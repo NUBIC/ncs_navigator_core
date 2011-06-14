@@ -1,0 +1,21 @@
+<%
+  require 'bcdatabase'
+  bcdb = Bcdatabase.load
+%>
+
+<%= bcdb.development :local_postgresql, :ncs_navigator_core_development %>
+<%= bcdb.ci :pdev, :ncs_navigator_core_hudson %>
+<%= bcdb.staging :pstage, :ncs_navigator_core_staging %>
+<%= bcdb.production :pprod, :ncs_navigator_core_production %>
+
+test: &test
+  adapter: postgresql
+  encoding: unicode
+  database: ncs_navigator_core_test
+  pool: 5
+  host: localhost
+  username: rails
+  password: pwd
+
+cucumber:
+  <<: *test
