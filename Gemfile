@@ -1,0 +1,29 @@
+source 'http://rubygems.org'
+source 'http://download.bioinformatics.northwestern.edu/gems'
+
+gem 'rails', '3.0.7'
+
+gem 'bcdatabase', '~> 1.0.5'
+gem 'bcsec', '~> 2.1.1'
+gem 'bcsec-rails', '>= 3.0'
+gem 'fastercsv'
+gem 'pg'
+
+group :development do
+  gem 'watchr'
+end
+
+group :development, :test, :ci do
+  gem 'rspec-rails', '~> 2.4'
+end
+
+group :test, :ci do
+
+  gem 'cucumber'
+  gem 'cucumber-rails'
+  gem 'database_cleaner'
+  gem 'shoulda'
+  gem 'factory_girl'
+  gem 'rcov'
+
+end
