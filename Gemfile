@@ -27,3 +27,9 @@ group :test, :ci do
   gem 'rcov'
 
 end
+
+group :cucumber do
+  gem 'capybara'
+  gem 'spork'
+  gem 'launchy'    # So you can do Then show me the page
+end
