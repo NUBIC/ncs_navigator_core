@@ -1,21 +1,21 @@
 # == Schema Information
-# Schema version: 20110613210555
+# Schema version: 20110623215337
 #
 # Table name: household_units
 #
 #  id                           :integer         not null, primary key
-#  psu_code                     :integer
-#  hh_status_code               :integer
-#  hh_eligibilty_code           :integer
+#  psu_code                     :integer         not null
+#  hh_status_code               :integer         not null
+#  hh_eligibilty_code           :integer         not null
+#  hh_structure_code            :integer         not null
+#  hh_structure_other           :string(255)
+#  hh_comment                   :text
 #  number_of_age_eligible_women :integer
 #  number_of_pregnant_women     :integer
 #  number_of_pregnant_minors    :integer
 #  number_of_pregnant_adults    :integer
 #  number_of_pregnant_over49    :integer
-#  hh_structure_code            :integer
-#  hh_structure_other           :string(255)
-#  hh_comment                   :text
-#  transaction_type             :string(255)
+#  transaction_type             :string(36)
 #  created_at                   :datetime
 #  updated_at                   :datetime
 #
@@ -33,5 +33,10 @@ describe HouseholdUnit do
   it { should belong_to(:hh_status) }
   it { should belong_to(:hh_eligibilty) }
   it { should belong_to(:hh_structure) }
+
+  it { should validate_presence_of(:psu) }
+  it { should validate_presence_of(:hh_status) }
+  it { should validate_presence_of(:hh_eligibilty) }
+  it { should validate_presence_of(:hh_structure) }
   
 end

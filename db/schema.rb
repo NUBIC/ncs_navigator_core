@@ -10,47 +10,59 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110613210555) do
+ActiveRecord::Schema.define(:version => 20110623215337) do
 
   create_table "dwelling_household_links", :force => true do |t|
-    t.integer  "psu_code"
-    t.integer  "is_active_code"
-    t.integer  "dwelling_unit_id"
-    t.integer  "household_unit_id"
-    t.integer  "du_rank_code"
+    t.integer  "psu_code",                        :null => false
+    t.integer  "is_active_code",                  :null => false
+    t.integer  "dwelling_unit_id",                :null => false
+    t.integer  "household_unit_id",               :null => false
+    t.integer  "du_rank_code",                    :null => false
     t.string   "du_rank_other"
-    t.string   "transaction_type"
+    t.string   "transaction_type",  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "dwelling_units", :force => true do |t|
-    t.integer  "psu_code"
-    t.integer  "duplicate_du_code"
-    t.integer  "missed_du_code"
-    t.integer  "du_type_code"
+    t.integer  "psu_code",                         :null => false
+    t.integer  "duplicate_du_code",                :null => false
+    t.integer  "missed_du_code",                   :null => false
+    t.integer  "du_type_code",                     :null => false
     t.string   "du_type_other"
-    t.integer  "du_ineligible_code"
-    t.integer  "du_access_code"
+    t.integer  "du_ineligible_code",               :null => false
+    t.integer  "du_access_code",                   :null => false
     t.text     "duid_comment"
-    t.string   "transaction_type"
+    t.string   "transaction_type",   :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "household_person_links", :force => true do |t|
+    t.string   "psu_code",          :limit => 36, :null => false
+    t.integer  "person_id",                       :null => false
+    t.integer  "household_unit_id",               :null => false
+    t.integer  "is_active_code",                  :null => false
+    t.integer  "hh_rank_code",                    :null => false
+    t.string   "hh_rank_other"
+    t.string   "transaction_type",  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "household_units", :force => true do |t|
-    t.integer  "psu_code"
-    t.integer  "hh_status_code"
-    t.integer  "hh_eligibilty_code"
+    t.integer  "psu_code",                                   :null => false
+    t.integer  "hh_status_code",                             :null => false
+    t.integer  "hh_eligibilty_code",                         :null => false
+    t.integer  "hh_structure_code",                          :null => false
+    t.string   "hh_structure_other"
+    t.text     "hh_comment"
     t.integer  "number_of_age_eligible_women"
     t.integer  "number_of_pregnant_women"
     t.integer  "number_of_pregnant_minors"
     t.integer  "number_of_pregnant_adults"
     t.integer  "number_of_pregnant_over49"
-    t.integer  "hh_structure_code"
-    t.string   "hh_structure_other"
-    t.text     "hh_comment"
-    t.string   "transaction_type"
+    t.string   "transaction_type",             :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -61,6 +73,54 @@ ActiveRecord::Schema.define(:version => 20110613210555) do
     t.string   "display_text"
     t.integer  "local_code"
     t.string   "global_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "people", :force => true do |t|
+    t.string   "psu_code",                       :limit => 36, :null => false
+    t.integer  "prefix_code",                                  :null => false
+    t.string   "first_name",                     :limit => 30
+    t.string   "last_name",                      :limit => 30
+    t.string   "middle_name",                    :limit => 30
+    t.string   "maiden_name",                    :limit => 30
+    t.integer  "suffix_code",                                  :null => false
+    t.string   "title",                          :limit => 5
+    t.integer  "sex_code"
+    t.integer  "age"
+    t.integer  "age_range_code",                               :null => false
+    t.string   "person_dob",                     :limit => 10
+    t.date     "date_of_birth"
+    t.integer  "deceased_code",                                :null => false
+    t.integer  "ethnic_group_code",                            :null => false
+    t.integer  "language_code",                                :null => false
+    t.string   "language_other"
+    t.integer  "marital_status_code",                          :null => false
+    t.string   "marital_status_other"
+    t.integer  "preferred_contact_method_code",                :null => false
+    t.string   "preferred_contact_method_other"
+    t.integer  "planned_move_code",                            :null => false
+    t.integer  "move_info_code",                               :null => false
+    t.integer  "when_move_code",                               :null => false
+    t.date     "moving_date"
+    t.string   "date_move"
+    t.integer  "p_tracing_code",                               :null => false
+    t.integer  "p_info_source_code",                           :null => false
+    t.string   "p_info_source_other"
+    t.date     "p_info_date"
+    t.date     "p_info_update"
+    t.text     "person_comment"
+    t.string   "transaction_type",               :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "person_races", :force => true do |t|
+    t.string   "psu_code",         :limit => 36, :null => false
+    t.integer  "person_id",                      :null => false
+    t.integer  "race_code",                      :null => false
+    t.string   "race_other"
+    t.string   "transaction_type", :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
