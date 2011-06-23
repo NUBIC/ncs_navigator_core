@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110613210555
+# Schema version: 20110623215337
 #
 # Table name: ncs_codes
 #

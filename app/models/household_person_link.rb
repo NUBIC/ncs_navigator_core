@@ -1,31 +1,34 @@
 # == Schema Information
 # Schema version: 20110623215337
 #
-# Table name: dwelling_household_links
+# Table name: household_person_links
 #
 #  id                :integer         not null, primary key
-#  psu_code          :integer         not null
-#  is_active_code    :integer         not null
-#  dwelling_unit_id  :integer         not null
+#  psu_code          :string(36)      not null
+#  person_id         :integer         not null
 #  household_unit_id :integer         not null
-#  du_rank_code      :integer         not null
-#  du_rank_other     :string(255)
+#  is_active_code    :integer         not null
+#  hh_rank_code      :integer         not null
+#  hh_rank_other     :string(255)
 #  transaction_type  :string(36)
 #  created_at        :datetime
 #  updated_at        :datetime
 #
 
-class DwellingHouseholdLink < ActiveRecord::Base
+class HouseholdPersonLink < ActiveRecord::Base
   
-  belongs_to :dwelling_unit
+  belongs_to :person
   belongs_to :household_unit
   
   belongs_to :psu,       :conditions => "list_name = 'PSU_CL1'",                :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
   belongs_to :is_active, :conditions => "list_name = 'CONFIRM_TYPE_CL2'",       :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :is_active_code
-  belongs_to :du_rank,   :conditions => "list_name = 'COMMUNICATION_RANK_CL1'", :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :du_rank_code
+  belongs_to :hh_rank,   :conditions => "list_name = 'COMMUNICATION_RANK_CL1'", :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :hh_rank_code
+  
+  validates_presence_of :person
+  validates_presence_of :household_unit
   
   validates_presence_of :psu
   validates_presence_of :is_active
-  validates_presence_of :du_rank
+  validates_presence_of :hh_rank
   
 end
