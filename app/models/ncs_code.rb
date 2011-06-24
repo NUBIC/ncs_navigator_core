@@ -81,8 +81,8 @@ class NcsCode < ActiveRecord::Base
     
     ### household_person_link
     # :psu_code               => "PSU_CL1",             # already referenced
-    :is_active => "CONFIRM_TYPE_CL2",
-    :hh_rank   => "COMMUNICATION_RANK_CL1"
+    :is_active_code => "CONFIRM_TYPE_CL2",
+    :hh_rank_code   => "COMMUNICATION_RANK_CL1"
     
   }
 
