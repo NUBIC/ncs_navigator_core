@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110623215337) do
+ActiveRecord::Schema.define(:version => 20110624163825) do
 
   create_table "dwelling_household_links", :force => true do |t|
     t.integer  "psu_code",                        :null => false
@@ -73,6 +73,39 @@ ActiveRecord::Schema.define(:version => 20110623215337) do
     t.string   "display_text"
     t.integer  "local_code"
     t.string   "global_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "participant_person_links", :force => true do |t|
+    t.string   "psu_code",           :limit => 36, :null => false
+    t.integer  "person_id",                        :null => false
+    t.integer  "participant_id",                   :null => false
+    t.integer  "relationship_code",                :null => false
+    t.string   "relationship_other"
+    t.integer  "is_active_code",                   :null => false
+    t.string   "transaction_type",   :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "participants", :force => true do |t|
+    t.string   "psu_code",                 :limit => 36, :null => false
+    t.integer  "person_id",                              :null => false
+    t.integer  "p_type_code",                            :null => false
+    t.string   "p_type_other"
+    t.integer  "status_info_source_code",                :null => false
+    t.string   "status_info_source_other"
+    t.integer  "status_info_mode_code",                  :null => false
+    t.string   "status_info_mode_other"
+    t.date     "status_info_date"
+    t.integer  "enroll_status_code",                     :null => false
+    t.date     "enroll_date"
+    t.integer  "pid_entry_code",                         :null => false
+    t.string   "pid_entry_other"
+    t.integer  "pid_age_eligibility_code",               :null => false
+    t.text     "pid_comment"
+    t.string   "transaction_type",         :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
