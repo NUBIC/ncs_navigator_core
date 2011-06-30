@@ -9,6 +9,8 @@ gem 'bcsec-rails', '>= 3.0'
 gem 'fastercsv'
 gem 'pg'
 
+gem 'ncs-mdes', '0.1.0'
+
 group :development do
   gem 'watchr'
 end
@@ -17,7 +19,7 @@ group :development, :test, :ci do
   gem 'rspec-rails', '~> 2.4'
 end
 
-group :test, :ci do
+group :test, :ci, :cucumber do
 
   gem 'cucumber'
   gem 'cucumber-rails'
