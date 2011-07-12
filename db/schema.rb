@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
   create_table "household_units", :force => true do |t|
     t.integer  "psu_code",                                   :null => false
     t.integer  "hh_status_code",                             :null => false
-    t.integer  "hh_eligibilty_code",                         :null => false
+    t.integer  "hh_eligibility_code",                        :null => false
     t.integer  "hh_structure_code",                          :null => false
     t.string   "hh_structure_other"
     t.text     "hh_comment"
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.string   "maiden_name",                    :limit => 30
     t.integer  "suffix_code",                                  :null => false
     t.string   "title",                          :limit => 5
-    t.integer  "sex_code"
+    t.integer  "sex_code",                                     :null => false
     t.integer  "age"
     t.integer  "age_range_code",                               :null => false
     t.string   "person_dob",                     :limit => 10
