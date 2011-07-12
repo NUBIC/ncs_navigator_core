@@ -1,0 +1,65 @@
+.page_section
+  = form_for(@household_unit) do |f| 
+    = render "shared/custom_error_messages", :object => f.object
+
+    %p
+      = f.label :psu_code, "PSU"
+      %br
+      - f.object.psu_code = 20000030
+      = f.select(:psu_code, NcsCode.ncs_code_lookup(:psu_code))
+
+    %p
+      = f.label :hh_status_code, "Status"
+      %br
+      = f.select(:hh_status_code, NcsCode.ncs_code_lookup(:hh_status_code), { :include_blank => "-- Select Status --" })
+
+    %p
+      = f.label :hh_eligibility_code, "Eligibility"
+      %br
+      = f.select(:hh_eligibility_code, NcsCode.ncs_code_lookup(:hh_eligibility_code), { :include_blank => "-- Select Eligibility --" })
+
+    %p
+      = f.label :hh_structure_code, "Structure"
+      %br
+      = f.select(:hh_structure_code, NcsCode.ncs_code_lookup(:hh_structure_code), { :include_blank => "-- Select Structure --" })
+
+    %p
+      = f.label :hh_structure_other, "Structure (Other)"
+      %br
+      = f.text_field :hh_structure_other
+
+    %p
+      = f.label :number_of_age_eligible_women, "Number Of Age Eligible Women"
+      %br
+      = f.text_field :number_of_age_eligible_women
+
+    %p
+      = f.label :number_of_pregnant_women, "Number Of Pregnant Women"
+      %br
+      = f.text_field :number_of_pregnant_women
+
+    %p
+      = f.label :number_of_pregnant_minors, "Number Of Pregnant Minors"
+      %br
+      = f.text_field :number_of_pregnant_minors
+
+    %p
+      = f.label :number_of_pregnant_adults, "Number Of Pregnant Adults"
+      %br
+      = f.text_field :number_of_pregnant_adults
+
+    %p
+      = f.label :number_of_pregnant_over49, "Number Of Pregnant Over 49"
+      %br
+      = f.text_field :number_of_pregnant_over49
+
+    %p
+      = f.label :hh_comment, "Comment"
+      %br
+      = f.text_area :hh_comment
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+
+.links
+  = link_to "All Household Units", household_units_path, :class => "list_link icon_link"

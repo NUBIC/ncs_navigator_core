@@ -4,7 +4,7 @@ class CreateHouseholdUnits < ActiveRecord::Migration
 
       t.integer :psu_code,            :null => false, :limit => 36
       t.integer :hh_status_code,      :null => false
-      t.integer :hh_eligibilty_code,  :null => false
+      t.integer :hh_eligibility_code,  :null => false
       t.integer :hh_structure_code,   :null => false
       t.string :hh_structure_other,   :limit => 255
       t.text :hh_comment

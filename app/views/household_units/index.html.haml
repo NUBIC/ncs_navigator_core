@@ -1,0 +1,40 @@
+- title "Household Units"
+  
+.page_section
+  - if @household_units.empty?
+    #no_records
+      No household units were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @household_units
+    %table.records
+      %tr
+        %th
+          PSU
+        %th
+          Status
+        %th
+          Eligibility
+        %th
+          Structure
+        %th{ :colspan => "2" }
+
+      - @household_units.each do |hh|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            =hh.psu
+          %td
+            = hh.hh_status
+          %td
+            = hh.hh_eligibility
+          %td
+            = hh.hh_structure
+          %td
+            = link_to 'Edit', edit_household_unit_path(hh), :class => "edit_link icon_link"
+          %td
+            = link_to 'Delete', hh, :confirm => 'Are you sure?', :method => :delete, :class => "delete_link icon_link"
+  .links
+    = link_to 'New Household Unit', new_household_unit_path, :class => "add_link icon_link"
+
+  = will_paginate @household_units

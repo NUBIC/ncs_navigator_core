@@ -1,0 +1,28 @@
+!!!
+
+%html{ :xmlns =>"http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en" }
+  %head
+    %meta{ "http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
+    %title
+      = show_title? ? "NCS Navigator Core :: " + yield(:title) : "NCS Navigator Core"
+    = stylesheet_link_tag 'compiled/screen.css', :media => 'screen, projection'
+    = stylesheet_link_tag 'compiled/print.css', :media => 'print'
+    /[if lt IE 8]
+      = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
+      = stylesheet_link_tag 'compiled/ie-custom.css', :media => 'screen, projection'
+    = javascript_include_tag("jquery-1.4.4.min", "rails", "application", "jquery-ui-1.8.6.custom.min")
+    = csrf_meta_tag
+    = yield :head
+
+  %body
+    #container
+      #header
+        #title
+          - if show_title?
+            = yield(:title)
+      #main
+        - flash.each do |message_type, message|
+          %div{ :class => "flash_message", :id => "flash_#{message_type}" }
+            = message
+
+        = yield
