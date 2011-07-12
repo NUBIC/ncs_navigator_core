@@ -1,0 +1,55 @@
+/* Tabular Data */
+.records_header {
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  min-height: 2em;
+}
+
+table.records {
+  width: 100%;
+  border-collapse: collapse;
+  td {
+    padding: 0.125em 0.25em;
+  }
+  td.action {
+    width: 5em;
+  }
+  th {
+    background-color: lightgray;
+  }
+  th.select_record,
+  td.select_record {
+    width: 5em;
+  }
+  tr {
+    border: 1px solid lightgray;
+  }
+  tr.even_record {
+    background-color: whitesmoke;
+  }
+  tr.odd_record {
+    background-color: white;
+  }
+  tr.current_record {
+    background-color: aliceblue;
+  }
+}
+
+div.records {
+  
+  span.form_label {
+    font-weight: bold;
+  }
+  
+  span.label { 
+    font-style: italic;
+    text-decoration: underline;
+  }
+
+  span.value {
+    padding-left: 1em;
+    font-size: 1.2em;
+  }
+}
+

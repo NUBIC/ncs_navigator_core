@@ -1,0 +1,32 @@
+// Here is where you can define your constants for your application and to configure the blueprint framework.
+// Feel free to delete these if you want keep the defaults:
+
+$blueprint-grid-columns   : 24;
+$blueprint-container-size : 1160px;
+$blueprint-grid-margin    : 10px;
+$blueprint-font-family    : Arial,Helvetica,sans-serif;
+
+// Use this to calculate the width based on the total width.
+// Or you can set !blueprint_grid_width to a fixed value and unset !blueprint_container_size -- it will be calculated for you.
+$blueprint-grid-width : ($blueprint-container-size + $blueprint-grid-margin) / $blueprint-grid-columns - $blueprint-grid-margin;
+
+//Colors
+$NU_PURPLE         : #520063;
+$SLATE_GRAY        : #353737;
+$LIGHT_GRAY        : #e2e2e2;
+$BORDER_GRAY       : #ccc;
+$ORANGE            : #b66e19;
+$SHADOW            : #262626;
+$PAGE_HEADER_COLOR : #007c8b;
+
+@mixin rounded-corners($radius) {
+  border-radius: $radius;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+}
+
+@mixin shadowbox {
+  box-shadow: 0px 0px 40px $SHADOW;
+  -webkit-box-shadow: 0px 0px 40px $SHADOW;
+  -moz-box-shadow: 0px 0px 40px $SHADOW;
+}

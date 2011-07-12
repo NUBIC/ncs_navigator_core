@@ -1,0 +1,135 @@
+body {
+  background-color: $NU_PURPLE;
+  font-family: Verdana, Helvetica, Arial;
+  font-size: 14px;
+}
+
+a {
+  color: #0000FF;
+  img {
+    border: none;
+  }
+}
+
+.page_section {
+  border: 1px solid #ccc;
+  margin: 1em;
+  padding: 0.75em 0.25em 0.5em 0.75em;
+  background-color: whitesmoke;
+  @include rounded-corners(.5em);
+}
+
+.flash_message {
+  padding: 0.5em;
+  text-align: center;
+  margin: .125em auto;
+  @include rounded-corners(.5em);
+}
+
+#flash_warning,
+#flash_notice, 
+#flash_error {
+  padding: 5px 8px;
+  margin: 10px 0;
+}
+
+#flash_notice {
+  background-color: #CFC;
+  border: solid 1px #6C6;
+}
+
+#flash_warning,
+#flash_error {
+  background-color: #FCC;
+  border: solid 1px #C66;
+}
+
+.clear {
+  clear: both;
+}
+
+.fieldWithErrors,
+.field_with_errors {
+  display: inline;
+  color: maroon;
+  input {
+    border: 2px solid maroon;
+  }
+}
+
+#errorExplanation {
+  width: 400px;
+  border: 2px solid maroon;
+  padding: 0px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  @include rounded-corners(.5em);
+  h2 {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 5px 5px 15px;
+    font-size: 12px;
+    margin: 0px;
+    background-color: maroon;
+    color: #fff;
+  }
+  p {
+    color: #333;
+    margin-bottom: 0;
+    padding: 8px;
+  }
+  ul {
+    margin: 2px 24px;
+    li {
+      font-size: 12px;
+      list-style: disc;
+    }
+  }
+}
+form {
+  select {
+    border-color: #bbb;
+  }
+}
+
+#container,
+.container {
+  @include container;
+  @include shadowbox;
+  @include rounded-corners(1em);
+  background-color: white;
+  padding: 20px 40px;
+  margin: 1em auto;
+  p {
+    margin-bottom: .25em;
+  }
+  h3 {
+    padding-top: 10px;
+  }
+  form {
+    margin-bottom: 1em;
+  }
+}
+
+#header {
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #ccc;
+  @include span(24);
+  @include container;
+}
+
+#title {
+  @include column(5);
+}
+
+#login,
+#logout {
+  text-align: right;
+  @include column(19, true); /* true that this is the last column */
+}
+
+#main {
+  padding-bottom: 4em;
+}

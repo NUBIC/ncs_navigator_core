@@ -1,0 +1,53 @@
+/* Link styles */
+
+input[type="submit"] {
+  font-size: 1.1em;
+  margin-top: 0.5em;
+}
+
+.icon_link {
+  font-size: 1.1em;
+  padding: 2px 2px 2px 20px;
+  text-decoration: none;
+}
+
+.icon_link:hover {
+  color: orange !important;
+  text-decoration: none;
+}
+
+.add_link, .add_link:hover {
+  background: url(../../images/add.png) 0 2px no-repeat !important;
+}
+
+.edit_link, .edit_link:hover {
+  background: url(../../images/edit.png) 0 2px no-repeat !important;
+}
+
+.export_link, .export_link:hover {
+  background: url(../../images/page_white_excel.png) 0 2px no-repeat !important;
+}
+
+.search_link, .search_link:hover {
+  background: url(../../images/find.png) 0 2px no-repeat !important;
+}
+
+.show_link, .show_link:hover {
+  background: url(../../images/show.png) 0 2px no-repeat !important;
+}
+
+.list_link, .list_link:hover {
+  background: url(../../images/list.png) 0 2px no-repeat !important;
+}
+
+.delete_link, .delete_link:hover {
+  background: url(../../images/delete.png) 0 2px no-repeat !important;
+}
+
+.login_link, .login_link:hover {
+  background: url(../../images/door_in.png) 0 2px no-repeat !important;
+}
+
+.logout_link, .logout_link:hover {
+  background: url(../../images/door_out.png) 0 2px no-repeat !important;
+}
