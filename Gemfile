@@ -6,10 +6,15 @@ gem 'rails', '3.0.7'
 gem 'bcdatabase', '~> 1.0.5'
 gem 'bcsec', '~> 2.1.1'
 gem 'bcsec-rails', '>= 3.0'
+gem 'compass'
 gem 'fastercsv'
+gem 'haml', '~> 3.1'
 gem 'pg'
+gem 'ruby-debug'
 
-gem 'ncs-mdes', '0.1.0'
+gem 'ncs_mdes', '0.2.0'
+
+gem "will_paginate", "~> 3.0.beta"
 
 group :development do
   gem 'watchr'
@@ -27,6 +32,7 @@ group :test, :ci, :cucumber do
   gem 'shoulda'
   gem 'factory_girl'
   gem 'rcov'
+  gem 'pickle'
 
 end
 
