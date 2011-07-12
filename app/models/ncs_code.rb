@@ -68,9 +68,9 @@ class NcsCode < ActiveRecord::Base
     
     ### household_unit
     # :psu_code               => "PSU_CL1",             # already referenced
-    :hh_status_code     => "CONFIRM_TYPE_CL2",
-    :hh_eligibilty_code => "HOUSEHOLD_ELIGIBILITY_CL2",
-    :hh_structure_code  => "RESIDENCE_TYPE_CL2",
+    :hh_status_code      => "CONFIRM_TYPE_CL2",
+    :hh_eligibility_code => "HOUSEHOLD_ELIGIBILITY_CL2",
+    :hh_structure_code   => "RESIDENCE_TYPE_CL2",
     
     
     ### dwelling_household_link
@@ -86,9 +86,11 @@ class NcsCode < ActiveRecord::Base
     
   }
 
-  def self.ncs_code_lookup(attribute_name)
+  def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
     list_name = attribute_lookup(attribute_name)
-    NcsCode.find_all_by_list_name(list_name).map do |n| 
+    where_clause = "list_name = ?"
+    where_clause += " AND display_text <> 'Missing in Error'" unless show_missing_in_error
+    NcsCode.where(where_clause, list_name).map do |n| 
       [n.display_text, n.local_code]
     end    
   end
