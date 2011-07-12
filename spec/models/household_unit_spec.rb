@@ -6,7 +6,7 @@
 #  id                           :integer         not null, primary key
 #  psu_code                     :integer         not null
 #  hh_status_code               :integer         not null
-#  hh_eligibilty_code           :integer         not null
+#  hh_eligibility_code           :integer         not null
 #  hh_structure_code            :integer         not null
 #  hh_structure_other           :string(255)
 #  hh_comment                   :text
@@ -31,12 +31,12 @@ describe HouseholdUnit do
   
   it { should belong_to(:psu) }
   it { should belong_to(:hh_status) }
-  it { should belong_to(:hh_eligibilty) }
+  it { should belong_to(:hh_eligibility) }
   it { should belong_to(:hh_structure) }
 
   it { should validate_presence_of(:psu) }
-  it { should validate_presence_of(:hh_status) }
-  it { should validate_presence_of(:hh_eligibilty) }
-  it { should validate_presence_of(:hh_structure) }
+  it { should validate_presence_of(:hh_status).with_message(/Status can't be blank/) }
+  it { should validate_presence_of(:hh_eligibility).with_message(/Eligibility can't be blank/) }
+  it { should validate_presence_of(:hh_structure).with_message(/Structure can't be blank/) }
   
 end

@@ -65,7 +65,7 @@ end
 Factory.define :household_unit do |hh|
   hh.psu                          { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
   hh.hh_status                    { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
-  hh.hh_eligibilty                { |a| a.association(:ncs_code, :list_name => "HOUSEHOLD_ELIGIBILITY_CL2", :display_text => "Household is eligible", :local_code => 1) }
+  hh.hh_eligibility                { |a| a.association(:ncs_code, :list_name => "HOUSEHOLD_ELIGIBILITY_CL2", :display_text => "Household is eligible", :local_code => 1) }
   hh.number_of_age_eligible_women 1
   hh.number_of_pregnant_women     1
   hh.number_of_pregnant_minors    0
