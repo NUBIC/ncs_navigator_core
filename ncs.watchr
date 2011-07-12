@@ -34,7 +34,7 @@ end
 
 def run_all_features
   system('clear')
-  system("cucumber")
+  system("bundle exec rake cucumber")
 end
 
 def related_spec_files(path)
