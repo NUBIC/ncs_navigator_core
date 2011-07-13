@@ -16,7 +16,6 @@ class HouseholdUnitsController < ApplicationController
   # GET /household_units/new.json
   def new
     @household_unit = HouseholdUnit.new
-
     respond_to do |format|
       format.html # new.html.haml
       format.json  { render :json => @household_unit }
@@ -55,7 +54,7 @@ class HouseholdUnitsController < ApplicationController
         format.json { head :ok }
       else
         format.html { render :action => "edit" }
-        format.json { render :json => @activity.errors, :status => :unprocessable_entity }
+        format.json { render :json => @household_unit.errors, :status => :unprocessable_entity }
       end
     end
   end

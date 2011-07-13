@@ -32,4 +32,7 @@ NcsNavigatorCore::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  require File.expand_path('../../initializers/system_configuration', __FILE__)
+  SystemConfiguration.psu_code = 20000030
 end

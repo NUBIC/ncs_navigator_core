@@ -22,5 +22,9 @@ NcsNavigatorCore::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+
+  # Add values used throughout application here# cf. /config/initializers/system_configuration.rb
+  require File.expand_path('../../initializers/system_configuration', __FILE__)
+  SystemConfiguration.psu_code = 20000030
 end
 

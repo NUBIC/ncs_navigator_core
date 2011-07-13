@@ -1,0 +1,36 @@
+- title "People"
+  
+.page_section
+  - if @people.empty?
+    #no_records
+      No people were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @people
+    %table.records
+      %tr
+        %th
+          PSU
+        %th
+          First Name
+        %th
+          Last Name
+        %th{ :colspan => "2" }
+
+      - @people.each do |person|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = person.psu
+          %td
+            = person.first_name
+          %td
+            = person.last_name
+          %td
+            = link_to 'Edit', edit_person_path(person), :class => "edit_link icon_link"
+          %td
+            = link_to 'Delete', person, :confirm => 'Are you sure?', :method => :delete, :class => "delete_link icon_link"
+  .links
+    = link_to 'New Person', new_person_path, :class => "add_link icon_link"
+
+  = will_paginate @people

@@ -65,21 +65,40 @@ describe Person do
   it { should belong_to(:when_move) }
   it { should belong_to(:p_tracing) }
   it { should belong_to(:p_info_source) }
+
+  # Cannot use these shoulda macros when setting a default value for the attribute (missing in error)
+  # 
+  # it { should validate_presence_of(:psu) }
+  # it { should validate_presence_of(:prefix) }
+  # it { should validate_presence_of(:suffix) }
+  # it { should validate_presence_of(:sex) }
+  # it { should validate_presence_of(:age_range) }
+  # it { should validate_presence_of(:deceased) }
+  # it { should validate_presence_of(:ethnic_group) }
+  # it { should validate_presence_of(:language) }
+  # it { should validate_presence_of(:marital_status) }
+  # it { should validate_presence_of(:preferred_contact_method) }
+  # it { should validate_presence_of(:planned_move) }
+  # it { should validate_presence_of(:move_info) }
+  # it { should validate_presence_of(:when_move) }
+  # it { should validate_presence_of(:p_tracing) }
+  # it { should validate_presence_of(:p_info_source) }
+  it { should validate_presence_of(:first_name) }
+  it { should validate_presence_of(:last_name) }
   
-  it { should validate_presence_of(:psu) }
-  it { should validate_presence_of(:prefix) }
-  it { should validate_presence_of(:suffix) }
-  it { should validate_presence_of(:sex) }
-  it { should validate_presence_of(:age_range) }
-  it { should validate_presence_of(:deceased) }
-  it { should validate_presence_of(:ethnic_group) }
-  it { should validate_presence_of(:language) }
-  it { should validate_presence_of(:marital_status) }
-  it { should validate_presence_of(:preferred_contact_method) }
-  it { should validate_presence_of(:planned_move) }
-  it { should validate_presence_of(:move_info) }
-  it { should validate_presence_of(:when_move) }
-  it { should validate_presence_of(:p_tracing) }
-  it { should validate_presence_of(:p_info_source) }
+  context "With NCS Codes" do
+    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+      create_missing_in_error_ncs_codes(Person)
+      
+      pers = Person.new
+      pers.psu = Factory(:ncs_code)
+      pers.first_name = "John"
+      pers.last_name = "Doe"
+      pers.save!
+    
+      Person.first.prefix.local_code.should == -4
+      Person.first.suffix.local_code.should == -4
+    end
+  end
 
 end
