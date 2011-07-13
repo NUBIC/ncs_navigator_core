@@ -59,6 +59,8 @@ class Person < ActiveRecord::Base
   belongs_to :p_tracing,                :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :p_tracing_code
   belongs_to :p_info_source,            :conditions => "list_name = 'INFORMATION_SOURCE_CL4'",  :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :p_info_source_code
   
+  validates_presence_of :first_name
+  validates_presence_of :last_name
   validates_presence_of :psu
   validates_presence_of :prefix
   validates_presence_of :suffix
@@ -74,5 +76,19 @@ class Person < ActiveRecord::Base
   validates_presence_of :when_move
   validates_presence_of :p_tracing
   validates_presence_of :p_info_source
+  
+  before_validation :set_missing_in_error
+  
+  private
+  
+    # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4
+    def set_missing_in_error
+      Person.reflect_on_all_associations.each do |association|
+        if association.options[:class_name] == "NcsCode" && self.send(association.name.to_sym).blank?
+          mie_code = NcsCode.where("#{association.options[:conditions]} AND local_code = -4").first
+          self.send("#{association.name}=", mie_code)
+        end
+      end
+    end
   
 end

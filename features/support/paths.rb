@@ -17,6 +17,11 @@ module NavigationHelpers
     when /^the edit household unit page$/
       edit_household_unit_path(HouseholdUnit.last)
 
+    when /^the people page$/
+      people_path
+      
+    when /^the edit person page$/
+      edit_person_path(Person.last)
 
     # the following are examples using path_to_pickle
 

@@ -24,7 +24,7 @@ Factory.define :person do |pers|
   pers.person_dob                     "1901-91-91"
   pers.date_of_birth                  nil
   pers.deceased                       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
-  pers.ethnic_group                   { |a| a.association(:ncs_code, :list_name => "ETHNICITY", :display_text => "Not Hispanic or Latino", :local_code => 2) }
+  pers.ethnic_group                   { |a| a.association(:ncs_code, :list_name => "ETHNICITY_CL1", :display_text => "Not Hispanic or Latino", :local_code => 2) }
   pers.language                       { |a| a.association(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
   pers.language_other                 nil
   pers.marital_status                 { |a| a.association(:ncs_code, :list_name => "MARITAL_STATUS_CL1", :display_text => "Married", :local_code => 1) }

@@ -32,3 +32,12 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 end
+
+def create_missing_in_error_ncs_codes(cls)
+  cls.reflect_on_all_associations.each do |association|
+    if association.options[:class_name] == "NcsCode"
+      list_name = association.options[:conditions].gsub("'", "").gsub("list_name = ", "")
+      Factory(:ncs_code, :local_code => '-4', :display_text => 'Missing in Error', :list_name => list_name)
+    end
+  end
+end
