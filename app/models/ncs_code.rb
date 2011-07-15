@@ -58,6 +58,11 @@ class NcsCode < ActiveRecord::Base
     :is_active_code    => "CONFIRM_TYPE_CL2",
     
     
+    ### listing_unit
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :list_source_code  => "LISTING_SOURCE_CL1",
+    
+    
     ### dwelling_unit
     # :psu_code               => "PSU_CL1",             # already referenced
     :duplicate_du_code  => "CONFIRM_TYPE_CL2",
