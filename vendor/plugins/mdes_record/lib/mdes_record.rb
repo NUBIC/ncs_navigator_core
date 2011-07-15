@@ -1,0 +1,1 @@
+require 'mdes_record/acts_as_mdes_record'

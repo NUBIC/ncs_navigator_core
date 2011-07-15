@@ -16,6 +16,8 @@
 #
 
 class HouseholdPersonLink < ActiveRecord::Base
+  include MdesRecord
+  acts_as_mdes_record :public_id_field => :person_hh_id
   
   belongs_to :person
   belongs_to :household_unit
@@ -25,10 +27,5 @@ class HouseholdPersonLink < ActiveRecord::Base
   belongs_to :hh_rank,   :conditions => "list_name = 'COMMUNICATION_RANK_CL1'", :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :hh_rank_code
   
   validates_presence_of :person
-  validates_presence_of :household_unit
-  
-  validates_presence_of :psu
-  validates_presence_of :is_active
-  validates_presence_of :hh_rank
-  
+  validates_presence_of :household_unit  
 end

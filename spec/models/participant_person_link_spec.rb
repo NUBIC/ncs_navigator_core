@@ -30,10 +30,30 @@ describe ParticipantPersonLink do
   it { should belong_to(:relationship) }
   it { should belong_to(:is_active) }
   
-  it { should validate_presence_of(:psu) }
   it { should validate_presence_of(:person) }
   it { should validate_presence_of(:participant) }
-  it { should validate_presence_of(:relationship) }
-  it { should validate_presence_of(:is_active) }
+  
+  context "as mdes record" do
+    
+    it "should set the public_id to a uuid" do
+      ppl = Factory(:participant_person_link)
+      ppl.public_id.should_not be_nil
+      ppl.person_pid_id.should == ppl.public_id
+      ppl.person_pid_id.length.should == 36
+    end
+    
+    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+      create_missing_in_error_ncs_codes(ParticipantPersonLink)
+      
+      ppl = ParticipantPersonLink.new
+      ppl.psu = Factory(:ncs_code)
+      ppl.participant = Factory(:participant)
+      ppl.person = Factory(:person)
+      ppl.save!
+    
+      ParticipantPersonLink.first.relationship.local_code.should == -4
+      ParticipantPersonLink.first.is_active.local_code.should == -4
+    end
+  end
   
 end

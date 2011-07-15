@@ -14,7 +14,8 @@ gem 'ruby-debug'
 
 gem 'ncs_mdes', '0.2.0'
 
-gem "will_paginate", "~> 3.0.beta"
+gem 'uuid'
+gem 'will_paginate', '~> 3.0.beta'
 
 group :development do
   gem 'watchr'

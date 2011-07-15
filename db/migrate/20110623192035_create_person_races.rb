@@ -8,8 +8,7 @@ class CreatePersonRaces < ActiveRecord::Migration
       t.string :race_other,       :limit => 255
       t.string :transaction_type, :limit => 36
 
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :person_race_id
+      t.binary :person_race_id,   :null => false
 
       t.timestamps
     end

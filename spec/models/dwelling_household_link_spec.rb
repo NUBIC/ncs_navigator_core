@@ -28,8 +28,27 @@ describe DwellingHouseholdLink do
   it { should belong_to(:is_active) }
   it { should belong_to(:du_rank) }
   
-  it { should validate_presence_of(:psu) }
-  it { should validate_presence_of(:is_active) }
-  it { should validate_presence_of(:du_rank) }
+  context "as mdes record" do
+    
+    it "should set the public_id to a uuid" do
+      dhl = Factory(:dwelling_household_link)
+      dhl.public_id.should_not be_nil
+      dhl.hh_du_id.should == dhl.public_id
+      dhl.hh_du_id.length.should == 36
+    end
+    
+    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+      create_missing_in_error_ncs_codes(DwellingHouseholdLink)
+      
+      dhl = DwellingHouseholdLink.new
+      dhl.psu = Factory(:ncs_code)
+      dhl.dwelling_unit = Factory(:dwelling_unit)
+      dhl.household_unit = Factory(:household_unit)
+      dhl.save!
+    
+      DwellingHouseholdLink.first.is_active.local_code.should == -4
+      DwellingHouseholdLink.first.du_rank.local_code.should == -4
+    end
+  end
   
 end

@@ -36,9 +36,9 @@ class CreatePeople < ActiveRecord::Migration
       t.text :person_comment
       t.string :transaction_type,               :limit => 36
 
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :person_id
-      # t.integer :new_address_id
+      t.binary :person_id,                      :null => false
+      
+      # t.references :address
       
       t.timestamps
     end

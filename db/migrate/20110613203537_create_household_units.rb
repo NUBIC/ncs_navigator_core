@@ -15,8 +15,7 @@ class CreateHouseholdUnits < ActiveRecord::Migration
       t.integer :number_of_pregnant_over49
       t.string :transaction_type,     :limit => 36
       
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :hh_id
+      t.binary :hh_id,                :null => false
 
       t.timestamps
     end

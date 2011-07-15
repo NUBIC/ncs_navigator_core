@@ -31,6 +31,7 @@ Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "INFORMATION_SOURCE_CL4", :display_text => "Person/Self", :local_code => 1)
   
   create_missing_in_error_ncs_codes(Person)
+  create_missing_in_error_ncs_codes(HouseholdUnit)
   
 end
 

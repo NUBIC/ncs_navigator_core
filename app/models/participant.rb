@@ -25,6 +25,8 @@
 #
 
 class Participant < ActiveRecord::Base
+  include MdesRecord
+  acts_as_mdes_record :public_id_field => :p_id
 
   belongs_to :person
   belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
@@ -35,13 +37,5 @@ class Participant < ActiveRecord::Base
   belongs_to :pid_entry,            :conditions => "list_name = 'STUDY_ENTRY_METHOD_CL1'",  :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :pid_entry_code
   belongs_to :pid_age_eligibility,  :conditions => "list_name = 'AGE_ELIGIBLE_CL2'",        :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :pid_age_eligibility_code
   
-  validates_presence_of :person
-  validates_presence_of :psu
-  validates_presence_of :p_type
-  validates_presence_of :status_info_source
-  validates_presence_of :status_info_mode
-  validates_presence_of :enroll_status
-  validates_presence_of :pid_entry
-  validates_presence_of :pid_age_eligibility
-  
+  validates_presence_of :person  
 end
