@@ -33,10 +33,27 @@ describe HouseholdUnit do
   it { should belong_to(:hh_status) }
   it { should belong_to(:hh_eligibility) }
   it { should belong_to(:hh_structure) }
-
-  it { should validate_presence_of(:psu) }
-  it { should validate_presence_of(:hh_status).with_message(/Status can't be blank/) }
-  it { should validate_presence_of(:hh_eligibility).with_message(/Eligibility can't be blank/) }
-  it { should validate_presence_of(:hh_structure).with_message(/Structure can't be blank/) }
+  
+  context "as mdes record" do
+    
+    it "should set the public_id to a uuid" do
+      hu = Factory(:household_unit)
+      hu.public_id.should_not be_nil
+      hu.hh_id.should == hu.public_id
+      hu.hh_id.length.should == 36
+    end
+    
+    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+      create_missing_in_error_ncs_codes(HouseholdUnit)
+      
+      hu = HouseholdUnit.new
+      hu.psu = Factory(:ncs_code)
+      hu.save!
+    
+      HouseholdUnit.first.hh_status.local_code.should == -4
+      HouseholdUnit.first.hh_eligibility.local_code.should == -4
+      HouseholdUnit.first.hh_structure.local_code.should == -4
+    end
+  end
   
 end

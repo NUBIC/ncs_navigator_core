@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110624163825) do
+ActiveRecord::Schema.define(:version => 20110714212419) do
 
   create_table "dwelling_household_links", :force => true do |t|
     t.integer  "psu_code",                        :null => false
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.integer  "du_rank_code",                    :null => false
     t.string   "du_rank_other"
     t.string   "transaction_type",  :limit => 36
+    t.binary   "hh_du_id",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -34,6 +35,8 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.integer  "du_access_code",                   :null => false
     t.text     "duid_comment"
     t.string   "transaction_type",   :limit => 36
+    t.binary   "du_id",                            :null => false
+    t.integer  "listing_unit_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -45,6 +48,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.integer  "is_active_code",                  :null => false
     t.integer  "hh_rank_code",                    :null => false
     t.string   "hh_rank_other"
+    t.binary   "person_hh_id",                    :null => false
     t.string   "transaction_type",  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -63,6 +67,18 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.integer  "number_of_pregnant_adults"
     t.integer  "number_of_pregnant_over49"
     t.string   "transaction_type",             :limit => 36
+    t.binary   "hh_id",                                      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "listing_units", :force => true do |t|
+    t.integer  "psu_code",                       :null => false
+    t.integer  "list_line"
+    t.integer  "list_source_code",               :null => false
+    t.text     "list_comment"
+    t.string   "transaction_type", :limit => 36
+    t.binary   "list_id",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -85,6 +101,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.string   "relationship_other"
     t.integer  "is_active_code",                   :null => false
     t.string   "transaction_type",   :limit => 36
+    t.binary   "person_pid_id",                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -106,6 +123,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.integer  "pid_age_eligibility_code",               :null => false
     t.text     "pid_comment"
     t.string   "transaction_type",         :limit => 36
+    t.binary   "p_id",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -144,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.date     "p_info_update"
     t.text     "person_comment"
     t.string   "transaction_type",               :limit => 36
+    t.binary   "person_id",                                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -154,6 +173,7 @@ ActiveRecord::Schema.define(:version => 20110624163825) do
     t.integer  "race_code",                      :null => false
     t.string   "race_other"
     t.string   "transaction_type", :limit => 36
+    t.binary   "person_race_id",                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

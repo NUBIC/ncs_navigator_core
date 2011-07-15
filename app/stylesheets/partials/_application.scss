@@ -1,5 +1,4 @@
 body {
-  background-color: $NU_PURPLE;
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
 }
@@ -95,9 +94,6 @@ form {
 
 #container,
 .container {
-  @include container;
-  @include shadowbox;
-  @include rounded-corners(1em);
   background-color: white;
   padding: 20px 40px;
   margin: 1em auto;
@@ -121,7 +117,9 @@ form {
 }
 
 #title {
-  @include column(5);
+  font-size: 2em;
+  @include column(16, true);
+  text-align: right;
 }
 
 #login,

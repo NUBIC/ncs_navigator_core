@@ -12,11 +12,10 @@ class CreateDwellingUnits < ActiveRecord::Migration
       t.text :duid_comment
       t.string :transaction_type,     :limit => 36
 
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :du_id
-      # t.integer :list_id
-      # t.integer :tsu_id
-      # t.integer :ssu_id
+      t.binary :du_id,                :null => false
+      t.references :listing_unit
+      # t.references :tsu
+      # t.references :ssu
 
       t.timestamps
     end

@@ -14,6 +14,7 @@
 #
 
 class NcsCode < ActiveRecord::Base
+
   validates_presence_of :list_name, :display_text, :local_code
   
   ATTRIBUTE_MAPPING = { 

@@ -1,0 +1,6 @@
+postgresql:
+  :adapter: postgresql
+  :username: rails
+  :password: pwd
+  :database: mdes_model_plugin_test
+  :min_messages: ERROR

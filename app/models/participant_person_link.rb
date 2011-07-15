@@ -16,6 +16,8 @@
 #
 
 class ParticipantPersonLink < ActiveRecord::Base
+  include MdesRecord
+  acts_as_mdes_record :public_id_field => :person_pid_id
   
   belongs_to :person
   belongs_to :participant
@@ -24,9 +26,5 @@ class ParticipantPersonLink < ActiveRecord::Base
   belongs_to :is_active,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",              :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :is_active_code
   
   validates_presence_of :person
-  validates_presence_of :psu
   validates_presence_of :participant
-  validates_presence_of :relationship
-  validates_presence_of :is_active
-  
 end

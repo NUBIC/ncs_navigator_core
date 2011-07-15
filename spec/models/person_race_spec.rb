@@ -27,7 +27,26 @@ describe PersonRace do
   it { should belong_to(:race) }
   
   it { should validate_presence_of(:person) }
-  it { should validate_presence_of(:psu) }
-  it { should validate_presence_of(:race) }
+  
+  context "as mdes record" do
+    
+    it "should set the public_id to a uuid" do
+      pr = Factory(:person_race)
+      pr.public_id.should_not be_nil
+      pr.person_race_id.should == pr.public_id
+      pr.person_race_id.length.should == 36
+    end
+    
+    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+      create_missing_in_error_ncs_codes(PersonRace)
+      
+      pr = PersonRace.new
+      pr.psu = Factory(:ncs_code)
+      pr.person = Factory(:person)
+      pr.save!
+    
+      PersonRace.first.race.local_code.should == -4
+    end
+  end
   
 end

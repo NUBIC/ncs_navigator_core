@@ -41,14 +41,30 @@ describe Participant do
   it { should belong_to(:enroll_status) }
   it { should belong_to(:pid_entry) }
   it { should belong_to(:pid_age_eligibility) }
-  
-  it { should validate_presence_of(:psu) }
+
   it { should validate_presence_of(:person) }
-  it { should validate_presence_of(:p_type) }
-  it { should validate_presence_of(:status_info_source) }
-  it { should validate_presence_of(:status_info_mode) }
-  it { should validate_presence_of(:enroll_status) }
-  it { should validate_presence_of(:pid_entry) }
-  it { should validate_presence_of(:pid_age_eligibility) }
+  
+  context "as mdes record" do
+    
+    it "should set the public_id to a uuid" do
+      pr = Factory(:participant)
+      pr.public_id.should_not be_nil
+      pr.p_id.should == pr.public_id
+      pr.p_id.length.should == 36
+    end
+    
+    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+      create_missing_in_error_ncs_codes(Participant)
+      
+      pr = Participant.new
+      pr.psu = Factory(:ncs_code)
+      pr.person = Factory(:person)
+      pr.save!
+    
+      Participant.first.status_info_source.local_code.should == -4
+      Participant.first.pid_entry.local_code.should == -4
+      Participant.first.p_type.local_code.should == -4
+    end
+  end
   
 end

@@ -10,8 +10,7 @@ class CreateParticipantPersonLinks < ActiveRecord::Migration
       t.integer :is_active_code,                :null => false
       t.string :transaction_type,               :limit => 36
 
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :person_pid_id
+      t.binary :person_pid_id,                  :null => false
 
       t.timestamps
     end

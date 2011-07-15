@@ -42,6 +42,8 @@
 #
 
 class Person < ActiveRecord::Base
+  include MdesRecord
+  acts_as_mdes_record :public_id_field => :person_id
   
   belongs_to :psu,                      :conditions => "list_name = 'PSU_CL1'",                 :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
   belongs_to :prefix,                   :conditions => "list_name = 'NAME_PREFIX_CL1'",         :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :prefix_code
@@ -61,34 +63,5 @@ class Person < ActiveRecord::Base
   
   validates_presence_of :first_name
   validates_presence_of :last_name
-  validates_presence_of :psu
-  validates_presence_of :prefix
-  validates_presence_of :suffix
-  validates_presence_of :sex
-  validates_presence_of :age_range
-  validates_presence_of :deceased
-  validates_presence_of :ethnic_group
-  validates_presence_of :language
-  validates_presence_of :marital_status
-  validates_presence_of :preferred_contact_method
-  validates_presence_of :planned_move
-  validates_presence_of :move_info
-  validates_presence_of :when_move
-  validates_presence_of :p_tracing
-  validates_presence_of :p_info_source
-  
-  before_validation :set_missing_in_error
-  
-  private
-  
-    # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4
-    def set_missing_in_error
-      Person.reflect_on_all_associations.each do |association|
-        if association.options[:class_name] == "NcsCode" && self.send(association.name.to_sym).blank?
-          mie_code = NcsCode.where("#{association.options[:conditions]} AND local_code = -4").first
-          self.send("#{association.name}=", mie_code)
-        end
-      end
-    end
   
 end

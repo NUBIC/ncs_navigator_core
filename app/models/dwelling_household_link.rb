@@ -16,6 +16,8 @@
 #
 
 class DwellingHouseholdLink < ActiveRecord::Base
+  include MdesRecord
+  acts_as_mdes_record :public_id_field => :hh_du_id
   
   belongs_to :dwelling_unit
   belongs_to :household_unit
@@ -23,9 +25,5 @@ class DwellingHouseholdLink < ActiveRecord::Base
   belongs_to :psu,       :conditions => "list_name = 'PSU_CL1'",                :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
   belongs_to :is_active, :conditions => "list_name = 'CONFIRM_TYPE_CL2'",       :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :is_active_code
   belongs_to :du_rank,   :conditions => "list_name = 'COMMUNICATION_RANK_CL1'", :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :du_rank_code
-  
-  validates_presence_of :psu
-  validates_presence_of :is_active
-  validates_presence_of :du_rank
-  
+
 end

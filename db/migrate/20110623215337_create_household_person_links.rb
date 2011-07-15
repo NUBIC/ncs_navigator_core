@@ -9,12 +9,10 @@ class CreateHouseholdPersonLinks < ActiveRecord::Migration
       t.integer :hh_rank_code,      :null => false
       t.string :hh_rank_other,      :limit => 255
       
+      t.binary :person_hh_id,       :null => false
+      
       t.string :transaction_type,   :limit => 36
       t.timestamps
-
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :person_hh_id
-
     end
   end
 

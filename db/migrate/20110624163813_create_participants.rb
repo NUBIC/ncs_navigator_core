@@ -19,8 +19,7 @@ class CreateParticipants < ActiveRecord::Migration
       t.text :pid_comment
       t.string :transaction_type,               :limit => 36
 
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :p_id
+      t.binary :p_id,                           :null => false
 
       t.timestamps
     end

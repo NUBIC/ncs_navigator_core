@@ -10,8 +10,7 @@ class CreateDwellingHouseholdLinks < ActiveRecord::Migration
       t.string :du_rank_other,      :limit => 255
       t.string :transaction_type,   :limit => 36
       
-      # TODO: determine how to reference other ncs core models and use uuids
-      # t.integer :hh_du_id
+      t.binary :hh_du_id,           :null => false
 
       t.timestamps
     end
