@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: participant_person_links
 #
@@ -11,6 +11,7 @@
 #  relationship_other :string(255)
 #  is_active_code     :integer         not null
 #  transaction_type   :string(36)
+#  person_pid_id      :binary          not null
 #  created_at         :datetime
 #  updated_at         :datetime
 #

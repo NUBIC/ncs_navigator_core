@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: household_person_links
 #
@@ -10,6 +10,7 @@
 #  is_active_code    :integer         not null
 #  hh_rank_code      :integer         not null
 #  hh_rank_other     :string(255)
+#  person_hh_id      :binary          not null
 #  transaction_type  :string(36)
 #  created_at        :datetime
 #  updated_at        :datetime

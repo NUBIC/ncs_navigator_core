@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: people
 #
@@ -12,7 +12,7 @@
 #  maiden_name                    :string(30)
 #  suffix_code                    :integer         not null
 #  title                          :string(5)
-#  sex_code                       :integer
+#  sex_code                       :integer         not null
 #  age                            :integer
 #  age_range_code                 :integer         not null
 #  person_dob                     :string(10)
@@ -37,6 +37,7 @@
 #  p_info_update                  :date
 #  person_comment                 :text
 #  transaction_type               :string(36)
+#  person_id                      :binary          not null
 #  created_at                     :datetime
 #  updated_at                     :datetime
 #

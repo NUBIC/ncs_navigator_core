@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: participants
 #
@@ -20,6 +20,7 @@
 #  pid_age_eligibility_code :integer         not null
 #  pid_comment              :text
 #  transaction_type         :string(36)
+#  p_id                     :binary          not null
 #  created_at               :datetime
 #  updated_at               :datetime
 #
