@@ -1,3 +1,19 @@
+# == Schema Information
+# Schema version: 20110714212419
+#
+# Table name: listing_units
+#
+#  id               :integer         not null, primary key
+#  psu_code         :integer         not null
+#  list_line        :integer
+#  list_source_code :integer         not null
+#  list_comment     :text
+#  transaction_type :string(36)
+#  list_id          :binary          not null
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 class ListingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :list_id

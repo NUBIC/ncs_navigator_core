@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: dwelling_units
 #
@@ -13,6 +13,8 @@
 #  du_access_code     :integer         not null
 #  duid_comment       :text
 #  transaction_type   :string(36)
+#  du_id              :binary          not null
+#  listing_unit_id    :integer
 #  created_at         :datetime
 #  updated_at         :datetime
 #

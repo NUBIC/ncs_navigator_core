@@ -1,12 +1,12 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: household_units
 #
 #  id                           :integer         not null, primary key
 #  psu_code                     :integer         not null
 #  hh_status_code               :integer         not null
-#  hh_eligibility_code           :integer         not null
+#  hh_eligibility_code          :integer         not null
 #  hh_structure_code            :integer         not null
 #  hh_structure_other           :string(255)
 #  hh_comment                   :text
@@ -16,6 +16,7 @@
 #  number_of_pregnant_adults    :integer
 #  number_of_pregnant_over49    :integer
 #  transaction_type             :string(36)
+#  hh_id                        :binary          not null
 #  created_at                   :datetime
 #  updated_at                   :datetime
 #

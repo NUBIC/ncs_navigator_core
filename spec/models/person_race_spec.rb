@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110624163825
+# Schema version: 20110714212419
 #
 # Table name: person_races
 #
@@ -9,6 +9,7 @@
 #  race_code        :integer         not null
 #  race_other       :string(255)
 #  transaction_type :string(36)
+#  person_race_id   :binary          not null
 #  created_at       :datetime
 #  updated_at       :datetime
 #
