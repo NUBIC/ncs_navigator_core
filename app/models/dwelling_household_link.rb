@@ -1,17 +1,17 @@
 # == Schema Information
-# Schema version: 20110714212419
+# Schema version: 20110715213911
 #
 # Table name: dwelling_household_links
 #
 #  id                :integer         not null, primary key
 #  psu_code          :integer         not null
-#  is_active_code    :integer         not null
+#  hh_du_id          :binary          not null
 #  dwelling_unit_id  :integer         not null
 #  household_unit_id :integer         not null
+#  is_active_code    :integer         not null
 #  du_rank_code      :integer         not null
 #  du_rank_other     :string(255)
 #  transaction_type  :string(36)
-#  hh_du_id          :binary          not null
 #  created_at        :datetime
 #  updated_at        :datetime
 #
