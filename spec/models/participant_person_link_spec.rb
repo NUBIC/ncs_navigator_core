@@ -52,8 +52,9 @@ describe ParticipantPersonLink do
       ppl.person = Factory(:person)
       ppl.save!
     
-      ParticipantPersonLink.first.relationship.local_code.should == -4
-      ParticipantPersonLink.first.is_active.local_code.should == -4
+      obj = ParticipantPersonLink.first
+      obj.relationship.local_code.should == -4
+      obj.is_active.local_code.should == -4
     end
   end
   

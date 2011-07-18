@@ -88,8 +88,21 @@ describe Person do
       pers.last_name = "Doe"
       pers.save!
     
-      Person.first.prefix.local_code.should == -4
-      Person.first.suffix.local_code.should == -4
+      obj = Person.first
+      obj.prefix.local_code.should == -4
+      obj.suffix.local_code.should == -4
+      obj.sex.local_code.should == -4
+      obj.age_range.local_code.should == -4
+      obj.deceased.local_code.should == -4
+      obj.ethnic_group.local_code.should == -4
+      obj.language.local_code.should == -4
+      obj.marital_status.local_code.should == -4
+      obj.preferred_contact_method.local_code.should == -4
+      obj.planned_move.local_code.should == -4
+      obj.move_info.local_code.should == -4
+      obj.when_move.local_code.should == -4
+      obj.p_tracing.local_code.should == -4
+      obj.p_info_source.local_code.should == -4
     end
   end
 

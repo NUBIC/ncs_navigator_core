@@ -3,6 +3,7 @@ class CreatePeople < ActiveRecord::Migration
     create_table :people do |t|
 
       t.string :psu_code,                       :null => false, :limit => 36
+      t.binary :person_id,                      :null => false
       t.integer :prefix_code,                   :null => false
       t.string :first_name,                     :limit => 30
       t.string :last_name,                      :limit => 30
@@ -25,6 +26,7 @@ class CreatePeople < ActiveRecord::Migration
       t.string :preferred_contact_method_other, :limit => 255
       t.integer :planned_move_code,             :null => false
       t.integer :move_info_code,                :null => false
+      # t.references :new_address
       t.integer :when_move_code,                :null => false
       t.date :moving_date
       t.string :date_move
@@ -35,10 +37,6 @@ class CreatePeople < ActiveRecord::Migration
       t.date :p_info_update
       t.text :person_comment
       t.string :transaction_type,               :limit => 36
-
-      t.binary :person_id,                      :null => false
-      
-      # t.references :address
       
       t.timestamps
     end

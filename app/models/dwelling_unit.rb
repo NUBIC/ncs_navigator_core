@@ -25,6 +25,7 @@ class DwellingUnit < ActiveRecord::Base
 
   has_many :dwelling_household_links
   has_many :houshold_units, :through => :dwelling_household_links
+  has_one :address
   
   belongs_to :listing_unit
   belongs_to :psu,           :conditions => "list_name = 'PSU_CL1'",            :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code

@@ -52,8 +52,9 @@ describe HouseholdPersonLink do
       hpl.household_unit = Factory(:household_unit)
       hpl.save!
     
-      HouseholdPersonLink.first.hh_rank.local_code.should == -4
-      HouseholdPersonLink.first.is_active.local_code.should == -4
+      obj = HouseholdPersonLink.first
+      obj.hh_rank.local_code.should == -4
+      obj.is_active.local_code.should == -4
     end
   end
   

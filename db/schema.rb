@@ -10,17 +10,51 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110714212419) do
+ActiveRecord::Schema.define(:version => 20110715213911) do
+
+  create_table "addresses", :force => true do |t|
+    t.integer  "psu_code",                                 :null => false
+    t.binary   "address_id",                               :null => false
+    t.integer  "person_id"
+    t.integer  "dwelling_unit_id",                         :null => false
+    t.integer  "address_rank_code",                        :null => false
+    t.string   "address_rank_other"
+    t.integer  "address_info_source_code",                 :null => false
+    t.string   "address_info_source_other"
+    t.integer  "address_info_mode_code",                   :null => false
+    t.string   "address_info_mode_other"
+    t.date     "address_info_date"
+    t.date     "address_info_update"
+    t.string   "address_start_date",        :limit => 10
+    t.date     "start_date"
+    t.string   "address_end_date",          :limit => 10
+    t.date     "end_date"
+    t.integer  "address_type_code",                        :null => false
+    t.string   "address_type_other"
+    t.integer  "address_description_code",                 :null => false
+    t.string   "address_description_other"
+    t.string   "address_one",               :limit => 100
+    t.string   "address_two",               :limit => 100
+    t.string   "unit",                      :limit => 10
+    t.string   "city",                      :limit => 50
+    t.integer  "state_code",                               :null => false
+    t.string   "zip",                       :limit => 5
+    t.string   "zip4",                      :limit => 4
+    t.text     "address_comment"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "dwelling_household_links", :force => true do |t|
     t.integer  "psu_code",                        :null => false
-    t.integer  "is_active_code",                  :null => false
+    t.binary   "hh_du_id",                        :null => false
     t.integer  "dwelling_unit_id",                :null => false
     t.integer  "household_unit_id",               :null => false
+    t.integer  "is_active_code",                  :null => false
     t.integer  "du_rank_code",                    :null => false
     t.string   "du_rank_other"
     t.string   "transaction_type",  :limit => 36
-    t.binary   "hh_du_id",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -41,14 +75,39 @@ ActiveRecord::Schema.define(:version => 20110714212419) do
     t.datetime "updated_at"
   end
 
+  create_table "emails", :force => true do |t|
+    t.integer  "psu_code",                               :null => false
+    t.binary   "email_id",                               :null => false
+    t.integer  "person_id"
+    t.string   "email",                   :limit => 100
+    t.integer  "email_rank_code",                        :null => false
+    t.string   "email_rank_other"
+    t.integer  "email_info_source_code",                 :null => false
+    t.string   "email_info_source_other"
+    t.date     "email_info_date"
+    t.date     "email_info_update"
+    t.integer  "email_type_code",                        :null => false
+    t.string   "email_type_other"
+    t.integer  "email_share_code",                       :null => false
+    t.integer  "email_active_code",                      :null => false
+    t.text     "email_comment"
+    t.string   "email_start_date",        :limit => 10
+    t.date     "start_date"
+    t.string   "email_end_date",          :limit => 10
+    t.date     "end_date"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "household_person_links", :force => true do |t|
     t.string   "psu_code",          :limit => 36, :null => false
+    t.binary   "person_hh_id",                    :null => false
     t.integer  "person_id",                       :null => false
     t.integer  "household_unit_id",               :null => false
     t.integer  "is_active_code",                  :null => false
     t.integer  "hh_rank_code",                    :null => false
     t.string   "hh_rank_other"
-    t.binary   "person_hh_id",                    :null => false
     t.string   "transaction_type",  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -74,11 +133,11 @@ ActiveRecord::Schema.define(:version => 20110714212419) do
 
   create_table "listing_units", :force => true do |t|
     t.integer  "psu_code",                       :null => false
+    t.binary   "list_id",                        :null => false
     t.integer  "list_line"
     t.integer  "list_source_code",               :null => false
     t.text     "list_comment"
     t.string   "transaction_type", :limit => 36
-    t.binary   "list_id",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -108,6 +167,7 @@ ActiveRecord::Schema.define(:version => 20110714212419) do
 
   create_table "participants", :force => true do |t|
     t.string   "psu_code",                 :limit => 36, :null => false
+    t.binary   "p_id",                                   :null => false
     t.integer  "person_id",                              :null => false
     t.integer  "p_type_code",                            :null => false
     t.string   "p_type_other"
@@ -123,13 +183,13 @@ ActiveRecord::Schema.define(:version => 20110714212419) do
     t.integer  "pid_age_eligibility_code",               :null => false
     t.text     "pid_comment"
     t.string   "transaction_type",         :limit => 36
-    t.binary   "p_id",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "people", :force => true do |t|
     t.string   "psu_code",                       :limit => 36, :null => false
+    t.binary   "person_id",                                    :null => false
     t.integer  "prefix_code",                                  :null => false
     t.string   "first_name",                     :limit => 30
     t.string   "last_name",                      :limit => 30
@@ -162,18 +222,45 @@ ActiveRecord::Schema.define(:version => 20110714212419) do
     t.date     "p_info_update"
     t.text     "person_comment"
     t.string   "transaction_type",               :limit => 36
-    t.binary   "person_id",                                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "person_races", :force => true do |t|
     t.string   "psu_code",         :limit => 36, :null => false
+    t.binary   "person_race_id",                 :null => false
     t.integer  "person_id",                      :null => false
     t.integer  "race_code",                      :null => false
     t.string   "race_other"
     t.string   "transaction_type", :limit => 36
-    t.binary   "person_race_id",                 :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "telephones", :force => true do |t|
+    t.integer  "psu_code",                              :null => false
+    t.binary   "phone_id",                              :null => false
+    t.integer  "person_id"
+    t.integer  "phone_info_source_code",                :null => false
+    t.string   "phone_info_source_other"
+    t.date     "phone_info_date"
+    t.date     "phone_info_update"
+    t.string   "phone_nbr",               :limit => 10
+    t.string   "phone_ext",               :limit => 5
+    t.integer  "phone_type_code",                       :null => false
+    t.string   "phone_type_other"
+    t.integer  "phone_rank_code",                       :null => false
+    t.string   "phone_rank_other"
+    t.integer  "phone_landline_code",                   :null => false
+    t.integer  "phone_share_code",                      :null => false
+    t.integer  "cell_permission_code",                  :null => false
+    t.integer  "text_permission_code",                  :null => false
+    t.text     "phone_comment"
+    t.string   "phone_start_date",        :limit => 10
+    t.date     "start_date"
+    t.string   "phone_end_date",          :limit => 10
+    t.date     "end_date"
+    t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
