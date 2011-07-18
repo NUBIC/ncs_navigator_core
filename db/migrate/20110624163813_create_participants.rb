@@ -3,7 +3,8 @@ class CreateParticipants < ActiveRecord::Migration
     create_table :participants do |t|
 
       t.string :psu_code,                       :null => false, :limit => 36
-      t.integer :person_id,                     :null => false
+      t.binary :p_id,                           :null => false
+      t.references :person,                     :null => false
       t.integer :p_type_code,                   :null => false
       t.string :p_type_other,                   :limit => 255
       t.integer :status_info_source_code,       :null => false
@@ -18,8 +19,6 @@ class CreateParticipants < ActiveRecord::Migration
       t.integer :pid_age_eligibility_code,      :null => false
       t.text :pid_comment
       t.string :transaction_type,               :limit => 36
-
-      t.binary :p_id,                           :null => false
 
       t.timestamps
     end

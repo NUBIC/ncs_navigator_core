@@ -47,8 +47,9 @@ describe DwellingHouseholdLink do
       dhl.household_unit = Factory(:household_unit)
       dhl.save!
     
-      DwellingHouseholdLink.first.is_active.local_code.should == -4
-      DwellingHouseholdLink.first.du_rank.local_code.should == -4
+      obj = DwellingHouseholdLink.first
+      obj.is_active.local_code.should == -4
+      obj.du_rank.local_code.should == -4
     end
   end
   

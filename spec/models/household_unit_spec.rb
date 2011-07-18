@@ -51,9 +51,10 @@ describe HouseholdUnit do
       hu.psu = Factory(:ncs_code)
       hu.save!
     
-      HouseholdUnit.first.hh_status.local_code.should == -4
-      HouseholdUnit.first.hh_eligibility.local_code.should == -4
-      HouseholdUnit.first.hh_structure.local_code.should == -4
+      obj = HouseholdUnit.first
+      obj.hh_status.local_code.should == -4
+      obj.hh_eligibility.local_code.should == -4
+      obj.hh_structure.local_code.should == -4
     end
   end
   

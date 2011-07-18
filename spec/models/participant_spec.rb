@@ -62,9 +62,15 @@ describe Participant do
       pr.person = Factory(:person)
       pr.save!
     
-      Participant.first.status_info_source.local_code.should == -4
-      Participant.first.pid_entry.local_code.should == -4
-      Participant.first.p_type.local_code.should == -4
+      obj = Participant.first
+      obj.status_info_source.local_code.should == -4
+      obj.pid_entry.local_code.should == -4
+      obj.p_type.local_code.should == -4
+      obj.status_info_source.local_code.should == -4
+      obj.status_info_mode.local_code.should == -4
+      obj.enroll_status.local_code.should == -4
+      obj.pid_entry.local_code.should == -4
+      obj.pid_age_eligibility.local_code.should == -4
     end
   end
   

@@ -1,4 +1,4 @@
-# == Schema Information
+ # == Schema Information
 # Schema version: 20110714212419
 #
 # Table name: ncs_codes
@@ -87,8 +87,38 @@ class NcsCode < ActiveRecord::Base
     
     ### household_person_link
     # :psu_code               => "PSU_CL1",             # already referenced
-    :is_active_code => "CONFIRM_TYPE_CL2",
-    :hh_rank_code   => "COMMUNICATION_RANK_CL1"
+    # :is_active_code         => "CONFIRM_TYPE_CL2",
+    :hh_rank_code   => "COMMUNICATION_RANK_CL1",
+    
+    
+    ### address
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :address_rank_code        => 'COMMUNICATION_RANK_CL1',
+    :address_info_source_code => 'INFORMATION_SOURCE_CL1',
+    :address_info_mode_code   => 'CONTACT_TYPE_CL1',
+    :address_type_code        => 'ADDRESS_CATEGORY_CL1',
+    :address_description_code => 'RESIDENCE_TYPE_CL1',
+    :state_code               => 'STATE_CL1',
+    
+    
+    ### telephone
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :phone_info_source        => 'INFORMATION_SOURCE_CL2',
+    :phone_type               => 'PHONE_TYPE_CL1',
+    :phone_rank               => 'COMMUNICATION_RANK_CL1',
+    :phone_landline           => 'CONFIRM_TYPE_CL2',
+    :phone_share              => 'CONFIRM_TYPE_CL2',
+    :cell_permission          => 'CONFIRM_TYPE_CL2',
+    :text_permission          => 'CONFIRM_TYPE_CL2',
+    
+    
+    ### email
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :email_info_source        => 'INFORMATION_SOURCE_CL2',
+    :email_type               => 'EMAIL_TYPE_CL1',
+    :email_rank               => 'COMMUNICATION_RANK_CL1',
+    :email_share              => 'CONFIRM_TYPE_CL2',
+    :email_active             => 'CONFIRM_TYPE_CL2',
     
   }
 

@@ -17,3 +17,14 @@ Feature: Editing a household unit
     And I press "Submit"
     Then I should see "Household was successfully updated."
     And I should be on the household units page
+    
+    # Scenario: Editing a household unit without selecting required attributes
+    #   Given a household_unit exists
+    #   Then a household_unit should exist
+    #   When I am on the edit household unit page
+    #   And I should see "Edit Household Unit"
+    #   When I fill in "Comment" with "A new comment"
+    #   And I select "-- Select Status --" from "Status"
+    #   And I press "Submit"
+    #   Then I should see "1 error prohibited this Household Unit from being saved"
+    #   And I should see "Status can't be blank"

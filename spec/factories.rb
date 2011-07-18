@@ -129,3 +129,37 @@ Factory.define :participant_person_link do |link|
   link.is_active          { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
   link.transaction_type   nil
 end
+
+Factory.define :address do |addr|
+  addr.association  :person,        :factory => :person
+  addr.association  :dwelling_unit, :factory => :dwelling_unit
+  addr.psu          { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  addr.address_rank { |a| a.association(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1) }
+  addr.address_info_source { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL1", :display_text => "Person/Self", :local_code => 1) }
+  addr.address_info_mode { |a| a.association(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :display_text => "In-Person", :local_code => 1) }
+  addr.address_type { |a| a.association(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Home/Residential", :local_code => 1) }
+  addr.address_description { |a| a.association(:ncs_code, :list_name => "RESIDENCE_TYPE_CL1", :display_text => "Single-Family Home", :local_code => 1) }
+  addr.state { |a| a.association(:ncs_code, :list_name => "STATE_CL1", :display_text => "Michigan", :local_code => 23) }
+end
+
+Factory.define :telephone do |phone|
+  phone.association  :person,        :factory => :person
+  phone.psu               { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  phone.phone_info_source { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL2", :display_text => "Person/Self", :local_code => 1) }
+  phone.phone_type        { |a| a.association(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1) }
+  phone.phone_rank        { |a| a.association(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1) }
+  phone.phone_landline    { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+  phone.phone_share       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+  phone.cell_permission   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+  phone.text_permission   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+end
+
+Factory.define :email do |email|
+  email.association  :person,        :factory => :person
+  email.psu               { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  email.email_info_source { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL2", :display_text => "Person/Self", :local_code => 1) }
+  email.email_type        { |a| a.association(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Personal", :local_code => 1) }
+  email.email_rank        { |a| a.association(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1) }
+  email.email_share       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+  email.email_active      { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+end

@@ -3,8 +3,8 @@ class CreateParticipantPersonLinks < ActiveRecord::Migration
     create_table :participant_person_links do |t|
 
       t.string :psu_code,                       :null => false, :limit => 36
-      t.integer :person_id,                     :null => false
-      t.integer :participant_id,                :null => false
+      t.references :person,                     :null => false
+      t.references :participant,                :null => false
       t.integer :relationship_code,             :null => false
       t.string :relationship_other,             :limit => 255
       t.integer :is_active_code,                :null => false

@@ -25,3 +25,18 @@ Feature: Creating a household unit
     Then I should see "Household was successfully created."
     And I should be on the household units page
     And I should see "Single-Family Home"
+    
+    # Scenario: Creating a new household unit without selecting required attributes
+    #   Given valid ncs codes
+    #   When I am on the household units page
+    #   Then I should see "Household Units"
+    #   And I should see "No household units were found."
+    #   And I should see "New Household Unit"
+    #   When I follow "New Household Unit" 
+    #   Then I should be on the new household unit page
+    #   And I should see "New Household Unit"
+    #   When I press "Submit"
+    #   Then I should see "3 errors prohibited this Household Unit from being saved"
+    #   And I should see "Status can't be blank"
+    #   And I should see "Eligibility can't be blank"
+    #   And I should see "Structure can't be blank"
