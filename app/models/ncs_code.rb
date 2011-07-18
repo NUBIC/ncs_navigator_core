@@ -1,3 +1,18 @@
+# == Schema Information
+# Schema version: 20110715213911
+#
+# Table name: ncs_codes
+#
+#  id               :integer         not null, primary key
+#  list_name        :string(255)
+#  list_description :string(255)
+#  display_text     :string(255)
+#  local_code       :integer
+#  global_code      :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
  # == Schema Information
 # Schema version: 20110714212419
 #

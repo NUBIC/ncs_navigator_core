@@ -1,3 +1,36 @@
+# == Schema Information
+# Schema version: 20110715213911
+#
+# Table name: telephones
+#
+#  id                      :integer         not null, primary key
+#  psu_code                :integer         not null
+#  phone_id                :binary          not null
+#  person_id               :integer
+#  phone_info_source_code  :integer         not null
+#  phone_info_source_other :string(255)
+#  phone_info_date         :date
+#  phone_info_update       :date
+#  phone_nbr               :string(10)
+#  phone_ext               :string(5)
+#  phone_type_code         :integer         not null
+#  phone_type_other        :string(255)
+#  phone_rank_code         :integer         not null
+#  phone_rank_other        :string(255)
+#  phone_landline_code     :integer         not null
+#  phone_share_code        :integer         not null
+#  cell_permission_code    :integer         not null
+#  text_permission_code    :integer         not null
+#  phone_comment           :text
+#  phone_start_date        :string(10)
+#  start_date              :date
+#  phone_end_date          :string(10)
+#  end_date                :date
+#  transaction_type        :string(255)
+#  created_at              :datetime
+#  updated_at              :datetime
+#
+
 require 'spec_helper'
 
 describe Telephone do

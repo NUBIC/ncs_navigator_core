@@ -1,15 +1,15 @@
 # == Schema Information
-# Schema version: 20110714212419
+# Schema version: 20110715213911
 #
 # Table name: person_races
 #
 #  id               :integer         not null, primary key
 #  psu_code         :string(36)      not null
+#  person_race_id   :binary          not null
 #  person_id        :integer         not null
 #  race_code        :integer         not null
 #  race_other       :string(255)
 #  transaction_type :string(36)
-#  person_race_id   :binary          not null
 #  created_at       :datetime
 #  updated_at       :datetime
 #
