@@ -17,9 +17,9 @@
 #  address_info_date         :date
 #  address_info_update       :date
 #  address_start_date        :string(10)
-#  start_date                :date
+#  address_start_date_date   :date
 #  address_end_date          :string(10)
-#  end_date                  :date
+#  address_end_date_date     :date
 #  address_type_code         :integer         not null
 #  address_type_other        :string(255)
 #  address_description_code  :integer         not null
@@ -81,5 +81,45 @@ describe Address do
       obj.address_description.local_code.should == -4
       obj.state.local_code.should == -4
     end
+  end
+  
+  context "mdes date formatting" do
+    
+    it "should set the corresponding date field with the user entered date" do
+      dt = Date.today
+      addr = Factory(:address)
+      addr.address_start_date = nil
+      addr.address_start_date_date = dt
+      addr.address_end_date = nil
+      addr.address_end_date_date = dt
+      addr.save!
+      addr = Address.last
+      addr.address_start_date.should == dt.strftime('%Y-%m-%d')
+      addr.address_end_date.should == dt.strftime('%Y-%m-%d')
+    end
+    
+    it "should set the address_start_date if the user said the information is unknown" do
+      addr = Factory(:address)
+      addr.address_start_date_modifier = "unknown"
+      addr.address_start_date = nil
+      addr.address_end_date = nil
+      addr.save!
+      
+      addr = Address.last
+      addr.address_start_date.should == '9666-96-96'
+    end
+    
+    it "should set the address_end_date if the user said the information is unknown" do
+      addr = Factory(:address)
+      addr.address_start_date = nil
+      addr.address_end_date = nil
+      addr.address_end_date_modifier = "unknown"
+      addr.save!
+      
+      addr = Address.last
+      addr.address_end_date.should == '9666-96-96'
+      addr.address_start_date.should be_nil
+    end
+    
   end
 end

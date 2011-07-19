@@ -15,7 +15,7 @@ class CreatePeople < ActiveRecord::Migration
       t.integer :age
       t.integer :age_range_code,                :null => false
       t.string :person_dob,                     :limit => 10
-      t.date :date_of_birth
+      t.date :person_dob_date
       t.integer :deceased_code,                 :null => false
       t.integer :ethnic_group_code,             :null => false
       t.integer :language_code,                 :null => false
@@ -28,8 +28,8 @@ class CreatePeople < ActiveRecord::Migration
       t.integer :move_info_code,                :null => false
       # t.references :new_address
       t.integer :when_move_code,                :null => false
-      t.date :moving_date
-      t.string :date_move
+      t.date :date_move_date
+      t.string :date_move,                      :limit => 7
       t.integer :p_tracing_code,                :null => false
       t.integer :p_info_source_code,            :null => false
       t.string :p_info_source_other,            :limit => 255

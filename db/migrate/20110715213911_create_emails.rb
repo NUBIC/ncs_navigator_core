@@ -19,9 +19,9 @@ class CreateEmails < ActiveRecord::Migration
       t.integer :email_active_code,       :null => false
       t.text :email_comment
       t.string :email_start_date,         :limit => 10
-      t.date :start_date
+      t.date :email_start_date_date
       t.string :email_end_date,           :limit => 10
-      t.date :end_date
+      t.date :email_end_date_date
       t.string :transaction_type
       t.timestamps
     end

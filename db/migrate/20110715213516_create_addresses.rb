@@ -17,9 +17,9 @@ class CreateAddresses < ActiveRecord::Migration
       t.date :address_info_date
       t.date :address_info_update
       t.string :address_start_date,         :limit => 10
-      t.date :start_date
+      t.date :address_start_date_date
       t.string :address_end_date,           :limit => 10
-      t.date :end_date
+      t.date :address_end_date_date
       t.integer :address_type_code,         :null => false
       t.string :address_type_other
       t.integer :address_description_code, :null => false

@@ -1412,31 +1412,35 @@ a img {
 form select {
   border-color: #bbb;
 }
+/* line 93, ../../../app/stylesheets/partials/_application.scss */
+form .datepicker {
+  width: 7.5em;
+}
 
-/* line 96, ../../../app/stylesheets/partials/_application.scss */
+/* line 99, ../../../app/stylesheets/partials/_application.scss */
 #container,
 .container {
   background-color: white;
   padding: 20px 40px;
   margin: 1em auto;
 }
-/* line 100, ../../../app/stylesheets/partials/_application.scss */
+/* line 103, ../../../app/stylesheets/partials/_application.scss */
 #container p,
 .container p {
   margin-bottom: .25em;
 }
-/* line 103, ../../../app/stylesheets/partials/_application.scss */
+/* line 106, ../../../app/stylesheets/partials/_application.scss */
 #container h3,
 .container h3 {
   padding-top: 10px;
 }
-/* line 106, ../../../app/stylesheets/partials/_application.scss */
+/* line 109, ../../../app/stylesheets/partials/_application.scss */
 #container form,
 .container form {
   margin-bottom: 1em;
 }
 
-/* line 111, ../../../app/stylesheets/partials/_application.scss */
+/* line 114, ../../../app/stylesheets/partials/_application.scss */
 #header {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -1448,7 +1452,7 @@ form select {
   *zoom: 1;
 }
 
-/* line 119, ../../../app/stylesheets/partials/_application.scss */
+/* line 122, ../../../app/stylesheets/partials/_application.scss */
 #title {
   font-size: 2em;
   display: inline;
@@ -1462,7 +1466,7 @@ form select {
   overflow-x: hidden;
 }
 
-/* line 126, ../../../app/stylesheets/partials/_application.scss */
+/* line 129, ../../../app/stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1478,7 +1482,7 @@ form select {
   overflow-x: hidden;
 }
 
-/* line 131, ../../../app/stylesheets/partials/_application.scss */
+/* line 134, ../../../app/stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 class ActsAsMdesRecordTest < Test::Unit::TestCase
   load_schema
   
-  def test_a_foo_uuid_field_should_be_uuid
+  def test_a_foo_public_id_field_should_be_uuid
     assert_equal(:uuid, Foo.public_id_field)
   end
   
@@ -30,6 +30,19 @@ class ActsAsMdesRecordTest < Test::Unit::TestCase
     assert_equal(bar.public_id, bar.uuid)
   end
   
+  def test_create_date_modifier_is_set_on_date_fields
+    df = DateFoo.new
+    assert(df.respond_to?(:start_date_modifier))
+    df.start_date_modifier = 'unknown'
+    df.save!
+    assert_equal('9111-91-91', df.start)
+  end
+  
+  def test_date_fields_are_accessible
+    df = DateFoo.new
+    assert_equal(df.date_fields, [:start_date])
+  end
+  
 end
 
 
@@ -41,4 +54,9 @@ end
 class Bar < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :bar_id
+end
+
+class DateFoo < ActiveRecord::Base
+  include MdesRecord
+  acts_as_mdes_record :date_fields => [:start_date]
 end

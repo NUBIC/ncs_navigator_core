@@ -5,6 +5,7 @@ module MdesRecord
   included do
     before_create :set_public_id
     before_validation :set_missing_in_error
+    before_save :format_dates
   end
  
   module ClassMethods
@@ -12,7 +13,14 @@ module MdesRecord
     def acts_as_mdes_record(options = {})
       send :include, InstanceMethods
       cattr_accessor :public_id_field
+      cattr_accessor :date_fields
       self.public_id_field = (options[:public_id_field] || :uuid)
+      if options[:date_fields]
+        self.date_fields = options[:date_fields]
+        options[:date_fields].each do |df|
+          attr_accessor "#{df}_modifier"
+        end
+      end
     end
 
   end
@@ -38,6 +46,40 @@ module MdesRecord
           missing_in_error_code = NcsCode.where("#{association.options[:conditions]} AND local_code = -4").first
           self.send("#{association.name}=", missing_in_error_code)
         end
+      end
+    end
+    
+    def format_dates
+      if self.date_fields
+        self.date_fields.each do |df|
+
+          formatter = self.respond_to?("#{df}_formatter") ? self.send("#{df}_formatter") : '%Y-%m-%d'
+
+          dt = self.send("#{df}_date")
+          self.send("#{df}=", dt.strftime(formatter)) unless dt.blank?
+
+          mod = self.send("#{df}_modifier")
+
+          unless mod.blank? 
+            case mod
+            when 'refused'
+              self.send("#{df}=", missing_date(formatter, "1"))
+            when 'unknown'
+              self.send("#{df}=", missing_date(formatter, "6"))
+            when 'not_applicable'
+              self.send("#{df}=", missing_date(formatter, "7"))
+            end
+          end
+        end
+      end
+    end
+    
+    def missing_date(formatter, n)
+      case formatter
+      when '%Y-%m'
+        return "9#{n*3}-9#{n}"
+      else
+        return "9#{n*3}-9#{n}-9#{n}"
       end
     end
     
