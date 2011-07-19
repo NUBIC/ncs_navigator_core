@@ -22,9 +22,9 @@ class CreateTelephones < ActiveRecord::Migration
       t.integer :text_permission_code,    :null => false
       t.text :phone_comment
       t.string :phone_start_date,         :limit => 10
-      t.date :start_date
+      t.date :phone_start_date_date
       t.string :phone_end_date,           :limit => 10
-      t.date :end_date
+      t.date :phone_end_date_date
       t.string :transaction_type
       
       t.timestamps

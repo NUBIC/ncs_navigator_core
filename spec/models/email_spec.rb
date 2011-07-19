@@ -20,9 +20,9 @@
 #  email_active_code       :integer         not null
 #  email_comment           :text
 #  email_start_date        :string(10)
-#  start_date              :date
+#  email_start_date_date   :date
 #  email_end_date          :string(10)
-#  end_date                :date
+#  email_end_date_date     :date
 #  transaction_type        :string(255)
 #  created_at              :datetime
 #  updated_at              :datetime

@@ -23,9 +23,9 @@
 #  text_permission_code    :integer         not null
 #  phone_comment           :text
 #  phone_start_date        :string(10)
-#  start_date              :date
+#  phone_start_date_date   :date
 #  phone_end_date          :string(10)
-#  end_date                :date
+#  phone_end_date_date     :date
 #  transaction_type        :string(255)
 #  created_at              :datetime
 #  updated_at              :datetime

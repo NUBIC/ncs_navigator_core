@@ -26,9 +26,9 @@ ActiveRecord::Schema.define(:version => 20110715213911) do
     t.date     "address_info_date"
     t.date     "address_info_update"
     t.string   "address_start_date",        :limit => 10
-    t.date     "start_date"
+    t.date     "address_start_date_date"
     t.string   "address_end_date",          :limit => 10
-    t.date     "end_date"
+    t.date     "address_end_date_date"
     t.integer  "address_type_code",                        :null => false
     t.string   "address_type_other"
     t.integer  "address_description_code",                 :null => false
@@ -92,9 +92,9 @@ ActiveRecord::Schema.define(:version => 20110715213911) do
     t.integer  "email_active_code",                      :null => false
     t.text     "email_comment"
     t.string   "email_start_date",        :limit => 10
-    t.date     "start_date"
+    t.date     "email_start_date_date"
     t.string   "email_end_date",          :limit => 10
-    t.date     "end_date"
+    t.date     "email_end_date_date"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -201,7 +201,7 @@ ActiveRecord::Schema.define(:version => 20110715213911) do
     t.integer  "age"
     t.integer  "age_range_code",                               :null => false
     t.string   "person_dob",                     :limit => 10
-    t.date     "date_of_birth"
+    t.date     "person_dob_date"
     t.integer  "deceased_code",                                :null => false
     t.integer  "ethnic_group_code",                            :null => false
     t.integer  "language_code",                                :null => false
@@ -213,8 +213,8 @@ ActiveRecord::Schema.define(:version => 20110715213911) do
     t.integer  "planned_move_code",                            :null => false
     t.integer  "move_info_code",                               :null => false
     t.integer  "when_move_code",                               :null => false
-    t.date     "moving_date"
-    t.string   "date_move"
+    t.date     "date_move_date"
+    t.string   "date_move",                      :limit => 7
     t.integer  "p_tracing_code",                               :null => false
     t.integer  "p_info_source_code",                           :null => false
     t.string   "p_info_source_other"
@@ -257,9 +257,9 @@ ActiveRecord::Schema.define(:version => 20110715213911) do
     t.integer  "text_permission_code",                  :null => false
     t.text     "phone_comment"
     t.string   "phone_start_date",        :limit => 10
-    t.date     "start_date"
+    t.date     "phone_start_date_date"
     t.string   "phone_end_date",          :limit => 10
-    t.date     "end_date"
+    t.date     "phone_end_date_date"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"

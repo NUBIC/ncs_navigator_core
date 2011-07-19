@@ -23,9 +23,9 @@ class HouseholdPersonLink < ActiveRecord::Base
   belongs_to :person
   belongs_to :household_unit
   
-  belongs_to :psu,       :conditions => "list_name = 'PSU_CL1'",                :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
-  belongs_to :is_active, :conditions => "list_name = 'CONFIRM_TYPE_CL2'",       :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :is_active_code
-  belongs_to :hh_rank,   :conditions => "list_name = 'COMMUNICATION_RANK_CL1'", :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :hh_rank_code
+  belongs_to :psu,       :conditions => "list_name = 'PSU_CL1'",                :foreign_key => :psu_code,        :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :is_active, :conditions => "list_name = 'CONFIRM_TYPE_CL2'",       :foreign_key => :is_active_code,  :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :hh_rank,   :conditions => "list_name = 'COMMUNICATION_RANK_CL1'", :foreign_key => :hh_rank_code,    :class_name => 'NcsCode', :primary_key => :local_code
   
   validates_presence_of :person
   validates_presence_of :household_unit  

@@ -17,9 +17,9 @@
 #  address_info_date         :date
 #  address_info_update       :date
 #  address_start_date        :string(10)
-#  start_date                :date
+#  address_start_date_date   :date
 #  address_end_date          :string(10)
-#  end_date                  :date
+#  address_end_date_date     :date
 #  address_type_code         :integer         not null
 #  address_type_other        :string(255)
 #  address_description_code  :integer         not null
@@ -39,16 +39,16 @@
 
 class Address < ActiveRecord::Base
   include MdesRecord
-  acts_as_mdes_record :public_id_field => :address_id
+  acts_as_mdes_record :public_id_field => :address_id, :date_fields => [:address_start_date, :address_end_date]
   
   belongs_to :person
   belongs_to :dwelling_unit
-  belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
-  belongs_to :address_rank,         :conditions => "list_name = 'COMMUNICATION_RANK_CL1'",  :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :address_rank_code
-  belongs_to :address_info_source,  :conditions => "list_name = 'INFORMATION_SOURCE_CL1'",  :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :address_info_source_code
-  belongs_to :address_info_mode,    :conditions => "list_name = 'CONTACT_TYPE_CL1'",        :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :address_info_mode_code
-  belongs_to :address_type,         :conditions => "list_name = 'ADDRESS_CATEGORY_CL1'",    :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :address_type_code
-  belongs_to :address_description,  :conditions => "list_name = 'RESIDENCE_TYPE_CL1'",      :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :address_description_code
-  belongs_to :state,                :conditions => "list_name = 'STATE_CL1'",               :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :state_code
+  belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :address_rank,         :conditions => "list_name = 'COMMUNICATION_RANK_CL1'",  :foreign_key => :address_rank_code,         :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :address_info_source,  :conditions => "list_name = 'INFORMATION_SOURCE_CL1'",  :foreign_key => :address_info_source_code,  :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :address_info_mode,    :conditions => "list_name = 'CONTACT_TYPE_CL1'",        :foreign_key => :address_info_mode_code,    :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :address_type,         :conditions => "list_name = 'ADDRESS_CATEGORY_CL1'",    :foreign_key => :address_type_code,         :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :address_description,  :conditions => "list_name = 'RESIDENCE_TYPE_CL1'",      :foreign_key => :address_description_code,  :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :state,                :conditions => "list_name = 'STATE_CL1'",               :foreign_key => :state_code,                :class_name => 'NcsCode', :primary_key => :local_code
   
 end

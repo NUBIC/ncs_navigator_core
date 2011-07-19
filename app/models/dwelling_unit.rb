@@ -28,11 +28,11 @@ class DwellingUnit < ActiveRecord::Base
   has_one :address
   
   belongs_to :listing_unit
-  belongs_to :psu,           :conditions => "list_name = 'PSU_CL1'",            :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :psu_code
-  belongs_to :duplicate_du,  :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :duplicate_du_code
-  belongs_to :missed_du,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :missed_du_code
-  belongs_to :du_type,       :conditions => "list_name = 'RESIDENCE_TYPE_CL2'", :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :du_type_code
-  belongs_to :du_ineligible, :conditions => "list_name = 'CONFIRM_TYPE_CL3'",   :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :du_ineligible_code
-  belongs_to :du_access,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :class_name => 'NcsCode', :primary_key => :local_code, :foreign_key => :du_access_code
+  belongs_to :psu,           :conditions => "list_name = 'PSU_CL1'",            :foreign_key => :psu_code,            :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :duplicate_du,  :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :duplicate_du_code,   :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :missed_du,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :missed_du_code,      :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :du_type,       :conditions => "list_name = 'RESIDENCE_TYPE_CL2'", :foreign_key => :du_type_code,        :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :du_ineligible, :conditions => "list_name = 'CONFIRM_TYPE_CL3'",   :foreign_key => :du_ineligible_code,  :class_name => 'NcsCode', :primary_key => :local_code
+  belongs_to :du_access,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :du_access_code,      :class_name => 'NcsCode', :primary_key => :local_code
 
 end

@@ -21,8 +21,7 @@ Factory.define :person do |pers|
   pers.sex                            { |a| a.association(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Male", :local_code => 1) }
   pers.age                            99
   pers.age_range                      { |a| a.association(:ncs_code, :list_name => "AGE_RANGE_CL1", :display_text => "65+", :local_code => 7) }
-  pers.person_dob                     "1901-91-91"
-  pers.date_of_birth                  nil
+  pers.person_dob                     nil
   pers.deceased                       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
   pers.ethnic_group                   { |a| a.association(:ncs_code, :list_name => "ETHNICITY_CL1", :display_text => "Not Hispanic or Latino", :local_code => 2) }
   pers.language                       { |a| a.association(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
@@ -34,7 +33,6 @@ Factory.define :person do |pers|
   pers.planned_move                   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL1", :display_text => "No", :local_code => 2) }
   pers.move_info                      { |a| a.association(:ncs_code, :list_name => "MOVING_PLAN_CL1", :display_text => "Address Known", :local_code => 1) }
   pers.when_move                      { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL4", :display_text => "No", :local_code => 2) }
-  pers.moving_date                    nil
   pers.date_move                      nil
   pers.p_tracing                      { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
   pers.p_info_source                  { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL4", :display_text => "Person/Self", :local_code => 1) }

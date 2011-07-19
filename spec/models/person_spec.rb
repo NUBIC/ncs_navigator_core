@@ -17,7 +17,7 @@
 #  age                            :integer
 #  age_range_code                 :integer         not null
 #  person_dob                     :string(10)
-#  date_of_birth                  :date
+#  person_dob_date                :date
 #  deceased_code                  :integer         not null
 #  ethnic_group_code              :integer         not null
 #  language_code                  :integer         not null
@@ -29,8 +29,8 @@
 #  planned_move_code              :integer         not null
 #  move_info_code                 :integer         not null
 #  when_move_code                 :integer         not null
-#  moving_date                    :date
-#  date_move                      :string(255)
+#  date_move_date                 :date
+#  date_move                      :string(7)
 #  p_tracing_code                 :integer         not null
 #  p_info_source_code             :integer         not null
 #  p_info_source_other            :string(255)
@@ -103,6 +103,54 @@ describe Person do
       obj.when_move.local_code.should == -4
       obj.p_tracing.local_code.should == -4
       obj.p_info_source.local_code.should == -4
+    end
+  end
+  
+  context "mdes date formatting" do
+    
+    it "should set the corresponding date field with the user entered date" do
+      dob = Date.today
+      pers = Factory(:person)
+      pers.person_dob_date = dob
+      pers.save!
+      pers = Person.last
+      pers.person_dob.should == Date.today.strftime('%Y-%m-%d')
+    end
+    
+    it "should set the person_dob if the person has refused to give the information" do
+      pers = Factory(:person)
+      pers.person_dob_modifier = "refused"
+      pers.save!
+      
+      pers = Person.last
+      pers.person_dob.should == '9111-91-91'
+    end
+    
+    it "should set the person_dob if the person said the information is unknown" do
+      pers = Factory(:person)
+      pers.person_dob_modifier = "unknown"
+      pers.save!
+      
+      pers = Person.last
+      pers.person_dob.should == '9666-96-96'
+    end
+    
+    it "should set the corresponding date field with the user entered date properly formatted" do
+      move_date = Date.today
+      pers = Factory(:person)
+      pers.date_move_date = move_date
+      pers.save!
+      pers = Person.last
+      pers.date_move.should == Date.today.strftime('%Y-%m')
+    end
+    
+    it "should set the date_move if the person said the information is not_applicable" do
+      pers = Factory(:person)
+      pers.date_move_modifier = "not_applicable"
+      pers.save!
+      
+      pers = Person.last
+      pers.date_move.should == '9777-97'
     end
   end
 
