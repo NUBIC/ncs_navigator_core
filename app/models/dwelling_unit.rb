@@ -19,6 +19,9 @@
 #  updated_at         :datetime
 #
 
+# DU is a specific street address within a sampling unit. 
+# There is a one-to-one relationship between Listing and DU. 
+# This is not a mandatory one-to-one relationship because some DUs may not appear in the Listing and vice versa
 class DwellingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :du_id
@@ -26,6 +29,8 @@ class DwellingUnit < ActiveRecord::Base
   has_many :dwelling_household_links
   has_many :houshold_units, :through => :dwelling_household_links
   has_one :address
+  
+  accepts_nested_attributes_for :address, :allow_destroy => true
   
   belongs_to :listing_unit
   belongs_to :psu,           :conditions => "list_name = 'PSU_CL1'",            :foreign_key => :psu_code,            :class_name => 'NcsCode', :primary_key => :local_code

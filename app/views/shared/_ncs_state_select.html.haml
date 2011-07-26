@@ -1,0 +1,8 @@
+%p
+  = f.label :state_code, "State"
+  %br
+  - states = NcsCode.ncs_code_lookup(:state_code).sort_by { |a| a[0] }
+  - odds   = states.select { |i| i[1] < 0 }
+  - states = states - odds
+  - odds.each { |o| states << o }
+  = f.select(:state_code, states, { :include_blank => "-- Select State --" })

@@ -8,7 +8,7 @@ class PeopleController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.haml
-      format.json  { render :json => @people }
+      format.json { render :json => @people }
     end
   end
   

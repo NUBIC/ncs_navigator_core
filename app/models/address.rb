@@ -51,4 +51,19 @@ class Address < ActiveRecord::Base
   belongs_to :address_description,  :conditions => "list_name = 'RESIDENCE_TYPE_CL1'",      :foreign_key => :address_description_code,  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :state,                :conditions => "list_name = 'STATE_CL1'",               :foreign_key => :state_code,                :class_name => 'NcsCode', :primary_key => :local_code
   
+  def to_s
+    addr = []
+    addr << address_one
+    addr << address_two
+    addr << unit
+    addr << city
+    addr << state.to_s unless state.local_code == -4
+    if zip4.blank?
+      addr << zip
+    else
+      addr << "#{zip}-#{zip4}" unless zip.blank?
+    end
+    addr.reject { |n| n.blank? }.join(' ')
+  end
+  
 end

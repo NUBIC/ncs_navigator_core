@@ -17,6 +17,12 @@ module NavigationHelpers
     when /^the edit household unit page$/
       edit_household_unit_path(HouseholdUnit.last)
 
+    when /^the dwelling units page$/
+      dwelling_units_path
+
+    when /^the edit dwelling unit page$/
+      edit_dwelling_unit_path(DwellingUnit.last)
+
     when /^the people page$/
       people_path
       

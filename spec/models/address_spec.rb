@@ -45,6 +45,22 @@ describe Address do
     addr.should_not be_nil
   end
   
+  it "should describe itself" do
+    addr = Factory(:address)
+    addr.to_s.should == "#{addr.state}"
+    
+    addr.address_one = "1 Main"
+    addr.city = "Detroit"
+    addr.to_s.should == "1 Main Detroit #{addr.state}"
+    
+    addr.zip = "48220"
+    addr.to_s.should == "1 Main Detroit #{addr.state} 48220"
+    
+    
+    addr.zip4 = "1111"
+    addr.to_s.should == "1 Main Detroit #{addr.state} 48220-1111"
+  end
+  
   it { should belong_to(:person) }
   it { should belong_to(:dwelling_unit) }
   it { should belong_to(:psu) }
@@ -53,8 +69,8 @@ describe Address do
   it { should belong_to(:address_info_mode) }
   it { should belong_to(:address_type) }
   it { should belong_to(:address_description) }
-  it { should belong_to(:state) }
-    
+  it { should belong_to(:state) }  
+  
   context "as mdes record" do
     
     it "should set the public_id to a uuid" do

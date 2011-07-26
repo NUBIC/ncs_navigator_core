@@ -38,5 +38,8 @@ class Participant < ActiveRecord::Base
   belongs_to :pid_entry,            :conditions => "list_name = 'STUDY_ENTRY_METHOD_CL1'",  :foreign_key => :pid_entry_code,            :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :pid_age_eligibility,  :conditions => "list_name = 'AGE_ELIGIBLE_CL2'",        :foreign_key => :pid_age_eligibility_code,  :class_name => 'NcsCode', :primary_key => :local_code
   
-  validates_presence_of :person  
+  validates_presence_of :person
+  
+  delegate :age, :to => :person
+  
 end

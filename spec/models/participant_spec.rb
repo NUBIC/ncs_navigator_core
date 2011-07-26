@@ -74,4 +74,10 @@ describe Participant do
     end
   end
   
+  it "should return the participant's age" do
+    pers = Factory(:person, :person_dob_date => 10.years.ago)
+    pr = Factory(:participant, :person => pers)
+    pr.age.should == 10
+  end
+  
 end

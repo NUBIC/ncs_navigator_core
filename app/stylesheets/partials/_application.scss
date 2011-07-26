@@ -19,17 +19,10 @@ a {
 }
 
 .flash_message {
-  padding: 0.5em;
+  padding: 0.25em 0;
   text-align: center;
-  margin: .125em auto;
   @include rounded-corners(.5em);
-}
-
-#flash_warning,
-#flash_notice, 
-#flash_error {
-  padding: 5px 8px;
-  margin: 10px 0;
+  @include column($blueprint-grid-columns);
 }
 
 #flash_notice {
@@ -45,6 +38,11 @@ a {
 
 .clear {
   clear: both;
+}
+
+span.required {
+  font-weight: bold;
+  color: maroon;
 }
 
 .fieldWithErrors,
@@ -92,6 +90,9 @@ form {
   }
   .datepicker {
     width: 7.5em;
+  }
+  .nested_attributes {
+    margin: 1em;
   }
 }
 

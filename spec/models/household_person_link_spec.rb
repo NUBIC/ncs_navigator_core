@@ -31,9 +31,6 @@ describe HouseholdPersonLink do
   it { should belong_to(:hh_rank) }
   it { should belong_to(:is_active) }
   
-  it { should validate_presence_of(:person) }
-  it { should validate_presence_of(:household_unit) }
-  
   context "as mdes record" do
     
     it "should set the public_id to a uuid" do
