@@ -1,0 +1,57 @@
+.page_section
+  = form_for(@dwelling_unit) do |f| 
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :duplicate_du_code, :label_text => "Duplicate Address" }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :missed_du_code, :label_text => "Missed" }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :du_type_code, :label_text => "Type of Residence", :other => :du_type_other }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :du_ineligible_code, :label_text => "Ineligible" }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :du_access_code, :label_text => "Access is restricted" }
+
+    .nested_attributes
+      %h3
+        Address
+      = f.fields_for :address do |address_form|
+        %p
+          = address_form.label :address_one, "Address One"
+          %br
+          = address_form.text_field :address_one
+        %p
+          = address_form.label :address_two, "Address Two"
+          %br
+          = address_form.text_field :address_two
+        %p
+          = address_form.label :city, "City"
+          %br
+          = address_form.text_field :city
+        = render "shared/ncs_state_select", { :f => address_form, :code => :state_code, :label_text => "State" }
+        %p
+          = address_form.label :zip, "Zip Code"
+          %br
+          = address_form.text_field :zip
+          &mdash;
+          = address_form.text_field :zip4
+
+    %p
+      = f.label :duid_comment, "Comment"
+      %br
+      = f.text_area :duid_comment
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+
+.links
+  = link_to "All Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
+  
+:javascript
+  // For the 'other' field
+  // Check on pageload
+  $(document).ready(function() {
+    wire_up_select_other("#dwelling_unit_du_type_code","#dwelling_unit_du_type_other");
+  });

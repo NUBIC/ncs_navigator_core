@@ -1,0 +1,42 @@
+- title "Dwelling Units"
+  
+.page_section
+  - if @dwelling_units.empty?
+    #no_records
+      No dwelling units were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @dwelling_units
+    %table.records
+      %tr
+        %th
+          PSU
+        %th
+          Type of Residence
+        %th
+          Eligibility
+        %th
+          Access
+        %th
+          Address
+        %th{ :colspan => "2" }
+
+      - @dwelling_units.each do |du|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = du.psu
+          %td
+            = du.du_type
+            - if du.du_type.local_code == -5
+              = du.du_type_other
+          %td
+            = du.address
+          %td
+            = link_to 'Edit', edit_dwelling_unit_path(du), :class => "edit_link icon_link"
+          %td
+            = link_to 'Delete', du, :confirm => 'Are you sure?', :method => :delete, :class => "delete_link icon_link"
+  .links
+    = link_to 'New Dwelling Unit', new_dwelling_unit_path, :class => "add_link icon_link"
+
+  = will_paginate @dwelling_units

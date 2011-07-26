@@ -1,0 +1,11 @@
+%tr{ :class => "household_person_link fields row" }
+  %td.combobox_col
+    = f.label :person_id, "Person"
+    = f.select :person_id, Person.all.map { |pers| [pers.name, pers.id]}, { :include_blank => true }, { :class => 'people_combobox_autocompleter people_selector' }
+  %td.select_col
+    %span{ :class => "hide" }
+      = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :is_active_code, :label_text => "Active", :inline => true }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :hh_rank_code, :label_text => "Rank", :inline => true }
+  %td.remove_col
+    = link_to_remove_fields 'Remove', f, :household_person_links

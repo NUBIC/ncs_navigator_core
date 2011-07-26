@@ -13,6 +13,7 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #
+
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file, 
 # or some other data file of dwelling units that can be aligned with a PSU, an SSU and a TSU. 
 # Each row of the Listing table corresponds to a dwelling unit

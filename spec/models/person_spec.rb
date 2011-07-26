@@ -50,6 +50,14 @@ describe Person do
     pers = Factory(:person)
     pers.should_not be_nil
   end
+  
+  it "should describe itself" do
+    pers = Factory(:person)
+    name = "#{pers.first_name} #{pers.last_name}"
+    pers.to_s.should == name
+    pers.name.should == name
+    pers.full_name.should == name
+  end
 
   it { should belong_to(:psu) }
   it { should belong_to(:prefix) }
@@ -152,6 +160,43 @@ describe Person do
       pers = Person.last
       pers.date_move.should == '9777-97'
     end
+  end
+  
+  context "determining date" do
+    
+    it "should return the person's age" do
+      pers = Factory(:person, :person_dob_date => 10.years.ago)
+      pers.age.should == 10
+    end
+    
+    it "should not blowup on leap year" do
+      dob = Date.parse('02/29/1992')
+      pers = Factory(:person, :person_dob_date => dob)
+      (pers.age > 18).should be_true
+    end
+    
+    it "should not return anything if person dob is unknown" do
+      pers = Factory(:person)
+      pers.person_dob_modifier = "unknown"
+      pers.save!
+      
+      Person.last.age.should be_nil
+    end
+    
+    it "should not return anything if person dob is refused" do
+      pers = Factory(:person)
+      pers.person_dob_modifier = "refused"
+      pers.save!
+      
+      Person.last.age.should be_nil
+    end
+    
+    it "should handle a string date" do
+      dob = 10.years.ago
+      pers = Factory(:person, :person_dob_date => nil, :person_dob => dob.strftime('%Y-%m-%d'))
+      pers.age.should == 10
+    end
+    
   end
 
 end

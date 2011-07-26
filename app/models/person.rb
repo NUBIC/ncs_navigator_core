@@ -69,4 +69,25 @@ class Person < ActiveRecord::Base
     '%Y-%m'
   end
   
+  def age
+    return nil if dob.blank?
+    now = Time.now.utc.to_date
+    offset = ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
+    now.year - dob.year - offset
+  end
+  
+  def to_s
+    "#{first_name} #{last_name}".strip
+  end
+  alias :name :to_s
+  alias :full_name :to_s
+  
+  private
+  
+    def dob
+      return person_dob_date unless person_dob_date.blank?
+      return Date.parse(person_dob) if !person_dob.blank? && person_dob.chars.first != '9'
+      return nil
+    end
+  
 end

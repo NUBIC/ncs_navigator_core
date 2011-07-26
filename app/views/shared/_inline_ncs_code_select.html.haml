@@ -1,0 +1,11 @@
+- default_value ||= nil
+- other ||= nil
+- date ||= nil
+
+= f.label code, label_text
+- f.object.send("#{code}=", default_value) if default_value
+= f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" })
+
+- if other
+  = f.label other, "#{label_text} (Other)"
+  = f.text_field other

@@ -1,5 +1,6 @@
 .page_section
   = form_for(@household_unit) do |f| 
+  
     = render "shared/custom_error_messages", :object => f.object
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
@@ -35,6 +36,21 @@
       %br
       = f.text_field :number_of_pregnant_over49
 
+    - @peopleTemplate = generate_nested_attributes_template(f, :household_person_links, 'household_units/household_person_links')
+    %table{ :class => 'records household_person_links' }
+      %tr.row
+        %td{ :colspan => '3' }
+          People in household
+          %span{ :class => "required" } * 
+          (Click the 'Add person' link to add one or more people to this household)
+      %tbody.nested_records_household_person_links
+        = f.fields_for :household_person_links do |hh_pers_link|
+          = render :partial => 'household_units/household_person_links', :locals => { :f => hh_pers_link }
+      %tfoot
+        %tr.row
+          %td{ :colspan => '3' }
+            = link_to_add_fields "Add person", :household_person_links
+
     %p
       = f.label :hh_comment, "Comment"
       %br
@@ -51,4 +67,5 @@
   // Check on pageload
   $(document).ready(function() {
     wire_up_select_other("#household_unit_hh_structure_code","#household_unit_hh_structure_other");
+    peopleTemplateUI = new NCSCore.UI.People({ peopleTemplate: '#{@peopleTemplate}' });
   });
