@@ -25,8 +25,8 @@ class ContactLink < ActiveRecord::Base
   
   belongs_to :contact
   belongs_to :person
-  # belongs_to :event
-  # belongs_to :instrument
+  belongs_to :event
+  belongs_to :instrument
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110726214159) do
+ActiveRecord::Schema.define(:version => 20110727185512) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -141,6 +141,29 @@ ActiveRecord::Schema.define(:version => 20110726214159) do
     t.datetime "updated_at"
   end
 
+  create_table "events", :force => true do |t|
+    t.integer  "psu_code",                                                                    :null => false
+    t.string   "event_id",                        :limit => 36,                               :null => false
+    t.integer  "participant_id"
+    t.integer  "event_type_code",                                                             :null => false
+    t.string   "event_type_other"
+    t.integer  "event_repeat_key"
+    t.integer  "event_disposition"
+    t.integer  "event_disposition_category_code",                                             :null => false
+    t.date     "event_start_date"
+    t.string   "event_start_time"
+    t.date     "event_end_date"
+    t.string   "event_end_time"
+    t.integer  "event_breakoff_code",                                                         :null => false
+    t.integer  "event_incentive_type_code",                                                   :null => false
+    t.decimal  "event_incentive_cash",                          :precision => 3, :scale => 2
+    t.string   "event_incentive_noncash"
+    t.text     "event_comment"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "household_person_links", :force => true do |t|
     t.string   "psu_code",          :limit => 36, :null => false
     t.binary   "person_hh_id",                    :null => false
@@ -168,6 +191,31 @@ ActiveRecord::Schema.define(:version => 20110726214159) do
     t.integer  "number_of_pregnant_over49"
     t.string   "transaction_type",             :limit => 36
     t.binary   "hh_id",                                      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "instruments", :force => true do |t|
+    t.integer  "psu_code",                               :null => false
+    t.string   "instrument_id",            :limit => 36, :null => false
+    t.integer  "event_id"
+    t.integer  "instrument_type_code",                   :null => false
+    t.string   "instrument_type_other"
+    t.string   "instrument_version",       :limit => 36, :null => false
+    t.integer  "instrument_repeat_key"
+    t.date     "instrument_start_date"
+    t.string   "instrument_start_time"
+    t.date     "instrument_end_date"
+    t.string   "instrument_end_time"
+    t.integer  "instrument_breakoff_code",               :null => false
+    t.integer  "instrument_status_code",                 :null => false
+    t.integer  "instrument_mode_code",                   :null => false
+    t.string   "instrument_mode_other"
+    t.integer  "instrument_method_code",                 :null => false
+    t.integer  "supervisor_review_code",                 :null => false
+    t.integer  "data_problem_code",                      :null => false
+    t.text     "instrument_comment"
+    t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

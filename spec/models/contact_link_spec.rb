@@ -30,6 +30,9 @@ describe ContactLink do
   it { should belong_to(:psu) }
   it { should belong_to(:contact) }
   it { should belong_to(:person) }
+  it { should belong_to(:event) }
+  it { should belong_to(:instrument) }
+  # it { should belong_to(:provider) }
 
   it { should validate_presence_of(:staff_id) }
   it { should validate_presence_of(:contact) }

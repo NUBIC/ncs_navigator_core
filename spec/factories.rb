@@ -174,11 +174,35 @@ end
 
 Factory.define :contact_link do |cl|
   cl.psu               { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
-  cl.association :person,  :factory => :person
-  cl.association :contact, :factory => :contact
+  cl.association :person,     :factory => :person
+  cl.association :contact,    :factory => :contact
+  cl.association :event,      :factory => :event
+  cl.association :instrument, :factory => :instrument
   cl.staff_id "staff_public_id"
   # TODO: create the following
   # cl.association :provider
-  # cl.association :event
-  # cl.association :instrument
+end
+
+Factory.define :event do |e|
+  e.association :participant, :factory => :participant
+  e.psu                         { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  e.event_type                  { |a| a.association(:ncs_code, :list_name => "EVENT_TYPE_CL1",        :display_text => "Household Enumeration", :local_code => 1) }
+  e.event_disposition_category  { |a| a.association(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Household Enumeration Events", :local_code => 1) }
+  e.event_breakoff              { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",      :display_text => "Yes", :local_code => 1) }
+  e.event_incentive_type        { |a| a.association(:ncs_code, :list_name => "INCENTIVE_TYPE_CL1",    :display_text => "Monetary", :local_code => 1) }
+end
+
+Factory.define :instrument do |ins|
+
+  ins.association :event, :factory => :event
+  ins.psu                   { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  ins.instrument_type       { |a| a.association(:ncs_code, :list_name => "INSTRUMENT_TYPE_CL1",         :display_text => "Household Enumeration Interview", :local_code => 1) }
+  ins.instrument_breakoff   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",            :display_text => "Yes", :local_code => 1) }
+  ins.instrument_status     { |a| a.association(:ncs_code, :list_name => "INSTRUMENT_STATUS_CL1",       :display_text => "Not started", :local_code => 1) }
+  ins.instrument_mode       { |a| a.association(:ncs_code, :list_name => "INSTRUMENT_ADMIN_MODE_CL1",   :display_text => "In-person, Computer Assisted (CAPI/CASI)", :local_code => 1) }
+  ins.instrument_method     { |a| a.association(:ncs_code, :list_name => "INSTRUMENT_ADMIN_METHOD_CL1", :display_text => "Self-administered", :local_code => 1) }
+  ins.supervisor_review     { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",            :display_text => "Yes", :local_code => 1) }
+  ins.data_problem          { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",            :display_text => "Yes", :local_code => 1) }
+  ins.instrument_version "1.2"
+  
 end
