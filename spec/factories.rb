@@ -155,9 +155,30 @@ end
 Factory.define :email do |email|
   email.association  :person,        :factory => :person
   email.psu               { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
-  email.email_info_source { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL2", :display_text => "Person/Self", :local_code => 1) }
-  email.email_type        { |a| a.association(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Personal", :local_code => 1) }
-  email.email_rank        { |a| a.association(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1) }
-  email.email_share       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
-  email.email_active      { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+  email.email_info_source { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL2",  :display_text => "Person/Self", :local_code => 1) }
+  email.email_type        { |a| a.association(:ncs_code, :list_name => "EMAIL_TYPE_CL1",          :display_text => "Personal", :local_code => 1) }
+  email.email_rank        { |a| a.association(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1",  :display_text => "Primary", :local_code => 1) }
+  email.email_share       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",        :display_text => "Yes", :local_code => 1) }
+  email.email_active      { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",        :display_text => "Yes", :local_code => 1) }
+end
+
+Factory.define :contact do |c|
+  c.psu               { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  c.contact_type      { |a| a.association(:ncs_code, :list_name => "CONTACT_TYPE_CL1",        :display_text => "In-person", :local_code => 1) }
+  c.contact_language  { |a| a.association(:ncs_code, :list_name => "LANGUAGE_CL2",            :display_text => "English", :local_code => 1) }
+  c.contact_interpret { |a| a.association(:ncs_code, :list_name => "TRANSLATION_METHOD_CL3",  :display_text => "Bilingual Interviewer", :local_code => 1) }
+  c.contact_location  { |a| a.association(:ncs_code, :list_name => "CONTACT_LOCATION_CL1",    :display_text => "Person/participant home", :local_code => 1) }
+  c.contact_private   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",        :display_text => "Yes", :local_code => 1) }
+  c.who_contacted     { |a| a.association(:ncs_code, :list_name => "CONTACTED_PERSON_CL1",    :display_text => "NCS Participant", :local_code => 1) }
+end
+
+Factory.define :contact_link do |cl|
+  cl.psu               { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  cl.association :person,  :factory => :person
+  cl.association :contact, :factory => :contact
+  cl.staff_id "staff_public_id"
+  # TODO: create the following
+  # cl.association :provider
+  # cl.association :event
+  # cl.association :instrument
 end

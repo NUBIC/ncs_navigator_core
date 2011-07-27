@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110715213911) do
+ActiveRecord::Schema.define(:version => 20110726214159) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -41,6 +41,47 @@ ActiveRecord::Schema.define(:version => 20110715213911) do
     t.string   "zip",                       :limit => 5
     t.string   "zip4",                      :limit => 4
     t.text     "address_comment"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contact_links", :force => true do |t|
+    t.integer  "psu_code",                       :null => false
+    t.string   "contact_link_id",  :limit => 36, :null => false
+    t.integer  "contact_id",                     :null => false
+    t.integer  "event_id"
+    t.integer  "instrument_id"
+    t.string   "staff_id",         :limit => 36, :null => false
+    t.integer  "person_id"
+    t.integer  "provider_id"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contacts", :force => true do |t|
+    t.integer  "psu_code",                                                            :null => false
+    t.string   "contact_id",              :limit => 36,                               :null => false
+    t.integer  "contact_disposition"
+    t.integer  "contact_type_code",                                                   :null => false
+    t.string   "contact_type_other"
+    t.string   "contact_date",            :limit => 10
+    t.date     "contact_date_date"
+    t.string   "contact_start_time"
+    t.string   "contact_end_time"
+    t.integer  "contact_language_code",                                               :null => false
+    t.string   "contact_language_other"
+    t.integer  "contact_interpret_code",                                              :null => false
+    t.string   "contact_interpret_other"
+    t.integer  "contact_location_code",                                               :null => false
+    t.string   "contact_location_other"
+    t.integer  "contact_private_code",                                                :null => false
+    t.string   "contact_private_detail"
+    t.decimal  "contact_distance",                      :precision => 6, :scale => 2
+    t.integer  "who_contacted_code",                                                  :null => false
+    t.string   "who_contacted_other"
+    t.text     "contact_comment"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
