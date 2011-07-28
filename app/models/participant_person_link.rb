@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: participant_person_links
 #
@@ -16,6 +16,11 @@
 #  updated_at         :datetime
 #
 
+# The same Person can be a respondent or informant for many Participants. 
+# One Participant can have many respondents or informants who provide 
+# information about him/her. As a consequence, there is a many to many 
+# relationship between Participant and Person. The link that defines this 
+# relationship contains specific information about the relationship.
 class ParticipantPersonLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_pid_id

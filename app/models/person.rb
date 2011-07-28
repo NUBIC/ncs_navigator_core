@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: people
 #
@@ -42,6 +42,8 @@
 #  updated_at                     :datetime
 #
 
+# A Person is an individual who may provide information on a participant. 
+# All individuals contacted are Persons, including those who may also be Participants. 
 class Person < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob]

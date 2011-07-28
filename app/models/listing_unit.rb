@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: listing_units
 #
@@ -17,7 +17,6 @@
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file, 
 # or some other data file of dwelling units that can be aligned with a PSU, an SSU and a TSU. 
 # Each row of the Listing table corresponds to a dwelling unit
-#
 class ListingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :list_id

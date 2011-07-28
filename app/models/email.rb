@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: emails
 #
@@ -28,6 +28,7 @@
 #  updated_at              :datetime
 #
 
+# A Person, an Institution and a Provider will have at least one and sometimes many Email addresses.
 class Email < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :email_id, :date_fields => [:email_start_date, :email_end_date]

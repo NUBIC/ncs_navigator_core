@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: participants
 #
@@ -25,6 +25,10 @@
 #  updated_at               :datetime
 #
 
+# A Participant is a living Person who has provided Study data about her/himself or a NCS Child. 
+# S/he may have been administered a variety of questionnaires or assessments, including household enumeration, 
+# pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.  
+# Every Participant is also a Person.
 class Participant < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :p_id

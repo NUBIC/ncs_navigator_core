@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: addresses
 #
@@ -37,6 +37,8 @@
 #  updated_at                :datetime
 #
 
+# A Dwelling Unit will have exactly one Address.
+# A Person, an Institution and a Provider will have at least one and sometimes many Addresses.
 class Address < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :address_id, :date_fields => [:address_start_date, :address_end_date]

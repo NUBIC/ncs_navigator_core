@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: contacts
 #
@@ -30,6 +30,10 @@
 #  updated_at              :datetime
 #
 
+# Staff makes Contact with a Person pursuant to a protocol – either one 
+# of the recruitment schemas or a Study assessment protocol. 
+# The scope of a Contact may include one or more Events, one or more
+# Instruments in an Event and one or more Specimens that some Instruments collect.
 class Contact < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :contact_id, :date_fields => [:contact_date]

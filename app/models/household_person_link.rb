@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: household_person_links
 #
@@ -16,6 +16,15 @@
 #  updated_at        :datetime
 #
 
+# Sometimes a person may split from a household and either enter a household 
+# that has already been identified or, alternatively, create a new household. 
+# A person who moves from one household to another will have multiple Person 
+# Household linking records. In some cases only one link is active at a time. 
+# In other cases there are Persons who live in multiple households simultaneously. 
+# Someone in school might live both on campus and “at home,” or an NCS child may 
+# live with both a mother and father who reside at different addresses. In this event 
+# both links would be active. The links, however, are distinguishable by other 
+# information maintained on the linking record.
 class HouseholdPersonLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_hh_id

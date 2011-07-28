@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: contact_links
 #
@@ -17,6 +17,9 @@
 #  updated_at       :datetime
 #
 
+# Each Contact Link record associates a unique combination 
+# of Staff Member, Person, Event, and/or Instrument that occurs during a Contact.  
+# There should be at least 1 contact link record for every contact.
 class ContactLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :contact_link_id
