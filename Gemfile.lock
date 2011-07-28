@@ -110,7 +110,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
-    ncs_mdes (0.2.0)
+    ncs_mdes (0.4.0)
       nokogiri (~> 1.4)
     net-ldap (0.1.1)
     nokogiri (1.4.4)
@@ -200,7 +200,7 @@ DEPENDENCIES
   fastercsv
   haml (~> 3.1)
   launchy
-  ncs_mdes (= 0.2.0)
+  ncs_mdes (= 0.4.0)
   pg
   pickle
   rails (= 3.0.7)

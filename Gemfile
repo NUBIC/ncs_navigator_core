@@ -12,7 +12,7 @@ gem 'haml', '~> 3.1'
 gem 'pg'
 gem 'ruby-debug'
 
-gem 'ncs_mdes', '0.2.0'
+gem 'ncs_mdes', '0.4.0'
 
 gem 'uuid'
 gem 'will_paginate', '~> 3.0.beta'
