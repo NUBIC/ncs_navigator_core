@@ -35,6 +35,16 @@ describe DwellingUnit do
   it { should belong_to(:du_ineligible) }
   it { should belong_to(:du_access) }
   
+  it "should find all dwelling units not linked to a household" do
+    
+    10.times do |x|
+      du = Factory(:dwelling_unit)
+      Factory(:dwelling_household_link, :dwelling_unit => du) if ((x % 2) == 0)
+    end
+    
+    DwellingUnit.without_household.size.should == 5
+  end
+  
   context "as mdes record" do
     
     it "should set the public_id to a uuid" do

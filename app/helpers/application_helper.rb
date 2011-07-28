@@ -40,8 +40,8 @@ module ApplicationHelper
     f.hidden_field(:_destroy) + link_to(name, "javascript:void(0);", :class => "delete_#{association.to_s} delete_link icon_link")
   end
 
-  def nested_record_id(builder, assocation)
-    builder.object.id.nil? ? "new_nested_record" : "#{assocation.to_s.singularize}_#{builder.object.id}"
+  def nested_record_id(builder, association)
+    builder.object.id.nil? ? "new_nested_record" : "#{association.to_s.singularize}_#{builder.object.id}"
   end
   
 end
