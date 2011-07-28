@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: ncs_codes
 #
@@ -120,6 +120,38 @@ class NcsCode < ActiveRecord::Base
     :email_share              => 'CONFIRM_TYPE_CL2',
     :email_active             => 'CONFIRM_TYPE_CL2',
     
+    
+    ### instrument 
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :instrument_type          => 'INSTRUMENT_TYPE_CL1',
+    :instrument_breakoff      => 'CONFIRM_TYPE_CL2',
+    :instrument_status        => 'INSTRUMENT_STATUS_CL1',
+    :instrument_mode          => 'INSTRUMENT_ADMIN_MODE_CL1',
+    :instrument_method        => 'INSTRUMENT_ADMIN_METHOD_CL1',
+    :supervisor_review        => 'CONFIRM_TYPE_CL2',
+    :data_problem             => 'CONFIRM_TYPE_CL2',
+
+    
+    ### event
+    # :psu_code                   => "PSU_CL1",             # already referenced
+    :event_type                   => 'EVENT_TYPE_CL1',
+    :event_disposition_category   => 'EVENT_DSPSTN_CAT_CL1',
+    :event_breakoff               => 'CONFIRM_TYPE_CL2',
+    :event_incentive_type         => 'INCENTIVE_TYPE_CL1',
+    
+    
+    ### contact_link
+    # :psu_code               => "PSU_CL1",             # already referenced
+    
+    
+    ### contact 
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :contact_type             => 'CONTACT_TYPE_CL1',
+    :contact_language         => 'LANGUAGE_CL2',
+    :contact_interpret        => 'TRANSLATION_METHOD_CL3',
+    :contact_location         => 'CONTACT_LOCATION_CL1',
+    :contact_private          => 'CONFIRM_TYPE_CL2',
+    :who_contacted            => 'CONTACTED_PERSON_CL1',
   }
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)

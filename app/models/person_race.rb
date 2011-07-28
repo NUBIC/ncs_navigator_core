@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110726214159
+# Schema version: 20110727185512
 #
 # Table name: person_races
 #
@@ -14,6 +14,7 @@
 #  updated_at       :datetime
 #
 
+# A Person may be of mixed race. This table records each race for a Person in a separate row. 
 class PersonRace < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_race_id
