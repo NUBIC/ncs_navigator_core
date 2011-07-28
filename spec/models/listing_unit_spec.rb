@@ -30,6 +30,16 @@ describe ListingUnit do
     lu.public_id.should == lu.uuid
   end
   
+  it "should find all listing units without an associated dwelling unit" do
+    
+    10.times do |x|
+      lu = Factory(:listing_unit)
+      Factory(:dwelling_unit, :listing_unit => lu) if ((x % 2) == 0)
+    end
+    
+    ListingUnit.without_dwelling.size.should == 5
+  end
+  
   it { should belong_to(:psu) }
   it { should belong_to(:list_source) }
   it { should have_one(:dwelling_unit) }
