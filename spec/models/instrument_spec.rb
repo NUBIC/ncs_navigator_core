@@ -51,14 +51,14 @@ describe Instrument do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       ins = Factory(:instrument)
       ins.public_id.should_not be_nil
       ins.instrument_id.should == ins.public_id
       ins.instrument_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Instrument)
       
       ins = Instrument.new(:instrument_version => "0.1")

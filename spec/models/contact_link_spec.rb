@@ -39,7 +39,7 @@ describe ContactLink do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       link = Factory(:contact_link)
       link.public_id.should_not be_nil
       link.contact_link_id.should == link.public_id

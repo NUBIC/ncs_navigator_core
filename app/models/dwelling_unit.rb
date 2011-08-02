@@ -41,5 +41,6 @@ class DwellingUnit < ActiveRecord::Base
   belongs_to :du_access,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :du_access_code,      :class_name => 'NcsCode', :primary_key => :local_code
 
   scope :without_household, joins("LEFT OUTER JOIN dwelling_household_links ON dwelling_units.id = dwelling_household_links.dwelling_unit_id").where("dwelling_household_links.id is NULL")
+  scope :next_to_process, without_household.where("dwelling_units.being_processed IS FALSE").readonly(false)
 
 end

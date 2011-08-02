@@ -35,26 +35,44 @@ describe DwellingUnit do
   it { should belong_to(:du_ineligible) }
   it { should belong_to(:du_access) }
   
-  it "should find all dwelling units not linked to a household" do
-    
-    10.times do |x|
-      du = Factory(:dwelling_unit)
-      Factory(:dwelling_household_link, :dwelling_unit => du) if ((x % 2) == 0)
+  context "determining next dwelling unit to process" do
+  
+    it "should find all dwelling units not linked to a household" do
+
+      10.times do |x|
+        du = Factory(:dwelling_unit)
+        Factory(:dwelling_household_link, :dwelling_unit => du) if ((x % 2) == 0)
+      end
+
+      DwellingUnit.without_household.size.should == 5
+    end
+
+    it "does not choose a dwelling unit that is currently being processed (worked on by another person)" do
+      2.times do |x|
+        du = Factory(:dwelling_unit)
+        Factory(:dwelling_household_link, :dwelling_unit => du) if (x == 1)
+      end
+      
+      DwellingUnit.next_to_process.size.should == 1
+      
+      DwellingUnit.next_to_process.first.update_attribute(:being_processed, true)
+      DwellingUnit.next_to_process.should be_empty
     end
     
-    DwellingUnit.without_household.size.should == 5
   end
+  
+
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       du = Factory(:dwelling_unit)
       du.public_id.should_not be_nil
       du.du_id.should == du.public_id
       du.du_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(DwellingUnit)
       
       du = DwellingUnit.new

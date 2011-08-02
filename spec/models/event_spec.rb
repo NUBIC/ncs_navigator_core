@@ -44,14 +44,14 @@ describe Event do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       e = Factory(:event)
       e.public_id.should_not be_nil
       e.event_id.should == e.public_id
       e.event_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Event)
       
       e = Event.new

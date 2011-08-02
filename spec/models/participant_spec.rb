@@ -47,14 +47,14 @@ describe Participant do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       pr = Factory(:participant)
       pr.public_id.should_not be_nil
       pr.p_id.should == pr.public_id
       pr.p_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Participant)
       
       pr = Participant.new
@@ -74,10 +74,23 @@ describe Participant do
     end
   end
   
-  it "should return the participant's age" do
-    pers = Factory(:person, :person_dob_date => 10.years.ago)
-    pr = Factory(:participant, :person => pers)
-    pr.age.should == 10
+  context "delegating to the associated person" do
+    let(:person) { Factory(:person, :person_dob_date => 10.years.ago) }
+    let(:participant) { Factory(:participant, :person => person) }
+    
+    it "should return age" do
+      participant.age.should == person.age
+    end
+    
+    it "should return first_name" do
+      participant.first_name.should == person.first_name
+    end
+    
+    it "should return last_name" do
+      participant.last_name.should == person.last_name
+    end
+    
   end
+
   
 end

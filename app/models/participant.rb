@@ -28,7 +28,7 @@
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child. 
 # S/he may have been administered a variety of questionnaires or assessments, including household enumeration, 
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.  
-# Every Participant is also a Person.
+# Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :p_id
@@ -44,6 +44,6 @@ class Participant < ActiveRecord::Base
   
   validates_presence_of :person
   
-  delegate :age, :to => :person
+  delegate :age, :first_name, :last_name, :to => :person
   
 end

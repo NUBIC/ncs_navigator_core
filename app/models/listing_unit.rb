@@ -27,5 +27,6 @@ class ListingUnit < ActiveRecord::Base
   has_one :dwelling_unit
 
   scope :without_dwelling, joins("LEFT OUTER JOIN dwelling_units ON listing_units.id = dwelling_units.listing_unit_id").where("dwelling_units.id is NULL")
+  scope :next_to_process, without_dwelling.where("listing_units.being_processed IS FALSE").readonly(false)
 
 end
