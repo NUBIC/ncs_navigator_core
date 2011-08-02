@@ -7,3 +7,5 @@ ncs_navigator_core.tmproj
 coverage.data
 coverage/
 coverage/*
+surveys/kitchen_sink_survey.rb
+surveys/quiz.rb
