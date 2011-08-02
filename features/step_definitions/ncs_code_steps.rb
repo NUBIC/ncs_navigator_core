@@ -23,6 +23,8 @@ Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
   Factory(:ncs_code, :list_name => "STUDY_ENTRY_METHOD_CL1", :display_text => "Advance letter mailed by NCS.", :local_code => 1)
   Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
+  
+  Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Visit 1", :local_code => 13)
 
   
   create_missing_in_error_ncs_codes(Person)

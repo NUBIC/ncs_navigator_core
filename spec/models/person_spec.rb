@@ -219,6 +219,16 @@ describe Person do
       
     end
     
+    it "knows the upcoming applicable events for a person who is a participant" do
+      
+      part = Factory(:participant)
+      part.upcoming_events.should_not be_empty
+      
+      part.person.should be_participant
+      part.upcoming_events.should == ["Pregnancy Visit 1"]
+      
+    end
+    
   end
 
 end

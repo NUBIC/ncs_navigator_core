@@ -1,0 +1,7 @@
+Boy Howdy
+
+- @person.upcoming_events.each do |event|
+  %h3 
+    = "Instruments for #{event}"
+  - InstrumentEventMap.instruments_for(event).each do |ins|
+    = ins  

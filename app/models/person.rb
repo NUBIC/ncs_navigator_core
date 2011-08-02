@@ -95,8 +95,8 @@ class Person < ActiveRecord::Base
   def upcoming_events
     events = []
     NcsCode.ncs_code_lookup(:event_type).each do |code|
-      if participant? 
-        # check for state of participant
+      if participant?
+        events << "Pregnancy Visit 1" unless events.include?("Pregnancy Visit 1")
       elsif code[0].include?("Pregnancy Screening")
         events << code[0]
       end

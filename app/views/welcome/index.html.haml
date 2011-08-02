@@ -1,0 +1,32 @@
+%h1
+  NCS Navigator
+  
+%h2
+  Upcoming Activities
+  
+#dwellings
+  %h3
+    Dwellings
+  - if @dwellings.blank?
+    No dwellings were found.
+  - else
+    - @dwellings.each do |d|
+      .dwelling
+        = d.du_type_other
+        = link_to "Household Enumeration", "javascript:alert('To be implemented');"
+
+#people
+  %h3
+    People
+  - if @people.blank?
+    No people were found.  
+    
+#participants
+  %h3
+    Participants
+  - if @participants.blank?
+    No participants were found.
+  - else
+    - @participants.each do |p|
+      .participant
+        = link_to "Pregnancy Visit 1", events_person_path(p.person)
