@@ -44,6 +44,6 @@ class Participant < ActiveRecord::Base
   
   validates_presence_of :person
   
-  delegate :age, :first_name, :last_name, :to => :person
+  delegate :age, :first_name, :last_name, :upcoming_events, :to => :person
   
 end

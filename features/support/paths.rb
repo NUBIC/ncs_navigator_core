@@ -28,6 +28,9 @@ module NavigationHelpers
       
     when /^the edit person page$/
       edit_person_path(Person.last)
+      
+    when /^the events_person page$/
+      events_person_path(Participant.last.person_id)
 
     when /^the new participant page for that person$/
       new_participant_path(:person_id => Person.last.id)

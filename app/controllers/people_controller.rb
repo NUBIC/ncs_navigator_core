@@ -60,4 +60,9 @@ class PeopleController < ApplicationController
     end
   end
   
+  # GET /people/1/events
+  def events
+    @person = Person.find(params[:id])
+  end
+  
 end
