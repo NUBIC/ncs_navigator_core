@@ -51,14 +51,14 @@ describe Telephone do
     
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       phone = Factory(:telephone)
       phone.public_id.should_not be_nil
       phone.phone_id.should == phone.public_id
       phone.phone_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Telephone)
       
       phone = Telephone.new

@@ -84,6 +84,23 @@ class Person < ActiveRecord::Base
   alias :name :to_s
   alias :full_name :to_s
   
+  # A Person is a Participant if there is
+  def participant?
+    Participant.where(:person_id => self.id).count > 0
+  end
+  
+  def upcoming_events
+    events = []
+    NcsCode.ncs_code_lookup(:event_type).each do |code|
+      if participant? 
+        # check for state of participant
+      elsif code[0].include?("Pregnancy Screening")
+        events << code[0]
+      end
+    end
+    events
+  end
+  
   private
   
     def dob

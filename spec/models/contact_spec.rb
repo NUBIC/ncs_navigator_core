@@ -48,14 +48,14 @@ describe Contact do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       c = Factory(:contact)
       c.public_id.should_not be_nil
       c.contact_id.should == c.public_id
       c.contact_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Contact)
       
       c = Contact.new

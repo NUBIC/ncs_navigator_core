@@ -73,14 +73,14 @@ describe Address do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       addr = Factory(:address)
       addr.public_id.should_not be_nil
       addr.address_id.should == addr.public_id
       addr.address_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Address)
       
       addr = Address.new

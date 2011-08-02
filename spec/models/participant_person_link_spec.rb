@@ -36,14 +36,14 @@ describe ParticipantPersonLink do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       ppl = Factory(:participant_person_link)
       ppl.public_id.should_not be_nil
       ppl.person_pid_id.should == ppl.public_id
       ppl.person_pid_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(ParticipantPersonLink)
       
       ppl = ParticipantPersonLink.new

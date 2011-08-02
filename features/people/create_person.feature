@@ -5,7 +5,7 @@ Feature: Creating a person record
   I want to be able to create a person record
   
   Scenario: Creating a new person
-    Given valid ncs codes      
+    Given valid ncs codes
     When I am on the people page
     Then I should see "People"
     And I should see "No people were found."
@@ -34,7 +34,7 @@ Feature: Creating a person record
     And I should see "John"
 
   Scenario: Creating a new person without entering required attributes
-    Given valid ncs codes      
+    Given valid ncs codes
     When I am on the people page
     Then I should see "People"
     And I should see "No people were found."

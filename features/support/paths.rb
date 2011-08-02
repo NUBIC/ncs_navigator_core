@@ -29,6 +29,15 @@ module NavigationHelpers
     when /^the edit person page$/
       edit_person_path(Person.last)
 
+    when /^the new participant page for that person$/
+      new_participant_path(:person_id => Person.last.id)
+      
+    when /^the new participant page for that participant$/
+      new_participant_path(:person_id => Participant.last.person_id)
+
+    when /^the edit participant page$/
+      edit_participant_path(Participant.last)
+
     # the following are examples using path_to_pickle
 
     when /^#{capture_model}(?:'s)? page$/                           # eg. the forum's page

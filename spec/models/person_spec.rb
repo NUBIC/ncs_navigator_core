@@ -46,12 +46,12 @@ require 'spec_helper'
 
 describe Person do
 
-  it "should create a new instance given valid attributes" do
+  it "creates a new instance given valid attributes" do
     pers = Factory(:person)
     pers.should_not be_nil
   end
   
-  it "should describe itself" do
+  it "describes itself" do
     pers = Factory(:person)
     name = "#{pers.first_name} #{pers.last_name}"
     pers.to_s.should == name
@@ -80,14 +80,14 @@ describe Person do
   
   context "as mdes record" do
     
-    it "should set the public_id to a uuid" do
+    it "sets the public_id to a uuid" do
       pers = Factory(:person)
       pers.public_id.should_not be_nil
       pers.person_id.should == pers.public_id
       pers.person_id.length.should == 36
     end
     
-    it "should use the ncs_code 'Missing in Error' for all required ncs codes" do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Person)
       
       pers = Person.new
@@ -116,7 +116,7 @@ describe Person do
   
   context "mdes date formatting" do
     
-    it "should set the corresponding date field with the user entered date" do
+    it "sets the corresponding date field with the user entered date" do
       dob = Date.today
       pers = Factory(:person)
       pers.person_dob_date = dob
@@ -125,7 +125,7 @@ describe Person do
       pers.person_dob.should == Date.today.strftime('%Y-%m-%d')
     end
     
-    it "should set the person_dob if the person has refused to give the information" do
+    it "sets the person_dob if the person has refused to give the information" do
       pers = Factory(:person)
       pers.person_dob_modifier = "refused"
       pers.save!
@@ -134,7 +134,7 @@ describe Person do
       pers.person_dob.should == '9111-91-91'
     end
     
-    it "should set the person_dob if the person said the information is unknown" do
+    it "sets the person_dob if the person said the information is unknown" do
       pers = Factory(:person)
       pers.person_dob_modifier = "unknown"
       pers.save!
@@ -143,7 +143,7 @@ describe Person do
       pers.person_dob.should == '9666-96-96'
     end
     
-    it "should set the corresponding date field with the user entered date properly formatted" do
+    it "sets the corresponding date field with the user entered date properly formatted" do
       move_date = Date.today
       pers = Factory(:person)
       pers.date_move_date = move_date
@@ -152,7 +152,7 @@ describe Person do
       pers.date_move.should == Date.today.strftime('%Y-%m')
     end
     
-    it "should set the date_move if the person said the information is not_applicable" do
+    it "sets the date_move if the person said the information is not_applicable" do
       pers = Factory(:person)
       pers.date_move_modifier = "not_applicable"
       pers.save!
@@ -164,18 +164,18 @@ describe Person do
   
   context "determining date" do
     
-    it "should return the person's age" do
+    it "returns the person's age" do
       pers = Factory(:person, :person_dob_date => 10.years.ago)
       pers.age.should == 10
     end
     
-    it "should not blowup on leap year" do
+    it "does not blowup on leap year" do
       dob = Date.parse('02/29/1992')
       pers = Factory(:person, :person_dob_date => dob)
       (pers.age > 18).should be_true
     end
     
-    it "should not return anything if person dob is unknown" do
+    it "does not return anything if person dob is unknown" do
       pers = Factory(:person)
       pers.person_dob_modifier = "unknown"
       pers.save!
@@ -183,7 +183,7 @@ describe Person do
       Person.last.age.should be_nil
     end
     
-    it "should not return anything if person dob is refused" do
+    it "does not return anything if person dob is refused" do
       pers = Factory(:person)
       pers.person_dob_modifier = "refused"
       pers.save!
@@ -191,10 +191,30 @@ describe Person do
       Person.last.age.should be_nil
     end
     
-    it "should handle a string date" do
+    it "handles a string date" do
       dob = 10.years.ago
       pers = Factory(:person, :person_dob_date => nil, :person_dob => dob.strftime('%Y-%m-%d'))
       pers.age.should == 10
+    end
+    
+  end
+
+  context "with events" do
+    
+    before(:each) do
+      load_event_types
+    end
+    
+    
+    it "knows the upcoming applicable events for a person who is not a participant" do
+      
+      pers = Factory(:person)
+      pers.upcoming_events.should_not be_empty
+      
+      pers.should_not be_participant
+      # TODO: determine the "arm" of the two tier study
+      pers.upcoming_events.should == ["Pregnancy Screening - High Intensity Group", "Pregnancy Screening - Low Intensity Group"]
+      
     end
     
   end
