@@ -64,6 +64,9 @@ class Person < ActiveRecord::Base
   belongs_to :p_tracing,                :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :p_tracing_code,                :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :p_info_source,            :conditions => "list_name = 'INFORMATION_SOURCE_CL4'",  :foreign_key => :p_info_source_code,            :class_name => 'NcsCode', :primary_key => :local_code
   
+  # surveyor
+  has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
+  
   validates_presence_of :first_name
   validates_presence_of :last_name
   

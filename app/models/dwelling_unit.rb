@@ -22,6 +22,13 @@
 # DU is a specific street address within a sampling unit. 
 # There is a one-to-one relationship between Listing and DU. 
 # This is not a mandatory one-to-one relationship because some DUs may not appear in the Listing and vice versa
+# 
+# Dwelling Units are an identified address. Once identified the data in this record will rarely change. 
+#
+#  Possible reasons for modification:
+#  * Dwelling disappears
+#  * New association with household
+#
 class DwellingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :du_id

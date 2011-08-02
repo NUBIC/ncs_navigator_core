@@ -1,0 +1,164 @@
+/* Do not change surveyor.sass or the generated
+ * surveyor.css. They will be overwritten by
+ * the surveyor generator. Instead, add
+ * custom styles to custom.sass, which will be
+ * loaded after the surveyor stylesheets */
+/* line 15, sass/surveyor.sass */
+body {
+  background-color: #eeeeee;
+}
+
+/* line 17, sass/surveyor.sass */
+#surveyor {
+  font-family: "Century Gothic";
+  width: 960px;
+  padding: 20px;
+  margin: 0 auto;
+  text-align: left;
+  font-family: Helvetica;
+  font-size: 100%;
+  background-color: #fffff1;
+  color: #333333;
+}
+/* line 27, sass/surveyor.sass */
+#surveyor .surveyor_flash {
+  background-color: #fff1a8;
+  margin: 0 auto;
+  padding: 5px;
+  width: 300px;
+  font-weight: bold;
+  text-align: center;
+}
+/* line 34, sass/surveyor.sass */
+#surveyor .survey_title {
+  font-size: 2em;
+  font-weight: bold;
+  padding: 5px 0;
+}
+/* line 38, sass/surveyor.sass */
+#surveyor .surveyor_menu {
+  float: right;
+}
+/* line 40, sass/surveyor.sass */
+#surveyor .surveyor_menu ul {
+  background-color: #eeeeee;
+  border: 1px solid #cccccc;
+  border-bottom-width: 0;
+  list-style: none;
+}
+/* line 45, sass/surveyor.sass */
+#surveyor .surveyor_menu ul li {
+  border: 0 solid #cccccc;
+  border-bottom-width: 1px;
+}
+/* line 48, sass/surveyor.sass */
+#surveyor .surveyor_menu ul li.active, #surveyor .surveyor_menu ul li.active input[type="submit"] {
+  background-color: #ebebcc;
+}
+/* line 51, sass/surveyor.sass */
+#surveyor .next_section {
+  float: right;
+}
+/* line 54, sass/surveyor.sass */
+#surveyor .survey_section span.title {
+  display: block;
+  padding: 5px 0;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+/* line 61, sass/surveyor.sass */
+#surveyor fieldset.g_inline fieldset {
+  display: inline;
+}
+/* line 64, sass/surveyor.sass */
+#surveyor fieldset.g_grid table {
+  border-collapse: collapse;
+}
+/* line 66, sass/surveyor.sass */
+#surveyor fieldset.g_grid li.surveyor_radio label, #surveyor fieldset.g_grid li.surveyor_check_boxes label {
+  visibility: hidden;
+}
+/* line 68, sass/surveyor.sass */
+#surveyor fieldset.g_grid li.surveyor_radio label input, #surveyor fieldset.g_grid li.surveyor_check_boxes label input {
+  visibility: visible;
+}
+/* line 71, sass/surveyor.sass */
+#surveyor fieldset.g_repeater ol fieldset {
+  display: inline;
+}
+/* line 73, sass/surveyor.sass */
+#surveyor fieldset.g_repeater input[type="submit"].add_row {
+  font-size: 0.7em;
+}
+/* line 77, sass/surveyor.sass */
+#surveyor .survey_section > fieldset > ol {
+  padding-left: 1em;
+}
+/* line 79, sass/surveyor.sass */
+#surveyor fieldset {
+  padding-top: 5px;
+  margin-bottom: 10px;
+}
+/* line 83, sass/surveyor.sass */
+#surveyor fieldset ol fieldset {
+  vertical-align: top;
+}
+/* line 85, sass/surveyor.sass */
+#surveyor fieldset ol li {
+  padding: 1px 0;
+}
+/* line 86, sass/surveyor.sass */
+#surveyor fieldset ol li label, #surveyor fieldset ol li input {
+  vertical-align: top;
+}
+/* line 89, sass/surveyor.sass */
+#surveyor fieldset ol li p.inline-hints {
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+/* line 93, sass/surveyor.sass */
+#surveyor fieldset ol li.inline {
+  display: inline;
+}
+/* line 96, sass/surveyor.sass */
+#surveyor fieldset ol li.datetime input, #surveyor fieldset ol li.datetime fieldset, #surveyor fieldset ol li.datetime fieldset ol li, #surveyor fieldset ol li.time input, #surveyor fieldset ol li.time fieldset, #surveyor fieldset ol li.time fieldset ol li {
+  display: inline;
+}
+/* line 98, sass/surveyor.sass */
+#surveyor fieldset.q_inline ol li {
+  display: inline;
+}
+/* line 100, sass/surveyor.sass */
+#surveyor fieldset input, #surveyor fieldset textarea, #surveyor fieldset select {
+  margin: 0 3px;
+}
+/* line 102, sass/surveyor.sass */
+#surveyor fieldset input[type="text"], #surveyor fieldset textarea {
+  font-size: 0.8em;
+}
+/* line 105, sass/surveyor.sass */
+#surveyor fieldset.q_hidden, #surveyor fieldset.g_hidden {
+  display: none;
+}
+/* line 107, sass/surveyor.sass */
+#surveyor fieldset.q_dependent, #surveyor fieldset.g_dependent {
+  background-color: #ffffdf;
+}
+/* line 109, sass/surveyor.sass */
+#surveyor fieldset.q_dependent legend, #surveyor fieldset.g_dependent legend {
+  background-color: #ffffdf;
+  padding: 3px 3px 3px 0;
+}
+/* line 113, sass/surveyor.sass */
+#surveyor fieldset.q_dropdown label, #surveyor fieldset.q_inline_dropdown label, #surveyor fieldset.q_slider label, #surveyor fieldset.q_repeater_dropdown label {
+  display: none;
+}
+/* line 117, sass/surveyor.sass */
+#surveyor input[type="submit"] {
+  font-size: 1em;
+  border: 1px;
+  padding: 5px;
+  cursor: pointer;
+  background-color: #eeeeee;
+}

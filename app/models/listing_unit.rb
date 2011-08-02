@@ -16,7 +16,12 @@
 
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file, 
 # or some other data file of dwelling units that can be aligned with a PSU, an SSU and a TSU. 
+#
 # Each row of the Listing table corresponds to a dwelling unit
+#
+# Data entered into this table is either purchased or obtained from traditional field listing activities. 
+# Records will be added to this table but will NOT be edited.
+#
 class ListingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :list_id

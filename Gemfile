@@ -13,6 +13,7 @@ gem 'pg'
 gem 'ruby-debug'
 
 gem 'ncs_mdes', '0.4.0'
+gem "surveyor", :git => "git://github.com/NUBIC/surveyor.git", :branch => "rails3"
 
 gem 'uuid'
 gem 'will_paginate', '~> 3.0.beta'
