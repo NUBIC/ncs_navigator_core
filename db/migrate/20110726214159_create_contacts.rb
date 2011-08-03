@@ -3,7 +3,7 @@ class CreateContacts < ActiveRecord::Migration
     create_table :contacts do |t|
 
       t.integer :psu_code,                  :null => false, :limit => 36
-      t.string :contact_id,                 :null => false, :limit => 36
+      t.binary :contact_id,                 :null => false
       t.integer :contact_disposition
       t.integer :contact_type_code,         :null => false
       t.string :contact_type_other
