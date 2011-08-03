@@ -26,8 +26,13 @@ require 'pickle/world'
 #   config.map 'I', 'myself', 'me', 'my', :to => 'user: "me"'
 # end
 
+# Setting predicates explicitly to ensure default capture_predicate method used in pickle_steps
+# does not throw a 'regular expression too big' exception
+# http://groups.google.com/group/pickle-cucumber/browse_thread/thread/c6be23c6247fa0dd?pli=1
+
 Pickle.configure do |config|
   config.adapters = [:factory_girl]
+  config.predicates = %w(exist) 
 end
 
 require 'pickle/path/world'
