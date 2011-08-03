@@ -3,7 +3,7 @@ class CreateEvents < ActiveRecord::Migration
     create_table :events do |t|
 
       t.integer :psu_code,                  :null => false, :limit => 36
-      t.string :event_id,                   :null => false, :limit => 36
+      t.binary :event_id,                   :null => false
       t.references :participant
       t.integer :event_type_code,           :null => false
       t.string :event_type_other

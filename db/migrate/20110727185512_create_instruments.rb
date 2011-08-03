@@ -1,9 +1,9 @@
 class CreateInstruments < ActiveRecord::Migration
   def self.up
     create_table :instruments do |t|
-
+      
       t.integer :psu_code,                  :null => false, :limit => 36
-      t.string :instrument_id,              :null => false, :limit => 36
+      t.binary :instrument_id,              :null => false
       t.references :event
       t.integer :instrument_type_code,      :null => false
       t.string :instrument_type_other

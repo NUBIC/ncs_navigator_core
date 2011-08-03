@@ -3,7 +3,7 @@ class CreateContactLinks < ActiveRecord::Migration
     create_table :contact_links do |t|
       
       t.integer :psu_code,            :null => false, :limit => 36
-      t.string :contact_link_id,      :null => false, :limit => 36
+      t.binary :contact_link_id,      :null => false
       t.references :contact,          :null => false
       t.references :event
       t.references :instrument
