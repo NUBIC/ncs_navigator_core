@@ -4,6 +4,7 @@ NcsNavigatorCore::Application.routes.draw do
   resources :people do
     member do 
       get :events
+      get :start_instrument
     end
   end
   resources :participants

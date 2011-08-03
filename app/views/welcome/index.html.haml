@@ -29,4 +29,5 @@
   - else
     - @participants.each do |p|
       .participant
+        = p.person.to_s
         = link_to "Pregnancy Visit 1", events_person_path(p.person)

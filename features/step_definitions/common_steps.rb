@@ -16,9 +16,16 @@ When /^I focus on the autocomplete input element$/ do
   page.driver.browser.execute_script "$('.ui-autocomplete-input').val('');"
 end
 
+Given /^the following participants:$/ do |table|
+  table.hashes.each do |hash|
+    Factory(:participant, :person => Factory(:person, hash))
+  end
+end
+
 Given /^the following (.+) records:$/ do |factory, table|
   table.hashes.each do |hash|
     Factory(factory.to_sym, hash)
   end
 end
+
 

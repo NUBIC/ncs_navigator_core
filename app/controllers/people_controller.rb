@@ -65,4 +65,12 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
   end
   
+  def start_instrument
+    @person = Person.find(params[:id])
+    survey = Survey.find_by_access_code(params[:survey_access_code])
+    rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
+    rs = @person.start_instrument(survey) if rs.nil?
+    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code  => rs.access_code))
+  end
+  
 end

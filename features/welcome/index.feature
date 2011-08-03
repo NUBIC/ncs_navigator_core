@@ -23,13 +23,19 @@ Feature: Accessing the application
     And I should see "Household Enumeration"
     
   Scenario: Accessing an instance of the application with participants
-    Given a participant exists
+    Given the following participants:
+      | first_name | last_name |
+      | Judy       | Garland   |
+      | Ma         | Rainey    |
+      | Bessie     | Smith     |
     And valid ncs codes 
-    Then a person should exist
+    Then 3 people should exist
     When I go to the home page
     Then I should see "NCS Navigator"
     And I should see "Pregnancy Visit 1"
+    And I should see "Judy Garland"
     When I follow "Pregnancy Visit 1"
     Then I should be on the events_person page
+    And I should see "Judy Garland"
     And I should see "Instruments for Pregnancy Visit 1"
     And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"

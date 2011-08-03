@@ -231,4 +231,35 @@ describe Person do
     
   end
 
+  
+  context "with instruments" do
+    
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant, :person => person) }
+
+    before(:each) do
+      Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Visit 1", :local_code => 13)
+      survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0")
+      section = Factory(:survey_section, :survey => survey)
+      question = Factory(:question, :survey_section => section, :data_export_identifier => "name")
+      answer = Factory(:answer, :question => question)
+    end
+
+    it "determines the next survey to complete" do
+      participant.person.next_survey.access_code.should == Survey.first.access_code
+    end
+    
+    it "creates a response set for the instrument" do
+      ResponseSet.where(:user_id => person.id).should be_empty
+      
+      person.start_instrument(participant.person.next_survey)
+      
+      rs = ResponseSet.where(:user_id => person.id).first
+      rs.should_not be_nil
+      rs.responses.should_not be_empty
+      rs.responses.first.string_value.should == person.name
+    end
+    
+  end
+
 end

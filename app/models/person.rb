@@ -104,6 +104,27 @@ class Person < ActiveRecord::Base
     events
   end
   
+  def next_survey
+    event = upcoming_events.first
+    if event 
+      instrument = InstrumentEventMap.instruments_for(event).first
+      if instrument
+        return Survey.find_by_access_code(Survey.to_normalized_string(instrument))
+      end
+    end
+  end
+  
+  def start_instrument(survey)
+    response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
+    # TODO: determine way to know about initializing data for each survey
+    question = Question.where(:data_export_identifier => "name").first
+    if question
+      answer = question.answers.first
+      Response.create(:response_set => response_set, :question => question, :answer => answer, :string_value => name)
+    end
+    response_set
+  end
+  
   private
   
     def dob
