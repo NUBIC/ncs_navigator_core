@@ -206,3 +206,14 @@ Factory.define :instrument do |ins|
   ins.instrument_version "1.2"
   
 end
+
+
+Factory.define :pregnancy_visit_1 do |pv1|
+  
+  pv1.association :dwelling_unit, :factory => :dwelling_unit
+  pv1.association :participant,   :factory => :participant
+  pv1.association :instrument,    :factory => :instrument
+  pv1.association :event,         :factory => :event
+  pv1.psu                   { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  
+end
