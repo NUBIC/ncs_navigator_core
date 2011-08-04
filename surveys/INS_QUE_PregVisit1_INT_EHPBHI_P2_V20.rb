@@ -628,7 +628,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_3 "Hospital emergency room"
     a_4 "Hospital outpatient department"
     a_5 "Some other place"
-    a_6 "DOESN'T GOT TO ONE PLACE MOST OFTEN"
+    a_6 "DOESN'T GO TO ONE PLACE MOST OFTEN"
     a_7 "DOESN'T GET PREVENTIVE CARE ANYWHERE"
     a_neg_1 "REFUSED"
     a_neg_2 "DON'T KNOW"
@@ -646,7 +646,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_neg_1 "REFUSED"
     a_neg_2 "DON'T KNOW"
 
-    label "Now I'll read a list of different types of insurance. Please tell me which types you currently have. Do you currently have. . ."
+    label "Now I'll read a list of different types of insurance. Please tell me which types you currently have. Do you currently have..."
     
     label "<b>INTERVIEWER INSTRUCTIONS:</b> <br>
       RE-READ INTRODUCTORY STATEMENT (Do you currently <b>have…</b>) AS NEEDED"
@@ -1097,7 +1097,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_2 "HIGH SCHOOL DIPLOMA OR GED"
     a_3 "SOME COLLEGE BUT NO DEGREE"
     a_4 "ASSOCIATE DEGREE"
-    a_5 "BACHELOR’S DEGREE (e.g., BA, BS)"
+    a_5 "BACHELOR’S DEGREE (E.G., BA, BS)"
     a_6 "POST GRADUATE DEGREE (E.G., MASTERS OR DOCTORAL)"
     a_neg_1 "REFUSED"
     a_neg_2 "DON'T KNOW"
@@ -1289,7 +1289,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_1 "SPECIFY", :string
     a_neg_1 "REFUSED"
     a_neg_2 "DON'T KNOW"
-    dependency :rule=>"A and (B or C)"
+    dependency :rule=>"A and B and C"
     condition_A :q_hipv1_2_sp_race, "==", :a_neg_5
     condition_B :q_hipv1_2_sp_race, "!=", :a_neg_1
     condition_C :q_hipv1_2_sp_race, "!=", :a_neg_2                              
@@ -1401,7 +1401,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_1 "ENTER RESPONSE", :string
     a_neg_1 "REFUSED"
     a_neg_2 "DON'T KNOW"
-    dependency :rule=>"A and (B or C)"
+    dependency :rule=>"A and B and C"
     condition_A :q_hipv1_2_enter_hh_members, "==", :a_1
     condition_B :q_hipv1_2_hh_members, ">", {:integer_value => "0"}
     condition_C :q_hipv1_2_hh_members, "<", {:integer_value => "15"}    
@@ -1745,7 +1745,8 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_hipv1_2_enter_contact_2, "==", :a_1      
 
-    q_hipv1_2_contact_relate_2 "What is his/her relationship to you?", :pick=>:one, :data_export_identifier=>"PREG_VISIT_1_2.RELATE_2"
+    q_hipv1_2_contact_relate_2 "What is his/her relationship to you?", :pick=>:one, 
+    :data_export_identifier=>"PREG_VISIT_1_2.CONTACT_RELATE_2"
     a_1 "MOTHER/FATHER"
     a_2 "BROTHER/SISTER"
     a_3 "AUNT/UNCLE"
