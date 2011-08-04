@@ -1,0 +1,28 @@
+#surveyor {
+  
+  @include column($blueprint-grid-columns - 2);
+  margin: 0;
+  background: inherit;
+  
+  fieldset {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    legend {
+      span {
+        display: block;
+        font-weight: normal;
+        font-size: 0.8em;
+        width: 990px;
+        white-space: normal;
+      }
+    }
+    ol {
+      margin: 0;
+      li {
+        fieldset {
+          border: none !important;
+        }
+      }
+    }
+  }
+}
