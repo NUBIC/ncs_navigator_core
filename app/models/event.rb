@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20110727185512
+# Schema version: 20110805151543
 #
 # Table name: events
 #
 #  id                              :integer         not null, primary key
 #  psu_code                        :integer         not null
-#  event_id                        :string(36)      not null
+#  event_id                        :binary          not null
 #  participant_id                  :integer
 #  event_type_code                 :integer         not null
 #  event_type_other                :string(255)

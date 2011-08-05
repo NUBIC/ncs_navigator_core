@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110727185512
+# Schema version: 20110805151543
 #
 # Table name: listing_units
 #
@@ -12,6 +12,7 @@
 #  transaction_type :string(36)
 #  created_at       :datetime
 #  updated_at       :datetime
+#  being_processed  :boolean
 #
 
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file, 

@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20110727185512
+# Schema version: 20110805151543
 #
 # Table name: contact_links
 #
 #  id               :integer         not null, primary key
 #  psu_code         :integer         not null
-#  contact_link_id  :string(36)      not null
+#  contact_link_id  :binary          not null
 #  contact_id       :integer         not null
 #  event_id         :integer
 #  instrument_id    :integer
