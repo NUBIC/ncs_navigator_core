@@ -214,8 +214,7 @@ describe Person do
       pers.upcoming_events.should_not be_empty
       
       pers.should_not be_participant
-      # TODO: determine the "arm" of the two tier study
-      pers.upcoming_events.should == ["Pregnancy Screening - High Intensity Group", "Pregnancy Screening - Low Intensity Group"]
+      pers.upcoming_events.should == ["Pregnancy Screener"]
       
     end
     

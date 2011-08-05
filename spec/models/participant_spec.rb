@@ -29,7 +29,7 @@ require 'spec_helper'
 
 describe Participant do
   
-  it "should create a new instance given valid attributes" do
+  it "creates a new instance given valid attributes" do
     par = Factory(:participant)
     par.should_not be_nil
   end
@@ -42,6 +42,9 @@ describe Participant do
   it { should belong_to(:enroll_status) }
   it { should belong_to(:pid_entry) }
   it { should belong_to(:pid_age_eligibility) }
+  
+  it { should have_many(:ppg_details) }
+  it { should have_many(:ppg_status_histories) }
 
   it { should validate_presence_of(:person) }
   
@@ -78,16 +81,52 @@ describe Participant do
     let(:person) { Factory(:person, :person_dob_date => 10.years.ago) }
     let(:participant) { Factory(:participant, :person => person) }
     
-    it "should return age" do
+    it "returns age" do
       participant.age.should == person.age
     end
     
-    it "should return first_name" do
+    it "returns first_name" do
       participant.first_name.should == person.first_name
     end
     
-    it "should return last_name" do
+    it "returns last_name" do
       participant.last_name.should == person.last_name
+    end
+    
+  end
+
+  context "with an assigned pregnancy probability group" do
+    
+    let(:participant) { Factory(:participant) }
+    let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+    let(:status2)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+    let(:status1a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
+    
+    it "determines the ppg from the ppg_details if there is no ppg_status_history record" do
+      Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
+      
+      participant.ppg_details.should_not be_empty
+      participant.ppg_status_histories.should be_empty
+      participant.ppg_status.should == status2      
+    end
+
+    it "determines the ppg from the ppg_status_history" do
+      Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
+      Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+      
+      participant.ppg_details.should_not be_empty
+      participant.ppg_status_histories.should_not be_empty
+      participant.ppg_status.should == status1
+    end
+    
+    it "determines the ppg from the most recent ppg_status_history" do
+      Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
+      Factory(:ppg_status_history, :participant => participant, :ppg_status => status1,  :ppg_status_date => '2011-01-02')
+      Factory(:ppg_status_history, :participant => participant, :ppg_status => status1a, :ppg_status_date => '2011-01-31')
+      
+      participant.ppg_details.should_not be_empty
+      participant.ppg_status_histories.should_not be_empty
+      participant.ppg_status.should == status1a
     end
     
   end

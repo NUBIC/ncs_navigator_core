@@ -42,8 +42,15 @@ class Participant < ActiveRecord::Base
   belongs_to :pid_entry,            :conditions => "list_name = 'STUDY_ENTRY_METHOD_CL1'",  :foreign_key => :pid_entry_code,            :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :pid_age_eligibility,  :conditions => "list_name = 'AGE_ELIGIBLE_CL2'",        :foreign_key => :pid_age_eligibility_code,  :class_name => 'NcsCode', :primary_key => :local_code
   
+  has_many :ppg_details
+  has_many :ppg_status_histories, :order => "ppg_status_date DESC"
+  
   validates_presence_of :person
   
   delegate :age, :first_name, :last_name, :upcoming_events, :to => :person
+  
+  def ppg_status
+    ppg_status_histories.blank? ? ppg_details.first.ppg_first : ppg_status_histories.first.ppg_status
+  end
   
 end
