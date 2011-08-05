@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110803151709) do
+ActiveRecord::Schema.define(:version => 20110805151543) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -375,6 +375,36 @@ ActiveRecord::Schema.define(:version => 20110803151709) do
     t.integer  "race_code",                      :null => false
     t.string   "race_other"
     t.string   "transaction_type", :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ppg_details", :force => true do |t|
+    t.string   "psu_code",            :limit => 36, :null => false
+    t.binary   "ppg_details_id",                    :null => false
+    t.integer  "participant_id"
+    t.integer  "ppg_pid_status_code",               :null => false
+    t.integer  "ppg_first_code",                    :null => false
+    t.string   "orig_due_date",       :limit => 10
+    t.string   "due_date_2",          :limit => 10
+    t.string   "due_date_3",          :limit => 10
+    t.string   "transaction_type",    :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ppg_status_histories", :force => true do |t|
+    t.string   "psu_code",              :limit => 36, :null => false
+    t.binary   "ppg_history_id",                      :null => false
+    t.integer  "participant_id"
+    t.integer  "ppg_status_code",                     :null => false
+    t.string   "ppg_status_date",       :limit => 10
+    t.integer  "ppg_info_source_code",                :null => false
+    t.string   "ppg_info_source_other"
+    t.integer  "ppg_info_mode_code",                  :null => false
+    t.string   "ppg_info_mode_other"
+    t.text     "ppg_comment"
+    t.string   "transaction_type",      :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end

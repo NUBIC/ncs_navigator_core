@@ -3,9 +3,7 @@ class InstrumentEventMap
   def self.instruments_for(event)
     result = []
     INSTRUMENT_EVENT_CONFIG.each do |ie|
-      if ie["event"].include?(event)
-        result << ie["filename"]
-      end
+      result << ie["filename"] if ie["event"].include?(event)
     end
     result
   end
