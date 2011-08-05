@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110727185512
+# Schema version: 20110805151543
 #
 # Table name: participants
 #
@@ -23,6 +23,7 @@
 #  transaction_type         :string(36)
 #  created_at               :datetime
 #  updated_at               :datetime
+#  being_processed          :boolean
 #
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child. 

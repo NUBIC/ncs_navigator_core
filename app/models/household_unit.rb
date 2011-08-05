@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110727185512
+# Schema version: 20110805151543
 #
 # Table name: household_units
 #
@@ -19,6 +19,7 @@
 #  hh_id                        :binary          not null
 #  created_at                   :datetime
 #  updated_at                   :datetime
+#  being_processed              :boolean
 #
 
 # The definition of a household is really based on the individual person's definition of a family.

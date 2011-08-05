@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110727185512
+# Schema version: 20110805151543
 #
 # Table name: dwelling_units
 #
@@ -17,6 +17,7 @@
 #  listing_unit_id    :integer
 #  created_at         :datetime
 #  updated_at         :datetime
+#  being_processed    :boolean
 #
 
 # DU is a specific street address within a sampling unit. 
