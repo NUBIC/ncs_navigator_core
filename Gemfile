@@ -16,7 +16,7 @@ gem 'ncs_mdes', '0.4.0'
 gem "surveyor", :git => "git://github.com/NUBIC/surveyor.git", :branch => "rails3"
 
 gem 'uuid'
-gem 'will_paginate', '~> 3.0.beta'
+gem 'will_paginate', '~> 3.0'
 
 group :development do
   gem 'watchr'
