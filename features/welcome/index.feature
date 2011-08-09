@@ -23,7 +23,7 @@ Feature: Accessing the application
     And I should see "Household Enumeration"
     
   Scenario: Accessing an instance of the application with participants
-    Given the following participants:
+    Given the following pregnant participants:
       | first_name | last_name |
       | Judy       | Garland   |
       | Ma         | Rainey    |

@@ -48,10 +48,32 @@ class Participant < ActiveRecord::Base
   
   validates_presence_of :person
   
-  delegate :age, :first_name, :last_name, :upcoming_events, :to => :person
+  delegate :age, :first_name, :last_name, :upcoming_events, :contact_links, :to => :person
   
   def ppg_status
     ppg_status_histories.blank? ? ppg_details.first.ppg_first : ppg_status_histories.first.ppg_status
   end
+  
+  def protocol_status
+    ppg_details.first.ppg_pid_status
+  end
+  
+  def next_scheduled_event
+    ScheduledEvent.new(:date => last_event_date + interval, :event => upcoming_events.first)
+  end
+  
+  private
+  
+    def last_event_date
+      contact_links.blank? ? self.created_at.to_date : contact_links.first.created_at.to_date
+    end
+  
+    def interval
+      in_lo_intensity_protocol? ? 6.months : 3.months
+    end
+    
+    def in_lo_intensity_protocol?
+      !ppg_details.blank? && protocol_status.local_code == 3
+    end
   
 end
