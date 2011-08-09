@@ -16,9 +16,11 @@ When /^I focus on the autocomplete input element$/ do
   page.driver.browser.execute_script "$('.ui-autocomplete-input').val('');"
 end
 
-Given /^the following participants:$/ do |table|
+Given /^the following pregnant participants:$/ do |table|
   table.hashes.each do |hash|
-    Factory(:participant, :person => Factory(:person, hash))
+    status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+    participant = Factory(:participant, :person => Factory(:person, hash))
+    Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
   end
 end
 

@@ -4,4 +4,8 @@
   %h3 
     = "Instruments for #{event}"
   - InstrumentEventMap.instruments_for(event).each do |ins|
-    = link_to "#{ins}", start_instrument_person_path(@person, :survey_access_code => Survey.to_normalized_string(ins))
+    - if Survey.where(:title => ins).count > 0
+      = link_to "#{ins}", start_instrument_person_path(@person, :survey_access_code => Survey.to_normalized_string(ins))
+    - else
+      = "#{ins}"
+    %br

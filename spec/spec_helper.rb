@@ -41,15 +41,3 @@ def create_missing_in_error_ncs_codes(cls)
     end
   end
 end
-
-def load_event_types
-  Factory(:ncs_code, :local_code => '-5', :list_name => 'EVENT_TYPE_CL1', :display_text => 'Other')
-  Factory(:ncs_code, :local_code => '-4', :list_name => 'EVENT_TYPE_CL1', :display_text => 'Missing in Error')
-  Factory(:ncs_code, :local_code => '1',  :list_name => 'EVENT_TYPE_CL1', :display_text => 'Household Enumeration')
-  Factory(:ncs_code, :local_code => '2',  :list_name => 'EVENT_TYPE_CL1', :display_text => 'Two Tier Enumeration')
-  # 3 4 
-  Factory(:ncs_code, :local_code => '5',  :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Screening - High Intensity Group')
-  Factory(:ncs_code, :local_code => '6',  :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Screening - Low Intensity Group')
-
-  Factory(:ncs_code, :local_code => '13',  :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Visit 1')
-end

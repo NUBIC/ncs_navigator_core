@@ -67,6 +67,8 @@ class Person < ActiveRecord::Base
   
   # surveyor
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
+  has_one :participant
+  has_many :contact_links, :order => "created_at DESC"
   
   validates_presence_of :first_name
   validates_presence_of :last_name
@@ -88,19 +90,25 @@ class Person < ActiveRecord::Base
   alias :name :to_s
   alias :full_name :to_s
   
-  # A Person is a Participant if there is
+  # A Person is a Participant if there is an association on the participant table
   def participant?
-    Participant.where(:person_id => self.id).count > 0
+    !participant.nil?
   end
   
   def upcoming_events
     events = []
-    InstrumentEventMap.events.each do |event|
-      if participant? 
-        events << event if event == "Pregnancy Visit 1"
-      elsif event == "Pregnancy Screener"
-        events << event
+    if participant? 
+      # TODO: move logic to participant
+      case participant.ppg_status.local_code
+      when 1
+        events << "Pregnancy Visit 1"
+      when 2
+        events << "Pre-Pregnancy"
+      when 3,4
+        events << "Pregnancy Probability"
       end
+    else
+      events << "Pregnancy Screener"
     end
     events
   end
