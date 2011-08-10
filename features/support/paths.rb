@@ -31,6 +31,12 @@ module NavigationHelpers
       
     when /^the events_person page$/
       events_person_path(Participant.first.person_id)
+      
+    when /^the new_person_contact page$/
+      new_person_contact_path(Participant.first.person_id)
+      
+    when /^the edit_person_contact page$/
+      edit_person_contact_path(Participant.first.person_id, Contact.last)
 
     when /^the new participant page for that person$/
       new_participant_path(:person_id => Person.last.id)
@@ -40,6 +46,9 @@ module NavigationHelpers
 
     when /^the edit participant page$/
       edit_participant_path(Participant.last)
+      
+    when /^the edit_arm_participant page$/
+      edit_arm_participant_path(Participant.last)
 
     # the following are examples using path_to_pickle
 

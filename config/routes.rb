@@ -6,8 +6,14 @@ NcsNavigatorCore::Application.routes.draw do
       get :events
       get :start_instrument
     end
+    resources :contacts
   end
-  resources :participants
+  resources :participants do
+    member do
+      get :edit_arm
+      put :update_arm
+    end
+  end
   
   root :to => "welcome#index"
 end

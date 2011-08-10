@@ -35,6 +35,11 @@ describe Participant do
     par.should_not be_nil
   end
   
+  it "is in low intensity arm by default" do
+    participant = Factory(:participant)
+    participant.should be_in_low_intensity_arm
+  end
+  
   it { should belong_to(:psu) }
   it { should belong_to(:person) }
   it { should belong_to(:p_type) }
@@ -131,43 +136,24 @@ describe Participant do
     end
     
   end
-
-  context "hi/lo recruitment strategy" do
-    
-    it "should know if in the high intensity protocol" do
-      participant = Factory(:participant)
-      hi = Factory(:ncs_code, :list_name => "PARTICIPANT_STATUS_CL1", :display_text => "Enrolled in regular intensity protocol", :local_code => 2)
-      Factory(:ppg_detail, :participant => participant, :ppg_pid_status => hi)
-      participant.protocol_status.should == hi
-    end
-    
-    it "should know if in the low intensity protocol" do
-      participant = Factory(:participant)
-      lo = Factory(:ncs_code, :list_name => "PARTICIPANT_STATUS_CL1", :display_text => "Enrolled in low intensity protocol", :local_code => 3)
-      Factory(:ppg_detail, :participant => participant, :ppg_pid_status => lo)
-      participant.protocol_status.should == lo
-    end
-    
-  end
-
   
-  context "determining schedule" do
+  context "when determining schedule" do
     
-    describe "a participant who has had a recent pregnancy loss - PPG 3" do
+    describe "a participant who has had a recent pregnancy loss (PPG 3)" do
 
       before(:each) do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
-        @participant = Factory(:participant)
+        @participant = Factory(:participant, :high_intensity => true)
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
       end
       
-      it "knows the upcoming applicable events for a new participant" do
+      it "knows the upcoming applicable events when a new record" do
         @participant.ppg_status.local_code.should == 3
         @participant.next_scheduled_event.event.should == "Pregnancy Probability"
         @participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
       
-      it "knows the upcoming applicable events for a participant who has had a followup already" do
+      it "knows the upcoming applicable events who has had a followup already" do
         event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
         event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
@@ -178,7 +164,7 @@ describe Participant do
         @participant.next_scheduled_event.date.should == 1.month.from_now.to_date
       end
       
-      it "knows the upcoming applicable events for a participant who has had several followups already" do
+      it "knows the upcoming applicable events who has had several followups already" do
         event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
         event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
@@ -196,8 +182,7 @@ describe Participant do
       context "in the low intensity protocol" do
         
         it "knows the upcoming applicable events for a new participant" do
-          lo = Factory(:ncs_code, :list_name => "PARTICIPANT_STATUS_CL1", :display_text => "Enrolled in low intensity protocol", :local_code => 3)
-          Factory(:ppg_detail, :participant => @participant, :ppg_pid_status => lo)
+          @participant.high_intensity = false
           @participant.next_scheduled_event.event.should == "Pregnancy Probability"
           @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end

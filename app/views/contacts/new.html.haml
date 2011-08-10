@@ -1,0 +1,57 @@
+%h3
+  = @person
+
+%h3
+  = @event.event_type.display_text
+  
+.page_section
+  = form_for([@person, @contact]) do |f| 
+  
+    = hidden_field_tag :event_id, @event.id
+  
+    = render "shared/custom_error_messages", :object => f.object
+    
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "Contact Type", :other => :contact_type_other }
+    
+    %p
+      = f.label :contact_date_date, "Contact Date"
+      %br
+      = f.text_field :contact_date_date, :class => "datepicker"
+    
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_language_code, :label_text => "Language", :other => :contact_language_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }    
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private" }
+    
+    %p
+      = f.label :contact_private_detail, "Private Detail"
+      %br
+      = f.text_field :contact_private_detail
+    
+      %p
+        = f.label :contact_distance, "Distance (format xx.x)"
+        %br
+        = f.text_field :contact_distance
+    
+    = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Who was Contacted", :other => :who_contacted_other }
+
+    %p
+      = f.label :contact_comment, "Comment"
+      %br
+      = f.text_area :contact_comment
+      
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+    
+:javascript
+  // For the 'other' field
+  // Check on pageload
+  $(document).ready(function() {
+    $(".datepicker").datepicker();
+
+    wire_up_select_other("#contact_contact_type_code","#contact_contact_type_other");
+    wire_up_select_other("#contact_contact_language_code","#contact_contact_language_other");
+    wire_up_select_other("#contact_contact_interpret_code","#contact_contact_interpret_other");
+    wire_up_select_other("#contact_contact_location_code","#contact_contact_location_other");
+    wire_up_select_other("#contact_who_contacted_code","#contact_who_contacted_other");
+  });
