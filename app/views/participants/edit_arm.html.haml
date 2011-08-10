@@ -1,0 +1,15 @@
+.page_section
+
+  %h3
+    = @participant.person
+
+  = form_for(@participant, :url => update_arm_participant_path(@participant)) do |f| 
+    = render "shared/full_error_messages", :object => f.object
+    
+    = f.hidden_field :high_intensity
+    
+    %p
+      = @message
+    
+    %p
+      = f.submit "Switch"

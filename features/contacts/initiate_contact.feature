@@ -1,0 +1,32 @@
+Feature: Initiating a contact
+  Since all contacts either scheduled or unscheduled must be recorded in the Contact table
+  In order to ensure a contact record is created
+  As a user
+  I want to initiate a contact for a person and an event
+  
+  Scenario: Initiating contact
+  Given the following pregnant participants:
+    | first_name | last_name |
+    | Bessie     | Smith     |
+  And valid ncs codes 
+  Then 1 people should exist
+  When I go to the home page
+  Then I should see "NCS Navigator"
+  And I should see "Pregnancy Visit 1"
+  And I should see "Bessie Smith"
+  When I follow "Initiate Contact"
+  Then I should be on the new_person_contact page
+  And I should see "Bessie Smith"
+  And I should see "Pregnancy Visit 1"
+  When I select "In-person" from "Contact Type"
+  And I fill in "Contact Date" with "01/01/2001"
+  And I select "Legitimate Skip" from "Interpret"
+  And I select "Person/participant home" from "Location"
+  And I select "Yes" from "Private"
+  And I select "NCS Participant" from "Who was Contacted"
+  And I press "Submit"
+  Then I should see "Contact was successfully created."
+  And I should be on the edit_person_contact page
+  And I should see "Bessie Smith"
+  And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
+

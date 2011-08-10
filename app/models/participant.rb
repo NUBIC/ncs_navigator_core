@@ -62,18 +62,16 @@ class Participant < ActiveRecord::Base
     ScheduledEvent.new(:date => last_event_date + interval, :event => upcoming_events.first)
   end
   
-  private
+  def last_event_date
+    contact_links.blank? ? self.created_at.to_date : contact_links.first.created_at.to_date
+  end
+
+  def interval
+    in_low_intensity_arm? ? 6.months : 3.months
+  end
   
-    def last_event_date
-      contact_links.blank? ? self.created_at.to_date : contact_links.first.created_at.to_date
-    end
-  
-    def interval
-      in_lo_intensity_protocol? ? 6.months : 3.months
-    end
-    
-    def in_lo_intensity_protocol?
-      !ppg_details.blank? && protocol_status.local_code == 3
-    end
+  def in_low_intensity_arm?
+    !high_intensity
+  end
   
 end

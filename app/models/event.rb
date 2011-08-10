@@ -40,4 +40,17 @@ class Event < ActiveRecord::Base
   belongs_to :event_breakoff,             :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :event_breakoff_code,             :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :event_incentive_type,       :conditions => "list_name = 'INCENTIVE_TYPE_CL1'",      :foreign_key => :event_incentive_type_code,       :class_name => 'NcsCode', :primary_key => :local_code
 
+
+  def self.event_types(events)
+    result = []
+    events.each do |e| 
+      if e == "Pregnancy Visit 1"
+        result << "Pregnancy Visit  1"
+      else
+        result << e
+      end
+    end
+    result
+  end
+
 end

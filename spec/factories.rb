@@ -116,6 +116,7 @@ Factory.define :participant do |par|
   par.pid_age_eligibility       { |a| a.association(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1) }
   par.pid_comment               nil
   par.transaction_type          nil
+  par.high_intensity            nil
 end
 
 Factory.define :participant_person_link do |link|
