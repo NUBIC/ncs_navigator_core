@@ -14,6 +14,9 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_arm
     end
   end
+  resources :contact_links
   
   root :to => "welcome#index"
+  
+  match 'surveyor/finalize_instrument/:response_set_id' => 'surveyor#finalize_instrument', :via => [:get]
 end

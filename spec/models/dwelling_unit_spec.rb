@@ -36,6 +36,9 @@ describe DwellingUnit do
   it { should belong_to(:du_ineligible) }
   it { should belong_to(:du_access) }
   
+  it { should have_many(:dwelling_household_links) }
+  it { should have_many(:household_units).through(:dwelling_household_links) }
+  
   context "determining next dwelling unit to process" do
   
     it "should find all dwelling units not linked to a household" do

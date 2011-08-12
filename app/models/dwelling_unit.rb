@@ -35,7 +35,7 @@ class DwellingUnit < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :du_id
 
   has_many :dwelling_household_links
-  has_many :houshold_units, :through => :dwelling_household_links
+  has_many :household_units, :through => :dwelling_household_links
   has_one :address
   
   accepts_nested_attributes_for :address, :allow_destroy => true

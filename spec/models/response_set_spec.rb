@@ -18,5 +18,6 @@ require 'spec_helper'
 describe ResponseSet do
   
   it { should belong_to(:person) }
+  it { should belong_to(:contact_link) }
   
 end
