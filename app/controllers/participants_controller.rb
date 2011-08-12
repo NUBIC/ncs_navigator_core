@@ -12,6 +12,12 @@ class ParticipantsController < ApplicationController
     end
   end
   
+  def in_ppg_group
+    params[:ppg_group] ||= 1
+    @ppg_group = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => params[:ppg_group]).first
+    @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
+  end
+  
   # GET /participants/new
   # GET /participants/new.json
   def new

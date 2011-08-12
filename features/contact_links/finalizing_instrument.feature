@@ -7,10 +7,10 @@ Feature: Finalizing an instrument
   
   @wip
   Scenario: Finalizing an instrument 
-  Given the following pregnant participants:
+  Given valid ncs codes
+  And the following pregnant participants:
     | first_name | last_name |
-    | Bessie     | Smith     |
-  And valid ncs codes 
+    | Bessie     | Smith     | 
   And a pregnancy visit 1 survey exists
   When I go to the home page
   When I follow "Initiate Contact"

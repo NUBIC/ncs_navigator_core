@@ -118,6 +118,12 @@ form {
   border-bottom: 1px solid #ccc;
   @include span(24);
   @include container;
+  
+  #app_name {
+    a {
+      text-decoration: none;
+    }
+  }
 }
 
 #title {

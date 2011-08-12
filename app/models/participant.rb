@@ -50,6 +50,10 @@ class Participant < ActiveRecord::Base
   
   delegate :age, :first_name, :last_name, :upcoming_events, :contact_links, :to => :person
   
+  def self.in_ppg_group(local_code)
+    Participant.joins(:ppg_status_histories).where("ppg_status_histories.ppg_status_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
+  end
+  
   def ppg_status
     ppg_status_histories.blank? ? ppg_details.first.ppg_first : ppg_status_histories.first.ppg_status
   end

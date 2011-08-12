@@ -9,6 +9,9 @@ NcsNavigatorCore::Application.routes.draw do
     resources :contacts
   end
   resources :participants do
+    collection do
+      get :in_ppg_group
+    end
     member do
       get :edit_arm
       put :update_arm

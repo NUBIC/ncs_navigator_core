@@ -107,6 +107,9 @@ describe Participant do
     let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
     let(:status2)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
     let(:status2a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+
+    let(:status3)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
+    let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
     
     it "determines the ppg from the ppg_details if there is no ppg_status_history record" do
       Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
@@ -133,6 +136,37 @@ describe Participant do
       participant.ppg_details.should_not be_empty
       participant.ppg_status_histories.should_not be_empty
       participant.ppg_status.should == status1
+    end
+    
+    it "finds participants in that group" do
+      
+      3.times do |x|
+        pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG1")
+        part = Factory(:participant, :person_id => pers.id)
+        Factory(:ppg_status_history, :participant => part, :ppg_status => status1)
+      end
+      
+      5.times do |x|
+        pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG2")
+        part = Factory(:participant, :person_id => pers.id)
+        Factory(:ppg_status_history, :participant => part, :ppg_status => status2)
+      end
+      
+      1.times do |x|
+        pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG3")
+        part = Factory(:participant, :person_id => pers.id)
+        Factory(:ppg_status_history, :participant => part, :ppg_status => status3)
+      end
+      
+      6.times do |x|
+        pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG4")
+        part = Factory(:participant, :person_id => pers.id)
+        Factory(:ppg_status_history, :participant => part, :ppg_status => status4)
+      end
+      Participant.in_ppg_group(1).size.should == 3
+      Participant.in_ppg_group(2).size.should == 5
+      Participant.in_ppg_group(3).size.should == 1
+      Participant.in_ppg_group(4).size.should == 6
     end
     
   end

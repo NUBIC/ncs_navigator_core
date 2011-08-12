@@ -1,17 +1,28 @@
-%h1
-  NCS Navigator
-  
 %h2
-  Upcoming Activities
+  Welcome to the National Children's Study Navigator.
     
 #participants
   %h3
     Participants
-  - if @participants.blank?
-    No participants were found.
-  - else
-    - @participants.each do |p|
-      .participant
-        = p.person.to_s
-        = p.upcoming_events.to_sentence
-        = link_to "Initiate Contact", new_person_contact_path(p.person)
+  .column-container
+    .column-1
+      .ppg
+        = Participant.in_ppg_group(1).size
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first.display_text, in_ppg_group_participants_path(:ppg_group => 1)
+      .ppg
+        = Participant.in_ppg_group(2).size
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first.display_text, in_ppg_group_participants_path(:ppg_group => 2)
+    .column-2
+      .ppg
+        = Participant.in_ppg_group(3).size
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 3).first.display_text, in_ppg_group_participants_path(:ppg_group => 3)
+      .ppg
+        = Participant.in_ppg_group(5).size
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 4).first.display_text, in_ppg_group_participants_path(:ppg_group => 4)
+    .column-3
+      .ppg
+        = Participant.in_ppg_group(5).size
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 5).first.display_text, in_ppg_group_participants_path(:ppg_group => 5)
+      .ppg
+        = Participant.in_ppg_group(6).size
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 6).first.display_text, in_ppg_group_participants_path(:ppg_group => 6)
