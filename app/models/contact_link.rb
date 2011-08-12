@@ -33,7 +33,14 @@ class ContactLink < ActiveRecord::Base
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
 
+  has_one :response_set
+
   validates_presence_of :contact
   validates_presence_of :staff_id
+  
+  accepts_nested_attributes_for :contact,    :allow_destroy => true
+  accepts_nested_attributes_for :person,     :allow_destroy => true
+  accepts_nested_attributes_for :event,      :allow_destroy => true
+  accepts_nested_attributes_for :instrument, :allow_destroy => true
   
 end

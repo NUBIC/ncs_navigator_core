@@ -44,8 +44,11 @@ class Event < ActiveRecord::Base
   def self.event_types(events)
     result = []
     events.each do |e| 
-      if e == "Pregnancy Visit 1"
+      case e
+      when "Pregnancy Visit 1"
         result << "Pregnancy Visit  1"
+      when "Pre-Pregnancy"
+        result << "Pre-Pregnancy Visit"
       else
         result << e
       end

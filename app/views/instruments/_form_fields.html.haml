@@ -1,0 +1,54 @@
+= render "shared/ncs_code_select", { :f => f, :code => :instrument_type_code, :label_text => "Instrument Type", :other => :instrument_type_other }
+
+%p
+  = f.label :instrument_version, "Instrument Version"
+  %br
+  = f.text_field :instrument_version
+
+%p
+  = f.label :instrument_repeat_key, "Instrument Repeat Key"
+  %br
+  = f.text_field :instrument_repeat_key
+
+%p
+  = f.label :instrument_start_date, "Instrument Start Date"
+  %br
+  = f.text_field :instrument_start_date
+  
+%p
+  = f.label :instrument_start_time, "Instrument Start Time"
+  %br
+  = f.text_field :instrument_start_time
+  
+%p
+  = f.label :instrument_end_date, "Instrument End Date"
+  %br
+  = f.text_field :instrument_end_date
+
+%p
+  = f.label :instrument_end_time, "Instrument End Time"
+  %br
+  = f.text_field :instrument_end_time
+
+= render "shared/ncs_code_select", { :f => f, :code => :instrument_breakoff_code, :label_text => "Breakoff Code" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :instrument_status_code, :label_text => "Instrument Status" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :instrument_mode_code, :label_text => "Instrument Mode", :other => :instrument_mode_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :instrument_method_code, :label_text => "Instrument Method" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :supervisor_review_code, :label_text => "Supervisor Review" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :data_problem_code, :label_text => "Data Problem" }
+
+%p
+  = f.label :instrument_comment, "Comment"
+  %br
+  = f.text_area :instrument_comment
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#instrument_instrument_type_code","#instrument_instrument_type_other");
+    wire_up_select_other("#instrument_instrument_mode_code","#instrument_instrument_mode_other");
+  });

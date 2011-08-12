@@ -1,0 +1,34 @@
+.page_section
+  = form_for(@contact_link) do |f| 
+    = render "shared/full_error_messages", :object => f.object
+    
+    = f.hidden_field :person_id
+    
+    .contact_link_section
+      %h3
+        Contact
+      = fields_for @contact_link.contact do |contact|
+        = render "contacts/form_fields", { :f => contact }
+    
+    .contact_link_section
+      %h3
+        Event    
+      = fields_for @contact_link.event do |event|
+        = render "events/form_fields", { :f => event }
+        
+    
+    .contact_link_section
+      %h3
+        Instrument
+      = fields_for @contact_link.instrument do |instrument|
+        = render "instruments/form_fields", { :f => instrument }
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+      
+:javascript
+  $(document).ready(function() {
+    $(".datepicker").datepicker();
+
+    wire_up_select_other("#event_event_type_code","#event_event_type_other");
+  });

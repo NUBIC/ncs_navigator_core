@@ -2056,6 +2056,17 @@ body.ncs #footer .app_version {
   overflow-x: hidden;
 }
 
+/* line 2, ../../../app/stylesheets/partials/_contact_links.scss */
+.contact_link_section h3 {
+  line-height: 1.25em;
+  margin-bottom: 0.2em;
+  border-bottom: 1px solid #cccccc;
+}
+/* line 7, ../../../app/stylesheets/partials/_contact_links.scss */
+.contact_link_section p {
+  padding: 0 1em;
+}
+
 /* line 1, ../../../app/stylesheets/partials/_dwelling_unit.scss */
 #dwelling_unit_address_attributes_zip {
   width: 4em;

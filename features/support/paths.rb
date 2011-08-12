@@ -50,6 +50,9 @@ module NavigationHelpers
     when /^the edit_arm_participant page$/
       edit_arm_participant_path(Participant.last)
 
+    when /^the edit_contact_link page$/
+      edit_contact_link_path(ContactLink.last)
+
     # the following are examples using path_to_pickle
 
     when /^#{capture_model}(?:'s)? page$/                           # eg. the forum's page
