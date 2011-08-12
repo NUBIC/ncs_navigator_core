@@ -1,0 +1,14 @@
+- title "Participants"
+
+%h3
+  Participants in 
+  = @ppg_group
+
+- if @participants.blank?
+  No participants were found.
+- else
+  - @participants.each do |p|
+    .participant
+      = p.person.to_s
+      = p.upcoming_events.to_sentence
+      = link_to "Initiate Contact", new_person_contact_path(p.person)

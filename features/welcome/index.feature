@@ -5,11 +5,11 @@ Feature: Accessing the application
   I want to view them when I access the application
   
   Scenario: Accessing a new instance of the application
+    Given valid ncs codes
     When I go to the home page
     Then I should see "NCS Navigator"
-    And I should see "Upcoming Activities"
     And I should see "Participants"
-    And I should see "No participants were found."
+    And I should see "0 PPG Group 1: Pregnant and Eligible "
     # And I should see "Dwellings"
     # And I should see "No dwellings were found."
     # And I should see "People"
@@ -23,16 +23,18 @@ Feature: Accessing the application
   #   And I should see "Household Enumeration"
     
   Scenario: Accessing an instance of the application with participants
-    Given the following pregnant participants:
+    Given valid ncs codes 
+    And the following pregnant participants:
       | first_name | last_name |
       | Judy       | Garland   |
       | Ma         | Rainey    |
-      | Bessie     | Smith     |
-    And valid ncs codes 
+      | Bessie     | Smith     | 
     Then 3 people should exist
     When I go to the home page
     Then I should see "NCS Navigator"
-    And I should see "Pregnancy Visit 1"
+    And I should see "3 PPG Group 1: Pregnant and Eligible"
+    When I follow "PPG Group 1: Pregnant and Eligible"
+    Then I should see "Pregnancy Visit 1"
     And I should see "Judy Garland"
     When I follow "Initiate Contact"
     Then I should be on the new_person_contact page

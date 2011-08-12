@@ -30,6 +30,13 @@ Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "CONTACT_LOCATION_CL1", :display_text => "Person/participant home", :local_code => 1)
   Factory(:ncs_code, :list_name => "CONTACTED_PERSON_CL1", :display_text => "NCS Participant", :local_code => 1)
   
+  Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+  Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+  Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
+  Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
+  Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5: Ineligible", :local_code => 5)
+  Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 6: Withdrawn", :local_code => 6)
+  
   create_missing_in_error_ncs_codes(Person)
   create_missing_in_error_ncs_codes(HouseholdUnit)
   create_missing_in_error_ncs_codes(DwellingUnit)
@@ -38,6 +45,7 @@ Given /^valid ncs codes$/ do
   create_missing_in_error_ncs_codes(Participant)
   create_missing_in_error_ncs_codes(Contact)
   create_missing_in_error_ncs_codes(Event)
+  create_missing_in_error_ncs_codes(PpgStatusHistory)
 end
 
 

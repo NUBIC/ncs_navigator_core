@@ -18,7 +18,7 @@ end
 
 Given /^the following pregnant participants:$/ do |table|
   table.hashes.each do |hash|
-    status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+    status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first
     participant = Factory(:participant, :person => Factory(:person, hash))
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
   end

@@ -5,14 +5,16 @@ Feature: Initiating a contact
   I want to initiate a contact for a person and an event
   
   Scenario: Initiating contact
-  Given the following pregnant participants:
+  Given valid ncs codes 
+  And the following pregnant participants:
     | first_name | last_name |
     | Bessie     | Smith     |
-  And valid ncs codes 
   Then 1 people should exist
   When I go to the home page
   Then I should see "NCS Navigator"
-  And I should see "Pregnancy Visit 1"
+  And I should see "1 PPG Group 1: Pregnant and Eligible"
+  When I follow "PPG Group 1: Pregnant and Eligible"
+  Then I should see "Pregnancy Visit 1"
   And I should see "Bessie Smith"
   When I follow "Initiate Contact"
   Then I should be on the new_person_contact page

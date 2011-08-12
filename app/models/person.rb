@@ -115,12 +115,8 @@ class Person < ActiveRecord::Base
   
   def next_survey
     event = upcoming_events.first
-    if event 
-      instrument = InstrumentEventMap.instruments_for(event).first
-      if instrument
-        return Survey.find_by_access_code(Survey.to_normalized_string(instrument))
-      end
-    end
+    instrument = InstrumentEventMap.instruments_for(event).first if event 
+    return Survey.find_by_access_code(Survey.to_normalized_string(instrument)) if instrument
   end
   
   def start_instrument(survey)

@@ -1,0 +1,26 @@
+.column-container {
+  @include column(24, true);
+
+  .column-1 {
+    @include column(7);
+    @include colborder();
+    margin-top: 1em;
+  }
+
+  .column-2 {
+    @include column(7);
+    @include colborder();
+    margin-top: 1em;
+  }
+
+  .column-3 {
+    @include column(8, true);
+    margin-top: 1em;
+  }
+
+  .buttons {
+    @include column(23, true);
+    @include prepend(1);
+    margin-bottom: 1em;
+  }
+}
