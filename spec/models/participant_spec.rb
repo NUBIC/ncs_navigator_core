@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110805151543
+# Schema version: 20110811161140
 #
 # Table name: participants
 #
@@ -24,6 +24,7 @@
 #  created_at               :datetime
 #  updated_at               :datetime
 #  being_processed          :boolean
+#  high_intensity           :boolean
 #
 
 require 'spec_helper'
