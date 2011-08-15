@@ -114,7 +114,14 @@ class Person < ActiveRecord::Base
   def start_instrument(survey)
     response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
     # TODO: determine way to know about initializing data for each survey
-    question = Question.where(:data_export_identifier => "name").first
+    question = nil
+    survey.sections_with_questions.each do |section|
+      section.questions.each do |q|
+        question = q if q.data_export_identifier == "name"
+        break unless question.nil?
+      end
+      break unless question.nil?
+    end
     if question
       answer = question.answers.first
       Response.create(:response_set => response_set, :question => question, :answer => answer, :string_value => name)

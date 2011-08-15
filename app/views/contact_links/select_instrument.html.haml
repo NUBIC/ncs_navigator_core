@@ -1,8 +1,5 @@
 %h3
   = @person
-
-%h3
-  = @event.event_type.display_text
   
 - @person.upcoming_events.each do |event|
   %h3 

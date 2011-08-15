@@ -6,10 +6,14 @@ class ContactLinksController < ApplicationController
     
     @response_set = @contact_link.response_set
     
-    @person       = @contact_link.person
-    @survey       = @response_set.survey if @response_set
+    if @response_set.blank?
+      redirect_to select_instrument_contact_link_path(@contact_link)
+    else
+      @person       = @contact_link.person
+      @survey       = @response_set.survey 
     
-    @contact_link.instrument ||= Instrument.new
+      @contact_link.instrument = Instrument.create(:psu_code => @psu_code) if @contact_link.instrument.blank?
+    end
   end
 
   # PUT /contact_links/1
@@ -18,6 +22,7 @@ class ContactLinksController < ApplicationController
     @contact_link = ContactLink.find(params[:id])
 
     respond_to do |format|
+
       if @contact_link.update_attributes(params[:contact_link]) && 
          @contact_link.instrument.update_attributes(params[:instrument]) &&
          @contact_link.event.update_attributes(params[:event]) &&
