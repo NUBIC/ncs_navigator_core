@@ -1,1 +1,53 @@
 = render "shared/ncs_code_select", { :f => f, :code => :event_type_code, :label_text => "Event Type", :other => :event_type_other }
+
+%p
+  = f.label :event_repeat_key, "Repeat Key"
+  %br
+  = f.text_field :event_repeat_key
+  
+%p
+  = f.label :event_disposition, "Disposition"
+  %br
+  = f.text_field :event_disposition
+  
+= render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category" }
+
+%p
+  = f.label :event_start_date, "Event Start Date"
+  %br
+  = f.text_field :event_start_date, :class => "datepicker"
+
+%p
+  = f.label :event_start_time, "Event Start Time"
+  %br
+  = f.text_field :event_start_time
+
+%p
+  = f.label :event_end_date, "Event End Date"
+  %br
+  = f.text_field :event_end_date, :class => "datepicker"
+
+%p
+  = f.label :event_end_time, "Event End Time"
+  %br
+  = f.text_field :event_end_time
+
+= render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type" }
+
+%p
+  = f.label :event_incentive_cash, "Incentive (Cash)"
+  %br
+  = f.text_field :event_incentive_cash
+
+%p
+  = f.label :event_incentive_noncash, "Incentive (Non-Cash)"
+  %br
+  = f.text_field :event_incentive_noncash
+
+%p
+  = f.label :event_comment, "Comment"
+  %br
+  = f.text_area :event_comment
+

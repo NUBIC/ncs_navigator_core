@@ -40,6 +40,21 @@ class Event < ActiveRecord::Base
   belongs_to :event_breakoff,             :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :event_breakoff_code,             :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :event_incentive_type,       :conditions => "list_name = 'INCENTIVE_TYPE_CL1'",      :foreign_key => :event_incentive_type_code,       :class_name => 'NcsCode', :primary_key => :local_code
 
+  def to_s
+    event_type.display_text
+  end
+  
+  def event_start
+    result = "#{event_start_date} #{event_start_time}"
+    result = "N/A" if result.blank?
+    result
+  end
+  
+  def event_end
+    result = "#{event_end_date} #{event_end_time}"
+    result = "N/A" if result.blank?
+    result
+  end
 
   def self.event_types(events)
     result = []

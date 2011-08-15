@@ -3,3 +3,17 @@
     margin-bottom: 0;
   }
 }
+
+.participant {
+  @include rounded-corners(0.5em);
+  border: 1px solid $BORDER_GRAY;
+  padding: 0.5em;
+  background-color: white;
+  margin-bottom: 0.5em;
+  .name {
+    font-size: 1.25em;
+  }
+  .icon_link {
+    font-size: 1em;
+  }
+}

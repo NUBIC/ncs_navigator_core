@@ -66,5 +66,45 @@ describe Event do
       obj.event_incentive_type.local_code.should == -4
     end
   end
+  
+  context "human-readable attributes" do
+    it "returns the event type display text for to_s" do
+      e = Factory(:event)
+      e.to_s.should == e.event_type.display_text
+    end
+    
+    it "concatenates the start date and time for the event start" do
+      e = Factory(:event)
+      e.event_start.should == "N/A"
+      e.event_start_time = "HH:MM"
+      e.event_start_date = Date.parse('2011-01-01')
+      e.event_start.should == "2011-01-01 HH:MM"
+    end
+
+    it "concatenates the end date and time for the event end" do
+      e = Factory(:event)
+      e.event_end.should == "N/A"
+      e.event_end_date = Date.parse('2011-01-01')
+      e.event_end_time = "HH:MM"
+      e.event_end.should == "2011-01-01 HH:MM"
+    end
+  end
+  
+  context "mapping events to event types" do
+    
+    it "maps Pregnancy Visit 1" do
+      Event.event_types(["Pregnancy Visit 1"]).should == ["Pregnancy Visit  1"]
+    end
+
+    it "maps Pre-Pregnancy" do
+      Event.event_types(["Pre-Pregnancy"]).should == ["Pre-Pregnancy Visit"]
+    end
+
+    it "maps defaults" do
+      Event.event_types(["asdf"]).should == ["asdf"]
+      Event.event_types(["asdf", "qwer"]).should == ["asdf", "qwer"]
+    end
+    
+  end
 
 end
