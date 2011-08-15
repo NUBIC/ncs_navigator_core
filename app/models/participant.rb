@@ -62,10 +62,6 @@ class Participant < ActiveRecord::Base
     ppg_status_histories.blank? ? ppg_details.first.ppg_first : ppg_status_histories.first.ppg_status
   end
   
-  def protocol_status
-    ppg_details.first.ppg_pid_status
-  end
-  
   def next_scheduled_event
     ScheduledEvent.new(:date => last_event_date + interval, :event => upcoming_events.first)
   end

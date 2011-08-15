@@ -7,7 +7,7 @@ class ContactLinksController < ApplicationController
     @response_set = @contact_link.response_set
     
     @person       = @contact_link.person
-    @survey       = @response_set.survey
+    @survey       = @response_set.survey if @response_set
     
     @contact_link.instrument ||= Instrument.new
   end
@@ -29,6 +29,13 @@ class ContactLinksController < ApplicationController
         format.json { render :json => @contact_link.errors, :status => :unprocessable_entity }
       end
     end
+  end
+  
+  def select_instrument
+    @contact_link = ContactLink.find(params[:id])
+    @contact      = @contact_link.contact
+    @person       = @contact_link.person
+    @event        = @contact_link.event
   end
   
 end

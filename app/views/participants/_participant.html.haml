@@ -1,0 +1,49 @@
+.participant
+  .name
+    = participant.person.to_s
+  .upcoming
+    %span.label
+      Upcoming Events
+    %table.records
+      %tr
+        %th Select
+        %th Event
+      %tr{ :class => cycle('even_record', 'odd_record') }
+        %td
+          = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
+        %td
+          = participant.upcoming_events.to_sentence
+  .past
+    %span.label
+      Previous Contacts/Events/Instruments
+    - if participant.contact_links.blank?
+      %p
+        No previous contacts to date.
+    - else
+      %table.records
+        %tr
+          %th Select
+          %th Event
+          %th Instrument
+          %th Survey
+        - participant.contact_links.each do |link|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = link_to "Edit", edit_contact_link_path(link), :class => "edit_link icon_link"
+            %td
+              = link.event
+              %span.status
+                - if link.event.event_end == 'N/A'
+                  in process
+                - else
+                  complete
+            %td
+              = link.instrument.to_s
+            %td
+              - if link.response_set
+                = link.response_set.survey.title
+                %span.status
+                  - if link.response_set.complete?
+                    complete
+                  - else
+                    in process

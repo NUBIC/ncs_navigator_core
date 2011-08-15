@@ -5,7 +5,6 @@ Feature: Finalizing an instrument
   As a user
   I want to complete the entry of the contact link
   
-  @wip
   Scenario: Finalizing an instrument 
   Given valid ncs codes
   And the following pregnant participants:
@@ -13,10 +12,14 @@ Feature: Finalizing an instrument
     | Bessie     | Smith     | 
   And a pregnancy visit 1 survey exists
   When I go to the home page
+  Then I should see "1 PPG Group 1: Pregnant and Eligible"
+  When I follow "PPG Group 1: Pregnant and Eligible"
+  Then I should see "Pregnancy Visit 1"
+  And I should see "Bessie Smith"
   When I follow "Initiate Contact"
-  When I select "In-person" from "Contact Type"
+  And I select "In-person" from "Contact Type"
   And I press "Submit"
-  Then I should be on the edit_person_contact page
+  Then I should be on the select_instrument_contact_link page
   And I should see "Bessie Smith"
   And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
   When I follow "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"

@@ -59,12 +59,7 @@ class PeopleController < ApplicationController
       end
     end
   end
-  
-  # GET /people/1/events
-  def events
-    @person = Person.find(params[:id])
-  end
-  
+
   def start_instrument
     @person = Person.find(params[:id])
     survey = Survey.find_by_access_code(params[:survey_access_code])

@@ -2162,6 +2162,25 @@ body.ncs #footer .app_version {
   margin-bottom: 0;
 }
 
+/* line 7, ../../../app/stylesheets/partials/_participants.scss */
+.participant {
+  border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  border: 1px solid #cccccc;
+  padding: 0.5em;
+  background-color: white;
+  margin-bottom: 0.5em;
+}
+/* line 13, ../../../app/stylesheets/partials/_participants.scss */
+.participant .name {
+  font-size: 1.25em;
+}
+/* line 16, ../../../app/stylesheets/partials/_participants.scss */
+.participant .icon_link {
+  font-size: 1em;
+}
+
 /* line 2, ../../../app/stylesheets/partials/_welcome.scss */
 #arm h3 {
   margin-bottom: 0;

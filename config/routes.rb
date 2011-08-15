@@ -17,7 +17,11 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_arm
     end
   end
-  resources :contact_links
+  resources :contact_links do
+    member do
+      get :select_instrument
+    end
+  end
   
   root :to => "welcome#index"
   

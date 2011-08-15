@@ -53,6 +53,9 @@ module NavigationHelpers
     when /^the edit_contact_link page$/
       edit_contact_link_path(ContactLink.last)
 
+    when /^the select_instrument_contact_link page$/
+      select_instrument_contact_link_path(ContactLink.last)
+
     # the following are examples using path_to_pickle
 
     when /^#{capture_model}(?:'s)? page$/                           # eg. the forum's page

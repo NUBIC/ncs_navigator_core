@@ -3,13 +3,27 @@
 
 %h3
   = @event.event_type.display_text
-  
-- @person.upcoming_events.each do |event|
-  %h3 
-    = "Instruments for #{event}"
-  - InstrumentEventMap.instruments_for(event).each do |ins|
-    - if Survey.where(:title => ins).count > 0
-      = link_to "#{ins}", start_instrument_person_path(@person, :survey_access_code => Survey.to_normalized_string(ins), :contact_link_id => @contact_link.id)
-    - else
-      = "#{ins}"
-    %br
+    
+.page_section
+  = form_for([@person, @contact]) do |f| 
+    = hidden_field_tag :event_id, @event.id
+
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "contacts/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+
+:javascript
+  // For the 'other' field
+  // Check on pageload
+  $(document).ready(function() {
+    $(".datepicker").datepicker();
+
+    wire_up_select_other("#contact_contact_type_code","#contact_contact_type_other");
+    wire_up_select_other("#contact_contact_language_code","#contact_contact_language_other");
+    wire_up_select_other("#contact_contact_interpret_code","#contact_contact_interpret_other");
+    wire_up_select_other("#contact_contact_location_code","#contact_contact_location_other");
+    wire_up_select_other("#contact_who_contacted_code","#contact_who_contacted_other");
+  });
