@@ -2161,3 +2161,8 @@ body.ncs #footer .app_version {
 #participants h3 {
   margin-bottom: 0;
 }
+
+/* line 2, ../../../app/stylesheets/partials/_welcome.scss */
+#arm h3 {
+  margin-bottom: 0;
+}

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110805151543
+# Schema version: 20110811161140
 #
 # Table name: participants
 #
@@ -24,6 +24,7 @@
 #  created_at               :datetime
 #  updated_at               :datetime
 #  being_processed          :boolean
+#  high_intensity           :boolean
 #
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child. 
@@ -47,6 +48,9 @@ class Participant < ActiveRecord::Base
   has_many :ppg_status_histories, :order => "ppg_status_date DESC"
   
   validates_presence_of :person
+  
+  scope :in_low_intensity, where("high_intensity is null or high_intensity is false")
+  scope :in_high_intensity, where("high_intensity is true")
   
   delegate :age, :first_name, :last_name, :upcoming_events, :contact_links, :to => :person
   
@@ -76,6 +80,19 @@ class Participant < ActiveRecord::Base
   
   def in_low_intensity_arm?
     !high_intensity
+  end
+  
+  def upcoming_events
+    events = []
+    case ppg_status.local_code
+    when 1
+      events << "Pregnancy Visit 1"
+    when 2
+      events << "Pre-Pregnancy"
+    when 3,4
+      events << "Pregnancy Probability"
+    end
+    events
   end
   
 end

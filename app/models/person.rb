@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110805151543
+# Schema version: 20110811161140
 #
 # Table name: people
 #
@@ -98,15 +98,7 @@ class Person < ActiveRecord::Base
   def upcoming_events
     events = []
     if participant? 
-      # TODO: move logic to participant
-      case participant.ppg_status.local_code
-      when 1
-        events << "Pregnancy Visit 1"
-      when 2
-        events << "Pre-Pregnancy"
-      when 3,4
-        events << "Pregnancy Probability"
-      end
+      participant.upcoming_events.each { |e| events << e}
     else
       events << "Pregnancy Screener"
     end

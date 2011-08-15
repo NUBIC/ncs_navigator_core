@@ -26,3 +26,14 @@
       .ppg
         = Participant.in_ppg_group(6).size
         = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 6).first.display_text, in_ppg_group_participants_path(:ppg_group => 6)
+
+#arm
+  %h3
+    Switch Arm
+  .column-container
+    .column-1
+      = Participant.in_low_intensity.count
+      in Low Intensity Arm
+    .column-2
+      = Participant.in_high_intensity.count
+      in High Intensity Arm
