@@ -12,4 +12,15 @@ class InstrumentEventMap
     INSTRUMENT_EVENT_CONFIG.collect { |ie| ie["event"].split(";") }.flatten.collect { |e| e.strip }.uniq.sort
   end
   
+  def self.version(filename)
+    result = nil
+    INSTRUMENT_EVENT_CONFIG.each do |ie|
+      if ie["filename"] == filename
+        result = ie["version_number"]
+        break
+      end
+    end
+    result
+  end
+  
 end
