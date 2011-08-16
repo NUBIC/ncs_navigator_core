@@ -23,6 +23,7 @@
       %table.records
         %tr
           %th Select
+          %th Date
           %th Event
           %th Instrument
           %th Survey
@@ -30,6 +31,8 @@
           %tr{ :class => cycle('even_record', 'odd_record') }
             %td
               = link_to "Edit", edit_contact_link_path(link), :class => "edit_link icon_link"
+            %td
+              = link.contact.contact_date
             %td
               = link.event
               %span.status
