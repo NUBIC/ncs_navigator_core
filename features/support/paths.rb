@@ -11,6 +11,12 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
+    when /login/
+      '/login'
+    
+    when /logout/
+      '/logout'
+
     when /^the household units page$/
       household_units_path
 

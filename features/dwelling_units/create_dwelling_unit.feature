@@ -6,6 +6,7 @@ Feature: Creating a dwelling unit
   
   Scenario: Creating a new dwelling unit
     Given valid ncs codes
+    And an authenticated user
     And the following ncs_code records:
       | list_name                 | display_text             | local_code |
       | CONFIRM_TYPE_CL2          | Yes                      | 1          |

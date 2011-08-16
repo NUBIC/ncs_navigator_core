@@ -6,6 +6,7 @@ Feature: Creating a person record
   
   Scenario: Creating a new person
     Given valid ncs codes
+    And an authenticated user
     When I am on the people page
     Then I should see "People"
     And I should see "No people were found."
@@ -35,6 +36,7 @@ Feature: Creating a person record
 
   Scenario: Creating a new person without entering required attributes
     Given valid ncs codes
+    And an authenticated user
     When I am on the people page
     Then I should see "People"
     And I should see "No people were found."

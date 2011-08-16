@@ -6,6 +6,7 @@ Feature: Accessing the application
   
   Scenario: Accessing a new instance of the application
     Given valid ncs codes
+    And an authenticated user
     When I go to the home page
     Then I should see "NCS Navigator"
     And I should see "Participants"
@@ -23,7 +24,8 @@ Feature: Accessing the application
   #   And I should see "Household Enumeration"
     
   Scenario: Accessing an instance of the application with participants
-    Given valid ncs codes 
+    Given valid ncs codes
+    And an authenticated user
     And the following pregnant participants:
       | first_name | last_name |
       | Judy       | Garland   |

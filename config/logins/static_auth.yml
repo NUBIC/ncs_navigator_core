@@ -1,0 +1,15 @@
+--- 
+groups: 
+  NCSNavigator: 
+  - staff
+  - supervisor
+users:
+  test_user:
+    password: test_user
+    portals:
+      - NCSNavigator:
+        - staff
+    last_name: Usr
+    email: t-usr@dev.null
+    first_name: T.
+    

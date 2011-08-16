@@ -14,6 +14,31 @@ require 'shoulda'
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
+module TestLogins
+  def user_login
+    person = Factory(:person, :username => 'pfr957')
+    Aker.authority.valid_credentials?(:user, person.username, person.username)
+  end
+
+  def admin_login
+    person = Factory(:person, :username => 'pfr957')
+    Aker.authority.valid_credentials?(:user, person.username, person.username)
+  end
+  
+  def login(as)
+    controller.request.env['aker.check'] = Aker::Rack::Facade.new(Aker.configuration, as)
+  end
+end
+
+module Pers
+  class Base
+    def ensure_bcauditable
+      true
+    end
+  end
+end
+
+
 RSpec.configure do |config|
   # == Mock Framework
   #
@@ -31,6 +56,8 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+  
+  config.include TestLogins
 end
 
 def create_missing_in_error_ncs_codes(cls)

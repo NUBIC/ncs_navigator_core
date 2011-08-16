@@ -32,7 +32,7 @@ class ContactLinksController < ApplicationController
          @contact_link.event.update_attributes(params[:event]) &&
          @contact_link.contact.update_attributes(params[:contact])
         
-        #TODO: determine redirect after updating 
+        # TODO: determine redirect after updating 
         format.html { redirect_to(edit_contact_link_path(@contact_link), :notice => 'Contact was successfully updated.') }
         format.json { head :ok }
       else

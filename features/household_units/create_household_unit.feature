@@ -6,6 +6,7 @@ Feature: Creating a household unit
   
   Scenario: Creating a new household unit
     Given valid ncs codes
+    And an authenticated user
     And the following ncs_code records:
       | list_name                 | display_text             | local_code |
       | CONFIRM_TYPE_CL2          | Yes                      | 1          |
@@ -29,6 +30,7 @@ Feature: Creating a household unit
   @javascript
   Scenario: Associating a person with a household unit
     Given valid ncs codes
+    And an authenticated user
     And a person exists with first_name: "Bix", last_name: "Beiderbecke"
     And the following ncs_code records:
       | list_name                 | display_text             | local_code |
