@@ -22,6 +22,12 @@ NcsNavigatorCore::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+  
+  config.aker do
+    static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
+    authorities :cas, static
+    central '/etc/nubic/ncs/aker-local.yml'
+  end
 
   # Add values used throughout application here# cf. /config/initializers/system_configuration.rb
   require File.expand_path('../../initializers/system_configuration', __FILE__)

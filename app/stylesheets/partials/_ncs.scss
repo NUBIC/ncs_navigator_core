@@ -141,6 +141,12 @@ body.ncs {
         display: block;
       }
     }
+    
+    .logged_in_user {
+      color: #999;
+      @include column($blueprint-grid-columns);
+      text-align: right;
+    }
 
     .app_version {
       color: #999;

@@ -5,7 +5,9 @@ Feature: Editing a person
   I want to be able to select and edit a person record
   
   Scenario: Editing a new  person
-    Given a person exists
+    Given valid ncs codes
+    And an authenticated user
+    And a person exists
     Then a person should exist
     When I am on the people page
     Then I should see "People"
@@ -19,7 +21,9 @@ Feature: Editing a person
     And I should be on the people page
 
   Scenario: Editing a person without entering required attributes
-    Given a person exists
+    Given valid ncs codes
+    And an authenticated user
+    And a person exists
     Then a person should exist
     When I am on the edit person page
     And I should see "Edit Person"

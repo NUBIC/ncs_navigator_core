@@ -5,13 +5,16 @@ Feature: Creating a participant record
   I want to select a Person and make them a Participant
 
   Scenario: Creating a new participant without a reference to a person
+    Given valid ncs codes
+    And an authenticated user
     When I go to the new participant page
     Then I should be on the people page
     And I should see "Cannot create a Participant without a reference to a Person"
     
   Scenario: Creating a new participant from an existing person record
-    Given a person exists
-    And valid ncs codes
+    Given valid ncs codes
+    And an authenticated user
+    And a person exists
     When I go to the new participant page for that person
     Then I should be on the new participant page
     And I should see "New Participant"
@@ -22,8 +25,9 @@ Feature: Creating a participant record
     And I should be on the participants page
     
   Scenario: Attempting to create a new participant from a person who is already a participant
-    Given a participant exists
-    And valid ncs codes
+    Given valid ncs codes
+    And an authenticated user
+    And a participant exists
     When I go to the new participant page for that participant
     Then I should be on the edit participant page
     And I should see "Edit Participant"

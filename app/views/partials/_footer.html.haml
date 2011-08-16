@@ -15,5 +15,10 @@
 .ncs_text
   = image_tag("ncs_gcsc_redwords_sm.png")  
 
+- if current_user
+  .logged_in_user
+    = link_to "Logout", '/logout', :class => "logout_link icon_link"
+    = current_user.full_name
+  
 .app_version
   = app_version_helper

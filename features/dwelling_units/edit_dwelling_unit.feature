@@ -5,7 +5,9 @@ Feature: Editing a dwelling unit
   I want to be able to select and edit a dwelling unit record
   
   Scenario: Editing a new dwelling unit
-    Given a dwelling_unit exists
+    Given valid ncs codes
+    And an authenticated user
+    And a dwelling_unit exists
     Then a dwelling_unit should exist
     When I am on the dwelling units page
     Then I should see "Dwelling Units"

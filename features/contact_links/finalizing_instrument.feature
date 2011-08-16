@@ -7,6 +7,7 @@ Feature: Finalizing an instrument
   
   Scenario: Finalizing an instrument 
   Given valid ncs codes
+  And an authenticated user
   And the following pregnant participants:
     | first_name | last_name |
     | Bessie     | Smith     | 
