@@ -42,10 +42,12 @@ Given /^valid ncs codes$/ do
   create_missing_in_error_ncs_codes(DwellingUnit)
   create_missing_in_error_ncs_codes(Address)
   create_missing_in_error_ncs_codes(HouseholdPersonLink)
+  create_missing_in_error_ncs_codes(PpgStatusHistory)
   create_missing_in_error_ncs_codes(Participant)
+  create_missing_in_error_ncs_codes(ContactLink)
   create_missing_in_error_ncs_codes(Contact)
   create_missing_in_error_ncs_codes(Event)
-  create_missing_in_error_ncs_codes(PpgStatusHistory)
+  create_missing_in_error_ncs_codes(Instrument)
 end
 
 
