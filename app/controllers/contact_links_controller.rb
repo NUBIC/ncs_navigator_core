@@ -12,7 +12,11 @@ class ContactLinksController < ApplicationController
       @person       = @contact_link.person
       @survey       = @response_set.survey 
     
-      @contact_link.instrument = Instrument.create(:psu_code => @psu_code) if @contact_link.instrument.blank?
+      if @contact_link.instrument.blank?
+        instrument = Instrument.create(:psu_code => @psu_code, :instrument_version => InstrumentEventMap.version(@survey.title)) 
+        @contact_link.instrument = instrument
+        @contact_link.save!
+      end
     end
   end
 
@@ -26,8 +30,10 @@ class ContactLinksController < ApplicationController
       if @contact_link.update_attributes(params[:contact_link]) && 
          @contact_link.instrument.update_attributes(params[:instrument]) &&
          @contact_link.event.update_attributes(params[:event]) &&
-         @contact_link.event.update_attributes(params[:event])
-        format.html { redirect_to(contact_links_path, :notice => 'Contact was successfully updated.') }
+         @contact_link.contact.update_attributes(params[:contact])
+        
+        #TODO: determine redirect after updating 
+        format.html { redirect_to(edit_contact_link_path(@contact_link), :notice => 'Contact was successfully updated.') }
         format.json { head :ok }
       else
         format.html { render :action => "edit" }
