@@ -8,24 +8,24 @@
     .column-1
       .ppg
         = Participant.in_ppg_group(1).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first.display_text, in_ppg_group_participants_path(:ppg_group => 1)
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first.display_text, in_ppg_group_participants_path(:ppg_group => 1), :class => "show_link icon_link"
       .ppg
         = Participant.in_ppg_group(2).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first.display_text, in_ppg_group_participants_path(:ppg_group => 2)
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first.display_text, in_ppg_group_participants_path(:ppg_group => 2), :class => "show_link icon_link"
     .column-2
       .ppg
         = Participant.in_ppg_group(3).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 3).first.display_text, in_ppg_group_participants_path(:ppg_group => 3)
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 3).first.display_text, in_ppg_group_participants_path(:ppg_group => 3), :class => "show_link icon_link"
       .ppg
         = Participant.in_ppg_group(5).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 4).first.display_text, in_ppg_group_participants_path(:ppg_group => 4)
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 4).first.display_text, in_ppg_group_participants_path(:ppg_group => 4), :class => "show_link icon_link"
     .column-3
       .ppg
         = Participant.in_ppg_group(5).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 5).first.display_text, in_ppg_group_participants_path(:ppg_group => 5)
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 5).first.display_text, in_ppg_group_participants_path(:ppg_group => 5), :class => "show_link icon_link"
       .ppg
         = Participant.in_ppg_group(6).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 6).first.display_text, in_ppg_group_participants_path(:ppg_group => 6)
+        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 6).first.display_text, in_ppg_group_participants_path(:ppg_group => 6), :class => "show_link icon_link"
 
 #arm
   %h3
@@ -37,3 +37,10 @@
     .column-2
       = Participant.in_high_intensity.count
       in High Intensity Arm
+      
+#households
+  %h3
+    Households
+  .column-container
+    .column-1
+      = link_to "View all", household_units_path, :class => "list_link icon_link"

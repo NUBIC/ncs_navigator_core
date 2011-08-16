@@ -2181,7 +2181,20 @@ body.ncs #footer .app_version {
   font-size: 1em;
 }
 
-/* line 2, ../../../app/stylesheets/partials/_welcome.scss */
+/* line 1, ../../../app/stylesheets/partials/_welcome.scss */
+#arm {
+  margin: 3em 0;
+}
+/* line 3, ../../../app/stylesheets/partials/_welcome.scss */
 #arm h3 {
+  margin-bottom: 0;
+}
+
+/* line 8, ../../../app/stylesheets/partials/_welcome.scss */
+#households {
+  margin: 3em 0;
+}
+/* line 10, ../../../app/stylesheets/partials/_welcome.scss */
+#households h3 {
   margin-bottom: 0;
 }
