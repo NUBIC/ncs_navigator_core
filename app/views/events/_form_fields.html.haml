@@ -4,11 +4,8 @@
   = f.label :event_repeat_key, "Repeat Key"
   %br
   = f.text_field :event_repeat_key
-  
-%p
-  = f.label :event_disposition, "Disposition"
-  %br
-  = f.text_field :event_disposition
+
+= render "shared/disposition_code", { :f => f, :code => :event_disposition }
   
 = render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category" }
 

@@ -40,4 +40,21 @@ module ApplicationHelper
     builder.object.id.nil? ? "new_nested_record" : "#{association.to_s.singularize}_#{builder.object.id}"
   end
   
+  # Dispositions
+  
+  
+  def grouped_disposition_codes
+    grouped_options = {}
+    mdes = NcsNavigator::Mdes::Specification.new('2.0')
+    mdes.disposition_codes.map(&:event).uniq.each do |event|
+      grouped_options[event] = []
+    end
+    
+    mdes.disposition_codes.each do |code|
+      grouped_options[code.event] << [code.disposition, code.final_code]
+    end
+    
+    grouped_options_for_select(grouped_options)
+  end
+  
 end
