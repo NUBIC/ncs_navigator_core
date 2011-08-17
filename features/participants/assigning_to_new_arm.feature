@@ -12,7 +12,7 @@ Feature: Assigning to new arm
     When I go to the edit_arm_participant page
     Then I should see "Switch from Low Intensity to High Intensity"
     When I press "Switch"
-    Then I should see "Successfully added to High Intensity Arm"
+    Then I should see "Successfully added Fred Rogers to High Intensity Arm"
     And I should be on the edit participant page
 
   Scenario: Assigning to high intensity arm from low
@@ -23,5 +23,5 @@ Feature: Assigning to new arm
     When I go to the edit_arm_participant page
     Then I should see "Switch from High Intensity to Low Intensity"
     When I press "Switch"
-    Then I should see "Successfully added to Low Intensity Arm"
+    Then I should see "Successfully added Fred Rogers to Low Intensity Arm"
     And I should be on the edit participant page

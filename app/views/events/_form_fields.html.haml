@@ -48,3 +48,8 @@
   %br
   = f.text_area :event_comment
 
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#event_event_type_code","#event_event_type_other");
+  });

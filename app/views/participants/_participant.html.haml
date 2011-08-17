@@ -1,6 +1,15 @@
+
 .participant
+  .switch_arm
+    = form_for(participant, :url => update_arm_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
+      = render "shared/full_error_messages", :object => f.object
+      = f.hidden_field :high_intensity
+      %p
+        = f.submit switch_arm_message(participant)
+
   .name
     = participant.person.to_s
+    = link_to "Edit Participant Record", edit_participant_path(participant), :class => "edit_link icon_link"
   .upcoming
     %span.label
       Upcoming Events

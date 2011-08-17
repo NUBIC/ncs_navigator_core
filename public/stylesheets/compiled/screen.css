@@ -2170,12 +2170,7 @@ body.ncs #footer .app_version {
   width: 5em;
 }
 
-/* line 2, ../../../app/stylesheets/partials/_participants.scss */
-#participants h3 {
-  margin-bottom: 0;
-}
-
-/* line 7, ../../../app/stylesheets/partials/_participants.scss */
+/* line 1, ../../../app/stylesheets/partials/_participants.scss */
 .participant {
   border-radius: 0.5em;
   -moz-border-radius: 0.5em;
@@ -2185,29 +2180,33 @@ body.ncs #footer .app_version {
   background-color: white;
   margin-bottom: 0.5em;
 }
-/* line 13, ../../../app/stylesheets/partials/_participants.scss */
+/* line 7, ../../../app/stylesheets/partials/_participants.scss */
 .participant .name {
   font-size: 1.25em;
 }
-/* line 16, ../../../app/stylesheets/partials/_participants.scss */
+/* line 10, ../../../app/stylesheets/partials/_participants.scss */
 .participant .icon_link {
   font-size: 1em;
 }
 
-/* line 1, ../../../app/stylesheets/partials/_welcome.scss */
-#arm {
-  margin: 3em 0;
-}
-/* line 3, ../../../app/stylesheets/partials/_welcome.scss */
-#arm h3 {
-  margin-bottom: 0;
+/* line 16, ../../../app/stylesheets/partials/_participants.scss */
+#edit_person_link,
+#edit_participant_link {
+  text-align: right;
+  padding-right: 1em;
 }
 
-/* line 8, ../../../app/stylesheets/partials/_welcome.scss */
-#households {
-  margin: 3em 0;
+/* line 21, ../../../app/stylesheets/partials/_participants.scss */
+.switch_arm {
+  float: right;
 }
-/* line 10, ../../../app/stylesheets/partials/_welcome.scss */
-#households h3 {
+
+/* line 1, ../../../app/stylesheets/partials/_welcome.scss */
+.front_page_section {
+  margin: 0.5em 0;
+  float: left;
+}
+/* line 4, ../../../app/stylesheets/partials/_welcome.scss */
+.front_page_section h3 {
   margin-bottom: 0;
 }
