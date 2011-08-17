@@ -1,4 +1,11 @@
+%h3
+  = @person.to_s
+  
 .page_section
+  - if @person.participant?
+    #edit_participant_link
+      = link_to "Edit Participant Record", edit_participant_path(@person.participant), :class => "edit_link icon_link"
+
   = form_for(@person) do |f| 
     = render "shared/full_error_messages", :object => f.object
 

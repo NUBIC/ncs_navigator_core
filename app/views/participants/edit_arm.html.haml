@@ -9,7 +9,7 @@
     = f.hidden_field :high_intensity
     
     %p
-      = @message
+      = switch_arm_message(@participant)
     
     %p
       = f.submit "Switch"

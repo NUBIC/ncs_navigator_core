@@ -30,3 +30,10 @@
   = f.label :contact_comment, "Comment"
   %br
   = f.text_area :contact_comment
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#contact_contact_language_code","#contact_contact_language_other");
+    wire_up_select_other("#contact_contact_interpret_code","#contact_contact_interpret_other");
+    wire_up_select_other("#contact_contact_location_code","#contact_contact_location_other");
+  });

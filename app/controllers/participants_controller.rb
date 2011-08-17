@@ -58,31 +58,24 @@ class ParticipantsController < ApplicationController
   
   def edit_arm
     @participant = Participant.find(params[:id])
-    set_switch_arm_message
-    @participant.high_intensity = !@participant.high_intensity
   end
   
   def update_arm
     @participant = Participant.find(params[:id])
-    set_switch_arm_message
-
-    if @participant.update_attributes(params[:participant])
-      redirect_to(edit_participant_path(@participant), :notice => @notice)
+    
+    @notice = "Successfully added #{@participant.person} to High Intensity Arm"
+    @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
+    
+    @participant.high_intensity = !@participant.high_intensity
+    
+    if @participant.save
+      
+      url = edit_participant_path(@participant)
+      url = params[:redirect_to] unless params[:redirect_to].blank?
+      redirect_to(url, :notice => @notice)
     else
       render :action => "edit_arm"
     end
   end
-  
-  private
-  
-    def set_switch_arm_message
-      @message = "Switch from Low Intensity to High Intensity"
-      @notice = "Successfully added to High Intensity Arm"
-
-      if @participant.high_intensity
-        @message = "Switch from High Intensity to Low Intensity"
-        @notice = "Successfully added to Low Intensity Arm"
-      end
-    end
   
 end
