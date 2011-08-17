@@ -23,4 +23,15 @@ class InstrumentEventMap
     result
   end
   
+  def self.instrument_type(filename)
+    result = nil
+    INSTRUMENT_EVENT_CONFIG.each do |ie|
+      if ie["filename"] == filename
+        result = NcsCode.where(:list_name => 'INSTRUMENT_TYPE_CL1').where(:display_text => ie["name"]).first
+        break
+      end
+    end
+    result
+  end
+  
 end

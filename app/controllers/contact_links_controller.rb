@@ -13,7 +13,7 @@ class ContactLinksController < ApplicationController
       @survey       = @response_set.survey 
     
       if @contact_link.instrument.blank?
-        instrument = Instrument.create(:psu_code => @psu_code, :instrument_version => InstrumentEventMap.version(@survey.title)) 
+        instrument = create_instrument(@survey)
         @contact_link.instrument = instrument
         @contact_link.save!
       end
@@ -48,5 +48,13 @@ class ContactLinksController < ApplicationController
     @person       = @contact_link.person
     @event        = @contact_link.event
   end
+  
+  private
+  
+    def create_instrument(survey)
+      Instrument.create(:psu_code => @psu_code, 
+                        :instrument_version => InstrumentEventMap.version(survey.title),
+                        :instrument_type => InstrumentEventMap.instrument_type(survey.title))
+    end
   
 end
