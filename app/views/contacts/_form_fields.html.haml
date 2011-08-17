@@ -17,10 +17,12 @@
   %br
   = f.text_field :contact_private_detail
 
-  %p
-    = f.label :contact_distance, "Distance (format xx.x)"
-    %br
-    = f.text_field :contact_distance
+%p
+  = f.label :contact_distance, "Distance (format xx.x)"
+  %br
+  = f.text_field :contact_distance
+  
+= render "shared/disposition_code", { :f => f, :code => :contact_disposition }
 
 = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Who was Contacted", :other => :who_contacted_other }
 

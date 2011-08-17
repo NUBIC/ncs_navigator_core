@@ -1,0 +1,5 @@
+
+%p
+  = f.label code, "Disposition"
+  %br
+  = f.select(code, grouped_disposition_codes, { :include_blank => "-- Select Disposition --" })
