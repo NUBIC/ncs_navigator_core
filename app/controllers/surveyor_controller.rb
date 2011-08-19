@@ -1,6 +1,6 @@
 class SurveyorController < ApplicationController
   include Surveyor::SurveyorControllerMethods
-  layout 'application'
+  layout 'surveyor'
   
   def surveyor_finish
     edit_contact_link_path(@response_set.contact_link_id)
