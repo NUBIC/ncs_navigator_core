@@ -47,6 +47,9 @@ class Participant < ActiveRecord::Base
   has_many :ppg_details
   has_many :ppg_status_histories, :order => "ppg_status_date DESC"
   
+  has_many :participant_person_links
+  has_many :person_relations, :through => :participant_person_links, :source => :person
+  
   validates_presence_of :person
   
   scope :in_low_intensity, where("high_intensity is null or high_intensity is false")
@@ -80,6 +83,7 @@ class Participant < ActiveRecord::Base
   
   def upcoming_events
     events = []
+    # TODO: do not hard code NcsCode local code here
     case ppg_status.local_code
     when 1
       events << "Pregnancy Visit 1"
@@ -90,5 +94,35 @@ class Participant < ActiveRecord::Base
     end
     events
   end
+  
+  def participant_type
+    p_type.to_s
+  end
+  
+  def father
+    # TODO: do not hard code NcsCode local code here
+    relationships(4).first
+  end
+  
+  def children
+    # TODO: do not hard code NcsCode local code here
+    relationships(8)
+  end
+
+  def mother
+    # TODO: do not hard code NcsCode local code here
+    relationships(2).first
+  end
+  
+  def partner
+    # TODO: do not hard code NcsCode local code here
+    relationships(7).first    
+  end
+  
+  private
+  
+    def relationships(code)
+      participant_person_links.select { |ppl| ppl.relationship.local_code == code }.collect { |ppl| ppl.person } 
+    end
   
 end

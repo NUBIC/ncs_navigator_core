@@ -53,6 +53,9 @@ describe Participant do
   it { should have_many(:ppg_details) }
   it { should have_many(:ppg_status_histories) }
 
+  it { should have_many(:participant_person_links) }
+  it { should have_many(:person_relations).through(:participant_person_links) }
+
   it { should validate_presence_of(:person) }
   
   context "as mdes record" do
@@ -221,9 +224,96 @@ describe Participant do
           @participant.next_scheduled_event.event.should == "Pregnancy Probability"
           @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
-        
-        
-        
+      end
+      
+    end
+    
+  end
+
+
+  context "participant types" do
+    
+    let(:age_eligible) { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Age-eligible woman",      :local_code => 1) }
+    let(:trying)       { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "High Trier",              :local_code => 2) }
+    let(:pregnant)     { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Pregnant eligible woman", :local_code => 3) }
+    let(:bio_father)   { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Biological Father",       :local_code => 4) }
+    let(:soc_father)   { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Social Father",           :local_code => 5) }
+    let(:child)        { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "NCS Child",               :local_code => 6) }
+    
+    let(:part_self)    { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self",          :local_code => 1) }
+    let(:mother)       { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Mother",         :local_code => 2) }
+    let(:father)       { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Father",         :local_code => 4) }
+    let(:spouse)       { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Spouse",                    :local_code => 6) }
+    let(:partner)      { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Partner/Significant Other", :local_code => 7) }
+    let(:child_rel)    { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child",                     :local_code => 8) }
+    
+    before(:each) do
+      @ella  = Factory(:person, :first_name => "Ella", :last_name => "Fitzgerald")
+      @mom   = Factory(:participant, :person => @ella, :p_type => age_eligible)
+
+      @louis = Factory(:person, :first_name => "Louis", :last_name => "Armstrong")
+      @dad   = Factory(:participant, :person => @louis, :p_type => bio_father)
+
+      @kiddo = Factory(:person, :first_name => "Kid", :last_name => "Ory")
+      @kid   = Factory(:participant, :person => @kiddo, :p_type => child)
+
+      Factory(:participant_person_link, :person => @ella,  :participant => @mom, :relationship => part_self)
+      Factory(:participant_person_link, :person => @louis, :participant => @mom, :relationship => partner)
+      Factory(:participant_person_link, :person => @kiddo, :participant => @mom, :relationship => child_rel)
+            
+      Factory(:participant_person_link, :person => @louis, :participant => @dad, :relationship => part_self)
+      Factory(:participant_person_link, :person => @ella,  :participant => @dad, :relationship => partner)
+      Factory(:participant_person_link, :person => @kiddo, :participant => @dad, :relationship => child_rel)
+      
+      Factory(:participant_person_link, :person => @kiddo, :participant => @kid, :relationship => part_self)
+      Factory(:participant_person_link, :person => @louis, :participant => @kid, :relationship => father)
+      Factory(:participant_person_link, :person => @ella,  :participant => @kid, :relationship => mother)
+    end
+
+    describe "self" do
+      it "knows it's own participant type" do
+        @mom.participant_type.should == "Age-eligible woman"
+        @dad.participant_type.should == "Biological Father"
+        @kid.participant_type.should == "NCS Child"
+      end
+    end
+    
+    describe "mother's relationships" do
+    
+      it "knows its father" do
+        @mom.father.should be_nil
+      end
+      
+      it "knows its children" do
+        @mom.children.should == [@kiddo]
+      end
+
+      it "knows its partner/significant other" do
+        @mom.partner.should == @louis
+      end
+      
+    end
+    
+    describe "child's relationships" do
+      
+      it "knows its father" do
+        @kid.father.should == @louis
+      end
+      
+      it "knows its mother" do
+        @kid.mother.should == @ella
+      end
+      
+    end
+    
+    describe "father's relationships" do
+      
+      it "knows its children" do
+        @dad.children.should == [@kiddo]
+      end
+      
+      it "knows its partner/significant other" do
+        @dad.partner.should == @ella
       end
       
     end
