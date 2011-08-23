@@ -6,7 +6,7 @@ require 'rspec/rails'
 # Factory Girl was not autoloading factories hence the call to Factory.find_definitions
 # cf. http://stackoverflow.com/questions/1160004/setup-factory-girl-with-testunit-and-shoulda
 require 'factory_girl'
-Factory.find_definitions
+FactoryGirl.find_definitions
 
 require 'shoulda'
 

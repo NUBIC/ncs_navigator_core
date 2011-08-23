@@ -17,6 +17,9 @@
 
 require 'factory_girl'
 require File.dirname(__FILE__) + '/../../spec/factories'
+require File.dirname(__FILE__) + '/../../spec/factories/surveyor'
+require File.dirname(__FILE__) + '/../../spec/factories/household'
+require File.dirname(__FILE__) + '/../../spec/factories/consent'
 
 require 'pickle/world'
 # Example of configuring pickle:
