@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110811161140
+# Schema version: 20110823212243
 #
 # Table name: dwelling_units
 #

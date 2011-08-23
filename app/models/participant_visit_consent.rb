@@ -1,3 +1,26 @@
+# == Schema Information
+# Schema version: 20110823212243
+#
+# Table name: participant_visit_consents
+#
+#  id                          :integer         not null, primary key
+#  psu_code                    :string(36)      not null
+#  pid_visit_consent_id        :binary          not null
+#  participant_id              :integer
+#  vis_consent_type_code       :integer         not null
+#  vis_consent_response_code   :integer         not null
+#  vis_language_code           :integer         not null
+#  vis_language_other          :string(255)
+#  vis_person_who_consented_id :integer
+#  vis_who_consented_code      :integer         not null
+#  vis_translate_code          :integer         not null
+#  vis_comments                :text
+#  contact_id                  :integer
+#  transaction_type            :string(36)
+#  created_at                  :datetime
+#  updated_at                  :datetime
+#
+
 # In addition to the single time consents we have participants review and give oral consent to specific 
 # data collection components that occur at a specific visit. These are presented on what is called the 
 # Visit Information Sheet or VIS. The VIS is specific to a specific Event and needs to be linked back to 

@@ -1,3 +1,37 @@
+# == Schema Information
+# Schema version: 20110823212243
+#
+# Table name: participant_consents
+#
+#  id                              :integer         not null, primary key
+#  psu_code                        :string(36)      not null
+#  participant_consent_id          :binary          not null
+#  participant_id                  :integer
+#  consent_version                 :string(9)
+#  consent_expiration              :date
+#  consent_type_code               :integer         not null
+#  consent_form_type_code          :integer         not null
+#  consent_given_code              :integer         not null
+#  consent_date                    :date
+#  consent_withdraw_code           :integer         not null
+#  consent_withdraw_type_code      :integer         not null
+#  consent_withdraw_reason_code    :integer         not null
+#  consent_withdraw_date           :date
+#  consent_language_code           :integer         not null
+#  consent_language_other          :string(255)
+#  person_who_consented_id         :integer
+#  who_consented_code              :integer         not null
+#  person_wthdrw_consent_id        :integer
+#  who_wthdrw_consent_code         :integer         not null
+#  consent_translate_code          :integer         not null
+#  consent_comments                :text
+#  contact_id                      :integer
+#  reconsideration_script_use_code :integer         not null
+#  transaction_type                :string(36)
+#  created_at                      :datetime
+#  updated_at                      :datetime
+#
+
 require 'spec_helper'
 
 describe ParticipantConsent do
