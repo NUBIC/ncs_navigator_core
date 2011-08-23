@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110811161140) do
+ActiveRecord::Schema.define(:version => 20110823212243) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -292,6 +292,62 @@ ActiveRecord::Schema.define(:version => 20110811161140) do
     t.datetime "updated_at"
   end
 
+  create_table "participant_authorization_forms", :force => true do |t|
+    t.string   "psu_code",            :limit => 36, :null => false
+    t.binary   "auth_form_id",                      :null => false
+    t.integer  "participant_id"
+    t.integer  "contact_id"
+    t.integer  "provider_id"
+    t.integer  "auth_form_type_code",               :null => false
+    t.string   "auth_type_other"
+    t.integer  "auth_status_code",                  :null => false
+    t.string   "auth_status_other"
+    t.string   "transaction_type",    :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "participant_consent_samples", :force => true do |t|
+    t.string   "psu_code",                      :limit => 36, :null => false
+    t.binary   "participant_consent_sample_id",               :null => false
+    t.integer  "participant_id"
+    t.integer  "participant_consent_id"
+    t.integer  "sample_consent_type_code",                    :null => false
+    t.integer  "sample_consent_given_code",                   :null => false
+    t.string   "transaction_type",              :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "participant_consents", :force => true do |t|
+    t.string   "psu_code",                        :limit => 36, :null => false
+    t.binary   "participant_consent_id",                        :null => false
+    t.integer  "participant_id"
+    t.string   "consent_version",                 :limit => 9
+    t.date     "consent_expiration"
+    t.integer  "consent_type_code",                             :null => false
+    t.integer  "consent_form_type_code",                        :null => false
+    t.integer  "consent_given_code",                            :null => false
+    t.date     "consent_date"
+    t.integer  "consent_withdraw_code",                         :null => false
+    t.integer  "consent_withdraw_type_code",                    :null => false
+    t.integer  "consent_withdraw_reason_code",                  :null => false
+    t.date     "consent_withdraw_date"
+    t.integer  "consent_language_code",                         :null => false
+    t.string   "consent_language_other"
+    t.integer  "person_who_consented_id"
+    t.integer  "who_consented_code",                            :null => false
+    t.integer  "person_wthdrw_consent_id"
+    t.integer  "who_wthdrw_consent_code",                       :null => false
+    t.integer  "consent_translate_code",                        :null => false
+    t.text     "consent_comments"
+    t.integer  "contact_id"
+    t.integer  "reconsideration_script_use_code",               :null => false
+    t.string   "transaction_type",                :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "participant_person_links", :force => true do |t|
     t.string   "psu_code",           :limit => 36, :null => false
     t.integer  "person_id",                        :null => false
@@ -301,6 +357,49 @@ ActiveRecord::Schema.define(:version => 20110811161140) do
     t.integer  "is_active_code",                   :null => false
     t.string   "transaction_type",   :limit => 36
     t.binary   "person_pid_id",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "participant_visit_consents", :force => true do |t|
+    t.string   "psu_code",                    :limit => 36, :null => false
+    t.binary   "pid_visit_consent_id",                      :null => false
+    t.integer  "participant_id"
+    t.integer  "vis_consent_type_code",                     :null => false
+    t.integer  "vis_consent_response_code",                 :null => false
+    t.integer  "vis_language_code",                         :null => false
+    t.string   "vis_language_other"
+    t.integer  "vis_person_who_consented_id"
+    t.integer  "vis_who_consented_code",                    :null => false
+    t.integer  "vis_translate_code",                        :null => false
+    t.text     "vis_comments"
+    t.integer  "contact_id"
+    t.string   "transaction_type",            :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "participant_visit_records", :force => true do |t|
+    t.string   "psu_code",                  :limit => 36, :null => false
+    t.binary   "rvis_id",                                 :null => false
+    t.integer  "participant_id"
+    t.integer  "rvis_language_code",                      :null => false
+    t.string   "rvis_language_other"
+    t.integer  "rvis_person_id"
+    t.integer  "rvis_who_consented_code",                 :null => false
+    t.integer  "rvis_translate_code",                     :null => false
+    t.integer  "contact_id"
+    t.datetime "time_stamp_1"
+    t.datetime "time_stamp_2"
+    t.integer  "rvis_sections_code",                      :null => false
+    t.integer  "rvis_during_interv_code",                 :null => false
+    t.integer  "rvis_during_bio_code",                    :null => false
+    t.integer  "rvis_bio_cord_code",                      :null => false
+    t.integer  "rvis_during_env_code",                    :null => false
+    t.integer  "rvis_during_thanks_code",                 :null => false
+    t.integer  "rvis_after_saq_code",                     :null => false
+    t.integer  "rvis_reconsideration_code",               :null => false
+    t.string   "transaction_type",          :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end

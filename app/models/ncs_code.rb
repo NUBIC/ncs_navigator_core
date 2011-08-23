@@ -165,6 +165,57 @@ class NcsCode < ActiveRecord::Base
     :ppg_status_code               => 'PARTICIPANT_STATUS_CL1',
     :ppg_info_source_code          => 'INFORMATION_SOURCE_CL3',
     :ppg_info_mode_code            => 'CONTACT_TYPE_CL1',
+
+
+    ### participant_consent
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :consent_type_code              => 'CONSENT_TYPE_CL1',
+    :consent_form_type_code         => 'CONSENT_TYPE_CL1',
+    :consent_given_code             => 'CONFIRM_TYPE_CL2',
+    :consent_withdraw_code          => 'CONFIRM_TYPE_CL2',
+    :consent_withdraw_type_code     => 'CONSENT_WITHDRAW_REASON_CL1',
+    :consent_withdraw_reason_code   => 'CONSENT_WITHDRAW_REASON_CL2',
+    :consent_language_code          => 'LANGUAGE_CL2',
+    :who_consented_code             => 'AGE_STATUS_CL1',
+    :who_wthdrw_consent_code        => 'AGE_STATUS_CL3',
+    :consent_translate_code         => 'TRANSLATION_METHOD_CL1',
+    :reconsideration_script_use_code => 'CONFIRM_TYPE_CL21',
+
+
+    ### participant_visit_consent
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :vis_consent_type_code      => 'VISIT_TYPE_CL1',
+    :vis_consent_response_code  => 'CONFIRM_TYPE_CL2',
+    :vis_language_code          => 'LANGUAGE_CL2',
+    :vis_who_consented_code     => 'AGE_STATUS_CL1',
+    :vis_translate_code         => 'TRANSLATION_METHOD_CL1',
+    
+
+    ### participant_authorization_form
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :auth_form_type_code        => 'AUTH_FORM_TYPE_CL1',
+    :auth_status_code           =>'AUTH_STATUS_CL1',
+    
+    
+    ### participant_consent_sample
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :sample_consent_type_code   => 'CONSENT_TYPE_CL2',
+    :sample_consent_given_code  => 'CONFIRM_TYPE_CL2',
+    
+    
+    ### participant_visit_record
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :rvis_language_code        => 'LANGUAGE_CL2',
+    :rvis_who_consented_code   => 'AGE_STATUS_CL1',
+    :rvis_translate_code       => 'TRANSLATION_METHOD_CL1',
+    :rvis_sections_code        => 'CONFIRM_TYPE_CL21',
+    :rvis_during_interv_code   => 'CONFIRM_TYPE_CL21',
+    :rvis_during_bio_code      => 'CONFIRM_TYPE_CL21',
+    :rvis_bio_cord_code        => 'CONFIRM_TYPE_CL21',
+    :rvis_during_env_code      => 'CONFIRM_TYPE_CL21',
+    :rvis_during_thanks_code   => 'CONFIRM_TYPE_CL21',
+    :rvis_after_saq_code       => 'CONFIRM_TYPE_CL21',
+    :rvis_reconsideration_code => 'CONFIRM_TYPE_CL21',
     
   }
 

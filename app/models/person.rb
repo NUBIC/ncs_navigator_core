@@ -98,7 +98,7 @@ class Person < ActiveRecord::Base
   def upcoming_events
     events = []
     if participant? 
-      participant.upcoming_events.each { |e| events << e}
+      participant.upcoming_events.each { |e| events << e }
     else
       events << "Pregnancy Screener"
     end
@@ -108,10 +108,13 @@ class Person < ActiveRecord::Base
   def next_survey
     event = upcoming_events.first
     instrument = InstrumentEventMap.instruments_for(event).first if event 
-    return Survey.find_by_access_code(Survey.to_normalized_string(instrument)) if instrument
+    result = Survey.find_by_access_code(Survey.to_normalized_string(instrument)) if instrument    
+    result
   end
   
   def start_instrument(survey)
+    # TODO: raise Exception if survey is nil
+    return if survey.nil?
     response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
     # TODO: determine way to know about initializing data for each survey
     question = nil

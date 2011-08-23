@@ -53,4 +53,6 @@ Before do
   require 'factory_girl'
   Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories.rb')).each {|f| require f }  
   Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/surveyor.rb')).each {|f| require f }  
+  Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/household.rb')).each {|f| require f }  
+  Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/consent.rb')).each {|f| require f }  
 end

@@ -276,20 +276,22 @@ describe Person do
         
     describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
       
+      before(:each) do
+        Survey.destroy_all
+      end
+      
       let(:person) { Factory(:person) }
       let(:participant) { Factory(:participant, :person => person) }
 
-      let(:pv1survey) { Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-1") }
+      let(:pv1survey) { Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0") }
       let(:presurvey) { Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1") }
 
       let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
       let(:status2) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
-
-      before(:each) do
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
-      end
     
       it "creates a response set for the instrument" do
+
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
 
         section   = Factory(:survey_section, :survey => pv1survey)
         question  = Factory(:question, :survey_section => section, :data_export_identifier => "name")
