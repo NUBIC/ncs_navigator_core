@@ -28,9 +28,5 @@ NcsNavigatorCore::Application.configure do
     authorities :cas, static
     central '/etc/nubic/ncs/aker-local.yml'
   end
-
-  # Add values used throughout application here# cf. /config/initializers/system_configuration.rb
-  require File.expand_path('../../initializers/system_configuration', __FILE__)
-  SystemConfiguration.psu_code = 20000030
 end
 
