@@ -15,6 +15,8 @@ gem 'jquery-rails'
 
 gem 'ncs_mdes', '0.4.0'
 gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git', :branch => 'rails3'
+gem 'psc'
+gem 'ncs_navigator_configuration'
 
 gem 'uuid'
 gem 'will_paginate', '~> 3.0'
