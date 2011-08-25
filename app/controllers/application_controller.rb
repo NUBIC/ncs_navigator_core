@@ -1,4 +1,4 @@
-require File.expand_path('../../../config/initializers/system_configuration', __FILE__)
+require 'ncs_navigator/configuration'
 
 class ApplicationController < ActionController::Base
   include Aker::Rails::SecuredController
@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   private
   
     def set_system_defaults
-      @psu_code = SystemConfiguration.psu_code
+      @psu_code = NcsNavigatorCore.psu
     end
     
     def current_staff

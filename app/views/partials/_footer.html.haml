@@ -1,19 +1,11 @@
 .ncs_logo
-  = image_tag("ncs_gcsc_logo_sm.png")
+  = image_tag(NcsNavigatorCore.footer_left_logo_path) if NcsNavigatorCore.footer_left_logo_path
 
 .contact_info
-  National Children’s Study-Greater Chicago Study Center
-  %br
-  Institute for Healthcare Studies,Feinberg School of Medicine
-  %br
-  Northwestern University
-  %br
-  420 East Superior, 10th Floor
-  %br
-  Chicago, IL 60611
+  = NcsNavigator.configuration.footer_center_html
 
 .ncs_text
-  = image_tag("ncs_gcsc_redwords_sm.png")  
+  = image_tag(NcsNavigatorCore.footer_right_logo_path) if NcsNavigatorCore.footer_right_logo_path
 
 - if current_user
   .logged_in_user
