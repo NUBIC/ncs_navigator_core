@@ -41,6 +41,7 @@ Factory.define :person do |pers|
   pers.p_info_update                  nil
   pers.person_comment                 nil
   pers.transaction_type               nil
+  pers.person_id                      nil
 end
 
 Factory.define :person_race do |pr|

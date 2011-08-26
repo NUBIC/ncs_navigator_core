@@ -9,6 +9,7 @@ require 'factory_girl'
 FactoryGirl.find_definitions
 
 require 'shoulda'
+require File.expand_path("../vcr_setup", __FILE__)
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -56,6 +57,8 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  config.extend VCR::RSpec::Macros
   
   config.include TestLogins
 end

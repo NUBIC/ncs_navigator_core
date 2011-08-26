@@ -1,0 +1,32 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://pfr957:psc@localhost:8080/psc/api/v1/studies.json
+    body: 
+    headers: 
+      authorization: 
+      - Basic cGZyOTU3OnBzYw==
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - application/json
+      server: 
+      - Restlet-Framework/2.0.3
+      date: 
+      - Fri, 26 Aug 2011 18:54:05 GMT
+      vary: 
+      - Accept-Charset, Accept-Encoding, Accept-Language, Accept
+      accept-ranges: 
+      - bytes
+      cache-control: 
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+      transfer-encoding: 
+      - chunked
+      pragma: 
+      - no-cache
+    body: "{\"studies\":[{\"assigned_identifier\":\"NCS Hi-Lo\",\"id\":\"1\",\"privileges\":[\"amend\",\"set-managing-sites\",\"set-participation\",\"register\",\"see-released\",\"purge\"]}]}"
+    http_version: "1.1"

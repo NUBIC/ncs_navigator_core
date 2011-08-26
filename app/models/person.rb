@@ -84,6 +84,10 @@ class Person < ActiveRecord::Base
     now.year - dob.year - offset
   end
   
+  def gender
+    sex.to_s
+  end
+  
   def to_s
     "#{first_name} #{last_name}".strip
   end
