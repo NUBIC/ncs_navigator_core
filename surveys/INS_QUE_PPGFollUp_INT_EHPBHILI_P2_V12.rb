@@ -1,0 +1,358 @@
+survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
+  section "Pregnancy Probability Group Follow-Up Interview", :reference_identifier=>"PPGFollUp_INT" do
+    q_time_stamp_1 "Insert date/time stamp", 
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+    a :datetime
+    
+    label "Hello. My name is [INTERVIEWER FIRST AND LAST NAME] from the National Children’s Study. It’s been a few months since we 
+    have spoken with you. We’re following up with women of childbearing age and our first questions are always about pregnancy. We first 
+    want to know..."
+    
+    label "Pregnancy screener"
+    
+    q_PREGNANT "Are you pregnant now?",
+    :help_text => "Enter \"Yes\" even if respondent is unsure that she is pregnant",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.PREGNANT"
+    a_1 "Yes"
+    a_2 "No, no additional information provided"
+    a_3 "No, recently lost pregnancy (miscarriage/abortion) - (if volunteered by participant)"
+    a_4 "No, recently gave birth  - (if volunteered by participant)"
+    a_5 "No, unable to have children  (hysterectomy, tubal ligation)  - (if volunteered by participant)"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    
+    q_TRYING "Are you currently trying to become pregnant?",
+    :help_text => "Do not define \"trying to become pregnant\"",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.TRYING"
+    a_1 "Yes"
+    a_2 "No"
+    a_3 "Recently lost pregnancy (miscarriage or abortion)"
+    a_4 "Recently gave birth"
+    a_5 "Unable to have children (e.g., hysterectomy, tubal ligation)"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=>"A or B or C"
+    condition_A :q_PREGNANT, "==", :a_2
+    condition_B :q_PREGNANT, "==", :a_neg_1
+    condition_C :q_PREGNANT, "==", :a_neg_2
+    
+    q_PPG_DUE_DATE_1 "Congratulations. When is your baby due?",
+    :data_export_identifier=>"PPG_CATI.PPG_DUE_DATE_1"
+    a "Date", :date
+    dependency :rule=>"A"
+    condition_A :q_PREGNANT, "==", :a_1
+    
+    # TODO
+    # PROGRAMMER INSTRUCTIONS: 
+    # • SOFT EDIT:
+    # o IF DATE IS MORE THAN NINE MONTHS AFTER CURRENT DATE, DISPLAY, “You have entered a date that is more than nine months from today. Confirm date and re-enter it.”
+    # • HARD EDIT:
+    # o IF DATE IS MORE THAN TEN MONTHS AFTER CURRENT DATE, DISPLAY, “You have entered a date that is more than ten months from today. Re-enter date.”
+    # o IF DATE IS MORE THAN 1 MONTH BEFORE CURRENT DATE, DISPLAY, “You have entered a date that occurred more than a month before today. Re-enter date.”
+    # 
+    # • IF DATE IS COMPLETE, SET PPG_DUE_DATE_2 TO DATE PROVIDED; GO TO STATUS
+    # 
+    # • IF DATE IS INCOMPLETE, GO TO DATE_PERIOD
+    
+    q_calculated_due_date_completeness "Is due date complete?",
+    :pick => :one
+    a_1 "Yes"
+    a_2 "No"
+    dependency :rule=>"A"
+    condition_A :q_PREGNANT, "==", :a_1
+    
+    q_DATE_PERIOD "What was the first day of your last menstrual period?",
+    :data_export_identifier=>"PPG_CATI.DATE_PERIOD"
+    a "Date", :date
+    dependency :rule=>"A"
+    condition_A :q_calculated_due_date_completeness, "==", :a_2
+
+    # TODO
+    # • IF VALID DATE IS PROVIDED IN PPG_DUE_DATE_1, SKIP TO STATUS
+    # • HARD EDIT:
+    # o IF DATE IS MORE THAN TEN MONTHS BEFORE CURRENT DATE, DISPLAY, “You have entered a date that was more than ten months before today. Confirm date. If this date is correct, enter ‘Don’t Know’ to continue with duration questions.”
+    # o IF DATE IS AFTER TODAY’S DATE, DISPLAY “You have entered a date that has not occurred yet. Re-enter date.”
+    # 
+    # • IF DATE IS COMPLETE, CALCULATE DUE DATE FROM FIRST DATE OF LAST MENSTRUAL PERIOD, WHERE PPG_DUE_DATE_2 = DATE_PERIOD + 280 DAYS ; 
+    # ELSE GO TO WEEKS_PREG.
+
+    q_calculated_period_date_completeness "Is last menstrual period date complete?",
+    :pick => :one
+    a_1 "Yes"
+    a_2 "No"
+    dependency :rule=>"A"
+    condition_A :q_calculated_due_date_completeness, "==", :a_2
+    
+    # TODO
+    # • IF DATE IS COMPLETE, CALCULATE DUE DATE FROM FIRST DATE OF LAST MENSTRUAL PERIOD, WHERE PPG_DUE_DATE_2 = DATE_PERIOD + 280 DAYS ; 
+    # ELSE GO TO WEEKS_PREG.
+    
+    q_WEEKS_PREG_LABEL "How many weeks pregnant are you now? If you’re not sure, please make your best guess.",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.WEEKS_PREG"
+    a_1 "Enter response"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    dependency :rule=>"A"
+    condition_A :q_calculated_period_date_completeness , "==", :a_2    
+
+    q_WEEKS_PREG "Number of weeks",
+    :data_export_identifier=>"PPG_CATI.WEEKS_PREG"
+    a "Number of weeks", :integer
+    dependency :rule=>"A"
+    condition_A :q_WEEKS_PREG_LABEL, "==", :a_1    
+    
+    label "The provided value is outside the suggested range (between 1 and 44). Please verify the input."
+    dependency :rule=>"A or B"
+    condition_A :q_WEEKS_PREG, "<", {:integer_value => "1"}
+    condition_B :q_WEEKS_PREG, ">", {:integer_value => "44"}
+
+    q_calculated_number_of_weeks_completeness "Is number of weeks pregnant complete?",
+    :pick => :one
+    a_1 "Yes"
+    a_2 "No"
+    dependency :rule=>"A"
+    condition_A :q_WEEKS_PREG_LABEL, "==", :a_1
+    
+    # TODO
+    # IF NUMBER OF WEEKS PREGNANT IS COMPLETE, CALCULATE DUE DATE FROM NUMBER OF WEEKS PREGNANT, WHERE 
+    # PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – WEEKS_PREG*7); ELSE GO TO MONTH_PREG.
+    
+    q_MONTH_PREG_LABEL "About how many months pregnant are you? If you’re not sure, please make your best guess.",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.MONTH_PREG"
+    a_1 "Enter response"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    dependency :rule=>"A"
+    condition_A :q_calculated_number_of_weeks_completeness , "==", :a_2    
+    
+    q_MONTH_PREG "Number of months.",
+    :data_export_identifier=>"PPG_CATI.MONTH_PREG"
+    a "Number of months", :integer
+    dependency :rule=>"A"
+    condition_A :q_MONTH_PREG_LABEL, "==", :a_1
+    
+    label "The provided value is outside the suggested range (between 1 and 12). Please verify the input."
+    dependency :rule=>"A or B"
+    condition_A :q_MONTH_PREG, "<", {:integer_value => "1"}
+    condition_B :q_MONTH_PREG, ">", {:integer_value => "12"}    
+    
+    # TODO
+    #     • IF NUMBER OF MONTHS PREGNANT IS COMPLETE, CALCULATE DUE DATE FROM NUMBER OF MONTHS PREGNANT, WHERE 
+    #     PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – MONTH_PREG*30 - 15) ; ELSE GO TO TRIMESTER.
+    
+    q_calculated_number_of_months_completeness "Is number of months pregnant complete?",
+    :pick => :one
+    a_1 "Yes"
+    a_2 "No"
+    dependency :rule=>"A"
+    condition_A :q_MONTH_PREG_LABEL , "==", :a_1
+    
+    q_TRIMESTER "Are you currently in your First, Second, or Third trimester?",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.TRIMESTER"
+    a_1 "1st (1 to 3 months pregnant)"
+    a_2 "2nd (4 to 6 months pregnant)"
+    a_3 "3rd (7 to 9 months pregnant)"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=>"A"
+    condition_A :q_calculated_number_of_months_completeness, "==", :a_2
+    
+    # TODO
+    #    PROGRAMMER INSTRUCTIONS: 
+    #    •  REFERENCE CODE LIST: TRIMESTER_CL1
+    # 
+    #    •  CALCULATE DUE DATE FROM TRIMESTER, 
+    #    o  IF TRIMESTER = 1 THEN: PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – 46 DAYS). 
+    #    o  IF TRIMESTER = 2 THEN: PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – 140 DAYS). 
+    #    o  IF TRIMESTER = 3 THEN: PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – 235 DAYS). 
+    #    o  IF TRIMESTER = -1 OR -2 THEN: PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – 140 DAYS) .
+    
+    q_MED_UNABLE "Do any of the following apply to you? Have you had: A hysterectomy, Both ovaries removed, Your tubes tied, 
+    Gone through menopause or Any other medical reason why you cannot become pregnant?",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.MED_UNABLE"
+    a_1 "Yes"
+    a_2 "No"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=> "A or B or C or D or E"
+    condition_A :q_PREGNANT, "==", :a_5
+    condition_B :q_TRYING, "==", :a_2
+    condition_C :q_TRYING, "==", :a_5
+    condition_D :q_TRYING, "==", :a_neg_1
+    condition_E :q_TRYING, "==", :a_neg_2
+    
+    # TODO
+    # • PRELOAD LOCAL SC  TOLL-FREE NUMBER AND NAME OF LOCAL SC
+    label_prepopulated_sc_phone_number "Local SC toll-free number"
+    dependency :rule=> "A or B or C or D or E or F or G"
+    condition_A :q_PREGNANT, "==", :a_1
+    condition_B :q_PREGNANT, "==", :a_2
+    condition_C :q_PREGNANT, "==", :a_3
+    condition_D :q_PREGNANT, "==", :a_4
+    condition_E :q_PREGNANT, "==", :a_5
+    condition_F :q_PREGNANT, "==", :a_neg_1
+    condition_G :q_PREGNANT, "==", :a_neg_2
+    
+    label_prepopulated_local_sc "Local SC"
+    dependency :rule=> "A or B or C or D or E or F or G"
+    condition_A :q_PREGNANT, "==", :a_1
+    condition_B :q_PREGNANT, "==", :a_2
+    condition_C :q_PREGNANT, "==", :a_3
+    condition_D :q_PREGNANT, "==", :a_4
+    condition_E :q_PREGNANT, "==", :a_5
+    condition_F :q_PREGNANT, "==", :a_neg_1
+    condition_G :q_PREGNANT, "==", :a_neg_2
+    
+    label_STATUS_PREG "Status: Pregnant and Eligible",
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+    dependency :rule=> "A"
+    condition_A :q_PREGNANT, "==", :a_1
+    
+    label "Thank you for taking time to answer these questions. [Congratulations again on your pregnancy.]  We would like to set up a 
+    time to talk about the National Children’s Study.  If you have any other questions before that time, please 
+    call xxx-xxx-xxxx, which is XXX’s local toll free National Children’s Study office."
+    dependency :rule=> "A"
+    condition_A :q_PREGNANT, "==", :a_1
+    
+    label_STATUS_TRYING "Status: High probability - trying to conceive",
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+    dependency :rule=> "A"
+    condition_A :q_TRYING, "==", :a_1
+    
+    label "Thank you for taking time to answer these questions.  
+    You are able to take part in this important study because you are currently trying to become pregnant.  
+    We would like to set up a time to talk about the National Children’s Study.  If you have any other questions or find out that 
+    you’re pregnant before our next call, please call xxx-xxx-xxxx, which is XXX’s local toll free National Children’s Study office."
+    dependency :rule=> "A"
+    condition_A :q_TRYING, "==", :a_1
+    
+    label_STATUS_RECENT_LOSS "Status: high probability - recent loss",
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+    dependency :rule=> "A or B"
+    condition_A :q_PREGNANT, "==", :a_3
+    condition_B :q_TRYING, "==", :a_3
+    
+    label "[I’m so sorry to hear that you’ve lost your baby.  I know this can be a hard time.]  Because your address is in the study 
+    area, we may be back in touch at a later time to update your household information.  If you have any other questions before that 
+    time, please call xxx-xxx-xxxx, which is XXX’s local toll free National Children’s Study office.  Thank you for taking time to answer 
+    these questions.  "
+    dependency :rule=> "A or B"
+    condition_A :q_PREGNANT, "==", :a_3
+    condition_B :q_TRYING, "==", :a_3
+    
+    label_STATUS_OTHER_PROBABILITY "Status: other probability – not pregnant and not trying",
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+    dependency :rule=> "A or B or C or D or E"
+    condition_A :q_PREGNANT, "==", :a_4
+    condition_B :q_TRYING, "==", :a_4
+    condition_C :q_MED_UNABLE, "==", :a_2
+    condition_D :q_MED_UNABLE, "==", :a_neg_1
+    condition_E :q_MED_UNABLE, "==", :a_neg_2
+    
+    label "Thank you for taking time to answer these questions.  
+    We will call you again in a couple of months to ask a few quick questions.  If you have any other questions before that time, 
+    please call xxx-xxx-xxxx, which is XXX’s local toll free National Children’s Study office."
+    dependency :rule=> "A or B or C or D or E"
+    condition_A :q_PREGNANT, "==", :a_4
+    condition_B :q_TRYING, "==", :a_4
+    condition_C :q_MED_UNABLE, "==", :a_2
+    condition_D :q_MED_UNABLE, "==", :a_neg_1
+    condition_E :q_MED_UNABLE, "==", :a_neg_2
+    
+    label_STATUS_INELIGIBLE "Status: ineligible- unable to conceive",
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+    dependency :rule=> "A"
+    condition_A :q_MED_UNABLE, "==", :a_1
+    
+    label "Thank you for taking time to answer these questions.  Based on what you’ve told me, we will not ask you to take part 
+    in the study at this time. We may be back in touch at a later time to update your household information.  If you have any other 
+    questions before that time, please call xxx-xxx-xxxx, which is XXX’s local toll free National Children’s Study office."
+    dependency :rule=> "A"
+    condition_A :q_MED_UNABLE, "==", :a_1
+    
+    q_time_stamp_2 "Insert date/time stamp", 
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_2"
+    a :datetime
+    dependency :rule=> "A or B or C or D or E or F or G"
+    condition_A :q_PREGNANT, "==", :a_1
+    condition_B :q_PREGNANT, "==", :a_2
+    condition_C :q_PREGNANT, "==", :a_3
+    condition_D :q_PREGNANT, "==", :a_4
+    condition_E :q_PREGNANT, "==", :a_5
+    condition_F :q_PREGNANT, "==", :a_neg_1
+    condition_G :q_PREGNANT, "==", :a_neg_2
+    
+    label "Tracing questions"
+    dependency :rule=> "A or B or C or D or E or F or G"
+    condition_A :q_PREGNANT, "==", :a_1
+    condition_B :q_PREGNANT, "==", :a_2
+    condition_C :q_PREGNANT, "==", :a_3
+    condition_D :q_PREGNANT, "==", :a_4
+    condition_E :q_PREGNANT, "==", :a_5
+    condition_F :q_PREGNANT, "==", :a_neg_1
+    condition_G :q_PREGNANT, "==", :a_neg_2
+    
+    q_BST_NMBR "Just to confirm, is this the best phone number to reach you?",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.BST_NMBR"
+    a_1 "Yes"
+    a_2 "No"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=> "A or B or C or D or E or F or G"
+    condition_A :q_PREGNANT, "==", :a_1
+    condition_B :q_PREGNANT, "==", :a_2
+    condition_C :q_PREGNANT, "==", :a_3
+    condition_D :q_PREGNANT, "==", :a_4
+    condition_E :q_PREGNANT, "==", :a_5
+    condition_F :q_PREGNANT, "==", :a_neg_1
+    condition_G :q_PREGNANT, "==", :a_neg_2
+    
+    q_PHONE_NBR "What is the best phone number to reach you?",
+    :help_text => "Enter phone number and confirm",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.PHONE_NBR"
+    a_1 "Phone number: ", :string
+    a_neg_7 "Respondent has no telephone"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=> "A"
+    condition_A :q_BST_NMBR, "==", :a_2
+    
+    q_PHONE_TYPE "Is that your home, work, cell, or another phone number?",
+    :help_text => "Confirm if known.",
+    :pick => :one,
+    :data_export_identifier=>"PPG_CATI.PHONE_TYPE"
+    a_1 "Home"
+    a_2 "Work"
+    a_3 "Cell"
+    a_4 "Friend/relative"
+    a_neg_5 "Other"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=> "A"
+    condition_A :q_PHONE_NBR, "==", :a_1
+    
+    label_END "Thank you taking the time to answer our questions."
+    dependency :rule=> "A or B or C or D"
+    condition_A :q_BST_NMBR, "==", :a_1
+    condition_B :q_BST_NMBR, "==", :a_2
+    condition_C :q_BST_NMBR, "==", :a_neg_1
+    condition_D :q_BST_NMBR, "==", :a_neg_2
+    
+    q_time_stamp_3 "Insert date/time stamp", 
+    :data_export_identifier=>"PPG_CATI.TIME_STAMP_3"
+    a :datetime
+    dependency :rule=> "A or B or C or D"
+    condition_A :q_BST_NMBR, "==", :a_1
+    condition_B :q_BST_NMBR, "==", :a_2
+    condition_C :q_BST_NMBR, "==", :a_neg_1
+    condition_D :q_BST_NMBR, "==", :a_neg_2
+  end
+end
