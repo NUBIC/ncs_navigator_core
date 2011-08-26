@@ -38,6 +38,8 @@ group :test, :ci, :cucumber do
   gem 'factory_girl'
   gem 'rcov'
   gem 'pickle'
+  gem 'vcr'
+  gem 'fakeweb'
 
 end
 
