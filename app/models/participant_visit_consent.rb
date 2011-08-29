@@ -33,7 +33,7 @@ class ParticipantVisitConsent < ActiveRecord::Base
 
   belongs_to :participant
   belongs_to :contact
-  belongs_to :vis_person_who_consented,  :class_name => "Person"
+  belongs_to :vis_person_who_consented,  :class_name => "Person", :foreign_key => :vis_person_who_consented_id
   
   belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :vis_consent_type,     :conditions => "list_name = 'VISIT_TYPE_CL1'",          :foreign_key => :vis_consent_type_code,     :class_name => 'NcsCode', :primary_key => :local_code
