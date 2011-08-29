@@ -36,7 +36,7 @@ class ParticipantVisitRecord < ActiveRecord::Base
 
   belongs_to :participant
   belongs_to :contact
-  belongs_to :rvis_person, :class_name => "Person"
+  belongs_to :rvis_person, :class_name => "Person", :foreign_key => :rvis_person_id
   
   belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :rvis_language,        :conditions => "list_name = 'LANGUAGE_CL2'",            :foreign_key => :rvis_language_code,        :class_name => 'NcsCode', :primary_key => :local_code
