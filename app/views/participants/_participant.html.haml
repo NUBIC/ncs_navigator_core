@@ -13,6 +13,7 @@
   .upcoming
     %span.label
       Upcoming Events
+    
     %table.records
       %tr
         %th Select
@@ -22,44 +23,55 @@
           = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
         %td
           = participant.upcoming_events.to_sentence
-  .past
-    %span.label
-      Previous Contacts/Events/Instruments
-    - if participant.contact_links.blank?
+    
+    - if PatientStudyCalendar.is_registered?(participant)
+      = link_to "Click here to view schedule in PSC", "#{NcsNavigator.configuration.psc_uri.to_s}/pages/subject?assignment=#{participant.person.public_id}"
+      .past
+        %span.label
+          Previous Contacts/Events/Instruments
+        - if participant.contact_links.blank?
+          %p
+            No previous contacts to date.
+        - else
+          %table.records
+            %tr
+              %th Select
+              %th Date
+              %th Event
+              %th Instrument
+              %th Survey
+            - participant.contact_links.each do |link|
+              %tr{ :class => cycle('even_record', 'odd_record') }
+                %td
+                  = link_to "Edit", edit_contact_link_path(link), :class => "edit_link icon_link"
+                %td
+                  = link.contact.contact_date
+                %td
+                  = link.event
+                  %span.status
+                    - if link.event.event_end == 'N/A'
+                      in process
+                    - else
+                      complete
+                %td
+                  = link.instrument.to_s
+                %td
+                  - if link.response_set
+                    = link.response_set.survey.title
+                    %span.status
+                      - if link.response_set.complete?
+                        complete
+                      - else
+                        in process
+    
+  - else
+    .psc_note
+      Not yet registered with PSC
+    = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
+      = render "shared/full_error_messages", :object => f.object
       %p
-        No previous contacts to date.
-    - else
-      %table.records
-        %tr
-          %th Select
-          %th Date
-          %th Event
-          %th Instrument
-          %th Survey
-        - participant.contact_links.each do |link|
-          %tr{ :class => cycle('even_record', 'odd_record') }
-            %td
-              = link_to "Edit", edit_contact_link_path(link), :class => "edit_link icon_link"
-            %td
-              = link.contact.contact_date
-            %td
-              = link.event
-              %span.status
-                - if link.event.event_end == 'N/A'
-                  in process
-                - else
-                  complete
-            %td
-              = link.instrument.to_s
-            %td
-              - if link.response_set
-                = link.response_set.survey.title
-                %span.status
-                  - if link.response_set.complete?
-                    complete
-                  - else
-                    in process
-                    
+        = f.submit "Register with PSC"
+                        
   .relationships
     %span.label
       Relationships

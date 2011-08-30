@@ -30,4 +30,3 @@ Given /^the following (.+) records:$/ do |factory, table|
   end
 end
 
-

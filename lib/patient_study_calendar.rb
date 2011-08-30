@@ -23,7 +23,7 @@ class PatientStudyCalendar
     end
 
     def is_registered?(participant)
-      resp = connection.get("/subjects/#{participant.person.public_id}")
+      resp = connection.get("subjects/#{participant.person.public_id}")
       resp.status < 300
     end
     
@@ -33,6 +33,8 @@ class PatientStudyCalendar
       return nil if is_registered?(participant)
       connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
     end
+    
+
     
     private
     
@@ -53,15 +55,20 @@ class PatientStudyCalendar
       end
       
       def build_subject_assignment_request(participant)
-        subject = {:first_name => participant.first_name, :last_name => participant.last_name, :birth_date => participant.person_dob, :person_id => participant.person.public_id, :gender => participant.gender}
-
+        subject = {:first_name => participant.first_name, :last_name => participant.last_name, :person_id => participant.person.public_id, :gender => participant.gender}
+        if participant.person_dob
+          subject[:birth_date] = participant.person_dob
+        end
+        
+        Rails.logger.info(subject.inspect)
+        
         xm = Builder::XmlMarkup.new(:target => "")
         xm.instruct!
         xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
                         "first-study-segment-id" => segments.first.attribute('id').value, 
-                        "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => 'todo') { 
+                        "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => "todo_#{Time.now.to_i}") { 
           xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
         }
         xm.target!
