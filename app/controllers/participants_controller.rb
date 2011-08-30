@@ -18,6 +18,18 @@ class ParticipantsController < ApplicationController
     @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
   end
   
+  def register_with_psc
+    @participant = Participant.find(params[:id])
+    resp = PatientStudyCalendar.assign_subject(@participant)
+    
+    Rails.logger.info(resp.inspect)
+    Rails.logger.info(resp.headers.inspect)
+    
+    url = edit_participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+    redirect_to(url, :notice => "#{@participant.person.to_s} registered with PSC")
+  end
+  
   # GET /participants/new
   # GET /participants/new.json
   def new

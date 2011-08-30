@@ -8,7 +8,6 @@ Feature: Assigning to new arm
     Given valid ncs codes
     And an authenticated user
     And a participant exists
-    And valid ncs codes
     When I go to the edit_arm_participant page
     Then I should see "Switch from Low Intensity to High Intensity"
     When I press "Switch"
@@ -19,7 +18,6 @@ Feature: Assigning to new arm
     Given valid ncs codes
     And an authenticated user
     And a participant exists with high_intensity: true
-    And valid ncs codes
     When I go to the edit_arm_participant page
     Then I should see "Switch from High Intensity to Low Intensity"
     When I press "Switch"

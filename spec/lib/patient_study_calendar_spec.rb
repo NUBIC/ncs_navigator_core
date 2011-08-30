@@ -68,4 +68,28 @@ describe PatientStudyCalendar do
     end
   
   end
+  
+  
+  context "calling api" do
+    
+    it "parses subject schedules" do
+      json = File.open("#{Rails.root}/spec/fixtures/json/psc_subject_schedules.json", "r").read
+      subject_schedules = JSON.parse(json)
+      subject_schedules.class.should == Hash
+      subject = subject_schedules["subject"]
+      subject["full_name"].should == "Ella Fitzgerald"
+      days = subject_schedules["days"]
+      days.size.should == 1
+      days.keys.size.should == 1
+      date = days.keys.first
+      date.should == "2011-08-29"
+      day = days[date]
+      activities = day["activities"]
+      activities.size.should == 1
+      activities.first["study_segment"].should == "LO-Intensity: Pregnancy Screener"
+      activities.first["assignment"]["id"].should == "todo_1314638760" 
+    end
+    
+  end
+  
 end
