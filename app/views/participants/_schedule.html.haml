@@ -1,0 +1,12 @@
+.schedule
+  - subject_schedules = PatientStudyCalendar.schedules(participant)
+  - days = subject_schedules["days"]
+  - days.keys.each do |date|
+    .day
+      .date
+        = date
+      .activities
+      - days[date]["activities"].each do |activity|
+        .activity
+          - study_segment = activity["study_segment"]
+          = link_to "#{study_segment}", psc_assignment_path(activity["assignment"]["id"]), :class => "icon_link external_link"

@@ -66,30 +66,27 @@ describe PatientStudyCalendar do
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
       end
     end
-  
-  end
-  
-  
-  context "calling api" do
     
-    it "parses subject schedules" do
-      json = File.open("#{Rails.root}/spec/fixtures/json/psc_subject_schedules.json", "r").read
-      subject_schedules = JSON.parse(json)
-      subject_schedules.class.should == Hash
-      subject = subject_schedules["subject"]
-      subject["full_name"].should == "Ella Fitzgerald"
-      days = subject_schedules["days"]
-      days.size.should == 1
-      days.keys.size.should == 1
-      date = days.keys.first
-      date.should == "2011-08-29"
-      day = days[date]
-      activities = day["activities"]
-      activities.size.should == 1
-      activities.first["study_segment"].should == "LO-Intensity: Pregnancy Screener"
-      activities.first["assignment"]["id"].should == "todo_1314638760" 
+    it "pulls a registered subjects schedules" do
+      VCR.use_cassette('psc/schedules') do
+        person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
+        participant = Factory(:participant, :person => person)
+        subject_schedules = PatientStudyCalendar.schedules(participant)
+        subject_schedules.class.should == Hash
+        subject = subject_schedules["subject"]
+        subject["full_name"].should == "Ella Fitzgerald"
+        days = subject_schedules["days"]
+        days.size.should == 1
+        days.keys.size.should == 1
+        date = days.keys.first
+        day = days[date]
+        activities = day["activities"]
+        activities.size.should == 1
+        activities.first["study_segment"].should == "LO-Intensity: Pregnancy Screener"
+        activities.first["assignment"]["id"].should == "todo_1314638760" 
+      end
     end
-    
+  
   end
   
 end

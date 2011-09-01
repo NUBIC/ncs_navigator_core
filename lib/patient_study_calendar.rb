@@ -34,7 +34,11 @@ class PatientStudyCalendar
       connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
     end
     
-
+    def schedules(participant)
+      resp = connection.get("subjects/#{participant.person.public_id}/schedules.json")
+      resp.body
+    end
+    
     
     private
     

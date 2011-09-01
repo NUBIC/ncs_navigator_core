@@ -1,0 +1,1 @@
+{"first_name":"Bessie","last_name":"Smith","full_name":"Bessie Smith","last_first":"Smith, Bessie","birth_date":"1900-01-01","gender":"Female","person_id":"registered_with_psc","subject_identifier":"registered_with_psc","properties":[],"href":{"schedules":"http://localhost:8080/psc/api/v1/subjects/registered_with_psc/schedules"}}

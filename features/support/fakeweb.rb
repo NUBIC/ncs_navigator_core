@@ -1,6 +1,12 @@
 FakeWeb.allow_net_connect = %r[^https?://(localhost|127.0.0.1)]
 
-FakeWeb.register_uri(:get, /^http:\/\/pfr957:psc@localhost:8080\/psc\/api\/v1\/subjects\//, :body => "Unknown", :status => ["401", "Unknown"])
+FakeWeb.register_uri(:get, /psc\/api\/v1\/subjects\/registered_with_psc$/, 
+                     :body => "#{Rails.root}/features/fixtures/fakeweb/registered_with_psc.json", :status => ["200", "OK"], :content_type => "application/json")
+
+FakeWeb.register_uri(:get, /psc\/api\/v1\/subjects\/registered_with_psc\/schedules.json$/, 
+                    :body => "#{Rails.root}/features/fixtures/fakeweb/registered_with_psc_schedule.json", :status => ["200", "OK"], :content_type => "application/json")
+
+FakeWeb.register_uri(:get, /psc\/api\/v1\/subjects\/((?!registered_with_psc))/, :body => "Unknown", :status => ["401", "Unknown"])
 
 FakeWeb.register_uri(:get, /\/psc\/api\/v1\/studies.json$/,
                      :body => "#{Rails.root}/features/fixtures/fakeweb/studies.json", :content_type => "application/json")

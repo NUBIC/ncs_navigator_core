@@ -4,8 +4,16 @@ Feature: Registering a participant with Patient Study Calendar (PSC)
   As a user
   I want to register that participant with the Patient Study Calendar
 
+  @javascript
   Scenario: Registering a new participant with PSC
     Given a pregnant participant on the ppg1 page
     Then I should see "Not yet registered with PSC"
     When I press "Register with PSC"
-    # Then I should see "Click here to view schedule in PSC"
+    Then I should be on the ppg1 page
+    And I should see "registered with PSC"
+
+  @javascript
+  Scenario: Viewing a registered participant with PSC
+    Given a registered pregnant participant on the ppg1 page
+    Then I should see "2011-08-29"
+    And I should see "LO-Intensity: Pregnancy Screener"

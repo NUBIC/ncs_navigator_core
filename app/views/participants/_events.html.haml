@@ -1,0 +1,23 @@
+.upcoming
+  %span.label
+    Upcoming Events
+  
+  %table.records
+    %tr
+      %th Select
+      %th Event
+    %tr{ :class => cycle('even_record', 'odd_record') }
+      %td
+        = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
+      %td
+        = participant.upcoming_events.to_sentence
+  
+  - if PatientStudyCalendar.is_registered?(participant)
+    = render "schedule", :participant => participant
+  - else
+    .psc_note
+      Not yet registered with PSC
+    = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
+      = render "shared/full_error_messages", :object => f.object
+      %p
+        = f.submit "Register with PSC"
