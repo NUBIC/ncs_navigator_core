@@ -1600,6 +1600,13 @@ input[type="submit"] {
   background: url(../../images/door_out.png) 0 2px no-repeat !important;
 }
 
+/* line 55, ../../../app/stylesheets/partials/_links.scss */
+.external_link, .external_link:hover {
+  background: url(../../images/external_link_icon.png) 0 2px no-repeat;
+  background-position: right top;
+  padding: 2px 20px 2px 0px !important;
+}
+
 /* Tabular Data */
 /* line 2, ../../../app/stylesheets/partials/_tabular_records.scss */
 .records_header {

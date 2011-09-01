@@ -6,89 +6,9 @@
       = f.hidden_field :high_intensity
       %p
         = f.submit switch_arm_message(participant)
-
   .name
     = participant.person.to_s
     = link_to "Edit Participant Record", edit_participant_path(participant), :class => "edit_link icon_link"
-  .upcoming
-    %span.label
-      Upcoming Events
-    
-    %table.records
-      %tr
-        %th Select
-        %th Event
-      %tr{ :class => cycle('even_record', 'odd_record') }
-        %td
-          = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
-        %td
-          = participant.upcoming_events.to_sentence
-    
-    - if PatientStudyCalendar.is_registered?(participant)
-      = link_to "Click here to view schedule in PSC", "#{NcsNavigator.configuration.psc_uri.to_s}/pages/subject?assignment=#{participant.person.public_id}"
-      .past
-        %span.label
-          Previous Contacts/Events/Instruments
-        - if participant.contact_links.blank?
-          %p
-            No previous contacts to date.
-        - else
-          %table.records
-            %tr
-              %th Select
-              %th Date
-              %th Event
-              %th Instrument
-              %th Survey
-            - participant.contact_links.each do |link|
-              %tr{ :class => cycle('even_record', 'odd_record') }
-                %td
-                  = link_to "Edit", edit_contact_link_path(link), :class => "edit_link icon_link"
-                %td
-                  = link.contact.contact_date
-                %td
-                  = link.event
-                  %span.status
-                    - if link.event.event_end == 'N/A'
-                      in process
-                    - else
-                      complete
-                %td
-                  = link.instrument.to_s
-                %td
-                  - if link.response_set
-                    = link.response_set.survey.title
-                    %span.status
-                      - if link.response_set.complete?
-                        complete
-                      - else
-                        in process
-    
-  - else
-    .psc_note
-      Not yet registered with PSC
-    = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
-      = render "shared/full_error_messages", :object => f.object
-      %p
-        = f.submit "Register with PSC"
-                        
-  .relationships
-    %span.label
-      Relationships
-    - if participant.participant_person_links.blank?
-      %p
-        No relationships exist at this time.
-    - else
-      %table.records
-        %tr
-          %th Select
-          %th Name
-          %th Relationship Type
-        - participant.participant_person_links.each do |ppl|
-          %tr{ :class => cycle('even_record', 'odd_record') }
-            %td
-              = link_to "Edit", edit_person_path(ppl.person), :class => "edit_link icon_link"
-            %td
-              = ppl.person.name
-            %td
-              = ppl.relationship
+  
+  = render "events", :participant => participant
+  = render "relationships", :participant => participant

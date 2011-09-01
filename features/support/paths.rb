@@ -52,6 +52,9 @@ module NavigationHelpers
 
     when /^the edit participant page$/
       edit_participant_path(Participant.last)
+
+    when /^the ppg1 page$/
+      in_ppg_group_participants_path
       
     when /^the edit_arm_participant page$/
       edit_arm_participant_path(Participant.last)
