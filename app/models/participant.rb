@@ -33,8 +33,12 @@
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
   include MdesRecord
+  include ActiveModel::Dirty
+  include ActiveModel::Validations
+  include ActiveModel::Observing
+  
   acts_as_mdes_record :public_id_field => :p_id
-
+  
   belongs_to :person
   belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :p_type,               :conditions => "list_name = 'PARTICIPANT_TYPE_CL1'",    :foreign_key => :p_type_code,               :class_name => 'NcsCode', :primary_key => :local_code
@@ -57,30 +61,97 @@ class Participant < ActiveRecord::Base
   
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :to => :person
   
-  def self.in_ppg_group(local_code)
-    Participant.joins(:ppg_status_histories).where("ppg_status_histories.ppg_status_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
+  ##
+  # State Machine used to manage relationship with Patient Study Calendar
+  state_machine :initial => :pending do
+    before_transition :log_state_change
+
+    event :register do
+      transition :pending => :registered
+    end
+
+    # TODO: determine if this is necessary
+    # state :in_pregnancy_probability_group do
+    #   validates_presence_of :ppg_status
+    # end
+
+    event :assign_to_pregnancy_probability_group do
+      transition :registered => :in_pregnancy_probability_group
+    end
+
   end
   
+  ##
+  # Log each time the Participant changes state 
+  # cf. state_machine above
+  def log_state_change(transition)
+    event, from, to = transition.event, transition.from_name, transition.to_name
+    Rails.logger.info("Participant State Change #{id}: #{from} => #{to} on #{event}")
+  end
+  
+  ##
+  # The current pregnancy probability group status for this participant. 
+  # 
+  # This is determined either by the first assigned status from the ppg_details relationship
+  # or from the most recent ppg_status_histories record. 
+  # Each participant will be associated with a ppg_details record when first screened and 
+  # will have a ppg_status_histories association after the first follow-up. There is a good 
+  # chance that the ppg_status_histories record will be created in tandem with the ppg_details
+  # when first screened, but this cannot be assured.
+  #
+  # The big difference between the two is that the ppg_detail status comes from the PPG_STATUS_CL2
+  # code list whereas the ppg_status_history status comes from the PPG_STATUS_CL1 code list.
+  #
+  # 1 - PPG Group 1: Pregnant and Eligible 
+  # 2 - PPG Group 2: High Probability – Trying to Conceive
+  # 3 - PPG Group 3: High Probability – Recent Pregnancy Loss 
+  # 4 - PPG Group 4: Other Probability – Not Pregnancy and not Trying
+  # 5 - PPG Group 5: Ineligible (Unable to Conceive, age-ineligible)
+  # 6 or nil - PPG: Group 6: Withdrawn
+  # 6 or 7 - Ineligible Dwelling Unit
+  #
+  # @return [NcsCode]
   def ppg_status
     ppg_status_histories.blank? ? ppg_details.first.ppg_first : ppg_status_histories.first.ppg_status
   end
-  
-  def next_scheduled_event
-    ScheduledEvent.new(:date => last_event_date + interval, :event => upcoming_events.first)
+    
+  ##
+  # The next segment in PSC for the participant
+  # based on the current state
+  # (ppg and intensity will also be considered in the future)
+  # 
+  # @return [String]
+  def next_study_segment
+    if pending?
+      nil
+    elsif registered?
+      "LO-Intensity: Pregnancy Screener"
+    elsif in_pregnancy_probability_group?
+      if [1,2].include? ppg_status.local_code
+        "PPG 1 and 2"
+      elsif [3,4].include? ppg_status.local_code
+        "PPG Follow Up"
+      end
+    else
+      nil
+    end
   end
   
   def last_event_date
     contact_links.blank? ? self.created_at.to_date : contact_links.first.created_at.to_date
   end
-
-  def interval
-    in_low_intensity_arm? ? 6.months : 3.months
+  
+  ##
+  # The next event for the participant with the date and the event name
+  # @return [ScheduledEvent]
+  def next_scheduled_event
+    ScheduledEvent.new(:date => last_event_date + interval, :event => upcoming_events.first)
   end
   
-  def in_low_intensity_arm?
-    !high_intensity
-  end
-  
+  ##
+  # Based on the current state, pregnancy probability group, and 
+  # the intensity group (hi/lo) determine the next event
+  # @return [String]
   def upcoming_events
     events = []
     # TODO: do not hard code NcsCode local code here
@@ -95,8 +166,25 @@ class Participant < ActiveRecord::Base
     events
   end
   
+  ##
+  # Display text from the NcsCode list PARTICIPANT_TYPE_CL1 
+  # cf. p_type belongs_to association
+  # @return [String]
   def participant_type
     p_type.to_s
+  end
+  
+  ##
+  # The number of months to wait before the next Follow-Up event
+  # @return [Date]
+  def interval
+    in_low_intensity_arm? ? 6.months : 3.months
+  end
+  
+  ##
+  # @return [true,false]
+  def in_low_intensity_arm?
+    !high_intensity
   end
   
   def father
@@ -117,6 +205,14 @@ class Participant < ActiveRecord::Base
   def partner
     # TODO: do not hard code NcsCode local code here
     relationships(7).first    
+  end
+  
+  ##
+  # Find all Participants for the given pregnancy probability group
+  # @param local_code for NcsCode
+  # @return[Array<Participant>]
+  def self.in_ppg_group(local_code)
+    Participant.joins(:ppg_status_histories).where("ppg_status_histories.ppg_status_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
   end
   
   private

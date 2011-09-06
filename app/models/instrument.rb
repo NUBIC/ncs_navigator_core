@@ -48,6 +48,10 @@ class Instrument < ActiveRecord::Base
   
   validates_presence_of :instrument_version
   
+  ##
+  # Display text from the NcsCode list INSTRUMENT_TYPE_CL1 
+  # cf. instrument_type belongs_to association
+  # @return [String]
   def to_s
     instrument_type.to_s
   end
