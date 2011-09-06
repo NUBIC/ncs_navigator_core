@@ -49,7 +49,7 @@ class Instrument < ActiveRecord::Base
   validates_presence_of :instrument_version
   
   def to_s
-    instrument_type
+    instrument_type.to_s
   end
   
 end

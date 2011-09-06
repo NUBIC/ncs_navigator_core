@@ -16,6 +16,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :edit_arm
       put :update_arm
       put :register_with_psc
+      get :schedule
     end
   end
   resources :contact_links do

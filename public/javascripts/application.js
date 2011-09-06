@@ -36,3 +36,15 @@ function check_select_for_other(select_id, other_id) {
     }
   }
 }
+
+function stop_default_action(e) {
+  if (e &&e.preventDefault) {
+    // to disable the default event we call the preventDefault() method of the event handler 
+    // (for those browsers that recognise standard event listeners)
+    e.preventDefault();
+  } else if (window.event && window.event.returnValue) {
+    // we set the eventReturnValue property to false for Internet Explorer 
+    // (which uses its own proprietary means of attaching events)
+    window.eventReturnValue = false;
+  }
+}

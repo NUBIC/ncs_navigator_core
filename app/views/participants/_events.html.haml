@@ -12,12 +12,18 @@
       %td
         = participant.upcoming_events.to_sentence
   
-  - if PatientStudyCalendar.is_registered?(participant)
-    = render "schedule", :participant => participant
-  - else
-    .psc_note
-      Not yet registered with PSC
-    = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
-      = render "shared/full_error_messages", :object => f.object
-      %p
-        = f.submit "Register with PSC"
+  %div{ :id => "participant_schedule_#{participant.id}" }
+    - if PatientStudyCalendar.is_registered?(participant)
+      = render "schedule", :participant => participant
+    - else
+      .psc_note
+        Not yet registered with PSC
+      = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}"), :html => {:class => "register_participant_with_psc"}) do |f| 
+        = render "shared/full_error_messages", :object => f.object
+        %p
+          = f.submit "Register with PSC"
+
+:javascript
+  $(document).ready(function() {
+    participantTemplateUI = new NCSCore.UI.Participants({ });
+  });

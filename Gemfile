@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://download.bioinformatics.northwestern.edu/gems'
 
-gem 'rails', '3.0.10'
+gem 'rails', '3.1.0'
 
 gem 'bcdatabase', '~> 1.0.5'
 gem 'aker', '~> 3.0'
@@ -19,7 +19,7 @@ gem 'psc'
 gem 'ncs_navigator_configuration'
 
 gem 'uuid'
-gem 'will_paginate', '~> 3.0'
+gem 'will_paginate'
 
 group :development do
   gem 'watchr'
@@ -27,6 +27,15 @@ end
 
 group :development, :test, :ci do
   gem 'rspec-rails', '~> 2.4'
+  
+  gem 'guard'
+  gem 'guard-cucumber'
+  gem 'guard-rspec'
+  gem 'guard-coffeescript'
+  gem 'guard-livereload'
+  gem 'guard-bundler'
+  gem 'jasmine'
+  
 end
 
 group :test, :ci, :cucumber do

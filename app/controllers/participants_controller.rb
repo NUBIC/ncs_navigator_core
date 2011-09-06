@@ -1,4 +1,5 @@
 class ParticipantsController < ApplicationController
+  layout proc { |controller| controller.request.xhr? ? nil : 'application'  } 
   
   # GET /participants
   # GET /participants.json
@@ -25,9 +26,21 @@ class ParticipantsController < ApplicationController
     Rails.logger.info(resp.inspect)
     Rails.logger.info(resp.headers.inspect)
     
-    url = edit_participant_path(@participant)
-    url = params[:redirect_to] unless params[:redirect_to].blank?
-    redirect_to(url, :notice => "#{@participant.person.to_s} registered with PSC")
+    respond_to do |format|
+      format.html do
+        url = edit_participant_path(@participant)
+        url = params[:redirect_to] unless params[:redirect_to].blank?
+        redirect_to(url, :notice => "#{@participant.person.to_s} registered with PSC")
+      end
+      format.json do
+        render :json => { :id => @participant.id, :errors => [] }, :status => :ok
+      end
+    end    
+  end
+
+  def schedule
+    @participant = Participant.find(params[:id])
+    @subject_schedules = PatientStudyCalendar.schedules(@participant)
   end
   
   # GET /participants/new
