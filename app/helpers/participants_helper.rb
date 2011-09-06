@@ -7,7 +7,7 @@ module ParticipantsHelper
   end
   
   def psc_assignment_path(assignment_id)
-    "#{NcsNavigator.configuration.psc_uri}/pages/subject?assignment=#{assignment_id}"
+    "#{NcsNavigator.configuration.psc_uri}pages/subject?assignment=#{assignment_id}"
   end
   
 end

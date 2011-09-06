@@ -32,9 +32,14 @@ require 'spec_helper'
 
 describe Instrument do
   
-  it "should create a new instance given valid attributes" do
+  it "creates a new instance given valid attributes" do
     ins = Factory(:instrument)
     ins.should_not be_nil
+  end
+  
+  it "describes itself in terms of the instrument type" do
+    ins = Factory(:instrument)
+    ins.to_s.should == ins.instrument_type.to_s
   end
   
   it { should belong_to(:psu) }
