@@ -62,17 +62,14 @@ class PatientStudyCalendar
         subject = {:first_name => participant.first_name, :last_name => participant.last_name, :person_id => participant.person.public_id, :gender => participant.gender}
         if participant.person_dob
           subject[:birth_date] = participant.person_dob
-        end
-        
-        Rails.logger.info(subject.inspect)
-        
+        end        
         xm = Builder::XmlMarkup.new(:target => "")
         xm.instruct!
         xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
                         "first-study-segment-id" => segments.first.attribute('id').value, 
-                        "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => "todo_#{Time.now.to_i}") { 
+                        "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => "#{Time.now.to_i}") { 
           xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
         }
         xm.target!

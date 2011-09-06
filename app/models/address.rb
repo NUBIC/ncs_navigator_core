@@ -53,6 +53,10 @@ class Address < ActiveRecord::Base
   belongs_to :address_description,  :conditions => "list_name = 'RESIDENCE_TYPE_CL1'",      :foreign_key => :address_description_code,  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :state,                :conditions => "list_name = 'STATE_CL1'",               :foreign_key => :state_code,                :class_name => 'NcsCode', :primary_key => :local_code
   
+  ##
+  # Concatentate Address information into a complete string
+  # if that data exists.
+  # @return [String]
   def to_s
     addr = []
     addr << address_one

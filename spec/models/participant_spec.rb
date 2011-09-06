@@ -229,6 +229,40 @@ describe Participant do
     end
     
   end
+  
+  context "with state" do
+    
+    let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
+    let(:status2)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+    let(:status3)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
+    let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
+    
+    it "starts in the state of pending" do
+      participant = Factory(:participant)
+      participant.should be_pending
+      participant.can_register?.should be_true
+      participant.can_assign_to_pregnancy_probability_group?.should be_false
+      participant.next_study_segment.should be_nil
+    end
+    
+    it "initially transitions into a registered state" do
+      participant = Factory(:participant)
+      participant.should be_pending
+      participant.register!
+      participant.should be_registered
+      participant.can_assign_to_pregnancy_probability_group?.should be_true
+      participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+    end
+    
+    it "transitions from registered to in pregnancy probability group" do
+      participant = Factory(:participant)
+      Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+      participant.register!
+      participant.assign_to_pregnancy_probability_group!
+      participant.should be_in_pregnancy_probability_group
+      participant.next_study_segment.should == "PPG 1 and 2"
+    end
+  end
 
 
   context "participant types" do

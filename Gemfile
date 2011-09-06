@@ -18,11 +18,15 @@ gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git', :branch => 'rails
 gem 'psc'
 gem 'ncs_navigator_configuration'
 
+gem 'state_machine'
 gem 'uuid'
 gem 'will_paginate'
 
+
 group :development do
   gem 'watchr'
+  gem 'rb-fsevent'
+  gem 'growl_notify' # or gem 'growl'
 end
 
 group :development, :test, :ci do

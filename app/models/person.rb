@@ -73,10 +73,17 @@ class Person < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :last_name
   
+  ##
+  # How to format the date_move attribute
+  # cf. MdesRecord
+  # @return [String]
   def date_move_formatter
     '%Y-%m'
   end
   
+  ##
+  # Determine the age of the Person based on the date of birth
+  # @return [Integer]
   def age
     return nil if dob.blank?
     now = Time.now.utc.to_date
@@ -84,21 +91,36 @@ class Person < ActiveRecord::Base
     now.year - dob.year - offset
   end
   
+  ##
+  # Display text from the NcsCode list GENDER_CL1 
+  # cf. sex belongs_to association
+  # @return [String]
   def gender
     sex.to_s
   end
   
+  ##
+  # Override to_s to return the full name of the Person
+  # aliased as :name and :full_name
+  # @return [String]
   def to_s
     "#{first_name} #{last_name}".strip
   end
   alias :name :to_s
   alias :full_name :to_s
   
+  ##
   # A Person is a Participant if there is an association on the participant table
+  # @return [Boolean]
   def participant?
     !participant.nil?
   end
   
+  ##
+  # Based on the current state, pregnancy probability group, and 
+  # the intensity group (hi/lo) determine the next event
+  # cf. Participant.upcoming_events
+  # @return [String]
   def upcoming_events
     events = []
     if participant? 
@@ -109,6 +131,9 @@ class Person < ActiveRecord::Base
     events
   end
   
+  ##
+  # Determines the next Survey to administer.
+  # @return [Survey]
   def next_survey
     event = upcoming_events.first
     instrument = InstrumentEventMap.instruments_for(event).first if event 
@@ -116,6 +141,12 @@ class Person < ActiveRecord::Base
     result
   end
   
+  ##
+  # Create a new ResponseSet for the Person associated with the given Survey
+  # and pre-populate questions to which we have previous data.
+  # 
+  # @param [Survey]
+  # @return [ResponseSet]
   def start_instrument(survey)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
