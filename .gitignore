@@ -9,3 +9,11 @@ coverage/
 coverage/*
 surveys/kitchen_sink_survey.rb
 surveys/quiz.rb
+app/coffeescripts/math.coffee
+public/javascripts/Player.js
+public/javascripts/Song.js
+public/javascripts/compiled/math.js
+spec/coffeescripts/math_spec.coffee
+spec/javascripts/PlayerSpec.js
+spec/javascripts/helpers/SpecHelper.js
+spec/javascripts/math_spec.js
