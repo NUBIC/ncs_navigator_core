@@ -15,14 +15,16 @@
   %div{ :id => "participant_schedule_#{participant.id}" }
     - if PatientStudyCalendar.is_registered?(participant)
       = render "schedule", :participant => participant
-    - else
+    - elsif participant.can_register?
       .psc_note
-        Not yet registered with PSC
+        Not yet registered with PSC.
       = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}"), :html => {:class => "register_participant_with_psc"}) do |f| 
         = render "shared/full_error_messages", :object => f.object
         %p
           = f.submit "Register with PSC"
-
+    - else
+      PROGRAMMER NOTE:
+      Something is wrong with the Participant Schedule and PSC. 
 :javascript
   $(document).ready(function() {
     participantTemplateUI = new NCSCore.UI.Participants({ });

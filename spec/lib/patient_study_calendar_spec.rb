@@ -40,6 +40,7 @@ describe PatientStudyCalendar do
       @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
       @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
       @participant = Factory(:participant, :person => @person)
+      @participant.register!
       ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
       Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
     end
@@ -62,6 +63,7 @@ describe PatientStudyCalendar do
     
     it "registers a participant with the study" do
       VCR.use_cassette('psc/assign_subject') do
+        @participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
         resp = PatientStudyCalendar.assign_subject(@participant)
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
       end

@@ -1,6 +1,9 @@
 class ParticipantsController < ApplicationController
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  } 
   
+  ##
+  # List all of the Participants in the application, paginated
+  # 
   # GET /participants
   # GET /participants.json
   def index
@@ -13,14 +16,24 @@ class ParticipantsController < ApplicationController
     end
   end
   
+  ##
+  # List all Participants in the application who belong to this Pregnancy Probability Group
+  # 
+  # GET /participants/in_ppg_group?ppg_group=X
   def in_ppg_group
     params[:ppg_group] ||= 1
     @ppg_group = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => params[:ppg_group]).first
     @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
   end
   
+  ##
+  # If the Participant is not known to PSC, register the participant
+  #
+  # POST /participant/:id/register_with_psc
+  # POST /participant:id/register_with_psc.json
   def register_with_psc
     @participant = Participant.find(params[:id])
+    @participant.register! if @participant.can_register?
     resp = PatientStudyCalendar.assign_subject(@participant)
     
     Rails.logger.info(resp.inspect)
@@ -38,6 +51,10 @@ class ParticipantsController < ApplicationController
     end    
   end
 
+  ##
+  # Retrieve the schedule from PSC for the registered Participant
+  # 
+  # GET /participants/:id/schedule
   def schedule
     @participant = Participant.find(params[:id])
     @subject_schedules = PatientStudyCalendar.schedules(@participant)
@@ -91,9 +108,7 @@ class ParticipantsController < ApplicationController
     @notice = "Successfully added #{@participant.person} to High Intensity Arm"
     @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
     
-    @participant.high_intensity = !@participant.high_intensity
-    
-    if @participant.save
+    if @participant.switch_arm
       
       url = edit_participant_path(@participant)
       url = params[:redirect_to] unless params[:redirect_to].blank?
