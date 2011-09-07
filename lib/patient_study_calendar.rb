@@ -28,7 +28,6 @@ class PatientStudyCalendar
     end
     
     # TODO: set desired assignment id
-    # TODO: determine first-study-segment-id for participant based on participant ppg status
     def assign_subject(participant)
       return nil if is_registered?(participant)
       connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
@@ -68,7 +67,7 @@ class PatientStudyCalendar
         xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                        "first-study-segment-id" => segments.first.attribute('id').value, 
+                        "first-study-segment-id" => participant.next_study_segment, 
                         "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => "#{Time.now.to_i}") { 
           xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
         }

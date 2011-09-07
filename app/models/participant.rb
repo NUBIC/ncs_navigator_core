@@ -49,7 +49,7 @@ class Participant < ActiveRecord::Base
   belongs_to :pid_age_eligibility,  :conditions => "list_name = 'AGE_ELIGIBLE_CL2'",        :foreign_key => :pid_age_eligibility_code,  :class_name => 'NcsCode', :primary_key => :local_code
   
   has_many :ppg_details
-  has_many :ppg_status_histories, :order => "ppg_status_date DESC"
+  has_many :ppg_status_histories, :order => "created_at DESC"
   
   has_many :participant_person_links
   has_many :person_relations, :through => :participant_person_links, :source => :person
@@ -77,6 +77,10 @@ class Participant < ActiveRecord::Base
 
     event :assign_to_pregnancy_probability_group do
       transition :registered => :in_pregnancy_probability_group
+    end
+
+    event :impregnate do
+      transition :in_pregnancy_probability_group => :pregnant
     end
 
   end
@@ -132,6 +136,8 @@ class Participant < ActiveRecord::Base
       elsif [3,4].include? ppg_status.local_code
         "PPG Follow Up"
       end
+    elsif pregnant?
+      "Birth Visit Interview"
     else
       nil
     end
@@ -185,6 +191,14 @@ class Participant < ActiveRecord::Base
   # @return [true,false]
   def in_low_intensity_arm?
     !high_intensity
+  end
+  
+  ##
+  # Helper method to switch from lo intensity to hi intensity protocol and vice-versa
+  # @return [true, false]
+  def switch_arm
+    self.high_intensity = !self.high_intensity
+    self.save
   end
   
   def father

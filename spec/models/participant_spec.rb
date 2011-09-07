@@ -236,31 +236,71 @@ describe Participant do
     let(:status2)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
     let(:status3)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
     let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
+    let(:status5)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5: Ineligible", :local_code => 5) }
     
-    it "starts in the state of pending" do
-      participant = Factory(:participant)
-      participant.should be_pending
-      participant.can_register?.should be_true
-      participant.can_assign_to_pregnancy_probability_group?.should be_false
-      participant.next_study_segment.should be_nil
-    end
+    context "for the Lo Intensity Protocol" do
+      
+      it "starts in the state of pending" do
+        participant = Factory(:participant)
+        participant.should be_in_low_intensity_arm
+        participant.should be_pending
+        participant.can_register?.should be_true
+        participant.can_assign_to_pregnancy_probability_group?.should be_false
+        participant.next_study_segment.should be_nil
+      end
     
-    it "initially transitions into a registered state" do
-      participant = Factory(:participant)
-      participant.should be_pending
-      participant.register!
-      participant.should be_registered
-      participant.can_assign_to_pregnancy_probability_group?.should be_true
-      participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
-    end
+      it "initially transitions into a registered state" do
+        participant = Factory(:participant)
+        participant.should be_pending
+        participant.register!
+        participant.should be_registered
+        participant.can_assign_to_pregnancy_probability_group?.should be_true
+        participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+      end
     
-    it "transitions from registered to in pregnancy probability group" do
-      participant = Factory(:participant)
-      Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
-      participant.register!
-      participant.assign_to_pregnancy_probability_group!
-      participant.should be_in_pregnancy_probability_group
-      participant.next_study_segment.should == "PPG 1 and 2"
+      it "transitions from registered to in pregnancy probability group - PPG1/2" do
+        participant = Factory(:participant)
+        participant.register!
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+        participant.assign_to_pregnancy_probability_group!
+        participant.should be_in_pregnancy_probability_group
+        participant.next_study_segment.should == "PPG 1 and 2"
+      end
+    
+      it "transitions from registered to in pregnancy probability group - PPG3/4" do
+        participant = Factory(:participant)
+        participant.register!
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
+        participant.assign_to_pregnancy_probability_group!
+        participant.should be_in_pregnancy_probability_group
+        participant.next_study_segment.should == "PPG Follow Up"
+      end
+    
+      it "transitions from registered to in pregnancy probability group - PPG5/6" do
+        participant = Factory(:participant)
+        participant.register!
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status5)
+        participant.assign_to_pregnancy_probability_group!
+        participant.should be_in_pregnancy_probability_group
+        participant.next_study_segment.should be_nil
+      end
+
+      it "transitions from in pregnancy probability group to pregnant" do
+        participant = Factory(:participant)
+        participant.register!
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
+        participant.assign_to_pregnancy_probability_group!
+        participant.should be_in_pregnancy_probability_group
+        participant.next_study_segment.should == "PPG Follow Up"
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+        participant = Participant.find(participant.id)
+        participant.ppg_status.local_code.should == 1
+        participant.next_study_segment.should == "PPG 1 and 2"
+        
+        participant.impregnate!
+        participant.should be_pregnant
+        participant.next_study_segment.should == "Birth Visit Interview"
+      end
     end
   end
 
