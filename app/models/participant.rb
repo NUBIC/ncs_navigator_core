@@ -65,6 +65,8 @@ class Participant < ActiveRecord::Base
   # State Machine used to manage relationship with Patient Study Calendar
   state_machine :initial => :pending do
     before_transition :log_state_change
+    after_transition :on => :enroll_in_high_intensity_arm, :do => :switch_arm
+
 
     event :register do
       transition :pending => :registered
@@ -82,6 +84,30 @@ class Participant < ActiveRecord::Base
     event :impregnate do
       transition :in_pregnancy_probability_group => :pregnant
     end
+    
+    event :enroll_in_high_intensity_arm do
+      transition :in_pregnancy_probability_group => :in_high_intensity_arm, :pregnant => :in_high_intensity_arm
+    end
+    
+    event :non_pregnant_consent do
+      transition :in_high_intensity_arm => :pre_pregnancy
+    end
+    
+    event :pregnant_consent do
+      transition :in_high_intensity_arm => :pregnancy_one
+    end
+    
+    # event :pregnancy_one_visit do
+    #   transition :pregnancy_one => :pregnancy_two
+    # end
+    # 
+    # event :birth_child do
+    #   transition :pregnancy_one => :birth, :pregnancy_two => :birth
+    # end
+    # 
+    # event :three_months_after_birth do
+    #   transition :birth => :three_month
+    # end
 
   end
   
@@ -121,25 +147,14 @@ class Participant < ActiveRecord::Base
     
   ##
   # The next segment in PSC for the participant
-  # based on the current state
-  # (ppg and intensity will also be considered in the future)
+  # based on the current state, pregnancy probability group, and protocol arm
   # 
   # @return [String]
   def next_study_segment
-    if pending?
-      nil
-    elsif registered?
-      "LO-Intensity: Pregnancy Screener"
-    elsif in_pregnancy_probability_group?
-      if [1,2].include? ppg_status.local_code
-        "PPG 1 and 2"
-      elsif [3,4].include? ppg_status.local_code
-        "PPG Follow Up"
-      end
-    elsif pregnant?
-      "Birth Visit Interview"
+    if low_intensity?
+      next_low_intensity_study_segment
     else
-      nil
+      next_high_intensity_study_segment
     end
   end
   
@@ -184,12 +199,12 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next Follow-Up event
   # @return [Date]
   def interval
-    in_low_intensity_arm? ? 6.months : 3.months
+    low_intensity? ? 6.months : 3.months
   end
   
   ##
   # @return [true,false]
-  def in_low_intensity_arm?
+  def low_intensity?
     !high_intensity
   end
   
@@ -233,6 +248,34 @@ class Participant < ActiveRecord::Base
   
     def relationships(code)
       participant_person_links.select { |ppl| ppl.relationship.local_code == code }.collect { |ppl| ppl.person } 
+    end
+    
+    def next_low_intensity_study_segment
+      if pending?
+        nil
+      elsif registered?
+        "LO-Intensity: Pregnancy Screener"
+      elsif in_pregnancy_probability_group?
+        if [1,2].include? ppg_status.local_code
+          "LO-Intensity: PPG 1 and 2"
+        elsif [3,4].include? ppg_status.local_code
+          "LO-Intensity: PPG Follow Up"
+        end
+      elsif pregnant?
+        "LO-Intensity: Birth Visit Interview"
+      else
+        nil
+      end
+    end
+  
+    def next_high_intensity_study_segment
+      if in_high_intensity_arm?
+        "HI-Intensity: HI-LO Conversion"
+      elsif pre_pregnancy?
+        "HI-Intensity: Pre-Pregnancy"
+      else
+        nil
+      end
     end
   
 end
