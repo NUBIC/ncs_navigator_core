@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "selectors"))
 
-When /^I wait (\d+) seconds$/ do |wait_seconds|
+When /^I wait (\d+) second/ do |wait_seconds|
   sleep(wait_seconds.to_i)
 end
 

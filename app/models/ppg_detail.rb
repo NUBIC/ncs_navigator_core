@@ -37,4 +37,8 @@ class PpgDetail < ActiveRecord::Base
   belongs_to :ppg_pid_status, :conditions => "list_name = 'PARTICIPANT_STATUS_CL1'",  :foreign_key => :ppg_pid_status_code,   :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :ppg_first,      :conditions => "list_name = 'PPG_STATUS_CL2'",          :foreign_key => :ppg_first_code,        :class_name => 'NcsCode', :primary_key => :local_code
 
+  def to_s
+    "#{ppg_first}"
+  end
+
 end

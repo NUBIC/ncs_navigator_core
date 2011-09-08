@@ -7,7 +7,13 @@ NCSCore.UI.Participants = function (config) {
       $('div#participant_schedule_' + participant_id).replaceWith(response);
     });
   };
+  
+  var onerror = function(data) {
+    var participant_id = data["id"];
+    $('div#participant_schedule_' + participant_id).append("<div class='psc_error'>" + data.errors + "</div>");
+  };
 
+  $('.register_participant_with_psc').die('click');
   $('.register_participant_with_psc').live('click', function(e) {
     stop_default_action(e);
     $.ajax({
@@ -15,8 +21,11 @@ NCSCore.UI.Participants = function (config) {
       url: $(this).attr('action'),
       data: $(this).serializeArray(),
       dataType: 'json',
-      success: function(response) {
-        onsuccess(response);
+      success: function(data) {
+        onsuccess(data);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        onerror($.parseJSON(jqXHR.responseText));
       }
     });
   });

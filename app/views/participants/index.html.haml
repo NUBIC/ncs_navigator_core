@@ -7,7 +7,8 @@
   - else
     .records_header
       .page_entries_info
-        = raw page_entries_info @participants
+        - model_name = (@participants.size == 1 ? "Participant" : "Participants")
+        = raw page_entries_info @participants, {:model => model_name}
     %table.records
       %tr
         %th

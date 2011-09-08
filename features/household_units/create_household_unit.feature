@@ -50,8 +50,10 @@ Feature: Creating a household unit
     And I follow "add_household_person_links"
     And I focus on the autocomplete input element
     And I fill in "autocomplete_combobox_person" with "Bix"
+    And I wait 1 second
     Then I should see "Bix Beiderbecke"
     When I click on the "Bix Beiderbecke" autocomplete option
+    And I wait 1 second
     And I press "Submit"
     Then I should see "Household was successfully created."
     And I should be on the household units page
