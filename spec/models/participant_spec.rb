@@ -38,7 +38,7 @@ describe Participant do
   
   it "is in low intensity arm by default" do
     participant = Factory(:participant)
-    participant.should be_in_low_intensity_arm
+    participant.should be_low_intensity
   end
   
   it { should belong_to(:psu) }
@@ -238,11 +238,11 @@ describe Participant do
     let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
     let(:status5)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5: Ineligible", :local_code => 5) }
     
-    context "for the Lo Intensity Protocol" do
+    context "for the Low Intensity Protocol" do
       
       it "starts in the state of pending" do
         participant = Factory(:participant)
-        participant.should be_in_low_intensity_arm
+        participant.should be_low_intensity
         participant.should be_pending
         participant.can_register?.should be_true
         participant.can_assign_to_pregnancy_probability_group?.should be_false
@@ -264,7 +264,7 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
-        participant.next_study_segment.should == "PPG 1 and 2"
+        participant.next_study_segment.should == "LO-Intensity: PPG 1 and 2"
       end
     
       it "transitions from registered to in pregnancy probability group - PPG3/4" do
@@ -273,7 +273,7 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
-        participant.next_study_segment.should == "PPG Follow Up"
+        participant.next_study_segment.should == "LO-Intensity: PPG Follow Up"
       end
     
       it "transitions from registered to in pregnancy probability group - PPG5/6" do
@@ -291,15 +291,62 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
-        participant.next_study_segment.should == "PPG Follow Up"
+        participant.next_study_segment.should == "LO-Intensity: PPG Follow Up"
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
         participant = Participant.find(participant.id)
         participant.ppg_status.local_code.should == 1
-        participant.next_study_segment.should == "PPG 1 and 2"
+        participant.next_study_segment.should == "LO-Intensity: PPG 1 and 2"
         
         participant.impregnate!
         participant.should be_pregnant
-        participant.next_study_segment.should == "Birth Visit Interview"
+        participant.next_study_segment.should == "LO-Intensity: Birth Visit Interview"
+      end
+    end
+    
+    context "for the High Intensity Protocol" do
+      it "can enroll in the high intensity arm only after being assigned a Pregnancy Probability Group" do
+        participant = Factory(:participant)
+        participant.should be_low_intensity
+        participant.can_enroll_in_high_intensity_arm?.should be_false
+
+        participant.register!
+        participant.can_enroll_in_high_intensity_arm?.should be_false
+
+        participant.assign_to_pregnancy_probability_group!
+        participant.can_enroll_in_high_intensity_arm?.should be_true
+      end
+      
+      it "can enroll in the high intensity arm if pregnant" do
+        participant = Factory(:participant)
+        participant.should be_low_intensity
+        participant.register!
+        participant.assign_to_pregnancy_probability_group!
+        participant.impregnate!
+        participant.can_enroll_in_high_intensity_arm?.should be_true
+      end
+      
+      context "having enrolled in the High Intensity Arm" do
+      
+        before(:each) do
+          @participant = Factory(:participant)
+          @participant.register!
+          Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2)
+          @participant.assign_to_pregnancy_probability_group!
+          @participant.enroll_in_high_intensity_arm!
+        end
+        
+        it "will initially take the Hi-Lo Conversion script" do
+          @participant.should be_in_high_intensity_arm
+          @participant.should_not be_low_intensity
+          @participant.next_study_segment.should == "HI-Intensity: HI-LO Conversion"
+        end
+        
+        it "consents to the high intensity protocol" do
+          @participant.non_pregnant_consent!
+          @participant.should be_pre_pregnancy
+          @participant.next_study_segment.should == "HI-Intensity: Pre-Pregnancy"
+        end
+        
       end
     end
   end
