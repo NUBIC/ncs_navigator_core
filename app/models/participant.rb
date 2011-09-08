@@ -56,6 +56,8 @@ class Participant < ActiveRecord::Base
   
   validates_presence_of :person
   
+  accepts_nested_attributes_for :ppg_details, :allow_destroy => true
+  
   scope :in_low_intensity, where("high_intensity is null or high_intensity is false")
   scope :in_high_intensity, where("high_intensity is true")
   
@@ -241,7 +243,10 @@ class Participant < ActiveRecord::Base
   # @param local_code for NcsCode
   # @return[Array<Participant>]
   def self.in_ppg_group(local_code)
-    Participant.joins(:ppg_status_histories).where("ppg_status_histories.ppg_status_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
+    results = []
+    results << Participant.joins(:ppg_status_histories).where("ppg_status_histories.ppg_status_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
+    results << Participant.joins(:ppg_details).where("ppg_details.ppg_first_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
+    results.flatten.uniq
   end
   
   private

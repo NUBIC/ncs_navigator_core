@@ -12,8 +12,21 @@
   }
 }
 
+.ppg_details {
+  border: 1px solid $BORDER_GRAY;
+  padding: 0.5em;
+  margin: 0 1em 0.5em 0;  
+}
+
+.psc_error {
+  color: crimson;
+  margin: 0.5em;
+}
+
 #edit_person_link,
-#edit_participant_link {
+#edit_participant_link,
+#create_person_link,
+#create_participant_link {
   text-align: right;
   padding-right: 1em;
 }

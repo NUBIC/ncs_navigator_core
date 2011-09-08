@@ -7,10 +7,7 @@ Feature: Initiating a contact
   Scenario: Initiating contact
     Given valid ncs codes
     And an authenticated user
-    And the following pregnant participants:
-      | first_name | last_name |
-      | Bessie     | Smith     |
-    Then 1 people should exist
+    And a registered pregnant participant
     When I go to the home page
     Then I should see "NCS Navigator"
     And I should see "1 PPG Group 1: Pregnant and Eligible"

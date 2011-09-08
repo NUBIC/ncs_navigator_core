@@ -1,6 +1,6 @@
 .participant_schedule
-  %h3
-    Participant Schedule
   %p
-    registered with PSC
-  = render "schedule", {:participant => @participant}
+    = @participant.person
+    is now registered with PSC
+
+= render "events", :participant => @participant

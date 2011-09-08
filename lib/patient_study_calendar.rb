@@ -67,11 +67,38 @@ class PatientStudyCalendar
         xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                        "first-study-segment-id" => participant.next_study_segment, 
+                        "first-study-segment-id" => get_study_segment_id(participant.next_study_segment), 
                         "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => "#{Time.now.to_i}") { 
           xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
         }
         xm.target!
       end
+      
+      def get_study_segment_id(segment)
+        result = nil
+        segment = strip_epoch(segment)
+        segments.each do |seg|
+          
+          Rails.logger.info("~~ testing #{seg.attribute('name')}")
+          Rails.logger.info("#{seg.attribute('name')} == #{segment} = #{seg.attribute('name') == segment}")
+          Rails.logger.info("~~ testing #{seg.attribute('name').value}")
+          Rails.logger.info("#{seg.attribute('name').value} == #{segment} = #{seg.attribute('name').value == segment}")
+          result = seg.attribute('id').value if seg.attribute('name').value == segment
+          break if result
+        end
+        
+        Rails.logger.info("~~~ study_segment_id = #{result} for #{segment}")
+        
+        result
+      end
+      
+      def strip_epoch(segment)
+        return segment unless segment.include?(":")
+        segments = segment.split(":")
+        return segments[1].strip
+      end
+      
+      
+      
   end
 end

@@ -3,6 +3,12 @@ body {
   font-size: 14px;
 }
 
+.developer_note {
+  font-size: 0.7em;
+  font-style: italic;
+  color: $BORDER_GRAY;
+}
+
 a {
   color: #0000FF;
   img {

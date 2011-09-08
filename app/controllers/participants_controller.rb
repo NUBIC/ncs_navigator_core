@@ -33,22 +33,37 @@ class ParticipantsController < ApplicationController
   # POST /participant:id/register_with_psc.json
   def register_with_psc
     @participant = Participant.find(params[:id])
-    @participant.register! if @participant.can_register?
-    resp = PatientStudyCalendar.assign_subject(@participant)
+    @participant.register! if @participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
     
+    resp = PatientStudyCalendar.assign_subject(@participant)
+
+    url = edit_participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
     Rails.logger.info(resp.inspect)
     Rails.logger.info(resp.headers.inspect)
-    
-    respond_to do |format|
-      format.html do
-        url = edit_participant_path(@participant)
-        url = params[:redirect_to] unless params[:redirect_to].blank?
-        redirect_to(url, :notice => "#{@participant.person.to_s} registered with PSC")
+
+    if resp.status.to_i < 299
+      respond_to do |format|
+        format.html do
+          redirect_to(url, :notice => "#{@participant.person.to_s} registered with PSC")
+        end
+        format.json do
+          render :json => { :id => @participant.id, :errors => [] }, :status => :ok
+        end
       end
-      format.json do
-        render :json => { :id => @participant.id, :errors => [] }, :status => :ok
+    else
+      @participant.update_attribute(:state, 'pending') if @participant.registered? # reset to initial state if failed to register with PSC
+      respond_to do |format|
+        format.html do
+          redirect_to(url, :error => "#{resp.body}")
+        end
+        format.json do
+          render :json => { :id => @participant.id, :errors => "#{resp.body}" }, :status => :error
+        end
       end
-    end    
+    end
+
   end
 
   ##
@@ -96,6 +111,20 @@ class ParticipantsController < ApplicationController
   # GET /participants/1/edit
   def edit
     @participant = Participant.find(params[:id])
+  end
+  
+  def update
+    @participant = Participant.find(params[:id])
+
+    respond_to do |format|
+      if @participant.update_attributes(params[:participant])
+        format.html { redirect_to(participants_path, :notice => 'Participant was successfully created.') }
+        format.json { render :json => @participant }
+      else
+        format.html { render :action => "edit" }
+        format.json { render :json => @participant.errors }
+      end
+    end
   end
   
   def edit_arm

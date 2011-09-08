@@ -48,6 +48,7 @@ Given /^valid ncs codes$/ do
   create_missing_in_error_ncs_codes(Contact)
   create_missing_in_error_ncs_codes(Event)
   create_missing_in_error_ncs_codes(Instrument)
+  create_missing_in_error_ncs_codes(PpgDetail)
 end
 
 

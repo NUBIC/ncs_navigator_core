@@ -1,6 +1,6 @@
-Given /^a pregnant participant on the ppg1 page with an instrument$/ do
+Given /^a registered pregnant participant on the ppg1 page with an instrument$/ do
   steps %Q{
-    Given a pregnant participant
+    Given a registered pregnant participant
     And a pregnancy visit 1 survey exists
     And ppg1 page is validated
   }
@@ -46,7 +46,6 @@ Given /^ppg1 page is validated$/ do
     Then I should see "1 PPG Group 1: Pregnant and Eligible"
     When I follow "PPG Group 1: Pregnant and Eligible"
     Then I should be on the ppg1 page
-    And I should see "Pregnancy Visit 1"
     And I should see "Bessie Smith"
   }
 end

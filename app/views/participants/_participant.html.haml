@@ -1,6 +1,8 @@
 
 .participant
   .switch_arm
+    .developer_note
+      (This will be replaced with the Hi/Lo Conversion Instrument)
     = form_for(participant, :url => update_arm_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
       = render "shared/full_error_messages", :object => f.object
       = f.hidden_field :high_intensity

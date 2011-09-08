@@ -39,7 +39,7 @@ module NavigationHelpers
       events_person_path(Participant.first.person_id)
       
     when /^the new_person_contact page$/
-      new_person_contact_path(Participant.first.person_id)
+      new_person_contact_path(Participant.last.person_id)
       
     when /^the edit_person_contact page$/
       edit_person_contact_path(Participant.first.person_id, Contact.last)

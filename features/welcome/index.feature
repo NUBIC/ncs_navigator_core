@@ -22,7 +22,8 @@ Feature: Accessing the application
   #   Then I should see "NCS Navigator"
   #   And I should see "Test Dwelling"
   #   And I should see "Household Enumeration"
-    
+  
+  @javascript
   Scenario: Accessing an instance of the application with participants
     Given valid ncs codes
     And an authenticated user
@@ -30,16 +31,16 @@ Feature: Accessing the application
       | first_name | last_name |
       | Judy       | Garland   |
       | Ma         | Rainey    |
-      | Bessie     | Smith     | 
+    And a registered pregnant participant
     Then 3 people should exist
     When I go to the home page
     Then I should see "NCS Navigator"
     And I should see "3 PPG Group 1: Pregnant and Eligible"
     When I follow "PPG Group 1: Pregnant and Eligible"
     Then I should see "Pregnancy Visit 1"
-    And I should see "Judy Garland"
+    And I should see "Bessie Smith"
     When I follow "Initiate Contact"
     Then I should be on the new_person_contact page
-    And I should see "Judy Garland"
+    And I should see "Bessie Smith"
     And I should see "Pregnancy Visit 1"
     # And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"

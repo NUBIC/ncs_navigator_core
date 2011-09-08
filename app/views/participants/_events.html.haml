@@ -1,19 +1,21 @@
+- registered = PatientStudyCalendar.is_registered?(participant)
 .upcoming
-  %span.label
-    Upcoming Events
+  - if registered
+    %span.label
+      Upcoming Events
   
-  %table.records
-    %tr
-      %th Select
-      %th Event
-    %tr{ :class => cycle('even_record', 'odd_record') }
-      %td
-        = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
-      %td
-        = participant.upcoming_events.to_sentence
+    %table.records
+      %tr
+        %th Select
+        %th Event
+      %tr{ :class => cycle('even_record', 'odd_record') }
+        %td
+          = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
+        %td
+          = participant.upcoming_events.to_sentence
   
   %div{ :id => "participant_schedule_#{participant.id}" }
-    - if PatientStudyCalendar.is_registered?(participant)
+    - if registered
       = render "schedule", :participant => participant
     - elsif participant.can_register?
       .psc_note
@@ -23,8 +25,9 @@
         %p
           = f.submit "Register with PSC"
     - else
-      PROGRAMMER NOTE:
-      Something is wrong with the Participant Schedule and PSC. 
+      .developer_note
+        PROGRAMMER NOTE:
+        Participant is out of sync with PSC. Reset state to "pending".
 :javascript
   $(document).ready(function() {
     participantTemplateUI = new NCSCore.UI.Participants({ });
