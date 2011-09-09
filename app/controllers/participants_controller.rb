@@ -53,7 +53,7 @@ class ParticipantsController < ApplicationController
         end
       end
     else
-      @participant.update_attribute(:state, 'pending') if @participant.registered? # reset to initial state if failed to register with PSC
+      @participant.unregister! if @participant.registered? # reset to initial state if failed to register with PSC
       respond_to do |format|
         format.html do
           redirect_to(url, :error => "#{resp.body}")

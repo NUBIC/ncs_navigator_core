@@ -37,7 +37,19 @@ class PatientStudyCalendar
       resp = connection.get("subjects/#{participant.person.public_id}/schedules.json")
       resp.body
     end
-    
+       
+    ##
+    # The PSC assigments returns the epoch prefix to the study segment (e.g. "HI-Intesity: HI-LO Conversion")
+    # but when scheduling someone to a segment, it is more useful to use only the study segment name minus the epoch prefix.
+    # This method removes the prefix.
+    #
+    # @param [String]
+    # @return [String]   
+    def strip_epoch(segment)
+      return segment unless segment.include?(":")
+      segments = segment.split(":")
+      return segments[1].strip
+    end
     
     private
     
@@ -90,15 +102,7 @@ class PatientStudyCalendar
         Rails.logger.info("~~~ study_segment_id = #{result} for #{segment}")
         
         result
-      end
-      
-      def strip_epoch(segment)
-        return segment unless segment.include?(":")
-        segments = segment.split(":")
-        return segments[1].strip
-      end
-      
-      
+      end      
       
   end
 end

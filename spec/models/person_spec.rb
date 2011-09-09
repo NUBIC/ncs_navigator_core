@@ -204,7 +204,7 @@ describe Person do
     
   end
 
-  context "with events" do
+  context "with events and assigned to a PPG" do
     
     describe "a person who is not a participant" do
     
@@ -217,98 +217,5 @@ describe Person do
       end
     end
     
-    describe "a participant who is pregnant - PPG 1" do
-    
-      it "knows the upcoming applicable events" do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
-        participant = Factory(:participant)
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-        participant.upcoming_events.should_not be_empty
-      
-        participant.person.should be_participant
-        participant.upcoming_events.should == ["Pregnancy Visit 1"]
-      end
-    end
-    
-    describe "a participant who is not pregnant but actively trying - PPG 2" do
-      
-      it "knows the upcoming applicable events" do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-        participant = Factory(:participant)
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-        participant.upcoming_events.should_not be_empty
-    
-        participant.person.should be_participant
-        participant.upcoming_events.should == ["Pre-Pregnancy"]
-      end
-    end
-    
-    describe "a participant who has had a recent pregnancy loss - PPG 3" do
-      
-      it "knows the upcoming applicable events" do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
-        participant = Factory(:participant)
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-        participant.upcoming_events.should_not be_empty
-    
-        participant.person.should be_participant
-        participant.upcoming_events.should == ["Pregnancy Probability"]
-      end
-    end
-    
-    describe "a participant who is not pregnant and not trying - PPG 4" do
-      
-      it "knows the upcoming applicable events" do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
-        participant = Factory(:participant)
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-        participant.upcoming_events.should_not be_empty
-    
-        participant.person.should be_participant
-        participant.upcoming_events.should == ["Pregnancy Probability"]
-      end
-    end
-    
   end
-
-  
-  context "with instruments" do
-        
-    describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
-      
-      before(:each) do
-        Survey.destroy_all
-      end
-      
-      let(:person) { Factory(:person) }
-      let(:participant) { Factory(:participant, :person => person) }
-
-      let(:pv1survey) { Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0") }
-      let(:presurvey) { Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1") }
-
-      let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
-      let(:status2) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
-    
-      it "creates a response set for the instrument" do
-
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
-
-        section   = Factory(:survey_section, :survey => pv1survey)
-        question  = Factory(:question, :survey_section => section, :data_export_identifier => "name")
-        answer    = Factory(:answer, :question => question)
-
-        ResponseSet.where(:user_id => person.id).should be_empty
-      
-        person.start_instrument(participant.person.next_survey)
-      
-        rs = ResponseSet.where(:user_id => person.id).first
-        rs.should_not be_nil
-        rs.responses.should_not be_empty
-        rs.responses.first.string_value.should == person.name
-      end
-
-    end
-    
-  end
-
 end

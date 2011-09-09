@@ -67,11 +67,15 @@ class Participant < ActiveRecord::Base
   # State Machine used to manage relationship with Patient Study Calendar
   state_machine :initial => :pending do
     before_transition :log_state_change
-    after_transition :on => :enroll_in_high_intensity_arm, :do => :switch_arm
+    after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
 
 
     event :register do
       transition :pending => :registered
+    end
+    
+    event :unregister do
+      transition :registered => :pending
     end
 
     # TODO: determine if this is necessary
@@ -82,6 +86,10 @@ class Participant < ActiveRecord::Base
     event :assign_to_pregnancy_probability_group do
       transition :registered => :in_pregnancy_probability_group
     end
+    
+    event :remove_from_pregnancy_probability_group do
+      transition :in_pregnancy_probability_group => :registered
+    end
 
     event :impregnate do
       transition :in_pregnancy_probability_group => :pregnant
@@ -91,11 +99,11 @@ class Participant < ActiveRecord::Base
       transition :in_pregnancy_probability_group => :in_high_intensity_arm, :pregnant => :in_high_intensity_arm
     end
     
-    event :non_pregnant_consent do
+    event :non_pregnant_informed_consent do
       transition :in_high_intensity_arm => :pre_pregnancy
     end
     
-    event :pregnant_consent do
+    event :pregnant_informed_consent do
       transition :in_high_intensity_arm => :pregnancy_one
     end
     
@@ -177,15 +185,7 @@ class Participant < ActiveRecord::Base
   # @return [String]
   def upcoming_events
     events = []
-    # TODO: do not hard code NcsCode local code here
-    case ppg_status.local_code
-    when 1
-      events << "Pregnancy Visit 1"
-    when 2
-      events << "Pre-Pregnancy"
-    when 3,4
-      events << "Pregnancy Probability"
-    end
+    events << next_study_segment
     events
   end
   
@@ -201,7 +201,11 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next Follow-Up event
   # @return [Date]
   def interval
-    low_intensity? ? 6.months : 3.months
+    if low_intensity? or ppg_status.local_code == 3
+      6.months
+    else
+      3.months
+    end
   end
   
   ##
@@ -210,11 +214,16 @@ class Participant < ActiveRecord::Base
     !high_intensity
   end
   
+  def add_to_high_intensity_protocol
+    switch_arm(true)
+  end
+  
   ##
   # Helper method to switch from lo intensity to hi intensity protocol and vice-versa
   # @return [true, false]
-  def switch_arm
-    self.high_intensity = !self.high_intensity
+  def switch_arm(ensure_high_intensity = false)
+    val = ensure_high_intensity ? true : !self.high_intensity
+    self.high_intensity = val
     self.save
   end
   
@@ -278,6 +287,14 @@ class Participant < ActiveRecord::Base
         "HI-Intensity: HI-LO Conversion"
       elsif pre_pregnancy?
         "HI-Intensity: Pre-Pregnancy"
+      elsif pregnancy_one?
+        "HI-Intensity: Pregnancy Visit 1"
+      elsif in_pregnancy_probability_group?
+        if ppg_status.local_code == 3
+          "HI-Intensity: PPG Follow Up CATI after 6 months"
+        else
+          "HI-Intensity: PPG Follow Up CATI after 3 months"
+        end
       else
         nil
       end
