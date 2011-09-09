@@ -16,6 +16,11 @@ describe InstrumentEventMap do
     
   end
   
+  it "handles the epoch prefix given by psc" do
+    instruments = InstrumentEventMap.instruments_for("HI-Intensity: Pregnancy Visit 1")
+    instruments.size.should == 7
+  end
+  
   it "knows all events" do
     events = InstrumentEventMap.events
     events.size.should == 18

@@ -1,6 +1,7 @@
 class InstrumentEventMap
 
   def self.instruments_for(event)
+    event = PatientStudyCalendar.strip_epoch(event)
     result = []
     INSTRUMENT_EVENT_CONFIG.each do |ie|
       result << ie["filename"] if ie["event"].include?(event)

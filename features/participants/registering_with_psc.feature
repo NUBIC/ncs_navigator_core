@@ -6,7 +6,7 @@ Feature: Registering a participant with Patient Study Calendar (PSC)
 
   @javascript
   Scenario: Registering a new participant with PSC
-    Given a pregnant participant on the ppg1 page
+    Given a unregistered participant on the ppg1 page
     Then I should see "Not yet registered with PSC"
     When I press "Register with PSC"
     Then I should be on the ppg1 page

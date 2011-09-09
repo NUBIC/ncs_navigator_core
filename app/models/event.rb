@@ -74,6 +74,9 @@ class Event < ActiveRecord::Base
   def self.event_types(events)
     result = []
     events.each do |e| 
+      
+      e = PatientStudyCalendar.strip_epoch(e)
+      
       case e
       when "Pregnancy Visit 1"
         result << "Pregnancy Visit  1"

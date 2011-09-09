@@ -182,13 +182,15 @@ describe Participant do
       before(:each) do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
         @participant = Factory(:participant, :high_intensity => true)
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
       end
       
       it "knows the upcoming applicable events when a new record" do
         @participant.ppg_status.local_code.should == 3
-        @participant.next_scheduled_event.event.should == "Pregnancy Probability"
-        @participant.next_scheduled_event.date.should == 3.months.from_now.to_date
+        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
+        @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
       end
       
       it "knows the upcoming applicable events who has had a followup already" do
@@ -196,9 +198,9 @@ describe Participant do
         event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
         contact = Factory(:contact)
-        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 2.months.ago)
+        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 5.months.ago)
         
-        @participant.next_scheduled_event.event.should == "Pregnancy Probability"
+        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
         @participant.next_scheduled_event.date.should == 1.month.from_now.to_date
       end
       
@@ -213,15 +215,15 @@ describe Participant do
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 4.month.ago)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 1.month.ago)
         
-        @participant.next_scheduled_event.event.should == "Pregnancy Probability"
-        @participant.next_scheduled_event.date.should == 2.month.from_now.to_date
+        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
+        @participant.next_scheduled_event.date.should == 5.month.from_now.to_date
       end
       
       context "in the low intensity protocol" do
         
         it "knows the upcoming applicable events for a new participant" do
           @participant.high_intensity = false
-          @participant.next_scheduled_event.event.should == "Pregnancy Probability"
+          @participant.next_scheduled_event.event.should == "LO-Intensity: PPG Follow Up"
           @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
       end
@@ -229,6 +231,68 @@ describe Participant do
     end
     
   end
+  
+  context "with events" do
+    
+    context "assigned to a PPG" do
+      
+      context "in high intensity protocol" do
+        
+        describe "a participant who is pregnant - PPG 1" do
+    
+          it "knows the upcoming applicable events" do
+            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
+            Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
+            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+            
+            participant.enroll_in_high_intensity_arm!
+            participant.upcoming_events.should == ["HI-Intensity: HI-LO Conversion"]
+            
+            participant.pregnant_informed_consent!
+            participant.upcoming_events.should == ["HI-Intensity: Pregnancy Visit 1"]
+          end
+        end
+    
+        describe "a participant who is not pregnant but actively trying - PPG 2" do
+      
+          it "knows the upcoming applicable events" do
+            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
+            Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
+            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+
+            participant.enroll_in_high_intensity_arm!
+            participant.upcoming_events.should == ["HI-Intensity: HI-LO Conversion"]
+
+            participant.non_pregnant_informed_consent!
+            participant.upcoming_events.should == ["HI-Intensity: Pre-Pregnancy"]
+          end
+        end
+    
+        describe "a participant who has had a recent pregnancy loss - PPG 3" do
+      
+          it "knows the upcoming applicable events" do
+            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
+            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
+            Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
+            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 6 months"]
+          end
+        end
+    
+        describe "a participant who is not pregnant and not trying - PPG 4" do
+      
+          it "knows the upcoming applicable events" do
+            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
+            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
+            Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
+            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+          end
+        end
+      end
+    end
+  end
+  
   
   context "with state" do
     
@@ -342,7 +406,7 @@ describe Participant do
         end
         
         it "consents to the high intensity protocol" do
-          @participant.non_pregnant_consent!
+          @participant.non_pregnant_informed_consent!
           @participant.should be_pre_pregnancy
           @participant.next_study_segment.should == "HI-Intensity: Pre-Pregnancy"
         end
