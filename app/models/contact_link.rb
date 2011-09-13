@@ -43,4 +43,13 @@ class ContactLink < ActiveRecord::Base
   accepts_nested_attributes_for :event,      :allow_destroy => true
   accepts_nested_attributes_for :instrument, :allow_destroy => true
   
+  ##
+  # A contact link is 'closed' or 'completed' if the disposition of both the event /and/ contact has been set.
+  # @return [true, false]  
+  def closed?
+    (contact && contact.closed?) && (event && event.closed?)
+  end
+  alias completed? closed?
+  alias complete? closed?
+  
 end

@@ -10,3 +10,9 @@
     - else
       = "#{ins}"
     %br
+  
+  // TODO: remove Pregnancy Screener check
+  - if event.include?("Pregnancy Screener") && @participant
+    .developer_note
+      (The Pregnancy Screener Instrument will assign/update the Pregnancy Probability Group - in the interim use the following link)
+    = link_to "Assign to Pregnancy Probability Group", edit_ppg_status_participant_path(@participant)

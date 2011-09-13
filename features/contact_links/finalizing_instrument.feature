@@ -7,7 +7,8 @@ Feature: Finalizing an instrument
   
   Scenario: Finalizing an instrument 
   Given a registered pregnant participant on the ppg1 page with an instrument
-  When I follow "Initiate Contact"
+  When I follow "Bessie Smith"
+  Then I follow "Initiate Contact"
   And I select "In-person" from "Contact Type"
   And I press "Submit"
   Then I should be on the select_instrument_contact_link page

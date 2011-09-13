@@ -65,6 +65,22 @@ class Event < ActiveRecord::Base
     result = "N/A" if result.blank?
     result
   end
+  
+  ##
+  # An event is 'closed' or 'completed' if the disposition has been set.
+  # @return [true, false]
+  def closed?
+    event_disposition.to_i > 0
+  end
+  alias completed? closed?
+  alias complete? closed?
+
+  ##
+  # Using the InstrumentEventMap, find the existing Surveys for this event
+  # @return [Array, <Survey]
+  def surveys
+    Survey.where("title in (?)", InstrumentEventMap.instruments_for(self.to_s)).all
+  end
 
   ##
   # Clean given input to bridge Instrument Event Map in the MDES and 

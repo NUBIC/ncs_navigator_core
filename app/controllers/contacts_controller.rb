@@ -4,7 +4,7 @@ class ContactsController < ApplicationController
   # GET /contacts/new.json
   def new
     @person     = Person.find(params[:person_id])
-    @contact    = Contact.new(:psu_code =>  @psu_code)
+    @contact    = Contact.new(:psu_code =>  @psu_code, :contact_date_date => Date.today)
     
     event_for_contact
 

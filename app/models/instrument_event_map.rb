@@ -1,5 +1,11 @@
 class InstrumentEventMap
 
+  ##
+  # For a given event, return the filenames of all the Instruments/Surveys that match
+  # from the MDES Instrument and Event Map
+  # 
+  # @param [String] - the name of the event (e.g. Pregnancy Screener)
+  # @return [Array, <String>] - filenames for that event
   def self.instruments_for(event)
     event = PatientStudyCalendar.strip_epoch(event)
     result = []
@@ -9,10 +15,17 @@ class InstrumentEventMap
     result
   end
   
+  ##
+  # A list of all the known event names.
+  # @return [Array, <String>]
   def self.events
     INSTRUMENT_EVENT_CONFIG.collect { |ie| ie["event"].split(";") }.flatten.collect { |e| e.strip }.uniq.sort
   end
   
+  ##
+  # Get the current version number for this Instrument from the Instrumnnt and Event Map
+  # @param [String]
+  # @return [String]
   def self.version(filename)
     result = nil
     INSTRUMENT_EVENT_CONFIG.each do |ie|
@@ -24,6 +37,10 @@ class InstrumentEventMap
     result
   end
   
+  ##
+  # For the given filename, find the NcsCode from the INSTRUMENT_TYPE_CL1 Code List.
+  # @param [String]
+  # @return [NcsCode]
   def self.instrument_type(filename)
     result = nil
     INSTRUMENT_EVENT_CONFIG.each do |ie|

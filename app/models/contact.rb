@@ -45,5 +45,14 @@ class Contact < ActiveRecord::Base
   belongs_to :contact_location,         :conditions => "list_name = 'CONTACT_LOCATION_CL1'",    :foreign_key => :contact_location_code,         :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :contact_private,          :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :contact_private_code,          :class_name => 'NcsCode', :primary_key => :local_code  
   belongs_to :who_contacted,            :conditions => "list_name = 'CONTACTED_PERSON_CL1'",    :foreign_key => :who_contacted_code,            :class_name => 'NcsCode', :primary_key => :local_code  
+
+  ##
+  # An event is 'closed' or 'completed' if the disposition has been set.
+  # @return [true, false]  
+  def closed?
+    contact_disposition.to_i > 0
+  end
+  alias completed? closed?
+  alias complete? closed?
   
 end

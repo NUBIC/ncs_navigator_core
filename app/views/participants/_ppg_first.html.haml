@@ -1,0 +1,14 @@
+.developer_note
+  (Assigning a Participant to the initial PPG will be done through the Pregnancy Screener Instrument)      
+.ppg_details
+  %b
+    Initial Pregnancy Participant Group
+  %br
+  - if @participant.new_record? or @participant.ppg_details.blank?
+    = f.fields_for :ppg_details, PpgDetail.new do |ppg_detail_form|
+      %span{ :class => "hide" }
+        = render "shared/inline_ncs_code_select", { :f => ppg_detail_form, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
+      = render "shared/inline_ncs_code_select", { :f => ppg_detail_form, :code => :ppg_pid_status_code, :label_text => "Participant Status", :inline => true }
+      = render "shared/inline_ncs_code_select", { :f => ppg_detail_form, :code => :ppg_first_code, :label_text => "PPG Status", :inline => true }
+  - else
+    = @participant.ppg_details.first.to_s

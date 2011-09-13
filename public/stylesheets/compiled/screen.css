@@ -1306,7 +1306,7 @@ body {
 .developer_note {
   font-size: 0.7em;
   font-style: italic;
-  color: #cccccc;
+  color: #aaaaaa;
 }
 
 /* line 12, ../../../app/stylesheets/partials/_application.scss */
@@ -2202,21 +2202,34 @@ body.ncs #footer .app_version {
 .participant .icon_link {
   font-size: 1em;
 }
+/* line 13, ../../../app/stylesheets/partials/_participants.scss */
+.participant .edit_participant {
+  float: right;
+}
+/* line 17, ../../../app/stylesheets/partials/_participants.scss */
+.participant .schedule {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5em;
+}
+/* line 20, ../../../app/stylesheets/partials/_participants.scss */
+.participant .schedule .activity {
+  padding-left: 0.5em;
+}
 
-/* line 15, ../../../app/stylesheets/partials/_participants.scss */
+/* line 27, ../../../app/stylesheets/partials/_participants.scss */
 .ppg_details {
   border: 1px solid #cccccc;
   padding: 0.5em;
   margin: 0 1em 0.5em 0;
 }
 
-/* line 21, ../../../app/stylesheets/partials/_participants.scss */
+/* line 33, ../../../app/stylesheets/partials/_participants.scss */
 .psc_error {
   color: crimson;
   margin: 0.5em;
 }
 
-/* line 29, ../../../app/stylesheets/partials/_participants.scss */
+/* line 41, ../../../app/stylesheets/partials/_participants.scss */
 #edit_person_link,
 #edit_participant_link,
 #create_person_link,
@@ -2225,7 +2238,7 @@ body.ncs #footer .app_version {
   padding-right: 1em;
 }
 
-/* line 34, ../../../app/stylesheets/partials/_participants.scss */
+/* line 46, ../../../app/stylesheets/partials/_participants.scss */
 .switch_arm {
   float: right;
 }

@@ -46,6 +46,15 @@ describe Contact do
   it { should belong_to(:contact_private) }
   it { should belong_to(:who_contacted) }  
   
+  it "knows when it is 'closed'" do
+    c = Factory(:contact)
+    c.should_not be_closed
+    
+    c.contact_disposition = 510
+    c.should be_closed
+    c.should be_completed
+  end
+  
   context "as mdes record" do
     
     it "sets the public_id to a uuid" do
