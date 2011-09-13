@@ -69,6 +69,7 @@ class Person < ActiveRecord::Base
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
   has_one :participant
   has_many :contact_links, :order => "created_at DESC"
+  has_many :instruments, :through => :contact_links
   
   validates_presence_of :first_name
   validates_presence_of :last_name
@@ -165,6 +166,18 @@ class Person < ActiveRecord::Base
       Response.create(:response_set => response_set, :question => question, :answer => answer, :string_value => name)
     end
     response_set
+  end
+  
+  ##
+  # Return the currently active ContactLink, if a person is associated with a Contact through 
+  # a ContactLink and that ContactLink has not been closed (cf. Event#closed? and Contact#closed?)
+  # 
+  # @return [ContactLink]
+  def current_contact_link
+    open_contact_links = contact_links.select { |link| !link.complete? }
+    return nil if open_contact_links.blank?
+    return open_contact_links.first if open_contact_links.size == 1
+    # TODO: what to do if there is more than one open contact?
   end
   
   private

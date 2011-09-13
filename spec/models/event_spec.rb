@@ -42,6 +42,25 @@ describe Event do
   it { should belong_to(:event_breakoff) }
   it { should belong_to(:event_incentive_type) }
   
+  it "knows when it is 'closed'" do
+    e = Factory(:event)
+    e.should_not be_closed
+    
+    e.event_disposition = 510
+    e.should be_closed
+    e.should be_completed
+  end
+  
+  context "surveys for the event" do
+    
+    it "knows it's Surveys" do
+      event_type = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Screener")
+      e = Factory(:event, :event_type => event_type)
+      survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0")
+      e.surveys.should == [survey]
+    end
+  end
+  
   context "as mdes record" do
     
     it "sets the public_id to a uuid" do

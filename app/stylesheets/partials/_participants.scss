@@ -10,6 +10,18 @@
   .icon_link {
     font-size: 1em;
   }
+  .edit_participant {
+    float: right;
+  }
+  
+  .schedule {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.5em;
+    .activity {
+      padding-left: 0.5em;
+    }
+  }
+
 }
 
 .ppg_details {

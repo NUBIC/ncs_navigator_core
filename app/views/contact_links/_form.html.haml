@@ -16,12 +16,19 @@
       = fields_for @contact_link.event do |event|
         = render "events/form_fields", { :f => event }
         
-    
-    .contact_link_section
-      %h3
-        Instrument
-      = fields_for @contact_link.instrument do |instrument|
-        = render "instruments/form_fields", { :f => instrument }
+    - if @contact_link.instrument.blank?
+      .contact_link_section
+        %h3
+          Instrument
+        %p
+          No Instrument exists for the current event - 
+          = @contact_link.event
+    - else
+      .contact_link_section
+        %h3
+          Instrument
+        = fields_for @contact_link.instrument do |instrument|
+          = render "instruments/form_fields", { :f => instrument }
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'

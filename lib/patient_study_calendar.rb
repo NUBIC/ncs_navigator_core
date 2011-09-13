@@ -27,9 +27,10 @@ class PatientStudyCalendar
       resp.status < 300
     end
     
-    # TODO: set desired assignment id
     def assign_subject(participant)
-      return nil if is_registered?(participant)
+      Rails.logger.info("~~~ assign_subject is_registered?(participant) = #{is_registered?(participant)}")
+      Rails.logger.info("~~~ assign_subject participant.next_study_segment = #{participant.next_study_segment}")
+      return nil if is_registered?(participant) || participant.next_study_segment.blank?
       connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
     end
     
@@ -90,17 +91,9 @@ class PatientStudyCalendar
         result = nil
         segment = strip_epoch(segment)
         segments.each do |seg|
-          
-          Rails.logger.info("~~ testing #{seg.attribute('name')}")
-          Rails.logger.info("#{seg.attribute('name')} == #{segment} = #{seg.attribute('name') == segment}")
-          Rails.logger.info("~~ testing #{seg.attribute('name').value}")
-          Rails.logger.info("#{seg.attribute('name').value} == #{segment} = #{seg.attribute('name').value == segment}")
           result = seg.attribute('id').value if seg.attribute('name').value == segment
           break if result
         end
-        
-        Rails.logger.info("~~~ study_segment_id = #{result} for #{segment}")
-        
         result
       end      
       

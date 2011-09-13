@@ -1,0 +1,45 @@
+- javascript 'nested_attributes', 'ui/ppg_status_histories'
+- title "Update Pregnancy Probability Group"
+
+%h3
+  = @participant.person.to_s
+
+.page_section
+  = form_for(@participant, :url => update_ppg_status_participant_path(@participant), :method => 'put') do |f|
+    .developer_note
+      (Assigning a Participant to the initial PPG will be done through the Pregnancy Screener Instrument)      
+    .ppg_details
+      %b
+        Initial Pregnancy Participant Group
+      %br
+      - if @participant.new_record? or @participant.ppg_details.blank?
+        = f.fields_for :ppg_details, PpgDetail.new do |ppg_detail_form|
+          %span{ :class => "hide" }
+            = render "shared/inline_ncs_code_select", { :f => ppg_detail_form, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
+          = render "shared/inline_ncs_code_select", { :f => ppg_detail_form, :code => :ppg_pid_status_code, :label_text => "Participant Status", :inline => true }
+          = render "shared/inline_ncs_code_select", { :f => ppg_detail_form, :code => :ppg_first_code, :label_text => "PPG Status", :inline => true }
+      - else
+        = @participant.ppg_details.first.to_s
+      
+    .ppg_statuses
+      - @ppgStatusTemplate = generate_nested_attributes_template(f, :ppg_status_histories, 'participants/ppg_status_histories')
+      %table{ :class => 'records ppg_status_histories' }
+        %tr.row
+          %td{ :colspan => '3' }
+            Pregnancy Probability Group Status Histories
+            %span{ :class => "required" } * 
+            (Click the 'Add PPG Status' link to add a new ppg status to this participant)
+        %tbody.nested_records_ppg_status_histories
+          = f.fields_for :ppg_status_histories do |ppg_status|
+            = render :partial => 'participants/ppg_status_histories', :locals => { :f => ppg_status }
+        %tfoot
+          %tr.row
+            %td{ :colspan => '3' }
+              = link_to_add_fields "Add PPG Status", :ppg_status_histories
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+    
+:javascript
+  $(document).ready(function() {
+    ppgStatusTemplateUI = new NCSCore.UI.PPGStatus({ ppgStatusTemplate: '#{@ppgStatusTemplate}' });
+  });

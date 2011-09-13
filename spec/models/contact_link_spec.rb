@@ -21,11 +21,19 @@ require 'spec_helper'
 
 describe ContactLink do
 
-  it "should create a new instance given valid attributes" do
+  it "creates a new instance given valid attributes" do
     link = Factory(:contact_link)
     link.should_not be_nil
   end
 
+  it "knows when it is 'closed'" do
+    link = Factory(:contact_link)
+    link.should_not be_closed
+    
+    link.contact.contact_disposition = 510
+    link.event.event_disposition = 510
+    link.should be_closed
+  end
   
   it { should belong_to(:psu) }
   it { should belong_to(:contact) }

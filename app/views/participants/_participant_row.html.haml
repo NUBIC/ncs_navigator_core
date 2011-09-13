@@ -1,0 +1,20 @@
+
+.participant
+  .edit_participant
+    = link_to "Edit Participant Record", edit_participant_path(participant), :class => "edit_link icon_link"
+  .name
+    = link_to "#{participant.person}", participant_path(participant), :class => "show_link icon_link"
+  
+  - registered = PatientStudyCalendar.is_registered?(participant)
+  .upcoming
+    - if registered
+      %b
+        Upcoming Events
+      = participant.upcoming_events.to_sentence
+    - elsif participant.can_register?
+      .psc_note
+        Not yet registered with PSC.
+    - else
+      .developer_note
+        PROGRAMMER NOTE:
+        Participant is out of sync with PSC. Reset state to "pending".

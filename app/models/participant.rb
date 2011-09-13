@@ -57,11 +57,12 @@ class Participant < ActiveRecord::Base
   validates_presence_of :person
   
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true
+  accepts_nested_attributes_for :ppg_status_histories, :allow_destroy => true
   
   scope :in_low_intensity, where("high_intensity is null or high_intensity is false")
   scope :in_high_intensity, where("high_intensity is true")
   
-  delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :to => :person
+  delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :to => :person
   
   ##
   # State Machine used to manage relationship with Patient Study Calendar
@@ -73,10 +74,6 @@ class Participant < ActiveRecord::Base
     event :register do
       transition :pending => :registered
     end
-    
-    event :unregister do
-      transition :registered => :pending
-    end
 
     # TODO: determine if this is necessary
     # state :in_pregnancy_probability_group do
@@ -85,10 +82,6 @@ class Participant < ActiveRecord::Base
 
     event :assign_to_pregnancy_probability_group do
       transition :registered => :in_pregnancy_probability_group
-    end
-    
-    event :remove_from_pregnancy_probability_group do
-      transition :in_pregnancy_probability_group => :registered
     end
 
     event :impregnate do
@@ -257,6 +250,22 @@ class Participant < ActiveRecord::Base
     results << Participant.joins(:ppg_details).where("ppg_details.ppg_first_code = ?", local_code).all.select { |par| par.ppg_status.local_code == local_code }
     results.flatten.uniq
   end
+
+  ##
+  # Temporary helper method to assist in reverting state during development
+  # TODO: delete me
+  def unregister
+    self.state = "pending"
+    self.save!
+  end
+  
+  ##
+  # Temporary helper method to assist in reverting state during development
+  # TODO: delete me
+  def remove_from_pregnancy_probability_group
+    self.state = "registered"
+    self.save!
+  end
   
   private
   
@@ -283,7 +292,10 @@ class Participant < ActiveRecord::Base
     end
   
     def next_high_intensity_study_segment
-      if in_high_intensity_arm?
+      if registered?
+        switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
+        "LO-Intensity: Pregnancy Screener"
+      elsif in_high_intensity_arm?
         "HI-Intensity: HI-LO Conversion"
       elsif pre_pregnancy?
         "HI-Intensity: Pre-Pregnancy"

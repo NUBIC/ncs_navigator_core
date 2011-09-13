@@ -27,6 +27,12 @@ class ParticipantsController < ApplicationController
   end
   
   ##
+  # GET /participants/:id
+  def show
+    @participant = Participant.find(params[:id])
+  end
+  
+  ##
   # If the Participant is not known to PSC, register the participant
   #
   # POST /participant/:id/register_with_psc
@@ -41,9 +47,8 @@ class ParticipantsController < ApplicationController
     url = params[:redirect_to] unless params[:redirect_to].blank?
 
     Rails.logger.info(resp.inspect)
-    Rails.logger.info(resp.headers.inspect)
 
-    if resp.status.to_i < 299
+    if resp && resp.status.to_i < 299
       respond_to do |format|
         format.html do
           redirect_to(url, :notice => "#{@participant.person.to_s} registered with PSC")
@@ -54,12 +59,13 @@ class ParticipantsController < ApplicationController
       end
     else
       @participant.unregister! if @participant.registered? # reset to initial state if failed to register with PSC
+      error_msg = resp.blank? ? "Unable to send request to PSC" : "#{resp.body}"
       respond_to do |format|
         format.html do
-          redirect_to(url, :error => "#{resp.body}")
+          redirect_to(url, :error => error_msg)
         end
         format.json do
-          render :json => { :id => @participant.id, :errors => "#{resp.body}" }, :status => :error
+          render :json => { :id => @participant.id, :errors => error_msg }, :status => :error
         end
       end
     end
@@ -144,6 +150,24 @@ class ParticipantsController < ApplicationController
       redirect_to(url, :notice => @notice)
     else
       render :action => "edit_arm"
+    end
+  end
+  
+  def edit_ppg_status
+    @participant = Participant.find(params[:id])
+  end
+  
+  def update_ppg_status
+    @participant = Participant.find(params[:id])
+    respond_to do |format|
+      if @participant.update_attributes(params[:participant])
+        path = @participant.current_contact_link.blank? ? participants_path : edit_contact_link_path(@participant.current_contact_link)
+        format.html { redirect_to(path, :notice => 'Participant was successfully updated.') }
+        format.json { render :json => @participant }
+      else
+        format.html { render :action => "update_ppg_status" }
+        format.json { render :json => @participant.errors }
+      end
     end
   end
   

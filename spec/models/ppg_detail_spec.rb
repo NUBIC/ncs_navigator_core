@@ -21,9 +21,14 @@ require 'spec_helper'
 
 describe PpgDetail do
   
-  it "should create a new instance given valid attributes" do
+  it "creates a new instance given valid attributes" do
     ppg = Factory(:ppg_detail)
     ppg.should_not be_nil
+  end
+  
+  it "describes itself" do
+    ppg = Factory(:ppg_detail)
+    ppg.to_s.should == ppg.ppg_first.to_s
   end
   
   it { should belong_to(:psu) }

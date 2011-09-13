@@ -13,8 +13,8 @@ Feature: Initiating a contact
     And I should see "1 PPG Group 1: Pregnant and Eligible"
     When I follow "PPG Group 1: Pregnant and Eligible"
     Then I should see "Pregnancy Visit 1"
-    And I should see "Bessie Smith"
-    When I follow "Initiate Contact"
+    When I follow "Bessie Smith"
+    Then I follow "Initiate Contact"
     Then I should be on the new_person_contact page
     And I should see "Bessie Smith"
     And I should see "Pregnancy Visit 1"
