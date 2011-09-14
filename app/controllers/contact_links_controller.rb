@@ -3,7 +3,6 @@ class ContactLinksController < ApplicationController
 	# GET /contact_links/1/edit
 	def edit
 		@contact_link = ContactLink.find(params[:id])
-		
 		@response_set = @contact_link.response_set
 		
 		# TODO: remove Pregnancy Screener check
@@ -15,7 +14,7 @@ class ContactLinksController < ApplicationController
 			@survey				= @response_set.blank? ? nil : @response_set.survey 
 		
 			if @contact_link.instrument.blank? && @survey
-				instrument = create_instrument(@survey)
+				instrument = @person.create_instrument(@survey)
 				@contact_link.instrument = instrument
 				@contact_link.save!
 			end
@@ -54,13 +53,5 @@ class ContactLinksController < ApplicationController
 		@participant	= @person.participant
 		@event				= @contact_link.event
 	end
-	
-	private
-	
-		def create_instrument(survey)
-			Instrument.create(:psu_code => @psu_code, 
-												:instrument_version => InstrumentEventMap.version(survey.title),
-												:instrument_type => InstrumentEventMap.instrument_type(survey.title))
-		end
 	
 end

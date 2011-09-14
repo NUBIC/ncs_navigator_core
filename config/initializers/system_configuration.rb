@@ -15,6 +15,7 @@ module NcsNavigatorCore
     def psu
       NcsNavigator.configuration.psus.first.id unless NcsNavigator.configuration.psus.blank?
     end
+    alias :psu_code :psu
     
   end
 end

@@ -62,7 +62,7 @@ class Participant < ActiveRecord::Base
   scope :in_low_intensity, where("high_intensity is null or high_intensity is false")
   scope :in_high_intensity, where("high_intensity is true")
   
-  delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :to => :person
+  delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
   
   ##
   # State Machine used to manage relationship with Patient Study Calendar

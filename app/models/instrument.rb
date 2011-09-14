@@ -46,6 +46,9 @@ class Instrument < ActiveRecord::Base
   belongs_to :supervisor_review,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :supervisor_review_code,    :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :data_problem,         :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :data_problem_code,         :class_name => 'NcsCode', :primary_key => :local_code  
   
+  belongs_to :person
+  belongs_to :survey
+  
   validates_presence_of :instrument_version
   
   ##
@@ -54,6 +57,10 @@ class Instrument < ActiveRecord::Base
   # @return [String]
   def to_s
     instrument_type.to_s
+  end
+  
+  def complete?
+    !instrument_end_date.blank? && !instrument_end_time.blank?
   end
   
 end

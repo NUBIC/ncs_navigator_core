@@ -1,10 +1,12 @@
+require 'ncs_navigator/configuration'
+
 class ContactsController < ApplicationController
 
   # GET /contacts/new
   # GET /contacts/new.json
   def new
     @person     = Person.find(params[:person_id])
-    @contact    = Contact.new(:psu_code =>  @psu_code, :contact_date_date => Date.today)
+    @contact    = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today)
     
     event_for_contact
 
@@ -76,7 +78,7 @@ class ContactsController < ApplicationController
     def find_or_create_contact_link
       link = ContactLink.where("contact_id = ? AND person_id = ?", @contact, @person).first
       if link.blank?
-        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff, :psu_code => @psu_code)
+        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff, :psu_code => NcsNavigatorCore.psu_code)
       end
       link
     end
