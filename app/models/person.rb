@@ -45,6 +45,7 @@
 
 # A Person is an individual who may provide information on a participant. 
 # All individuals contacted are Persons, including those who may also be Participants. 
+require 'ncs_navigator/configuration'
 class Person < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob]
@@ -151,6 +152,7 @@ class Person < ActiveRecord::Base
   def start_instrument(survey)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
+    create_instrument(survey)
     response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
     # TODO: determine way to know about initializing data for each survey
     question = nil
@@ -178,6 +180,36 @@ class Person < ActiveRecord::Base
     return nil if open_contact_links.blank?
     return open_contact_links.first if open_contact_links.size == 1
     # TODO: what to do if there is more than one open contact?
+  end
+  
+  ##
+  # Create a new Instrument for the Person associated with the given Survey.
+  # 
+  # @param [Survey]
+  # @return [ResponseSet]
+  def create_instrument(survey)
+		Instrument.create!(:psu_code => NcsNavigatorCore.psu, 
+											:instrument_version => InstrumentEventMap.version(survey.title),
+											:instrument_type => InstrumentEventMap.instrument_type(survey.title),
+											:person => self, 
+											:survey => survey)
+  end
+  
+  ##
+  # Determine if this Person has started this Survey
+  # @param [Survey]
+  # @return [true, false]
+  def started_survey(survey)
+    ResponseSet.where(:survey_id => survey.id).where(:user_id => self.id).count > 0
+  end
+  
+  ##
+  # Get the most recent instrument for this survey
+  # @param [Survey]
+  # @return [Instrument]
+  def instrument_for(survey)
+    ins = Instrument.where(:survey_id => survey.id).where(:person_id => self.id).order("created_at DESC")
+    ins.first
   end
   
   private

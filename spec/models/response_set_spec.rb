@@ -31,7 +31,7 @@ describe ResponseSet do
       let(:access_code) { "ins-que-pregvisit1-int-ehpbhi-p2-v2-0" }
       let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
     
-      it "creates a response set for the instrument" do
+      it "creates a response set for the instrument with prepoulated answers" do
   
         pv1survey = Survey.find_by_access_code(access_code)
         if pv1survey.blank? 
@@ -46,8 +46,8 @@ describe ResponseSet do
   
         ResponseSet.where(:user_id => person.id).should be_empty
       
-        p person.upcoming_events.first
-      
+        create_missing_in_error_ncs_codes(Instrument)
+        instrument_type = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => 'Pregnancy Visit 1 Interview')
         person.start_instrument(participant.person.next_survey)
       
         rs = ResponseSet.where(:user_id => person.id).first

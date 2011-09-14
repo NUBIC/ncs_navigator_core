@@ -52,6 +52,9 @@ describe Instrument do
   it { should belong_to(:supervisor_review) }
   it { should belong_to(:data_problem) }
   
+  it { should belong_to(:person) }
+  it { should belong_to(:survey) }
+  
   it { should validate_presence_of(:instrument_version) }
   
   context "as mdes record" do

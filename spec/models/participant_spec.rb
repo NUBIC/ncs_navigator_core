@@ -415,6 +415,40 @@ describe Participant do
     end
   end
 
+  context "taking instruments and surveys" do
+    
+    it "is associated with an instrument" do
+      person = Factory(:person)
+      participant = Factory(:participant, :person => person)
+      participant.instruments.should be_empty
+      
+      link = Factory(:contact_link, :person => person)
+      participant.instruments.reload
+      participant.instruments.should_not be_empty
+      participant.instruments.should == [link.instrument]
+    end
+    
+    it "knows if it has taken an instrument for a particular survey" do
+      person = Factory(:person)
+      participant = Factory(:participant, :person => person)
+      
+      survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
+      ins_type = Factory(:ncs_code, :list_name => "INSTRUMENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 99)
+      create_missing_in_error_ncs_codes(Instrument)
+      
+      survey.should_not be_nil
+      
+      participant.started_survey(survey).should be_false
+      
+      participant.start_instrument(survey)
+      participant.started_survey(survey).should be_true
+      
+      participant.instrument_for(survey).should_not be_complete
+      
+    end
+    
+  end
+
 
   context "participant types" do
     
