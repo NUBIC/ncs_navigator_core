@@ -66,10 +66,9 @@ class Participant < ActiveRecord::Base
   
   ##
   # State Machine used to manage relationship with Patient Study Calendar
-  state_machine :initial => :pending do
+  state_machine :low_intensity_state, :initial => :pending do
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
-
 
     event :register do
       transition :pending => :registered
@@ -84,22 +83,41 @@ class Participant < ActiveRecord::Base
       transition :registered => :in_pregnancy_probability_group
     end
 
+    event :low_intensity_consent do
+      transition :in_pregnancy_probability_group => :consented_low_intensity
+    end
+
     event :impregnate do
-      transition :in_pregnancy_probability_group => :pregnant
+      transition :in_pregnancy_probability_group => :pregnant_and_consented, :consented_low_intensity => :pregnant_and_consented
     end
     
     event :enroll_in_high_intensity_arm do
-      transition :in_pregnancy_probability_group => :in_high_intensity_arm, :pregnant => :in_high_intensity_arm
+      transition :in_pregnancy_probability_group => :moved_to_high_intensity_arm, :pregnant_and_consented => :moved_to_high_intensity_arm
+    end
+
+    event :low_intensity_birth do
+      transition :pregnant_and_consented => :birth_low
+    end
+    
+    
+
+  end
+  
+  state_machine :high_intensity_state, :initial => :in_high_intensity_arm do
+    before_transition :log_state_change
+    
+    event :consent do
+      transition :in_high_intensity_arm => :consented_high_intensity
     end
     
     event :non_pregnant_informed_consent do
-      transition :in_high_intensity_arm => :pre_pregnancy
+      transition :consented_high_intensity => :pre_pregnancy
     end
     
     event :pregnant_informed_consent do
-      transition :in_high_intensity_arm => :pregnancy_one
+      transition :consented_high_intensity => :pregnancy_one
     end
-    
+
     # event :pregnancy_one_visit do
     #   transition :pregnancy_one => :pregnancy_two
     # end
@@ -111,7 +129,6 @@ class Participant < ActiveRecord::Base
     # event :three_months_after_birth do
     #   transition :birth => :three_month
     # end
-
   end
   
   ##
@@ -120,6 +137,34 @@ class Participant < ActiveRecord::Base
   def log_state_change(transition)
     event, from, to = transition.event, transition.from_name, transition.to_name
     Rails.logger.info("Participant State Change #{id}: #{from} => #{to} on #{event}")
+  end
+  
+  
+  ##
+  # Helper method to get the current state of the Participant
+  # Since there are two state_machines (one for Low Intensity and one for High (or PB or EH))
+  # this will return the current state based on which arm the Participant is enrolled in
+  # @return [String]
+  def state
+    if low_intensity?
+      low_intensity_state
+    else
+      high_intensity_state
+    end
+  end
+  
+  
+  ##
+  # Helper method to set the current state of the Participant
+  # Since there are two state_machines (one for Low Intensity and one for High (or PB or EH))
+  # this will update the state based on which arm the Participant is enrolled in
+  # @param [String]
+  def state=(state)
+    if low_intensity?
+      low_intensity_state = state
+    else
+      high_intensity_state = state
+    end
   end
   
   ##
@@ -178,7 +223,7 @@ class Participant < ActiveRecord::Base
   # @return [String]
   def upcoming_events
     events = []
-    events << next_study_segment
+    events << next_study_segment if next_study_segment
     events
   end
   
@@ -194,11 +239,32 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next Follow-Up event
   # @return [Date]
   def interval
-    if low_intensity? or ppg_status.local_code == 3
+    if low_intensity? or recent_loss?
       6.months
     else
       3.months
     end
+  end
+  
+  ##
+  # Only Participants who are Pregnant or Trying to become pregnant 
+  # should be presented with the consent form, otherwise they should be ineligible
+  # or simply following
+  def can_consent?
+    pregnant_or_trying?
+  end
+  
+  ##
+  # Participants who are eligible for the protocol but not actively trying nor pregnant
+  # should be followed to see if they ever move to the 'can_consent' state
+  def following?
+    eligible_for_ppg_follow_up?
+  end
+  
+  ##
+  # Participants are known to be pregnant if in the proper Pregnancy Probability Group
+  def known_to_be_pregnant?
+    pregnant?
   end
   
   ##
@@ -279,11 +345,9 @@ class Participant < ActiveRecord::Base
       elsif registered?
         "LO-Intensity: Pregnancy Screener"
       elsif in_pregnancy_probability_group?
-        if [1,2].include? ppg_status.local_code
-          "LO-Intensity: PPG 1 and 2"
-        elsif [3,4].include? ppg_status.local_code
-          "LO-Intensity: PPG Follow Up"
-        end
+        lo_intensity_follow_up
+      elsif consented_low_intensity?
+        lo_intensity_follow_up
       elsif pregnant?
         "LO-Intensity: Birth Visit Interview"
       else
@@ -296,20 +360,47 @@ class Participant < ActiveRecord::Base
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
         "LO-Intensity: Pregnancy Screener"
       elsif in_high_intensity_arm?
-        "HI-Intensity: HI-LO Conversion"
+        eligible_for_ppg_follow_up? ? hi_intensity_follow_up : "HI-Intensity: HI-LO Conversion"
+      elsif consented_high_intensity?
+        hi_intensity_follow_up
       elsif pre_pregnancy?
         "HI-Intensity: Pre-Pregnancy"
       elsif pregnancy_one?
         "HI-Intensity: Pregnancy Visit 1"
       elsif in_pregnancy_probability_group?
-        if ppg_status.local_code == 3
-          "HI-Intensity: PPG Follow Up CATI after 6 months"
-        else
-          "HI-Intensity: PPG Follow Up CATI after 3 months"
-        end
+        hi_intensity_follow_up
       else
         nil
       end
+    end
+    
+    def lo_intensity_follow_up
+      return nil if ineligible?
+      can_consent? ? "LO-Intensity: PPG 1 and 2" : "LO-Intensity: PPG Follow Up"
+    end
+    
+    def hi_intensity_follow_up
+      recent_loss? ? "HI-Intensity: PPG Follow Up CATI after 6 months" : "HI-Intensity: PPG Follow Up CATI after 3 months"
+    end
+    
+    def pregnant_or_trying?
+      [1,2].include?(ppg_status.local_code)
+    end
+    
+    def eligible_for_ppg_follow_up?
+      [3,4].include?(ppg_status.local_code)
+    end
+    
+    def ineligible?
+      ppg_status.local_code > 4
+    end
+    
+    def pregnant?
+      ppg_status.local_code == 1
+    end
+  
+    def recent_loss?
+      ppg_status.local_code == 3
     end
   
 end

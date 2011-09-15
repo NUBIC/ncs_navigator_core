@@ -69,7 +69,8 @@ Factory.define :participant do |par|
   par.pid_comment               nil
   par.transaction_type          nil
   par.high_intensity            nil
-  par.state                     'pending'
+  par.low_intensity_state       "pending"
+  par.high_intensity_state      "in_high_intensity_arm"
 end
 
 Factory.define :participant_person_link do |link|

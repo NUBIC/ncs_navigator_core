@@ -43,10 +43,12 @@ class ParticipantsController < ApplicationController
     
     resp = PatientStudyCalendar.assign_subject(@participant)
 
+    Rails.logger.info("~~~ register_with_psc is_registered?(participant) = #{PatientStudyCalendar.is_registered?(@participant)}")
+    Rails.logger.info("~~~ register_with_psc resp.status = #{resp.status}")
+
+
     url = edit_participant_path(@participant)
     url = params[:redirect_to] unless params[:redirect_to].blank?
-
-    Rails.logger.info(resp.inspect)
 
     if resp && resp.status.to_i < 299
       respond_to do |format|
@@ -58,10 +60,14 @@ class ParticipantsController < ApplicationController
         end
       end
     else
-      @participant.unregister! if @participant.registered? # reset to initial state if failed to register with PSC
+      
+      Rails.logger.info("~~~ register_with_psc resp.body = #{resp.body}")
+      
+      @participant.unregister if @participant.registered? # reset to initial state if failed to register with PSC
       error_msg = resp.blank? ? "Unable to send request to PSC" : "#{resp.body}"
       respond_to do |format|
         format.html do
+          flash[:warning] = error_msg
           redirect_to(url, :error => error_msg)
         end
         format.json do
@@ -169,6 +175,23 @@ class ParticipantsController < ApplicationController
         format.json { render :json => @participant.errors }
       end
     end
+  end
+  
+  ##
+  # Developer view to show participant in particular state and the instruments in that state
+  def development_workflow
+    @participant = Participant.find(params[:id])
+  end
+
+  ##
+  # Simple action to move participant from one state to the next
+  # PUT /participants/1/development_update_state
+  def development_update_state
+    @participant = Participant.find(params[:id])
+    @participant.update_attribute(:state, params[:new_state])
+    @participant.update_attribute(:high_intensity, true) if params[:new_state] == "in_high_intensity_arm"
+    flash[:notice] = "Participant was moved to #{params[:new_state].titleize}."
+    redirect_to development_workflow_participant_path(@participant)
   end
   
 end

@@ -1,19 +1,19 @@
 --- 
-- name: Household Enumeration Interview
-  filename: INS_QUE_HHEnum_INT_EH_P2_V1.2
-  event: Household Enumeration 
-  instrument_type: 1
-  version_number: 1.2
-- name: Pregnancy Screener Interview (EH)
-  filename: INS_QUE_PregScreen_INT_EH_P2_V2.0
-  event: Pregnancy Screener
-  instrument_type: 3
-  version_number: 2.0
-- name: Pregnancy Screener Interview (PB)
-  filename: INS_QUE_PregScreen_INT_PB_P2_V2.0
-  event: Pregnancy Screener
-  instrument_type: 4
-  version_number: 2.0
+# - name: Household Enumeration Interview
+#   filename: INS_QUE_HHEnum_INT_EH_P2_V1.2
+#   event: Household Enumeration 
+#   instrument_type: 1
+#   version_number: 1.2
+# - name: Pregnancy Screener Interview (EH)
+#   filename: INS_QUE_PregScreen_INT_EH_P2_V2.0
+#   event: Pregnancy Screener
+#   instrument_type: 3
+#   version_number: 2.0
+# - name: Pregnancy Screener Interview (PB)
+#   filename: INS_QUE_PregScreen_INT_PB_P2_V2.0
+#   event: Pregnancy Screener
+#   instrument_type: 4
+#   version_number: 2.0
 - name: Pregnancy Screener Interview (HI,LI)
   filename: INS_QUE_PregScreen_INT_HILI_P2_V2.0
   event: Pregnancy Screener
@@ -64,11 +64,11 @@
   event: Low Intensity Data Collection
   instrument_type: 14
   version_number: 2.0
-- name: Provider Based Recruitment Questionnaire
-  filename: INS_QUE_PBRecruit_INT_PB_P2_V2.0
-  event: Provider-Based Recruitment
-  instrument_type: 15
-  version_number: 2.0
+# - name: Provider Based Recruitment Questionnaire
+#   filename: INS_QUE_PBRecruit_INT_PB_P2_V2.0
+#   event: Provider-Based Recruitment
+#   instrument_type: 15
+#   version_number: 2.0
 - name: 3-Month Mother Phone Interview
   filename: INS_QUE_3MMother_INT_EHPBHI_P2_V1.1
   event: 3M

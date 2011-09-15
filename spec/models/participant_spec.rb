@@ -235,19 +235,21 @@ describe Participant do
   context "with events" do
     
     context "assigned to a PPG" do
-      
+            
       context "in high intensity protocol" do
+        
+        let(:participant) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true) }
         
         describe "a participant who is pregnant - PPG 1" do
     
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
-            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
-            
-            participant.enroll_in_high_intensity_arm!
+
             participant.upcoming_events.should == ["HI-Intensity: HI-LO Conversion"]
+            
+            participant.consent!
+            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
             
             participant.pregnant_informed_consent!
             participant.upcoming_events.should == ["HI-Intensity: Pregnancy Visit 1"]
@@ -258,13 +260,12 @@ describe Participant do
       
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
-
-            participant.enroll_in_high_intensity_arm!
             participant.upcoming_events.should == ["HI-Intensity: HI-LO Conversion"]
-
+            
+            participant.consent!
+            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+            
             participant.non_pregnant_informed_consent!
             participant.upcoming_events.should == ["HI-Intensity: Pre-Pregnancy"]
           end
@@ -274,7 +275,6 @@ describe Participant do
       
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
-            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 6 months"]
           end
@@ -284,7 +284,6 @@ describe Participant do
       
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
-            participant = Factory(:participant, :state => 'in_pregnancy_probability_group', :high_intensity => true)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
           end
@@ -406,6 +405,8 @@ describe Participant do
         end
         
         it "consents to the high intensity protocol" do
+          @participant.consent!
+          @participant.should be_consented_high_intensity
           @participant.non_pregnant_informed_consent!
           @participant.should be_pre_pregnancy
           @participant.next_study_segment.should == "HI-Intensity: Pre-Pregnancy"
