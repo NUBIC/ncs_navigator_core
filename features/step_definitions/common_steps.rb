@@ -20,7 +20,7 @@ Given /^the following pregnant participants:$/ do |table|
   table.hashes.each do |hash|
     status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first
     
-    participant = Factory(:participant, :person => Factory(:person, hash), :high_intensity => true, :state => "pregnancy_one")
+    participant = Factory(:participant, :person => Factory(:person, hash), :high_intensity => true, :high_intensity_state => "pregnancy_one")
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
   end
 end
