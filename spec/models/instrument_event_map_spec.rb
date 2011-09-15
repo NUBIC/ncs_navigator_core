@@ -23,9 +23,10 @@ describe InstrumentEventMap do
   
   it "knows all events" do
     events = InstrumentEventMap.events
-    events.size.should == 18
+    events.size.should == 17
+    
     [ "Household Enumeration", 
-      "Provider-Based Recruitment", 
+      # "Provider-Based Recruitment", 
       "Low Intensity Data Collection", 
       "Low to High Conversion", 
       "Pregnancy Screener",

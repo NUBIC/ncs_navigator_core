@@ -19,6 +19,8 @@ NcsNavigatorCore::Application.routes.draw do
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status
+      get :development_workflow
+      put :development_update_state
     end
   end
   resources :contact_links do

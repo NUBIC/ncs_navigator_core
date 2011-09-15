@@ -7,7 +7,8 @@ class InstrumentEventMap
   # @param [String] - the name of the event (e.g. Pregnancy Screener)
   # @return [Array, <String>] - filenames for that event
   def self.instruments_for(event)
-    event = PatientStudyCalendar.strip_epoch(event)
+    return [] if event.nil?
+    event = PatientStudyCalendar.map_psc_segment_to_mdes_event(event)
     result = []
     INSTRUMENT_EVENT_CONFIG.each do |ie|
       result << ie["filename"] if ie["event"].include?(event)

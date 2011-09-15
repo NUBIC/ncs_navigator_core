@@ -26,7 +26,7 @@ describe ResponseSet do
     describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
       
       let(:person) { Factory(:person) }
-      let(:participant) { Factory(:participant, :person => person, :high_intensity => true, :state => "pregnancy_one") }
+      let(:participant) { Factory(:participant, :person => person, :high_intensity => true, :high_intensity_state => "pregnancy_one") }
   
       let(:access_code) { "ins-que-pregvisit1-int-ehpbhi-p2-v2-0" }
       let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
@@ -48,6 +48,7 @@ describe ResponseSet do
       
         create_missing_in_error_ncs_codes(Instrument)
         instrument_type = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => 'Pregnancy Visit 1 Interview')
+        
         person.start_instrument(participant.person.next_survey)
       
         rs = ResponseSet.where(:user_id => person.id).first

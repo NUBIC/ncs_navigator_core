@@ -75,6 +75,8 @@ class Person < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :last_name
   
+  validates_length_of :title, :maximum => 5, :allow_blank => true
+  
   ##
   # How to format the date_move attribute
   # cf. MdesRecord
