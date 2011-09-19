@@ -48,7 +48,7 @@ class Participant < ActiveRecord::Base
   belongs_to :pid_entry,            :conditions => "list_name = 'STUDY_ENTRY_METHOD_CL1'",  :foreign_key => :pid_entry_code,            :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :pid_age_eligibility,  :conditions => "list_name = 'AGE_ELIGIBLE_CL2'",        :foreign_key => :pid_age_eligibility_code,  :class_name => 'NcsCode', :primary_key => :local_code
   
-  has_many :ppg_details
+  has_many :ppg_details, :order => "created_at DESC"
   has_many :ppg_status_histories, :order => "created_at DESC"
   
   has_many :participant_person_links
@@ -69,6 +69,7 @@ class Participant < ActiveRecord::Base
   state_machine :low_intensity_state, :initial => :pending do
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
+    after_transition :on => :parenthood, :do => :update_ppg_status_after_birth
 
     event :register do
       transition :pending => :registered
@@ -99,7 +100,9 @@ class Participant < ActiveRecord::Base
       transition :pregnant_and_consented => :birth_low
     end
     
-    
+    event :parenthood do
+      transition :birth_low => :consented_low_intensity
+    end
 
   end
   
@@ -160,10 +163,10 @@ class Participant < ActiveRecord::Base
   # this will update the state based on which arm the Participant is enrolled in
   # @param [String]
   def state=(state)
-    if low_intensity?
-      low_intensity_state = state
+    if low_intensity? && (state != high_intensity_state)
+      self.low_intensity_state = state
     else
-      high_intensity_state = state
+      self.high_intensity_state = state
     end
   end
   
@@ -206,15 +209,25 @@ class Participant < ActiveRecord::Base
     end
   end
   
-  def last_event_date
-    contact_links.blank? ? self.created_at.to_date : contact_links.first.created_at.to_date
+  def base_event_date
+    if due_date && pregnant_and_consented?
+      due_date
+    elsif contact_links.blank? 
+      self.created_at.to_date
+    else
+      contact_links.first.created_at.to_date
+    end
   end
   
   ##
-  # The next event for the participant with the date and the event name
+  # The next event for the participant with the date and the event name.
+  # Returns nil if Participant does not have a next_study_segment (i.e. Not Registered with PSC)
+  # 
   # @return [ScheduledEvent]
   def next_scheduled_event
-    ScheduledEvent.new(:date => last_event_date + interval, :event => upcoming_events.first)
+    return nil if next_study_segment.blank?
+    next_date = (interval == 0) ? Date.today : (base_event_date + interval)
+    ScheduledEvent.new(:date => next_date, :event => upcoming_events.first)
   end
   
   ##
@@ -236,14 +249,38 @@ class Participant < ActiveRecord::Base
   end
   
   ##
-  # The number of months to wait before the next Follow-Up event
+  # The number of months to wait before the next event
   # @return [Date]
   def interval
+    case
+    when pending?, registered?
+      0
+    when followed?
+      follow_up_interval
+    when pregnant_and_consented?
+      due_date ? 1.day : 0
+    else
+      0
+    end
+  end
+
+
+  ##
+  # The number of months to wait before the next Follow-Up event
+  # @return [Date]
+  def follow_up_interval
     if low_intensity? or recent_loss?
       6.months
     else
       3.months
     end
+  end
+  
+  ##
+  # The known due date for the pregnant participant, used to schedule the Birth Visit
+  # @return [Date]
+  def due_date
+    ppg_details.first.due_date if ppg_details.first && ppg_details.first.due_date
   end
   
   ##
@@ -260,6 +297,7 @@ class Participant < ActiveRecord::Base
   def following?
     eligible_for_ppg_follow_up?
   end
+  alias :followed? :following?
   
   ##
   # Participants are known to be pregnant if in the proper Pregnancy Probability Group
@@ -275,6 +313,15 @@ class Participant < ActiveRecord::Base
   
   def add_to_high_intensity_protocol
     switch_arm(true)
+  end
+  
+  ##
+  # Change the Participant status from Pregnant to Other Probability after having given birth
+  def update_ppg_status_after_birth
+    post_birth_ppg_status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 4).first
+    ppg_info_source       = NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).first
+    ppg_info_mode         = NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).first
+    PpgStatusHistory.create(:psu => self.psu, :ppg_status => post_birth_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
   end
   
   ##
@@ -343,13 +390,13 @@ class Participant < ActiveRecord::Base
       if pending?
         nil
       elsif registered?
-        "LO-Intensity: Pregnancy Screener"
+        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif in_pregnancy_probability_group?
         lo_intensity_follow_up
       elsif consented_low_intensity?
-        lo_intensity_follow_up
+        pregnant? ? PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW : lo_intensity_follow_up
       elsif pregnant?
-        "LO-Intensity: Birth Visit Interview"
+        PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       else
         nil
       end
@@ -376,7 +423,7 @@ class Participant < ActiveRecord::Base
     
     def lo_intensity_follow_up
       return nil if ineligible?
-      can_consent? ? "LO-Intensity: PPG 1 and 2" : "LO-Intensity: PPG Follow Up"
+      can_consent? ? PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 : PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
     end
     
     def hi_intensity_follow_up
@@ -388,7 +435,9 @@ class Participant < ActiveRecord::Base
     end
     
     def eligible_for_ppg_follow_up?
-      [3,4].include?(ppg_status.local_code)
+      status_codes = [3,4]
+      status_codes << 2 if high_intensity && consented_high_intensity?
+      status_codes.include?(ppg_status.local_code)
     end
     
     def ineligible?

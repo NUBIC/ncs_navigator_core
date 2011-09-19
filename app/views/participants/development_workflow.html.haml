@@ -14,29 +14,31 @@
       Next State
     .form
       = form_for @participant, :url => development_update_state_participant_path(@participant) do |f| 
-        - if @participant.pending?
-          Registered
-          = hidden_field_tag :new_state, "registered"
-        - elsif @participant.registered?
-          In Pregnancy Probability Group
-          = hidden_field_tag :new_state, "in_pregnancy_probability_group"
-        - elsif @participant.in_pregnancy_probability_group?
-          Pregnant
-          - unless @participant.known_to_be_pregnant?
-            .developer_note
-              Make sure you update the PPG Status to PPG 1 if you move to Pregnant State
-          = hidden_field_tag :new_state, "pregnant"
-        - elsif @participant.pregnant?
-          In High Intensity Arm
-          = hidden_field_tag :new_state, "in_high_intensity_arm"
-        - elsif @participant.in_high_intensity_arm?
-          Pre-Pregnancy
-          = hidden_field_tag :new_state, "pre_pregnancy"
-        - elsif @participant.pre_pregnancy?
-          Pregnancy One
-          = hidden_field_tag :new_state, "pregnancy_one"
+        - if @participant.low_intensity?
+          - if @participant.pending?
+            Registered
+            = hidden_field_tag :new_state, "registered"
+          - elsif @participant.registered?
+            In Pregnancy Probability Group
+            = hidden_field_tag :new_state, "in_pregnancy_probability_group"
+          - elsif @participant.in_pregnancy_probability_group?
+            Pregnant
+            - unless @participant.known_to_be_pregnant?
+              .developer_note
+                Make sure you update the PPG Status to PPG 1 if you move to Pregnant State
+            = hidden_field_tag :new_state, "pregnant_and_consented"
+          - elsif @participant.pregnant_and_consented?
+            Move to High Intensity Arm
+            = hidden_field_tag :new_state, "moved_to_high_intensity_arm"
         - else
-          N/A
+          - if @participant.in_high_intensity_arm?
+            Pre-Pregnancy
+            = hidden_field_tag :new_state, "pre_pregnancy"
+          - elsif @participant.pre_pregnancy?
+            Pregnancy One
+            = hidden_field_tag :new_state, "pregnancy_one"
+          - else
+            N/A
         %br
         - if !@participant.can_register? && !@participant.pregnancy_one?
           = f.submit "Move to next state", :disable_with => 'Updating...'

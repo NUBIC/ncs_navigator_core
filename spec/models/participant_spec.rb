@@ -217,15 +217,33 @@ describe Participant do
         
         @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
         @participant.next_scheduled_event.date.should == 5.month.from_now.to_date
+      end      
+    end
+    
+    context "in the low intensity protocol" do
+      
+      it "knows the upcoming applicable events for a new participant" do
+        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+        @participant = Factory(:participant, :high_intensity => false)
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+        @participant.next_scheduled_event.event.should == "LO-Intensity: PPG 1 and 2"
+        @participant.next_scheduled_event.date.should == Date.today
       end
       
-      context "in the low intensity protocol" do
-        
-        it "knows the upcoming applicable events for a new participant" do
-          @participant.high_intensity = false
-          @participant.next_scheduled_event.event.should == "LO-Intensity: PPG Follow Up"
-          @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
-        end
+    end
+    
+    context "in the high intensity protocol" do
+      
+      it "knows the upcoming applicable events for a consented participant" do
+        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "consented_high_intensity")
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 3 months"
+        @participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
       
     end
@@ -306,6 +324,7 @@ describe Participant do
       it "starts in the state of pending" do
         participant = Factory(:participant)
         participant.should be_low_intensity
+        participant.state.should == "pending"
         participant.should be_pending
         participant.can_register?.should be_true
         participant.can_assign_to_pregnancy_probability_group?.should be_false
@@ -317,6 +336,7 @@ describe Participant do
         participant.should be_pending
         participant.register!
         participant.should be_registered
+        participant.state.should == "registered"
         participant.can_assign_to_pregnancy_probability_group?.should be_true
         participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
       end
@@ -327,6 +347,7 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
+        participant.state.should == "in_pregnancy_probability_group"
         participant.next_study_segment.should == "LO-Intensity: PPG 1 and 2"
       end
     
@@ -398,7 +419,15 @@ describe Participant do
           @participant.enroll_in_high_intensity_arm!
         end
         
+        it "will be followed after consent" do
+          @participant.should_not be_followed
+          @participant.consent!
+          @participant.should be_followed
+        end
+        
         it "will initially take the Hi-Lo Conversion script" do
+          @participant.should be_moved_to_high_intensity_arm
+          @participant.state.should == "in_high_intensity_arm"
           @participant.should be_in_high_intensity_arm
           @participant.should_not be_low_intensity
           @participant.next_study_segment.should == "HI-Intensity: HI-LO Conversion"
@@ -407,6 +436,7 @@ describe Participant do
         it "consents to the high intensity protocol" do
           @participant.consent!
           @participant.should be_consented_high_intensity
+          @participant.state.should == "consented_high_intensity"
           @participant.non_pregnant_informed_consent!
           @participant.should be_pre_pregnancy
           @participant.next_study_segment.should == "HI-Intensity: Pre-Pregnancy"

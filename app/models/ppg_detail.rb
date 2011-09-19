@@ -40,5 +40,21 @@ class PpgDetail < ActiveRecord::Base
   def to_s
     "#{ppg_first}"
   end
+  
+  
+  ##
+  # Return the most recently updated due date
+  # @return [String]
+  def due_date
+    if due_date_3
+      due_date_3
+    elsif due_date_2
+      due_date_2
+    elsif orig_due_date
+      orig_due_date
+    else
+      nil
+    end
+  end
 
 end

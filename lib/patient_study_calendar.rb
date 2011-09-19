@@ -1,5 +1,21 @@
 class PatientStudyCalendar
+  
+  LOW_INTENSITY  = "LO-Intensity"
+  HIGH_INTENSITY = "HI-Intensity"
+  
+  PREGNANCY_SCREENER    = "Pregnancy Screener"
+  PPG_1_AND_2           = "PPG 1 and 2"
+  PPG_FOLLOW_UP         = "PPG Follow Up"
+  BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
+  
+  LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
+  LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
+  LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
+  LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
+  
+  
   class << self
+    
     def get_connection
       psc_client.connection
     end
@@ -28,8 +44,6 @@ class PatientStudyCalendar
     end
     
     def assign_subject(participant)
-      Rails.logger.info("~~~ assign_subject is_registered?(participant) = #{is_registered?(participant)}")
-      Rails.logger.info("~~~ assign_subject participant.next_study_segment = #{participant.next_study_segment}")
       return nil if is_registered?(participant) || participant.next_study_segment.blank?
       connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
     end
@@ -37,6 +51,15 @@ class PatientStudyCalendar
     def schedules(participant)
       resp = connection.get("subjects/#{participant.person.public_id}/schedules.json")
       resp.body
+    end
+    
+    def assignment_identifier(participant)
+      connection.get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
+    end
+    
+    def schedule_next_segment(participant)
+      return nil if participant.next_study_segment.blank?
+      connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })      
     end
        
     ##
@@ -95,6 +118,38 @@ class PatientStudyCalendar
         @psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
       end
       
+      # <xsd:element name="registration" type="psc:Registration"/>
+      # 
+      # <xsd:complexType name="Registration">
+      #     <xsd:sequence>
+      #         <xsd:element name="subject" type="psc:Subject"/>
+      #     </xsd:sequence>
+      #     <xsd:attribute name="first-study-segment-id" type="xsd:string" use="required"/>
+      #     <xsd:attribute name="date" type="xsd:date" use="required"/>
+      #     <xsd:attribute name="subject-coordinator-name" type="xsd:string"/>
+      #     <xsd:attribute name="desired-assignment-id" type="xsd:string"/>
+      #     <xsd:attribute name="study-subject-id" type="xsd:string"/>
+      # </xsd:complexType>
+      #
+      # <xsd:complexType name="Subject">
+      #     <xsd:sequence>
+      #         <xsd:element name="property" type="psc:Property" minOccurs="0" maxOccurs="unbounded"/>
+      #     </xsd:sequence>
+      #     <xsd:attribute name="first-name" type="xsd:string"/>
+      #     <xsd:attribute name="last-name" type="xsd:string"/>
+      #     <xsd:attribute name="birth-date" type="xsd:date"/>
+      #     <xsd:attribute name="person-id" type="xsd:string"/>
+      #     <xsd:attribute name="gender" use="required">
+      #         <xsd:simpleType>
+      #             <xsd:restriction base="xsd:string">
+      #                 <xsd:enumeration value="male"/>
+      #                 <xsd:enumeration value="female"/>
+      #                 <xsd:enumeration value="not reported"/>
+      #                 <xsd:enumeration value="unknown"/>
+      #             </xsd:restriction>
+      #         </xsd:simpleType>
+      #     </xsd:attribute>
+      # </xsd:complexType>      
       def build_subject_assignment_request(participant)
         subject = {:first_name => participant.first_name, :last_name => participant.last_name, :person_id => participant.person.public_id, :gender => participant.gender}
         if participant.person_dob
@@ -106,9 +161,37 @@ class PatientStudyCalendar
                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
                         "first-study-segment-id" => get_study_segment_id(participant.next_study_segment), 
-                        "date" => Date.today.to_s, "subject-coordinator-name" => username, "desired-assignment-id" => "#{Time.now.to_i}") { 
+                        "date" => Date.today.to_s, 
+                        "subject-coordinator-name" => username, 
+                        "desired-assignment-id" => "#{Time.now.to_i}") { 
           xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
         }
+        xm.target!
+      end
+      
+      # <xsd:element name="next-scheduled-study-segment" type="psc:NextScheduledStudySegment"/>
+      # 
+      # <xsd:complexType name="NextScheduledStudySegment">
+      #     <xsd:attribute name="start-date" type="xsd:date" use="required"/>
+      #     <xsd:attribute name="study-segment-id" type="xsd:string" use="required"/>
+      #     <xsd:attribute name="mode" use="required">
+      #         <xsd:simpleType>
+      #             <xsd:restriction base="xsd:string">
+      #                 <xsd:enumeration value="per-protocol"/>
+      #                 <xsd:enumeration value="immediate"/>
+      #             </xsd:restriction>
+      #         </xsd:simpleType>
+      #     </xsd:attribute>
+      # </xsd:complexType>
+      def build_next_scheduled_study_segment(participant)
+        xm = Builder::XmlMarkup.new(:target => "")
+        xm.instruct!
+        xm.next-scheduled-study-segment("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+                                        "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                                        "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
+                                        "study-segment-id" => get_study_segment_id(participant.next_study_segment), 
+                                        "start-date" => Date.today.to_s, # TODO: determine date for next study segment 
+                                        "mode" => "per-protocol") # TODO: determine if per-protocol or immediate
         xm.target!
       end
       
