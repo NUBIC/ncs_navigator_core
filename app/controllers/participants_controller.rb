@@ -43,10 +43,6 @@ class ParticipantsController < ApplicationController
     
     resp = PatientStudyCalendar.assign_subject(@participant)
 
-    Rails.logger.info("~~~ register_with_psc is_registered?(participant) = #{PatientStudyCalendar.is_registered?(@participant)}")
-    Rails.logger.info("~~~ register_with_psc resp.status = #{resp.status}")
-
-
     url = edit_participant_path(@participant)
     url = params[:redirect_to] unless params[:redirect_to].blank?
 
@@ -60,9 +56,6 @@ class ParticipantsController < ApplicationController
         end
       end
     else
-      
-      Rails.logger.info("~~~ register_with_psc resp.body = #{resp.body}")
-      
       @participant.unregister if @participant.registered? # reset to initial state if failed to register with PSC
       error_msg = resp.blank? ? "Unable to send request to PSC" : "#{resp.body}"
       respond_to do |format|
@@ -171,7 +164,7 @@ class ParticipantsController < ApplicationController
         format.html { redirect_to(path, :notice => 'Participant was successfully updated.') }
         format.json { render :json => @participant }
       else
-        format.html { render :action => "update_ppg_status" }
+        format.html { render :action => "edit_ppg_status" }
         format.json { render :json => @participant.errors }
       end
     end
@@ -188,8 +181,9 @@ class ParticipantsController < ApplicationController
   # PUT /participants/1/development_update_state
   def development_update_state
     @participant = Participant.find(params[:id])
-    @participant.update_attribute(:state, params[:new_state])
-    @participant.update_attribute(:high_intensity, true) if params[:new_state] == "in_high_intensity_arm"
+    @participant.state = params[:new_state]
+    @participant.high_intensity = true if params[:new_state] == "moved_to_high_intensity_arm"
+    @participant.save!
     flash[:notice] = "Participant was moved to #{params[:new_state].titleize}."
     redirect_to development_workflow_participant_path(@participant)
   end

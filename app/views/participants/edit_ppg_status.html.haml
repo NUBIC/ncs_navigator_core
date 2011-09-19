@@ -6,6 +6,7 @@
 
 .page_section
   = form_for(@participant, :url => update_ppg_status_participant_path(@participant), :method => 'put') do |f|
+    = render "shared/full_error_messages", :object => f.object
     .developer_note
       (Assigning a Participant to the initial PPG will be done through the Pregnancy Screener Instrument)      
     .ppg_details

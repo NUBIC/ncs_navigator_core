@@ -55,5 +55,7 @@ Before do
   Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/surveyor.rb')).each {|f| require f }  
   Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/household.rb')).each {|f| require f }  
   Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/consent.rb')).each {|f| require f }  
+  Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/participant.rb')).each {|f| require f }  
+  Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/ppg.rb')).each {|f| require f }  
 end
 
