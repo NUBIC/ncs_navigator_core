@@ -63,9 +63,29 @@ describe PatientStudyCalendar do
     
     it "registers a participant with the study" do
       VCR.use_cassette('psc/assign_subject') do
+        PatientStudyCalendar.is_registered?(@participant).should be_false
         @participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
         resp = PatientStudyCalendar.assign_subject(@participant)
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
+      end
+    end
+    
+    it "uses the participant public_id as the assignment identifier" do
+      VCR.use_cassette('psc/assignment_identfier') do
+        
+        person = Factory(:person, :first_name => "Angela", :last_name => "Davis", :sex => @female, :person_dob => '1940-01-01')
+        participant = Factory(:participant, :person => person, :p_id => "angela_davis_public_id")
+        participant.register!
+        ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
+        
+        participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+        resp = PatientStudyCalendar.assign_subject(participant)
+        
+        resp = PatientStudyCalendar.assignment_identifier(participant)
+        subject_assignments = resp.body.search('subject-assignment')
+        subject_assignments.size.should == 1
+        subject_assignments.first['id'].should == participant.public_id
       end
     end
     
