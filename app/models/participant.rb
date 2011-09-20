@@ -114,21 +114,25 @@ class Participant < ActiveRecord::Base
     end
     
     event :non_pregnant_informed_consent do
-      transition :consented_high_intensity => :pre_pregnancy
+      transition :consented_high_intensity => :pre_pregnancy, :in_high_intensity_arm => :pre_pregnancy
     end
     
     event :pregnant_informed_consent do
-      transition :consented_high_intensity => :pregnancy_one
+      transition :consented_high_intensity => :pregnancy_one, :in_high_intensity_arm => :pregnancy_one
     end
 
-    # event :pregnancy_one_visit do
-    #   transition :pregnancy_one => :pregnancy_two
-    # end
-    # 
-    # event :birth_child do
-    #   transition :pregnancy_one => :birth, :pregnancy_two => :birth
-    # end
-    # 
+    event :follow do
+      transition :pre_pregnancy => :consented_high_intensity, :pregnancy_one => :consented_high_intensity
+    end
+
+    event :pregnancy_one_visit do
+      transition :pregnancy_one => :pregnancy_two
+    end
+    
+    event :birth_child do
+      transition :pregnancy_one => :birth, :pregnancy_two => :birth
+    end
+
     # event :three_months_after_birth do
     #   transition :birth => :three_month
     # end
@@ -209,16 +213,6 @@ class Participant < ActiveRecord::Base
     end
   end
   
-  def base_event_date
-    if due_date && pregnant_and_consented?
-      due_date
-    elsif contact_links.blank? 
-      self.created_at.to_date
-    else
-      contact_links.first.created_at.to_date
-    end
-  end
-  
   ##
   # The next event for the participant with the date and the event name.
   # Returns nil if Participant does not have a next_study_segment (i.e. Not Registered with PSC)
@@ -226,8 +220,7 @@ class Participant < ActiveRecord::Base
   # @return [ScheduledEvent]
   def next_scheduled_event
     return nil if next_study_segment.blank?
-    next_date = (interval == 0) ? Date.today : (base_event_date + interval)
-    ScheduledEvent.new(:date => next_date, :event => upcoming_events.first)
+    ScheduledEvent.new(:date => next_scheduled_event_date, :event => upcoming_events.first)
   end
   
   ##
@@ -253,11 +246,13 @@ class Participant < ActiveRecord::Base
   # @return [Date]
   def interval
     case
-    when pending?, registered?
+    when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?
       0
+    when pregnancy_two?
+      60.days
     when followed?
       follow_up_interval
-    when pregnant_and_consented?
+    when birth?, birth_low?
       due_date ? 1.day : 0
     else
       0
@@ -391,10 +386,8 @@ class Participant < ActiveRecord::Base
         nil
       elsif registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
-      elsif in_pregnancy_probability_group?
+      elsif in_pregnancy_probability_group? || consented_low_intensity?
         lo_intensity_follow_up
-      elsif consented_low_intensity?
-        pregnant? ? PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW : lo_intensity_follow_up
       elsif pregnant?
         PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       else
@@ -405,17 +398,19 @@ class Participant < ActiveRecord::Base
     def next_high_intensity_study_segment
       if registered?
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
-        "LO-Intensity: Pregnancy Screener"
+        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif in_high_intensity_arm?
-        eligible_for_ppg_follow_up? ? hi_intensity_follow_up : "HI-Intensity: HI-LO Conversion"
+        PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
       elsif consented_high_intensity?
         hi_intensity_follow_up
       elsif pre_pregnancy?
-        "HI-Intensity: Pre-Pregnancy"
+        PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
       elsif pregnancy_one?
-        "HI-Intensity: Pregnancy Visit 1"
-      elsif in_pregnancy_probability_group?
-        hi_intensity_follow_up
+        PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+      elsif pregnancy_two?
+        PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
+      elsif birth?
+        PatientStudyCalendar::HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW
       else
         nil
       end
@@ -427,7 +422,7 @@ class Participant < ActiveRecord::Base
     end
     
     def hi_intensity_follow_up
-      recent_loss? ? "HI-Intensity: PPG Follow Up CATI after 6 months" : "HI-Intensity: PPG Follow Up CATI after 3 months"
+      recent_loss? ? PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP : PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
     end
     
     def pregnant_or_trying?
@@ -436,7 +431,7 @@ class Participant < ActiveRecord::Base
     
     def eligible_for_ppg_follow_up?
       status_codes = [3,4]
-      status_codes << 2 if high_intensity && consented_high_intensity?
+      status_codes << 2 if consented_to_high_intensity_arm?
       status_codes.include?(ppg_status.local_code)
     end
     
@@ -450,6 +445,28 @@ class Participant < ActiveRecord::Base
   
     def recent_loss?
       ppg_status.local_code == 3
+    end
+
+    def consented_to_high_intensity_arm?
+      high_intensity && ["consented_high_intensity", "pre_pregnancy", "pregnancy_one", "pregnancy_two"].include?(state)
+    end
+    
+    def newly_moved_to_high_intensity_arm?
+      high_intensity && ["in_high_intensity_arm"].include?(state)
+    end
+  
+    def next_scheduled_event_date
+      (interval == 0) ? Date.today : (date_used_to_schedule_next_event + interval)
+    end
+
+    def date_used_to_schedule_next_event
+      if due_date && (birth? || birth_low?)
+        due_date
+      elsif contact_links.blank? 
+        self.created_at.to_date
+      else
+        contact_links.first.created_at.to_date
+      end
     end
   
 end

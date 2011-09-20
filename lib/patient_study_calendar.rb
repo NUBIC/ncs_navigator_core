@@ -7,13 +7,27 @@ class PatientStudyCalendar
   PPG_1_AND_2           = "PPG 1 and 2"
   PPG_FOLLOW_UP         = "PPG Follow Up"
   BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
+  HI_LO_CONVERSION      = "HI-LO Conversion"
+  
+  PPG_3_MONTH_FOLLOW_UP = "PPG Follow Up CATI after 3 months"
+  PPG_6_MONTH_FOLLOW_UP = "PPG Follow Up CATI after 6 months"
+  PRE_PREGNANCY         = "Pre-Pregnancy"
+  PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
+  PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
   
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
   LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
-  
-  
+  LOW_INTENSITY_HI_LO_CONVERSION      = "#{LOW_INTENSITY}: #{HI_LO_CONVERSION}"
+
+  HIGH_INTENSITY_3_MONTH_FOLLOW_UP      = "#{HIGH_INTENSITY}: #{PPG_3_MONTH_FOLLOW_UP}"
+  HIGH_INTENSITY_6_MONTH_FOLLOW_UP      = "#{HIGH_INTENSITY}: #{PPG_6_MONTH_FOLLOW_UP}"
+  HIGH_INTENSITY_PRE_PREGNANCY          = "#{HIGH_INTENSITY}: #{PRE_PREGNANCY}"
+  HIGH_INTENSITY_PREGNANCY_VISIT_1      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_1}"
+  HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
+  HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW  = "#{HIGH_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
+
   class << self
     
     def get_connection
@@ -59,7 +73,7 @@ class PatientStudyCalendar
     
     def schedule_next_segment(participant)
       return nil if participant.next_study_segment.blank?
-      connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })      
+      connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_next_scheduled_study_segment_request(participant), { 'Content-Length' => '1024' })      
     end
        
     ##
@@ -163,7 +177,7 @@ class PatientStudyCalendar
                         "first-study-segment-id" => get_study_segment_id(participant.next_study_segment), 
                         "date" => Date.today.to_s, 
                         "subject-coordinator-name" => username, 
-                        "desired-assignment-id" => "#{Time.now.to_i}") { 
+                        "desired-assignment-id" => participant.public_id) { 
           xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
         }
         xm.target!
@@ -183,15 +197,18 @@ class PatientStudyCalendar
       #         </xsd:simpleType>
       #     </xsd:attribute>
       # </xsd:complexType>
-      def build_next_scheduled_study_segment(participant)
+      def build_next_scheduled_study_segment_request(participant)
+        
+        next_scheduled_event = participant.next_scheduled_event
+        
         xm = Builder::XmlMarkup.new(:target => "")
         xm.instruct!
         xm.next-scheduled-study-segment("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                                        "study-segment-id" => get_study_segment_id(participant.next_study_segment), 
-                                        "start-date" => Date.today.to_s, # TODO: determine date for next study segment 
-                                        "mode" => "per-protocol") # TODO: determine if per-protocol or immediate
+                                        "study-segment-id" => get_study_segment_id(next_scheduled_event.event), 
+                                        "start-date" => next_scheduled_event.date.to_s,
+                                        "mode" => "per-protocol")
         xm.target!
       end
       

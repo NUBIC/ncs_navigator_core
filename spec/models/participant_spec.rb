@@ -189,7 +189,9 @@ describe Participant do
       
       it "knows the upcoming applicable events when a new record" do
         @participant.ppg_status.local_code.should == 3
-        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
+        
+        @participant.consent!
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
       end
       
@@ -200,7 +202,9 @@ describe Participant do
         contact = Factory(:contact)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 5.months.ago)
         
-        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
+        @participant.consent!
+        
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 1.month.from_now.to_date
       end
       
@@ -215,7 +219,9 @@ describe Participant do
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 4.month.ago)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 1.month.ago)
         
-        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 6 months"
+        @participant.consent!
+        
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 5.month.from_now.to_date
       end      
     end
@@ -228,7 +234,7 @@ describe Participant do
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
-        @participant.next_scheduled_event.event.should == "LO-Intensity: PPG 1 and 2"
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
         @participant.next_scheduled_event.date.should == Date.today
       end
       
@@ -242,7 +248,7 @@ describe Participant do
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
-        @participant.next_scheduled_event.event.should == "HI-Intensity: PPG Follow Up CATI after 3 months"
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
       
@@ -264,10 +270,10 @@ describe Participant do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
 
-            participant.upcoming_events.should == ["HI-Intensity: HI-LO Conversion"]
+            participant.upcoming_events.should == [PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION]
             
             participant.consent!
-            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP]
             
             participant.pregnant_informed_consent!
             participant.upcoming_events.should == ["HI-Intensity: Pregnancy Visit 1"]
@@ -279,13 +285,14 @@ describe Participant do
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.upcoming_events.should == ["HI-Intensity: HI-LO Conversion"]
-            
-            participant.consent!
-            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+            participant.upcoming_events.should == [PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION]
             
             participant.non_pregnant_informed_consent!
-            participant.upcoming_events.should == ["HI-Intensity: Pre-Pregnancy"]
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY]
+            
+            participant.follow!
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP]
+            
           end
         end
     
@@ -294,7 +301,8 @@ describe Participant do
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 6 months"]
+            participant.consent!
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP]
           end
         end
     
@@ -303,7 +311,8 @@ describe Participant do
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.upcoming_events.should == ["HI-Intensity: PPG Follow Up CATI after 3 months"]
+            participant.consent!
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP]
           end
         end
       end
@@ -338,7 +347,7 @@ describe Participant do
         participant.should be_registered
         participant.state.should == "registered"
         participant.can_assign_to_pregnancy_probability_group?.should be_true
-        participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       end
     
       it "transitions from registered to in pregnancy probability group - PPG1/2" do
@@ -348,7 +357,7 @@ describe Participant do
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
         participant.state.should == "in_pregnancy_probability_group"
-        participant.next_study_segment.should == "LO-Intensity: PPG 1 and 2"
+        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
       end
     
       it "transitions from registered to in pregnancy probability group - PPG3/4" do
@@ -357,7 +366,7 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
-        participant.next_study_segment.should == "LO-Intensity: PPG Follow Up"
+        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
       end
     
       it "transitions from registered to in pregnancy probability group - PPG5/6" do
@@ -379,11 +388,11 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
         participant = Participant.find(participant.id)
         participant.ppg_status.local_code.should == 1
-        participant.next_study_segment.should == "LO-Intensity: PPG 1 and 2"
+        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
         
         participant.impregnate!
         participant.should be_pregnant
-        participant.next_study_segment.should == "LO-Intensity: Birth Visit Interview"
+        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       end
     end
     
@@ -422,6 +431,7 @@ describe Participant do
         it "will be followed after consent" do
           @participant.should_not be_followed
           @participant.consent!
+          @participant.non_pregnant_informed_consent!
           @participant.should be_followed
         end
         
@@ -430,7 +440,7 @@ describe Participant do
           @participant.state.should == "in_high_intensity_arm"
           @participant.should be_in_high_intensity_arm
           @participant.should_not be_low_intensity
-          @participant.next_study_segment.should == "HI-Intensity: HI-LO Conversion"
+          @participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         end
         
         it "consents to the high intensity protocol" do
@@ -439,7 +449,7 @@ describe Participant do
           @participant.state.should == "consented_high_intensity"
           @participant.non_pregnant_informed_consent!
           @participant.should be_pre_pregnancy
-          @participant.next_study_segment.should == "HI-Intensity: Pre-Pregnancy"
+          @participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
         end
         
       end
