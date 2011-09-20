@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110915181145) do
+ActiveRecord::Schema.define(:version => 20110920210459) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -349,6 +349,26 @@ ActiveRecord::Schema.define(:version => 20110915181145) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "participant_high_intensity_state_transitions", :force => true do |t|
+    t.integer  "participant_id"
+    t.string   "event"
+    t.string   "from"
+    t.string   "to"
+    t.datetime "created_at"
+  end
+
+  add_index "participant_high_intensity_state_transitions", ["participant_id"], :name => "participant_high_intensity_state_idx"
+
+  create_table "participant_low_intensity_state_transitions", :force => true do |t|
+    t.integer  "participant_id"
+    t.string   "event"
+    t.string   "from"
+    t.string   "to"
+    t.datetime "created_at"
+  end
+
+  add_index "participant_low_intensity_state_transitions", ["participant_id"], :name => "participant_low_intensity_state_idx"
 
   create_table "participant_person_links", :force => true do |t|
     t.string   "psu_code",           :limit => 36, :null => false

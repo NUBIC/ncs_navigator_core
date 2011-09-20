@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110823212243
+# Schema version: 20110920210459
 #
 # Table name: participants
 #
@@ -25,6 +25,8 @@
 #  updated_at               :datetime
 #  being_processed          :boolean
 #  high_intensity           :boolean
+#  low_intensity_state      :string(255)
+#  high_intensity_state     :string(255)
 #
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child. 
@@ -51,6 +53,9 @@ class Participant < ActiveRecord::Base
   has_many :ppg_details, :order => "created_at DESC"
   has_many :ppg_status_histories, :order => "created_at DESC"
   
+  has_many :low_intensity_state_transition_audits,  :class_name => "ParticipantLowIntensityStateTransition",  :foreign_key => "participant_id"
+  has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id"
+  
   has_many :participant_person_links
   has_many :person_relations, :through => :participant_person_links, :source => :person
   
@@ -67,6 +72,7 @@ class Participant < ActiveRecord::Base
   ##
   # State Machine used to manage relationship with Patient Study Calendar
   state_machine :low_intensity_state, :initial => :pending do
+    store_audit_trail
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
     after_transition :on => :parenthood, :do => :update_ppg_status_after_birth
@@ -107,6 +113,7 @@ class Participant < ActiveRecord::Base
   end
   
   state_machine :high_intensity_state, :initial => :in_high_intensity_arm do
+    store_audit_trail
     before_transition :log_state_change
     
     event :consent do

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110823212243
+# Schema version: 20110920210459
 #
 # Table name: dwelling_household_links
 #

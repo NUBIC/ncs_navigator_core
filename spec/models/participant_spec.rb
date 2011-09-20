@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110823212243
+# Schema version: 20110920210459
 #
 # Table name: participants
 #
@@ -25,6 +25,8 @@
 #  updated_at               :datetime
 #  being_processed          :boolean
 #  high_intensity           :boolean
+#  low_intensity_state      :string(255)
+#  high_intensity_state     :string(255)
 #
 
 require 'spec_helper'
@@ -55,6 +57,9 @@ describe Participant do
 
   it { should have_many(:participant_person_links) }
   it { should have_many(:person_relations).through(:participant_person_links) }
+  
+  it { should have_many(:low_intensity_state_transition_audits) }
+  it { should have_many(:high_intensity_state_transition_audits) }
 
   it { should validate_presence_of(:person) }
   

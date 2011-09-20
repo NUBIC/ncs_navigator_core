@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110823212243
+# Schema version: 20110920210459
 #
 # Table name: instruments
 #
@@ -26,6 +26,8 @@
 #  transaction_type         :string(255)
 #  created_at               :datetime
 #  updated_at               :datetime
+#  person_id                :integer
+#  survey_id                :integer
 #
 
 require 'spec_helper'
