@@ -71,9 +71,9 @@ class PatientStudyCalendar
       connection.get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
     end
     
-    def schedule_next_segment(participant)
+    def schedule_next_segment(participant, date = nil)
       return nil if participant.next_study_segment.blank?
-      connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_next_scheduled_study_segment_request(participant), { 'Content-Length' => '1024' })      
+      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}", build_next_scheduled_study_segment_request(participant, date), { 'Content-Length' => '1024' })
     end
        
     ##
@@ -197,18 +197,19 @@ class PatientStudyCalendar
       #         </xsd:simpleType>
       #     </xsd:attribute>
       # </xsd:complexType>
-      def build_next_scheduled_study_segment_request(participant)
+      def build_next_scheduled_study_segment_request(participant, date)
         
-        next_scheduled_event = participant.next_scheduled_event
+        next_scheduled_event      = participant.next_scheduled_event
+        next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
         
         xm = Builder::XmlMarkup.new(:target => "")
         xm.instruct!
-        xm.next-scheduled-study-segment("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+        xm.tag!("next-scheduled-study-segment".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                                         "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
                                         "study-segment-id" => get_study_segment_id(next_scheduled_event.event), 
-                                        "start-date" => next_scheduled_event.date.to_s,
-                                        "mode" => "per-protocol")
+                                        "start-date" => next_scheduled_event_date,
+                                        "mode" => "per-protocol"})
         xm.target!
       end
       
@@ -216,7 +217,7 @@ class PatientStudyCalendar
         result = nil
         segment = strip_epoch(segment)
         segments.each do |seg|
-          result = seg.attribute('id').value if seg.attribute('name').value == segment
+          result = seg.attribute('id').value if seg.attribute('name').value.strip == segment
           break if result
         end
         result
