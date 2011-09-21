@@ -70,6 +70,43 @@ class ParticipantsController < ApplicationController
     end
 
   end
+  
+  ##
+  # If the Participant is known to PSC, schedule the next event for the participant
+  #
+  # POST /participant/:id/schedule_next_event_with_psc
+  # POST /participant:id/schedule_next_event_with_psc.json
+  def schedule_next_event_with_psc
+    @participant = Participant.find(params[:id])
+    resp = PatientStudyCalendar.schedule_next_segment(@participant, params[:date])
+
+    url = edit_participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    if resp && resp.status.to_i < 299
+      respond_to do |format|
+        format.html do
+          redirect_to(url, :notice => "Scheduled event for #{@participant.person.to_s} in PSC")
+        end
+        format.json do
+          render :json => { :id => @participant.id, :errors => [] }, :status => :ok
+        end
+      end
+    else
+      @participant.unregister if @participant.registered? # reset to initial state if failed to register with PSC
+      error_msg = resp.blank? ? "Unable to send request to PSC" : "#{resp.body}"
+      respond_to do |format|
+        format.html do
+          flash[:warning] = error_msg
+          redirect_to(url, :error => error_msg)
+        end
+        format.json do
+          render :json => { :id => @participant.id, :errors => error_msg }, :status => :error
+        end
+      end
+    end
+    
+  end
 
   ##
   # Retrieve the schedule from PSC for the registered Participant

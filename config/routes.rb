@@ -16,6 +16,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :edit_arm
       put :update_arm
       put :register_with_psc
+      put :schedule_next_event_with_psc
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status
