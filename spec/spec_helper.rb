@@ -10,6 +10,7 @@ FactoryGirl.find_definitions
 
 require 'shoulda'
 require File.expand_path("../vcr_setup", __FILE__)
+require File.expand_path("../test_surveys", __FILE__)
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -61,6 +62,7 @@ RSpec.configure do |config|
   config.extend VCR::RSpec::Macros
   
   config.include TestLogins
+  config.include TestSurveys
 end
 
 def create_missing_in_error_ncs_codes(cls)
