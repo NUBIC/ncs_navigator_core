@@ -63,7 +63,7 @@ class Address < ActiveRecord::Base
     addr << address_two
     addr << unit
     addr << city
-    addr << state.to_s unless state.local_code == -4
+    addr << state.to_s if state && state.local_code != -4
     if zip4.blank?
       addr << zip
     else

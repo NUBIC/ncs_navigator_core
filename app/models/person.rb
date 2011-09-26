@@ -71,6 +71,9 @@ class Person < ActiveRecord::Base
   has_one :participant
   has_many :contact_links, :order => "created_at DESC"
   has_many :instruments, :through => :contact_links
+  has_many :addresses
+  has_many :telephones
+  has_many :emails
   
   validates_presence_of :first_name
   validates_presence_of :last_name
@@ -156,18 +159,37 @@ class Person < ActiveRecord::Base
     return if survey.nil?
     create_instrument(survey)
     response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
+
+    response_set = prepopulate_response_set(survey, response_set)
+    response_set
+  end
+
+  def prepopulate_response_set(survey, response_set)
     # TODO: determine way to know about initializing data for each survey
-    question = nil
-    survey.sections_with_questions.each do |section|
-      section.questions.each do |q|
-        question = q if q.data_export_identifier == "name"
+    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
+    reference_identifiers.each do |reference_identifier|
+      question = nil
+      survey.sections_with_questions.each do |section|
+        section.questions.each do |q|
+          question = q if q.reference_identifier == reference_identifier
+          break unless question.nil?
+        end
         break unless question.nil?
       end
-      break unless question.nil?
-    end
-    if question
-      answer = question.answers.first
-      Response.create(:response_set => response_set, :question => question, :answer => answer, :string_value => name)
+      if question
+        answer = question.answers.first
+        value = case reference_identifier
+                when "prepopulated_name"
+                  name
+                when "prepopulated_date_of_birth"
+                  dob.to_s
+                else
+                  # TODO: handle other prepopulated fields
+                  nil
+                end
+        
+        Response.create(:response_set => response_set, :question => question, :answer => answer, :string_value => value)
+      end
     end
     response_set
   end

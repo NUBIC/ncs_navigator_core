@@ -31,7 +31,7 @@ describe ResponseSet do
       let(:access_code) { "ins-que-pregvisit1-int-ehpbhi-p2-v2-0" }
       let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
     
-      it "creates a response set for the instrument with prepoulated answers" do
+      it "creates a response set for the instrument with prepopulated answers" do
   
         pv1survey = Survey.find_by_access_code(access_code)
         if pv1survey.blank? 
@@ -41,7 +41,7 @@ describe ResponseSet do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
   
         section   = Factory(:survey_section, :survey => pv1survey)
-        question  = Factory(:question, :survey_section => section, :data_export_identifier => "name")
+        question  = Factory(:question, :survey_section => section, :data_export_identifier => "name", :reference_identifier => "prepopulated_name")
         answer    = Factory(:answer, :question => question)
   
         ResponseSet.where(:user_id => person.id).should be_empty

@@ -83,6 +83,10 @@ describe Person do
   it { should have_many(:response_sets) }
   it { should have_many(:contact_links) }
   
+  it { should have_many(:addresses) }
+  it { should have_many(:telephones) }
+  it { should have_many(:emails) }
+  
   context "as mdes record" do
     
     it "sets the public_id to a uuid" do
