@@ -1,71 +1,73 @@
 class PregnancyScreenerOperationalDataExtractor
+
+  INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
   
   PERSON_MAP = {
-    "PREG_SCREEN_HI_2.R_FNAME"         => "first_name",
-    "PREG_SCREEN_HI_2.R_LNAME"         => "last_name",
-    "PREG_SCREEN_HI_2.PERSON_DOB"      => "person_dob",
-    "PREG_SCREEN_HI_2.AGE"             => "age",
-    "PREG_SCREEN_HI_2.AGE_RANGE"       => "age_range_code",
-    "PREG_SCREEN_HI_2.ETHNICITY"       => "ethnic_group_code",
-    "PREG_SCREEN_HI_2.PERSON_LANG"     => "language_code",
-    "PREG_SCREEN_HI_2.PERSON_LANG_OTH" => "language_other" 
+    "#{INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
+    "#{INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
+    "#{INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
+    "#{INTERVIEW_PREFIX}.AGE"             => "age",
+    "#{INTERVIEW_PREFIX}.AGE_RANGE"       => "age_range_code",
+    "#{INTERVIEW_PREFIX}.ETHNICITY"       => "ethnic_group_code",
+    "#{INTERVIEW_PREFIX}.PERSON_LANG"     => "language_code",
+    "#{INTERVIEW_PREFIX}.PERSON_LANG_OTH" => "language_other" 
   }
   
   PARTICIPANT_MAP = {
-    "PREG_SCREEN_HI_2.AGE_ELIG"        => "pid_age_eligibility_code"
+    "#{INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
   }
 
   ADDRESS_MAP = {
-    "PREG_SCREEN_HI_2.ADDRESS_1"       => "address_one",
-    "PREG_SCREEN_HI_2.ADDRESS_2"       => "address_two",
-    "PREG_SCREEN_HI_2.UNIT"            => "unit",
-    "PREG_SCREEN_HI_2.CITY"            => "city",
-    "PREG_SCREEN_HI_2.STATE"           => "state_code",
-    "PREG_SCREEN_HI_2.ZIP"             => "zip",
-    "PREG_SCREEN_HI_2.ZIP4"            => "zip4"
+    "#{INTERVIEW_PREFIX}.ADDRESS_1"       => "address_one",
+    "#{INTERVIEW_PREFIX}.ADDRESS_2"       => "address_two",
+    "#{INTERVIEW_PREFIX}.UNIT"            => "unit",
+    "#{INTERVIEW_PREFIX}.CITY"            => "city",
+    "#{INTERVIEW_PREFIX}.STATE"           => "state_code",
+    "#{INTERVIEW_PREFIX}.ZIP"             => "zip",
+    "#{INTERVIEW_PREFIX}.ZIP4"            => "zip4"
   }
   
   MAIL_ADDRESS_MAP = {
-    "PREG_SCREEN_HI_2.MAIL_ADDRESS_1"  => "address_one",
-    "PREG_SCREEN_HI_2.MAIL_ADDRESS_2"  => "address_two",
-    "PREG_SCREEN_HI_2.MAIL_UNIT"       => "unit",
-    "PREG_SCREEN_HI_2.MAIL_CITY"       => "city",
-    "PREG_SCREEN_HI_2.MAIL_STATE"      => "state_code",
-    "PREG_SCREEN_HI_2.MAIL_ZIP"        => "zip",
-    "PREG_SCREEN_HI_2.MAIL_ZIP4"       => "zip4"
+    "#{INTERVIEW_PREFIX}.MAIL_ADDRESS_1"  => "address_one",
+    "#{INTERVIEW_PREFIX}.MAIL_ADDRESS_2"  => "address_two",
+    "#{INTERVIEW_PREFIX}.MAIL_UNIT"       => "unit",
+    "#{INTERVIEW_PREFIX}.MAIL_CITY"       => "city",
+    "#{INTERVIEW_PREFIX}.MAIL_STATE"      => "state_code",
+    "#{INTERVIEW_PREFIX}.MAIL_ZIP"        => "zip",
+    "#{INTERVIEW_PREFIX}.MAIL_ZIP4"       => "zip4"
   }
   
   TELEPHONE_MAP = {
-    "PREG_SCREEN_HI_2.PHONE_NBR"       => "phone_nbr",
-    "PREG_SCREEN_HI_2.PHONE_NBR_OTH"   => "phone_nbr",
-    "PREG_SCREEN_HI_2.PHONE_TYPE"      => "phone_type_code",
-    "PREG_SCREEN_HI_2.PHONE_TYPE_OTH"  => "phone_type_other",
+    "#{INTERVIEW_PREFIX}.PHONE_NBR"       => "phone_nbr",
+    "#{INTERVIEW_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
+    "#{INTERVIEW_PREFIX}.PHONE_TYPE"      => "phone_type_code",
+    "#{INTERVIEW_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
   }
   
   HOME_PHONE_MAP = {
-    "PREG_SCREEN_HI_2.HOME_PHONE"      => "phone_nbr"
+    "#{INTERVIEW_PREFIX}.HOME_PHONE"      => "phone_nbr"
   }
   
   CELL_PHONE_MAP = {
-    "PREG_SCREEN_HI_2.CELL_PHONE_2"    => "cell_permission_code",
-    "PREG_SCREEN_HI_2.CELL_PHONE_4"    => "text_permission_code",
-    "PREG_SCREEN_HI_2.CELL_PHONE"      => "phone_nbr"
+    "#{INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+    "#{INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+    "#{INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr"
   }
   
   EMAIL_MAP = {
-    "PREG_SCREEN_HI_2.EMAIL"           => "email",
-    "PREG_SCREEN_HI_2.EMAIL_TYPE"      => "email_type_code"
+    "#{INTERVIEW_PREFIX}.EMAIL"           => "email",
+    "#{INTERVIEW_PREFIX}.EMAIL_TYPE"      => "email_type_code"
   }
   
   PPG_DETAILS_MAP = {
-    "PREG_SCREEN_HI_2.PREGNANT"        => "ppg_first_code",
-    "PREG_SCREEN_HI_2.ORIG_DUE_DATE"   => "orig_due_date",
-    "PREG_SCREEN_HI_2.TRYING"          => "ppg_first_code",
-    "PREG_SCREEN_HI_2.HYSTER"          => "ppg_first_code",
-    "PREG_SCREEN_HI_2.OVARIES"         => "ppg_first_code",
-    "PREG_SCREEN_HI_2.MENOPAUSE"       => "ppg_first_code",
-    "PREG_SCREEN_HI_2.MED_UNABLE"      => "ppg_first_code",
-    "PREG_SCREEN_HI_2.MED_UNABLE_OTH"  => "ppg_first_code"    
+    "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_first_code",
+    "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "orig_due_date",
+    "#{INTERVIEW_PREFIX}.TRYING"          => "ppg_first_code",
+    "#{INTERVIEW_PREFIX}.HYSTER"          => "ppg_first_code",
+    "#{INTERVIEW_PREFIX}.OVARIES"         => "ppg_first_code",
+    "#{INTERVIEW_PREFIX}.MENOPAUSE"       => "ppg_first_code",
+    "#{INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_first_code",
+    "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"  => "ppg_first_code"    
   }
   
   
@@ -126,11 +128,11 @@ class PregnancyScreenerOperationalDataExtractor
         if PPG_DETAILS_MAP.has_key?(data_export_identifier)
           value = value
           case data_export_identifier
-          when "PREG_SCREEN_HI_2.PREGNANT"
+          when "#{INTERVIEW_PREFIX}.PREGNANT"
             value = 1
-          when "PREG_SCREEN_HI_2.TRYING"
+          when "#{INTERVIEW_PREFIX}.TRYING"
             value = 2
-          when "PREG_SCREEN_HI_2.HYSTER", "PREG_SCREEN_HI_2.OVARIES", "PREG_SCREEN_HI_2.TUBES_TIED", "PREG_SCREEN_HI_2.MENOPAUSE", "PREG_SCREEN_HI_2.MED_UNABLE", "PREG_SCREEN_HI_2.MED_UNABLE_OTH"
+          when "#{INTERVIEW_PREFIX}.HYSTER", "#{INTERVIEW_PREFIX}.OVARIES", "#{INTERVIEW_PREFIX}.TUBES_TIED", "#{INTERVIEW_PREFIX}.MENOPAUSE", "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"
             value = 5
           end
           ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", value)

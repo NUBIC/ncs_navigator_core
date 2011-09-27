@@ -37,10 +37,10 @@ describe PpgFollowUpOperationalDataExtractor do
 
       @survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "PPG_CATI.PREGNANT"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "PPG_CATI.PPG_DUE_DATE_1"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PPG_DUE_DATE_1"
           answer = q.answers.select { |a| a.response_class == "date" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :datetime_value => "2011-12-25", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -64,7 +64,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       @survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "PPG_CATI.PREGNANT"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "3" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -88,7 +88,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       @survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "PPG_CATI.TRYING"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -113,7 +113,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       @survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "PPG_CATI.TRYING"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "3" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -138,7 +138,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       @survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "PPG_CATI.TRYING"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "4" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -162,7 +162,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       @survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "PPG_CATI.MED_UNABLE"
+        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.MED_UNABLE"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -203,10 +203,10 @@ describe PpgFollowUpOperationalDataExtractor do
       
     survey_section.questions.each do |q|
       case q.data_export_identifier
-      when "PPG_CATI.PHONE_NBR"
+      when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PHONE_NBR"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125551234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PPG_CATI.PHONE_TYPE"
+      when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PHONE_TYPE"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{cell.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -245,19 +245,19 @@ describe PpgFollowUpOperationalDataExtractor do
       
     survey_section.questions.each do |q|
       case q.data_export_identifier
-      when "PPG_SAQ.HOME_PHONE"
+      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.HOME_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125551234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PPG_SAQ.CELL_PHONE"
+      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.CELL_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125555678", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PPG_SAQ.WORK_PHONE"
+      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.WORK_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125559012", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PPG_SAQ.OTHER_PHONE"
+      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.OTHER_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125553456", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PPG_SAQ.EMAIL"
+      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.EMAIL"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
