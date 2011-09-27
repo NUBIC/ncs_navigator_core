@@ -28,16 +28,16 @@ describe PrePregnancyOperationalDataExtractor do
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
       case q.data_export_identifier
-      when "PRE_PREG.R_FNAME"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.R_FNAME"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Jo", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PRE_PREG.R_LNAME"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.R_LNAME"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Stafford", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PRE_PREG.PERSON_DOB"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_DOB"
         answer = q.answers.select { |a| a.response_class == "date" }.first
         Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/11/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PRE_PREG.MARISTAT"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.MARISTAT"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{married.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -71,13 +71,13 @@ describe PrePregnancyOperationalDataExtractor do
       
     survey_section.questions.each do |q|
       case q.data_export_identifier
-      when "PRE_PREG.CELL_PHONE_2"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_2"
         answer = q.answers.select { |a| a.response_class == "answer" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PRE_PREG.CELL_PHONE_4"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_4"
         answer = q.answers.select { |a| a.response_class == "answer" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PRE_PREG.CELL_PHONE"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125557890", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -108,7 +108,7 @@ describe PrePregnancyOperationalDataExtractor do
       
     survey_section.questions.each do |q|
       case q.data_export_identifier
-      when "PRE_PREG.EMAIL"
+      when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.EMAIL"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end

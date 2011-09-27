@@ -37,22 +37,23 @@ class PrePregnancyOperationalDataExtractor
   # 
   # CONTACT_PHONE_2       Telephone.phone_nbr
   
+  INTERVIEW_PREFIX = "PRE_PREG"
   
   PERSON_MAP = {
-    "PRE_PREG.R_FNAME"         => "first_name",
-    "PRE_PREG.R_LNAME"         => "last_name",
-    "PRE_PREG.PERSON_DOB"      => "person_dob",
-    "PRE_PREG.MARISTAT"        => "marital_status_code" 
+    "#{INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
+    "#{INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
+    "#{INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
+    "#{INTERVIEW_PREFIX}.MARISTAT"        => "marital_status_code" 
   }
   
   CELL_PHONE_MAP = {
-    "PRE_PREG.CELL_PHONE_2"    => "cell_permission_code",
-    "PRE_PREG.CELL_PHONE_4"    => "text_permission_code",
-    "PRE_PREG.CELL_PHONE"      => "phone_nbr"
+    "#{INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+    "#{INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+    "#{INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr"
   }
   
   EMAIL_MAP = {
-    "PRE_PREG.EMAIL"           => "email"
+    "#{INTERVIEW_PREFIX}.EMAIL"           => "email"
   }
   
   class << self
