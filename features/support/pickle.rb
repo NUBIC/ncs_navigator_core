@@ -15,13 +15,16 @@
 #
 # You may also need to add gem dependencies on your factory of choice in <tt>config/environments/cucumber.rb</tt>
 
-require 'factory_girl'
-require File.dirname(__FILE__) + '/../../spec/factories'
-require File.dirname(__FILE__) + '/../../spec/factories/surveyor'
-require File.dirname(__FILE__) + '/../../spec/factories/household'
-require File.dirname(__FILE__) + '/../../spec/factories/consent'
-require File.dirname(__FILE__) + '/../../spec/factories/participant'
-require File.dirname(__FILE__) + '/../../spec/factories/ppg'
+# ***********************
+# Uncomment the following if not using spork & guard
+# require 'factory_girl'
+# require File.dirname(__FILE__) + '/../../spec/factories'
+# require File.dirname(__FILE__) + '/../../spec/factories/surveyor'
+# require File.dirname(__FILE__) + '/../../spec/factories/household'
+# require File.dirname(__FILE__) + '/../../spec/factories/consent'
+# require File.dirname(__FILE__) + '/../../spec/factories/participant'
+# require File.dirname(__FILE__) + '/../../spec/factories/ppg'
+# ***********************
 
 require 'pickle/world'
 # Example of configuring pickle:
