@@ -55,10 +55,12 @@ group :test, :ci, :cucumber do
   gem 'vcr'
   gem 'fakeweb'
 
+  gem "spork", "> 0.9.0.rc"
+  gem "guard-spork"
+
 end
 
 group :cucumber do
   gem 'capybara'
-  gem 'spork'
   gem 'launchy'    # So you can do Then show me the page
 end

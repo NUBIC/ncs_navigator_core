@@ -56,5 +56,20 @@ class PpgDetail < ActiveRecord::Base
       nil
     end
   end
+  
+  ##
+  # Helper method to set the most recently known due_date
+  # @param [Date]
+  def update_due_date(due_date)
+    if orig_due_date.blank?
+      self.update_attribute(:orig_due_date, due_date)
+    elsif due_date_2.blank?
+      self.update_attribute(:due_date_2, due_date)
+    elsif due_date_3.blank?
+      self.update_attribute(:due_date_3, due_date)
+    else
+      nil
+    end
+  end
 
 end

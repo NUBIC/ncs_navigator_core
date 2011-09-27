@@ -12,7 +12,9 @@ class OperationalDataExtractor
     end
     
     EXTRACTORS = [
-      [/PregScreen_INT/, PregnancyScreenerOperationalDataExtractor]
+      [/_PregScreen_/, PregnancyScreenerOperationalDataExtractor],
+      [/_PPGFollUp_/,  PpgFollowUpOperationalDataExtractor],
+      [/_PrePreg_/,    PrePregnancyOperationalDataExtractor],
     ]
     
     def response_value(response)
@@ -29,7 +31,6 @@ class OperationalDataExtractor
         response.answer.reference_identifier.gsub("neg_", "-").to_i
       end
     end
-    private :response_value
   end
   
 end

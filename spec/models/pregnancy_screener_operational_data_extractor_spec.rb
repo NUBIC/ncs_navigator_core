@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OperationalDataExtractor do
+describe PregnancyScreenerOperationalDataExtractor do
 
   before(:each) do
     create_missing_in_error_ncs_codes(Instrument)
@@ -12,31 +12,6 @@ describe OperationalDataExtractor do
     create_missing_in_error_ncs_codes(PpgDetail)
   end
 
-  it "sets up the test properly" do
-    
-    person = Factory(:person)
-    survey = create_survey_with_person_operational_data
-    
-    survey.sections.size.should == 1
-    survey.sections.first.questions.size.should == 9
-    
-    survey.sections.first.questions.each do |q| 
-      case q.reference_identifier
-      when "R_FNAME", "R_LNAME", "AGE", "PERSON_DOB"
-        q.answers.size.should == 3
-      when "AGE_RANGE"
-        q.answers.size.should == 9
-      when "ETHNICITY"
-        q.answers.size.should == 2
-      when "PERSON_LANG"
-        q.answers.size.should == 3
-      when "PERSON_LANG_OTH"
-        q.answers.size.should == 1
-      end
-    end
-    
-  end
-
   # R_FNAME               Person.first_name
   # R_LNAME               Person.last_name
   # PERSON_DOB            Person.person_dob
@@ -45,7 +20,7 @@ describe OperationalDataExtractor do
   # ETHNICITY             Person.ethnic_group_code          ETHNICITY_CL1
   # PERSON_LANG           Person.language_code              LANGUAGE_CL2
   # PERSON_LANG_OTH       Person.language_other
-  it "extracts person operational data from the survey responses" do    
+  it "extracts person operational data from the survey responses" do
     
     age_range     = Factory(:ncs_code, :list_name => "AGE_RANGE_CL1", :display_text => "25-34", :local_code => 3)
     ethnic_group  = Factory(:ncs_code, :list_name => "ETHNICITY_CL1", :display_text => "Not Hispanic or Latino", :local_code => 2)
@@ -58,36 +33,36 @@ describe OperationalDataExtractor do
     participant = Factory(:participant, :person => person)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
     
-    survey = create_survey_with_person_operational_data
+    survey = create_pregnancy_screener_survey_with_person_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "R_FNAME"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.R_FNAME"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Jo", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "R_LNAME"
+      when "PREG_SCREEN_HI_2.R_LNAME"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Stafford", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PERSON_DOB"
+      when "PREG_SCREEN_HI_2.PERSON_DOB"
         answer = q.answers.select { |a| a.response_class == "date" }.first
         Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/11/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "AGE"
+      when "PREG_SCREEN_HI_2.AGE"
         answer = q.answers.select { |a| a.response_class == "integer" }.first
         Factory(:response, :survey_section_id => survey_section.id, :integer_value => 30, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "AGE_RANGE"
+      when "PREG_SCREEN_HI_2.AGE_RANGE"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{age_range.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "ETHNICITY"
+      when "PREG_SCREEN_HI_2.ETHNICITY"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ethnic_group.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PERSON_LANG"
+      when "PREG_SCREEN_HI_2.PERSON_LANG"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{language.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PERSON_LANG_OTH"
+      when "PREG_SCREEN_HI_2.PERSON_LANG_OTH"
         ## Do nothing
-      when "AGE_ELIG"
+      when "PREG_SCREEN_HI_2.AGE_ELIG"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{age_eligible.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)        
       end
@@ -96,7 +71,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 8
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person = Person.find(person.id)
     person.first_name.should == "Jo"
@@ -125,31 +100,31 @@ describe OperationalDataExtractor do
     person = Factory(:person)
     person.addresses.size.should == 0
     
-    survey = create_survey_with_address_operational_data
+    survey = create_pregnancy_screener_survey_with_address_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "ADDRESS_1"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.ADDRESS_1"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "123 Easy St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "ADDRESS_2"
+      when "PREG_SCREEN_HI_2.ADDRESS_2"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "UNIT"
+      when "PREG_SCREEN_HI_2.UNIT"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "CITY"
+      when "PREG_SCREEN_HI_2.CITY"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "STATE"
+      when "PREG_SCREEN_HI_2.STATE"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "ZIP"
+      when "PREG_SCREEN_HI_2.ZIP"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "ZIP4"
+      when "PREG_SCREEN_HI_2.ZIP4"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -158,7 +133,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 7
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     person.addresses.size.should == 1
@@ -175,31 +150,31 @@ describe OperationalDataExtractor do
     person = Factory(:person)
     person.addresses.size.should == 0
     
-    survey = create_survey_with_mail_address_operational_data
+    survey = create_pregnancy_screener_survey_with_mail_address_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "MAIL_ADDRESS_1"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.MAIL_ADDRESS_1"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "123 Easy St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "MAIL_ADDRESS_2"
+      when "PREG_SCREEN_HI_2.MAIL_ADDRESS_2"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "MAIL_UNIT"
+      when "PREG_SCREEN_HI_2.MAIL_UNIT"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "MAIL_CITY"
+      when "PREG_SCREEN_HI_2.MAIL_CITY"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "MAIL_STATE"
+      when "PREG_SCREEN_HI_2.MAIL_STATE"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "MAIL_ZIP"
+      when "PREG_SCREEN_HI_2.MAIL_ZIP"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "MAIL_ZIP4"
+      when "PREG_SCREEN_HI_2.MAIL_ZIP4"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -208,7 +183,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 7
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     person.addresses.size.should == 1
@@ -229,35 +204,35 @@ describe OperationalDataExtractor do
     person = Factory(:person)
     person.telephones.size.should == 0
 
-    survey = create_survey_with_telephone_operational_data
+    survey = create_pregnancy_screener_survey_with_telephone_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
       
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "PHONE_NBR"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.PHONE_NBR"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125551234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PHONE_NBR_OTH"
+      when "PREG_SCREEN_HI_2.PHONE_NBR_OTH"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PHONE_TYPE"
+      when "PREG_SCREEN_HI_2.PHONE_TYPE"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{cell.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "PHONE_TYPE_OTH"
+      when "PREG_SCREEN_HI_2.PHONE_TYPE_OTH"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "HOME_PHONE"
+      when "PREG_SCREEN_HI_2.HOME_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125554321", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "CELL_PHONE_2"
+      when "PREG_SCREEN_HI_2.CELL_PHONE_2"
         answer = q.answers.select { |a| a.response_class == "answer" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "CELL_PHONE_4"
+      when "PREG_SCREEN_HI_2.CELL_PHONE_4"
         answer = q.answers.select { |a| a.response_class == "answer" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "CELL_PHONE"
+      when "PREG_SCREEN_HI_2.CELL_PHONE"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125557890", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -266,7 +241,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 8
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     person.telephones.size.should == 3
@@ -285,17 +260,17 @@ describe OperationalDataExtractor do
     person = Factory(:person)
     person.emails.size.should == 0
 
-    survey = create_survey_with_email_operational_data
+    survey = create_pregnancy_screener_survey_with_email_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
 
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "EMAIL"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.EMAIL"
         answer = q.answers.select { |a| a.response_class == "string" }.first
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "EMAIL_TYPE"
+      when "PREG_SCREEN_HI_2.EMAIL_TYPE"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{home.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -304,7 +279,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 2
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     person.emails.size.should == 1
@@ -334,17 +309,17 @@ describe OperationalDataExtractor do
     
     ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1", :local_code => 1)
     
-    survey = create_survey_with_ppg_detail_operational_data
+    survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
     
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "PREGNANT"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.PREGNANT"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "ORIG_DUE_DATE"
+      when "PREG_SCREEN_HI_2.ORIG_DUE_DATE"
         answer = q.answers.select { |a| a.response_class == "date" }.first
         Factory(:response, :survey_section_id => survey_section.id, :datetime_value => "2011-12-25", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -353,7 +328,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 2
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     participant = person.participant
@@ -372,14 +347,14 @@ describe OperationalDataExtractor do
     
     ppg2 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2", :local_code => 2)
     
-    survey = create_survey_with_ppg_detail_operational_data
+    survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
     
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "TRYING"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.TRYING"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -388,7 +363,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 1
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     participant = person.participant
@@ -408,14 +383,14 @@ describe OperationalDataExtractor do
     
     ppg5 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 5", :local_code => 5)
     
-    survey = create_survey_with_ppg_detail_operational_data
+    survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set = person.start_instrument(survey)
     response_set.responses.size.should == 0
     
     survey_section.questions.each do |q|
-      case q.reference_identifier
-      when "HYSTER"
+      case q.data_export_identifier
+      when "PREG_SCREEN_HI_2.HYSTER"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
@@ -424,7 +399,7 @@ describe OperationalDataExtractor do
     response_set.responses.reload
     response_set.responses.size.should == 1
     
-    OperationalDataExtractor.process(response_set)
+    PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
     
     person  = Person.find(person.id)
     participant = person.participant
