@@ -121,8 +121,8 @@ describe PregnancyVisitOperationalDataExtractor do
           answer = q.answers.select { |a| a.response_class == "string" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Lonnie Johnson", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Lonnie Johnson", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          answer = q.answers.select { |a| a.response_class == "integer" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :integer_value => "23", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_1"
           answer = q.answers.select { |a| a.response_class == "string" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :string_value => "123 Easy St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
@@ -144,21 +144,21 @@ describe PregnancyVisitOperationalDataExtractor do
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4"
           answer = q.answers.select { |a| a.response_class == "string" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_PHONE"
+        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"
           answer = q.answers.select { |a| a.response_class == "string" }.first
           Factory(:response, :survey_section_id => @survey_section.id, :string_value => "3125551212", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         end
       end
 
       response_set.responses.reload
-      response_set.responses.size.should == 9
+      response_set.responses.size.should == 10
 
       PregnancyVisitOperationalDataExtractor.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
       participant.person_relations.size.should == 2
-      participant.friends.size.should == 1
+      participant.partner.should_not be_nil
       father = participant.partner
       father.first_name.should == "Lonnie"
       father.last_name.should == "Johnson"

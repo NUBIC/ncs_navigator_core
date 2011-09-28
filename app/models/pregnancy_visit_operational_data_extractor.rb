@@ -123,6 +123,7 @@ class PregnancyVisitOperationalDataExtractor
   
   FATHER_PERSON_MAP = {
     "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME"       => "full_name",
+    "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE"        => "age",
   }
   
   FATHER_ADDRESS_MAP = {
@@ -136,7 +137,7 @@ class PregnancyVisitOperationalDataExtractor
   }
   
   FATHER_PHONE_MAP = {
-    "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"     => "phone_nbr",
+    "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"           => "phone_nbr",
   }
 
   class << self
@@ -165,10 +166,10 @@ class PregnancyVisitOperationalDataExtractor
       birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new)
       
       father = Person.new
+      father_phone = Telephone.new(:person => father)
       father_address = Address.new(:person => father, :dwelling_unit => DwellingUnit.new)
       # TODO: determine the default relationship for Father when creating father esp. when child has not been born
       father_relationship = ParticipantPersonLink.new(:person => father, :participant => participant, :relationship_code => 7) # 7	Partner/Significant Other 
-      father_phone = Telephone.new(:person => father)
       
       response_set.responses.each do |r|
         
@@ -241,10 +242,11 @@ class PregnancyVisitOperationalDataExtractor
         
       end
 
-      if !father.to_s.blank?
+      if !father.first_name.blank? && !father.last_name.blank?
         father_address.save! unless father_address.to_s.blank?
         father_phone.save! unless father_phone.phone_nbr.blank?
         father.save!
+        father_relationship.save!
       end
       
       if !contact1.to_s.blank? && !contact1relationship.relationship_code.blank?
