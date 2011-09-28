@@ -112,7 +112,7 @@ class PrePregnancyOperationalDataExtractor
         end
         
         if CONTACT_1_RELATIONSHIP_MAP.has_key?(data_export_identifier)        
-          contact1relationship.send("#{CONTACT_1_RELATIONSHIP_MAP[data_export_identifier]}=", contact_to_person_relationship(value)) unless value.blank?
+          contact1relationship.send("#{CONTACT_1_RELATIONSHIP_MAP[data_export_identifier]}=", OperationalDataExtractor.contact_to_person_relationship(value)) unless value.blank?
         end
 
         if CONTACT_1_ADDRESS_MAP.has_key?(data_export_identifier)
@@ -128,7 +128,7 @@ class PrePregnancyOperationalDataExtractor
         end
         
         if CONTACT_2_RELATIONSHIP_MAP.has_key?(data_export_identifier)        
-          contact2relationship.send("#{CONTACT_2_RELATIONSHIP_MAP[data_export_identifier]}=", contact_to_person_relationship(value)) unless value.blank?
+          contact2relationship.send("#{CONTACT_2_RELATIONSHIP_MAP[data_export_identifier]}=", OperationalDataExtractor.contact_to_person_relationship(value)) unless value.blank?
         end
 
         if CONTACT_2_ADDRESS_MAP.has_key?(data_export_identifier)
@@ -160,59 +160,6 @@ class PrePregnancyOperationalDataExtractor
       cell_phone.save! unless cell_phone.phone_nbr.blank?
       person.save!
       
-    end
-    
-    ##
-    # Convert Contact Survey code to Person/Participant Relationship code
-    # 
-    # CONTACT_RELATIONSHIP_CL2
-    #   1 Mother/Father
-    #   2 Brother/Sister
-    #   3 Aunt/Uncle
-    #   4 Grandparent
-    #   5 Neighbor
-    #   6 Friend
-    #   -5  Other
-    # PERSON_PARTCPNT_RELTNSHP_CL1
-    #   1 Participant/Self
-    #   2 Biological Mother
-    #   3 Non-Biological Mother
-    #   4 Biological Father
-    #   5 Non-Biological Father
-    #   6 Spouse
-    #   7 Partner/Significant Other
-    #   8 Child
-    #   9 Sibling
-    #   10  Grandparent
-    #   11  Other relative
-    #   12  Friend
-    #   13  Neighbor
-    #   14  Co-Worker
-    #   15  Care-giver
-    #   16  Teacher
-    #   17  Primary health care provider
-    #   18  Other health care provider
-    #   -5  Other
-    def contact_to_person_relationship(value)
-      # TODO: FIXME: Determine how to handle Mother/Father value
-      case value
-      when 1  # Mother/Father
-        2       # Default to Biological Mother for now 
-      when 2  # Brother/Sister
-        9       # Sibling
-      when 3  # Aunt/Uncle
-        11      # Other relative
-      when 4  # Grandparent
-        10      # Grandparent
-      when 5  # Neighbor
-        13      # Neighbor
-      when 6  # Friend
-        12      # Friend
-      when -5, -4
-        value   # Other, Missing in Error
-      else 
-        nil     # No mapping value
-      end
     end
     
   end

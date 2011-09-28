@@ -54,7 +54,10 @@ describe OperationalDataExtractor do
     handler = OperationalDataExtractor.extractor_for(response_set)
     handler.should == PrePregnancyOperationalDataExtractor
     
-    
+    survey = create_pregnancy_visit_1_survey_with_person_operational_data
+    response_set = person.start_instrument(survey)
+    handler = OperationalDataExtractor.extractor_for(response_set)
+    handler.should == PregnancyVisitOperationalDataExtractor
   end
   
 end
