@@ -30,7 +30,7 @@ class InstrumentEventMap
   def self.version(filename)
     result = nil
     INSTRUMENT_EVENT_CONFIG.each do |ie|
-      if ie["filename"] == filename
+      if filename =~ Regexp.new(ie["filename"])
         result = ie["version_number"]
         break
       end

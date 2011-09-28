@@ -117,6 +117,17 @@ class Person < ActiveRecord::Base
   alias :full_name :to_s
   
   ##
+  # Helper method to set first and last name from full name
+  # @param [String]
+  def full_name=(full_name)
+    full_name = full_name.split
+    if full_name.size >= 2 
+      self.last_name = full_name.last
+      self.first_name = full_name[0, (full_name.size - 1) ].join(" ")
+    end
+  end
+  
+  ##
   # A Person is a Participant if there is an association on the participant table
   # @return [Boolean]
   def participant?

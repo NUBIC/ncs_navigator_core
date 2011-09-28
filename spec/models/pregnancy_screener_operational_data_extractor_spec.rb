@@ -26,8 +26,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     ethnic_group  = Factory(:ncs_code, :list_name => "ETHNICITY_CL1", :display_text => "Not Hispanic or Latino", :local_code => 2)
     language      = Factory(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1)
 
-    age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 3)
-    age_eligible2 = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL4", :display_text => "Age-Eligible", :local_code => 3)
+    age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
     
     person = Factory(:person)
     participant = Factory(:participant, :person => person)
@@ -83,7 +82,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     person.ethnic_group.should == ethnic_group
     person.language.should == language
     
-    person.participant.pid_age_eligibility
+    person.participant.pid_age_eligibility.should == age_eligible
     
   end
   
