@@ -331,4 +331,113 @@ module TestSurveys
     survey
   end
   
+  # CONTACT_FNAME_1       Person.first_name
+  # CONTACT_LNAME_1       Person.last_name
+  # 
+  # CONTACT_RELATE_1      ParticipantPersonLink.relationship_code   PERSON_PARTCPNT_RELTNSHP_CL1/CONTACT_RELATIONSHIP_CL2
+  # CONTACT_RELATE1_OTH   ParticipantPersonLink.relationship_other
+  # 
+  # C_ADDR_1_1            Address.address_one
+  # C_ADDR_2_1            Address.address_two
+  # C_UNIT_1              Address.unit
+  # C_CITY_1              Address.city
+  # C_STATE_1             Address.state_code                        STATE_CL1
+  # C_ZIP_1               Address.zip
+  # C_ZIP4_1              Address.zip4
+  # 
+  # CONTACT_PHONE_1       Telephone.phone_nbr
+  def create_pre_pregnancy_survey_with_contact_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Contact 1 First Name
+    q = Factory(:question, :reference_identifier => "CONTACT_FNAME_1", :data_export_identifier => "PRE_PREG.CONTACT_FNAME_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
+    # Contact 1 Last Name
+    q = Factory(:question, :reference_identifier => "CONTACT_LNAME_1", :data_export_identifier => "PRE_PREG.CONTACT_LNAME_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Last Name", :response_class => "string")
+    # Contact 1 Relationship Code
+    q = Factory(:question, :reference_identifier => "CONTACT_RELATE_1", :data_export_identifier => "PRE_PREG.CONTACT_RELATE_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "MOTHER/FATHER", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "BROTHER/SISTER", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "AUNT/UNCLE", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "GRANDPARENT", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "NEIGHBOR", :response_class => "answer", :reference_identifier => "5")
+    a = Factory(:answer, :question_id => q.id, :text => "FRIEND", :response_class => "answer", :reference_identifier => "6")
+    a = Factory(:answer, :question_id => q.id, :text => "OTHER", :response_class => "answer", :reference_identifier => "neg_5")
+    # Contact 1 Relationship Other
+    q = Factory(:question, :reference_identifier => "CONTACT_RELATE1_OTH", :data_export_identifier => "PRE_PREG.CONTACT_RELATE1_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Specify", :response_class => "string")
+    # Contact 1 Address One
+    q = Factory(:question, :reference_identifier => "C_ADDR_1_1", :data_export_identifier => "PRE_PREG.C_ADDR_1_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    # Contact 1 Address Two
+    q = Factory(:question, :reference_identifier => "C_ADDR_2_1", :data_export_identifier => "PRE_PREG.C_ADDR_2_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+    # Contact 1 Unit
+    q = Factory(:question, :reference_identifier => "C_UNIT_1", :data_export_identifier => "PRE_PREG.C_UNIT_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
+    # Contact 1 City
+    q = Factory(:question, :reference_identifier => "C_CITY_1", :data_export_identifier => "PRE_PREG.C_CITY_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
+    # Contact 1 State
+    q = Factory(:question, :reference_identifier => "C_STATE_1", :data_export_identifier => "PRE_PREG.C_STATE_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
+    a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
+    # Contact 1 Zip
+    q = Factory(:question, :reference_identifier => "C_ZIP_1", :data_export_identifier => "PRE_PREG.C_ZIP_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+    # Contact 1 plus 4
+    q = Factory(:question, :reference_identifier => "C_ZIP4_1", :data_export_identifier => "PRE_PREG.C_ZIP4_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
+    # Contact 1 phone
+    q = Factory(:question, :reference_identifier => "CONTACT_PHONE_1", :data_export_identifier => "PRE_PREG.CONTACT_PHONE_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
+    
+    # Contact 2 First Name
+    q = Factory(:question, :reference_identifier => "CONTACT_FNAME_2", :data_export_identifier => "PRE_PREG.CONTACT_FNAME_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
+    # Contact 2 Last Name
+    q = Factory(:question, :reference_identifier => "CONTACT_LNAME_2", :data_export_identifier => "PRE_PREG.CONTACT_LNAME_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Last Name", :response_class => "string")
+    # Contact 2 Relationship Code
+    q = Factory(:question, :reference_identifier => "CONTACT_RELATE_2", :data_export_identifier => "PRE_PREG.CONTACT_RELATE_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "MOTHER/FATHER", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "BROTHER/SISTER", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "AUNT/UNCLE", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "GRANDPARENT", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "NEIGHBOR", :response_class => "answer", :reference_identifier => "5")
+    a = Factory(:answer, :question_id => q.id, :text => "FRIEND", :response_class => "answer", :reference_identifier => "6")
+    a = Factory(:answer, :question_id => q.id, :text => "OTHER", :response_class => "answer", :reference_identifier => "neg_5")
+    # Contact 2 Relationship Other
+    q = Factory(:question, :reference_identifier => "CONTACT_RELATE2_OTH", :data_export_identifier => "PRE_PREG.CONTACT_RELATE2_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Specify", :response_class => "string")
+    # Contact 2 Address One
+    q = Factory(:question, :reference_identifier => "C_ADDR_1_2", :data_export_identifier => "PRE_PREG.C_ADDR_1_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    # Contact 2 Address Two
+    q = Factory(:question, :reference_identifier => "C_ADDR_2_2", :data_export_identifier => "PRE_PREG.C_ADDR_2_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+    # Contact 2 Unit
+    q = Factory(:question, :reference_identifier => "C_UNIT_2", :data_export_identifier => "PRE_PREG.C_UNIT_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
+    # Contact 2 City
+    q = Factory(:question, :reference_identifier => "C_CITY_2", :data_export_identifier => "PRE_PREG.C_CITY_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
+    # Contact 2 State
+    q = Factory(:question, :reference_identifier => "C_STATE_2", :data_export_identifier => "PRE_PREG.C_STATE_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
+    a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
+    # Contact 2 Zip
+    q = Factory(:question, :reference_identifier => "C_ZIP_2", :data_export_identifier => "PRE_PREG.C_ZIP_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+    # Contact 2 plus 4
+    q = Factory(:question, :reference_identifier => "C_ZIP4_2", :data_export_identifier => "PRE_PREG.C_ZIP4_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
+    # Contact 2 phone
+    q = Factory(:question, :reference_identifier => "CONTACT_PHONE_2", :data_export_identifier => "PRE_PREG.CONTACT_PHONE_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
+    survey
+  end
+  
 end

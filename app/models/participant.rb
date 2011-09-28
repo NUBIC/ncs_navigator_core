@@ -352,7 +352,27 @@ class Participant < ActiveRecord::Base
   
   def partner
     # TODO: do not hard code NcsCode local code here
-    relationships(7).first    
+    relationships(7).first
+  end
+  
+  def grandparents
+    # TODO: do not hard code NcsCode local code here
+    relationships(10)
+  end
+    
+  def other_relatives
+    # TODO: do not hard code NcsCode local code here
+    relationships(11)
+  end
+  
+  def friends
+    # TODO: do not hard code NcsCode local code here
+    relationships(12)
+  end
+  
+  def neighbors
+    # TODO: do not hard code NcsCode local code here
+    relationships(13)
   end
   
   ##
