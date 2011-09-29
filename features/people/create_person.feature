@@ -34,18 +34,18 @@ Feature: Creating a person record
     And I should be on the people page
     And I should see "John"
 
-  Scenario: Creating a new person without entering required attributes
-    Given valid ncs codes
-    And an authenticated user
-    When I am on the people page
-    Then I should see "People"
-    And I should see "No people were found."
-    And I should see "New Person"
-    When I follow "New Person" 
-    Then I should be on the new person page
-    And I should see "New Person"
-    When I press "Submit"
-    Then I should see "2 errors prohibited this Person from being saved"
-    And I should see "First name can't be blank"
-    And I should see "Last name can't be blank"
+  # Scenario: Creating a new person without entering required attributes
+  #   Given valid ncs codes
+  #   And an authenticated user
+  #   When I am on the people page
+  #   Then I should see "People"
+  #   And I should see "No people were found."
+  #   And I should see "New Person"
+  #   When I follow "New Person" 
+  #   Then I should be on the new person page
+  #   And I should see "New Person"
+  #   When I press "Submit"
+  #   Then I should see "2 errors prohibited this Person from being saved"
+  #   And I should see "First name can't be blank"
+  #   And I should see "Last name can't be blank"
 

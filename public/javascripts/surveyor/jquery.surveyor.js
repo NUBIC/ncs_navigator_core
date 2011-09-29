@@ -55,6 +55,8 @@ jQuery(document).ready(function(){
   });
 
   $('li.date input').dateinput({
-      format: 'dd mmm yyyy'
+      format: 'mm/dd/yyyy',
+      yearRange: [-100, 5], 
+      selectors: true
   });
 });

@@ -8,6 +8,7 @@
           - subject_schedules["days"][date]["activities"].each do |activity|
             .activity
               - study_segment = activity["study_segment"]
-              = link_to "#{study_segment}", psc_assignment_path(activity["assignment"]["id"]), :class => "icon_link external_link"
+              - activity_name = activity["activity"]["name"]
+              = link_to "#{study_segment} :: #{activity_name}", psc_assignment_path(activity["assignment"]["id"]), :class => "icon_link external_link"
   - else
     Subject does not yet have a schedule

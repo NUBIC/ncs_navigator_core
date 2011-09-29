@@ -76,8 +76,8 @@ describe Person do
   it { should belong_to(:p_tracing) }
   it { should belong_to(:p_info_source) }
 
-  it { should validate_presence_of(:first_name) }
-  it { should validate_presence_of(:last_name) }
+  # it { should validate_presence_of(:first_name) }
+  # it { should validate_presence_of(:last_name) }
 
   it { should have_one(:participant) }
   it { should have_many(:response_sets) }

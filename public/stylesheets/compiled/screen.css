@@ -1524,8 +1524,13 @@ form .nested_attributes {
 #surveyor fieldset {
   border: none;
   border-bottom: 1px solid #ccc;
+  background-color: inherit !important;
 }
 /* line 11, ../../../app/stylesheets/partials/_surveyor.scss */
+#surveyor fieldset legend {
+  background-color: inherit !important;
+}
+/* line 13, ../../../app/stylesheets/partials/_surveyor.scss */
 #surveyor fieldset legend span {
   display: block;
   font-weight: normal;
@@ -1533,11 +1538,11 @@ form .nested_attributes {
   width: 990px;
   white-space: normal;
 }
-/* line 19, ../../../app/stylesheets/partials/_surveyor.scss */
+/* line 21, ../../../app/stylesheets/partials/_surveyor.scss */
 #surveyor fieldset ol {
   margin: 0;
 }
-/* line 22, ../../../app/stylesheets/partials/_surveyor.scss */
+/* line 24, ../../../app/stylesheets/partials/_surveyor.scss */
 #surveyor fieldset ol li fieldset {
   border: none !important;
 }

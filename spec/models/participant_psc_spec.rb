@@ -4,14 +4,12 @@ describe Participant do
 
   context "a new participant" do
     
-    it "has no upcoming event until it is registered with the Patient Study Calendar (PSC)" do
+    it "is scheduled for the LO-Intensity Pregnancy Screener if not registered with the Patient Study Calendar (PSC)" do
       
       participant = Factory(:participant)
       participant.should be_pending
-      participant.next_study_segment.should be_nil
-      
-      participant.next_scheduled_event.should be_nil
-
+      participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      participant.next_scheduled_event.event.should == participant.next_study_segment
     end
     
   end

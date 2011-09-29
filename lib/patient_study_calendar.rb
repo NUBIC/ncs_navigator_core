@@ -7,7 +7,7 @@ class PatientStudyCalendar
   PPG_1_AND_2           = "PPG 1 and 2"
   PPG_FOLLOW_UP         = "PPG Follow Up"
   BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
-  HI_LO_CONVERSION      = "HI-LO Conversion"
+  HI_LO_CONVERSION      = "Low to High Conversion"
   
   PPG_3_MONTH_FOLLOW_UP = "PPG Follow Up CATI after 3 months"
   PPG_6_MONTH_FOLLOW_UP = "PPG Follow Up CATI after 6 months"
@@ -48,7 +48,7 @@ class PatientStudyCalendar
     end
     
     def segments
-      template = connection.get("studies/#{CGI.escape(study_identifier)}/template.xml")
+      template = connection.get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
       template.body.xpath('//psc:study-segment', Psc.xml_namespace)
     end
 
@@ -74,6 +74,10 @@ class PatientStudyCalendar
     def schedule_next_segment(participant, date = nil)
       return nil if participant.next_study_segment.blank?
       connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}", build_next_scheduled_study_segment_request(participant, date), { 'Content-Length' => '1024' })
+    end
+    
+    def update_subject(participant)
+      connection.put("subjects/#{participant.person.public_id}", build_subject_attributes_hash(participant, "_").to_json)      
     end
        
     ##
@@ -114,7 +118,7 @@ class PatientStudyCalendar
       event
     end
     
-    private
+    # private
     
       def uri
         psc_config["uri"]
@@ -144,7 +148,23 @@ class PatientStudyCalendar
       #     <xsd:attribute name="desired-assignment-id" type="xsd:string"/>
       #     <xsd:attribute name="study-subject-id" type="xsd:string"/>
       # </xsd:complexType>
-      #
+      #     
+      def build_subject_assignment_request(participant)
+        subject_attributes = build_subject_attributes_hash(participant)
+        xm = Builder::XmlMarkup.new(:target => "")
+        xm.instruct!
+        xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+                        "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                        "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
+                        "first-study-segment-id" => get_study_segment_id(participant.next_study_segment), 
+                        "date" => Date.today.to_s, 
+                        "subject-coordinator-name" => username, 
+                        "desired-assignment-id" => participant.public_id) { 
+          xm.subject(subject_attributes)
+        }
+        xm.target!
+      end
+
       # <xsd:complexType name="Subject">
       #     <xsd:sequence>
       #         <xsd:element name="property" type="psc:Property" minOccurs="0" maxOccurs="unbounded"/>
@@ -163,24 +183,23 @@ class PatientStudyCalendar
       #             </xsd:restriction>
       #         </xsd:simpleType>
       #     </xsd:attribute>
-      # </xsd:complexType>      
-      def build_subject_assignment_request(participant)
-        subject = {:first_name => participant.first_name, :last_name => participant.last_name, :person_id => participant.person.public_id, :gender => participant.gender}
-        if participant.person_dob
-          subject[:birth_date] = participant.person_dob
-        end        
-        xm = Builder::XmlMarkup.new(:target => "")
-        xm.instruct!
-        xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
-                        "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                        "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                        "first-study-segment-id" => get_study_segment_id(participant.next_study_segment), 
-                        "date" => Date.today.to_s, 
-                        "subject-coordinator-name" => username, 
-                        "desired-assignment-id" => participant.public_id) { 
-          xm.subject("first-name" => subject[:first_name], "last-name" => subject[:last_name], "birth-date" => subject[:birth_date], "person-id" => subject[:person_id], "gender" => subject[:gender]) 
-        }
-        xm.target!
+      # </xsd:complexType>
+      def build_subject_attributes_hash(participant, separator = "-")
+        subject_attributes = Hash.new
+        subject_attributes["person#{separator}id"]  = participant.person.public_id
+        
+        gender = participant.gender
+        if gender.blank?
+          gender = "unknown"
+        elsif gender == "Missing in Error"         
+          gender = "unknown"
+        end
+        subject_attributes["gender"] = gender
+        
+        subject_attributes["first#{separator}name"] = participant.first_name unless participant.first_name.blank?
+        subject_attributes["last#{separator}name"]  = participant.last_name  unless participant.last_name.blank?
+        subject_attributes["birth#{separator}date"] = participant.person_dob unless participant.person_dob.blank?
+        subject_attributes
       end
       
       # <xsd:element name="next-scheduled-study-segment" type="psc:NextScheduledStudySegment"/>

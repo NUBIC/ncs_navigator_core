@@ -40,9 +40,9 @@
           - else
             N/A
         %br
-        - if !@participant.can_register? && !@participant.pregnancy_one?
+        - if !@participant.can_register_with_psc? && !@participant.pregnancy_one?
           = f.submit "Move to next state", :disable_with => 'Updating...'
-    - if @participant.can_register?
+    - if @participant.can_register_with_psc?
       = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "register_participant_with_psc"}) do |f| 
         = render "shared/full_error_messages", :object => f.object
         %p
@@ -95,23 +95,25 @@
     %b
       PSC
     %br
-    - if @participant.can_register?
+    - if @participant.can_register_with_psc?
       Participant needs to be registered in PSC
     - else
       Participant is registered in PSC
       
   = render "schedule", :participant => @participant if PatientStudyCalendar.is_registered?(@participant)
   
-  - if next_event = @participant.next_scheduled_event  
-    .schedule_next_event
-      %b
-        Schedule Next Event      
-        = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f| 
-          = render "shared/full_error_messages", :object => f.object
-          %p
-            = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
-          %p
-            = f.submit "Schedule #{next_event.event}"
+  %b
+  - if !@participant.can_register_with_psc?
+    - if next_event = @participant.next_scheduled_event
+      .schedule_next_event
+        %b
+          Schedule Next Event      
+          = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f| 
+            = render "shared/full_error_messages", :object => f.object
+            %p
+              = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
+            %p
+              = f.submit "Schedule #{next_event.event}"
             
 :javascript
   $(document).ready(function() {

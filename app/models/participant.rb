@@ -204,7 +204,11 @@ class Participant < ActiveRecord::Base
   #
   # @return [NcsCode]
   def ppg_status
-    ppg_status_histories.blank? ? ppg_details.first.ppg_first : ppg_status_histories.first.ppg_status
+    if ppg_status_histories.blank? 
+      ppg_details.blank? ? nil : ppg_details.first.ppg_first
+    else
+      ppg_status_histories.first.ppg_status
+    end
   end
     
   ##
@@ -291,6 +295,12 @@ class Participant < ActiveRecord::Base
   # or simply following
   def can_consent?
     pregnant_or_trying?
+  end
+  
+  ##
+  # Only Participants who are in a state of pending and have not yet registered with PSC can register
+  def can_register_with_psc?
+    can_register? && !PatientStudyCalendar.is_registered?(self)
   end
   
   ##
@@ -409,9 +419,7 @@ class Participant < ActiveRecord::Base
     end
     
     def next_low_intensity_study_segment
-      if pending?
-        nil
-      elsif registered?
+      if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif in_pregnancy_probability_group? || consented_low_intensity?
         lo_intensity_follow_up
@@ -453,7 +461,7 @@ class Participant < ActiveRecord::Base
     end
     
     def pregnant_or_trying?
-      [1,2].include?(ppg_status.local_code)
+      ppg_status && [1,2].include?(ppg_status.local_code)
     end
     
     def eligible_for_ppg_follow_up?
@@ -463,15 +471,15 @@ class Participant < ActiveRecord::Base
     end
     
     def ineligible?
-      ppg_status.local_code > 4
+      ppg_status && ppg_status.local_code > 4
     end
     
     def pregnant?
-      ppg_status.local_code == 1
+      ppg_status && ppg_status.local_code == 1
     end
   
     def recent_loss?
-      ppg_status.local_code == 3
+      ppg_status && ppg_status.local_code == 3
     end
 
     def consented_to_high_intensity_arm?

@@ -25,7 +25,7 @@ class OperationalDataExtractor
       when "integer"
         response.integer_value
       when "date", "datetime", "time"
-        response.datetime_value.strftime('%Y-%m-%d')
+        response.datetime_value.strftime('%Y-%m-%d') unless response.datetime_value.blank?
       when "text"
         response.text_value
       when "answer"
