@@ -75,8 +75,8 @@ class Person < ActiveRecord::Base
   has_many :telephones
   has_many :emails
   
-  validates_presence_of :first_name
-  validates_presence_of :last_name
+  # validates_presence_of :first_name
+  # validates_presence_of :last_name
   
   validates_length_of :title, :maximum => 5, :allow_blank => true
   

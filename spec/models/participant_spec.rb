@@ -342,7 +342,7 @@ describe Participant do
         participant.should be_pending
         participant.can_register?.should be_true
         participant.can_assign_to_pregnancy_probability_group?.should be_false
-        participant.next_study_segment.should be_nil
+        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       end
     
       it "initially transitions into a registered state" do

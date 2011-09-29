@@ -89,7 +89,6 @@ class PregnancyScreenerOperationalDataExtractor
       response_set.responses.each do |r|
         
         value = OperationalDataExtractor.response_value(r)
-        
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
@@ -126,16 +125,25 @@ class PregnancyScreenerOperationalDataExtractor
 
         # TODO: do not hard code ppg code
         if PPG_DETAILS_MAP.has_key?(data_export_identifier)
-          value = value
+          
           case data_export_identifier
           when "#{INTERVIEW_PREFIX}.PREGNANT"
-            value = 1
+            ppg_detail_value = value
           when "#{INTERVIEW_PREFIX}.TRYING"
-            value = 2
+            case value
+            when 1 # when Yes to Trying - set ppg_first_code to 2 - Trying
+              ppg_detail_value = 2
+            when 2 # when No to Trying - set ppg_first_code to 4 - Not Trying
+              ppg_detail_value = 4
+            else  # Otherwise Recent Loss, Not Trying, Unable match ppg_first_code
+              ppg_detail_value = value 
+            end
           when "#{INTERVIEW_PREFIX}.HYSTER", "#{INTERVIEW_PREFIX}.OVARIES", "#{INTERVIEW_PREFIX}.TUBES_TIED", "#{INTERVIEW_PREFIX}.MENOPAUSE", "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"
-            value = 5
+            ppg_detail_value = 5 if value == 1 # If yes to any set the ppg_first_code to 5 - Unable to become pregnant
+          else
+            ppg_detail_value = value 
           end
-          ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", value)
+          ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", ppg_detail_value)
         end
 
       end

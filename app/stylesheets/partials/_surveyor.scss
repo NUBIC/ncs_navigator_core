@@ -7,7 +7,9 @@
   fieldset {
     border: none;
     border-bottom: 1px solid #ccc;
+    background-color: inherit !important;
     legend {
+      background-color: inherit !important;
       span {
         display: block;
         font-weight: normal;

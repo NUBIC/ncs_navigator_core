@@ -98,6 +98,8 @@ class Event < ActiveRecord::Base
         result << "Pregnancy Visit  1"
       when "Pre-Pregnancy"
         result << "Pre-Pregnancy Visit"
+      when "PPG 1 and 2"
+        result << "Pregnancy Probability"
       else
         result << e
       end

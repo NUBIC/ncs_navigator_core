@@ -10,8 +10,7 @@ Feature: Registering a participant with Patient Study Calendar (PSC)
     Then I should see "Not yet registered with PSC"
     When I follow "Bessie Smith"
     Then I press "Register with PSC"
-    Then I should be on the participant page
-    And I should see "registered with PSC"
+    Then I should see "registered with PSC"
 
   @javascript
   Scenario: Viewing a registered participant with PSC
