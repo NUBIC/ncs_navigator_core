@@ -1,5 +1,5 @@
 class AddStateToParticipants < ActiveRecord::Migration
-  def change
+  def up
     add_column :participants, :state, :string
   end
 end
