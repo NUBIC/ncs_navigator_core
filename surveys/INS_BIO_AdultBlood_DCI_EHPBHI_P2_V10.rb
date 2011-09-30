@@ -297,7 +297,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     dependency :rule=>"A"
     condition_A :q_BLOOD_COMPLETE, "==", :a_1
     
-
+# TODO
 # PROGRAMMER INSTRUCTIONS:
 # • IF VISIT IS PARTICIPANT’S FIRST VISIT (PRE-PREGNANCY OR PREGNANCY 
 # VISIT 1), DISPLAY THE FOLLOWING BLOOD TUBES:
@@ -1005,7 +1005,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     q_CENTRIFUGE_DATE "Time centrifugation began – DATE",
     :help_text => "Double check if year is < 2011.",
     :pick => :one,
-    :data_export_identifier => "SPEC_URINE.CENTRIFUGE_DATE"
+    :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_DATE"
     a "DATE", :date
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"

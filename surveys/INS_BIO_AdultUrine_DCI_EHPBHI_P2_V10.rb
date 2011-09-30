@@ -6,8 +6,8 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
     q_URINE_INTRO "You will now collect a urine sample. I will need to ask you some questions before you collect your urine sample.",
     :pick => :one,
     :data_export_identifier=>"SPEC_URINE.URINE_INTRO"
-    a_1 "CONTINUE"
-    a_neg_1 "REFUSED"
+    a_1 "Continue"
+    a_neg_1 "Refused"
     
 # TODO - tried to accomodate with aditional text next to the question:    
 # PROGRAMMER INSTRUCTIONS:
@@ -94,7 +94,7 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
     q_ATE_MEAT "How much of what you ate was beef, pork, tuna, or salmon?",
     :pick => :one,
     :data_export_identifier=>"SPEC_URINE.ATE_MEAT"
-    a_1 "NONE"
+    a_1 "None"
     a_2 "Less than one quarter of the meal"
     a_3 "One quarter to one half of the meal"
     a_4 "Less than three quarters of the meal"
@@ -109,10 +109,10 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
     :help_text => "If the participant asks, explain that creatine supplements are often taken by athletes wishing to gain muscle mass.",
     :pick => :one,
     :data_export_identifier => "SPEC_URINE.CREATINE_SUPP"
-    a_1 "YES"
-    a_2 "NO"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_1 "Yes"
+    a_2 "No"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
     dependency :rule=>"A "
     condition_A :q_URINE_INTRO, "==", :a_1
     
@@ -225,7 +225,7 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
    - Format must be AA # # # # # # #-UR## 
    - Specimen_type=12, urine collection",
    :data_export_identifier=>"SPEC_URINE.SPECIMEN_ID"      
-   a :string
+   a "$AA|-UR12", :string
    dependency :rule=>"A "
    condition_A :q_URINE_INTRO, "==", :a_1
 

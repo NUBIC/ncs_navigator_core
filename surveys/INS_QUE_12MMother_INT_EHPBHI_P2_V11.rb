@@ -42,7 +42,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
 #     PROGRAMMER INSTRUCTION: 
 #     • CHILD_QNUM CANNOT BE GREATER THAN CHILD_NUM
 
-    q_CHILD_SEX "Is child_qnum a male or female?",
+    q_CHILD_SEX "Is CHILD_QNUM a male or female?",
     :pick => :one,
     :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.CHILD_SEX"
     a_1 "Male"

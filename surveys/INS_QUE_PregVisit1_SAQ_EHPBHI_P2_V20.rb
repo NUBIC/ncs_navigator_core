@@ -1,17 +1,6 @@
 survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
-  section "SELF-ADMINISTERED QUESTIONAIRE", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
-    label "<b>NOTE:</b> THE SAQS MAY BE COMPLETED IN EITHER A PAPI OR CASI MODE"
-    
-    q_is_papi_mode "IS SAQ COMPLETED IN A PAPI MODE?", :pick => :one
-    a_1 "YES"
-    a_2 "NO"
-    
-    q_participant_id "<b>FIELD INTERVIEWER INSTRUCTION:</b> ENTER THE PARTICIPANT ID"
-    a :string
-    dependency :rule => "A"
-    condition_A :q_is_papi_mode, "==", :a_1
-
-    q_time_stamp_1 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_1"
+  section "Self-administered questionaire", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
+    q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_1"
     a :datetime
     
     label "Thank you for agreeing to participate in this study. This self-administered questionnaire will take about 
@@ -19,23 +8,22 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     your satisfaction with our visit with you today.<br>Your answers are important to us. There are no right or wrong 
     answers. You can always refuse to answer any question or group of questions, and your answers will be kept confidential."
   end
-  section "PREGNANCY INTENTIONS AND HISTORY", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do  
+  section "Pregnancy intentions and history", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do  
     q_PLANNED "Regarding this pregnancy, were you trying to become pregnant?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.PLANNED"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
      
-    q_MONTH_TRY "For about how many months were you trying to become pregnant? <br>
-    <b>INTERVIEWER INSTRUCTION: </b><br>
-    -If 1 month or less, enter 1",
+    q_MONTH_TRY "For about how many months were you trying to become pregnant?",
+    :help_text => "If 1 month or less, enter 1",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.MONTH_TRY"
     a_months "Months", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule => "A"
     condition_A :q_PLANNED, "==", :a_1        
     
@@ -49,8 +37,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.WANTED"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_TIMING "Would you say you became pregnant too soon, at about the right time, or later than you wanted?",
     :pick => :one,
@@ -59,8 +47,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_2 "Right Time"
     a_3 "Later"
     a_4 "Didn’t Care"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule => "A"
     condition_A :q_WANTED, "==", :a_1
     
@@ -68,25 +56,27 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     What is the first and last name of your baby’s father?", 
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.FATHER_NAME"
-    a_F_F_NAME_and_F_L_NAME "FIRST and LAST NAME:", :string
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_F_F_NAME_and_F_L_NAME "First and last name:", :string
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
+    # TODO
+    # Have to substitude the name of the father
     q_FATHER_SAME_HH "Is the father of your baby/[FIRST NAME OF FATHER] living in the same household as you?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.FATHER_SAME_HH"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_FATHER_KNOW_PREG "Is the father/[FIRST NAME OF FATHER] aware of your pregnancy?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.FATHER_SAME_HH"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_CONTACT_F_NOW "May we have your permission to contact the father/[FIRST NAME OF FATHER] and invite him to participate 
     in the Study?",
@@ -94,8 +84,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CONTACT_F_NOW"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule => "A"
     condition_A :q_FATHER_KNOW_PREG, "!=", :a_2
     
@@ -105,8 +95,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CONTACT_F_LATER"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule => "A"
     condition_A :q_FATHER_KNOW_PREG, "==", :a_2
     
@@ -115,15 +105,15 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     dependency :rule => "A"
     condition_A :q_CONTACT_F_LATER, "==", :a_1
     
-    q_F_ADDR "What is the father’s/[FIRST NAME OF FATHER’s] home address?<br><br>
-    <b>INTERVIEWER INSTRUCTIONS:</b><br>- PROMPT AS NECESSARY TO COMPLETE INFORMATION", :pick=>:one
-    a_1 "ENTER RESPONSE", :string
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON'T KNOW"
+    q_F_ADDR "What is the father’s/[FIRST NAME OF FATHER’s] home address?",
+    :help_text => "Prompt as necessary to complete information", :pick=>:one
+    a_1 "Enter response", :string
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
 
 
 # FATHER_SAME_HH = 2 AND CONTACT_F_NOW 
-    q_F_ADDR1_2 "ADDRESS 1 - STREET/PO BOX", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_ADDR1_2"  
+    q_F_ADDR1_2 "Address 1 - street/PO Box", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_ADDR1_2"  
     a :string
     dependency :rule=>"A and B and C"
     condition_A :q_FATHER_SAME_HH, "==", :a_2
@@ -131,28 +121,28 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     condition_C :q_F_ADDR, "==", :a_1
     
 
-    q_F_ADDR_2_2 "ADDRESS 2", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_ADDR_2_2"
+    q_F_ADDR_2_2 "Address 2", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_ADDR_2_2"
     a :string
     dependency :rule=>"A and B and C"
     condition_A :q_FATHER_SAME_HH, "==", :a_2
     condition_B :q_CONTACT_F_NOW, "==", :a_1
     condition_C :q_F_ADDR, "==", :a_1
 
-    q_F_UNIT_2 "UNIT", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_UNIT_2"
+    q_F_UNIT_2 "Unit", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_UNIT_2"
     a :string
     dependency :rule=>"A and B and C"
     condition_A :q_FATHER_SAME_HH, "==", :a_2
     condition_B :q_CONTACT_F_NOW, "==", :a_1
     condition_C :q_F_ADDR, "==", :a_1
 
-    q_F_CITY_2 "CITY", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_CITY_2"
+    q_F_CITY_2 "City", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_CITY_2"
     a :string
     dependency :rule=>"A and B and C"
     condition_A :q_FATHER_SAME_HH, "==", :a_2
     condition_B :q_CONTACT_F_NOW, "==", :a_1
     condition_C :q_F_ADDR, "==", :a_1
 
-    q_F_STATE_2 "STATE", :display_type=>"dropdown", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_STATE_2"
+    q_F_STATE_2 "State", :display_type=>"dropdown", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_STATE_2"
     a_1 "AL"
     a_2 "AK"
     a_3 "AZ"
@@ -209,7 +199,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     condition_B :q_CONTACT_F_NOW, "==", :a_1
     condition_C :q_F_ADDR, "==", :a_1
 
-    q_F_ZIPCODE_2 "ZIP CODE", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_ZIPCODE_2"
+    q_F_ZIPCODE_2 "ZIP Code", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_ZIPCODE_2"
     a :string
     dependency :rule=>"A and B and C"
     condition_A :q_FATHER_SAME_HH, "==", :a_2
@@ -223,14 +213,14 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     condition_B :q_CONTACT_F_NOW, "==", :a_1
     condition_C :q_F_ADDR, "==", :a_1
 
-    q_F_PHONE "What is the father’s/[FIRST NAME OF FATHER’s] telephone number (XXXXXXXXXX)?<br><br>
-    <b>INTERVIEWER INSTRUCTION:</b><br>- IF FATHER HAS NO TELEPHONE ASK FOR TELEPHONE NUMBER WHERE HE/SHE RECEIVES CALLS", 
+    q_F_PHONE "What is the father’s/[FIRST NAME OF FATHER’s] telephone number (XXXXXXXXXX)?",
+    :help_text => "If father has no telephone ask for telephone number where he/she receives calls", 
     :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.CONTACT_PHONE_1"
-    a_1 "PHONE NUMBER", :string
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON'T KNOW"
-    a_neg_7 "FATHER HAS NO TELEPHONE"
+    a_1 "Phone number", :string
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    a_neg_7 "Father has no telephone"
     dependency :rule=>"A and B"
     condition_A :q_FATHER_SAME_HH, "==", :a_1
     condition_B :q_CONTACT_F_NOW, "==", :a_1
@@ -238,15 +228,15 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     q_F_AGE "What is the father’s/[FIRST NAME OF FATHER’s] age?",
     :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.F_AGE"
-    a_f_age "AGE IN YEARS", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON'T KNOW"
+    a_f_age "Age in years", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"(A or B) and C"
     condition_A :q_FATHER_SAME_HH, "==", :a_1
     condition_B :q_FATHER_SAME_HH, "==", :a_2    
     condition_C :q_CONTACT_F_NOW, "==", :a_1
     
-    q_time_stamp_2 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_2"
+    q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_2"
     a :datetime
     
     label "These next questions are about any previous pregnancies you may have had."
@@ -257,16 +247,16 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.PAST_PREG"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_NUM_PREG "Including this pregnancy, how many times total have you been pregnant?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.NUM_PREG"
-    a_number "NUMBER", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
-    a_neg_7 "NEVER BEEN PREGNANT/NOT APPLICABLE"
+    a_number "Number", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    a_neg_7 "Never been pregnant/not applicable"
     dependency :rule=>"A"
     condition_A :q_PAST_PREG, "==", :a_1
     
@@ -278,9 +268,9 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     q_AGE_FIRST "How old were you when you became pregnant for the first time?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.AGE_FIRST"
-    a_number "AGE IN YEARS", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_number "Age in years", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_PAST_PREG, "==", :a_1
     
@@ -289,15 +279,14 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     condition_A :q_NUM_PREG, "<", {:integer_value => "13"}
     
     q_PREMATURE "Did any of your previous pregnancies end in the birth of a child more than 3 weeks early, 
-    before his or her due date? <br><br>
-    <b>INTERVIEWER INSTRUCTIONS: </b>
-    - INCLUDE ALL INFANTS WHO WERE ALIVE AT THE TIME OF BIRTH. DO NOT INCLUDE MISCARRIAGES, STILLBIRTHS OR ABORTIONS.",
+    before his or her due date?",
+    :help_text => "Include all infants who were alive at the time of birth. do not include miscarriages, stillbirths or abortions.",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.PREMATURE"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_PAST_PREG, "==", :a_1    
     
@@ -306,13 +295,13 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.MISCARRY"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_PAST_PREG, "==", :a_1        
   end
-  section "TOBACCO AND ALCOHOL USE", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
-    q_time_stamp_3 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_3"
+  section "Tobacco and alcohol use", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
+    q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_3"
     a :datetime
     
     label "The next questions are about your use of cigarettes and alcohol just before your current pregnancy."
@@ -322,8 +311,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CIG_PAST"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_CIG_PAST_FREQ "Did you smoke cigarettes:",
     :pick => :one,
@@ -334,8 +323,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_4 "Once a week"
     a_5 "1-3 days a month"
     a_6 "Less than once a month"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_CIG_PAST, "==", :a_1    
     
@@ -343,9 +332,9 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     or less each day, please enter \"1.\"",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CIG_PAST_NUM"
-    a_number "NUMBER PER DAY", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_number "Number per day", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_CIG_PAST, "==", :a_1
     
@@ -362,8 +351,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CIG_NOW"
     a_1 "Yes"
     a_2 "No"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_CIG_NOW_FREQ "Do you smoke cigarettes:",
     :pick => :one,
@@ -374,8 +363,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_4 "Once a week"
     a_5 "1-3 days a month"
     a_6 "Less than once a month"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_CIG_NOW, "==", :a_1
     
@@ -383,9 +372,9 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     less each day, please enter \"1.\"",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CIG_NOW_NUM"
-    a_number "NUMBER PER DAY", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_number "Number per day", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_CIG_NOW, "==", :a_1
      
@@ -397,7 +386,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_CIG_NOW_NUM, ">", {:integer_value => "60"}     
      
-    q_DRINK_PAST "<u>In the 3 months before you knew you were pregnant</u>, how often did you drink alcoholic beverages including wine, 
+    q_DRINK_PAST "In the 3 months before you knew you were pregnant, how often did you drink alcoholic beverages including wine, 
     beer, drinks containing hard liquor, wine coolers, hard lemonade, or hard cider?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DRINK_PAST"
@@ -407,22 +396,22 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_4 "1-3 times a month"
     a_5 "Less than once a month"
     a_6 "Never"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
-    q_DRINK_PAST_NUM "<u>In the 3 months before you knew you were pregnant</u>, on days that you drank alcoholic beverages, 
+    q_DRINK_PAST_NUM "In the 3 months before you knew you were pregnant, on days that you drank alcoholic beverages, 
     how many did you have per day? If you had one drink or less, please enter \"1.\"",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DRINK_PAST_NUM"     
-    a_number "NUMBER OF DRINKS", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_number "Number of drinks", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A or B or C"
     condition_A :q_DRINK_PAST, "!=", :a_6
     condition_A :q_DRINK_PAST, "!=", :a_neg_1
     condition_A :q_DRINK_PAST, "!=", :a_neg_2
     
-    q_DRINK_PAST_5 "<u>In the 3 months before you knew you were pregnant</u>, how often did you have 5 or more drinks within 
+    q_DRINK_PAST_5 "In the 3 months before you knew you were pregnant, how often did you have 5 or more drinks within 
     a couple of hours?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DRINK_PAST_NUM"     
@@ -430,8 +419,8 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_2 "About once a month"
     a_3 "About once a week"
     a_4 "About once a day"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A or B or C"
     condition_A :q_DRINK_PAST, "!=", :a_6
     condition_A :q_DRINK_PAST, "!=", :a_neg_1
@@ -446,16 +435,16 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_4 "1-3 times a month"
     a_5 "Less than once a month"
     a_6 "Never"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
-    q_DRINK_NOW_NUM "<u>In the 3 months before you knew you were pregnant</u>, on days that you drank alcoholic beverages, 
+    q_DRINK_NOW_NUM "In the 3 months before you knew you were pregnant, on days that you drank alcoholic beverages, 
     how many did you have per day? If you had one drink or less, please enter \"1.\"",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DRINK_NOW_NUM"
-    a_number "NUMBER OF DRINKS", :integer
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_number "Number of drinks", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A or B or C"
     condition_A :q_DRINK_NOW, "!=", :a_6
     condition_A :q_DRINK_NOW, "!=", :a_neg_1
@@ -468,18 +457,17 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_2 "About once a month"
     a_3 "About once a week"
     a_4 "About once a day"
-    a_neg_1 "REFUSED"
-    a_neg_2 "DON’T KNOW"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A or B or C"
     condition_A :q_DRINK_NOW, "!=", :a_6
     condition_A :q_DRINK_NOW, "!=", :a_neg_1
     condition_A :q_DRINK_NOW, "!=", :a_neg_2
     
-    label "<b>INTERVIEWER INSTRUCTION:</b><br>
-    FOLLOW LOCAL MANDATORY REPORTING REQUIREMENTS."
+    label "Interviewer instruction: Follow local mandatory reporting requirements."
   end
-  section "EVALUATION QUESTIONS", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
-    q_time_stamp_4 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_4"
+  section "Evaluation questions", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
+    q_time_stamp_4 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_4"
     a :datetime
     
     label "We would now like to take a few minutes to ask some questions about your experience in the study. 
@@ -488,70 +476,70 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     
     label "How important was each of the following in your decision to take part in the National Children’s Study?"
     
-    q_LEARN "(How important was…) Learning more about my health or the health of my child?",
+    q_LEARN "(How important was...) Learning more about my health or the health of my child?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.LEARN"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_HELP "(How important was…) Feeling as if I can help children now and in the future?",
+    q_HELP "(How important was...) Feeling as if I can help children now and in the future?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.HELP"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_INCENT "(How important was…) Receiving money or gifts for taking part in the study?",
+    q_INCENT "(How important was...) Receiving money or gifts for taking part in the study?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.INCENT"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_RESEARCH "(How important was…) Helping doctors and researchers learn more about children and their health?",
+    q_RESEARCH "(How important was...) Helping doctors and researchers learn more about children and their health?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.RESEARCH"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_ENVIR "(How important was…) Helping researchers learn how the environment may affect children’s health?",
+    q_ENVIR "(How important was...) Helping researchers learn how the environment may affect children’s health?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.ENVIR"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_COMMUNITY "(How important was…) Feeling part of my community?",
+    q_COMMUNITY "(How important was...) Feeling part of my community?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.COMMUNITY"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_KNOW_OTHERS "(How important was…) Knowing other women in the study?",
+    q_KNOW_OTHERS "(How important was...) Knowing other women in the study?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.KNOW_OTHERS"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_FAMILY "(How important was…) Having family members or friends support my choice to take part in the study?",
+    q_FAMILY "(How important was...) Having family members or friends support my choice to take part in the study?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.FAMILY"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_DOCTOR "(How important was…) Having my doctor or health care provider support my choice to take part in the study?",
+    q_DOCTOR "(How important was...) Having my doctor or health care provider support my choice to take part in the study?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DOCTOR"
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
     
-    q_STAFF "(How important was…) Feeling comfortable with the study staff who come to my home?",
+    q_STAFF "(How important was...) Feeling comfortable with the study staff who come to my home?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.STAFF"
     a_1 "Not at all important"
@@ -641,12 +629,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     
     label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey."
 
-    label_instructions "<b>INSTRUCTIONS: </b><br>IF SAQ IS COMPLETED AS A PAPI, SCs MUST PROVIDE INSTRUCTIONS AND A BUSINESS 
-    REPLY ENVELOPE FOR PARTICIPANT TO RETURN"
-    dependency :rule => "A"
-    condition_A :q_is_papi_mode, "==", :a_1
-    
-    q_time_stamp_5 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_5"
+    q_time_stamp_5 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_5"
     a :datetime
   end 
 end

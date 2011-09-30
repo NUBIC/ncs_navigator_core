@@ -828,6 +828,8 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_D :q_AGE_ELIG, "==", :a_1
     condition_E :q_AGE_ELIG, "==", :a_3
 
+    # TODO
+    # THE VALIDATION BELOW SHOULD TAKE PLACE, BUT WE DON'T SUPPORT INTEGER FORMAT IN ANSWERS YET
     q_NUM_CHILD "How many of those people are children? Please include anyone under 18 years or anyone 
     older than 18 years and in high school.", 
     :help_text => "Double check if the entry field for this question > than the answer above, or if responce is > 10",
@@ -836,11 +838,12 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     a_1 "Number", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule=>"A and B and C"
+    # dependency :rule=>"A and B and C and D"
+    dependency :rule=>"A and B"
     condition_A :q_HH_MEMBERS, "!=", :a_neg_1
     condition_B :q_HH_MEMBERS, "!=", :a_neg_2
-    condition_C :q_HH_MEMBERS, ">", {:integer_value => "0"}
-    condition_D :q_HH_MEMBERS, "<", {:integer_value => "15"}    
+    # condition_C :q_HH_MEMBERS, ">", {:integer_value => "0"}
+    # condition_D :q_HH_MEMBERS, "<", {:integer_value => "15"}    
     
     q_INCOME_4CAT "Of these income groups, which category best represents your total combined family income during the last calendar year?",
     :help_text => "If using showcards, refer respondent to appropriate showcard. Otherwise, read response categories to respondent.",

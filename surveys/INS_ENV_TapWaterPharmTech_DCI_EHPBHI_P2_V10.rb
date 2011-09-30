@@ -1,5 +1,5 @@
 survey "INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0" do
-  section "Technician-collect Tap Water PHARMACEUTICALS (TWF) Sample Collection Instrument", :reference_identifier=>"TapWaterPharmTech_DCI" do
+  section "Technician-collect Tap Water Pharmaceuticals (TWF) Sample Collection Instrument", :reference_identifier=>"TapWaterPharmTech_DCI" do
     q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"TAP_WATER_TWF.TIME_STAMP_1"
     a :datetime
     

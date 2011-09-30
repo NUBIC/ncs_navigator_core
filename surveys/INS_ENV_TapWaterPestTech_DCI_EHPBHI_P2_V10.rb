@@ -126,7 +126,7 @@ survey "INS_ENV_TapWaterPestTechCollect_DCI_EHPBHI_P2_V1.0" do
     condition_A :q_TWQ_COLLECT, "==", :a_1
     
     q_BOTTLE2_FILLED "Was the twq blank bottle 2 completely filled?",
-    :help_text => "Enter filled status of the twq sample bottle 1. 
+    :help_text => "Enter filled status of the twq sample bottle 2. 
       Select \"Completely filled\" to indicate that the bottle was filled to the shoulder.
       Select \"Partially filled\" to indicate that the bottle was filled lower than the shoulder.
       Select \"Not filled\" to indicate that the water bottle was not filled.",
@@ -278,7 +278,7 @@ survey "INS_ENV_TapWaterPestTechCollect_DCI_EHPBHI_P2_V1.0" do
     q_BL_REAS_BOTTLE_N_FILLED "Why was the sample only partially collected?",
     :help_text => "Enter reasons that a bottle was not filled or was only partially filled. Select all that apply.",
     :pick => :any,
-    :data_export_identifier=>"TAP_WATER_TWQ_REASON_FILLED2.BL_BOTTLE2_FILLED" 
+    :data_export_identifier=>"TAP_WATER_TWQ_REASON_FILLED2.BL_REAS_BOTTLE_N_FILLED" 
     a_1 "Supplies missing from kit"
     a_2 "Ran out of time"
     a_neg_5 "Other"

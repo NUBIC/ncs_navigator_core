@@ -41,6 +41,8 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     q_PPG_DUE_DATE_1 "Congratulations. When is your baby due?",
     :data_export_identifier=>"PPG_CATI.PPG_DUE_DATE_1"
     a "Date", :date
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
     dependency :rule=>"A"
     condition_A :q_PREGNANT, "==", :a_1
     
@@ -56,18 +58,14 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     # 
     # • IF DATE IS INCOMPLETE, GO TO DATE_PERIOD
     
-    q_calculated_due_date_completeness "Is due date complete?",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_PREGNANT, "==", :a_1
-    
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
     :data_export_identifier=>"PPG_CATI.DATE_PERIOD"
     a "Date", :date
-    dependency :rule=>"A"
-    condition_A :q_calculated_due_date_completeness, "==", :a_2
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"
+    dependency :rule=>"A or B"
+    condition_A :q_PPG_DUE_DATE_1, "==", :a_neg_1
+    condition_B :q_PPG_DUE_DATE_1, "==", :a_neg_2
 
     # TODO
     # • IF VALID DATE IS PROVIDED IN PPG_DUE_DATE_1, SKIP TO STATUS
@@ -78,78 +76,37 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     # • IF DATE IS COMPLETE, CALCULATE DUE DATE FROM FIRST DATE OF LAST MENSTRUAL PERIOD, WHERE PPG_DUE_DATE_2 = DATE_PERIOD + 280 DAYS ; 
     # ELSE GO TO WEEKS_PREG.
 
-    q_calculated_period_date_completeness "Is last menstrual period date complete?",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_calculated_due_date_completeness, "==", :a_2
-    
-    # TODO
-    # • IF DATE IS COMPLETE, CALCULATE DUE DATE FROM FIRST DATE OF LAST MENSTRUAL PERIOD, WHERE PPG_DUE_DATE_2 = DATE_PERIOD + 280 DAYS ; 
-    # ELSE GO TO WEEKS_PREG.
-    
-    q_WEEKS_PREG_LABEL "How many weeks pregnant are you now? If you’re not sure, please make your best guess.",
+    q_WEEKS_PREG "How many weeks pregnant are you now? If you’re not sure, please make your best guess.",
+    :help_text => "Reject responses that are either < 1 week or greater than 44 weeks. If response was determined to be invalid, 
+    ask question again and probe for valid response."
     :pick => :one,
     :data_export_identifier=>"PPG_CATI.WEEKS_PREG"
-    a_1 "Enter response"
+    a "Number of weeks", :integer
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_calculated_period_date_completeness , "==", :a_2    
-
-    q_WEEKS_PREG "Number of weeks",
-    :data_export_identifier=>"PPG_CATI.WEEKS_PREG"
-    a "Number of weeks", :integer
-    dependency :rule=>"A"
-    condition_A :q_WEEKS_PREG_LABEL, "==", :a_1    
-    
-    label "The provided value is outside the suggested range (between 1 and 44). Please verify the input."
     dependency :rule=>"A or B"
-    condition_A :q_WEEKS_PREG, "<", {:integer_value => "1"}
-    condition_B :q_WEEKS_PREG, ">", {:integer_value => "44"}
+    condition_A :q_DATE_PERIOD , "==", :a_neg_1
+    condition_B :q_DATE_PERIOD , "==", :a_neg_2        
 
-    q_calculated_number_of_weeks_completeness "Is number of weeks pregnant complete?",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_WEEKS_PREG_LABEL, "==", :a_1
-    
     # TODO
     # IF NUMBER OF WEEKS PREGNANT IS COMPLETE, CALCULATE DUE DATE FROM NUMBER OF WEEKS PREGNANT, WHERE 
     # PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – WEEKS_PREG*7); ELSE GO TO MONTH_PREG.
     
-    q_MONTH_PREG_LABEL "About how many months pregnant are you? If you’re not sure, please make your best guess.",
+    q_MONTH_PREG "About how many months pregnant are you? If you’re not sure, please make your best guess.",
     :pick => :one,
-    :data_export_identifier=>"PPG_CATI.MONTH_PREG"
-    a_1 "Enter response"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_calculated_number_of_weeks_completeness , "==", :a_2    
-    
-    q_MONTH_PREG "Number of months.",
+    :help_text => "Reject responses that are either < 1 month or greater than 12 months. If response was determined to be invalid, 
+    ask question again and probe for valid response.",
     :data_export_identifier=>"PPG_CATI.MONTH_PREG"
     a "Number of months", :integer
-    dependency :rule=>"A"
-    condition_A :q_MONTH_PREG_LABEL, "==", :a_1
-    
-    label "The provided value is outside the suggested range (between 1 and 12). Please verify the input."
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A or B"
-    condition_A :q_MONTH_PREG, "<", {:integer_value => "1"}
-    condition_B :q_MONTH_PREG, ">", {:integer_value => "12"}    
+    condition_A :q_WEEKS_PREG, "==", :a_neg_1
+    condition_B :q_WEEKS_PREG, "==", :a_neg_2
     
     # TODO
     #     • IF NUMBER OF MONTHS PREGNANT IS COMPLETE, CALCULATE DUE DATE FROM NUMBER OF MONTHS PREGNANT, WHERE 
     #     PPG_DUE_DATE_2 = TODAY’S DATE + (280 DAYS – MONTH_PREG*30 - 15) ; ELSE GO TO TRIMESTER.
-    
-    q_calculated_number_of_months_completeness "Is number of months pregnant complete?",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_MONTH_PREG_LABEL , "==", :a_1
     
     q_TRIMESTER "Are you currently in your First, Second, or Third trimester?",
     :pick => :one,
@@ -159,8 +116,9 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     a_3 "3rd (7 to 9 months pregnant)"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule=>"A"
-    condition_A :q_calculated_number_of_months_completeness, "==", :a_2
+    dependency :rule=>"A or B"
+    condition_A :q_MONTH_PREG, "==", :a_neg_1
+    condition_B :q_MONTH_PREG, "==", :a_neg_2
     
     # TODO
     #    PROGRAMMER INSTRUCTIONS: 

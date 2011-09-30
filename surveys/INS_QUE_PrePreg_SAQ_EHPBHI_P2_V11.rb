@@ -1,21 +1,10 @@
 survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
-  section "INTERVIEW EVALUATION", :reference_identifier=>"PrePreg_SAQ_V1.1" do
-    label "<b>NOTE:</b> THE SAQS MAY BE COMPLETED IN EITHER A PAPI OR CASI MODE"
-    
-    q_is_papi_mode "IS SAQ COMPLETED IN A PAPI MODE?", :pick => :one
-    a_1 "YES"
-    a_2 "NO"
-    
-    q_participant_id "<b>FIELD INTERVIEWER INSTRUCTION:</b> ENTER THE PARTICIPANT ID"
-    a :string
-    dependency :rule => "A"
-    condition_A :q_is_papi_mode, "==", :a_1
-    
-    q_time_stamp_13 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_13"
+  section "Interview evaluation", :reference_identifier=>"PrePreg_SAQ_V1.1" do
+    q_time_stamp_13 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_13"
     a :datetime
     
-    label "We would now like to take a few minutes to ask some questions about your experience in the study. 
-    There are no right or wrong answers. You can always refuse to answer any question or group of questions, and your 
+    label "We would Now like to take a few minutes to ask some questions about your experience in the study. 
+    There are No right or wrong answers. You can always refuse to answer any question or group of questions, and your 
     answers will be kept confidential."
     
     label "How important was each of the following in your decision to take part in the National Children’s Study?"
@@ -23,73 +12,73 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     q_LEARN "(How important was...) Learning more about my health or the health of my child?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.LEARN"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
-    q_HELP "(How important was...) Feeling as if I can help children now and in the future?",
+    q_HELP "(How important was...) Feeling as if I can help children Now and in the future?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.HELP"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     q_INCENT "(How important was…)   Receiving money or gifts for taking part in the study",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.INCENT"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
         
     q_RESEARCH "(How important was...) Helping doctors and researchers learn more about children and their health?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.RESEARCH"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     q_ENVIR "(How important was...) Helping researchers learn how the environment may affect children’s health?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.ENVIR"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     q_COMMUNITY "(How important was...) Feeling part of my community?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.COMMUNITY"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     q_KNOW_OTHERS "(How important was...) Knowing other women in the study?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.KNOW_OTHERS"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     q_FAMILY "(How important was...) Having family members or friends support my choice to take part in the study?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.FAMILY"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
 
     q_DOCTOR "(How important was...) Having my doctor or health care provider support my choice to take part in the study?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.DOCTOR"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     q_STAFF "(How important was...) Feeling comfortable with the study staff who come to my home?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.STAFF"
-    a_1 "NOT AT ALL IMPORTANT"
-    a_2 "SOMEWHAT IMPORTANT"
-    a_3 "VERY IMPORTANT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"
 
     label "How negative or positive do each of the following people feel about you taking part in the National Children’s Study?"
 
@@ -141,12 +130,12 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     :data_export_identifier=>"PRE_PREG_SAQ.EXPERIENCE"
     a_1 "Mostly negative"
     a_2 "Somewhat negative"
-    a_3 "Neither negative nor positive"
+    a_3 "Neither negative Nor positive"
     a_4 "Somewhat positive"
     a_5 "Mostly positive"
 
     q_IMPROVE "In your opinion, how much do you think the National Children’s Study will help improve the health 
-    of children now and in the future?",
+    of children Now and in the future?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.IMPROVE"
     a_1 "Not at all"
@@ -177,12 +166,7 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
 
     label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey."
 
-    label_instructions "<i>if saq is completed as a papi, scs must provide instructions and a business 
-    reply envelope for participant to return</i>"
-    dependency :rule => "A"
-    condition_A :q_is_papi_mode, "==", :a_1
-
-    q_time_stamp_14 "INSERT DATE/TIME STAMP", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_14"
+    q_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_14"
     a :datetime
   end
 end
