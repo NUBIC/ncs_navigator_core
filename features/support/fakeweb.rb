@@ -14,7 +14,7 @@ FakeWeb.register_uri(:get, /\/psc\/api\/v1\/studies.json$/,
 FakeWeb.register_uri(:get, /\/psc\/api\/v1\/sites/, 
                      :body => "#{Rails.root}/features/fixtures/fakeweb/sites.xml", :content_type => "text/xml")
 
-FakeWeb.register_uri(:get, /\/psc\/api\/v1\/studies\/(.*)\/template.xml$/,
+FakeWeb.register_uri(:get, /\/psc\/api\/v1\/studies\/(.*)\/template\/current.xml$/,
                      :body => "#{Rails.root}/features/fixtures/fakeweb/template.xml", :content_type => "text/xml")
 
 FakeWeb.register_uri(:post, /\/psc\/api\/v1\/studies\/(.*)\/sites\/(.*)\/subject-assignments$/,
