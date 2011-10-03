@@ -1,4 +1,6 @@
 class PregnancyScreenerOperationalDataExtractor
+  
+  # TODO: extract contact information (language/interpreter used)
 
   INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
   

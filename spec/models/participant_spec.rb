@@ -240,7 +240,7 @@ describe Participant do
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
-        @participant.next_scheduled_event.date.should == Date.today
+        @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
       end
       
     end

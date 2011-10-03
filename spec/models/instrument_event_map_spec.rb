@@ -7,18 +7,19 @@ describe InstrumentEventMap do
     instruments = InstrumentEventMap.instruments_for("Pregnancy Visit 1")
     instruments.should include "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
     instruments.should include "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0"
-    instruments.should include "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0"
-    instruments.should include "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0"
-    instruments.should include "INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0"
-    instruments.should include "INS_ENV_TapWaterPestTechCollect_DCI_EHPBHI_P2_V1.0"
-    instruments.should include "INS_ENV_VacBagDustTechCollect_DCI_EHPBHI_P2_V1.0"
-    instruments.size.should == 7
+    # Specimen collection has been removed
+    # instruments.should include "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0"
+    # instruments.should include "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0"
+    # instruments.should include "INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0"
+    # instruments.should include "INS_ENV_TapWaterPestTechCollect_DCI_EHPBHI_P2_V1.0"
+    # instruments.should include "INS_ENV_VacBagDustTechCollect_DCI_EHPBHI_P2_V1.0"
+    instruments.size.should == 2
     
   end
   
   it "handles the epoch prefix given by psc" do
     instruments = InstrumentEventMap.instruments_for("HI-Intensity: Pregnancy Visit 1")
-    instruments.size.should == 7
+    instruments.size.should == 2
   end
   
   it "knows all events" do

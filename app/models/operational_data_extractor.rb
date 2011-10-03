@@ -15,7 +15,7 @@ class OperationalDataExtractor
       [/_PregScreen_/, PregnancyScreenerOperationalDataExtractor],
       [/_PPGFollUp_/,  PpgFollowUpOperationalDataExtractor],
       [/_PrePreg_/,    PrePregnancyOperationalDataExtractor],
-      [/_PregVisit/,  PregnancyVisitOperationalDataExtractor],
+      [/_PregVisit/,   PregnancyVisitOperationalDataExtractor],
     ]
     
     def response_value(response)
