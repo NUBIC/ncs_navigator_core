@@ -10,7 +10,7 @@ class InstrumentEventMap
     return [] if event.nil?
     event = PatientStudyCalendar.map_psc_segment_to_mdes_event(event)
     result = []
-    INSTRUMENT_EVENT_CONFIG.each do |ie|
+    instruments.each do |ie|
       result << ie["filename"] if ie["event"].include?(event)
     end
     result
@@ -20,7 +20,7 @@ class InstrumentEventMap
   # A list of all the known event names.
   # @return [Array, <String>]
   def self.events
-    INSTRUMENT_EVENT_CONFIG.collect { |ie| ie["event"].split(";") }.flatten.collect { |e| e.strip }.uniq.sort
+    instruments.collect { |ie| ie["event"].split(";") }.flatten.collect { |e| e.strip }.uniq.sort
   end
   
   ##
@@ -29,7 +29,7 @@ class InstrumentEventMap
   # @return [String]
   def self.version(filename)
     result = nil
-    INSTRUMENT_EVENT_CONFIG.each do |ie|
+    instruments.each do |ie|
       if filename =~ Regexp.new(ie["filename"])
         result = ie["version_number"]
         break
@@ -44,13 +44,32 @@ class InstrumentEventMap
   # @return [NcsCode]
   def self.instrument_type(filename)
     result = nil
-    INSTRUMENT_EVENT_CONFIG.each do |ie|
+    instruments.each do |ie|
       if ie["filename"] == filename
         result = NcsCode.where(:list_name => 'INSTRUMENT_TYPE_CL1').where(:display_text => ie["name"]).first
         break
       end
     end
     result
+  end
+  
+  def self.instruments
+    results = []
+    with_specimens = NcsNavigatorCore.with_specimens
+    INSTRUMENT_EVENT_CONFIG.each do |ie|
+      filename = ie["filename"]      
+      next if filename.include?("_DCI_") && with_specimens == "false"
+
+      case NcsNavigatorCore.recruitment_type
+      when "HILI"
+        results << ie if filename.include?("HILI") || filename.include?("HI") || filename.include?("LI")
+      when "PB"
+        results << ie if filename.include?("PB")
+      when "EH"
+        results << ie if filename.include?("EH")
+      end
+    end
+    results
   end
   
 end

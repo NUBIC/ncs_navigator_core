@@ -15,8 +15,8 @@ Feature: Finalizing an instrument
   And I should see "Bessie Smith"
   And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
   When I follow "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
-  And I press "PREGNANCY CARE LOG INTRODUCTION"
-  Then I should see "PREGNANCY CARE LOG INTRODUCTION"
+  And I press "Pregnancy care log introduction"
+  Then I should see "Pregnancy care log introduction"
   When I press "Click here to finish"
   Then I should be on the edit_contact_link page
   And I should see "Bessie Smith has completed Instrument - INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"

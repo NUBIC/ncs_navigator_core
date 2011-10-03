@@ -43,7 +43,7 @@ describe Participant do
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 
           participant.next_scheduled_event.event.should == participant.next_study_segment
-          participant.next_scheduled_event.date.should == Date.today
+          participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
         
         it "schedules the LO-Intensity Birth Visit Interview the day after the due_date if consented and known to be pregnant" do
@@ -71,7 +71,7 @@ describe Participant do
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 
           participant.next_scheduled_event.event.should == participant.next_study_segment
-          participant.next_scheduled_event.date.should == Date.today
+          participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
     
       end

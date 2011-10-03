@@ -77,7 +77,7 @@ class PatientStudyCalendar
     end
     
     def update_subject(participant)
-      connection.put("subjects/#{participant.person.public_id}", build_subject_attributes_hash(participant, "_").to_json)      
+      connection.put("subjects/#{participant.person.public_id}", build_subject_attributes_hash(participant, "_").to_json)
     end
        
     ##

@@ -261,7 +261,7 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?
+    when followed?, in_pregnancy_probability_group?
       follow_up_interval
     when birth?, birth_low?
       due_date ? 1.day : 0
