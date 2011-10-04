@@ -109,6 +109,33 @@ describe Participant do
     end
     
   end
+  
+  context "associated with NCS staff" do
+    
+    it { should have_many(:participant_staff_relationships) }
+
+    before(:each) do
+      @participant = Factory(:participant)
+      Factory(:participant_staff_relationship, :participant => @participant, :staff_id => "main_guy", :primary => true)
+      Factory(:participant_staff_relationship, :participant => @participant, :staff_id => "that_guy", :primary => false)
+    end
+    
+    it "knows it's staff relationships" do
+      @participant.participant_staff_relationships.size.should == 2
+    end
+    
+    it "knows it's primary relationship" do
+      @participant.primary_staff_relationships.size.should == 1
+      @participant.primary_staff_relationships.first.staff_id.should == "main_guy"
+    end
+    
+    it "finds all participants for a staff member" do
+      Factory(:participant_staff_relationship, :participant => Factory(:participant), :staff_id => "that_guy", :primary => true)
+      Participant.all_for_staff("that_guy").count.should == 2
+      Participant.primary_for_staff("that_guy").count.should == 1
+    end
+    
+  end
 
   context "with an assigned pregnancy probability group" do
     
