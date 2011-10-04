@@ -1,6 +1,6 @@
 Given /^the survey has been completed$/ do
   steps %Q{
-    When I go to the home page
+    When I go to the welcome summary page
     When I follow "PPG Group 1: Pregnant and Eligible"
     When I follow "Initiate Contact"
     When I select "In-person" from "Contact Type"

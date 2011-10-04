@@ -25,7 +25,7 @@ guard 'livereload' do
 end
 
 
-guard 'cucumber', :cli => "--drb", :all_on_start => false, :all_after_pass => false do
+guard 'cucumber', :cli => "--drb --color --format progress", :all_on_start => false, :all_after_pass => false do
   watch(%r{^features\/.+\.feature$})
   watch(%r{^features\/support\/.+$})                      { 'features' }
   watch(%r{^features\/step_definitions\/(.+)_steps\.rb$}) { |m| Dir[File.join("**/#{m[1]}.feature")][0] || 'features' }

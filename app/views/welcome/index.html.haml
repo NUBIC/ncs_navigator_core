@@ -1,51 +1,25 @@
 %h2
   Welcome to the NCS Navigator.
     
+- if @scheduled_activities
+  .front_page_section
+    - rows = @scheduled_activities['rows']
+    - if rows.blank?
+      %h4
+        No Activities Scheduled
+    - else
+      %h4
+        Scheduled Activities
+      .column-container
+        - rows.each do |row|
+          - if row['subject']
+            %p
+              = row['scheduled_date']
+              - if person = Person.find_by_person_id(row['subject']['person_id'])
+                = link_to row['subject']['name'], :controller => "people", :action => "edit", :id => person
+              - else
+                = row['subject']['name']
+              = row['activity_name']
 .front_page_section
-  %h3
-    Participants
   .column-container
-    .column-1
-      .ppg
-        = Participant.in_ppg_group(1).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first.display_text, in_ppg_group_participants_path(:ppg_group => 1), :class => "show_link icon_link"
-      .ppg
-        = Participant.in_ppg_group(2).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first.display_text, in_ppg_group_participants_path(:ppg_group => 2), :class => "show_link icon_link"
-    .column-2
-      .ppg
-        = Participant.in_ppg_group(3).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 3).first.display_text, in_ppg_group_participants_path(:ppg_group => 3), :class => "show_link icon_link"
-      .ppg
-        = Participant.in_ppg_group(4).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 4).first.display_text, in_ppg_group_participants_path(:ppg_group => 4), :class => "show_link icon_link"
-    .column-3
-      .ppg
-        = Participant.in_ppg_group(5).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 5).first.display_text, in_ppg_group_participants_path(:ppg_group => 5), :class => "show_link icon_link"
-      .ppg
-        = Participant.in_ppg_group(6).size
-        = link_to NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 6).first.display_text, in_ppg_group_participants_path(:ppg_group => 6), :class => "show_link icon_link"
-  .column-container
-    .column-1
-      = link_to "View all participants", participants_path, :class => "list_link icon_link"
-    .column-2
-      = link_to "View all people", people_path, :class => "list_link icon_link"
-
-.front_page_section
-  %h3
-    Switch Arm
-  .column-container
-    .column-1
-      = Participant.in_low_intensity.count
-      in Low Intensity Arm
-    .column-2
-      = Participant.in_high_intensity.count
-      in High Intensity Arm
-      
-.front_page_section
-  %h3
-    Households
-  .column-container
-    .column-1
-      = link_to "View all households", household_units_path, :class => "list_link icon_link"
+    = link_to "Administer New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"

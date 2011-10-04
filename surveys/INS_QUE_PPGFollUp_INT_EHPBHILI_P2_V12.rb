@@ -78,7 +78,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
 
     q_WEEKS_PREG "How many weeks pregnant are you now? If you’re not sure, please make your best guess.",
     :help_text => "Reject responses that are either < 1 week or greater than 44 weeks. If response was determined to be invalid, 
-    ask question again and probe for valid response."
+    ask question again and probe for valid response.",
     :pick => :one,
     :data_export_identifier=>"PPG_CATI.WEEKS_PREG"
     a "Number of weeks", :integer

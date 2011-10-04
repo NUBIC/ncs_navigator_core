@@ -836,7 +836,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_RETURN_JOB_DT "When did you return to your job?"
+    q_RETURN_JOB_DT "When did you return to your job?",
     :pick => :one,
     :data_export_identifier=>"BIRTH_VISIT_LI.RETURN_JOB_DT"
     a_date "Date", :date
@@ -1057,7 +1057,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_CELL_PHONE "What is your personal cell phone number?"
+    q_CELL_PHONE "What is your personal cell phone number?",
     :pick => :one,
     :data_export_identifier=>"BIRTH_VISIT_LI.CELL_PHONE"
     a "Phone Number", :string

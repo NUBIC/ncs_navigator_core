@@ -178,7 +178,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     dependency :rule=>"A"
     condition_A :q_using_showcards, "==", :a_2
     
-    q_EDUC_showcard "What is the highest degree or level of school you have completed?"
+    q_EDUC_showcard "What is the highest degree or level of school you have completed?",
     :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.",
     :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER.EDUC"

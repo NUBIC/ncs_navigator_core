@@ -762,7 +762,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     that {C_FNAME or YOUR CHILD} may have taken in the last 30 days."
     
     q_OTC_TAKE "Has {C_FNAME or YOUR CHILD} used or taken any non-prescription medicines in the past 30 days? 
-    Include only those products purchased over the counter that do not require a prescription."    
+    Include only those products purchased over the counter that do not require a prescription.", 
     :help_text =>  "Do not include over-the-counter vitamins or minerals.",
     :pick => :one,
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.OTC_TAKE"

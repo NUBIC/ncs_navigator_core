@@ -7,7 +7,7 @@ Feature: Accessing the application
   Scenario: Accessing a new instance of the application
     Given valid ncs codes
     And an authenticated user
-    When I go to the home page
+    When I go to the welcome summary page
     Then I should see "NCS Navigator"
     And I should see "Participants"
     And I should see "0 PPG Group 1: Pregnant and Eligible "
@@ -33,7 +33,7 @@ Feature: Accessing the application
       | Ma         | Rainey    |
     And a registered pregnant participant
     Then 3 people should exist
-    When I go to the home page
+    When I go to the welcome summary page
     Then I should see "NCS Navigator"
     And I should see "3 PPG Group 1: Pregnant and Eligible"
     When I follow "PPG Group 1: Pregnant and Eligible"

@@ -109,6 +109,15 @@ describe PatientStudyCalendar do
       end
     end
   
+    it "retrieves a list of all scheduled activities" do
+      VCR.use_cassette('psc/scheduled_activity_report') do
+        scheduled_activities = PatientStudyCalendar.scheduled_activities_report
+        scheduled_activities.size.should == 2
+      end
+      
+      
+    end
+  
   end
   
 end
