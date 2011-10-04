@@ -8,7 +8,7 @@ Feature: Initiating a contact
     Given valid ncs codes
     And an authenticated user
     And a registered pregnant participant
-    When I go to the home page
+    When I go to the welcome summary page
     Then I should see "NCS Navigator"
     And I should see "1 PPG Group 1: Pregnant and Eligible"
     When I follow "PPG Group 1: Pregnant and Eligible"

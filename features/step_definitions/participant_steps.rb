@@ -59,7 +59,7 @@ end
 
 Given /^ppg1 page is validated$/ do
   steps %Q{
-    When I go to the home page
+    When I go to the welcome summary page
     Then I should see "1 PPG Group 1: Pregnant and Eligible"
     When I follow "PPG Group 1: Pregnant and Eligible"
     Then I should be on the ppg1 page

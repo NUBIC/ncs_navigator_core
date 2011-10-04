@@ -10,6 +10,6 @@ class AddParticipantStaffRelationships < ActiveRecord::Migration
 
   def down
     drop_table :participant_staff_relationships
-    drop_index :participant_staff_relationships, :participant_id
+    # remove_index :participant_staff_relationships, :participant_id
   end
 end

@@ -20,3 +20,5 @@ FakeWeb.register_uri(:get, /\/psc\/api\/v1\/studies\/(.*)\/template\/current.xml
 FakeWeb.register_uri(:post, /\/psc\/api\/v1\/studies\/(.*)\/sites\/(.*)\/subject-assignments$/,
                     :body => "", :status => ["201", "Created"])
 
+FakeWeb.register_uri(:get, /\/psc\/api\/v1\/reports\/scheduled-activities.json/,
+                    :body => "#{Rails.root}/features/fixtures/fakeweb/scheduled_activities.json", :status => ["200", "OK"])

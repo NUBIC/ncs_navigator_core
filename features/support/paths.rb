@@ -10,6 +10,9 @@ module NavigationHelpers
 
     when /the home\s?page/
       '/'
+      
+    when /the welcome summary page/
+      '/welcome/summary'
 
     when /login/
       '/login'

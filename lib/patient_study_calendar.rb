@@ -67,6 +67,21 @@ class PatientStudyCalendar
       resp.body
     end
     
+    
+    def scheduled_activities_report(options = {})
+      filters = {:start_date => Date.today.to_s, :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
+      filters = filters.merge(options)
+      
+      path = "reports/scheduled-activities.json?"
+      path << "end-date=#{filters[:end_date]}"
+      path << "&start-date=#{filters[:start_date]}" if filters[:start_date]
+      path << "&responsible-user=#{filters[:current_user]}" if filters[:current_user]
+      
+      resp = connection.get(path)
+      resp.body
+    end
+    
+    
     def assignment_identifier(participant)
       connection.get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
     end
@@ -77,7 +92,8 @@ class PatientStudyCalendar
     end
     
     def update_subject(participant)
-      connection.put("subjects/#{participant.person.public_id}", build_subject_attributes_hash(participant, "_").to_json)
+      resp = connection.put("subjects/#{participant.person.public_id}", build_subject_attributes_hash(participant, "_").to_json)
+      Rails.logger.info(resp.body)
     end
        
     ##
