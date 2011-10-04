@@ -59,6 +59,8 @@ class Participant < ActiveRecord::Base
   has_many :participant_person_links
   has_many :person_relations, :through => :participant_person_links, :source => :person
   
+  has_many :participant_staff_relationships
+  
   validates_presence_of :person
   
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true
@@ -66,6 +68,9 @@ class Participant < ActiveRecord::Base
   
   scope :in_low_intensity, where("high_intensity is null or high_intensity is false")
   scope :in_high_intensity, where("high_intensity is true")
+  
+  scope :all_for_staff, lambda { |staff_id| joins(:participant_staff_relationships).where("participant_staff_relationships.staff_id = ?", staff_id) }
+  scope :primary_for_staff, lambda { |staff_id| all_for_staff(staff_id).where("participant_staff_relationships.primary = ?", true) }
   
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
   
@@ -410,6 +415,10 @@ class Participant < ActiveRecord::Base
   def remove_from_pregnancy_probability_group
     self.state = "registered"
     self.save!
+  end
+  
+  def primary_staff_relationships
+    participant_staff_relationships.where(:primary => true).all
   end
   
   private
