@@ -1943,8 +1943,7 @@ body.ncs {
 }
 /* line 17, ../../../app/stylesheets/partials/_ncs.scss */
 body.ncs a:hover {
-  background-color: #406cd5;
-  color: #f0f0f0;
+  color: orange;
 }
 /* line 23, ../../../app/stylesheets/partials/_ncs.scss */
 body.ncs .ui-widget {
@@ -2168,6 +2167,12 @@ body.ncs #footer .app_version {
 /* line 7, ../../../app/stylesheets/partials/_contact_links.scss */
 .contact_link_section p {
   padding: 0 1em;
+}
+
+/* line 2, ../../../app/stylesheets/partials/_contacts.scss */
+input#contact_contact_end_time,
+input#contact_contact_start_time {
+  width: 3em;
 }
 
 /* line 1, ../../../app/stylesheets/partials/_dwelling_unit.scss */

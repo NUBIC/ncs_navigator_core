@@ -16,7 +16,7 @@
             %p
               = row['scheduled_date']
               - if person = Person.find_by_person_id(row['subject']['person_id'])
-                = link_to row['subject']['name'], :controller => "people", :action => "edit", :id => person
+                = link_to row['subject']['name'], person_path(person), :class => "show_link icon_link"
               - else
                 = row['subject']['name']
               = row['activity_name']

@@ -214,7 +214,7 @@ class PatientStudyCalendar
         
         subject_attributes["first#{separator}name"] = participant.first_name unless participant.first_name.blank?
         subject_attributes["last#{separator}name"]  = participant.last_name  unless participant.last_name.blank?
-        subject_attributes["birth#{separator}date"] = participant.person_dob unless participant.person_dob.blank?
+        subject_attributes["birth#{separator}date"] = participant.person_dob if !(participant.person_dob.to_i < 0) && !participant.person_dob.blank?
         subject_attributes
       end
       

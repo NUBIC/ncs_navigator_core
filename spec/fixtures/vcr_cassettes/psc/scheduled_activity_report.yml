@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://pfr957:psc@localhost:8080/psc/api/v1/reports/scheduled-activities.json?end-date=2012-01-04&start-date=2011-10-04
+    uri: !ruby/regexp /^http:\/\/pfr957:psc@localhost:8080\/psc\/api\/v1\/reports\/scheduled-activities.json/
     body: 
     headers: 
       authorization: 

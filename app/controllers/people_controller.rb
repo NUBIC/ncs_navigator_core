@@ -12,6 +12,12 @@ class PeopleController < ApplicationController
     end
   end
   
+  # GET /people/1
+  def show
+    @person = Person.find(params[:id])
+    @participant = @person.participant
+  end
+  
   # GET /people/new
   # GET /people/new.json
   def new

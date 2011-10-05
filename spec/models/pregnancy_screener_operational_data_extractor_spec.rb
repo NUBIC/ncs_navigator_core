@@ -82,8 +82,8 @@ describe PregnancyScreenerOperationalDataExtractor do
     person.ethnic_group.should == ethnic_group
     person.language.should == language
     
-    person.participant.pid_age_eligibility.should == age_eligible
-    
+    person.participant.pid_age_eligibility.display_text.should == age_eligible.display_text
+    person.participant.pid_age_eligibility.local_code.should == age_eligible.local_code
   end
   
   # ADDRESS_1             Address.address_one

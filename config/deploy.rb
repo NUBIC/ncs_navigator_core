@@ -4,8 +4,9 @@
 
 require 'bundler/capistrano'
 require 'bcdatabase'
+require 'ncs_navigator/configuration'
 
-bcconf = Bcdatabase.load[:ncs_conf, :ncs_navigator_core] # Using the bcdatabase gem for server config
+bcconf = Bcdatabase.load[:ncs_deploy, :ncs_navigator_core] # Using the bcdatabase gem for server config
 set :application, "ncs_navigator_core"
 
 # User
@@ -73,7 +74,7 @@ end
 # before 'deploy:migrate', 'db:backup'
 
 # after deploying, generate static pages, copy over uploads and results, cleanup old deploys, aggressively set permissions
-after 'deploy:update_code', 'deploy:cleanup', 'deploy:permissions'
+after 'deploy:update_code', 'deploy:cleanup' # , 'deploy:permissions'
 
 # after deploying symlink , copy images to current image config location.
 after 'deploy:symlink', 'config:images'
@@ -87,13 +88,12 @@ namespace :db do
 end
 
 namespace :config do
-  config = YAML.load_file("/etc/nubic/ncs/staff_portal_config.yml")
-  desc "Copy configurable images to /public/images folder"
+  desc "Copy configurable images to /public/images/config folder"
   task :images,  :roles => :app do
-    if config['display']['footer_logo_front'] || config['display']['footer_logo_back']
+    if NcsNavigator.configuration.footer_logo_left || NcsNavigator.configuration.footer_logo_right
       run "mkdir -p #{current_path}/public/images/config"
-      run "cp #{config['display']['footer_logo_front']} #{current_path}/public/images" if config['display']['footer_logo_front']
-      run "cp #{config['display']['footer_logo_back']} #{current_path}/public/images" if config['display']['footer_logo_back']
+      run "cp #{NcsNavigator.configuration.footer_logo_left} #{current_path}/public/images/config" if NcsNavigator.configuration.footer_logo_left
+      run "cp #{NcsNavigator.configuration.footer_logo_right} #{current_path}/public/images/config" if NcsNavigator.configuration.footer_logo_right
     end
   end
 end
