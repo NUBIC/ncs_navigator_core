@@ -5,8 +5,8 @@
 
 <%= bcdb.development :local_postgresql, :ncs_navigator_core_development %>
 <%= bcdb.ci :pdev, :ncs_navigator_core_hudson %>
-<%= bcdb.staging :pstage, :ncs_navigator_core_staging %>
-<%= bcdb.production :pprod, :ncs_navigator_core_production %>
+<%= bcdb.staging :ncsdb_staging, :ncs_navigator_core %>
+<%= bcdb.production :ncsdb_prod, :ncs_navigator_core %>
 
 test: &test
   adapter: postgresql

@@ -6,7 +6,7 @@ class ContactsController < ApplicationController
   # GET /contacts/new.json
   def new
     @person     = Person.find(params[:person_id])
-    @contact    = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today)
+    @contact    = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
     
     event_for_contact
 
@@ -42,6 +42,7 @@ class ContactsController < ApplicationController
   def edit
     @person  = Person.find(params[:person_id])
     @contact = Contact.find(params[:id])
+    @contact.contact_end_time = Time.now.strftime("%H:%M")
     
     @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact, @person).first
     @event = @contact_link.event
