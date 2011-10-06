@@ -14,9 +14,9 @@ class SurveyorController < ApplicationController
     def update_participant_based_on_responses(response_set)
       
       if response_set.person.participant  && /_PregScreen_/ =~ response_set.survey.title
-        participant = response_set.person.participant
+        participant = Participant.find(response_set.person.participant.id)
         Rails.logger.info("~~~ surveyor_finish for #{response_set.survey.title} and #{response_set.person} - updating psc")
-        resp = PatientStudyCalendar.update_subject(response_set.person.participant)
+        resp = psc.update_subject(participant)
         Rails.logger.info("~~~ #{resp}")
         participant.assign_to_pregnancy_probability_group!
         participant.impregnate! if participant.ppg_status.local_code == 1        

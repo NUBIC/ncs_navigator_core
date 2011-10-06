@@ -304,8 +304,8 @@ class Participant < ActiveRecord::Base
   
   ##
   # Only Participants who are in a state of pending and have not yet registered with PSC can register
-  def can_register_with_psc?
-    can_register? && !PatientStudyCalendar.is_registered?(self)
+  def can_register_with_psc?(psc)
+    can_register? && !psc.is_registered?(self)
   end
   
   ##

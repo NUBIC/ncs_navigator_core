@@ -57,7 +57,9 @@ describe PregnancyVisitOperationalDataExtractor do
     person.person_dob.should == "1981-01-11"
     person.age.should == 30
     
-    person.participant.pid_age_eligibility.should == age_eligible
+    person.participant.pid_age_eligibility.display_text.should == age_eligible.display_text
+    person.participant.pid_age_eligibility.local_code.should == age_eligible.local_code
+    person.participant.pid_age_eligibility.list_name.should == age_eligible.list_name
   end
   
   context "extracting contact information from the survey responses" do

@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /^http:\/\/pfr957:psc@localhost:8080\/psc\/api\/v1\/subjects\//
+    uri: !ruby/regexp /^http:\/\/localhost:8080\/psc\/api\/v1\/subjects\//
     body: 
     headers: 
       authorization: 
