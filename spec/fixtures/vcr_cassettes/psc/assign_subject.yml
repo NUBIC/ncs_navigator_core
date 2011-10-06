@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /^http:\/\/pfr957:psc@localhost:8080\/psc\/api\/v1\/subjects\//
+    uri: !ruby/regexp /^http:\/\/localhost:8080\/psc\/api\/v1\/subjects\//
     body: 
     headers: 
       authorization: 
@@ -25,7 +25,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://pfr957:psc@localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/current.xml
+    uri: http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/current.xml
     body: 
     headers: 
       authorization: 
@@ -347,7 +347,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://pfr957:psc@localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
+    uri: http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
     body: 
     headers: 
       content-type: 

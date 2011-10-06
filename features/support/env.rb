@@ -71,3 +71,5 @@ Spork.each_run do
   # This code will be run each time you run your specs.
   FactoryGirl.reload
 end
+
+ENV['PSC_USERNAME_PASSWORD'] = %w(pscuser pscpwd).join(',')

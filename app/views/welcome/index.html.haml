@@ -6,7 +6,7 @@
     - rows = @scheduled_activities['rows']
     - if rows.blank?
       %h4
-        No Activities Scheduled
+        No Upcoming Activities Scheduled
     - else
       %h4
         Scheduled Activities
@@ -23,3 +23,8 @@
 .front_page_section
   .column-container
     = link_to "Administer New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
+
+.front_page_section
+  .column-container
+    = link_to "View All Participants", participants_path, :class => "list_link icon_link"
+  

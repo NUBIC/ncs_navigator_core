@@ -41,7 +41,7 @@ class ParticipantsController < ApplicationController
     @participant = Participant.find(params[:id])
     @participant.register! if @participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
     
-    resp = PatientStudyCalendar.assign_subject(@participant)
+    resp = psc.assign_subject(@participant)
 
     url = edit_participant_path(@participant)
     url = params[:redirect_to] unless params[:redirect_to].blank?
@@ -78,7 +78,7 @@ class ParticipantsController < ApplicationController
   # POST /participant:id/schedule_next_event_with_psc.json
   def schedule_next_event_with_psc
     @participant = Participant.find(params[:id])
-    resp = PatientStudyCalendar.schedule_next_segment(@participant, params[:date])
+    resp = psc.schedule_next_segment(@participant, params[:date])
 
     url = edit_participant_path(@participant)
     url = params[:redirect_to] unless params[:redirect_to].blank?
@@ -114,7 +114,7 @@ class ParticipantsController < ApplicationController
   # GET /participants/:id/schedule
   def schedule
     @participant = Participant.find(params[:id])
-    @subject_schedules = PatientStudyCalendar.schedules(@participant)
+    @subject_schedules = psc.schedules(@participant)
   end
   
   # GET /participants/new

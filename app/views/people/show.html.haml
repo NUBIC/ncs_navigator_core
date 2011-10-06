@@ -40,9 +40,9 @@
           - else
             N/A
         %br
-        - if !@participant.can_register_with_psc? && !@participant.pregnancy_one?
+        - if !@participant.can_register_with_psc?(psc) && !@participant.pregnancy_one?
           = f.submit "Move to next state", :disable_with => 'Updating...'
-    - if @participant.can_register_with_psc?
+    - if @participant.can_register_with_psc?(psc)
       = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "register_participant_with_psc"}) do |f| 
         = render "shared/full_error_messages", :object => f.object
         %p
@@ -92,15 +92,15 @@
     %b
       PSC
     %br
-    - if @participant.can_register_with_psc?
+    - if @participant.can_register_with_psc?(psc)
       Participant needs to be registered in PSC
     - else
       Participant is registered in PSC
       
-  = render "/participants/schedule", :participant => @participant if PatientStudyCalendar.is_registered?(@participant)
+  = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
   
   %b
-  - if !@participant.can_register_with_psc?
+  - if !@participant.can_register_with_psc?(psc)
     - if next_event = @participant.next_scheduled_event
       .schedule_next_event
         %b

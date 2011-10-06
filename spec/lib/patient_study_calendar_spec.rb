@@ -5,30 +5,41 @@ describe PatientStudyCalendar do
   before(:each) do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
+    @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
   end
 
+  let(:subject) { PatientStudyCalendar.new(@user) }
+
   it "connects to the running instance of PSC configured in by the NcsNavigator::Configuration" do
-    cnx = PatientStudyCalendar.get_connection
+    cnx = subject.get_connection
     cnx.should_not be_nil
     cnx.class.should == Psc::Connection
   end
-
+  
+  it "uses the correct service url to request the cas-proxy-ticket" do
+    # protocol:host_url/prefix
+    service_url = "http://localhost:8080/psc/auth/cas_security_check"
+    @user.should_receive(:cas_proxy_ticket).with(service_url).and_return('PT-CAS-2')
+    VCR.use_cassette('psc/segments') do
+      subject.segments
+    end
+  end
   
   it "gets the study identifier" do
     VCR.use_cassette('psc/study_identifier') do
-      PatientStudyCalendar.study_identifier.should == "NCS Hi-Lo"
+      subject.study_identifier.should == "NCS Hi-Lo"
     end
   end
 
   it "gets the site identifier" do
     VCR.use_cassette('psc/site_identifier') do
-      PatientStudyCalendar.site_identifier.should == "GCSC"
+      subject.site_identifier.should == "GCSC"
     end
   end
 
   it "gets the segments for the study" do
     VCR.use_cassette('psc/segments') do
-      segments = PatientStudyCalendar.segments
+      segments = subject.segments
       segments.size.should == 13
       segments.first.attr('name').should == "Pregnancy Screener"
     end
@@ -48,7 +59,7 @@ describe PatientStudyCalendar do
     context "checking if registered" do
       it "knows when the participant is NOT registered with the study" do
         VCR.use_cassette('psc/unknown_subject') do
-          PatientStudyCalendar.is_registered?(@participant).should be_false
+          subject.is_registered?(@participant).should be_false
         end
       end
       
@@ -56,16 +67,16 @@ describe PatientStudyCalendar do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
         participant = Factory(:participant, :person => person)
         VCR.use_cassette('psc/known_subject') do
-          PatientStudyCalendar.is_registered?(participant).should be_true
+          subject.is_registered?(participant).should be_true
         end
       end
     end
     
     it "registers a participant with the study" do
       VCR.use_cassette('psc/assign_subject') do
-        PatientStudyCalendar.is_registered?(@participant).should be_false
+        subject.is_registered?(@participant).should be_false
         @participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
-        resp = PatientStudyCalendar.assign_subject(@participant)
+        resp = subject.assign_subject(@participant)
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
       end
     end
@@ -80,9 +91,9 @@ describe PatientStudyCalendar do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
         
         participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
-        resp = PatientStudyCalendar.assign_subject(participant)
+        resp = subject.assign_subject(participant)
         
-        resp = PatientStudyCalendar.assignment_identifier(participant)
+        resp = subject.assignment_identifier(participant)
         subject_assignments = resp.body.search('subject-assignment')
         subject_assignments.size.should == 1
         subject_assignments.first['id'].should == participant.public_id
@@ -93,7 +104,7 @@ describe PatientStudyCalendar do
       VCR.use_cassette('psc/schedules') do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
         participant = Factory(:participant, :person => person)
-        subject_schedules = PatientStudyCalendar.schedules(participant)
+        subject_schedules = subject.schedules(participant)
         subject_schedules.class.should == Hash
         subject = subject_schedules["subject"]
         subject["full_name"].should == "Ella Fitzgerald"
@@ -111,7 +122,7 @@ describe PatientStudyCalendar do
   
     it "retrieves a list of all scheduled activities" do
       VCR.use_cassette('psc/scheduled_activity_report') do
-        scheduled_activities = PatientStudyCalendar.scheduled_activities_report
+        scheduled_activities = subject.scheduled_activities_report
         scheduled_activities.size.should == 2
       end
       

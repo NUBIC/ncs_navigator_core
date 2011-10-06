@@ -1,6 +1,7 @@
 class PregnancyScreenerOperationalDataExtractor
   
   # TODO: extract contact information (language/interpreter used)
+  # TODO: is address the HOME address? if so, set address_type
 
   INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
   

@@ -5,7 +5,7 @@
   .name
     = link_to "#{participant.person}", participant_path(participant), :class => "show_link icon_link"
   
-  - registered = PatientStudyCalendar.is_registered?(participant)
+  - registered = psc.is_registered?(participant)
   .upcoming
     - if registered
       %b
