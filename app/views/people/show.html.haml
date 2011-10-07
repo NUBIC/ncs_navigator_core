@@ -1,7 +1,10 @@
-- title "Development Workflow for Participant"
+- title "Person Record"
 
 %h3
-  = link_to "#{@person}", participant_path(@participant), :class => "icon_link"
+  = @person
+
+%p.hide
+  = link_to "View Participant Record for #{@person}", participant_path(@participant), :class => "show_link icon_link"
 
 .page_section.hide
   %p
@@ -100,7 +103,7 @@
   = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
   
   %b
-  - if !@participant.can_register_with_psc?(psc)
+  - unless @participant.can_register_with_psc?(psc)
     - if next_event = @participant.next_scheduled_event
       .schedule_next_event
         %b
@@ -111,6 +114,11 @@
               = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
             %p
               = f.submit "Schedule #{next_event.event}"
+      .perform_next_event
+        %b
+          Perform Next Event
+        %p
+          = link_to "Initiate Contact for #{@participant.upcoming_events.to_sentence}", new_person_contact_path(@person), :class => "add_link icon_link"
             
 .page_section
   - unless @person.telephones.blank?

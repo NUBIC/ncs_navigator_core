@@ -13,7 +13,7 @@
 %p
   = f.label :instrument_start_date, "Instrument Start Date"
   %br
-  = f.text_field :instrument_start_date
+  = f.text_field :instrument_start_date, :class => "datepicker"
   
 %p
   = f.label :instrument_start_time, "Instrument Start Time"
@@ -23,7 +23,7 @@
 %p
   = f.label :instrument_end_date, "Instrument End Date"
   %br
-  = f.text_field :instrument_end_date
+  = f.text_field :instrument_end_date, :class => "datepicker"
 
 %p
   = f.label :instrument_end_time, "Instrument End Time"
