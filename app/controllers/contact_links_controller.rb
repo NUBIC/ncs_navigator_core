@@ -37,7 +37,8 @@ class ContactLinksController < ApplicationController
 				@contact_link.instrument.update_attributes(params[:instrument]) if @contact_link.instrument
 				
 				# TODO: determine redirect after updating 
-				format.html { redirect_to(select_instrument_contact_link_path(@contact_link), :notice => 'Contact was successfully updated.') }
+				# format.html { redirect_to(select_instrument_contact_link_path(@contact_link), :notice => 'Contact was successfully updated.') }
+				format.html { redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.') }
 				format.json { head :ok }
 			else
 				format.html { render :action => "edit" }
