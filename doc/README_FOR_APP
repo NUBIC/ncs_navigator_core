@@ -1,0 +1,17 @@
+Use this README file to introduce your application and point to useful places in the API for learning more.
+Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.
+
+NCS Navigator Core Setup and Configuration
+
+- steps to setup the postgres database
+  
+  To create the database tables and indices
+    - rake db:migrate
+  
+  To populate the database with all the code lists from the MDES
+    - rake mdes:load_codes_from_schema
+  
+  To upload and create the surveys/instruments
+    - rake setup:surveys
+
+
