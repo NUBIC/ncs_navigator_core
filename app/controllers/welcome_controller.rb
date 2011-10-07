@@ -1,7 +1,7 @@
 class WelcomeController < ApplicationController
   
   def index
-    @scheduled_activities = psc.scheduled_activities_report({ :current_user => current_staff, :start_date => 1.month.ago.to_date.strftime("%Y-%m-%d") })
+    @scheduled_activities = psc.scheduled_activities_report({ :current_user => current_staff, :end_date => 5.months.from_now.to_date.to_s })
   end
   
   def summary
@@ -13,8 +13,7 @@ class WelcomeController < ApplicationController
     person = Person.create(:psu_code => @psu_code)
     participant = Participant.create(:psu_code => @psu_code, :person => person)
     participant.register!
-    subject = psc.new(current_user)
-    resp = subject.assign_subject(participant)
+    resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)
     else
