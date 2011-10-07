@@ -500,7 +500,7 @@ class Participant < ActiveRecord::Base
     end
   
     def next_scheduled_event_date
-      (interval == 0) ? Date.today : (date_used_to_schedule_next_event + interval)
+      (interval == 0) ? Date.today : (date_used_to_schedule_next_event.to_date + interval)
     end
 
     def date_used_to_schedule_next_event
