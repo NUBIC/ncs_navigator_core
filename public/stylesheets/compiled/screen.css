@@ -2175,6 +2175,18 @@ input#contact_contact_start_time {
   width: 3em;
 }
 
+/* line 7, ../../../app/stylesheets/partials/_contacts.scss */
+input#event_event_end_time,
+input#event_event_start_time {
+  width: 3em;
+}
+
+/* line 12, ../../../app/stylesheets/partials/_contacts.scss */
+input#instrument_instrument_end_time,
+input#instrument_instrument_start_time {
+  width: 3em;
+}
+
 /* line 1, ../../../app/stylesheets/partials/_dwelling_unit.scss */
 #dwelling_unit_address_attributes_zip {
   width: 4em;
@@ -2263,8 +2275,9 @@ span.known_instrument {
 .front_page_section {
   margin: 0.5em 0;
   float: left;
+  width: 100%;
 }
-/* line 4, ../../../app/stylesheets/partials/_welcome.scss */
+/* line 5, ../../../app/stylesheets/partials/_welcome.scss */
 .front_page_section h3 {
   margin-bottom: 0;
 }
