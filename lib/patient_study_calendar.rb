@@ -85,11 +85,20 @@ class PatientStudyCalendar
     connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
   end
   
-  def schedules(participant)
-    resp = connection.get("subjects/#{participant.person.public_id}/schedules.json")
+  def schedules(participant, format = "json")
+    resp = connection.get("subjects/#{participant.person.public_id}/schedules.#{format}")
     resp.body
   end
   
+  def specific_activity(participant, activity_identifier)
+    resp = connection.get("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{activity_identifier}.json")
+    
+    # Rails.logger.info("~~~ specific_activity for #{participant.person}")
+    # Rails.logger.info(connection.get("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{activity_identifier}.xml").body)
+    # Rails.logger.info("~~~")
+    
+    resp.body
+  end
   
   def scheduled_activities_report(options = {})
     filters = {:state => 'scheduled', :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
