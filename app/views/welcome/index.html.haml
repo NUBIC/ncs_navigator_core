@@ -18,21 +18,22 @@
         - rows.each do |row|
           - if row['subject']
             - person = Person.find_by_person_id(row['subject']['person_id'])
-            %tr{ :class => cycle('even_record', 'odd_record') }
-              %td
-                = row['scheduled_date']
-              %td
-                - if person
-                  = link_to row['subject']['name'], person_path(person), :class => "show_link icon_link"
-                - else
-                  = row['subject']['name']
-              %td
-                - if person.participant
-                  = person.participant.ppg_status
-                - else
-                  n/a
-              %td
-                = row['activity_name']
+            - if person
+              %tr{ :class => cycle('even_record', 'odd_record') }
+                %td
+                  = row['scheduled_date']
+                %td
+                  - if person
+                    = link_to row['subject']['name'], person_path(person), :class => "show_link icon_link"
+                  - else
+                    = row['subject']['name']
+                %td
+                  - if person.participant
+                    = person.participant.ppg_status
+                  - else
+                    n/a
+                %td
+                  = row['activity_name']
 .front_page_section.page_section
   .column-container
     = link_to "Administer New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
