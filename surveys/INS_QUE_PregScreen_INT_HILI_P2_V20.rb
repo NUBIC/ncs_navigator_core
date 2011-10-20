@@ -143,10 +143,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_B :q_R_GENDER, "==", :a_2
     
     q_PERSON_DOB "What is your date of birth?",
-    :help_text => "Please verify if calculated age is less than local age of majority or greater than 49",
+    :help_text => "Please verify if calculated age is less than local age of majority or greater than 49. Format as YYYYMMDD",
     :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.PERSON_DOB"
-    a :date
+    a :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"    
     dependency :rule=>"A or B"
@@ -435,10 +435,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     q_ORIG_DUE_DATE "Congratulations. When is your baby due?",
     :help_text => "Check reported due date against current date. If response was determined to be invalid, ask question 
     again and probe for valid response. Reject responses that are either more than 9 months after current date or 
-    more than 1 month before current date",
+    more than 1 month before current date. Format as YYYYMMDD",
     :pick => :any,
     :data_export_identifier=>"PREG_SCREEN_HI_2.ORIG_DUE_DATE"
-    a_1 "Due date", :date
+    a_1 "Due date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -456,10 +456,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
 
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
     :help_text => "Check reported menstrual date against current date. If response was determined to be invalid, ask question 
-    again and probe for valid response. Reject responses that are either > 10 months or after current date",    
+    again and probe for valid response. Reject responses that are either > 10 months or after current date. Format as YYYYMMDD",    
     :pick => :any,
     :data_export_identifier=>"PREG_SCREEN_HI_2.DATE_PERIOD"
-    a_1 "Date", :date
+    a_1 "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -1291,9 +1291,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_A :q_PLAN_MOVE, "==", :a_1
     
     q_DATE_MOVE "When will you move?",
+    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.DATE_MOVE"
-    a_date "Date", :date
+    a_date "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -1348,6 +1349,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_B :q_AGE_ELIG, "==", :a_1    
     condition_C :q_TRYING, "==", :a_3
 
+    # TODO -- verify  these dependencies - esp for AGE_ELIG for case 'or B'  
     label_PPG_FIRST_STATUS_OTHER_PROBABILITY_4 "Status: other probability – not pregnant and not trying",
     :data_export_identifier=>"PREG_SCREEN_HI_2.PPG_FIRST"
     dependency :rule=> "(A and B) or B or C or D or E or F or G"
@@ -1405,9 +1407,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_A :q_DU_ELIG_CONFIRM, "==", :a_2
     
     q_BIO_FATHER_HOME "Does the biological father live with you?",
+    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.BIO_FATHER_HOME"
-    a_date "Date", :date
+    a_date "Date", :string
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"

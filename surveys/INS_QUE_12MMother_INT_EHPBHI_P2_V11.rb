@@ -125,10 +125,11 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
-    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.",
+    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
+    Format as YYYYMMDD",
     :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -628,10 +629,10 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"
     
     q_LAST_VISIT "What was the date of {C_FNAME or YOUR CHILD}’s most recent well-child visit or checkup?",
-    :help_text => "Show calendar to assist in date recall.",
+    :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
     :pick => :one,
     :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.LAST_VISIT"
-    a_date "Date", :date
+    a_date "Date", :string
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"

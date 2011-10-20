@@ -49,7 +49,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     # • IF RESPONSE = YES, SET PERSON_DOB TO KNOWN VALUE
 
     q_prepopulated_date_of_birth "[Participant's date of birth as MM/DD/YYYY]"
-    a :date
+    a :string
 
     q_hipv2_2_dob_confirm "Is this your birth date?", :pick=>:one, :data_export_identifier=>"PREG_VISIT_2_2.DOB_CONFIRM"
     a_1 "Yes"
@@ -59,9 +59,10 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
 
     q_hipv2_2_confirmed_dob "What is your date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob is 
-    required to determine eligibility. If response was determined to be invalid, ask question again and probe for valid response",
+    required to determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
+    Format as YYYYMMDD",
     :data_export_identifier=>"PREG_VISIT_2_2.PERSON_DOB"
-    a :date
+    a :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -393,9 +394,10 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     condition_A :q_USE_PR_LOG, "!=", :a_1
     
     q_DATE_VISIT "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant?",
+    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_2_2.DATE_VISIT"
-    a "Date", :date
+    a "Date", :string
     a_neg_7 "Have not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -541,10 +543,11 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_ADMIN_DATE "What was the admission date of your most recent hospital stay?", 
+    q_ADMIN_DATE "What was the admission date of your most recent hospital stay?",
+    :help_text => "Format as YYYYMMDD",
     :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_2_2.ADMIN_DATE"
-    a "DATE", :date
+    a "DATE", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     a_neg_7 "Have not been hospitalized overnight/not applicable"

@@ -39,8 +39,9 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     condition_C :q_PREGNANT, "==", :a_neg_2
     
     q_PPG_DUE_DATE_1 "Congratulations. When is your baby due?",
+    :help_text => "Format as YYYYMMDD",
     :data_export_identifier=>"PPG_CATI.PPG_DUE_DATE_1"
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -59,8 +60,9 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     # • IF DATE IS INCOMPLETE, GO TO DATE_PERIOD
     
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
+    :help_text => "Format as YYYYMMDD",
     :data_export_identifier=>"PPG_CATI.DATE_PERIOD"
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A or B"

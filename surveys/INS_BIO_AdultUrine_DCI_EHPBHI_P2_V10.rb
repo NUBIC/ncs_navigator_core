@@ -24,9 +24,9 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
     condition_A :q_URINE_INTRO, "==", :a_1
     
     q_LT_URINE_1 "Last urination – DATE",
-    :help_text => "Double check if year is < 2011.",
+    :help_text => "Format as YYYYMMDD. Double check if year is < 2011.",
     :data_export_identifier=>"SPEC_URINE.LT_URINE_1"
-    a "DATE", :date
+    a "Date", :string
     dependency :rule=>"A "
     condition_A :q_URINE_INTRO, "==", :a_1    
     
@@ -61,9 +61,9 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
     condition_A :q_URINE_INTRO, "==", :a_1   
    
     q_LT_EAT_DRINK_1 "Last time ate or drank – DATE",
-    :help_text => "Double check if year is < 2011.",
+    :help_text => "Format as YYYYMMDD. Double check if year is < 2011.",
     :data_export_identifier=>"SPEC_URINE.LT_EAT_DRINK_1"
-    a "DATE (double check if year is < 2011)", :date
+    a "Date", :string
     dependency :rule=>"A "
     condition_A :q_URINE_INTRO, "==", :a_1    
     

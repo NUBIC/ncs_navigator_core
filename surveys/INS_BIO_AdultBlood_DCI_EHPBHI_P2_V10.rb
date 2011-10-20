@@ -1003,10 +1003,10 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     condition_A :q_CENTRIFUGE_LOCATION, "==", :a_1
     
     q_CENTRIFUGE_DATE "Time centrifugation began – DATE",
-    :help_text => "Double check if year is < 2011.",
+    :help_text => "Format as YYYYMMDD. Double check if year is < 2011.",
     :pick => :one,
     :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_DATE"
-    a "DATE", :date
+    a "DATE", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -1040,10 +1040,10 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     condition_A :q_CENTRIFUGE_LOCATION, "==", :a_1
 
      q_CENTRIFUGE_END_DATE "Time centrifugation began – DATE",
-     :help_text => "Double check if year is < 2011.",
+     :help_text => "Format as YYYYMMDD. Double check if year is < 2011.",
      :pick => :one,
      :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_END_DATE"
-     a "DATE", :date
+     a "DATE", :string
      a_neg_1 "Refused"
      a_neg_2 "Don’t know"
      dependency :rule=>"A"

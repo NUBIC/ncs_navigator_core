@@ -1,7 +1,7 @@
 survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"THREE_MTH_MOTHER" do
 
-    q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER.TIME_STAMP_1"
+    q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER.TIME_STAMP_1"
     a :datetime
 
     label "Hello. I’m [INTERVIEWER NAME] calling from the National Children’s Study. I’m calling today to ask you 
@@ -11,7 +11,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     everything that you tell us confidential."
   end
   section "Interviewer completed questions", :reference_identifier=>"THREE_MTH_MOTHER" do
-    q_mult_child "Is there more than one child in this household eligible for the 3-month call today?", :pick => :one,
+    q_MULT_CHILD "Is there more than one child in this household eligible for the 3-month call today?", :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER.MULT_CHILD"
     a_1 "Yes"
     a_2 "No"
@@ -55,6 +55,11 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     
     q_prepopulated_baby_name "Baby's name:"
     a :string
+
+    # TODO
+    # PROGRAMMER INSTRUCTIONS: 
+    # • PRELOADCHILD’S NAME IF BABY_NAME COLLECTED AT BIRTH INTERVIEW.
+    # • IF CNAME_CONFIRM = 1, SET C_FNAME C_LNAME TO KNOWN VALUE.
     
     q_CNAME_CONFIRM "Is that your baby’s name?", :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.CNAME_CONFIRM"
@@ -63,32 +68,39 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    label "What is your baby’s full name?",
-    :help_text => "If participant refuses to provide information, re-state confidentiality 
-    protections, ask for initials or some other name she would like her child to be called. 
-    Confirm spelling of first name if not previously collected and of last name for all children."
-    
-    q_C_FNAME "First name", :pick => :one, 
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.C_FNAME"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    group "Baby's information" do
     dependency :rule=>"A"
-    condition_A :q_hipv1_2_name_confirm, "!=", :a_1
+    condition_A :q_CNAME_CONFIRM , "!=", :a_1    
+    
+      label "What is your baby’s full name?",
+      :help_text => "If participant refuses to provide information, re-state confidentiality 
+      protections, ask for initials or some other name she would like her child to be called. 
+      Confirm spelling of first name if not previously collected and of last name for all children."
+   
+      q_C_FNAME "First name", 
+      :pick => :one, 
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.C_FNAME"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_LNAME "Last name", :pick => :one, 
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.C_LNAME"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_hipv1_2_name_confirm, "!=", :a_1
-    
+      q_C_LNAME "Last name",
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.C_LNAME"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
+
     # PROGRAMMER INSTRUCTION:
     # •	IF C_FNAME AND C_LNAME = -1 or -2, SUBSTITUTE “YOUR CHILD” FOR C_FNAME IN REMAINER OF QUESTIONNAIRE.
     
     q_prepopulated_childs_birth_date "Child's birth date"
     a :string
+
+    # TODO
+    # PROGRAMMER INSTRUCTIONS:
+    # • PRELOAD CHILD_DOB COLLECTED AT BIRTH INTERVIEWAS MM/DD/YYYY.
+    # • IF CDOB_CONFIRM =1, SET CHILD_DOB TO KNOWN VALUE.
     
     # TODO: Is {C_FNAME/YOUR CHILD}’S birth date {CHILD’S DATE OF BIRTH}
     q_CDOB_CONFIRM "Is this {C_FNAME/YOUR CHILD}’s birth date?", 
@@ -107,9 +119,12 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
-    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.",
+    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
+    Format as YYYYMMDD",
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.CHILD_DOB"
-    a :date
+    a :string
+    dependency :rule=>"A"
+    condition_A :q_CDOB_CONFIRM , "!=", :a_1
     
     # TODO:
     #     PROGRAMMER INSTRUCTIONS:
@@ -118,6 +133,8 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     q_calculated_age "Interviewer instructions: Calculated age (months)?",
     :help_text => "If it appears that the calculated age of the baby is less than 2 months or greater than 5 months, please verify"
     a :integer
+    dependency :rule=>"A"
+    condition_A :q_CDOB_CONFIRM , "!=", :a_1
     
     q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.TIME_STAMP_2"
     a :datetime
@@ -136,187 +153,113 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     # BEFORE BIRTH, GO TO TIME_STAMP_3 AND COMPLETE QUESTIONNAIRE FOR FIRST CHILD.  THEN BEGINNING AT CHILD_QNUM, 
     # LOOP THROUGH INTERVIEWER-COMPLETED SECTIONS: SLEEP, CRYING PATTERNS, CHILD DEVELOPMENT AND PARENTING, CHILDCARE 
     # ARRANGEMENTS HEALTHCARE, FOR EACH SUBSEQUENT CHILD.
-    # 
+        # Nataliya's comment ont the statement above - should it be IF CHILD_NUM>1
+
     q_prev_questionare "Interviewer instructions: was mother enrolled prior to or during pregnancy 
     and has completed at least one questionnaire before birth", :pick => :one
     a_1 "Yes"
     a_2 "No"
   end
   section "Demographics", :reference_identifier=>"THREE_MTH_MOTHER" do
-    q_MARISTAT "I’d like to ask about your marital status. Are you:",
-    :help_text => "Record the participant’s current marital status", :pick => :one, 
-    :data_export_identifier=>"THREE_MTH_MOTHER.MARISTAT"
-    a_1 "Married,"
-    a_2 "Not married but living together with a partner"
-    a_3 "Never been married,"
-    a_4 "Divorced,"
-    a_5 "Separated, or"
-    a_6 "Widowed?"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    group "Demographics Info" do 
     dependency :rule => "A"
     condition_A :q_prev_questionare, "==", :a_2
+          
+      q_MARISTAT "I’d like to ask about your marital status. Are you:",
+      :help_text => "Record the participant’s current marital status", :pick => :one, 
+      :data_export_identifier=>"THREE_MTH_MOTHER.MARISTAT"
+      a_1 "Married,"
+      a_2 "Not married but living together with a partner"
+      a_3 "Never been married,"
+      a_4 "Divorced,"
+      a_5 "Separated, or"
+      a_6 "Widowed?"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_using_showcards "Interviewer instruction: does interviewer use showcards?", :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
+      q_EDUC "What is the highest degree or level of school you have completed?",
+      :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER.EDUC"
+      a_1 "Less than a high school diploma or GED"
+      a_2 "High school diploma or GED"
+      a_3 "Some college but no degree"
+      a_4 "Associate degree"
+      a_5 "Bachelor's degree (for example, BA, BS)"
+      a_6 "Post graduate degree (for example, MAsters Or Doctoral)"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+        
+      q_ETHNICITY "Do you consider yourself to be Hispanic, or Latina?", :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER.ETHNICITY"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_EDUC_no_showcard "What is the highest degree or level of school you have completed?",
-    :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER.EDUC"
-    a_1 "Less Than a High School Diploma or GED"
-    a_2 "High School Diploma or GED"
-    a_3 "Some College but No Degree"
-    a_4 "Associate Degree"
-    a_5 "Bachelor’s Degree (for example, BA, BS)"
-    a_6 "Post Graduate Degree (for example, Masters or Doctoral)"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_using_showcards, "==", :a_2
-    
-    q_EDUC_showcard "What is the highest degree or level of school you have completed?",
-    :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER.EDUC"
-    a_1 "Less than a high school diploma or GED"
-    a_2 "High school diploma or GED"
-    a_3 "Some college but no degree"
-    a_4 "Associate degree"
-    a_5 "Bachelor's degree (for example, BA, BS)"
-    a_6 "Post graduate degree (for example, MAsters Or Doctoral)"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_using_showcards, "==", :a_1
-    
-    q_ETHNICITY "Do you consider yourself to be Hispanic, or Latina?", :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER.ETHNICITY"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
-    
-    q_RACE "What race do you consider yourself to be? You may select one or more.",
-    :help_text => "Probe: Anything else? Code \"Other\" only if volunteered. Select all that apply", :pick => :any,
-    :data_export_identifier=>"THREE_MTH_MOTHER_RACE.RACE"
-    a_1 "White,"
-    a_2 "Black or African American,"
-    a_3 "American Indian or Alaska Native"
-    a_4 "Asian, or"
-    a_5 "Native Hawaiian or Other Pacific Islander"
-    a_6 "Multi Racial"
-    a_neg_5 "Some other race?"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
+      q_RACE "What race do you consider yourself to be? You may select one or more.",
+      :help_text => "Probe: Anything else? Code \"Other\" only if volunteered. Select all that apply", :pick => :any,
+      :data_export_identifier=>"THREE_MTH_MOTHER_RACE.RACE"
+      a_1 "White,"
+      a_2 "Black or African American,"
+      a_3 "American Indian or Alaska Native"
+      a_4 "Asian, or"
+      a_5 "Native Hawaiian or Other Pacific Islander"
+      a_6 "Multi Racial"
+      a_neg_5 "Some other race?"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
      
-    q_RACE_OTH "Other race", 
-    :pick=>:one, 
-    :data_export_identifier=>"THREE_MTH_MOTHER_RACE.RACE_OTH"
-    a_1 "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A and (B or C)"
-    condition_A :q_RACE, "==", :a_neg_5
-    condition_B :q_RACE, "!=", :a_neg_1
-    condition_C :q_RACE, "!=", :a_neg_2
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
+      q_RACE_OTH "Other race", 
+      :pick=>:one, 
+      :data_export_identifier=>"THREE_MTH_MOTHER_RACE.RACE_OTH"
+      a_1 "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A and (B or C)"
+      condition_A :q_RACE, "==", :a_neg_5
+      condition_B :q_RACE, "!=", :a_neg_1
+      condition_C :q_RACE, "!=", :a_neg_2
     
-    # TODO:
-    # {CURRENT YEAR – 1}    
-    label "Now I’m going to ask a few questions about your income. Family income is important in understanding 
-    the information we collect and is often used in scientific studies to compare groups of people who are similar. 
-    Please remember that all the information you share with us is confidential.<br>
-    Please think about your total combined family income during {CURRENT YEAR – 1} for all members of the family. "
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
-    
+      # TODO:
+      # {CURRENT YEAR – 1}    
+      label "Now I’m going to ask a few questions about your income. Family income is important in understanding 
+      the information we collect and is often used in scientific studies to compare groups of people who are similar. 
+      Please remember that all the information you share with us is confidential.<br>
+      Please think about your total combined family income during {CURRENT YEAR – 1} for all members of the family. "
 
-    q_enter_HH_MEMBERS "How many household members are supported by your total combined family income?", 
-    :pick=>:one
-    a_1 "Enter response"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
+      q_HH_MEMBERS "How many household members are supported by your total combined family income?",
+      :help_text => "Please verify if response < 0 or > 15",
+      :pick=>:one,
+      :data_export_identifier=>"THREE_MTH_MOTHER.HH_MEMBERS"
+      a_1 "Number", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_HH_MEMBERS "Number household members supported by total combined family income", 
-    :data_export_identifier=>"THREE_MTH_MOTHER.HH_MEMBERS"
-    a :integer
-    dependency :rule=>"A"
-    condition_A :q_enter_HH_MEMBERS, "==", :a_1
+      q_NUM_CHILD "How many of those people are children? Please include anyone under 18 years or anyone 
+      older than 18 years and in high school.", 
+      :help_text => "Please verify if responce is higher than the answer above. The suggested range is > 0 and < 10", 
+      :pick=>:one,
+      :data_export_identifier=>"THREE_MTH_MOTHER.NUM_CHILD"    
+      a_1 "Enter response", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    label "The value you provided is outside the suggested range. (Range = 1 to 15) This value is admissible, but you may wish to verify."
-    dependency :rule=>"A or B"
-    condition_A :q_HH_MEMBERS, "<", {:integer_value => "1"}
-    condition_B :q_HH_MEMBERS, ">", {:integer_value => "15"}
+      # PROGRAMMER INSTRUCTION:
+      # • IF USING SHOWCARDS, DISPLAY RESPONSE CATEGORIES IN ALL CAPITAL LETTERS.  OTHERWISE, DISPLAY RESPONSE CATEGORIES AS MIXED UPPER/LOWER CASE PER BELOW.
 
-    q_enter_num_child "How many of those people are children? Please include anyone under 18 years or anyone 
-    older than 18 years and in high school.", :pick=>:one
-    a_1 "Enter response", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A and B and C"
-    condition_A :q_enter_HH_MEMBERS, "==", :a_1
-    condition_B :q_HH_MEMBERS, ">", {:integer_value => "1"}
-    condition_C :q_HH_MEMBERS, "<", {:integer_value => "15"}    
-
-# TODO == • DISPLAY  HARD EDIT IF RESPONSE > HH_MEMBERS 
-    q_NUM_CHILD "Number of children",
-    :help_text => "Check the entry field for this question with the answer above. If response is higher, ask the question again", 
-    :data_export_identifier=>"THREE_MTH_MOTHER.NUM_CHILD"
-    a "Specify", :integer
-    dependency :rule=>"A"
-    condition_A :q_enter_HH_MEMBERS, "==", :a_1
-
-    label "The value you provided is outside the suggested range. (Range = 0 to 10) This value is admissible, but you may wish to verify."
-    dependency :rule=>"A"
-    condition_A :q_NUM_CHILD, ">", {:integer_value => "10"}
-
-    q_using_showcards_for_income "Interviewer instruction: does interviewer use showcards?", :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule => "A"
-    condition_A :q_prev_questionare, "==", :a_2
-
-    # PROGRAMMER INSTRUCTION:
-    # • IF USING SHOWCARDS, DISPLAY RESPONSE CATEGORIES IN ALL CAPITAL LETTERS.  OTHERWISE, DISPLAY RESPONSE CATEGORIES AS MIXED UPPER/LOWER CASE PER BELOW.
-
-    q_INCOME_4CAT_no_showcards "Of these income groups, which category best represents your combined family income during the 
-    last calendar year?",
-    :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.", 
-    :pick=>:one, 
-    :data_export_identifier=>"THREE_MTH_MOTHER.INCOME_4CAT"
-    a_1 "Less than $30,000"
-    a_2 "$30,000 - $49,999"
-    a_3 "$50,000 - $99,999"
-    a_4 "$100,000 or more"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_using_showcards_for_income, "==", :a_2
-    
-    q_INCOME_4CAT_showcards "Of these income groups, which category best represents your combined family income during the 
-    last calendar year?",
-    :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.", 
-    :pick=>:one, 
-    :data_export_identifier=>"THREE_MTH_MOTHER.INCOME_4CAT"
-    a_1 "Less than $30,000"
-    a_2 "$30,000 - $49,999"
-    a_3 "$50,000 - $99,999"
-    a_4 "$100,000 or more"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_using_showcards_for_income, "==", :a_1    
+      q_INCOME_4CAT "Of these income groups, which category best represents your combined family income during the 
+      last calendar year?",
+      :help_text => "If using showcards, refer participant to appropriate showcard. Otherwise, read response categories to participant.", 
+      :pick=>:one, 
+      :data_export_identifier=>"THREE_MTH_MOTHER.INCOME_4CAT"
+      a_1 "Less than $30,000"
+      a_2 "$30,000 - $49,999"
+      a_3 "$50,000 - $99,999"
+      a_4 "$100,000 or more"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER.TIME_STAMP_3"
     a :datetime    
@@ -381,7 +324,9 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a "Specify", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+    dependency :rule=>"A"
+    condition_A :q_SLEEP_PLACE_2, "==", :a_neg_5
+        
     q_SLEEP_POSITION_NIGHT "In what position do you most often lay {C_FNAME/YOUR CHILD} down to sleep at night? On his/her.",
     :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SLEEP_POSITION_NIGHT"
@@ -506,7 +451,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
-    q_SHY"Shy or quiet?",
+    q_SHY "Shy or quiet?",
     :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SHY"
     a_1 "Yes"
@@ -669,10 +614,11 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"  
     
-    q_time_stamp_4 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_4"
+    q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_4"
     a :datetime                           
   end
   section "Child care arrangements", :reference_identifier=>"THREE_MTH_MOTHER" do 
+    
     label "Next, I’d like to ask you about different types of child care {C_FNAME/YOUR CHILD} may receive from someone 
     other than parents or guardians. This includes regularly scheduled care arrangements with relatives and non-relatives, 
     and day care or early childhood programs, whether or not there is a charge or fee, but not occasional baby-sitting."
@@ -686,32 +632,44 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_FAMILY_CARE_HRS "I’d like you to think about all the care {C_FNAME/YOUR CHILD} receives from relatives. 
-    For example, from grandparents, brothers or sisters, or any other relatives. (This includes all regularly scheduled 
-    care arrangements with relatives that happen at least weekly, but does not include occasional baby-sitting.)
-    Including all of these regular arrangements, how many total hours each week does {C_FNAME/YOUR CHILD} receive 
-    care from relatives?",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.FAMILY_CARE_HRS"
-    a "Hours", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    group "Childcare Information" do
     dependency :rule=>"A"
-    condition_A :q_CHILDCARE, "==", :a_1
+    condition_A :q_CHILDCARE, "==", :a_1    
+
+      q_FAMILY_CARE_HRS "I’d like you to think about all the care {C_FNAME/YOUR CHILD} receives from relatives. 
+      For example, from grandparents, brothers or sisters, or any other relatives. (This includes all regularly scheduled 
+      care arrangements with relatives that happen at least weekly, but does not include occasional baby-sitting.)
+      Including all of these regular arrangements, how many total hours each week does {C_FNAME/YOUR CHILD} receive 
+      care from relatives?",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.FAMILY_CARE_HRS"
+      a "Hours", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
     
-    q_HOMECARE_HRS "I’d like you to think about all the regularly scheduled care your child receives on a weekly basis 
-    from non-relatives in a home setting. (This includes all regularly scheduled care arrangements with non-relatives that 
-    happen at least weekly, including home child care providers, regularly scheduled sitter arrangements, or neighbors. 
-    This does not include day care centers, early childhood programs, or occasional babysitting.)
-    Including all of these arrangements, how many total hours each week does {C_FNAME/YOUR CHILD} receive care from 
-    non-relatives in a home setting?",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.HOMECARE_HRS"
-    a "Hours", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CHILDCARE, "==", :a_1
+      q_HOMECARE_HRS "I’d like you to think about all the regularly scheduled care your child receives on a weekly basis 
+      from non-relatives in a home setting. (This includes all regularly scheduled care arrangements with non-relatives that 
+      happen at least weekly, including home child care providers, regularly scheduled sitter arrangements, or neighbors. 
+      This does not include day care centers, early childhood programs, or occasional babysitting.)
+      Including all of these arrangements, how many total hours each week does {C_FNAME/YOUR CHILD} receive care from 
+      non-relatives in a home setting?",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.HOMECARE_HRS"
+      a "Hours", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    
+      q_DAYCARE_HRS "I’d like you to think about all the care your child receives from child care centers. For example, 
+      day care centers, early learning centers, nursery schools, and preschools. (This includes all regularly scheduled care 
+      arrangements in child care centers that happen at least weekly.) Including all of these arrangements, how many total 
+      hours each week does {C_FNAME/YOUR CHILD} receive care at child care centers?",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.HOMECARE_HRS"
+      a "Hours", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_time_stamp_5 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_5"
     a :datetime
@@ -743,50 +701,39 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or check-up?",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.LAST_VISIT"
-    a :date
-    a_neg_7 "Has not had a visit"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    group "Child's check-up information" do
     dependency :rule=>"A and B and C"
     condition_A :q_R_HCARE, "!=", :a_7
     condition_B :q_R_HCARE, "!=", :a_neg_1
-    condition_C :q_R_HCARE, "!=", :a_neg_2
+    condition_C :q_R_HCARE, "!=", :a_neg_2      
+      
+      q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or check-up?",
+      :help_text => "Format as YYYYMMDD",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.LAST_VISIT"
+      a_date "Date", :string
+      a_neg_7 "Has not had a visit"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_enter_VISIT_WT "What was {C_FNAME/YOUR CHILD}’s weight at that visit?",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.VISIT_WT"
-    a_1 "Enter response"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A and B and C"
-    condition_A :q_LAST_VISIT, "!=", :a_neg_7
-    condition_B :q_LAST_VISIT, "!=", :a_neg_1
-    condition_C :q_LAST_VISIT, "!=", :a_neg_2
+      q_VISIT_WT "What was {C_FNAME/YOUR CHILD}’s weight at that visit?",
+      :help_text => "Please verify if response < 8 or > 21 pounds.",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.VISIT_WT"
+      a_pounds "Pounds", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_VISIT_WT "Weight in pounds",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.VISIT_WT"
-    a "Pounds", :integer
-    dependency :rule=>"A and B and C"
-    condition_A :q_enter_VISIT_WT, "==", :a_1
-
-    label "The appropriate range for weight is >8 and < 21 pounds. This value is admissible, but you may wish to verify."
-    dependency :rule=>"A or B"
-    condition_A :q_VISIT_WT, "<", {:integer_value => "8"}
-    condition_B :q_VISIT_WT, ">", {:integer_value => "21"}
-    
-    q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to 
-    the same place as for well-child visits?",
-    :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SAME_CARE"    
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_7 "Has not been sick"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to 
+      the same place as for well-child visits?",
+      :pick => :one,
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SAME_CARE"    
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_7 "Has not been sick"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_HCARE_SICK "What kind of place does {C_FNAME/YOUR CHILD} usually go to when {he/she} is sick, doesn’t feel well, 
     or if you have concerns about {his/her} health?",
@@ -801,16 +748,18 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_7 "Has not been sick"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A or B"
+    dependency :rule => "A or B or C or D or E"
     condition_A :q_SAME_CARE, "!=", :a_1
     condition_B :q_SAME_CARE, "!=", :a_neg_7
+    condition_C :q_R_HCARE, "==", :a_7
+    condition_D :q_R_HCARE, "==", :a_neg_1
+    condition_E :q_R_HCARE, "==", :a_neg_2    
     
     q_HOSPITAL "After coming home from the hospital the first time, has your child spent at least one night in the hospital?",
     :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.HOSPITAL"    
     a_1 "Yes"
     a_2 "No"
-    a_neg_7 "Has not been sick"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
@@ -819,7 +768,6 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.DIAGNOSIS"    
     a_1 "Yes"
     a_2 "No"
-    a_neg_7 "Has not been sick"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -831,6 +779,8 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a "DIAGNOSES", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule => "A"
+    condition_A :q_DIAGNOSIS, "==", :a_1    
     
     q_time_stamp_6 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_6"
     a :datetime

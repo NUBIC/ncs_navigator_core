@@ -372,7 +372,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     less each day, please enter \"1.\"",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.CIG_NOW_NUM"
-    a_number "Number per day", :integer
+    a_number "Number per day", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -588,7 +588,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     a_5 "Very Positive"
     a_6 "Not Applicable"    
 
-    q_EXPERIENCE "In general, has your experience with the National Children’s Study been…",
+    q_EXPERIENCE "In general, has your experience with the National Children’s Study been...",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_SAQ_2.EXPERIENCE"
     a_1 "Mostly negative"

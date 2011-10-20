@@ -44,10 +44,10 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
     q_PERSON_DOB "What is your date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob 
     is required to determine eligibility. If response was determined to be invalid, ask question again and probe for 
-    valid response. Verify if calculated age is less than local age of majority.",
+    valid response. Verify if calculated age is less than local age of majority. Format as YYYYMMDD",
     :pick => :one,
     :data_export_identifier=>"FATHER_PV1.PERSON_DOB"
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     

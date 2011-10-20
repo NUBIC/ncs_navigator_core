@@ -1,8 +1,9 @@
 survey "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1" do
   section "Pregnancy probability group follow-up SAQ ", :reference_identifier=>"PPGFollUp_SAQ" do
-    q_DATE "Please enter today’s date.", 
+    q_DATE "Please enter today’s date.",
+    :help_text => "Format as YYYYMMDD", 
     :data_export_identifier=>"PPG_SAQ.DATE"
-    a :date
+    a :string
     
     q_PREGNANT "Because we are interested in pregnancy, it is important for us to know if you’re currently pregnant. Are you pregnant now?",
     :data_export_identifier=>"PPG_SAQ.PREGNANT",
@@ -19,8 +20,9 @@ survey "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1" do
     condition_A :q_PREGNANT, "==", :a_1
 
     q_PPG_DUE_DATE "Date",
+    :help_text => "Format as YYYYMMDD",
     :data_export_identifier=>"PPG_SAQ.PPG_DUE_DATE"
-    a_1 "Due Date:", :date
+    a_1 "Due Date:", :string
     dependency :rule=>"A and B"
     condition_A :q_PREGNANT, "==", :a_1
     condition_B :q_PPG_DUE_DATE_LABEL, "==", :a_1

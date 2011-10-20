@@ -57,6 +57,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_neg_2 "Don't know"
 
     q_hipv1_2_confirmed_dob "What is your date of birth?",
+    :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_2.PERSON_DOB"
     a :date
     a_neg_1 "Refused"
@@ -200,11 +201,11 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_hipv1_2_enter_date_period, "==", :a_1
 
-    label "You have entered a date that is more than 10 months before today. confirm date. if date is correct, enter \"Don’t know\""
+    label "You have entered a date that is more than 10 months before today. Confirm date. If date is correct, enter \"Don’t know\""
     dependency :rule=>"A"
     condition_A :q_hipv1_2_date_period_check, "==", :a_more_than_10_months_before_today
     
-    label "You have entered a date that has not occurred yet. re-enter date."
+    label "You have entered a date that has not occurred yet. Re-enter date."
     dependency :rule=>"A"
     condition_A :q_hipv1_2_date_period_check, "==", :a_after_today
     
@@ -212,6 +213,8 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     :help_text => "Set due_date (YYYYMMDD) = Date_period + 280 days",
     :data_export_identifier=>"PREG_VISIT_1_2.DUE_DATE"
     a :string
+    dependency :rule=>"A"
+    condition_A :q_hipv1_2_date_period_check, "==", :a_valid
     
     q_hipv1_2_knew_date "Did participant give date?", :pick=>:one, :data_export_identifier=>"PREG_VISIT_1_2.KNEW_DATE"
     a_1 "Participant gave complete date"
@@ -253,35 +256,35 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     condition_B :q_hipv1_2_birth_plan, "==", :a_2
     condition_C :q_hipv1_2_birth_plan, "==", :a_4        
 
-    q_hipv1_2_nash_hosp_name "NAME OF BIRTH HOSPITAL/BIRTHING CENTER", :data_export_identifier=>"PREG_VISIT_1_2.BIRTH_PLACE"
+    q_hipv1_2_nash_hosp_name "Name of birth hospital/birthing center", :data_export_identifier=>"PREG_VISIT_1_2.BIRTH_PLACE"
     a :string
     dependency :rule=>"A or B or C"
     condition_A :q_hipv1_2_birth_plan, "==", :a_1
     condition_B :q_hipv1_2_birth_plan, "==", :a_2
     condition_C :q_hipv1_2_birth_plan, "==", :a_4        
 
-    q_hipv1_2_b_address_1 "ADDRESS 1 - STREET/PO BOX", :data_export_identifier=>"PREG_VISIT_1_2.B_ADDRESS_1"
+    q_hipv1_2_b_address_1 "Address 1 - STREET/PO BOX", :data_export_identifier=>"PREG_VISIT_1_2.B_ADDRESS_1"
     a :string
     dependency :rule=>"A or B or C"
     condition_A :q_hipv1_2_birth_plan, "==", :a_1
     condition_B :q_hipv1_2_birth_plan, "==", :a_2
     condition_C :q_hipv1_2_birth_plan, "==", :a_4        
 
-    q_hipv1_2_b_address_2 "ADDRESS 2", :data_export_identifier=>"PREG_VISIT_1_2.B_ADDRESS_2"
+    q_hipv1_2_b_address_2 "Address 2", :data_export_identifier=>"PREG_VISIT_1_2.B_ADDRESS_2"
     a :string
     dependency :rule=>"A or B or C"
     condition_A :q_hipv1_2_birth_plan, "==", :a_1
     condition_B :q_hipv1_2_birth_plan, "==", :a_2
     condition_C :q_hipv1_2_birth_plan, "==", :a_4        
 
-    q_hipv1_2_b_city "CITY", :data_export_identifier=>"PREG_VISIT_1_2.B_CITY"
+    q_hipv1_2_b_city "City", :data_export_identifier=>"PREG_VISIT_1_2.B_CITY"
     a "Text", :string
     dependency :rule=>"A or B or C"
     condition_A :q_hipv1_2_birth_plan, "==", :a_1
     condition_B :q_hipv1_2_birth_plan, "==", :a_2
     condition_C :q_hipv1_2_birth_plan, "==", :a_4        
 
-    q_hipv1_2_b_state "STATE", :display_type=>"dropdown", :data_export_identifier=>"PREG_VISIT_1_2.B_STATE"
+    q_hipv1_2_b_state "State", :display_type=>"dropdown", :data_export_identifier=>"PREG_VISIT_1_2.B_STATE"
     a_1 "AL"
     a_2 "AK"
     a_3 "AZ"
@@ -338,7 +341,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     condition_B :q_hipv1_2_birth_plan, "==", :a_2
     condition_C :q_hipv1_2_birth_plan, "==", :a_4        
 
-    q_hipv1_2_b_zipcode "ZIP CODE", :data_export_identifier=>"PREG_VISIT_1_2.B_ZIPCODE"
+    q_hipv1_2_b_zipcode "ZIP code", :data_export_identifier=>"PREG_VISIT_1_2.B_ZIPCODE"
     a :string
     dependency :rule=>"A or B or C"
     condition_A :q_hipv1_2_birth_plan, "==", :a_1
@@ -364,14 +367,16 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     q_hipv1_2_enter_date_visit "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant? (MM/DD/YYYY)", :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_2.DATE_VISIT"
     a :string
-    a_7 "HAVE NOT HAD A VISIT"
+    a_7 "Have not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
     # PROGRAMMER INSTRUCTIONS: 
     #     • IF VALID DATE FOR DATE_VISIT IS PROVIDED, DISPLAY “AT THIS VISIT OR AT”. OTHERWISE ”At”.
     label "At this visit or at any time during your pregnancy, did the doctor or other health care provider tell you that you have any 
-    of the following conditions? - RE-READ INTRODUCTORY STATEMENT AS NEEDED"
+    of the following conditions?",
+    :help_text => "If valid date for date_visit is provided, display \"At this visit or at\". 
+    Otherwise \"At\". Re-read introductory statement as needed"
 
     q_hipv1_2_diabetes_1 "Diabetes? ", :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.DIABETES_1"
@@ -476,9 +481,10 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     q_hipv1_2_time_stamp_5 "Current date & time", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_5"
     a :datetime
     
-    label "This next question is about your health when you are <U>not</U> pregnant"
-
-    q_hipv1_2_health "Would you say your health in general is. . . ", :pick=>:one, 
+    label "This next question is about your health when you are not pregnant"
+  
+    q_hipv1_2_health "Would you say your health in general is...", 
+    :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.HEALTH"
     a_1 "Excellent"
     a_2 "Very good,"
@@ -487,15 +493,16 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_5 "Poor?"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
-    q_hipv1_2_enter_height "How tall are you without shoes? ", :pick=>:one
+  
+    q_hipv1_2_enter_height "How tall are you without shoes? ", 
+    :pick=>:one
     a_1 "Enter response"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
+  
     q_hipv1_2_height_ft "Portion of height in whole feet (e.g., 5)", 
     :data_export_identifier=>"PREG_VISIT_1_2.HEIGHT_FT"
-    a "Feet", :integer
+    a :integer
     dependency :rule=>"A"
     condition_A :q_hipv1_2_enter_height, "==", :a_1
     
@@ -503,28 +510,30 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A or B"
     condition_A :q_hipv1_2_height_ft, "<", {:integer_value => "4"}
     condition_B :q_hipv1_2_height_ft, ">", {:integer_value => "7"}
-
+  
     q_hipv1_2_ht_inch "Additional portion of height in inches (e.g., 7)", 
     :data_export_identifier=>"PREG_VISIT_1_2.HT_INCH"
-    a "Inches", :string
+    a :integer
     dependency :rule=>"A"
     condition_A :q_hipv1_2_enter_height, "==", :a_1
     
     label "Provided value is outside of the suggested range (0 to 11 inches when \"feet\" value is specified and 
-    48 to 84 inches, when \"FEET\" value is blank. This value is admissible, but you may wish to verify."
+    48 to 84 inches, when \"feet\" value is blank. This value is admissible, but you may wish to verify."
     dependency :rule=>"A or B or C or D"
     condition_A :q_hipv1_2_ht_inch, "<", {:integer_value => "0"}
     condition_B :q_hipv1_2_ht_inch, ">", {:integer_value => "11"}
     condition_C :q_hipv1_2_ht_inch, ">", {:integer_value => "84"}
     condition_D :q_hipv1_2_ht_inch, "<", {:integer_value => "48"}
-
-    q_hipv1_2_enter_weight "What was your weight just before you became pregnant? ", :pick=>:one
+  
+    q_hipv1_2_enter_weight "What was your weight just before you became pregnant? ", 
+    :pick=>:one
     a_1 "Enter response"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
-    q_hipv1_2_weight "Weight before becoming pregnant (pounds)", :data_export_identifier=>"PREG_VISIT_1_2.WEIGHT"
-    a "Pounds", :integer
+  
+    q_hipv1_2_weight "Weight before becoming pregnant (pounds)", 
+    :data_export_identifier=>"PREG_VISIT_1_2.WEIGHT"
+    a :integer
     dependency :rule=>"A"
     condition_A :q_hipv1_2_enter_weight, "==", :a_1
     
@@ -532,33 +541,37 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A or B"
     condition_A :q_hipv1_2_weight, "<", {:integer_value => "90"}
     condition_B :q_hipv1_2_weight, ">", {:integer_value => "400"}      
-
+  
     label "The next questions are about medical conditions or health problems you might have now or may have had in the past."
-
-    q_hipv1_2_asthma "Have you ever been told by a doctor or other health care provider that you had asthma? ", :pick=>:one, 
+  
+    q_hipv1_2_asthma "Have you ever been told by a doctor or other health care provider that you had asthma? ", 
+    :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.ASTHMA"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
+  
     q_hipv1_2_highbp_notpreg "Have you ever been told by a doctor or other health care provider that you had
-    Hypertension or high blood pressure when you’re not pregnant?", :pick=>:one, 
+    Hypertension or high blood pressure when you’re not pregnant?", 
+    :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.HIGHBP_NOTPREG"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
+  
     q_hipv1_2_diabetes_notpreg "Have you ever been told by a doctor or other health care provider that you had
-    High blood sugar or Diabetes when you're not pregnant?", :pick=>:one, 
+    High blood sugar or Diabetes when you're not pregnant?", 
+    :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.DIABETES_NOTPREG"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
-    q_hipv1_2_diabetes_2 "Have you taken any medicine or received other medical treatment for diabetes in the past 12 months? ", :pick=>:one,
+  
+    q_hipv1_2_diabetes_2 "Have you taken any medicine or received other medical treatment for diabetes in the past 12 months? ", 
+    :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_2.DIABETES_2"
     a_1 "Yes"
     a_2 "No"
@@ -566,7 +579,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_hipv1_2_diabetes_notpreg, "==", :a_1
-
+  
     q_hipv1_2_diabetes_3 "Have you ever taken insulin? ", :pick=>:one, :data_export_identifier=>"PREG_VISIT_1_2.DIABETES_3"
     a_1 "Yes"
     a_2 "No"
@@ -574,7 +587,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_hipv1_2_diabetes_notpreg, "==", :a_1
-
+  
     q_hipv1_2_thyroid_1 "Have you ever been told by a doctor or other health care provider that you had 
     Hypothyroidism, that is, an under active thyroid?", :pick=>:one, 
     :data_export_identifier=>"PREG_VISIT_1_2.THYROID_1"
@@ -582,7 +595,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
+  
     q_hipv1_2_thyroid_2 "Have you taken any medicine or received other medical treatment for a thyroid problem in the past 12 months?", :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_2.THYROID_2"
     a_1 "Yes"
@@ -593,7 +606,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     condition_A :q_hipv1_2_thyroid_1, "==", :a_1
     
     label "This next question is about where you go for routine health care."
-
+  
     q_hipv1_2_hlth_care "What kind of place do you usually go to when you need routine or preventive care, such as a physical examination or check-up?", 
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_2.HLTH_CARE"
@@ -613,7 +626,8 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
     label "Now I'm going to switch to another subject and ask about health insurance."
 
-    q_hipv1_2_insure "Are you currently covered by any kind of health insurance or some other kind of health care plan? ", :pick=>:one,
+    q_hipv1_2_insure "Are you currently covered by any kind of health insurance or some other kind of health care plan? ", 
+    :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_2.INSURE"
     a_1 "Yes"
     a_2 "No"
@@ -728,7 +742,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
 
     q_hipv1_2_age_home "Can you tell us, which of these categories do you think best describes when your home or building was built?",
-    :help_text => "Interviewer instruction: show response options on card to participant", :pick=>:one,
+    :help_text => "Show response options on card to participant", :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_2.AGE_HOME"
     a_1 "2001 to present"
     a_2 "1981 to 2000"

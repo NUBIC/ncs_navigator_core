@@ -128,10 +128,11 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
      
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
-    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.",
+    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
+    Format as YYYYMMDD",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -165,10 +166,10 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     condition_A :q_PREGNANT, "==", :a_3
     
     q_ORIG_DUE_DATE "[Congratulations.] When is your baby due?",
-    :help_text => "If response was determined to be invalid, ask question again and probe for valid response.", 
+    :help_text => "If response was determined to be invalid, ask question again and probe for valid response. Format as YYYYMMDD", 
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.ORIG_DUE_DATE",
     :pick => :one
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"    
     dependency :rule =>"A"
@@ -218,14 +219,14 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     q_SLEEP_TIME_NIGHT "On a normal day, what time in the evening does {C_FNAME or YOUR CHILD} go to sleep?",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.SLEEP_TIME_NIGHT",
     :pick => :one    
-    a "Time", :time
+    a "Time", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
     q_SLEEP_TIME_WAKE "On a normal day, what time does {C_FNAME or YOUR CHILD} wake up in the morning?",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.SLEEP_TIME_WAKE",
     :pick => :one    
-    a "Time", :time
+    a "Time", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
@@ -481,10 +482,10 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     condition_A :q_USE_IC_LOG, "!=", :a_1
     
     q_LAST_VISIT "What was the date of {C_FNAME or YOUR CHILD}’s most recent well-child visit or checkup?",
-    :help_text => "Show calendar to assist in date recall. ",
+    :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.LAST_VISIT",
     :pick => :one
-    a "Date", :date
+    a "Date", :string
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -518,10 +519,10 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't know"
     
     q_ADMIN_DATE "What was the admission date of {C_FNAME or YOUR CHILD}’s most recent hospital stay?",
-    :help_text => "Show calendar to assist in date recall.",
+    :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.ADMIN_DATE",
     :pick => :one
-    a_1 "Date", :date
+    a_1 "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -762,7 +763,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     that {C_FNAME or YOUR CHILD} may have taken in the last 30 days."
     
     q_OTC_TAKE "Has {C_FNAME or YOUR CHILD} used or taken any non-prescription medicines in the past 30 days? 
-    Include only those products purchased over the counter that do not require a prescription.", 
+    Include only those products purchased over the counter that do not require a prescription.",
     :help_text =>  "Do not include over-the-counter vitamins or minerals.",
     :pick => :one,
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.OTC_TAKE"

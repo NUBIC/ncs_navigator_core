@@ -1252,9 +1252,10 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     condition_A :q_PLAN_MOVE, "==", :a_1
     
     q_DATE_MOVE "When will you move?",
+    :help_text => "Format as YYYYMMDD",
     :pick=>:one, 
     :data_export_identifier=>"BIRTH_VISIT_2.DATE_MOVE"
-    a_date "Date", :date
+    a_date "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"

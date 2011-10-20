@@ -35,9 +35,10 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     condition_A :q_MULTIPLE, "==", :a_2
     
     q_CHILD_DOB "What was the {BABY’S/BABIES’} date of birth?",
+    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"BIRTH_VISIT_LI.CHILD_DOB" 
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
   end
@@ -837,9 +838,10 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     a_neg_2 "Don't know"
     
     q_RETURN_JOB_DT "When did you return to your job?",
+    :help_text => "Format as YYYYMMDD",
     :pick => :one,
     :data_export_identifier=>"BIRTH_VISIT_LI.RETURN_JOB_DT"
-    a_date "Date", :date
+    a_date "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -1536,9 +1538,10 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     condition_A :q_PLAN_MOVE, "==", :a_1
     
     q_DATE_MOVE "When will you move?",
+    :help_text =>"Format as YYYYMMDD",
     :pick=>:one, 
     :data_export_identifier=>"BIRTH_VISIT_LI.DATE_MOVE"
-    a_date "Date", :date
+    a_date "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
