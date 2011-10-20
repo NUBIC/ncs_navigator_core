@@ -60,4 +60,35 @@ describe OperationalDataExtractor do
     handler.should == PregnancyVisitOperationalDataExtractor
   end
   
+  describe "processing the response set" do
+    
+    before(:each) do
+      @person = Factory(:person)
+      @survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data    
+      @response_set = @person.start_instrument(@survey)
+      question = Factory(:question, :data_export_identifier => "PREG_SCREEN_HI_2.HOME_PHONE")
+      answer = Factory(:answer, :response_class => "string")
+      home_phone_response = Factory(:response, :string_value => "3125551212", :question => question, :answer => answer, :response_set => @response_set)
+      @response_set.responses << home_phone_response
+      OperationalDataExtractor.process(@response_set)
+    end
+    
+    it "processes the response set once" do
+      ResponseSet.find(@response_set.id).should be_processed_for_operational_data_extraction
+    end
+    
+    it "creates only one data record for the extracted data" do
+      person = Person.find(@person.id)
+      phones = person.telephones
+      phones.should_not be_empty
+      phones.first.phone_nbr.should == "3125551212"
+      
+      OperationalDataExtractor.process(@response_set)
+      person = Person.find(@person.id)
+      person.telephones.should == phones
+      person.telephones.first.phone_nbr.should == "3125551212"
+    end
+    
+  end
+  
 end

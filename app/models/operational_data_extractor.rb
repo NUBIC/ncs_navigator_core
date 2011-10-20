@@ -1,8 +1,17 @@
 class OperationalDataExtractor
-    
+  EXTRACTORS = [
+    [/_PregScreen_/, PregnancyScreenerOperationalDataExtractor],
+    [/_PPGFollUp_/,  PpgFollowUpOperationalDataExtractor],
+    [/_PrePreg_/,    PrePregnancyOperationalDataExtractor],
+    [/_PregVisit/,   PregnancyVisitOperationalDataExtractor],
+  ]  
+  
   class << self
     def process(response_set)
-      extractor_for(response_set).extract_data(response_set)
+      if !response_set.processed_for_operational_data_extraction
+        success = extractor_for(response_set).extract_data(response_set)
+        response_set.update_attribute(:processed_for_operational_data_extraction, true) if success
+      end
     end
     
     
@@ -10,13 +19,6 @@ class OperationalDataExtractor
       extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
       extractor ? extractor[1] : PregnancyScreenerOperationalDataExtractor
     end
-    
-    EXTRACTORS = [
-      [/_PregScreen_/, PregnancyScreenerOperationalDataExtractor],
-      [/_PPGFollUp_/,  PpgFollowUpOperationalDataExtractor],
-      [/_PrePreg_/,    PrePregnancyOperationalDataExtractor],
-      [/_PregVisit/,   PregnancyVisitOperationalDataExtractor],
-    ]
     
     def response_value(response)
       case response.answer.response_class
