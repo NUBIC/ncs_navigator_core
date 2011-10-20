@@ -13,7 +13,8 @@ gem 'ruby-debug'
 gem 'jquery-rails'
 
 gem 'ncs_mdes', '0.4.0'
-gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git', :branch => 'rails3'
+gem 'formtastic', '1.2.4'
+gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git', :branch => 'performance'
 gem 'psc'
 gem 'ncs_navigator_configuration'
 
@@ -40,6 +41,8 @@ group :development, :test, :ci do
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'jasmine'
+  
+  gem 'newrelic_rpm'
   
 end
 
