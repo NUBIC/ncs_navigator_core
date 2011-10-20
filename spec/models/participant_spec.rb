@@ -421,6 +421,7 @@ describe Participant do
         participant = Participant.find(participant.id)
         participant.ppg_status.local_code.should == 1
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        participant.can_impregnate?.should be_true
         
         participant.impregnate!
         participant.should be_pregnant
