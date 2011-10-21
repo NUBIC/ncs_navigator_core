@@ -239,4 +239,11 @@ class NcsCode < ActiveRecord::Base
   def code
     local_code
   end
+  
+  def ==(comparison_object) 
+    comparison_object.equal?(self) ||
+      (comparison_object.instance_of?(self.class) &&
+      comparison_object.list_name == self.list_name &&
+      comparison_object.local_code == self.local_code)
+  end
 end

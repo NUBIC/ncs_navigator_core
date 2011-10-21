@@ -48,6 +48,28 @@ describe InstrumentEventMap do
     end
   end
   
+  describe "recruitment type" do
+    
+    it "understands Two-Tier (HILI)" do
+      NcsNavigatorCore.stub!(:recruitment_type).and_return("HILI")
+      instruments = InstrumentEventMap.instruments_for("Pregnancy Screener")
+      instruments.should include "INS_QUE_PregScreen_INT_HILI_P2_V2.0"
+    end
+    
+    it "understands Provider Based (PB)" do
+      NcsNavigatorCore.stub!(:recruitment_type).and_return("PB")
+      instruments = InstrumentEventMap.instruments_for("Pregnancy Screener")
+      instruments.should include "INS_QUE_PregScreen_INT_PB_P2_V2.0"
+    end
+    
+    it "understands Enhanced Household (EH)" do
+      NcsNavigatorCore.stub!(:recruitment_type).and_return("EH")
+      instruments = InstrumentEventMap.instruments_for("Pregnancy Screener")
+      instruments.should include "INS_QUE_PregScreen_INT_EH_P2_V2.0"
+    end
+    
+  end
+  
 end
 
 
