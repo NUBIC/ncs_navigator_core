@@ -32,7 +32,7 @@ group :development do
 end
 
 group :development, :test, :ci do
-  gem 'rspec-rails', '~> 2.4'
+  gem 'rspec-rails', '2.6.1'
   
   gem 'guard'
   gem 'guard-cucumber'
