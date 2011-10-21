@@ -27,10 +27,10 @@ begin
     desc "Run both specs and features to generate aggregated coverage"
     task :all do |t|
       Rake::Task["rcov:clean"].invoke
-      puts "~~~ running rspecs"
-      Rake::Task["rcov:rspec_run"].invoke
       puts "~~~ running cucumber features"
       Rake::Task["rcov:cucumber_run"].invoke
+      puts "~~~ running rspecs"
+      Rake::Task["rcov:rspec_run"].invoke
     end
   
     desc "Run only rspecs"

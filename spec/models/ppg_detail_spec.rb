@@ -30,6 +30,37 @@ describe PpgDetail do
     ppg = Factory(:ppg_detail)
     ppg.to_s.should == ppg.ppg_first.to_s
   end
+
+  context "due date" do
+    it "should return nil if no due date" do
+      ppg = Factory(:ppg_detail, :orig_due_date => nil, :due_date_2 => nil, :due_date_3 => nil)
+      ppg.due_date.should be_nil
+    end
+    
+    it "should return the most recently known due date" do
+      ppg = Factory(:ppg_detail, :orig_due_date => nil, :due_date_2 => nil, :due_date_3 => nil)
+      ppg.due_date.should be_nil
+      
+      dt = 9.months.from_now.strftime("%Y%m%d")
+      ppg.update_due_date(dt)
+      ppg.due_date.should == dt
+      ppg.orig_due_date.should == dt
+      
+      dt2 = 8.months.from_now.strftime("%Y%m%d")
+      ppg.update_due_date(dt2)
+      ppg.orig_due_date.should == dt
+      ppg.due_date_2.should == dt2
+      ppg.due_date.should == dt2
+      
+      dt3 = 7.months.from_now.strftime("%Y%m%d")
+      ppg.update_due_date(dt3)
+      ppg.orig_due_date.should == dt
+      ppg.due_date_2.should == dt2
+      ppg.due_date_3.should == dt3
+      ppg.due_date.should == dt3
+      
+    end
+  end
   
   it { should belong_to(:psu) }
   it { should belong_to(:participant) }
