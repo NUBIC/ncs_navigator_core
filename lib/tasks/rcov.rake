@@ -4,28 +4,32 @@ begin
 
   namespace :rcov do
     
-    rcov_options = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/ --aggregate coverage.data}
+    rcov_options = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/ --aggregate coverage/coverage.data}
     
     Cucumber::Rake::Task.new(:cucumber_run) do |t|
+      t.cucumber_opts = "--format pretty"
       t.rcov = true
       t.rcov_opts = rcov_options
       t.rcov_opts << %[-o "coverage"]
     end
   
     RSpec::Core::RakeTask.new(:rspec_run) do |t|
+      t.spec_opts = ["--color --format nested"]
       t.pattern = FileList['spec/**/*_spec.rb']
       t.rcov = true
       t.rcov_opts = rcov_options
     end
 
     task :clean do |t|
-      rm "coverage.data" if File.exist?("coverage.data")
+      rm "coverage/coverage.data" if File.exist?("coverage/coverage.data")
     end
 
     desc "Run both specs and features to generate aggregated coverage"
     task :all do |t|
       Rake::Task["rcov:clean"].invoke
+      puts "~~~ running rspecs"
       Rake::Task["rcov:rspec_run"].invoke
+      puts "~~~ running cucumber features"
       Rake::Task["rcov:cucumber_run"].invoke
     end
   
