@@ -77,9 +77,13 @@ class Event < ActiveRecord::Base
 
   ##
   # Using the InstrumentEventMap, find the existing Surveys for this event
-  # @return [Array, <Survey]
+  # @return [Array, <Survey>]
   def surveys
-    Survey.where("title in (?)", InstrumentEventMap.instruments_for(self.to_s)).all
+    surveys = []
+    InstrumentEventMap.instruments_for(self.to_s).each do |ins|
+      surveys << Survey.most_recent_for_title(ins)
+    end    
+    surveys
   end
 
   ##

@@ -51,7 +51,6 @@
         %p
           = f.submit "Register with PSC"
 
-
 .page_section
   .intensity
     %b
@@ -74,21 +73,33 @@
       = @participant.upcoming_events.to_sentence
       %br
       - @participant.upcoming_events.each do |event|
-        %b
-          = "Instruments for #{event}"
-        %br
-        - instruments = InstrumentEventMap.instruments_for(event)
-        - if instruments.blank?
-          There are no Instruments for 
-          = event
-        - else
-          - instruments.each do |ins|
-            - if Survey.where(:title => ins).count > 0
-              %span{ :class => "known_instrument" }
+        %p
+          %b
+            = "Instruments for #{event}"
+          %br
+          - instruments = InstrumentEventMap.instruments_for(event)
+          - if instruments.blank?
+            There are no Instruments for 
+            = event
+          - else
+            - instruments.each do |ins|
+              - if Survey.where(:title => ins).count > 0
+                %span{ :class => "known_instrument" }
+                  = "#{ins}"
+              - else
                 = "#{ins}"
-            - else
-              = "#{ins}"
-            %br
+              %br
+        %p
+          %b
+            = "Instruments from PSC for #{event}"
+          %br
+          - if subject_schedules = psc.schedules(@participant)
+            - subject_schedules["days"].keys.each do |date|
+              - subject_schedules["days"][date]["activities"].each do |activity|
+                - @participant.upcoming_events.each do |event|
+                  - if activity["study_segment"].include?(event.to_s)
+                    .activity
+                      = "#{activity["activity"]["name"]}"
 
 .page_section
   .psc_registration
@@ -119,7 +130,27 @@
           Perform Next Event
         %p
           = link_to "Initiate Contact for #{@participant.upcoming_events.to_sentence}", new_person_contact_path(@person), :class => "add_link icon_link"
-            
+
+.page_section
+  - if @participant.low_intensity_state_transition_audits.size > 1
+    %table.records
+      %tr
+        %th
+          From
+        %th
+          To
+        %th
+          When
+      - @participant.low_intensity_state_transition_audits.each do |t|
+        - next if t.from.blank?
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = t.from.titleize
+          %td
+            = t.to.titleize
+          %td
+            = t.created_at
+
 .page_section
   - unless @person.telephones.blank?
     .telephones

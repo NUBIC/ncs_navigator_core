@@ -1,9 +1,11 @@
 class OperationalDataExtractor
   EXTRACTORS = [
-    [/_PregScreen_/, PregnancyScreenerOperationalDataExtractor],
-    [/_PPGFollUp_/,  PpgFollowUpOperationalDataExtractor],
-    [/_PrePreg_/,    PrePregnancyOperationalDataExtractor],
-    [/_PregVisit/,   PregnancyVisitOperationalDataExtractor],
+    [/_PregScreen_/,    PregnancyScreenerOperationalDataExtractor],
+    [/_PPGFollUp_/,     PpgFollowUpOperationalDataExtractor],
+    [/_PrePreg_/,       PrePregnancyOperationalDataExtractor],
+    [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
+    [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
+    [/_LIPregNotPreg/,  LowIntensityPregnancyVisitOperationalDataExtractor],
   ]  
   
   class << self

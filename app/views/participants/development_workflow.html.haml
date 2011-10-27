@@ -83,8 +83,7 @@
           = event
         - else
           - instruments.each do |ins|
-            - if Survey.where(:title => ins).count > 0
-              %span{ :class => "known_instrument" }
+            - if survey = Survey.most_recent_for_title(ins)
                 = "#{ins}"
             - else
               = "#{ins}"
