@@ -72,7 +72,8 @@ class ContactsController < ApplicationController
   
     def event_for_contact
       list_name   = NcsCode.attribute_lookup(:event_type_code)
-      event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, Event.event_types(@person.upcoming_events)).all
+      ets = Event.event_types(@person.upcoming_events).collect { |et| PatientStudyCalendar.map_psc_segment_to_mdes_event(et) }
+      event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
       @event      = Event.new(:participant => @person.participant, :event_type => event_types.first)
     end
     
