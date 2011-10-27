@@ -56,7 +56,7 @@ describe Event do
     it "knows it's Surveys" do
       event_type = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Screener")
       e = Factory(:event, :event_type => event_type)
-      survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0")
+      survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
       e.surveys.should == [survey]
     end
   end
