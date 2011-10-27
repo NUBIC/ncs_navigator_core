@@ -81,6 +81,7 @@ class Participant < ActiveRecord::Base
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
     after_transition :on => :parenthood, :do => :update_ppg_status_after_birth
+    after_transition :on => :lose_child, :do => :update_ppg_status_after_child_loss
 
     event :register do
       transition :pending => :registered
@@ -101,6 +102,10 @@ class Participant < ActiveRecord::Base
 
     event :impregnate do
       transition :in_pregnancy_probability_group => :pregnant_and_consented, :consented_low_intensity => :pregnant_and_consented
+    end
+    
+    event :lose_child do
+      transition :pregnant_and_consented => :in_pregnancy_probability_group, :in_pregnancy_probability_group => :in_pregnancy_probability_group, :consented_low_intensity => :in_pregnancy_probability_group
     end
     
     event :enroll_in_high_intensity_arm do
@@ -323,6 +328,12 @@ class Participant < ActiveRecord::Base
   end
   
   ##
+  # Participants are known to have experienced child loss if in the proper Pregnancy Probability Group
+  def known_to_have_experienced_child_loss?
+    recent_loss?
+  end
+  
+  ##
   # @return [true,false]
   def low_intensity?
     !high_intensity
@@ -335,10 +346,13 @@ class Participant < ActiveRecord::Base
   ##
   # Change the Participant status from Pregnant to Other Probability after having given birth
   def update_ppg_status_after_birth
-    post_birth_ppg_status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 4).first
-    ppg_info_source       = NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).first
-    ppg_info_mode         = NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).first
-    PpgStatusHistory.create(:psu => self.psu, :ppg_status => post_birth_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
+    post_transition_ppg_status_update(4)
+  end
+  
+  ##
+  # Change the Participant status to PPG 3 after child loss
+  def update_ppg_status_after_child_loss
+    post_transition_ppg_status_update(3)
   end
   
   ##
@@ -513,4 +527,10 @@ class Participant < ActiveRecord::Base
       end
     end
   
+    def post_transition_ppg_status_update(ppg_status_local_code)
+      new_ppg_status  = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => ppg_status_local_code).first
+      ppg_info_source = NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).first
+      ppg_info_mode   = NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).first
+      PpgStatusHistory.create(:psu => self.psu, :ppg_status => new_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
+    end
 end

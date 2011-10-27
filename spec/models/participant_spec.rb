@@ -427,6 +427,53 @@ describe Participant do
         participant.should be_pregnant
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       end
+            
+    end
+    
+    context "experience Pregnancy Loss" do
+      before(:each) do
+        if (NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 3).count == 0)
+          Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
+        end
+        if (NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).count == 0)
+          Factory(:ncs_code, :list_name => "INFORMATION_SOURCE_CL3", :display_text => "Unknown", :local_code => -5)
+        end
+        if (NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).count == 0)
+          Factory(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :display_text => "Unknown", :local_code => -5)
+        end
+      end
+      
+      it "transitions from pregnant to loss" do
+        participant = Factory(:participant)
+        participant.register!
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+        participant.assign_to_pregnancy_probability_group!
+        participant.impregnate!
+        
+        participant = Participant.find(participant.id)        
+        participant.ppg_status.should == status1        
+
+        participant.lose_child!
+
+        participant = Participant.find(participant.id)
+        participant.ppg_status.should == status3        
+      end
+      
+      it "transitions from in ppg to loss" do
+        participant = Factory(:participant)
+        participant.register!
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status2)
+        participant.assign_to_pregnancy_probability_group!
+        
+        participant = Participant.find(participant.id)        
+        participant.ppg_status.should == status2
+
+        participant.lose_child!
+
+        participant = Participant.find(participant.id)
+        participant.ppg_status.should == status3        
+      end
+      
     end
     
     context "for the High Intensity Protocol" do
