@@ -87,15 +87,10 @@ class PatientStudyCalendar
   
   def schedules(participant, format = "json")
     resp = connection.get("subjects/#{participant.person.public_id}/schedules.#{format}")
-    resp.body
-  end
-  
-  def specific_activity(participant, activity_identifier)
-    resp = connection.get("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{activity_identifier}.json")
     
-    # Rails.logger.info("~~~ specific_activity for #{participant.person}")
-    # Rails.logger.info(connection.get("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{activity_identifier}.xml").body)
-    # Rails.logger.info("~~~")
+    Rails.logger.info("~~~ schedules for #{participant.person}")
+    Rails.logger.info(resp.body.inspect)
+    Rails.logger.info("~~~")
     
     resp.body
   end
@@ -182,16 +177,15 @@ class PatientStudyCalendar
     subject_attributes["person#{separator}id"]  = participant.person.public_id
   
     gender = participant.gender
-    if gender.blank?
-      gender = "unknown"
-    elsif gender == "Missing in Error"         
+    if gender.blank? || gender == "Missing in Error"         
       gender = "unknown"
     end
     subject_attributes["gender"] = gender
   
     subject_attributes["first#{separator}name"] = participant.first_name unless participant.first_name.blank?
     subject_attributes["last#{separator}name"]  = participant.last_name  unless participant.last_name.blank?
-    subject_attributes["birth#{separator}date"] = participant.person_dob if !(participant.person_dob.to_i < 0) && !participant.person_dob.blank?
+    dob = formatted_dob(participant)
+    subject_attributes["birth#{separator}date"] = dob unless dob.blank?
     subject_attributes
   end
 
@@ -234,6 +228,20 @@ class PatientStudyCalendar
     end
     result
   end
+  
+  def formatted_dob(participant)
+    dob = nil
+    if !(participant.person_dob.to_i < 0) && !participant.person_dob.blank?
+      begin
+        dt = Date.parse(participant.person_dob)
+        dob = dt.strftime("%Y-%m-%d") if dt
+      rescue
+       # NOOP - failed to parse person_dob into date - return default nil 
+      end
+    end
+    dob
+  end
+  private :formatted_dob
   
   class << self
     ##
