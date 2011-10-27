@@ -120,7 +120,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
     that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
-    Format as YYYYMMDD",
+    Format as YYYYMMDD. Please verify if calculated age in months is less than 2 months or greater than 5 months",
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.CHILD_DOB"
     a :string
     dependency :rule=>"A"
@@ -130,12 +130,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     #     PROGRAMMER INSTRUCTIONS:
     #     • INCLUDE A SOFT EDIT/WARNING IF CALCULATED AGE IS LESS THAN 2 MONTHS OR GREATER THAN 5 MONTHS.
     #     •	FORMAT CHILD_DOB AS YYYYMMDD.
-    q_calculated_age "Interviewer instructions: Calculated age (months)?",
-    :help_text => "If it appears that the calculated age of the baby is less than 2 months or greater than 5 months, please verify"
-    a :integer
-    dependency :rule=>"A"
-    condition_A :q_CDOB_CONFIRM , "!=", :a_1
-    
+
     q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.TIME_STAMP_2"
     a :datetime
     
@@ -700,40 +695,43 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_7 "Doesn't get well-child care anywhere"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
-    group "Child's check-up information" do
+
+    q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or check-up?",
+    :help_text => "Format as YYYYMMDD",
+    :pick => :one,
+    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.LAST_VISIT"
+    a_date "Date", :string
+    a_neg_7 "Has not had a visit"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     dependency :rule=>"A and B and C"
     condition_A :q_R_HCARE, "!=", :a_7
     condition_B :q_R_HCARE, "!=", :a_neg_1
     condition_C :q_R_HCARE, "!=", :a_neg_2      
-      
-      q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or check-up?",
-      :help_text => "Format as YYYYMMDD",
-      :pick => :one,
-      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.LAST_VISIT"
-      a_date "Date", :string
-      a_neg_7 "Has not had a visit"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-    
-      q_VISIT_WT "What was {C_FNAME/YOUR CHILD}’s weight at that visit?",
-      :help_text => "Please verify if response < 8 or > 21 pounds.",
-      :pick => :one,
-      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.VISIT_WT"
-      a_pounds "Pounds", :integer
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-    
-      q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to 
-      the same place as for well-child visits?",
-      :pick => :one,
-      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SAME_CARE"    
-      a_1 "Yes"
-      a_2 "No"
-      a_neg_7 "Has not been sick"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-    end
+  
+    q_VISIT_WT "What was {C_FNAME/YOUR CHILD}’s weight at that visit?",
+    :help_text => "Please verify if response < 8 or > 21 pounds.",
+    :pick => :one,
+    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.VISIT_WT"
+    a_pounds "Pounds", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    dependency  :rule => "A"
+    condition_A :q_LAST_VISIT, "==", :a_date      
+  
+    q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to 
+    the same place as for well-child visits?",
+    :pick => :one,
+    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SAME_CARE"    
+    a_1 "Yes"
+    a_2 "No"
+    a_neg_7 "Has not been sick"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    dependency  :rule => "A and B and C"
+    condition_A :q_R_HCARE, "!=", :a_7
+    condition_B :q_R_HCARE, "!=", :a_neg_1
+    condition_C :q_R_HCARE, "!=", :a_neg_2      
     
     q_HCARE_SICK "What kind of place does {C_FNAME/YOUR CHILD} usually go to when {he/she} is sick, doesn’t feel well, 
     or if you have concerns about {his/her} health?",

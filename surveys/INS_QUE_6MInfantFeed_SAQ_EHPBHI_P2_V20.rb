@@ -1,6 +1,6 @@
 survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
   section "Interview introduction", :reference_identifier=>"6MInfantFeed_SAQ" do
-    q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_SAQ_2.TIME_STAMP_1"
+    q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_SAQ_2.TIME_STAMP_1"
     a :datetime
     
     label "Thank you for agreeing to participate in the National Children’s Study. This self-administered 
@@ -17,51 +17,49 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_1 "Yes"
     a_2 "No"
     
-    q_BREAST_FEED_NOW "Are you currently breast feeding your baby?",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_FEED_NOW"
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_BREAST_FEED, "==", :a_2
+    group "Breast feeding information" do 
+      dependency :rule=>"A"
+      condition_A :q_BREAST_FEED, "==", :a_1
+            
+      q_BREAST_FEED_NOW "Are you currently breast feeding your baby?",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_FEED_NOW"
+      a_1 "Yes"
+      a_2 "No"
+
+      q_PUMPED "Did you ever feed your baby pumped or expressed breast milk?",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.PUMPED"
+      a_1 "Yes"
+      a_2 "No"
+      
+      q_PUMPED_NOW "Are you currently feeding your baby pumped or expressed breast milk?",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.PUMPED_NOW"
+      a_1 "Yes"
+      a_2 "No"
+      dependency :rule=>"A"
+      condition_A :q_PUMPED, "==", :a_1      
+    end
     
-    q_PUMPED "Did you ever feed your baby pumped or expressed breast milk?",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.PUMPED"
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_BREAST_FEED, "==", :a_2
+    group "Breast feeding additional information" do
+      dependency :rule=>"A and B"
+      condition_A :q_BREAST_FEED_NOW, "==", :a_2
+      condition_B :q_PUMPED, "==", :a_2      
+      
+      label "How old was your baby when you completely stopped feeding your baby breast milk?"
     
-    q_PUMPED_NOW "Are you currently feeding your baby pumped or expressed breast milk?",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.PUMPED_NOW"
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_PUMPED, "==", :a_1
+      q_BREAST_STOP "Number",
+      :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_STOP"
+      a_num :integer
     
-    label "How old was your baby when you completely stopped feeding your baby breast milk?"
-    dependency :rule=>"A and B"
-    condition_A :q_BREAST_FEED_NOW, "==", :a_2
-    condition_B :q_PUMPED, "==", :a_2
-    
-    q_BREAST_STOP "Number",
-    :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_STOP"
-    a_num :integer
-    dependency :rule=>"A and B"
-    condition_A :q_BREAST_FEED_NOW, "==", :a_2
-    condition_B :q_PUMPED, "==", :a_2
-    
-    q_BREAST_STOP_UNIT "Unit",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_STOP_UNIT"
-    a_1 "Weeks"
-    a_2 "Months"
-    a_neg_7 "Never fed breast milk"
-    dependency :rule=>"A and B"
-    condition_A :q_BREAST_FEED_NOW, "==", :a_2
-    condition_B :q_PUMPED, "==", :a_2
+      q_BREAST_STOP_UNIT "Unit",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_STOP_UNIT"
+      a_1 "Weeks"
+      a_2 "Months"
+      a_neg_7 "Never fed breast milk"
+    end
     
     q_FED_7DAYS "The next questions will ask about the milk, formula, and food your child has eaten. 
     In the past 7 days, how often was your baby fed each item listed below? Include feedings by everyone 
@@ -73,8 +71,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     :help_text => "Re-read introductory statement (In the past 7 days, how often was your baby fed each item 
     listed below?) as needed."
     
-    label "{In the past 7 days, how often was your baby fed each item listed below?} Breast 
-    milk (include breast fed and expressed or pumped breast milk)?"
+    label "Breast milk (include breast fed and expressed or pumped breast milk)?"
     
     q_BREAST_MILK "Amount",
     :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_MILK"
@@ -88,7 +85,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     
-    label "{In the past 7 days, how often was your baby fed each item listed below?} Formula?"
+    label "Formula?"
     
     q_FORMULA_OFTEN "Amount",
     :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_OFTEN"
@@ -102,7 +99,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     
-    label "{In the past 7 days, how often was your baby fed each item listed below?} Cow’s milk?"
+    label "Cow’s milk?"
     
     q_COW_MILK "Amount",
     :data_export_identifier=>"SIX_MTH_SAQ_2.COW_MILK"
@@ -116,7 +113,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     
-    label "{In the past 7 days, how often was your baby fed each item listed below?} Other milk (soy milk, rice milk, goat milk)?"
+    label "Other milk (soy milk, rice milk, goat milk)?"
     
     q_MILK_OTHER "Amount",
     :data_export_identifier=>"SIX_MTH_SAQ_2.MILK_OTHER"
@@ -140,33 +137,34 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_4 "Nearly every day"
     a_5 "1 to 3 times per day"
     a_6 "More than 4 times per day"
-    dependency :rule=>"A and B"
+    dependency :rule=>"A or B"
     condition_A :q_PUMPED, "!=", :a_2
     condition_B :q_PUMPED_NOW, "!=", :a_2
     
-    q_BREAST_MILK_STORED "In the past 7 days, about how long was your breast milk usually stored in the refrigerator before 
-    it was fed to your baby? (Include cooler with cold source such as freezer packs).",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_MILK_STORED"
-    a_1 "1 day or less"
-    a_2 "2-3 days"
-    a_3 "4-5 days"
-    a_4 "More than 6 days"
-    a_neg_7 "Did not store breast milk in refrigerator"
-    dependency :rule=>"A"
-    condition_A :q_PUMPED_2, "!=", :a_neg_7
+    group "Breast milk information" do
+      dependency :rule=>"A"
+      condition_A :q_PUMPED_2, "!=", :a_neg_7      
     
-    q_BREAST_MILK_TEMP "In the past 7 days, about how long was your breast milk usually kept at room temperature and then fed to your baby?",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_MILK_TEMP"
-    a_1 "Less than 2 hours"
-    a_2 "2-4 hours"
-    a_3 "5-8 hours"
-    a_4 "More than 8 hours"
-    a_neg_7 "Did not keep breast milk at roomtemperature"
-    dependency :rule=>"A"
-    condition_A :q_PUMPED_2, "!=", :a_neg_7
-    
+      q_BREAST_MILK_STORED "In the past 7 days, about how long was your breast milk usually stored in the refrigerator before 
+      it was fed to your baby? (Include cooler with cold source such as freezer packs).",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_MILK_STORED"
+      a_1 "1 day or less"
+      a_2 "2-3 days"
+      a_3 "4-5 days"
+      a_4 "More than 6 days"
+      a_neg_7 "Did not store breast milk in refrigerator"
+
+      q_BREAST_MILK_TEMP "In the past 7 days, about how long was your breast milk usually kept at room temperature and then fed to your baby?",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.BREAST_MILK_TEMP"
+      a_1 "Less than 2 hours"
+      a_2 "2-4 hours"
+      a_3 "5-8 hours"
+      a_4 "More than 8 hours"
+      a_neg_7 "Did not keep breast milk at roomtemperature"
+    end
+
     q_FORMULA "How old was your baby when {he/she} was first fed formula on a daily basis?",
     :pick => :one,
     :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA"
@@ -176,24 +174,25 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_4 "More than 31 days"
     a_neg_7 "Never fed formula"
     
-    q_FORMULA_IRON "Was the formula fed to your baby within the past 7 days with iron or a low iron formula?",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_IRON"
-    a_1 "With iron"
-    a_2 "Low iron"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+    group "Formula information" do
+      dependency :rule=>"A"
+      condition_A :q_FORMULA, "!=", :a_neg_7
+          
+      q_FORMULA_IRON "Was the formula fed to your baby within the past 7 days with iron or a low iron formula?",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_IRON"
+      a_1 "With iron"
+      a_2 "Low iron"
 
-    q_FORMULA_TYPE "Was the formula fed to your baby within the past 7 days ready-to-feed, liquid concentrate, 
-    powder from a can that makes more than one bottle, or powder from single serving packets?",
-    :pick => :any,
-    :data_export_identifier=>"SIX_MTH_SAQ_FORMULA_TYPE_2.FORMULA_TYPE"
-    a_1 "Ready-to-feed"
-    a_2 "Liquid concentrate"
-    a_3 "Powder from a can that makes more than one bottle"
-    a_4 "Powder from single serving packets"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+      q_FORMULA_TYPE "Was the formula fed to your baby within the past 7 days ready-to-feed, liquid concentrate, 
+      powder from a can that makes more than one bottle, or powder from single serving packets?",
+      :pick => :any,
+      :data_export_identifier=>"SIX_MTH_SAQ_FORMULA_TYPE_2.FORMULA_TYPE"
+      a_1 "Ready-to-feed"
+      a_2 "Liquid concentrate"
+      a_3 "Powder from a can that makes more than one bottle"
+      a_4 "Powder from single serving packets"
+    end
     
     q_FORMULA_LABEL "When the formula was mixed, was it made according to the directions on the formula label?",
     :pick => :one,
@@ -207,42 +206,37 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     condition_D :q_FORMULA_TYPE, "==", :a_4
     condition_E :q_FORMULA_TYPE, "!=", :a_1
     
-    label "When the formula was mixed, how much formula and how much water were used?"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA_LABEL, "==", :a_2
+    group "Formula mixing information" do
+      dependency :rule=>"A"
+      condition_A :q_FORMULA_LABEL, "==", :a_2
+          
+      label "When the formula was mixed, how much formula and how much water were used?"
+
+      q_FORMULA_AMT "Formula - amount",
+      :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_AMT"
+      a_amt :integer
     
-    q_FORMULA_AMT "Formula - amount",
-    :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_AMT"
-    a_amt :integer
-    dependency :rule=>"A"
-    condition_A :q_FORMULA_LABEL, "==", :a_2
+      q_FORMULA_UNIT "Formula - unit",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_UNIT"
+      a_1 "Tablespoon"
+      a_2 "Teaspoon"
+      a_3 "Ounce"
+      a_4 "Cup"
+      a_5 "Packet"
+      a_6 "Formula Can"
     
-    q_FORMULA_UNIT "Formula - unit",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.FORMULA_UNIT"
-    a_1 "Tablespoon"
-    a_2 "Teaspoon"
-    a_3 "Ounce"
-    a_4 "Cup"
-    a_5 "Packet"
-    a_6 "Formula Can"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA_LABEL, "==", :a_2    
+      q_WATER_AMT "Water - amount",
+      :data_export_identifier=>"SIX_MTH_SAQ_2.WATER_AMT"
+      a_amt :integer
     
-    q_WATER_AMT "Water - amount",
-    :data_export_identifier=>"SIX_MTH_SAQ_2.WATER_AMT"
-    a_amt :integer
-    dependency :rule=>"A"
-    condition_A :q_FORMULA_LABEL, "==", :a_2
-    
-    q_WATER_UNIT "Water - unit",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.WATER_UNIT"
-    a_1 "Tablespoon"
-    a_2 "Teaspoon"
-    a_3 "Ounce"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA_LABEL, "==", :a_2
+      q_WATER_UNIT "Water - unit",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.WATER_UNIT"
+      a_1 "Tablespoon"
+      a_2 "Teaspoon"
+      a_3 "Ounce"
+    end
     
     q_WATER_1 "During the past 7 days, what types of water have you and others who care 
     for your baby used for mixing your baby’s formula?",
@@ -253,12 +247,8 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_2 "Warm tap water from the hot faucet"
     a_3 "Bottled water"
     a_4 "No water used"
-    dependency :rule=>"A or B"
+    dependency :rule=>"A"
     condition_A :q_FORMULA_LABEL, "==", :a_1
-    condition_B :q_FORMULA_TYPE, "==", :a_2
-    condition_C :q_FORMULA_TYPE, "==", :a_3
-    condition_D :q_FORMULA_TYPE, "==", :a_4
-    condition_E :q_FORMULA_TYPE, "!=", :a_1
     
     q_WATER_2 "In the past 7 days, was the water used to mix the formula ALWAYS boiled?",
     :pick => :one,
@@ -268,66 +258,59 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_WATER_1, "!=", :a_4
     
-    q_OUNCES "In the past 7 days, on the average, how many ounces of formula did your baby drink at each feeding?",
-    :data_export_identifier=>"SIX_MTH_SAQ_2.OUNCES"
-    a_ounces "Ounces", :string
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+    group "Additional information about formula" do
+      dependency :rule=>"A"
+      condition_A :q_FORMULA, "!=", :a_neg_7
+          
+      q_OUNCES "In the past 7 days, on the average, how many ounces of formula did your baby drink at each feeding?",
+      :data_export_identifier=>"SIX_MTH_SAQ_2.OUNCES"
+      a_ounces "Ounces", :string
 
-    label_CLEAN_HANDS "Now think about how you cleaned your hands when you were preparing formula. 
-    During the past 7 days, did you never, sometimes, most of the time, or always:",
-    :help_text => "Re-read introductory statement (Now think about how you cleaned your hands when you 
-    were preparing formula. During the past 7 days, did you never, sometimes, most of the time, or always:) as needed."
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+      label_CLEAN_HANDS "Now think about how you cleaned your hands when you were preparing formula. 
+      During the past 7 days, did you never, sometimes, most of the time, or always:",
+      :help_text => "Re-read introductory statement (Now think about how you cleaned your hands when you 
+      were preparing formula. During the past 7 days, did you never, sometimes, most of the time, or always:) as needed."
     
-    q_CLEAN_HANDS_1 "Rinse hands with water only.",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_1"
-    a_1 "Never"
-    a_2 "Sometimes"
-    a_3 "Most of the Time"
-    a_4 "Always"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+      q_CLEAN_HANDS_1 "Rinse hands with water only.",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_1"
+      a_1 "Never"
+      a_2 "Sometimes"
+      a_3 "Most of the Time"
+      a_4 "Always"
     
-    q_CLEAN_HANDS_2 "Wipe hands only.",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_2"
-    a_1 "Never"
-    a_2 "Sometimes"
-    a_3 "Most of the Time"
-    a_4 "Always"
+      q_CLEAN_HANDS_2 "Wipe hands only.",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_2"
+      a_1 "Never"
+      a_2 "Sometimes"
+      a_3 "Most of the Time"
+      a_4 "Always"
     
-    q_CLEAN_HANDS_3 "Wash hands with soap.",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_3"
-    a_1 "Never"
-    a_2 "Sometimes"
-    a_3 "Most of the Time"
-    a_4 "Always"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+      q_CLEAN_HANDS_3 "Wash hands with soap.",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_3"
+      a_1 "Never"
+      a_2 "Sometimes"
+      a_3 "Most of the Time"
+      a_4 "Always"
     
-    q_CLEAN_HANDS_4 "Use a hand sanitizer (such as gel or wipes).",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_4"
-    a_1 "Never"
-    a_2 "Sometimes"
-    a_3 "Most of the Time"
-    a_4 "Always"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+      q_CLEAN_HANDS_4 "Use a hand sanitizer (such as gel or wipes).",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_4"
+      a_1 "Never"
+      a_2 "Sometimes"
+      a_3 "Most of the Time"
+      a_4 "Always"
     
-    q_CLEAN_HANDS_5 "Prepare formula without cleaning your hands.",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_5"
-    a_1 "Never"
-    a_2 "Sometimes"
-    a_3 "Most of the Time"
-    a_4 "Always"
-    dependency :rule=>"A"
-    condition_A :q_FORMULA, "!=", :a_neg_7
+      q_CLEAN_HANDS_5 "Prepare formula without cleaning your hands.",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.CLEAN_HANDS_5"
+      a_1 "Never"
+      a_2 "Sometimes"
+      a_3 "Most of the Time"
+      a_4 "Always"
+    end
     
     label_B_TYPE "In the past 7 days, about how often did your baby drink from each of the following types of bottles and cups?",
     :help_text => "Re-read introductory statement (In the past 7 days, about how often did your baby 
@@ -386,23 +369,22 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_1 "Yes"
     a_2 "No"
 
-    label "How old was your baby when he/she was first fed cow’s milk that was not sold especially for babies?"
-    dependency :rule=>"A"
-    condition_A :q_COWS_MILK_1, "==", :a_1
+    group "Cow milk information" do
+      dependency :rule=>"A"
+      condition_A :q_COWS_MILK_1, "==", :a_1
+      
+      label "How old was your baby when he/she was first fed cow’s milk that was not sold especially for babies?"
     
-    q_COWS_MILK_2 "Amount",
-    :data_export_identifier=>"SIX_MTH_SAQ_2.COWS_MILK_2"
-    a_number :integer
-    dependency :rule=>"A"
-    condition_A :q_COWS_MILK_1, "==", :a_1
+      q_COWS_MILK_2 "Amount",
+      :data_export_identifier=>"SIX_MTH_SAQ_2.COWS_MILK_2"
+      a_number :integer
     
-    q_COWS_MILK_2_UNIT "Unit",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.COWS_MILK_2_UNIT"
-    a_1 "Days"
-    a_2 "Weeks"
-    dependency :rule=>"A"
-    condition_A :q_COWS_MILK_1, "==", :a_1
+      q_COWS_MILK_2_UNIT "Unit",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.COWS_MILK_2_UNIT"
+      a_1 "Days"
+      a_2 "Weeks"
+    end
     
     q_JUICE "Have you ever fed your baby fruit juice that was not sold especially for babies?",
     :pick => :one,
@@ -410,34 +392,31 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     a_1 "Yes"
     a_2 "No"
     
-    label "How old was your baby when he/she was first fed fruit juice that was not sold especially for babies?"
-    dependency :rule=>"A"
-    condition_A :q_JUICE, "==", :a_1
+    group "Juice information" do
+      dependency :rule=>"A"
+      condition_A :q_JUICE, "==", :a_1
+
+      label "How old was your baby when he/she was first fed fruit juice that was not sold especially for babies?"
+
+      q_JUICE_AGE "Amount",
+      :data_export_identifier=>"SIX_MTH_SAQ_2.JUICE_AGE"
+      a_number :integer
     
-    q_JUICE_AGE "Amount",
-    :data_export_identifier=>"SIX_MTH_SAQ_2.JUICE_AGE"
-    a_number :integer
-    dependency :rule=>"A"
-    condition_A :q_JUICE, "==", :a_1
+      q_JUICE_AGE_UNIT "Unit",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.JUICE_AGE_UNIT"
+      a_1 "Days"
+      a_2 "Weeks"
     
-    q_JUICE_AGE_UNIT "Unit",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.JUICE_AGE_UNIT"
-    a_1 "Days"
-    a_2 "Weeks"
-    dependency :rule=>"A"
-    condition_A :q_JUICE, "==", :a_1
-    
-    q_JUICE_CALCIUM "About how often was the fruit juice fortified with calcium?",
-    :pick => :one,
-    :data_export_identifier=>"SIX_MTH_SAQ_2.JUICE_CALCIUM"
-    a_1 "Always"
-    a_2 "Sometimes"
-    a_3 "Rarely"
-    a_4 "Never"
-    a_neg_2 "Don’t know"
-    dependency :rule=>"A"
-    condition_A :q_JUICE, "==", :a_1
+      q_JUICE_CALCIUM "About how often was the fruit juice fortified with calcium?",
+      :pick => :one,
+      :data_export_identifier=>"SIX_MTH_SAQ_2.JUICE_CALCIUM"
+      a_1 "Always"
+      a_2 "Sometimes"
+      a_3 "Rarely"
+      a_4 "Never"
+      a_neg_2 "Don’t know"
+    end
     
     label_C_FOOD "Now think about fruits, vegetables, and meats that may have been fed to your baby 
     in the past 7 days. How often was each of the foods your baby ate commercial baby food? (Commercial 
@@ -519,9 +498,8 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     :data_export_identifier=>"SIX_MTH_SAQ_SUPP_2.SUPPLEMENT_OTH"
     a "Specify", :string
     a_neg_2 "Don’t know"
-    dependency :rule=>"A and B"
+    dependency :rule=>"A"
     condition_A :q_SUPPLEMENT, "==", :a_neg_5
-    condition_B :q_SUPPLEMENT, "==", :a_5    
     
     q_SUPP_FORM "Were the supplements you gave your baby in the form of drops or pills?",
     :help_text => "Mark crushed pills mixed with liquid as \"Pills\".",
@@ -545,7 +523,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_HERBAL, "==", :a_1
     
-    q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_SAQ_2.TIME_STAMP_2"
+    q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_SAQ_2.TIME_STAMP_2"
     a :datetime
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.", 

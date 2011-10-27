@@ -1,6 +1,6 @@
 survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"9MMother_INT" do
-    q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER.TIME_STAMP_1"
+    q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER.TIME_STAMP_1"
     a :datetime
     
     label "Hello. I’m [INTERVIEWER NAME] calling from the National Children’s Study. I’m calling today to ask you 
@@ -32,6 +32,8 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     q_CHILD_QNUM "Which number child is this questionnaire for?",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CHILD_QNUM"
     a_which_child "Number", :integer
+    dependency :rule=>"A"
+    condition_A :q_MULT_CHILD, "==", :a_1
 
     # TODO
     #     PROGRAMMER INSTRUCTION:
@@ -84,28 +86,30 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     # TODO
     # PROGRAMMER INSTRUCTION:
     # • IF C_FNAME AND C_LNAME=-1 or -2, SUBSTITUTE “YOUR CHILD” FOR C_FNAME IN REMAINER OF QUESTIONNAIRE.
+    group "Child's information" do
+      dependency :rule=>"A"
+      condition_A :q_CNAME_CONFIRM, "!=", :a_1
 
-    label "What is your child’s full name?",
-    :help_text => "If participant refuses to provide information, re-state confidentiality 
-    protections, ask for initials or some other name she would like her child to be called. 
-    Confirm spelling of first name if not previously collected and of last name for all children."
+      label "What is your child’s full name?",
+      :help_text => "If participant refuses to provide information, re-state confidentiality 
+      protections, ask for initials or some other name she would like her child to be called. 
+      Confirm spelling of first name if not previously collected and of last name for all children."
 
-    q_C_FNAME "First name", :pick => :one, 
-    :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.C_FNAME"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CNAME_CONFIRM, "!=", :a_1
+      q_C_FNAME "First name", 
+      :pick => :one, 
+      :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.C_FNAME"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_LNAME "Last name", :pick => :one, 
-    :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.C_LNAME"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CNAME_CONFIRM, "!=", :a_1
-    
+      q_C_LNAME "Last name", 
+      :pick => :one, 
+      :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.C_LNAME"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
+
     # TODO
     # PROGRAMMER INSTRUCTIONS:
     # •  PRELOAD CHILD’S DOB IF COLLECTED PREVIOUSLY AS MM/DD/YYYY.
@@ -128,25 +132,24 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
     that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
-    Format as YYYYMMDD",
+    Format as YYYYMMDD. Please verify if calculated age in months is less than 8 months or greater than 11 months",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
     a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule => "A"
+    condition_A :q_CDOB_CONFIRM, "!=", :a_1    
     
     # TODO:
     #     PROGRAMMER INSTRUCTIONS:
     # • INCLUDE A SOFT EDIT/WARNING IF CALCULATED AGE IS LESS THAN 8 MONTHS OR GREATER THAN 11 MONTHS.
     # • FORMAT CHILD_DOB AS YYYYMMDD.
-    q_calculated_age "Interviewer instructions: Calculated age (months)?",
-    :help_text => "If it appears that the calculated age of the baby is less than 8 months or greater than 11 months, please verify"
-    a :integer
-    
-    q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_2"
+  
+    q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_2"
     a :datetime       
   end
-  section "Child development and parenting", :reference_identifier=>"6MMother_INT" do
+  section "Child development and parenting", :reference_identifier=>"9MMother_INT" do
     label "First, I will read you a list of things {C_FNAME/YOUR CHILD} may already do or may start 
     doing when {he/she} gets older. Does {C_FNAME/YOUR CHILD}:"  
     
@@ -310,7 +313,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"           
    
-    q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_3"
+    q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_3"
     a :datetime
   end
   section "Health care", :reference_identifier=>"9MMother_INT" do
@@ -339,7 +342,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_7 "Doesn't get well-child care anywhere"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or checkup?",
     :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
     :pick => :one,
@@ -348,11 +351,11 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A or B or C"
+    dependency :rule => "A and B and C"
     condition_A :q_R_HCARE, "!=", :a_7
     condition_B :q_R_HCARE, "!=", :a_neg_1
     condition_C :q_R_HCARE, "!=", :a_neg_2
-    
+
     q_VISIT_WT "What was {C_FNAME/YOUR CHILD}’s weight at that visit?",
     :help_text => "Please verify if weight < 13 or > 26 pounds",
     :pick => :one,
@@ -360,9 +363,9 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_weight "Pounds", :integer
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A or B or C"
+    dependency :rule => "A"
     condition_A :q_LAST_VISIT, "==", :a_date
-    
+  
     q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to 
     the same place as for well-child visits?",
     :pick => :one,
@@ -372,7 +375,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_7 "Has not been sick"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule => "A or B or C"
+    dependency  :rule => "A and B and C"
     condition_A :q_R_HCARE, "!=", :a_7
     condition_B :q_R_HCARE, "!=", :a_neg_1
     condition_C :q_R_HCARE, "!=", :a_neg_2    
@@ -390,11 +393,14 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_7 "Has not been sick"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A or B"
-    condition_A :q_SAME_CARE, "!=", :a_1
-    condition_B :q_SAME_CARE, "!=", :a_neg_7
+    dependency :rule => "(A or B or C) or (D and E)"
+    condition_A :R_HCARE, "==", :a_7
+    condition_B :R_HCARE, "==", :a_neg_1
+    condition_C :R_HCARE, "==", :a_neg_2
+    condition_D :q_SAME_CARE, "!=", :a_1
+    condition_E :q_SAME_CARE, "!=", :a_neg_7
     
-    q_time_stamp_4 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_4"
+    q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_4"
     a :datetime
     
     label "Thank you for your time and for being a part of this important research study. This is the end of our interview.",

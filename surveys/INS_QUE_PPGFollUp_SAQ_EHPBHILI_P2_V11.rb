@@ -11,21 +11,14 @@ survey "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1" do
     a_1 "Yes, I’m pregnant"
     a_2 "No, I’m not pregnant"
     
-    q_PPG_DUE_DATE_LABEL "Please tell us when your baby is due.",
-    :data_export_identifier=>"PPG_SAQ.PPG_DUE_DATE",
-    :pick => :one
-    a_1 "Enter response"
+    q_PPG_DUE_DATE "Please tell us when your baby is due.",
+    :help_text => "Format as YYYYMMDD",
+    :pick => :one,
+    :data_export_identifier=>"PPG_SAQ.PPG_DUE_DATE"
+    a_date "Due Date:", :string
     a_2 "I don’t know the baby’s due date"
     dependency :rule=>"A"
     condition_A :q_PREGNANT, "==", :a_1
-
-    q_PPG_DUE_DATE "Date",
-    :help_text => "Format as YYYYMMDD",
-    :data_export_identifier=>"PPG_SAQ.PPG_DUE_DATE"
-    a_1 "Due Date:", :string
-    dependency :rule=>"A and B"
-    condition_A :q_PREGNANT, "==", :a_1
-    condition_B :q_PPG_DUE_DATE_LABEL, "==", :a_1
 
     q_TRYING "Are you currently trying to become pregnant?",
     :data_export_identifier=>"PPG_SAQ.TRYING",
@@ -47,7 +40,7 @@ survey "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1" do
     q_CONTACT "To help us keep in touch with you, please provide us with all of your current contact information below and 
     let us know the best way to reach you by marking the box beside your preference.",
     :data_export_identifier=>"PPG_SAQ.CONTACT"
-    a :string
+    a :text
         
     q_HOME_ADDRESS "Residence (Street address, City, State, Zip Code)",
     :data_export_identifier=>"PPG_SAQ.HOME_ADDRESS"

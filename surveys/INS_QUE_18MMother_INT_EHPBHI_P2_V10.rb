@@ -1,6 +1,6 @@
 survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
   section "Interview introduction", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_1 "Insert date/time stamp", 
+    q_TIME_STAMP_1 "Insert date/time stamp", 
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_1"
     a :datetime
     
@@ -84,30 +84,28 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     # PROGRAMMER INSTRUCTIONS: 
     # • PRELOAD CHILD’S NAME IF COLLECTED PREVIOUSLY.
     # • IF CHILD’S NAME NOT COLLECTED PREVIOUSLY, GO TO C_FNAME C_LNAME.
+    group "Child's information" do
+      dependency :rule=>"A"
+      condition_A :q_CNAME_CONFIRM, "!=", :a_1
 
-    label "What is your child’s full name?",
-    :help_text => "If participant refuses to provide information, re-state confidentiality 
-    protections, ask for initials or some other name she would like her child to be called. 
-    Confirm spelling of first name if not previously collected and of last name for all children."
-    dependency :rule=>"A"
-    condition_A :q_CNAME_CONFIRM, "!=", :a_1
+      label "What is your child’s full name?",
+      :help_text => "If participant refuses to provide information, re-state confidentiality 
+      protections, ask for initials or some other name she would like her child to be called. 
+      Confirm spelling of first name if not previously collected and of last name for all children."
 
-    q_C_FNAME "First name", :pick => :one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_DETAIL.C_FNAME"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CNAME_CONFIRM, "!=", :a_1
+      q_C_FNAME "First name", :pick => :one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_DETAIL.C_FNAME"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_LNAME "Last name", :pick => :one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_DETAIL.C_LNAME"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CNAME_CONFIRM, "!=", :a_1 
-    
+      q_C_LNAME "Last name", :pick => :one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_DETAIL.C_LNAME"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+    end
     # TODO
     # PROGRAMMER INSTRUCTIONS: 
     # • IF PARTICIPANT REFUSES TO PROVIDE NAME, INITIALS OR IDENTIFIER C_FNAME AND C_LNAME= -1 OR -2, 
@@ -139,11 +137,11 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     probe for valid response. Format as YYYYMMDD",
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
-    a "Date", :string
+    a_date "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
-    condition :q_CDOB_CONFIRM, "!=", :a_1    
+    condition_A :q_CDOB_CONFIRM, "!=", :a_1    
     
     # TODO:
     #     PROGRAMMER INSTRUCTIONS:
@@ -179,7 +177,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     condition_A :q_PREGNANT, "==", :a_1
   end
   section "Demographics", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_2 "Insert date/time stamp", 
+    q_TIME_STAMP_2 "Insert date/time stamp", 
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_2"
     a :datetime
     
@@ -211,10 +209,12 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
+    # TODO
+    # • PROGRAMMER INSTRUCTION: ALLOW UP TO 250 ALPHANUMERIC CHARACTERS.
     q_HHCOMP_CHANGE_SPECIFY "Please explain.",
     :pick => :one,
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.HHCOMP_CHANGE_SPECIFY"
-    a_text :text
+    a_string :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -235,17 +235,15 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     
     q_NUM_CHILD "How many of those people are children? Please include anyone under 18 years or anyone 18 years and 
     older and in high school.",
-    :help_text => "Double check if the entry field for this question > than the answer above, or if responce is > 10",
+    :help_text => "Verify if responce > than the answer above, or if responce is > 10",
     :pick => :one,
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NUM_CHILD"    
     a_1 "Number", :integer
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule=>"A and B and C and D"
-    condition_A :q_HH_MEMBERS, "!=", :a_neg_1
-    condition_B :q_HH_MEMBERS, "!=", :a_neg_2
-    condition_C :q_HH_MEMBERS, ">", {:integer_value => "0"}
-    condition_D :q_HH_MEMBERS, "<", {:integer_value => "15"}
+    dependency :rule=>"A and B"
+    condition_A :q_HH_MEMBERS, "==", :a_1
+    condition_B :q_HH_MEMBERS, ">", {:integer_value => "1"}
     
     q_INCOME "Of these income groups, which category best represents your total combined family income 
     during the last calendar year?",
@@ -259,7 +257,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_2 "Don’t know"
   end
   section "Sleep", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_3 "Insert date/time stamp", 
+    q_TIME_STAMP_3 "Insert date/time stamp", 
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_3"
     a :datetime
     
@@ -280,6 +278,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't know"
 
     q_SLEEP_TIME_NIGHT "On a normal day, what time in the evening does {C_FNAME or YOUR CHILD} go to sleep?",
+    :help_text => "Format as HH:MM",
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.SLEEP_TIME_NIGHT",
     :pick => :one    
     a "Time", :string
@@ -287,6 +286,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't know"
 
     q_SLEEP_TIME_WAKE "On a normal day, what time does {C_FNAME or YOUR CHILD} wake up in the morning?",
+    :help_text => "Format as HH:MM",
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.SLEEP_TIME_WAKE",
     :pick => :one    
     a "Time", :string
@@ -329,7 +329,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't know"
   end
   section "Child care arrangements", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_4 "Insert date/time stamp", 
+    q_TIME_STAMP_4 "Insert date/time stamp", 
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_4"
     a :datetime
     
@@ -341,22 +341,23 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    label "I’d like to ask you about different types of child care {C_FNAME or YOUR CHILD} may receive from someone other 
-    than parents or guardians. This includes regularly scheduled care arrangements with relatives and non-relatives, and day 
-    care or early childhood programs, whether or not there is a charge or fee, but not occasional baby-sitting."
-    dependency :rule => "A"
-    condition_A :q_CHILDCARE_CHANGE, "==", :a_1
-    
-    q_CHILDCARE "Does {C_FNAME or YOUR CHILD} currently receive any regularly scheduled care from someone other than a parent 
-    or guardian, for example from relatives, friends or other non-relatives, or a child care center or program?",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.CHILDCARE",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_CHILDCARE_CHANGE, "==", :a_1
+    group "Childcare information" do
+      dependency :rule => "A"
+      condition_A :q_CHILDCARE_CHANGE, "==", :a_1
+            
+      label "I’d like to ask you about different types of child care {C_FNAME or YOUR CHILD} may receive from someone other 
+      than parents or guardians. This includes regularly scheduled care arrangements with relatives and non-relatives, and day 
+      care or early childhood programs, whether or not there is a charge or fee, but not occasional baby-sitting."
+
+      q_CHILDCARE "Does {C_FNAME or YOUR CHILD} currently receive any regularly scheduled care from someone other than a parent 
+      or guardian, for example from relatives, friends or other non-relatives, or a child care center or program?",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.CHILDCARE",
+      :pick => :one
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_FAMILY_CARE "Does {C_FNAME or YOUR CHILD} receive any care from relatives, for example, from grandparents, brothers or 
     sisters, or any other relatives. This includes all regularly scheduled care arrangements with relatives that happen at least 
@@ -380,67 +381,62 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     dependency :rule => "A"
     condition_A :q_FAMILY_CARE, "==", :a_1
     
-    label "Now I’d like to ask you about any regularly scheduled care {C_FNAME or YOUR CHILD} receives from someone not related 
-    to {him/her}, either in your home or someone else’s home. This includes all regularly scheduled care arrangements with 
-    non-relatives that happen at least weekly, including home child care providers, regularly scheduled sitter arrangements, 
-    or neighbors. This does not include day care centers, early childhood programs, or occasional babysitting."
-    dependency :rule => "A or B"
-    condition_A :q_CHILDCARE, "==", :a_1
-    condition_B :q_CHILDCARE_CHANGE, "==", :a_1    
-    
-    q_HOMECARE "Does {C_FNAME or YOUR CHILD} receive any regularly scheduled care either in your home or someone else’s home 
-    from someone not related to {him/her}?",
-    :help_text =>"If necessary read... \"This includes arrangements with non-relatives including home child care providers, 
-    regularly scheduled sitter arrangements, or neighbors. This does not include day care centers, early childhood programs, 
-    or occasional babysitting.\"",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.HOMECARE",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A or B"
-    condition_A :q_CHILDCARE, "==", :a_1
-    condition_B :q_CHILDCARE_CHANGE, "==", :a_1
-    
-    q_HOMECARE_HRS "Approximately how many total hours each week does {C_FNAME or YOUR CHILD} receive care in a home from non-relatives?",
-    :help_text => "Please verify if response exceeds 50 hours per week",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.HOMECARE_HRS",
-    :pick => :one
-    a "Number of hours per week", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_HOMECARE, "==", :a_1
-    
-    label "Now I want to ask you about child care centers {C_FNAME or YOUR CHILD} may attend on a regular basis. Such centers 
-    include day care centers, early learning centers, nursery schools, and preschools."
-    dependency :rule => "A"
-    condition_A :q_CHILDCARE, "==", :a_1
-    
-    q_DAYCARE "Does {C_FNAME or YOUR CHILD} receive any care in child care centers? Such centers include day care centers, 
-    early learning centers, nursery schools, and preschools.",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DAYCARE",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_CHILDCARE, "==", :a_1
-    
-    q_DAYCARE_HRS "Approximately how many total hours each week does {C_FNAME or YOUR CHILD} receive care in child care centers?",
-    :help_text => "Please verify if response exceeds 50 hours per week",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DAYCARE_HRS",
-    :pick => :one
-    a "Number of hours per week", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_HOMECARE, "==", :a_1
+    group "Care information" do
+      dependency :rule => "A"
+      condition_A :q_CHILDCARE, "==", :a_1
+      
+      label "Now I’d like to ask you about any regularly scheduled care {C_FNAME or YOUR CHILD} receives from someone not related 
+      to {him/her}, either in your home or someone else’s home. This includes all regularly scheduled care arrangements with 
+      non-relatives that happen at least weekly, including home child care providers, regularly scheduled sitter arrangements, 
+      or neighbors. This does not include day care centers, early childhood programs, or occasional babysitting."
+
+      q_HOMECARE "Does {C_FNAME or YOUR CHILD} receive any regularly scheduled care either in your home or someone else’s home 
+      from someone not related to {him/her}?",
+      :help_text =>"If necessary read... \"This includes arrangements with non-relatives including home child care providers, 
+      regularly scheduled sitter arrangements, or neighbors. This does not include day care centers, early childhood programs, 
+      or occasional babysitting.\"",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.HOMECARE",
+      :pick => :one
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      q_HOMECARE_HRS "Approximately how many total hours each week does {C_FNAME or YOUR CHILD} receive care in a home from non-relatives?",
+      :help_text => "Please verify if response exceeds 50 hours per week",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.HOMECARE_HRS",
+      :pick => :one
+      a "Number of hours per week", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_HOMECARE, "==", :a_1
+
+      label "Now I want to ask you about child care centers {C_FNAME or YOUR CHILD} may attend on a regular basis. Such centers 
+      include day care centers, early learning centers, nursery schools, and preschools."
+
+      q_DAYCARE "Does {C_FNAME or YOUR CHILD} receive any care in child care centers? Such centers include day care centers, 
+      early learning centers, nursery schools, and preschools.",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DAYCARE",
+      :pick => :one
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      q_DAYCARE_HRS "Approximately how many total hours each week does {C_FNAME or YOUR CHILD} receive care in child care centers?",
+      :help_text => "Please verify if response exceeds 50 hours per week",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DAYCARE_HRS",
+      :pick => :one
+      a "Number of hours per week", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_DAYCARE, "==", :a_1
+    end
   end
   section "Health care", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_5 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_5"
+    q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_5"
     a :datetime
     
     label "The next questions are about where {C_FNAME or YOUR CHILD} goes for health care."
@@ -512,32 +508,31 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     condition_C :q_REASON_NO_IC_LOG, "==", :a_neg_1
     condition_D :q_REASON_NO_IC_LOG, "==", :a_neg_2
     
-    q_NUM_PROV_IC_LOG "How many health care providers has your child seen since using this Infant and Child Health Care Log?",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.NUM_PROV_IC_LOG",
-    :pick => :one
-    a "Number of providers", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_USE_IC_LOG, "==", :a_1  
+    group "Providers information" do
+      dependency :rule => "A"
+      condition_A :q_USE_IC_LOG, "==", :a_1
+          
+      q_NUM_PROV_IC_LOG "How many health care providers has your child seen since using this Infant and Child Health Care Log?",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.NUM_PROV_IC_LOG",
+      :pick => :one
+      a "Number of providers", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NUM_PROV_REC "Of those providers that your child has seen, how many providers have you recorded their contact information 
-    such as address or phone number?",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.NUM_PROV_REC",
-    :pick => :one
-    a "Number of contacts", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_USE_IC_LOG, "==", :a_1
-    
-    label "I am now going to ask some questions about your child’s visits to a doctor or other health care provider 
-    (pediatrician or family medicine doctor, specialist (like a surgeon, heart, allergy, or skin doctor). It would be helpful 
-    if you referred to the Infant and Child Health Care Log that you received as part of this study or to any other personal 
-    record or calendar that you keep that would help you to remember the dates of these visits. If you have this information 
-    available, please go and get it now."
-    dependency :rule => "A"
-    condition_A :q_USE_IC_LOG, "==", :a_1
+      q_NUM_PROV_REC "Of those providers that your child has seen, how many providers have you recorded their contact information 
+      such as address or phone number?",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.NUM_PROV_REC",
+      :pick => :one
+      a "Number of contacts", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      label "I am now going to ask some questions about your child’s visits to a doctor or other health care provider 
+      (pediatrician or family medicine doctor, specialist (like a surgeon, heart, allergy, or skin doctor). It would be helpful 
+      if you referred to the Infant and Child Health Care Log that you received as part of this study or to any other personal 
+      record or calendar that you keep that would help you to remember the dates of these visits. If you have this information 
+      available, please go and get it now."
+    end
     
     label "I am now going to ask some questions about your child’s visits to a doctor or other health care provider 
     (pediatrician or family medicine doctor, specialist (like a surgeon, heart, allergy, or skin doctor). It would be helpful 
@@ -551,7 +546,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     :help_text => "Format as YYYYMMDD",
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.LAST_VISIT",
     :pick => :one
-    a "Date", :string
+    a_date "Date", :string
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -563,10 +558,8 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a "Pounds", :integer
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A or B or C"
-    condition_A :q_USE_IC_LOG, "!=", :a_neg_7
-    condition_B :q_USE_IC_LOG, "!=", :a_neg_1
-    condition_C :q_USE_IC_LOG, "!=", :a_neg_2
+    dependency :rule => "A"
+    condition_A :q_LAST_VISIT, "==", :a_date
     
     label "If you haven’t yet, please put a check mark in the box next to the visit you just told me about in your Infant 
     and Child Health Care Log."
@@ -583,46 +576,45 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    
+    group "Hospital information" do
+      dependency :rule => "A"
+      condition_A :q_HOSPITAL, "==", :a_1      
 
-    q_ADMIN_DATE "What was the admission date of {C_FNAME or YOUR CHILD}’s most recent hospital stay?",
-    :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.ADMIN_DATE",
-    :pick => :one
-    a_1 "Date", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_HOSPITAL, "!=", :a_1
-    
-    q_HOSP_NIGHTS "How many nights did {C_FNAME or YOUR CHILD} stay in the hospital during this hospital stay?",
-    :help_text => "Confirm response",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.HOSP_NIGHTS",
-    :pick => :one
-    a "Number of nights", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_HOSPITAL, "!=", :a_1
-    
-    q_DIAGNOSE "Did a doctor or other health care provider give you a diagnosis for {C_FNAME or YOUR CHILD} during this hospital stay?",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DIAGNOSE",
-    :pick => :one
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_HOSPITAL, "!=", :a_1
-    
-    q_DIAGNOSE_OTH "What was the diagnosis?",
-    :help_text => "Enter all diagnoses in field separated by commas or an \"and\". Probe: \"Anything else?\"",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DIAGNOSE_OTH",
-    :pick => :one
-    a "Diagnoses", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_HOSPITAL, "!=", :a_1
+      q_ADMIN_DATE "What was the admission date of {C_FNAME or YOUR CHILD}’s most recent hospital stay?",
+      :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.ADMIN_DATE",
+      :pick => :one
+      a_1 "Date", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      q_HOSP_NIGHTS "How many nights did {C_FNAME or YOUR CHILD} stay in the hospital during this hospital stay?",
+      :help_text => "Confirm response",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.HOSP_NIGHTS",
+      :pick => :one
+      a "Number of nights", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      q_DIAGNOSE "Did a doctor or other health care provider give you a diagnosis for {C_FNAME or YOUR CHILD} during this hospital stay?",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DIAGNOSE",
+      :pick => :one
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+      q_DIAGNOSE_OTH "What was the diagnosis?",
+      :help_text => "Enter all diagnoses in field separated by commas or an \"and\". Probe: \"Anything else?\"",
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.DIAGNOSE_OTH",
+      :pick => :one
+      a "Diagnoses", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_DIAGNOSE, "==", :a_1
+    end
     
     label "If you haven’t yet, please put a check mark in the box next to the visit you just told me about in your Infant and 
     Child Health Care Log."
@@ -633,7 +625,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     condition_D :q_REASON_NO_IC_LOG, "!=", :a_neg_2
   end
   section "Medical conditions", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_6 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_6"
+    q_TIME_STAMP_6 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_6"
     a :datetime
 
     label "Now I’d like to ask about {C_FNAME or YOUR CHILD}’s health and about some illnesses {he/she} may have had in 
@@ -679,7 +671,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't know"    
   end
   section "Medications", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_7 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_7"
+    q_TIME_STAMP_7 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_7"
     a :datetime
 
     label "Now, I’d like to ask about medications that may have been prescribed by a doctor or other healthcare provider 
@@ -703,14 +695,9 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     # PRESCRMED FOR APPROPRIATE CYCLE.
     # Repeaters allow multiple responses to a question or set of questions
 
-    q_PRESCRMED "Please list the name of all prescription medications taken in the past 30 days:",
+    label "Please list the name of all prescription medications taken in the past 30 days:",
     :help_text => "Enter up to 10 medications; if more than 10 medications provided, enter first 10 provided by participant. 
-    Probe: Anything else?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRMED"
-    a :text
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    Probe: Anything else?"
     dependency :rule => "A"
     condition_A :q_PRESCR_TAKE, "==", :a_1
 
@@ -722,17 +709,16 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       dependency :rule => "A"
       condition_A :q_PRESCR_TAKE, "==", :a_1
 
-      q "Interviewer instruction: What drug is first/next from the answer above?",
-      :help_text => "Please pick the drug from the list above and put it in the answer. After the set of questions per selected drug 
-      is answered, select \"Add Row\" to add the set of questions for the next drug"
+      q_PRESCRMED "What is the name of the drug?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRMED"
       a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
       q_PRESCR_ADMIN "How is the {PRESCRMED} taken?", 
       :pick => :one, 
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCR_ADMIN"
-      dependency :rule => "A or B"
-      condition_A :q_PRESCRMED, "!=", :a_neg_1
-      condition_B :q_PRESCRMED, "!=", :a_neg_2
       a_1 "By mouth"
       a_2 "Inhaled either by mouth or nose,"
       a_3 "Injected,"
@@ -747,8 +733,6 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_PRESCR_ADMIN, "==", :a_5
 
       q_PRESCR_TAKESTILL "Is {C_FNAME or YOUR CHILD} still taking the {PRESCRMED}?",
       :pick => :one,
@@ -758,51 +742,13 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_PRESCRIP_FREQ "How often does {C_FNAME or YOUR CHILD} use or take {PRESCRMED}?",
+      q_PRESCRIP_FREQ "How often did/does {C_FNAME or YOUR CHILD} use or take {PRESCRMED}?",
       :help_text => "Indicate frequency",
       :pick => :one,
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRIP_FREQ"
       a "Enter number", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_PRESCR_TAKESTILL, "==", :a_1
-
-      q_PRESCRIP_FREQ_UNIT "Unit of how often does {C_FNAME or YOUR CHILD} use or take {PRESCRMED}?",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRIP_FREQ_UNIT"
-      a_1 "Per day"
-      a_2 "Per week"
-      a_3 "Per month"
-      a_4 "Per year"
-      a_5 "As needed"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_PRESCR_TAKESTILL, "==", :a_1
-
-      q_PRESCRIP_FREQ_ALT "How often did {C_FNAME or YOUR CHILD} use or take {PRESCRMED}?",
-      :help_text => "Indicate frequency",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRIP_FREQ"
-      a "Enter number", :integer
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_PRESCR_TAKESTILL, "!=", :a_1
-
-      q_PRESCRIP_FREQ_UNIT_ALT "Unit of how often did {C_FNAME or YOUR CHILD} use or take {PRESCRMED}?",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRIP_FREQ_UNIT"
-      a_1 "Per day"
-      a_2 "Per week"
-      a_3 "Per month"
-      a_4 "Per year"
-      a_5 "As needed"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_PRESCR_TAKESTILL, "!=", :a_1
     end
     
     label "Now I’d like to ask about non-prescription medications, over the counter medications, and dietary supplements 
@@ -824,14 +770,9 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     # • IF FIRST LOOP, DISPLAY INTRO_OTCMED_1. OTHERWISE, DISPLAY INTRO_OTCMED_2_10.
     # • FOR INTRO_OTCMED_1, INTRO_OTCMED_2_10, OTC_ADMIN, OTC_TAKESTILL AND OTC_FREQ INSERT CORRECT MEDICATION OTCMED FOR APPROPRIATE CYCLE.
     
-    q_OTCMED "Please list the names of all non-prescription medications taken in the past 30 days:",
+    label "Please list the names of all non-prescription medications taken in the past 30 days:",
     :help_text => "Enter up to 10 medications; if more than 10 medications provided, enter first 10 provided by participant. 
-    Probe: Anything else?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTCMED"
-    a :text
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    Probe: Anything else?"
     dependency :rule => "A"
     condition_A :q_OTC_TAKE, "==", :a_1
 
@@ -843,17 +784,16 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       dependency :rule => "A"
       condition_A :q_OTC_TAKE, "==", :a_1
 
-      q "Interviewer instruction: What drug is first/next from the answer above?",
-      :help_text => "Please pick the drug from the list above and put it in the answer. After the set of questions per selected drug 
-      is completed, select \"Add Row\" to add the set of questions for the next drug"
+      q_OTCMED "What is the name of the drug?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTCMED"
       a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
       q_OTC_ADMIN "How is the {OTCMED} taken?", 
       :pick => :one, 
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_ADMIN"
-      dependency :rule => "A or B"
-      condition_A :q_OTCMED, "!=", :a_neg_1
-      condition_B :q_OTCMED, "!=", :a_neg_2
       a_1 "By mouth,"
       a_2 "Inhaled either by mouth or nose,"
       a_3 "Injected,"
@@ -868,8 +808,6 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_OTC_ADMIN, "==", :a_5
 
       q_OTC_TAKESTILL "Is {C_FNAME or YOUR CHILD} still taking the {OTCMED}?",
       :pick => :one,
@@ -879,17 +817,15 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_OTC_FREQ "How often does {C_FNAME or YOUR CHILD} use or take the {OTCMED}?",
+      q_OTC_FREQ "How often did/does {C_FNAME or YOUR CHILD} use or take the {OTCMED}?",
       :help_text => "Indicate frequency",
       :pick => :one,
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_FREQ"
       a "Enter number", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_OTC_TAKESTILL, "==", :a_1
 
-      q_OTC_FREQ_UNIT "Unit of how often does {C_FNAME or YOUR CHILD} use or take the {OTCMED}?",
+      q_OTC_FREQ_UNIT "Unit of how often did/does {C_FNAME or YOUR CHILD} use or take the {OTCMED}?",
       :pick => :one,
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_FREQ_UNIT"
       a_1 "Per day"
@@ -899,31 +835,6 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a_5 "As needed"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_OTC_TAKESTILL, "==", :a_1
-
-      q_OTC_FREQ_ALT "How often did {C_FNAME or YOUR CHILD} use or take the {OTCMED}?",
-      :help_text => "Indicate frequency",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_FREQ"
-      a "Enter number", :integer
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_OTC_TAKESTILL, "!=", :a_1
-
-      q_OTC_FREQ_UNIT_ALT "Unit of how often did {C_FNAME or YOUR CHILD} use or take the {OTCMED}?",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_FREQ_UNIT"
-      a_1 "Per day"
-      a_2 "Per week"
-      a_3 "Per month"
-      a_4 "Per year"
-      a_5 "As needed"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_OTC_TAKESTILL, "!=", :a_1
     end
     label "Now I would like to ask about dietary supplements."
     
@@ -943,16 +854,11 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     #     •	FOR INTRO_SUPPLMED_1, INTRO_SUPPLMED_2_10, SUPPL_ADMIN, SUPPL_TAKESTILL AND SUPPL_FREQ INSERT CORRECT MEDICATION 
     # SUPPL MED FOR APPROPRIATE CYCLE.
     
-    q_SUPPLMED "Please list the names of all vitamins, minerals, herbals, and other dietary supplements taken in the past 30 days:",
+    label "Please list the names of all vitamins, minerals, herbals, and other dietary supplements taken in the past 30 days:",
     :help_text => "Enter up to 10 supplements; if more than 10 supplements provided, enter first 10 provided by participant. 
-    Probe: Anything else?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPLMED"
-    a :text
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    Probe: Anything else?"
     dependency :rule => "A"
-    condition_A :q_OTC_TAKE, "==", :a_1
+    condition_A :q_SUPPL_TAKE, "==", :a_1
 
     # TODO
     # MED016A/(INTRO_SUPPLMED_1). Let’s first talk about the {SUPPLMED}.
@@ -962,17 +868,16 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       dependency :rule => "A"
       condition_A :q_SUPPL_TAKE, "==", :a_1
 
-      q "Interviewer instruction: What drug is first/next from the answer above?",
-      :help_text => "Please pick the drug from the list above and put it in the answer. After the set of questions per selected drug 
-      is completed, select \"Add Row\" to add the set of questions for the next drug"
+      q_SUPPLMED "What is the name of the drug?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPLMED"
       a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
       q_SUPPL_ADMIN "How is the {SUPPLMED} taken?", 
       :pick => :one, 
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPL_ADMIN"
-      dependency :rule => "A or B"
-      condition_A :q_SUPPLMED, "!=", :a_neg_1
-      condition_B :q_SUPPLMED, "!=", :a_neg_2
       a_1 "By mouth,"
       a_2 "Inhaled either by mouth or nose,"
       a_3 "Injected,"
@@ -987,8 +892,6 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_SUPPL_ADMIN, "==", :a_5
 
       q_SUPPL_TAKESTILL "Is {C_FNAME or YOUR CHILD} still taking the {SUPPLMED}?",
       :pick => :one,
@@ -998,17 +901,15 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_SUPPL_FREQ "How often does {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
+      q_SUPPL_FREQ "How often did/does {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
       :help_text => "Indicate frequency",
       :pick => :one,
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPL_FREQ"
       a "Enter number", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_SUPPL_TAKESTILL, "==", :a_1
 
-      q_SUPPL_FREQ_UNIT "Unit of how often does {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
+      q_SUPPL_FREQ_UNIT "Unit of how often did/does {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
       :pick => :one,
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPL_FREQ_UNIT"
       a_1 "Per day"
@@ -1018,35 +919,10 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a_5 "As needed"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_SUPPL_TAKESTILL, "==", :a_1
-
-      q_SUPPL_FREQ_ALT "How often did {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
-      :help_text => "Indicate frequency",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPL_FREQ"
-      a "Enter number", :integer
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_SUPPL_TAKESTILL, "!=", :a_1
-
-      q_SUPPL_FREQ_UNIT_ALT "Unit of how often did {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
-      :pick => :one,
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SUPPL.SUPPL_FREQ_UNIT"
-      a_1 "Per day"
-      a_2 "Per week"
-      a_3 "Per month"
-      a_4 "Per year"
-      a_5 "As needed"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule => "A"
-      condition_A :q_SUPPL_TAKESTILL, "!=", :a_1
     end
   end
   section "Product use", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_8 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_8"
+    q_TIME_STAMP_8 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TIME_STAMP_8"
     a :datetime
     
     label "The next questions ask about lice exposure and treatment."
@@ -1071,28 +947,40 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     dependency :rule => "A"
     condition_A :q_LICE_1, "==", :a_1
 
+    # TODO
+    # PROGRAMMER INSTRUCTION: 
+    # • GO TO PROGRAMMER INSTRUCTIONS AT START OF “MATERNAL BEHAVIORS” SECTION.
+    # Nataliya's comment - what does it mean?? Coded along 12MMother_INT instructions
+    
     q_LICE_OTH_1  "Other: specify",
     :pick => :one,
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.LICE_OTH_1"
     a "Specify: ", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_LICE_2, "==", :a_2
-
-    # TODO
-    # PROGRAMMER INSTRUCTION: 
-    # • GO TO PROGRAMMER INSTRUCTIONS AT START OF “MATERNAL BEHAVIORS” SECTION.
-    # Nataliya's comment - what does it mean??
+    dependency :rule => "(A and B and G and D and E) or (B and D and E and F and G) or (B and C and F and D and E) or (A and B and C and D and E)"
+    condition_A :q_LICE_2, "==", :a_1
+    condition_B :q_LICE_2, "==", :a_2
+    condition_C :q_LICE_2, "==", :a_3
+    condition_D :q_LICE_2, "!=", :a_neg_1
+    condition_E :q_LICE_2, "!=", :a_neg_2
+    condition_F :q_LICE_2, "!=", :a_1
+    condition_G :q_LICE_2, "!=", :a_3
     
     q_LICE_OTH_2  "Other: specify",
-    :pick => :one,
+    :pick => :one,    
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.LICE_OTH_2"
     a "Specify: ", :string
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_LICE_2, "==", :a_3
+    a_neg_2 "Don't know"    
+    dependency :rule => "(C and D and E and F and G) or (A and C and D and E and G) or (B and C and F and D and E) or (A and B and C and D and E)"
+    condition_A :q_LICE_2, "==", :a_1
+    condition_B :q_LICE_2, "==", :a_2
+    condition_C :q_LICE_2, "==", :a_3
+    condition_D :q_LICE_2, "!=", :a_neg_1
+    condition_E :q_LICE_2, "!=", :a_neg_2
+    condition_F :q_LICE_2, "!=", :a_1
+    condition_G :q_LICE_2, "!=", :a_2    
   end 
   section "Maternal behaviors", :reference_identifier=>"18MMother_INT" do
     # TODO
@@ -1100,92 +988,80 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     # • IF CHILD_QNUM =1, GO TO TIME_STAMP_9
     # • IF CHILD_QNUM > 1, THEN GO TO SMOKE_HOURS
     # Nataliya's comment - impelemented, but won't work until the numeric value is fixed    
-    
-    q_time_stamp_9 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_9"
-    a :datetime
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+    group "Maternal behaviors information" do
+      dependency :rule=>"A"
+      condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      
+      q_TIME_STAMP_9 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_9"
+      a :datetime
 
-    label "The next questions are about your experiences in the past year. First, I’d like to ask some questions about 
-    work. People’s work situations sometimes change after having a baby."
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      label "The next questions are about your experiences in the past year. First, I’d like to ask some questions about 
+      work. People’s work situations sometimes change after having a baby."
     
-    q_WORK_LAST_CONTACT "Since our last interview, have you been employed at a job or business?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WORK_LAST_CONTACT"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_WORK_LAST_CONTACT "Since our last interview, have you been employed at a job or business?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WORK_LAST_CONTACT"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_WORK_CURRENTLY "Are you currently employed?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WORK_CURRENTLY"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_WORK_LAST_CONTACT, "==", :a_1
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_WORK_CURRENTLY "Are you currently employed?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WORK_CURRENTLY"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_WORK_LAST_CONTACT, "==", :a_1
     
-    q_WORK_HRS "How many hours per week do you work?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WORK_HRS"
-    a_1 "Hours", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_WORK_CURRENTLY, "==", :a_1
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_WORK_HRS "How many hours per week do you work?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WORK_HRS"
+      a_1 "Hours", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_WORK_CURRENTLY, "==", :a_1
     
-    q_R_SMOKE "Do you currently smoke cigarettes or use any other tobacco product?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.R_SMOKE"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_R_SMOKE "Do you currently smoke cigarettes or use any other tobacco product?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.R_SMOKE"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_NUM_SMOKER "How many smokers live in your home now?",
-    :help_text => "Enter \"0\" if none",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NUM_SMOKER"
-    a "Number of smokers", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A and B"
-    condition_A :q_R_SMOKE, "!=", :a_1
-    condition_B :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_NUM_SMOKER "How many smokers live in your home now?",
+      :help_text => "Enter \"0\" if none",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NUM_SMOKER"
+      a "Number of smokers", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_R_SMOKE, "!=", :a_1
     
-    q_NUM_SMOKER_INCL "How many smokers live in your home now, including yourself?",
-    :help_text => "Response to num_smoker must be ≥ 1",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NUM_SMOKER"   
-    a "Number of smokers", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A and B"
-    condition_A :q_R_SMOKE, "==", :a_1
-    condition_B :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_NUM_SMOKER_INCL "How many smokers live in your home now, including yourself?",
+      :help_text => "Response to num_smoker must be ≥ 1",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NUM_SMOKER"   
+      a "Number of smokers", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A"
+      condition_A :q_R_SMOKE, "==", :a_1
     
-    q_SMOKE_RULES "Which of the following statements describes the rules about smoking inside your home now?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.SMOKE_RULES"    
-    a_1 "No one is allowed to smoke anywhere inside my home,"
-    a_2 "Smoking is allowed in some rooms at some times, or"
-    a_3 "Smoking is permitted anywhere inside my home"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CHILD_QNUM, "==", {:integer_value => "1"}
+      q_SMOKE_RULES "Which of the following statements describes the rules about smoking inside your home now?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.SMOKE_RULES"    
+      a_1 "No one is allowed to smoke anywhere inside my home,"
+      a_2 "Smoking is allowed in some rooms at some times, or"
+      a_3 "Smoking is permitted anywhere inside my home"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_SMOKE_HOURS "On average, about how many hours per day do people smoke in the same room as {C_FNAME or YOUR CHILD}, 
     or near enough that {he/she} can see or smell the smoke? Please consider all the places {C_FNAME or YOUR CHILD} is 
@@ -1204,7 +1080,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     # FOR EACH CHILD UNTIL CHILD_NUM=CHILD_QNUM. THEN GO TO TIME_STAMP_10.
   end
   section "Pets", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_10 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_10"
+    q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_10"
     a :datetime
     
     label "Now I’d like to ask about any pets you may have in your home."
@@ -1217,54 +1093,59 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     
-    q_PET_TYPE "What kind of pets are these?",
-    :help_text => "Select all that apply. Probe for multiple responses: \"Any others?\"",    
-    :pick => :any,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PET_TYPE.PET_TYPE"
-    a_1 "Dog"
-    a_2 "Cat"
-    a_3 "Small mammal (rabbit, gerbil, hamster, guinea pig, ferret, mouse)"
-    a_4 "Bird"
-    a_5 "Fish or reptile (turtle, snake, lizard)"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
-    dependency  :rule => "A"
-    condition_A :q_PETS, "==", :a_1
-    
-    q_PET_TYPE_OTH "Other types of pets", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PET_TYPE.PET_TYPE_OTH"
-    a_1 "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A and B and C"
-    condition_A :q_PET_TYPE, "==", :a_neg_5
-    condition_B :q_PET_TYPE, "!=", :a_neg_1
-    condition_C :q_PET_TYPE, "!=", :a_neg_2
+    group "Pet's information" do
+      dependency  :rule => "A"
+      condition_A :q_PETS, "==", :a_1
+      
+      q_PET_TYPE "What kind of pets are these?",
+      :help_text => "Select all that apply. Probe for multiple responses: \"Any others?\"",    
+      :pick => :any,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PET_TYPE.PET_TYPE"
+      a_1 "Dog"
+      a_2 "Cat"
+      a_3 "Small mammal (rabbit, gerbil, hamster, guinea pig, ferret, mouse)"
+      a_4 "Bird"
+      a_5 "Fish or reptile (turtle, snake, lizard)"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
 
-    q_PET_MEDS "Are any products ever used on your pets to control fleas, ticks, or mites? This includes flea collars, 
-    flea and tick powders, shampoos, or other flea, tick and mite control products. (This does not include pills given to your 
-    pet to control for fleas or other insects.)",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.PET_MEDS"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
+      q_PET_TYPE_OTH "Other types of pets", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PET_TYPE.PET_TYPE_OTH"
+      a_1 "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A and B and C"
+      condition_A :q_PET_TYPE, "==", :a_neg_5
+      condition_B :q_PET_TYPE, "!=", :a_neg_1
+      condition_C :q_PET_TYPE, "!=", :a_neg_2
 
-    q_PET_MED_TIME "When were any of these last used on any of your pets?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.PET_MED_TIME"
-    a_1 "Within the last month"
-    a_2 "1-3 months ago"
-    a_3 "4-6 months ago"
-    a_4 "More than 6 months ago"
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
+      q_PET_MEDS "Are any products ever used on your pets to control fleas, ticks, or mites? This includes flea collars, 
+      flea and tick powders, shampoos, or other flea, tick and mite control products. (This does not include pills given to your 
+      pet to control for fleas or other insects.)",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.PET_MEDS"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
+
+      q_PET_MED_TIME "When were any of these last used on any of your pets?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.PET_MED_TIME"
+      a_1 "Within the last month"
+      a_2 "1-3 months ago"
+      a_3 "4-6 months ago"
+      a_4 "More than 6 months ago"
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
+      dependency  :rule => "A"
+      condition_A :q_PET_MEDS, "==", :a_1
+    end
   end
   section "In-home exposures", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_11 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_11"
+    q_TIME_STAMP_11 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_11"
     a :datetime
     
     label "Do you use any methods to \"allergy-proof\" your home? Please answer \"yes\" or \"no\" to each method I describe"
@@ -1337,47 +1218,51 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_ROOM_MOLD "In which rooms have you seen the mold or mildew?",
-    :help_text => "Select all that apply. Probe: Any other rooms?",
-    :pick => :any,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_ROOM_MOLD.ROOM_MOLD"
-    a_1 "Kitchen"
-    a_2 "Living room"
-    a_3 "Hall/landing"
-    a_4 "Your child’s bedroom"
-    a_5 "Other bedroom"
-    a_6 "Bathroom/toilet"
-    a_7 "Basement"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_MOLD, "==", :a_1
+    group "Mold information" do
+      dependency :rule => "A"
+      condition_A :q_MOLD, "==", :a_1
+      
+      q_ROOM_MOLD "In which rooms have you seen the mold or mildew?",
+      :help_text => "Select all that apply. Probe: Any other rooms?",
+      :pick => :any,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_ROOM_MOLD.ROOM_MOLD"
+      a_1 "Kitchen"
+      a_2 "Living room"
+      a_3 "Hall/landing"
+      a_4 "Your child’s bedroom"
+      a_5 "Other bedroom"
+      a_6 "Bathroom/toilet"
+      a_7 "Basement"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_ROOM_MOLD_OTH "Other rooms",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_ROOM_MOLD.ROOM_MOLD_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A and B and C"
-    condition_A :q_ROOM_MOLD, "==", :a_neg_5
-    condition_B :q_ROOM_MOLD, "!=", :a_neg_1
-    condition_C :q_ROOM_MOLD, "!=", :a_neg_2
+      q_ROOM_MOLD_OTH "Other rooms",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_ROOM_MOLD.ROOM_MOLD_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A and B and C"
+      condition_A :q_ROOM_MOLD, "==", :a_neg_5
+      condition_B :q_ROOM_MOLD, "!=", :a_neg_1
+      condition_C :q_ROOM_MOLD, "!=", :a_neg_2
 
-    # TODO
-    # PROGRAMMER INSTRUCTION: 
-    # • LOOP THROUGH ROOM_MOLD_CHILD UNTIL CHILD_NUM=CHILD_QNUM. 
+      # TODO
+      # PROGRAMMER INSTRUCTION: 
+      # • LOOP THROUGH ROOM_MOLD_CHILD UNTIL CHILD_NUM=CHILD_QNUM. 
 
-    q_ROOM_MOLD_CHILD "Was the mold in {C_FNAME or YOUR CHILD} bedroom?",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_MOLD.ROOM_MOLD_CHILD"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_MOLD, "==", :a_1
+      q_ROOM_MOLD_CHILD "Was the mold in {C_FNAME or YOUR CHILD} bedroom?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_MOLD.ROOM_MOLD_CHILD"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A and B"
+      condition_A :q_ROOM_MOLD, "!=", :a_neg_1
+      condition_B :q_ROOM_MOLD, "!=", :a_neg_2
+    end
     
     label "The next few questions ask about any recent additions or renovations to your home."
     
@@ -1391,36 +1276,39 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_RENOVATE_ROOM "Which rooms were renovated?",
-    :help_text => "Probe: Any others? Select all that apply.",
-    :pick => :any,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM"
-    a_1 "Kitchen"
-    a_2 "Living room"
-    a_3 "Hall/landing"
-    a_4 "{C_FNAME or YOUR CHILD}’s bedroom"
-    a_5 "Other bedroom"
-    a_6 "Bathroom/toilet"
-    a_7 "Basement"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_RENOVATE, "==", :a_1
+    group "Renovation information" do
+      dependency :rule => "A"
+      condition_A :q_RENOVATE, "==", :a_1
     
-    q_RENOVATE_ROOM_OTH "Other room",
-    :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A and B and C"
-    condition_A :q_RENOVATE_ROOM, "==", :a_neg_5
-    condition_B :q_RENOVATE_ROOM, "!=", :a_neg_1
-    condition_C :q_RENOVATE_ROOM, "!=", :a_neg_2
+      q_RENOVATE_ROOM "Which rooms were renovated?",
+      :help_text => "Probe: Any others? Select all that apply.",
+      :pick => :any,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM"
+      a_1 "Kitchen"
+      a_2 "Living room"
+      a_3 "Hall/landing"
+      a_4 "{C_FNAME or YOUR CHILD}’s bedroom"
+      a_5 "Other bedroom"
+      a_6 "Bathroom/toilet"
+      a_7 "Basement"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    
+      q_RENOVATE_ROOM_OTH "Other room",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule => "A and B and C"
+      condition_A :q_RENOVATE_ROOM, "==", :a_neg_5
+      condition_B :q_RENOVATE_ROOM, "!=", :a_neg_1
+      condition_C :q_RENOVATE_ROOM, "!=", :a_neg_2
+    end
   end
   section "Housing characteristics", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_12 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_12"
+    q_TIME_STAMP_12 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_12"
     a :datetime
     
     label "Now I’d like to find out more about your living situation."
@@ -1435,235 +1323,233 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    q_AGE_HOME "Can you tell us, which of these categories do you think best describes when your home or building was built?",
-    :pick=>:one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.AGE_HOME"
-    a_1 "2001 to present"
-    a_2 "1981 to 2000"
-    a_3 "1961 to 1980"
-    a_4 "1941 to 1960"
-    a_5 "1940 or before"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+    group "Move information" do
+      dependency :rule=>"A"
+      condition_A :q_RECENT_MOVE, "==", :a_1
 
-    q_ENTER_LENGTH_RESIDE "How long have you lived in this home?  ", 
-    :pick=>:one
-    a_1 "Enter response"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_AGE_HOME "Can you tell us, which of these categories do you think best describes when your home or building was built?",
+      :pick=>:one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.AGE_HOME"
+      a_1 "2001 to present"
+      a_2 "1981 to 2000"
+      a_3 "1961 to 1980"
+      a_4 "1941 to 1960"
+      a_5 "1940 or before"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_LENGTH_RESIDE "Length reside: number (e.g., 5)",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.LENGTH_RESIDE"
-    a "Number", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_ENTER_LENGTH_RESIDE, "==", :a_1
+      q_LENGTH_RESIDE "How long have you lived in this home? Number (e.g., 5)",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.LENGTH_RESIDE"
+      a "Number", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_LENGTH_RESIDE_UNIT "Length reside: units (e.g., months)", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.LENGTH_RESIDE_UNIT"
-    a_1 "Weeks"
-    a_2 "Months"
-    a_3 "Years"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_ENTER_LENGTH_RESIDE, "==", :a_1
+      q_LENGTH_RESIDE_UNIT "How long have you lived in this home? Unit (e.g., months)", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.LENGTH_RESIDE_UNIT"
+      a_1 "Weeks"
+      a_2 "Months"
+      a_3 "Years"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_ENTER_LENGTH_RESIDE, "==", :a_1
 
-    q_WATER_DRINK "What water source in your home do you use most of the time for drinking? ", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_DRINK"
-    a_1 "Tap water,"
-    a_2 "Filtered tap water,"
-    a_3 "Bottled water, or"
-    a_neg_5 "Some other source?"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_WATER_DRINK "What water source in your home do you use most of the time for drinking? ", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_DRINK"
+      a_1 "Tap water,"
+      a_2 "Filtered tap water,"
+      a_3 "Bottled water, or"
+      a_neg_5 "Some other source?"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_WATER_DRINK_OTH "Other water source", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_DRINK_OTH"
-    a_1 "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_WATER_DRINK, "==", :a_neg_5
+      q_WATER_DRINK_OTH "Other water source", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_DRINK_OTH"
+      a_1 "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_WATER_DRINK, "==", :a_neg_5
 
-    q_WATER_COOK "What water source in your home is used most of the time for cooking?", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_COOK"
-    a_1 "Tap water,"
-    a_2 "Filtered tap water,"
-    a_3 "Bottled water, or"
-    a_neg_5 "Some other source?"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_WATER_COOK "What water source in your home is used most of the time for cooking?", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_COOK"
+      a_1 "Tap water,"
+      a_2 "Filtered tap water,"
+      a_3 "Bottled water, or"
+      a_neg_5 "Some other source?"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_WATER_COOK_OTH "Other source of cooking water", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_COOK_OTH"
-    a_1 "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_WATER_COOK, "==", :a_neg_5  
-  end
-  section "Neighborhood characteristics", :reference_identifier=>"18MMother_INT" do
-    label "Now I’d like to ask a few questions about your neighborhood."
+      q_WATER_COOK_OTH "Other source of cooking water", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.WATER_COOK_OTH"
+      a_1 "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_WATER_COOK, "==", :a_neg_5  
+      
+      label "Neighborhood characteristics"
+
+      label "Now I’d like to ask a few questions about your neighborhood."
     
-    q_NEIGH_DEFN "When you are talking to someone about your neighborhood, what do you mean? Is it...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_DEFN"
-    a_1 "The block or street you live on,"
-    a_2 "Several blocks or streets in each direction,"
-    a_3 "The area within a 15 minute walk from your house,"
-    a_4 "An area larger than a 15 minute walk from your house?"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_DEFN "When you are talking to someone about your neighborhood, what do you mean? Is it...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_DEFN"
+      a_1 "The block or street you live on,"
+      a_2 "Several blocks or streets in each direction,"
+      a_3 "The area within a 15 minute walk from your house,"
+      a_4 "An area larger than a 15 minute walk from your house?"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_NEIGH_FAM "How many of your relatives or in-laws live in your neighborhood? Would you say...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_FAM"
-    a_1 "None"
-    a_2 "A few"
-    a_3 "Many"
-    a_4 "Most"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
+      q_NEIGH_FAM "How many of your relatives or in-laws live in your neighborhood? Would you say...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_FAM"
+      a_1 "None"
+      a_2 "A few"
+      a_3 "Many"
+      a_4 "Most"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"    
 
-    q_NEIGH_FRIEND "How many of your friends live in your neighborhood? Would you say...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_FRIEND"
-    a_1 "None"
-    a_2 "A few"
-    a_3 "Many"
-    a_4 "Most"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_FRIEND "How many of your friends live in your neighborhood? Would you say...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_FRIEND"
+      a_1 "None"
+      a_2 "A few"
+      a_3 "Many"
+      a_4 "Most"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGHBORS "About how many adults do you recognize or know by sight in this neighborhood? Would you say you recognize...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGHBORS"
-    a_1 "None"
-    a_2 "A few"
-    a_3 "Many"
-    a_4 "Most"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
+      q_NEIGHBORS "About how many adults do you recognize or know by sight in this neighborhood? Would you say you recognize...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGHBORS"
+      a_1 "None"
+      a_2 "A few"
+      a_3 "Many"
+      a_4 "Most"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"    
 
-    # TODO
-    # Have to calculate DATE 30 DAYS AGO
-    q_NEIGH_NUM_TALK "In the past 30 days, that is since [INSERT DATE 30 DAYS AGO], how many of your neighbors have you 
-    talked with for 10 minutes of more? Would you say...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_NUM_TALK"
-    a_1 "None"
-    a_2 "1 or 2"
-    a_3 "3 to 5"
-    a_4 "6 or more"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      # TODO
+      # Have to calculate DATE 30 DAYS AGO
+      q_NEIGH_NUM_TALK "In the past 30 days, that is since [INSERT DATE 30 DAYS AGO], how many of your neighbors have you 
+      talked with for 10 minutes of more? Would you say...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_NUM_TALK"
+      a_1 "None"
+      a_2 "1 or 2"
+      a_3 "3 to 5"
+      a_4 "6 or more"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_HELP "About how often do you and people in your neighborhood do favors for each other? By favors, we mean such 
-    things as watching each other’s children, helping with shopping, lending garden or house tools.",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_HELP"
-    a_1 "Often"
-    a_2 "Sometimes"
-    a_3 "Rarely"
-    a_4 "Never"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_HELP "About how often do you and people in your neighborhood do favors for each other? By favors, we mean such 
+      things as watching each other’s children, helping with shopping, lending garden or house tools.",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_HELP"
+      a_1 "Often"
+      a_2 "Sometimes"
+      a_3 "Rarely"
+      a_4 "Never"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_TALK "How often do you and other people in your neighborhood visit in each other’s homes or speak with each 
-    other on the street?",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_TALK"
-    a_1 "Often"
-    a_2 "Sometimes"
-    a_3 "Rarely"
-    a_4 "Never"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_TALK "How often do you and other people in your neighborhood visit in each other’s homes or speak with each 
+      other on the street?",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_TALK"
+      a_1 "Often"
+      a_2 "Sometimes"
+      a_3 "Rarely"
+      a_4 "Never"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_WATCH_1 "If children were skipping school and hanging out, how likely is it that your neighbors would do something 
-    about it? Would you say it is...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_WATCH_1"
-    a_1 "Very Likely,"
-    a_2 "Likely,"
-    a_3 "Unlikely,"
-    a_4 "Very Unlikely"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_WATCH_1 "If children were skipping school and hanging out, how likely is it that your neighbors would do something 
+      about it? Would you say it is...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_WATCH_1"
+      a_1 "Very Likely,"
+      a_2 "Likely,"
+      a_3 "Unlikely,"
+      a_4 "Very Unlikely"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_WATCH_2 "If children were showing disrespect to an adult, how likely is it that your neighbors would do something 
-    about it? Would you say it is...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_WATCH_2"
-    a_1 "Very Likely,"
-    a_2 "Likely,"
-    a_3 "Unlikely,"
-    a_4 "Very Unlikely"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_WATCH_2 "If children were showing disrespect to an adult, how likely is it that your neighbors would do something 
+      about it? Would you say it is...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_WATCH_2"
+      a_1 "Very Likely,"
+      a_2 "Likely,"
+      a_3 "Unlikely,"
+      a_4 "Very Unlikely"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    label "Please tell me if you agree or disagree with the following statements."
+      label "Please tell me if you agree or disagree with the following statements."
 
-    q_NEIGH_CLOSE "This is a close-knit neighborhood. Would you say you...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_CLOSE"
-    a_1 "Strongly agree,"
-    a_2 "Agree,"
-    a_3 "Disagree,"
-    a_4 "Strongly disagree"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_CLOSE "This is a close-knit neighborhood. Would you say you...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_CLOSE"
+      a_1 "Strongly agree,"
+      a_2 "Agree,"
+      a_3 "Disagree,"
+      a_4 "Strongly disagree"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_TRUST "People in this neighborhood can be trusted. Would you say you...",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_TRUST"
-    a_1 "Strongly agree,"
-    a_2 "Agree,"
-    a_3 "Disagree,"
-    a_4 "Strongly disagree"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_TRUST "People in this neighborhood can be trusted. Would you say you...",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_TRUST"
+      a_1 "Strongly agree,"
+      a_2 "Agree,"
+      a_3 "Disagree,"
+      a_4 "Strongly disagree"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_SAFE_1 "I feel safe walking in my neighborhood, day or night.",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_SAFE_1"
-    a_1 "Strongly agree,"
-    a_2 "Agree,"
-    a_3 "Disagree,"
-    a_4 "Strongly disagree"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_SAFE_1 "I feel safe walking in my neighborhood, day or night.",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_SAFE_1"
+      a_1 "Strongly agree,"
+      a_2 "Agree,"
+      a_3 "Disagree,"
+      a_4 "Strongly disagree"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_SAFE_2 "Violence is not a problem in my neighborhood.",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_SAFE_2"
-    a_1 "Strongly agree,"
-    a_2 "Agree,"
-    a_3 "Disagree,"
-    a_4 "Strongly disagree"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_SAFE_2 "Violence is not a problem in my neighborhood.",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_SAFE_2"
+      a_1 "Strongly agree,"
+      a_2 "Agree,"
+      a_3 "Disagree,"
+      a_4 "Strongly disagree"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEIGH_SAFE_3 "My neighborhood is safe from crime.",
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_SAFE_3"
-    a_1 "Strongly agree,"
-    a_2 "Agree,"
-    a_3 "Disagree,"
-    a_4 "Strongly disagree"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_NEIGH_SAFE_3 "My neighborhood is safe from crime.",
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.NEIGH_SAFE_3"
+      a_1 "Strongly agree,"
+      a_2 "Agree,"
+      a_3 "Disagree,"
+      a_4 "Strongly disagree"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
   end  
   section "Tracing questions", :reference_identifier=>"18MMother_INT" do
-    q_time_stamp_13 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_13"
+    q_TIME_STAMP_13 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_13"
     a :datetime
 
     label "The next set of questions asks about different ways we might be able to keep in touch with you. Please remember that 
@@ -1677,7 +1563,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_3 "Don't remember"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-
+    
     q_HAVE_EMAIL "Do you have an email address?", :pick=>:one, 
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.HAVE_EMAIL"
     a_1 "Yes"
@@ -1685,34 +1571,33 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
-    condition_A :q_COMM_EMAIL, "!=", :a_2    
+    condition_A :q_COMM_EMAIL, "!=", :a_2   
+    
+    group "Email information" do 
+      dependency :rule=>"A"
+      condition_A :q_HAVE_EMAIL, "==", :a_1 
 
-    q_EMAIL_2 "May we use your personal email address to make future study appointments or send appointment reminders?", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.EMAIL_2"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1
+      q_EMAIL_2 "May we use your personal email address to make future study appointments or send appointment reminders?", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.EMAIL_2"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_EMAIL_3 "May we use your personal email address for questionnaires (like this one) that you can answer over the Internet?", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.EMAIL_3"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1
+      q_EMAIL_3 "May we use your personal email address for questionnaires (like this one) that you can answer over the Internet?", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.EMAIL_3"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_EMAIL "What is the best email address to reach you?", :pick=>:one, 
-    :help_text=>"Show example of valid email address such as maryjane@email.com", 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.EMAIL"
-    a_1 "Enter e-mail address:", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1      
+      q_EMAIL "What is the best email address to reach you?", :pick=>:one, 
+      :help_text=>"Show example of valid email address such as maryjane@email.com", 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.EMAIL"
+      a_1 "Enter e-mail address:", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
 
     q_COMM_CELL "When we last spoke, we asked questions about communicating with you through your personal cell 
     phone number. Has your cell phone number or your preferences regarding use of your personal cell phone number 
@@ -1733,40 +1618,40 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     dependency :rule=>"A"
     condition_A :q_COMM_CELL, "!=", :a_2
 
-    q_CELL_PHONE_2 "May we use your personal cell phone to make future study appointments or for appointment reminders?", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE_2"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CELL_PHONE_1, "==", :a_1
+    group "Cell phone information" do
+      dependency :rule=>"A"
+      condition_A :q_CELL_PHONE_1, "==", :a_1
 
-    q_CELL_PHONE_3 "Do you send and receive text messages on your personal cell phone?", :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE_3"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CELL_PHONE_1, "==", :a_1      
+      q_CELL_PHONE_2 "May we use your personal cell phone to make future study appointments or for appointment reminders?", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE_2"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CELL_PHONE_4 "May we send text messages to make future study appointments or for appointment reminders?", :pick=>:one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE_4"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CELL_PHONE_3, "==", :a_1
+      q_CELL_PHONE_3 "Do you send and receive text messages on your personal cell phone?", :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE_3"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CELL_PHONE "What is your personal cell phone number?", :pick=>:one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE"
-    a_1 "Phone number", :string
-    a_neg_7 "Participant has no cell phone"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_CELL_PHONE_4 "May we send text messages to make future study appointments or for appointment reminders?", :pick=>:one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE_4"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
+      q_CELL_PHONE "What is your personal cell phone number?", :pick=>:one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CELL_PHONE"
+      a_1 "Phone number", :string
+      a_neg_7 "Participant has no cell phone"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+
+    end
+    
     q_TIME_STAMP_14 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_14"
     a :datetime
 
@@ -1791,301 +1676,311 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     dependency :rule=>"A"
     condition_A :q_COMM_CONTACT, "!=", :a_2
 
-    q_CONTACT_FNAME_1 "What is the person's first name?",
-    :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_FNAME_1"
-    a_1 "First name", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_1, "!=", :a_1
+    group "Contact information" do
+      dependency :rule=>"A"
+      condition_A :q_CONTACT_1, "==", :a_1
 
-    q_CONTACT_LNAME_1 "What is the person's last name?",
-    :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_LNAME_1"
-    a_1 "Last name", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_1, "!=", :a_1  
+      q_CONTACT_FNAME_1 "What is the person's first name?",
+      :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_FNAME_1"
+      a_1 "First name", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_RELATE_1 "What is his/her relationship to you?", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_1"
-    a_1 "Mother/father"
-    a_2 "Brother/sister"
-    a_3 "Aunt/uncle"
-    a_4 "Grandparent"
-    a_5 "Neighbor"
-    a_6 "Friend"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_1, "!=", :a_1
+      q_CONTACT_LNAME_1 "What is the person's last name?",
+      :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_LNAME_1"
+      a_1 "Last name", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_RELATE1_OTH "Other relationship of contact", :pick=>:one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE1_OTH"      
-    a_1 "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_RELATE_1, "==", :a_neg_5
+      q_CONTACT_RELATE_1 "What is his/her relationship to you?", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_1"
+      a_1 "Mother/father"
+      a_2 "Brother/sister"
+      a_3 "Aunt/uncle"
+      a_4 "Grandparent"
+      a_5 "Neighbor"
+      a_6 "Friend"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_ADDR_1 "What is his/her address?",
-    :help_text => "Prompt as necessary to complete information", :pick=>:one
-    a_1 "Enter response", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_CONTACT_RELATE1_OTH "Other relationship of contact", :pick=>:one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE1_OTH"      
+      a_1 "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CONTACT_RELATE_1, "==", :a_neg_5
 
-    q_C_ADDR1_1 "Address 1 - street/PO Box", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR1_1"  
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      label "What is his/her address?",
+      :help_text => "Prompt as necessary to complete information"
 
-    q_C_ADDR_2_1 "Address 2", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR_2_1"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      q_C_ADDR1_1 "Address 1 - street/PO Box", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR1_1"  
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      
+      q_C_ADDR_2_1 "Address 2", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR_2_1"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_UNIT_1 "Unit", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_UNIT_1"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      q_C_UNIT_1 "Unit", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_UNIT_1"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_CITY_1 "City", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_CITY_1"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      q_C_CITY_1 "City", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_CITY_1"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_STATE_1 "State", :display_type=>"dropdown", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_STATE_1"
-    a_1 "AL"
-    a_2 "AK"
-    a_3 "AZ"
-    a_4 "AR"
-    a_5 "CA"
-    a_6 "CO"
-    a_7 "CT"
-    a_8 "DE"
-    a_9 "DC"
-    a_10 "FL"
-    a_11 "GA"
-    a_12 "HI"
-    a_13 "ID"
-    a_14 "IL"
-    a_15 "IN"
-    a_16 "IA"
-    a_17 "KS"
-    a_18 "KY"
-    a_19 "LA"
-    a_20 "ME"
-    a_21 "MD"
-    a_22 "MA"
-    a_23 "MI"
-    a_24 "MN"
-    a_25 "MS"
-    a_26 "MO"
-    a_27 "MT"
-    a_28 "NE"
-    a_29 "NV"
-    a_30 "NH"
-    a_31 "NJ"
-    a_32 "NM"
-    a_33 "NY"
-    a_34 "NC"
-    a_35 "ND"
-    a_36 "OH"
-    a_37 "OK"
-    a_38 "OR"
-    a_39 "PA"
-    a_40 "RI"
-    a_41 "SC"
-    a_42 "SD"
-    a_43 "TN"
-    a_44 "TX"
-    a_45 "UT"
-    a_46 "VT"
-    a_47 "VA"
-    a_48 "WA"
-    a_49 "WV"
-    a_50 "WI"
-    a_51 "WY"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      q_C_STATE_1 "State", 
+      :pick=>:one,      
+      :display_type=>"dropdown", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_STATE_1"
+      a_1 "AL"
+      a_2 "AK"
+      a_3 "AZ"
+      a_4 "AR"
+      a_5 "CA"
+      a_6 "CO"
+      a_7 "CT"
+      a_8 "DE"
+      a_9 "DC"
+      a_10 "FL"
+      a_11 "GA"
+      a_12 "HI"
+      a_13 "ID"
+      a_14 "IL"
+      a_15 "IN"
+      a_16 "IA"
+      a_17 "KS"
+      a_18 "KY"
+      a_19 "LA"
+      a_20 "ME"
+      a_21 "MD"
+      a_22 "MA"
+      a_23 "MI"
+      a_24 "MN"
+      a_25 "MS"
+      a_26 "MO"
+      a_27 "MT"
+      a_28 "NE"
+      a_29 "NV"
+      a_30 "NH"
+      a_31 "NJ"
+      a_32 "NM"
+      a_33 "NY"
+      a_34 "NC"
+      a_35 "ND"
+      a_36 "OH"
+      a_37 "OK"
+      a_38 "OR"
+      a_39 "PA"
+      a_40 "RI"
+      a_41 "SC"
+      a_42 "SD"
+      a_43 "TN"
+      a_44 "TX"
+      a_45 "UT"
+      a_46 "VT"
+      a_47 "VA"
+      a_48 "WA"
+      a_49 "WV"
+      a_50 "WI"
+      a_51 "WY"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_ZIPCODE_1 "ZIP Code", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIPCODE_1"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      q_C_ZIPCODE_1 "ZIP Code", 
+      :pick=>:one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIPCODE_1"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_ZIP4_1 "ZIP+4", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIP4_1"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_1, "==", :a_1
+      q_C_ZIP4_1 "ZIP+4", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIP4_1"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_PHONE_1 "What is his/her telephone number?",
-    :help_text => "If contact has no telephone ask for telephone number where he/she receives calls", 
-    :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_PHONE_1"
-    a_1 "Phone number", :string
-    a_neg_7 "Contact has no telephone"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_CONTACT_PHONE_1 "What is his/her telephone number?",
+      :help_text => "If contact has no telephone ask for telephone number where he/she receives calls", 
+      :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_PHONE_1"
+      a_1 "Phone number", :string
+      a_neg_7 "Contact has no telephone"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    
+      label "Now I’d like to collect information on a second contact who does not currently live with you. 
+      What is the person's name?",
+      :help_text => "If participant does not want to provide name of contact ask for initials- confirm spelling of first and last names"
 
-    label "Now I’d like to collect information on a second contact who does not currently live with you. 
-    What is the person's name?",
-    :help_text => "If participant does not want to provide name of contact ask for initials- confirm spelling of first and last names"
+      q_CONTACT_FNAME_2 "What is the person's first name?",
+      :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_FNAME_2"
+      a_1 "First name", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_FNAME_2 "What is the person's first name?",
-    :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_FNAME_2"
-    a_1 "First name", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_2, "==", :a_1
+      q_CONTACT_LNAME_2 "What is the person's last name?",
+      :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_LNAME_2"
+      a_1 "Last name", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_LNAME_2 "What is the person's last name?",
-    :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_LNAME_2"
-    a_1 "Last name", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_2, "==", :a_1      
+      q_CONTACT_RELATE_2 "What is his/her relationship to you?", :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_2"
+      a_1 "Mother/father"
+      a_2 "Brother/sister"
+      a_3 "Aunt/uncle"
+      a_4 "Grandparent"
+      a_5 "Neighbor"
+      a_6 "Friend"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_RELATE_2 "What is his/her relationship to you?", :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_2"
-    a_1 "Mother/father"
-    a_2 "Brother/sister"
-    a_3 "Aunt/uncle"
-    a_4 "Grandparent"
-    a_5 "Neighbor"
-    a_6 "Friend"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_2, "==", :a_1
+      q_CONTACT_RELATE2_OTH "Other relationship of second contact", :pick=>:one, 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_2_OTH"
+      a_1 "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CONTACT_RELATE_2, "==", :a_neg_5
 
-    q_CONTACT_RELATE2_OTH "Other relationship of second contact", :pick=>:one, 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_2_OTH"
-    a_1 "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_2, "==", :a_neg_5
+      label "What is his/her address?",
+      :help_text => "Prompt as needed to complete information"
 
+      q_C_ADDR1_2 "Address 1 - street/PO Box",
+      :pick=>:one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR1_2"  
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      
+      q_C_ADDR_2_2 "Address 2", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR_2_2"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      
+      q_C_UNIT_2 "Unit",
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_UNIT_2"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CONTACT_ADDR_2 "What is his/her address?",
-    :help_text => "Prompt as needed to complete information", :pick=>:one
-    a_1 "Enter response", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_2, "==", :a_1    
+      q_C_CITY_2 "City",
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_CITY_2"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_ADDR1_2 "Address 1 - street/PO Box", 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR1_2"  
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
+      q_C_STATE_2 "State", 
+      :pick=>:one,      
+      :display_type=>"dropdown", 
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_STATE_2"
+      a_1 "AL"
+      a_2 "AK"
+      a_3 "AZ"
+      a_4 "AR"
+      a_5 "CA"
+      a_6 "CO"
+      a_7 "CT"
+      a_8 "DE"
+      a_9 "DC"
+      a_10 "FL"
+      a_11 "GA"
+      a_12 "HI"
+      a_13 "ID"
+      a_14 "IL"
+      a_15 "IN"
+      a_16 "IA"
+      a_17 "KS"
+      a_18 "KY"
+      a_19 "LA"
+      a_20 "ME"
+      a_21 "MD"
+      a_22 "MA"
+      a_23 "MI"
+      a_24 "MN"
+      a_25 "MS"
+      a_26 "MO"
+      a_27 "MT"
+      a_28 "NE"
+      a_29 "NV"
+      a_30 "NH"
+      a_31 "NJ"
+      a_32 "NM"
+      a_33 "NY"
+      a_34 "NC"
+      a_35 "ND"
+      a_36 "OH"
+      a_37 "OK"
+      a_38 "OR"
+      a_39 "PA"
+      a_40 "RI"
+      a_41 "SC"
+      a_42 "SD"
+      a_43 "TN"
+      a_44 "TX"
+      a_45 "UT"
+      a_46 "VT"
+      a_47 "VA"
+      a_48 "WA"
+      a_49 "WV"
+      a_50 "WI"
+      a_51 "WY"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_ADDR_2_2 "Address 2", 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ADDR_2_2"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
+      q_C_ZIPCODE_2 "ZIP Code", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIPCODE_2"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_UNIT_2 "Unit", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_UNIT_2"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
+      q_C_ZIP4_2 "ZIP+4", 
+      :pick=>:one,      
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIP4_2"
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_C_CITY_2 "City", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_CITY_2"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
-
-    q_C_STATE_2 "State", :display_type=>"dropdown", 
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_STATE_2"
-    a_1 "AL"
-    a_2 "AK"
-    a_3 "AZ"
-    a_4 "AR"
-    a_5 "CA"
-    a_6 "CO"
-    a_7 "CT"
-    a_8 "DE"
-    a_9 "DC"
-    a_10 "FL"
-    a_11 "GA"
-    a_12 "HI"
-    a_13 "ID"
-    a_14 "IL"
-    a_15 "IN"
-    a_16 "IA"
-    a_17 "KS"
-    a_18 "KY"
-    a_19 "LA"
-    a_20 "ME"
-    a_21 "MD"
-    a_22 "MA"
-    a_23 "MI"
-    a_24 "MN"
-    a_25 "MS"
-    a_26 "MO"
-    a_27 "MT"
-    a_28 "NE"
-    a_29 "NV"
-    a_30 "NH"
-    a_31 "NJ"
-    a_32 "NM"
-    a_33 "NY"
-    a_34 "NC"
-    a_35 "ND"
-    a_36 "OH"
-    a_37 "OK"
-    a_38 "OR"
-    a_39 "PA"
-    a_40 "RI"
-    a_41 "SC"
-    a_42 "SD"
-    a_43 "TN"
-    a_44 "TX"
-    a_45 "UT"
-    a_46 "VT"
-    a_47 "VA"
-    a_48 "WA"
-    a_49 "WV"
-    a_50 "WI"
-    a_51 "WY"
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
-
-    q_C_ZIPCODE_2 "ZIP Code", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIPCODE_2"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
-
-    q_C_ZIP4_2 "ZIP+4", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.C_ZIP4_2"
-    a :string
-    dependency :rule=>"A"
-    condition_A :q_CONTACT_ADDR_2, "==", :a_1
-
-    q_CONTACT_PHONE_2 "What is his/her telephone number (XXXXXXXXXX)?",
-    :help_text => "If contact has no telephone ask for telephone number where he/she receives calls", 
-    :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_PHONE_2"
-    a_1 "Phone number", :string
-    a_7 "Contact has no phone"    
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_CONTACT_PHONE_2 "What is his/her telephone number (XXXXXXXXXX)?",
+      :help_text => "If contact has no telephone ask for telephone number where he/she receives calls", 
+      :pick=>:one, :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_PHONE_2"
+      a_1 "Phone number", :string
+      a_7 "Contact has no phone"    
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
 
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey. 
     This concludes the interview portion of our visit.",
     :help_text => "Explain SAQs and return process"
 
-    q_hipv1_time_stamp_15 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_15"
+    q_hipv1_TIME_STAMP_15 "Insert date/time stamp", :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.TIME_STAMP_15"
     a :datetime 
   end    
 end  
