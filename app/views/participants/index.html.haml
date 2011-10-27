@@ -17,7 +17,7 @@
           First Name
         %th
           Last Name
-        %th{ :colspan => "3" }
+        %th{ :colspan => "2" }
 
       - @participants.each do |participant|
         %tr{ :class => cycle('even_record', 'odd_record') }
@@ -31,7 +31,5 @@
             = link_to 'View', participant_path(participant), :class => "show_link icon_link"
           %td
             = link_to 'Edit', edit_participant_path(participant), :class => "edit_link icon_link"
-          %td
-            = link_to 'Delete', participant, :confirm => 'Are you sure?', :method => :delete, :class => "delete_link icon_link"
 
   = will_paginate @participants

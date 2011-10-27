@@ -1,5 +1,7 @@
 class InstrumentEventMap
 
+  # TODO: Map PSC Activities to Instrument File names !!!!
+
   ##
   # For a given event, return the filenames of all the Instruments/Surveys that match
   # from the MDES Instrument and Event Map

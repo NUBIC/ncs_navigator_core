@@ -36,6 +36,15 @@ task :set_roles do
   role :db, app_server, :primary => true
 end
 
+# Demo environment
+desc "Deploy to demo"
+task :demo do
+  set :app_server, bcconf["demo_app_server"]
+  set :rails_env, "staging"
+  set :whenever_environment, fetch(:rails_env)
+  set_roles
+end
+
 # Staging environment
 desc "Deploy to staging"
 task :staging do

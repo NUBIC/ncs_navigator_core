@@ -135,6 +135,17 @@ class Person < ActiveRecord::Base
   end
   
   ##
+  # The Participant ppg_status local_code (cf. NcsCode) if applicable
+  # @return [Integer]
+  def ppg_status
+    Rails.logger.info("~~~ ppg_status")
+    if participant && participant.ppg_status
+      Rails.logger.info("~~~ #{participant.ppg_status.inspect}")
+      participant.ppg_status.local_code
+    end
+  end
+
+  ##
   # Based on the current state, pregnancy probability group, and 
   # the intensity group (hi/lo) determine the next event
   # cf. Participant.upcoming_events
@@ -148,14 +159,14 @@ class Person < ActiveRecord::Base
     end
     events
   end
-  
+
   ##
   # Determines the next Survey to administer.
   # @return [Survey]
   def next_survey
     event = upcoming_events.first
     instrument = InstrumentEventMap.instruments_for(event).first if event 
-    result = Survey.find_by_access_code(Survey.to_normalized_string(instrument)) if instrument    
+    result = Survey.most_recent_for_title(instrument) if instrument    
     result
   end
   
@@ -177,7 +188,10 @@ class Person < ActiveRecord::Base
 
   def prepopulate_response_set(survey, response_set)
     # TODO: determine way to know about initializing data for each survey
-    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
+    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_ppg_status", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
+    
+    response_type = "string_value"
+    
     reference_identifiers.each do |reference_identifier|
       question = nil
       survey.sections_with_questions.each do |section|
@@ -191,15 +205,20 @@ class Person < ActiveRecord::Base
         answer = question.answers.first
         value = case reference_identifier
                 when "prepopulated_name"
+                  response_type = "string_value"
                   name
                 when "prepopulated_date_of_birth"
+                  response_type = "string_value"
                   dob.to_s
+                when "prepopulated_ppg_status"
+                  response_type = "integer_value"
+                  ppg_status
                 else
                   # TODO: handle other prepopulated fields
                   nil
                 end
         
-        Response.create(:response_set => response_set, :question => question, :answer => answer, :string_value => value)
+        Response.create(:response_set => response_set, :question => question, :answer => answer, response_type.to_sym => value)
       end
     end
     response_set
