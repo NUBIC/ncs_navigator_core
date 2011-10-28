@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /^http:\/\/localhost:8080\/psc\/api\/v1\/subjects\//
+    uri: !ruby/regexp /^https:\/\/ncsn-psc.local\/api\/v1\/subjects\//
     body: 
     headers: 
       authorization: 
@@ -25,7 +25,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/current.xml
+    uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/template/current.xml
     body: 
     headers: 
       authorization: 
@@ -347,7 +347,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
+    uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
     body: 
     headers: 
       content-type: 
@@ -362,7 +362,7 @@
       message: Created
     headers: 
       location: 
-      - http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/schedules/angela_davis_public_id
+      - https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/schedules/angela_davis_public_id
       server: 
       - Restlet-Framework/2.0.3
       date: 
@@ -382,7 +382,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
+    uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
     body: 
     headers: 
       authorization: 

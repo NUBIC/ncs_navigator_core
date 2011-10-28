@@ -18,7 +18,7 @@ describe PatientStudyCalendar do
   
   it "uses the correct service url to request the cas-proxy-ticket" do
     # protocol:host_url/prefix
-    service_url = "http://localhost:8080/psc/auth/cas_security_check"
+    service_url = "https://ncsn-psc.local/auth/cas_security_check"
     @user.should_receive(:cas_proxy_ticket).with(service_url).and_return('PT-CAS-2')
     VCR.use_cassette('psc/segments') do
       subject.segments

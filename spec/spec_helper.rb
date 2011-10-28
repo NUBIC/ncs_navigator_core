@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'spork'
 
+require 'ncs_navigator/configuration'
+
 # --- Instructions ---
 # Sort the contents of this file into a Spork.prefork and a Spork.each_run
 # block.
@@ -54,6 +56,9 @@ Spork.prefork do
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
+  NcsNavigator.configuration =
+    NcsNavigator::Configuration.new(File.expand_path('../navigator.ini', __FILE__))
+
   module TestLogins
     def user_login
       person = Factory(:person, :username => 'pfr957')
@@ -80,6 +85,8 @@ Spork.prefork do
 
 
   RSpec.configure do |config|
+    config.treat_symbols_as_metadata_keys_with_true_values = true
+
     # == Mock Framework
     #
     # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:

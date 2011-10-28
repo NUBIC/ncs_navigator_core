@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://localhost:8080/psc/api/v1/studies.json
+    uri: https://ncsn-psc.local/api/v1/studies.json
     body: 
     headers: 
       authorization: 
