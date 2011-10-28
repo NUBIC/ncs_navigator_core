@@ -65,6 +65,8 @@ Spork.prefork do
   # end
   # ***********************
 
+  NcsNavigator.configuration =
+    NcsNavigator::Configuration.new(File.expand_path('../../../spec/navigator.ini', __FILE__))
 end
 
 Spork.each_run do
