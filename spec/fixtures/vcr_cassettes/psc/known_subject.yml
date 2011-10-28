@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://localhost:8080/psc/api/v1/subjects/asdf
+    uri: https://ncsn-psc.local/api/v1/subjects/asdf
     body: 
     headers: 
       authorization: 
@@ -28,5 +28,5 @@
       - chunked
       pragma: 
       - no-cache
-    body: "{\"first_name\":\"As\",\"last_name\":\"Df\",\"full_name\":\"As Df\",\"last_first\":\"Df, As\",\"birth_date\":\"1900-01-01\",\"gender\":\"Female\",\"person_id\":\"asdf\",\"subject_identifier\":\"asdf\",\"properties\":[],\"href\":{\"schedules\":\"http://localhost:8080/psc/api/v1/subjects/asdf/schedules\"}}"
+    body: "{\"first_name\":\"As\",\"last_name\":\"Df\",\"full_name\":\"As Df\",\"last_first\":\"Df, As\",\"birth_date\":\"1900-01-01\",\"gender\":\"Female\",\"person_id\":\"asdf\",\"subject_identifier\":\"asdf\",\"properties\":[],\"href\":{\"schedules\":\"https://ncsn-psc.local/api/v1/subjects/asdf/schedules\"}}"
     http_version: "1.1"

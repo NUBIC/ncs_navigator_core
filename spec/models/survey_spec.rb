@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Survey do
 
-  context "more than one Survey having the same title" do
+  context "more than one Survey having the same title", :slow do
     
     before(:each) do
       Survey.destroy_all
