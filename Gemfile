@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.0'
 
-gem 'bcdatabase', '~> 1.0.5'
+gem 'bcdatabase', '~> 1.0'
 gem 'aker', '~> 3.0'
 gem 'aker-rails'
 gem 'compass'
@@ -12,7 +12,7 @@ gem 'pg'
 gem 'ruby-debug'
 gem 'jquery-rails'
 
-gem 'ncs_mdes', '0.4.0'
+gem 'ncs_mdes', '~> 0.4.0'
 gem 'formtastic', '1.2.4'
 gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git', :branch => 'performance'
 gem 'psc'
