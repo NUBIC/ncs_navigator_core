@@ -17,7 +17,7 @@
 %p
   = f.label :event_start_time, "Event Start Time"
   %br
-  = f.text_field :event_start_time
+  = f.text_field :event_start_time, :class => "time"
 
 %p
   = f.label :event_end_date, "Event End Date"
@@ -27,7 +27,7 @@
 %p
   = f.label :event_end_time, "Event End Time"
   %br
-  = f.text_field :event_end_time
+  = f.text_field :event_end_time, :class => "time"
 
 = render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff" }
 

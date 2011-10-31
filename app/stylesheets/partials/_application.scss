@@ -46,6 +46,7 @@ a {
   clear: both;
 }
 
+span.warning,
 span.required {
   font-weight: bold;
   color: maroon;
@@ -94,6 +95,7 @@ form {
   select {
     border-color: #bbb;
   }
+  .date,
   .datepicker {
     width: 7.5em;
   }

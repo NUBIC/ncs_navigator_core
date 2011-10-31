@@ -19,6 +19,8 @@ class ContactLinksController < ApplicationController
 				@contact_link.save!
 			end
 		end
+		
+		set_time_and_dates
 	end
 
 	# PUT /contact_links/1
@@ -54,5 +56,27 @@ class ContactLinksController < ApplicationController
 		@participant	= @person.participant
 		@event				= @contact_link.event
 	end
+	
+	private
+	
+	  def set_time_and_dates
+	    contact = @contact_link.contact
+	   	contact.contact_end_time = Time.now.strftime("%H:%M")
+	   	
+	   	start_date = contact.contact_date_date.nil? ? Date.today : contact.contact_date_date
+	   	
+	   	event = @contact_link.event
+	   	event.event_start_date = start_date if event.event_start_date.blank?
+	   	event.event_end_date = Date.today
+	   	event.event_start_time = contact.contact_start_time
+	   	event.event_end_time = contact.contact_end_time
+	   	
+	   	instrument = @contact_link.instrument
+	   	instrument.instrument_start_date = instrument.created_at.to_date
+	   	instrument.instrument_end_date = Date.today
+	   	instrument.instrument_start_time = instrument.created_at.strftime("%H:%M")
+	   	instrument.instrument_end_time = contact.contact_end_time
+  		
+	  end
 	
 end

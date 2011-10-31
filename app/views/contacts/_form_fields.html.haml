@@ -10,12 +10,12 @@
 %p
   = f.label :contact_start_time, "Contact Start Time"
   %br
-  = f.text_field :contact_start_time
+  = f.text_field :contact_start_time, :class => "time"
 
 %p
   = f.label :contact_end_time, "Contact End Time"
   %br
-  = f.text_field :contact_end_time
+  = f.text_field :contact_end_time, :class => "time"
 
 
 = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Who was Contacted", :other => :who_contacted_other }
