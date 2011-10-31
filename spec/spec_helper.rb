@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spork'
+require 'database_cleaner'
 
 require 'ncs_navigator/configuration'
 
@@ -102,7 +103,29 @@ Spork.prefork do
     # If you're not using ActiveRecord, or you'd prefer not to run each of your
     # examples within a transaction, remove the following line or assign false
     # instead of true.
-    config.use_transactional_fixtures = true
+    # Using DatabaseCleaner instead
+    # config.use_transactional_fixtures = true
+
+    config.before(:all) do
+      DatabaseCleaner.strategy = :transaction
+      DatabaseCleaner.clean_with(:truncation)
+    end
+
+    config.before(:each, :clean_with_truncation) do
+      DatabaseCleaner.strategy = :truncation
+    end
+
+    config.after(:each, :clean_with_truncation) do
+      DatabaseCleaner.strategy = :transaction
+    end
+
+    config.before(:each) do
+      DatabaseCleaner.start
+    end
+
+    config.after(:each) do
+      DatabaseCleaner.clean
+    end
 
     config.extend VCR::RSpec::Macros
 

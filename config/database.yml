@@ -3,7 +3,7 @@
   bcdb = Bcdatabase.load
 %>
 
-<%= bcdb.development :local_postgresql, :ncs_navigator_core_development %>
+<%= bcdb.development :local_postgresql, :ncs_navigator_core %>
 <%= bcdb.test :local_postgresql, :ncs_navigator_core_test %>
 <%= bcdb.ci :pdev, :ncs_navigator_core_hudson %>
 <%= bcdb.staging :ncsdb_staging, :ncs_navigator_core %>
