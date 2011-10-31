@@ -34,14 +34,3 @@
           = yield
       #footer
         = render 'partials/footer'
-        
-:javascript
-  $(document).ready(function() {
-    $('.datetime').datetimepicker({
-    	showSecond: true,
-    	showMillisec: false,
-    	timeFormat: 'hh:mm:ss'
-    });
-    $('.date').datepicker();
-    $('.time').timepicker();
-  });
