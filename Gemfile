@@ -23,7 +23,6 @@ gem 'state_machine-audit_trail'
 gem 'uuid'
 gem 'will_paginate'
 
-
 group :development do
   gem 'capistrano'
   gem 'watchr'
@@ -41,7 +40,7 @@ end
 
 group :development, :test, :ci do
   gem 'rspec-rails', '2.6.1'
-  
+
   gem 'guard'
   gem 'guard-cucumber'
   gem 'guard-rspec'
@@ -49,13 +48,11 @@ group :development, :test, :ci do
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'jasmine'
-  
+
   gem 'newrelic_rpm'
-  
 end
 
 group :test, :ci, :cucumber do
-
   gem 'cucumber'
   gem 'cucumber-rails'
   gem 'database_cleaner'
@@ -68,7 +65,6 @@ group :test, :ci, :cucumber do
 
   gem "spork", "> 0.9.0.rc"
   gem "guard-spork"
-
 end
 
 group :cucumber do
