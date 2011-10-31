@@ -63,6 +63,9 @@
       Pregnancy Probability Group
     %br
       = @participant.ppg_status
+      - if @participant.ppg_status.blank?
+        %span.warning
+          No PPG Assigned
   .upcoming_events
     %b
       Upcoming Events
@@ -130,7 +133,14 @@
           Perform Next Event
         %p
           = link_to "Initiate Contact for #{@participant.upcoming_events.to_sentence}", new_person_contact_path(@person), :class => "add_link icon_link"
-
+    - elsif rs = @person.last_incomplete_response_set
+      - if rs.survey.title =~ /_PregScreen_/
+        .perform_next_event
+          %b
+            Continue Event
+        %p
+          = link_to "Continue Pregnancy Screener", new_person_contact_path(@person), :class => "add_link icon_link"
+        
 .page_section
   - if @participant.low_intensity_state_transition_audits.size > 1
     %table.records

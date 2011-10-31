@@ -266,6 +266,14 @@ class Person < ActiveRecord::Base
     ins.first
   end
   
+  ##
+  # Convenience method to get the last response set
+  # @return [ResponseSet]
+  def last_incomplete_response_set
+    rs = response_sets.last
+    rs.complete? ? nil : rs
+  end
+  
   private
   
     def dob
