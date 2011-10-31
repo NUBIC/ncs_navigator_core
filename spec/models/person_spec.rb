@@ -240,5 +240,33 @@ describe Person do
     end
     
   end
+
+  context "with a response set" do
+    
+    before(:each) do
+      create_missing_in_error_ncs_codes(Instrument)
+    end
+    
+    it "returns the last incomplete response set" do
+      InstrumentEventMap.stub!(:version).and_return("1.0")
+      InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
+      pers = Factory(:person)
+      survey = create_test_survey_for_person
+      rs = pers.start_instrument(survey)
+    
+      pers = Person.find(pers.id)
+      pers.response_sets.size.should == 1
+      pers.response_sets.last.should == rs
+      pers.last_incomplete_response_set.should == rs
+      pers.last_incomplete_response_set.should_not be_complete
+      
+      rs.complete!
+      rs.save!
+      pers = Person.find(pers.id)
+      pers.last_incomplete_response_set.should be_nil
+      
+    end
+    
+  end
   
 end
