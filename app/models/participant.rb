@@ -99,21 +99,25 @@ class Participant < ActiveRecord::Base
     event :low_intensity_consent do
       transition :in_pregnancy_probability_group => :consented_low_intensity
     end
+    
+    event :follow_low_intensity do
+      transition :in_pregnancy_probability_group => :following_low_intensity
+    end
 
     event :impregnate do
-      transition :in_pregnancy_probability_group => :pregnant_and_consented, :consented_low_intensity => :pregnant_and_consented
+      transition :in_pregnancy_probability_group => :pregnant_and_consented, :consented_low_intensity => :pregnant_and_consented, :following_low_intensity => :pregnant_and_consented
     end
     
     event :lose_child do
-      transition :pregnant_and_consented => :in_pregnancy_probability_group, :in_pregnancy_probability_group => :in_pregnancy_probability_group, :consented_low_intensity => :in_pregnancy_probability_group
+      transition :pregnant_and_consented => :in_pregnancy_probability_group, :in_pregnancy_probability_group => :in_pregnancy_probability_group, :consented_low_intensity => :in_pregnancy_probability_group, :following_low_intensity => :in_pregnancy_probability_group
     end
     
     event :enroll_in_high_intensity_arm do
-      transition :in_pregnancy_probability_group => :moved_to_high_intensity_arm, :pregnant_and_consented => :moved_to_high_intensity_arm
+      transition :in_pregnancy_probability_group => :moved_to_high_intensity_arm, :pregnant_and_consented => :moved_to_high_intensity_arm, :following_low_intensity => :moved_to_high_intensity_arm
     end
 
     event :low_intensity_birth do
-      transition :pregnant_and_consented => :birth_low
+      transition :pregnant_and_consented => :birth_low, :following_low_intensity => :birth_low
     end
     
     event :parenthood do
@@ -271,7 +275,7 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?, in_pregnancy_probability_group?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?
       follow_up_interval
     when birth?, birth_low?
       due_date ? 1.day : 0
@@ -444,6 +448,8 @@ class Participant < ActiveRecord::Base
     def next_low_intensity_study_segment
       if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      elsif following_low_intensity?
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
       elsif in_pregnancy_probability_group? || consented_low_intensity?
         lo_intensity_follow_up
       elsif pregnant?
@@ -488,6 +494,7 @@ class Participant < ActiveRecord::Base
     end
     
     def eligible_for_ppg_follow_up?
+      return false if ppg_status.nil?
       status_codes = [3,4]
       status_codes << 2 if consented_to_high_intensity_arm?
       status_codes.include?(ppg_status.local_code)
