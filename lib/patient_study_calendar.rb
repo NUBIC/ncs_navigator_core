@@ -7,7 +7,7 @@ class PatientStudyCalendar
   
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
-  PPG_FOLLOW_UP         = "PPG Follow Up"
+  PPG_FOLLOW_UP         = "PPG Follow-Up"
   BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
   HI_LO_CONVERSION      = "Low to High Conversion"
   
@@ -273,7 +273,7 @@ class PatientStudyCalendar
                 "Birth"
               when "PPG 1 and 2"
                 "Low Intensity Data Collection"
-              when "PPG Follow Up"
+              when "PPG Follow-Up"
                 "Pregnancy Probability"
               else
                 event
