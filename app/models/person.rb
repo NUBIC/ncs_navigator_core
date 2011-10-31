@@ -213,6 +213,12 @@ class Person < ActiveRecord::Base
                 when "prepopulated_ppg_status"
                   response_type = "integer_value"
                   ppg_status
+                when "prepopulated_local_sc"
+                  response_type = "string_value"
+                  NcsNavigatorCore.study_center_name
+                when "prepopulated_sc_phone_number"
+                  response_type = "string_value"
+                  NcsNavigatorCore.study_center_phone_number
                 else
                   # TODO: handle other prepopulated fields
                   nil
@@ -267,11 +273,19 @@ class Person < ActiveRecord::Base
   end
   
   ##
-  # Convenience method to get the last response set
+  # Convenience method to get the last incomplete response set
   # @return [ResponseSet]
   def last_incomplete_response_set
     rs = response_sets.last
     rs.complete? ? nil : rs
+  end
+  
+  ##
+  # Convenience method to get the last completed survey
+  # @return [ResponseSet]
+  def last_completed_survey
+    rs = response_sets.last
+    rs.complete? ? rs.survey : nil
   end
   
   private
