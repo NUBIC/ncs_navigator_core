@@ -8,6 +8,3 @@
 <%= bcdb.ci :pdev, :ncs_navigator_core_hudson %>
 <%= bcdb.staging :ncsdb_staging, :ncs_navigator_core %>
 <%= bcdb.production :ncsdb_prod, :ncs_navigator_core %>
-
-cucumber:
-  <<: *test

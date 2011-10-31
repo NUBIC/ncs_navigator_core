@@ -52,9 +52,9 @@ group :development, :test, :ci do
   gem 'newrelic_rpm'
 end
 
-group :test, :ci, :cucumber do
+group :test, :ci do
   gem 'cucumber'
-  gem 'cucumber-rails'
+  gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
   gem 'shoulda'
   gem 'factory_girl'
@@ -65,9 +65,10 @@ group :test, :ci, :cucumber do
 
   gem "spork", "> 0.9.0.rc"
   gem "guard-spork"
+
+  gem 'capybara'
 end
 
-group :cucumber do
-  gem 'capybara'
+group :test do
   gem 'launchy'    # So you can do Then show me the page
 end
