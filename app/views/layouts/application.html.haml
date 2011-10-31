@@ -13,6 +13,7 @@
       = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
       = stylesheet_link_tag 'compiled/ie-custom.css', :media => 'screen, projection'
     = javascript_include_tag("jquery.min", "jquery_ujs", "application", "jquery-ui.min")
+    = javascript_include_tag("jquery-ui-timepicker-addon")
     = csrf_meta_tag
     = yield :head
 

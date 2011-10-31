@@ -48,3 +48,13 @@ function stop_default_action(e) {
     window.eventReturnValue = false;
   }
 }
+
+$(document).ready(function() {
+  $('input.datetime').datetimepicker({
+  	showSecond: true,
+  	showMillisec: false,
+  	timeFormat: 'hh:mm:ss'
+  });
+  $('input.date').datepicker();
+  $('input.time').timepicker({});
+});
