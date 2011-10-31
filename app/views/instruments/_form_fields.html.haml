@@ -13,22 +13,22 @@
 %p
   = f.label :instrument_start_date, "Instrument Start Date"
   %br
-  = f.text_field :instrument_start_date, :class => "datepicker"
+  = f.text_field :instrument_start_date, :class => "date"
   
 %p
   = f.label :instrument_start_time, "Instrument Start Time"
   %br
-  = f.text_field :instrument_start_time
+  = f.text_field :instrument_start_time, :class => "time"
   
 %p
   = f.label :instrument_end_date, "Instrument End Date"
   %br
-  = f.text_field :instrument_end_date, :class => "datepicker"
+  = f.text_field :instrument_end_date, :class => "date"
 
 %p
   = f.label :instrument_end_time, "Instrument End Time"
   %br
-  = f.text_field :instrument_end_time
+  = f.text_field :instrument_end_time, :class => "time"
 
 = render "shared/ncs_code_select", { :f => f, :code => :instrument_breakoff_code, :label_text => "Breakoff Code" }
 

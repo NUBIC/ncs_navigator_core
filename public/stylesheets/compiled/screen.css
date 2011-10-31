@@ -1364,25 +1364,26 @@ a img {
   clear: both;
 }
 
-/* line 49, ../../../app/stylesheets/partials/_application.scss */
+/* line 50, ../../../app/stylesheets/partials/_application.scss */
+span.warning,
 span.required {
   font-weight: bold;
   color: maroon;
 }
 
-/* line 55, ../../../app/stylesheets/partials/_application.scss */
+/* line 56, ../../../app/stylesheets/partials/_application.scss */
 .fieldWithErrors,
 .field_with_errors {
   display: inline;
   color: maroon;
 }
-/* line 58, ../../../app/stylesheets/partials/_application.scss */
+/* line 59, ../../../app/stylesheets/partials/_application.scss */
 .fieldWithErrors input,
 .field_with_errors input {
   border: 2px solid maroon;
 }
 
-/* line 63, ../../../app/stylesheets/partials/_application.scss */
+/* line 64, ../../../app/stylesheets/partials/_application.scss */
 #errorExplanation {
   width: 400px;
   border: 2px solid maroon;
@@ -1394,7 +1395,7 @@ span.required {
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
-/* line 71, ../../../app/stylesheets/partials/_application.scss */
+/* line 72, ../../../app/stylesheets/partials/_application.scss */
 #errorExplanation h2 {
   text-align: left;
   font-weight: bold;
@@ -1404,59 +1405,60 @@ span.required {
   background-color: maroon;
   color: #fff;
 }
-/* line 80, ../../../app/stylesheets/partials/_application.scss */
+/* line 81, ../../../app/stylesheets/partials/_application.scss */
 #errorExplanation p {
   color: #333;
   margin-bottom: 0;
   padding: 8px;
 }
-/* line 85, ../../../app/stylesheets/partials/_application.scss */
+/* line 86, ../../../app/stylesheets/partials/_application.scss */
 #errorExplanation ul {
   margin: 2px 24px;
 }
-/* line 87, ../../../app/stylesheets/partials/_application.scss */
+/* line 88, ../../../app/stylesheets/partials/_application.scss */
 #errorExplanation ul li {
   font-size: 12px;
   list-style: disc;
 }
 
-/* line 94, ../../../app/stylesheets/partials/_application.scss */
+/* line 95, ../../../app/stylesheets/partials/_application.scss */
 form select {
   border-color: #bbb;
 }
-/* line 97, ../../../app/stylesheets/partials/_application.scss */
+/* line 99, ../../../app/stylesheets/partials/_application.scss */
+form .date,
 form .datepicker {
   width: 7.5em;
 }
-/* line 100, ../../../app/stylesheets/partials/_application.scss */
+/* line 102, ../../../app/stylesheets/partials/_application.scss */
 form .nested_attributes {
   margin: 1em;
 }
 
-/* line 106, ../../../app/stylesheets/partials/_application.scss */
+/* line 108, ../../../app/stylesheets/partials/_application.scss */
 #container,
 .container {
   background-color: white;
   padding: 20px 40px;
   margin: 1em auto;
 }
-/* line 110, ../../../app/stylesheets/partials/_application.scss */
+/* line 112, ../../../app/stylesheets/partials/_application.scss */
 #container p,
 .container p {
   margin-bottom: .25em;
 }
-/* line 113, ../../../app/stylesheets/partials/_application.scss */
+/* line 115, ../../../app/stylesheets/partials/_application.scss */
 #container h3,
 .container h3 {
   padding-top: 10px;
 }
-/* line 116, ../../../app/stylesheets/partials/_application.scss */
+/* line 118, ../../../app/stylesheets/partials/_application.scss */
 #container form,
 .container form {
   margin-bottom: 1em;
 }
 
-/* line 121, ../../../app/stylesheets/partials/_application.scss */
+/* line 123, ../../../app/stylesheets/partials/_application.scss */
 #header {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -1467,12 +1469,12 @@ form .nested_attributes {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 129, ../../../app/stylesheets/partials/_application.scss */
+/* line 131, ../../../app/stylesheets/partials/_application.scss */
 #header #app_name a {
   text-decoration: none;
 }
 
-/* line 135, ../../../app/stylesheets/partials/_application.scss */
+/* line 137, ../../../app/stylesheets/partials/_application.scss */
 #title {
   font-size: 2em;
   display: inline;
@@ -1486,7 +1488,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 142, ../../../app/stylesheets/partials/_application.scss */
+/* line 144, ../../../app/stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1502,7 +1504,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 147, ../../../app/stylesheets/partials/_application.scss */
+/* line 149, ../../../app/stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }

@@ -59,7 +59,7 @@ class ContactsController < ApplicationController
       if @contact.update_attributes(params[:contact])
         link = find_or_create_contact_link
         
-        format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully created.') }
+        format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully updated.') }
         format.json { render :json => @contact }
       else
         format.html { render :action => "new" }
