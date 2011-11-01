@@ -12,7 +12,7 @@
     
     .contact_link_section
       %h3
-        Event    
+        Event
       = fields_for @contact_link.event do |event|
         = render "events/form_fields", { :f => event }
         

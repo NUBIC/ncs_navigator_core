@@ -223,9 +223,7 @@ class NcsCode < ActiveRecord::Base
     list_name = attribute_lookup(attribute_name)
     where_clause = "list_name = ?"
     where_clause += " AND display_text <> 'Missing in Error'" unless show_missing_in_error
-    NcsCode.where(where_clause, list_name).map do |n| 
-      [n.display_text, n.local_code]
-    end
+    NcsCode.where(where_clause, list_name).map { |n| [n.display_text, n.local_code] }
   end
   
   def self.attribute_lookup(attribute_name)

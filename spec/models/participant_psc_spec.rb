@@ -38,7 +38,7 @@ describe Participant do
   
         let(:participant) { Factory(:low_intensity_ppg1_participant) }
     
-        it "schedules the LO-Intensity PPG 1 and 2 event on that day" do
+        it "should schedule the LO-Intensity Birth Visit" do
           participant.ppg_status.local_code.should == 1
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 
@@ -73,7 +73,20 @@ describe Participant do
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
-    
+
+        it "schedules the LO-Intensity PPG Follow Up event 6 months out after the Low Intensity questionnaire" do
+          participant.ppg_status.local_code.should == 2
+          participant.should be_in_pregnancy_probability_group
+          participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 
+          
+          participant.follow_low_intensity!
+          participant.should be_following_low_intensity
+          participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP 
+          participant.next_scheduled_event.event.should == participant.next_study_segment
+          participant.next_scheduled_event.date.should == 6.months.from_now.to_date
+          
+        end
+
       end
     
       context "PPG Group 3: High Probability - Recent Pregnancy Loss" do
