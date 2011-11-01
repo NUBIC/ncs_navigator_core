@@ -416,7 +416,7 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
-        participant.next_study_segment.should == "LO-Intensity: PPG Follow Up"
+        participant.next_study_segment.should == "LO-Intensity: PPG Follow-Up"
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
         participant = Participant.find(participant.id)
         participant.ppg_status.local_code.should == 1

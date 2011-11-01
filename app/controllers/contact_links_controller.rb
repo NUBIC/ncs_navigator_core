@@ -21,6 +21,7 @@ class ContactLinksController < ApplicationController
 		end
 		
 		set_time_and_dates
+		set_disposition_group
 	end
 
 	# PUT /contact_links/1
@@ -77,6 +78,25 @@ class ContactLinksController < ApplicationController
 	   	instrument.instrument_start_time = instrument.created_at.strftime("%H:%M")
 	   	instrument.instrument_end_time = contact.contact_end_time
   		
+	  end
+	  
+	  ##
+	  # Determine the disposition group to be used from the contact type or instrument taken
+	  def set_disposition_group
+	    @disposition_group = nil
+	    instrument = @contact_link.instrument
+	    contact = @contact_link.contact
+	    if contact && contact.contact_type
+	      @disposition_group = @contact_link.contact.contact_type.to_s
+      end
+      if instrument && instrument.survey
+        case instrument.survey.title
+        when /_HHEnum_/
+          @disposition_group = instrument.survey.title
+        when /_PregScreen_/
+          @disposition_group = instrument.survey.title
+        end
+      end
 	  end
 	
 end

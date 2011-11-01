@@ -49,18 +49,8 @@ module ApplicationHelper
   # Dispositions
   
   
-  def grouped_disposition_codes
-    grouped_options = {}
-    mdes = NcsNavigator::Mdes::Specification.new('2.0')
-    mdes.disposition_codes.map(&:event).uniq.each do |event|
-      grouped_options[event] = []
-    end
-    
-    mdes.disposition_codes.each do |code|
-      grouped_options[code.event] << [code.disposition, code.final_code]
-    end
-    
-    grouped_options_for_select(grouped_options)
+  def grouped_disposition_codes(group = nil)
+    grouped_options_for_select(DispositionMapper.get_grouped_options(group))
   end
   
 end
