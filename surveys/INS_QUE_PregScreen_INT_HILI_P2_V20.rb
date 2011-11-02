@@ -17,7 +17,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     # • PRELOAD NAME OF LOCAL ACADEMIC INSTITUTION.
     # 
     label "Thank you for calling the National Children’s Study. I’d like to tell you a bit about the Study and see if 
-    you are able to take part. I will just need a few minutes of your time. [NAME OF LOCAL ACADEMIC INSTITUTION] is part 
+    you are able to take part. I will just need a few minutes of your time. [Name of local academic institution] is part 
     of this important research study aimed at improving the health and well-being of children."
   end
   section "Verbal permission to screening for study eligibility", :reference_identifier=>"PregScreen_INT" do    
@@ -767,47 +767,30 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
     end
-    label "No questions in this section, please go on to next section"
+  end
+  section "Tracing questions", :reference_identifier=>"PregScreen_INT" do  
+    group "Tracing questions" do
       dependency :rule=>"(A or B or C) and (D or E)"
       condition_A :q_DU_ELIG_CONFIRM, "==", :a_1
       condition_B :q_DU_ELIG_CONFIRM, "==", :a_2
       condition_C :q_DU_ELIG_CONFIRM, "==", :a_3
-      condition_D :q_AGE_ELIG, "!=", :a_1
-      condition_E :q_AGE_ELIG, "!=", :a_3
-  end
-  section "Tracing questions", :reference_identifier=>"PregScreen_INT" do  
-          
-    q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_10"
-    a :datetime
-    dependency :rule=>"(A or B or C) and (D or E)"
-    condition_A :q_DU_ELIG_CONFIRM, "==", :a_1
-    condition_B :q_DU_ELIG_CONFIRM, "==", :a_2
-    condition_C :q_DU_ELIG_CONFIRM, "==", :a_3
-    condition_D :q_AGE_ELIG, "==", :a_1
-    condition_E :q_AGE_ELIG, "==", :a_3
+      condition_D :q_AGE_ELIG, "==", :a_1
+      condition_E :q_AGE_ELIG, "==", :a_3
+      
+      q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_10"
+      a :datetime
     
-    label "These next few questions will help us to contact you again in the future."
-    dependency :rule=>"(A or B or C) and (D or E)"
-    condition_A :q_DU_ELIG_CONFIRM, "==", :a_1
-    condition_B :q_DU_ELIG_CONFIRM, "==", :a_2
-    condition_C :q_DU_ELIG_CONFIRM, "==", :a_3
-    condition_D :q_AGE_ELIG, "==", :a_1
-    condition_E :q_AGE_ELIG, "==", :a_3
+      label "These next few questions will help us to contact you again in the future."
     
-    q_PHONE_NBR "What is the best phone number to reach you?",
-    :help_text => "Enter phone number and confirm.",
-    :pick=>:one,
-    :data_export_identifier=>"PREG_SCREEN_HI_2.PHONE_NBR"
-    a_number "Phone number", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
-    a_neg_7 "Respondent has no telephone/not applicable"
-    dependency :rule=>"(A or B or C) and (D or E)"
-    condition_A :q_DU_ELIG_CONFIRM, "==", :a_1
-    condition_B :q_DU_ELIG_CONFIRM, "==", :a_2
-    condition_C :q_DU_ELIG_CONFIRM, "==", :a_3
-    condition_D :q_AGE_ELIG, "==", :a_1
-    condition_E :q_AGE_ELIG, "==", :a_3
+      q_PHONE_NBR "What is the best phone number to reach you?",
+      :help_text => "Enter phone number and confirm.",
+      :pick=>:one,
+      :data_export_identifier=>"PREG_SCREEN_HI_2.PHONE_NBR"
+      a_number "Phone number", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
+      a_neg_7 "Respondent has no telephone/not applicable"
+    end
     
     q_PHONE_NBR_OTH "Other phone number", 
     :help_text => "If respondent does not have a telephone number, ask where respondent receives telephone calls, 
@@ -903,10 +886,9 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     a_number "Phone number", :string
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule=>"A and (B or C)"
+    dependency :rule=>"A and B"
     condition_A :q_PHONE_TYPE, "!=", :a_3
-    condition_B :q_PHONE_NBR, "!=", :a_number
-    condition_C :q_PHONE_NBR_OTH, "!=", :a_number
+    condition_B :q_CELL_PHONE_1, "==", :a_1
     
     q_SAME_ADDR "Is your mailing address the same as your street address?",
     :pick=>:one,

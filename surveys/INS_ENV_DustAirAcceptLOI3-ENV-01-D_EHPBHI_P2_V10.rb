@@ -48,6 +48,8 @@ survey "INS_ENV_DustAirAcceptLOI3-ENV-01-D_EHPBHI_P2_V1.0" do
     a "Comment", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule =>"A"
+    condition_A :q_COMMENT_COLL, "==", :a_1
     
     label_DAA007 "Now I am going to ask you about the air sampling that is going to be completed in your home.",
     :help_text => "Show air sampling device to participant."

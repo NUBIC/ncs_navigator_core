@@ -1,6 +1,6 @@
 survey "INS_QUE_PregVisit2_SAQ_EHPBHI_P2_V2.0" do
   section "SELF-ADMINISTERED QUESTIONAIRE", :reference_identifier=>"PREG_VISIT_2_SAQ_2" do
-    q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_SAQ_2.TIME_STAMP_1"
+    q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_SAQ_2.TIME_STAMP_1"
     a :datetime
     
     label "Thank you for agreeing to participate in this study. This self-administered questionnaire will take about 5 minutes 
@@ -156,9 +156,10 @@ survey "INS_QUE_PregVisit2_SAQ_EHPBHI_P2_V2.0" do
     a_1 "Yes"
     a_2 "No"
     
-    label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey."
+    label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.", 
+    :help_text => "If SAQ is completed as a PAPI, SCs must provide instructions and a business reply envelope for participant to return"
 
-    q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_SAQ_2.TIME_STAMP_2"
+    q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_SAQ_2.TIME_STAMP_2"
     a :datetime
   end 
 end              

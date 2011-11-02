@@ -1,6 +1,6 @@
 survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
   section "Interview introduction", :reference_identifier=>"Birth_INT" do
-    q_time_stamp_1 "Insert date/time stamp", 
+    q_TIME_STAMP_1 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_1"
     a :datetime
     
@@ -36,7 +36,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     q_CHILD_DOB "What was the {BABY’S/BABIES’} date of birth?",
     :pick=>:one,
     :data_export_identifier=>"BIRTH_VISIT_2.CHILD_DOB" 
-    a "Date", :date
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
   end
@@ -60,73 +60,79 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     # What name would you like me to use to talk about your next baby?” 
     # • IF MULTIPLE =2, DISPLAY: “What name would you like me to use to talk about your baby?”
     
-    repeater "Information on the babies" do
-      q_BABY_NAME_TWINS "During this interview, we would like to refer to your {baby/babies} by name. 
-      Let’s start with your first/next twin birth. What name would you like me to use to talk about your first/next baby?",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
-      a_1 "Name provided"
-      a_2 "Initials provided"
-      a_3 "No official name selected"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule=>"A and B"
-      condition_A :q_MULTIPLE, "==", :a_1
-      condition_B :q_MULTIPLE_NUM, "==", {:integer_value => "2"}   
+    # repeater "Information on the babies" do
+    #   q_BABY_NAME_TWINS "During this interview, we would like to refer to your {baby/babies} by name. 
+    #   Let’s start with your first/next twin birth. What name would you like me to use to talk about your first/next baby?",
+    #   :pick=>:one,
+    #   :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
+    #   a_1 "Name provided"
+    #   a_2 "Initials provided"
+    #   a_3 "No official name selected"
+    #   a_neg_1 "Refused"
+    #   a_neg_2 "Don't know"
+    #   dependency :rule=>"A and B"
+    #   condition_A :q_MULTIPLE, "==", :a_1
+    #   condition_B :q_MULTIPLE_NUM, "==", {:integer_value => "2"}   
+    # 
+    #   q_BABY_NAME_TRIPLETS "During this interview, we would like to refer to your {baby/babies} by name. Let’s start with your 
+    #   first/next triplet birth. What name would you like me to use to talk about your first/next baby?",
+    #   :pick=>:one,
+    #   :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
+    #   a_1 "Name provided"
+    #   a_2 "Initials provided"
+    #   a_3 "No official name selected"
+    #   a_neg_1 "Refused"
+    #   a_neg_2 "Don't know"
+    #   dependency :rule=>"A and B"
+    #   condition_A :q_MULTIPLE, "==", :a_1
+    #   condition_B :q_MULTIPLE_NUM, "==", {:integer_value => "3"}   
+    # 
+    #   q_BABY_NAME_FOUR_OR_MORE "During this interview, we would like to refer to your {baby/babies} by name. Let’s start with your 
+    #   first higher order birth. What name would you like me to use to talk about your first baby?",
+    #   :help_text => "For the second loop read; \"Now let’s talk about your next baby. What name would you like me to use to talk about your next baby?\"",
+    #   :pick=>:one,
+    #   :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
+    #   a_1 "Name provided"
+    #   a_2 "Initials provided"
+    #   a_3 "No official name selected"
+    #   a_neg_1 "Refused"
+    #   a_neg_2 "Don't know"
+    #   dependency :rule=>"A and B"
+    #   condition_A :q_MULTIPLE, "==", :a_1
+    #   condition_B :q_MULTIPLE_NUM, ">", {:integer_value => "3"}   
+    # 
+    #   q_BABY_NAME_ONE "During this interview, we would like to refer to your {baby/babies} by name. What name would you like me to use to talk about your baby?",
+    #   :pick=>:one,
+    #   :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
+    #   a_1 "Name provided"
+    #   a_2 "Initials provided"
+    #   a_3 "No official name selected"
+    #   a_neg_1 "Refused"
+    #   a_neg_2 "Don't know"
+    #   dependency :rule=>"A"
+    #   condition_A :q_MULTIPLE, "==", :a_2
+  # end
+  
+    q_BABY_NAME "During this interview, we would like to refer to your {baby/babies} by name.",
+    :pick=>:one,
+    :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
+    a_1 "Name provided"
+    a_2 "Initials provided"
+    a_3 "No official name selected"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
-      q_BABY_NAME_TRIPLETS "During this interview, we would like to refer to your {baby/babies} by name. Let’s start with your 
-      first/next triplet birth. What name would you like me to use to talk about your first/next baby?",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
-      a_1 "Name provided"
-      a_2 "Initials provided"
-      a_3 "No official name selected"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule=>"A and B"
-      condition_A :q_MULTIPLE, "==", :a_1
-      condition_B :q_MULTIPLE_NUM, "==", {:integer_value => "3"}   
-
-      q_BABY_NAME_FOUR_OR_MORE "During this interview, we would like to refer to your {baby/babies} by name. Let’s start with your 
-      first higher order birth. What name would you like me to use to talk about your first baby?",
-      :help_text => "For the second loop read; \"Now let’s talk about your next baby. What name would you like me to use to talk about your next baby?\"",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
-      a_1 "Name provided"
-      a_2 "Initials provided"
-      a_3 "No official name selected"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule=>"A and B"
-      condition_A :q_MULTIPLE, "==", :a_1
-      condition_B :q_MULTIPLE_NUM, ">", {:integer_value => "3"}   
-    
-      q_BABY_NAME_ONE "During this interview, we would like to refer to your {baby/babies} by name. What name would you like me to use to talk about your baby?",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_NAME"
-      a_1 "Name provided"
-      a_2 "Initials provided"
-      a_3 "No official name selected"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      dependency :rule=>"A"
-      condition_A :q_MULTIPLE, "==", :a_2
-    
+    group "First and last name" do
+      dependency :rule=>"A or B"
+      condition_A :q_BABY_NAME, "==", :a_1
+      condition_B :q_BABY_NAME, "==", :a_2
+      
       q_BABY_FNAME "First name",
       :pick=>:one,
       :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_FNAME"
       a_1 "First name", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule=>"A or B or C or D or E or F or G or H"
-      condition_A :q_BABY_NAME_TWINS, "==", :a_1
-      condition_B :q_BABY_NAME_TWINS, "==", :a_2
-      condition_C :q_BABY_NAME_TRIPLETS, "==", :a_1
-      condition_D :q_BABY_NAME_TRIPLETS, "==", :a_2
-      condition_E :q_BABY_NAME_FOUR_OR_MORE, "==", :a_1
-      condition_F :q_BABY_NAME_FOUR_OR_MORE, "==", :a_2        
-      condition_G :q_BABY_NAME_ONE, "==", :a_1
-      condition_H :q_BABY_NAME_ONE, "==", :a_2
     
       q_BABY_LNAME "Last name",
       :pick=>:one,
@@ -134,48 +140,38 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
       a_1 "Last name", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule=>"A or B or C or D or E or F or G or H"
-      condition_A :q_BABY_NAME_TWINS, "==", :a_1
-      condition_B :q_BABY_NAME_TWINS, "==", :a_2
-      condition_C :q_BABY_NAME_TRIPLETS, "==", :a_1
-      condition_D :q_BABY_NAME_TRIPLETS, "==", :a_2
-      condition_E :q_BABY_NAME_FOUR_OR_MORE, "==", :a_1
-      condition_F :q_BABY_NAME_FOUR_OR_MORE, "==", :a_2        
-      condition_G :q_BABY_NAME_ONE, "==", :a_1
-      condition_H :q_BABY_NAME_ONE, "==", :a_2    
-    
-    
-      q_BABY_SEX "What is the sex of the baby?",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_SEX"
-      a_1 "Male"
-      a_2 "Female"
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-    
-      # TODO
-      #     PROGRAMMER INSTRUCTIONS: 
-      #     • IF MULTIPLE =2 AND BABY_SEX=1, USE “he” IN REMAINDER OF QUESTIONNAIRE. IF MULTIPLE =2 AND IF BABY_SEX=2, , 
-      # USE “she” IN REMAINDER OF QUESTIONNAIRE. 
-      #     • IF MULTIPLE=1, USE “they” IN REMAINDER OF QUESTIONNAIRE. IF MULTIPLE BIRTHS, PRE-FILL EITHER “your babies” 
-      # OR ACTUAL NAMES – SEPARATED BY “and” AS APPROPRIATE THROUGHOUT QUESTIONNAIRE.
-      #     • IF MULTIPLE=2 AND IF BABY_SEX=-1 OR -2, USE BABY_NAME IN REMAINDER OF QUESTIONNARE FOR “he” or “she.”
-      #     •	IF BABY_NAME=3, -1 OR -2 AND BABY_SEX=-1 OR -2, USE “your baby” IN REMAINDER OF QUESTIONNAIRE FOR ‘she” or “he.”
-      
-      q_BABY_BWT_LB "How much did [BABY_NAME] weigh when [he/she] was born?",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_BWT_LB"
-      a_lbs "Pounds:", :integer
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
-      
-      q_BABY_BWT_OZ "How much did [BABY_NAME] weigh when [he/she] was born?",
-      :pick=>:one,
-      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_BWT_OZ"
-      a_lbs "Ounces:", :integer
-      a_neg_1 "Refused"
-      a_neg_2 "Don't know"
     end
+    
+    q_BABY_SEX "What is the sex of the baby?",
+    :pick=>:one,
+    :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_SEX"
+    a_1 "Male"
+    a_2 "Female"
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    
+    # TODO
+    #     PROGRAMMER INSTRUCTIONS: 
+    #     • IF MULTIPLE =2 AND BABY_SEX=1, USE “he” IN REMAINDER OF QUESTIONNAIRE. IF MULTIPLE =2 AND IF BABY_SEX=2, , 
+    # USE “she” IN REMAINDER OF QUESTIONNAIRE. 
+    #     • IF MULTIPLE=1, USE “they” IN REMAINDER OF QUESTIONNAIRE. IF MULTIPLE BIRTHS, PRE-FILL EITHER “your babies” 
+    # OR ACTUAL NAMES – SEPARATED BY “and” AS APPROPRIATE THROUGHOUT QUESTIONNAIRE.
+    #     • IF MULTIPLE=2 AND IF BABY_SEX=-1 OR -2, USE BABY_NAME IN REMAINDER OF QUESTIONNARE FOR “he” or “she.”
+    #     •	IF BABY_NAME=3, -1 OR -2 AND BABY_SEX=-1 OR -2, USE “your baby” IN REMAINDER OF QUESTIONNAIRE FOR ‘she” or “he.”
+    
+    q_BABY_BWT_LB "How much did [BABY_NAME] weigh when [he/she] was born?",
+    :pick=>:one,
+    :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_BWT_LB"
+    a_lbs "Pounds:", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
+    
+    q_BABY_BWT_OZ "How much did [BABY_NAME] weigh when [he/she] was born?",
+    :pick=>:one,
+    :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_BWT_OZ"
+    a_lbs "Ounces:", :integer
+    a_neg_1 "Refused"
+    a_neg_2 "Don't know"
     
     q_LIVE_MOM "When [BABY’S NAME leaves] the hospital will [he/she] live with you?",
     :pick=>:one,
@@ -211,7 +207,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     condition_A :q_LIVE_MOM, "!=", :a_1
     condition_B :q_LIVE_MOM_ALT, "!=", :a_1    
     
-    q_time_stamp_2 "Insert date/time stamp", 
+    q_TIME_STAMP_2 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_2"
     a :datetime    
   end
@@ -222,69 +218,65 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
+    a_neg_2 "Don't know"  
     
-    q_OWN_HOME "Is your current home...",
-    :pick=>:one,
-    :data_export_identifier=>"BIRTH_VISIT_2.OWN_HOME"
-    a_1 "Owned or being bought by you or someone in your household"
-    a_2 "Rented by you or someone in your household, or"
-    a_3 "Occupied without payment of rent?"
-    a_neg_5 "Some other arrangement"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_RECENT_MOVE, "==", :a_1
+    group "Housing information" do
+      dependency :rule=>"A"
+      condition_A :q_RECENT_MOVE, "==", :a_1  
     
-    q_OWN_HOME_OTH "Other specify",
-    :pick=>:one,
-    :data_export_identifier=>"BIRTH_VISIT_2.OWN_HOME_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_OWN_HOME, "==", :a_neg_5
+      q_OWN_HOME "Is your current home...",
+      :pick=>:one,
+      :data_export_identifier=>"BIRTH_VISIT_2.OWN_HOME"
+      a_1 "Owned or being bought by you or someone in your household"
+      a_2 "Rented by you or someone in your household, or"
+      a_3 "Occupied without payment of rent?"
+      a_neg_5 "Some other arrangement"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_AGE_HOME "Can you tell us when your home or building was built? Was it between...",
-    :help_text => "Use showcard with categories.",
-    :pick=>:one,
-    :data_export_identifier=>"BIRTH_VISIT_2.AGE_HOME"
-    a_1 "2001 to present,"
-    a_2 "1981 to 2000,"
-    a_3 "1961 to 1980,"
-    a_4 "1941 to 1960, OR"
-    a_5 "1940 or before"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
+      q_OWN_HOME_OTH "Other specify",
+      :pick=>:one,
+      :data_export_identifier=>"BIRTH_VISIT_2.OWN_HOME_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_OWN_HOME, "==", :a_neg_5
     
-    q_ENTER_LENGTH_RESIDE "How long have you lived in this home?",
-    :help_text => "Verify if value > 18 years", 
-    :pick=>:one
-    a_1 "Enter response"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
+      q_AGE_HOME "Can you tell us when your home or building was built? Was it between...",
+      :help_text => "Use showcard with categories.",
+      :pick=>:one,
+      :data_export_identifier=>"BIRTH_VISIT_2.AGE_HOME"
+      a_1 "2001 to present,"
+      a_2 "1981 to 2000,"
+      a_3 "1961 to 1980,"
+      a_4 "1941 to 1960, OR"
+      a_5 "1940 or before"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"    
+    
+      label "How long have you lived in this home?"
 
-    q_LENGTH_RESIDE "Length reside: number (e.g., 5)",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.LENGTH_RESIDE"
-    a "Number", :integer
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_ENTER_LENGTH_RESIDE, "==", :a_1
+      q_LENGTH_RESIDE "Length reside: number (e.g., 5)",
+      :help_text => "Verify if value > 18 years",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.LENGTH_RESIDE"
+      a "Number", :integer
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_LENGTH_RESIDE_UNIT "Length reside: units (e.g., months)", 
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.LENGTH_RESIDE_UNIT"
-    a_1 "Weeks"
-    a_2 "Months"
-    a_3 "Years"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_ENTER_LENGTH_RESIDE, "==", :a_1
+      q_LENGTH_RESIDE_UNIT "Length reside: units (e.g., months)",
+      :help_text => "Verify if value > 18 years",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.LENGTH_RESIDE_UNIT"
+      a_1 "Weeks"
+      a_2 "Months"
+      a_3 "Years"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
-    q_time_stamp_3 "Insert date/time stamp", 
+    q_TIME_STAMP_3 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_3"
     a :datetime    
   end  
@@ -382,7 +374,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_SMOKE, "==", :a_1
     
-    q_time_stamp_4 "Insert date/time stamp", 
+    q_TIME_STAMP_4 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_4"
     a :datetime
   end
@@ -406,274 +398,254 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_neg_2 "Don't know"
     dependency :rule=>"A"
     condition_A :q_FED_BABY, "==", :a_1
-
-    q_PLAN_FEED "After you leave the hospital do you plan to feed the {baby/babies} breast milk, formula or both?",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.PLAN_FEED"
-    a_1 "Breast milk"
-    a_2 "Formula"
-    a_3 "Both breast milk and formula"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"  
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
     
-    q_time_stamp_5 "Insert date/time stamp", 
-    :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_5"
-    a :datetime    
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2    
+    group "Feeding information" do
+      dependency :rule=>"A or B"
+      condition_A :q_LIVE_MOM, "!=", :a_2
+      condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+
+      q_PLAN_FEED "After you leave the hospital do you plan to feed the {baby/babies} breast milk, formula or both?",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.PLAN_FEED"
+      a_1 "Breast milk"
+      a_2 "Formula"
+      a_3 "Both breast milk and formula"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"  
+    
+      q_TIME_STAMP_5 "Insert date/time stamp", 
+      :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_5"
+      a :datetime    
+    end
   end
-  section "Infant sleep", :reference_identifier=>"Birth_INT" do  
-    q_POS_HOSP "Do the nurses here in the hospital usually put your babies to sleep on their stomachs, backs, or sides?",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.POS_HOSP"
-    a_1 "Stomach"
-    a_2 "Back"
-    a_3 "Side"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A and (B or C)"
-    condition_A :q_MULTIPLE, "==", :a_1
-    condition_B :q_LIVE_MOM, "!=", :a_2
-    condition_C :q_LIVE_MOM_ALT, "!=", :a_2
+  section "Infant sleep", :reference_identifier=>"Birth_INT" do
+    group "Sleep information" do
+      dependency :rule=>"A or B"
+      condition_A :q_LIVE_MOM, "!=", :a_2
+      condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+      
+      q_POS_HOSP "Do the nurses here in the hospital usually put your babies to sleep on their stomachs, backs, or sides?",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.POS_HOSP"
+      a_1 "Stomach"
+      a_2 "Back"
+      a_3 "Side"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_MULTIPLE, "==", :a_1
 
-    q_POS_HOSP_ALT "Do the nurses here in the hospital usually put {BABY’S NAME/your baby }} to sleep on [his/her] stomach, back, or side?",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.POS_HOSP"
-    a_1 "Stomach"
-    a_2 "Back"
-    a_3 "Side"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A and (B or C)"
-    condition_A :q_MULTIPLE, "==", :a_2
-    condition_B :q_LIVE_MOM, "!=", :a_2
-    condition_C :q_LIVE_MOM_ALT, "!=", :a_2
+      q_POS_HOSP_ALT "Do the nurses here in the hospital usually put {BABY’S NAME/your baby }} to sleep on [his/her] stomach, back, or side?",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.POS_HOSP"
+      a_1 "Stomach"
+      a_2 "Back"
+      a_3 "Side"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_MULTIPLE, "==", :a_2
     
-    q_POS_HOME "In what position do you plan to put {[BABY’S NAME]/your babies} to sleep at home?",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.POS_HOME"
-    a_1 "Stomach"
-    a_2 "Back"
-    a_3 "Side"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+      q_POS_HOME "In what position do you plan to put {[BABY’S NAME]/your babies} to sleep at home?",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.POS_HOME"
+      a_1 "Stomach"
+      a_2 "Back"
+      a_3 "Side"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_SLEEP_ROOM "When you go home from the hospital do you plan for {[BABY’S NAME]/your babies} to sleep...",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.SLEEP_ROOM"
-    a_1 "In [his/her/their] own room,"
-    a_2 "In a room with other children,"
-    a_3 "In your bedroom, or"
-    a_4 "Another location?"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2    
+      q_SLEEP_ROOM "When you go home from the hospital do you plan for {[BABY’S NAME]/your babies} to sleep...",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.SLEEP_ROOM"
+      a_1 "In [his/her/their] own room,"
+      a_2 "In a room with other children,"
+      a_3 "In your bedroom, or"
+      a_4 "Another location?"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_BED "When you go home from the hospital do you plan for {[BABY’S NAME]/your babies} to sleep in...",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.BED"
-    a_1 "A bassinette,"
-    a_2 "A crib,"
-    a_3 "A co-sleeper,"
-    a_4 "An adult bed alone,"
-    a_5 "An adult bed with you,"
-    a_6 "An adult bed with another child, or"
-    a_neg_5 "Something else"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2    
+      q_BED "When you go home from the hospital do you plan for {[BABY’S NAME]/your babies} to sleep in...",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.BED"
+      a_1 "A bassinette,"
+      a_2 "A crib,"
+      a_3 "A co-sleeper,"
+      a_4 "An adult bed alone,"
+      a_5 "An adult bed with you,"
+      a_6 "An adult bed with another child, or"
+      a_neg_5 "Something else"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_BED_OTH "Other",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.BED_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_BED, "==", :a_neg_5
+      q_BED_OTH "Other",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.BED_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_BED, "==", :a_neg_5
     
-    q_time_stamp_6 "Insert date/time stamp", 
-    :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_6"
-    a :datetime    
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2    
+      q_TIME_STAMP_6 "Insert date/time stamp", 
+      :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_6"
+      a :datetime    
+    end
   end
   section "Well baby care and immunizations", :reference_identifier=>"Birth_INT" do
-    q_HCARE "Where do you plan to take your new {baby/babies} for well-baby checkups?",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.HCARE"
-    a_1 "Clinic or health center"
-    a_2 "Doctor's office or Health Maintenance Organization (HMO)"
-    a_3 "Hospital outpatient department"
-    a_neg_5 "Some other place"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+    group "Well baby care and immunizations information" do
+      dependency :rule=>"A or B"
+      condition_A :q_LIVE_MOM, "!=", :a_2
+      condition_B :q_LIVE_MOM_ALT, "!=", :a_2
     
-    q_HCARE_OTH "Other",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.HCARE_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_HCARE, "==", :a_neg_5
+      q_HCARE "Where do you plan to take your new {baby/babies} for well-baby checkups?",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.HCARE"
+      a_1 "Clinic or health center"
+      a_2 "Doctor's office or Health Maintenance Organization (HMO)"
+      a_3 "Hospital outpatient department"
+      a_neg_5 "Some other place"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_VACCINE "Do you plan for your new {baby/babies} to have well-baby shots or vaccinations?",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.VACCINE"
-    a_1 "Yes"
-    a_2 "Yes, on a delayed schedule"
-    a_3 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+      q_HCARE_OTH "Other",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.HCARE_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_HCARE, "==", :a_neg_5
     
-    q_time_stamp_7 "Insert date/time stamp", 
-    :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_7"
-    a :datetime    
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2    
+      q_VACCINE "Do you plan for your new {baby/babies} to have well-baby shots or vaccinations?",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.VACCINE"
+      a_1 "Yes"
+      a_2 "Yes, on a delayed schedule"
+      a_3 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    
+      q_TIME_STAMP_7 "Insert date/time stamp", 
+      :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_7"
+      a :datetime    
+    end
   end
   section "Work and plans for childcare", :reference_identifier=>"Birth_INT" do
-    q_EMPLOY2 "Are you currently employed?",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.EMPLOY2"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+    group "Work and plans for childcare" do
+      dependency :rule=>"A or B"
+      condition_A :q_LIVE_MOM, "!=", :a_2
+      condition_B :q_LIVE_MOM_ALT, "!=", :a_2
     
-    q "When do you plan to return to your current job?",
-    :help_text => "Verify if value > 1 year or > 12 months or > 52 weeks or > 365 days",
-    :pick => :one
-    a_1 "Enter response"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_EMPLOY2, "!=", :a_2
+      q_EMPLOY2 "Are you currently employed?",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.EMPLOY2"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    
+      label "When do you plan to return to your current job?"
+      dependency :rule=>"A"
+      condition_A :q_EMPLOY2, "!=", :a_2
 
-    q_RETURN_JOB "Number",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.RETURN_JOB"
-    a_num "Number", :integer
-    a_neg_7 "Doesn’t plan to return to work"  
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_EMPLOY2, "!=", :a_2
+      q_RETURN_JOB "Number",
+      :help_text => "Verify if value > 1 year or > 12 months or > 52 weeks or > 365 days",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.RETURN_JOB"
+      a_num "Number", :integer
+      a_neg_7 "Doesn’t plan to return to work"  
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_EMPLOY2, "!=", :a_2
     
-    q_RETURN_JOB_UNIT "Unit",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.RETURN_JOB_UNIT"
-    a_1 "Days"
-    a_2 "Weeks"
-    a_3 "Months"
-    a_4 "Years"
-    a_neg_7 "Doesn’t plan to return to work"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_EMPLOY2, "!=", :a_2
+      q_RETURN_JOB_UNIT "Unit",
+      :help_text => "Verify if value > 1 year or > 12 months or > 52 weeks or > 365 days",      
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.RETURN_JOB_UNIT"
+      a_1 "Days"
+      a_2 "Weeks"
+      a_3 "Months"
+      a_4 "Years"
+      a_neg_7 "Doesn’t plan to return to work"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_EMPLOY2, "!=", :a_2
     
-    q_CHILDCARE "Next I would like to ask you a few questions about your plans for childcare. 
-    Do you plan for {(BABY’S NAME)/your babies} to receive regularly scheduled care from someone 
-    other than you or the {baby’s/babies’} father?",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.CHILDCARE"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+      q_CHILDCARE "Next I would like to ask you a few questions about your plans for childcare. 
+      Do you plan for {(BABY’S NAME)/your babies} to receive regularly scheduled care from someone 
+      other than you or the {baby’s/babies’} father?",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.CHILDCARE"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_CCARE_TYPE "Please describe the type of setting in which most of the childcare will occur.",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.CCARE_TYPE"
-    a_1 "Participants home"
-    a_2 "Other private home"
-    a_3 "Child care center"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CHILDCARE, "!=", :a_2
+      q_CCARE_TYPE "Please describe the type of setting in which most of the childcare will occur.",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.CCARE_TYPE"
+      a_1 "Participants home"
+      a_2 "Other private home"
+      a_3 "Child care center"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CHILDCARE, "!=", :a_2
     
-    q_CCARE_TYPE_OTH "Other type", 
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.CCARE_TYPE_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CCARE_TYPE, "==", :a_neg_5
+      q_CCARE_TYPE_OTH "Other type", 
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.CCARE_TYPE_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CCARE_TYPE, "==", :a_neg_5
     
-    q_CCARE_WHO "Which best describes the person who will be caring for {[BABY’S NAME]/your babies}?",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.CCARE_WHO"
-    a_1 "Your mother"
-    a_2 "Your father"
-    a_3 "Your mother in-law"
-    a_4 "Your father in-law"
-    a_5 "Guardian"
-    a_6 "Other relative"
-    a_7 "Friend"
-    a_8 "Nanny"
-    a_9 "Professional in home daycare"
-    a_10 "Professional center based daycare"
-    a_neg_5 "Other"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2
+      q_CCARE_WHO "Which best describes the person who will be caring for {[BABY’S NAME]/your babies}?",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.CCARE_WHO"
+      a_1 "Your mother"
+      a_2 "Your father"
+      a_3 "Your mother in-law"
+      a_4 "Your father in-law"
+      a_5 "Guardian"
+      a_6 "Other relative"
+      a_7 "Friend"
+      a_8 "Nanny"
+      a_9 "Professional in home daycare"
+      a_10 "Professional center based daycare"
+      a_neg_5 "Other"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CHILDCARE, "!=", :a_2      
     
-    q_REL_CARE_OTH "Other relative",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.REL_CARE_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CCARE_WHO, "==", :a_6 
+      q_REL_CARE_OTH "Other relative",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.REL_CARE_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CCARE_WHO, "==", :a_6 
     
-    q_CCARE_WHO_OTH "Other type of care",
-    :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.CCARE_WHO_OTH"
-    a "Specify", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CCARE_WHO, "==", :a_neg_5
+      q_CCARE_WHO_OTH "Other type of care",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.CCARE_WHO_OTH"
+      a "Specify", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_CCARE_WHO, "==", :a_neg_5
     
-    q_time_stamp_8 "Insert date/time stamp", 
-    :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_8"
-    a :datetime    
-    dependency :rule=>"A or B"
-    condition_A :q_LIVE_MOM, "!=", :a_2
-    condition_B :q_LIVE_MOM_ALT, "!=", :a_2    
+      q_TIME_STAMP_8 "Insert date/time stamp", 
+      :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_8"
+      a :datetime    
+    end
   end
   section "Tracing questions", :reference_identifier=>"Birth_INT" do
     label "These next few questions will help us to contact you again in the future."
@@ -712,10 +684,8 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_neg_5 "Other"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule=>"A or B or C"
-    condition_A :q_PHONE_NBR, "!=", :a_neg_1
-    condition_B :q_PHONE_NBR, "!=", :a_neg_2
-    condition_C :q_PHONE_NBR, "!=", :a_neg_7        
+    dependency :rule=>"A"
+    condition_A :q_PHONE_NBR, "==", :a_phone
     
     q_FRIEND_PHONE_OTH "Friend's phone number",
     :pick => :one,
@@ -763,6 +733,9 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule=>"A or B"
+    condition_A :q_CELL_PHONE_1, "==", :a_1
+    condition_B :q_PHONE_TYPE, "==", :a_3  
     
     q_CELL_PHONE_3 "Do you send and receive text messages on your personal cell phone?",
     :pick => :one,
@@ -771,6 +744,9 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule=>"A or B"
+    condition_A :q_CELL_PHONE_1, "==", :a_1
+    condition_B :q_PHONE_TYPE, "==", :a_3    
     
     q_CELL_PHONE_4 "May we send text messages to make future study appointments or for appointment reminders?",
     :pick => :one,
@@ -779,6 +755,8 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule=>"A"
+    condition_A :q_CELL_PHONE_3, "==", :a_1    
     
     q_CELL_PHONE "What is your personal cell phone number?",
     :help_text => "Enter phone number and confirm.",
@@ -787,11 +765,12 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a "Phone Number", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule=>"A and B"
-    condition_A :q_PHONE_TYPE, "!=", :a_3
-    condition_B :q_PHONE_NBR, "==", :a_phone
+    dependency :rule=>"(A and B) or C"
+    condition_A :q_CELL_PHONE_1, "==", :a_1
+    condition_B :q_PHONE_TYPE, "!=", :a_3
+    condition_C :q_PHONE_TYPE, "==", :a_3    
     
-    q_time_stamp_9 "Insert date/time stamp", 
+    q_TIME_STAMP_9 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_9"
     a :datetime
     
@@ -806,125 +785,109 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_RECENT_MOVE , "==", :a_1
 
-    q_NEW_ADDRESS1 "Address 1 - street/PO Box", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS1",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
+    group "Address information" do
+      dependency :rule=>"A"
+      condition_A :q_MOVE_INFO , "==", :a_1
+      
+      q_NEW_ADDRESS1 "Address 1 - street/PO Box", 
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS1",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_ADDRESS2 "Address 2", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS2",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
+      q_NEW_ADDRESS2 "Address 2", 
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS2",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_UNIT "Unit", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_UNIT",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
+      q_NEW_UNIT "Unit", 
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_UNIT",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_CITY "City", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_CITY",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
+      q_NEW_CITY "City", 
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_CITY",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_STATE "State", :display_type=>"dropdown", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_STATE"
-    a_1 "AL"
-    a_2 "AK"
-    a_3 "AZ"
-    a_4 "AR"
-    a_5 "CA"
-    a_6 "CO"
-    a_7 "CT"
-    a_8 "DE"
-    a_9 "DC"
-    a_10 "FL"
-    a_11 "GA"
-    a_12 "HI"
-    a_13 "ID"
-    a_14 "IL"
-    a_15 "IN"
-    a_16 "IA"
-    a_17 "KS"
-    a_18 "KY"
-    a_19 "LA"
-    a_20 "ME"
-    a_21 "MD"
-    a_22 "MA"
-    a_23 "MI"
-    a_24 "MN"
-    a_25 "MS"
-    a_26 "MO"
-    a_27 "MT"
-    a_28 "NE"
-    a_29 "NV"
-    a_30 "NH"
-    a_31 "NJ"
-    a_32 "NM"
-    a_33 "NY"
-    a_34 "NC"
-    a_35 "ND"
-    a_36 "OH"
-    a_37 "OK"
-    a_38 "OR"
-    a_39 "PA"
-    a_40 "RI"
-    a_41 "SC"
-    a_42 "SD"
-    a_43 "TN"
-    a_44 "TX"
-    a_45 "UT"
-    a_46 "VT"
-    a_47 "VA"
-    a_48 "WA"
-    a_49 "WV"
-    a_50 "WI"
-    a_51 "WY"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
+      q_NEW_STATE "State", :display_type=>"dropdown", :pick=>:one,
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_STATE"
+      a_1 "AL"
+      a_2 "AK"
+      a_3 "AZ"
+      a_4 "AR"
+      a_5 "CA"
+      a_6 "CO"
+      a_7 "CT"
+      a_8 "DE"
+      a_9 "DC"
+      a_10 "FL"
+      a_11 "GA"
+      a_12 "HI"
+      a_13 "ID"
+      a_14 "IL"
+      a_15 "IN"
+      a_16 "IA"
+      a_17 "KS"
+      a_18 "KY"
+      a_19 "LA"
+      a_20 "ME"
+      a_21 "MD"
+      a_22 "MA"
+      a_23 "MI"
+      a_24 "MN"
+      a_25 "MS"
+      a_26 "MO"
+      a_27 "MT"
+      a_28 "NE"
+      a_29 "NV"
+      a_30 "NH"
+      a_31 "NJ"
+      a_32 "NM"
+      a_33 "NY"
+      a_34 "NC"
+      a_35 "ND"
+      a_36 "OH"
+      a_37 "OK"
+      a_38 "OR"
+      a_39 "PA"
+      a_40 "RI"
+      a_41 "SC"
+      a_42 "SD"
+      a_43 "TN"
+      a_44 "TX"
+      a_45 "UT"
+      a_46 "VT"
+      a_47 "VA"
+      a_48 "WA"
+      a_49 "WV"
+      a_50 "WI"
+      a_51 "WY"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_ZIP "ZIP Code", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
+      q_NEW_ZIP "ZIP Code", 
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_ZIP4 "ZIP+4", 
-    :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP4",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_MOVE_INFO , "==", :a_1
-    condition_B :q_MOVE_INFO , "==", :a_3
-
+      q_NEW_ZIP4 "ZIP+4", 
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP4",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
+    
     q_SAME_ADDR "Is your mailing address the same as your street address?",
     :pick => :one,
     :data_export_identifier=>"BIRTH_VISIT_2.SAME_ADDR"
@@ -932,123 +895,115 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
+    dependency :rule=>"A"
+    condition_A :q_MOVE_INFO , "!=", :a_3
     
-    label "What is your mailing address?",
-    :help_text => "Prompt as necessary to complete information"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+    group "Mailing address information" do
+      dependency :rule=>"A or B"
+      condition_A :q_SAME_ADDR, "==", :a_2
+      condition_B :q_MOVE_INFO , "==", :a_3
+      
+      label "What is your mailing address?",
+      :help_text => "Prompt as necessary to complete information"
+    
+      q_MAIL_ADDRESS1 "Address 1 - street/PO Box", 
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ADDRESS1",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_MAIL_ADDRESS1 "Address 1 - street/PO Box", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ADDRESS1",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+      q_MAIL_ADDRESS2 "Address 2", 
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ADDRESS2",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_MAIL_ADDRESS2 "Address 2", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ADDRESS2",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+      q_MAIL_UNIT "Unit", 
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_UNIT",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_MAIL_UNIT "Unit", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_UNIT",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+      q_MAIL_CITY "City", 
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_CITY",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_MAIL_CITY "City", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_CITY",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+      q_MAIL_STATE "State", :display_type=>"dropdown", :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_STATE"
+      a_1 "AL"
+      a_2 "AK"
+      a_3 "AZ"
+      a_4 "AR"
+      a_5 "CA"
+      a_6 "CO"
+      a_7 "CT"
+      a_8 "DE"
+      a_9 "DC"
+      a_10 "FL"
+      a_11 "GA"
+      a_12 "HI"
+      a_13 "ID"
+      a_14 "IL"
+      a_15 "IN"
+      a_16 "IA"
+      a_17 "KS"
+      a_18 "KY"
+      a_19 "LA"
+      a_20 "ME"
+      a_21 "MD"
+      a_22 "MA"
+      a_23 "MI"
+      a_24 "MN"
+      a_25 "MS"
+      a_26 "MO"
+      a_27 "MT"
+      a_28 "NE"
+      a_29 "NV"
+      a_30 "NH"
+      a_31 "NJ"
+      a_32 "NM"
+      a_33 "NY"
+      a_34 "NC"
+      a_35 "ND"
+      a_36 "OH"
+      a_37 "OK"
+      a_38 "OR"
+      a_39 "PA"
+      a_40 "RI"
+      a_41 "SC"
+      a_42 "SD"
+      a_43 "TN"
+      a_44 "TX"
+      a_45 "UT"
+      a_46 "VT"
+      a_47 "VA"
+      a_48 "WA"
+      a_49 "WV"
+      a_50 "WI"
+      a_51 "WY"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_MAIL_STATE "State", :display_type=>"dropdown", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_STATE"
-    a_1 "AL"
-    a_2 "AK"
-    a_3 "AZ"
-    a_4 "AR"
-    a_5 "CA"
-    a_6 "CO"
-    a_7 "CT"
-    a_8 "DE"
-    a_9 "DC"
-    a_10 "FL"
-    a_11 "GA"
-    a_12 "HI"
-    a_13 "ID"
-    a_14 "IL"
-    a_15 "IN"
-    a_16 "IA"
-    a_17 "KS"
-    a_18 "KY"
-    a_19 "LA"
-    a_20 "ME"
-    a_21 "MD"
-    a_22 "MA"
-    a_23 "MI"
-    a_24 "MN"
-    a_25 "MS"
-    a_26 "MO"
-    a_27 "MT"
-    a_28 "NE"
-    a_29 "NV"
-    a_30 "NH"
-    a_31 "NJ"
-    a_32 "NM"
-    a_33 "NY"
-    a_34 "NC"
-    a_35 "ND"
-    a_36 "OH"
-    a_37 "OK"
-    a_38 "OR"
-    a_39 "PA"
-    a_40 "RI"
-    a_41 "SC"
-    a_42 "SD"
-    a_43 "TN"
-    a_44 "TX"
-    a_45 "UT"
-    a_46 "VT"
-    a_47 "VA"
-    a_48 "WA"
-    a_49 "WV"
-    a_50 "WI"
-    a_51 "WY"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+      q_MAIL_ZIP "ZIP Code", 
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ZIP",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_MAIL_ZIP "ZIP Code", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ZIP",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
-
-    q_MAIL_ZIP4 "ZIP+4", 
-    :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ZIP4",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_SAME_ADDR, "==", :a_2
+      q_MAIL_ZIP4 "ZIP+4", 
+      :data_export_identifier=>"BIRTH_VISIT_2.MAIL_ZIP4",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_HAVE_EMAIL "Do you have an email address?", :pick=>:one, 
     :data_export_identifier=>"BIRTH_VISIT_2.HAVE_EMAIL"
@@ -1056,41 +1011,40 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_COMM_EMAIL, "!=", :a_2
     
-    q_EMAIL "What is the best email address to reach you?", 
-    :pick=>:one, 
-    :help_text=>"Show example of valid email address such as maryjane@email.com", 
-    :data_export_identifier=>"BIRTH_VISIT_2.EMAIL"
-    a_1 "Enter e-mail address:", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1
+    group "Email information" do
+      dependency :rule=>"A"
+      condition_A :q_HAVE_EMAIL, "==", :a_1
+      
+      q_EMAIL "What is the best email address to reach you?", 
+      :pick=>:one, 
+      :help_text=>"Show example of valid email address such as maryjane@email.com", 
+      :data_export_identifier=>"BIRTH_VISIT_2.EMAIL"
+      a_1 "Enter e-mail address:", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_EMAIL_TYPE "Is that your personal e-mail, work e-mail, or a family or shared e-mail address?",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.EMAIL_TYPE"
-    a_1 "Personal"
-    a_2 "Work"
-    a_3 "Family/shared"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1
+      q_EMAIL_TYPE "Is that your personal e-mail, work e-mail, or a family or shared e-mail address?",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.EMAIL_TYPE"
+      a_1 "Personal"
+      a_2 "Work"
+      a_3 "Family/shared"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    # TODO
-    #     PROGRAMMER INSTRUCTIONS: 
-    #     • IF PARTICIPANT REPORTED A SHARED EMAIL ADDRESS IN EMAIL_TYPE, SET EMAIL_SHARE AS APPROPRIATE THEN GO TO PLAN_MOVE.
-    q_EMAIL_SHARE "Is email shared?",
-    :help_text => "If participant reported a shared email address in previous question, set the answer as appropriate.",
-    :pick=>:one, 
-    :data_export_identifier=>"BIRTH_VISIT_2.EMAIL_SHARE"
-    a_1 "Yes"
-    a_2 "No"
-    dependency :rule=>"A"
-    condition_A :q_EMAIL_TYPE, "!=", :a_3
+      # TODO
+      #     PROGRAMMER INSTRUCTIONS: 
+      #     • IF PARTICIPANT REPORTED A SHARED EMAIL ADDRESS IN EMAIL_TYPE, SET EMAIL_SHARE AS APPROPRIATE THEN GO TO PLAN_MOVE.
+      q_EMAIL_SHARE "Is email shared?",
+      :help_text => "If participant reported a shared email address in previous question, set the answer as appropriate.",
+      :pick=>:one, 
+      :data_export_identifier=>"BIRTH_VISIT_2.EMAIL_SHARE"
+      a_1 "Yes"
+      a_2 "No"
+      dependency :rule=>"A"
+      condition_A :q_EMAIL_TYPE, "!=", :a_3
+    end
     
     q_PLAN_MOVE "Do you plan on moving from your present address in the next few months?",
     :pick=>:one, 
@@ -1099,8 +1053,6 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_EMAIL_TYPE, "!=", :a_3
     
     q_WHERE_MOVE "Do you know where you will be moving?",
     :pick=>:one, 
@@ -1123,123 +1075,107 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_WHERE_MOVE , "==", :a_1
     
-    label "Enter address",
-    :help_text => "Probe and enter as much information as participant knows."
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+    group "New home address" do
+      dependency :rule=>"A or B"
+      condition_A :q_PLAN_MOVE_INFO, "==", :a_1
+      condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      
+      label "Enter address",
+      :help_text => "Probe and enter as much information as participant knows."
 
-    q_NEW_ADDRESS1_B "Address 1 - street/PO Box", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS1_B",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_ADDRESS1_B "Address 1 - street/PO Box", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS1_B",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_NEW_ADDRESS2_B "Address 2", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS2_B",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_ADDRESS2_B "Address 2", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ADDRESS2_B",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_NEW_UNIT_B "Unit", :data_export_identifier=>"BIRTH_VISIT_2.NEW_UNIT_B",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_UNIT_B "Unit", :data_export_identifier=>"BIRTH_VISIT_2.NEW_UNIT_B",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_NEW_CITY_B "City", :data_export_identifier=>"BIRTH_VISIT_2.NEW_CITY_B",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_CITY_B "City", :data_export_identifier=>"BIRTH_VISIT_2.NEW_CITY_B",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_STATE_B "State", :display_type=>"dropdown", :data_export_identifier=>"BIRTH_VISIT_2.NEW_STATE_B"
-    a_1 "AL"
-    a_2 "AK"
-    a_3 "AZ"
-    a_4 "AR"
-    a_5 "CA"
-    a_6 "CO"
-    a_7 "CT"
-    a_8 "DE"
-    a_9 "DC"
-    a_10 "FL"
-    a_11 "GA"
-    a_12 "HI"
-    a_13 "ID"
-    a_14 "IL"
-    a_15 "IN"
-    a_16 "IA"
-    a_17 "KS"
-    a_18 "KY"
-    a_19 "LA"
-    a_20 "ME"
-    a_21 "MD"
-    a_22 "MA"
-    a_23 "MI"
-    a_24 "MN"
-    a_25 "MS"
-    a_26 "MO"
-    a_27 "MT"
-    a_28 "NE"
-    a_29 "NV"
-    a_30 "NH"
-    a_31 "NJ"
-    a_32 "NM"
-    a_33 "NY"
-    a_34 "NC"
-    a_35 "ND"
-    a_36 "OH"
-    a_37 "OK"
-    a_38 "OR"
-    a_39 "PA"
-    a_40 "RI"
-    a_41 "SC"
-    a_42 "SD"
-    a_43 "TN"
-    a_44 "TX"
-    a_45 "UT"
-    a_46 "VT"
-    a_47 "VA"
-    a_48 "WA"
-    a_49 "WV"
-    a_50 "WI"
-    a_51 "WY"
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_STATE_B "State", :display_type=>"dropdown",
+      :pick => :one,
+      :data_export_identifier=>"BIRTH_VISIT_2.NEW_STATE_B"
+      a_1 "AL"
+      a_2 "AK"
+      a_3 "AZ"
+      a_4 "AR"
+      a_5 "CA"
+      a_6 "CO"
+      a_7 "CT"
+      a_8 "DE"
+      a_9 "DC"
+      a_10 "FL"
+      a_11 "GA"
+      a_12 "HI"
+      a_13 "ID"
+      a_14 "IL"
+      a_15 "IN"
+      a_16 "IA"
+      a_17 "KS"
+      a_18 "KY"
+      a_19 "LA"
+      a_20 "ME"
+      a_21 "MD"
+      a_22 "MA"
+      a_23 "MI"
+      a_24 "MN"
+      a_25 "MS"
+      a_26 "MO"
+      a_27 "MT"
+      a_28 "NE"
+      a_29 "NV"
+      a_30 "NH"
+      a_31 "NJ"
+      a_32 "NM"
+      a_33 "NY"
+      a_34 "NC"
+      a_35 "ND"
+      a_36 "OH"
+      a_37 "OK"
+      a_38 "OR"
+      a_39 "PA"
+      a_40 "RI"
+      a_41 "SC"
+      a_42 "SD"
+      a_43 "TN"
+      a_44 "TX"
+      a_45 "UT"
+      a_46 "VT"
+      a_47 "VA"
+      a_48 "WA"
+      a_49 "WV"
+      a_50 "WI"
+      a_51 "WY"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_ZIP_B "ZIP Code", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP_B",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_ZIP_B "ZIP Code", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP_B",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    q_NEW_ZIP4_B "ZIP+4", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP4_B",
-    :pick=>:one
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A or B"
-    condition_A :q_PLAN_MOVE_INFO, "==", :a_1
-    condition_B :q_PLAN_MOVE_INFO, "==", :a_3
+      q_NEW_ZIP4_B "ZIP+4", :data_export_identifier=>"BIRTH_VISIT_2.NEW_ZIP4_B",
+      :pick=>:one
+      a :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+    end
     
     q_WHEN_MOVE "Do you know when you will be moving?",
     :pick=>:one, 
@@ -1261,14 +1197,14 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_WHEN_MOVE, "==", :a_1
 
-    q_time_stamp_10 "Insert date/time stamp", 
+    q_TIME_STAMP_10 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_10"
     a :datetime    
 
     label_END_OF_INTERVIEW "Thank you for participating in the National Children’s Study and for taking the time to answer our questions."
   end
   section "Interviewer-completed questions", :reference_identifier=>"Birth_INT" do
-    q_time_stamp_11 "Insert date/time stamp", 
+    q_TIME_STAMP_11 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_11"
     a :datetime
     
@@ -1346,7 +1282,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     dependency :rule=>"A"
     condition_A :q_CONTACT_INTERPRET, "==", :a_neg_5
     
-    q_time_stamp_12 "Insert date/time stamp", 
+    q_TIME_STAMP_12 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_12"
     a :datetime
     

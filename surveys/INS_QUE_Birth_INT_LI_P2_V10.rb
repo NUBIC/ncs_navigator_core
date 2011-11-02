@@ -503,7 +503,9 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       a_2 "Formula"
       a_3 "Both breast milk and formula"
       a_neg_1 "Refused"
-      a_neg_2 "Don't know"  
+      a_neg_2 "Don't know"
+      dependency :rule=>"A"
+      condition_A :q_FED_BABY, "==", :a_2      
     
       q_PLAN_FEED_1 "Have you fed the {baby/babies} breast milk, formula or both?",
       :pick=>:one, 
@@ -513,6 +515,8 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       a_3 "Both breast milk and formula"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"  
+      dependency :rule=>"A"
+      condition_A :q_FED_BABY, "!=", :a_2      
     
       q_TIME_STAMP_5 "Insert date/time stamp", 
       :data_export_identifier=>"BIRTH_VISIT_LI.TIME_STAMP_5"
@@ -1025,6 +1029,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     a_neg_2 "Don't know"
     dependency :rule=>"A or B"
     condition_A :q_CELL_PHONE_1, "==", :a_1
+    condition_B :q_PHONE_TYPE, "!=", :a_3    
     
     q_TIME_STAMP_9 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_LI.TIME_STAMP_9"

@@ -1,6 +1,6 @@
 survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
   section "Self-administered questionaire", :reference_identifier=>"12MMother_SAQ_2" do
-    q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_1"
+    q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_1"
     a :datetime
     
     label "Thank you for agreeing to participate in the National Children’s Study. This self-administered questionnaire will take 
@@ -470,7 +470,7 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     
-    q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_2"
+    q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_2"
     a :datetime
     
     label "The next questions will ask about the milk, formula, and food your child has eaten. In the past 7 Days, 
@@ -663,9 +663,10 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_5 "Other"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule=>"A or B"
+    dependency :rule=>"A and B and C"
     condition_A :q_FORMULA_LAST7, "!=", :a_2
     condition_B :q_FORMULA_LAST7, "!=", :a_neg_7
+    condition_C :q_FORMULA_FED, "!=", :a_neg_7  
     
     q_FORMULA_BRAND_OTH "Other Formula Brand", 
     :pick => :one,
@@ -674,14 +675,14 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A and B and C"
-    condition_A :q_FORMULA_LAST7, "==", :a_neg_5
-    condition_B :q_FORMULA_LAST7, "!=", :a_neg_1
-    condition_B :q_FORMULA_LAST7, "!=", :a_neg_2
+    condition_A :q_FORMULA_BRAND, "==", :a_neg_5
+    condition_B :q_FORMULA_BRAND, "!=", :a_neg_1
+    condition_B :q_FORMULA_BRAND, "!=", :a_neg_2
     
     q_FORMULA_TYPE "Was the formula ready-to-feed, liquid concentrate, powder from a can that makes a single 
     serving, or powder from single serving packets?",
     :help_text => "Select all that apply",
-    :pick => :one,
+    :pick => :any,
     :data_export_identifier=>"TWELVE_MTH_SAQ_FORMULA_BRAND_2.FORMULA_TYPE"
     a_1 "Ready-to-feed"
     a_2 "Liquid concentrate"
@@ -696,7 +697,7 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     q_WATER_1 "During the past 7 days, what types of water have you and others who care for your baby used for 
     mixing your baby’s formula?",
     :help_text => "Select all that apply",
-    :pick => :one,
+    :pick => :any,
     :data_export_identifier=>"TWELVE_MTH_SAQ_WATER_2.WATER_1"
     a_1 "Tap water from the cold faucet"
     a_2 "Warm tap water from the hot faucet"
@@ -704,9 +705,13 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_5 "Other type of water used"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know" 
-    dependency :rule=>"A and B"
+    dependency :rule=>"(A and B and C and (D or E or F))"
     condition_A :q_FORMULA_TYPE, "!=", :a_neg_1
     condition_B :q_FORMULA_TYPE, "!=", :a_neg_2
+    condition_C :q_FORMULA_TYPE, "==", :a_1
+    condition_D :q_FORMULA_TYPE, "==", :a_2
+    condition_E :q_FORMULA_TYPE, "==", :a_3
+    condition_F :q_FORMULA_TYPE, "==", :a_4
     
     q_WATER_1_OTH "Specify other type of water user",
     :pick => :one,
@@ -726,10 +731,13 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule=>"A and B and C"
-    condition_A :q_WATER_1_OTH, "==", :a_specify
-    condition_B :q_WATER_1, "!=", :a_neg_1
-    condition_C :q_WATER_1, "!=", :a_neg_2    
+    dependency :rule=>"(A and B and C and (D or E or F))"
+    condition_A :q_FORMULA_TYPE, "!=", :a_neg_1
+    condition_B :q_FORMULA_TYPE, "!=", :a_neg_2
+    condition_C :q_FORMULA_TYPE, "==", :a_1
+    condition_D :q_FORMULA_TYPE, "==", :a_2
+    condition_E :q_FORMULA_TYPE, "==", :a_3
+    condition_F :q_FORMULA_TYPE, "==", :a_4   
     
     q_OUNCES "In the past 7 days, on the average, how many ounces of formula did your baby drink at each feeding?",
     :pick => :one,
@@ -894,7 +902,7 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"   
     
-    q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_3"
+    q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_3"
     a :datetime
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.",

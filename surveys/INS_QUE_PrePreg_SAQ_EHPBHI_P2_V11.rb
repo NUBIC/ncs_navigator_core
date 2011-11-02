@@ -65,7 +65,6 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_2 "Somewhat important"
     a_3 "Very important"
 
-
     q_DOCTOR "(How important was...) Having my doctor or health care provider support my choice to take part in the study?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.DOCTOR"
@@ -164,7 +163,8 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_1 "Yes"
     a_2 "No"
 
-    label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey."
+    label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.", 
+    :help_text => "If SAQ is completed as a PAPI, SCs must provide instructions and a business reply envelope for participant to return."
 
     q_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_14"
     a :datetime

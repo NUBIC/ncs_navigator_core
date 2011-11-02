@@ -1,5 +1,5 @@
 survey "INS_QUE_InternetUseContactPref_SUR_EHPBHI_P2_V1.0" do
-  section "INTERVIEW", :reference_identifier=>"InternetUseContactPref_SUR" do
+  section "Interview", :reference_identifier=>"InternetUseContactPref_SUR" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"INTERNET_USAGE.TIME_STAMP_1"
     a :datetime
     
@@ -55,32 +55,33 @@ survey "INS_QUE_InternetUseContactPref_SUR_EHPBHI_P2_V1.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
+
+    group "Email information" do
+      dependency :rule=>"A"
+      condition_A :q_HAVE_EMAIL, "==", :a_1
+      
+      q_CHECK_EMAIL "How often would you say you log on to check your email?",
+      :pick => :one,
+      :data_export_identifier=>"INTERNET_USAGE.CHECK_EMAIL"
+      a_1 "1 to 5 times a day (or more)"
+      a_2 "Once a day"
+      a_3 "1-3 times a week"
+      a_4 "Less than once a week"
+      a_5 "Once every 2 weeks"
+      a_6 "Once a month"
+      a_7 "Rarely"
+      a_8 "Never"
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
     
-    q_CHECK_EMAIL "How often would you say you log on to check your email?",
-    :pick => :one,
-    :data_export_identifier=>"INTERNET_USAGE.CHECK_EMAIL"
-    a_1 "1 to 5 times a day (or more)"
-    a_2 "Once a day"
-    a_3 "1-3 times a week"
-    a_4 "Less than once a week"
-    a_5 "Once every 2 weeks"
-    a_6 "Once a month"
-    a_7 "Rarely"
-    a_8 "Never"
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1
-    
-    q_OK_EMAIL_ADDR "May we have your email address to contact you in the future?",
-    :pick => :one,
-    :data_export_identifier=>"INTERNET_USAGE.OK_EMAIL_ADDR"
-    a_1 "Yes"
-    a_2 "No"
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
-    dependency :rule=>"A"
-    condition_A :q_HAVE_EMAIL, "==", :a_1    
+      q_OK_EMAIL_ADDR "May we have your email address to contact you in the future?",
+      :pick => :one,
+      :data_export_identifier=>"INTERNET_USAGE.OK_EMAIL_ADDR"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
+    end
     
     # TODO
     # PROGRAMMER INSTRUCTION:
