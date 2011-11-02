@@ -21,3 +21,5 @@ doc/survey_to_operational_data_maps/
 doc/survey_to_operational_data_maps/*
 doc/notes/
 doc/notes/*
+.sass-cache/
+.sass-cache/*
