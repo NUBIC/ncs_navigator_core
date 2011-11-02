@@ -1571,42 +1571,42 @@ input[type="submit"] {
 
 /* line 19, ../../../stylesheets/partials/_links.scss */
 .add_link, .add_link:hover {
-  background: url(../../images/add.png) 0 2px no-repeat !important;
+  background: url(../../assets/add.png) 0 2px no-repeat !important;
 }
 
 /* line 23, ../../../stylesheets/partials/_links.scss */
 .edit_link, .edit_link:hover {
-  background: url(../../images/edit.png) 0 2px no-repeat !important;
+  background: url(../../assets/edit.png) 0 2px no-repeat !important;
 }
 
 /* line 27, ../../../stylesheets/partials/_links.scss */
 .export_link, .export_link:hover {
-  background: url(../../images/page_white_excel.png) 0 2px no-repeat !important;
+  background: url(../../assets/page_white_excel.png) 0 2px no-repeat !important;
 }
 
 /* line 31, ../../../stylesheets/partials/_links.scss */
 .search_link, .search_link:hover {
-  background: url(../../images/find.png) 0 2px no-repeat !important;
+  background: url(../../assets/find.png) 0 2px no-repeat !important;
 }
 
 /* line 35, ../../../stylesheets/partials/_links.scss */
 .show_link, .show_link:hover {
-  background: url(../../images/show.png) 0 2px no-repeat !important;
+  background: url(../../assets/show.png) 0 2px no-repeat !important;
 }
 
 /* line 39, ../../../stylesheets/partials/_links.scss */
 .list_link, .list_link:hover {
-  background: url(../../images/list.png) 0 2px no-repeat !important;
+  background: url(../../assets/list.png) 0 2px no-repeat !important;
 }
 
 /* line 43, ../../../stylesheets/partials/_links.scss */
 .delete_link, .delete_link:hover {
-  background: url(../../images/delete.png) 0 2px no-repeat !important;
+  background: url(../../assets/delete.png) 0 2px no-repeat !important;
 }
 
 /* line 47, ../../../stylesheets/partials/_links.scss */
 .login_link, .login_link:hover {
-  background: url(../../images/door_in.png) 0 2px no-repeat !important;
+  background: url(../../assets/door_in.png) 0 2px no-repeat !important;
 }
 
 /* line 51, ../../../stylesheets/partials/_links.scss */
@@ -1616,7 +1616,7 @@ input[type="submit"] {
 
 /* line 55, ../../../stylesheets/partials/_links.scss */
 .external_link, .external_link:hover {
-  background: url(../../images/external_link_icon.png) 0 2px no-repeat;
+  background: url(../../assets/external_link_icon.png) 0 2px no-repeat;
   background-position: right top;
   padding: 2px 20px 2px 0px !important;
 }
