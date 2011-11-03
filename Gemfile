@@ -30,7 +30,7 @@ group :development do
   gem 'growl_notify' # or gem 'growl'
 end
 
-group :development, :test do
+group :development, :test, :ci do
   # Since the transformer isn't run from within the app, don't include
   # its dependencies in production.
   gem 'ncs_mdes_warehouse', '~> 0.0',
@@ -50,6 +50,8 @@ group :development, :test, :ci do
   gem 'jasmine'
 
   gem 'newrelic_rpm'
+
+  gem 'ci_reporter', :git => 'git://github.com/nicksieger/ci_reporter.git'
 end
 
 group :test, :ci do
