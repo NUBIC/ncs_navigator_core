@@ -70,6 +70,15 @@ module NavigationHelpers
 
     when /^the select_instrument_contact_link page$/
       select_instrument_contact_link_path(ContactLink.last)
+      
+    when /^the consent_contact_link page$/
+      consent_contact_link_path(ContactLink.last)
+
+    when /^the new contact path for the participant$/
+      new_person_contact_path(:person_id => Participant.last.person_id)
+      
+    when /^the new participant consent page$/
+      new_participant_consent_path
 
     # the following are examples using path_to_pickle
 

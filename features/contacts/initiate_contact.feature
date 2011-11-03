@@ -29,4 +29,3 @@ Feature: Initiating a contact
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"
     And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
-

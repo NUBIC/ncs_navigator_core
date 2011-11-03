@@ -7,8 +7,9 @@ class ContactsController < ApplicationController
   def new
     @person     = Person.find(params[:person_id])
     @contact    = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
-    
+
     event_for_contact
+    @requires_consent = @person.participant && @person.participant.consented? == false && @event.event_type.display_text != "Pregnancy Screener"
 
     respond_to do |format|
       format.html # new.html.haml
@@ -72,7 +73,7 @@ class ContactsController < ApplicationController
   
     def event_for_contact
       list_name   = NcsCode.attribute_lookup(:event_type_code)
-      ets = Event.event_types(@person.upcoming_events).collect { |et| PatientStudyCalendar.map_psc_segment_to_mdes_event(et) }
+      ets         = Event.event_types(@person.upcoming_events).collect { |et| PatientStudyCalendar.map_psc_segment_to_mdes_event(et) }
       event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
       @event      = Event.new(:participant => @person.participant, :event_type => event_types.first)
     end

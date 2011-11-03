@@ -56,8 +56,7 @@
     %b
       Hi/Lo
     %br
-      = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"  
-
+      = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
   .pregnancy_probability_group
     %b
       Pregnancy Probability Group
@@ -66,6 +65,16 @@
       - if @participant.ppg_status.blank?
         %span.warning
           No PPG Assigned
+  .consent
+    %b
+      Consented?
+    %br
+      = @participant.consented?
+  .withdrawn
+    %b
+      Withdrawn?
+    %br
+      = @participant.withdrawn?
   .upcoming_events
     %b
       Upcoming Events
@@ -96,13 +105,10 @@
           %b
             = "Instruments from PSC for #{event}"
           %br
-          - if subject_schedules = psc.schedules(@participant)
-            - subject_schedules["days"].keys.each do |date|
-              - subject_schedules["days"][date]["activities"].each do |activity|
-                - @participant.upcoming_events.each do |event|
-                  - if activity["study_segment"].include?(event.to_s)
-                    .activity
-                      = "#{activity["activity"]["name"]}"
+          - if activities = psc.activities_for_event(@participant)
+            - activities.each do |activity|
+              = activity
+              %br
 
 .page_section
   .psc_registration

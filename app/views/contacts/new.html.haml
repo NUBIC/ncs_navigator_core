@@ -1,9 +1,12 @@
 %h3
   = @person
-
-%h3
+  = "::" unless @person.to_s.blank?
   = @event.event_type.display_text
-  
+- if @requires_consent
+  %p
+    %span.warning
+      Consent required
+
 .page_section
   = form_for([@person, @contact]) do |f| 
     = hidden_field_tag :event_id, @event.id

@@ -61,6 +61,8 @@ describe Participant do
   it { should have_many(:low_intensity_state_transition_audits) }
   it { should have_many(:high_intensity_state_transition_audits) }
 
+  it { should have_one(:participant_consent) }
+
   it { should validate_presence_of(:person) }
   
   context "as mdes record" do

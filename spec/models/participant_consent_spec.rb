@@ -94,4 +94,30 @@ describe ParticipantConsent do
     end
   end
 
+  context "for a participant" do
+    
+    before(:each) do
+      @yes = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
+      @no  = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "No", :local_code => 2)
+    end
+    
+    it "cannot have consented without a participant_consent record" do
+      participant = Factory(:participant)
+      participant.participant_consent.should be_nil
+      participant.should_not be_consented
+    end
+    
+    it "knows if the participant has consented" do
+      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no)
+      pc.participant.should be_consented
+      pc.participant.should_not be_withdrawn
+    end
+    
+    it "knows if the participant has withdrawn consented" do
+      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes)
+      pc.participant.should be_withdrawn
+    end
+    
+  end
+
 end

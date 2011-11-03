@@ -1,6 +1,22 @@
 %h3
   = @person
   
+%h3
+  Consent
+- no_consent = true
+- if activities = psc.activities_for_event(@person.participant)
+  - activities.each do |activity|
+    - if activity.include?("Consent")
+      - no_consent = false
+      - if @person.participant.consented?
+        = activity
+      - else
+        = link_to activity, new_participant_consent_path(:participant_id => @person.participant.id, :contact_link_id => @contact_link.id)
+    %br
+- if no_consent
+  %p
+    No consent required
+  
 - @person.upcoming_events.each do |event|
   %h3 
     = "Instruments for #{event}"
