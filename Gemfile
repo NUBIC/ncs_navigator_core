@@ -9,7 +9,6 @@ gem 'compass'
 gem 'fastercsv'
 gem 'haml', '~> 3.1'
 gem 'pg'
-gem 'ruby-debug'
 gem 'jquery-rails'
 
 gem 'ncs_mdes', '~> 0.4.0'
@@ -28,9 +27,11 @@ group :development do
   gem 'watchr'
   gem 'rb-fsevent'
   gem 'growl_notify' # or gem 'growl'
+
+  gem 'ruby-debug', :platform => :ruby_18
 end
 
-group :development, :test do
+group :development, :test, :ci do
   # Since the transformer isn't run from within the app, don't include
   # its dependencies in production.
   gem 'ncs_mdes_warehouse', '~> 0.0',
@@ -50,6 +51,8 @@ group :development, :test, :ci do
   gem 'jasmine'
 
   gem 'newrelic_rpm'
+
+  gem 'ci_reporter', :git => 'git://github.com/nicksieger/ci_reporter.git'
 end
 
 group :test, :ci do
