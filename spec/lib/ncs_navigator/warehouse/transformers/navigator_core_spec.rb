@@ -20,8 +20,15 @@ module NcsNavigator::Warehouse::Transformers
       NavigatorCore.bcdatabase[:name].should == 'ncs_navigator_core'
     end
 
+    let(:bcdatabase_config) {
+      if Rails.env == 'ci'
+        { :group => 'public_ci_postgresql9' }
+      else
+        { :name => 'ncs_navigator_core_test' }
+      end
+    }
     let(:enumerator) {
-      NavigatorCore.new(wh_config, :bcdatabase => { :name => 'ncs_navigator_core_test' })
+      NavigatorCore.new(wh_config, :bcdatabase => bcdatabase_config)
     }
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }

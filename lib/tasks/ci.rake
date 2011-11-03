@@ -1,0 +1,40 @@
+begin
+  require 'ci/reporter/rake/rspec'
+  require 'rspec/core/rake_task'
+  require 'cucumber/rake/task'
+
+  namespace :ci do
+    desc 'Run full CI build'
+    task :all => [:spec, :cucumber]
+
+    task :setup => ['log:clear', :navigator_configuration, 'db:migrate']
+
+    # Initializes NcsNavigator.configuration in an
+    # environment-independent way.
+    task :navigator_configuration do
+      require 'ncs_navigator/configuration'
+      NcsNavigator.configuration = NcsNavigator::Configuration.new(
+        File.expand_path('../../../spec/navigator.ini', __FILE__))
+    end
+
+    task :spec_setup do
+      ENV['CI_REPORTS'] = 'reports/spec-xml'
+      ENV['SPEC_OPTS'] = "#{ENV['SPEC_OPTS']} --format nested"
+    end
+
+    desc "Run specs for CI (i.e., without db:test:prepare)"
+    RSpec::Core::RakeTask.new(:spec => [:setup, :spec_setup, 'ci:setup:rspecbase']) do |t|
+      t.pattern = "spec/**/*_spec.rb"
+    end
+
+    Cucumber::Rake::Task.new(
+      { :cucumber => [:setup] }, 'Run features for CI (without database setup steps)'
+      ) do |t|
+      t.fork = true
+      t.profile = 'ci'
+    end
+  end
+rescue LoadError => e
+  $stderr.puts "One or more dependencies not available. CI builds will not work.\n#{e.class}: #{e}"
+end
+
