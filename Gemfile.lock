@@ -27,6 +27,13 @@ GIT
       sass
       uuid
 
+GIT
+  remote: git://github.com/nicksieger/ci_reporter.git
+  revision: af8674c7bddc338fad228c566a03e3b8188d8a22
+  specs:
+    ci_reporter (1.6.5)
+      builder (>= 2.1.2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -362,6 +369,7 @@ DEPENDENCIES
   bcdatabase (~> 1.0)
   capistrano
   capybara
+  ci_reporter!
   compass
   cucumber
   cucumber-rails
