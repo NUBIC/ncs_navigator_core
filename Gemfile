@@ -9,7 +9,6 @@ gem 'compass'
 gem 'fastercsv'
 gem 'haml', '~> 3.1'
 gem 'pg'
-gem 'ruby-debug'
 gem 'jquery-rails'
 
 gem 'ncs_mdes', '~> 0.4.0'
@@ -28,6 +27,8 @@ group :development do
   gem 'watchr'
   gem 'rb-fsevent'
   gem 'growl_notify' # or gem 'growl'
+
+  gem 'ruby-debug', :platform => :ruby_18
 end
 
 group :development, :test, :ci do
