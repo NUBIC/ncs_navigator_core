@@ -29,6 +29,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :select_instrument
     end
   end
+  resources :participant_consents
   
   match "/welcome/summary", :to => "welcome#summary"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"

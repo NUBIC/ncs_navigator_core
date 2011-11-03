@@ -61,6 +61,8 @@ class Participant < ActiveRecord::Base
   
   has_many :participant_staff_relationships
   
+  has_one :participant_consent
+  
   validates_presence_of :person
   
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true
@@ -309,6 +311,20 @@ class Participant < ActiveRecord::Base
   # or simply following
   def can_consent?
     pregnant_or_trying?
+  end
+  
+  ##
+  # Returns true if a participant_consent record exists and consent_given_code is true 
+  # and consent_withdraw_code is not true
+  # @return [Boolean]
+  def consented?
+    return false if participant_consent.nil?
+    participant_consent.consent_given.local_code == 1 && !withdrawn?
+  end
+  
+  def withdrawn?
+    return false if participant_consent.nil?
+    participant_consent.consent_withdraw.local_code == 1
   end
   
   ##

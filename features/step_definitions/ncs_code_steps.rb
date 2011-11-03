@@ -25,6 +25,8 @@ Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
   
   Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Visit  1", :local_code => 13)
+  Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
+  Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
 
   Factory(:ncs_code, :list_name => "TRANSLATION_METHOD_CL3", :display_text => "Legitimate Skip", :local_code => -3)
   Factory(:ncs_code, :list_name => "CONTACT_LOCATION_CL1", :display_text => "Person/participant home", :local_code => 1)
@@ -36,6 +38,8 @@ Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
   Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5: Ineligible", :local_code => 5)
   Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 6: Withdrawn", :local_code => 6)
+  
+  Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :display_text => "Low Intensity Consent", :local_code => 7)
   
   create_missing_in_error_ncs_codes(Person)
   create_missing_in_error_ncs_codes(HouseholdUnit)
@@ -49,6 +53,7 @@ Given /^valid ncs codes$/ do
   create_missing_in_error_ncs_codes(Event)
   create_missing_in_error_ncs_codes(Instrument)
   create_missing_in_error_ncs_codes(PpgDetail)
+  create_missing_in_error_ncs_codes(ParticipantConsent)
 end
 
 

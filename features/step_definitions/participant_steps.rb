@@ -33,6 +33,16 @@ Given /^an unregistered pregnant participant$/ do
   }
 end
 
+Given /^a registered unconsented trying participant$/ do
+  steps %Q{
+    Given valid ncs codes
+    And an authenticated user
+    And the following registered unconsented trying participants:
+    | first_name | last_name | person_id           | 
+    | Bessie     | Smith     | registered_with_psc |
+  }
+end
+
 Given /^a registered pregnant participant on the ppg1 page$/ do
   steps %Q{
     Given a registered pregnant participant
