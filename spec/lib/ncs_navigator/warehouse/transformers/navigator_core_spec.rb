@@ -33,6 +33,10 @@ module NcsNavigator::Warehouse::Transformers
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }
 
+    def self.code(i)
+      Factory(:ncs_code, :local_code => i)
+    end
+
     describe 'for Person' do
       before do
         Factory(:person)
@@ -47,6 +51,33 @@ module NcsNavigator::Warehouse::Transformers
 
       it 'creates Persons with the correct first_names' do
         results.collect(&:first_name).should == %w(Fred Ginger)
+      end
+
+      context 'with manually determined variables' do
+        before do
+          # ignore unused so we can see the mapping failures
+          NavigatorCore.on_unused_columns :ignore
+        end
+
+        after do
+          NavigatorCore.on_unused_columns :fail
+        end
+
+        [
+          [:marital_status,                 code(9),     :maristat,     '9'],
+          [:marital_status_other,           'On fire',   :maristat_oth],
+          [:language,                       code(4),     :person_lang,  '4'],
+          [:language_other,                 'Esperanto', :person_lang_oth],
+          [:preferred_contact_method,       code(1),     :pref_contact, '1'],
+          [:preferred_contact_method_other, 'Pigeon',    :pref_contact_oth],
+          [:planned_move,                   code(4),     :plan_move,    '4'],
+        ].each do |core_field, core_value, wh_field, wh_value|
+          it "maps #{core_field} to #{wh_field}" do
+            wh_value ||= core_value
+            Person.last.tap { |p| p.send("#{core_field}=", core_value) }.save!
+            results.last.send(wh_field).should == wh_value
+          end
+        end
       end
     end
   end
