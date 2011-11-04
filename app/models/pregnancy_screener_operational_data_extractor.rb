@@ -8,6 +8,7 @@ class PregnancyScreenerOperationalDataExtractor
   PERSON_MAP = {
     "#{INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
     "#{INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
+    "#{INTERVIEW_PREFIX}.R_GENDER"        => "sex_code",
     "#{INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
     "#{INTERVIEW_PREFIX}.AGE"             => "age",
     "#{INTERVIEW_PREFIX}.AGE_RANGE"       => "age_range_code",
