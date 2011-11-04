@@ -14,8 +14,12 @@
         = link_to activity, new_participant_consent_path(:participant_id => @person.participant.id, :contact_link_id => @contact_link.id), :class => "edit_link icon_link"
     %br
 - if no_consent
-  %p
-    No consent required
+  - if !@person.participant.consented?
+    %p
+      = link_to "Consent", new_participant_consent_path(:participant_id => @person.participant.id, :contact_link_id => @contact_link.id), :class => "edit_link icon_link"
+  - else
+    %p
+      No consent required
   
 - @person.upcoming_events.each do |event|
   %h3 
