@@ -27,13 +27,14 @@
       .contact_link_section
         %h3
           Instrument
+        - if @contact_link.instrument.survey
+          - survey = @contact_link.instrument.survey
+          - if rs = ResponseSet.where(:survey_id => survey.id).where(:user_id => @contact_link.person_id).first
+            .survey
+              = link_to survey.title, edit_my_survey_path(:survey_code => survey.access_code, :response_set_code => rs.access_code), :class => "show_link icon_link"
+      
         = fields_for @contact_link.instrument do |instrument|
           = render "instruments/form_fields", { :f => instrument }
-
+      
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
-      
-:javascript
-  $(document).ready(function() {
-    $(".datepicker").datepicker();
-  });

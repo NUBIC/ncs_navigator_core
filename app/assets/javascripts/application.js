@@ -56,5 +56,6 @@ $(document).ready(function() {
   	timeFormat: 'hh:mm:ss'
   });
   $('input.date').datepicker();
+  $('input.datepicker').datepicker();
   $('input.time').timepicker({});
 });
