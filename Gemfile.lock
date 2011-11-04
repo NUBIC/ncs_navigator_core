@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/NUBIC/ncs_mdes_warehouse.git
-  revision: 1246e539df5d9eb577e75527c4590ddeac71f8d2
+  revision: 446ecdaa14f84e080116bd9dff82efcb1aa56cf6
   specs:
     ncs_mdes_warehouse (0.0.2.pre)
       activesupport (~> 3.0)
