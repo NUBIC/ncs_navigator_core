@@ -1,0 +1,14 @@
+.page_section
+  %b
+    Contacts
+  - @person.contact_links.each do |cl|
+    .contact_link
+      = link_to cl.contact.contact_date, edit_contact_link_path(cl), :class => "show_link icon_link"
+
+.page_section
+  %b
+    Surveys Taken
+  - @person.response_sets.each do |rs|
+    .survey
+      = rs.created_at
+      = link_to rs.survey.title, edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code), :class => "show_link icon_link"
