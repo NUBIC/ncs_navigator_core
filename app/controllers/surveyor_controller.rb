@@ -18,7 +18,7 @@ class SurveyorController < ApplicationController
       
         if /_PregScreen_/ =~ response_set.survey.title
           resp = psc.update_subject(participant)
-          participant.assign_to_pregnancy_probability_group!
+          participant.assign_to_pregnancy_probability_group! if participant.can_assign_to_pregnancy_probability_group?
         end
       
         if /_LIPregNotPreg_/ =~ response_set.survey.title && participant.can_follow_low_intensity?
