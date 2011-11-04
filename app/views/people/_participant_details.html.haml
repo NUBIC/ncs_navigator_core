@@ -1,0 +1,58 @@
+.page_section
+  .intensity
+    %b
+      Hi/Lo
+    %br
+      = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
+  .pregnancy_probability_group
+    %b
+      Pregnancy Probability Group
+    %br
+      = @participant.ppg_status
+      - if @participant.ppg_status.blank?
+        %span.warning
+          No PPG Assigned
+  .consent
+    %b
+      Consented?
+    %br
+      = @participant.consented?
+  .withdrawn
+    %b
+      Withdrawn?
+    %br
+      = @participant.withdrawn?
+  .upcoming_events
+    %b
+      Upcoming Events
+    %br  
+    - if @participant.upcoming_events.blank?
+      No Upcoming Events
+    - else
+      = @participant.upcoming_events.to_sentence
+      %br
+      - @participant.upcoming_events.each do |event|
+        %p
+          %b
+            = "Instruments for #{event}"
+          %br
+          - instruments = InstrumentEventMap.instruments_for(event)
+          - if instruments.blank?
+            There are no Instruments for 
+            = event
+          - else
+            - instruments.each do |ins|
+              - if Survey.where(:title => ins).count > 0
+                %span{ :class => "known_instrument" }
+                  = "#{ins}"
+              - else
+                = "#{ins}"
+              %br
+        %p
+          %b
+            = "Instruments from PSC for #{event}"
+          %br
+          - if activities = psc.activities_for_event(@participant)
+            - activities.each do |activity|
+              = activity
+              %br
