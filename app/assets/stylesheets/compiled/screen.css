@@ -1521,7 +1521,7 @@ form .nested_attributes {
   margin-right: 10px;
   width: 1062.5px;
   margin: 0;
-  background: inherit;
+  background: inherit !important;
 }
 /* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #surveyor {
@@ -1529,8 +1529,8 @@ form .nested_attributes {
 }
 /* line 7, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor fieldset {
-  border: none;
-  border-bottom: 1px solid #ccc;
+  border: none !important;
+  border-bottom: 1px solid #ccc !important;
   background-color: inherit !important;
 }
 /* line 11, ../../../stylesheets/partials/_surveyor.scss */
@@ -1539,15 +1539,15 @@ form .nested_attributes {
 }
 /* line 13, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor fieldset legend span {
-  display: block;
-  font-weight: normal;
-  font-size: 0.8em;
-  width: 990px;
-  white-space: normal;
+  display: block !important;
+  font-weight: normal !important;
+  font-size: 0.8em !important;
+  width: 990px !important;
+  white-space: normal !important;
 }
 /* line 21, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor fieldset ol {
-  margin: 0;
+  margin: 0 !important;
 }
 /* line 24, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor fieldset ol li fieldset {
