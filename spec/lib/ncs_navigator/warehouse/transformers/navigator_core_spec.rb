@@ -4,6 +4,8 @@ require 'ncs_navigator/warehouse/transformers/navigator_core'
 
 module NcsNavigator::Warehouse::Transformers
   describe NavigatorCore, :clean_with_truncation, :slow do
+    MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
+
     let(:wh_config) {
       NcsNavigator::Warehouse::Configuration.new.tap do |config|
         config.log_file = File.join(Rails.root, 'log/wh.log')
@@ -200,6 +202,66 @@ module NcsNavigator::Warehouse::Transformers
             verify_mapping(core_field, core_value, wh_field, wh_value)
           end
         end
+      end
+    end
+
+    describe 'for ParticipantConsent' do
+      before do
+        Factory(:participant_consent)
+        producer_names << :participant_consents
+      end
+
+      it 'generates one consent per source record' do
+        results.collect(&:class).should == [MdesModule::ParticipantConsent]
+      end
+
+      it "uses the participant's public ID" do
+        results.first.p_id.should == Participant.first.p_id
+      end
+    end
+
+    describe 'for ParticipantConsentSample' do
+      before do
+        Factory(:participant_consent_sample)
+        producer_names << :participant_consent_samples
+      end
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [MdesModule::ParticipantConsentSample]
+      end
+
+      it "uses the participant's public ID" do
+        results.first.p_id.should == Participant.first.p_id
+      end
+
+      it "uses the participant consent's public ID" do
+        results.first.participant_consent_id.should ==
+          ParticipantConsent.first.participant_consent_id
+      end
+    end
+
+    describe 'for ParticipantAuthorizationForm' do
+      let(:producer_names) { [:participant_authorization_forms] }
+
+      before do
+        Factory(:participant_authorization_form)
+      end
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [MdesModule::ParticipantAuth]
+      end
+
+      it 'uses the public ID for participant' do
+        results.first.p_id.should == Participant.first.p_id
+      end
+
+      it 'uses the public ID for contact' do
+        results.first.contact_id.should == Contact.first.contact_id
+      end
+
+      it 'uses the public ID for provider' do
+        pending 'No providers yet'
+        results.first.provider_id.should == Provider.first.provider_id
       end
     end
   end
