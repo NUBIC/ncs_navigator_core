@@ -23,4 +23,5 @@ doc/notes/
 doc/notes/*
 .sass-cache/
 .sass-cache/*
+public/assets
 reports
