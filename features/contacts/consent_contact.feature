@@ -4,7 +4,6 @@ Feature: Obtaining participant consent
   As a user
   I want to initiate a contact for a participant to obtain consent
   
-  @javascript
   Scenario: Initiating contact
     Given valid ncs codes
     And an authenticated user

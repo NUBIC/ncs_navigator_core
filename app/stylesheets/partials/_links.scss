@@ -16,6 +16,10 @@ input[type="submit"] {
   text-decoration: none;
 }
 
+.mdes_documentation_link {
+  float: right;
+}
+
 .add_link, .add_link:hover {
   background: url(../../assets/add.png) 0 2px no-repeat !important;
 }

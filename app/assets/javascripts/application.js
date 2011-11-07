@@ -55,7 +55,24 @@ $(document).ready(function() {
   	showMillisec: false,
   	timeFormat: 'hh:mm:ss'
   });
-  $('input.date').datepicker();
-  $('input.datepicker').datepicker();
+  $('input.date').datepicker( { dateFormat: 'yy-mm-dd' } );
+  $('input.datepicker').datepicker( { dateFormat: 'yy-mm-dd' } );
   $('input.time').timepicker({});
+
+  $('.mdes_documentation_link').click(function(event) {
+    var definition = $('#mdes_definition').val();
+    var title = $('#mdes_definition').attr('title');
+    $('<div id="dialog">' + definition + '</div>').appendTo('body');
+      event.preventDefault();
+      $("#dialog").dialog({
+        title: title,
+        width: 600,
+        modal: true,
+        close: function(event, ui) {
+          $("#dialog").remove();
+        }
+      });
+  });
+
 });
+
