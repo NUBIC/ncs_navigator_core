@@ -264,5 +264,55 @@ module NcsNavigator::Warehouse::Transformers
         results.first.provider_id.should == Provider.first.provider_id
       end
     end
+
+    describe 'for ParticipantVisitConsent' do
+      let(:producer_names) { [:participant_visit_consents] }
+      let(:consenter) { Factory(:person, :first_name => 'Ginger') }
+
+      before do
+        Factory(:participant_visit_consent, :vis_person_who_consented => consenter)
+      end
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [MdesModule::ParticipantVisConsent]
+      end
+
+      it 'uses the public ID for the participant' do
+        results.first.p_id.should == Participant.first.p_id
+      end
+
+      it 'uses the public ID for the person who consented' do
+        results.first.vis_person_who_consented_id.should == consenter.person_id
+      end
+
+      it 'uses the public ID for the contact' do
+        results.first.contact_id.should == Contact.first.contact_id
+      end
+    end
+
+    describe 'for ParticipantVisitRecord' do
+      let(:producer_names) { [:participant_visit_records] }
+      let(:visited) { Factory(:person, :first_name => 'Ginger') }
+
+      before do
+        Factory(:participant_visit_record, :rvis_person => visited)
+      end
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [MdesModule::ParticipantRvis]
+      end
+
+      it 'uses the public ID for the participant' do
+        results.first.p_id.should == Participant.first.p_id
+      end
+
+      it 'uses the public ID for the person visited' do
+        results.first.rvis_person.should == visited.person_id
+      end
+
+      it 'uses the public ID for the contact' do
+        results.first.contact_id.should == Contact.first.contact_id
+      end
+    end
   end
 end

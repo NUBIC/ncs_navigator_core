@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Transformers
         selects = ['t.*']
         options[:public_ids].each_with_index do |pub, i|
           pub = case pub
-                when String
+                when String, Symbol
                   if pub.to_s == 'participants'
                     { :table => pub, :public_id => :p_id }
                   else
@@ -24,20 +24,21 @@ module NcsNavigator::Warehouse::Transformers
                   pub
                 end
 
-          other_table = pub[:table]
-          join_column = other_table.to_s.singularize + '_id'
+          other_table = pub[:table].to_s
+          join_column = pub[:join_column] || pub[:public_ref] || other_table.singularize + '_id'
           public_id_column = pub[:public_id] || join_column
+          public_id_ref = pub[:public_ref] || public_id_column
           table_alias = "pub_#{i}"
           public_id_column_alias = "public_#{public_id_column}"
 
-          column_map[public_id_column_alias.to_sym] = public_id_column.to_sym
+          column_map[public_id_column_alias.to_sym] = public_id_ref.to_sym
           ignored_columns << join_column
 
           joins << "LEFT JOIN #{other_table} #{table_alias} ON t.#{join_column} = #{table_alias}.id"
           selects << "#{table_alias}.#{public_id_column} AS #{public_id_column_alias}"
         end
 
-        query = "SELECT #{selects.join(',')}\nFROM #{table_name} t\n  #{joins.join("\n  ")}"
+        query = "SELECT #{selects.join(', ')}\nFROM #{table_name} t\n  #{joins.join("\n  ")}"
       end
 
       pr_opts = {}
