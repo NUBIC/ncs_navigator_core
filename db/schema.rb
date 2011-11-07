@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111018175121) do
+ActiveRecord::Schema.define(:version => 20111104175824) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -163,6 +163,8 @@ ActiveRecord::Schema.define(:version => 20111018175121) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                  :default => false
+    t.string   "ssu_id"
+    t.string   "tsu_id"
   end
 
   create_table "emails", :force => true do |t|
@@ -282,6 +284,8 @@ ActiveRecord::Schema.define(:version => 20111018175121) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                :default => false
+    t.string   "ssu_id"
+    t.string   "tsu_id"
   end
 
   create_table "ncs_codes", :force => true do |t|

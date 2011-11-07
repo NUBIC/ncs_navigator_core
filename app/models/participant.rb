@@ -103,7 +103,7 @@ class Participant < ActiveRecord::Base
     end
     
     event :follow_low_intensity do
-      transition :in_pregnancy_probability_group => :following_low_intensity
+      transition :in_pregnancy_probability_group => :following_low_intensity,  :consented_low_intensity => :following_low_intensity
     end
 
     event :impregnate do
@@ -132,7 +132,7 @@ class Participant < ActiveRecord::Base
     store_audit_trail
     before_transition :log_state_change
     
-    event :consent do
+    event :high_intensity_consent do
       transition :in_high_intensity_arm => :consented_high_intensity
     end
     
@@ -286,7 +286,6 @@ class Participant < ActiveRecord::Base
     end
   end
 
-
   ##
   # The number of months to wait before the next Follow-Up event
   # @return [Date]
@@ -373,6 +372,20 @@ class Participant < ActiveRecord::Base
   # Change the Participant status to PPG 3 after child loss
   def update_ppg_status_after_child_loss
     post_transition_ppg_status_update(3)
+  end
+  
+  ##
+  # True if participant is known to live in Tertiary Sampling Unit
+  # Delegate to Person model
+  # @return [true,false]
+  def in_tsu?
+    person && person.in_tsu?
+  end
+  
+  ##
+  # True if a participant in the low_intensity arm has a ppg status of pregnant or trying and is in tsu
+  def eligible_for_high_intensity_invitation?
+    low_intensity? && pregnant_or_trying? && in_tsu?
   end
   
   ##

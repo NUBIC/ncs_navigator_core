@@ -5,6 +5,8 @@ Factory.define :listing_unit do |lu|
   lu.list_source      { |a| a.association(:ncs_code, :list_name => "LISTING_SOURCE_CL1", :display_text => "Traditional Listing Effort", :local_code => 1) }
   lu.list_comment     "comment"
   lu.transaction_type nil
+  lu.ssu_id        nil
+  lu.tsu_id        nil
 end
 
 Factory.define :dwelling_unit do |du|
@@ -16,6 +18,8 @@ Factory.define :dwelling_unit do |du|
   du.du_ineligible { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL3", :display_text => "No", :local_code => 2) }
   du.du_access     { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)}
   du.duid_comment  "No comment"
+  du.ssu_id        nil
+  du.tsu_id        nil
 end
 
 Factory.define :household_unit do |hh|

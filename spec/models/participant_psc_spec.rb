@@ -59,6 +59,21 @@ describe Participant do
           participant.next_scheduled_event.date.should == 271.days.from_now.to_date
           
         end
+        
+        it "is eligible to be moved in the high intensity arm if in tsu" do
+          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
+          hh = Factory(:household_unit)
+          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+          
+          participant.should be_in_tsu
+          participant.should be_eligible_for_high_intensity_invitation
+        end
+        
+        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
+          participant.should_not be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
+        end
     
       end
     
@@ -84,7 +99,22 @@ describe Participant do
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP 
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.from_now.to_date
-          
+        end
+        
+        it "is eligible to be moved in the high intensity arm if in tsu" do
+          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
+          hh = Factory(:household_unit)
+          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+
+          participant.person.should be_in_tsu
+          participant.should be_in_tsu
+          participant.should be_eligible_for_high_intensity_invitation
+        end
+        
+        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
+          participant.should_not be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
         end
 
       end
@@ -99,6 +129,17 @@ describe Participant do
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
+        
+        it "is NOT eligible to be moved in the high intensity arm" do
+          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
+          hh = Factory(:household_unit)
+          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+
+          participant.should be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
+        end
+        
       end
       
       context "PPG Group 4: Other Probability - Not Pregnant and not Trying" do
@@ -111,8 +152,18 @@ describe Participant do
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
+
+        it "is NOT eligible to be moved in the high intensity arm" do
+          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
+          hh = Factory(:household_unit)
+          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+
+          participant.should be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
+        end
+
       end
-      
       
     end
     
@@ -198,7 +249,7 @@ describe Participant do
       end
   
       it "goes into the High Intensity Follow Up loop every 6 months after consenting" do
-        participant.consent!
+        participant.high_intensity_consent!
         participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 6.months.from_now.to_date
@@ -217,7 +268,7 @@ describe Participant do
       end
   
       it "goes into the High Intensity Follow Up loop every 3 months after consenting" do
-        participant.consent!
+        participant.high_intensity_consent!
         participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 3.months.from_now.to_date
