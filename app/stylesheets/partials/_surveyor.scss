@@ -2,24 +2,24 @@
   
   @include column($blueprint-grid-columns - 2);
   margin: 0;
-  background: inherit;
+  background: inherit !important;
   
   fieldset {
-    border: none;
-    border-bottom: 1px solid #ccc;
+    border: none !important;
+    border-bottom: 1px solid #ccc !important;
     background-color: inherit !important;
     legend {
       background-color: inherit !important;
       span {
-        display: block;
-        font-weight: normal;
-        font-size: 0.8em;
-        width: 990px;
-        white-space: normal;
+        display: block !important;
+        font-weight: normal !important;
+        font-size: 0.8em !important;
+        width: 990px !important;
+        white-space: normal !important;
       }
     }
     ol {
-      margin: 0;
+      margin: 0 !important;
       li {
         fieldset {
           border: none !important;
