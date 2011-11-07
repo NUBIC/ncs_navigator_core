@@ -110,5 +110,33 @@ class Event < ActiveRecord::Base
     end
     result
   end
+  
+  ##
+  # Determines if the disposition code is complete based on the disposition category
+  # and the disposition code
+  # @return [true,false]
+  def disposition_complete?
+    
+    # TODO: move knowledge of disposition codes out of event
+    # TODO: do not hard code code lists and disposition codes here
+    if event_disposition_category && event_disposition
+      case event_disposition_category.local_code
+      when 1 # Household Enumeration
+        (540..545) === event_disposition
+      when 2 # Pregnancy Screener
+        (560..565) === event_disposition
+      when 3 # General Study
+        (560..562) === event_disposition
+      when 4 # Mailed Back SAQ
+        (550..556) === event_disposition
+      when 5 # Telephone Interview
+        (590..595) === event_disposition
+      when 6 # Internet Survey
+        (540..546) === event_disposition
+      else
+        false
+      end
+    end
+  end
 
 end
