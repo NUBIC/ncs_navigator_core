@@ -1,32 +1,32 @@
 require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/models/two_point_zero'
 
+require 'ncs_navigator/warehouse/transformers/navigator_core_helpers'
+
 module NcsNavigator::Warehouse::Transformers
   class NavigatorCore
     include Database
     include NcsNavigator::Warehouse::Models::TwoPointZero
+
+    extend NavigatorCoreHelpers
 
     bcdatabase :name => 'ncs_navigator_core'
 
     on_unused_columns :fail
     ignored_columns :id, :transaction_type, :updated_at, :created_at, :being_processed
 
-    produce_records :people do |row|
-      model_row(Person, row,
-        :column_map => {
-          :language_code => :person_lang,
-          :language_other => :person_lang_oth,
-          :marital_status_code => :maristat,
-          :marital_status_other => :maristat_oth,
-          :preferred_contact_method_code => :pref_contact,
-          :preferred_contact_method_other => :pref_contact_oth,
-          :planned_move_code => :plan_move
-        },
-        :ignored_columns => %w(
-           person_dob_date date_move_date
-        )
-      )
-    end
+    produce_one_for_one(:people, Person,
+      :column_map => {
+        :language_code => :person_lang,
+        :language_other => :person_lang_oth,
+        :marital_status_code => :maristat,
+        :marital_status_other => :maristat_oth,
+        :preferred_contact_method_code => :pref_contact,
+        :preferred_contact_method_other => :pref_contact_oth,
+        :planned_move_code => :plan_move
+      },
+      :ignored_columns => %w(person_dob_date date_move_date)
+    )
 
     # TODO: maybe unnecessary
 #    produce_records :link_participant_self_person, :query => %Q(
@@ -42,41 +42,35 @@ module NcsNavigator::Warehouse::Transformers
 #      )
 #    end
 
-    def self.person_associated_query(table)
-      %Q(SELECT t.*, p.person_id AS public_person_id
-         FROM #{table} t INNER JOIN people p ON t.person_id=p.id)
-    end
+    produce_one_for_one(:person_races, PersonRace, :public_ids => %w(people))
 
-    produce_records(:person_races, :query => person_associated_query('person_races')) do |row|
-      model_row(PersonRace, row,
-        :column_map => {
-          :public_person_id => :person_id
-        })
-    end
+    produce_one_for_one(:participants, Participant,
+      :column_map => {
+        :pid_age_eligibility_code => :pid_age_elig
+      },
+      :ignored_columns => %w(person_id high_intensity low_intensity_state high_intensity_state)
+    )
 
-    produce_records(:participants) do |row|
-      model_row(Participant, row,
-        :column_map => {
-          :pid_age_eligibility_code => :pid_age_elig
-        },
-        :ignored_columns => %w(person_id high_intensity low_intensity_state high_intensity_state)
-      )
-    end
+    produce_one_for_one(:participant_person_links, LinkPersonParticipant,
+      :public_ids => %w(people participants),
+      :column_map => {
+        :relationship_code => :relation,
+        :relationship_other => :relation_oth,
+        :public_person_id => :person_id
+      }
+    )
 
-    produce_records(:participant_person_links, :query => %Q(
-      SELECT lpp.*, p.person_id AS public_person_id, par.p_id
-      FROM participant_person_links lpp
-        INNER JOIN people p ON lpp.person_id=p.id
-        INNER JOIN participants par ON lpp.participant_id=par.id
-    )) do |row|
-      model_row(LinkPersonParticipant, row,
-        :column_map => {
-          :relationship_code => :relation,
-          :relationship_other => :relation_oth,
-          :public_person_id => :person_id
-        },
-        :ignored_columns => %w(participant_id person_id)
-      )
-    end
+    produce_one_for_one(:participant_consents, ParticipantConsent,
+      :public_ids => %w(participants)
+    )
+
+    produce_one_for_one(:participant_consent_samples, ParticipantConsentSample,
+      :public_ids => %w(participants participant_consents)
+    )
+
+    produce_one_for_one(:participant_authorization_forms, ParticipantAuth,
+      :public_ids => %w(participants contacts)
+    )
+
   end
 end
