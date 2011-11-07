@@ -38,7 +38,9 @@ group :development do
   gem 'ruby-debug', :platform => :ruby_18
 end
 
-
+group :staging, :production do
+  gem 'therubyracer'
+end
 
 group :development, :test, :ci do
   # Since the transformer isn't run from within the app, don't include
