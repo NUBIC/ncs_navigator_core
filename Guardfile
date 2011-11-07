@@ -29,7 +29,7 @@ guard 'cucumber', :cli => "--no-profile --drb --color --format progress", :all_o
   watch(%r{^features\/.+\.feature$})
   watch(%r{^features\/support\/.+$})                      { 'features' }
   watch(%r{^features\/step_definitions\/(.+)_steps\.rb$}) { |m| Dir[File.join("**/#{m[1]}.feature")][0] || 'features' }
-end
+end unless ENV['NO_AUTOTEST']
 
 
 guard 'rspec', :version => 2, :cli => "--color --format nested --fail-fast --drb", :all_on_start => false, :all_after_pass => false do
@@ -48,7 +48,7 @@ guard 'rspec', :version => 2, :cli => "--color --format nested --fail-fast --drb
   watch('app/controllers/application_controller.rb')      { "spec/controllers" }
   # Capybara request specs
   # watch(%r{^app\/views\/(.+)\/.*\.(erb|haml)$})         { |m| "spec/requests/#{m[1]}_spec.rb" }
-end
+end unless ENV['NO_AUTOTEST']
 
 
 guard 'bundler' do
