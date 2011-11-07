@@ -6,15 +6,8 @@
     %title
       = show_title? ? "NCS Navigator Core :: " + yield(:title) : "NCS Navigator Core"
     %link{ :rel=>"icon", :type=>"image/gif", :href=>"/images/favicon.gif"}
-    = stylesheet_link_tag('jquery-ui.custom', "jquery-ui-timepicker-addon")
-    = stylesheet_link_tag 'surveyor/reset', 'surveyor/dateinput', 'surveyor', 'custom'
-    = stylesheet_link_tag 'compiled/screen.css', :media => 'screen, projection'
-    = stylesheet_link_tag 'compiled/print.css', :media => 'print'
-    /[if lt IE 8]
-      = stylesheet_link_tag 'compiled/ie.css', :media => 'screen, projection'
-      = stylesheet_link_tag 'compiled/ie-custom.css', :media => 'screen, projection'
-    = javascript_include_tag("jquery.min", "jquery_ujs", "application", "jquery-ui.min")
-    = javascript_include_tag("jquery-ui-timepicker-addon", "surveyor/jquery.surveyor.new")
+    = stylesheet_link_tag('application')
+    = javascript_include_tag("application")
     = csrf_meta_tag
     = yield :head
 
