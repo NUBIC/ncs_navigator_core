@@ -72,5 +72,25 @@ module NcsNavigator::Warehouse::Transformers
       :public_ids => %w(participants contacts)
     )
 
+    produce_one_for_one(:participant_visit_consents, ParticipantVisConsent,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :vis_person_who_consented_id }
+      ]
+    )
+
+    produce_one_for_one(:participant_visit_records, ParticipantRvis,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :join_column => :rvis_person_id,
+          :public_ref => :rvis_person }
+      ]
+    )
   end
 end
