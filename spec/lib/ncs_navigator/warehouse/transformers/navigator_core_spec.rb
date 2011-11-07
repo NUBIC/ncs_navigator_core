@@ -37,7 +37,26 @@ module NcsNavigator::Warehouse::Transformers
       Factory(:ncs_code, :local_code => i)
     end
 
+    shared_context 'mapping test' do
+      before do
+        # ignore unused so we can see the mapping failures
+        NavigatorCore.on_unused_columns :ignore
+      end
+
+      after do
+        NavigatorCore.on_unused_columns :fail
+      end
+
+      def verify_mapping(core_field, core_value, wh_field, wh_value=nil)
+        wh_value ||= core_value
+        core_model.last.tap { |p| p.send("#{core_field}=", core_value) }.save!
+        results.last.send(wh_field).should == wh_value
+      end
+    end
+
     describe 'for Person' do
+      let(:core_model) { Person }
+
       before do
         Factory(:person)
         Factory(:person, :first_name => 'Ginger')
@@ -54,14 +73,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       context 'with manually determined variables' do
-        before do
-          # ignore unused so we can see the mapping failures
-          NavigatorCore.on_unused_columns :ignore
-        end
-
-        after do
-          NavigatorCore.on_unused_columns :fail
-        end
+        include_context 'mapping test'
 
         [
           [:marital_status,                 code(9),     :maristat,     '9'],
@@ -73,9 +85,119 @@ module NcsNavigator::Warehouse::Transformers
           [:planned_move,                   code(4),     :plan_move,    '4'],
         ].each do |core_field, core_value, wh_field, wh_value|
           it "maps #{core_field} to #{wh_field}" do
-            wh_value ||= core_value
-            Person.last.tap { |p| p.send("#{core_field}=", core_value) }.save!
-            results.last.send(wh_field).should == wh_value
+            verify_mapping(core_field, core_value, wh_field, wh_value)
+          end
+        end
+      end
+
+      describe 'direct link to participant' do
+        before do
+          pending 'Might not be necessary'
+
+          Factory(:participant, :p_id => 'the-participant-id', :person => Person.first)
+
+          producer_names.clear << :link_participant_self_person
+        end
+
+        it 'derives the ID from the participant ID' do
+          results.first.person_pid_id.should == 'the-participant-id-self'
+        end
+
+        it 'has the correct person_id' do
+          results.first.person_id.should == Person.first.person_id
+        end
+
+        it 'has the correct p_id' do
+          results.first.p_id.should == Participant.first.p_id
+        end
+
+        it 'relation is self' do
+          results.first.relation.should == '1'
+        end
+
+        it 'is active' do
+          results.first.is_active.should == '1'
+        end
+
+        it 'only generates if there is a participant' do
+          results.size.should == 1
+        end
+      end
+
+      describe 'and ParticipantPersonLink' do
+        let(:participant) { Participant.first }
+        let(:person) { Person.last }
+
+        before do
+          Factory(:participant)
+          Factory(:participant_person_link,
+            :participant => participant, :person => person)
+
+          producer_names.clear << :participant_person_links
+        end
+
+        it 'generates one link per source link' do
+          results.size.should == 1
+        end
+
+        it 'uses the public ID for participant' do
+          results.first.p_id.should == participant.p_id
+        end
+
+        it 'uses the public ID for person' do
+          results.first.person_id.should == person.person_id
+        end
+
+        it 'uses the public ID for the link itself' do
+          results.first.person_pid_id.should == ParticipantPersonLink.first.person_pid_id
+        end
+      end
+    end
+
+    describe 'for PersonRace' do
+      before do
+        Factory(:person)
+        Factory(:person_race, :person => Person.first)
+        Factory(:person_race, :person => Person.first,
+          :race => Factory(:ncs_code, :local_code => 2))
+
+        producer_names << :person_races
+      end
+
+      it 'generates one person_race per source record' do
+        results.size.should == 2
+      end
+
+      it 'uses the correct code for each record' do
+        results.collect(&:race).should == %w(1 2)
+      end
+
+      it 'has the correct person_id' do
+        results.first.person_id.should == Person.first.person_id
+      end
+    end
+
+    describe 'for Participant' do
+      let(:core_model) { Participant }
+
+      before do
+        Factory(:participant)
+
+        producer_names << :participants
+      end
+
+      it 'generates one participant per source record' do
+        results.size.should == 1
+      end
+
+      describe 'manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:pid_age_eligibility, code(8), :pid_age_elig, '8']
+        ].each do |core_field, core_value, wh_field, wh_value|
+          it "maps #{core_field} to #{wh_field}" do
+            verify_mapping(core_field, core_value, wh_field, wh_value)
           end
         end
       end
