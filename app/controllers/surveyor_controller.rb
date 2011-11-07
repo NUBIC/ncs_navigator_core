@@ -32,6 +32,8 @@ class SurveyorController < ApplicationController
         if /_LIHIConversion_/ =~ response_set.survey.title && participant.can_enroll_in_high_intensity_arm?
           participant.enroll_in_high_intensity_arm!
           
+          
+          # TODO: update this information only when completing a Consent record - move to consent controller
           if participant.consented? && participant.can_high_intensity_consent?
             participant.high_intensity_consent!
             if participant.known_to_be_pregnant?
