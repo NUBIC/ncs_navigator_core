@@ -9,6 +9,13 @@ gem 'compass'
 gem 'fastercsv'
 gem 'haml', '~> 3.1'
 gem 'pg'
+
+group :assets do
+  gem 'sass-rails', " ~> 3.1.0"
+  gem 'coffee-rails', " ~> 3.1.0"
+  gem 'uglifier'
+end
+
 gem 'jquery-rails'
 
 gem 'ncs_mdes', '~> 0.4.0'
@@ -30,6 +37,8 @@ group :development do
 
   gem 'ruby-debug', :platform => :ruby_18
 end
+
+
 
 group :development, :test, :ci do
   # Since the transformer isn't run from within the app, don't include

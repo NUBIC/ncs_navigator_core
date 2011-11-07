@@ -96,12 +96,12 @@ namespace :db do
 end
 
 namespace :config do
-  desc "Copy configurable images to /public/images/config folder"
+  desc "Copy configurable images to /public/assets/images folder"
   task :images,  :roles => :app do
     if NcsNavigator.configuration.footer_logo_left || NcsNavigator.configuration.footer_logo_right
       run "mkdir -p #{current_path}/public/images/config"
-      run "cp #{NcsNavigator.configuration.footer_logo_left} #{current_path}/public/images/config" if NcsNavigator.configuration.footer_logo_left
-      run "cp #{NcsNavigator.configuration.footer_logo_right} #{current_path}/public/images/config" if NcsNavigator.configuration.footer_logo_right
+      run "cp #{NcsNavigator.configuration.footer_logo_left} #{current_path}/public/assets/images" if NcsNavigator.configuration.footer_logo_left
+      run "cp #{NcsNavigator.configuration.footer_logo_right} #{current_path}/public/assets/images" if NcsNavigator.configuration.footer_logo_right
     end
   end
 end
