@@ -101,6 +101,9 @@ GEM
     childprocess (0.2.2)
       ffi (~> 1.0.6)
     chunky_png (1.2.5)
+    coffee-rails (3.1.0)
+      coffee-script (>= 2.2.0)
+      railties (~> 3.1.0.rc1)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
@@ -325,6 +328,10 @@ GEM
     rubytree (0.7.0)
     rubyzip (0.9.4)
     sass (3.1.10)
+    sass-rails (3.1.0)
+      actionpack (~> 3.1.0)
+      railties (~> 3.1.0)
+      sass (>= 3.1.4)
     selenium-webdriver (2.10.0)
       childprocess (>= 0.2.1)
       ffi (= 1.0.9)
@@ -348,6 +355,9 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.30)
+    uglifier (1.0.3)
+      execjs (>= 0.3.0)
+      multi_json (>= 1.0.2)
     uuid (2.3.4)
       macaddr (~> 1.0)
     uuidtools (2.1.2)
@@ -369,6 +379,7 @@ DEPENDENCIES
   capistrano
   capybara
   ci_reporter!
+  coffee-rails (~> 3.1.0)
   compass
   cucumber
   cucumber-rails
@@ -401,11 +412,13 @@ DEPENDENCIES
   rcov
   rspec-rails (= 2.6.1)
   ruby-debug
+  sass-rails (~> 3.1.0)
   shoulda
   spork (> 0.9.0.rc)
   state_machine
   state_machine-audit_trail
   surveyor!
+  uglifier
   uuid
   vcr
   watchr
