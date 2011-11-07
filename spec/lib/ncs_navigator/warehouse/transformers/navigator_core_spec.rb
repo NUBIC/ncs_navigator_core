@@ -39,6 +39,12 @@ module NcsNavigator::Warehouse::Transformers
       Factory(:ncs_code, :local_code => i)
     end
 
+    shared_examples 'one to one' do
+      it 'creates one record per source entry' do
+        results.collect(&:class).should == [warehouse_model]
+      end
+    end
+
     shared_context 'mapping test' do
       before do
         # ignore unused so we can see the mapping failures
@@ -53,6 +59,101 @@ module NcsNavigator::Warehouse::Transformers
         wh_value ||= core_value
         core_model.last.tap { |p| p.send("#{core_field}=", core_value) }.save!
         results.last.send(wh_field).should == wh_value
+      end
+
+      def self.verify_mapping(core_field, core_value, wh_field, wh_value=nil)
+        it "maps #{core_field} to #{wh_field}" do
+          verify_mapping(core_field, core_value, wh_field, wh_value)
+        end
+      end
+    end
+
+    describe 'for ListingUnit' do
+      let(:producer_names) { [:listing_units] }
+      let(:warehouse_model) { MdesModule::ListingUnit }
+
+      before do
+        Factory(:listing_unit)
+      end
+
+      include_examples 'one to one'
+    end
+
+    describe 'for DwellingUnit' do
+      let(:producer_names) { [:dwelling_units] }
+      let(:warehouse_model) { MdesModule::DwellingUnit }
+
+      before do
+        Factory(:dwelling_unit)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the listing unit' do
+        results.first.list_id.should == ListingUnit.first.list_id
+      end
+    end
+
+    describe 'for DwellingHouseholdLink' do
+      let(:producer_names) { [:dwelling_household_links] }
+      let(:warehouse_model) { MdesModule::LinkHouseholdDwelling }
+
+      before do
+        Factory(:dwelling_household_link)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the dwelling unit' do
+        results.first.du_id.should == DwellingUnit.first.du_id
+      end
+
+      it 'uses the public ID for the household unit' do
+        results.first.hh_id.should == HouseholdUnit.first.hh_id
+      end
+    end
+
+    describe 'for HouseholdUnit' do
+      let(:producer_names) { [:household_units] }
+      let(:warehouse_model) { MdesModule::HouseholdUnit }
+      let(:core_model) { HouseholdUnit }
+
+      before do
+        Factory(:household_unit)
+      end
+
+      include_examples 'one to one'
+
+      describe 'with manually determined variables' do
+        include_context 'mapping test'
+
+        [
+          [:hh_eligibility,               code(7), :hh_elig,         '7'],
+          [:number_of_age_eligible_women,      11, :num_age_elig,   '11'],
+          [:number_of_pregnant_women,           4, :num_preg,        '4'],
+          [:number_of_pregnant_minors,          1, :num_preg_minor,  '1'],
+          [:number_of_pregnant_adults,          3, :num_preg_adult,  '3'],
+          [:number_of_pregnant_over49,          0, :num_preg_over49, '0']
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for HouseholdPersonLink' do
+      let(:producer_names) { [:household_person_links] }
+      let(:warehouse_model) { MdesModule::LinkPersonHousehold }
+
+      before do
+        Factory(:household_person_link)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.person_id
+      end
+
+      it 'uses the publid ID for household' do
+        results.first.hh_id.should == HouseholdUnit.first.hh_id
       end
     end
 
@@ -86,9 +187,7 @@ module NcsNavigator::Warehouse::Transformers
           [:preferred_contact_method_other, 'Pigeon',    :pref_contact_oth],
           [:planned_move,                   code(4),     :plan_move,    '4'],
         ].each do |core_field, core_value, wh_field, wh_value|
-          it "maps #{core_field} to #{wh_field}" do
-            verify_mapping(core_field, core_value, wh_field, wh_value)
-          end
+          verify_mapping(core_field, core_value, wh_field, wh_value)
         end
       end
 
