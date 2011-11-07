@@ -20,6 +20,7 @@ Factory.define :dwelling_unit do |du|
   du.duid_comment  "No comment"
   du.ssu_id        nil
   du.tsu_id        nil
+  du.association   :listing_unit, :factory => :listing_unit
 end
 
 Factory.define :household_unit do |hh|

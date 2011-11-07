@@ -15,6 +15,32 @@ module NcsNavigator::Warehouse::Transformers
     on_unused_columns :fail
     ignored_columns :id, :transaction_type, :updated_at, :created_at, :being_processed
 
+    produce_one_for_one(:listing_units, ListingUnit)
+
+    produce_one_for_one(:dwelling_units, DwellingUnit,
+      :public_ids => [
+        { :table => :listing_units, :public_id => :list_id }
+      ]
+    )
+
+    produce_one_for_one(:household_units, HouseholdUnit,
+      :column_map => {
+        :hh_eligibility_code => :hh_elig,
+        :number_of_age_eligible_women => :num_age_elig,
+        :number_of_pregnant_women => :num_preg,
+        :number_of_pregnant_minors => :num_preg_minor,
+        :number_of_pregnant_adults => :num_preg_adult,
+        :number_of_pregnant_over49 => :num_preg_over49
+      }
+    )
+
+    produce_one_for_one(:dwelling_household_links, LinkHouseholdDwelling,
+      :public_ids => [
+        { :table => :dwelling_units, :public_id => :du_id },
+        { :table => :household_units, :public_id => :hh_id }
+      ]
+    )
+
     produce_one_for_one(:people, Person,
       :column_map => {
         :language_code => :person_lang,
@@ -26,6 +52,13 @@ module NcsNavigator::Warehouse::Transformers
         :planned_move_code => :plan_move
       },
       :ignored_columns => %w(person_dob_date date_move_date)
+    )
+
+    produce_one_for_one(:household_person_links, LinkPersonHousehold,
+      :public_ids => [
+        :people,
+        { :table => :household_units, :public_id => :hh_id }
+      ]
     )
 
     # TODO: maybe unnecessary
