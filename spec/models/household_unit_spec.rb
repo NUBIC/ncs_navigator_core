@@ -36,6 +36,9 @@ describe HouseholdUnit do
   it { should belong_to(:hh_eligibility) }
   it { should belong_to(:hh_structure) }
   
+  it { should have_many(:dwelling_household_links) }
+  it { should have_many(:dwelling_units).through(:dwelling_household_links) }
+  
   context "as mdes record" do
     
     it "sets the public_id to a uuid" do

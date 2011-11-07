@@ -1384,6 +1384,11 @@ span.required {
 }
 
 /* line 64, ../../../stylesheets/partials/_application.scss */
+#mdes_definition {
+  display: none;
+}
+
+/* line 68, ../../../stylesheets/partials/_application.scss */
 #errorExplanation {
   width: 400px;
   border: 2px solid maroon;
@@ -1395,7 +1400,7 @@ span.required {
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
-/* line 72, ../../../stylesheets/partials/_application.scss */
+/* line 76, ../../../stylesheets/partials/_application.scss */
 #errorExplanation h2 {
   text-align: left;
   font-weight: bold;
@@ -1405,60 +1410,60 @@ span.required {
   background-color: maroon;
   color: #fff;
 }
-/* line 81, ../../../stylesheets/partials/_application.scss */
+/* line 85, ../../../stylesheets/partials/_application.scss */
 #errorExplanation p {
   color: #333;
   margin-bottom: 0;
   padding: 8px;
 }
-/* line 86, ../../../stylesheets/partials/_application.scss */
+/* line 90, ../../../stylesheets/partials/_application.scss */
 #errorExplanation ul {
   margin: 2px 24px;
 }
-/* line 88, ../../../stylesheets/partials/_application.scss */
+/* line 92, ../../../stylesheets/partials/_application.scss */
 #errorExplanation ul li {
   font-size: 12px;
   list-style: disc;
 }
 
-/* line 95, ../../../stylesheets/partials/_application.scss */
+/* line 99, ../../../stylesheets/partials/_application.scss */
 form select {
   border-color: #bbb;
 }
-/* line 99, ../../../stylesheets/partials/_application.scss */
+/* line 103, ../../../stylesheets/partials/_application.scss */
 form .date,
 form .datepicker {
   width: 7.5em;
 }
-/* line 102, ../../../stylesheets/partials/_application.scss */
+/* line 106, ../../../stylesheets/partials/_application.scss */
 form .nested_attributes {
   margin: 1em;
 }
 
-/* line 108, ../../../stylesheets/partials/_application.scss */
+/* line 112, ../../../stylesheets/partials/_application.scss */
 #container,
 .container {
   background-color: white;
   padding: 20px 40px;
   margin: 1em auto;
 }
-/* line 112, ../../../stylesheets/partials/_application.scss */
+/* line 116, ../../../stylesheets/partials/_application.scss */
 #container p,
 .container p {
   margin-bottom: .25em;
 }
-/* line 115, ../../../stylesheets/partials/_application.scss */
+/* line 119, ../../../stylesheets/partials/_application.scss */
 #container h3,
 .container h3 {
   padding-top: 10px;
 }
-/* line 118, ../../../stylesheets/partials/_application.scss */
+/* line 122, ../../../stylesheets/partials/_application.scss */
 #container form,
 .container form {
   margin-bottom: 1em;
 }
 
-/* line 123, ../../../stylesheets/partials/_application.scss */
+/* line 127, ../../../stylesheets/partials/_application.scss */
 #header {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -1469,12 +1474,12 @@ form .nested_attributes {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 131, ../../../stylesheets/partials/_application.scss */
+/* line 135, ../../../stylesheets/partials/_application.scss */
 #header #app_name a {
   text-decoration: none;
 }
 
-/* line 137, ../../../stylesheets/partials/_application.scss */
+/* line 141, ../../../stylesheets/partials/_application.scss */
 #title {
   font-size: 2em;
   display: inline;
@@ -1488,7 +1493,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 144, ../../../stylesheets/partials/_application.scss */
+/* line 148, ../../../stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1504,7 +1509,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 149, ../../../stylesheets/partials/_application.scss */
+/* line 153, ../../../stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }
@@ -1570,51 +1575,56 @@ input[type="submit"] {
 }
 
 /* line 19, ../../../stylesheets/partials/_links.scss */
+.mdes_documentation_link {
+  float: right;
+}
+
+/* line 23, ../../../stylesheets/partials/_links.scss */
 .add_link, .add_link:hover {
   background: url(../../assets/add.png) 0 2px no-repeat !important;
 }
 
-/* line 23, ../../../stylesheets/partials/_links.scss */
+/* line 27, ../../../stylesheets/partials/_links.scss */
 .edit_link, .edit_link:hover {
   background: url(../../assets/edit.png) 0 2px no-repeat !important;
 }
 
-/* line 27, ../../../stylesheets/partials/_links.scss */
+/* line 31, ../../../stylesheets/partials/_links.scss */
 .export_link, .export_link:hover {
   background: url(../../assets/page_white_excel.png) 0 2px no-repeat !important;
 }
 
-/* line 31, ../../../stylesheets/partials/_links.scss */
+/* line 35, ../../../stylesheets/partials/_links.scss */
 .search_link, .search_link:hover {
   background: url(../../assets/find.png) 0 2px no-repeat !important;
 }
 
-/* line 35, ../../../stylesheets/partials/_links.scss */
+/* line 39, ../../../stylesheets/partials/_links.scss */
 .show_link, .show_link:hover {
   background: url(../../assets/show.png) 0 2px no-repeat !important;
 }
 
-/* line 39, ../../../stylesheets/partials/_links.scss */
+/* line 43, ../../../stylesheets/partials/_links.scss */
 .list_link, .list_link:hover {
   background: url(../../assets/list.png) 0 2px no-repeat !important;
 }
 
-/* line 43, ../../../stylesheets/partials/_links.scss */
+/* line 47, ../../../stylesheets/partials/_links.scss */
 .delete_link, .delete_link:hover {
   background: url(../../assets/delete.png) 0 2px no-repeat !important;
 }
 
-/* line 47, ../../../stylesheets/partials/_links.scss */
+/* line 51, ../../../stylesheets/partials/_links.scss */
 .login_link, .login_link:hover {
   background: url(../../assets/door_in.png) 0 2px no-repeat !important;
 }
 
-/* line 51, ../../../stylesheets/partials/_links.scss */
+/* line 55, ../../../stylesheets/partials/_links.scss */
 .logout_link, .logout_link:hover {
   background: url(../../assets/door_out.png) 0 2px no-repeat !important;
 }
 
-/* line 55, ../../../stylesheets/partials/_links.scss */
+/* line 59, ../../../stylesheets/partials/_links.scss */
 .external_link, .external_link:hover {
   background: url(../../assets/external_link_icon.png) 0 2px no-repeat;
   background-position: right top;
