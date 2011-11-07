@@ -144,6 +144,12 @@ Spork.prefork do
 
   ::ActiveSupport::Deprecation.silenced = true
 
+  # Preload slow warehouse infrastructure only when actually using spork
+  if Spork.using_spork?
+    puts 'Preloading warehouse models (spork only)'
+    require 'ncs_navigator/warehouse'
+    require 'ncs_navigator/warehouse/models/two_point_zero'
+  end
 end
 
 Spork.each_run do
