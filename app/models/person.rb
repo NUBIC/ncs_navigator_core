@@ -74,6 +74,9 @@ class Person < ActiveRecord::Base
   has_many :addresses
   has_many :telephones
   has_many :emails
+
+  has_many :household_person_links
+  has_many :household_units, :through => :household_person_links
   
   # validates_presence_of :first_name
   # validates_presence_of :last_name
@@ -286,6 +289,21 @@ class Person < ActiveRecord::Base
   def last_completed_survey
     rs = response_sets.last
     rs.complete? ? rs.survey : nil
+  end
+  
+  ##
+  # Returns all DwellingUnits associated with the person's household units
+  # @return[Array<DwellingUnit]
+  def dwelling_units
+    household_units.collect(&:dwelling_units).flatten
+  end
+  
+  ##
+  # Returns true if a dwelling_unit has a tsu_is and this person has an association to the
+  # tsu dwelling unit through their household
+  # @return [true,false]
+  def in_tsu?
+    dwelling_units.map(&:tsu_id).compact.size > 0
   end
   
   private

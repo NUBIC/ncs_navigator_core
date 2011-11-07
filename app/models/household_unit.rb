@@ -51,5 +51,8 @@ class HouseholdUnit < ActiveRecord::Base
   has_many :household_person_links
   has_many :people, :through => :household_person_links
   
+  has_many :dwelling_household_links
+  has_many :dwelling_units, :through => :dwelling_household_links
+  
   accepts_nested_attributes_for :household_person_links, :allow_destroy => true
 end
