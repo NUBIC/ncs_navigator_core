@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20110920210459
+# Schema version: 20111018175121
 #
 # Table name: participant_visit_records
 #
