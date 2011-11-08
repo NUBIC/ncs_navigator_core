@@ -126,6 +126,52 @@ module NcsNavigator::Warehouse::Transformers
       ]
     )
 
+    produce_one_for_one(:contacts, Contact,
+      :column_map => {
+        :contact_disposition => :contact_disp,
+        :contact_language_code => :contact_lang,
+        :contact_language_other => :contact_lang_oth,
+        :who_contacted_other => :who_contact_oth
+      },
+      :ignored_columns => %w(contact_date_date)
+    )
+
+    produce_one_for_one(:events, Event,
+      :column_map => {
+        :event_disposition => :event_disp,
+        :event_disposition_category_code => :event_disp_cat,
+        :event_incentive_cash => :event_incent_cash,
+        :event_incentive_noncash => :event_incent_noncash
+      }
+    )
+
+    produce_one_for_one(:instruments, Instrument,
+      :public_ids => %w(events),
+      :column_map => {
+        :instrument_start_date => :ins_date_start,
+        :instrument_start_time => :ins_start_time,
+        :instrument_end_date => :ins_date_end,
+        :instrument_end_time => :ins_end_time,
+        :instrument_breakoff_code => :ins_breakoff,
+        :instrument_status_code => :ins_status,
+        :instrument_mode_code => :ins_mode,
+        :instrument_mode_other => :ins_mode_oth,
+        :instrument_comment => :instru_comment,
+        :instrument_method_code => :ins_method,
+        :supervisor_review_code => :sup_review
+      },
+      :ignored_columns => %w(person_id survey_id)
+    )
+
+    produce_one_for_one(:contact_links, LinkContact,
+      :public_ids => [
+        :people,
+        :events,
+        :contacts,
+        :instruments
+      ]
+    )
+
     produce_one_for_one(:addresses, Address,
       :public_ids => [
         :people,
