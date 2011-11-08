@@ -125,5 +125,27 @@ module NcsNavigator::Warehouse::Transformers
           :public_ref => :rvis_person }
       ]
     )
+
+    produce_one_for_one(:addresses, Address,
+      :public_ids => [
+        :people,
+        { :table => :dwelling_units, :public_id => :du_id }
+      ],
+      :column_map => {
+        :address_one => :address_1,
+        :address_two => :address_2
+      },
+      :ignored_columns => %w(address_start_date_date address_end_date_date)
+    )
+
+    produce_one_for_one(:emails, Email,
+      :public_ids => %w(people),
+      :ignored_columns => %w(email_start_date_date email_end_date_date)
+    )
+
+    produce_one_for_one(:telephones, Telephone,
+      :public_ids => %w(people),
+      :ignored_columns => %w(phone_start_date_date phone_end_date_date)
+    )
   end
 end

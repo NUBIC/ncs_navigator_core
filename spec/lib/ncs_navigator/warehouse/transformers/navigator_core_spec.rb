@@ -413,5 +413,110 @@ module NcsNavigator::Warehouse::Transformers
         results.first.contact_id.should == Contact.first.contact_id
       end
     end
+
+    describe 'for Address' do
+      let(:producer_names) { [:addresses] }
+      let(:warehouse_model) { MdesModule::Address }
+      let(:core_model) { Address }
+      let!(:address) { Factory(:address) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the person' do
+        results.first.person_id.should == Person.first.person_id
+      end
+
+      # TODO: person_id and du_id should be mutually exclusive
+      it 'uses the public ID for the DU' do
+        results.first.du_id.should == DwellingUnit.first.du_id
+      end
+
+      it 'uses the public ID for the provider' do
+        pending 'No Provider in core yet'
+      end
+
+      it 'uses the public ID for the institute' do
+        pending 'No Institute in core yet'
+      end
+
+      it 'renders address_info_date appropriately' do
+        address.tap { |a| a.address_info_date = Date.new(2010, 3, 4) }.save!
+        results.first.address_info_date.should == '2010-03-04'
+      end
+
+      it 'renders address_info_update appropriately' do
+        address.tap { |a| a.address_info_update = Date.new(2011, 9, 4) }.save!
+        results.first.address_info_update.should == '2011-09-04'
+      end
+
+      context 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:address_one, '2702 High St.', :address_1],
+          [:address_two, 'Floor 23',      :address_2]
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for Email' do
+      let(:producer_names) { [:emails] }
+      let(:warehouse_model) { MdesModule::Email }
+      let!(:email) { Factory(:email) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.person_id
+      end
+
+      it 'uses the public ID for the provider' do
+        pending 'No Provider in core yet'
+      end
+
+      it 'uses the public ID for the institute' do
+        pending 'No Institute in core yet'
+      end
+
+      it 'renders email_info_date appropriately' do
+        email.tap { |a| a.email_info_date = Date.new(2010, 3, 4) }.save!
+        results.first.email_info_date.should == '2010-03-04'
+      end
+
+      it 'renders email_info_update appropriately' do
+        email.tap { |a| a.email_info_update = Date.new(2011, 9, 4) }.save!
+        results.first.email_info_update.should == '2011-09-04'
+      end
+    end
+
+    describe 'for Telephone' do
+      let(:producer_names) { [:telephones] }
+      let(:warehouse_model) { MdesModule::Telephone }
+      let!(:telephone) { Factory(:telephone) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.person_id
+      end
+
+      it 'uses the public ID for the provider' do
+        pending 'No Provider in core yet'
+      end
+
+      it 'uses the public ID for the institute' do
+        pending 'No Institute in core yet'
+      end
+
+      it 'renders phone_info_date appropriately' do
+        telephone.tap { |a| a.phone_info_date = Date.new(2010, 3, 4) }.save!
+        results.first.phone_info_date.should == '2010-03-04'
+      end
+
+      it 'renders email_info_update appropriately' do
+        telephone.tap { |a| a.phone_info_update = Date.new(2011, 9, 4) }.save!
+        results.first.phone_info_update.should == '2011-09-04'
+      end
+    end
   end
 end
