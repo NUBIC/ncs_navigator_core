@@ -103,23 +103,23 @@ class Participant < ActiveRecord::Base
     end
     
     event :follow_low_intensity do
-      transition :in_pregnancy_probability_group => :following_low_intensity,  :consented_low_intensity => :following_low_intensity
+      transition [:in_pregnancy_probability_group, :consented_low_intensity] => :following_low_intensity
     end
 
     event :impregnate do
-      transition :in_pregnancy_probability_group => :pregnant_and_consented, :consented_low_intensity => :pregnant_and_consented, :following_low_intensity => :pregnant_and_consented
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity, :moved_to_high_intensity_arm] => :pregnant_and_consented
     end
     
     event :lose_child do
-      transition :pregnant_and_consented => :in_pregnancy_probability_group, :in_pregnancy_probability_group => :in_pregnancy_probability_group, :consented_low_intensity => :in_pregnancy_probability_group, :following_low_intensity => :in_pregnancy_probability_group
+      transition [:pregnant_and_consented, :in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity] => :in_pregnancy_probability_group
     end
     
     event :enroll_in_high_intensity_arm do
-      transition :in_pregnancy_probability_group => :moved_to_high_intensity_arm, :pregnant_and_consented => :moved_to_high_intensity_arm, :following_low_intensity => :moved_to_high_intensity_arm
+      transition [:in_pregnancy_probability_group, :pregnant_and_consented, :following_low_intensity] => :moved_to_high_intensity_arm
     end
 
     event :low_intensity_birth do
-      transition :pregnant_and_consented => :birth_low, :following_low_intensity => :birth_low
+      transition [:pregnant_and_consented, :following_low_intensity] => :birth_low
     end
     
     event :parenthood do
@@ -137,15 +137,15 @@ class Participant < ActiveRecord::Base
     end
     
     event :non_pregnant_informed_consent do
-      transition :consented_high_intensity => :pre_pregnancy, :in_high_intensity_arm => :pre_pregnancy
+      transition [:consented_high_intensity, :in_high_intensity_arm] => :pre_pregnancy
     end
     
     event :pregnant_informed_consent do
-      transition :consented_high_intensity => :pregnancy_one, :in_high_intensity_arm => :pregnancy_one
+      transition [:consented_high_intensity, :in_high_intensity_arm] => :pregnancy_one
     end
 
     event :follow do
-      transition :pre_pregnancy => :consented_high_intensity, :pregnancy_one => :consented_high_intensity
+      transition [:pre_pregnancy, :pregnancy_one] => :consented_high_intensity
     end
 
     event :pregnancy_one_visit do
@@ -153,7 +153,7 @@ class Participant < ActiveRecord::Base
     end
     
     event :birth_child do
-      transition :pregnancy_one => :birth, :pregnancy_two => :birth
+      transition [:pregnancy_one, :pregnancy_two] => :birth
     end
 
     # event :three_months_after_birth do
@@ -183,7 +183,6 @@ class Participant < ActiveRecord::Base
     end
   end
   
-  
   ##
   # Helper method to set the current state of the Participant
   # Since there are two state_machines (one for Low Intensity and one for High (or PB or EH))
@@ -196,6 +195,54 @@ class Participant < ActiveRecord::Base
       self.high_intensity_state = state
     end
   end
+  
+  ##
+  # After a survey has been completed the participant would move through the states as
+  # defined in the state machine
+  # @param [ResponseSet] - used to determine survey taken
+  # @param [PatientStudyCalendar] - cf. ApplicationController#psc
+  def update_state_after_survey(response_set, psc)
+    survey_title = response_set.survey.title
+    
+    if /_PregScreen_/ =~ survey_title
+      resp = psc.update_subject(self)
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
+    end
+  
+    if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
+      follow_low_intensity!
+    end
+  
+    if /_LIHIConversion_/ =~ survey_title && can_enroll_in_high_intensity_arm?
+      enroll_in_high_intensity_arm!
+      
+      # TODO: handle all types of consent
+      if consented? && can_high_intensity_consent?
+        high_intensity_consent!
+        if known_to_be_pregnant?
+          pregnant_informed_consent!
+        else
+          non_pregnant_informed_consent!
+        end
+      end
+    end
+  
+    if known_to_be_pregnant? && can_impregnate?
+      impregnate!
+    end
+    
+    if /_PregVisit1_/ =~ survey_title && can_pregnancy_one_visit?
+      pregnancy_one_visit!
+    end
+  
+    if known_to_have_experienced_child_loss? && can_lose_child?
+      lose_child!
+    end
+    
+    # TODO: update participant state for each survey
+    #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
+  end
+  
   
   ##
   # The current pregnancy probability group status for this participant. 
