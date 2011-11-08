@@ -518,5 +518,113 @@ module NcsNavigator::Warehouse::Transformers
         results.first.phone_info_update.should == '2011-09-04'
       end
     end
+
+    describe 'for Instrument' do
+      let(:producer_names) { [:instruments] }
+      let(:warehouse_model) { MdesModule::Instrument }
+      let(:core_model) { Instrument }
+
+      let!(:instrument) { Factory(:instrument) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for event' do
+        results.first.event_id.should == Event.first.event_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:instrument_start_date, Date.new(2009, 5, 8), :ins_date_start, '2009-05-08'],
+          [:instrument_start_time, '23:30',              :ins_start_time],
+          [:instrument_end_date,   Date.new(2009, 5, 9), :ins_date_end,   '2009-05-09'],
+          [:instrument_end_time,   '01:30',              :ins_end_time],
+          [:instrument_breakoff,   code(2),              :ins_breakoff,   '2'],
+          [:instrument_status,     code(4),              :ins_status,     '4'],
+          [:instrument_mode,       code(2),              :ins_mode,       '2'],
+          [:instrument_mode_other, 'Helicopter drop',    :ins_mode_oth],
+          [:instrument_method,     code(1),              :ins_method,     '1'],
+          [:instrument_comment,    'Confused',           :instru_comment],
+          [:supervisor_review,     code(1),              :sup_review,     '1']
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for Event' do
+      let(:producer_names) { [:events] }
+      let(:warehouse_model) { MdesModule::Event }
+      let(:core_model) { Event }
+
+      let!(:event) { Factory(:event) }
+
+      include_examples 'one to one'
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:event_disposition,          5,                        :event_disp],
+          [:event_disposition_category, code(4),                  :event_disp_cat,    '4'],
+          [:event_incentive_cash,       BigDecimal.new('7.11'), :event_incent_cash, '7.11'],
+          [:event_incentive_noncash,    'Chick-fil-a coupons',    :event_incent_noncash]
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for Contact' do
+      let(:producer_names) { [:contacts] }
+      let(:warehouse_model) { MdesModule::Contact }
+      let(:core_model) { Contact }
+
+      let!(:contact) { Factory(:contact) }
+
+      include_examples 'one to one'
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:contact_disposition,    7,         :contact_disp, '7'],
+          [:contact_language,       code(10),  :contact_lang, '10'],
+          [:contact_language_other, 'Klingon', :contact_lang_oth],
+          [:who_contacted_other,    'Cat',     :who_contact_oth]
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for ContactLink' do
+      let(:producer_names) { [:contact_links] }
+      let(:warehouse_model) { MdesModule::LinkContact }
+      let(:core_model) { ContactLink }
+
+      let!(:contact_link) { Factory(:contact_link) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for contact' do
+        results.first.contact_id.should == Contact.first.contact_id
+      end
+
+      it 'uses the public ID for event' do
+        results.first.event_id.should == Event.first.event_id
+      end
+
+      it 'uses the public ID for instrument' do
+        results.first.instrument_id.should == Instrument.first.instrument_id
+      end
+
+      it 'uses the public ID for staff' do
+        pending 'Core has no separate concept of staff'
+      end
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.person_id
+      end
+
+      it 'uses the public ID for provider' do
+        pending 'No Provider in core yet'
+      end
+    end
   end
 end
