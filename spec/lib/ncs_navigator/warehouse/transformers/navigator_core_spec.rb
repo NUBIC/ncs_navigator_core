@@ -414,6 +414,32 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
+    describe 'for PpgDetail' do
+      let(:producer_names) { [:ppg_details] }
+      let(:warehouse_model) { MdesModule::PpgDetails }
+
+      let!(:ppg_detail) { Factory(:ppg_detail) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the participant' do
+        results.first.p_id.should == Participant.first.p_id
+      end
+    end
+
+    describe 'for PpgStatusHistory' do
+      let(:producer_names) { [:ppg_status_histories] }
+      let(:warehouse_model) { MdesModule::PpgStatusHistory }
+
+      let!(:ppg_status_history) { Factory(:ppg_status_history) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the participant' do
+        results.first.p_id.should == Participant.first.p_id
+      end
+    end
+
     describe 'for Address' do
       let(:producer_names) { [:addresses] }
       let(:warehouse_model) { MdesModule::Address }
