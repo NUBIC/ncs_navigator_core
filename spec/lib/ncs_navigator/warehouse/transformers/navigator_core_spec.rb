@@ -652,5 +652,28 @@ module NcsNavigator::Warehouse::Transformers
         pending 'No Provider in core yet'
       end
     end
+
+    describe "a producer's metadata" do
+      let(:producer) { NavigatorCore.record_producers.find { |rp| rp.name == :participants } }
+      let(:column_map) { producer.column_map(Participant.attribute_names) }
+
+      it 'includes the MDES model' do
+        producer.model.should == MdesModule::Participant
+      end
+
+      it 'includes a column map' do
+        lambda { column_map }.should_not raise_error
+      end
+
+      describe 'column map' do
+        it 'includes explicit mappings' do
+          column_map['pid_age_eligibility_code'].should == 'pid_age_elig'
+        end
+
+        it 'includes heuristic mappings' do
+          column_map['p_type_other'].should == 'p_type_oth'
+        end
+      end
+    end
   end
 end
