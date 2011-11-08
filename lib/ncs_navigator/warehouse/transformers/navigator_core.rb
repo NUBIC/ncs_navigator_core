@@ -126,6 +126,12 @@ module NcsNavigator::Warehouse::Transformers
       ]
     )
 
+    produce_one_for_one(:ppg_details, PpgDetails, :public_ids => %w(participants))
+
+    produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
+      :public_ids => %w(participants)
+    )
+
     produce_one_for_one(:contacts, Contact,
       :column_map => {
         :contact_disposition => :contact_disp,
