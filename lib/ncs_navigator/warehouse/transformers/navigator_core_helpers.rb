@@ -1,10 +1,8 @@
 module NcsNavigator::Warehouse::Transformers
   module NavigatorCoreHelpers
     ##
-    # Wrapper for {Database::DSL#produce_records} that automatically
-    # invokes `model_row` assuming that each source row results in
-    # exactly one MDES row. It also does automatic joins to replace
-    # association IDs with public IDs.
+    # Extends {Database::DSL#produce_one_for_one} to support automatic
+    # joins to replace association IDs with public IDs.
     def produce_one_for_one(table_name, mdes_model, options={})
       query = nil
       column_map = (options[:column_map] || {}).dup
@@ -41,14 +39,13 @@ module NcsNavigator::Warehouse::Transformers
         query = "SELECT #{selects.join(', ')}\nFROM #{table_name} t\n  #{joins.join("\n  ")}"
       end
 
-      pr_opts = {}
-      if query
-        pr_opts[:query] = query
-      end
+      pr_opts = {
+        :column_map => column_map,
+        :ignored_columns => ignored_columns
+      }
+      pr_opts[:query] = query if query
 
-      produce_records(table_name, :query => query) do |row|
-        model_row(mdes_model, row, :column_map => column_map, :ignored_columns => ignored_columns)
-      end
+      super(table_name, mdes_model, pr_opts)
     end
   end
 end
