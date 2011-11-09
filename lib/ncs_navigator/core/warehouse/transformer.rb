@@ -1,14 +1,13 @@
-require 'ncs_navigator/warehouse'
+require 'ncs_navigator/core'
+
 require 'ncs_navigator/warehouse/models/two_point_zero'
 
-require 'ncs_navigator/warehouse/transformers/navigator_core_helpers'
-
-module NcsNavigator::Warehouse::Transformers
-  class NavigatorCore
-    include Database
+module NcsNavigator::Core::Warehouse
+  class Transformer
+    include NcsNavigator::Warehouse::Transformers::Database
     include NcsNavigator::Warehouse::Models::TwoPointZero
 
-    extend NavigatorCoreHelpers
+    extend TransformerHelpers
 
     bcdatabase :name => 'ncs_navigator_core'
 

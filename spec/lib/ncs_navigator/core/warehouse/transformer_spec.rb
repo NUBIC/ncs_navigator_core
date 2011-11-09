@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-require 'ncs_navigator/warehouse/transformers/navigator_core'
+require 'ncs_navigator/core/warehouse/transformer'
 
-module NcsNavigator::Warehouse::Transformers
-  describe NavigatorCore, :clean_with_truncation, :slow do
+module NcsNavigator::Core::Warehouse
+  describe Transformer, :clean_with_truncation, :slow do
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     let(:wh_config) {
@@ -15,11 +15,11 @@ module NcsNavigator::Warehouse::Transformers
     }
 
     it 'can be created' do
-      NavigatorCore.create_transformer(wh_config).should_not be_nil
+      Transformer.create_transformer(wh_config).should_not be_nil
     end
 
     it 'uses the correct bcdatabase config' do
-      NavigatorCore.bcdatabase[:name].should == 'ncs_navigator_core'
+      Transformer.bcdatabase[:name].should == 'ncs_navigator_core'
     end
 
     let(:bcdatabase_config) {
@@ -30,7 +30,7 @@ module NcsNavigator::Warehouse::Transformers
       end
     }
     let(:enumerator) {
-      NavigatorCore.new(wh_config, :bcdatabase => bcdatabase_config)
+      Transformer.new(wh_config, :bcdatabase => bcdatabase_config)
     }
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }
@@ -48,11 +48,11 @@ module NcsNavigator::Warehouse::Transformers
     shared_context 'mapping test' do
       before do
         # ignore unused so we can see the mapping failures
-        NavigatorCore.on_unused_columns :ignore
+        Transformer.on_unused_columns :ignore
       end
 
       after do
-        NavigatorCore.on_unused_columns :fail
+        Transformer.on_unused_columns :fail
       end
 
       def verify_mapping(core_field, core_value, wh_field, wh_value=nil)
@@ -654,7 +654,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe "a producer's metadata" do
-      let(:producer) { NavigatorCore.record_producers.find { |rp| rp.name == :participants } }
+      let(:producer) { Transformer.record_producers.find { |rp| rp.name == :participants } }
       let(:column_map) { producer.column_map(Participant.attribute_names) }
 
       it 'includes the MDES model' do
