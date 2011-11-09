@@ -3,11 +3,14 @@ require 'ncs_navigator/core'
 require 'ncs_navigator/warehouse/models/two_point_zero'
 
 module NcsNavigator::Core::Warehouse
-  class Transformer
+  ##
+  # Converts the contents of a core instance into appropriate MDES
+  # model instances for MDES Warehouse.
+  class Enumerator
     include NcsNavigator::Warehouse::Transformers::Database
     include NcsNavigator::Warehouse::Models::TwoPointZero
 
-    extend TransformerHelpers
+    extend EnumeratorHelpers
 
     bcdatabase :name => 'ncs_navigator_core'
 
