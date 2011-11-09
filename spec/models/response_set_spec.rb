@@ -50,7 +50,7 @@ describe ResponseSet do
         create_missing_in_error_ncs_codes(Instrument)
         instrument_type = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => 'Pregnancy Visit 1 Interview')
         
-        person.start_instrument(participant.person.next_survey)
+        person.start_instrument(pv1survey)
       
         rs = ResponseSet.where(:user_id => person.id).first
         rs.should_not be_nil

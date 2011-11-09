@@ -95,7 +95,7 @@ class PatientStudyCalendar
     resp.body
   end
   
-  def activities_for_event(participant)
+  def activities_for_participant(participant)
     activities = []
     if subject_schedules = schedules(participant)    
       subject_schedules["days"].keys.each do |date|
@@ -110,6 +110,21 @@ class PatientStudyCalendar
     end
     activities.uniq
   end
+
+  def activities_for_segment(participant, segment)
+    activities = []
+    if subject_schedules = schedules(participant)    
+      subject_schedules["days"].keys.each do |date|
+        subject_schedules["days"][date]["activities"].each do |activity|          
+          Rails.logger.info("~~~ segment = #{segment} && study_segment #{activity["study_segment"]}")
+          Rails.logger.info("    #{activity["activity"]["name"]}")
+          activities << activity["activity"]["name"] if activity["study_segment"].include?(segment.to_s)
+        end
+      end
+    end
+    activities.uniq
+  end
+
   
   def scheduled_activities_report(options = {})
     filters = {:state => 'scheduled', :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }

@@ -18,7 +18,8 @@ Feature: Obtaining participant consent
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"
-    And I should see "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
+    # And I should see "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
+    And I should see "Low-Intensity Interview"
     And I should see "Low-Intensity Consent"
     When I follow "Low-Intensity Consent"
     Then I should be on the new participant consent page

@@ -80,7 +80,7 @@ class Event < ActiveRecord::Base
   # @return [Array, <Survey>]
   def surveys
     surveys = []
-    InstrumentEventMap.instruments_for(self.to_s).each do |ins|
+    InstrumentEventMap.instruments_for_segment(self.to_s).each do |ins|
       surveys << Survey.most_recent_for_title(ins)
     end    
     surveys
