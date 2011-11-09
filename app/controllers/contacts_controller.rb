@@ -8,7 +8,7 @@ class ContactsController < ApplicationController
     @person     = Person.find(params[:person_id])
     @contact    = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
 
-    event_for_contact
+    event_for_person(false)
     @requires_consent = @person.participant && @person.participant.consented? == false && @event.event_type.display_text != "Pregnancy Screener"
 
     respond_to do |format|
@@ -23,8 +23,7 @@ class ContactsController < ApplicationController
     @person     = Person.find(params[:person_id])
     @contact    = Contact.new(params[:contact])
     
-    event_for_contact
-    @event.save!
+    event_for_person
 
     respond_to do |format|
       if @contact.save
@@ -53,8 +52,7 @@ class ContactsController < ApplicationController
     @person  = Person.find(params[:person_id])
     @contact = Contact.find(params[:id])
     
-    event_for_contact
-    @event.save!
+    event_for_person
 
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
@@ -71,11 +69,9 @@ class ContactsController < ApplicationController
   
   private
   
-    def event_for_contact
-      list_name   = NcsCode.attribute_lookup(:event_type_code)
-      ets         = Event.event_types(@person.upcoming_events).collect { |et| PatientStudyCalendar.map_psc_segment_to_mdes_event(et) }
-      event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
-      @event      = Event.new(:participant => @person.participant, :event_type => event_types.first)
+    def event_for_person(save = true)
+      @event = new_event_for_person(@person)
+      @event.save! if save
     end
     
     def find_or_create_contact_link

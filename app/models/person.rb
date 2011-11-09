@@ -162,16 +162,6 @@ class Person < ActiveRecord::Base
     end
     events
   end
-
-  ##
-  # Determines the next Survey to administer.
-  # @return [Survey]
-  def next_survey
-    event = upcoming_events.first
-    instrument = InstrumentEventMap.instruments_for(event).first if event 
-    result = Survey.most_recent_for_title(instrument) if instrument    
-    result
-  end
   
   ##
   # Create a new ResponseSet for the Person associated with the given Survey

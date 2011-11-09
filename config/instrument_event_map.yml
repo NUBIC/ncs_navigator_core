@@ -49,7 +49,7 @@
   event: Pregnancy Visit 2
   instrument_type: 11
   version_number: 2.0
-- name: Pregnancy Visit 2  SAQ
+- name: Pregnancy Visit 2 SAQ
   filename: INS_QUE_PregVisit2_SAQ_EHPBHI_P2_V2.0
   event: Pregnancy Visit 2
   instrument_type: 12

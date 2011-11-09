@@ -4,7 +4,7 @@
 %h3
   Consent
 - no_consent = true
-- if activities = psc.activities_for_event(@person.participant)
+- if activities = psc.activities_for_participant(@person.participant)
   - activities.each do |activity|
     - if activity.include?("Consent")
       - no_consent = false
@@ -12,7 +12,7 @@
         = activity
       - else
         = link_to activity, new_participant_consent_path(:participant_id => @person.participant.id, :contact_link_id => @contact_link.id), :class => "edit_link icon_link"
-    %br
+      %br
 - if no_consent
   - if !@person.participant.consented?
     %p
@@ -21,7 +21,7 @@
     %p
       No consent required
   
-= render 'instruments_for_upcoming_events'
+= render 'instruments_for_upcoming_events', :initial_instrument_for_contact => true
     
 .close_consent
   %h3

@@ -1456,14 +1456,15 @@ form .nested_attributes {
 #container h3,
 .container h3 {
   padding-top: 10px;
+  margin-bottom: 0.5em;
 }
-/* line 122, ../../../stylesheets/partials/_application.scss */
+/* line 123, ../../../stylesheets/partials/_application.scss */
 #container form,
 .container form {
   margin-bottom: 1em;
 }
 
-/* line 127, ../../../stylesheets/partials/_application.scss */
+/* line 128, ../../../stylesheets/partials/_application.scss */
 #header {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -1474,12 +1475,12 @@ form .nested_attributes {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 135, ../../../stylesheets/partials/_application.scss */
+/* line 136, ../../../stylesheets/partials/_application.scss */
 #header #app_name a {
   text-decoration: none;
 }
 
-/* line 141, ../../../stylesheets/partials/_application.scss */
+/* line 142, ../../../stylesheets/partials/_application.scss */
 #title {
   font-size: 2em;
   display: inline;
@@ -1493,7 +1494,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 148, ../../../stylesheets/partials/_application.scss */
+/* line 149, ../../../stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1509,7 +1510,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 153, ../../../stylesheets/partials/_application.scss */
+/* line 154, ../../../stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }

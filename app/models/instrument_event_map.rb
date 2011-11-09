@@ -3,12 +3,12 @@ class InstrumentEventMap
   # TODO: Map PSC Activities to Instrument File names !!!!
 
   ##
-  # For a given event, return the filenames of all the Instruments/Surveys that match
+  # For a given PSC segment, return the filenames of all the Instruments/Surveys that match
   # from the MDES Instrument and Event Map
   # 
-  # @param [String] - the name of the PSC segment (e.g. Lo-Intensity:Pregnancy Screener)
+  # @param [String] - the name of the PSC segment (e.g. Lo-Intensity: Pregnancy Screener)
   # @return [Array, <String>] - filenames for that event
-  def self.instruments_for(segment)
+  def self.instruments_for_segment(segment)
     return [] if segment.nil?
     event = PatientStudyCalendar.map_psc_segment_to_mdes_event(segment)
     result = []
@@ -18,6 +18,33 @@ class InstrumentEventMap
     result
   end
   
+  ##
+  # For a given activity from a PSC segment, return the filename of the Instrument with
+  # the matching name from the MDES Instrument and Event Map
+  # 
+  # @param [String] - the name of the PSC segment activity (e.g. Pregnancy Probability Group Follow-Up Interview)
+  # @return [String] - filename for the instrument whose name matches the activity
+  def self.instrument_for_activity(activity)
+    result = nil
+    instruments.each do |ie|
+      if ie["name"].include?(activity_to_instrument_name(activity))
+        result = ie["filename"]
+        break
+      end
+    end
+    result
+  end
+
+  # FIXME: PSC template activities should match MDES instruments
+  def self.activity_to_instrument_name(activity)
+    case activity
+    when "Low-Intensity Birth Interview"
+      "Birth Interview (LI)"
+    else
+      activity
+    end
+  end
+
   ##
   # A list of all the known event names.
   # @return [Array, <String>]

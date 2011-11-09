@@ -31,28 +31,17 @@
     - else
       = @participant.upcoming_events.to_sentence
       %br
-      - @participant.upcoming_events.each do |event|
+      - @participant.upcoming_events.each do |segment|
         %p
           %b
-            = "Instruments for #{event}"
+            = "Instruments from PSC for #{segment}"
           %br
-          - instruments = InstrumentEventMap.instruments_for(event)
-          - if instruments.blank?
-            There are no Instruments for 
-            = event
-          - else
-            - instruments.each do |ins|
-              - if Survey.where(:title => ins).count > 0
-                %span{ :class => "known_instrument" }
-                  = "#{ins}"
-              - else
-                = "#{ins}"
-              %br
-        %p
-          %b
-            = "Instruments from PSC for #{event}"
-          %br
-          - if activities = psc.activities_for_event(@participant)
+          - if activities = psc.activities_for_segment(@participant, segment)
             - activities.each do |activity|
-              = activity
+              - instrument = InstrumentEventMap.instrument_for_activity(activity)
+              - if Survey.where(:title => instrument).count > 0
+                %span{ :class => "known_instrument" }
+                  = "#{activity}"
+              - else
+                = "#{activity}"
               %br
