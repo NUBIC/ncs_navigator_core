@@ -40,22 +40,22 @@ describe OperationalDataExtractor do
   it "determines the proper data extractor to use" do
     person = Factory(:person)
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data    
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     handler = OperationalDataExtractor.extractor_for(response_set)
     handler.should == PregnancyScreenerOperationalDataExtractor
     
     survey = create_follow_up_survey_with_ppg_status_history_operational_data
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     handler = OperationalDataExtractor.extractor_for(response_set)
     handler.should == PpgFollowUpOperationalDataExtractor
     
     survey = create_pre_pregnancy_survey_with_person_operational_data
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     handler = OperationalDataExtractor.extractor_for(response_set)
     handler.should == PrePregnancyOperationalDataExtractor
     
     survey = create_pregnancy_visit_1_survey_with_person_operational_data
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     handler = OperationalDataExtractor.extractor_for(response_set)
     handler.should == PregnancyVisitOperationalDataExtractor
   end
@@ -65,7 +65,7 @@ describe OperationalDataExtractor do
     before(:each) do
       @person = Factory(:person)
       @survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data    
-      @response_set = @person.start_instrument(@survey)
+      @response_set, @instrument = @person.start_instrument(@survey)
       question = Factory(:question, :data_export_identifier => "PREG_SCREEN_HI_2.HOME_PHONE")
       answer = Factory(:answer, :response_class => "string")
       home_phone_response = Factory(:response, :string_value => "3125551212", :question => question, :answer => answer, :response_set => @response_set)

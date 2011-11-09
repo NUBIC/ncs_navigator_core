@@ -252,7 +252,7 @@ describe Person do
       InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
       @pers = Factory(:person)
       @survey = create_test_survey_for_person
-      @rs = @pers.start_instrument(@survey)
+      @rs, @instrument = @pers.start_instrument(@survey)
       
     end
     

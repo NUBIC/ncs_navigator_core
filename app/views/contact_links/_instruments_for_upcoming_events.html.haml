@@ -1,0 +1,9 @@
+- @person.upcoming_events.each do |event|
+  %h3 
+    = "Instruments for #{event}"
+  - InstrumentEventMap.instruments_for(event).each do |ins|
+    - if survey = Survey.most_recent_for_title(ins)
+      = link_to "#{ins}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id), :class => "edit_link icon_link"
+    - else
+      = "#{ins}"
+    %br

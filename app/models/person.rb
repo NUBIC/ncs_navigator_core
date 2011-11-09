@@ -182,11 +182,11 @@ class Person < ActiveRecord::Base
   def start_instrument(survey)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
-    create_instrument(survey)
+    instrument = create_instrument(survey)
     response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
 
     response_set = prepopulate_response_set(survey, response_set)
-    response_set
+    [response_set, instrument]
   end
 
   def prepopulate_response_set(survey, response_set)
