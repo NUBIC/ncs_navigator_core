@@ -4,10 +4,10 @@
 - @person.upcoming_events.each do |segment|
   %h3 
     = "Instruments for #{segment}"
-  - if activities = psc.activities_for_segment(@participant, segment)
+  - if activities = psc.activities_for_segment(@person.participant, segment)
     - activities.each do |activity|
       - instrument = InstrumentEventMap.instrument_for_activity(activity)
-      - if survey = Survey.most_recent_for_title(instrument)
+      - if instrument && survey = Survey.most_recent_for_title(instrument)
         = link_to "#{activity}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
       - else
         = "#{activity}"

@@ -134,6 +134,23 @@ describe Event do
     
   end
   
+  context "mapping events to psc segments" do
+    
+    it "should determine the segment based on the event's event type" do
+      [
+        ["Ongoing Tracking of Dwelling Units", nil],
+        ["Pregnancy Screener", "Pregnancy Screener"],
+        ["Pre-Pregnancy Visit", "Pre-Pregnancy"],
+        ["Pregnancy Visit #1 SAQ", "Pregnancy Visit 1"]
+      ].each do |event_type_text, psc_segment|
+        event_type = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => event_type_text)
+        e = Factory(:event, :event_type => event_type)
+        e.psc_segment_name.should == psc_segment
+      end
+    end
+    
+  end
+  
   context "disposition" do
     
     describe "household enumeration" do

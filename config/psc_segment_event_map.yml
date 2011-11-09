@@ -1,0 +1,67 @@
+--- 
+- event_type: Household Enumeration
+  psc_segment: 
+- event_type: Two Tier Enumeration
+  psc_segment:
+- event_type: Ongoing Tracking of Dwelling Units
+  psc_segment:
+- event_type: Pregnancy Screening - Provider Group
+  psc_segment: Pregnancy Screener
+- event_type: Pregnancy Screening – High Intensity  Group
+  psc_segment: Pregnancy Screener
+- event_type: Pregnancy Screening – Low Intensity Group
+  psc_segment: Pregnancy Screener
+- event_type: Pregnancy Probability
+  psc_segment: PPG Follow-Up
+- event_type: PPG Follow-Up by Mailed SAQ
+  psc_segment: PPG Follow-Up
+- event_type: Pregnancy Screening - Household Enumeration Group
+  psc_segment: Pregnancy Screener
+- event_type: Informed Consent
+  psc_segment:
+- event_type: Pre-Pregnancy Visit
+  psc_segment: Pre-Pregnancy
+- event_type: Pre-Pregnancy Visit SAQ
+  psc_segment: Pre-Pregnancy
+- event_type: Pregnancy Visit  1
+  psc_segment: Pregnancy Visit 1
+- event_type: "Pregnancy Visit #1 SAQ"
+  psc_segment: Pregnancy Visit 1
+- event_type: Pregnancy Visit  2
+  psc_segment: Pregnancy Visit 2
+- event_type: "Pregnancy Visit #2 SAQ"
+  psc_segment: Pregnancy Visit 2
+- event_type: Pregnancy Visit - Low Intensity Group
+  psc_segment: 
+- event_type: Birth
+  psc_segment: Birth Visit Interview
+- event_type: Father
+  psc_segment: Father Consent and Interview
+- event_type: Father Visit SAQ
+  psc_segment: Father Consent and Interview
+- event_type: Validation
+  psc_segment:
+- event_type: Provider-Based Recruitment
+  psc_segment:
+- event_type: 3 Month
+  psc_segment:
+- event_type: 6 Month
+  psc_segment:
+- event_type: 6-Month Infant Feeding SAQ
+  psc_segment:
+- event_type: 9 Month
+  psc_segment:
+- event_type: 12 Month
+  psc_segment:
+- event_type: 12 Month Mother Interview SAQ
+  psc_segment:
+- event_type: Pregnancy Screener
+  psc_segment: Pregnancy Screener
+- event_type: 18 Month
+  psc_segment:
+- event_type: 24 Month
+  psc_segment:
+- event_type: Low to High Conversion
+  psc_segment: Low to High Conversion
+- event_type: Low Intensity Data Collection
+  psc_segment: PPG 1 and 2

@@ -82,15 +82,15 @@ class Event < ActiveRecord::Base
     surveys = []
     InstrumentEventMap.instruments_for_segment(self.to_s).each do |ins|
       surveys << Survey.most_recent_for_title(ins)
-    end    
+    end
     surveys
   end
 
   ##
   # Clean given input to bridge Instrument Event Map in the MDES and 
   # the Event Type in the NCS Code List
-  # @param [Array <String>]
-  # @return [Array <String>]
+  # @param [Array <String>] - the PSC segment
+  # @return [Array <String>] - the Event Name from the MDES Instrument and Event Map
   def self.event_types(events)
     result = []
     events.each do |e| 
@@ -106,6 +106,19 @@ class Event < ActiveRecord::Base
         result << "Pregnancy Probability"
       else
         result << e
+      end
+    end
+    result
+  end
+  
+  ##
+  # For this event.event_type return the corresponding PSC segment name from the template
+  def psc_segment_name
+    result = nil
+    PSC_SEGMENT_EVENT_CONFIG.each do |e|
+      if event_type.to_s == e["event_type"]
+        result = e["psc_segment"]
+        break
       end
     end
     result
