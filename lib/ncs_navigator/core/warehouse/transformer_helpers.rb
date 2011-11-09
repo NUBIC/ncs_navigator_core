@@ -1,5 +1,7 @@
-module NcsNavigator::Warehouse::Transformers
-  module NavigatorCoreHelpers
+require 'ncs_navigator/core'
+
+module NcsNavigator::Core::Warehouse
+  module TransformerHelpers
     ##
     # Extends {Database::DSL#produce_one_for_one} to support automatic
     # joins to replace association IDs with public IDs.
