@@ -27,6 +27,8 @@ NcsNavigatorCore::Application.routes.draw do
   resources :contact_links do
     member do
       get :select_instrument
+      get :edit_instrument
+      put :finalize_instrument
     end
   end
   resources :participant_consents

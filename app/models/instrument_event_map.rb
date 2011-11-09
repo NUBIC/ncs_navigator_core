@@ -6,11 +6,11 @@ class InstrumentEventMap
   # For a given event, return the filenames of all the Instruments/Surveys that match
   # from the MDES Instrument and Event Map
   # 
-  # @param [String] - the name of the event (e.g. Pregnancy Screener)
+  # @param [String] - the name of the PSC segment (e.g. Lo-Intensity:Pregnancy Screener)
   # @return [Array, <String>] - filenames for that event
-  def self.instruments_for(event)
-    return [] if event.nil?
-    event = PatientStudyCalendar.map_psc_segment_to_mdes_event(event)
+  def self.instruments_for(segment)
+    return [] if segment.nil?
+    event = PatientStudyCalendar.map_psc_segment_to_mdes_event(segment)
     result = []
     instruments.each do |ie|
       result << ie["filename"] if ie["event"].include?(event)

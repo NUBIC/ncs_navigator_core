@@ -68,10 +68,13 @@ class PeopleController < ApplicationController
 
   def start_instrument
     @person = Person.find(params[:id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
-    rs = @person.start_instrument(survey) if rs.nil? or rs.complete?
-    rs.update_attribute(:contact_link_id, params[:contact_link_id])
+    rs, instrument = @person.start_instrument(survey) if rs.nil? or rs.complete?
+    rs.update_attribute(:contact_link_id, @contact_link.id)
+    @contact_link.instrument = instrument
+    @contact_link.save!
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs.access_code))
   end
   

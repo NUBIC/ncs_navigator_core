@@ -27,7 +27,7 @@ describe PregnancyVisitOperationalDataExtractor do
     
     survey = create_pregnancy_visit_1_survey_with_person_operational_data
     survey_section = survey.sections.first
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
       case q.data_export_identifier
@@ -102,7 +102,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
       @survey_section = @survey.sections.first
-      @response_set = @person.start_instrument(@survey)
+      @response_set, @instrument = @person.start_instrument(@survey)
 
       @response_set.responses.size.should == 0
       @participant.person_relations.size.should == 1
@@ -113,7 +113,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       survey = create_pregnancy_visit_1_saq_survey_with_father_operational_data
       survey_section = survey.sections.first
-      response_set = @person.start_instrument(survey)
+      response_set, instrument = @person.start_instrument(survey)
 
       response_set.responses.size.should == 0
       
@@ -366,7 +366,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
     survey = create_pregnancy_visit_1_survey_with_telephone_operational_data
     survey_section = survey.sections.first
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     response_set.responses.size.should == 0
       
     survey_section.questions.each do |q|
@@ -404,7 +404,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
     survey = create_pregnancy_visit_1_survey_with_email_operational_data
     survey_section = survey.sections.first
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     response_set.responses.size.should == 0
       
     survey_section.questions.each do |q|
@@ -434,7 +434,7 @@ describe PregnancyVisitOperationalDataExtractor do
     
     survey = create_pregnancy_visit_survey_with_birth_address_operational_data
     survey_section = survey.sections.first
-    response_set = person.start_instrument(survey)
+    response_set, instrument = person.start_instrument(survey)
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
       case q.data_export_identifier
