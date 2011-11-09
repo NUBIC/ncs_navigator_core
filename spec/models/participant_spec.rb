@@ -225,7 +225,7 @@ describe Participant do
         @participant.ppg_status.local_code.should == 3
         
         @participant.high_intensity_consent!
-        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
       end
       
@@ -238,7 +238,7 @@ describe Participant do
         
         @participant.high_intensity_consent!
         
-        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 1.month.from_now.to_date
       end
       
@@ -255,7 +255,7 @@ describe Participant do
         
         @participant.high_intensity_consent!
         
-        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 5.month.from_now.to_date
       end      
     end
@@ -282,7 +282,7 @@ describe Participant do
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
-        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
       
@@ -307,7 +307,7 @@ describe Participant do
             participant.upcoming_events.should == [PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION]
             
             participant.high_intensity_consent!
-            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP]
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
             
             participant.pregnant_informed_consent!
             participant.upcoming_events.should == ["HI-Intensity: Pregnancy Visit 1"]
@@ -325,7 +325,7 @@ describe Participant do
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY]
             
             participant.follow!
-            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP]
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
             
           end
         end
@@ -336,7 +336,7 @@ describe Participant do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.high_intensity_consent!
-            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP]
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
           end
         end
     
@@ -346,7 +346,7 @@ describe Participant do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.high_intensity_consent!
-            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP]
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
           end
         end
       end

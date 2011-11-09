@@ -542,7 +542,7 @@ class Participant < ActiveRecord::Base
       elsif in_high_intensity_arm?
         PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
       elsif consented_high_intensity?
-        hi_intensity_follow_up
+        PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
       elsif pre_pregnancy?
         PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
       elsif pregnancy_one?
@@ -559,10 +559,6 @@ class Participant < ActiveRecord::Base
     def lo_intensity_follow_up
       return nil if ineligible?
       can_consent? ? PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 : PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
-    end
-    
-    def hi_intensity_follow_up
-      recent_loss? ? PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP : PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
     end
     
     def pregnant_or_trying?
