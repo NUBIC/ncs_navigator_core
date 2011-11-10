@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: contacts
 #
 #  id                      :integer         not null, primary key
 #  psu_code                :integer         not null
-#  contact_id              :binary          not null
+#  contact_id              :string(36)      not null
 #  contact_disposition     :integer
 #  contact_type_code       :integer         not null
 #  contact_type_other      :string(255)

@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: instruments
 #
 #  id                       :integer         not null, primary key
 #  psu_code                 :integer         not null
-#  instrument_id            :binary          not null
+#  instrument_id            :string(36)      not null
 #  event_id                 :integer
 #  instrument_type_code     :integer         not null
 #  instrument_type_other    :string(255)
