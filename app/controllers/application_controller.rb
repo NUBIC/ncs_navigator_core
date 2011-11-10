@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     
     def new_event_for_person(person)
       list_name   = NcsCode.attribute_lookup(:event_type_code)
-      ets         = Event.event_types(person.upcoming_events).collect { |et| PatientStudyCalendar.map_psc_segment_to_mdes_event(et) }
+      ets         = person.upcoming_events.collect { |e| PatientStudyCalendar.map_psc_segment_to_mdes_event_type(e) }
       event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
       Event.new(:participant => person.participant, :event_type => event_types.first)
     end

@@ -38,12 +38,12 @@ describe Participant do
   
         let(:participant) { Factory(:low_intensity_ppg1_participant) }
     
-        it "should schedule the LO-Intensity Birth Visit" do
+        it "should schedule the LO-Intensity Quex" do
           participant.ppg_status.local_code.should == 1
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 
           participant.next_scheduled_event.event.should == participant.next_study_segment
-          participant.next_scheduled_event.date.should == 6.months.from_now.to_date
+          participant.next_scheduled_event.date.should == Date.today
         end
         
         it "schedules the LO-Intensity Birth Visit Interview the day after the due_date if consented and known to be pregnant" do
@@ -86,7 +86,7 @@ describe Participant do
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 
           participant.next_scheduled_event.event.should == participant.next_study_segment
-          participant.next_scheduled_event.date.should == 6.months.from_now.to_date
+          participant.next_scheduled_event.date.should == Date.today
         end
 
         it "schedules the LO-Intensity PPG Follow Up event 6 months out after the Low Intensity questionnaire" do
@@ -231,7 +231,7 @@ describe Participant do
       it "ends up in the followup loop after the pre-pregnancy interview" do
         participant.non_pregnant_informed_consent!
         participant.follow!
-        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
@@ -250,7 +250,7 @@ describe Participant do
   
       it "goes into the High Intensity Follow Up loop every 6 months after consenting" do
         participant.high_intensity_consent!
-        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_6_MONTH_FOLLOW_UP
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 6.months.from_now.to_date
       end
@@ -269,7 +269,7 @@ describe Participant do
   
       it "goes into the High Intensity Follow Up loop every 3 months after consenting" do
         participant.high_intensity_consent!
-        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_3_MONTH_FOLLOW_UP
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end

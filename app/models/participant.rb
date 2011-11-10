@@ -320,7 +320,7 @@ class Participant < ActiveRecord::Base
   # @return [Date]
   def interval
     case
-    when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?
+    when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?, (can_consent? && eligible_for_low_intensity_follow_up?)
       0
     when pregnancy_two?
       60.days
@@ -526,7 +526,7 @@ class Participant < ActiveRecord::Base
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif following_low_intensity?
         PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
-      elsif in_pregnancy_probability_group? || consented_low_intensity?
+      elsif eligible_for_low_intensity_follow_up?
         lo_intensity_follow_up
       elsif pregnant?
         PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
@@ -554,6 +554,10 @@ class Participant < ActiveRecord::Base
       else
         nil
       end
+    end
+    
+    def eligible_for_low_intensity_follow_up?
+      low_intensity? && (in_pregnancy_probability_group? || consented_low_intensity?)
     end
     
     def lo_intensity_follow_up

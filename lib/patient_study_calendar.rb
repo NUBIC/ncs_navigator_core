@@ -286,13 +286,13 @@ class PatientStudyCalendar
     end
   
     ##
-    # The Segment in PSC often, but not always, maps directly to the Event as named in the Instrument to Event Map
-    # section in the Master Data Element Specification.
+    # The Segment in PSC often, but not always, maps directly to the Event Type as named in the 
+    # Master Data Element Specification Code List.
     #
     # This method takes the segment name from PSC and translates it into the Event as named in the MDES
-    # @param [String]
-    # @return [String]
-    def map_psc_segment_to_mdes_event(segment)
+    # @param [String] - PSC Segment Name
+    # @return [String] - Master Data Element Specification Code List Event Type
+    def map_psc_segment_to_mdes_event_type(segment)
       event = PatientStudyCalendar.strip_epoch(segment)
       event = case event
               when "HI-LO Conversion"
@@ -301,12 +301,13 @@ class PatientStudyCalendar
                 "Birth"
               when "PPG 1 and 2"
                 "Low Intensity Data Collection"
+              when "Pregnancy Visit 1"
+                "Pregnancy Visit  1"
               when "PPG Follow-Up"
                 "Pregnancy Probability"
               else
                 event
               end
-
       event
     end
     

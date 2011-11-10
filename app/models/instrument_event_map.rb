@@ -10,7 +10,7 @@ class InstrumentEventMap
   # @return [Array, <String>] - filenames for that event
   def self.instruments_for_segment(segment)
     return [] if segment.nil?
-    event = PatientStudyCalendar.map_psc_segment_to_mdes_event(segment)
+    event = PatientStudyCalendar.strip_epoch(segment)
     result = []
     instruments.each do |ie|
       result << ie["filename"] if ie["event"].include?(event)
