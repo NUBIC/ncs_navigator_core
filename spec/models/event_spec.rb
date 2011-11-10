@@ -109,31 +109,6 @@ describe Event do
     end
   end
   
-  context "mapping events to event types" do
-    
-    it "maps Pregnancy Visit 1" do
-      Event.event_types(["Pregnancy Visit 1"]).should == ["Pregnancy Visit  1"]
-    end
-
-    it "maps Pre-Pregnancy" do
-      Event.event_types(["Pre-Pregnancy"]).should == ["Pre-Pregnancy Visit"]
-    end
-    
-    it "maps PPG 1 and 2" do
-      Event.event_types(["PPG 1 and 2"]).should == ["Pregnancy Probability"]
-    end
-
-    it "maps defaults" do
-      Event.event_types(["asdf"]).should == ["asdf"]
-      Event.event_types(["asdf", "qwer"]).should == ["asdf", "qwer"]
-    end
-    
-    it "handles epochs" do
-      Event.event_types(["Hi Intensity: PPG 1 and 2"]).should == ["Pregnancy Probability"]
-    end
-    
-  end
-  
   context "mapping events to psc segments" do
     
     it "should determine the segment based on the event's event type" do
