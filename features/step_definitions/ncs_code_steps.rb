@@ -27,6 +27,7 @@ Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Visit  1", :local_code => 13)
   Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
   Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
+  Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
 
   Factory(:ncs_code, :list_name => "TRANSLATION_METHOD_CL3", :display_text => "Legitimate Skip", :local_code => -3)
   Factory(:ncs_code, :list_name => "CONTACT_LOCATION_CL1", :display_text => "Person/participant home", :local_code => 1)
