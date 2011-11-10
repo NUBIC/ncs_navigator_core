@@ -85,31 +85,6 @@ class Event < ActiveRecord::Base
     end
     surveys
   end
-
-  ##
-  # Clean given input to bridge Instrument Event Map in the MDES and 
-  # the Event Type in the NCS Code List
-  # @param [Array <String>] - the PSC segment
-  # @return [Array <String>] - the Event Name from the MDES Instrument and Event Map
-  def self.event_types(events)
-    result = []
-    events.each do |e| 
-      
-      e = PatientStudyCalendar.strip_epoch(e)
-      
-      case e
-      when "Pregnancy Visit 1"
-        result << "Pregnancy Visit  1"
-      when "Pre-Pregnancy"
-        result << "Pre-Pregnancy Visit"
-      when "PPG 1 and 2"
-        result << "Pregnancy Probability"
-      else
-        result << e
-      end
-    end
-    result
-  end
   
   ##
   # For this event.event_type return the corresponding PSC segment name from the template
