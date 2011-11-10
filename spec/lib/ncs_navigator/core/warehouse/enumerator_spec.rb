@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-require 'ncs_navigator/warehouse/transformers/navigator_core'
+require 'ncs_navigator/core/warehouse'
 
-module NcsNavigator::Warehouse::Transformers
-  describe NavigatorCore, :clean_with_truncation, :slow do
+module NcsNavigator::Core::Warehouse
+  describe Enumerator, :clean_with_truncation, :slow do
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     let(:wh_config) {
@@ -15,11 +15,11 @@ module NcsNavigator::Warehouse::Transformers
     }
 
     it 'can be created' do
-      NavigatorCore.create_transformer(wh_config).should_not be_nil
+      Enumerator.create_transformer(wh_config).should_not be_nil
     end
 
     it 'uses the correct bcdatabase config' do
-      NavigatorCore.bcdatabase[:name].should == 'ncs_navigator_core'
+      Enumerator.bcdatabase[:name].should == 'ncs_navigator_core'
     end
 
     let(:bcdatabase_config) {
@@ -30,7 +30,7 @@ module NcsNavigator::Warehouse::Transformers
       end
     }
     let(:enumerator) {
-      NavigatorCore.new(wh_config, :bcdatabase => bcdatabase_config)
+      Enumerator.new(wh_config, :bcdatabase => bcdatabase_config)
     }
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }
@@ -48,11 +48,11 @@ module NcsNavigator::Warehouse::Transformers
     shared_context 'mapping test' do
       before do
         # ignore unused so we can see the mapping failures
-        NavigatorCore.on_unused_columns :ignore
+        Enumerator.on_unused_columns :ignore
       end
 
       after do
-        NavigatorCore.on_unused_columns :fail
+        Enumerator.on_unused_columns :fail
       end
 
       def verify_mapping(core_field, core_value, wh_field, wh_value=nil)
@@ -650,6 +650,29 @@ module NcsNavigator::Warehouse::Transformers
 
       it 'uses the public ID for provider' do
         pending 'No Provider in core yet'
+      end
+    end
+
+    describe "a producer's metadata" do
+      let(:producer) { Enumerator.record_producers.find { |rp| rp.name == :participants } }
+      let(:column_map) { producer.column_map(Participant.attribute_names) }
+
+      it 'includes the MDES model' do
+        producer.model.should == MdesModule::Participant
+      end
+
+      it 'includes a column map' do
+        lambda { column_map }.should_not raise_error
+      end
+
+      describe 'column map' do
+        it 'includes explicit mappings' do
+          column_map['pid_age_eligibility_code'].should == 'pid_age_elig'
+        end
+
+        it 'includes heuristic mappings' do
+          column_map['p_type_other'].should == 'p_type_oth'
+        end
       end
     end
   end
