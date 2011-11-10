@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: participant_authorization_forms
 #
 #  id                  :integer         not null, primary key
 #  psu_code            :string(36)      not null
-#  auth_form_id        :binary          not null
+#  auth_form_id        :string(36)      not null
 #  participant_id      :integer
 #  contact_id          :integer
 #  provider_id         :integer

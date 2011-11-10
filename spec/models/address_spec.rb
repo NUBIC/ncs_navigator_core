@@ -1,13 +1,13 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: addresses
 #
 #  id                        :integer         not null, primary key
 #  psu_code                  :integer         not null
-#  address_id                :binary          not null
+#  address_id                :string(36)      not null
 #  person_id                 :integer
-#  dwelling_unit_id          :integer         not null
+#  dwelling_unit_id          :integer
 #  address_rank_code         :integer         not null
 #  address_rank_other        :string(255)
 #  address_info_source_code  :integer         not null
