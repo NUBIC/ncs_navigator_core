@@ -14,7 +14,7 @@
         = link_to activity, new_participant_consent_path(:participant_id => @person.participant.id, :contact_link_id => @contact_link.id), :class => "edit_link icon_link"
       %br
 - if no_consent
-  - if !@person.participant.consented?
+  - if !@person.participant.consented? && !(@contact_link.event.to_s =~ /Pregnancy Screener/)
     %p
       = link_to "Consent", new_participant_consent_path(:participant_id => @person.participant.id, :contact_link_id => @contact_link.id), :class => "edit_link icon_link"
   - else

@@ -40,7 +40,7 @@
             - activities.each do |activity|
               - instrument = InstrumentEventMap.instrument_for_activity(activity)
               - if Survey.where(:title => instrument).count > 0
-                %span{ :class => "known_instrument" }
+                %span.known_instrument
                   = "#{activity}"
               - else
                 = "#{activity}"
