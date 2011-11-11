@@ -91,7 +91,6 @@ module NcsNavigator::Core::Warehouse
       :column_map => {
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
-        :public_person_id => :person_id
       }
     )
 

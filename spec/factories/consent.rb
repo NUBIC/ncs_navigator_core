@@ -11,7 +11,7 @@ Factory.define :participant_consent do |pc|
   pc.consent_given            { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
   pc.consent_withdraw         { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "No", :local_code => 2) }
   pc.consent_withdraw_type    { |a| a.association(:ncs_code, :list_name => "CONSENT_WITHDRAW_REASON_CL1", :display_text => "Voluntary withdrawal initiated by the Participant", :local_code => 1) }
-  pc.consent_withdraw_reason  { |a| a.association(:ncs_code, :list_name => "CONSENT_WITHDRAW_REASON_CL1", :display_text => "Voluntary withdrawal initiated by the Participant", :local_code => 1) }
+  pc.consent_withdraw_reason  { |a| a.association(:ncs_code, :list_name => "CONSENT_WITHDRAW_REASON_CL2", :display_text => "Time Commitment", :local_code => 2) }
 
   pc.consent_language         { |a| a.association(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
   pc.who_consented            { |a| a.association(:ncs_code, :list_name => "AGE_STATUS_CL1", :display_text => "Adult", :local_code => 2) }
