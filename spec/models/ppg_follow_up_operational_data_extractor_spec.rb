@@ -9,6 +9,7 @@ describe PpgFollowUpOperationalDataExtractor do
     create_missing_in_error_ncs_codes(PpgStatusHistory)
     create_missing_in_error_ncs_codes(Telephone)
     create_missing_in_error_ncs_codes(Email)
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   context "updating the ppg status history" do

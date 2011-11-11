@@ -12,6 +12,7 @@ describe PrePregnancyOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Email)
     create_missing_in_error_ncs_codes(Address)
     create_missing_in_error_ncs_codes(DwellingUnit)
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
   
   it "extracts person operational data from the survey responses" do
@@ -130,12 +131,6 @@ describe PrePregnancyOperationalDataExtractor do
   context "extracting contact information from the survey responses" do
     
     before(:each) do
-      @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
-      @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person)
-      Factory(:ppg_detail, :participant => @participant)
-
-      # CONTACT_RELATIONSHIP_CL2
       Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Mother/Father", :local_code => 1)
       Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Brother/Sister", :local_code => 2)
       @contact_aunt_uncle = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Aunt/Uncle", :local_code => 3)
@@ -143,6 +138,13 @@ describe PrePregnancyOperationalDataExtractor do
       @contact_neighbor = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Neighbor", :local_code => 5)
       @contact_friend = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Friend", :local_code => 6)
       Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Other", :local_code => -5)
+
+
+      @person = Factory(:person)
+      @participant = Factory(:participant, :person => @person)
+      Factory(:ppg_detail, :participant => @participant)
+
+      # CONTACT_RELATIONSHIP_CL2
 
       # PERSON_PARTCPNT_RELTNSHP_CL1
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self", :local_code => 1)
@@ -170,7 +172,7 @@ describe PrePregnancyOperationalDataExtractor do
       @response_set, @instrument = @person.start_instrument(@survey)
 
       @response_set.responses.size.should == 0
-      @participant.person_relations.size.should == 1
+      @participant.participant_person_links.size.should == 1
     end
     
     it "creates a new person record and associates it with the particpant" do
@@ -221,9 +223,9 @@ describe PrePregnancyOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      @participant.person_relations.size.should == 2
-      @participant.friends.size.should == 1
-      friend = @participant.friends.first
+      participant.participant_person_links.size.should == 2
+      participant.friends.size.should == 1
+      friend = participant.friends.first
       friend.first_name.should == "Donna"
       friend.last_name.should == "Noble"
       friend.telephones.first.should_not be_nil
@@ -281,9 +283,9 @@ describe PrePregnancyOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      @participant.person_relations.size.should == 2
-      @participant.neighbors.size.should == 1
-      neighbor = @participant.neighbors.first
+      participant.participant_person_links.size.should == 2
+      participant.neighbors.size.should == 1
+      neighbor = participant.neighbors.first
       neighbor.first_name.should == "Carole"
       neighbor.last_name.should == "King"
       neighbor.telephones.first.should_not be_nil
@@ -317,9 +319,9 @@ describe PrePregnancyOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      @participant.person_relations.size.should == 2
-      @participant.other_relatives.size.should == 1
-      aunt = @participant.other_relatives.first
+      participant.participant_person_links.size.should == 2
+      participant.other_relatives.size.should == 1
+      aunt = participant.other_relatives.first
       aunt.first_name.should == "Ivy"
       aunt.last_name.should == "Anderson"      
     end
@@ -348,9 +350,9 @@ describe PrePregnancyOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      @participant.person_relations.size.should == 2
-      @participant.grandparents.size.should == 1
-      mimi = @participant.grandparents.first
+      participant.participant_person_links.size.should == 2
+      participant.grandparents.size.should == 1
+      mimi = participant.grandparents.first
       mimi.first_name.should == "Billie"
       mimi.last_name.should == "Holiday"      
     end
