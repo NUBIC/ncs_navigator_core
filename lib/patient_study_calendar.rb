@@ -301,10 +301,16 @@ class PatientStudyCalendar
                 "Birth"
               when "PPG 1 and 2"
                 "Low Intensity Data Collection"
+              when "Pre-Pregnancy"
+                "Pre-Pregnancy Visit"
               when "Pregnancy Visit 1"
                 "Pregnancy Visit  1"
               when "PPG Follow-Up"
                 "Pregnancy Probability"
+              when "Father Consent and Interview"
+                "Father"
+              when /Consent/
+                "Informed Consent"
               else
                 event
               end

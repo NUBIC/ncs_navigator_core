@@ -46,6 +46,25 @@ describe PatientStudyCalendar do
     end
   end
   
+  it "maps the psc segment name to mdes event type code" do
+    
+    [
+      ["LO-Intensity: Pregnancy Screener", "Pregnancy Screener"],
+      ["LO-Intensity: PPG 1 and 2", "Low Intensity Data Collection"],
+      ["LO-Intensity: PPG Follow-Up", "Pregnancy Probability"],
+      ["LO-Intensity: Birth Visit Interview", "Birth"],
+      ["LO-Intensity: Low to High Conversion", "Low to High Conversion"],
+      ["HI-Intensity: Pre-Pregnancy", "Pre-Pregnancy Visit"],
+      ["HI-Intensity: Pregnancy Visit 1", "Pregnancy Visit  1"],
+      ["HI-Intensity: Pregnancy Visit 2", "Pregnancy Visit 2"],
+      ["HI-Intensity: Child Consent", "Informed Consent"],
+      ["HI-Intensity: Father Consent and Interview", "Father"]
+    ].each do |segment_name, event_type_display_text| 
+      PatientStudyCalendar.map_psc_segment_to_mdes_event_type(segment_name).should == event_type_display_text
+    end
+    
+  end
+  
   context "with a participant" do
   
     before(:each) do
