@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: listing_units
 #
 #  id               :integer         not null, primary key
 #  psu_code         :integer         not null
-#  list_id          :binary          not null
+#  list_id          :string(36)      not null
 #  list_line        :integer
 #  list_source_code :integer         not null
 #  list_comment     :text
@@ -13,6 +13,8 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #  being_processed  :boolean
+#  ssu_id           :string(255)
+#  tsu_id           :string(255)
 #
 
 require 'spec_helper'

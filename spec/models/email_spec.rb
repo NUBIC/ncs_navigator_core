@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: emails
 #
 #  id                      :integer         not null, primary key
 #  psu_code                :integer         not null
-#  email_id                :binary          not null
+#  email_id                :string(36)      not null
 #  person_id               :integer
 #  email                   :string(100)
 #  email_rank_code         :integer         not null

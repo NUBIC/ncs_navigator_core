@@ -305,10 +305,10 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'for ParticipantConsent' do
-      before do
-        Factory(:participant_consent)
-        producer_names << :participant_consents
-      end
+      let(:producer_names) { [:participant_consents] }
+      let!(:core_record) { Factory(:participant_consent, :person_who_consented => consenter) }
+      let(:consenter) { Factory(:person, :first_name => 'Ginger') }
+      let(:some_guy) { Factory(:person) }
 
       it 'generates one consent per source record' do
         results.collect(&:class).should == [MdesModule::ParticipantConsent]
@@ -316,6 +316,21 @@ module NcsNavigator::Core::Warehouse
 
       it "uses the participant's public ID" do
         results.first.p_id.should == Participant.first.p_id
+      end
+
+      it "uses the person consenting's public ID" do
+        results.first.person_who_consented_id.should == consenter.person_id
+      end
+
+      it "uses the person withdrawing consent's public ID" do
+        core_record.person_wthdrw_consent = some_guy
+        core_record.save!
+
+        results.first.person_wthdrw_consent_id.should == some_guy.person_id
+      end
+
+      it 'uses the public ID for the contact' do
+        results.first.contact_id.should == Contact.first.contact_id
       end
     end
 

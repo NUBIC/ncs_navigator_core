@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: participant_visit_records
 #
 #  id                        :integer         not null, primary key
 #  psu_code                  :string(36)      not null
-#  rvis_id                   :binary          not null
+#  rvis_id                   :string(36)      not null
 #  participant_id            :integer
 #  rvis_language_code        :integer         not null
 #  rvis_language_other       :string(255)

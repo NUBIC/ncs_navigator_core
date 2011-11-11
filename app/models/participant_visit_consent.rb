@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: participant_visit_consents
 #
 #  id                          :integer         not null, primary key
 #  psu_code                    :string(36)      not null
-#  pid_visit_consent_id        :binary          not null
+#  pid_visit_consent_id        :string(36)      not null
 #  participant_id              :integer
 #  vis_consent_type_code       :integer         not null
 #  vis_consent_response_code   :integer         not null
