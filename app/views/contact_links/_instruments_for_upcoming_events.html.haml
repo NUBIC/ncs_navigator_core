@@ -14,6 +14,8 @@
           = "#{activity} - #{instrument}"
       - else
         = link_to "#{activity} - #{instrument}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
+    - elsif activity.include?("Consent")
+      = determine_participant_consent_path(activity, @person.participant, @contact_link)
     - else
-      = "#{activity}"
+      = activity
     %br
