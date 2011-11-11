@@ -68,7 +68,6 @@ class Person < ActiveRecord::Base
   
   # surveyor
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
-  has_one :participant
   has_many :contact_links, :order => "created_at DESC"
   has_many :instruments, :through => :contact_links
   has_many :addresses
@@ -78,6 +77,7 @@ class Person < ActiveRecord::Base
   has_many :household_person_links
   has_many :household_units, :through => :household_person_links
   
+  has_many :participant_person_links
   # validates_presence_of :first_name
   # validates_presence_of :last_name
   
@@ -127,6 +127,30 @@ class Person < ActiveRecord::Base
     if full_name.size >= 2 
       self.last_name = full_name.last
       self.first_name = full_name[0, (full_name.size - 1) ].join(" ")
+    end
+  end
+  
+  def self_link
+    participant_person_links.detect { |ppl| ppl.relationship_code == 1 }
+  end
+  private :self_link
+  
+  ##
+  # The participant record associated with this person if any whose 
+  # relationship is self
+  def participant
+    self_link.try(:participant)    
+  end
+  
+  ##
+  # Create or update the participant record associated with this person whose 
+  # relationship is self  
+  def participant=(participant)
+    ppl = self_link
+    if ppl
+      ppl.participant = participant
+    else
+      participant_person_links.build(:relationship_code => 1, :person => self, :participant => participant, :psu => self.psu)
     end
   end
   

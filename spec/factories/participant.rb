@@ -1,7 +1,6 @@
 FactoryGirl.define do
   
   factory :participant do
-    association :person,  :factory => :person
     psu                       { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
     p_type                    { |a| a.association(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Age-eligible woman", :local_code => 1) }
     p_type_other              nil

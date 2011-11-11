@@ -41,7 +41,6 @@ class Participant < ActiveRecord::Base
   
   acts_as_mdes_record :public_id_field => :p_id
   
-  belongs_to :person
   belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :p_type,               :conditions => "list_name = 'PARTICIPANT_TYPE_CL1'",    :foreign_key => :p_type_code,               :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :status_info_source,   :conditions => "list_name = 'INFORMATION_SOURCE_CL4'",  :foreign_key => :status_info_source_code,   :class_name => 'NcsCode', :primary_key => :local_code
@@ -57,13 +56,12 @@ class Participant < ActiveRecord::Base
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id"
   
   has_many :participant_person_links
-  has_many :person_relations, :through => :participant_person_links, :source => :person
   
   has_many :participant_staff_relationships
   
   has_one :participant_consent
   
-  validates_presence_of :person
+  # validates_presence_of :person
   
   accepts_nested_attributes_for :ppg_details, :allow_destroy => true
   accepts_nested_attributes_for :ppg_status_histories, :allow_destroy => true
@@ -73,6 +71,7 @@ class Participant < ActiveRecord::Base
   
   scope :all_for_staff, lambda { |staff_id| joins(:participant_staff_relationships).where("participant_staff_relationships.staff_id = ?", staff_id) }
   scope :primary_for_staff, lambda { |staff_id| all_for_staff(staff_id).where("participant_staff_relationships.primary = ?", true) }
+  scope :all_people_for_self, lambda { |person_id| joins(:participant_person_links).where("participant_person_links.person_id = ? AND participant_person_links.relationship_code = 1", person_id) }
   
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
   
@@ -243,6 +242,35 @@ class Participant < ActiveRecord::Base
     #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
   end
   
+  def self_link
+    participant_person_links.detect { |ppl| ppl.relationship_code == 1 }
+  end
+  private :self_link
+
+  ##
+  # The person record associated with this participant, if any, whose 
+  # relationship is self  
+  def person
+    self_link.try(:person)
+  end
+  
+  ##
+  # Create or update the person record associated with this participant whose 
+  # relationship is self
+  def person=(person)
+    ppl = self_link
+    if ppl
+      ppl.person = person
+    else
+      participant_person_links.build(:relationship_code => 1, :person => person, :participant => self, :psu => self.psu)
+    end
+  end
+  
+  ##
+  # Convenience method to retrieve the single Participant record for the given person
+  def self.for_person(person_id)
+    Participant.all_people_for_self(person_id).first
+  end
   
   ##
   # The current pregnancy probability group status for this participant. 

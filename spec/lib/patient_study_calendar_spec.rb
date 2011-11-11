@@ -6,6 +6,7 @@ describe PatientStudyCalendar do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
     @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   let(:subject) { PatientStudyCalendar.new(@user) }

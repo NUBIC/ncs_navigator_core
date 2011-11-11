@@ -7,7 +7,7 @@
   = form_for(@participant) do |f| 
     = render "shared/full_error_messages", :object => f.object
     
-    = f.hidden_field :person_id
+    = hidden_field_tag :person_id, @person_id
     
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
     

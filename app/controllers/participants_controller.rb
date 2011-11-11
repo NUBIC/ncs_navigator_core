@@ -120,12 +120,13 @@ class ParticipantsController < ApplicationController
   # GET /participants/new
   # GET /participants/new.json
   def new
+    @person_id = params[:person_id]
     if params[:person_id].blank?
       redirect_to(people_path, :notice => 'Cannot create a Participant without a reference to a Person')
-    elsif @participant = Participant.where(:person_id => params[:person_id]).first
+    elsif @participant = Participant.for_person(params[:person_id])
       redirect_to(edit_participant_path(@participant), :notice => 'Participant already exists')
     else
-      @participant = Participant.new(:person_id => params[:person_id])
+      @participant = Participant.new(:person => Person.find(params[:person_id]))
 
       respond_to do |format|
         format.html # new.html.haml
@@ -138,6 +139,7 @@ class ParticipantsController < ApplicationController
   # POST /participants.json
   def create
     @participant = Participant.new(params[:participant])
+    @participant.person = Person.find(params[:person_id])
 
     respond_to do |format|
       if @participant.save

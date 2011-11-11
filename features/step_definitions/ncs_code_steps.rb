@@ -42,6 +42,8 @@ Given /^valid ncs codes$/ do
   
   Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :display_text => "Low Intensity Consent", :local_code => 7)
   
+  Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+  
   create_missing_in_error_ncs_codes(Person)
   create_missing_in_error_ncs_codes(HouseholdUnit)
   create_missing_in_error_ncs_codes(DwellingUnit)

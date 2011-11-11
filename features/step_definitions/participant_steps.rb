@@ -1,3 +1,11 @@
+Given /^a participant exists with a person$/ do
+  Factory(:participant, :person => Factory(:person))
+end
+
+Given /^a high intensity participant exists with a person$/ do
+  Factory(:participant, :person => Factory(:person), :high_intensity => true)
+end
+
 Given /^a registered pregnant participant on the ppg1 page with an instrument$/ do
   steps %Q{
     Given a registered pregnant participant
