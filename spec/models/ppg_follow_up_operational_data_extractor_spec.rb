@@ -56,7 +56,7 @@ describe PpgFollowUpOperationalDataExtractor do
       participant.ppg_status_histories.size.should == 1
       participant.ppg_status_histories.first.ppg_status.local_code.should == 1
       participant.ppg_status.local_code.should == 1
-      participant.due_date.should == "2011-12-25"
+      participant.due_date.should == Date.parse("2011-12-25")
 
     end
 
