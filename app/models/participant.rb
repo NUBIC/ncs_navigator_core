@@ -326,7 +326,7 @@ class Participant < ActiveRecord::Base
       60.days
     when followed?, in_pregnancy_probability_group?, following_low_intensity?
       follow_up_interval
-    when birth?, birth_low?
+    when birth?, birth_low?, pregnant_and_consented?
       due_date ? 1.day : 0
     else
       0
@@ -348,7 +348,7 @@ class Participant < ActiveRecord::Base
   # The known due date for the pregnant participant, used to schedule the Birth Visit
   # @return [Date]
   def due_date
-    ppg_details.first.due_date if ppg_details.first && ppg_details.first.due_date
+    Date.parse(ppg_details.first.due_date) if ppg_details.first && ppg_details.first.due_date
   end
   
   ##
@@ -601,7 +601,7 @@ class Participant < ActiveRecord::Base
     end
 
     def date_used_to_schedule_next_event
-      if due_date && (birth? || birth_low?)
+      if due_date && (birth? || birth_low? || pregnant_and_consented?)
         due_date
       elsif contact_links.blank? 
         self.created_at.to_date

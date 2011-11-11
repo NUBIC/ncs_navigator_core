@@ -21,7 +21,9 @@ class ParticipantConsentsController < ApplicationController
   # GET /participant_consents/1/edit
   def edit
     @participant_consent = ParticipantConsent.find(params[:id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
     @participant = @participant_consent.participant
+    @contact = @participant_consent.contact
   end
 
   # POST /participant_consents
@@ -44,11 +46,12 @@ class ParticipantConsentsController < ApplicationController
   # PUT /participant_consents/1
   # PUT /participant_consents/1.json
   def update
+    @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.find(params[:id])
 
     respond_to do |format|
       if @participant_consent.update_attributes(params[:participant_consent])
-        format.html { redirect_to @participant_consent, :notice => 'Participant consent was successfully updated.' }
+        format.html { redirect_to select_instrument_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { head :ok }
       else
         format.html { render :action => "edit" }
