@@ -96,7 +96,16 @@ module NcsNavigator::Core::Warehouse
     )
 
     produce_one_for_one(:participant_consents, ParticipantConsent,
-      :public_ids => %w(participants)
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_who_consented_id },
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_wthdrw_consent_id }
+      ]
     )
 
     produce_one_for_one(:participant_consent_samples, ParticipantConsentSample,
