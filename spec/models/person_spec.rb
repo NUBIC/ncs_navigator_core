@@ -46,6 +46,9 @@
 require 'spec_helper'
 
 describe Person do
+  before(:each) do
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+  end
 
   it "creates a new instance given valid attributes" do
     pers = Factory(:person)
@@ -79,9 +82,9 @@ describe Person do
   # it { should validate_presence_of(:first_name) }
   # it { should validate_presence_of(:last_name) }
 
-  it { should have_one(:participant) }
   it { should have_many(:response_sets) }
   it { should have_many(:contact_links) }
+  it { should have_many(:participant_person_links) }
 
   it { should have_many(:household_person_links) }
   it { should have_many(:household_units).through(:household_person_links) }
@@ -124,6 +127,53 @@ describe Person do
       obj.p_tracing.local_code.should == -4
       obj.p_info_source.local_code.should == -4
     end
+  end
+  
+  context "relationship between person and participant" do
+    
+    describe "#participant=" do
+      
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
+      
+      describe "without an existing relationship" do
+        before do
+          person.participant.should be_nil
+          person.participant_person_links.should be_empty
+          
+          person.participant = participant
+        end
+        
+        it "creates the relationship" do
+          person.participant_person_links.first.relationship_code.should == 1
+        end
+        
+        it "associates to the correct participant" do
+          person.participant_person_links.first.participant.should == participant
+        end
+        
+      end
+      
+      describe "with an existing relationship" do
+        let!(:existing_link) {
+          person.participant_person_links.create(
+            :relationship_code => 1, :psu => person.psu, :participant => Factory(:participant, :p_id => "asdf"))
+        }
+  
+        before do
+          person.participant = participant
+        end
+        
+        it "does not add another link" do
+          person.should have(1).participant_person_link
+        end
+        
+        it "updates the associated participant" do
+          person.participant.should == participant
+        end
+      end
+    end
+    
   end
   
   context "mdes date formatting" do

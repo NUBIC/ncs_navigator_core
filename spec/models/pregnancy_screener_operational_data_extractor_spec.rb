@@ -10,6 +10,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Email)
     create_missing_in_error_ncs_codes(Participant)
     create_missing_in_error_ncs_codes(PpgDetail)
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   # R_FNAME               Person.first_name

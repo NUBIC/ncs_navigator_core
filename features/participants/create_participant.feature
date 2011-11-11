@@ -27,7 +27,7 @@ Feature: Creating a participant record
   Scenario: Attempting to create a new participant from a person who is already a participant
     Given valid ncs codes
     And an authenticated user
-    And a participant exists
+    And a participant exists with a person
     When I go to the new participant page for that participant
     Then I should be on the edit participant page
     And I should see "Edit Participant"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111110015749) do
+ActiveRecord::Schema.define(:version => 20111111164107) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -441,7 +441,6 @@ ActiveRecord::Schema.define(:version => 20111110015749) do
   create_table "participants", :force => true do |t|
     t.string   "psu_code",                 :limit => 36,                    :null => false
     t.string   "p_id",                     :limit => 36,                    :null => false
-    t.integer  "person_id",                                                 :null => false
     t.integer  "p_type_code",                                               :null => false
     t.string   "p_type_other"
     t.integer  "status_info_source_code",                                   :null => false

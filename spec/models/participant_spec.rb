@@ -33,6 +33,10 @@ require 'spec_helper'
 
 describe Participant do
   
+  before(:each) do
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+  end
+  
   it "creates a new instance given valid attributes" do
     par = Factory(:participant)
     par.should_not be_nil
@@ -44,7 +48,6 @@ describe Participant do
   end
   
   it { should belong_to(:psu) }
-  it { should belong_to(:person) }
   it { should belong_to(:p_type) }
   it { should belong_to(:status_info_source) }
   it { should belong_to(:status_info_mode) }
@@ -56,14 +59,13 @@ describe Participant do
   it { should have_many(:ppg_status_histories) }
 
   it { should have_many(:participant_person_links) }
-  it { should have_many(:person_relations).through(:participant_person_links) }
   
   it { should have_many(:low_intensity_state_transition_audits) }
   it { should have_many(:high_intensity_state_transition_audits) }
 
   it { should have_one(:participant_consent) }
 
-  it { should validate_presence_of(:person) }
+  # it { should validate_presence_of(:person) }
   
   context "as mdes record" do
     
@@ -91,6 +93,62 @@ describe Participant do
       obj.enroll_status.local_code.should == -4
       obj.pid_entry.local_code.should == -4
       obj.pid_age_eligibility.local_code.should == -4
+    end
+  end
+  
+  context "relationship between person and participant" do
+    let(:participant) { Factory(:participant) }
+    let(:person) { Factory(:person) }
+    
+    describe "#person=" do
+
+      describe "without an existing self relationship" do
+        before do
+          participant.person.should be_nil
+          participant.participant_person_links.should be_empty
+
+          participant.person = person
+        end
+        
+        it 'creates the relationship' do
+          participant.participant_person_links.first.relationship_code.should == 1
+        end
+        
+        it 'associates to the correct person' do
+          participant.person.should == person
+        end
+      end
+
+      describe 'with an existing self relationship' do
+        let!(:existing_link) {
+          participant.participant_person_links.create(
+            :relationship_code => 1, :psu => participant.psu, :person => Factory(:person, :last_name => 'Astaire'))
+        }
+
+        before do
+          participant.person = person
+        end
+
+        it 'does not add another link' do
+          participant.should have(1).participant_person_link
+        end
+
+        it "updates the associated person" do
+          participant.person.should == person
+        end
+      end
+      
+    end
+    
+    describe "query by person" do
+      before do
+        participant.person = person
+        participant.save!
+      end
+      
+      it "finds the participant via the person id" do
+        Participant.for_person(person.id).should == participant
+      end
     end
   end
   
@@ -180,25 +238,25 @@ describe Participant do
       
       3.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG1")
-        part = Factory(:participant, :person_id => pers.id)
+        part = Factory(:participant, :person => pers)
         Factory(:ppg_status_history, :participant => part, :ppg_status => status1)
       end
       
       5.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG2")
-        part = Factory(:participant, :person_id => pers.id)
+        part = Factory(:participant, :person => pers)
         Factory(:ppg_status_history, :participant => part, :ppg_status => status2)
       end
       
       1.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG3")
-        part = Factory(:participant, :person_id => pers.id)
+        part = Factory(:participant, :person => pers)
         Factory(:ppg_status_history, :participant => part, :ppg_status => status3)
       end
       
       6.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG4")
-        part = Factory(:participant, :person_id => pers.id)
+        part = Factory(:participant, :person => pers)
         Factory(:ppg_status_history, :participant => part, :ppg_status => status4)
       end
       Participant.in_ppg_group(1).size.should == 3
@@ -215,7 +273,7 @@ describe Participant do
 
       before(:each) do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
-        @participant = Factory(:participant, :high_intensity => true)
+        @participant = Factory(:participant, :high_intensity => true, :person => Factory(:person))
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
@@ -264,7 +322,7 @@ describe Participant do
       
       it "knows the upcoming applicable events for a new participant" do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-        @participant = Factory(:participant, :high_intensity => false)
+        @participant = Factory(:participant, :high_intensity => false, :person => Factory(:person))
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
@@ -278,7 +336,7 @@ describe Participant do
       
       it "knows the upcoming applicable events for a consented participant" do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "consented_high_intensity")
+        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "consented_high_intensity", :person => Factory(:person))
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
@@ -296,7 +354,7 @@ describe Participant do
             
       context "in high intensity protocol" do
         
-        let(:participant) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true) }
+        let(:participant) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true, :person => Factory(:person)) }
         
         describe "a participant who is pregnant - PPG 1" do
     
@@ -599,17 +657,21 @@ describe Participant do
       @kiddo = Factory(:person, :first_name => "Kid", :last_name => "Ory")
       @kid   = Factory(:participant, :person => @kiddo, :p_type => child)
 
-      Factory(:participant_person_link, :person => @ella,  :participant => @mom, :relationship => part_self)
+      # Factory(:participant_person_link, :person => @ella,  :participant => @mom, :relationship => part_self)
       Factory(:participant_person_link, :person => @louis, :participant => @mom, :relationship => partner)
       Factory(:participant_person_link, :person => @kiddo, :participant => @mom, :relationship => child_rel)
             
-      Factory(:participant_person_link, :person => @louis, :participant => @dad, :relationship => part_self)
+      #Factory(:participant_person_link, :person => @louis, :participant => @dad, :relationship => part_self)
       Factory(:participant_person_link, :person => @ella,  :participant => @dad, :relationship => partner)
       Factory(:participant_person_link, :person => @kiddo, :participant => @dad, :relationship => child_rel)
       
-      Factory(:participant_person_link, :person => @kiddo, :participant => @kid, :relationship => part_self)
+      # Factory(:participant_person_link, :person => @kiddo, :participant => @kid, :relationship => part_self)
       Factory(:participant_person_link, :person => @louis, :participant => @kid, :relationship => father)
       Factory(:participant_person_link, :person => @ella,  :participant => @kid, :relationship => mother)
+      
+      @mom.participant_person_links.reload
+      @dad.participant_person_links.reload
+      @kid.participant_person_links.reload
     end
 
     describe "self" do

@@ -33,4 +33,15 @@ class ParticipantPersonLink < ActiveRecord::Base
   
   validates_presence_of :person
   validates_presence_of :participant
+  
+  def initialize(*args)
+    super
+    if self.is_active_code.blank?
+      self.is_active_code = 1
+    end
+  end
+  
+  def active?
+    is_active_code == 1
+  end
 end

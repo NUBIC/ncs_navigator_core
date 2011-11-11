@@ -21,8 +21,15 @@ require 'spec_helper'
 describe ParticipantPersonLink do
   
   it "should create a new instance given valid attributes" do
-    par = Factory(:participant)
-    par.should_not be_nil
+    link = Factory(:participant_person_link)
+    link.should_not be_nil
+  end
+  
+  it "should be active when first created" do
+    person = Factory(:person)
+    participant = Factory(:participant)
+    link = ParticipantPersonLink.new(:person => person, :participant => participant)
+    link.should be_active
   end
   
   it { should belong_to(:psu) }
@@ -54,7 +61,7 @@ describe ParticipantPersonLink do
     
       obj = ParticipantPersonLink.first
       obj.relationship.local_code.should == -4
-      obj.is_active.local_code.should == -4
+      obj.is_active.local_code.should == 1
     end
   end
   

@@ -7,6 +7,7 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Participant)
     create_missing_in_error_ncs_codes(PpgDetail)
     create_missing_in_error_ncs_codes(PpgStatusHistory)
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   context "updating the ppg status history" do
