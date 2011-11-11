@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: telephones
 #
 #  id                      :integer         not null, primary key
 #  psu_code                :integer         not null
-#  phone_id                :binary          not null
+#  phone_id                :string(36)      not null
 #  person_id               :integer
 #  phone_info_source_code  :integer         not null
 #  phone_info_source_other :string(255)

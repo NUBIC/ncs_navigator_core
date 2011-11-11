@@ -5,7 +5,7 @@ Factory.define :listing_unit do |lu|
   lu.list_source      { |a| a.association(:ncs_code, :list_name => "LISTING_SOURCE_CL1", :display_text => "Traditional Listing Effort", :local_code => 1) }
   lu.list_comment     "comment"
   lu.transaction_type nil
-  lu.ssu_id        nil
+  lu.ssu_id        '42'
   lu.tsu_id        nil
 end
 

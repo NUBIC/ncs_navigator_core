@@ -10,11 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111108152522) do
+ActiveRecord::Schema.define(:version => 20111110015749) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
-    t.binary   "address_id",                               :null => false
+    t.string   "address_id",                :limit => 36,  :null => false
     t.integer  "person_id"
     t.integer  "dwelling_unit_id"
     t.integer  "address_rank_code",                        :null => false
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "contact_links", :force => true do |t|
     t.integer  "psu_code",                       :null => false
-    t.binary   "contact_link_id",                :null => false
+    t.string   "contact_link_id",  :limit => 36, :null => false
     t.integer  "contact_id",                     :null => false
     t.integer  "event_id"
     t.integer  "instrument_id"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "contacts", :force => true do |t|
     t.integer  "psu_code",                                                            :null => false
-    t.binary   "contact_id",                                                          :null => false
+    t.string   "contact_id",              :limit => 36,                               :null => false
     t.integer  "contact_disposition"
     t.integer  "contact_type_code",                                                   :null => false
     t.string   "contact_type_other"
@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "dwelling_household_links", :force => true do |t|
     t.integer  "psu_code",                        :null => false
-    t.binary   "hh_du_id",                        :null => false
+    t.string   "hh_du_id",          :limit => 36, :null => false
     t.integer  "dwelling_unit_id",                :null => false
     t.integer  "household_unit_id",               :null => false
     t.integer  "is_active_code",                  :null => false
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
     t.integer  "du_access_code",                                      :null => false
     t.text     "duid_comment"
     t.string   "transaction_type",   :limit => 36
-    t.binary   "du_id",                                               :null => false
+    t.string   "du_id",              :limit => 36,                    :null => false
     t.integer  "listing_unit_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -169,7 +169,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "emails", :force => true do |t|
     t.integer  "psu_code",                               :null => false
-    t.binary   "email_id",                               :null => false
+    t.string   "email_id",                :limit => 36,  :null => false
     t.integer  "person_id"
     t.string   "email",                   :limit => 100
     t.integer  "email_rank_code",                        :null => false
@@ -193,21 +193,21 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
   end
 
   create_table "events", :force => true do |t|
-    t.integer  "psu_code",                                                       :null => false
-    t.binary   "event_id",                                                       :null => false
+    t.integer  "psu_code",                                                                     :null => false
+    t.string   "event_id",                        :limit => 36,                                :null => false
     t.integer  "participant_id"
-    t.integer  "event_type_code",                                                :null => false
+    t.integer  "event_type_code",                                                              :null => false
     t.string   "event_type_other"
     t.integer  "event_repeat_key"
     t.integer  "event_disposition"
-    t.integer  "event_disposition_category_code",                                :null => false
+    t.integer  "event_disposition_category_code",                                              :null => false
     t.date     "event_start_date"
     t.string   "event_start_time"
     t.date     "event_end_date"
     t.string   "event_end_time"
-    t.integer  "event_breakoff_code",                                            :null => false
-    t.integer  "event_incentive_type_code",                                      :null => false
-    t.decimal  "event_incentive_cash",            :precision => 12, :scale => 2
+    t.integer  "event_breakoff_code",                                                          :null => false
+    t.integer  "event_incentive_type_code",                                                    :null => false
+    t.decimal  "event_incentive_cash",                          :precision => 12, :scale => 2
     t.string   "event_incentive_noncash"
     t.text     "event_comment"
     t.string   "transaction_type"
@@ -217,7 +217,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "household_person_links", :force => true do |t|
     t.string   "psu_code",          :limit => 36, :null => false
-    t.binary   "person_hh_id",                    :null => false
+    t.string   "person_hh_id",      :limit => 36, :null => false
     t.integer  "person_id",                       :null => false
     t.integer  "household_unit_id",               :null => false
     t.integer  "is_active_code",                  :null => false
@@ -241,7 +241,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
     t.integer  "number_of_pregnant_adults"
     t.integer  "number_of_pregnant_over49"
     t.string   "transaction_type",             :limit => 36
-    t.binary   "hh_id",                                                         :null => false
+    t.string   "hh_id",                        :limit => 36,                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
@@ -249,7 +249,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "instruments", :force => true do |t|
     t.integer  "psu_code",                               :null => false
-    t.binary   "instrument_id",                          :null => false
+    t.string   "instrument_id",            :limit => 36, :null => false
     t.integer  "event_id"
     t.integer  "instrument_type_code",                   :null => false
     t.string   "instrument_type_other"
@@ -276,7 +276,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "listing_units", :force => true do |t|
     t.integer  "psu_code",                                          :null => false
-    t.binary   "list_id",                                           :null => false
+    t.string   "list_id",          :limit => 36,                    :null => false
     t.integer  "list_line"
     t.integer  "list_source_code",                                  :null => false
     t.text     "list_comment"
@@ -300,7 +300,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "participant_authorization_forms", :force => true do |t|
     t.string   "psu_code",            :limit => 36, :null => false
-    t.binary   "auth_form_id",                      :null => false
+    t.string   "auth_form_id",        :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "contact_id"
     t.integer  "provider_id"
@@ -315,7 +315,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "participant_consent_samples", :force => true do |t|
     t.string   "psu_code",                      :limit => 36, :null => false
-    t.binary   "participant_consent_sample_id",               :null => false
+    t.string   "participant_consent_sample_id", :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "participant_consent_id"
     t.integer  "sample_consent_type_code",                    :null => false
@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "participant_consents", :force => true do |t|
     t.string   "psu_code",                        :limit => 36, :null => false
-    t.binary   "participant_consent_id",                        :null => false
+    t.string   "participant_consent_id",          :limit => 36, :null => false
     t.integer  "participant_id"
     t.string   "consent_version",                 :limit => 9
     t.date     "consent_expiration"
@@ -382,7 +382,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
     t.string   "relationship_other"
     t.integer  "is_active_code",                   :null => false
     t.string   "transaction_type",   :limit => 36
-    t.binary   "person_pid_id",                    :null => false
+    t.string   "person_pid_id",      :limit => 36, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -397,7 +397,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "participant_visit_consents", :force => true do |t|
     t.string   "psu_code",                    :limit => 36, :null => false
-    t.binary   "pid_visit_consent_id",                      :null => false
+    t.string   "pid_visit_consent_id",        :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "vis_consent_type_code",                     :null => false
     t.integer  "vis_consent_response_code",                 :null => false
@@ -415,7 +415,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "participant_visit_records", :force => true do |t|
     t.string   "psu_code",                  :limit => 36, :null => false
-    t.binary   "rvis_id",                                 :null => false
+    t.string   "rvis_id",                   :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "rvis_language_code",                      :null => false
     t.string   "rvis_language_other"
@@ -440,7 +440,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "participants", :force => true do |t|
     t.string   "psu_code",                 :limit => 36,                    :null => false
-    t.binary   "p_id",                                                      :null => false
+    t.string   "p_id",                     :limit => 36,                    :null => false
     t.integer  "person_id",                                                 :null => false
     t.integer  "p_type_code",                                               :null => false
     t.string   "p_type_other"
@@ -466,7 +466,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "people", :force => true do |t|
     t.string   "psu_code",                       :limit => 36,                    :null => false
-    t.binary   "person_id",                                                       :null => false
+    t.string   "person_id",                      :limit => 36,                    :null => false
     t.integer  "prefix_code",                                                     :null => false
     t.string   "first_name",                     :limit => 30
     t.string   "last_name",                      :limit => 30
@@ -506,7 +506,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "person_races", :force => true do |t|
     t.string   "psu_code",         :limit => 36, :null => false
-    t.binary   "person_race_id",                 :null => false
+    t.string   "person_race_id",   :limit => 36, :null => false
     t.integer  "person_id",                      :null => false
     t.integer  "race_code",                      :null => false
     t.string   "race_other"
@@ -517,7 +517,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "ppg_details", :force => true do |t|
     t.string   "psu_code",            :limit => 36, :null => false
-    t.binary   "ppg_details_id",                    :null => false
+    t.string   "ppg_details_id",      :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "ppg_pid_status_code",               :null => false
     t.integer  "ppg_first_code",                    :null => false
@@ -531,7 +531,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "ppg_status_histories", :force => true do |t|
     t.string   "psu_code",              :limit => 36, :null => false
-    t.binary   "ppg_history_id",                      :null => false
+    t.string   "ppg_history_id",        :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "ppg_status_code",                     :null => false
     t.string   "ppg_status_date",       :limit => 10
@@ -820,7 +820,7 @@ ActiveRecord::Schema.define(:version => 20111108152522) do
 
   create_table "telephones", :force => true do |t|
     t.integer  "psu_code",                              :null => false
-    t.binary   "phone_id",                              :null => false
+    t.string   "phone_id",                :limit => 36, :null => false
     t.integer  "person_id"
     t.integer  "phone_info_source_code",                :null => false
     t.string   "phone_info_source_other"

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: household_units
 #
@@ -16,7 +16,7 @@
 #  number_of_pregnant_adults    :integer
 #  number_of_pregnant_over49    :integer
 #  transaction_type             :string(36)
-#  hh_id                        :binary          not null
+#  hh_id                        :string(36)      not null
 #  created_at                   :datetime
 #  updated_at                   :datetime
 #  being_processed              :boolean

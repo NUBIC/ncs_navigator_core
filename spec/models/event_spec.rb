@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: events
 #
 #  id                              :integer         not null, primary key
 #  psu_code                        :integer         not null
-#  event_id                        :binary          not null
+#  event_id                        :string(36)      not null
 #  participant_id                  :integer
 #  event_type_code                 :integer         not null
 #  event_type_other                :string(255)
@@ -18,7 +18,7 @@
 #  event_end_time                  :string(255)
 #  event_breakoff_code             :integer         not null
 #  event_incentive_type_code       :integer         not null
-#  event_incentive_cash            :decimal(3, 2)
+#  event_incentive_cash            :decimal(12, 2)
 #  event_incentive_noncash         :string(255)
 #  event_comment                   :text
 #  transaction_type                :string(255)

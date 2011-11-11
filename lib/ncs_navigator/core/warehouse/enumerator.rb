@@ -91,12 +91,20 @@ module NcsNavigator::Core::Warehouse
       :column_map => {
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
-        :public_person_id => :person_id
       }
     )
 
     produce_one_for_one(:participant_consents, ParticipantConsent,
-      :public_ids => %w(participants)
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_who_consented_id },
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_wthdrw_consent_id }
+      ]
     )
 
     produce_one_for_one(:participant_consent_samples, ParticipantConsentSample,

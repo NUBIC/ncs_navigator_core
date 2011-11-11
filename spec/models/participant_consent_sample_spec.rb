@@ -1,11 +1,11 @@
 # == Schema Information
-# Schema version: 20111018175121
+# Schema version: 20111110015749
 #
 # Table name: participant_consent_samples
 #
 #  id                            :integer         not null, primary key
 #  psu_code                      :string(36)      not null
-#  participant_consent_sample_id :binary          not null
+#  participant_consent_sample_id :string(36)      not null
 #  participant_id                :integer
 #  participant_consent_id        :integer
 #  sample_consent_type_code      :integer         not null
