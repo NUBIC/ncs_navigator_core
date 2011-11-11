@@ -29,7 +29,7 @@ module NcsNavigator::Core::Warehouse
           public_id_column = pub[:public_id] || join_column
           public_id_ref = pub[:public_ref] || public_id_column
           table_alias = "pub_#{i}"
-          public_id_column_alias = "public_#{public_id_column}"
+          public_id_column_alias = "public_id_for_#{other_table}_as_#{public_id_ref}"
 
           column_map[public_id_column_alias.to_sym] = public_id_ref.to_sym
           ignored_columns << join_column
