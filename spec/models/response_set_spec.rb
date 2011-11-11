@@ -23,7 +23,10 @@ describe ResponseSet do
   it { should belong_to(:contact_link) }
   
   context "with instruments" do
-        
+    before(:each) do
+      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+    end
+
     describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
       
       let(:person) { Factory(:person) }

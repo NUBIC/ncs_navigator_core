@@ -12,6 +12,7 @@ describe PregnancyVisitOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Email)
     create_missing_in_error_ncs_codes(Address)
     create_missing_in_error_ncs_codes(DwellingUnit)
+    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   # R_FNAME               Person.first_name
@@ -105,7 +106,7 @@ describe PregnancyVisitOperationalDataExtractor do
       @response_set, @instrument = @person.start_instrument(@survey)
 
       @response_set.responses.size.should == 0
-      @participant.person_relations.size.should == 1
+      @participant.participant_person_links.size.should == 1
     end
     
     it "creates a new person (for the Child's Father) record and associates it with the particpant" do
@@ -159,7 +160,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.person_relations.size.should == 2
+      participant.participant_person_links.size.should == 3
       participant.partner.should_not be_nil
       father = participant.partner
       father.first_name.should == "Lonnie"
@@ -219,7 +220,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.person_relations.size.should == 2
+      participant.participant_person_links.size.should == 3
       participant.friends.size.should == 1
       friend = participant.friends.first
       friend.first_name.should == "Donna"
@@ -280,7 +281,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.person_relations.size.should == 2
+      participant.participant_person_links.size.should == 3
       participant.neighbors.size.should == 1
       neighbor = participant.neighbors.first
       neighbor.first_name.should == "Carole"
@@ -316,7 +317,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.person_relations.size.should == 2
+      participant.participant_person_links.size.should == 3
       participant.other_relatives.size.should == 1
       aunt = participant.other_relatives.first
       aunt.first_name.should == "Ivy"
@@ -347,7 +348,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.person_relations.size.should == 2
+      participant.participant_person_links.size.should == 3
       participant.grandparents.size.should == 1
       mimi = participant.grandparents.first
       mimi.first_name.should == "Billie"
