@@ -1,7 +1,7 @@
 survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
   section "BIOSPECIMEN BLOOD COLLECTION", :reference_identifier=>"AdultBlood_DCI" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"SPEC_BLOOD.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_BLOOD_INTRO "I will now collect a blood sample. I will need to ask you some questions before I collect your blood sample.",
     :help_text => "If the participant refuses this collection, select refused. otherwise select continue.",
@@ -122,7 +122,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       :help_text => "Record the time as HH:MM, be sure to fill the space with a zero when necessary and to mark the box to choose 
       \"AM\" or \"PM\". For example, if the last time participant ate or drank was at 2:05PM record \"02:05\" and choose \"PM\". ",
       :data_export_identifier=>"SPEC_BLOOD.LAST_TIME_EAT"
-      a "HH:MM", :string
+      a "HH:MM", :string, :custom_class => "time"
     
       q_LAST_TIME_EAT_UNIT "Last time ate or drank – AM/PM",
       :data_export_identifier=>"SPEC_BLOOD.LAST_TIME_EAT_UNIT",
@@ -213,7 +213,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       condition_A :q_BLOOD_COMPLETE, "==", :a_1
       
       q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"SPEC_BLOOD.TIME_STAMP_2"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "Blood collection"
     
@@ -826,7 +826,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     
     q_TIME_STAMP_3 "Insert date/time stamp", 
     :data_export_identifier=>"SPEC_BLOOD.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule=>"A"
     condition_A :q_COLLECTION_STATUS, "!=", :a_3
     
@@ -871,10 +871,10 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       a_neg_2 "Don’t know"
     
       q_CENTRIFUGE_DATE "Time centrifugation began – DATE",
-      :help_text => "Format as YYYYMMDD. Double check if year is < 2011.",
+      :help_text => "Double check if year is < 2011.",
       :pick => :one,
       :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_DATE"
-      a "DATE", :string
+      a "Date", :string
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
 
@@ -899,10 +899,10 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       a_neg_2 "Don’t know"
 
       q_CENTRIFUGE_END_DATE "Time centrifugation began – DATE",
-      :help_text => "Format as YYYYMMDD. Double check if year is < 2011.",
+      :help_text => "Double check if year is < 2011.",
       :pick => :one,
       :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_END_DATE"
-      a "DATE", :string
+      a "Date", :string
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
   
@@ -977,7 +977,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     end
 
     q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"SPEC_BLOOD.TIME_STAMP_4"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule=>"A or B or C or D"
     condition_A :q_CENTRIFUGE_LOCATION, "==", :a_2
     condition_B :q_BLOOD_HEMOLYZE, "==", :a_3
@@ -1062,6 +1062,6 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       condition_A :q_BLOOD_DRAW_COM, "==", :a_2
     end
     q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"SPEC_BLOOD.TIME_STAMP_5"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
 end

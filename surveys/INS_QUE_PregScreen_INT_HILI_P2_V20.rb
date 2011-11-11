@@ -4,7 +4,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     Scripts in this document represent this inbound calling scenario. "
     
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_INCOMING "Telephone number from caller ID", 
     :help_text => "If possible, collect telephone number from caller id and record",
@@ -27,7 +27,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
   end
   section "Eligibility questions", :reference_identifier=>"PregScreen_INT" do        
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_R_GENDER "Is respondent male or female?", 
     :help_text => "Select by observation/listening. If unable to determine, ask \"Just to confirm, are you male or female?\"",
@@ -101,7 +101,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     end
  
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule=>"A"
     condition_A :q_FEMALE_1, "==", :a_1
     
@@ -134,10 +134,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       a_neg_2 "Don't know"    
     
       q_PERSON_DOB "What is your date of birth?",
-      :help_text => "Please verify if calculated age is less than local age of majority or greater than 49. Format as YYYYMMDD",
+      :help_text => "Please verify if calculated age is less than local age of majority or greater than 49.",
       :pick => :one,
       :data_export_identifier=>"PREG_SCREEN_HI_2.PERSON_DOB"
-      a :string
+      a "Date of birth", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"    
     
@@ -189,7 +189,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
 
     
       q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_4"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
     
       label "What is your address?",
       :help_text => "If respondent refuses/don’t know: describe how her eligibility is determined by her residential 
@@ -307,7 +307,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
   end
   section "Familiarity with the national children’s study.", :reference_identifier=>"PregScreen_INT" do        
     q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_5"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule=>"A or B"
     condition_A :q_FEMALE_1, "==", :a_1
     condition_B :q_R_GENDER, "==", :a_2
@@ -384,7 +384,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       condition_E :q_AGE_ELIG, "==", :a_3
       
       q_TIME_STAMP_6 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_6"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "We are asking women of childbearing age a few questions about pregnancy. Not all women who answer 
       these questions will be able to take part in the National Children’s Study now, but almost every woman who 
@@ -414,10 +414,10 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     q_ORIG_DUE_DATE "Congratulations. When is your baby due?",
     :help_text => "Check reported due date against current date. If response was determined to be invalid, ask question 
     again and probe for valid response. Reject responses that are either more than 9 months after current date or 
-    more than 1 month before current date. Format as YYYYMMDD",
+    more than 1 month before current date.",
     :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.ORIG_DUE_DATE"
-    a_1 "Due date", :string
+    a_1 "Due date", :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -435,7 +435,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
 
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
     :help_text => "Check reported menstrual date against current date. If response was determined to be invalid, ask question 
-    again and probe for valid response. Reject responses that are either > 10 months or after current date. Format as YYYYMMDD",    
+    again and probe for valid response. Reject responses that are either > 10 months or after current date.",    
     :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.DATE_PERIOD"
     a_1 "Date", :string
@@ -508,7 +508,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       condition_D :q_PREGNANT, "==", :a_neg_2
       
       q_TIME_STAMP_7 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_7"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       q_TRYING "Are you currently trying to become pregnant?",
       :pick => :one,
@@ -600,7 +600,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       condition_E :q_AGE_ELIG, "==", :a_3
 
       q_TIME_STAMP_8 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_8"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "I’m so sorry about your loss. I have some additional questions to ask if that is okay.", 
       :help_text => "If using showcards, refer respondent to appropriate showcard. Otherwise, read response categories to respondent."
@@ -727,7 +727,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       condition_A :q_PERSON_LANG, "==", :a_neg_5
     
       q_TIME_STAMP_9 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_9"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       # TODO
       # PROGRAMMER INSTRUCTION: 
@@ -778,7 +778,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       condition_E :q_AGE_ELIG, "==", :a_3
       
       q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_10"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "These next few questions will help us to contact you again in the future."
     
@@ -1215,7 +1215,6 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_A :q_PLAN_MOVE, "==", :a_1
     
     q_DATE_MOVE "When will you move?",
-    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.DATE_MOVE"
     a_date "Date", :string
@@ -1226,7 +1225,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
   end
   section "Closing statements", :reference_identifier=>"PregScreen_INT" do        
     q_TIME_STAMP_11 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_11"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule=>"A"
     condition_A :q_AGE_ELIG, "!=", :a_neg_6    
     
@@ -1321,10 +1320,8 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     end
     
     q_BIO_FATHER_HOME "Does the biological father live with you?",
-    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.BIO_FATHER_HOME"
-    a_date "Date", :string
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
@@ -1438,7 +1435,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
   end
   section "Conclusion", :reference_identifier=>"PregScreen_INT" do        
     q_TIME_STAMP_12 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_12"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule => "A or B"
     condition_A :q_MALE_R, "==", :a_1 
     condition_B :q_R_GENDER, "==", :a_2 
@@ -1467,7 +1464,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
  end
  section "Final interviewer-completed questions", :reference_identifier=>"PregScreen_INT" do        
    q_TIME_STAMP_13 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_13"
-   a :datetime
+   a :datetime, :custom_class => "datetime"
    
    q_ENGLISH "Was this data collection session conducted in english?",
    :pick=>:one,
@@ -1530,7 +1527,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
    condition_A :q_CONTACT_INTERPRET, "==", :a_neg_5
    
    q_TIME_STAMP_14 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_14"
-   a :datetime
+   a :datetime, :custom_class => "datetime"
    
    # TODO
    # PROGRAMMER INSTRUCTION:

@@ -1,7 +1,7 @@
 survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
   section "Self-administered questionaire", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
     q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for agreeing to participate in this study. This self-administered questionnaire will take about 
     10 minutes to complete. There are questions about your pregnancy and your lifestyle. We will also ask you about 
@@ -230,7 +230,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
       a_neg_2 "Don't know"
     end
     q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "These next questions are about any previous pregnancies you may have had."
     
@@ -285,7 +285,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
   end
   section "Tobacco and alcohol use", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
     q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "The next questions are about your use of cigarettes and alcohol just before your current pregnancy."
     
@@ -447,7 +447,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
   end
   section "Evaluation questions", :reference_identifier=>"PREG_VISIT_1_SAQ_2" do
     q_time_stamp_4 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_4"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "We would now like to take a few minutes to ask some questions about your experience in the study. 
     There are no right or wrong answers. You can always refuse to answer any question or group of questions, and your 
@@ -610,6 +610,6 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     :help_text => "If SAQ is completed as a PAPI, SCs must provide instructions and a business reply envelope for participant to return"
 
     q_time_stamp_5 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_SAQ_2.TIME_STAMP_5"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end 
 end

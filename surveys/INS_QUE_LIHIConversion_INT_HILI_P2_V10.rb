@@ -117,10 +117,8 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
-    dependency :rule => "A or B or C"
+    dependency :rule => "A"
     condition_A :q_OUT_AVAIL, "!=", :a_1
-    condition_B :q_OUT_VISIT, "==", :a_1
-    condition_C :q_OUT_VISIT_UCLA, "==", :a_1    
     
     group "Call setup" do
       dependency :rule => "A"
@@ -130,7 +128,7 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
       :help_text => "Enter in hour and minute values",
       :pick => :one,
       :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_1"
-      a_time "Time HH:MM", :string
+      a_time "Time", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     
@@ -191,7 +189,7 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
       :help_text => "Enter in hour and minute values",
       :pick => :one,
       :data_export_identifier=>"LOW_HIGH_SCRIPT.BEST_TTC_1"
-      a_time "Time HH:MM", :string
+      a_time "Time", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     
@@ -225,20 +223,21 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
       :help_text => "End call and code case status"
     end
     
-    q_OUT_NEXTPH "What would be the best number to reach her?",
-    :help_text => "Record best number to reach participant.",
-    :pick => :one,
-    :data_export_identifier=>"LOW_HIGH_SCRIPT.OUT_NEXTPH"
-    a_phone "Phone number", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_OUT_UNAVAIL, "!=", :a_1
+    group "Phone number information" do
+      dependency :rule => "A"
+      condition_A :q_OUT_UNAVAIL, "!=", :a_1
+      
+      q_OUT_NEXTPH "What would be the best number to reach her?",
+      :help_text => "Record best number to reach participant.",
+      :pick => :one,
+      :data_export_identifier=>"LOW_HIGH_SCRIPT.OUT_NEXTPH"
+      a_phone "Phone number", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    label_OUT_NEXTPH "Thank you. I will try that number.",
-    :help_text => "End call and code case status."
-    dependency :rule => "A"
-    condition_A :q_OUT_UNAVAIL, "!=", :a_1
+      label_OUT_NEXTPH "Thank you. I will try that number.",
+      :help_text => "End call and code case status."
+    end
     
     label_OUT_ANSMC "Hello, this message is for [PARTICIPANT’S NAME]. This is [INTERVIEWER’S NAME] calling 
     from [LOCAL STUDY AFFILIATE] about the National Children’s Study. We will call back again within the next day or so, 
@@ -308,30 +307,32 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
     condition_B :q_IN_VISIT_UCLA, "!=", :a_1        
   end
   section "Pregnancy probability group (PPG) script", :reference_identifier=>"LIHIConversion_INT" do
-    q_PPG_CONFIRM "Are you pregnant now?",
-    :help_text => "If participant is known to be pregnant, add [Just to confirm,]",
-    :pick => :one,
-    :data_export_identifier=>"LOW_HIGH_SCRIPT.PPG_CONFIRM"
-    a_1 "Yes"
-    a_2 "No, no additional information"
-    a_3 "No, recently gave birth"
-    a_4 "No, recent pregnancy loss"
-    a_5 "No, recent pregnancy loss and currently trying to become pregnant"
-    a_neg_1 "Refused"
-    a_neg_2 "Don’t know"
-    dependency :rule => "A or B"
-    condition_A :q_IN_VISIT, "==", :a_1
-    condition_B :q_IN_VISIT_UCLA, "==", :a_1
+    group "Pregnancy questions" do
+      dependency :rule => "A or B or C or D"
+      condition_A :q_IN_VISIT, "==", :a_1
+      condition_B :q_IN_VISIT_UCLA, "==", :a_1
+      condition_C :q_OUT_VISIT, "==", :a_1
+      condition_D :q_OUT_VISIT_UCLA, "==", :a_1    
+      
+      q_PPG_CONFIRM "Are you pregnant now?",
+      :help_text => "If participant is known to be pregnant, add [Just to confirm,]",
+      :pick => :one,
+      :data_export_identifier=>"LOW_HIGH_SCRIPT.PPG_CONFIRM"
+      a_1 "Yes"
+      a_2 "No, no additional information"
+      a_3 "No, recently gave birth"
+      a_4 "No, recent pregnancy loss"
+      a_5 "No, recent pregnancy loss and currently trying to become pregnant"
+      a_neg_1 "Refused"
+      a_neg_2 "Don’t know"
     
-    # TODO
-    # MOST RECENT OF EITHER (PPG FIRST ) FROM PREGNANCY SCREENER INSTRUMENT (HI,LI) V1.1 
-    # OR (PPG_STATUS) FROM PREGNANCY PROBABILITY GROUP FOLLOW-UP INSTRUMENT V 1.1
-    # Prepopulate the ppg_status
-    q_prepopulated_ppg_status "PPG Status"
-    a_ppg_status "PPG status", :integer
-    dependency :rule => "A or B"
-    condition_A :q_IN_VISIT, "==", :a_1
-    condition_B :q_IN_VISIT_UCLA, "==", :a_1
+      # TODO
+      # MOST RECENT OF EITHER (PPG FIRST ) FROM PREGNANCY SCREENER INSTRUMENT (HI,LI) V1.1 
+      # OR (PPG_STATUS) FROM PREGNANCY PROBABILITY GROUP FOLLOW-UP INSTRUMENT V 1.1
+      # Prepopulate the ppg_status
+      q_prepopulated_ppg_status "PPG Status"
+      a_ppg_status "PPG status", :integer
+    end
     
     # TODO - verify - not sure if it's part of PPG002
     # Nataliya's comment - not sure if that is correct dependnency

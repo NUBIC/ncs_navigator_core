@@ -2,7 +2,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
   section "Interview introduction", :reference_identifier=>"prepregnancy_visit_1_v20" do
 
     q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
     label "Thank you for agreeing to participate in the National Children’s Study. 
     This interview will take about 30 minutes to complete. Your answers are important to us. 
@@ -46,7 +46,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     end
     
     q_prepopulated_date_of_birth "[Participant's date of birth as MM/DD/YYYY]"
-    a :date
+    a :string
 
     q_dob_confirm "Is this your birth date?", 
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob is 
@@ -60,7 +60,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     q_confirmed_dob "What is your date of birth?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_2.PERSON_DOB"
-    a_date :string
+    a_date :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -95,7 +95,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_age_elig, "!=", :a_2
       
       q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_2"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "We’ll begin by asking some questions about you, your health, and your health history. First, I’ll ask about your current pregnancy."
     
@@ -141,13 +141,13 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_3"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
 
-      q_due_date "What is your current due date? (YYYYMMDD)", :pick => :one,
+      q_due_date "What is your current due date?", :pick => :one,
       :help_text => "If response was determined to be invalid, ask question again and probe for valid response. Answer can not be (1) on or before 'TODAY' 
       or (2) more than 9 months after 'TODAY'. If response was determined to be invalid, ask question again and probe for valid response",
       :data_export_identifier=>"PREG_VISIT_1_2.DUE_DATE"
-      a_date :string
+      a_date :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     
@@ -172,7 +172,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       :help_text => "Code day as '15' if participant is unsure/unable to estimate day. Answer can not be (1) after 'TODAY' or (2) no more than 10 months 
       before 'TODAY'. If response was determined to be invalid, ask question again and probe for valid response", 
       :pick=>:one, :data_export_identifier=>"PREG_VISIT_1_2.DATE_PERIOD"
-      a_date :string
+      a_date :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
         
@@ -190,7 +190,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_date_period, "==", :a_date
     
       q_time_stamp_4 "Current date & time", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_4"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
         
       q_home_test "Did you use a home pregnancy test to help find out you were pregnant?", :pick=>:one, 
       :data_export_identifier=>"PREG_VISIT_1_2.HOME_TEST"
@@ -341,9 +341,9 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_enter_date_visit "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant? (MM/DD/YYYY)", :pick=>:one,
+      q_enter_date_visit "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant?", :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_1_2.DATE_VISIT"
-      a :string
+      a :string, :custom_class => "date"
       a_7 "Have not had a visit"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -461,7 +461,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_time_stamp_5 "Current date & time", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_5"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "This next question is about your health when you are not pregnant"
   
@@ -590,7 +590,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
     
       q_time_stamp_6 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_6"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
 
       label "Now I'm going to switch to another subject and ask about health insurance."
 
@@ -660,7 +660,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_time_stamp_7 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_7"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "Now I'd like to find out more about your home and the area in which you live."
 
@@ -695,7 +695,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_own_home , "==", :a_neg_5
 
       q_time_stamp_8 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_8"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
       dependency :rule=> "A"
       condition_A :q_recent_move, "==", :a_1
 
@@ -828,7 +828,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_D :q_cool, "!=", :a_neg_2                  
 
       q_time_stamp_9 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_9"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
 
       label "Now I'd like to ask about the water in your home."
 
@@ -911,7 +911,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_C :q_room_mold, "!=", :a_neg_2            
 
       q_time_stamp_10 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_10"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "The next few questions ask about any recent additions or renovations to your home."
 
@@ -992,7 +992,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
       q_time_stamp_11 "Insert date/time stamp", 
       :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_11"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
       
       label "Now, I'd like to ask about any pets you may have in your home."
 
@@ -1033,7 +1033,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
 
       q_time_stamp_12 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_12"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       # TODO
       # PROGRAMMER INSTRUCTION: 
@@ -1245,7 +1245,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     end
     
     q_time_stamp_13 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_13"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule=> "A"
     condition_A :q_pregnant, "==", :a_1      
   end
@@ -1330,7 +1330,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_2 "Don't know"
 
       q_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_14"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     end
   end  
   section "Family income", :reference_identifier=>"prepregnancy_visit_v20" do    
@@ -1390,7 +1390,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
           
       q_time_stamp_15 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_15"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "The next set of questions asks about different ways we might be able to keep in touch with you. Please remember 
       that all the information you provide is confidential and will not be provided to anyone outside the National Children’s Study."
@@ -1511,7 +1511,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
           
       q_hipv1_time_stamp_16 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_16"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       #       TODO
       # PROGRAMMER INSTRUCTIONS: 
@@ -1854,7 +1854,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     This concludes the interview portion of our visit.", :data_export_identifier=>"PREG_VISIT_1_2.END"
     
     q_hipv1_time_stamp_17 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_17"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
   section "Pregnancy care log introduction" do
     label "In order to help you keep track of your doctor visits or other health care provider visits during your pregnancy, we are giving 

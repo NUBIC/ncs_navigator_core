@@ -1,7 +1,7 @@
 survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
   section "Self-administered questionaire", :reference_identifier=>"12MMother_SAQ_2" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for agreeing to participate in the National Children’s Study. This self-administered questionnaire will take 
     about 10 minutes to complete. There are questions about your relationships, experiences as a parent, and questions about your 
@@ -471,7 +471,7 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_2 "Don’t know"
     
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "The next questions will ask about the milk, formula, and food your child has eaten. In the past 7 Days, 
     how often was your baby fed each item listed below? "
@@ -903,7 +903,7 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     a_neg_2 "Don’t know"   
     
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_SAQ_2.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.",
     :help_text => "If saq is completed as a papi, scs must provide instructions and a business reply envelope for respondent to return"        

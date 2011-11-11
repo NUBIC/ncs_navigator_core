@@ -2,7 +2,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
   section "Interview introduction", :reference_identifier=>"Birth_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for agreeing to participate in the National Children’s Study. This interview will 
     take about 20 minutes. Your answers are important to us. There are no right or wrong answers. We 
@@ -209,7 +209,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
     q_TIME_STAMP_2 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_2"
-    a :datetime    
+    a :datetime, :custom_class => "datetime"    
   end
   section "Housing characteristics", :reference_identifier=>"Birth_INT" do 
     q_RECENT_MOVE "Have you moved or changed your housing situation since we contacted you last?",
@@ -278,7 +278,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
     q_TIME_STAMP_3 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_3"
-    a :datetime    
+    a :datetime, :custom_class => "datetime"    
   end  
   section "Environmental exposures", :reference_identifier=>"Birth_INT" do
     q_RENOVATE "The next few questions ask about any recent additions or renovations to your home. 
@@ -376,7 +376,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
     q_TIME_STAMP_4 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_4"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
   section "Infant feeding", :reference_identifier=>"Birth_INT" do
     q_FED_BABY "Have you fed {[BABY’S NAME]/your babies} since [his/her/their] birth?",
@@ -415,7 +415,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
       q_TIME_STAMP_5 "Insert date/time stamp", 
       :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_5"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
     end
   end
   section "Infant sleep", :reference_identifier=>"Birth_INT" do
@@ -489,7 +489,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
       q_TIME_STAMP_6 "Insert date/time stamp", 
       :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_6"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
     end
   end
   section "Well baby care and immunizations", :reference_identifier=>"Birth_INT" do
@@ -528,7 +528,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
       q_TIME_STAMP_7 "Insert date/time stamp", 
       :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_7"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
     end
   end
   section "Work and plans for childcare", :reference_identifier=>"Birth_INT" do
@@ -644,7 +644,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
       q_TIME_STAMP_8 "Insert date/time stamp", 
       :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_8"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
     end
   end
   section "Tracing questions", :reference_identifier=>"Birth_INT" do
@@ -772,7 +772,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
     q_TIME_STAMP_9 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_9"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_MOVE_INFO "What is the address of your new home?",
     :pick => :one,
@@ -1188,7 +1188,6 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     condition_A :q_PLAN_MOVE, "==", :a_1
     
     q_DATE_MOVE "When will you move?",
-    :help_text => "Format as YYYYMMDD",
     :pick=>:one, 
     :data_export_identifier=>"BIRTH_VISIT_2.DATE_MOVE"
     a_date "Date", :string
@@ -1199,14 +1198,14 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
 
     q_TIME_STAMP_10 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_10"
-    a :datetime    
+    a :datetime, :custom_class => "datetime"    
 
     label_END_OF_INTERVIEW "Thank you for participating in the National Children’s Study and for taking the time to answer our questions."
   end
   section "Interviewer-completed questions", :reference_identifier=>"Birth_INT" do
     q_TIME_STAMP_11 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_11"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_PARTICIPANT "Was the interview completed with the birth mother or a proxy?",
     :pick=>:one, 
@@ -1284,7 +1283,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     
     q_TIME_STAMP_12 "Insert date/time stamp", 
     :data_export_identifier=>"BIRTH_VISIT_2.TIME_STAMP_12"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Explain infant and child health care log"
     

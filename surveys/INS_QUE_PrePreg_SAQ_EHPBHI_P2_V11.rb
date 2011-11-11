@@ -1,7 +1,7 @@
 survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
   section "Interview evaluation", :reference_identifier=>"PrePreg_SAQ_V1.1" do
     q_time_stamp_13 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_13"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "We would Now like to take a few minutes to ask some questions about your experience in the study. 
     There are No right or wrong answers. You can always refuse to answer any question or group of questions, and your 
@@ -167,6 +167,6 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     :help_text => "If SAQ is completed as a PAPI, SCs must provide instructions and a business reply envelope for participant to return."
 
     q_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_14"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
 end

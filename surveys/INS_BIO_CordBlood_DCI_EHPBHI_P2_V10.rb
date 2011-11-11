@@ -1,25 +1,25 @@
 survey "INS_BIO_CordBlood_DCI_EHPBHI_P2_V1.0" do
   section "Biospecimen Cord Blood Instrument (EH, PB, HI)", :reference_identifier=>"LIPregNotPreg_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"SPEC_CORD_BLOOD.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
-    q_PERSON_DOB "Mother’s date of birth (YYYYMMDD)",
+    q_PERSON_DOB "Mother’s date of birth",
     :help_text => "Record the mother’s date of birth. 
     The two digit month, the two digit day, and the four digit year should be recorded. 
     Please verify if month is not between 1 and 12, if day is not between 1 and 31 and if year < 1960.",
     :pick => :one,
     :data_export_identifier=>"SPEC_CORD_BLOOD.PERSON_DOB"
-    a :string
+    a :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
-    q_CHILD_DOB "Child’s date of birth (YYYYMMDD)",
+    q_CHILD_DOB "Child’s date of birth",
     :help_text => "Record the child’s date of birth. 
     The two digit month, the two digit day, and the four digit year should be recorded. 
     Please verify if month is not between 1 and 12, if day is not between 1 and 31 and if year < 2011.",
     :pick => :one,
     :data_export_identifier=>"SPEC_CORD_BLOOD.CHILD_DOB"
-    a :string
+    a :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
@@ -98,123 +98,110 @@ survey "INS_BIO_CordBlood_DCI_EHPBHI_P2_V1.0" do
     dependency :rule=>"A"
     condition_A :q_CORD_NOTCOL_COMMENT, "==", :a_neg_5
     
-    q_CORD_COLLECT_DATE "Date cord blood collected (YYYYMMDD)",
-    :help_text => "Record the date the cord blood was collected. 
-    The two digit month, the two digit day, and the four digit year should be recorded. 
-    Please verify if month is not between 1 and 12, if day is not between 1 and 31 and if year < 2011.",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_DATE"
-    a :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    
-    label_BD008 "Time of cord blood collection: hour\time of cord blood collection : minute\time of cord blood collection, AM/PM",
-    :help_text => "Record the time of the cord blood collection be sure to fill the space with a zero when necessary 
-    and to choose \"AM\" or \"PM\". For example, if the child was born at 2:05 PM record \"02:05\" and choose \"PM\". "
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
-    
-    q_CORD_COLLECT_HR "Time of cord blood collection: hour",
-    :help_text=> "Verify if value is not 2 digits (fill the space with 0 as necessary). The value must be between 01 and 12.",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_HR"
-    a "Hour: HH", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1    
-    
-    q_CORD_COLLECT_MIN "Time of cord blood collection: minute",
-    :help_text=> "Verify if value is not 2 digits (fill the space with 0 as necessary). The value must be between 00 and 59.",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_MIN"
-    a "Minutes: MM", :string
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
+    group "Collection information" do
+      dependency :rule=>"A"
+      condition_A :q_CORD_COLLECTION, "==", :a_1
 
-    q_CORD_COLLECT_UNIT "Time of cord blood collection: AM/PM",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_UNIT"
-    a_1 "AM"
-    a_2 "PM"    
-    a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
+      q_CORD_COLLECT_DATE "Date cord blood collected",
+      :help_text => "Record the date the cord blood was collected. 
+      The two digit month, the two digit day, and the four digit year should be recorded. 
+      Please verify if month is not between 1 and 12, if day is not between 1 and 31 and if year < 2011.",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_DATE"
+      a :string, :custom_class => "date"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_CORD_WHERE_COLLECT "Where was the sample collected?",
-    :help_text => "If the cord blood was collected prior to delivery of the placenta, choose \"In utero\". 
-    If the cord blood was collected after delivery of the placenta, choose \"Ex utero\".",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_WHERE_COLLECT"
-    a_1 "In utero"
-    a_2 "Ex utero"       
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
+      label_BD008 "Time of cord blood collection: hour\time of cord blood collection : minute\time of cord blood collection, AM/PM",
+      :help_text => "Record the time of the cord blood collection be sure to fill the space with a zero when necessary 
+      and to choose \"AM\" or \"PM\". For example, if the child was born at 2:05 PM record \"02:05\" and choose \"PM\". "
     
-    q_CORD_DELIVERY "What type of delivery was performed?",
-    :help_text => "If the delivery was a vaginal delivery choose \"Vaginal.\". 
-    If the deivery was cesarean (c-section) choose \"Cesarean.\"",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_DELIVERY"
-    a_1 "Vaginal"
-    a_2 "Cesarean"       
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
+      q_CORD_COLLECT_HR "Time of cord blood collection: hour",
+      :help_text=> "Verify if value is not 2 digits (fill the space with 0 as necessary). The value must be between 01 and 12.",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_HR"
+      a "Hour: HH", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
     
-    q_CORD_CONTAINER "In what type of container was the cord blood collected?",
-    :pick => :one,
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_CONTAINER"
-    a_1 "Cord blood bag with edta"
-    a_2 "Cord blood bag with heparin"
-    a_3 "Vacutainer tubes collected"           
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
-    
-    # TODO
-    # PROGRAMMER INSTRUCTIONS:
-    # • LOOP THROUGH SPECIMEN_ID TO CAPTURE NEEDED SPECIMEN IDs FOR CORD BLOOD COLLECTION.  NOT ALL 
-    # SPECIMEN_IDs WILL BE NEEDED:
-    # • IF CORD_CONTAINER=3:
-    #   o DISPLAY DATA COLLECTOR INSTRUCTION:
-    #     • RECORD THE SPECIMEN_ID PRINTED ON THE LABEL OF THE TUBE(S) COLLECTED. ONE LAVENDAR EDTA AND/OR ONE RED TOP TUBE WILL BE ACCEPTED. 
-    #   o DISPLAY BOTH OF THE FOLLOWING, SINCE EITHER TUBE OR BOTH CAN BE COLLECTED.
-    #     • FOR SPECIMEN_TYPE= 9, DISPLAY:
-    #       “EDTA TUBE” AND  FORMAT FOR SPECIMEN_ID: 
-    #         |___|___|___|___|___|___|___|___|___|-CL|___|___| (SPECIMEN_ID) 
-    #     • FOR SPECIMEN_TYPE= 10, DISPLAY:
-    #       “RED TOP TUBE” AND FORMAT FOR SPECIMEN_ID 
-    #         |___|___|___|___|___|___|___|___|___|-CS|___|___| (SPECIMEN_ID)
-    #   o HARD EDIT: INCLUDE HARD EDIT IF FORMAT IS NOT AA # # # # # # #-CL## (FOR SPECIMEN_TYPE= 9, EDTA TUBE) AND/OR AA # # # # # # #-CS## (FOR SPECIMEN_TYPE= 10, RED TOP TUBE).
-    #   o RECORD SPECIMEN_TYPE FOR EACH SPECIMEN_ID ENTERED.
-    # • IF CORD_CONTAINER= 1 OR 2, SPECIMEN_TYPE=11.
-    #   o DISPLAY:
-    #     DATA COLLECTOR INSTRUCTIONS: 
-    #     • RECORD THE SPECIMEN ID PRINTED ON THE LABEL THAT IS AFFIXED TO THE BIOHAZARD BAG THAT CONTAINS THE CORD BLOOD BAG.
-    #     • DISPLAY “BIOHAZARD BAG THAT CONTAINS THE CORD BLOOD BAG” AND FORMAT FOR SPECIMEN_ID:
-    #       |___|___|___|___|___|___|___|___|___|-CB|___|___|
-    #     • CANNOT BE NULL.
-    #     • HARD EDIT: INCLUDE HARD EDIT IF FORMAT IS NOT AA # # # # # # #-CB## (FORMAT MUST BE AA # # # # # # #-CB##).
+      q_CORD_COLLECT_MIN "Time of cord blood collection: minute",
+      :help_text=> "Verify if value is not 2 digits (fill the space with 0 as necessary). The value must be between 00 and 59.",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_MIN"
+      a "Minutes: MM", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
 
-    # Nataliya's comment - does it have to be in some range (ex 1-20)?
-    q_CORD_CONTAINER "What is the cord container",
-    :pick => :any
-    a_1 "1"
-    a_2 "2"
-    a_3 "3"
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
+      q_CORD_COLLECT_UNIT "Time of cord blood collection: AM/PM",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_COLLECT_UNIT"
+      a_1 "AM"
+      a_2 "PM"    
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"    
     
-    # Nataliya's comment - does it have to be in some range (ex 1-20)?
-    q_SPECIMEN_TYPE "What is the specimen type?",
-    :pick => :any
-    a_9 "9"
-    a_10 "10"
-    a_11 "11"
-    dependency :rule=>"A"
-    condition_A :q_CORD_COLLECTION, "==", :a_1
+      q_CORD_WHERE_COLLECT "Where was the sample collected?",
+      :help_text => "If the cord blood was collected prior to delivery of the placenta, choose \"In utero\". 
+      If the cord blood was collected after delivery of the placenta, choose \"Ex utero\".",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_WHERE_COLLECT"
+      a_1 "In utero"
+      a_2 "Ex utero"       
+    
+      q_CORD_DELIVERY "What type of delivery was performed?",
+      :help_text => "If the delivery was a vaginal delivery choose \"Vaginal.\". 
+      If the deivery was cesarean (c-section) choose \"Cesarean.\"",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_DELIVERY"
+      a_1 "Vaginal"
+      a_2 "Cesarean"       
+    
+      q_CORD_CONTAINER "In what type of container was the cord blood collected?",
+      :pick => :one,
+      :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_CONTAINER"
+      a_1 "Cord blood bag with edta"
+      a_2 "Cord blood bag with heparin"
+      a_3 "Vacutainer tubes collected"           
+    
+      # TODO
+      # PROGRAMMER INSTRUCTIONS:
+      # • LOOP THROUGH SPECIMEN_ID TO CAPTURE NEEDED SPECIMEN IDs FOR CORD BLOOD COLLECTION.  NOT ALL 
+      # SPECIMEN_IDs WILL BE NEEDED:
+      # • IF CORD_CONTAINER=3:
+      #   o DISPLAY DATA COLLECTOR INSTRUCTION:
+      #     • RECORD THE SPECIMEN_ID PRINTED ON THE LABEL OF THE TUBE(S) COLLECTED. ONE LAVENDAR EDTA AND/OR ONE RED TOP TUBE WILL BE ACCEPTED. 
+      #   o DISPLAY BOTH OF THE FOLLOWING, SINCE EITHER TUBE OR BOTH CAN BE COLLECTED.
+      #     • FOR SPECIMEN_TYPE= 9, DISPLAY:
+      #       “EDTA TUBE” AND  FORMAT FOR SPECIMEN_ID: 
+      #         |___|___|___|___|___|___|___|___|___|-CL|___|___| (SPECIMEN_ID) 
+      #     • FOR SPECIMEN_TYPE= 10, DISPLAY:
+      #       “RED TOP TUBE” AND FORMAT FOR SPECIMEN_ID 
+      #         |___|___|___|___|___|___|___|___|___|-CS|___|___| (SPECIMEN_ID)
+      #   o HARD EDIT: INCLUDE HARD EDIT IF FORMAT IS NOT AA # # # # # # #-CL## (FOR SPECIMEN_TYPE= 9, EDTA TUBE) AND/OR AA # # # # # # #-CS## (FOR SPECIMEN_TYPE= 10, RED TOP TUBE).
+      #   o RECORD SPECIMEN_TYPE FOR EACH SPECIMEN_ID ENTERED.
+      # • IF CORD_CONTAINER= 1 OR 2, SPECIMEN_TYPE=11.
+      #   o DISPLAY:
+      #     DATA COLLECTOR INSTRUCTIONS: 
+      #     • RECORD THE SPECIMEN ID PRINTED ON THE LABEL THAT IS AFFIXED TO THE BIOHAZARD BAG THAT CONTAINS THE CORD BLOOD BAG.
+      #     • DISPLAY “BIOHAZARD BAG THAT CONTAINS THE CORD BLOOD BAG” AND FORMAT FOR SPECIMEN_ID:
+      #       |___|___|___|___|___|___|___|___|___|-CB|___|___|
+      #     • CANNOT BE NULL.
+      #     • HARD EDIT: INCLUDE HARD EDIT IF FORMAT IS NOT AA # # # # # # #-CB## (FORMAT MUST BE AA # # # # # # #-CB##).
+
+      # Nataliya's comment - does it have to be in some range (ex 1-20)?
+      q_CORD_CONTAINER "What is the cord container",
+      :pick => :any
+      a_1 "1"
+      a_2 "2"
+      a_3 "3"
+    
+      # Nataliya's comment - does it have to be in some range (ex 1-20)?
+      q_SPECIMEN_TYPE "What is the specimen type?",
+      :pick => :any
+      a_9 "9"
+      a_10 "10"
+      a_11 "11"
+    end
     
     q_SPECIMEN_ID_EDTA_TUBE "EDTA tube",
     :help_text => "Verify the format AA # # # # # # #-CL##",
@@ -248,7 +235,7 @@ survey "INS_BIO_CordBlood_DCI_EHPBHI_P2_V1.0" do
     condition_C :q_SPECIMEN_TYPE, "==", :a_11
     
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"SPEC_CORD_BLOOD.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
 end
     

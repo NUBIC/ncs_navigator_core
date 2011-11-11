@@ -7,8 +7,7 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     label "Your answers are important to us. There are no right or wrong answers. You can skip over any question. 
     We will keep everything that you tell us confidential."
     
-    q_ASQ_DATE_COMP "Date ASQ was completed.", 
-    :help_text => "Format as YYYYMMDD",
+    q_ASQ_DATE_COMP "Date ASQ was completed.",
     :pick => :one,
     :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.ASQ_DATE_COMP"
     a "Date", :string
@@ -40,7 +39,6 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't Know"
 
     q_CHILD_DOB "Child's date of birth:",
-    :help_text => "Format as YYYYMMDD",
     :pick => :one,
     :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.CHILD_DOB"
     a "Date", :string

@@ -2,7 +2,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"THREE_MTH_MOTHER" do
 
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
     label "Hello. I’m [INTERVIEWER NAME] calling from the National Children’s Study. I’m calling today to ask you 
     some questions about you and your baby. We realize that you are busy, and this call should take only about 20 minutes. 
@@ -120,7 +120,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
     that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
-    Format as YYYYMMDD. Please verify if calculated age in months is less than 2 months or greater than 5 months",
+    Please verify if calculated age in months is less than 2 months or greater than 5 months",
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.CHILD_DOB"
     a :string
     dependency :rule=>"A"
@@ -132,7 +132,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     #     •	FORMAT CHILD_DOB AS YYYYMMDD.
 
     q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     # TODO:
     # PROGRAMMER INSTRUCTIONS:
@@ -257,7 +257,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     end
     
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER.TIME_STAMP_3"
-    a :datetime    
+    a :datetime, :custom_class => "datetime"    
     
     q_HH_PRIMARY_LANG "What is the primary language spoken in your home?", :pick => :any, 
     :data_export_identifier=>"THREE_MTH_MOTHER.HH_PRIMARY_LANG"
@@ -610,7 +610,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"  
     
     q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_4"
-    a :datetime                           
+    a :datetime, :custom_class => "datetime"                           
   end
   section "Child care arrangements", :reference_identifier=>"THREE_MTH_MOTHER" do 
     
@@ -667,7 +667,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     end
     
     q_time_stamp_5 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_5"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end  
   section "Health care", :reference_identifier=>"THREE_MTH_MOTHER" do 
     q_C_HEALTH "Since {C_FNAME/YOUR CHILD} was born, would you say {his/her} health has been poor, fair, good, excellent?",
@@ -697,7 +697,6 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"
 
     q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or check-up?",
-    :help_text => "Format as YYYYMMDD",
     :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.LAST_VISIT"
     a_date "Date", :string
@@ -781,7 +780,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     condition_A :q_DIAGNOSIS, "==", :a_1    
     
     q_time_stamp_6 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.TIME_STAMP_6"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     # TODO - questionare for the second baby
     

@@ -4,7 +4,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
     pregnancy screener or return of PPG self-administered questionnaire]"
     
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_type_of_call "What type of call is this?", 
     :pick => :one
@@ -37,7 +37,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       :help_text => "Enter in hour and minute values",
       :pick => :one,
       :data_export_identifier=>"PREG_VISIT_LI_2.BEST_TTC_1"
-      a_time "Time HH:MM", :string
+      a_time "Time", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     
@@ -86,7 +86,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
     end
     
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule => "A or B"
     condition_A :q_FEMALE_1, "==", :a_1
     condition_B :q_type_of_call, "==", :a_inbound       
@@ -158,7 +158,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
   end
   section "Current pregnancy information", :reference_identifier=>"LIPregNotPreg_INT" do
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     dependency :rule => "A or B or (C and D)"
     condition_A :q_PREGNANT, "==", :a_1
     condition_B :q_PREGNANT, "==", :a_3
@@ -302,7 +302,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_A :q_PREGNANT, "==", :a_1 
     
       q_TIME_STAMP_4 "Current date & time", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_4"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       q_HOME_TEST "Did you use a home pregnancy test to help find out you were pregnant?", :pick=>:one, 
       :data_export_identifier=>"PREG_VISIT_LI_2.HOME_TEST"
@@ -563,7 +563,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_B :q_PREGNANT, "!=", :a_5
             
       q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_5"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "I have some additional questions to ask if that is okay."
       dependency :rule => "A"
@@ -741,7 +741,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_B :q_PREGNANT, "!=", :a_5
 
       q_TIME_STAMP_6 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_6"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label_HI001 "Now I'm going to switch to another subject and ask about health insurance."
     
@@ -812,7 +812,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_B :q_PREGNANT, "!=", :a_5
       
       q_TIME_STAMP_7 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_7"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Now I'd like to find out more about your home.",
       :help_text => "Show response options on card to participant."
@@ -903,7 +903,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_B :q_PREGNANT, "!=", :a_5
     
       q_TIME_STAMP_8 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_8"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label_TA001 "Now I am going to ask about your use of cigarettes and alcohol."
 
@@ -980,7 +980,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_C :q_DRINK_NOW, "!=", :a_neg_2
     
       q_TIME_STAMP_9 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_9"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     end
   end
   section "Evaluation questions", :reference_identifier=>"PREG_VISIT_LI_2" do
@@ -990,7 +990,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_B :q_PREGNANT, "!=", :a_5
 
       q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_10"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "We would now like to take a few minutes to ask some questions about your experience in the study."
     
@@ -1151,7 +1151,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_B :q_type_of_call, "==", :a_inbound
       
       q_TIME_STAMP_11 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_11"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       # TODO
       # PROGRAMMER INSTRUCTION:
@@ -1169,7 +1169,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       condition_A :q_PREGNANT, "==", :a_5
     
       q_TIME_STAMP_12 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_LI_2.TIME_STAMP_12"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     end
   end
 end

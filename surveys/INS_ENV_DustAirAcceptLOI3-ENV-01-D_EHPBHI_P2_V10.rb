@@ -3,16 +3,16 @@ survey "INS_ENV_DustAirAcceptLOI3-ENV-01-D_EHPBHI_P2_V1.0" do
   # NO DATA_EXPORT_IDENTIFIER in MDES 2.0
   section "CAPI", :reference_identifier=>"DustAirAcceptLOI3-ENV" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>""
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label_DAA001 "Now I’m going to ask about the dust sampling you completed."
     
     q_LAST_VAC_LIVRM "When was the last time you had vacuumed your family/living room prior to completing the 
-    dust sample? (YYYYMMDD)",
+    dust sample?",
     :help_text => "Enter two digit month, two digit day, and four digit year",
     :pick => :one,
     :data_export_identifier=>""
-    a :string
+    a "Date", :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     

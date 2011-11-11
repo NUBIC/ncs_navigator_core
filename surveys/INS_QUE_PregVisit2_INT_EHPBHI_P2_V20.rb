@@ -2,7 +2,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
   section "CAPI", :reference_identifier=>"prepregnancy_visit_2_v20" do
 
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for agreeing to participate in the National Children’s Study. This interview will take about 20 minutes 
     to complete. Your answers are important to us. There are no right or wrong answers. We will ask you questions about yourself, 
@@ -58,11 +58,10 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
 
     q_confirmed_dob "What is your date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob is 
-    required to determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
-    Format as YYYYMMDD",
+    required to determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.",
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_2_2.PERSON_DOB"
-    a_date :string
+    a_date :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -96,7 +95,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_age_elig, "!=", :a_2
           
       q_time_stamp_2 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_2"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       # PROGRAMMER INSTRUCTIONS: 
       # • IF PARTICIPANT HAS REPORTED BEING PREGNANT WITH MULTIPLES FILL IN “BABIES’ AS APPROPRIATE THROUGHOUT INSTRUMENT
@@ -122,7 +121,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_2
 
       q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_3"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "I’m so sorry for your loss. I know this can be a difficult time.",
       :help_text => "Use social cues and professional judgment in response. 
@@ -158,7 +157,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       :help_text => "If response was determined to be invalid, ask question again and probe for valid response. Answer can not be (1) on or before 'TODAY' 
       or (2) more than 9 months after 'TODAY'. If response was determined to be invalid, ask question again and probe for valid response",
       :data_export_identifier=>"PREG_VISIT_2_2.DUE_DATE"
-      a_date :string
+      a_date :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
@@ -386,7 +385,6 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     condition_A :q_USE_PR_LOG, "!=", :a_1
     
     q_DATE_VISIT "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant?",
-    :help_text => "Format as YYYYMMDD",
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_2_2.DATE_VISIT"
     a_date "Date", :string
@@ -522,7 +520,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_oth_condition, "==", :a_1 
     
       q_time_stamp_4 "Current date & time", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_4"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       q_HOSPITAL "Since you’ve been pregnant, have you spent at least one night in the hospital?", 
       :pick=>:one, 
@@ -537,7 +535,6 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_HOSPITAL, "==", :a_1    
       
       q_ADMIN_DATE "What was the admission date of your most recent hospital stay?",
-      :help_text => "Format as YYYYMMDD",
       :pick=>:one, 
       :data_export_identifier=>"PREG_VISIT_2_2.ADMIN_DATE"
       a "Date", :string
@@ -598,7 +595,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_5"
-      a :datetime           
+      a :datetime, :custom_class => "datetime"           
     
       label "Now I’d like to find out more about your home and the area in which you live."
     
@@ -749,7 +746,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_D :q_cool, "!=", :a_neg_2                  
     
       q_time_stamp_6 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_6"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
 
       label "Now I'd like to ask about the water in your home."
 
@@ -788,7 +785,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_water_cook, "==", :a_neg_5
     
       q_time_stamp_7 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_7"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
 
       label "Water damage is a common problem that occurs inside of many homes. Water damage includes water stains on the 
       ceiling or walls, rotting wood, and flaking sheetrock or plaster. This damage may be from broken pipes, a leaky roof, or floods."
@@ -835,7 +832,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_C :q_room_mold, "!=", :a_neg_2            
 
       q_time_stamp_8 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_8"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
 
     label "The next few questions ask about any recent additions or renovations to your home."
@@ -916,7 +913,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_TIME_STAMP_9 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_9"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Now, I’d like to ask some questions about your current employment status."
     
@@ -956,7 +953,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_10"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "The following questions ask about your feelings and thoughts during the last month. For the following questions, 
       please refer to the card and choose the answer that best describes your life now.",
@@ -1037,7 +1034,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
       
       q_TIME_STAMP_11 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_11"
-      a :datetime   
+      a :datetime, :custom_class => "datetime"   
     
       label "Now I’m going to switch the subject and ask about health insurance.  The next questions are similar to those asked 
       the last time we contacted you, but we are asking them again because sometimes the answers change."
@@ -1109,7 +1106,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
        
       q_time_stamp_12 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_12"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "The next set of questions asks about different ways we might be able to keep in touch with you. Please remember 
       that all the information you provide is confidential and will not be provided to anyone outside the National Children’s Study."
@@ -1249,7 +1246,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_pregnant, "==", :a_1
           
       q_time_stamp_13 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_13"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       q_comm_contact "Sometimes if people move or change their telephone number, we have difficulty reaching them. At our 
       last visit, we asked for contact information for two friends or relatives not living with you who would know where you could be 
@@ -1604,7 +1601,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     This concludes the interview portion of our visit.", :data_export_identifier=>"PREG_VISIT_2_2.END"
     
     q_hipv1_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_14"
-    a :datetime        
+    a :datetime, :custom_class => "datetime"        
   end
   
 end

@@ -2,7 +2,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"pre_pregnancy_int_v11" do
 
     q_time_stamp_1 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
     label "Thank you for agreeing to participate in the National Children’s Study. This interview will take about 20 minutes 
     to complete. Your answers are important to us. There are no right or wrong answers, just those that help us understand your 
@@ -62,9 +62,8 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"
     
     q_confirmed_dob "What is your date of birth?",
-    :help_text => "Format as YYYYMMDD",
     :data_export_identifier=>"PRE_PREG.PERSON_DOB"
-    a :string
+    a :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -95,7 +94,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3
       
       q_time_stamp_2 "Current date & time", :data_export_identifier=>"PRE_PREG.TIME_STAMP_2"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Next, I have some general questions about your health and health care."
 
@@ -247,7 +246,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3
           
       q_time_stamp_3 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_3"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
   
       label "Now I'm going to switch to another subject and ask about health insurance."
   
@@ -316,7 +315,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3
       
       q_time_stamp_4 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_4"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "Now I'd like to find out more about your home and the area in which you live."
 
@@ -473,7 +472,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_D :q_cool, "!=", :a_neg_2                  
 
       q_time_stamp_5 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_5"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
 
       label "Water damage is a common problem that occurs inside of many homes. Water damage includes water stains on the ceiling 
       or walls, rotting wood, and flaking sheetrock or plaster. This damage may be from broken pipes, a leaky roof, or floods."
@@ -522,7 +521,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
 
       q_time_stamp_6 "Insert date/time stamp", 
       :data_export_identifier=>"PRE_PREG.TIME_STAMP_6"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "The next few questions ask about any recent additions or renovations to your home."
 
@@ -598,7 +597,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_C :q_decorate_room, "!=", :a_neg_2
     
       q_time_stamp_7 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_7"
-      a :datetime      
+      a :datetime, :custom_class => "datetime"      
 
       label "Now I'd like to ask about the water in your home."
 
@@ -644,7 +643,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3
        
       q_time_stamp_8 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_8"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
   
       label "Now, I'd like to ask some questions about your schooling and employment."
   
@@ -692,7 +691,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3   
 
       q_time_stamp_9 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_9"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
      
       label "The next questions may be similar to those asked the last time we contacted you, 
       but we are asking them again because sometimes the answers change."
@@ -770,7 +769,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3
       
       q_time_stamp_10 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_10"
-      a :datetime    
+      a :datetime, :custom_class => "datetime"    
     
       label "Now I’m going to ask a few questions about your income.  Family income is important in analyzing the data we 
       collect and is often used in scientific studies to compare groups of people who are similar. Please remember that all the 
@@ -823,7 +822,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       condition_B :q_age_elig, "!=", :a_3
       
       q_time_stamp_11 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_11"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
 
       label "The next set of questions asks about different ways we might be able to keep in touch with you. Please remember 
       that all the information you provide is confidential and will not be provided to anyone outside the National Children’s Study."
@@ -1222,7 +1221,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       a_neg_2 "Don't know"
     end
     q_time_stamp_12 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG.TIME_STAMP_12"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey. 
     This concludes the interview portion of our visit.",

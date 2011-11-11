@@ -1,7 +1,7 @@
 survey "INS_QUE_InternetUseContactPref_SUR_EHPBHI_P2_V1.0" do
   section "Interview", :reference_identifier=>"InternetUseContactPref_SUR" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"INTERNET_USAGE.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_ABLE_PARTICIPATE "What are the following ways you are able to participate in National Children’s Study data collection?",  
     :help_text => "Select all that apply.",
@@ -160,7 +160,7 @@ survey "INS_QUE_InternetUseContactPref_SUR_EHPBHI_P2_V1.0" do
     :help_text => "Display bracketed text for those completing the three month call event."
     
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"INTERNET_USAGE.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
 end
     

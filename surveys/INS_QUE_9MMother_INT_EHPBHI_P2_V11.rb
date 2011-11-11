@@ -1,7 +1,7 @@
 survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"9MMother_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Hello. I’m [INTERVIEWER NAME] calling from the National Children’s Study. I’m calling today to ask you 
     some questions about you and your baby. We realize that you are busy, and this call should take only about 10 minutes. 
@@ -132,7 +132,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
     that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
-    Format as YYYYMMDD. Please verify if calculated age in months is less than 8 months or greater than 11 months",
+    Please verify if calculated age in months is less than 8 months or greater than 11 months",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
     a "Date", :string
@@ -147,7 +147,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     # • FORMAT CHILD_DOB AS YYYYMMDD.
   
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_2"
-    a :datetime       
+    a :datetime, :custom_class => "datetime"       
   end
   section "Child development and parenting", :reference_identifier=>"9MMother_INT" do
     label "First, I will read you a list of things {C_FNAME/YOUR CHILD} may already do or may start 
@@ -314,7 +314,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"           
    
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
   section "Health care", :reference_identifier=>"9MMother_INT" do
     q_C_HEALTH "Would you say {C_FNAME/YOUR CHILD}’s health in general is poor, fair, good, or excellent?",
@@ -344,7 +344,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"
 
     q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or checkup?",
-    :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
+    :help_text => "Show calendar to assist in date recall.",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.LAST_VISIT"
     a_date "Date", :string
@@ -401,7 +401,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     condition_E :q_SAME_CARE, "!=", :a_neg_7
     
     q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_4"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for your time and for being a part of this important research study. This is the end of our interview.",
     :help_text => "Include information about next contact (12-month home visit) and verification of contact information."

@@ -1,7 +1,7 @@
 survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
   section "Interview introduction", :reference_identifier=>"6MInfantFeed_SAQ" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_SAQ_2.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for agreeing to participate in the National Children’s Study. This self-administered 
     questionnaire will take about 10 minutes to complete. There are questions about your child’s diet. 
@@ -524,7 +524,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     condition_A :q_HERBAL, "==", :a_1
     
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_SAQ_2.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.", 
     :help_text => "If SAQ is completed as a PAPI, SCs must provide instructions and a business reply envelope for participant to return."

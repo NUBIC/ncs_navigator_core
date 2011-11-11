@@ -1,7 +1,7 @@
 survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
   section "Interview introduction", :reference_identifier=>"Father_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Thank you for agreeing to participate in this study. We are about to begin the interview portion 
     of today’s visit, which will take about 15 minutes to complete. Your answers are important to us. There 
@@ -22,7 +22,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_F_INT_READY, "==", :a_1
       
       q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_2"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "I’ll begin by asking some questions about you."
     
@@ -48,7 +48,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       q_PERSON_DOB "What is your date of birth?",
       :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob 
       is required to determine eligibility. If response was determined to be invalid, ask question again and probe for 
-      valid response. Verify if calculated age is less than local age of majority. Format as YYYYMMDD",
+      valid response. Verify if calculated age is less than local age of majority.",
       :pick => :one,
       :data_export_identifier=>"FATHER_PV1.PERSON_DOB"
       a "Date", :string
@@ -165,7 +165,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2      
 
       q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_3"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "The next question is about your use of cigarettes."
     
@@ -184,7 +184,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2
           
       q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_4"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Now I am going to ask about your use of alcohol."
     
@@ -229,7 +229,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2
       
       q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_5"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Now, I have questions about your health and about medical conditions or health problems you have or have had."
     
@@ -476,7 +476,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2
           
       q_TIME_STAMP_6 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_6"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Now I’d like to ask some questions about work and income."
     
@@ -564,7 +564,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2
           
       q_TIME_STAMP_7 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_7"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Now, I will read a list of the ways you might have felt or behaved. Please look at this card, 
       and tell me how often you have felt this way during the past week.",
@@ -777,7 +777,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2
           
       q_TIME_STAMP_8 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_8"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "These next questions are about your background and culture."
     
@@ -883,7 +883,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_A :q_AGE_ELIG, "!=", :a_2
           
       q_TIME_STAMP_9 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_9"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "Social network:"
     
@@ -937,7 +937,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       condition_B :F_INT_READY, "==", :a_2
           
       q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_10"
-      a :datetime
+      a :datetime, :custom_class => "datetime"
     
       label "General involvement:"
     
@@ -1134,7 +1134,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this interview."
   
     q_TIME_STAMP_11 "Insert date/time stamp", :data_export_identifier=>"FATHER_PV1.TIME_STAMP_11"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
   end
 end

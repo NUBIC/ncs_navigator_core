@@ -2,7 +2,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
   section "CATI", :reference_identifier=>"PPGFollUp_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", 
     :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Hello. My name is [INTERVIEWER FIRST AND LAST NAME] from the National Children’s Study. It’s been a few months since we 
     have spoken with you. We’re following up with women of childbearing age and our first questions are always about pregnancy. We first 
@@ -38,7 +38,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     condition_C :q_PREGNANT, "==", :a_neg_2
     
     q_PPG_DUE_DATE_1 "Congratulations. When is your baby due?",
-    :help_text => "Format as YYYYMMDD. Verify if date is more than nine months after current date, or if date is more than 1 month before current date",
+    :help_text => "Verify if date is more than nine months after current date, or if date is more than 1 month before current date",
     :pick => :one,
     :data_export_identifier=>"PPG_CATI.PPG_DUE_DATE_1"
     a_date "Date", :string
@@ -60,7 +60,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     # • IF DATE IS INCOMPLETE, GO TO DATE_PERIOD
     
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
-    :help_text => "Format as YYYYMMDD",
+    :pick => :one,
     :data_export_identifier=>"PPG_CATI.DATE_PERIOD"
     a_date "Date", :string
     a_neg_1 "Refused"
@@ -218,7 +218,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     
     q_TIME_STAMP_2 "Insert date/time stamp", 
     :data_export_identifier=>"PPG_CATI.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
   section "Tracing questions", :reference_identifier=>"PPGFollUp_INT" do 
     q_BST_NMBR "Just to confirm, is this the best phone number to reach you?",
@@ -258,6 +258,6 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     
     q_TIME_STAMP_3 "Insert date/time stamp", 
     :data_export_identifier=>"PPG_CATI.TIME_STAMP_3"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
   end
 end

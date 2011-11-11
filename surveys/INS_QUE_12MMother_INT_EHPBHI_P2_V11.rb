@@ -1,7 +1,7 @@
 survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_1"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
     label "Thank you for agreeing to participate in the National Children’s Study. This interview will take about 30 minutes to 
     complete. Your answers are important to us. There are no right or wrong answers, just those that help us understand your 
@@ -126,7 +126,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
     :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
     that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
-    Format as YYYYMMDD. Please verify if calculated age in months is less than 9 months or greater than 15 months",
+    Please verify if calculated age in months is less than 9 months or greater than 15 months",
     :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
     a "Date", :string
@@ -143,7 +143,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   section "Child development and parenting", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_2 "Insert date/time stamp", 
     :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.TIME_STAMP_2"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "First, I’d like to ask about {C_FNAME or YOUR CHILD} and you. You may notice your baby’s personality developing a bit more now 
     that he or she is twelve months old."
@@ -525,7 +525,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end   
   section "Child Care Arrangements", :reference_identifier=>"12MMother_INT" do        
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.TIME_STAMP_3"
-    a :datetime 
+    a :datetime, :custom_class => "datetime" 
     
     label "Next, I’d like to ask you about different types of child care {C_FNAME or YOUR CHILD} may receive from someone other 
     than parents or guardians. This includes regularly scheduled care arrangements with relatives and non-relatives, and day care or 
@@ -621,7 +621,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end  
   section "Health care", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.TIME_STAMP_4"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "The next questions are about where {C_FNAME or YOUR CHILD} goes for health care."
     
@@ -640,7 +640,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"
     
     q_LAST_VISIT "What was the date of {C_FNAME or YOUR CHILD}’s most recent well-child visit or checkup?",
-    :help_text => "Show calendar to assist in date recall. Format as YYYYMMDD",
+    :help_text => "Show calendar to assist in date recall.",
     :pick => :one,
     :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.LAST_VISIT"
     a_date "Date", :string
@@ -698,7 +698,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Medical conditions", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_5 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.TIME_STAMP_5"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Now I’d like to ask about some illnesses {C_FNAME or YOUR CHILD} may have had in the last 3 months."
     
@@ -811,7 +811,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Health insurance", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_6 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.TIME_STAMP_6"
-    a :datetime 
+    a :datetime, :custom_class => "datetime" 
     
     label "Now I’m going to switch to another subject and ask about health insurance."
     
@@ -883,7 +883,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Product use", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_7 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.TIME_STAMP_7"
-    a :datetime 
+    a :datetime, :custom_class => "datetime" 
     
     label "The next questions ask about lice exposure and treatment."
     
@@ -936,7 +936,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   # • THIS SECTION SHOULD ONLY BE ASKED FOR THE FIRST ELIGIBLE CHILD. IF CHILD_QNUM > 1, THEN GO TO SMOKE_HOURS
   section "In-home exposures", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_8 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_8"
-    a :datetime 
+    a :datetime, :custom_class => "datetime" 
     
     label "Do you use any methods to \"allergy-proof\" your home? Please answer \"yes\" or \"no\" to each method I describe"
   
@@ -1076,7 +1076,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     condition_C :q_ROOM_MOLD, "!=", :a_neg_2
     
     q_TIME_STAMP_9 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_9"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
     # TODO
     # PROGRAMMER INSTRUCTIONS:
@@ -1124,7 +1124,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Health behaviors", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_10 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_10"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     q_CIG_NOW "Do you currently smoke cigarettes or use any other tobacco product?",
     :pick => :one,
@@ -1216,7 +1216,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Neighborhood characteristics", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_11 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_11"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "Now I’d like to ask a few questions about your neighborhood."
     
@@ -1368,7 +1368,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Tracing questions", :reference_identifier=>"12MMother_INT" do
     q_TIME_STAMP_12 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_12"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
     
     label "The next set of questions asks about different ways we might be able to keep in touch with you. Please remember that all the 
     information you provide is confidential and will not be provided to anyone outside the National Children’s Study."
@@ -1472,7 +1472,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     end
     
     q_TIME_STAMP_13 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_13"
-    a :datetime
+    a :datetime, :custom_class => "datetime"
 
     q_COMM_CONTACT "Sometimes if people move or change their telephone number, we have difficulty reaching them. At our last visit, 
     we asked for contact information for two friends or relatives not living with you who would know where you could be reached in case we 
@@ -1804,6 +1804,6 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     :data_export_identifier=>"TWELVE_MTH_MOTHER.END"
     
     q_hipv1_TIME_STAMP_14 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_14"
-    a :datetime    
+    a :datetime, :custom_class => "datetime"    
   end    
 end
