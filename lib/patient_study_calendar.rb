@@ -27,6 +27,8 @@ class PatientStudyCalendar
   HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
   HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW  = "#{HIGH_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
 
+  ACTIVITY_OCCURRED = 'occurred'
+
   CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
 
   attr_accessor :user
@@ -84,17 +86,33 @@ class PatientStudyCalendar
   
   def schedules(participant, format = "json")
     resp = connection.get("subjects/#{participant.person.public_id}/schedules.#{format}")
-    
-    Rails.logger.info("~~~ schedules for #{participant.person}")
-    Rails.logger.info(resp.body.inspect)
-    Rails.logger.info("~~~")
-    
     resp.body
+  end
+  
+  def mark_activity_for_instrument(activity, participant, value)
+    if scheduled_activity_identifier = get_scheduled_activity_identifier(activity, participant)
+      resp = connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}/activities/#{scheduled_activity_identifier}", 
+        build_scheduled_activity_state_request(value), { 'Content-Length' => '1024' })
+    end
+  end
+  
+  def get_scheduled_activity_identifier(activity_name, participant)
+    scheduled_activity_identifier = nil
+    if subject_schedules = schedules(participant)
+      subject_schedules["days"].keys.each do |date|
+        subject_schedules["days"][date]["activities"].each do |activity|
+          if activity_name =~ Regexp.new(activity["activity"]["name"])
+            scheduled_activity_identifier = activity["id"]
+          end
+        end
+      end
+    end
+    scheduled_activity_identifier
   end
   
   def activities_for_participant(participant)
     activities = []
-    if subject_schedules = schedules(participant)    
+    if subject_schedules = schedules(participant)  
       subject_schedules["days"].keys.each do |date|
         subject_schedules["days"][date]["activities"].each do |activity|
           participant.upcoming_events.each do |event|
@@ -244,6 +262,35 @@ class PatientStudyCalendar
                                     "study-segment-id" => get_study_segment_id(next_scheduled_event.event), 
                                     "start-date" => next_scheduled_event_date,
                                     "mode" => "per-protocol"})
+    xm.target!
+  end
+  
+  # <xsd:element name="scheduled-activity-state" type="psc:ScheduledActivityState"/>
+  # 
+  # <xsd:complexType name="ScheduledActivityState">
+  #     <xsd:attribute name="state" use="required">
+  #         <xsd:simpleType>
+  #             <xsd:restriction base="xsd:string">
+  #                 <xsd:enumeration value="canceled"/>
+  #                 <xsd:enumeration value="conditional"/>
+  #                 <xsd:enumeration value="missing"/>
+  #                 <xsd:enumeration value="not-applicable"/>
+  #                 <xsd:enumeration value="occurred"/>
+  #                 <xsd:enumeration value="scheduled"/>
+  #             </xsd:restriction>
+  #         </xsd:simpleType>
+  #     </xsd:attribute>
+  #     <xsd:attribute name="date" type="xsd:date"/>
+  #     <xsd:attribute name="reason" type="xsd:string"/>
+  # </xsd:complexType>
+  def build_scheduled_activity_state_request(value)
+    xm = Builder::XmlMarkup.new(:target => "")
+    xm.instruct!
+    xm.tag!("scheduled-activity-state".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+                                    "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
+                                    "state" => value, 
+                                    "date" => Date.today.strftime("%Y-%m-%d")})
     xm.target!
   end
   
