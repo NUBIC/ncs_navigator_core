@@ -5,6 +5,7 @@ class SurveyorController < ApplicationController
   def surveyor_finish
     OperationalDataExtractor.process(@response_set)
     update_participant_based_on_survey(@response_set)
+    psc.mark_activity_for_instrument(InstrumentEventMap.activity_for_instrument(@response_set.survey.title), @response_set.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED) if @response_set.survey
     edit_instrument_contact_link_path(@response_set.contact_link_id)
   end
 

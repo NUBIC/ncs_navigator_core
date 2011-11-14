@@ -44,6 +44,22 @@ class InstrumentEventMap
       activity
     end
   end
+  
+  ##
+  # For a given survey title (i.e. instrument filename), return the event name (i.e. the activity from a PSC segment)
+  # 
+  # @param [String] - filename for the instrument whose name matches the activity
+  # @return [String] - the name of the PSC segment activity (e.g. Pregnancy Probability Group Follow-Up Interview)
+  def self.activity_for_instrument(instrument)
+    result = nil
+    instruments.each do |ie|
+      if instrument =~ Regexp.new(ie["filename"])
+        result = ie["name"]
+        break
+      end
+    end
+    result    
+  end
 
   ##
   # A list of all the known event names.
