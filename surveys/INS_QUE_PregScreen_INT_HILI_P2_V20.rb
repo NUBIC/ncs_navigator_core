@@ -137,7 +137,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       :help_text => "Please verify if calculated age is less than local age of majority or greater than 49.",
       :pick => :one,
       :data_export_identifier=>"PREG_SCREEN_HI_2.PERSON_DOB"
-      a "Date of birth", :string
+      a "Date of birth", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"    
     
