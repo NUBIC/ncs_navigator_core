@@ -18,6 +18,20 @@ module TestSurveys
   end
   
   
+  def create_pregnancy_screener_survey_with_cell_phone_permissions
+    survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    # Permission
+    q = Factory(:question, :reference_identifier => "CELL_PHONE_2", :data_export_identifier => "PREG_SCREEN_HI_2.CELL_PHONE_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
+    
+    q = Factory(:question, :reference_identifier => "CELL_PHONE_4", :data_export_identifier => "PREG_SCREEN_HI_2.CELL_PHONE_4", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
+    survey
+  end
+  
   def create_pregnancy_screener_survey_with_person_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)

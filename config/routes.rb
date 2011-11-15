@@ -5,6 +5,8 @@ NcsNavigatorCore::Application.routes.draw do
     member do 
       get :events
       get :start_instrument
+      get :responses_for
+      put :responses_for
     end
     resources :contacts
   end
