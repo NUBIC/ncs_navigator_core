@@ -78,6 +78,14 @@ class PeopleController < ApplicationController
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs.access_code))
   end
   
+  def responses_for
+    @person = Person.find(params[:id])
+    @responses = []
+    if params[:data_export_identifier]
+      @responses = @person.responses_for(params[:data_export_identifier])
+    end
+  end
+  
   private 
   
     ##

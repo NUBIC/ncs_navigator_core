@@ -1,0 +1,21 @@
+- title "Responses for Person"
+
+%h3
+  = @person
+  
+= form_for @person, :url => responses_for_person_path(@person) do |f|
+
+  = text_field_tag :data_export_identifier, params[:data_export_identifier]
+  
+  = f.submit "Submit"
+  
+- unless @responses.empty?
+  %p
+    %b
+      = @responses.first.question.text
+  %ul
+    - @responses.each do |r|
+      %li
+        = "#{r.created_at.to_s(:db)} #{r} "
+    
+  
