@@ -99,8 +99,8 @@ form {
   select {
     border-color: #bbb;
   }
-  .date,
-  .datepicker {
+  input[type="text"].date,
+  input[type="text"].datepicker {
     width: 7.5em;
   }
   .nested_attributes {

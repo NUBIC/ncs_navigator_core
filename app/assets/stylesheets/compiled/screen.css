@@ -1431,8 +1431,8 @@ form select {
   border-color: #bbb;
 }
 /* line 103, ../../../stylesheets/partials/_application.scss */
-form .date,
-form .datepicker {
+form input[type="text"].date,
+form input[type="text"].datepicker {
   width: 7.5em;
 }
 /* line 106, ../../../stylesheets/partials/_application.scss */

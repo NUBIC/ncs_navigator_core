@@ -47,14 +47,14 @@ function stop_default_action(e) {
 }
 
 $(document).ready(function() {
-  $('input.datetime').datetimepicker({
+  $("input[type='text'].datetime").datetimepicker({
   	showSecond: true,
   	showMillisec: false,
   	timeFormat: 'hh:mm:ss'
   });
-  $('input.date').datepicker( { dateFormat: 'yy-mm-dd' } );
-  $('input.datepicker').datepicker( { dateFormat: 'yy-mm-dd' } );
-  $('input.time').timepicker({});
+  $("input[type='text'].date").datepicker( { dateFormat: 'yy-mm-dd' } );
+  $("input[type='text'].datepicker").datepicker( { dateFormat: 'yy-mm-dd' } );
+  $("input[type='text'].time").timepicker({});
 
   $('.mdes_documentation_link').click(function(event) {
     var definition = $('#mdes_definition').val();
