@@ -50,10 +50,24 @@ $(document).ready(function() {
   $("input[type='text'].datetime").datetimepicker({
   	showSecond: true,
   	showMillisec: false,
-  	timeFormat: 'hh:mm:ss'
+  	timeFormat: 'hh:mm:ss',
+  	dateFormat: 'yy-mm-dd',
+  	changeMonth: true,
+  	changeYear: true,
+  	yearRange: '1920:2020'
   });
-  $("input[type='text'].date").datepicker( { dateFormat: 'yy-mm-dd' } );
-  $("input[type='text'].datepicker").datepicker( { dateFormat: 'yy-mm-dd' } );
+  $("input[type='text'].date").datepicker( { 
+  	dateFormat: 'yy-mm-dd',
+  	changeMonth: true,
+  	changeYear: true,
+  	yearRange: '1920:2020'
+  } );
+  $("input[type='text'].datepicker").datepicker( { 
+  	dateFormat: 'yy-mm-dd',
+  	changeMonth: true,
+  	changeYear: true,
+  	yearRange: '1920:2020'
+  } );
   $("input[type='text'].time").timepicker({});
 
   $('.mdes_documentation_link').click(function(event) {
