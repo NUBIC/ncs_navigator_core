@@ -64,7 +64,7 @@ class Telephone < ActiveRecord::Base
   end
   
   def phone_nbr=(nbr)
-    self[:phone_nbr] = nbr.scan(/\d/).join unless nbr.blank?
+    self[:phone_nbr] = nbr.scan(/\d/).join if nbr.is_a? String
   end
   
 end
