@@ -34,8 +34,9 @@ class PublicIdsToVarchar < ActiveRecord::Migration
   end
 
   def down
-    tables_to_public_ids.each do |table, public_id|
-      execute "ALTER TABLE #{table} ALTER COLUMN #{public_id} TYPE BYTEA"
-    end
+    # PGError: ERROR:  column "___" cannot be cast to type bytea
+    # tables_to_public_ids.each do |table, public_id|
+    #   execute "ALTER TABLE #{table} ALTER COLUMN #{public_id} TYPE BYTEA"
+    # end
   end
 end
