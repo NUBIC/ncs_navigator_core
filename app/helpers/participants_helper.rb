@@ -2,8 +2,8 @@ module ParticipantsHelper
   include ActionView::Helpers::UrlHelper
   
   def switch_arm_message(participant)
-    msg = "Switch from Low Intensity to High Intensity"
-    msg = "Switch from High Intensity to Low Intensity" if participant.high_intensity
+    msg = "Invite #{participant.person} to join High Intensity Arm"
+    msg = "Move #{participant.person} from High Intensity to Low Intensity" if participant.high_intensity
     msg
   end
   

@@ -9,7 +9,7 @@ Feature: Assigning to new arm
     And an authenticated user
     And a participant exists with a person
     When I go to the edit_arm_participant page
-    Then I should see "Switch from Low Intensity to High Intensity"
+    Then I should see "Invite Fred Rogers to join High Intensity Arm"
     When I press "Switch"
     Then I should see "Successfully added Fred Rogers to High Intensity Arm"
     And I should be on the edit participant page
@@ -19,7 +19,7 @@ Feature: Assigning to new arm
     And an authenticated user
     And a high intensity participant exists with a person
     When I go to the edit_arm_participant page
-    Then I should see "Switch from High Intensity to Low Intensity"
+    Then I should see "Move Fred Rogers from High Intensity to Low Intensity"
     When I press "Switch"
     Then I should see "Successfully added Fred Rogers to Low Intensity Arm"
     And I should be on the edit participant page
