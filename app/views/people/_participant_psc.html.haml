@@ -7,7 +7,15 @@
       Participant needs to be registered in PSC
     - else
       Participant is registered in PSC
-      
+
+  - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
+    .high_intensity_invitation
+      = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
+        = render "shared/full_error_messages", :object => f.object
+        = f.hidden_field :high_intensity
+        %p
+          = f.submit switch_arm_message(@participant)
+  
   = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
   
   %b

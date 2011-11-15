@@ -332,7 +332,9 @@ class Person < ActiveRecord::Base
   # tsu dwelling unit through their household
   # @return [true,false]
   def in_tsu?
-    dwelling_units.map(&:tsu_id).compact.size > 0
+    # TODO: when dwelling units can and cannot have a tsu id - use the logic
+    true
+    # dwelling_units.map(&:tsu_id).compact.size > 0
   end
   
   private
