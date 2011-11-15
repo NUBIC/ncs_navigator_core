@@ -130,6 +130,17 @@ class Person < ActiveRecord::Base
     end
   end
   
+  ##
+  # Override default setter to also set Date value for use in calculations
+  def person_dob=(dob)
+    self[:person_dob] = dob
+    begin
+      self.person_dob_date = Date.parse(dob)
+    rescue
+      # Date entered is unparseable
+    end
+  end
+
   def self_link
     participant_person_links.detect { |ppl| ppl.relationship_code == 1 }
   end
@@ -165,11 +176,7 @@ class Person < ActiveRecord::Base
   # The Participant ppg_status local_code (cf. NcsCode) if applicable
   # @return [Integer]
   def ppg_status
-    Rails.logger.info("~~~ ppg_status")
-    if participant && participant.ppg_status
-      Rails.logger.info("~~~ #{participant.ppg_status.inspect}")
-      participant.ppg_status.local_code
-    end
+    participant.ppg_status.local_code if participant && participant.ppg_status
   end
 
   ##
@@ -306,6 +313,14 @@ class Person < ActiveRecord::Base
   end
   
   ##
+  # Given a data export identifier, return the responses this person made for that question
+  # @return [Array<Response>]
+  def responses_for(data_export_identifier)
+    Response.includes([:answer, :question, :response_set]).where(
+      "response_sets.user_id = ? AND questions.data_export_identifier = ?", self.id, data_export_identifier).all
+  end
+  
+  ##
   # Returns all DwellingUnits associated with the person's household units
   # @return[Array<DwellingUnit]
   def dwelling_units
@@ -328,4 +343,9 @@ class Person < ActiveRecord::Base
       return nil
     end
   
+end
+
+class PersonResponse 
+  attr_accessor :response_class, :text, :short_text, :reference_identifier
+  attr_accessor :datetime_value, :integer_value, :float_value, :text_value, :string_value
 end
