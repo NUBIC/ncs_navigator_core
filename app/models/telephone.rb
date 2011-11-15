@@ -63,4 +63,8 @@ class Telephone < ActiveRecord::Base
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => -5).first
   end
   
+  def phone_nbr=(nbr)
+    self[:phone_nbr] = nbr.scan(/\d/).join unless nbr.blank?
+  end
+  
 end
