@@ -2284,6 +2284,21 @@ span.known_instrument {
   font-style: italic;
 }
 
+/* line 56, ../../../stylesheets/partials/_participants.scss */
+#low_intensity_consent_no,
+#low_intensity_consent_yes {
+  border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  border: 3px solid #cccccc;
+  padding: 0.5em;
+}
+
+/* line 62, ../../../stylesheets/partials/_participants.scss */
+#low_intensity_consent_script {
+  margin-bottom: 2em;
+}
+
 /* line 1, ../../../stylesheets/partials/_welcome.scss */
 .front_page_section {
   margin: 0.5em 0;
