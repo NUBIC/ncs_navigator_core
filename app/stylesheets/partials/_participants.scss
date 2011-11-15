@@ -51,3 +51,14 @@ span.known_instrument {
   color: darkorange;
   font-style: italic;
 }
+
+#low_intensity_consent_no,
+#low_intensity_consent_yes {
+  @include rounded-corners(0.5em);
+  border: 3px solid $BORDER_GRAY;
+  padding: 0.5em;
+}
+
+#low_intensity_consent_script {
+  margin-bottom: 2em;
+}

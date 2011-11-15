@@ -7,6 +7,7 @@ class ParticipantConsentsController < ApplicationController
   # GET /participant_consents/new
   # GET /participant_consents/new.json
   def new
+    @consent_type = params[:consent_type]
     @participant  = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
     @contact = @contact_link.contact
@@ -20,6 +21,7 @@ class ParticipantConsentsController < ApplicationController
 
   # GET /participant_consents/1/edit
   def edit
+    @consent_type = params[:consent_type]
     @participant_consent = ParticipantConsent.find(params[:id])
     @contact_link = ContactLink.find(params[:contact_link_id])
     @participant = @participant_consent.participant
@@ -29,6 +31,7 @@ class ParticipantConsentsController < ApplicationController
   # POST /participant_consents
   # POST /participant_consents.json
   def create
+    @consent_type = params[:consent_type]
     @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.new(params[:participant_consent])
     
@@ -46,6 +49,7 @@ class ParticipantConsentsController < ApplicationController
   # PUT /participant_consents/1
   # PUT /participant_consents/1.json
   def update
+    @consent_type = params[:consent_type]
     @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.find(params[:id])
 
