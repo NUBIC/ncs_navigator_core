@@ -113,8 +113,3 @@
               = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
             %p
               = f.submit "Schedule #{next_event.event}"
-            
-:javascript
-  $(document).ready(function() {
-    $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
-  });
