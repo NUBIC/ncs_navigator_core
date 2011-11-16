@@ -135,7 +135,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     Please verify if calculated age in months is less than 8 months or greater than 11 months",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -347,7 +347,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     :help_text => "Show calendar to assist in date recall.",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.LAST_VISIT"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"

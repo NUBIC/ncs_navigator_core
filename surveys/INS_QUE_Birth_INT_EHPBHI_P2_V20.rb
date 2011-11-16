@@ -36,7 +36,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     q_CHILD_DOB "What was the {BABY’S/BABIES’} date of birth?",
     :pick=>:one,
     :data_export_identifier=>"BIRTH_VISIT_2.CHILD_DOB" 
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
   end
@@ -1190,7 +1190,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     q_DATE_MOVE "When will you move?",
     :pick=>:one, 
     :data_export_identifier=>"BIRTH_VISIT_2.DATE_MOVE"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"

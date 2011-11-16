@@ -137,7 +137,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     probe for valid response. ",
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -544,7 +544,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     :help_text => "",
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.LAST_VISIT",
     :pick => :one
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -583,7 +583,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       :help_text => "Show calendar to assist in date recall.",
       :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.ADMIN_DATE",
       :pick => :one
-      a_1 "Date", :string
+      a_1 "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 

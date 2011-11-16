@@ -134,7 +134,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
@@ -168,7 +168,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     :help_text => "If response was determined to be invalid, ask question again and probe for valid response.", 
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.ORIG_DUE_DATE",
     :pick => :one
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"    
     dependency :rule =>"A"
@@ -481,7 +481,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     :help_text => "Show calendar to assist in date recall.",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.LAST_VISIT",
     :pick => :one
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -520,7 +520,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
       :help_text => "Show calendar to assist in date recall.",
       :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.ADMIN_DATE",
       :pick => :one
-      a_1 "Date", :string
+      a_1 "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     

@@ -37,7 +37,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     q_CHILD_DOB "What was the {BABY’S/BABIES’} date of birth?",
     :pick=>:one,
     :data_export_identifier=>"BIRTH_VISIT_LI.CHILD_DOB" 
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
   end
@@ -799,7 +799,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       q_RETURN_JOB_DT "When did you return to your job?",
       :pick => :one,
       :data_export_identifier=>"BIRTH_VISIT_LI.RETURN_JOB_DT"
-      a_date "Date", :string
+      a_date "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
       dependency :rule=>"A"
@@ -1466,7 +1466,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     q_DATE_MOVE "When will you move?",
     :pick=>:one, 
     :data_export_identifier=>"BIRTH_VISIT_LI.DATE_MOVE"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"

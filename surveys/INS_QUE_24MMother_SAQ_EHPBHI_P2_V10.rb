@@ -10,7 +10,7 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     q_ASQ_DATE_COMP "Date ASQ was completed.",
     :pick => :one,
     :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.ASQ_DATE_COMP"
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't Know"
     a_neg_4 "Missing in Error"
@@ -41,7 +41,7 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     q_CHILD_DOB "Child's date of birth:",
     :pick => :one,
     :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.CHILD_DOB"
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't Know"
     a_neg_4 "Missing in Error"

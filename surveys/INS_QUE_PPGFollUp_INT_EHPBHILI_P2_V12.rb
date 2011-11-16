@@ -41,7 +41,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     :help_text => "Verify if date is more than nine months after current date, or if date is more than 1 month before current date",
     :pick => :one,
     :data_export_identifier=>"PPG_CATI.PPG_DUE_DATE_1"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -62,7 +62,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
     :pick => :one,
     :data_export_identifier=>"PPG_CATI.DATE_PERIOD"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"

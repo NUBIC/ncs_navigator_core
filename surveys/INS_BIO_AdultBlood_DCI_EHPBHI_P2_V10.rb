@@ -134,7 +134,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       :help_text => "Double check if year is < 2011.",
       :data_export_identifier=>"SPEC_BLOOD.LAST_DATE_EAT",
       :pick => :one
-      a "Date", :string
+      a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     
@@ -874,7 +874,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       :help_text => "Double check if year is < 2011.",
       :pick => :one,
       :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_DATE"
-      a "Date", :string
+      a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
 
@@ -902,7 +902,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       :help_text => "Double check if year is < 2011.",
       :pick => :one,
       :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_END_DATE"
-      a "Date", :string
+      a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
   

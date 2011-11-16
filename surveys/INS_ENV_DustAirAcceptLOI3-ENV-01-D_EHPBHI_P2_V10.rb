@@ -12,7 +12,7 @@ survey "INS_ENV_DustAirAcceptLOI3-ENV-01-D_EHPBHI_P2_V1.0" do
     :help_text => "Enter two digit month, two digit day, and four digit year",
     :pick => :one,
     :data_export_identifier=>""
-    a "Date", :string
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     

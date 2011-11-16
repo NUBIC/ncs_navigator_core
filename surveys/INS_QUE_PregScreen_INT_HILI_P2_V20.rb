@@ -417,7 +417,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     more than 1 month before current date.",
     :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.ORIG_DUE_DATE"
-    a_1 "Due date", :custom_class => "date"
+    a_1 "Due date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -438,7 +438,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     again and probe for valid response. Reject responses that are either > 10 months or after current date.",    
     :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.DATE_PERIOD"
-    a_1 "Date", :string
+    a_1 "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -1217,7 +1217,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     q_DATE_MOVE "When will you move?",
     :pick=>:one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.DATE_MOVE"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -1341,7 +1341,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_A :q_MARISTAT, "==", :a_1
     condition_B :q_TRYING, "==", :a_1
     
-    q_PARTNER_TRYING_ALT "Since you say you are currently trying to become partner, do you have a husband with 
+    q_PARTNER_TRYING_ALT "Since you say you are currently trying to become pregnant, do you have a husband with 
     whom you are trying to become a parent?",
     :pick=>:one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.PARTNER_TRYING"

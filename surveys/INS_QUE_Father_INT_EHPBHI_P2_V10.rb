@@ -51,7 +51,7 @@ survey "INS_QUE_Father_INT_EHPBHI_P2_V1.0" do
       valid response. Verify if calculated age is less than local age of majority.",
       :pick => :one,
       :data_export_identifier=>"FATHER_PV1.PERSON_DOB"
-      a "Date", :string
+      a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     

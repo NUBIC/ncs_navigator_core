@@ -387,7 +387,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     q_DATE_VISIT "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant?",
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_2_2.DATE_VISIT"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_7 "Have not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -537,7 +537,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       q_ADMIN_DATE "What was the admission date of your most recent hospital stay?",
       :pick=>:one, 
       :data_export_identifier=>"PREG_VISIT_2_2.ADMIN_DATE"
-      a "Date", :string
+      a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
       a_neg_7 "Have not been hospitalized overnight/not applicable"

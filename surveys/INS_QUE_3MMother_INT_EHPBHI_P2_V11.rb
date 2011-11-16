@@ -699,7 +699,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     q_LAST_VISIT "What was the date of {C_FNAME/YOUR CHILD}’s most recent well-child visit or check-up?",
     :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.LAST_VISIT"
-    a_date "Date", :string
+    a_date "Date", :string, :custom_class => "date"
     a_neg_7 "Has not had a visit"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
