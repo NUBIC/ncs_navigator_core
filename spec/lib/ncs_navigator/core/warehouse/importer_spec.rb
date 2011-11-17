@@ -215,7 +215,7 @@ module NcsNavigator::Core::Warehouse
         [
           ListingUnit, DwellingUnit, DwellingHouseholdLink, HouseholdUnit, HouseholdPersonLink,
           Person, PersonRace, ParticipantPersonLink,
-          ParticipantConsentSample,
+          Participant, ParticipantConsentSample,
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
           PpgDetail, PpgStatusHistory,
