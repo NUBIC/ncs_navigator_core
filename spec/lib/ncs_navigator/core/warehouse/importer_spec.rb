@@ -55,14 +55,11 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        Importer.automatic_producers.size.should == 19
+        Importer.automatic_producers.size.should == 22
       end
 
       [
         MdesModule::LinkContact,
-        MdesModule::Contact,
-        MdesModule::Event,
-        MdesModule::Instrument
       ].each do |manual|
         it "handles #{manual} manually" do
           Importer.automatic_producers.collect(&:model).should_not include(manual)
@@ -219,7 +216,8 @@ module NcsNavigator::Core::Warehouse
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
           PpgDetail, PpgStatusHistory,
-          Address, Email, Telephone
+          Address, Email, Telephone,
+          Contact, Instrument
         ].each do |core_model|
           describe core_model do
             let(:core_model) { core_model }
@@ -228,7 +226,20 @@ module NcsNavigator::Core::Warehouse
           end
         end
 
+        describe Event do
+          include_context 'basic model import test'
+
+          let(:core_record) {
+            Factory(:event,
+              :event_start_date => Date.new(2011, 9, 5),
+              :event_disposition => '053')
+          }
+          let(:core_model) { Event }
+        end
+
         describe ParticipantConsent do
+          include_context 'basic model import test'
+
           let(:core_model) { ParticipantConsent }
           let(:core_record) {
             Factory(:participant_consent,
@@ -236,26 +247,24 @@ module NcsNavigator::Core::Warehouse
           }
           let(:consenter) { Factory(:person, :first_name => 'Ginger') }
           let(:some_guy) { Factory(:person) }
-
-          include_context 'basic model import test'
         end
 
         describe ParticipantVisitRecord do
+          include_context 'basic model import test'
+
           let(:core_model) { ParticipantVisitRecord }
           let(:visited) { Factory(:person, :first_name => 'Ginger') }
           let(:core_record) { Factory(:participant_visit_record, :rvis_person => visited) }
-
-          include_context 'basic model import test'
         end
 
         describe ParticipantVisitConsent do
+          include_context 'basic model import test'
+
           let(:core_model) { ParticipantVisitConsent }
           let(:consenter) { Factory(:person, :first_name => 'Ginger') }
           let(:core_record) {
             Factory(:participant_visit_consent, :vis_person_who_consented => consenter)
           }
-
-          include_context 'basic model import test'
         end
       end
     end
