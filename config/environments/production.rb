@@ -57,4 +57,12 @@ NcsNavigatorCore::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+  
+  config.middleware.use ExceptionNotifier,
+    :email_prefix => "[NCS Navigator Core] ",
+    :sender_address => %{"Paul Friedman" <p-friedman@northwestern.edu>},
+    :exception_recipients => %w{p-friedman@northwestern.edu r-sutphin@northwestern.edu}
+    
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { :address => "ns.northwestern.edu", :port => 25, :domain => "northwestern.edu" }
 end
