@@ -183,6 +183,7 @@ GEM
       eventmachine (>= 0.12.9)
     erubis (2.7.0)
     eventmachine (0.12.10)
+    exception_notification (2.4.0)
     execjs (1.2.9)
       multi_json (~> 1.0)
     factory_girl (2.2.0)
@@ -394,6 +395,7 @@ DEPENDENCIES
   cucumber
   cucumber-rails
   database_cleaner!
+  exception_notification
   factory_girl
   fakeweb
   fastercsv
