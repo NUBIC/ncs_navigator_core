@@ -191,40 +191,6 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      describe 'direct link to participant' do
-        before do
-          pending 'Might not be necessary'
-
-          Factory(:participant, :p_id => 'the-participant-id', :person => Person.first)
-
-          producer_names.clear << :link_participant_self_person
-        end
-
-        it 'derives the ID from the participant ID' do
-          results.first.person_pid_id.should == 'the-participant-id-self'
-        end
-
-        it 'has the correct person_id' do
-          results.first.person_id.should == Person.first.person_id
-        end
-
-        it 'has the correct p_id' do
-          results.first.p_id.should == Participant.first.p_id
-        end
-
-        it 'relation is self' do
-          results.first.relation.should == '1'
-        end
-
-        it 'is active' do
-          results.first.is_active.should == '1'
-        end
-
-        it 'only generates if there is a participant' do
-          results.size.should == 1
-        end
-      end
-
       describe 'and ParticipantPersonLink' do
         let(:participant) { Participant.first }
         let(:person) { Person.last }

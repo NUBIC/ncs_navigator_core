@@ -43,13 +43,13 @@
 #  being_processed                :boolean
 #
 
-# A Person is an individual who may provide information on a participant. 
-# All individuals contacted are Persons, including those who may also be Participants. 
+# A Person is an individual who may provide information on a participant.
+# All individuals contacted are Persons, including those who may also be Participants.
 require 'ncs_navigator/configuration'
 class Person < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob]
-  
+
   belongs_to :psu,                      :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                      :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :prefix,                   :conditions => "list_name = 'NAME_PREFIX_CL1'",         :foreign_key => :prefix_code,                   :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :suffix,                   :conditions => "list_name = 'NAME_SUFFIX_CL1'",         :foreign_key => :suffix_code,                   :class_name => 'NcsCode', :primary_key => :local_code
@@ -65,7 +65,7 @@ class Person < ActiveRecord::Base
   belongs_to :when_move,                :conditions => "list_name = 'CONFIRM_TYPE_CL4'",        :foreign_key => :when_move_code,                :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :p_tracing,                :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :p_tracing_code,                :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :p_info_source,            :conditions => "list_name = 'INFORMATION_SOURCE_CL4'",  :foreign_key => :p_info_source_code,            :class_name => 'NcsCode', :primary_key => :local_code
-  
+
   # surveyor
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
   has_many :contact_links, :order => "created_at DESC"
@@ -76,13 +76,13 @@ class Person < ActiveRecord::Base
 
   has_many :household_person_links
   has_many :household_units, :through => :household_person_links
-  
+
   has_many :participant_person_links
   # validates_presence_of :first_name
   # validates_presence_of :last_name
-  
+
   validates_length_of :title, :maximum => 5, :allow_blank => true
-  
+
   ##
   # How to format the date_move attribute
   # cf. MdesRecord
@@ -90,7 +90,7 @@ class Person < ActiveRecord::Base
   def date_move_formatter
     '%Y-%m'
   end
-  
+
   ##
   # Determine the age of the Person based on the date of birth
   # @return [Integer]
@@ -100,15 +100,15 @@ class Person < ActiveRecord::Base
     offset = ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
     now.year - dob.year - offset
   end
-  
+
   ##
-  # Display text from the NcsCode list GENDER_CL1 
+  # Display text from the NcsCode list GENDER_CL1
   # cf. sex belongs_to association
   # @return [String]
   def gender
     sex.to_s
   end
-  
+
   ##
   # Override to_s to return the full name of the Person
   # aliased as :name and :full_name
@@ -118,18 +118,18 @@ class Person < ActiveRecord::Base
   end
   alias :name :to_s
   alias :full_name :to_s
-  
+
   ##
   # Helper method to set first and last name from full name
   # @param [String]
   def full_name=(full_name)
     full_name = full_name.split
-    if full_name.size >= 2 
+    if full_name.size >= 2
       self.last_name = full_name.last
       self.first_name = full_name[0, (full_name.size - 1) ].join(" ")
     end
   end
-  
+
   ##
   # Override default setter to also set Date value for use in calculations
   def person_dob=(dob)
@@ -145,17 +145,17 @@ class Person < ActiveRecord::Base
     participant_person_links.detect { |ppl| ppl.relationship_code == 1 }
   end
   private :self_link
-  
+
   ##
-  # The participant record associated with this person if any whose 
+  # The participant record associated with this person if any whose
   # relationship is self
   def participant
-    self_link.try(:participant)    
+    self_link.try(:participant)
   end
-  
+
   ##
-  # Create or update the participant record associated with this person whose 
-  # relationship is self  
+  # Create or update the participant record associated with this person whose
+  # relationship is self
   def participant=(participant)
     ppl = self_link
     if ppl
@@ -164,14 +164,14 @@ class Person < ActiveRecord::Base
       participant_person_links.build(:relationship_code => 1, :person => self, :participant => participant, :psu => self.psu)
     end
   end
-  
+
   ##
   # A Person is a Participant if there is an association on the participant table
   # @return [Boolean]
   def participant?
     !participant.nil?
   end
-  
+
   ##
   # The Participant ppg_status local_code (cf. NcsCode) if applicable
   # @return [Integer]
@@ -180,24 +180,24 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Based on the current state, pregnancy probability group, and 
+  # Based on the current state, pregnancy probability group, and
   # the intensity group (hi/lo) determine the next event
   # cf. Participant.upcoming_events
   # @return [String]
   def upcoming_events
     events = []
-    if participant? 
+    if participant?
       participant.upcoming_events.each { |e| events << e }
     else
       events << "Pregnancy Screener"
     end
     events
   end
-  
+
   ##
   # Create a new ResponseSet for the Person associated with the given Survey
   # and pre-populate questions to which we have previous data.
-  # 
+  #
   # @param [Survey]
   # @return [ResponseSet]
   def start_instrument(survey)
@@ -213,9 +213,9 @@ class Person < ActiveRecord::Base
   def prepopulate_response_set(survey, response_set)
     # TODO: determine way to know about initializing data for each survey
     reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_ppg_status", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
-    
+
     response_type = "string_value"
-    
+
     reference_identifiers.each do |reference_identifier|
       question = nil
       survey.sections_with_questions.each do |section|
@@ -247,17 +247,17 @@ class Person < ActiveRecord::Base
                   # TODO: handle other prepopulated fields
                   nil
                 end
-        
+
         Response.create(:response_set => response_set, :question => question, :answer => answer, response_type.to_sym => value)
       end
     end
     response_set
   end
-  
+
   ##
-  # Return the currently active ContactLink, if a person is associated with a Contact through 
+  # Return the currently active ContactLink, if a person is associated with a Contact through
   # a ContactLink and that ContactLink has not been closed (cf. Event#closed? and Contact#closed?)
-  # 
+  #
   # @return [ContactLink]
   def current_contact_link
     open_contact_links = contact_links.select { |link| !link.complete? }
@@ -265,20 +265,20 @@ class Person < ActiveRecord::Base
     return open_contact_links.first if open_contact_links.size == 1
     # TODO: what to do if there is more than one open contact?
   end
-  
+
   ##
   # Create a new Instrument for the Person associated with the given Survey.
-  # 
+  #
   # @param [Survey]
   # @return [ResponseSet]
   def create_instrument(survey)
-		Instrument.create!(:psu_code => NcsNavigatorCore.psu, 
-											:instrument_version => InstrumentEventMap.version(survey.title),
-											:instrument_type => InstrumentEventMap.instrument_type(survey.title),
-											:person => self, 
-											:survey => survey)
+    Instrument.create!(:psu_code => NcsNavigatorCore.psu,
+      :instrument_version => InstrumentEventMap.version(survey.title),
+      :instrument_type => InstrumentEventMap.instrument_type(survey.title),
+      :person => self,
+      :survey => survey)
   end
-  
+
   ##
   # Determine if this Person has started this Survey
   # @param [Survey]
@@ -286,7 +286,7 @@ class Person < ActiveRecord::Base
   def started_survey(survey)
     ResponseSet.where(:survey_id => survey.id).where(:user_id => self.id).count > 0
   end
-  
+
   ##
   # Get the most recent instrument for this survey
   # @param [Survey]
@@ -295,7 +295,7 @@ class Person < ActiveRecord::Base
     ins = Instrument.where(:survey_id => survey.id).where(:person_id => self.id).order("created_at DESC")
     ins.first
   end
-  
+
   ##
   # Convenience method to get the last incomplete response set
   # @return [ResponseSet]
@@ -303,7 +303,7 @@ class Person < ActiveRecord::Base
     rs = response_sets.last
     rs.complete? ? nil : rs
   end
-  
+
   ##
   # Convenience method to get the last completed survey
   # @return [ResponseSet]
@@ -311,7 +311,7 @@ class Person < ActiveRecord::Base
     rs = response_sets.last
     rs.complete? ? rs.survey : nil
   end
-  
+
   ##
   # Given a data export identifier, return the responses this person made for that question
   # @return [Array<Response>]
@@ -319,14 +319,14 @@ class Person < ActiveRecord::Base
     Response.includes([:answer, :question, :response_set]).where(
       "response_sets.user_id = ? AND questions.data_export_identifier = ?", self.id, data_export_identifier).all
   end
-  
+
   ##
   # Returns all DwellingUnits associated with the person's household units
   # @return[Array<DwellingUnit]
   def dwelling_units
     household_units.collect(&:dwelling_units).flatten
   end
-  
+
   ##
   # Returns true if a dwelling_unit has a tsu_is and this person has an association to the
   # tsu dwelling unit through their household
@@ -336,18 +336,18 @@ class Person < ActiveRecord::Base
     true
     # dwelling_units.map(&:tsu_id).compact.size > 0
   end
-  
+
   private
-  
+
     def dob
       return person_dob_date unless person_dob_date.blank?
       return Date.parse(person_dob) if person_dob.to_i > 0 && !person_dob.blank? && person_dob.chars.first != '9'
       return nil
     end
-  
+
 end
 
-class PersonResponse 
+class PersonResponse
   attr_accessor :response_class, :text, :short_text, :reference_identifier
   attr_accessor :datetime_value, :integer_value, :float_value, :text_value, :string_value
 end
