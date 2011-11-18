@@ -10,7 +10,7 @@ gem 'fastercsv'
 gem 'haml', '~> 3.1'
 gem 'pg'
 
-gem 'exception_notification'
+gem 'exception_notification', :require => 'exception_notifier'
 
 group :assets do
   gem 'sass-rails', " ~> 3.1.0"
