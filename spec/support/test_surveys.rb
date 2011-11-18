@@ -233,6 +233,52 @@ module TestSurveys
     survey
   end
 
+  def create_pregnancy_screener_survey_to_determine_due_date
+    survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    # Pregnant
+    q = Factory(:question, :reference_identifier => "PREGNANT", :data_export_identifier => "PREG_SCREEN_HI_2.PREGNANT", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "No, recent loss", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "No, unable to have children", :response_class => "answer", :reference_identifier => "4")
+
+    # Due Date
+    q = Factory(:question, :reference_identifier => "ORIG_DUE_DATE", :data_export_identifier => "PREG_SCREEN_HI_2.ORIG_DUE_DATE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Due Date", :response_class => "date")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # Date Last Period
+    q = Factory(:question, :reference_identifier => "DATE_PERIOD", :data_export_identifier => "PREG_SCREEN_HI_2.DATE_PERIOD", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Date Last Period", :response_class => "date")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # How Many Weeks Pregnant
+    q = Factory(:question, :reference_identifier => "WEEKS_PREG", :data_export_identifier => "PREG_SCREEN_HI_2.WEEKS_PREG", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Weeks Pregnant", :response_class => "integer")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # How Many Months Pregnant
+    q = Factory(:question, :reference_identifier => "MONTH_PREG", :data_export_identifier => "PREG_SCREEN_HI_2.MONTH_PREG", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Months Pregnant", :response_class => "integer")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # Which Trimester
+    q = Factory(:question, :reference_identifier => "TRIMESTER", :data_export_identifier => "PREG_SCREEN_HI_2.TRIMESTER", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "1st trimester (1-3 months pregnant)", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "2nd trimester (4-6 months pregnant)", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "3rd trimester (7-9 months pregnant)", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+    
+    survey
+  end
+
+
 
   def create_follow_up_survey_with_ppg_status_history_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2", :access_code => "ins-que-ppgfollup-int-ehpbhili-p2-v1-2")

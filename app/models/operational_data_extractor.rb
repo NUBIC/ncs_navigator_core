@@ -90,6 +90,85 @@ class OperationalDataExtractor
       end
     end
   
+  
+    # PREG_SCREEN_HI_2.ORIG_DUE_DATE
+    # PREG_VISIT_LI_2.DUE_DATE
+    # PPG_CATI.PPG_DUE_DATE_1
+    # 
+    # PREG_SCREEN_HI_2.DATE_PERIOD
+    # PREG_VISIT_LI_2.DATE_PERIOD
+    # PPG_CATI.DATE_PERIOD
+    # CALCULATE DUE DATE FROM THE FIRST DATE OF LAST MENSTRUAL PERIOD AND SET ORIG_DUE_DATE = DATE_PERIOD + 280 DAYS
+    # 
+    # PREG_SCREEN_HI_2.WEEKS_PREG
+    # PPG_CATI.WEEKS_PREG
+    # CALCULATE ORIG_DUE_DATE =TODAY’S DATE + 280 DAYS – WEEKS_PREG * 7
+    # 
+    # PREG_SCREEN_HI_2.MONTH_PREG
+    # PPG_CATI.MONTH_PREG
+    # CALCULATE DUE DATE AS FROM NUMBER OF MONTHS PREGNANT WHERE ORIG_DUE_DATE =TODAY’S DATE + 280 DAYS – MONTH_PREG * 30 - 15
+    # 
+    # PREG_SCREEN_HI_2.TRIMESTER
+    # PPG_CATI.TRIMESTER
+    # # 1ST TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 46 DAYS).
+    # # 2ND TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS).
+    # # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).
+    # # DON’T KNOW/REFUSED: ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS)
+    def determine_due_date(key, response)
+      
+      return nil unless should_calculate_due_date?(key, response)
+      
+      value = case response.answer.response_class
+              when "integer"
+                response.integer_value
+              when "date", "datetime", "time"
+                response.datetime_value
+              when "answer"
+                response.answer.reference_identifier.gsub("neg_", "-").to_i
+              end
+    
+      due_date =  case key
+                  when "ORIG_DUE_DATE", "DUE_DATE", "PPG_DUE_DATE_1"
+                    value
+                  when "DATE_PERIOD"
+                    value + 280.days
+                  when "WEEKS_PREG"
+                    (Date.today + 280.days) - ((value * 7).days)
+                  when "MONTH_PREG"
+                    (Date.today + 280.days) - ((value * 30) - 15)
+                  when "TRIMESTER"
+                    case value
+                    when 1
+                      (Date.today + 280.days) - (46.days)
+                    when 2
+                      (Date.today + 280.days) - (140.days)
+                    when 3
+                      (Date.today + 280.days) - (235.days)
+                    else
+                      (Date.today + 280.days) - (140.days)
+                    end
+                  else
+                    (Date.today + 280.days) - (140.days)
+                  end
+    
+      due_date.strftime('%Y-%m-%d') unless due_date.blank?
+    end
+    
+    def should_calculate_due_date?(key, response)
+      answer_class = response.answer.response_class
+      case key
+      when "ORIG_DUE_DATE", "DUE_DATE", "PPG_DUE_DATE_1", "DATE_PERIOD"
+        answer_class == "date"
+      when "WEEKS_PREG", "MONTH_PREG"
+        answer_class == "integer"
+      when "TRIMESTER"
+        answer_class == "answer"
+      else
+        false
+      end
+      
+    end
+  
   end
   
 end
