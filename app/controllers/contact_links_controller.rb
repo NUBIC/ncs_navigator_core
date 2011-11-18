@@ -10,7 +10,7 @@ class ContactLinksController < ApplicationController
 			redirect_to select_instrument_contact_link_path(@contact_link)
 		else
 			@person	= @contact_link.person
-			@survey	= @response_set.survey
+			@survey	= @response_set.survey if @response_set
 
 		  @instrument = find_or_create_instrument(@survey)
 		end
