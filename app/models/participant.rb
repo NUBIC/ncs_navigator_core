@@ -376,7 +376,15 @@ class Participant < ActiveRecord::Base
   # The known due date for the pregnant participant, used to schedule the Birth Visit
   # @return [Date]
   def due_date
-    Date.parse(ppg_details.first.due_date) if ppg_details.first && ppg_details.first.due_date
+    dt = nil
+    if ppg_details.first && ppg_details.first.due_date
+      begin
+        dt = Date.parse(ppg_details.first.due_date)
+      rescue
+        # NOOP - date is unparseable
+      end
+    end
+    dt
   end
   
   ##

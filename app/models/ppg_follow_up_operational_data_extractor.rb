@@ -43,6 +43,12 @@ class PpgFollowUpOperationalDataExtractor
     "#{SAQ_PREFIX}.MED_UNABLE"            => "ppg_status_code"
   }
   
+  DUE_DATE_DETERMINER_MAP = {
+    "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
+    "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
+    "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
+    "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
+  }
   
   class << self
     
@@ -112,6 +118,11 @@ class PpgFollowUpOperationalDataExtractor
           if (data_export_identifier == "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1" || data_export_identifier == "#{SAQ_PREFIX}.PPG_DUE_DATE") && !value.blank?
             participant.ppg_details.first.update_due_date(value) 
           end
+        end
+
+        if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
+          due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
+          participant.ppg_details.first.update_due_date(due_date) if due_date
         end
 
       end

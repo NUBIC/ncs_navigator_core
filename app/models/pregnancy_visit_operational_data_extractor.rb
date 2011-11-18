@@ -139,6 +139,10 @@ class PregnancyVisitOperationalDataExtractor
   FATHER_PHONE_MAP = {
     "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"           => "phone_nbr",
   }
+  
+  DUE_DATE_DETERMINER_MAP = {
+    "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD" => "DATE_PERIOD",
+  }
 
   class << self
     
@@ -238,6 +242,11 @@ class PregnancyVisitOperationalDataExtractor
         
         if FATHER_PHONE_MAP.has_key?(data_export_identifier)
           father_phone.send("#{FATHER_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+        end
+        
+        if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
+          due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
+          participant.ppg_details.first.update_due_date(due_date) if due_date
         end
         
       end

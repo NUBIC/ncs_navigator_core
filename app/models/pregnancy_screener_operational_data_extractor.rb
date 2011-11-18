@@ -74,21 +74,27 @@ class PregnancyScreenerOperationalDataExtractor
     "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"  => "ppg_first_code"    
   }
   
+  DUE_DATE_DETERMINER_MAP = {
+    "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
+    "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
+    "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
+    "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
+  }
   
   class << self
     
     def extract_data(response_set)
       person = response_set.person
       person.participant = Participant.new if person.participant.blank?
-      address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new)
-      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new)
+      address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu)
+      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu)
 
-      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type)
-      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type)
-      phone = Telephone.new(:person => person)
+      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu)
+      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu)
+      phone = Telephone.new(:person => person, :psu => person.psu)
 
-      email = Email.new(:person => person)
-      ppg_detail = PpgDetail.new(:participant => person.participant)
+      email = Email.new(:person => person, :psu => person.psu)
+      ppg_detail = PpgDetail.new(:participant => person.participant, :psu => person.psu)
 
       response_set.responses.each do |r|
         
@@ -148,6 +154,11 @@ class PregnancyScreenerOperationalDataExtractor
             ppg_detail_value = value 
           end
           ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", ppg_detail_value)
+        end
+
+        if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
+          due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
+          ppg_detail.orig_due_date = due_date if due_date
         end
 
       end

@@ -587,5 +587,321 @@ describe PregnancyScreenerOperationalDataExtractor do
     participant.due_date.should be_nil
   end
 
+  context "determining the due date of a pregnant woman" do
+    
+    let(:ppg1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1", :local_code => 1) }
+  
+    before(:each) do
+      @person = Factory(:person)
+      @participant = Factory(:participant, :person => @person)
+
+      @survey = create_pregnancy_screener_survey_to_determine_due_date
+      
+      @survey_section = @survey.sections.first
+      @response_set, @instrument = @person.start_instrument(@survey)
+      @response_set.responses.size.should == 0
+    end
+
+    
+    it "sets the due date to the date provided by the participant" do
+    
+      due_date = "2012-02-29"
+
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "date" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :datetime_value => due_date, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 2
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == Date.parse(due_date)
+      
+    end
+    
+    # CALCULATE DUE DATE FROM THE FIRST DATE OF LAST MENSTRUAL PERIOD AND SET ORIG_DUE_DATE = DATE_PERIOD + 280 DAYS
+    it "calculates the due date based on the date of the last menstrual period" do
+
+      last_period = 20.weeks.ago
+
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "date" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :datetime_value => last_period, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 3
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == (last_period + 280.days).to_date
+
+    end
+    
+    # CALCULATE ORIG_DUE_DATE =TODAY’S DATE + 280 DAYS – WEEKS_PREG * 7
+    it "calculates the due date based on the number of weeks pregnant" do
+      
+      weeks_pregnant = 8
+      
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "integer" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :integer_value => weeks_pregnant, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 4
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - (weeks_pregnant * 7)).to_date
+      
+    end
+    
+    # CALCULATE DUE DATE AS FROM NUMBER OF MONTHS PREGNANT WHERE ORIG_DUE_DATE =TODAY’S DATE + 280 DAYS – MONTH_PREG * 30 - 15
+    it "calculates the due date based on the number of months pregnant" do
+      months_pregnant = 4
+      
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.MONTH_PREG"
+          answer = q.answers.select { |a| a.response_class == "integer" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :integer_value => months_pregnant, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 5
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - ((months_pregnant * 30) - 15)).to_date
+      
+    end
+    
+    # 1ST TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 46 DAYS).
+    # 2ND TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS).
+    # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).
+    # DON’T KNOW/REFUSED: ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS)
+    it "calculates the due date based on the 1st trimester" do
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.MONTH_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.TRIMESTER"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 6
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - (46.days)).to_date
+      
+    end
+    
+    it "calculates the due date based on the 2nd trimester" do
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.MONTH_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.TRIMESTER"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 6
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - (140.days)).to_date
+    end
+
+    it "calculates the due date based on the 3rd trimester" do
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.MONTH_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.TRIMESTER"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "3" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 6
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - (235.days)).to_date
+    end
+    
+    it "calculates the due date when refused" do
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.MONTH_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.TRIMESTER"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 6
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - (140.days)).to_date
+    end
+    
+    it "calculates the due date when don't know" do
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{ppg1.local_code}" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ORIG_DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DATE_PERIOD"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.WEEKS_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.MONTH_PREG"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_2" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.TRIMESTER"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "neg_1" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 6
+
+      PregnancyScreenerOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - (140.days)).to_date
+    end
+    
+  end
 
 end
