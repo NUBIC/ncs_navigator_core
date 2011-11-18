@@ -987,7 +987,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_c_state_1 "State", :display_type=>"dropdown", :pick=>:one, 
+      q_c_state_1 "State", :display_type=>:dropdown, :pick=>:one, 
       :data_export_identifier=>"PRE_PREG.C_STATE_1"
       a_1 "AL"
       a_2 "AK"
@@ -1141,7 +1141,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"      
 
-      q_c_state_2 "State", :display_type=>"dropdown",
+      q_c_state_2 "State", :display_type=>:dropdown,
       :pick=>:one, 
       :data_export_identifier=>"PRE_PREG.C_STATE_2"
       a_1 "AL"

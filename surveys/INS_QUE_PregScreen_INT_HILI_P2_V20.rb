@@ -225,7 +225,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_STATE "State", :display_type=>"dropdown", 
+      q_STATE "State", :display_type=>:dropdown, 
       :pick=>:one,
       :data_export_identifier=>"PREG_SCREEN_HI_2.STATE"
       a_1 "AL"
@@ -473,7 +473,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     ask question again and probe for valid response.",    
     :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_2.MONTH_PREG"
-    a_1 "Number of weeks", :integer
+    a_1 "Number of months", :integer
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
     dependency :rule=>"A"
@@ -937,7 +937,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_MAIL_STATE "State", :display_type=>"dropdown", 
+      q_MAIL_STATE "State", :display_type=>:dropdown, 
       :pick=>:one,
       :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_STATE"
       a_1 "AL"
@@ -1132,7 +1132,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_NEW_STATE "State", :display_type=>"dropdown", 
+      q_NEW_STATE "State", :display_type=>:dropdown, 
       :pick => :one,    
       :data_export_identifier=>"PREG_SCREEN_HI_2.NEW_STATE"
       a_1 "AL"

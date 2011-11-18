@@ -1310,7 +1310,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
 
       q_C_STATE_1 "State", 
       :pick=>:one,
-      :display_type=>"dropdown", 
+      :display_type=>:dropdown, 
       :data_export_identifier=>"SIX_MTH_MOTHER.C_STATE_1"
       a_1 "AL"
       a_2 "AK"
@@ -1473,7 +1473,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
 
       q_C_STATE_2 "State", 
       :pick=>:one, 
-      :display_type=>"dropdown", 
+      :display_type=>:dropdown, 
       :data_export_identifier=>"SIX_MTH_MOTHER.C_STATE_2"
       a_1 "AL"
       a_2 "AK"

@@ -1832,7 +1832,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_C_STATE_1 "State", :display_type=>"dropdown", 
+      q_C_STATE_1 "State", :display_type=>:dropdown, 
       :pick=>:one,      
       :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.C_STATE_1"
       a_1 "AL"
@@ -1981,7 +1981,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"      
 
-      q_C_STATE_2 "State", :display_type=>"dropdown",
+      q_C_STATE_2 "State", :display_type=>:dropdown,
       :pick=>:one,      
       :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.C_STATE_2"
       a_1 "AL"

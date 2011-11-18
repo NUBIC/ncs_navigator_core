@@ -124,7 +124,7 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
-    q_ASQ24_STATE "State", :display_type=>"dropdown", 
+    q_ASQ24_STATE "State", :display_type=>:dropdown, 
     :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.ASQ24_STATE"
     a_1 "AL"
     a_2 "AK"

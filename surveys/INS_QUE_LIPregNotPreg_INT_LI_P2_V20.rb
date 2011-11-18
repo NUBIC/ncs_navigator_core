@@ -366,7 +366,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_B_STATE "State", :display_type=>"dropdown", 
+      q_B_STATE "State", :display_type=>:dropdown, 
       :pick => :one,       
       :data_export_identifier=>"PREG_VISIT_LI_2.B_STATE"
       a_1 "AL"

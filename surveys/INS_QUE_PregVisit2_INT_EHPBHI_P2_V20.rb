@@ -244,7 +244,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"    
 
-      q_b_state "State", :display_type=>"dropdown", 
+      q_b_state "State", :display_type=>:dropdown, 
       :pick =>:one,    
       :data_export_identifier=>"PREG_VISIT_2_2.B_STATE"
       a_1 "AL"
@@ -1356,7 +1356,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       dependency :rule=>"A"
       condition_A :q_enter_contact_addr_1, "==", :a_1
 
-      q_c_state_1 "State", :display_type=>"dropdown", 
+      q_c_state_1 "State", :display_type=>:dropdown, 
       :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_2_2.C_STATE_1"
       a_1 "AL"
@@ -1518,7 +1518,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"      
 
-      q_hipv1_c_state_2 "State", :display_type=>"dropdown",
+      q_hipv1_c_state_2 "State", :display_type=>:dropdown,
       :pick=>:one,       
       :data_export_identifier=>"PREG_VISIT_2_2.C_STATE_2"
       a_1 "AL"

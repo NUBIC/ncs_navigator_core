@@ -912,12 +912,12 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     label "What is your full name?",
     :help_text => "Confirm spelling of first name if not previously collected and of last name for all participants."
 
-    q_R_FNAME "First name", :data_export_identifier=>"BIRTH_VISIT_LI.R_FNAME"
+    q_R_FNAME "First name", :pick => :one, :data_export_identifier=>"BIRTH_VISIT_LI.R_FNAME"
     a :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
-    q_R_LNAME "Last name", :data_export_identifier=>"BIRTH_VISIT_LI.R_LNAME"
+    q_R_LNAME "Last name", :pick => :one, :data_export_identifier=>"BIRTH_VISIT_LI.R_LNAME"
     a :string
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -1081,7 +1081,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_NEW_STATE "State", :display_type=>"dropdown",
+      q_NEW_STATE "State", :display_type=>:dropdown,
       :pick => :one,
       :help_text => "Probe and enter as much information as r knows.",    
       :data_export_identifier=>"BIRTH_VISIT_LI.NEW_STATE"
@@ -1199,7 +1199,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_MAIL_STATE "State", :display_type=>"dropdown",
+      q_MAIL_STATE "State", :display_type=>:dropdown,
       :pick => :one, 
       :data_export_identifier=>"BIRTH_VISIT_LI.MAIL_STATE"
       a_1 "AL"
@@ -1378,7 +1378,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_NEW_STATE_B "State", :display_type=>"dropdown", 
+      q_NEW_STATE_B "State", :display_type=>:dropdown, 
       :help_text => "Probe and enter as much information as participant knows.",
       :pick => :one,
       :data_export_identifier=>"BIRTH_VISIT_LI.NEW_STATE_B"

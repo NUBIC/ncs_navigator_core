@@ -32,14 +32,14 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       ask for initials or some other name she would like to be called. confirm spelling of first 
       name if not previously collected and of last name for all participants."
 
-      q_r_fname "First name", :display_type=>"string", :data_export_identifier=>"PREG_VISIT_1_2.R_FNAME"
+      q_r_fname "First name", :pick => :one, :data_export_identifier=>"PREG_VISIT_1_2.R_FNAME"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
       dependency :rule=>"A"
       condition_A :q_name_confirm, "!=", :a_1
 
-      q_r_lname "Last name", :display_type=>"string", :data_export_identifier=>"PREG_VISIT_1_2.R_LNAME"
+      q_r_lname "Last name", :pick => :one, :data_export_identifier=>"PREG_VISIT_1_2.R_LNAME"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -256,7 +256,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"    
 
-      q_b_state "State", :display_type=>"dropdown", 
+      q_b_state "State", :display_type=>:dropdown, 
       :pick=>:one, 
       :data_export_identifier=>"PREG_VISIT_1_2.B_STATE"
       a_1 "AL"
@@ -1607,7 +1607,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"      
 
-      q_c_state_1 "State", :display_type=>"dropdown", 
+      q_c_state_1 "State", :display_type=>:dropdown, 
       :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_1_2.C_STATE_1"
       a_1 "AL"
@@ -1770,7 +1770,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"      
 
-      q_hipv1_c_state_2 "State", :display_type=>"dropdown",
+      q_hipv1_c_state_2 "State", :display_type=>:dropdown,
       :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_1_2.C_STATE_2"
       a_1 "AL"

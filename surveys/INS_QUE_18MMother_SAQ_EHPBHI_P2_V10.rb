@@ -131,7 +131,7 @@ survey "INS_QUE_18MMother_SAQ_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
-    q_ASQ18_STATE "State", :display_type=>"dropdown", 
+    q_ASQ18_STATE "State", :display_type=>:dropdown, 
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SAQ.ASQ18_STATE"
     a_1 "AL"
     a_2 "AK"
