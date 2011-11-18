@@ -15,6 +15,9 @@ class SurveyorController < ApplicationController
     #       and that the disposition of the instrument was completed
     def update_participant_based_on_survey(response_set)
       participant = Participant.find(response_set.person.participant.id) if response_set.person.participant
-      participant.update_state_after_survey(response_set, psc) if participant
+      if participant
+        participant.update_state_after_survey(response_set, psc) 
+        psc.schedule_next_segment(participant)
+      end
     end
 end
