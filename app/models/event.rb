@@ -26,13 +26,13 @@
 #  updated_at                      :datetime
 #
 
-# An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed 
-# data collection activities with a single subject. The subject may be a Household or a Participant. 
+# An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
+# data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
 class Event < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :event_id
-  
+
   belongs_to :participant
   belongs_to :psu,                        :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                        :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :event_type,                 :conditions => "list_name = 'EVENT_TYPE_CL1'",          :foreign_key => :event_type_code,                 :class_name => 'NcsCode', :primary_key => :local_code
@@ -41,13 +41,13 @@ class Event < ActiveRecord::Base
   belongs_to :event_incentive_type,       :conditions => "list_name = 'INCENTIVE_TYPE_CL1'",      :foreign_key => :event_incentive_type_code,       :class_name => 'NcsCode', :primary_key => :local_code
 
   ##
-  # Display text from the NcsCode list EVENT_TYPE_CL1 
+  # Display text from the NcsCode list EVENT_TYPE_CL1
   # cf. event_type belongs_to association
   # @return [String]
   def to_s
     event_type.to_s
   end
-  
+
   ##
   # Format the event start date
   # @return [String]
@@ -56,7 +56,7 @@ class Event < ActiveRecord::Base
     result = "N/A" if result.blank?
     result
   end
-  
+
   ##
   # Format the event end date
   # @return [String]
@@ -65,7 +65,7 @@ class Event < ActiveRecord::Base
     result = "N/A" if result.blank?
     result
   end
-  
+
   ##
   # An event is 'closed' or 'completed' if the disposition has been set.
   # @return [true, false]
@@ -85,7 +85,7 @@ class Event < ActiveRecord::Base
     end
     surveys
   end
-  
+
   ##
   # For this event.event_type return the corresponding PSC segment name from the template
   def psc_segment_name
@@ -98,13 +98,13 @@ class Event < ActiveRecord::Base
     end
     result
   end
-  
+
   ##
   # Determines if the disposition code is complete based on the disposition category
   # and the disposition code
   # @return [true,false]
   def disposition_complete?
-    
+
     # TODO: move knowledge of disposition codes out of event
     # TODO: do not hard code code lists and disposition codes here
     if event_disposition_category && event_disposition
