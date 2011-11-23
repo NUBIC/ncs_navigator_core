@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
 # Schema version: 20111110015749
 #
@@ -39,6 +40,49 @@ class Event < ActiveRecord::Base
   belongs_to :event_disposition_category, :conditions => "list_name = 'EVENT_DSPSTN_CAT_CL1'",    :foreign_key => :event_disposition_category_code, :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :event_breakoff,             :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :event_breakoff_code,             :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :event_incentive_type,       :conditions => "list_name = 'INCENTIVE_TYPE_CL1'",      :foreign_key => :event_incentive_type_code,       :class_name => 'NcsCode', :primary_key => :local_code
+
+  ##
+  # A partial ordering of MDES event types. The ordering is such that,
+  # if an event of type A and one of type B occur on the same day, A
+  # precedes B IFF the event of type A would be executed before the
+  # one of type B.
+  TYPE_ORDER = [
+     1, # Household Enumeration
+     2, # Two Tier Enumeration
+    22, # Provider-Based Recruitment
+     3, # Ongoing Tracking of Dwelling Units
+     4, # Pregnancy Screening - Provider Group
+     5, # Pregnancy Screening – High Intensity  Group
+     6, # Pregnancy Screening – Low Intensity Group
+     9, # Pregnancy Screening - Household Enumeration Group
+    29, # Pregnancy Screener
+    10, # Informed Consent
+    33, # Low Intensity Data Collection
+    32, # Low to High Conversion
+     7, # Pregnancy Probability
+     8, # PPG Follow-Up by Mailed SAQ
+    11, # Pre-Pregnancy Visit
+    12, # Pre-Pregnancy Visit SAQ
+    13, # Pregnancy Visit  1
+    14, # Pregnancy Visit #1 SAQ
+    15, # Pregnancy Visit  2
+    16, # Pregnancy Visit #2 SAQ
+    17, # Pregnancy Visit - Low Intensity Group
+    18, # Birth
+    19, # Father
+    20, # Father Visit SAQ
+    21, # Validation
+    23, # 3 Month
+    24, # 6 Month
+    25, # 6-Month Infant Feeding SAQ
+    26, # 9 Month
+    27, # 12 Month
+    28, # 12 Month Mother Interview SAQ
+    30, # 18 Month
+    31, # 24 Month
+    -5, # Other
+    -4  # Missing in Error
+  ]
 
   ##
   # Display text from the NcsCode list EVENT_TYPE_CL1
