@@ -39,8 +39,6 @@ class ParticipantsController < ApplicationController
   # POST /participant:id/register_with_psc.json
   def register_with_psc
     @participant = Participant.find(params[:id])
-    @participant.register! if @participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
-    
     resp = psc.assign_subject(@participant)
 
     url = edit_participant_path(@participant)

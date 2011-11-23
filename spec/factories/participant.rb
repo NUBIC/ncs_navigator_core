@@ -66,8 +66,8 @@ FactoryGirl.define do
       low_intensity_state "consented_low_intensity"
     end
     
-    trait :pregnant_and_consented do
-      low_intensity_state "pregnant_and_consented"
+    trait :pregnant_low do
+      low_intensity_state "pregnant_low"
     end
     
     trait :moved_to_high_intensity_arm do

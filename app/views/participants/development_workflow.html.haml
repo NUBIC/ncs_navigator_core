@@ -26,8 +26,8 @@
             - unless @participant.known_to_be_pregnant?
               .developer_note
                 Make sure you update the PPG Status to PPG 1 if you move to Pregnant State
-            = hidden_field_tag :new_state, "pregnant_and_consented"
-          - elsif @participant.pregnant_and_consented?
+            = hidden_field_tag :new_state, "pregnant_low"
+          - elsif @participant.pregnant_low?
             Move to High Intensity Arm
             = hidden_field_tag :new_state, "moved_to_high_intensity_arm"
         - else

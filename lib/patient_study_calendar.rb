@@ -81,6 +81,7 @@ class PatientStudyCalendar
   
   def assign_subject(participant)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
+    participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
     connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
   end
   

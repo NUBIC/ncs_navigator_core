@@ -98,31 +98,27 @@ class Participant < ActiveRecord::Base
     end
 
     event :low_intensity_consent do
-      transition :in_pregnancy_probability_group => :consented_low_intensity
+      transition [:in_pregnancy_probability_group, :registered] => :consented_low_intensity
     end
     
     event :follow_low_intensity do
       transition [:in_pregnancy_probability_group, :consented_low_intensity] => :following_low_intensity
     end
 
-    event :impregnate do
-      transition [:in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity, :moved_to_high_intensity_arm] => :pregnant_and_consented
+    event :impregnate_low do
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity, :moved_to_high_intensity_arm] => :pregnant_low
     end
     
     event :lose_child do
-      transition [:pregnant_and_consented, :in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity] => :in_pregnancy_probability_group
-    end
-    
-    event :enroll_in_high_intensity_arm do
-      transition [:in_pregnancy_probability_group, :pregnant_and_consented, :following_low_intensity] => :moved_to_high_intensity_arm
+      transition [:pregnant_low, :in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity] => :following_low_intensity
     end
 
-    event :low_intensity_birth do
-      transition [:pregnant_and_consented, :following_low_intensity] => :birth_low
+    event :birth_event_low do
+      transition [:consented_low_intensity, :pregnant_low, :following_low_intensity] => :following_low_intensity
     end
-    
-    event :parenthood do
-      transition :birth_low => :consented_low_intensity
+
+    event :enroll_in_high_intensity_arm do
+      transition [:in_pregnancy_probability_group, :pregnant_low, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
     end
 
   end
@@ -142,17 +138,33 @@ class Participant < ActiveRecord::Base
     event :pregnant_informed_consent do
       transition [:consented_high_intensity, :in_high_intensity_arm] => :pregnancy_one
     end
+    
+    event :late_pregnant_informed_consent do
+      transition [:consented_high_intensity, :in_high_intensity_arm] => :pregnancy_two
+    end
 
     event :follow do
-      transition [:pre_pregnancy, :pregnancy_one] => :consented_high_intensity
+      transition [:consented_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one] => :following_high_intensity
+    end
+
+    event :impregnate do
+      transition [:following_high_intensity, :pre_pregnancy] => :pregnancy_one
     end
 
     event :pregnancy_one_visit do
       transition :pregnancy_one => :pregnancy_two
     end
     
-    event :birth_child do
-      transition [:pregnancy_one, :pregnancy_two] => :birth
+    event :pregnancy_two_visit do
+      transition :pregnancy_two => :ready_for_birth
+    end
+    
+    event :late_pregnancy_one_visit do
+      transition :pregnancy_one => :ready_for_birth
+    end
+    
+    event :birth_event do
+      transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
     # event :three_months_after_birth do
@@ -201,6 +213,9 @@ class Participant < ActiveRecord::Base
   # @param [ResponseSet] - used to determine survey taken
   # @param [PatientStudyCalendar] - cf. ApplicationController#psc
   def update_state_after_survey(response_set, psc)
+    
+    # TODO: ensure that the response_set has been completed
+    
     survey_title = response_set.survey.title
     
     if /_PregScreen_/ =~ survey_title
@@ -214,20 +229,12 @@ class Participant < ActiveRecord::Base
   
     if /_LIHIConversion_/ =~ survey_title && can_enroll_in_high_intensity_arm?
       enroll_in_high_intensity_arm!
-      
-      # TODO: handle all types of consent
-      if consented? && can_high_intensity_consent?
-        high_intensity_consent!
-        if known_to_be_pregnant?
-          pregnant_informed_consent!
-        else
-          non_pregnant_informed_consent!
-        end
-      end
     end
   
-    if known_to_be_pregnant? && can_impregnate?
-      impregnate!
+    if known_to_be_pregnant? && can_impregnate_low?
+      if low_intensity? && following_low_intensity? && !due_date_is_greater_than_follow_up_interval
+        impregnate_low!
+      end
     end
     
     if /_PregVisit1_/ =~ survey_title && can_pregnancy_one_visit?
@@ -240,6 +247,24 @@ class Participant < ActiveRecord::Base
     
     # TODO: update participant state for each survey
     #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
+  end
+  
+  ##
+  # After a participant has consented to the high intensity arm
+  # this method determines the next state for the participant based
+  # on the ppg status
+  def process_high_intensity_consent!
+    return unless consented_high_intensity?
+
+    case ppg_status.local_code
+    when 1
+      pregnant_informed_consent!
+    when 2
+      non_pregnant_informed_consent
+    else
+      follow!
+    end
+
   end
   
   def self_link
@@ -354,7 +379,7 @@ class Participant < ActiveRecord::Base
       60.days
     when followed?, in_pregnancy_probability_group?, following_low_intensity?
       follow_up_interval
-    when birth?, birth_low?, pregnant_and_consented?
+    when in_pregnant_state?
       due_date ? 1.day : 0
     else
       0
@@ -370,6 +395,10 @@ class Participant < ActiveRecord::Base
     else
       3.months
     end
+  end
+  
+  def due_date_is_greater_than_follow_up_interval
+    due_date && due_date > follow_up_interval.from_now.to_date
   end
   
   ##
@@ -396,10 +425,18 @@ class Participant < ActiveRecord::Base
   end
   
   ##
+  # Returns true if the participant is in PPG 1 or 2 (pregnant_or_trying) and
+  # has not given consent (or has withdrawn)
+  def requires_consent
+    low_intensity? ? (can_consent? && !consented?) : can_high_intensity_consent?
+  end
+  
+  ##
   # Returns true if a participant_consent record exists and consent_given_code is true 
   # and consent_withdraw_code is not true
   # @return [Boolean]
   def consented?
+    # TODO: handle type of consent !!!
     return false if participant_consent.nil?
     participant_consent.consent_given.local_code == 1 && !withdrawn?
   end
@@ -436,6 +473,15 @@ class Participant < ActiveRecord::Base
   end
   
   ##
+  # Any low intensity participant who has been consented and is in PPG 1 or 2 should
+  # take the Lo I Quex every six months. 
+  # A pregnant woman whose due_date is > 6 months out should take this Lo I Quex too
+  def should_take_low_intensity_questionnaire?
+    # TODO: determine if due date is > 6 mos
+    low_intensity? && consented_low_intensity? && pregnant_or_trying?
+  end
+  
+  ##
   # @return [true,false]
   def low_intensity?
     !high_intensity
@@ -456,7 +502,7 @@ class Participant < ActiveRecord::Base
   def update_ppg_status_after_child_loss
     post_transition_ppg_status_update(3)
   end
-  
+    
   ##
   # True if participant is known to live in Tertiary Sampling Unit
   # Delegate to Person model
@@ -551,6 +597,91 @@ class Participant < ActiveRecord::Base
     participant_staff_relationships.where(:primary => true).all
   end
   
+  
+  # [1, "Household Enumeration"],
+  # [2, "Two Tier Enumeration"],
+  # [3, "Ongoing Tracking of Dwelling Units"],
+  # [4, "Pregnancy Screening - Provider Group"],
+  # [5, "Pregnancy Screening – High Intensity  Group"],
+  # [6, "Pregnancy Screening – Low Intensity Group "],
+  # [7, "Pregnancy Probability"],
+  # [8, "PPG Follow-Up by Mailed SAQ"],
+  # [9, "Pregnancy Screening - Household Enumeration Group"],
+  # [10, "Informed Consent"],
+  # [11, "Pre-Pregnancy Visit"],
+  # [12, "Pre-Pregnancy Visit SAQ"],
+  # [13, "Pregnancy Visit  1"],
+  # [14, "Pregnancy Visit #1 SAQ"],
+  # [15, "Pregnancy Visit  2"],
+  # [16, "Pregnancy Visit #2 SAQ"],
+  # [17, "Pregnancy Visit - Low Intensity Group"],
+  # [18, "Birth"],
+  # [19, "Father"],
+  # [20, "Father Visit SAQ"],
+  # [21, "Validation"],
+  # [22, "Provider-Based Recruitment"],
+  # [23, "3 Month"],
+  # [24, "6 Month"],
+  # [25, "6-Month Infant Feeding SAQ"],
+  # [26, "9 Month"],
+  # [27, "12 Month"],
+  # [28, "12 Month Mother Interview SAQ"],
+  # [29, "Pregnancy Screener"],
+  # [30, "18 Month"],
+  # [31, "24 Month"],
+  # [32, "Low to High Conversion"],
+  # [33, "Low Intensity Data Collection"],
+  # [-5, "Other"],
+  # [-4, "Missing in Error"]
+  #
+  # This method is reactive and cannot know the outcome of the event
+  # so it simply will set the state to the most probable given the
+  # event type and the current state
+  # @param [NcsCode]
+  def set_state_for_event_type(event_type)
+    register! if can_register?  # assume known to PSC
+    
+    case event_type.local_code
+    when 4, 5, 6, 29
+      # Pregnancy Screener Events
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group? 
+    when 10
+      # Informed Consent
+      low_intensity_consent! if can_low_intensity_consent?
+    when 7, 8
+      # Pregnancy Probability
+      follow_low_intensity! if can_follow_low_intensity?
+      follow! if can_follow?
+    when 33
+      # Lo I Quex
+      follow_low_intensity if can_follow_low_intensity?
+    when 11, 12
+      # Pre-Pregnancy
+      move_to_high_intensity_if_required
+      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+    when 13, 14
+      # Pregnancy Visit 1
+      move_to_high_intensity_if_required
+      pregnant_informed_consent! if can_pregnant_informed_consent?
+      impregnate! if can_impregnate?
+      # pregnancy_one_visit! 
+    when 15, 16
+      # Pregnancy Visit 2
+      move_to_high_intensity_if_required
+      late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
+      pregnancy_one_visit! if can_pregnancy_one_visit?
+    when 18
+      # Birth
+      if low_intensity? 
+        birth_event_low! if can_birth_event_low? 
+      else 
+        birth_event! if can_birth_event?
+      end
+    when 32
+      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+    end
+  end
+  
   private
   
     def relationships(code)
@@ -577,7 +708,7 @@ class Participant < ActiveRecord::Base
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif in_high_intensity_arm?
         PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
-      elsif consented_high_intensity?
+      elsif following_high_intensity? || consented_high_intensity?
         PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
       elsif pre_pregnancy?
         PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
@@ -585,7 +716,7 @@ class Participant < ActiveRecord::Base
         PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
       elsif pregnancy_two?
         PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
-      elsif birth?
+      elsif ready_for_birth?
         PatientStudyCalendar::HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW
       else
         nil
@@ -601,14 +732,10 @@ class Participant < ActiveRecord::Base
       can_consent? ? PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 : PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
     end
     
-    def pregnant_or_trying?
-      ppg_status && [1,2].include?(ppg_status.local_code)
-    end
-    
     def eligible_for_ppg_follow_up?
       return false if ppg_status.nil?
       status_codes = [3,4]
-      status_codes << 2 if consented_to_high_intensity_arm?
+      status_codes << 2 if consented_to_high_intensity_arm? || following_high_intensity? || pre_pregnancy?
       status_codes.include?(ppg_status.local_code)
     end
     
@@ -616,8 +743,16 @@ class Participant < ActiveRecord::Base
       ppg_status && ppg_status.local_code > 4
     end
     
+    def pregnant_or_trying?
+      pregnant? || trying?
+    end
+    
     def pregnant?
       ppg_status && ppg_status.local_code == 1
+    end
+    
+    def trying?
+      ppg_status && ppg_status.local_code == 2
     end
   
     def recent_loss?
@@ -637,7 +772,7 @@ class Participant < ActiveRecord::Base
     end
 
     def date_used_to_schedule_next_event
-      if due_date && (birth? || birth_low? || pregnant_and_consented?)
+      if due_date && in_pregnant_state?
         due_date
       elsif contact_links.blank? 
         self.created_at.to_date
@@ -645,11 +780,24 @@ class Participant < ActiveRecord::Base
         contact_links.first.created_at.to_date
       end
     end
+    
+    def in_pregnant_state?
+      pregnancy_one? || pregnancy_two? || pregnant_low? || ready_for_birth?
+    end
   
     def post_transition_ppg_status_update(ppg_status_local_code)
       new_ppg_status  = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => ppg_status_local_code).first
       ppg_info_source = NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).first
       ppg_info_mode   = NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).first
       PpgStatusHistory.create(:psu => self.psu, :ppg_status => new_ppg_status, :ppg_info_source => ppg_info_source, :ppg_info_mode => ppg_info_mode, :participant_id => self.id)
+    end
+    
+    def move_to_high_intensity_if_required
+      if consented_low_intensity?
+        # if consented to low intensity - assume that this was a consent to high since the 
+        # given event is in the high intensity arm
+        enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+        high_intensity_consent! if can_high_intensity_consent?
+      end
     end
 end

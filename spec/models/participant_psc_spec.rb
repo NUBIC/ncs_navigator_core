@@ -53,8 +53,8 @@ describe Participant do
         it "schedules the LO-Intensity Birth Visit Interview the day after the due_date if consented and known to be pregnant" do
           participant.should be_in_pregnancy_probability_group
           participant.should be_known_to_be_pregnant
-          participant.impregnate!
-          participant.low_intensity_birth!
+          participant.impregnate_low!
+          # participant.birth_event_low!
           
           participant.stub!(:due_date).and_return { 270.days.from_now.to_date }
           
@@ -205,7 +205,7 @@ describe Participant do
       it "schedules the birth visit after the second pregnancy visit" do
         participant.pregnant_informed_consent!
         participant.pregnancy_one_visit!
-        participant.birth_child!
+        participant.pregnancy_two_visit!
 
         participant.stub!(:due_date).and_return { 270.days.from_now.to_date }
         

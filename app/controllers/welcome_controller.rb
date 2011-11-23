@@ -12,7 +12,6 @@ class WelcomeController < ApplicationController
   def start_pregnancy_screener_instrument
     person = Person.create(:psu_code => @psu_code)
     participant = Participant.create(:psu_code => @psu_code, :person => person)
-    participant.register!
     resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)

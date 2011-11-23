@@ -481,9 +481,9 @@ describe Participant do
         participant = Participant.find(participant.id)
         participant.ppg_status.local_code.should == 1
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
-        participant.can_impregnate?.should be_true
+        participant.can_impregnate_low?.should be_true
         
-        participant.impregnate!
+        participant.impregnate_low!
         participant.should be_pregnant
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       end
@@ -508,7 +508,7 @@ describe Participant do
         participant.register!
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
         participant.assign_to_pregnancy_probability_group!
-        participant.impregnate!
+        participant.impregnate_low!
         
         participant = Participant.find(participant.id)        
         participant.ppg_status.should == status1        
@@ -554,7 +554,7 @@ describe Participant do
         participant.should be_low_intensity
         participant.register!
         participant.assign_to_pregnancy_probability_group!
-        participant.impregnate!
+        participant.impregnate_low!
         participant.can_enroll_in_high_intensity_arm?.should be_true
       end
       
