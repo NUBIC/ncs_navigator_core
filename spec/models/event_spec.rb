@@ -250,6 +250,21 @@ describe Event do
         end
       end
     end
-    
+
+  end
+
+  describe '.TYPE_ORDER' do
+    it 'has no duplicates' do
+      Event::TYPE_ORDER.uniq.size.should == Event::TYPE_ORDER.size
+    end
+
+    it 'contains integers' do
+      Event::TYPE_ORDER.collect(&:class).uniq.should == [Fixnum]
+    end
+
+    # TODO: don't hard-code the count
+    it 'has an item for every event type' do
+      Event::TYPE_ORDER.size.should == 35
+    end
   end
 end
