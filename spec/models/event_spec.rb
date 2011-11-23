@@ -28,31 +28,31 @@
 
 require 'spec_helper'
 
-describe Event do  
-  
+describe Event do
+
   it "should create a new instance given valid attributes" do
     e = Factory(:event)
     e.should_not be_nil
   end
-  
+
   it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:event_type) }
   it { should belong_to(:event_disposition_category) }
   it { should belong_to(:event_breakoff) }
   it { should belong_to(:event_incentive_type) }
-  
+
   it "knows when it is 'closed'" do
     e = Factory(:event)
     e.should_not be_closed
-    
+
     e.event_disposition = 510
     e.should be_closed
     e.should be_completed
   end
-  
+
   context "surveys for the event" do
-    
+
     it "knows it's Surveys" do
       event_type = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Screener")
       e = Factory(:event, :event_type => event_type)
@@ -60,24 +60,24 @@ describe Event do
       e.surveys.should == [survey]
     end
   end
-  
+
   context "as mdes record" do
-    
+
     it "sets the public_id to a uuid" do
       e = Factory(:event)
       e.public_id.should_not be_nil
       e.event_id.should == e.public_id
       e.event_id.length.should == 36
     end
-    
+
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Event)
-      
+
       e = Event.new
       e.psu = Factory(:ncs_code)
       e.participant = Factory(:participant)
       e.save!
-    
+
       obj = Event.first
       obj.event_type.local_code.should == -4
       obj.event_disposition_category.local_code.should == -4
@@ -85,13 +85,13 @@ describe Event do
       obj.event_incentive_type.local_code.should == -4
     end
   end
-  
+
   context "human-readable attributes" do
     it "returns the event type display text for to_s" do
       e = Factory(:event)
       e.to_s.should == e.event_type.display_text
     end
-    
+
     it "concatenates the start date and time for the event start" do
       e = Factory(:event)
       e.event_start.should == "N/A"
@@ -108,9 +108,9 @@ describe Event do
       e.event_end.should == "2011-01-01 HH:MM"
     end
   end
-  
+
   context "mapping events to psc segments" do
-    
+
     it "should determine the segment based on the event's event type" do
       [
         ["Ongoing Tracking of Dwelling Units", nil],
@@ -123,53 +123,53 @@ describe Event do
         e.psc_segment_name.should == psc_segment
       end
     end
-    
+
   end
-  
+
   context "disposition" do
-    
+
     describe "household enumeration" do
       before(:each) do
         @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 1, :display_text => "Household Enumeration Events")
       end
-      
+
       it "knows if it is complete" do
         (540..545).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
-      
+
       it "knows if it is not complete" do
         [510, 515, 546, 539].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
-      
+
     end
-    
+
     describe "pregnancy screener" do
       before(:each) do
         @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 2, :display_text => "Pregnancy Screening Events")
       end
-      
+
       it "knows if it is complete" do
         (560..565).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
-      
+
       it "knows if it is not complete" do
         [510, 515, 566, 559].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
-      
+
     end
-    
+
     describe "general study" do
       before(:each) do
         @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 3, :display_text => "General Study Visits (including CASI SAQs)")
@@ -181,7 +181,7 @@ describe Event do
           event.should be_disposition_complete
         end
       end
-      
+
       it "knows if it is not complete" do
         [510, 515, 563, 559].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
@@ -190,19 +190,19 @@ describe Event do
       end
 
     end
-    
+
     describe "mailed back saq" do
       before(:each) do
         @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 4, :display_text => "Mailed Back Self Administered Questionnaires")
       end
-      
+
       it "knows if it is complete" do
         (550..556).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
-      
+
       it "knows if it is not complete" do
         [510, 515, 549, 557].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
@@ -210,19 +210,19 @@ describe Event do
         end
       end
     end
-    
+
     describe "telephone interview" do
       before(:each) do
         @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 5, :display_text => "Telephone Interview Events")
       end
-      
+
       it "knows if it is complete" do
         (590..595).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
-      
+
       it "knows if it is not complete" do
         [510, 515, 589, 596].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
@@ -230,19 +230,19 @@ describe Event do
         end
       end
     end
-    
+
     describe "internet survey" do
       before(:each) do
         @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 6, :display_text => "Internet Survey Events")
       end
-      
+
       it "knows if it is complete" do
         (540..546).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
-      
+
       it "knows if it is not complete" do
         [510, 515, 539, 547].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
@@ -250,6 +250,21 @@ describe Event do
         end
       end
     end
-    
+
+  end
+
+  describe '.TYPE_ORDER' do
+    it 'has no duplicates' do
+      Event::TYPE_ORDER.uniq.size.should == Event::TYPE_ORDER.size
+    end
+
+    it 'contains integers' do
+      Event::TYPE_ORDER.collect(&:class).uniq.should == [Fixnum]
+    end
+
+    # TODO: don't hard-code the count
+    it 'has an item for every event type' do
+      Event::TYPE_ORDER.size.should == 35
+    end
   end
 end

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
 # Schema version: 20111110015749
 #
@@ -26,13 +27,13 @@
 #  updated_at                      :datetime
 #
 
-# An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed 
-# data collection activities with a single subject. The subject may be a Household or a Participant. 
+# An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
+# data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
 class Event < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :event_id
-  
+
   belongs_to :participant
   belongs_to :psu,                        :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                        :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :event_type,                 :conditions => "list_name = 'EVENT_TYPE_CL1'",          :foreign_key => :event_type_code,                 :class_name => 'NcsCode', :primary_key => :local_code
@@ -41,13 +42,56 @@ class Event < ActiveRecord::Base
   belongs_to :event_incentive_type,       :conditions => "list_name = 'INCENTIVE_TYPE_CL1'",      :foreign_key => :event_incentive_type_code,       :class_name => 'NcsCode', :primary_key => :local_code
 
   ##
-  # Display text from the NcsCode list EVENT_TYPE_CL1 
+  # A partial ordering of MDES event types. The ordering is such that,
+  # if an event of type A and one of type B occur on the same day, A
+  # precedes B IFF the event of type A would be executed before the
+  # one of type B.
+  TYPE_ORDER = [
+     1, # Household Enumeration
+     2, # Two Tier Enumeration
+    22, # Provider-Based Recruitment
+     3, # Ongoing Tracking of Dwelling Units
+     4, # Pregnancy Screening - Provider Group
+     5, # Pregnancy Screening – High Intensity  Group
+     6, # Pregnancy Screening – Low Intensity Group
+     9, # Pregnancy Screening - Household Enumeration Group
+    29, # Pregnancy Screener
+    10, # Informed Consent
+    33, # Low Intensity Data Collection
+    32, # Low to High Conversion
+     7, # Pregnancy Probability
+     8, # PPG Follow-Up by Mailed SAQ
+    11, # Pre-Pregnancy Visit
+    12, # Pre-Pregnancy Visit SAQ
+    13, # Pregnancy Visit  1
+    14, # Pregnancy Visit #1 SAQ
+    15, # Pregnancy Visit  2
+    16, # Pregnancy Visit #2 SAQ
+    17, # Pregnancy Visit - Low Intensity Group
+    18, # Birth
+    19, # Father
+    20, # Father Visit SAQ
+    21, # Validation
+    23, # 3 Month
+    24, # 6 Month
+    25, # 6-Month Infant Feeding SAQ
+    26, # 9 Month
+    27, # 12 Month
+    28, # 12 Month Mother Interview SAQ
+    30, # 18 Month
+    31, # 24 Month
+    -5, # Other
+    -4  # Missing in Error
+  ]
+
+  ##
+  # Display text from the NcsCode list EVENT_TYPE_CL1
   # cf. event_type belongs_to association
   # @return [String]
   def to_s
     event_type.to_s
   end
-  
+
   ##
   # Format the event start date
   # @return [String]
@@ -56,7 +100,7 @@ class Event < ActiveRecord::Base
     result = "N/A" if result.blank?
     result
   end
-  
+
   ##
   # Format the event end date
   # @return [String]
@@ -65,7 +109,7 @@ class Event < ActiveRecord::Base
     result = "N/A" if result.blank?
     result
   end
-  
+
   ##
   # An event is 'closed' or 'completed' if the disposition has been set.
   # @return [true, false]
@@ -85,7 +129,7 @@ class Event < ActiveRecord::Base
     end
     surveys
   end
-  
+
   ##
   # For this event.event_type return the corresponding PSC segment name from the template
   def psc_segment_name
@@ -98,13 +142,13 @@ class Event < ActiveRecord::Base
     end
     result
   end
-  
+
   ##
   # Determines if the disposition code is complete based on the disposition category
   # and the disposition code
   # @return [true,false]
   def disposition_complete?
-    
+
     # TODO: move knowledge of disposition codes out of event
     # TODO: do not hard code code lists and disposition codes here
     if event_disposition_category && event_disposition
