@@ -24,7 +24,7 @@ Given /^the following pregnant participants:$/ do |table|
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
     participant.register!
     participant.assign_to_pregnancy_probability_group!
-    participant.impregnate!
+    participant.impregnate_low!
   end
 end
 
