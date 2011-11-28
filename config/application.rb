@@ -64,3 +64,5 @@ module NcsNavigatorCore
     end
   end
 end
+
+require 'ncs_navigator/core'
