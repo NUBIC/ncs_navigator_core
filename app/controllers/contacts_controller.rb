@@ -43,16 +43,24 @@ class ContactsController < ApplicationController
     @person  = Person.find(params[:person_id])
     @contact = Contact.find(params[:id])
     @contact.contact_end_time = Time.now.strftime("%H:%M")
-    
-    @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact, @person).first
-    @event = @contact_link.event
+
+    if params[:next_event]
+      event_for_person(false)
+    else
+      @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact.id, @person.id).first
+      @event = @contact_link.event
+    end
   end
   
   def update
     @person  = Person.find(params[:person_id])
     @contact = Contact.find(params[:id])
     
-    event_for_person
+    if params[:next_event]
+      event_for_person
+    else
+      @event = @contact.contact_link.event
+    end
 
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
@@ -70,12 +78,12 @@ class ContactsController < ApplicationController
   private
   
     def event_for_person(save = true)
-      @event = new_event_for_person(@person)
+      @event = new_event_for_person(@person, params[:event_type_id])
       @event.save! if save
     end
     
     def find_or_create_contact_link
-      link = ContactLink.where("contact_id = ? AND person_id = ?", @contact, @person).first
+      link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?", @contact, @person, @event).first
       if link.blank?
         link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff, :psu_code => NcsNavigatorCore.psu_code)
       end

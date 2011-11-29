@@ -62,13 +62,7 @@ Spork.prefork do
 
   module TestLogins
     def user_login
-      person = Factory(:person, :username => 'pfr957')
-      Aker.authority.valid_credentials?(:user, person.username, person.username)
-    end
-
-    def admin_login
-      person = Factory(:person, :username => 'pfr957')
-      Aker.authority.valid_credentials?(:user, person.username, person.username)
+      Aker.authority.valid_credentials?(:user, 'test_user', 'test_user')
     end
 
     def login(as)

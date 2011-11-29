@@ -4,6 +4,7 @@ class ContactLinksController < ApplicationController
 	def edit
 		@contact_link = ContactLink.find(params[:id])
 		@response_set = @contact_link.response_set
+		@event        = @contact_link.event
 		
 		# TODO: remove Pregnancy Screener check
 		if params[:close_contact].blank? && @response_set.blank? && @contact_link.person.upcoming_events.select { |e| e.to_s.include?('Pregnancy Screener') }.empty?
