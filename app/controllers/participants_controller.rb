@@ -8,11 +8,18 @@ class ParticipantsController < ApplicationController
   # GET /participants.json
   def index
     params[:page] ||= 1
-    @participants = Participant.paginate(:page => params[:page], :per_page => 20)
+    
+    params[:q] ||= {}
+    params[:q][:participant_person_links_relationship_code_eq] = 1
+    
+    @q = Participant.search(params[:q])
+    # @q.sorts = 'last_name asc' if @q.sorts.empty?
+    result = @q.result
+    @participants = result.paginate(:page => params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html # index.html.haml
-      format.json { render :json => @participants }
+      format.json { render :json => result.all }
     end
   end
   

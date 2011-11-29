@@ -4,11 +4,14 @@ class PeopleController < ApplicationController
   # GET /people.json
   def index
     params[:page] ||= 1
-    @people = Person.paginate(:page => params[:page], :per_page => 20)
+    
+    @q = Person.search(params[:q])
+    result = @q.result(:distinct => true)
+    @people = result.paginate(:page => params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html # index.html.haml
-      format.json { render :json => @people }
+      format.json { render :json => result.all }
     end
   end
   

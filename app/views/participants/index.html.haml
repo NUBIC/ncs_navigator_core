@@ -2,6 +2,23 @@
 
 .mdes_table_definition
   = render 'documentation/participant'
+  
+.page_section.search
+  = search_form_for @q do |f|
+    
+    = f.hidden_field :participant_person_links_relationship_code_eq
+  
+    = f.label :participant_person_links_person_last_name_cont, "Last Name"
+    = f.text_field :participant_person_links_person_last_name_cont
+    %br
+    = f.label :participant_person_links_person_first_name_cont, "First Name"
+    = f.text_field :participant_person_links_person_first_name_cont
+    %br
+    = f.label :p_id_cont, "Participant ID"
+    = f.text_field :p_id_cont
+    %br
+    = f.submit "Search"
+
 
 .page_section
   - if @participants.empty?
@@ -17,9 +34,11 @@
         %th
           PSU
         %th
-          First Name
+          = sort_link @q, "participant_person_links_person_first_name", "First Name"
         %th
-          Last Name
+          = sort_link @q, "participant_person_links_person_last_name", "Last Name"
+        %th
+          = sort_link @q, "p_id", "Participant ID"
         %th{ :colspan => "2" }
 
       - @participants.each do |participant|
@@ -30,6 +49,8 @@
             = participant.first_name
           %td
             = participant.last_name
+          %td
+            = participant.p_id
           %td
             = link_to 'View', participant_path(participant), :class => "show_link icon_link"
           %td
