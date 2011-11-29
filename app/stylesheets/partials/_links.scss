@@ -11,13 +11,22 @@ input[type="submit"] {
   text-decoration: none;
 }
 
-.icon_link:hover {
+.sort_link {
+  font-size: 1.1em;
+  text-decoration: none;
+}
+
+.sort_link:hover, .icon_link:hover {
   color: orange !important;
   text-decoration: none;
 }
 
+.mdes_table_definition {
+  text-align: right;
+  margin: 0;
+}
+
 .mdes_documentation_link {
-  float: right;
 }
 
 .add_link, .add_link:hover {

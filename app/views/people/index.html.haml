@@ -3,6 +3,19 @@
 .mdes_table_definition
   = render 'documentation/person'
 
+.page_section.search
+  = search_form_for @q do |f|
+    = f.label :last_name_cont
+    = f.text_field :last_name_cont
+    %br
+    = f.label :first_name_cont
+    = f.text_field :first_name_cont
+    %br
+    = f.label :person_id_cont, "Person Identifier"
+    = f.text_field :person_id_cont
+    %br
+    = f.submit "Search"
+
 .page_section
   - if @people.empty?
     #no_records
@@ -16,9 +29,11 @@
         %th
           PSU
         %th
-          First Name
+          = sort_link @q, "first_name"
         %th
-          Last Name
+          = sort_link @q, "last_name"
+        %th
+          = sort_link @q, "person_id", "Person Identifier"
         %th{ :colspan => "3" }
 
       - @people.each do |person|
@@ -29,6 +44,8 @@
             = person.first_name
           %td
             = person.last_name
+          %td
+            = person.person_id
           %td
             = link_to 'View', person_path(person), :class => "show_link icon_link"
           %td

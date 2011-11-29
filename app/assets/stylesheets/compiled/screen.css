@@ -1321,8 +1321,8 @@ a img {
 /* line 19, ../../../stylesheets/partials/_application.scss */
 .page_section {
   border: 1px solid #ccc;
-  margin: 1em;
-  padding: 0.75em 0.25em 0.5em 0.75em;
+  margin: 0.5em;
+  padding: 0.75em 0.5em 0.5em 0.5em;
   background-color: whitesmoke;
   border-radius: 0.5em;
   -moz-border-radius: 0.5em;
@@ -1570,62 +1570,69 @@ input[type="submit"] {
 }
 
 /* line 14, ../../../stylesheets/partials/_links.scss */
-.icon_link:hover {
-  color: orange !important;
+.sort_link {
+  font-size: 1.1em;
   text-decoration: none;
 }
 
 /* line 19, ../../../stylesheets/partials/_links.scss */
-.mdes_documentation_link {
-  float: right;
+.sort_link:hover, .icon_link:hover {
+  color: orange !important;
+  text-decoration: none;
 }
 
-/* line 23, ../../../stylesheets/partials/_links.scss */
+/* line 24, ../../../stylesheets/partials/_links.scss */
+.mdes_table_definition {
+  text-align: right;
+  margin: 0;
+}
+
+/* line 32, ../../../stylesheets/partials/_links.scss */
 .add_link, .add_link:hover {
   background: url(../../assets/add.png) 0 2px no-repeat !important;
 }
 
-/* line 27, ../../../stylesheets/partials/_links.scss */
+/* line 36, ../../../stylesheets/partials/_links.scss */
 .edit_link, .edit_link:hover {
   background: url(../../assets/edit.png) 0 2px no-repeat !important;
 }
 
-/* line 31, ../../../stylesheets/partials/_links.scss */
+/* line 40, ../../../stylesheets/partials/_links.scss */
 .export_link, .export_link:hover {
   background: url(../../assets/page_white_excel.png) 0 2px no-repeat !important;
 }
 
-/* line 35, ../../../stylesheets/partials/_links.scss */
+/* line 44, ../../../stylesheets/partials/_links.scss */
 .search_link, .search_link:hover {
   background: url(../../assets/find.png) 0 2px no-repeat !important;
 }
 
-/* line 39, ../../../stylesheets/partials/_links.scss */
+/* line 48, ../../../stylesheets/partials/_links.scss */
 .show_link, .show_link:hover {
   background: url(../../assets/show.png) 0 2px no-repeat !important;
 }
 
-/* line 43, ../../../stylesheets/partials/_links.scss */
+/* line 52, ../../../stylesheets/partials/_links.scss */
 .list_link, .list_link:hover {
   background: url(../../assets/list.png) 0 2px no-repeat !important;
 }
 
-/* line 47, ../../../stylesheets/partials/_links.scss */
+/* line 56, ../../../stylesheets/partials/_links.scss */
 .delete_link, .delete_link:hover {
   background: url(../../assets/delete.png) 0 2px no-repeat !important;
 }
 
-/* line 51, ../../../stylesheets/partials/_links.scss */
+/* line 60, ../../../stylesheets/partials/_links.scss */
 .login_link, .login_link:hover {
   background: url(../../assets/door_in.png) 0 2px no-repeat !important;
 }
 
-/* line 55, ../../../stylesheets/partials/_links.scss */
+/* line 64, ../../../stylesheets/partials/_links.scss */
 .logout_link, .logout_link:hover {
   background: url(../../assets/door_out.png) 0 2px no-repeat !important;
 }
 
-/* line 59, ../../../stylesheets/partials/_links.scss */
+/* line 68, ../../../stylesheets/partials/_links.scss */
 .external_link, .external_link:hover {
   background: url(../../assets/external_link_icon.png) 0 2px no-repeat;
   background-position: right top;
