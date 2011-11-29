@@ -47,7 +47,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     # • PRELOAD PARTICIPANT’S DOB IF COLLECTED PREVIOUSLY
     # • IF RESPONSE = YES, SET PERSON_DOB TO KNOWN VALUE
 
-    q_prepopulated_date_of_birth "[Participant's date of birth as MM/DD/YYYY]"
+    q_prepopulated_date_of_birth "Participant's date of birth"
     a :string
 
     q_dob_confirm "Is this your birth date?", :pick=>:one, :data_export_identifier=>"PREG_VISIT_2_2.DOB_CONFIRM"
@@ -61,7 +61,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
     required to determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.",
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_2_2.PERSON_DOB"
-    a_date :string, :custom_class => "date"
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -140,8 +140,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       condition_A :q_loss_info, "==", :a_1
     
       label "Again, I’d like to say how sorry I am for your loss. Please accept our condolences. Thank you for your time.",
-      :help_text => "If loss of pregnancy, end interview. Do not administer SAQs.", 
-      :data_export_identifier=>"PREG_VISIT_2_2.END_INFO"
+      :help_text => "If loss of pregnancy, end interview. Do not administer SAQs."
       dependency :rule=> "A"
       condition_A :q_loss_info, "==", :a_2    
     
@@ -358,7 +357,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
             
       q_NUM_PROV_PR_LOG "How many health care providers have you seen since using this Pregnancy Health Care Log?",
       :pick=>:one,
-      :data_export_identifier=>"PREG_VISIT_2_2.NUM_PROV_REC"
+      :data_export_identifier=>"PREG_VISIT_2_2.NUM_PROV_PR_LOG"
       a "Number of providers", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1480,7 +1479,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       a_neg_2 "Don't know"
 
       q_enter_contact_relate2_oth "Other relationship of second contact", :pick=>:one, 
-      :data_export_identifier=>"PREG_VISIT_2_2.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"PREG_VISIT_2_2.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1598,7 +1597,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       a_neg_7 "Contact has no telephone"
     end
     label "Thank you for participating in the National Children’s Study and for taking the time to answer our questions. 
-    This concludes the interview portion of our visit.", :data_export_identifier=>"PREG_VISIT_2_2.END"
+    This concludes the interview portion of our visit."
     
     q_hipv1_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_14"
     a :datetime, :custom_class => "datetime"        

@@ -438,7 +438,8 @@ survey "INS_ENV_TapWaterPestTechCollect_DCI_EHPBHI_P2_V1.0" do
     # • LIMIT FREE TEXT TO 250 CHARACTERS
     q_TWQ_COMMENTS "Record any comments about the twq collection:",
     :help_text => "Record here if you had any difficulties collecting the sample, if there were any unsual sampling conditions, if you have 
-    any improvements to the sample collection procedure, etc. "
+    any improvements to the sample collection procedure, etc.",
+    :data_export_identifier=>"TAP_WATER_TWQ.TWQ_COMMENTS"
     a "Specify:", :string
     dependency :rule=>"(A and B and C and D) or (E and F) or (G and H) or I or J or K or L"
     condition_E :q_TWQ_SUBSAMPLES, "!=", :a_1

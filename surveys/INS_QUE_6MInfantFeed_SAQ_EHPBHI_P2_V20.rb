@@ -242,7 +242,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
     for your baby used for mixing your baby’s formula?",
     :help_text => "Select all that apply.",
     :pick => :any,
-    :data_export_identifier=>"SIX_MTH_SAQ_WATER_2.MULT_CHILD"
+    :data_export_identifier=>"SIX_MTH_SAQ_WATER_2.WATER_1"
     a_1 "Tap water from the cold faucet"
     a_2 "Warm tap water from the hot faucet"
     a_3 "Bottled water"

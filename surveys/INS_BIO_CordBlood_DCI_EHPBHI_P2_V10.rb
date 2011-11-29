@@ -93,7 +93,7 @@ survey "INS_BIO_CordBlood_DCI_EHPBHI_P2_V1.0" do
     q_CORD_NOTCOL_OTH "Cord blood not collected",
     :help_text => "If the cord blood was not collected for a reason not listed in the previous question, type 
     in the reason below",
-    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_NOTCOL_OTHT"
+    :data_export_identifier=>"SPEC_CORD_BLOOD.CORD_NOTCOL_OTH"
     a "Specify", :string
     dependency :rule=>"A"
     condition_A :q_CORD_NOTCOL_COMMENT, "==", :a_neg_5

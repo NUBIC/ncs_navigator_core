@@ -67,7 +67,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     
     q_FATHER_KNOW_PREG "Is the father/[FIRST NAME OF FATHER] aware of your pregnancy?",
     :pick => :one,
-    :data_export_identifier=>"PREG_VISIT_1_SAQ_2.FATHER_SAME_HH"
+    :data_export_identifier=>"PREG_VISIT_1_SAQ_2.FATHER_KNOW_PREG"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
@@ -216,7 +216,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
       q_F_PHONE "What is the father’s/[FIRST NAME OF FATHER’s] telephone number (XXXXXXXXXX)?",
       :help_text => "If father has no telephone ask for telephone number where he/she receives calls", 
       :pick=>:one, 
-      :data_export_identifier=>"PREG_VISIT_1_2.CONTACT_PHONE_1"
+      :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_PHONE"
       a_1 "Phone number", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -224,7 +224,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
     
       q_F_AGE "What is the father’s/[FIRST NAME OF FATHER’s] age?",
       :pick=>:one, 
-      :data_export_identifier=>"PREG_VISIT_1_2.F_AGE"
+      :data_export_identifier=>"PREG_VISIT_1_SAQ_2.F_AGE"
       a_f_age "Age in years", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -397,7 +397,7 @@ survey "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0" do
       q_DRINK_PAST_5 "In the 3 months before you knew you were pregnant, how often did you have 5 or more drinks within 
       a couple of hours?",
       :pick => :one,
-      :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DRINK_PAST_NUM"     
+      :data_export_identifier=>"PREG_VISIT_1_SAQ_2.DRINK_PAST_5"     
       a_1 "Never"
       a_2 "About once a month"
       a_3 "About once a week"

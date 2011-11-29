@@ -207,7 +207,7 @@ survey "INS_BIO_AdultUrine_DCI_EHPBHI_P2_V1.0" do
     
       q_UR_COLL_EASIER_COMMENT "Is there anything that would make the urine sample collection easier for you?",
       :pick => :one,
-      :data_export_identifier=>"SPEC_URINE.UR_COLL_DIFFICULT"
+      :data_export_identifier=>"SPEC_URINE.UR_COLL_EASIER_COMMENT"
       a "Comment", :string
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"

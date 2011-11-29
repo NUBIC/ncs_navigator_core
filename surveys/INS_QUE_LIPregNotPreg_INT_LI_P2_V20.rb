@@ -69,7 +69,6 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       a_neg_2 "Don't know"
 
       q_PHONE_NBR "Would you please tell me a telephone number where she can be reached? ",
-      :help_text => "Enter in hour and minute values",
       :pick => :one,
       :data_export_identifier=>"PREG_VISIT_LI_2.PHONE_NBR"
       a_phone "Phone number", :string
@@ -129,10 +128,6 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
     label_PPG_FIRST_1 "PPG First = 1"
     dependency :rule => "A"
     condition_A :q_PREGNANT, "==", :a_1 
-     
-    # label_PPG_FIRST_2 "PPG First = 2"
-    #  dependency :rule => "A"
-    #  condition_A :q_PREGNANT, "==", :a_2 
     
     label_PPG_FIRST_3 "PPG First = 3"
     dependency :rule => "A"
@@ -442,7 +437,15 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       a_1 "Yes"
       a_2 "No"
       a_neg_1 "Refused"
-      a_neg_2 "Don't know"    
+      a_neg_2 "Don't know"
+      
+      q_PREG_VITAMIN "Since you’ve become pregnant, have you regularly taken multivitamins, prenatal vitamins, folate, or folic acid?", 
+      :pick=>:one,
+      :data_export_identifier=>"PREG_VISIT_LI_2.PREG_VITAMIN"
+      a_1 "Yes"
+      a_2 "No"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"      
     
       q_DATE_VISIT "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant? (YYYYMMDD)", :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_LI_2.DATE_VISIT"
@@ -959,7 +962,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       a_number "Number", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule=>"A or B or C"
+      dependency :rule=>"A and B and C"
       condition_A :q_DRINK_NOW, "!=", :a_6
       condition_B :q_DRINK_NOW, "!=", :a_neg_1
       condition_C :q_DRINK_NOW, "!=", :a_neg_2
@@ -974,7 +977,7 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       a_4 "About once a day"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-      dependency :rule=>"A or B or C"
+      dependency :rule=>"A and B and C"
       condition_A :q_DRINK_NOW, "!=", :a_6
       condition_B :q_DRINK_NOW, "!=", :a_neg_1
       condition_C :q_DRINK_NOW, "!=", :a_neg_2

@@ -23,7 +23,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     
     q_MULTIPLE "Was this a multiple birth?",
     :pick => :one,
-    :data_export_identifier=>"BIRTH_VISIT_2.MULTIPLE"
+    :data_export_identifier=>"BIRTH_VISIT_LI.MULTIPLE"
     a_1 "Yes"
     a_2 "No"    
     
@@ -127,7 +127,7 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    group "First and last name" do
+    group "First, middle and last name" do
       dependency :rule=>"A or B"
       condition_A :q_BABY_NAME, "==", :a_1
       condition_B :q_BABY_NAME, "==", :a_2  
@@ -139,7 +139,15 @@ survey "INS_QUE_Birth_INT_LI_P2_V1.0" do
       a_1 "First name", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
-  
+
+      q_BABY_MNAME "Middle name",
+      :help_text => "Enter text and confirm spelling",
+      :pick=>:one,
+      :data_export_identifier=>"BIRTH_VISIT_LI_BABY_NAME.BABY_MNAME"
+      a_1 "Middle name", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"
+        
       q_BABY_LNAME "Last name",
       :help_text => "Enter text and confirm spelling",
       :pick=>:one,

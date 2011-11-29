@@ -26,7 +26,7 @@ survey "INS_QUE_18MMother_SAQ_EHPBHI_P2_V1.0" do
 
     q_C_MINITIAL "Child's middle initial:",
     :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SAQ.C_MINITIAL"
+    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SAQ.C_MINITAL"
     a :string
     a_neg_1 "Refused"
     a_neg_2 "Don't Know"
@@ -604,7 +604,7 @@ survey "INS_QUE_18MMother_SAQ_EHPBHI_P2_V1.0" do
     a_neg_2 "Don't know"
     
     q_PSLV18_TOTAL "Personal-social total",
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SAQ.PSLV18_TOTAL"
+    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_SAQ.PSOC18_TOTAL"
     a :integer        
   end
 end

@@ -8,7 +8,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     
     q_INCOMING "Telephone number from caller ID", 
     :help_text => "If possible, collect telephone number from caller id and record",
-    :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_1"
+    :data_export_identifier=>"PREG_SCREEN_HI_2.INCOMING"
     a :string
   end
   section "Initial conversation with incoming caller", :reference_identifier=>"PregScreen_INT" do
@@ -354,7 +354,7 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     condition_A :q_KNOW_NCS, "==", :a_1
     
     q_HOW_KNOW_NCS_OTH "Other - specify",
-    :pick => :any,
+    :pick => :one,
     :data_export_identifier=>"PREG_SCREEN_HI_KNOW_NCS_2.HOW_KNOW_NCS_OTH"
     a "Specify", :string
     a_neg_1 "Refused"
@@ -370,8 +370,8 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
     # -- Nataliya's comment -- Programmed PPG_FIRST and used dependencies on where to go next, without ELIG question...
     
     # SHOULD BE HIDDEN VALUE
-    label_ELIG "Skip value 9333-93-93T93:93:93 (Legitimate Skip)",
-    :data_export_identifier=>"PREG_SCREEN_HI_2.ELIG"
+    # label_ELIG "Skip value 9333-93-93T93:93:93 (Legitimate Skip)",
+    # :data_export_identifier=>"PREG_SCREEN_HI_2.ELIG"
   end
   section "Pregnancy screener", :reference_identifier=>"PregScreen_INT" do
     
@@ -920,12 +920,13 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
 
       q_MAIL_ADDRESS2 "Address 2", 
       :pick=>:one,    
-      :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_ADDRESS2"
+      :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_ADDRESS2",
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_MAIL_UNIT "Unit", :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_UNIT"
+      q_MAIL_UNIT "Unit", :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_UNIT",
+      :pick=>:one,
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"

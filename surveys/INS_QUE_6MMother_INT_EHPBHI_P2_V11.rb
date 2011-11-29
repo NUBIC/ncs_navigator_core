@@ -398,6 +398,17 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     a_5 "Never"
     a_neg_1 "Refused"
     a_neg_2 "Don’t know"
+    
+    q_SLEEP_THROUGH "How often does {C_FNAME or YOUR CHILD} wake at night?",
+    :pick => :one,
+    :data_export_identifier=>"SIX_MTH_MOTHER_DETAIL.SLEEP_THROUGH"
+    a_1 "Never"
+    a_2 "Occasionally"
+    a_3 "Most nights"
+    a_4 "Every night"
+    a_5 "More than once per night"
+    a_neg_1 "Refused"
+    a_neg_2 "Don’t know"    
   end
   section "Health and medical conditions", :reference_identifier=>"6MMother_INT" do
     q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"SIX_MTH_MOTHER_DETAIL.TIME_STAMP_4"
@@ -874,7 +885,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     
     q_WORK_PREG "Just before you gave birth to {C_FNAME or YOUR CHILD}, were you employed at a job or business?",
     :pick => :one,
-    :data_export_identifier=>"SIX_MTH_MOTHER_DETAIL.STAND"
+    :data_export_identifier=>"SIX_MTH_MOTHER.WORK_PREG"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
@@ -969,7 +980,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     including at home, at daycare, or some other place.",
     :help_text => "If {he/she} is not exposed to smoke, enter \"0\".",
     :pick => :one,
-    :data_export_identifier=>"SIX_MTH_MOTHER_DETAIL.SMOKE_HOURS"
+    :data_export_identifier=>"SIX_MTH_MOTHER.SMOKE_HOURS"
     a "Hours", :integer
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
@@ -1395,8 +1406,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
       condition_A :q_COMM_CONTACT, "!=", :a_2
       condition_A :q_CONTACT_1, "==", :a_1
       
-      label "Now I’d like to collect information on a second contact who does not currently live with you.",
-      :data_export_identifier=>"SIX_MTH_MOTHER.CONTACT_2"
+      label "Now I’d like to collect information on a second contact who does not currently live with you."
 
       q_CONTACT_FNAME_2 "What is the person's first name?",
       :help_text => "If participant does not want to provide name of contact ask for initials. Confirm spelling of first and last names", 
@@ -1433,7 +1443,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
 
       q_CONTACT_RELATE2_OTH "Other relationship of second contact", 
       :pick=>:one, 
-      :data_export_identifier=>"SIX_MTH_MOTHER.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"SIX_MTH_MOTHER.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1547,7 +1557,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
       :help_text => "If contact has no telephone ask for telephone number where he/she receives calls", 
       :pick=>:one, :data_export_identifier=>"SIX_MTH_MOTHER.CONTACT_PHONE_2"
       a_1 "Phone number", :string
-      a_7 "Contact has no phone"    
+      a_7 "Contact has no phone"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     
@@ -1557,7 +1567,6 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey. 
     This concludes the interview portion of our visit.",
-    :help_text => "Explain SAQs and return process",
-    :data_export_identifier=>"SIX_MTH_MOTHER.END"
+    :help_text => "Explain SAQs and return process"
   end
 end

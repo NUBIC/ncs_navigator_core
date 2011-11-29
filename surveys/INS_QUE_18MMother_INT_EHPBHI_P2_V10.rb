@@ -747,6 +747,17 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a "Enter number", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
+      
+      q_PRESCRIP_FREQ_UNIT "Unit of how often did/does {C_FNAME or YOUR CHILD} use or take the {PRESCRMED}?",
+      :pick => :one,
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_PRESCR.PRESCRIP_FREQ_UNIT"
+      a_1 "Per day"
+      a_2 "Per week"
+      a_3 "Per month"
+      a_4 "Per year"
+      a_5 "As needed"
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"      
     end
     
     label "Now I’d like to ask about non-prescription medications, over the counter medications, and dietary supplements 
@@ -756,7 +767,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     Include only those products purchased over the counter that do not require a prescription.",
     :help_text =>  "Do not include over-the-counter vitamins or minerals.", 
     :pick => :one,
-    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_TAKE"
+    :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.OTC_TAKE"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
@@ -1855,7 +1866,7 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_2 "Don't know"
 
       q_CONTACT_RELATE2_OTH "Other relationship of second contact", :pick=>:one, 
-      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"

@@ -122,7 +122,7 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     
-    group "First and last name" do
+    group "First, middle and last name" do
       dependency :rule=>"A or B"
       condition_A :q_BABY_NAME, "==", :a_1
       condition_B :q_BABY_NAME, "==", :a_2
@@ -133,6 +133,13 @@ survey "INS_QUE_Birth_INT_EHPBHI_P2_V2.0" do
       a_1 "First name", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
+      
+      q_BABY_MNAME "Middle name",
+      :pick=>:one,
+      :data_export_identifier=>"BIRTH_VISIT_BABY_NAME_2.BABY_MNAME"
+      a_1 "Middle  name", :string
+      a_neg_1 "Refused"
+      a_neg_2 "Don't know"      
     
       q_BABY_LNAME "Last name",
       :pick=>:one,

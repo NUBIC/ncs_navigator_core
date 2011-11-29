@@ -25,6 +25,13 @@ survey "INS_QUE_PregVisit2_SAQ_EHPBHI_P2_V2.0" do
     a_2 "Somewhat important"
     a_3 "Very important"
     
+    q_INCENT "(How important was...) Receiving money or gifts for taking part in the study?",
+    :pick => :one,
+    :data_export_identifier=>"PREG_VISIT_2_SAQ_2.INCENT"
+    a_1 "Not at all important"
+    a_2 "Somewhat important"
+    a_3 "Very important"  
+    
     q_RESEARCH "(How important was...) Helping doctors and researchers learn more about children and their health?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_2_SAQ_2.RESEARCH"

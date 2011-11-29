@@ -45,11 +45,11 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_2 "Don't know"
     end
     
-    q_prepopulated_date_of_birth "[Participant's date of birth as MM/DD/YYYY]"
+    q_prepopulated_date_of_birth "Participant's date of birth"
     a :string
 
     q_dob_confirm "Is this your birth date?", 
-    :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob is 
+    :help_text => "If participant refuses to provide information, re-state confidentiality protections and that date of birth is 
     required to determine eligibility. If response was determined to be invalid, ask question again and probe for valid response",
     :pick=>:one, :data_export_identifier=>"PREG_VISIT_1_2.DOB_CONFIRM"
     a_1 "Yes"
@@ -60,7 +60,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     q_confirmed_dob "What is your date of birth?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_1_2.PERSON_DOB"
-    a_date :string, :custom_class => "date"
+    a_date "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -129,7 +129,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       label "Interviewer instructions: end the questionare"
     
       label "Again, I'd like to say how sorry I am for your loss.Please accept our best wishes for a quick recovery. Thank you for your time.",
-      :help_text => "If loss of pregnancy, end interview. Do not administer SAQs.", :data_export_identifier=>"PREG_VISIT_1_2.END_INFO"
+      :help_text => "If loss of pregnancy, end interview. Do not administer SAQs."
     
       label "We'll send the information packet you requested as soon as possible."
     
@@ -343,7 +343,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
       q_enter_date_visit "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant?", :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_1_2.DATE_VISIT"
-      a :string, :custom_class => "date"
+      a_visit :string, :custom_class => "date"
       a_7 "Have not had a visit"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -352,8 +352,15 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       #     • IF VALID DATE FOR DATE_VISIT IS PROVIDED, DISPLAY “AT THIS VISIT OR AT”. OTHERWISE ”At”.
       label "At this visit or at any time during your pregnancy, did the doctor or other health care provider tell you that you have any 
       of the following conditions?",
-      :help_text => "If valid date for date_visit is provided, display \"At this visit or at\". 
-      Otherwise \"At\". Re-read introductory statement as needed"
+      :help_text => "Re-read introductory statement as needed"
+      dependency :rule => "A"
+      condition_A :q_enter_date_visit, "==", :a_visit
+
+      label "At any time during your pregnancy, did the doctor or other health care provider tell you that you have any 
+      of the following conditions?",
+      :help_text => "Re-read introductory statement as needed"
+      dependency :rule => "A"
+      condition_A :q_enter_date_visit, "!=", :a_visit
 
       q_diabetes_1 "Diabetes? ", :pick=>:one, 
       :data_export_identifier=>"PREG_VISIT_1_2.DIABETES_1"
@@ -1687,11 +1694,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       a_neg_2 "Don't know"
       a_neg_7 "Contact has no telephone"
     
-      label "Now I’d like to collect information on a second contact who does not currently live with you. What is this person’s name?",
-      :data_export_identifier=>"PREG_VISIT_1_2.CONTACT_2"
-
-      q_enter_contact_2 "What is the person's name?",
-      :help_text => "If participant does not want to provide name of contact ask for initials- confirm spelling of first and last names"
+      label "Now I’d like to collect information on a second contact who does not currently live with you. What is this person’s name?"
 
       q_contact_fname_2 "What is the person's first name?",
       :help_text => "If participant does not want to provide name of contact ask for initials- confirm spelling of first and last names", 
@@ -1727,7 +1730,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       condition_B :q_contact_lname_2, "==", :a_last_name
 
       q_enter_contact_relate2_oth "Other relationship of second contact", :pick=>:one, 
-      :data_export_identifier=>"PREG_VISIT_1_2.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"PREG_VISIT_1_2.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1751,7 +1754,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
       q_c_addr2_2 "Address 2",
       :pick=>:one,      
-      :data_export_identifier=>"PREG_VISIT_1_2.C_ADDR2_2"
+      :data_export_identifier=>"PREG_VISIT_1_2.C_ADDR_2_2"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1851,7 +1854,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     end
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey. 
-    This concludes the interview portion of our visit.", :data_export_identifier=>"PREG_VISIT_1_2.END"
+    This concludes the interview portion of our visit."
     
     q_hipv1_time_stamp_17 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_17"
     a :datetime, :custom_class => "datetime"

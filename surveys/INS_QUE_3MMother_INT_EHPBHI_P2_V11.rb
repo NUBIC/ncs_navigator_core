@@ -660,7 +660,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
       arrangements in child care centers that happen at least weekly.) Including all of these arrangements, how many total 
       hours each week does {C_FNAME/YOUR CHILD} receive care at child care centers?",
       :pick => :one,
-      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.HOMECARE_HRS"
+      :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.DAYCARE_HRS"
       a "Hours", :integer
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -672,7 +672,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
   section "Health care", :reference_identifier=>"THREE_MTH_MOTHER" do 
     q_C_HEALTH "Since {C_FNAME/YOUR CHILD} was born, would you say {his/her} health has been poor, fair, good, excellent?",
     :pick => :one,
-    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.HOMECARE_HRS"
+    :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.C_HEALTH"
     a_1 "Poor"
     a_2 "Fair"
     a_3 "Good"

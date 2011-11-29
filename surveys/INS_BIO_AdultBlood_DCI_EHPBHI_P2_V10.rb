@@ -198,7 +198,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
     
       q_BLOOD_COMPLETE "Thank you for answering my questions. I am now going to prepare to draw your blood",
       :pick => :one,
-      :data_export_identifier=>"SPEC_BLOOD.BLOOD_INTRO"
+      :data_export_identifier=>"SPEC_BLOOD.BLOOD_COMPLETE"
       a_1 "Continue"
       a_neg_1 "Refused"
     end
@@ -308,7 +308,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_1_VISIT_1 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=1].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=1].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -349,7 +349,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_2_VISIT_1 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=2].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=2].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -390,7 +390,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_3_VISIT_1 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=3].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -431,7 +431,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_4_VISIT_1 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=4].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=4].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -472,7 +472,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_5_VISIT_1 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=5].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=5].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -513,7 +513,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_6_VISIT_1 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=6].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=6].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -559,7 +559,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_7_VISIT_2 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=7].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=7].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -600,7 +600,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_1_VISIT_2 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=1].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=1].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -641,7 +641,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_2_VISIT_2 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=2].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=2].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -682,7 +682,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_3_VISIT_2 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=3].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -723,7 +723,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_4_VISIT_2 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=4].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=4].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -764,7 +764,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_TUBE_COMMENTS_TUBE_TYPE_8_VISIT_2 "Blood tube collection comments",
       :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply", 
       :pick => :any,
-      :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=8].TUBE_COMMENTS"
+      :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=8].TUBE_COMMENTS"
       a_1 "Equipment failure"
       a_2 "Fainting"
       a_3 "Light-headedness"
@@ -873,7 +873,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_CENTRIFUGE_DATE "Time centrifugation began – DATE",
       :help_text => "Double check if year is < 2011.",
       :pick => :one,
-      :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_DATE"
+      :data_export_identifier=>"SPEC_BLOOD.CENTRIFUGE_DATE"
       a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
@@ -901,7 +901,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_CENTRIFUGE_END_DATE "Time centrifugation began – DATE",
       :help_text => "Double check if year is < 2011.",
       :pick => :one,
-      :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_END_DATE"
+      :data_export_identifier=>"SPEC_BLOOD.CENTRIFUGE_END_DATE"
       a "Date", :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don’t know"
@@ -910,7 +910,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       :help_text => "If able to measure temperature, then select \"Temperature\". If not able to measure temperature, then 
       select \"Not able to measure\".",
       :pick => :one,
-      :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_TEMP_MEASURE"
+      :data_export_identifier=>"SPEC_BLOOD.CENTRIFUGE_TEMP_MEASURE"
       a_1 "Temperature"
       a_2 "Not able to measure"
 
@@ -918,7 +918,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       :help_text => "Record the temperature reading on the digital thermometer attached to the centrifuge at the time that the blood tubes are 
       removed after centrifugation. Enter temperature in degrees celsius. Record the temperature to the first decimal point. 
       Double check if temperature is < 15C or > 28C ",
-      :data_export_identifier=>"SPEC_URINE.CENTRIFUGE_TEMP"
+      :data_export_identifier=>"SPEC_BLOOD.CENTRIFUGE_TEMP"
       a "|°C", :string
       dependency :rule=>"A"
       condition_A :q_CENTRIFUGE_TEMP_MEASURE, "==", :a_1
@@ -926,7 +926,7 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_BLOOD_HEMOLYZE "Did blood hemolyze?",
       :help_text => "Record whether hemolysis occurred in one or more of the blood tubes",
       :pick => :one,
-      :data_export_identifier=>"SPEC_URINE.BLOOD_HEMOLYZE"
+      :data_export_identifier=>"SPEC_BLOOD.BLOOD_HEMOLYZE"
       a_1 "Yes, all tubes hemolyzed"
       a_2 "Yes, at least one tube hemolyzed and at least one tube did not hemolyze"
       a_3 "No, none of the tubes hemolyzed"
@@ -963,14 +963,14 @@ survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
       q_CENTRIFUGE_COMMENT "Centrifuge other comments",
       :help_text => "Enter centrifuge comments:",
       :pick => :one,
-      :data_export_identifier=>"SPEC_BLOOD_HEMOLYZE.CENTRIFUGE_COMMENT"
+      :data_export_identifier=>"SPEC_BLOOD.CENTRIFUGE_COMMENT"
       a_1 "No comments"
       a_2 "Comment"
     
       q_CENTRIFUGE_COMMENT_OTH "Any other centrifuge comments",
       :help_text => "Enter centrifuge comments:",
       :pick => :one,
-      :data_export_identifier=>"SPEC_BLOOD_HEMOLYZE.CENTRIFUGE_COMMENT_OTH"
+      :data_export_identifier=>"SPEC_BLOOD.CENTRIFUGE_COMMENT_OTH"
       a "Comment", :string
       dependency :rule=>"A"
       condition_A :q_CENTRIFUGE_COMMENT, "==", :a_2

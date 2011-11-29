@@ -1645,8 +1645,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
       a_neg_2 "Don't know"
       a_neg_7 "Contact has no telephone"
 
-      label "Now I’d like to collect information on a second contact who does not currently live with you.",
-      :data_export_identifier=>"TWELVE_MTH_MOTHER.CONTACT_2"
+      label "Now I’d like to collect information on a second contact who does not currently live with you."
 
       label "What is the person's name?",
       :help_text => "If participant does not want to provide name of contact ask for initials- confirm spelling of first and last names"
@@ -1678,7 +1677,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
       a_neg_2 "Don't know"
 
       q_CONTACT_RELATE2_OTH "Other relationship of second contact", :pick=>:one, 
-      :data_export_identifier=>"TWELVE_MTH_MOTHER.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"TWELVE_MTH_MOTHER.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1800,8 +1799,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey. 
     This concludes the interview portion of our visit.", 
-    :help_text => "Explain SAQs and return process",
-    :data_export_identifier=>"TWELVE_MTH_MOTHER.END"
+    :help_text => "Explain SAQs and return process"
     
     q_hipv1_TIME_STAMP_14 "Insert date/time stamp", :data_export_identifier=>"TWELVE_MTH_MOTHER.TIME_STAMP_14"
     a :datetime, :custom_class => "datetime"    

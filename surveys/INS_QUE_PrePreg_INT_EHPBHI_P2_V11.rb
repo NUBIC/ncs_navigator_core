@@ -47,7 +47,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
     end
-    q_prepopulated_date_of_birth "[Participant's date of birth as MM/DD/YYYY]"
+    q_prepopulated_date_of_birth "Participant's date of birth"
     a :string
 
     q_dob_confirm "Is this your birth date?", 
@@ -63,7 +63,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
     
     q_confirmed_dob "What is your date of birth?",
     :data_export_identifier=>"PRE_PREG.PERSON_DOB"
-    a :string, :custom_class => "date"
+    a "Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=>"A"
@@ -968,7 +968,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
 
       q_c_addr2_1 "Address 2", 
       :pick=>:one,
-      :data_export_identifier=>"PRE_PREG.C_ADDR2_1"
+      :data_export_identifier=>"PRE_PREG.C_ADDR_2_1"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1100,7 +1100,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       a_neg_2 "Don't know"
 
       q_enter_contact_relate2_oth "Other relationship of second contact", :pick=>:one, 
-      :data_export_identifier=>"PRE_PREG.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"PRE_PREG.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1122,7 +1122,7 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
       a_neg_2 "Don't know"
 
       q_c_addr2_2 "Address 2", 
-      :data_export_identifier=>"PRE_PREG.C_ADDR2_2"
+      :data_export_identifier=>"PRE_PREG.C_ADDR_2_2"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1225,6 +1225,6 @@ survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
     
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey. 
     This concludes the interview portion of our visit.",
-    :help_text => "Explain saqs and return process", :data_export_identifier=>"PRE_PREG.END"
+    :help_text => "Explain saqs and return process"
   end
 end
