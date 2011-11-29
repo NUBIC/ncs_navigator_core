@@ -24,11 +24,15 @@ class ApplicationController < ActionController::Base
       current_user.username
     end
     
-    def new_event_for_person(person)
+    def new_event_for_person(person, event_type_id = nil)
       list_name   = NcsCode.attribute_lookup(:event_type_code)
-      ets         = person.upcoming_events.collect { |e| PatientStudyCalendar.map_psc_segment_to_mdes_event_type(e) }
-      event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
-      Event.new(:participant => person.participant, :event_type => event_types.first)
+      if event_type_id
+        event_types = NcsCode.where("list_name = ? AND id in (?)", list_name, event_type_id).all
+      else
+        ets         = person.upcoming_events.collect { |e| PatientStudyCalendar.map_psc_segment_to_mdes_event_type(e) }
+        event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
+      end
+      Event.new(:participant => person.participant, :event_type => event_types.first, :psu_code => NcsNavigatorCore.psu_code)
     end
   
 end

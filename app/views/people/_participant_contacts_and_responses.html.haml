@@ -4,6 +4,8 @@
   - @person.contact_links.each do |cl|
     .contact_link
       = link_to cl.contact.contact_date, edit_contact_link_path(cl), :class => "show_link icon_link"
+      = cl.contact.contact_disposition
+      = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"
 
 .page_section
   %b

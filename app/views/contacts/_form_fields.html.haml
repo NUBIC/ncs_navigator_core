@@ -1,4 +1,6 @@
 = f.hidden_field :psu_code
+= hidden_field_tag :event_type_id, @event.event_type.id
+= hidden_field_tag :next_event, params[:next_event]
 
 = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "Contact Type", :other => :contact_type_other }
 
