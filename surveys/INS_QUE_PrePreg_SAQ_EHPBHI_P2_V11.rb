@@ -2,13 +2,13 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
   section "Interview evaluation", :reference_identifier=>"PrePreg_SAQ_V1.1" do
     q_time_stamp_13 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_13"
     a :datetime, :custom_class => "datetime"
-    
-    label "We would Now like to take a few minutes to ask some questions about your experience in the study. 
-    There are No right or wrong answers. You can always refuse to answer any question or group of questions, and your 
+
+    label "We would Now like to take a few minutes to ask some questions about your experience in the study.
+    There are No right or wrong answers. You can always refuse to answer any question or group of questions, and your
     answers will be kept confidential."
-    
+
     label "How important was each of the following in your decision to take part in the National Children’s Study?"
-    
+
     q_LEARN "(How important was...) Learning more about my health or the health of my child?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.LEARN"
@@ -29,7 +29,7 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_1 "Not at all important"
     a_2 "Somewhat important"
     a_3 "Very important"
-        
+
     q_RESEARCH "(How important was...) Helping doctors and researchers learn more about children and their health?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.RESEARCH"
@@ -91,7 +91,7 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_5 "Very Positive"
     a_6 "Not Applicable"
 
-    # PROGRAMMER INSTRUCTION:  
+    # PROGRAMMER INSTRUCTION:
     # • IF ADMINISTERED AS A CASI, SKIP OPIN_SPOUSE IF MARISTAT = 3, 4, 5, 6, -1 or -2
 
     q_OPIN_FAMILY "Other family members",
@@ -122,7 +122,7 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_3 "Neither Positive or Negative"
     a_4 "Somewhat Positive"
     a_5 "Very Positive"
-    a_6 "Not Applicable"    
+    a_6 "Not Applicable"
 
     q_EXPERIENCE "In general, has your experience with the National Children’s Study been…",
     :pick => :one,
@@ -133,7 +133,7 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_4 "Somewhat positive"
     a_5 "Mostly positive"
 
-    q_IMPROVE "In your opinion, how much do you think the National Children’s Study will help improve the health 
+    q_IMPROVE "In your opinion, how much do you think the National Children’s Study will help improve the health
     of children Now and in the future?",
     :pick => :one,
     :data_export_identifier=>"PRE_PREG_SAQ.IMPROVE"
@@ -163,7 +163,7 @@ survey "INS_QUE_PrePreg_SAQ_EHPBHI_P2_V1.1" do
     a_1 "Yes"
     a_2 "No"
 
-    label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.", 
+    label_END_EVAL "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.",
     :help_text => "If SAQ is completed as a PAPI, SCs must provide instructions and a business reply envelope for participant to return."
 
     q_time_stamp_14 "Insert date/time stamp", :data_export_identifier=>"PRE_PREG_SAQ.TIME_STAMP_14"

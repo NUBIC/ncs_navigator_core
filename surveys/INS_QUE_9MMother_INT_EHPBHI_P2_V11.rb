@@ -2,11 +2,11 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
   section "Interview introduction", :reference_identifier=>"9MMother_INT" do
     q_TIME_STAMP_1 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER.TIME_STAMP_1"
     a :datetime, :custom_class => "datetime"
-    
-    label "Hello. I’m [INTERVIEWER NAME] calling from the National Children’s Study. I’m calling today to ask you 
-    some questions about you and your baby. We realize that you are busy, and this call should take only about 10 minutes. 
-    I will ask you questions about your baby’s health and behavior. Your answers are very important to us. There are no 
-    right or wrong answers. You can skip over any question or stop the interview at any time. We will keep everything that 
+
+    label "Hello. I’m [INTERVIEWER NAME] calling from the National Children’s Study. I’m calling today to ask you
+    some questions about you and your baby. We realize that you are busy, and this call should take only about 10 minutes.
+    I will ask you questions about your baby’s health and behavior. Your answers are very important to us. There are no
+    right or wrong answers. You can skip over any question or stop the interview at any time. We will keep everything that
     you tell us confidential. "
   end
   section "Interviewer completed questions", :reference_identifier=>"9MMother_INT" do
@@ -24,9 +24,9 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     dependency :rule=>"A"
     condition_A :q_MULT_CHILD, "==", :a_1
 
-# TODO    
+# TODO
     # PROGRAMMER INSTRUCTION:
-    # • IF MULT_CHILD = 1, COMPLETE ENTIRE QUESTIONNAIRE FOR FIRST CHILD.  THEN LOOP THROUGH INTERVIEWER-COMPLETED QUESTIONS 
+    # • IF MULT_CHILD = 1, COMPLETE ENTIRE QUESTIONNAIRE FOR FIRST CHILD.  THEN LOOP THROUGH INTERVIEWER-COMPLETED QUESTIONS
     # STARTING AT CHILD_QNUM AND PROCEED THROUGH THE REMAINDER OF THE QUESTIONNAIRE FOR EACH ELIGIBLE CHILD RECORDED IN CHILD_NUM.
 
     q_CHILD_QNUM "Which number child is this questionnaire for?",
@@ -44,21 +44,21 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_1 "Male"
     a_2 "Female"
     a_3 "Both"
-    
+
     # TODO
-    # PROGRAMMER INSTRUCTIONS: 
+    # PROGRAMMER INSTRUCTIONS:
     # • IF CHILD_SEX = 1, DISPLAY “his” AND “he” IN APPROPRIATE FIELDS THROUGHOUT INSTRUMENT.
     # • IF CHILD_SEX = 2, DISPLAY “her” AND “she” IN APPROPRIATE FIELDS THROUGHOUT INSTRUMENT.
     # • IF CHILD_SEX = 3, DISPLAY “him/her” AND “he/she” IN APPROPRIATE FIELDS THROUGHOUT INSTRUMENT.
-    
+
     q_RESP_REL "What is the relationship of participant to child?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.RESP_REL"
     a_1 "Mother"
     a_2 "Father"
     a_3 "Other"
-    
-    q_RESP_REL_OTH "Other relationship?", 
+
+    q_RESP_REL_OTH "Other relationship?",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.RESP_REL_OTH"
     a "Specify", :string
     dependency :rule=>"A"
@@ -66,17 +66,17 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
   end
   section "Participant verification", :reference_identifier=>"6MMother_INT" do
     label "First, we’d like to make sure we have your child’s correct name and birth date."
-    
-#     TODO - the name should be pre-populated    
+
+#     TODO - the name should be pre-populated
     q_prepopulated_name "Name:"
     a :string
 
     # TODO
-    # PROGRAMMER INSTRUCTIONS: 
+    # PROGRAMMER INSTRUCTIONS:
     # • PRELOAD CHILD’S NAME IF COLLECTED PREVIOUSLY.
     # • IF CNAME_CONFIRM= 1, SET C_FNAME/C_LNAME TO KNOWN VALUE.
 
-    q_CNAME_CONFIRM "Is your baby’s name {INSERT NAME}?", 
+    q_CNAME_CONFIRM "Is your baby’s name {INSERT NAME}?",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CNAME_CONFIRM", :pick=>:one
     a_1 "Yes"
     a_2 "No"
@@ -91,19 +91,19 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
       condition_A :q_CNAME_CONFIRM, "!=", :a_1
 
       label "What is your child’s full name?",
-      :help_text => "If participant refuses to provide information, re-state confidentiality 
-      protections, ask for initials or some other name she would like her child to be called. 
+      :help_text => "If participant refuses to provide information, re-state confidentiality
+      protections, ask for initials or some other name she would like her child to be called.
       Confirm spelling of first name if not previously collected and of last name for all children."
 
-      q_C_FNAME "First name", 
-      :pick => :one, 
+      q_C_FNAME "First name",
+      :pick => :one,
       :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.C_FNAME"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_C_LNAME "Last name", 
-      :pick => :one, 
+      q_C_LNAME "Last name",
+      :pick => :one,
       :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.C_LNAME"
       a :string
       a_neg_1 "Refused"
@@ -117,10 +117,10 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     #   • IF CDOB_CONFIRM = 1, RESPONSE = YES, SET CHILD_DOB TO KNOWN VALUE.
     q_prepopulated_childs_birth_date "Child's birth date"
     a :string
-    
+
     # TODO: Is {C_FNAME or YOUR CHILD}’S birth date  {CHILD’S DATE OF BIRTH}
-    q_CDOB_CONFIRM "Is {C_FNAME/YOUR CHILD}’S birth date {CHILD’S DATE OF BIRTH}?", 
-    :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
+    q_CDOB_CONFIRM "Is {C_FNAME/YOUR CHILD}’S birth date {CHILD’S DATE OF BIRTH}?",
+    :help_text => "If participant refuses to provide information, re-state confidentiality protections and
     that DOB helps determine eligibility.",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CDOB_CONFIRM"
@@ -128,10 +128,10 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-     
+
     q_CHILD_DOB "What is {C_FNAME/YOUR CHILD}’s date of birth?",
-    :help_text => "If participant refuses to provide information, re-state confidentiality protections and 
-    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response. 
+    :help_text => "If participant refuses to provide information, re-state confidentiality protections and
+    that DOB helps determine eligibility. If response was determined to be invalid, ask question again and probe for valid response.
     Please verify if calculated age in months is less than 8 months or greater than 11 months",
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.CHILD_DOB",
     :pick => :one
@@ -139,20 +139,20 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule => "A"
-    condition_A :q_CDOB_CONFIRM, "!=", :a_1    
-    
+    condition_A :q_CDOB_CONFIRM, "!=", :a_1
+
     # TODO:
     #     PROGRAMMER INSTRUCTIONS:
     # • INCLUDE A SOFT EDIT/WARNING IF CALCULATED AGE IS LESS THAN 8 MONTHS OR GREATER THAN 11 MONTHS.
     # • FORMAT CHILD_DOB AS YYYYMMDD.
-  
+
     q_TIME_STAMP_2 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_2"
-    a :datetime, :custom_class => "datetime"       
+    a :datetime, :custom_class => "datetime"
   end
   section "Child development and parenting", :reference_identifier=>"9MMother_INT" do
-    label "First, I will read you a list of things {C_FNAME/YOUR CHILD} may already do or may start 
-    doing when {he/she} gets older. Does {C_FNAME/YOUR CHILD}:"  
-    
+    label "First, I will read you a list of things {C_FNAME/YOUR CHILD} may already do or may start
+    doing when {he/she} gets older. Does {C_FNAME/YOUR CHILD}:"
+
     q_EYES_FOLLOW "Follow you with {his/her} eyes?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.EYES_FOLLOW"
@@ -176,7 +176,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_FEED "Feed {him/herself} a cracker or cereal?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.FEED"
@@ -184,7 +184,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_WAVE "Wave goodbye?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.WAVE"
@@ -192,14 +192,14 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_GRAB "Grab an object like a block or rattle from you?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.GRAB"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
+    a_neg_2 "Don't know"
 
     q_SWITCH_HANDS "Move a toy or block from one hand to the other?",
     :pick => :one,
@@ -208,7 +208,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_PICKUP "Pick up a small object like a Cheerio or raisin?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.PICKUP"
@@ -216,7 +216,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_HOLD "Hold two toys or blocks at a time, one in each hand?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.HOLD"
@@ -224,7 +224,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-        
+
     q_SOUND_3 "Turn toward someone when they’re speaking?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.SOUND_3"
@@ -232,7 +232,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_SPEAK_1 "Make sounds as though {he/she} is trying to speak?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.SPEAK_1"
@@ -240,23 +240,23 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_SPEAK_2 "Say mama or dada?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.SPEAK_2"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"   
-    
+    a_neg_2 "Don't know"
+
     q_HEADUP "Keep head steady when sitting or held up?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.HEADUP"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"    
-   
+    a_neg_2 "Don't know"
+
     q_ROLL_2 "Roll from back to stomach?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.ROLL_2"
@@ -264,7 +264,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_SITUP "Sit up by {himself/herself}?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.SITUP"
@@ -272,7 +272,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_STAND "Stand while holding onto something?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.STAND"
@@ -280,7 +280,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_STAND_ALONE "Stand alone, without holding onto something?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.STAND_ALONE"
@@ -288,7 +288,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_WALK "Walk by {himself/herself}, without holding onto something?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.WALK"
@@ -296,7 +296,7 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_SCRIBBLE "Scribble or draw with a pencil, crayon, or marker?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.SCRIBBLE"
@@ -304,15 +304,15 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "No"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     q_FORK_SPOON "Try to use a fork or spoon when eating?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.FORK_SPOON"
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"           
-   
+    a_neg_2 "Don't know"
+
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_3"
     a :datetime, :custom_class => "datetime"
   end
@@ -326,10 +326,10 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_4 "Excellent"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    
+
     label "The next questions are about where {C_FNAME} goes for health care."
-    
-    q_R_HCARE "First, what kind of place does {C_FNAME/YOUR CHILD} usually go to when {he/she} needs routine or well-child care, 
+
+    q_R_HCARE "First, what kind of place does {C_FNAME/YOUR CHILD} usually go to when {he/she} needs routine or well-child care,
     such as a check-up or well-baby shots (immunizations)?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.R_HCARE"
@@ -365,8 +365,8 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     a_neg_2 "Don't know"
     dependency :rule => "A"
     condition_A :q_LAST_VISIT, "==", :a_date
-  
-    q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to 
+
+    q_SAME_CARE "If {C_FNAME/YOUR CHILD} is sick or if you have concerns about {his/her} health, does {he/she} go to
     the same place as for well-child visits?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.SAME_CARE"
@@ -378,9 +378,9 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     dependency  :rule => "A and B and C"
     condition_A :q_R_HCARE, "!=", :a_7
     condition_B :q_R_HCARE, "!=", :a_neg_1
-    condition_C :q_R_HCARE, "!=", :a_neg_2    
-    
-    q_HCARE_SICK "What kind of place does {C_FNAME/YOUR CHILD} usually go to when {he/she} is sick, doesn’t feel 
+    condition_C :q_R_HCARE, "!=", :a_neg_2
+
+    q_HCARE_SICK "What kind of place does {C_FNAME/YOUR CHILD} usually go to when {he/she} is sick, doesn’t feel
     well, or if you have concerns about {his/her} health?",
     :pick => :one,
     :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.HCARE_SICK"
@@ -399,10 +399,10 @@ survey "INS_QUE_9MMother_INT_EHPBHI_P2_V1.1" do
     condition_C :R_HCARE, "==", :a_neg_2
     condition_D :q_SAME_CARE, "!=", :a_1
     condition_E :q_SAME_CARE, "!=", :a_neg_7
-    
+
     q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"NINE_MTH_MOTHER_DETAIL.TIME_STAMP_4"
     a :datetime, :custom_class => "datetime"
-    
+
     label "Thank you for your time and for being a part of this important research study. This is the end of our interview.",
     :help_text => "Include information about next contact (12-month home visit) and verification of contact information."
   end
