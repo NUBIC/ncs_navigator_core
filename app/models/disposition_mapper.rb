@@ -19,7 +19,7 @@ class DispositionMapper
 
     def get_grouped_options(group = nil)
       grouped_options = {}
-      mdes = NcsNavigator::Mdes::Specification.new('2.0')
+      mdes = NcsNavigatorCore.mdes
       mdes.disposition_codes.map(&:event).uniq.each do |event|
         grouped_options[event] = [] if should_add(group, event)
       end

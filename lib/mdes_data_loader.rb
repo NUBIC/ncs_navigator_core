@@ -1,8 +1,8 @@
 require 'ncs_navigator/mdes'
 
 module MdesDataLoader
-  def self.load_codes_from_schema(version = '2.0')
-    mdes = NcsNavigator::Mdes(version)
+  def self.load_codes_from_schema
+    mdes = NcsNavigatorCore.mdes
     counter = 0
     mdes.types.each do |typ|
       next if typ.name.blank?
@@ -23,6 +23,6 @@ module MdesDataLoader
         end
       end
     end
-    puts "Created #{counter} NcsCodes."
+    puts "Created #{counter} new NcsCode#{'s' if counter != 1} from MDES #{mdes.specification_version}."
   end
 end

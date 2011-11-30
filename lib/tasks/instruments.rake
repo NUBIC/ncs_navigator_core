@@ -37,8 +37,7 @@ namespace :instruments do
 
   desc 'Cross-references the surveyor instruments with the MDES'
   task :analyze => :environment do
-    # TODO: centrally specify the current MDES version
-    mdes = NcsNavigator::Mdes('2.0')
+    mdes = NcsNavigatorCore.mdes
     Survey.most_recent_for_each_title.each do |survey|
       any_errors = false
       survey.mdes_table_map.each do |table_ident, t_contents|
