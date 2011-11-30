@@ -43,6 +43,13 @@ module NcsNavigatorCore
     def with_specimens
       NcsNavigator.configuration.core['with_specimens']
     end
+
+    ##
+    # @return [NcsNavigator::Mdes::Specification] the specification
+    #   for the MDES version that Core currently corresponds to.
+    def mdes
+      @mdes ||= NcsNavigator::Mdes('2.0')
+    end
   end
 end
 
