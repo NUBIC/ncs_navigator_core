@@ -920,13 +920,13 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
 
       q_MAIL_ADDRESS2 "Address 2", 
       :pick=>:one,    
-      :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_ADDRESS2",
+      :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_ADDRESS2"
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
       q_MAIL_UNIT "Unit", :data_export_identifier=>"PREG_SCREEN_HI_2.MAIL_UNIT",
-      :pick=>:one,
+      :pick=>:one
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
