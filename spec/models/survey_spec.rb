@@ -30,12 +30,11 @@ describe Survey do
     before(:each) do
       Survey.destroy_all
       count = 0
-      Dir.foreach("#{Rails.root}/spec/fixtures/surveys") do |f|
-        unless File.directory?(f)
-          puts "~~~ about to run --> rake surveyor FILE=spec/fixtures/surveys/#{f}"
-          `rake surveyor FILE=spec/fixtures/surveys/#{f}`
-          count += 1
-        end
+      Dir["#{Rails.root}/spec/fixtures/surveys/*.rb"].sort.each do |f|
+        $stdout = StringIO.new
+        Surveyor::Parser.parse File.read(f)
+        $stdout = STDOUT
+        count += 1
       end
 
       Survey.count.should == count
@@ -54,6 +53,10 @@ describe Survey do
       Survey.most_recent_for_access_code(access_code).should == Survey.most_recent_for_title(title)
     end
 
+    it 'finds all the most recent surveys' do
+      Survey.most_recent_for_each_title.
+        collect(&:title).should == ['INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0 1']
+    end
   end
 
   after(:all) do

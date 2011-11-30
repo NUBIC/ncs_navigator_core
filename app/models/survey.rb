@@ -41,4 +41,17 @@ class Survey < ActiveRecord::Base
     Survey.where_access_code_like(code).first
   end
 
+  def self.most_recent_for_each_title
+    title_index = {}
+    Survey.order('created_at DESC').all.each do |survey|
+      actual_title =
+        if survey.title =~ /^(\S+)\s+\d+$/
+          $1
+        else
+          survey.title
+        end
+      title_index[actual_title] ||= survey
+    end
+    title_index.values.sort_by { |s| s.title }
+  end
 end
