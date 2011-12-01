@@ -3,7 +3,7 @@ require 'ncs_navigator/mdes'
 namespace :instruments do
   desc 'Lists all MDES elements in the surveys'
   task :report => :environment do
-    Survey.all.each do |survey|
+    Survey.most_recent_for_each_title.each do |survey|
       puts
       puts survey.title
       puts '=' * survey.title.size
@@ -98,5 +98,62 @@ namespace :instruments do
         end
       end
     end
+  end
+
+  task :mdes_tree => :environment do
+    Survey.most_recent_for_each_title.each do |survey|
+      actual_title = survey.title.split(' ').first
+      puts
+      puts actual_title
+
+      tables = survey.mdes_table_map.
+        collect { |ti, tc| tc[:table] }.uniq.
+        collect { |t| NcsNavigatorCore.mdes[t] || fail("No MDES table #{t}") }
+
+      parent_children = {}
+      tables.each do |t|
+        parent = t.instrument_table_tree[1]
+        parent_children[parent] ||= []
+        parent_children[parent] << t
+      end
+
+      dump_tree = lambda { |children, depth|
+        (children || []).each do |child|
+          puts ('  ' * depth) + child.name
+          dump_tree[parent_children[child], depth + 1]
+        end
+      }
+
+      dump_tree[parent_children[nil], 1]
+    end
+  end
+
+  desc 'Lists the MDES tables that have no corresponding instrument'
+  task :unmapped_tables => :environment do
+    mapped_tables = Survey.most_recent_for_each_title.
+      collect { |s| s.mdes_table_map.collect { |ti, tc| tc[:table] } }.
+      flatten.uniq
+    all_tables = NcsNavigatorCore.mdes.transmission_tables.
+      select { |t| t.instrument_table? }.
+      collect(&:name)
+
+    (all_tables - mapped_tables).each do |table|
+      puts table
+    end
+  end
+end
+
+class NcsNavigator::Mdes::TransmissionTable
+  def instrument_table_tree
+    @instrument_table_tree ||=
+      if primary_instrument_table?
+        [self]
+      elsif operational_table?
+        nil
+      else
+        [self] + variables.collect { |v| v.table_reference }.compact.
+          collect { |t| t.instrument_table_tree }.compact.
+          sort_by { |parents| parents.size }.first
+      end
   end
 end
