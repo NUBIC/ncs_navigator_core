@@ -80,8 +80,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
       label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.
       This concludes the interview portion of our visit.",
-      :help_text => "Interviewer instructions: end the questionare",
-      :data_export_identifier=>"PREG_VISIT_1_2.END"
+      :help_text => "Interviewer instructions: end the questionare"
     end
 
     label "Case for supervisor review at SC to confirm age eligibility post-interview"
@@ -108,7 +107,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
     end
 
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.
-    This concludes the interview portion of our visit.", :data_export_identifier=>"PREG_VISIT_1_2.END"
+    This concludes the interview portion of our visit."
     dependency :rule=> "A or B"
     condition_A :q_pregnant, "==", :a_neg_1
     condition_B :q_pregnant, "==", :a_neg_2

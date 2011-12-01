@@ -683,7 +683,7 @@ survey "INS_QUE_12MMother_SAQ_EHPBHI_P2_V2.0" do
     serving, or powder from single serving packets?",
     :help_text => "Select all that apply",
     :pick => :any,
-    :data_export_identifier=>"TWELVE_MTH_SAQ_FORMULA_BRAND_2.FORMULA_TYPE"
+    :data_export_identifier=>"TWELVE_MTH_SAQ_FORMULA_TYPE_2.FORMULA_TYPE"
     a_1 "Ready-to-feed"
     a_2 "Liquid concentrate"
     a_3 "Powder from a can that makes more than one bottle"

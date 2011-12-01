@@ -26,7 +26,7 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
 
     q_C_MINITIAL "Child's middle initial:",
     :pick => :one,
-    :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.C_MINITIAL"
+    :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.C_MINITAL"
     a :string
     a_neg_1 "Refused"
     a_neg_2 "Don't Know"
@@ -278,7 +278,7 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     q_COMM24_DIRECT_3 "Without your giving him clues by pointing or using gestures, can your child carry out at least three of these kinds of
     directions? a)\"Put the toy on the table.\" b)\"Close the door.\" c)\"Bring me a towel.\" d)\"Find your coat\" e)\"Take my hand.\"
     f) \"Get your book.\"",
-    :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.COMM24_IMITATE_3",
+    :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.COMM24_DIRECT_3",
     :pick=>:one
     a_0 "Not Yet"
     a_5 "Sometimes"
@@ -574,8 +574,8 @@ survey "INS_QUE_24MMother_SAQ_EHPBHI_P2_V1.0" do
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
 
-    q_PSLV24_TOTAL "Personal-social total",
-    :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.PSLV24_TOTAL"
+    q_PSOC24_TOTAL "Personal-social total",
+    :data_export_identifier=>"TWENTY_FOUR_MTH_SAQ.PSOC24_TOTAL"
     a :integer
   end
 end

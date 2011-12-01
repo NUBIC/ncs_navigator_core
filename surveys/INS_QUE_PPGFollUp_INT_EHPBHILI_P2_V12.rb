@@ -155,8 +155,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
       dependency :rule=> "A"
       condition_A :q_PREGNANT, "==", :a_1
 
-      label_STATUS_PREG "Status: Pregnant and Eligible",
-      :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+      label_STATUS_PREG "Status: Pregnant and Eligible"
 
       label "Thank you for taking time to answer these questions. [Congratulations again on your pregnancy.]  We would like to set up a
       time to talk about the National Children’s Study.  If you have any other questions before that time, please
@@ -167,8 +166,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
       dependency :rule=> "A"
       condition_A :q_TRYING, "==", :a_1
 
-      label_STATUS_TRYING "Status: High probability - trying to conceive",
-      :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+      label_STATUS_TRYING "Status: High probability - trying to conceive"
 
       label "Thank you for taking time to answer these questions.
       You are able to take part in this important study because you are currently trying to become pregnant.
@@ -181,8 +179,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
       condition_A :q_PREGNANT, "==", :a_3
       condition_B :q_TRYING, "==", :a_3
 
-      label_STATUS_RECENT_LOSS "Status: high probability - recent loss",
-      :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+      label_STATUS_RECENT_LOSS "Status: high probability - recent loss"
 
       label "[I’m so sorry to hear that you’ve lost your baby.  I know this can be a hard time.]  Because your address is in the study
       area, we may be back in touch at a later time to update your household information.  If you have any other questions before that
@@ -196,8 +193,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
       condition_B :q_TRYING, "==", :a_4
       condition_C :q_MED_UNABLE, "!=", :a_1
 
-      label_STATUS_OTHER_PROBABILITY "Status: other probability – not pregnant and not trying",
-      :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+      label_STATUS_OTHER_PROBABILITY "Status: other probability – not pregnant and not trying"
 
       label "Thank you for taking time to answer these questions.
       We will call you again in a couple of months to ask a few quick questions.  If you have any other questions before that time,
@@ -208,8 +204,7 @@ survey "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2" do
       dependency :rule=> "A"
       condition_A :q_MED_UNABLE, "==", :a_1
 
-      label_STATUS_INELIGIBLE "Status: ineligible- unable to conceive",
-      :data_export_identifier=>"PPG_CATI.TIME_STAMP_1"
+      label_STATUS_INELIGIBLE "Status: ineligible- unable to conceive"
 
       label "Thank you for taking time to answer these questions.  Based on what you’ve told me, we will not ask you to take part
       in the study at this time. We may be back in touch at a later time to update your household information.  If you have any other
