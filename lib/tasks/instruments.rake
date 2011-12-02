@@ -54,11 +54,24 @@ namespace :instruments do
 
           mdes_not_surv = mdes_variable_names - surv_variable_names
           surv_not_mdes = surv_variable_names - mdes_variable_names
-          surv_multiple_q = t_contents[:variables].
-            select { |var_name, var_mapping| var_mapping[:questions] && var_mapping[:questions].size > 1 }.
-            collect { |var_name, var_mapping| [var_name, var_mapping[:questions]] }
+          surv_multiple_q =
+            if ENV['IGNORE_MULTIPLE_Q']
+              []
+            else
+              t_contents[:variables].
+                select { |var_name, var_mapping| var_mapping[:questions] && var_mapping[:questions].size > 1 }.
+                collect { |var_name, var_mapping| [var_name, var_mapping[:questions]] }
+            end
+          surv_multiple_on_primary =
+            if mdes_table.primary_instrument_table?
+              t_contents[:variables].select { |var_name, var_mapping| var_mapping[:questions] }.
+                collect { |var_n, var_m| [var_n, var_m[:questions].select { |q| q.pick == 'any' }] }.
+                reject { |var_n, qs| qs.empty? }
+            else
+              []
+            end
 
-          if mdes_not_surv.any? || surv_not_mdes.any? || surv_multiple_q.any?
+          if mdes_not_surv.any? || surv_not_mdes.any? || surv_multiple_q.any? || surv_multiple_on_primary.any?
             unless any_errors
               actual_title = survey.title.split(' ').first
               puts
@@ -90,6 +103,13 @@ namespace :instruments do
               surv_multiple_q.each do |var, qs|
                 q_idents = qs.collect(&:reference_identifier).collect(&:inspect)
                 puts "    - %-#{len}s mapped to #{q_idents.join(', ')}" % var
+              end
+            end
+            unless surv_multiple_on_primary.empty?
+              puts "  % Questions on the primary table which are pick=any:"
+              surv_multiple_on_primary.each do |var, qs|
+                q_idents = qs.collect(&:reference_identifier).collect(&:inspect)
+                puts "    - #{var} (#{q_idents.join(', ')})"
               end
             end
           end
