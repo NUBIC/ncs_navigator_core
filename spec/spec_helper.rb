@@ -136,6 +136,17 @@ Spork.prefork do
     end
   end
 
+  def load_survey_string(s)
+    require 'stringio'
+    begin
+      original_stdout = $stdout
+      $stdout = StringIO.new
+      Surveyor::Parser.new.parse(s)
+    ensure
+      $stdout = original_stdout if original_stdout
+    end
+  end
+
   ::ActiveSupport::Deprecation.silenced = true
 
   # Preload slow warehouse infrastructure only when actually using spork

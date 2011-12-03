@@ -18,6 +18,23 @@ module NcsNavigator::Core
       end
     end
 
+    ##
+    # @return [Array<String>] a three-element array containing the names
+    #   of the MDES table and MDES variable to which the given
+    #   question maps (if any), plus the fixed value mapping for that table.
+    def mdes_mapping_for_question(q)
+      mdes_table_map.collect { |ti, tc|
+        [
+          tc[:table],
+          tc[:variables].find { |vn, vm|
+            (vm[:questions] || []).include?(q)
+          }.try(:first),
+          tc[:variables].collect { |vn, vm| [vn, vm[:fixed_value]] }.
+            select { |vn, fixed| fixed }.inject({}) { |h, (vn, fixed)| h[vn] = fixed; h }
+        ]
+      }.find { |table_name, var_name| var_name }
+    end
+
     def update_mdes_table_map(map, q, table_identifier, variable_name)
       map[table_identifier] ||= {}
       map[table_identifier].tap do |table|
@@ -50,8 +67,62 @@ module NcsNavigator::Core
     end
     private :parse_mdes_table_identifier
 
+    ##
+    # Heuristically matches any multivalued questions with an other
+    # (code=-5) option to the associated "other" question.
+    #
+    # @return [Array<Hash<[:coded,:other], [Question,nil]>>] a list of
+    #   pairs of questions.
+    def mdes_other_pairs
+      @mdes_other_pairs ||= all_questions.select { |q|
+        q.pick == 'any' && q.answers.select { |a| a.response_class == 'answer' }.
+          collect(&:reference_identifier).include?('neg_5')
+      }.collect do |coded|
+        {
+          :coded => coded,
+        }.merge(find_other_question(coded) || {})
+      end
+    end
+
+    # @private
+    MDES_OTHER_OVERRIDES = {
+      'PREG_VISIT_1_NONENGLISH2_2.HH_NONENGLISH_2' =>
+        'PREG_VISIT_1_NONENGLISH2_2.HH_NONENGLISH2_OTH'
+    }
+
+    def find_other_question(coded_question)
+      in_same_table = all_questions.find { |q|
+        if MDES_OTHER_OVERRIDES[coded_question.data_export_identifier]
+          q.data_export_identifier == MDES_OTHER_OVERRIDES[coded_question.data_export_identifier]
+        else
+          q.data_export_identifier == coded_question.data_export_identifier + '_OTH'
+        end
+      }
+      return { :other => in_same_table } if in_same_table
+
+      coded_table_name, coded_variable_name, coded_fixed = mdes_mapping_for_question(coded_question)
+      mdes_table = NcsNavigatorCore.mdes[coded_table_name]
+      mdes_parent = mdes_table.instrument_table_tree[1]
+      if mdes_parent
+        # TODO: might change the way fixed works for associated
+        # tables, which would make this more complicated.
+        parent_table_contents = mdes_table_map.find { |ti, tc|
+          tc_fixed = tc[:variables].collect { |vn, vm| [vn, vm[:fixed_value]] }.
+            select { |vn, fixed| fixed }.inject({}) { |h, (vn, fixed)| h[vn] = fixed; h }
+          tc[:table] == mdes_parent.name && tc_fixed == coded_fixed
+        }
+        if parent_table_contents
+          parent_other = parent_table_contents.last[:variables].
+            find { |var_name, var_mapping| var_name == "#{coded_variable_name}_oth" }.
+            try(:last).try(:[], :questions).try(:first)
+          return { :parent_other => parent_other } if parent_other
+        end
+      end
+    end
+    private :find_other_question
+
     def all_questions
-      sections.collect(&:questions).flatten
+      sections_with_questions.collect(&:questions).flatten
     end
     private :all_questions
   end
