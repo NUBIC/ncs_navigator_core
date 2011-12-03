@@ -70,8 +70,13 @@ namespace :instruments do
             else
               []
             end
+          surv_no_other = survey.mdes_other_pairs.select { |pair|
+            t_contents[:variables].collect { |vn, vm| vm[:questions] }.compact.flatten.include?(pair[:coded])
+          }.reject { |pair| pair[:other] || pair[:parent_other] }.collect { |pair|
+            t_contents[:variables].find { |vn, vm| vm[:questions] && vm[:questions].include?(pair[:coded]) }
+          }.collect { |var_name, var_mapping| var_name }
 
-          if mdes_not_surv.any? || surv_not_mdes.any? || surv_multiple_q.any? || surv_multiple_on_primary.any?
+          if mdes_not_surv.any? || surv_not_mdes.any? || surv_multiple_q.any? || surv_multiple_on_primary.any? || surv_no_other.any?
             unless any_errors
               actual_title = survey.title.split(' ').first
               puts
@@ -110,6 +115,12 @@ namespace :instruments do
               surv_multiple_on_primary.each do |var, qs|
                 q_idents = qs.collect(&:reference_identifier).collect(&:inspect)
                 puts "    - #{var} (#{q_idents.join(', ')})"
+              end
+            end
+            unless surv_no_other.empty?
+              puts "  & Multivalued questions with an other option but no other question:"
+              surv_no_other.each do |var|
+                puts "    - #{var}"
               end
             end
           end
@@ -160,20 +171,5 @@ namespace :instruments do
     (all_tables - mapped_tables).each do |table|
       puts table
     end
-  end
-end
-
-class NcsNavigator::Mdes::TransmissionTable
-  def instrument_table_tree
-    @instrument_table_tree ||=
-      if primary_instrument_table?
-        [self]
-      elsif operational_table?
-        nil
-      else
-        [self] + variables.collect { |v| v.table_reference }.compact.
-          collect { |t| t.instrument_table_tree }.compact.
-          sort_by { |parents| parents.size }.first
-      end
   end
 end

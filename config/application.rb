@@ -66,3 +66,4 @@ module NcsNavigatorCore
 end
 
 require 'ncs_navigator/core'
+require 'ncs_navigator/mdes_ext'
