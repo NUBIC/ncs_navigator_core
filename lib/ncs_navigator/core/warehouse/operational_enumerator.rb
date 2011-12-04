@@ -6,11 +6,11 @@ module NcsNavigator::Core::Warehouse
   ##
   # Converts the contents of a core instance into appropriate MDES
   # model instances for MDES Warehouse.
-  class Enumerator
+  class OperationalEnumerator
     include NcsNavigator::Warehouse::Transformers::Database
     include NcsNavigator::Warehouse::Models::TwoPointZero
 
-    extend EnumeratorHelpers
+    extend DatabaseEnumeratorHelpers
 
     bcdatabase :name => 'ncs_navigator_core'
 

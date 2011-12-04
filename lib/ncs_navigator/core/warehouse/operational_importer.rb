@@ -1,18 +1,18 @@
 require 'ncs_navigator/core/warehouse'
-# To preload the same version of the models used by Enumerator
-require 'ncs_navigator/core/warehouse/enumerator'
+# To preload the same version of the models used by OperationalEnumerator
+require 'ncs_navigator/core/warehouse/operational_enumerator'
 
 require 'forwardable'
 
 module NcsNavigator::Core::Warehouse
   ##
   # A utility that takes the entire contents of an MDES Warehouse
-  # instance and initializes or updates this Core deployment to match
-  # its contents.
+  # instance and initializes or updates this Core deployment's
+  # operational tables to match its contents.
   #
   # The mappings from the MDES Warehouse to Core tables are defined in
-  # {Enumerator}.
-  class Importer
+  # {OperationalEnumerator}.
+  class OperationalImporter
     extend Forwardable
 
     attr_reader :wh_config
@@ -35,7 +35,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def self.automatic_producers
-      Enumerator.record_producers.reject { |rp|
+      OperationalEnumerator.record_producers.reject { |rp|
         %w(LinkContact).include?(rp.model.to_s.demodulize)
       }
     end
@@ -59,7 +59,7 @@ module NcsNavigator::Core::Warehouse
     def update_core_record(core_record, mdes_record, column_map)
       column_map.each do |core_attribute, mdes_variable|
         if core_attribute =~ /^public_id_for_/
-          # This is the format generated in EnumeratorHelpers for
+          # This is the format generated in DatabaseEnumeratorHelpers for
           # joined public ID columns
           associated_table, core_model_association_id =
             (core_attribute.scan /^public_id_for_(.*)_as_(.*)$/).first

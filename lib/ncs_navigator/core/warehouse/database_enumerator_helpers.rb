@@ -1,7 +1,7 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::Warehouse
-  module EnumeratorHelpers
+  module DatabaseEnumeratorHelpers
     ##
     # Extends {Database::DSL#produce_one_for_one} to support automatic
     # joins to replace association IDs with public IDs.
