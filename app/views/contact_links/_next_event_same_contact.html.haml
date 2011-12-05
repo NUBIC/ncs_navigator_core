@@ -2,4 +2,4 @@
   %h3 
     = "Continue onto #{@person.upcoming_events.to_sentence}"
   %p
-    = link_to "Continue onto #{@person.upcoming_events.to_sentence}", edit_person_contact_path(@person, :next_event => true), :class => "add_link icon_link"
+    = link_to "Continue onto #{@person.upcoming_events.to_sentence}", edit_person_contact_path(@person, @contact, :next_event => true), :class => "add_link icon_link"

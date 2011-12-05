@@ -1439,32 +1439,37 @@ form input[type="text"].datepicker {
 form .nested_attributes {
   margin: 1em;
 }
+/* line 109, ../../../stylesheets/partials/_application.scss */
+form textarea {
+  height: 200px;
+  width: 325px;
+}
 
-/* line 112, ../../../stylesheets/partials/_application.scss */
+/* line 116, ../../../stylesheets/partials/_application.scss */
 #container,
 .container {
   background-color: white;
   padding: 20px 40px;
   margin: 1em auto;
 }
-/* line 116, ../../../stylesheets/partials/_application.scss */
+/* line 120, ../../../stylesheets/partials/_application.scss */
 #container p,
 .container p {
   margin-bottom: .25em;
 }
-/* line 119, ../../../stylesheets/partials/_application.scss */
+/* line 123, ../../../stylesheets/partials/_application.scss */
 #container h3,
 .container h3 {
   padding-top: 10px;
   margin-bottom: 0.5em;
 }
-/* line 123, ../../../stylesheets/partials/_application.scss */
+/* line 127, ../../../stylesheets/partials/_application.scss */
 #container form,
 .container form {
   margin-bottom: 1em;
 }
 
-/* line 128, ../../../stylesheets/partials/_application.scss */
+/* line 132, ../../../stylesheets/partials/_application.scss */
 #header {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -1475,12 +1480,12 @@ form .nested_attributes {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 136, ../../../stylesheets/partials/_application.scss */
+/* line 140, ../../../stylesheets/partials/_application.scss */
 #header #app_name a {
   text-decoration: none;
 }
 
-/* line 142, ../../../stylesheets/partials/_application.scss */
+/* line 146, ../../../stylesheets/partials/_application.scss */
 #title {
   font-size: 2em;
   display: inline;
@@ -1494,7 +1499,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 149, ../../../stylesheets/partials/_application.scss */
+/* line 153, ../../../stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1510,7 +1515,7 @@ form .nested_attributes {
   overflow-x: hidden;
 }
 
-/* line 154, ../../../stylesheets/partials/_application.scss */
+/* line 158, ../../../stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }
@@ -1767,6 +1772,10 @@ div.records span.value {
 /* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html .column-container .buttons {
   overflow-x: hidden;
+}
+/* line 27, ../../../stylesheets/partials/_layout.scss */
+.column-container select {
+  width: 30em;
 }
 
 /* line 9, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_utilities.scss */

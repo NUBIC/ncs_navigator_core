@@ -23,4 +23,9 @@
     @include prepend(1);
     margin-bottom: 1em;
   }
+  
+  select {
+    width: 30em;
+  }
+  
 }
