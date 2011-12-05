@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: contact_links
 #
@@ -32,8 +32,6 @@ class ContactLink < ActiveRecord::Base
   belongs_to :instrument
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
-
-  has_one :response_set
 
   validates_presence_of :contact
   validates_presence_of :staff_id

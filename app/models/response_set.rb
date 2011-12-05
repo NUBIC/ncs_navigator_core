@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: response_sets
 #
@@ -11,14 +11,14 @@
 #  completed_at                              :datetime
 #  created_at                                :datetime
 #  updated_at                                :datetime
-#  contact_link_id                           :integer
 #  processed_for_operational_data_extraction :boolean
+#  instrument_id                             :integer
 #
 
 class ResponseSet < ActiveRecord::Base
   include Surveyor::Models::ResponseSetMethods
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
-  belongs_to :contact_link
+  belongs_to :instrument
   
   
   def has_responses_in_each_section_with_questions?

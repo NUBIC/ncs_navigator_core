@@ -88,6 +88,11 @@ class InstrumentEventMap
   # @param [String]
   # @return [NcsCode]
   def self.instrument_type(filename)
+    if filename.index(' ').to_i > 0
+      sub = filename[filename.index(' '), filename.length]
+      filename = filename.gsub(sub, '')
+    end
+    
     result = nil
     instruments.each do |ie|
       if ie["filename"] == filename

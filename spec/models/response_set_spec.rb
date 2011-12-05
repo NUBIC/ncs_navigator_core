@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: response_sets
 #
@@ -11,8 +11,8 @@
 #  completed_at                              :datetime
 #  created_at                                :datetime
 #  updated_at                                :datetime
-#  contact_link_id                           :integer
 #  processed_for_operational_data_extraction :boolean
+#  instrument_id                             :integer
 #
 
 require 'spec_helper'
@@ -20,7 +20,7 @@ require 'spec_helper'
 describe ResponseSet do
   
   it { should belong_to(:person) }
-  it { should belong_to(:contact_link) }
+  it { should belong_to(:instrument) }
   
   context "with instruments" do
     before(:each) do

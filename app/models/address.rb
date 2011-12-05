@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: addresses
 #
@@ -72,7 +72,7 @@ class Address < ActiveRecord::Base
     addr << unit
     addr << city
     addr << state.to_s if state && state.local_code != -4
-    if zip4.blank?
+    if zip4.blank? || zip4.to_i < 0
       addr << zip
     else
       addr << "#{zip}-#{zip4}" unless zip.blank?

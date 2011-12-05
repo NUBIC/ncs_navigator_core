@@ -36,10 +36,9 @@ end
     let(:questions_map) { questions.inject({}) { |h, q| h[q.reference_identifier] = q; h } }
 
     let(:participant) { Factory(:participant) }
-    let(:instrument) { Factory(:instrument) }
     let(:event) { Factory(:event, :participant => participant) }
-    let(:contact_link) { Factory(:contact_link, :event => event, :instrument => instrument) }
-    let(:response_set) { ResponseSet.create(:survey => survey, :contact_link => contact_link) }
+    let(:instrument) { Factory(:instrument, :event => event) }
+    let(:response_set) { ResponseSet.create(:survey => survey, :instrument => instrument) }
 
     let(:records) { response_set.to_mdes_warehouse_records }
 

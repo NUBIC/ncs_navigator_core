@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: instruments
 #
@@ -62,6 +62,8 @@ describe Instrument do
   
   it { should belong_to(:person) }
   it { should belong_to(:survey) }
+  
+  it { should have_one(:response_set) }
   
   it { should validate_presence_of(:instrument_version) }
   

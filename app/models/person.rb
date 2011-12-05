@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: people
 #
@@ -204,8 +204,8 @@ class Person < ActiveRecord::Base
     # TODO: raise Exception if survey is nil
     return if survey.nil?
     instrument = create_instrument(survey)
-    response_set = ResponseSet.create(:survey => survey, :user_id => self.id)
-
+    response_set = ResponseSet.create(:survey => survey, :user_id => self.id, :instrument => instrument)
+    
     response_set = prepopulate_response_set(survey, response_set)
     [response_set, instrument]
   end
