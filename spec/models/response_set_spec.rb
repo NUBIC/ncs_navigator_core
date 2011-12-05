@@ -65,5 +65,121 @@ describe ResponseSet do
     
   end
   
+  context "knowing if the user answered questions in each section" do
+    before(:each) do
+      create_missing_in_error_ncs_codes(Instrument)
+      
+      @survey = create_survey_with_many_sections
+      @survey.sections_with_questions.size.should == 5
+    end
+    
+    let(:person) { Factory(:person) }
+    
+    describe "a survey that has no responses" do
+      
+      it "knows that the response set does not have responses in each section" do
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+        
+        response_set.has_responses_in_each_section_with_questions?.should be_false
+        
+      end
+      
+    end
+    
+    describe "a survey that has a few responses but not in all sections" do
+      
+      it "knows that the response set does not have responses in each section" do
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        @survey.sections_with_questions.each do |section|
+          section.questions.each do |q|
+            case q.data_export_identifier
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+              answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+              Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+              answer = q.answers.select { |a| a.response_class == "date" }.first
+              Factory(:response, :survey_section_id => section.id, :datetime_value => "2012-02-29", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            end
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 2
+        
+        response_set.has_responses_in_each_section_with_questions?.should be_false
+        
+      end
+      
+      it "knows that the response set does not have responses in the last section with questions" do
+
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        @survey.sections_with_questions.each do |section|
+          section.questions.each do |q|
+            case q.data_export_identifier
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+              answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+              Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+              answer = q.answers.select { |a| a.response_class == "date" }.first
+              Factory(:response, :survey_section_id => section.id, :datetime_value => "2012-02-29", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.EMAIL"
+              answer = q.answers.select { |a| a.response_class == "string" }.first
+              Factory(:response, :survey_section_id => section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+              # SKIPPING THIS SECTION
+            end
+          end
+        end
+        
+        response_set.responses.reload
+        response_set.responses.size.should == 3
+        
+        response_set.has_responses_in_each_section_with_questions?.should be_false
+
+      end
+      
+    end
+    
+    describe "a survey that has at least one response in all sections" do
+      
+      it "knows that the response set does have responses in each section" do
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        @survey.sections_with_questions.each do |section|
+          section.questions.each do |q|
+            case q.data_export_identifier
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+              answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+              Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+              answer = q.answers.select { |a| a.response_class == "date" }.first
+              Factory(:response, :survey_section_id => section.id, :datetime_value => "2012-02-29", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.EMAIL"
+              answer = q.answers.select { |a| a.response_class == "string" }.first
+              Factory(:response, :survey_section_id => section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+              answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+              Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+            end
+          end
+        end
+        
+        response_set.responses.reload
+        response_set.responses.size.should == 4
+        
+        response_set.has_responses_in_each_section_with_questions?.should be_true
+        
+      end
+      
+    end
+    
+  end
   
 end

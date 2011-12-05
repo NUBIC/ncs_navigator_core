@@ -34,6 +34,12 @@ require 'spec_helper'
 
 describe Instrument do
   
+  before(:each) do
+    @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+    @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+    @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
+  end
+  
   it "creates a new instance given valid attributes" do
     ins = Factory(:instrument)
     ins.should_not be_nil
@@ -82,8 +88,41 @@ describe Instrument do
       obj.instrument_status.local_code.should == -4
       obj.instrument_mode.local_code.should == -4
       obj.instrument_method.local_code.should == -4
-      obj.supervisor_review.local_code.should == -4
-      obj.data_problem.local_code.should == -4
+      # These values are defaulted to No
+      obj.supervisor_review.local_code.should == 2
+      obj.data_problem.local_code.should == 2
     end
   end
+  
+  describe "the breakoff code" do
+    
+    before(:each) do
+      @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+      @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+      create_missing_in_error_ncs_codes(Instrument)
+    end
+  
+    it "should set the breakoff code to no if the reponse set has questions answered" do
+      response_set = Factory(:response_set)
+      response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(true)
+
+      instrument = Factory(:instrument)
+      
+      instrument.set_instrument_breakoff(response_set)
+      instrument.instrument_breakoff.should == @n
+    end
+
+
+    it "should set the breakoff code to yes if the reponse set does not have questions answered in each section" do
+      response_set = Factory(:response_set)
+      response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
+
+      instrument = Factory(:instrument)
+      
+      instrument.set_instrument_breakoff(response_set)
+      instrument.instrument_breakoff.should == @y
+    end
+    
+  end
+  
 end
