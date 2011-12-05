@@ -3,7 +3,7 @@ require 'ncs_navigator/mdes'
 namespace :instruments do
   desc 'Lists all MDES elements in the surveys'
   task :report => :environment do
-    Survey.all.each do |survey|
+    Survey.most_recent_for_each_title.each do |survey|
       puts
       puts survey.title
       puts '=' * survey.title.size
@@ -37,8 +37,7 @@ namespace :instruments do
 
   desc 'Cross-references the surveyor instruments with the MDES'
   task :analyze => :environment do
-    # TODO: centrally specify the current MDES version
-    mdes = NcsNavigator::Mdes('2.0')
+    mdes = NcsNavigatorCore.mdes
     Survey.most_recent_for_each_title.each do |survey|
       any_errors = false
       survey.mdes_table_map.each do |table_ident, t_contents|
@@ -55,11 +54,29 @@ namespace :instruments do
 
           mdes_not_surv = mdes_variable_names - surv_variable_names
           surv_not_mdes = surv_variable_names - mdes_variable_names
-          surv_multiple_q = t_contents[:variables].
-            select { |var_name, var_mapping| var_mapping[:questions] && var_mapping[:questions].size > 1 }.
-            collect { |var_name, var_mapping| [var_name, var_mapping[:questions]] }
+          surv_multiple_q =
+            if ENV['IGNORE_MULTIPLE_Q']
+              []
+            else
+              t_contents[:variables].
+                select { |var_name, var_mapping| var_mapping[:questions] && var_mapping[:questions].size > 1 }.
+                collect { |var_name, var_mapping| [var_name, var_mapping[:questions]] }
+            end
+          surv_multiple_on_primary =
+            if mdes_table.primary_instrument_table?
+              t_contents[:variables].select { |var_name, var_mapping| var_mapping[:questions] }.
+                collect { |var_n, var_m| [var_n, var_m[:questions].select { |q| q.pick == 'any' }] }.
+                reject { |var_n, qs| qs.empty? }
+            else
+              []
+            end
+          surv_no_other = survey.mdes_other_pairs.select { |pair|
+            t_contents[:variables].collect { |vn, vm| vm[:questions] }.compact.flatten.include?(pair[:coded])
+          }.reject { |pair| pair[:other] || pair[:parent_other] }.collect { |pair|
+            t_contents[:variables].find { |vn, vm| vm[:questions] && vm[:questions].include?(pair[:coded]) }
+          }.collect { |var_name, var_mapping| var_name }
 
-          if mdes_not_surv.any? || surv_not_mdes.any? || surv_multiple_q.any?
+          if mdes_not_surv.any? || surv_not_mdes.any? || surv_multiple_q.any? || surv_multiple_on_primary.any? || surv_no_other.any?
             unless any_errors
               actual_title = survey.title.split(' ').first
               puts
@@ -93,11 +110,66 @@ namespace :instruments do
                 puts "    - %-#{len}s mapped to #{q_idents.join(', ')}" % var
               end
             end
+            unless surv_multiple_on_primary.empty?
+              puts "  % Questions on the primary table which are pick=any:"
+              surv_multiple_on_primary.each do |var, qs|
+                q_idents = qs.collect(&:reference_identifier).collect(&:inspect)
+                puts "    - #{var} (#{q_idents.join(', ')})"
+              end
+            end
+            unless surv_no_other.empty?
+              puts "  & Multivalued questions with an other option but no other question:"
+              surv_no_other.each do |var|
+                puts "    - #{var}"
+              end
+            end
           end
         else
           puts "There is no MDES table #{table_name}"
         end
       end
+    end
+  end
+
+  task :mdes_tree => :environment do
+    Survey.most_recent_for_each_title.each do |survey|
+      actual_title = survey.title.split(' ').first
+      puts
+      puts actual_title
+
+      tables = survey.mdes_table_map.
+        collect { |ti, tc| tc[:table] }.uniq.
+        collect { |t| NcsNavigatorCore.mdes[t] || fail("No MDES table #{t}") }
+
+      parent_children = {}
+      tables.each do |t|
+        parent = t.instrument_table_tree[1]
+        parent_children[parent] ||= []
+        parent_children[parent] << t
+      end
+
+      dump_tree = lambda { |children, depth|
+        (children || []).each do |child|
+          puts ('  ' * depth) + child.name
+          dump_tree[parent_children[child], depth + 1]
+        end
+      }
+
+      dump_tree[parent_children[nil], 1]
+    end
+  end
+
+  desc 'Lists the MDES tables that have no corresponding instrument'
+  task :unmapped_tables => :environment do
+    mapped_tables = Survey.most_recent_for_each_title.
+      collect { |s| s.mdes_table_map.collect { |ti, tc| tc[:table] } }.
+      flatten.uniq
+    all_tables = NcsNavigatorCore.mdes.transmission_tables.
+      select { |t| t.instrument_table? }.
+      collect(&:name)
+
+    (all_tables - mapped_tables).each do |table|
+      puts table
     end
   end
 end
