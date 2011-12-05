@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'ncs_navigator/core/warehouse'
 
 module NcsNavigator::Core::Warehouse
-  describe Enumerator, :clean_with_truncation, :slow do
+  describe OperationalEnumerator, :clean_with_truncation, :slow do
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     let(:wh_config) {
@@ -15,11 +15,11 @@ module NcsNavigator::Core::Warehouse
     }
 
     it 'can be created' do
-      Enumerator.create_transformer(wh_config).should_not be_nil
+      OperationalEnumerator.create_transformer(wh_config).should_not be_nil
     end
 
     it 'uses the correct bcdatabase config' do
-      Enumerator.bcdatabase[:name].should == 'ncs_navigator_core'
+      OperationalEnumerator.bcdatabase[:name].should == 'ncs_navigator_core'
     end
 
     let(:bcdatabase_config) {
@@ -30,7 +30,7 @@ module NcsNavigator::Core::Warehouse
       end
     }
     let(:enumerator) {
-      Enumerator.new(wh_config, :bcdatabase => bcdatabase_config)
+      OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
     }
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }
@@ -48,11 +48,11 @@ module NcsNavigator::Core::Warehouse
     shared_context 'mapping test' do
       before do
         # ignore unused so we can see the mapping failures
-        Enumerator.on_unused_columns :ignore
+        OperationalEnumerator.on_unused_columns :ignore
       end
 
       after do
-        Enumerator.on_unused_columns :fail
+        OperationalEnumerator.on_unused_columns :fail
       end
 
       def verify_mapping(core_field, core_value, wh_field, wh_value=nil)
@@ -635,7 +635,9 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe "a producer's metadata" do
-      let(:producer) { Enumerator.record_producers.find { |rp| rp.name == :participants } }
+      let(:producer) {
+        OperationalEnumerator.record_producers.find { |rp| rp.name == :participants }
+      }
       let(:column_map) { producer.column_map(Participant.attribute_names) }
 
       it 'includes the MDES model' do

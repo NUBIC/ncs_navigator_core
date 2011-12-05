@@ -35,10 +35,8 @@ survey "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1" do
     dependency :rule=>"A"
     condition_A :q_PREGNANT, "==", :a_2
 
-    q_CONTACT "To help us keep in touch with you, please provide us with all of your current contact information below and
-    let us know the best way to reach you by marking the box beside your preference.",
-    :data_export_identifier=>"PPG_SAQ.CONTACT"
-    a :text
+    label_CONTACT "To help us keep in touch with you, please provide us with all of your current contact information below and
+    let us know the best way to reach you by marking the box beside your preference."
 
     q_HOME_ADDRESS "Residence (Street address, City, State, Zip Code)",
     :data_export_identifier=>"PPG_SAQ.HOME_ADDRESS"
@@ -48,9 +46,7 @@ survey "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1" do
     :data_export_identifier=>"PPG_SAQ.MAIL_ADDRESS"
     a :text
 
-    q_PHONE "Please provide us with all preferred, private telephone numbers where you can be reached.",
-    :data_export_identifier=>"PPG_SAQ.PHONE"
-    a :string
+    label_PHONE "Please provide us with all preferred, private telephone numbers where you can be reached."
 
     q_HOME_PHONE "Home: ",
     :data_export_identifier=>"PPG_SAQ.HOME_PHONE"

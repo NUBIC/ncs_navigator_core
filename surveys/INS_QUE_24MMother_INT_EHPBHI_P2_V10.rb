@@ -881,7 +881,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
 
       q_SUPPL_FREQ_UNIT "Unit of how often did/does {C_FNAME or YOUR CHILD} use or take {SUPPLMED}?",
       :pick => :one,
-      :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_SUPPL.SUPPL_FREQ_UNIT"
+      :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_HABITS.SUPPLE_FREQ_UNIT"
       a_1 "Per day"
       a_2 "Per week"
       a_3 "Per month"
@@ -1943,7 +1943,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_2 "Don't know"
 
       q_CONTACT_RELATE2_OTH "Other relationship of second contact", :pick=>:one,
-      :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.CONTACT_RELATE_2_OTH"
+      :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.CONTACT_RELATE2_OTH"
       a_1 "Specify", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -1975,8 +1975,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
       a_neg_2 "Don't know"
 
       q_C_CITY_2 "City",
-      :pick=>:one,
-      :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.C_CITY_2"
+      :pick=>:one
       a :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
@@ -2063,8 +2062,7 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
 
     label "Thank you for participating in the National Children’s Study and for taking the time to complete this survey.
     This concludes the interview portion of our visit.",
-    :help_text => "Explain SAQs and return process",
-    :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.END"
+    :help_text => "Explain SAQs and return process"
 
     q_hipv1_TIME_STAMP_15 "Insert date/time stamp", :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER.TIME_STAMP_15"
     a :datetime, :custom_class => "datetime"

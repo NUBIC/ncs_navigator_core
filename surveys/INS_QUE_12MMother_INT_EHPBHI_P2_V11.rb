@@ -898,7 +898,7 @@ survey "INS_QUE_12MMother_INT_EHPBHI_P2_V1.1" do
     q_LICE_2 "Who did you treat, was it {C_FNAME or YOUR CHILD}, someone else, or both?",
     :help_text => "Probe: \"Anyone else?\". Select all that apply",
     :pick => :any,
-    :data_export_identifier=>"TWELVE_MTH_MOTHER_DETAIL.LICE_2"
+    :data_export_identifier=>"TWELVE_MTH_MOTHER_LICE.LICE_2"
     a_1 "{C_FNAME or YOUR CHILD}"
     a_2 "Someone else"
     a_3 "Both {C_FNAME or YOUR CHILD} and someone else"

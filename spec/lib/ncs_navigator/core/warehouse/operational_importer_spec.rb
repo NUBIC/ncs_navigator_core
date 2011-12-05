@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'ncs_navigator/core/warehouse'
 
 module NcsNavigator::Core::Warehouse
-  describe Importer, :clean_with_truncation do
+  describe OperationalImporter, :clean_with_truncation do
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     before(:all) do
@@ -46,23 +46,23 @@ module NcsNavigator::Core::Warehouse
     end
 
     let(:importer) {
-      Importer.new(wh_config)
+      OperationalImporter.new(wh_config)
     }
 
     let(:enumerator) {
-      Enumerator.new(wh_config, :bcdatabase => bcdatabase_config)
+      OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
     }
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        Importer.automatic_producers.size.should == 22
+        OperationalImporter.automatic_producers.size.should == 22
       end
 
       [
         MdesModule::LinkContact,
       ].each do |manual|
         it "handles #{manual} manually" do
-          Importer.automatic_producers.collect(&:model).should_not include(manual)
+          OperationalImporter.automatic_producers.collect(&:model).should_not include(manual)
         end
       end
     end

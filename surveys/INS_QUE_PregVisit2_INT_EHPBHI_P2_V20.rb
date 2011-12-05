@@ -80,8 +80,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       label "Participant is not eligible"
 
       label "Thank you for participating in the National Children’s Study and for taking the time to answer our questions.
-       This concludes the interview portion of our visit.",
-       :data_export_identifier=>"PREG_VISIT_2_2.END"
+       This concludes the interview portion of our visit."
     end
 
     label "Case for supervisor review at SC to confirm age eligibility post-interview"
@@ -111,7 +110,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       a_neg_2 "Don't know"
 
       label "Thank you for participating in the National Children’s Study and for taking the time to answer our questions.
-      This concludes the interview portion of our visit.", :data_export_identifier=>"PREG_VISIT_2_2.END"
+      This concludes the interview portion of our visit."
       dependency :rule=> "A or B"
       condition_A :q_pregnant, "==", :a_neg_1
       condition_B :q_pregnant, "==", :a_neg_2
@@ -135,7 +134,7 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
 
       label "Again, I’d like to say how sorry I am for your loss. We’ll send the information packet you requested as soon as possible.
       Please accept our condolences. Thank you for your time.",
-      :help_text => "If loss of pregnancy, end interview. Do not administer SAQs.", :data_export_identifier=>"PREG_VISIT_2_2.END_INFO"
+      :help_text => "If loss of pregnancy, end interview. Do not administer SAQs."
       dependency :rule=> "A"
       condition_A :q_loss_info, "==", :a_1
 
