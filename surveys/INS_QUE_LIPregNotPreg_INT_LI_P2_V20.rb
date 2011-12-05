@@ -166,9 +166,10 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
     condition_A :q_PREGNANT, "==", :a_1
 
     group "Loss case" do
-      dependency :rule => "A or B"
+      dependency :rule => "A or (B and C)"
       condition_A :q_PREGNANT, "==", :a_3
       condition_B :q_PREGNANT, "==", :a_2
+      condition_C :q_prepopulated_ppg_status, "==", {:integer_value => "1"}
 
       label_CPI001A "I’m so sorry to hear that you’ve lost your baby. I know this can be a hard time.",
       :help_text => "Use social cues and professional judgment in response. If SC has pregnancy loss information
