@@ -259,7 +259,7 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     q_TIME_STAMP_3 "Insert date/time stamp", :data_export_identifier=>"THREE_MTH_MOTHER.TIME_STAMP_3"
     a :datetime, :custom_class => "datetime"
 
-    q_HH_PRIMARY_LANG "What is the primary language spoken in your home?", :pick => :any,
+    q_HH_PRIMARY_LANG "What is the primary language spoken in your home?", :pick => :one,
     :data_export_identifier=>"THREE_MTH_MOTHER.HH_PRIMARY_LANG"
     a_1 "English"
     a_2 "Spanish"
