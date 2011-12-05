@@ -87,6 +87,9 @@ describe Contact do
     
     before(:each) do
       create_missing_in_error_ncs_codes(Instrument)
+      @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+      @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+      @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
     end
     
     it "knows all contact links associated with this contact" do
@@ -119,6 +122,432 @@ describe Contact do
       c.instruments.reload
       c.contact_links.should == [l1, l2]
       c.instruments.should == [i1, i2]
+    end
+    
+    describe "setting the language and interpreter values" do
+      
+      before(:each) do
+        create_missing_in_error_ncs_codes(Contact)
+        
+        @survey = create_survey_with_language_and_interpreter_data
+        @person = Factory(:person)
+        @english = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'English', :local_code => 1)
+        @spanish = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Spanish', :local_code => 2)
+                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Spanish', :local_code => 1)
+        @farsi   = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Farsi',   :local_code => 17)
+                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Farsi',   :local_code => 16)
+                   
+        @legitimate_skip  = Factory(:ncs_code, :list_name => 'TRANSLATION_METHOD_CL3', :display_text => 'Legitimate Skip', :local_code => -3)
+        @sign_interpreter = Factory(:ncs_code, :list_name => 'TRANSLATION_METHOD_CL3', :display_text => 'Sign Language Interpreter', :local_code => 6)
+ 
+      end
+      
+      it "sets the contact language to English if the instrument was taken in English" do
+
+        contact = Factory(:contact, :contact_language => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_language.should == @english
+
+      end
+      
+      it "sets the contact language to Spanish if the instrument was taken in Spanish" do
+        contact = Factory(:contact, :contact_language => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_language.should == @spanish
+        
+      end
+      
+      it "sets the contact language to Farsi if the instrument was taken in Farsi" do
+        contact = Factory(:contact, :contact_language => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "16" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 2
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_language.should == @farsi
+        
+      end
+      
+      it "sets the contact language to some other specified language if the instrument was taken in some other specified language" do
+        contact = Factory(:contact, :contact_language => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        language_value = "Ojibwa"
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "-5" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG_OTH"
+            answer = q.answers.select { |a| a.response_class == "string" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :string_value => language_value, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 3
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_language.local_code.should == -4
+        contact.contact_language_other.should == language_value
+      end
+      
+      
+      it "sets the contact interpret to Legitimate Skip if no Interpreter was used" do
+
+        contact = Factory(:contact, :contact_interpret => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 1
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_interpret.should == @legitimate_skip
+        
+      end
+
+      it "sets the contact interpret to the Interpreter that was used" do
+
+        contact = Factory(:contact, :contact_interpret => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "6" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 2
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_interpret.should == @sign_interpreter
+        
+      end
+
+      it "sets the contact interpret to the other interpreter method" do
+
+        contact = Factory(:contact, :contact_interpret => nil)
+        person  = Factory(:person)
+
+        survey_section = @survey.sections.first
+        response_set, instrument = person.start_instrument(@survey)
+        response_set.responses.size.should == 0
+        
+        interpreter_value = "Other interpreter"
+
+        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "-5" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH"
+            answer = q.answers.select { |a| a.response_class == "string" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :string_value => interpreter_value, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 3
+
+        person = Person.find(person.id)
+
+        contact.set_language_and_interpreter_data(person)
+        contact.save!
+        contact.contact_interpret.local_code.should == -4
+        contact.contact_interpret_other.should == interpreter_value
+        
+      end
+      
+      
+    end
+    
+    describe "auto-completing MDES data" do
+
+      before(:each) do
+        create_missing_in_error_ncs_codes(Contact)
+        
+        @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+        @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+        @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
+        
+        @ncs_participant = Factory(:ncs_code, :list_name => 'CONTACTED_PERSON_CL1', :display_text => "NCS Participant", :local_code => 1)
+        
+        @telephone = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Telephone', :local_code => 3)
+        @mail      = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Mail', :local_code => 2)
+        @in_person = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'In-Person', :local_code => 1)
+        
+        @survey = create_survey_with_language_and_interpreter_data
+        @person = Factory(:person)
+        @english = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'English', :local_code => 1)
+        @spanish = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Spanish', :local_code => 2)
+                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Spanish', :local_code => 1)
+        @farsi   = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Farsi',   :local_code => 17)
+                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Farsi',   :local_code => 16)
+        
+      end
+
+      describe "for a telephone contact" do
+        
+        before(:each) do
+          @contact = Factory(:contact, :contact_type => @telephone, :contact_language => nil, :contact_interpret => nil, 
+                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+        end
+        
+        it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
+
+          response_set, instrument = @person.start_instrument(@survey)
+          response_set.responses.size.should == 0
+
+          link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
+          
+          @contact.populate_post_survey_attributes(instrument)
+          @contact.save!
+          @contact.who_contacted.should == @ncs_participant
+        end
+        
+        it "does not set the who_contacted if there was no instrument" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.who_contacted.local_code.should == -4
+        end
+        
+        it "sets the contact_location to missing in error" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_location.local_code.should == -4
+        end
+        
+        it "sets the contact_private code to Yes" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_private.to_s.should == "Yes"
+        end
+        
+        it "sets the contact_private_detail to the text of the contact type" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_private_detail.should == @contact.contact_type.to_s
+        end
+        
+        it "sets the contact_distance to 0.0" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_distance.should == 0.0
+        end
+        
+      end
+      
+      describe "for a mail contact" do
+
+        before(:each) do
+          @contact = Factory(:contact, :contact_type => @mail, :contact_language => nil, :contact_interpret => nil, 
+                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+        end
+        
+        it "sets the contact_location to missing in error" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_location.local_code.should == -4
+        end
+        
+        it "sets the contact_private code to Yes" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_private.to_s.should == "Yes"
+        end
+        
+        it "sets the contact_private_detail to the text of the contact type" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_private_detail.should == @contact.contact_type.to_s
+        end
+        
+        it "sets the contact_distance to 0.0" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_distance.should == 0.0
+        end
+        
+      end
+      
+      describe "for an in person contact" do
+
+        before(:each) do
+          @contact = Factory(:contact, :contact_type => @in_person, :contact_language => nil, :contact_interpret => nil, 
+                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+        end
+
+        it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
+
+          response_set, instrument = @person.start_instrument(@survey)
+          response_set.responses.size.should == 0
+
+          link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
+          
+          @contact.populate_post_survey_attributes(instrument)
+          @contact.save!
+          @contact.who_contacted.should == @ncs_participant
+        end
+        
+        it "does not set the who_contacted if there was no instrument" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.who_contacted.local_code.should == -4
+        end
+
+        it "sets the contact_location to missing in error" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_location.local_code.should == -4
+        end
+        
+        it "sets the contact_private code to Yes" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_private.local_code.should == -4
+        end
+        
+        it "sets the contact_private_detail to the text of the contact type" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_private_detail.should be_nil
+        end
+        
+        it "sets the contact_distance to 0.0" do
+          @contact.populate_post_survey_attributes(nil)
+          @contact.save!
+          @contact.contact_distance.should be_nil
+        end
+        
+      end
+      
+      
+      describe "setting the disposition based on instrument responses" do
+        
+        it "sets the disposition to complete in English"        
+        
+        it "sets the disposition to complete in Spanish"
+        
+        it "sets the disposition to complete in Other Language"
+
+      end
+
+      
     end
     
   end

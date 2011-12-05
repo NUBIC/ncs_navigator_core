@@ -53,6 +53,14 @@ class Address < ActiveRecord::Base
   belongs_to :address_description,  :conditions => "list_name = 'RESIDENCE_TYPE_CL1'",      :foreign_key => :address_description_code,  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :state,                :conditions => "list_name = 'STATE_CL1'",               :foreign_key => :state_code,                :class_name => 'NcsCode', :primary_key => :local_code
   
+  def self.home_address_type
+    NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first
+  end
+  
+  def self.mailing_address_type
+    NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 4).first
+  end  
+  
   ##
   # Concatentate Address information into a complete string
   # if that data exists.

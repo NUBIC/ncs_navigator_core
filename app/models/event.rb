@@ -170,5 +170,53 @@ class Event < ActiveRecord::Base
       end
     end
   end
+  
+  ##
+  # Given an instrument and contact, presumably after the instrument has been administered, set attributes on the
+  # event that can be inferred based on the instrument and type of contact
+  # @param [Instrument]
+  # @param [Contact]
+  def populate_post_survey_attributes(contact = nil, response_set = nil)
+    set_event_disposition_category(contact)
+    set_event_breakoff(response_set)
+  end
+  
+  def set_event_disposition_category(contact)
+    case event_type.to_s 
+    when /Pregnancy Screen/
+      # Pregnancy Screener Disposition Category Local Code = 2
+      self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 2)
+    when /Household/
+      # Household Event Disposition Category Local Code = 1
+      self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 1)
+    end
+    
+    if self.event_disposition_category.to_i <= 0
+      
+      case contact.contact_type.to_i
+      when 1 # in person contact
+        # General Study Visit Category Local Code = 3
+        self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 3)
+      when 2 # mail contact
+        # Mail Disposition Category Local Code = 4
+        self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 4)
+      when 3 # telephone contact
+        # Telephone Disposition Category Local Code = 5
+        self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 5)
+      when 5, 6 # text or website
+        # Website Disposition Category Local Code = 6
+        self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 6)
+      end
+    end
+  end
+  private :set_event_disposition_category
+  
+  def set_event_breakoff(response_set)
+    if response_set 
+      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1 
+      self.event_breakoff = NcsCode.for_attribute_name_and_local_code(:event_breakoff_code, local_code)
+    end
+  end
+  private :set_event_breakoff
 
 end

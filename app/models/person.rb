@@ -253,6 +253,26 @@ class Person < ActiveRecord::Base
     end
     response_set
   end
+  
+  
+  ##
+  # Returns the number of times (0 based) this instrument has been taken for the given survey
+  # @param [Survey]
+  # @return [Fixnum]
+  def instrument_repeat_key(survey)
+    response_sets_for_survey = response_sets.select { |rs| rs.survey.title == survey.title }
+    response_sets_for_survey.blank? ? 0 : response_sets_for_survey.size - 1
+  end
+
+  ##
+  # Returns the number of times (0 based) the person has been associated with the event type of the 
+  # given event
+  # @param [Event]
+  # @return [Fixnum]
+  def event_repeat_key(event)
+    contacts_for_event = contact_links.select { |link| link.event && link.event.event_type == event.event_type }
+    contacts_for_event.blank? ? 0 : contacts_for_event.size - 1
+  end
 
   ##
   # Return the currently active ContactLink, if a person is associated with a Contact through

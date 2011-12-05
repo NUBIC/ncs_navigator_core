@@ -252,7 +252,7 @@ describe Event do
     end
 
   end
-
+  
   describe '.TYPE_ORDER' do
     it 'has no duplicates' do
       Event::TYPE_ORDER.uniq.size.should == Event::TYPE_ORDER.size
@@ -266,5 +266,145 @@ describe Event do
     it 'has an item for every event type' do
       Event::TYPE_ORDER.size.should == 35
     end
+  end
+  
+  context "auto-completing MDES data" do
+
+    before(:each) do
+      create_missing_in_error_ncs_codes(Event)
+
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+      @participant.person = @person
+      @ppg_fu = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Probability", :local_code => 7)
+      @preg_screen = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Screener", :local_code => 29)
+      @hh = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Household Enumeration", :local_code => 1)
+      
+      [
+        [1, "Household Enumeration Events"],
+        [2, "Pregnancy Screening Events"],
+        [3, "General Study Visits (including CASI SAQs)"],
+        [4, "Mailed Back Self Administered Questionnaires"],
+        [5, "Telephone Interview Events"],
+        [6, "Internet Survey Events"]
+      ].each do |local_code, display_text|
+        Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => display_text, :local_code => local_code)
+      end
+      
+      @telephone = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Telephone', :local_code => 3)
+      @mail      = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Mail', :local_code => 2)
+      @in_person = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'In-Person', :local_code => 1)
+      @txtmsg    = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Text Message', :local_code => 5)
+      @website   = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Website', :local_code => 6)
+      
+      @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+      @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+      
+    end
+    
+    describe "repeating the event" do
+
+      it "returns 0 for the event_repeat_key if this is the first time taking the instrument" do
+        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        Factory(:contact_link, :event => event, :person => @person)
+        @person.event_repeat_key(event).should == 0
+      end
+      
+      it "returns 1 for the event_repeat_key if this is the second time taking the instrument" do
+        event1 = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        Factory(:contact_link, :event => event1, :person => @person)
+        event2 = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        Factory(:contact_link, :event => event2, :person => @person)
+        @person.event_repeat_key(event2).should == 1
+      end
+      
+    end
+    
+    describe "the disposition category" do
+      
+      it "is first determined by the event type" do
+        event = Event.create(:participant => @participant, :event_type => @preg_screen, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes
+        event.save!
+        event.event_disposition_category.local_code.should == 2
+        
+        event = Event.create(:participant => @participant, :event_type => @hh, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes
+        event.save!
+        event.event_disposition_category.local_code.should == 1
+      end
+      
+      it "is next determined by the contact type" do
+        # telephone
+        contact = Factory(:contact, :contact_type => @telephone)
+        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(contact)
+        event.save!
+        event.event_disposition_category.local_code.should == 5
+        
+        # mail
+        contact = Factory(:contact, :contact_type => @mail)
+        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(contact)
+        event.save!
+        event.event_disposition_category.local_code.should == 4
+        
+        # txt
+        contact = Factory(:contact, :contact_type => @txtmsg)
+        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(contact)
+        event.save!
+        event.event_disposition_category.local_code.should == 6
+        
+        # website
+        contact = Factory(:contact, :contact_type => @website)
+        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(contact)
+        event.save!
+        event.event_disposition_category.local_code.should == 6
+        
+        # in person
+        contact = Factory(:contact, :contact_type => @in_person)
+        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(contact)
+        event.save!
+        event.event_disposition_category.local_code.should == 3
+        
+      end
+
+    end
+    # = f.text_field :event_repeat_key
+    # = render "shared/disposition_code", { :f => f, :code => :event_disposition }
+
+    describe "the breakoff code" do
+    
+      it "should set the breakoff code to no if the reponse set has questions answered" do
+        response_set = Factory(:response_set)
+        response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(true)
+        event = Event.create(:participant => @participant, :event_type => @preg_screen, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(nil, response_set)
+        event.save!
+        event.event_breakoff.should == @n
+      end
+
+
+      it "should set the breakoff code to yes if the reponse set does not have questions answered in each section" do
+        response_set = Factory(:response_set)
+        response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
+        event = Event.create(:participant => @participant, :event_type => @preg_screen, :psu_code => NcsNavigatorCore.psu_code)
+        event.populate_post_survey_attributes(nil, response_set)
+        event.save!
+        event.event_breakoff.should == @y
+      end
+      
+    end
+
+    # = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type" }
+    # = f.text_field :event_incentive_cash
+    # = f.text_field :event_incentive_noncash
+    # = f.text_area :event_comment
+    
+    
   end
 end

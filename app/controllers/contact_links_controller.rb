@@ -10,10 +10,17 @@ class ContactLinksController < ApplicationController
 		if params[:close_contact].blank? && @response_set.blank? && @contact_link.person.upcoming_events.select { |e| e.to_s.include?('Pregnancy Screener') }.empty?
 			redirect_to select_instrument_contact_link_path(@contact_link)
 		else
-			@person	= @contact_link.person
-			@survey	= @response_set.survey if @response_set
+			@person	 = @contact_link.person
+			@contact = @contact_link.contact
+			@survey	 = @response_set.survey if @response_set
 
 		  @instrument = find_or_create_instrument(@survey)
+		  
+		  @contact.set_language_and_interpreter_data(@person)
+      @contact.populate_post_survey_attributes(@instrument)
+      
+      @event.populate_post_survey_attributes(@contact, @response_set)
+      @event.event_repeat_key = @person.event_repeat_key(@event)
 		end
 		
 		set_time_and_dates
@@ -63,6 +70,12 @@ class ContactLinksController < ApplicationController
 		
     @instrument   = find_or_create_instrument(@survey)
   	set_instrument_time_and_date(@contact_link.contact)
+  	
+    @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
+    @instrument.set_instrument_breakoff(@response_set)    
+    
+    @contact_link.contact.set_language_and_interpreter_data(@person)
+    @contact_link.contact.populate_post_survey_attributes(@instrument)
 	end
 	
 	def finalize_instrument
@@ -106,9 +119,10 @@ class ContactLinksController < ApplicationController
   	   	instrument.instrument_start_date = instrument.created_at.to_date
   	   	instrument.instrument_end_date = Date.today
   	   	instrument.instrument_start_time = instrument.created_at.strftime("%H:%M")
-  	   	instrument.instrument_end_time = contact.contact_end_time
+  	   	instrument.instrument_end_time = Time.now.strftime("%H:%M")
   		end
 	  end
+
 	  
 	  def find_or_create_instrument(survey)
       @contact_link.instrument

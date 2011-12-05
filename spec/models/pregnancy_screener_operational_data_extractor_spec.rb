@@ -207,6 +207,8 @@ describe PregnancyScreenerOperationalDataExtractor do
   it "extracts mail address operational data from the survey responses" do
     
     state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+    home = Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Home", :local_code => 1)
+    mail = Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Mailing", :local_code => 4)
     
     person = Factory(:person)
     person.addresses.size.should == 0
@@ -250,7 +252,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     person.addresses.size.should == 1
     address = person.addresses.first
     address.to_s.should == "123 Easy St. Chicago IL 65432-1234"
-    
+    address.address_type.should == mail
   end
   
   context "extracting telephone operational data from the survey responses" do

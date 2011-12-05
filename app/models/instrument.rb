@@ -53,6 +53,8 @@ class Instrument < ActiveRecord::Base
   
   validates_presence_of :instrument_version
   
+  before_create :set_default_codes
+  
   ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1 
   # cf. instrument_type belongs_to association
@@ -64,5 +66,27 @@ class Instrument < ActiveRecord::Base
   def complete?
     !instrument_end_date.blank? && !instrument_end_time.blank?
   end
+  
+  
+  def set_instrument_breakoff(response_set)
+    if response_set 
+      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1 
+      self.instrument_breakoff = NcsCode.for_attribute_name_and_local_code(:instrument_breakoff_code, local_code)
+    end
+  end
+  
+  
+  private
+  
+    ##
+    # Currently this sets the supervisor review and data problem code to No
+    # These values can and should be updated by the user/interviewer in case these are not the correct
+    # values
+    def set_default_codes
+      [:supervisor_review, :data_problem, :instrument_mode, :instrument_method].each do |asso|
+        val = NcsCode.for_attribute_name_and_local_code("#{asso}_code".to_sym, 2)
+        self.send("#{asso}=", val) if val
+      end
+    end
   
 end

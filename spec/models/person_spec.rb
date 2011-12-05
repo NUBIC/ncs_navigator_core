@@ -48,6 +48,9 @@ require 'spec_helper'
 describe Person do
   before(:each) do
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+    @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+    @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+    @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
   end
 
   it "creates a new instance given valid attributes" do
@@ -369,6 +372,69 @@ describe Person do
       can_text_to_setup_appts.size.should == 1
       can_text_to_setup_appts.first.to_s.should == "Yes"
     end
+    
+    context "repeating the instrument" do
+      
+      before(:each) do
+        create_missing_in_error_ncs_codes(Instrument)
+        InstrumentEventMap.stub!(:version).and_return("1.0")
+        InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
+        @person = Factory(:person)
+        @survey = create_test_survey_for_person
+      end
+      
+      it "returns 0 for the instrument_repeat_key if this is the first time taking the instrument" do
+        response_set, instrument = @person.start_instrument(@survey)
+        @person.instrument_repeat_key(instrument.survey).should == 0
+      end
+      
+      it "returns 1 for the instrument_repeat_key if this is the second time taking the instrument" do
+        response_set0, instrument0 = @person.start_instrument(@survey)
+        response_set1, instrument1 = @person.start_instrument(@survey)
+        @person.instrument_repeat_key(instrument1.survey).should == 1
+      end
+      
+    end
+    
+    context "setting default instrument values" do
+      
+      before(:each) do
+        create_missing_in_error_ncs_codes(Instrument)
+        InstrumentEventMap.stub!(:version).and_return("1.0")
+        InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
+        @person = Factory(:person)
+        @survey = create_test_survey_for_person
+        
+      end
+      
+      it "should set the supervisor_review_code" do
+        response_set, instrument = @person.start_instrument(@survey)
+        instrument.supervisor_review.should == @n
+      end
+      
+      it "should set the data_problem_code" do
+        response_set, instrument = @person.start_instrument(@survey)
+        instrument.data_problem.should == @n
+      end
+      
+      it "should set the instrument_mode_code" do
+        telephone_computer_administered = Factory(:ncs_code, :list_name => 'INSTRUMENT_ADMIN_MODE_CL1', :local_code => 2, :display_text => "Telephone, Computer Assisted (CATI)")
+        response_set, instrument = @person.start_instrument(@survey)
+        instrument.instrument_mode.should == telephone_computer_administered
+      end
+      
+      it "should set the instrument_method_code" do
+        interviewer_administered = Factory(:ncs_code, :list_name => 'INSTRUMENT_ADMIN_METHOD_CL1', :local_code => 2, :display_text => "Interviewer Administered")
+        response_set, instrument = @person.start_instrument(@survey)
+        instrument.instrument_method.should == interviewer_administered
+      end
+      
+      it "should set the instrument_breakoff_code"
+      
+      it "should set the instrument_status_code"      
+      
+    end
+        
   end
 
   # TODO: uncomment when dwelling units can and cannot have a tsu id

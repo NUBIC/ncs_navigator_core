@@ -5,6 +5,13 @@ class PregnancyScreenerOperationalDataExtractor
 
   INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
   
+  ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
+  CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG"
+  CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_OTH"
+  INTERPRET             = "#{INTERVIEW_PREFIX}.INTERPRET"
+  CONTACT_INTERPRET     = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET"
+  CONTACT_INTERPRET_OTH = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH"
+  
   PERSON_MAP = {
     "#{INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
     "#{INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
@@ -86,8 +93,8 @@ class PregnancyScreenerOperationalDataExtractor
     def extract_data(response_set)
       person = response_set.person
       person.participant = Participant.new if person.participant.blank?
-      address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu)
-      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu)
+      address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.home_address_type)
+      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type)
 
       home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu)
       cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu)
