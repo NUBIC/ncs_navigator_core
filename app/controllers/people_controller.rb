@@ -75,7 +75,8 @@ class PeopleController < ApplicationController
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
     rs, instrument = @person.start_instrument(survey) if rs.nil? or rs.complete?
-    rs.update_attribute(:contact_link_id, @contact_link.id)
+    instrument.event = @contact_link.event
+    instrument.save!
     @contact_link.instrument = instrument
     @contact_link.save!
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs.access_code))

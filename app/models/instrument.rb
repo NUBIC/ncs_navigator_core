@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: instruments
 #
@@ -50,6 +50,7 @@ class Instrument < ActiveRecord::Base
   
   belongs_to :person
   belongs_to :survey
+  has_one :response_set
   
   validates_presence_of :instrument_version
   

@@ -130,6 +130,22 @@ describe InstrumentEventMap do
     
   end
   
+  context "finding the instrument type" do
+    
+    before(:each) do
+      @psi = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => "Pregnancy Screener Interview (HI,LI)")
+    end
+    
+    # INS_QUE_PregScreen_INT_HILI_P2_V2.0 2
+    it "knows the instrument type for a survey" do
+      InstrumentEventMap.instrument_type("INS_QUE_PregScreen_INT_HILI_P2_V2.0").should == @psi
+    end
+    
+    it "knows the instrument_type for an updated survey" do
+      InstrumentEventMap.instrument_type("INS_QUE_PregScreen_INT_HILI_P2_V2.0 2").should == @psi
+    end
+  end
+  
 end
 
 

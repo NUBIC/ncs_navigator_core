@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: contact_links
 #
@@ -41,8 +41,6 @@ describe ContactLink do
   it { should belong_to(:event) }
   it { should belong_to(:instrument) }
   # it { should belong_to(:provider) }
-  
-  it { should have_one(:response_set) }
 
   it { should validate_presence_of(:staff_id) }
   it { should validate_presence_of(:contact) }

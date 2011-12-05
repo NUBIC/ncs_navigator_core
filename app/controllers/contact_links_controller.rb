@@ -3,9 +3,10 @@ class ContactLinksController < ApplicationController
 	# GET /contact_links/1/edit
 	def edit
 		@contact_link = ContactLink.find(params[:id])
-		@response_set = @contact_link.response_set
 		@event        = @contact_link.event
-		
+		@instrument   = find_or_create_instrument(@survey)
+		@response_set = @instrument.response_set
+	  
 		# TODO: remove Pregnancy Screener check
 		if params[:close_contact].blank? && @response_set.blank? && @contact_link.person.upcoming_events.select { |e| e.to_s.include?('Pregnancy Screener') }.empty?
 			redirect_to select_instrument_contact_link_path(@contact_link)
@@ -13,8 +14,6 @@ class ContactLinksController < ApplicationController
 			@person	 = @contact_link.person
 			@contact = @contact_link.contact
 			@survey	 = @response_set.survey if @response_set
-
-		  @instrument = find_or_create_instrument(@survey)
 		  
 		  @contact.set_language_and_interpreter_data(@person)
       @contact.populate_post_survey_attributes(@instrument)
@@ -63,12 +62,13 @@ class ContactLinksController < ApplicationController
 	
 	def edit_instrument
 		@contact_link = ContactLink.find(params[:id])
-		@response_set = @contact_link.response_set
 		
 		@person				= @contact_link.person
-		@survey				= @response_set.survey 
 		
     @instrument   = find_or_create_instrument(@survey)
+		@response_set = @instrument.response_set
+		@survey				= @response_set.survey
+
   	set_instrument_time_and_date(@contact_link.contact)
   	
     @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)

@@ -7,13 +7,13 @@ module NcsNavigator::Core::Warehouse
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     STATIC_RECORD_FIELD_MAPPING = {
-      :event_id => 'contact_link.event.public_id',
-      :event_type => 'contact_link.event.event_type_code',
-      :event_repeat_key => 'contact_link.event.event_repeat_key',
-      :instrument_id => 'contact_link.instrument.public_id',
-      :instrument_version => 'contact_link.instrument.instrument_version',
-      :instrument_repeat_key => 'contact_link.instrument.instrument_repeat_key',
-      :p_id => 'contact_link.event.participant.public_id'
+      :event_id => 'instrument.event.public_id',
+      :event_type => 'instrument.event.event_type_code',
+      :event_repeat_key => 'instrument.event.event_repeat_key',
+      :instrument_id => 'instrument.public_id',
+      :instrument_version => 'instrument.instrument_version',
+      :instrument_repeat_key => 'instrument.instrument_repeat_key',
+      :p_id => 'instrument.event.participant.public_id'
     }
 
     ##
