@@ -13,20 +13,7 @@ module NcsNavigator::Core::Warehouse
     def create_emitter
       @emitter ||= NcsNavigator::Warehouse::XmlEmitter.new(
         @wh_config, Rails.root + 'tmp/unused_imported_instrument_tables.xml',
-        :zip => false, :'include-pii' => true, :tables => unused_tables)
-    end
-
-    private
-
-    def unused_tables
-      instr_tables = ::NcsNavigatorCore.mdes.transmission_tables.
-        select { |t| t.instrument_table? }.collect { |t| t.name }
-
-      used_tables = Survey.most_recent_for_each_title.collect { |s|
-        s.mdes_table_map.values.collect { |tc| tc[:table] }
-      }.flatten
-
-      instr_tables - used_tables
+        :zip => false, :'include-pii' => true, :tables => Survey.mdes_unused_instrument_tables)
     end
   end
 end
