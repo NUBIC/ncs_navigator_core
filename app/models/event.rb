@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20111110015749
+# Schema version: 20111205175632
 #
 # Table name: events
 #
@@ -27,6 +26,7 @@
 #  updated_at                      :datetime
 #
 
+# -*- coding: utf-8 -*-
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
