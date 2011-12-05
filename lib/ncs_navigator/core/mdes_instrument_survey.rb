@@ -2,6 +2,27 @@ require 'ncs_navigator/core'
 
 module NcsNavigator::Core
   module MdesInstrumentSurvey
+    extend ActiveSupport::Concern
+
+    module ClassMethods
+      def mdes_instrument_tables
+        @mdes_instrument_tables ||= most_recent_for_each_title.collect { |s|
+          s.mdes_table_map.collect { |ti, tc| tc[:table] }
+        }.flatten.uniq
+      end
+
+      def mdes_primary_instrument_tables
+        @mdes_primary_instrument_tables ||= mdes_instrument_tables.select { |name|
+          NcsNavigatorCore.mdes[name].primary_instrument_table?
+        }
+      end
+
+      def mdes_unused_instrument_tables
+        NcsNavigatorCore.mdes.transmission_tables.
+          select { |t| t.instrument_table? }.collect(&:name) - mdes_instrument_tables
+      end
+    end
+
     ##
     # Extracts the mapping to the MDES that is embedded in this
     # {Survey}'s data export identifiers.
