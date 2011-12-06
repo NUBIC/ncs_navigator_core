@@ -142,10 +142,10 @@ module NcsNavigator::Core::Warehouse
         ResponseSet.count.should == 1 # just :twq_rec
       end
 
-      it 'uses the primary table ID as its access code' do
+      it 'uses the table name plus the primary table ID as its access code' do
         importer.import
 
-        ResponseSet.first.access_code.should == 'PV11'
+        ResponseSet.first.access_code.should == 'tap_water_twq#PV11'
       end
 
       describe 'with many records' do
@@ -153,8 +153,11 @@ module NcsNavigator::Core::Warehouse
           pending 'This test is absurdly slow'
           start = Time.now
           1.upto(2793) do |i|
-            create_mdes_record(MdesModule::TapWaterTwq, i.to_s, {}, false)
-            print "\r%.3f created per sec / #{i} total" % [i.to_f / (Time.now - start)]
+            create_mdes_record(
+              MdesModule::TapWaterTwq, i.to_s,
+              {:twq_location => '-5', :twq_location_oth => "Location #{i}"},
+              false)
+            print "\r[before] %.3f created per sec / #{i} total" % [i.to_f / (Time.now - start)]
           end
           puts ' ... done'
         end
@@ -180,13 +183,13 @@ module NcsNavigator::Core::Warehouse
 
       it 'is reused for an updated instrument' do
         importer.import
-        ResponseSet.all.collect(&:access_code).should == %w(PV11)
+        ResponseSet.all.collect(&:access_code).should == %w(tap_water_twq#PV11)
 
         twq_rec.time_stamp_1 = '2010-10-01T10:01:10'
         twq_rec.save
 
         importer.import
-        ResponseSet.all.collect(&:access_code).should == %w(PV11)
+        ResponseSet.all.collect(&:access_code).should == %w(tap_water_twq#PV11)
       end
     end
 
@@ -280,7 +283,6 @@ module NcsNavigator::Core::Warehouse
         let(:question) { Question.find_by_reference_identifier('TWQ_SUBSAMPLES') }
         let(:responses) { Response.where(:question_id => question.id) }
 
-
         before do
           primary = create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1', :twq_location => '1')
           create_mdes_record(MdesModule::TapWaterTwqSubsamples, 'AK', :twq_subsamples => '3',
@@ -299,6 +301,10 @@ module NcsNavigator::Core::Warehouse
             %w(tap_water_twq_subsamples AK),
             %w(tap_water_twq_subsamples EH)
           ]
+        end
+
+        it 'has one ResponseSet per primary record' do
+          ResponseSet.count.should == 1
         end
       end
     end

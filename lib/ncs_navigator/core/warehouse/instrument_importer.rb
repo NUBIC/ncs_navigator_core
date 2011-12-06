@@ -32,40 +32,48 @@ module NcsNavigator::Core::Warehouse
       offset = 0
       while offset < count
         @progress.loading(model)
-        model.all(:limit => BLOCK_SIZE, :offset => offset).each do |instance|
-          create_or_update_response_set_for_primary_record(instance)
+        ResponseSet.transaction do
+          model.all(:limit => BLOCK_SIZE, :offset => offset).each do |instance|
+            create_or_update_response_set_for_primary_record(instance)
+          end
         end
         offset += BLOCK_SIZE
       end
     end
 
+    def record_response_set_access_code(record)
+      [record.class.mdes_table_name, record.key.first].join('#')
+    end
+
     def create_or_update_response_set_for_primary_record(record)
       survey = Survey.mdes_surveys_by_mdes_table[record.class.mdes_table_name] ||
         fail("No survey for #{record}")
+      access_code = record_response_set_access_code(record)
       @progress.increment_response_sets
       # TODO: this will not handle incremental imports when the survey
       # definition changes
-      existing = survey.response_sets.find_by_access_code(record.key.first)
-      if existing
-        update_response_set_for_record(record, existing)
+      response_set = survey.response_sets.find_by_access_code(access_code)
+      if response_set
         log.info(
           "Updating existing response set for #{access_code}")
       else
         log.info(
           "Creating new response set for #{access_code}")
-        new_rs = survey.response_sets.build.tap do |rs|
-          rs.access_code = record.key.first
-          rs.instrument = Instrument.find_by_instrument_id(record.instrument_id)
-          rs.save!
-        end
-        update_response_set_for_record(record, new_rs)
+        response_set = ResponseSet.create!(
+          :access_code => access_code,
+          :instrument_id => core_instrument_id(record.instrument_id),
+          :survey => survey
+        )
       end
+      update_response_set_for_record(survey, record, response_set)
     end
 
-    def update_response_set_for_record(record, response_set)
+    # survey is a param (instead as ref'd from response_set) so that the
+    # survey is only loaded once
+    def update_response_set_for_record(survey, record, response_set)
       # TODO: this won't work correctly for tables with multiple
       # variants (i.e., fixed values)
-      variables = response_set.survey.mdes_table_map.
+      variables = survey.mdes_table_map.
         detect { |ti, tc| tc[:table] == record.class.mdes_table_name }.last[:variables]
       variables.select { |var_name, var_mapping| var_mapping[:questions] }.each do |var_name, var_m|
         questions = var_m[:questions]
@@ -81,7 +89,7 @@ module NcsNavigator::Core::Warehouse
       }.select { |model, rel| rel }.collect { |child_model, rel|
         child_model.all(rel.child_key.first.name => record.key.first)
       }.flatten.each do |child_record|
-        update_response_set_for_record(child_record, response_set)
+        update_response_set_for_record(survey, child_record, response_set)
       end
     end
 
@@ -101,14 +109,16 @@ module NcsNavigator::Core::Warehouse
         }
       end
 
-      update_response(response, value)
+      update_response(question, response, value)
       response.save!
     end
 
-    def update_response(response, mdes_value)
-      answers = response.question.answers
+    # question is a param (instead as ref'd from response) so that the
+    # answers are only loaded once
+    def update_response(question, response, mdes_value)
       @progress.increment_responses
 
+      answers = question.answers
       coded_ref_id = mdes_value.sub(/^-/, 'neg_')
       if coded_a = answers.detect { |a| a.reference_identifier == coded_ref_id }
         response.answer = coded_a
@@ -128,6 +138,17 @@ module NcsNavigator::Core::Warehouse
             response.question.survey_section.survey.title
           ])
       end
+    end
+
+    def core_instrument_id(instrument_public_id)
+      core_instrument_id_map[instrument_public_id]
+    end
+
+    def core_instrument_id_map
+      @core_instrument_id_map ||=
+        ActiveRecord::Base.connection.
+        select_all('SELECT id, instrument_id AS public_id FROM instruments').
+        inject({}) { |h, rec| h[rec['public_id']] = rec['id']; h }
     end
 
     # @private
