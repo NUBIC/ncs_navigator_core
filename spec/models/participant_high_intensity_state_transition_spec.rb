@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111205175632
+# Schema version: 20111205213437
 #
 # Table name: participant_high_intensity_state_transitions
 #
