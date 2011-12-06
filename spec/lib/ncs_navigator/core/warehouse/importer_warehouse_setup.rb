@@ -10,7 +10,7 @@ shared_context :importer_spec_warehouse do
   # This is not a `let` due to https://github.com/rspec/rspec-core/issues/500
   def wh_config
     @wh_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |config|
-      config.log_file = File.join(Rails.root, 'log/wh-import_test.log')
+      config.log_file = Rails.root + 'log/wh-import_test.log'
       config.set_up_logs
       config.output_level = :quiet
       if bcdatabase_config[:group]
