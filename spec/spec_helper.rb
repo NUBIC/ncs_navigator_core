@@ -151,9 +151,10 @@ Spork.prefork do
 
   # Preload slow warehouse infrastructure only when actually using spork
   if Spork.using_spork?
-    puts 'Preloading warehouse models (spork only)'
+    puts 'Preloading warehouse models & MDES tables (spork only)'
     require 'ncs_navigator/warehouse'
     require 'ncs_navigator/warehouse/models/two_point_zero'
+    NcsNavigatorCore.mdes.transmission_tables
   end
 end
 

@@ -29,6 +29,10 @@ INSTR
 
     let(:questions) { subject.sections_with_questions.collect(&:questions).flatten }
 
+    before do
+      Survey.mdes_reset!
+    end
+
     it 'is mixed into Survey' do
       ::Survey.ancestors.should include(MdesInstrumentSurvey)
     end
@@ -288,6 +292,13 @@ INSTR
           Survey.mdes_unused_instrument_tables.should_not include('pre_preg')
           Survey.mdes_unused_instrument_tables.should_not include('spec_blood_tube')
           Survey.mdes_unused_instrument_tables.should include('household_enumeration')
+        end
+      end
+
+      describe '.mdes_surveys_by_mdes_table' do
+        it 'returns a mapping from MDES table to survey' do
+          Survey.mdes_surveys_by_mdes_table.should ==
+            { 'pre_preg' => subject, 'spec_blood_tube' => subject }
         end
       end
     end
