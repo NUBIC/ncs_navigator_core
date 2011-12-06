@@ -20,11 +20,11 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        OperationalImporter.automatic_producers.size.should == 22
+        OperationalImporter.automatic_producers.size.should == 21
       end
 
       [
-        MdesModule::LinkContact,
+        MdesModule::LinkContact, MdesModule::Event
       ].each do |manual|
         it "handles #{manual} manually" do
           OperationalImporter.automatic_producers.collect(&:model).should_not include(manual)
@@ -191,17 +191,6 @@ module NcsNavigator::Core::Warehouse
           end
         end
 
-        describe Event do
-          include_context 'basic model import test'
-
-          let(:core_record) {
-            Factory(:event,
-              :event_start_date => Date.new(2011, 9, 5),
-              :event_disposition => '053')
-          }
-          let(:core_model) { Event }
-        end
-
         describe ParticipantConsent do
           include_context 'basic model import test'
 
@@ -235,11 +224,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'special conversions' do
-      describe 'for Participant' do
-        it 'creates the direct link between participant and person'
-      end
-
-      describe 'for ContactLink, Contact, Event, Instrument' do
+      describe 'for ContactLink, Event' do
         it 'works, etc.'
       end
     end

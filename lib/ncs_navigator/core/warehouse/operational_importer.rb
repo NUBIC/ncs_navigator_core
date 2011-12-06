@@ -36,7 +36,7 @@ module NcsNavigator::Core::Warehouse
 
     def self.automatic_producers
       OperationalEnumerator.record_producers.reject { |rp|
-        %w(LinkContact).include?(rp.model.to_s.demodulize)
+        %w(LinkContact Event).include?(rp.model.to_s.demodulize)
       }
     end
 
