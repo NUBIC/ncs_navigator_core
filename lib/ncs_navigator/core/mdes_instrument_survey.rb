@@ -6,9 +6,7 @@ module NcsNavigator::Core
 
     module ClassMethods
       def mdes_instrument_tables
-        @mdes_instrument_tables ||= most_recent_for_each_title.collect { |s|
-          s.mdes_table_map.collect { |ti, tc| tc[:table] }
-        }.flatten.uniq
+        mdes_surveys_by_mdes_table.keys
       end
 
       def mdes_primary_instrument_tables
@@ -20,6 +18,20 @@ module NcsNavigator::Core
       def mdes_unused_instrument_tables
         NcsNavigatorCore.mdes.transmission_tables.
           select { |t| t.instrument_table? }.collect(&:name) - mdes_instrument_tables
+      end
+
+      def mdes_surveys_by_mdes_table
+        @mdes_surveys_by_mdes_table ||= most_recent_for_each_title.inject({}) do |h, survey|
+          survey.mdes_table_map.collect { |ti, tc| tc[:table] }.flatten.each do |table|
+            h[table] = survey
+          end
+          h
+        end
+      end
+
+      def mdes_reset!
+        @mdes_primary_instrument_tables = nil
+        @mdes_surveys_by_mdes_table = nil
       end
     end
 
