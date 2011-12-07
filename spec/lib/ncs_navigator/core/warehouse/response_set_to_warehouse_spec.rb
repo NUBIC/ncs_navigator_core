@@ -49,6 +49,10 @@ end
       }
     end
 
+    before do
+      Survey.mdes_reset!
+    end
+
     context 'external references' do
       let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pre_preg' } }
       let(:question) { questions_map['health'] }

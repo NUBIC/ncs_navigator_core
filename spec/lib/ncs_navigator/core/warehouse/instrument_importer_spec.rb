@@ -91,6 +91,7 @@ module NcsNavigator::Core::Warehouse
     }
 
     before do
+      Survey.mdes_reset!
       ResponseSet.count.should == 0
     end
 

@@ -68,7 +68,6 @@ describe PeopleController do
           get :index, :q => { :first_name_cont => "Ja" }, :format => :json
           # response.body.should == [@person1].to_json - does not work since psu_code is a string
           parsed_body = ActiveSupport::JSON.decode(response.body)
-          p parsed_body
           parsed_body.size.should == 1
           parsed_body.first.should include ("person")
           person = parsed_body.first["person"]
