@@ -1,5 +1,8 @@
 
 %p
   = f.label code, "Disposition"
-  %br
+  %span{ :class => "notification_icon" }
+  .notification_tooltip
+    = t('mdes.disposition')
+%p
   = f.select(code, grouped_disposition_codes(@disposition_group), { :include_blank => "-- Select Disposition --" })

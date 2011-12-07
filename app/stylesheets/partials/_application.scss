@@ -9,6 +9,13 @@ body {
   color: $NOTE_GRAY;
 }
 
+.instructional_note {
+  font-size: 0.8em;
+  font-style: italic;
+  color: $NOTE_GRAY;
+  margin: 0 0 0.5em 1em;
+}
+
 a {
   color: #0000FF;
   img {

@@ -23,7 +23,7 @@ Feature: Initiating a contact
     # And I select "Legitimate Skip" from "Interpret"
     # And I select "Person/participant home" from "Location"
     # And I select "Yes" from "Private"
-    And I select "NCS Participant" from "Who was Contacted"
+    And I select "NCS Participant" from "Who was contacted"
     And I press "Submit"
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page

@@ -71,8 +71,8 @@ $(document).ready(function() {
   $("input[type='text'].time").timepicker({});
 
   $('.mdes_documentation_link').click(function(event) {
-    var definition = $('#mdes_definition').val();
-    var title = $('#mdes_definition').attr('title');
+    var definition = $(this).next('.mdes_definition').val();
+    var title = $(this).next('.mdes_definition').attr('title');
     $('<div id="dialog">' + definition + '</div>').appendTo('body');
       event.preventDefault();
       $("#dialog").dialog({
@@ -85,5 +85,7 @@ $(document).ready(function() {
       });
   });
 
+  $(".help_icon").tooltip();
+  $(".notification_icon").tooltip();
 });
 

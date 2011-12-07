@@ -24,18 +24,6 @@ class BirthOperationalDataExtractor
     "#{BIRTH_LI_PREFIX}.R_FNAME"         => "first_name",
     "#{BIRTH_LI_PREFIX}.R_LNAME"         => "last_name",
   }
-
-  TELEPHONE_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.PHONE_NBR"       => "phone_nbr",
-    "#{BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
-    "#{BIRTH_VISIT_PREFIX}.PHONE_TYPE"      => "phone_type_code",
-    "#{BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
-
-    "#{BIRTH_LI_PREFIX}.PHONE_NBR"       => "phone_nbr",
-    "#{BIRTH_LI_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
-    "#{BIRTH_LI_PREFIX}.PHONE_TYPE"      => "phone_type_code",
-    "#{BIRTH_LI_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
-  }
   
   MAIL_ADDRESS_MAP = {
     "#{BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1"   => "address_one",

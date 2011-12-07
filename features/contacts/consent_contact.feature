@@ -13,7 +13,7 @@ Feature: Obtaining participant consent
     And I should see "Consent required"
     When I select "In-person" from "Contact Type"
     And I fill in "Contact Date" with "01/01/2001"
-    And I select "NCS Participant" from "Who was Contacted"
+    And I select "NCS Participant" from "Who was contacted"
     And I press "Submit"
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page
