@@ -29,6 +29,10 @@ end
     let(:wh_config)   { NcsNavigator::Warehouse::Configuration.new }
     let(:passthrough) { UnusedInstrumentPassthrough.new(wh_config) }
 
+    before do
+      Survey.mdes_reset!
+    end
+
     describe '#create_emitter', :slow do
       subject { passthrough.create_emitter }
 
