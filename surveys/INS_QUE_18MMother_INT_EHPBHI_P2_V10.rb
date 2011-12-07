@@ -166,9 +166,8 @@ survey "INS_QUE_18MMother_INT_EHPBHI_P2_V1.0" do
     condition_A :q_PREGNANT, "==", :a_3
 
     q_ORIG_DUE_DATE "[Congratulations.] When is your baby due? ",
-    :help_text => "If response was determined to be invalid, ask question again and probe for valid response.
-    ",
-    :pick => :any,
+    :help_text => "If response was determined to be invalid, ask question again and probe for valid response.",
+    :pick => :one,
     :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.ORIG_DUE_DATE"
     a_1 "Due date", :string
     a_neg_1 "Refused"

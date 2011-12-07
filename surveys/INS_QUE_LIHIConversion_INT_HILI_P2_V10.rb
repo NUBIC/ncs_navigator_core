@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
   # TODO
   #   Low-Intensity Invitation to High-Intensity Conversion Script (HI, LI)
@@ -193,12 +194,10 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      # TODO
-      # DAY_WEEK_1 doesn't present in MDES2 spreadsheet
       q_DAY_WEEK_1 "What would be a good day to reach her?",
       :help_text => "Enter in day(s) of week",
-      :pick => :any,
-      :data_export_identifier=>"LOW_HIGH_SCRIPT.DAY_WEEK_1"
+      :data_export_identifier=>"LOW_HIGH_SCRIPT.DAY_WEEK_1",
+      :pick => :one
       a_days_of_week "Day(s) of the week", :string
       a_neg_1 "Refused"
       a_neg_2 "Don't know"

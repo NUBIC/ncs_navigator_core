@@ -503,7 +503,7 @@ survey "INS_QUE_6MInfantFeed_SAQ_EHPBHI_P2_V2.0" do
 
     q_SUPP_FORM "Were the supplements you gave your baby in the form of drops or pills?",
     :help_text => "Mark crushed pills mixed with liquid as \"Pills\".",
-    :pick => :any,
+    :pick => :one,
     :data_export_identifier=>"SIX_MTH_SAQ_2.SUPP_FORM"
     a_1 "Drops"
     a_2 "Pills"
