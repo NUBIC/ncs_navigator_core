@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111205175632
+# Schema version: 20111205213437
 #
 # Table name: responses
 #
@@ -18,10 +18,17 @@
 #  created_at        :datetime
 #  updated_at        :datetime
 #  survey_section_id :integer
+#  source_mdes_table :string(100)
+#  source_mdes_id    :string(36)
 #
 
 class Response < ActiveRecord::Base
   include Surveyor::Models::ResponseMethods
+
+  def source_mdes_record=(record)
+    self.source_mdes_table = record.class.mdes_table_name
+    self.source_mdes_id = record.key.first
+  end
 
   def reportable_value
     case answer.response_class

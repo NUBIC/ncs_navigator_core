@@ -24,9 +24,14 @@ survey "INS_QUE_etc_v1.1" do
 end
 INSTR
     }
+
     subject { load_survey_string(instrument_text) }
 
     let(:questions) { subject.sections_with_questions.collect(&:questions).flatten }
+
+    before do
+      Survey.mdes_reset!
+    end
 
     it 'is mixed into Survey' do
       ::Survey.ancestors.should include(MdesInstrumentSurvey)
@@ -264,6 +269,37 @@ INSTR
 
       it 'associates the coded question with nil if no other question is found' do
         pairs.detect { |pair| pair[:coded].reference_identifier == 'RACE' }[:other].should be_nil
+      end
+    end
+
+    describe 'class methods' do
+      before { subject }
+
+      describe '.mdes_instrument_tables' do
+        it 'returns the names of all instrument tables used in any survey' do
+          Survey.mdes_instrument_tables.should == %w(pre_preg spec_blood_tube)
+        end
+      end
+
+      describe '.mdes_primary_instrument_tables' do
+        it 'returns the names of all primary instrument tables used in any survey' do
+          Survey.mdes_primary_instrument_tables.should == %w(pre_preg)
+        end
+      end
+
+      describe '.mdes_unused_instrument_tables' do
+        it 'returns the names of all instrument tables that are not used in any survey' do
+          Survey.mdes_unused_instrument_tables.should_not include('pre_preg')
+          Survey.mdes_unused_instrument_tables.should_not include('spec_blood_tube')
+          Survey.mdes_unused_instrument_tables.should include('household_enumeration')
+        end
+      end
+
+      describe '.mdes_surveys_by_mdes_table' do
+        it 'returns a mapping from MDES table to survey' do
+          Survey.mdes_surveys_by_mdes_table.should ==
+            { 'pre_preg' => subject, 'spec_blood_tube' => subject }
+        end
       end
     end
   end

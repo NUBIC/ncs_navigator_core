@@ -161,14 +161,7 @@ namespace :instruments do
 
   desc 'Lists the MDES tables that have no corresponding instrument'
   task :unmapped_tables => :environment do
-    mapped_tables = Survey.most_recent_for_each_title.
-      collect { |s| s.mdes_table_map.collect { |ti, tc| tc[:table] } }.
-      flatten.uniq
-    all_tables = NcsNavigatorCore.mdes.transmission_tables.
-      select { |t| t.instrument_table? }.
-      collect(&:name)
-
-    (all_tables - mapped_tables).each do |table|
+    Survey.mdes_unused_instrument_tables.each do |table|
       puts table
     end
   end

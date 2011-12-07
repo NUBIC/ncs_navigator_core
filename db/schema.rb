@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111205175632) do
+ActiveRecord::Schema.define(:version => 20111205213437) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -779,6 +779,8 @@ ActiveRecord::Schema.define(:version => 20111205175632) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "survey_section_id"
+    t.string   "source_mdes_table", :limit => 100
+    t.string   "source_mdes_id",    :limit => 36
   end
 
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"

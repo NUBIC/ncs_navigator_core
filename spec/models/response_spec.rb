@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111205175632
+# Schema version: 20111205213437
 #
 # Table name: responses
 #
@@ -18,12 +18,54 @@
 #  created_at        :datetime
 #  updated_at        :datetime
 #  survey_section_id :integer
+#  source_mdes_table :string(100)
+#  source_mdes_id    :string(36)
 #
 
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe Response do
+  describe 'import record fields' do
+    subject { Response.new }
+
+    describe '#source_mdes_table' do
+      it 'exists' do
+        lambda { subject.source_mdes_table }.should_not raise_error
+      end
+    end
+
+    describe '#source_mdes_id' do
+      it 'exists' do
+        lambda { subject.source_mdes_id }.should_not raise_error
+      end
+    end
+
+    describe '#source_mdes_record=' do
+      class ResponseSpecFakeMdesWarehouseModel
+        def self.mdes_table_name
+          'fake_one'
+        end
+
+        def key
+          ['00000-11111-66']
+        end
+      end
+
+      before do
+        subject.source_mdes_record = ResponseSpecFakeMdesWarehouseModel.new
+      end
+
+      it 'sets the source table' do
+        subject.source_mdes_table.should == 'fake_one'
+      end
+
+      it 'sets the source id' do
+        subject.source_mdes_id.should == '00000-11111-66'
+      end
+    end
+  end
+
   describe '#reportable_value' do
     let(:questions_dsl) {
       <<-DSL
