@@ -2,4 +2,41 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  mdes:
+    disposition: "Disposition cannot be determined. Please select the correct diposition code."
+    notification: "Cannot impute this field. Please choose value."
+    contact: 
+      private: 
+        definition: "Were there privacy issues during the contact?"
+      private_detail: 
+        definition: "Description of privacy issues during field contact"
+      who_contacted:
+        definition: "Person who provided information associated with contact"
+      contact_interpret:
+        definition: "Who translated questionnaire during contact?"
+      contact_distance:
+        definition: "Total miles staff member traveled for contact"
+    instrument:
+      instrument_status:
+        definition: "Instrument status. Choose from Not started, Refused, Partial, or Complete."
+      breakoff:
+        definition: "Were there one or more break offs during the instrument?"
+      supervisor_review:
+        definition: "Instrument requires supervisor review"
+      data_problem:
+        definition: "Instrument requires review of data"
+      instrument_repeat_key:
+        definition: "For multiple administrations of an instrument in an event. INSTRUMENT_REPEAT_KEY is sequential. The first value of the sequence is 0 (which is also the value if there is no repetition)."
+    event:
+      event_type:
+        definition: "Protocol Event Name"
+      event_repeat_key:
+        definition: "Some protocol events repeat like the PPG status calls. EVENT_REPEAT_KEY is sequential. The first value of the sequence is 0 (which is also the value if there is no repetition)."
+      breakoff:
+        definition: "Were there one or more break offs during the event?"
+      incentive_type:
+        definition: "Type of incentive provided for event"
+      incentive_cash:
+        definition: "Value of cash incentive provided to participant"
+      incentive_noncash:
+        definition: "Other non-cash incentive provided to participant"

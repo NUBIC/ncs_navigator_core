@@ -1,10 +1,12 @@
 .column-container
   .column-1
-    = render "shared/ncs_code_select", { :f => f, :code => :event_type_code, :label_text => "Event Type", :other => :event_type_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :event_type_code, :label_text => "Event Type", :other => :event_type_other, :help_text => "events/event_event_type_tooltip" }
 
     %p
       = f.label :event_repeat_key, "Repeat Key"
-      %br
+      %span{ :class => "help_icon" }
+      = render "events/event_repeat_key_tooltip"
+    %p
       = f.text_field :event_repeat_key
     %p
       = f.label :event_start_date, "Event Start Date"
@@ -27,21 +29,25 @@
       = f.text_field :event_end_time, :class => "time"
 
 
-    = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type" }
+    = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type", :help_text => "events/event_incentive_type_tooltip" }
 
     %p
       = f.label :event_incentive_cash, "Incentive (Cash)"
-      %br
+      %span{ :class => "help_icon" }
+      = render "events/event_incentive_cash_tooltip"
+    %p
       = f.text_field :event_incentive_cash
 
     %p
       = f.label :event_incentive_noncash, "Incentive (Non-Cash)"
-      %br
+      %span{ :class => "help_icon" }
+      = render "events/event_incentive_noncash_tooltip"
+    %p
       = f.text_field :event_incentive_noncash
   .column-2
-    = render "shared/disposition_code", { :f => f, :code => :event_disposition }
+    = render "shared/disposition_code", { :f => f, :code => :event_disposition, :notify_marker => true }
     = render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category" }
-    = render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff" }
+    = render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff", :help_text => "events/event_breakoff_tooltip" }
     
     %p
       = f.label :event_comment, "Comment"

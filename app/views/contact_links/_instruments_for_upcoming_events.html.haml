@@ -1,3 +1,5 @@
+- initial_instrument_for_contact ||= nil
+
 %p.hide
   = @contact_link.event
   %br
@@ -5,6 +7,13 @@
 
 %h3 
   = "Instruments for #{@contact_link.event.psc_segment_name}"
+
+- if initial_instrument_for_contact
+  .instructional_note
+    Choose the Instrument from the list below to administer for this contact.
+    %br
+    (If there is a Consent link in the list, you should obtain consent before proceeding.)
+
 - no_consent = true
 - if activities = psc.activities_for_segment(@person.participant, @contact_link.event.psc_segment_name)
   - activities.each do |activity|

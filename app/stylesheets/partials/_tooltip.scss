@@ -1,0 +1,38 @@
+/* tooltip styling */
+.notification_tooltip,
+.tooltip {
+  z-index: 999;
+  display: none;
+  padding: 10px;
+  width: 310px;
+  font-size: 11px;
+  color: black;
+  font-weight: bold;
+  border: 3px solid black;
+  border-radius: 1em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  /* a .label element inside tooltip */
+  .label {
+    color: purple;
+    width: 35px;
+  }
+  a {
+    font-size: 11px;
+    font-weight: bold;
+  }
+  h4 {
+    margin-bottom: 0.5em;
+    padding: 0;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}
+
+.tooltip {
+  background-color: aliceblue;
+}
+
+.notification_tooltip {
+  background-color: pink;
+}

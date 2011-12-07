@@ -1,11 +1,20 @@
 - default_value ||= nil
 - other ||= nil
 - date ||= nil
+- help_text ||= nil
+- notify_marker ||= nil
 %p
   = f.label code, label_text
-  %br
+  - if notify_marker
+    %span{ :class => "notification_icon" }
+    .notification_tooltip
+      = t('mdes.notification')
+  - if help_text
+    %span{ :class => "help_icon" }
+    = render help_text
   - f.object.send("#{code}=", default_value) if default_value
-  = f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" })
+  %p
+    = f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" })
 
 - if other
   %p

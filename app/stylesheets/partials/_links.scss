@@ -70,3 +70,15 @@ input[type="submit"] {
   background-position: right top;
   padding: 2px 20px 2px 0px !important;
 }
+
+.help_icon, .help_icon:hover {
+  padding: 2px 2px 2px 20px;
+  margin-left: 5px;
+  background: url(../../assets/help.png) 0 2px no-repeat !important;
+}
+
+.notification_icon, .notification_icon:hover {
+  padding: 2px 2px 2px 20px;
+  margin-left: 5px;
+  background: url(../../assets/exclamation.png) 0 2px no-repeat !important;
+}

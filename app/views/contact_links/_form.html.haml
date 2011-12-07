@@ -5,12 +5,16 @@
     = f.hidden_field :person_id
     
     .contact_link_section
+      .mdes_table_definition
+        = render 'documentation/contact'
       %h3
         Contact
       = fields_for @contact_link.contact do |contact|
         = render "contacts/form_fields", { :f => contact }
     
     .contact_link_section
+      .mdes_table_definition
+        = render 'documentation/event'
       %h3
         Event
       = fields_for @contact_link.event do |event|

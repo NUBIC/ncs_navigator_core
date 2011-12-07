@@ -22,16 +22,18 @@
       = f.text_field :contact_end_time, :class => "time"
 
 
-    = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Who was Contacted", :other => :who_contacted_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Who was contacted", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
 
-    - unless f.object.new_record?  
+    - unless f.object.new_record?
 
       = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }    
-      = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private" }
+      = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private", :help_text => "contacts/contact_private_tooltip" }
 
       %p
         = f.label :contact_private_detail, "Private Detail"
-        %br
+        %span{ :class => "help_icon" }
+        = render "contacts/contact_private_detail_tooltip"
+      %p
         = f.text_field :contact_private_detail
 
       %p
@@ -40,11 +42,11 @@
         = f.text_field :contact_distance
 
   .column-2 
-    - unless f.object.new_record?  
+    - unless f.object.new_record?
       = render "shared/disposition_code", { :f => f, :code => :contact_disposition }
 
       = render "shared/ncs_code_select", { :f => f, :code => :contact_language_code, :label_text => "Language", :other => :contact_language_other }
-      = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other }
+      = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other, :help_text => "contacts/contact_interpret_tooltip" }
       
     %p
       = f.label :contact_comment, "Comment"
