@@ -1,6 +1,7 @@
 namespace :mdes do
   desc 'Initialize the code lookup values.'
   task :load_codes_from_schema => :environment do
+    puts 'Tip: you can load all the lookup data using db:seed'
     require 'mdes_data_loader'
     MdesDataLoader::load_codes_from_schema
   end
