@@ -259,6 +259,10 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'LinkContact and Event' do
+      before do
+        Event.count.should == 0
+      end
+
       let(:fred_p) {
         create_warehouse_record_via_core(Participant, 'fred_p')
       }
@@ -266,22 +270,22 @@ module NcsNavigator::Core::Warehouse
         create_warehouse_record_via_core(Participant, 'ginger_p')
       }
 
-      let(:f_e1) {
-        create_warehouse_record_via_core(Event, 'f_e1',
+      let(:f_e2) {
+        create_warehouse_record_via_core(Event, 'f_e2',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Pregnancy Screener'),
           :event_start_date => '2010-09-03')
       }
-      let(:f_e2) {
-        create_warehouse_record_via_core(Event, 'f_e2',
+      let(:f_e3) {
+        create_warehouse_record_via_core(Event, 'f_e3',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Informed Consent'),
           :event_start_date => '2010-09-03')
       }
-      let(:f_e3) {
-        create_warehouse_record_via_core(Event, 'f_e3',
+      let(:f_e1) {
+        create_warehouse_record_via_core(Event, 'f_e1',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Low Intensity Data Collection'),
@@ -367,12 +371,6 @@ module NcsNavigator::Core::Warehouse
           importer.import
           Event.find_by_event_id('g_e1').should_not be_nil
         end
-
-        it 'does not create any core contact links' do
-          initial_ct = ContactLink.count
-          importer.import
-          ContactLink.count.should == initial_ct
-        end
       end
 
       describe 'unorderable contacts' do
@@ -402,10 +400,6 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'orderable, participant-associated instances' do
-        before do
-          pending 'TODO'
-        end
-
         describe 'order' do
           let(:order) { importer.ordered_event_sets }
 
@@ -424,21 +418,49 @@ module NcsNavigator::Core::Warehouse
 
           # TODO: this is a way crappy test
           it 'orders by the contact date followed by the event start date followed by the event end date followed by the type' do
-            events_for('fred_p').collect(&:event_id).should == %w(f_e1 f_e2 f_e3 fe_4)
+            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e3 f_e1 f_e4)
           end
 
           it 'includes events without link_contact' do
-            events_for('ginger_p').first.event.event_id.should == 'g_e1'
+            events_for('ginger_p').first.event_id.should == 'g_e1'
           end
         end
 
         describe 'produced participant status history' do
+          let(:participant) { Participant.find_by_p_id('fred_p') }
+
+          let(:target_states) {
+            participant.low_intensity_state_transition_audits.order(:id).collect(&:to)
+          }
+
+          let(:expected_states) {
+            %w(pending registered in_pregnancy_probability_group consented_low_intensity following_low_intensity)
+          }
+
           before do
             importer.import
           end
 
-          it 'is in the correct order'
-          it 'does not duplicate already-imported events'
+          it 'is in the correct order' do
+            target_states.should == expected_states
+          end
+
+          it 'does not duplicate already-imported events' do
+            importer.import # twice
+            target_states.should == expected_states
+          end
+        end
+
+        it 'saves the events' do
+          importer.import
+          Event.joins(:participant).where('participants.p_id' => 'fred_p').
+            collect(&:event_id).sort.should == %w(f_e1 f_e2 f_e3 f_e4)
+        end
+
+        it 'saves the contact_links' do
+          importer.import
+          ContactLink.all.collect(&:contact_link_id).sort.should ==
+            MdesModule::LinkContact.all.collect(&:contact_link_id).sort
         end
       end
     end

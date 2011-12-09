@@ -47,6 +47,11 @@ module NcsNavigator::Core::Warehouse
       }
     end
 
+    # @private exposed for testing
+    def ordered_event_sets
+      @ordered_event_sets ||= build_ordered_event_sets
+    end
+
     private
 
     def create_simply_mapped_core_records(mdes_producer)
@@ -59,7 +64,30 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_events_and_contact_links
-      no_state_impact_event_and_link_contact_ids = ::DataMapper.repository.adapter.select(
+      @progress.loading('events with no p state impact')
+      create_core_records_by_mdes_public_ids(Event,
+        no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id })
+      @progress.loading('contact links with no p state impact')
+      create_core_records_by_mdes_public_ids(ContactLink,
+        no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
+      @progress.loading('events and contact links with p state impact')
+      ordered_event_sets.each do |p_id, events_and_links|
+        participant = Participant.find_by_p_id(p_id)
+        events_and_links.each do |mdes_event, *mdes_link_contacts|
+          core_event = apply_mdes_record_to_core(Event, mdes_event)
+          if core_event.new_record?
+            participant.set_state_for_event_type(core_event.event_type)
+          end
+          save_core_record(core_event)
+          mdes_link_contacts.compact.each do |mdes_lc|
+            save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
+          end
+        end
+      end
+    end
+
+    def no_state_impact_event_and_link_contact_ids
+      @no_state_impact_event_and_link_contact_ids ||= ::DataMapper.repository.adapter.select(
         %{
           SELECT e.event_id, l.contact_link_id
           FROM event e
@@ -75,10 +103,48 @@ module NcsNavigator::Core::Warehouse
                 )
         }
       )
-      create_core_records_by_mdes_public_ids(Event,
-        no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id })
-      create_core_records_by_mdes_public_ids(ContactLink,
-        no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
+    end
+
+    def build_ordered_event_sets
+      event_ids = no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }
+      events = find_producer(:events).model.all(:event_id.not => event_ids)
+      contact_links = find_producer(:contact_links).model.all(:event_id.not => event_ids)
+
+      cl_by_event = contact_links.inject({}) do |idx, cl|
+        (idx[cl.event_id] ||= []).tap { |a| a << cl }
+        idx
+      end
+
+      cl_by_event.values.each { |a|
+        a.sort! { |x, y| (x.contact.contact_date || '9') <=> (y.contact.contact_date || '9') }
+      }
+
+      events.inject({}) do |sets, event|
+        (sets[event.participant_id] ||= []).tap do |a|
+          a << [event, *cl_by_event[event.event_id]]
+        end
+        sets
+      end.tap { |sets|
+        sets.values.each { |a|
+          a.sort! { |x, y|
+            xe, *xcl = x
+            ye, *ycl = y
+            xcmp, ycmp = [[xe, xcl], [ye, ycl]].collect { |e, cls|
+              [
+                earliest_date(
+                  e.event_start_date, e.event_end_date,
+                  *cls.collect { |l| l.contact.contact_date }),
+                Event::TYPE_ORDER.index(e.event_type.to_i)
+              ]
+            }
+            xcmp <=> ycmp
+          }
+        }
+      }
+    end
+
+    def earliest_date(*dates)
+      dates.collect { |d| (d =~ /^9/) ? nil : d }.compact.sort.first
     end
 
     def create_core_records_by_mdes_public_ids(core_model, id_list)
