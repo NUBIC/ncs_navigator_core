@@ -99,23 +99,35 @@ describe ParticipantConsent do
     before(:each) do
       @yes = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
       @no  = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "No", :local_code => 2)
+      
+      @general       = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 1, :display_text => "General consent")
+      @biospecimens  = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 2, :display_text => "Consent to collect biospecimens")
+      @environmental = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 3, :display_text => "Consent to collect environmental samples")
+      @genetic       = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 4, :display_text => "Consent to collect genetic material")
+      @birth         = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 5, :display_text => "Consent to collect birth samples")
+      @child         = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 6, :display_text => "Consent for the child’s participation")
+      @low_intensity = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 7, :display_text => "Low Intensity Consent")
     end
     
     it "cannot have consented without a participant_consent record" do
       participant = Factory(:participant)
-      participant.participant_consent.should be_nil
+      participant.participant_consents.should be_empty
       participant.should_not be_consented
     end
     
     it "knows if the participant has consented" do
-      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no)
+      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no, :consent_type => @low_intensity)
       pc.participant.should be_consented
+      pc.participant.consented?(@low_intensity).should be_true
+      pc.participant.consented?(@general).should be_false
       pc.participant.should_not be_withdrawn
     end
     
     it "knows if the participant has withdrawn consented" do
-      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes)
+      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes, :consent_type => @low_intensity)
       pc.participant.should be_withdrawn
+      pc.participant.withdrawn?(@low_intensity).should be_true
+      pc.participant.withdrawn?(@general).should be_false
     end
     
   end

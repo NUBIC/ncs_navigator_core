@@ -75,6 +75,10 @@ class PeopleController < ApplicationController
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
     rs, instrument = @person.start_instrument(survey) if rs.nil? or rs.complete?
+    
+    ## TODO: get instrument if rs already exists
+    #        find any response set for this event
+    
     instrument.event = @contact_link.event
     instrument.save!
     @contact_link.instrument = instrument
