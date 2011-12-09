@@ -18,6 +18,18 @@ module NcsNavigator::Core::Warehouse
       OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
     }
 
+    def save_wh(record)
+      unless record.save
+        messages = record.errors.keys.collect { |prop|
+          record.errors[prop].collect { |e|
+            v = record.send(prop)
+            "#{e} (#{prop}=#{v.inspect})."
+          }
+        }.flatten
+        fail "Could not save #{record} due to validation failures: #{messages.join(', ')}"
+      end
+    end
+
     describe 'strategy selection' do
       it 'handles most models automatically' do
         OperationalImporter.automatic_producers.size.should == 21
@@ -35,7 +47,7 @@ module NcsNavigator::Core::Warehouse
     describe 'automatic conversion' do
       describe 'of an existing record' do
         let!(:core_person) { Factory(:person, :updated_at => Date.new(2010, 1, 1)) }
-        let!(:mdes_person) { enumerator.to_a(:people).first.tap { |p| p.save } }
+        let!(:mdes_person) { enumerator.to_a(:people).first.tap { |p| save_wh(p) } }
 
         describe 'when it is identical' do
           before do
@@ -54,7 +66,7 @@ module NcsNavigator::Core::Warehouse
         describe 'when a scalar field is updated' do
           before do
             mdes_person.last_name = 'Astaire'
-            mdes_person.save
+            save_wh(mdes_person)
 
             importer.import(:people)
           end
@@ -75,7 +87,7 @@ module NcsNavigator::Core::Warehouse
 
           before do
             mdes_person.maristat = new_coded_value.local_code.to_s
-            mdes_person.save
+            save_wh(mdes_person)
 
             importer.import(:people)
           end
@@ -96,7 +108,7 @@ module NcsNavigator::Core::Warehouse
           before do
             second_person = Factory(:person, :last_name => 'MacMurray')
             mdes_address.person_id = second_person.public_id
-            mdes_address.save
+            save_wh(mdes_address)
 
             importer.import(:addresses)
           end
@@ -159,7 +171,7 @@ module NcsNavigator::Core::Warehouse
         let!(:mdes_record) {
           core_record # ensure created
           enumerator.to_a(core_table).first.tap do |a|
-            a.save || fail("Save of #{a.inspect} failed: #{a.errors.values.join(', ')}")
+            save_wh(a)
             # remove the corresponding core record
             core_model.destroy_all
             core_model.count.should == 0
@@ -223,9 +235,211 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    describe 'special conversions' do
-      describe 'for ContactLink, Event' do
-        it 'works, etc.'
+    def create_warehouse_record_via_core(core_model, wh_id, wh_attributes={})
+      Factory(core_model.to_s.underscore, core_model.public_id_field => wh_id)
+      producer = OperationalEnumerator.record_producers.
+        find { |rp| rp.name == core_model.table_name.to_sym }
+      enumerator.each(producer.name) do |mdes_rec|
+        if mdes_rec.key.first == wh_id
+          mdes_rec.attributes = wh_attributes
+          save_wh(mdes_rec)
+        end
+      end
+      core_model.delete_all(["#{core_model.public_id_field} = ?", wh_id])
+      producer.model.first(producer.model.key.first.name => wh_id)
+    end
+
+    def code_for_event_type(event_type_name)
+      code = NcsNavigatorCore.mdes.types.
+        find { |type| type.name == 'event_type_cl1' }.code_list.
+        find { |cle| cle.label == event_type_name }.value
+      NcsCode.find_or_create_by_local_code_and_list_name(
+        code, 'EVENT_TYPE_CL1', :display_text => event_type_name)
+      code
+    end
+
+    describe 'LinkContact and Event' do
+      let(:fred_p) {
+        create_warehouse_record_via_core(Participant, 'fred_p')
+      }
+      let(:ginger_p) {
+        create_warehouse_record_via_core(Participant, 'ginger_p')
+      }
+
+      let(:f_e1) {
+        create_warehouse_record_via_core(Event, 'f_e1',
+          :participant => fred_p,
+          :event_disp => 4,
+          :event_type => code_for_event_type('Pregnancy Screener'),
+          :event_start_date => '2010-09-03')
+      }
+      let(:f_e2) {
+        create_warehouse_record_via_core(Event, 'f_e2',
+          :participant => fred_p,
+          :event_disp => 4,
+          :event_type => code_for_event_type('Informed Consent'),
+          :event_start_date => '2010-09-03')
+      }
+      let(:f_e3) {
+        create_warehouse_record_via_core(Event, 'f_e3',
+          :participant => fred_p,
+          :event_disp => 4,
+          :event_type => code_for_event_type('Low Intensity Data Collection'),
+          :event_start_date => '9666-96-96')
+      }
+      let(:f_c1) {
+        create_warehouse_record_via_core(Contact, 'f_c1', :contact_date => '2010-09-03')
+      }
+      let!(:f_c1_e1) {
+        create_warehouse_record_via_core(ContactLink, 'f_c1_e1',
+          :contact => f_c1, :event => f_e1)
+      }
+      let!(:f_c1_e2) {
+        create_warehouse_record_via_core(ContactLink, 'f_c1_e2',
+          :contact => f_c1, :event => f_e2)
+      }
+      let!(:f_c1_e3) {
+        create_warehouse_record_via_core(ContactLink, 'f_c1_e3',
+          :contact => f_c1, :event => f_e3)
+      }
+      let(:f_c2) {
+        create_warehouse_record_via_core(Contact, 'f_c2', :contact_date => '2010-09-17')
+      }
+      let!(:f_c2_e3) {
+        create_warehouse_record_via_core(ContactLink, 'f_c2_e3', :contact => f_c2, :event => f_e3)
+      }
+
+      let(:f_e4) {
+        create_warehouse_record_via_core(Event, 'f_e4',
+          :participant => fred_p,
+          :event_disp => 4,
+          :event_type => code_for_event_type('Pregnancy Probability'),
+          :event_start_date => '2011-03-09')
+      }
+      let(:f_c3) {
+        create_warehouse_record_via_core(Contact, 'f_c3', :contact_date => '2011-03-08')
+      }
+      let!(:f_c3_e4) {
+        create_warehouse_record_via_core(ContactLink, 'f_c3_e4', :contact => f_c3, :event => f_e4)
+      }
+
+      let!(:g_e1) {
+        create_warehouse_record_via_core(Event, 'g_e1',
+          :participant => ginger_p,
+          :event_disp => 4,
+          :event_type => code_for_event_type('Pregnancy Screener'),
+          :event_start_date => '2010-11-07')
+      }
+
+      describe 'events without participants' do
+        let(:g_c1) {
+          create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '2010-09-17')
+        }
+        let!(:g_c1_e1) {
+          create_warehouse_record_via_core(ContactLink, 'g_c1_e1', :contact => g_c1, :event => g_e1)
+        }
+
+        before do
+          g_e1.participant = nil
+          g_e1.save or fail('Could not update event')
+
+          importer.import
+        end
+
+        it 'creates core events' do
+          Event.find_by_event_id('g_e1').should_not be_nil
+        end
+
+        it 'creates core contact links' do
+          ContactLink.find_by_contact_link_id('g_c1_e1').should_not be_nil
+        end
+      end
+
+      describe 'unorderable events without contacts' do
+        before do
+          g_e1.event_start_date = '9666-96-96'
+          g_e1.event_end_date = '9777-97-97'
+
+          save_wh(g_e1)
+        end
+
+        it 'creates core events' do
+          importer.import
+          Event.find_by_event_id('g_e1').should_not be_nil
+        end
+
+        it 'does not create any core contact links' do
+          initial_ct = ContactLink.count
+          importer.import
+          ContactLink.count.should == initial_ct
+        end
+      end
+
+      describe 'unorderable contacts' do
+        let(:g_c1) {
+          create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '9777-97-97')
+        }
+        let!(:g_c1_e1) {
+          create_warehouse_record_via_core(ContactLink, 'g_c1_e1', :contact => g_c1, :event => g_e1)
+        }
+
+        before do
+          g_e1.event_start_date = '9666-96-96'
+          g_e1.event_end_date = '9666-96-96'
+
+          save_wh(g_e1)
+
+          importer.import
+        end
+
+        it 'creates core contact links' do
+          ContactLink.find_by_contact_link_id('g_c1_e1').should_not be_nil
+        end
+
+        it 'creates core events' do
+          Event.find_by_event_id('g_e1').should_not be_nil
+        end
+      end
+
+      describe 'orderable, participant-associated instances' do
+        before do
+          pending 'TODO'
+        end
+
+        describe 'order' do
+          let(:order) { importer.ordered_event_sets }
+
+          def events_for(which)
+            order.to_a.detect { |p_id, events_and_links| p_id == which }.
+              last.collect { |event_and_links| event_and_links.first }
+          end
+
+          it 'is an enumerable' do
+            order.should be_a(Enumerable)
+          end
+
+          it 'is segmented by participant' do
+            order.collect { |p_id, links| p_id }.sort.should == %w(fred_p ginger_p)
+          end
+
+          # TODO: this is a way crappy test
+          it 'orders by the contact date followed by the event start date followed by the event end date followed by the type' do
+            events_for('fred_p').collect(&:event_id).should == %w(f_e1 f_e2 f_e3 fe_4)
+          end
+
+          it 'includes events without link_contact' do
+            events_for('ginger_p').first.event.event_id.should == 'g_e1'
+          end
+        end
+
+        describe 'produced participant status history' do
+          before do
+            importer.import
+          end
+
+          it 'is in the correct order'
+          it 'does not duplicate already-imported events'
+        end
       end
     end
   end

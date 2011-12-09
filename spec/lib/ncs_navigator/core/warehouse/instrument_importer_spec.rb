@@ -96,11 +96,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_mdes_record(model, id, attributes={}, validate=true)
-      model.new(
-        model.properties.
-          select { |p| p.required? }.
-          inject({}) { |h, prop| h[prop.name] = '-4'; h }.merge(attributes)
-      ).tap do |record|
+      model.new(all_missing_attributes(model).merge(attributes)).tap do |record|
         record.send("#{record.class.key.first.name}=", id)
 
         possible_non_question_fields.each do |k, v|
