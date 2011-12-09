@@ -4,7 +4,7 @@
 en:
   mdes:
     disposition: "Disposition cannot be determined. Please select the correct diposition code."
-    notification: "Cannot impute this field. Please choose value."
+    notification: "Cannot determine this field. Please choose value."
     contact: 
       private: 
         definition: "Were there privacy issues during the contact?"

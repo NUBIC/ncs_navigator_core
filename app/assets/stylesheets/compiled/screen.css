@@ -2337,6 +2337,11 @@ span.known_instrument {
   margin-bottom: 2em;
 }
 
+/* line 68, ../../../stylesheets/partials/_participants.scss */
+.schedule .activities .activity {
+  margin-left: 1em;
+}
+
 /* line 1, ../../../stylesheets/partials/_welcome.scss */
 .front_page_section {
   margin: 0.5em 0;
