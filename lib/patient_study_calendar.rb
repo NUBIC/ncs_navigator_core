@@ -117,8 +117,6 @@ class PatientStudyCalendar
       subject_schedules["days"].keys.each do |date|
         subject_schedules["days"][date]["activities"].each do |activity|
           participant.upcoming_events.each do |event|
-            Rails.logger.info("~~~ event = #{event} && study_segment #{activity["study_segment"]}")
-            Rails.logger.info("    #{activity["activity"]["name"]}")
             activities << activity["activity"]["name"] if activity["study_segment"].include?(event.to_s)
           end
         end
@@ -132,8 +130,6 @@ class PatientStudyCalendar
     if subject_schedules = schedules(participant)    
       subject_schedules["days"].keys.each do |date|
         subject_schedules["days"][date]["activities"].each do |activity|          
-          Rails.logger.info("~~~ segment = #{segment} && study_segment #{activity["study_segment"]}")
-          Rails.logger.info("    #{activity["activity"]["name"]}")
           activities << activity["activity"]["name"] if activity["study_segment"].include?(segment.to_s)
         end
       end
@@ -163,7 +159,30 @@ class PatientStudyCalendar
   
   def schedule_next_segment(participant, date = nil)
     return nil if participant.next_study_segment.blank?
-    connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}", build_next_scheduled_study_segment_request(participant, date), { 'Content-Length' => '1024' })
+    
+    next_scheduled_event      = participant.next_scheduled_event
+    next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
+    
+    if should_schedule_next_segment(participant, next_scheduled_event, next_scheduled_event_date)
+      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}", build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date), { 'Content-Length' => '1024' })
+    end
+  end
+  
+  def should_schedule_next_segment(participant, next_scheduled_event, next_scheduled_event_date)
+    result = true
+    subject_schedules = schedules(participant)
+    if subject_schedules && days = subject_schedules["days"]
+      days.keys.each do |day|
+        if day == next_scheduled_event_date.to_s
+          days[day]["activities"].each do |activity|
+            if activity["study_segment"].include?(next_scheduled_event.event)
+              result = false
+            end
+          end
+        end
+      end
+    end
+    result
   end
   
   def update_subject(participant)
@@ -250,10 +269,7 @@ class PatientStudyCalendar
   #         </xsd:simpleType>
   #     </xsd:attribute>
   # </xsd:complexType>
-  def build_next_scheduled_study_segment_request(participant, date)
-  
-    next_scheduled_event      = participant.next_scheduled_event
-    next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
+  def build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date)
   
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
