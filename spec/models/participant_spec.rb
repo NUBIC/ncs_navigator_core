@@ -62,7 +62,7 @@ describe Participant do
   it { should have_many(:low_intensity_state_transition_audits) }
   it { should have_many(:high_intensity_state_transition_audits) }
 
-  it { should have_one(:participant_consent) }
+  it { should have_many(:participant_consents) }
 
   # it { should validate_presence_of(:person) }
   

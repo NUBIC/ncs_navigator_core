@@ -58,7 +58,7 @@ class Participant < ActiveRecord::Base
   
   has_many :participant_staff_relationships
   
-  has_one :participant_consent
+  has_many :participant_consents
   
   # validates_presence_of :person
   
@@ -431,18 +431,35 @@ class Participant < ActiveRecord::Base
   end
   
   ##
-  # Returns true if a participant_consent record exists and consent_given_code is true 
-  # and consent_withdraw_code is not true
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_given_code is true and consent_withdraw_code is not true.
+  # If no consent type is given, then check if any consent record exists
+  # @param [NcsCode]
   # @return [Boolean]
-  def consented?
-    # TODO: handle type of consent !!!
-    return false if participant_consent.nil?
-    participant_consent.consent_given.local_code == 1 && !withdrawn?
+  def consented?(consent_type = nil)
+    return false if participant_consents.empty?
+    if consent_type
+      consents = participant_consents.where(:consent_type_code => consent_type.local_code).all
+    else
+      consents = participant_consents
+    end
+    consents.select { |c| c.consent_given.local_code == 1 }.size > 0 && !withdrawn?
   end
   
-  def withdrawn?
-    return false if participant_consent.nil?
-    participant_consent.consent_withdraw.local_code == 1
+  ##
+  # Returns true if a participant_consent record exists for the given consent type
+  # and consent_withdraw_code is true.
+  # If no consent type is given, then check if any consent record exists that was withdrawn
+  # @param [NcsCode]
+  # @return [Boolean]
+  def withdrawn?(consent_type = nil)
+    return false if participant_consents.empty?
+    if consent_type
+      consents = participant_consents.where(:consent_type_code => consent_type.local_code).all
+    else
+      consents = participant_consents
+    end
+    consents.select { |c| c.consent_withdraw.local_code == 1 }.size > 0
   end
   
   ##
@@ -678,6 +695,8 @@ class Participant < ActiveRecord::Base
       end
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+    else
+      fail "Unhandled event type for participant state #{event_type.local_code.inspect}"
     end
   end
   
