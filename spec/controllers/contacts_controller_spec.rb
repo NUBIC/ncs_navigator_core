@@ -74,10 +74,11 @@ describe ContactsController do
           get :edit, :id => "37", :person_id => @person.id
           assigns[:event].should equal(mock_event)
         end
+      
       end
       
-      describe "PUT update with new event" do
-        it "creates a new contact link and event when updating the existing contact" do
+      describe "GET edit with next_event param" do
+        it "creates a new contact link and event when continuing to next event" do
           create_missing_in_error_ncs_codes(Event)
           @contact = Factory(:contact)
           contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => Factory(:event, :event_type => @preg_screen_event))
@@ -92,15 +93,14 @@ describe ContactsController do
           @person.contact_links.reload
           @person.upcoming_events.should == ["LO-Intensity: PPG 1 and 2"]
           @person.contact_links.size.should == 1
-          put :update, :id => @contact.id, :person_id => @person.id, :next_event => true
+          get :edit, :id => @contact.id, :person_id => @person.id, :next_event => true
           @person.contact_links.reload
           @person.contact_links.size.should == 2
           @person.contact_links.map(&:event).map(&:event_type).should == [@ppg12_event, @preg_screen_event]
           @person.contact_links.map(&:contact).uniq.should == [@contact]
         end
         
-      end
-      
+      end      
 
     end
 
