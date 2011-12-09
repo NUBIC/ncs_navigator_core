@@ -4,6 +4,7 @@ class AddContactLinkIdToResponseSet < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :response_sets, :contact_link_id
+    # NOOP - contact_link_id has been removed from response_sets
+    # remove_column :response_sets, :contact_link_id
   end
 end
