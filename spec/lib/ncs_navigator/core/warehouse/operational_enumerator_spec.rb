@@ -573,9 +573,13 @@ module NcsNavigator::Core::Warehouse
         [
           [:event_disposition,          5,                        :event_disp],
           [:event_disposition_category, code(4),                  :event_disp_cat,    '4'],
-          [:event_incentive_cash,       BigDecimal.new('7.11'), :event_incent_cash, '7.11'],
+          [:event_incentive_cash,       BigDecimal.new('7.11'),   :event_incent_cash, '7.11'],
           [:event_incentive_noncash,    'Chick-fil-a coupons',    :event_incent_noncash]
         ].each { |crit| verify_mapping(*crit) }
+      end
+
+      it 'uses the public ID for participant' do
+        results.first.participant_id.should == Participant.first.p_id
       end
     end
 

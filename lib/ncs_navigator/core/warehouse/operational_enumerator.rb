@@ -153,6 +153,9 @@ module NcsNavigator::Core::Warehouse
     )
 
     produce_one_for_one(:events, Event,
+      :public_ids => [
+        { :table => :participants, :public_id => :p_id, :public_ref => :participant_id }
+      ],
       :column_map => {
         :event_disposition => :event_disp,
         :event_disposition_category_code => :event_disp_cat,
