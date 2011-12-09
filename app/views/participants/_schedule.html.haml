@@ -1,3 +1,5 @@
+- seen_activities = Array.new
+
 .schedule
   - if subject_schedules = psc.schedules(participant)
     - subject_schedules["days"].keys.each do |date|
@@ -6,9 +8,10 @@
           = date
         .activities
           - subject_schedules["days"][date]["activities"].each do |activity|
-            .activity
-              - study_segment = activity["study_segment"]
-              - activity_name = activity["activity"]["name"]
-              = link_to "#{study_segment} :: #{activity_name}", psc_assignment_path(activity["assignment"]["id"]), :class => "icon_link external_link"
+            - activity_name = activity["activity"]["name"]
+            - unless seen_activities.include?([date, activity_name])
+              - seen_activities << [date, activity_name]
+              .activity
+                = link_to "#{activity_name}", psc_assignment_path(activity["assignment"]["id"]), :class => "icon_link external_link"
   - else
     Subject does not yet have a schedule
