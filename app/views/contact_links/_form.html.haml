@@ -19,5 +19,19 @@
         Event
       = fields_for @contact_link.event do |event|
         = render "events/form_fields", { :f => event }
-    %p
-      = f.submit "Submit", :disable_with => 'Submitting...'
+    
+    .contact_link_section
+      %h3
+        &nbsp;
+      %p
+        = "Close contact for #{@contact_link.event.event_type}"
+        %br
+        = f.submit "Close"
+
+      - unless params[:close_contact]
+        %p
+          = "- OR -"
+        %p
+          = "Continue onto #{@person.upcoming_events.to_sentence}"
+          %br
+          = f.submit "Continue"

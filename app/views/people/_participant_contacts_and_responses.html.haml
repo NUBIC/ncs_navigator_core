@@ -13,9 +13,11 @@
         %th
           End
         %th
-          Disposition Code
+          Disposition
         %th
           Continue Event
+        %th
+          Event Disposition
       - @person.contact_links.each do |cl|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
@@ -30,6 +32,8 @@
             = cl.contact.contact_disposition
           %td
             = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"
+          %td
+            = "#{cl.event.event_disposition} - #{cl.event.event_disposition_category}"
 
 .page_section
   %b

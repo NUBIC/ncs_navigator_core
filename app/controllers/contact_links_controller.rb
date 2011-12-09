@@ -35,15 +35,15 @@ class ContactLinksController < ApplicationController
 
 			if @contact_link.update_attributes(params[:contact_link]) && 
 				 @contact_link.event.update_attributes(params[:event]) &&
-				 # @contact_link.instrument.update_attributes(params[:instrument]) &&
 				 @contact_link.contact.update_attributes(params[:contact])
 				
-				# TODO: remove instrument check when all Instruments are created
-				@contact_link.instrument.update_attributes(params[:instrument]) if @contact_link.instrument
-				
-				# TODO: determine redirect after updating 
-				# format.html { redirect_to(select_instrument_contact_link_path(@contact_link), :notice => 'Contact was successfully updated.') }
-				format.html { redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.') }
+				format.html { 
+				  if params[:commit] == "Continue"
+				    redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
+				  else
+				    redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.') 
+				  end
+				}
 				format.json { head :ok }
 			else
 				format.html { render :action => "edit" }
