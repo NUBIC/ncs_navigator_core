@@ -47,5 +47,8 @@ begin
 
   end
 rescue LoadError => e
-  $stderr.puts "One or more dependencies not available. RCOV will not work.\n#{e.class}: #{e}"
+  desc 'rcov dependencies missing'
+  task :rcov do
+    $stderr.puts "One or more dependencies not available. RCOV will not work.\n#{e.class}: #{e}"
+  end
 end
