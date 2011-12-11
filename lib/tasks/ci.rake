@@ -35,6 +35,10 @@ begin
     end
   end
 rescue LoadError => e
-  $stderr.puts "One or more dependencies not available. CI builds will not work.\n#{e.class}: #{e}"
+  desc 'CI dependencies missing'
+  task :ci do
+    $stderr.puts "One or more dependencies not available. CI builds will not work."
+    $stderr.puts "#{e.class}: #{e}"
+  end
 end
 
