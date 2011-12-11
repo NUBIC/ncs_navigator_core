@@ -46,9 +46,6 @@ begin
     end
 
   end
-rescue
-  desc 'ci rake task not available (cucumber or rspec not installed)'
-  task :ci do
-    abort 'CI rake task is not available. Be sure to install cucumber and/or rspec as a gem or plugin'
-  end
+rescue LoadError => e
+  $stderr.puts "One or more dependencies not available. RCOV will not work.\n#{e.class}: #{e}"
 end
