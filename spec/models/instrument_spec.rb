@@ -33,23 +33,23 @@
 require 'spec_helper'
 
 describe Instrument do
-  
+
   before(:each) do
     @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
     @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
     @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
   end
-  
+
   it "creates a new instance given valid attributes" do
     ins = Factory(:instrument)
     ins.should_not be_nil
   end
-  
+
   it "describes itself in terms of the instrument type" do
     ins = Factory(:instrument)
     ins.to_s.should == ins.instrument_type.to_s
   end
-  
+
   it { should belong_to(:psu) }
   it { should belong_to(:event) }
   it { should belong_to(:instrument_type) }
@@ -59,31 +59,31 @@ describe Instrument do
   it { should belong_to(:instrument_method) }
   it { should belong_to(:supervisor_review) }
   it { should belong_to(:data_problem) }
-  
+
   it { should belong_to(:person) }
   it { should belong_to(:survey) }
-  
+
   it { should have_one(:response_set) }
-  
+
   it { should validate_presence_of(:instrument_version) }
-  
+
   context "as mdes record" do
-    
+
     it "sets the public_id to a uuid" do
       ins = Factory(:instrument)
       ins.public_id.should_not be_nil
       ins.instrument_id.should == ins.public_id
       ins.instrument_id.length.should == 36
     end
-    
+
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Instrument)
-      
+
       ins = Instrument.new(:instrument_version => "0.1")
       ins.psu = Factory(:ncs_code)
       ins.event = Factory(:event)
       ins.save!
-    
+
       obj = Instrument.first
       obj.instrument_type.local_code.should == -4
       obj.instrument_breakoff.local_code.should == -4
@@ -95,21 +95,21 @@ describe Instrument do
       obj.data_problem.local_code.should == 2
     end
   end
-  
+
   describe "the breakoff code" do
-    
+
     before(:each) do
       @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
       @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
       create_missing_in_error_ncs_codes(Instrument)
     end
-  
+
     it "should set the breakoff code to no if the reponse set has questions answered" do
       response_set = Factory(:response_set)
       response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(true)
 
       instrument = Factory(:instrument)
-      
+
       instrument.set_instrument_breakoff(response_set)
       instrument.instrument_breakoff.should == @n
     end
@@ -120,11 +120,11 @@ describe Instrument do
       response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
 
       instrument = Factory(:instrument)
-      
+
       instrument.set_instrument_breakoff(response_set)
       instrument.instrument_breakoff.should == @y
     end
-    
+
   end
-  
+
 end
