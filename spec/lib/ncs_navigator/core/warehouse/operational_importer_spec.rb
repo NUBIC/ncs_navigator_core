@@ -32,11 +32,11 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        OperationalImporter.automatic_producers.size.should == 21
+        OperationalImporter.automatic_producers.size.should == 20
       end
 
       [
-        MdesModule::LinkContact, MdesModule::Event
+        MdesModule::LinkContact, MdesModule::Event, MdesModule::Instrument
       ].each do |manual|
         it "handles #{manual} manually" do
           OperationalImporter.automatic_producers.collect(&:model).should_not include(manual)
@@ -194,7 +194,7 @@ module NcsNavigator::Core::Warehouse
           # ParticipantAuthorizationForm,
           PpgDetail, PpgStatusHistory,
           Address, Email, Telephone,
-          Contact, Instrument
+          Contact
         ].each do |core_model|
           describe core_model do
             let(:core_model) { core_model }
@@ -258,7 +258,7 @@ module NcsNavigator::Core::Warehouse
       code
     end
 
-    describe 'LinkContact and Event' do
+    describe 'Event, LinkContact, and Instrument' do
       before do
         Event.count.should == 0
       end
@@ -276,6 +276,10 @@ module NcsNavigator::Core::Warehouse
           :event_disp => 4,
           :event_type => code_for_event_type('Pregnancy Screener'),
           :event_start_date => '2010-09-03')
+      }
+      let!(:f_e2_i) {
+        create_warehouse_record_via_core(Instrument, 'f_e2_i',
+          :event => f_e2)
       }
       let(:f_e3) {
         create_warehouse_record_via_core(Event, 'f_e3',
@@ -334,6 +338,10 @@ module NcsNavigator::Core::Warehouse
           :event_type => code_for_event_type('Pregnancy Screener'),
           :event_start_date => '2010-11-07')
       }
+      let!(:g_e1_i) {
+        create_warehouse_record_via_core(Instrument, 'g_e1_i',
+          :event => g_e1)
+      }
 
       describe 'events without participants' do
         let(:g_c1) {
@@ -357,6 +365,10 @@ module NcsNavigator::Core::Warehouse
         it 'creates core contact links' do
           ContactLink.find_by_contact_link_id('g_c1_e1').should_not be_nil
         end
+
+        it 'creates core instruments' do
+          Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
+        end
       end
 
       describe 'unorderable events without contacts' do
@@ -370,6 +382,11 @@ module NcsNavigator::Core::Warehouse
         it 'creates core events' do
           importer.import
           Event.find_by_event_id('g_e1').should_not be_nil
+        end
+
+        it 'creates core instruments' do
+          importer.import
+          Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
         end
       end
 
@@ -397,6 +414,10 @@ module NcsNavigator::Core::Warehouse
         it 'creates core events' do
           Event.find_by_event_id('g_e1').should_not be_nil
         end
+
+        it 'creates core instruments' do
+          Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
+        end
       end
 
       describe 'orderable, participant-associated instances' do
@@ -405,7 +426,7 @@ module NcsNavigator::Core::Warehouse
 
           def events_for(which)
             order.to_a.detect { |p_id, events_and_links| p_id == which }.
-              last.collect { |event_and_links| event_and_links.first }
+              last.collect { |event_and_links| event_and_links[:event] }
           end
 
           it 'is an enumerable' do
@@ -461,6 +482,11 @@ module NcsNavigator::Core::Warehouse
           importer.import
           ContactLink.all.collect(&:contact_link_id).sort.should ==
             MdesModule::LinkContact.all.collect(&:contact_link_id).sort
+        end
+
+        it 'saves the instruments' do
+          importer.import
+          MdesModule::Instrument.all.collect(&:instrument_id).sort.should == %w(f_e2_i g_e1_i)
         end
       end
     end

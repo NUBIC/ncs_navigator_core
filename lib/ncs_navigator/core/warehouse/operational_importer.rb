@@ -35,15 +35,15 @@ module NcsNavigator::Core::Warehouse
         each do |one_to_one_producer|
           create_simply_mapped_core_records(one_to_one_producer)
         end
-      if tables.empty? || tables.include?(:events) || tables.include?(:contact_links)
-        create_events_and_contact_links
+      if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
+        create_events_and_instruments_and_contact_links
       end
       @progress.complete
     end
 
     def self.automatic_producers
       OperationalEnumerator.record_producers.reject { |rp|
-        %w(LinkContact Event).include?(rp.model.to_s.demodulize)
+        %w(LinkContact Event Instrument).include?(rp.model.to_s.demodulize)
       }
     end
 
@@ -63,23 +63,30 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def create_events_and_contact_links
+    def create_events_and_instruments_and_contact_links
       @progress.loading('events with no p state impact')
       create_core_records_by_mdes_public_ids(Event,
         no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id })
+      @progress.loading('instruments with no p state impact')
+      create_core_records_by_mdes_public_ids(Instrument,
+        no_state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
       @progress.loading('contact links with no p state impact')
       create_core_records_by_mdes_public_ids(ContactLink,
         no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
-      @progress.loading('events and contact links with p state impact')
+
+      @progress.loading('events, instruments, and links with p state impact')
       ordered_event_sets.each do |p_id, events_and_links|
         participant = Participant.find_by_p_id(p_id)
-        events_and_links.each do |mdes_event, *mdes_link_contacts|
-          core_event = apply_mdes_record_to_core(Event, mdes_event)
+        events_and_links.each do |event_and_links|
+          core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
           if core_event.new_record?
             participant.set_state_for_event_type(core_event.event_type)
           end
           save_core_record(core_event)
-          mdes_link_contacts.compact.each do |mdes_lc|
+          (event_and_links[:instruments] || []).each do |mdes_i|
+            save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
+          end
+          (event_and_links[:link_contacts] || []).each do |mdes_lc|
             save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
           end
         end
@@ -89,10 +96,11 @@ module NcsNavigator::Core::Warehouse
     def no_state_impact_event_and_link_contact_ids
       @no_state_impact_event_and_link_contact_ids ||= ::DataMapper.repository.adapter.select(
         %{
-          SELECT e.event_id, l.contact_link_id
+          SELECT e.event_id, l.contact_link_id, i.instrument_id
           FROM event e
             LEFT JOIN link_contact l ON e.event_id=l.event_id
             LEFT JOIN contact c ON l.contact_id=c.contact_id
+            LEFT JOIN instrument i ON e.event_id=i.event_id
           WHERE e.participant_id IS NULL
              OR (
                   (e.event_start_date LIKE '9%' OR e.event_start_date IS NULL)
@@ -109,6 +117,7 @@ module NcsNavigator::Core::Warehouse
       event_ids = no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }
       events = find_producer(:events).model.all(:event_id.not => event_ids)
       contact_links = find_producer(:contact_links).model.all(:event_id.not => event_ids)
+      instruments = find_producer(:instruments).model.all(:event_id.not => event_ids)
 
       cl_by_event = contact_links.inject({}) do |idx, cl|
         (idx[cl.event_id] ||= []).tap { |a| a << cl }
@@ -119,21 +128,30 @@ module NcsNavigator::Core::Warehouse
         a.sort! { |x, y| (x.contact.contact_date || '9') <=> (y.contact.contact_date || '9') }
       }
 
+      in_by_event = instruments.inject({}) do |idx, instr|
+        (idx[instr.event_id] ||= []).tap { |a| a << instr }
+        idx
+      end
+
       events.inject({}) do |sets, event|
         (sets[event.participant_id] ||= []).tap do |a|
-          a << [event, *cl_by_event[event.event_id]]
+          a << {
+            :event => event,
+            :link_contacts => cl_by_event[event.event_id],
+            :instruments => in_by_event[event.event_id]
+          }
         end
         sets
       end.tap { |sets|
         sets.values.each { |a|
           a.sort! { |x, y|
-            xe, *xcl = x
-            ye, *ycl = y
-            xcmp, ycmp = [[xe, xcl], [ye, ycl]].collect { |e, cls|
+            xcmp, ycmp = [x, y].map { |set|
+              e = set[:event]
+              cls = (set[:link_contacts] || [])
               [
                 earliest_date(
                   e.event_start_date, e.event_end_date,
-                  *cls.compact.collect { |l| l.contact.contact_date }),
+                  *cls.collect { |l| l.contact.contact_date }),
                 Event::TYPE_ORDER.index(e.event_type.to_i)
               ]
             }
