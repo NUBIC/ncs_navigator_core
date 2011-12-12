@@ -14,14 +14,14 @@
 #  updated_at       :datetime
 #
 
-# A Person may be of mixed race. This table records each race for a Person in a separate row. 
+# A Person may be of mixed race. This table records each race for a Person in a separate row.
 class PersonRace < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_race_id
-  
+
   belongs_to :person
   belongs_to :psu,  :conditions => "list_name = 'PSU_CL1'",  :foreign_key => :psu_code,   :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :race, :conditions => "list_name = 'RACE_CL1'", :foreign_key => :race_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  
+
   validates_presence_of :person
 end

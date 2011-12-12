@@ -1,17 +1,17 @@
 class PregnancyScreenerOperationalDataExtractor
-  
+
   # TODO: extract contact information (language/interpreter used)
   # TODO: is address the HOME address? if so, set address_type
 
   INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
-  
+
   ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
   CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG"
   CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_OTH"
   INTERPRET             = "#{INTERVIEW_PREFIX}.INTERPRET"
   CONTACT_INTERPRET     = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET"
   CONTACT_INTERPRET_OTH = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH"
-  
+
   PERSON_MAP = {
     "#{INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
     "#{INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
@@ -21,9 +21,9 @@ class PregnancyScreenerOperationalDataExtractor
     "#{INTERVIEW_PREFIX}.AGE_RANGE"       => "age_range_code",
     "#{INTERVIEW_PREFIX}.ETHNICITY"       => "ethnic_group_code",
     "#{INTERVIEW_PREFIX}.PERSON_LANG"     => "language_code",
-    "#{INTERVIEW_PREFIX}.PERSON_LANG_OTH" => "language_other" 
+    "#{INTERVIEW_PREFIX}.PERSON_LANG_OTH" => "language_other"
   }
-  
+
   PARTICIPANT_MAP = {
     "#{INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
   }
@@ -37,7 +37,7 @@ class PregnancyScreenerOperationalDataExtractor
     "#{INTERVIEW_PREFIX}.ZIP"             => "zip",
     "#{INTERVIEW_PREFIX}.ZIP4"            => "zip4"
   }
-  
+
   MAIL_ADDRESS_MAP = {
     "#{INTERVIEW_PREFIX}.MAIL_ADDRESS_1"  => "address_one",
     "#{INTERVIEW_PREFIX}.MAIL_ADDRESS_2"  => "address_two",
@@ -47,29 +47,29 @@ class PregnancyScreenerOperationalDataExtractor
     "#{INTERVIEW_PREFIX}.MAIL_ZIP"        => "zip",
     "#{INTERVIEW_PREFIX}.MAIL_ZIP4"       => "zip4"
   }
-  
+
   TELEPHONE_MAP = {
     "#{INTERVIEW_PREFIX}.PHONE_NBR"       => "phone_nbr",
     "#{INTERVIEW_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
     "#{INTERVIEW_PREFIX}.PHONE_TYPE"      => "phone_type_code",
     "#{INTERVIEW_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
   }
-  
+
   HOME_PHONE_MAP = {
     "#{INTERVIEW_PREFIX}.HOME_PHONE"      => "phone_nbr"
   }
-  
+
   CELL_PHONE_MAP = {
     "#{INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
     "#{INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
     "#{INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr"
   }
-  
+
   EMAIL_MAP = {
     "#{INTERVIEW_PREFIX}.EMAIL"           => "email",
     "#{INTERVIEW_PREFIX}.EMAIL_TYPE"      => "email_type_code"
   }
-  
+
   PPG_DETAILS_MAP = {
     "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_first_code",
     "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "orig_due_date",
@@ -78,18 +78,18 @@ class PregnancyScreenerOperationalDataExtractor
     "#{INTERVIEW_PREFIX}.OVARIES"         => "ppg_first_code",
     "#{INTERVIEW_PREFIX}.MENOPAUSE"       => "ppg_first_code",
     "#{INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_first_code",
-    "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"  => "ppg_first_code"    
+    "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"  => "ppg_first_code"
   }
-  
+
   DUE_DATE_DETERMINER_MAP = {
     "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
     "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
     "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
     "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
   }
-  
+
   class << self
-    
+
     def extract_data(response_set)
       person = response_set.person
       person.participant = Participant.new if person.participant.blank?
@@ -104,7 +104,7 @@ class PregnancyScreenerOperationalDataExtractor
       ppg_detail = PpgDetail.new(:participant => person.participant, :psu => person.psu)
 
       response_set.responses.each do |r|
-        
+
         value = OperationalDataExtractor.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
@@ -142,7 +142,7 @@ class PregnancyScreenerOperationalDataExtractor
 
         # TODO: do not hard code ppg code
         if PPG_DETAILS_MAP.has_key?(data_export_identifier)
-          
+
           case data_export_identifier
           when "#{INTERVIEW_PREFIX}.PREGNANT"
             ppg_detail_value = value
@@ -153,12 +153,12 @@ class PregnancyScreenerOperationalDataExtractor
             when 2 # when No to Trying - set ppg_first_code to 4 - Not Trying
               ppg_detail_value = 4
             else  # Otherwise Recent Loss, Not Trying, Unable match ppg_first_code
-              ppg_detail_value = value 
+              ppg_detail_value = value
             end
           when "#{INTERVIEW_PREFIX}.HYSTER", "#{INTERVIEW_PREFIX}.OVARIES", "#{INTERVIEW_PREFIX}.TUBES_TIED", "#{INTERVIEW_PREFIX}.MENOPAUSE", "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"
             ppg_detail_value = 5 if value == 1 # If yes to any set the ppg_first_code to 5 - Unable to become pregnant
           else
-            ppg_detail_value = value 
+            ppg_detail_value = value
           end
           ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", ppg_detail_value)
         end

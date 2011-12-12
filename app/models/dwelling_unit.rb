@@ -22,11 +22,11 @@
 #  tsu_id             :string(255)
 #
 
-# DU is a specific street address within a sampling unit. 
-# There is a one-to-one relationship between Listing and DU. 
+# DU is a specific street address within a sampling unit.
+# There is a one-to-one relationship between Listing and DU.
 # This is not a mandatory one-to-one relationship because some DUs may not appear in the Listing and vice versa
-# 
-# Dwelling Units are an identified address. Once identified the data in this record will rarely change. 
+#
+# Dwelling Units are an identified address. Once identified the data in this record will rarely change.
 #
 #  Possible reasons for modification:
 #  * Dwelling disappears
@@ -39,9 +39,9 @@ class DwellingUnit < ActiveRecord::Base
   has_many :dwelling_household_links
   has_many :household_units, :through => :dwelling_household_links
   has_one :address
-  
+
   accepts_nested_attributes_for :address, :allow_destroy => true
-  
+
   belongs_to :listing_unit
   belongs_to :psu,           :conditions => "list_name = 'PSU_CL1'",            :foreign_key => :psu_code,            :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :duplicate_du,  :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :duplicate_du_code,   :class_name => 'NcsCode', :primary_key => :local_code

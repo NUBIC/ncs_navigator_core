@@ -1,13 +1,13 @@
 require 'active_support/concern'
 module MdesRecord
   extend ActiveSupport::Concern
-  
+
   included do
     before_create :set_public_id
     before_validation :set_missing_in_error
     before_save :format_dates
   end
- 
+
   module ClassMethods
 
     def acts_as_mdes_record(options = {})
@@ -24,19 +24,19 @@ module MdesRecord
     end
 
   end
- 
+
   module InstanceMethods
 
     def set_public_id
       self.send("#{self.public_id_field}=", UUID.new.generate) if self.uuid.blank?
     end
-    
+
     def public_id
       self.send("#{self.public_id_field}")
     end
-    
+
     def uuid
-      self.send("#{self.public_id_field}")      
+      self.send("#{self.public_id_field}")
     end
 
     # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4
@@ -48,11 +48,11 @@ module MdesRecord
         end
       end
     end
-    
+
     def is_missing?(method_name)
       self.send(method_name).blank? || self.send(method_name).local_code == -4
     end
-    
+
     def format_dates
       if self.date_fields
         self.date_fields.each do |df|
@@ -64,7 +64,7 @@ module MdesRecord
 
           mod = self.send("#{df}_modifier")
 
-          unless mod.blank? 
+          unless mod.blank?
             case mod
             when 'refused'
               self.send("#{df}=", missing_date(formatter, "1"))
@@ -77,7 +77,7 @@ module MdesRecord
         end
       end
     end
-    
+
     def missing_date(formatter, n)
       case formatter
       when '%Y-%m'
@@ -86,7 +86,7 @@ module MdesRecord
         return "9#{n*3}-9#{n}-9#{n}"
       end
     end
-    
+
   end
-  
+
 end

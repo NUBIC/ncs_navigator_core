@@ -17,16 +17,16 @@
 #  updated_at          :datetime
 #
 
-# Basic non-repeating Pregnancy Probability Group (PPG) status information 
-# is stored here for each woman who completes a pregnancy screener. 
-# Eligibility criteria for administration of the pregnancy screener are based on 4 elements: 
-# * gender (i.e., female); 
-# * primary residence (i.e., participant lives in a sampled Dwelling Unit); 
-# * age (i.e., 18-49); 
-# * currently known as pregnant – regardless of age. 
-# 
-# In the event that a mother has several pregnancies, each pregnancy would have its own 
-# PPG Details record. 
+# Basic non-repeating Pregnancy Probability Group (PPG) status information
+# is stored here for each woman who completes a pregnancy screener.
+# Eligibility criteria for administration of the pregnancy screener are based on 4 elements:
+# * gender (i.e., female);
+# * primary residence (i.e., participant lives in a sampled Dwelling Unit);
+# * age (i.e., 18-49);
+# * currently known as pregnant – regardless of age.
+#
+# In the event that a mother has several pregnancies, each pregnancy would have its own
+# PPG Details record.
 # There is a one-to-many relationship between Participant and PPG Details.
 class PpgDetail < ActiveRecord::Base
   include MdesRecord
@@ -40,8 +40,8 @@ class PpgDetail < ActiveRecord::Base
   def to_s
     "#{ppg_first}"
   end
-  
-  
+
+
   ##
   # Return the most recently updated due date
   # @return [String]
@@ -56,7 +56,7 @@ class PpgDetail < ActiveRecord::Base
       nil
     end
   end
-  
+
   ##
   # Helper method to set the most recently known due_date
   # @param [Date]

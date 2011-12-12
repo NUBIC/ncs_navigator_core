@@ -1,7 +1,7 @@
 class LowIntensityPregnancyVisitOperationalDataExtractor
-  
+
   INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
-  
+
   BIRTH_ADDRESS_MAP = {
     "#{INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
     "#{INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
@@ -10,20 +10,20 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
     "#{INTERVIEW_PREFIX}.B_STATE"             => "state_code",
     "#{INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
   }
-  
+
   PPG_STATUS_MAP = {
     "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
     "#{INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
     "#{INTERVIEW_PREFIX}.TRYING"          => "ppg_status_code",
     "#{INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_status_code"
   }
-  
+
   class << self
-    
+
     def extract_data(response_set)
       person = response_set.person
       if person.participant.blank?
-        participant = Participant.create(:person => person) 
+        participant = Participant.create(:person => person)
       else
         participant = person.participant
       end
@@ -40,7 +40,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
           when "#{INTERVIEW_PREFIX}.PREGNANT"
             ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value)
           end
-          
+
           if (data_export_identifier == "#{INTERVIEW_PREFIX}.DUE_DATE") && !value.blank?
             participant.ppg_details.first.update_due_date(value)
           end

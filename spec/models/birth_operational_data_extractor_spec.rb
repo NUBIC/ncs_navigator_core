@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BirthOperationalDataExtractor do
-  
+
   before(:each) do
     create_missing_in_error_ncs_codes(DwellingUnit)
     create_missing_in_error_ncs_codes(Instrument)
@@ -10,13 +10,13 @@ describe BirthOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Participant)
     create_missing_in_error_ncs_codes(Person)
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-    
+
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Mother", :local_code => 2)
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
   end
-  
+
   context "creating a new person record for the child" do
-    
+
     before(:each) do
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self", :local_code => 1)
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
@@ -35,7 +35,7 @@ describe BirthOperationalDataExtractor do
       @response_set.responses.size.should == 0
       @participant.participant_person_links.size.should == 1
     end
-    
+
     it "creates a new person (Child) record and associates it with the particpant" do
 
       survey = create_birth_survey_with_child_operational_data
@@ -43,7 +43,7 @@ describe BirthOperationalDataExtractor do
       response_set, instrument = @person.start_instrument(survey)
 
       response_set.responses.size.should == 0
-      
+
       survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME"
@@ -74,21 +74,21 @@ describe BirthOperationalDataExtractor do
       child.first_name.should == "Mary"
       child.last_name.should == "Williams"
       child.sex.should == @female
-      
+
       # child.mother.should == person - will not know until child is a participant
     end
-    
+
   end
-  
+
   context "extracting tracing operational data" do
-  
+
     let(:home) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1) }
     let(:work) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Work", :local_code => 2) }
     let(:cell) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3) }
     let(:frre) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Friend/Relative", :local_code => 4) }
     let(:fax)  { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Fax", :local_code => 5) }
     let(:oth)  { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Other", :local_code => -5) }
-  
+
     before(:each) do
       @person = Factory(:person)
       @participant = Factory(:participant, :person => @person)
@@ -109,25 +109,25 @@ describe BirthOperationalDataExtractor do
           Factory(:response, :survey_section_id => survey_section.id, :string_value => "Goldsmith", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         end
       end
-    
+
       response_set.responses.reload
       response_set.responses.size.should == 2
-    
+
       BirthOperationalDataExtractor.extract_data(response_set)
-    
+
       person = Person.find(@person.id)
       person.first_name.should == "Jocelyn"
       person.last_name.should == "Goldsmith"
     end
-    
+
     it "extracts mailing address data" do
-    
+
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
       Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Home", :local_code => 1)
       Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Mailing", :local_code => 4)
-    
+
       @person.addresses.size.should == 0
-    
+
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
       response_set.responses.size.should == 0
@@ -156,24 +156,24 @@ describe BirthOperationalDataExtractor do
           Factory(:response, :survey_section_id => survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         end
       end
-    
+
       response_set.responses.reload
       response_set.responses.size.should == 7
-    
+
       BirthOperationalDataExtractor.extract_data(response_set)
-    
+
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
       address.to_s.should == "123 Easy St. Chicago IL 65432-1234"
     end
-  
+
     it "extracts telephone operational data" do
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
       response_set.responses.size.should == 0
       @person.telephones.size.should == 0
-      
+
       survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR"
@@ -202,12 +202,12 @@ describe BirthOperationalDataExtractor do
           Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125557890", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         end
       end
-    
+
       response_set.responses.reload
       response_set.responses.size.should == 8
-    
+
       BirthOperationalDataExtractor.extract_data(response_set)
-    
+
       person  = Person.find(@person.id)
       person.telephones.size.should == 3
       person.telephones.each do |t|
@@ -215,7 +215,7 @@ describe BirthOperationalDataExtractor do
         t.phone_nbr[0,6].should == "312555"
       end
     end
-    
+
     it "extracts email information from the survey responses" do
 
       home = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Personal", :local_code => 1)
@@ -249,8 +249,8 @@ describe BirthOperationalDataExtractor do
       person.emails.first.email_type.local_code.should == 1
 
     end
-    
-    
+
+
   end
 
 end

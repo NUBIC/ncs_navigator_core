@@ -32,7 +32,7 @@
 class Email < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :email_id, :date_fields => [:email_start_date, :email_end_date]
-  
+
   belongs_to :person
 
   belongs_to :psu,                :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                :class_name => 'NcsCode', :primary_key => :local_code
