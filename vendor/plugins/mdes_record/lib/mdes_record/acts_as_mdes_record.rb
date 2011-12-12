@@ -36,7 +36,11 @@ module MdesRecord
     end
 
     def uuid
-      self.send("#{self.public_id_field}")
+      if self.public_id_field == :uuid
+        super
+      else
+        self.send("#{self.public_id_field}")
+      end
     end
 
     # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4

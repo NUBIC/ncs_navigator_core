@@ -32,10 +32,9 @@ class ActsAsMdesRecordTest < Test::Unit::TestCase
 
   def test_create_date_modifier_is_set_on_date_fields
     df = DateFoo.new
-    assert(df.respond_to?(:start_date_modifier))
-    df.start_date_modifier = 'unknown'
+    df.start_date_modifier = 'refused'
     df.save!
-    assert_equal('9111-91-91', df.start)
+    assert_equal('9111-91-91', df.start_date)
   end
 
   def test_date_fields_are_accessible

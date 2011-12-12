@@ -1,6 +1,6 @@
-postgresql:
-  :adapter: postgresql
-  :username: rails
-  :password: pwd
-  :database: mdes_model_plugin_test
-  :min_messages: ERROR
+<%
+require 'bcdatabase'
+bcdb = Bcdatabase.load
+%>
+
+<%= bcdb.postgresql :local_postgresql, :mdes_model_plugin_test %>
