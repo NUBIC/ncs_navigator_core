@@ -57,7 +57,7 @@ describe Person do
     pers = Factory(:person)
     pers.should_not be_nil
   end
-  
+
   it "describes itself" do
     pers = Factory(:person)
     name = "#{pers.first_name} #{pers.last_name}"
@@ -91,29 +91,29 @@ describe Person do
 
   it { should have_many(:household_person_links) }
   it { should have_many(:household_units).through(:household_person_links) }
-  
+
   it { should have_many(:addresses) }
   it { should have_many(:telephones) }
   it { should have_many(:emails) }
-  
+
   context "as mdes record" do
-    
+
     it "sets the public_id to a uuid" do
       pers = Factory(:person)
       pers.public_id.should_not be_nil
       pers.person_id.should == pers.public_id
       pers.person_id.length.should == 36
     end
-    
+
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Person)
-      
+
       pers = Person.new
       pers.psu = Factory(:ncs_code)
       pers.first_name = "John"
       pers.last_name = "Doe"
       pers.save!
-    
+
       obj = Person.find(pers.id)
       obj.prefix.local_code.should == -4
       obj.suffix.local_code.should == -4
@@ -131,56 +131,56 @@ describe Person do
       obj.p_info_source.local_code.should == -4
     end
   end
-  
+
   context "relationship between person and participant" do
-    
+
     describe "#participant=" do
-      
+
       let(:participant) { Factory(:participant) }
       let(:person) { Factory(:person) }
-      
+
       describe "without an existing relationship" do
         before do
           person.participant.should be_nil
           person.participant_person_links.should be_empty
-          
+
           person.participant = participant
         end
-        
+
         it "creates the relationship" do
           person.participant_person_links.first.relationship_code.should == 1
         end
-        
+
         it "associates to the correct participant" do
           person.participant_person_links.first.participant.should == participant
         end
-        
+
       end
-      
+
       describe "with an existing relationship" do
         let!(:existing_link) {
           person.participant_person_links.create(
             :relationship_code => 1, :psu => person.psu, :participant => Factory(:participant, :p_id => "asdf"))
         }
-  
+
         before do
           person.participant = participant
         end
-        
+
         it "does not add another link" do
           person.should have(1).participant_person_link
         end
-        
+
         it "updates the associated participant" do
           person.participant.should == participant
         end
       end
     end
-    
+
   end
-  
+
   context "mdes date formatting" do
-    
+
     it "sets the corresponding date field with the user entered date" do
       dob = Date.today
       pers = Factory(:person)
@@ -189,25 +189,25 @@ describe Person do
       pers = Person.last
       pers.person_dob.should == Date.today.strftime('%Y-%m-%d')
     end
-    
+
     it "sets the person_dob if the person has refused to give the information" do
       pers = Factory(:person)
       pers.person_dob_modifier = "refused"
       pers.save!
-      
+
       pers = Person.last
       pers.person_dob.should == '9111-91-91'
     end
-    
+
     it "sets the person_dob if the person said the information is unknown" do
       pers = Factory(:person)
       pers.person_dob_modifier = "unknown"
       pers.save!
-      
+
       pers = Person.last
       pers.person_dob.should == '9666-96-96'
     end
-    
+
     it "sets the corresponding date field with the user entered date properly formatted" do
       move_date = Date.today
       pers = Factory(:person)
@@ -216,89 +216,89 @@ describe Person do
       pers = Person.last
       pers.date_move.should == Date.today.strftime('%Y-%m')
     end
-    
+
     it "sets the date_move if the person said the information is not_applicable" do
       pers = Factory(:person)
       pers.date_move_modifier = "not_applicable"
       pers.save!
-      
+
       pers = Person.last
       pers.date_move.should == '9777-97'
     end
   end
-  
+
   context "determining date" do
-    
+
     it "returns the person's age" do
       pers = Factory(:person, :person_dob_date => 10.years.ago)
       pers.age.should == 10
     end
-    
+
     it "does not blowup on leap year" do
       dob = Date.parse('02/29/1992')
       pers = Factory(:person, :person_dob_date => dob)
       (pers.age > 18).should be_true
     end
-    
+
     it "does not return anything if person dob is unknown" do
       pers = Factory(:person)
       pers.person_dob_modifier = "unknown"
       pers.save!
-      
+
       Person.last.age.should be_nil
     end
-    
+
     it "does not return anything if person dob is refused" do
       pers = Factory(:person)
       pers.person_dob_modifier = "refused"
       pers.save!
-      
+
       Person.last.age.should be_nil
     end
-    
+
     it "handles a string date" do
       dob = 10.years.ago
       pers = Factory(:person, :person_dob_date => nil, :person_dob => dob.strftime('%Y-%m-%d'))
       pers.age.should == 10
     end
-    
+
   end
 
   context "with events and assigned to a PPG" do
-    
+
     describe "a person who is not a participant" do
-    
+
       it "knows the upcoming applicable events" do
         pers = Factory(:person)
         pers.upcoming_events.should_not be_empty
-      
+
         pers.should_not be_participant
         pers.upcoming_events.should == ["Pregnancy Screener"]
       end
     end
-    
+
   end
-  
+
   context "with a contact" do
-    
+
     it "gets an incomplete contact/contact link" do
       pers = Factory(:person)
       pers.current_contact_link.should be_nil
-      
+
       link = Factory(:contact_link, :person => pers)
       pers.contact_links.reload
       pers.current_contact_link.should eq link
-      
+
       pers.current_contact_link.contact.contact_disposition = 510
       pers.current_contact_link.event.event_disposition = 510
       pers.current_contact_link.should be_nil
-      
+
     end
-    
+
   end
 
   context "with a response set" do
-    
+
     before(:each) do
       create_missing_in_error_ncs_codes(Instrument)
       InstrumentEventMap.stub!(:version).and_return("1.0")
@@ -306,44 +306,44 @@ describe Person do
       @pers = Factory(:person)
       @survey = create_test_survey_for_person
       @rs, @instrument = @pers.start_instrument(@survey)
-      
+
     end
-    
+
     it "knows the last incomplete response set" do
-    
+
       pers = Person.find(@pers.id)
       pers.response_sets.size.should == 1
       pers.response_sets.last.should == @rs
       pers.last_incomplete_response_set.should == @rs
       pers.last_incomplete_response_set.should_not be_complete
-      
+
       @rs.complete!
       @rs.save!
       pers = Person.find(@pers.id)
       pers.last_incomplete_response_set.should be_nil
-      
+
     end
-    
+
     it "knows the last completed survey" do
       @rs.complete!
       @rs.save!
       pers = Person.find(@pers.id)
       pers.last_completed_survey.should == @survey
     end
-    
+
     it "knows the last incomplete survey"
-    
+
   end
-  
+
   context "responses to instrument questions" do
-    
+
     before(:each) do
       create_missing_in_error_ncs_codes(Instrument)
     end
-    
+
     it "should get responses by data_export_identifier" do
       person = Factory(:person)
-    
+
       survey = create_pregnancy_screener_survey_with_cell_phone_permissions
       survey_section = survey.sections.first
       response_set, instrument = person.start_instrument(survey)
@@ -359,22 +359,22 @@ describe Person do
           Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         end
       end
-    
+
       response_set.responses.reload
       response_set.responses.size.should == 2
-    
+
       person  = Person.find(person.id)
       can_use_phone_to_setup_appts = person.responses_for("#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_2")
       can_use_phone_to_setup_appts.size.should == 1
       can_use_phone_to_setup_appts.first.to_s.should == "Yes"
-    
+
       can_text_to_setup_appts = person.responses_for("#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_4")
       can_text_to_setup_appts.size.should == 1
       can_text_to_setup_appts.first.to_s.should == "Yes"
     end
-    
+
     context "repeating the instrument" do
-      
+
       before(:each) do
         create_missing_in_error_ncs_codes(Instrument)
         InstrumentEventMap.stub!(:version).and_return("1.0")
@@ -382,76 +382,76 @@ describe Person do
         @person = Factory(:person)
         @survey = create_test_survey_for_person
       end
-      
+
       it "returns 0 for the instrument_repeat_key if this is the first time taking the instrument" do
         response_set, instrument = @person.start_instrument(@survey)
         @person.instrument_repeat_key(instrument.survey).should == 0
       end
-      
+
       it "returns 1 for the instrument_repeat_key if this is the second time taking the instrument" do
         response_set0, instrument0 = @person.start_instrument(@survey)
         response_set1, instrument1 = @person.start_instrument(@survey)
         @person.instrument_repeat_key(instrument1.survey).should == 1
       end
-      
+
     end
-    
+
     context "setting default instrument values" do
-      
+
       before(:each) do
         create_missing_in_error_ncs_codes(Instrument)
         InstrumentEventMap.stub!(:version).and_return("1.0")
         InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
         @person = Factory(:person)
         @survey = create_test_survey_for_person
-        
+
       end
-      
+
       it "should set the supervisor_review_code" do
         response_set, instrument = @person.start_instrument(@survey)
         instrument.supervisor_review.should == @n
       end
-      
+
       it "should set the data_problem_code" do
         response_set, instrument = @person.start_instrument(@survey)
         instrument.data_problem.should == @n
       end
-      
+
       it "should set the instrument_mode_code" do
         telephone_computer_administered = Factory(:ncs_code, :list_name => 'INSTRUMENT_ADMIN_MODE_CL1', :local_code => 2, :display_text => "Telephone, Computer Assisted (CATI)")
         response_set, instrument = @person.start_instrument(@survey)
         instrument.instrument_mode.should == telephone_computer_administered
       end
-      
+
       it "should set the instrument_method_code" do
         interviewer_administered = Factory(:ncs_code, :list_name => 'INSTRUMENT_ADMIN_METHOD_CL1', :local_code => 2, :display_text => "Interviewer Administered")
         response_set, instrument = @person.start_instrument(@survey)
         instrument.instrument_method.should == interviewer_administered
       end
-      
+
       it "should set the instrument_breakoff_code"
-      
-      it "should set the instrument_status_code"      
-      
+
+      it "should set the instrument_status_code"
+
     end
-        
+
   end
 
   # TODO: uncomment when dwelling units can and cannot have a tsu id
   # context "determining ssu and tsu" do
-  #   
+  #
   #   let(:person) { Factory(:person) }
-  #   
+  #
   #   it "is not in a tsu if there are no households" do
   #     person.household_units.should be_empty
   #     person.should_not be_in_tsu
   #   end
-  #   
+  #
   #   it "is not in a tsu if there are no dwelling units" do
   #     person.dwelling_units.should be_empty
   #     person.should_not be_in_tsu
   #   end
-  #   
+  #
   #   it "is in a tsu if the dwelling unit for the household has a tsu id" do
   #     du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
   #     hh = Factory(:household_unit)
@@ -462,7 +462,7 @@ describe Person do
   #     person.dwelling_units.first.tsu_id.should == 'tsu'
   #     person.should be_in_tsu
   #   end
-  #   
+  #
   #   it "is NOT in a tsu if the dwelling unit for the household does NOT have a tsu id" do
   #     du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
   #     hh = Factory(:household_unit)
@@ -473,7 +473,7 @@ describe Person do
   #     person.dwelling_units.first.tsu_id.should be_nil
   #     person.should_not be_in_tsu
   #   end
-  #   
+  #
   # end
-  
+
 end
