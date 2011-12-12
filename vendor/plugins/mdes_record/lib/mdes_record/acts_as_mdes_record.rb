@@ -23,6 +23,37 @@ module MdesRecord
       end
     end
 
+    def ncs_coded_attribute(attribute_name, list_name)
+      ncs_coded_attributes[attribute_name.to_sym] =
+        ::MdesRecord::NcsCodedAttribute.new(self, attribute_name, list_name)
+    end
+
+    def ncs_coded_attributes
+      @ncs_coded_attributes ||= {}
+    end
+
+  end
+
+  class NcsCodedAttribute
+    attr_reader :attribute_name, :list_name
+
+    def initialize(model_class, attribute_name, list_name)
+      @list_name = list_name.upcase
+      @attribute_name = attribute_name.to_sym
+      belongs_to!(model_class)
+    end
+
+    def foreign_key
+      @foreign_key ||= "#{attribute_name}_code".to_sym
+    end
+
+    def belongs_to!(model)
+      model.belongs_to(attribute_name,
+        :conditions => "list_name = '#{list_name}'",
+        :foreign_key => foreign_key,
+        :class_name => 'NcsCode',
+        :primary_key => :local_code)
+    end
   end
 
   module InstanceMethods

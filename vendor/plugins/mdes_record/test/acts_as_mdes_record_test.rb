@@ -42,12 +42,27 @@ class ActsAsMdesRecordTest < Test::Unit::TestCase
     assert_equal(df.date_fields, [:start_date])
   end
 
+  def test_coded_attribute_belongs_to_code_list_model
+    assoc = Foo.reflect_on_association(:psu)
+    assert_not_nil(assoc, 'association not created')
+    assert_equal(
+      "list_name = 'PSU_CL1'",
+      assoc.options[:conditions])
+    assert_equal(:psu_code, assoc.options[:foreign_key])
+    assert_equal(:local_code, assoc.options[:primary_key])
+  end
+
+  def test_coded_attribute_list_name_retrievable
+    Foo.ncs_coded_attributes[:psu].list_name == 'PSU_CL1'
+  end
 end
 
 
 class Foo < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record
+
+  ncs_coded_attribute :psu, 'PSU_CL1'
 end
 
 class Bar < ActiveRecord::Base
