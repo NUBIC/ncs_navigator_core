@@ -224,6 +224,20 @@ module NcsNavigator::Core::Warehouse
               associated_model, associated_public_id)
           end
           core_record.send("#{core_model_association_id}=", new_association_id)
+        elsif core_attribute =~ /_code$/
+          mdes_value = mdes_record.send(mdes_variable)
+          if mdes_value
+            code_attribute_name = core_attribute.sub(/_code$/, '').to_sym
+            code_attribute = core_model.ncs_coded_attributes[code_attribute_name]
+            core_code = ncs_code_object_for(mdes_value, code_attribute.list_name)
+            if core_code
+              core_record.send("#{code_attribute_name}=", core_code)
+            else
+              core_record.send("#{core_attribute}=", mdes_value)
+            end
+          else
+            core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
+          end
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
         end
@@ -283,6 +297,22 @@ module NcsNavigator::Core::Warehouse
         idx[row['public_id']] = row['id']
         idx
       end
+    end
+
+    def ncs_code_object_for(local_code, list_name)
+      ncs_code_list(list_name).detect { |cl| cl.local_code == local_code.to_i }
+    end
+
+    def ncs_code_list(list_name)
+      ncs_code_lists[list_name] ||= build_ncs_code_list(list_name)
+    end
+
+    def build_ncs_code_list(list_name)
+      NcsCode.find_all_by_list_name(list_name)
+    end
+
+    def ncs_code_lists
+      @ncs_code_lists ||= {}
     end
 
     FailedAssociation = Struct.new(
