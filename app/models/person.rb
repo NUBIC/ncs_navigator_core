@@ -361,7 +361,7 @@ class Person < ActiveRecord::Base
 
     def dob
       return person_dob_date unless person_dob_date.blank?
-      return Date.parse(person_dob) if person_dob.to_i > 0 && !person_dob.blank? && person_dob.chars.first != '9'
+      return Date.parse(person_dob) if person_dob.to_i > 0 && !person_dob.blank? && (person_dob !~ /^9/ && person_dob !~ /-9/)
       return nil
     end
 

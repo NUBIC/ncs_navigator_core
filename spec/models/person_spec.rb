@@ -227,7 +227,7 @@ describe Person do
     end
   end
 
-  context "determining date" do
+  context "determining age" do
 
     it "returns the person's age" do
       pers = Factory(:person, :person_dob_date => 10.years.ago)
@@ -262,6 +262,19 @@ describe Person do
       pers.age.should == 10
     end
 
+    %w(
+      9111-91-91
+      9666-96-96
+      9777-97-97
+      1980-91-91
+      1963-07-91
+    ).each do |n|
+      it "handles a string unknown date of type #{n}" do
+        pers = Factory(:person, :person_dob_date => nil, :person_dob => n)
+        pers.save!
+        pers.age.should be_nil
+      end
+    end
   end
 
   context "with events and assigned to a PPG" do
