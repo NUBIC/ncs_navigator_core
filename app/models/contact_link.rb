@@ -17,15 +17,15 @@
 #  updated_at       :datetime
 #
 
-# Each Contact Link record associates a unique combination 
-# of Staff Member, Person, Event, and/or Instrument that occurs during a Contact.  
+# Each Contact Link record associates a unique combination
+# of Staff Member, Person, Event, and/or Instrument that occurs during a Contact. 
 # There should be at least 1 contact link record for every contact.
 class ContactLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :contact_link_id
-  
+
   belongs_to :psu, :conditions => "list_name = 'PSU_CL1'", :foreign_key => :psu_code, :class_name => 'NcsCode', :primary_key => :local_code
-  
+
   belongs_to :contact
   belongs_to :person
   belongs_to :event
@@ -35,19 +35,19 @@ class ContactLink < ActiveRecord::Base
 
   validates_presence_of :contact
   validates_presence_of :staff_id
-  
+
   accepts_nested_attributes_for :contact,    :allow_destroy => true
   accepts_nested_attributes_for :person,     :allow_destroy => true
   accepts_nested_attributes_for :event,      :allow_destroy => true
   accepts_nested_attributes_for :instrument, :allow_destroy => true
-  
+
   ##
   # A contact link is 'closed' or 'completed' if the disposition of both the event /and/ contact has been set.
-  # @return [true, false]  
+  # @return [true, false]
   def closed?
     (contact && contact.closed?) && (event && event.closed?)
   end
   alias completed? closed?
   alias complete? closed?
-  
+
 end

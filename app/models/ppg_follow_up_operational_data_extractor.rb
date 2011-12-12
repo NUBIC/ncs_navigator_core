@@ -1,8 +1,8 @@
 class PpgFollowUpOperationalDataExtractor
-  
+
   INTERVIEW_PREFIX = "PPG_CATI"
   SAQ_PREFIX       = "PPG_SAQ"
-  
+
   TELEPHONE_MAP = {
     "#{INTERVIEW_PREFIX}.PHONE_NBR"       => "phone_nbr",
     "#{INTERVIEW_PREFIX}.PHONE_TYPE"      => "phone_type_code",
@@ -15,23 +15,23 @@ class PpgFollowUpOperationalDataExtractor
   WORK_PHONE_MAP = {
     "#{SAQ_PREFIX}.WORK_PHONE"            => "phone_nbr"
   }
-    
+
   OTHER_PHONE_MAP = {
     "#{SAQ_PREFIX}.OTHER_PHONE"           => "phone_nbr"
   }
-  
+
   CELL_PHONE_MAP = {
     "#{INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
     "#{INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
     "#{INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr",
     "#{SAQ_PREFIX}.CELL_PHONE"            => "phone_nbr",
   }
-  
+
   EMAIL_MAP = {
     "#{SAQ_PREFIX}.EMAIL"                 => "email",
     "#{SAQ_PREFIX}.EMAIL_TYPE"            => "email_type_code"
   }
-  
+
   PPG_STATUS_MAP = {
     "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
     "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1"  => "orig_due_date",
@@ -42,25 +42,25 @@ class PpgFollowUpOperationalDataExtractor
     "#{SAQ_PREFIX}.TRYING"                => "ppg_status_code",
     "#{SAQ_PREFIX}.MED_UNABLE"            => "ppg_status_code"
   }
-  
+
   DUE_DATE_DETERMINER_MAP = {
     "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
     "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
     "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
     "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
   }
-  
+
   class << self
-    
+
     def extract_data(response_set)
       person = response_set.person
       if person.participant.blank?
-        participant = Participant.create(:person => person) 
+        participant = Participant.create(:person => person)
       else
         participant = person.participant
       end
       ppg_status_history = PpgStatusHistory.new(:participant => participant)
-      
+
       home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type)
       cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type)
       work_phone = Telephone.new(:person => person, :phone_type => Telephone.work_phone_type)
@@ -84,11 +84,11 @@ class PpgFollowUpOperationalDataExtractor
         if CELL_PHONE_MAP.has_key?(data_export_identifier)
           cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
         end
-        
+
         if OTHER_PHONE_MAP.has_key?(data_export_identifier)
           other_phone.send("#{OTHER_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
         end
-        
+
         if WORK_PHONE_MAP.has_key?(data_export_identifier)
           work_phone.send("#{WORK_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
         end
@@ -105,18 +105,18 @@ class PpgFollowUpOperationalDataExtractor
             # TRYING response will set the status in this case
             ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value) unless [2, -1, -2].include?(value)
           when "#{INTERVIEW_PREFIX}.TRYING", "#{SAQ_PREFIX}.TRYING"
-            
+
             value = 4 if value == 2 # "No" response means that the status is "Not Trying" - i.e. 4
             value = 2 if value == 1 # "Yes" response means that the status is "Trying" - i.e. 2
-            
+
             ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value)
           when "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{SAQ_PREFIX}.MED_UNABLE"
             value = 5 if value == 1 # "Yes" response means that the status is "Unable to become pregnant" - i.e. 5
             ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value)
           end
-          
+
           if (data_export_identifier == "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1" || data_export_identifier == "#{SAQ_PREFIX}.PPG_DUE_DATE") && !value.blank?
-            participant.ppg_details.first.update_due_date(value) 
+            participant.ppg_details.first.update_due_date(value)
           end
         end
 

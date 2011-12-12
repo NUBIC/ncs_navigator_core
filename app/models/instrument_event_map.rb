@@ -5,7 +5,7 @@ class InstrumentEventMap
   ##
   # For a given PSC segment, return the filenames of all the Instruments/Surveys that match
   # from the MDES Instrument and Event Map
-  # 
+  #
   # @param [String] - the name of the PSC segment (e.g. Lo-Intensity: Pregnancy Screener)
   # @return [Array, <String>] - filenames for that event
   def self.instruments_for_segment(segment)
@@ -17,11 +17,11 @@ class InstrumentEventMap
     end
     result
   end
-  
+
   ##
   # For a given activity from a PSC segment, return the filename of the Instrument with
   # the matching name from the MDES Instrument and Event Map
-  # 
+  #
   # @param [String] - the name of the PSC segment activity (e.g. Pregnancy Probability Group Follow-Up Interview)
   # @return [String] - filename for the instrument whose name matches the activity
   def self.instrument_for_activity(activity)
@@ -44,10 +44,10 @@ class InstrumentEventMap
       activity
     end
   end
-  
+
   ##
   # For a given survey title (i.e. instrument filename), return the event name (i.e. the activity from a PSC segment)
-  # 
+  #
   # @param [String] - filename for the instrument whose name matches the activity
   # @return [String] - the name of the PSC segment activity (e.g. Pregnancy Probability Group Follow-Up Interview)
   def self.activity_for_instrument(instrument)
@@ -58,7 +58,7 @@ class InstrumentEventMap
         break
       end
     end
-    result    
+    result
   end
 
   ##
@@ -67,7 +67,7 @@ class InstrumentEventMap
   def self.events
     instruments.collect { |ie| ie["event"].split(";") }.flatten.collect { |e| e.strip }.uniq.sort
   end
-  
+
   ##
   # Get the current version number for this Instrument from the Instrumnnt and Event Map
   # @param [String]
@@ -82,7 +82,7 @@ class InstrumentEventMap
     end
     result
   end
-  
+
   ##
   # For the given filename, find the NcsCode from the INSTRUMENT_TYPE_CL1 Code List.
   # @param [String]
@@ -92,7 +92,7 @@ class InstrumentEventMap
       sub = filename[filename.index(' '), filename.length]
       filename = filename.gsub(sub, '')
     end
-    
+
     result = nil
     instruments.each do |ie|
       if ie["filename"] == filename
@@ -102,12 +102,12 @@ class InstrumentEventMap
     end
     result
   end
-  
+
   def self.instruments
     results = []
     with_specimens = NcsNavigatorCore.with_specimens
     INSTRUMENT_EVENT_CONFIG.each do |ie|
-      filename = ie["filename"]      
+      filename = ie["filename"]
       next if filename.include?("_DCI_") && with_specimens == "false"
 
       case NcsNavigatorCore.recruitment_type
@@ -121,5 +121,5 @@ class InstrumentEventMap
     end
     results
   end
-  
+
 end

@@ -7,8 +7,8 @@ class OperationalDataExtractor
     [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
     [/_LIPregNotPreg/,  LowIntensityPregnancyVisitOperationalDataExtractor],
     [/_LIPregNotPreg/,  BirthOperationalDataExtractor],
-  ]  
-  
+  ]
+
   class << self
     def process(response_set)
       if !response_set.processed_for_operational_data_extraction
@@ -16,13 +16,13 @@ class OperationalDataExtractor
         response_set.update_attribute(:processed_for_operational_data_extraction, true) if success
       end
     end
-    
-    
+
+
     def extractor_for(response_set)
       extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
       extractor ? extractor[1] : PregnancyScreenerOperationalDataExtractor
     end
-    
+
     def response_value(response)
       case response.answer.response_class
       when "string"
@@ -37,10 +37,10 @@ class OperationalDataExtractor
         response.answer.reference_identifier.gsub("neg_", "-").to_i
       end
     end
-  
+
     ##
     # Convert Contact Survey code to Person/Participant Relationship code
-    # 
+    #
     # CONTACT_RELATIONSHIP_CL2
     #   1 Mother/Father
     #   2 Brother/Sister
@@ -73,7 +73,7 @@ class OperationalDataExtractor
       # TODO: FIXME: Determine how to handle Mother/Father value
       case value
       when 1  # Mother/Father
-        2       # Default to Biological Mother for now 
+        2       # Default to Biological Mother for now
       when 2  # Brother/Sister
         9       # Sibling
       when 3  # Aunt/Uncle
@@ -86,29 +86,29 @@ class OperationalDataExtractor
         12      # Friend
       when -5, -4
         value   # Other, Missing in Error
-      else 
+      else
         nil     # No mapping value
       end
     end
-  
-  
+
+
     # PREG_SCREEN_HI_2.ORIG_DUE_DATE
     # PREG_VISIT_LI_2.DUE_DATE
     # PPG_CATI.PPG_DUE_DATE_1
-    # 
+    #
     # PREG_SCREEN_HI_2.DATE_PERIOD
     # PREG_VISIT_LI_2.DATE_PERIOD
     # PPG_CATI.DATE_PERIOD
     # CALCULATE DUE DATE FROM THE FIRST DATE OF LAST MENSTRUAL PERIOD AND SET ORIG_DUE_DATE = DATE_PERIOD + 280 DAYS
-    # 
+    #
     # PREG_SCREEN_HI_2.WEEKS_PREG
     # PPG_CATI.WEEKS_PREG
     # CALCULATE ORIG_DUE_DATE =TODAY’S DATE + 280 DAYS – WEEKS_PREG * 7
-    # 
+    #
     # PREG_SCREEN_HI_2.MONTH_PREG
     # PPG_CATI.MONTH_PREG
     # CALCULATE DUE DATE AS FROM NUMBER OF MONTHS PREGNANT WHERE ORIG_DUE_DATE =TODAY’S DATE + 280 DAYS – MONTH_PREG * 30 - 15
-    # 
+    #
     # PREG_SCREEN_HI_2.TRIMESTER
     # PPG_CATI.TRIMESTER
     # # 1ST TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 46 DAYS).
@@ -116,9 +116,9 @@ class OperationalDataExtractor
     # # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).
     # # DON’T KNOW/REFUSED: ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS)
     def determine_due_date(key, response)
-      
+
       return nil unless should_calculate_due_date?(key, response)
-      
+
       value = case response.answer.response_class
               when "integer"
                 response.integer_value
@@ -127,7 +127,7 @@ class OperationalDataExtractor
               when "answer"
                 response.answer.reference_identifier.gsub("neg_", "-").to_i
               end
-    
+
       due_date =  case key
                   when "ORIG_DUE_DATE", "DUE_DATE", "PPG_DUE_DATE_1"
                     value
@@ -151,10 +151,10 @@ class OperationalDataExtractor
                   else
                     (Date.today + 280.days) - (140.days)
                   end
-    
+
       due_date.strftime('%Y-%m-%d') unless due_date.blank?
     end
-    
+
     def should_calculate_due_date?(key, response)
       answer_class = response.answer.response_class
       case key
@@ -167,9 +167,9 @@ class OperationalDataExtractor
       else
         false
       end
-      
+
     end
-  
+
   end
-  
+
 end

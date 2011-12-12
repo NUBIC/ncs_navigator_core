@@ -29,12 +29,12 @@ describe ContactLink do
   it "knows when it is 'closed'" do
     link = Factory(:contact_link)
     link.should_not be_closed
-    
+
     link.contact.contact_disposition = 510
     link.event.event_disposition = 510
     link.should be_closed
   end
-  
+
   it { should belong_to(:psu) }
   it { should belong_to(:contact) }
   it { should belong_to(:person) }
@@ -44,9 +44,9 @@ describe ContactLink do
 
   it { should validate_presence_of(:staff_id) }
   it { should validate_presence_of(:contact) }
-  
+
   context "as mdes record" do
-    
+
     it "sets the public_id to a uuid" do
       link = Factory(:contact_link)
       link.public_id.should_not be_nil

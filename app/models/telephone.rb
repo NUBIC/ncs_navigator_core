@@ -35,7 +35,7 @@
 class Telephone < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :phone_id, :date_fields => [:phone_start_date, :phone_end_date]
-  
+
   belongs_to :person
 
   belongs_to :psu,                :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                :class_name => 'NcsCode', :primary_key => :local_code
@@ -46,25 +46,25 @@ class Telephone < ActiveRecord::Base
   belongs_to :phone_share,        :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :phone_share_code,        :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :cell_permission,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :cell_permission_code,    :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :text_permission,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :text_permission_code,    :class_name => 'NcsCode', :primary_key => :local_code
-  
+
   def self.home_phone_type
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 1).first
   end
-  
+
   def self.work_phone_type
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 2).first
   end
-  
+
   def self.cell_phone_type
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 3).first
   end
-  
+
   def self.other_phone_type
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => -5).first
   end
-  
+
   def phone_nbr=(nbr)
     self[:phone_nbr] = nbr.scan(/\d/).join if nbr.is_a? String
   end
-  
+
 end

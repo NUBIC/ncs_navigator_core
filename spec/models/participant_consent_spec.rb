@@ -40,7 +40,7 @@ describe ParticipantConsent do
     pc = Factory(:participant_consent)
     pc.should_not be_nil
   end
-  
+
   it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:contact) }
@@ -49,7 +49,7 @@ describe ParticipantConsent do
   it { should belong_to(:consent_type) }
   it { should belong_to(:consent_form_type) }
   it { should belong_to(:consent_given) }
-  
+
   it { should belong_to(:consent_withdraw) }
   it { should belong_to(:consent_withdraw_type) }
   it { should belong_to(:consent_withdraw_reason) }
@@ -60,25 +60,25 @@ describe ParticipantConsent do
   it { should belong_to(:reconsideration_script_use) }
 
   it { should ensure_length_of(:consent_version).is_at_most(9) }
-  
+
   context "as mdes record" do
-    
+
     it "sets the public_id to a uuid" do
       pc = Factory(:participant_consent)
       pc.public_id.should_not be_nil
       pc.participant_consent_id.should == pc.public_id
       pc.participant_consent_id.length.should == 36
     end
-    
+
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(ParticipantConsent)
-      
+
       pc = ParticipantConsent.new
       pc.psu = Factory(:ncs_code)
       pc.participant = Factory(:participant)
       pc.consent_version = "asdf"
       pc.save!
-    
+
       obj = ParticipantConsent.find(pc.id)
       obj.consent_type.local_code.should == -4
       obj.consent_form_type.local_code.should == -4
@@ -95,11 +95,11 @@ describe ParticipantConsent do
   end
 
   context "for a participant" do
-    
+
     before(:each) do
       @yes = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
       @no  = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "No", :local_code => 2)
-      
+
       @general       = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 1, :display_text => "General consent")
       @biospecimens  = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 2, :display_text => "Consent to collect biospecimens")
       @environmental = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 3, :display_text => "Consent to collect environmental samples")
@@ -108,13 +108,13 @@ describe ParticipantConsent do
       @child         = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 6, :display_text => "Consent for the child’s participation")
       @low_intensity = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 7, :display_text => "Low Intensity Consent")
     end
-    
+
     it "cannot have consented without a participant_consent record" do
       participant = Factory(:participant)
       participant.participant_consents.should be_empty
       participant.should_not be_consented
     end
-    
+
     it "knows if the participant has consented" do
       pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no, :consent_type => @low_intensity)
       pc.participant.should be_consented
@@ -122,14 +122,14 @@ describe ParticipantConsent do
       pc.participant.consented?(@general).should be_false
       pc.participant.should_not be_withdrawn
     end
-    
+
     it "knows if the participant has withdrawn consented" do
       pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes, :consent_type => @low_intensity)
       pc.participant.should be_withdrawn
       pc.participant.withdrawn?(@low_intensity).should be_true
       pc.participant.withdrawn?(@general).should be_false
     end
-    
+
   end
 
 end

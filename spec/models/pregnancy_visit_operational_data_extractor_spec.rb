@@ -21,11 +21,11 @@ describe PregnancyVisitOperationalDataExtractor do
   it "extracts person operational data from the survey responses" do
 
     age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
-    
+
     person = Factory(:person)
     participant = Factory(:participant, :person => person)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
-    
+
     survey = create_pregnancy_visit_1_survey_with_person_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
@@ -43,28 +43,28 @@ describe PregnancyVisitOperationalDataExtractor do
         Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/11/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{age_eligible.local_code}" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)        
+        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
     end
-    
+
     response_set.responses.reload
     response_set.responses.size.should == 4
-    
+
     PregnancyVisitOperationalDataExtractor.extract_data(response_set)
-    
+
     person = Person.find(person.id)
     person.first_name.should == "Jo"
     person.last_name.should == "Stafford"
     person.person_dob.should == "1981-01-11"
     person.age.should == 30
-    
+
     person.participant.pid_age_eligibility.display_text.should == age_eligible.display_text
     person.participant.pid_age_eligibility.local_code.should == age_eligible.local_code
     person.participant.pid_age_eligibility.list_name.should == age_eligible.list_name
   end
-  
+
   context "extracting contact information from the survey responses" do
-    
+
     before(:each) do
       @person = Factory(:person)
       @participant = Factory(:participant, :person => @person)
@@ -108,7 +108,7 @@ describe PregnancyVisitOperationalDataExtractor do
       @response_set.responses.size.should == 0
       @participant.participant_person_links.size.should == 1
     end
-    
+
     it "creates a new person (for the Child's Father) record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
 
@@ -117,7 +117,7 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set, instrument = @person.start_instrument(survey)
 
       response_set.responses.size.should == 0
-      
+
       survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME"
@@ -167,14 +167,14 @@ describe PregnancyVisitOperationalDataExtractor do
       father.last_name.should == "Johnson"
       father.telephones.first.should_not be_nil
       father.telephones.first.phone_nbr.should == "3125551212"
-      
+
       father.addresses.first.should_not be_nil
       father.addresses.first.to_s.should == "123 Easy St. Chicago IL 65432-1234"
     end
 
     it "creates a new person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-      
+
       @survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"
@@ -227,15 +227,15 @@ describe PregnancyVisitOperationalDataExtractor do
       friend.last_name.should == "Noble"
       friend.telephones.first.should_not be_nil
       friend.telephones.first.phone_nbr.should == "3125551212"
-      
+
       friend.addresses.first.should_not be_nil
       friend.addresses.first.to_s.should == "123 Easy St. Chicago IL 65432-1234"
     end
 
-    
+
     it "creates another new person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-      
+
       @survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2"
@@ -288,14 +288,14 @@ describe PregnancyVisitOperationalDataExtractor do
       neighbor.last_name.should == "King"
       neighbor.telephones.first.should_not be_nil
       neighbor.telephones.first.phone_nbr.should == "3125551212"
-      
+
       neighbor.addresses.first.should_not be_nil
       neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago IL 65432-1234"
     end
-    
+
     it "creates an other relative person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-      
+
       @survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"
@@ -321,12 +321,12 @@ describe PregnancyVisitOperationalDataExtractor do
       participant.other_relatives.size.should == 1
       aunt = participant.other_relatives.first
       aunt.first_name.should == "Ivy"
-      aunt.last_name.should == "Anderson"      
+      aunt.last_name.should == "Anderson"
     end
 
     it "creates a grandparent person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-      
+
       @survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"
@@ -352,16 +352,16 @@ describe PregnancyVisitOperationalDataExtractor do
       participant.grandparents.size.should == 1
       mimi = participant.grandparents.first
       mimi.first_name.should == "Billie"
-      mimi.last_name.should == "Holiday"      
+      mimi.last_name.should == "Holiday"
     end
-    
+
   end
-  
+
   it "extracts cell phone operational data from the survey responses" do
-    
+
     cell = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3)
     Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
-    
+
     person = Factory(:person)
     person.telephones.size.should == 0
 
@@ -369,7 +369,7 @@ describe PregnancyVisitOperationalDataExtractor do
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.responses.size.should == 0
-      
+
     survey_section.questions.each do |q|
       case q.data_export_identifier
       when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"
@@ -383,22 +383,22 @@ describe PregnancyVisitOperationalDataExtractor do
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125557890", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
     end
-    
+
     response_set.responses.reload
     response_set.responses.size.should == 3
-    
+
     PregnancyVisitOperationalDataExtractor.extract_data(response_set)
-    
+
     person  = Person.find(person.id)
     person.telephones.size.should == 1
     telephone = person.telephones.first
-    
+
     telephone.phone_type.should == cell
     telephone.phone_nbr.should == "3125557890"
     telephone.cell_permission.local_code.should == 1
     telephone.text_permission.local_code.should == 1
   end
-  
+
   it "extracts email operational data from the survey responses" do
     person = Factory(:person)
     person.telephones.size.should == 0
@@ -407,7 +407,7 @@ describe PregnancyVisitOperationalDataExtractor do
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.responses.size.should == 0
-      
+
     survey_section.questions.each do |q|
       case q.data_export_identifier
       when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL"
@@ -415,24 +415,24 @@ describe PregnancyVisitOperationalDataExtractor do
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
     end
-    
+
     response_set.responses.reload
     response_set.responses.size.should == 1
-    
+
     PregnancyVisitOperationalDataExtractor.extract_data(response_set)
-    
+
     person = Person.find(person.id)
     person.emails.size.should == 1
     person.emails.first.email.should == "email@dev.null"
   end
-  
+
   it "extracts birth address operational data from the survey responses" do
-    
+
     state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-    
+
     person = Factory(:person)
     person.addresses.size.should == 0
-    
+
     survey = create_pregnancy_visit_survey_with_birth_address_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
@@ -459,18 +459,18 @@ describe PregnancyVisitOperationalDataExtractor do
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       end
     end
-    
+
     response_set.responses.reload
     response_set.responses.size.should == 6
-    
+
     PregnancyVisitOperationalDataExtractor.extract_data(response_set)
-    
+
     person  = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
     address.to_s.should == "123 Hospital Way Chicago IL 65432"
-    
+
   end
-  
+
 
 end

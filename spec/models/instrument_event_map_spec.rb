@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe InstrumentEventMap do
-  
+
   context "Segments from PSC" do
-  
+
     it "returns the proper instruments for an segment" do
-    
+
       instruments = InstrumentEventMap.instruments_for_segment("Pregnancy Visit 1")
       instruments.should include "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
       instruments.should include "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0"
@@ -17,7 +17,7 @@ describe InstrumentEventMap do
       # instruments.should include "INS_ENV_VacBagDustTechCollect_DCI_EHPBHI_P2_V1.0"
       instruments.size.should == 2
     end
-  
+
     it "handles the epoch prefix given by psc" do
       instruments = InstrumentEventMap.instruments_for_segment("HI-Intensity: Pregnancy Visit 1")
       instruments.size.should == 2
@@ -25,7 +25,7 @@ describe InstrumentEventMap do
   end
 
   context "Activities from PSC" do
-    
+
     describe "Low Intensity Protocol" do
       it "returns the proper instrument for an activity" do
         [
@@ -40,7 +40,7 @@ describe InstrumentEventMap do
         end
       end
     end
-    
+
     describe "High Intensity Protocol" do
       it "returns the proper instrument for an activity" do
         [
@@ -58,13 +58,13 @@ describe InstrumentEventMap do
         end
       end
     end
-    
+
     it "handles activities without instruments" do
       InstrumentEventMap.instrument_for_activity("Pregnancy Health Care Log").should be_nil
     end
-    
+
   end
-  
+
   it "returns the event name given the instrument filename" do
     [
       ["Pregnancy Visit 1 Interview", "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"],
@@ -79,73 +79,73 @@ describe InstrumentEventMap do
     ].each do |activity, filename|
       InstrumentEventMap.activity_for_instrument(filename).should == activity
     end
-    
+
   end
-  
+
   it "knows all events" do
     events = InstrumentEventMap.events
     events.size.should == 17
-    
-    [ "Household Enumeration", 
-      # "Provider-Based Recruitment", 
-      "Low Intensity Data Collection", 
-      "Low to High Conversion", 
+
+    [ "Household Enumeration",
+      # "Provider-Based Recruitment",
+      "Low Intensity Data Collection",
+      "Low to High Conversion",
       "Pregnancy Screener",
-      "Pregnancy Probability", 
-      "Pre-Pregnancy", 
-      "Father", 
-      "Pregnancy Visit 1", 
-      "Pregnancy Visit 2", 
-      "Birth", 
-      "3M", 
-      "6M", 
-      "9M", 
-      "12M", 
-      "18M", 
-      "24M", 
+      "Pregnancy Probability",
+      "Pre-Pregnancy",
+      "Father",
+      "Pregnancy Visit 1",
+      "Pregnancy Visit 2",
+      "Birth",
+      "3M",
+      "6M",
+      "9M",
+      "12M",
+      "18M",
+      "24M",
       "Validation Event"].each do |e|
       events.should include e
     end
   end
-  
+
   describe "recruitment type" do
-    
+
     it "understands Two-Tier (HILI)" do
       NcsNavigatorCore.stub!(:recruitment_type).and_return("HILI")
       instruments = InstrumentEventMap.instruments_for_segment("Pregnancy Screener")
       instruments.should include "INS_QUE_PregScreen_INT_HILI_P2_V2.0"
     end
-    
+
     it "understands Provider Based (PB)" do
       NcsNavigatorCore.stub!(:recruitment_type).and_return("PB")
       instruments = InstrumentEventMap.instruments_for_segment("Pregnancy Screener")
       instruments.should include "INS_QUE_PregScreen_INT_PB_P2_V2.0"
     end
-    
+
     it "understands Enhanced Household (EH)" do
       NcsNavigatorCore.stub!(:recruitment_type).and_return("EH")
       instruments = InstrumentEventMap.instruments_for_segment("Pregnancy Screener")
       instruments.should include "INS_QUE_PregScreen_INT_EH_P2_V2.0"
     end
-    
+
   end
-  
+
   context "finding the instrument type" do
-    
+
     before(:each) do
       @psi = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => "Pregnancy Screener Interview (HI,LI)")
     end
-    
+
     # INS_QUE_PregScreen_INT_HILI_P2_V2.0 2
     it "knows the instrument type for a survey" do
       InstrumentEventMap.instrument_type("INS_QUE_PregScreen_INT_HILI_P2_V2.0").should == @psi
     end
-    
+
     it "knows the instrument_type for an updated survey" do
       InstrumentEventMap.instrument_type("INS_QUE_PregScreen_INT_HILI_P2_V2.0 2").should == @psi
     end
   end
-  
+
 end
 
 

@@ -25,41 +25,41 @@
 require 'spec_helper'
 
 describe HouseholdUnit do
-  
+
   it "should create a new instance given valid attributes" do
     hh = Factory(:household_unit)
     hh.should_not be_nil
   end
-  
+
   it { should belong_to(:psu) }
   it { should belong_to(:hh_status) }
   it { should belong_to(:hh_eligibility) }
   it { should belong_to(:hh_structure) }
-  
+
   it { should have_many(:dwelling_household_links) }
   it { should have_many(:dwelling_units).through(:dwelling_household_links) }
-  
+
   context "as mdes record" do
-    
+
     it "sets the public_id to a uuid" do
       hu = Factory(:household_unit)
       hu.public_id.should_not be_nil
       hu.hh_id.should == hu.public_id
       hu.hh_id.length.should == 36
     end
-    
+
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(HouseholdUnit)
-      
+
       hu = HouseholdUnit.new
       hu.psu = Factory(:ncs_code)
       hu.save!
-    
+
       obj = HouseholdUnit.first
       obj.hh_status.local_code.should == -4
       obj.hh_eligibility.local_code.should == -4
       obj.hh_structure.local_code.should == -4
     end
   end
-  
+
 end

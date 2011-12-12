@@ -205,7 +205,7 @@ class Person < ActiveRecord::Base
     return if survey.nil?
     instrument = create_instrument(survey)
     response_set = ResponseSet.create(:survey => survey, :user_id => self.id, :instrument => instrument)
-    
+
     response_set = prepopulate_response_set(survey, response_set)
     [response_set, instrument]
   end
@@ -253,8 +253,8 @@ class Person < ActiveRecord::Base
     end
     response_set
   end
-  
-  
+
+
   ##
   # Returns the number of times (0 based) this instrument has been taken for the given survey
   # @param [Survey]
@@ -265,7 +265,7 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Returns the number of times (0 based) the person has been associated with the event type of the 
+  # Returns the number of times (0 based) the person has been associated with the event type of the
   # given event
   # @param [Event]
   # @return [Fixnum]

@@ -170,7 +170,7 @@ class Event < ActiveRecord::Base
       end
     end
   end
-  
+
   ##
   # Given an instrument and contact, presumably after the instrument has been administered, set attributes on the
   # event that can be inferred based on the instrument and type of contact
@@ -180,9 +180,9 @@ class Event < ActiveRecord::Base
     set_event_disposition_category(contact)
     set_event_breakoff(response_set)
   end
-  
+
   def set_event_disposition_category(contact)
-    case event_type.to_s 
+    case event_type.to_s
     when /Pregnancy Screen/
       # Pregnancy Screener Disposition Category Local Code = 2
       self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 2)
@@ -190,9 +190,9 @@ class Event < ActiveRecord::Base
       # Household Event Disposition Category Local Code = 1
       self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 1)
     end
-    
+
     if self.event_disposition_category.to_i <= 0
-      
+
       case contact.contact_type.to_i
       when 1 # in person contact
         # General Study Visit Category Local Code = 3
@@ -210,10 +210,10 @@ class Event < ActiveRecord::Base
     end
   end
   private :set_event_disposition_category
-  
+
   def set_event_breakoff(response_set)
-    if response_set 
-      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1 
+    if response_set
+      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1
       self.event_breakoff = NcsCode.for_attribute_name_and_local_code(:event_breakoff_code, local_code)
     end
   end

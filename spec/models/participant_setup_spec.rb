@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe Participant do
-  
+
   context "in low intensity arm" do
-    
+
     let(:ppg1_participant) { Factory(:low_intensity_ppg1_participant) }
     let(:ppg2_participant) { Factory(:low_intensity_ppg2_participant) }
     let(:ppg3_participant) { Factory(:low_intensity_ppg3_participant) }
     let(:ppg4_participant) { Factory(:low_intensity_ppg4_participant) }
     let(:ppg5_participant) { Factory(:low_intensity_ppg5_participant) }
     let(:ppg6_participant) { Factory(:low_intensity_ppg6_participant) }
-    
+
     it "is in the correct pregnancy participant group" do
       ppg1_participant.should be_low_intensity
       ppg1_participant.ppg_status.local_code.should == 1
@@ -30,7 +30,7 @@ describe Participant do
       ppg6_participant.should be_low_intensity
       ppg6_participant.ppg_status.local_code.should == 6
     end
-    
+
     it "knows if pregnant" do
       ppg1_participant.should be_pregnant
       ppg1_participant.should be_known_to_be_pregnant
@@ -50,9 +50,9 @@ describe Participant do
       ppg6_participant.should_not be_pregnant
       ppg6_participant.should_not be_known_to_be_pregnant
     end
-    
+
   end
-  
+
   context "in high intensity arm" do
     let(:ppg1_participant) { Factory(:high_intensity_ppg1_participant) }
     let(:ppg2_participant) { Factory(:high_intensity_ppg2_participant) }
@@ -60,7 +60,7 @@ describe Participant do
     let(:ppg4_participant) { Factory(:high_intensity_ppg4_participant) }
     let(:ppg5_participant) { Factory(:high_intensity_ppg5_participant) }
     let(:ppg6_participant) { Factory(:high_intensity_ppg6_participant) }
-    
+
     it "is in the correct pregnancy participant group" do
       ppg1_participant.should be_high_intensity
       ppg1_participant.ppg_status.local_code.should == 1
@@ -102,5 +102,5 @@ describe Participant do
     end
 
   end
-  
+
 end

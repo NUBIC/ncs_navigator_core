@@ -41,7 +41,7 @@ class ParticipantConsent < ActiveRecord::Base
   belongs_to :contact
   belongs_to :person_who_consented,  :class_name => "Person", :foreign_key => :person_who_consented_id
   belongs_to :person_wthdrw_consent, :class_name => "Person", :foreign_key => :person_wthdrw_consent_id
-  
+
   belongs_to :psu,                      :conditions => "list_name = 'PSU_CL1'",                     :foreign_key => :psu_code,                      :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :consent_type,             :conditions => "list_name = 'CONSENT_TYPE_CL1'",            :foreign_key => :consent_type_code,             :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :consent_form_type,        :conditions => "list_name = 'CONSENT_TYPE_CL1'",            :foreign_key => :consent_form_type_code,        :class_name => 'NcsCode', :primary_key => :local_code
