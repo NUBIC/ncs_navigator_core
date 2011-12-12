@@ -158,6 +158,47 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
+      describe 'resolving associations' do
+        let(:auto_names) { OperationalImporter.automatic_producers.collect(&:name) }
+
+        describe 'backward' do
+          let!(:mdes_person) { create_warehouse_record_via_core(Person, 'P24') }
+          let!(:mdes_link) {
+            create_warehouse_record_via_core(ParticipantPersonLink, 'LP42',
+              :person => mdes_person)
+          }
+
+          before do
+            # test setup
+            auto_names.index(:people).should < auto_names.index(:participant_person_links)
+            importer.import(:people, :participant_person_links)
+          end
+
+          it 'works' do
+            ParticipantPersonLink.find_by_person_pid_id('LP42').person.should ==
+              Person.find_by_person_id('P24')
+          end
+        end
+
+        describe 'forward' do
+          let!(:mdes_contact) { create_warehouse_record_via_core(Contact, 'C5') }
+          let!(:mdes_consent) {
+            create_warehouse_record_via_core(ParticipantConsent, 'PC3', :contact => mdes_contact)
+          }
+
+          before do
+            # test setup
+            auto_names.index(:participant_consents).should < auto_names.index(:contacts)
+            importer.import(:participant_consents, :contacts)
+          end
+
+          it 'works' do
+            ParticipantConsent.find_by_participant_consent_id('PC3').
+              contact.should == Contact.find_by_contact_id('C5')
+          end
+        end
+      end
+
       describe 'when the MDES data creates an invalid Core record' do
         it 'logs the error'
 

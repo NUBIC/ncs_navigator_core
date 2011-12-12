@@ -27,20 +27,26 @@ module NcsNavigator::Core::Warehouse
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
+      @failed_associations = []
       @progress = ProgressTracker.new(wh_config)
       NcsNavigator::Warehouse::DatabaseInitializer.new(wh_config).set_up_repository
     end
 
     def import(*tables)
       @progress.start
+
       automatic_producers.
         select { |rp| tables.empty? || tables.include?(rp.name) }.
         each do |one_to_one_producer|
           create_simply_mapped_core_records(one_to_one_producer)
         end
+
       if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
         create_events_and_instruments_and_contact_links
       end
+
+      resolve_failed_associations
+
       @progress.complete
     end
 
@@ -212,8 +218,10 @@ module NcsNavigator::Core::Warehouse
 
           new_association_id = public_id_index(associated_model)[associated_public_id]
           unless new_association_id
-            log.error(
-              "MDES association #{mdes_record.class.mdes_table_name}[#{mdes_record.key.first}]##{mdes_variable} refers to a record that is not present in Core.")
+            @failed_associations << FailedAssociation.new(
+              mdes_key, mdes_record.class.mdes_table_name, mdes_variable,
+              core_model, core_model_association_id,
+              associated_model, associated_public_id)
           end
           core_record.send("#{core_model_association_id}=", new_association_id)
         else
@@ -221,6 +229,21 @@ module NcsNavigator::Core::Warehouse
         end
       end
       core_record
+    end
+
+    def resolve_failed_associations
+      @failed_associations.each do |f|
+        ident = "#{f.mdes_table_name}[#{f.record_key}]##{f.mdes_variable}"
+        assoc_id = public_id_index(f.associated_model)[f.associated_public_id]
+        if assoc_id
+          log.debug("Late resolving #{ident}.")
+          core_record = f.core_model.find(public_id_index(f.core_model)[f.record_key])
+          core_record.update_attribute(f.core_model_association_id, assoc_id)
+        else
+          log.error(
+            "MDES association #{ident} refers to a record that is not present in Core.")
+        end
+      end
     end
 
     def save_core_record(core_record)
@@ -232,7 +255,7 @@ module NcsNavigator::Core::Warehouse
         log.debug("Updating #{ident} with #{core_record.changes.inspect}.")
         @progress.increment_updates
       else
-        log.debug("#{ident} encountered; not changed.")
+        log.debug("#{ident} encountered; no differences.")
         @progress.increment_unchanged
       end
       core_record.save!
@@ -261,6 +284,11 @@ module NcsNavigator::Core::Warehouse
         idx
       end
     end
+
+    FailedAssociation = Struct.new(
+      :record_key, :mdes_table_name, :mdes_variable,
+      :core_model, :core_model_association_id,
+      :associated_model, :associated_public_id)
 
     class ProgressTracker
       extend Forwardable
