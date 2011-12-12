@@ -127,4 +127,45 @@ describe Instrument do
 
   end
 
+  describe 'default code values' do
+    {
+      :supervisor_review => 'CONFIRM_TYPE_CL2',
+      :data_problem => 'CONFIRM_TYPE_CL2',
+      :instrument_mode => 'INSTRUMENT_ADMIN_MODE_CL1',
+      :instrument_method => 'INSTRUMENT_ADMIN_METHOD_CL1'
+    }.each do |attr, list|
+      describe "for #{attr}" do
+        let!(:default_code) {
+          NcsCode.find_or_create_by_list_name_and_local_code(list, 2, :display_text => 'Foo')
+        }
+
+        let(:other_code) {
+          NcsCode.find_or_create_by_list_name_and_local_code(list, 3, :display_text => 'Bar')
+        }
+
+        let(:new_instrument_attributes) {
+          { :instrument_version => '0.0', :psu => Factory(:ncs_code), :event => Factory(:event) }
+        }
+
+        let(:new_instrument) {
+          Instrument.new(new_instrument_attributes)
+        }
+
+        before do
+          create_missing_in_error_ncs_codes(Instrument)
+        end
+
+        it 'defaults to 2' do
+          new_instrument.save!
+          Instrument.last.send(attr).should == default_code
+        end
+
+        it 'does not overwrite a set value' do
+          new_instrument_attributes[attr] = other_code
+          new_instrument.save!
+          Instrument.last.send(attr).should == other_code
+        end
+      end
+    end
+  end
 end

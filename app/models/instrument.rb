@@ -85,8 +85,11 @@ class Instrument < ActiveRecord::Base
     # values
     def set_default_codes
       [:supervisor_review, :data_problem, :instrument_mode, :instrument_method].each do |asso|
-        val = NcsCode.for_attribute_name_and_local_code("#{asso}_code".to_sym, 2)
-        self.send("#{asso}=", val) if val
+        current_value = self.send(asso)
+        if current_value.nil? || current_value.local_code == -4
+          val = NcsCode.for_attribute_name_and_local_code("#{asso}_code".to_sym, 2)
+          self.send("#{asso}=", val) if val
+        end
       end
     end
 
