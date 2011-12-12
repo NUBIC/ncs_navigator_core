@@ -30,14 +30,14 @@
 #  survey_id                :integer
 #
 
-# An Instrument is a scheduled, partially executed or 
-# completely executed questionnaire or paper form. An 
-# Instrument can also be an Electronic Health Record or 
+# An Instrument is a scheduled, partially executed or
+# completely executed questionnaire or paper form. An
+# Instrument can also be an Electronic Health Record or
 # a Personal Health Record.
 class Instrument < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :instrument_id
-  
+
   belongs_to :event
   belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                     :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :instrument_type,      :conditions => "list_name = 'INSTRUMENT_TYPE_CL1'",         :foreign_key => :instrument_type_code,      :class_name => 'NcsCode', :primary_key => :local_code
@@ -46,39 +46,39 @@ class Instrument < ActiveRecord::Base
   belongs_to :instrument_mode,      :conditions => "list_name = 'INSTRUMENT_ADMIN_MODE_CL1'",   :foreign_key => :instrument_mode_code,      :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :instrument_method,    :conditions => "list_name = 'INSTRUMENT_ADMIN_METHOD_CL1'", :foreign_key => :instrument_method_code,    :class_name => 'NcsCode', :primary_key => :local_code
   belongs_to :supervisor_review,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :supervisor_review_code,    :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :data_problem,         :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :data_problem_code,         :class_name => 'NcsCode', :primary_key => :local_code  
-  
+  belongs_to :data_problem,         :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :data_problem_code,         :class_name => 'NcsCode', :primary_key => :local_code
+
   belongs_to :person
   belongs_to :survey
   has_one :response_set
-  
+
   validates_presence_of :instrument_version
-  
+
   before_create :set_default_codes
-  
+
   ##
-  # Display text from the NcsCode list INSTRUMENT_TYPE_CL1 
+  # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]
   def to_s
     instrument_type.to_s
   end
-  
+
   def complete?
     !instrument_end_date.blank? && !instrument_end_time.blank?
   end
-  
-  
+
+
   def set_instrument_breakoff(response_set)
-    if response_set 
-      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1 
+    if response_set
+      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1
       self.instrument_breakoff = NcsCode.for_attribute_name_and_local_code(:instrument_breakoff_code, local_code)
     end
   end
-  
-  
+
+
   private
-  
+
     ##
     # Currently this sets the supervisor review and data problem code to No
     # These values can and should be updated by the user/interviewer in case these are not the correct
@@ -89,5 +89,5 @@ class Instrument < ActiveRecord::Base
         self.send("#{asso}=", val) if val
       end
     end
-  
+
 end
