@@ -1,10 +1,10 @@
 # == Schema Information
-# Schema version: 20111205213437
+# Schema version: 20111212224350
 #
 # Table name: participants
 #
 #  id                       :integer         not null, primary key
-#  psu_code                 :string(36)      not null
+#  psu_code                 :integer         not null
 #  p_id                     :string(36)      not null
 #  p_type_code              :integer         not null
 #  p_type_other             :string(255)

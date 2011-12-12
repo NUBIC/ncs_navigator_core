@@ -1,10 +1,10 @@
 # == Schema Information
-# Schema version: 20111205213437
+# Schema version: 20111212224350
 #
 # Table name: ppg_details
 #
 #  id                  :integer         not null, primary key
-#  psu_code            :string(36)      not null
+#  psu_code            :integer         not null
 #  ppg_details_id      :string(36)      not null
 #  participant_id      :integer
 #  ppg_pid_status_code :integer         not null
