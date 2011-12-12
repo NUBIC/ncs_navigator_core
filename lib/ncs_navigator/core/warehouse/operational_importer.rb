@@ -133,7 +133,7 @@ module NcsNavigator::Core::Warehouse
               [
                 earliest_date(
                   e.event_start_date, e.event_end_date,
-                  *cls.collect { |l| l.contact.contact_date }),
+                  *cls.compact.collect { |l| l.contact.contact_date }),
                 Event::TYPE_ORDER.index(e.event_type.to_i)
               ]
             }
@@ -203,11 +203,15 @@ module NcsNavigator::Core::Warehouse
     end
 
     def save_core_record(core_record)
+      ident = "#{core_record.class}##{core_record.id}##{core_record.public_id}"
       if core_record.new_record?
+        log.debug("Creating #{ident}: #{core_record.inspect}.")
         @progress.increment_creates
       elsif core_record.changed?
+        log.debug("Updating #{ident} with #{core_record.changes.inspect}.")
         @progress.increment_updates
       else
+        log.debug("#{ident} encountered; not changed.")
         @progress.increment_unchanged
       end
       core_record.save!
