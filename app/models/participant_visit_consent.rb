@@ -35,11 +35,11 @@ class ParticipantVisitConsent < ActiveRecord::Base
   belongs_to :contact
   belongs_to :vis_person_who_consented,  :class_name => "Person", :foreign_key => :vis_person_who_consented_id
 
-  belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :vis_consent_type,     :conditions => "list_name = 'VISIT_TYPE_CL1'",          :foreign_key => :vis_consent_type_code,     :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :vis_consent_response, :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :vis_consent_response_code, :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :vis_language,         :conditions => "list_name = 'LANGUAGE_CL2'",            :foreign_key => :vis_language_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :vis_who_consented,    :conditions => "list_name = 'AGE_STATUS_CL1'",          :foreign_key => :vis_who_consented_code,    :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :vis_translate,        :conditions => "list_name = 'TRANSLATION_METHOD_CL1'",  :foreign_key => :vis_translate_code,        :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,                  'PSU_CL1'
+  ncs_coded_attribute :vis_consent_type,     'VISIT_TYPE_CL1'
+  ncs_coded_attribute :vis_consent_response, 'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :vis_language,         'LANGUAGE_CL2'
+  ncs_coded_attribute :vis_who_consented,    'AGE_STATUS_CL1'
+  ncs_coded_attribute :vis_translate,        'TRANSLATION_METHOD_CL1'
 
 end

@@ -38,14 +38,14 @@ class Telephone < ActiveRecord::Base
 
   belongs_to :person
 
-  belongs_to :psu,                :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :phone_info_source,  :conditions => "list_name = 'INFORMATION_SOURCE_CL2'",  :foreign_key => :phone_info_source_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :phone_type,         :conditions => "list_name = 'PHONE_TYPE_CL1'",          :foreign_key => :phone_type_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :phone_rank,         :conditions => "list_name = 'COMMUNICATION_RANK_CL1'",  :foreign_key => :phone_rank_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :phone_landline,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :phone_landline_code,     :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :phone_share,        :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :phone_share_code,        :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :cell_permission,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :cell_permission_code,    :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :text_permission,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :text_permission_code,    :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,               'PSU_CL1'
+  ncs_coded_attribute :phone_info_source, 'INFORMATION_SOURCE_CL2'
+  ncs_coded_attribute :phone_type,        'PHONE_TYPE_CL1'
+  ncs_coded_attribute :phone_rank,        'COMMUNICATION_RANK_CL1'
+  ncs_coded_attribute :phone_landline,    'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :phone_share,       'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :cell_permission,   'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :text_permission,   'CONFIRM_TYPE_CL2'
 
   def self.home_phone_type
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 1).first

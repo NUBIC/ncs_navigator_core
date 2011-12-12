@@ -43,10 +43,10 @@ class HouseholdUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :hh_id
 
-  belongs_to :psu,            :conditions => "list_name = 'PSU_CL1'",                   :foreign_key => :psu_code,            :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :hh_status,      :conditions => "list_name = 'CONFIRM_TYPE_CL2'",          :foreign_key => :hh_status_code,      :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :hh_eligibility, :conditions => "list_name = 'HOUSEHOLD_ELIGIBILITY_CL2'", :foreign_key => :hh_eligibility_code, :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :hh_structure,   :conditions => "list_name = 'RESIDENCE_TYPE_CL2'",        :foreign_key => :hh_structure_code,   :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,            'PSU_CL1'
+  ncs_coded_attribute :hh_status,      'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :hh_eligibility, 'HOUSEHOLD_ELIGIBILITY_CL2'
+  ncs_coded_attribute :hh_structure,   'RESIDENCE_TYPE_CL2'
 
   has_many :household_person_links
   has_many :people, :through => :household_person_links

@@ -24,7 +24,7 @@ class ContactLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :contact_link_id
 
-  belongs_to :psu, :conditions => "list_name = 'PSU_CL1'", :foreign_key => :psu_code, :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu, 'PSU_CL1'
 
   belongs_to :contact
   belongs_to :person

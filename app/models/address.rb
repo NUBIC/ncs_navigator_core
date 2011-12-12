@@ -45,13 +45,13 @@ class Address < ActiveRecord::Base
 
   belongs_to :person
   belongs_to :dwelling_unit
-  belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :address_rank,         :conditions => "list_name = 'COMMUNICATION_RANK_CL1'",  :foreign_key => :address_rank_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :address_info_source,  :conditions => "list_name = 'INFORMATION_SOURCE_CL1'",  :foreign_key => :address_info_source_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :address_info_mode,    :conditions => "list_name = 'CONTACT_TYPE_CL1'",        :foreign_key => :address_info_mode_code,    :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :address_type,         :conditions => "list_name = 'ADDRESS_CATEGORY_CL1'",    :foreign_key => :address_type_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :address_description,  :conditions => "list_name = 'RESIDENCE_TYPE_CL1'",      :foreign_key => :address_description_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :state,                :conditions => "list_name = 'STATE_CL1'",               :foreign_key => :state_code,                :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,                 'PSU_CL1'
+  ncs_coded_attribute :address_rank,        'COMMUNICATION_RANK_CL1'
+  ncs_coded_attribute :address_info_source, 'INFORMATION_SOURCE_CL1'
+  ncs_coded_attribute :address_info_mode,   'CONTACT_TYPE_CL1'
+  ncs_coded_attribute :address_type,        'ADDRESS_CATEGORY_CL1'
+  ncs_coded_attribute :address_description, 'RESIDENCE_TYPE_CL1'
+  ncs_coded_attribute :state,               'STATE_CL1'
 
   def self.home_address_type
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first

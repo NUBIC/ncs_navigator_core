@@ -33,9 +33,9 @@ class PpgDetail < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :ppg_details_id
 
   belongs_to :participant
-  belongs_to :psu,            :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,              :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :ppg_pid_status, :conditions => "list_name = 'PARTICIPANT_STATUS_CL1'",  :foreign_key => :ppg_pid_status_code,   :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :ppg_first,      :conditions => "list_name = 'PPG_STATUS_CL2'",          :foreign_key => :ppg_first_code,        :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,            'PSU_CL1'
+  ncs_coded_attribute :ppg_pid_status, 'PARTICIPANT_STATUS_CL1'
+  ncs_coded_attribute :ppg_first,      'PPG_STATUS_CL2'
 
   def to_s
     "#{ppg_first}"

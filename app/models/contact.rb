@@ -41,13 +41,13 @@ class Contact < ActiveRecord::Base
   TELEPHONE_CONTACT_CODE = 3
   MAILING_CONTACT_CODE   = 2
 
-  belongs_to :psu,                      :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                      :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :contact_type,             :conditions => "list_name = 'CONTACT_TYPE_CL1'",        :foreign_key => :contact_type_code,             :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :contact_language,         :conditions => "list_name = 'LANGUAGE_CL2'",            :foreign_key => :contact_language_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :contact_interpret,        :conditions => "list_name = 'TRANSLATION_METHOD_CL3'",  :foreign_key => :contact_interpret_code,        :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :contact_location,         :conditions => "list_name = 'CONTACT_LOCATION_CL1'",    :foreign_key => :contact_location_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :contact_private,          :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :contact_private_code,          :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :who_contacted,            :conditions => "list_name = 'CONTACTED_PERSON_CL1'",    :foreign_key => :who_contacted_code,            :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,               'PSU_CL1'
+  ncs_coded_attribute :contact_type,      'CONTACT_TYPE_CL1'
+  ncs_coded_attribute :contact_language,  'LANGUAGE_CL2'
+  ncs_coded_attribute :contact_interpret, 'TRANSLATION_METHOD_CL3'
+  ncs_coded_attribute :contact_location,  'CONTACT_LOCATION_CL1'
+  ncs_coded_attribute :contact_private,   'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :who_contacted,     'CONTACTED_PERSON_CL1'
 
   has_many :contact_links
   has_many :instruments, :through => :contact_links

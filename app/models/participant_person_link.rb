@@ -27,9 +27,9 @@ class ParticipantPersonLink < ActiveRecord::Base
 
   belongs_to :person
   belongs_to :participant
-  belongs_to :psu,          :conditions => "list_name = 'PSU_CL1'",                       :foreign_key => :psu_code,          :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :relationship, :conditions => "list_name = 'PERSON_PARTCPNT_RELTNSHP_CL1'",  :foreign_key => :relationship_code, :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :is_active,    :conditions => "list_name = 'CONFIRM_TYPE_CL2'",              :foreign_key => :is_active_code,    :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,          'PSU_CL1'
+  ncs_coded_attribute :relationship, 'PERSON_PARTCPNT_RELTNSHP_CL1'
+  ncs_coded_attribute :is_active,    'CONFIRM_TYPE_CL2'
 
   validates_presence_of :person
   validates_presence_of :participant

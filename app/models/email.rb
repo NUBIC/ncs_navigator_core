@@ -35,11 +35,11 @@ class Email < ActiveRecord::Base
 
   belongs_to :person
 
-  belongs_to :psu,                :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :email_info_source,  :conditions => "list_name = 'INFORMATION_SOURCE_CL2'",  :foreign_key => :email_info_source_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :email_type,         :conditions => "list_name = 'EMAIL_TYPE_CL1'",          :foreign_key => :email_type_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :email_rank,         :conditions => "list_name = 'COMMUNICATION_RANK_CL1'",  :foreign_key => :email_rank_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :email_share,        :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :email_share_code,        :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :email_active,       :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :email_active_code,       :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,               'PSU_CL1'
+  ncs_coded_attribute :email_info_source, 'INFORMATION_SOURCE_CL2'
+  ncs_coded_attribute :email_type,        'EMAIL_TYPE_CL1'
+  ncs_coded_attribute :email_rank,        'COMMUNICATION_RANK_CL1'
+  ncs_coded_attribute :email_share,       'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :email_active,      'CONFIRM_TYPE_CL2'
 
 end

@@ -50,21 +50,21 @@ class Person < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob]
 
-  belongs_to :psu,                      :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                      :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :prefix,                   :conditions => "list_name = 'NAME_PREFIX_CL1'",         :foreign_key => :prefix_code,                   :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :suffix,                   :conditions => "list_name = 'NAME_SUFFIX_CL1'",         :foreign_key => :suffix_code,                   :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :sex,                      :conditions => "list_name = 'GENDER_CL1'",              :foreign_key => :sex_code,                      :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :age_range,                :conditions => "list_name = 'AGE_RANGE_CL1'",           :foreign_key => :age_range_code,                :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :deceased,                 :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :deceased_code,                 :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :ethnic_group,             :conditions => "list_name = 'ETHNICITY_CL1'",           :foreign_key => :ethnic_group_code,             :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :language,                 :conditions => "list_name = 'LANGUAGE_CL2'",            :foreign_key => :language_code,                 :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :marital_status,           :conditions => "list_name = 'MARITAL_STATUS_CL1'",      :foreign_key => :marital_status_code,           :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :preferred_contact_method, :conditions => "list_name = 'CONTACT_TYPE_CL1'",        :foreign_key => :preferred_contact_method_code, :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :planned_move,             :conditions => "list_name = 'CONFIRM_TYPE_CL1'",        :foreign_key => :planned_move_code,             :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :move_info,                :conditions => "list_name = 'MOVING_PLAN_CL1'",         :foreign_key => :move_info_code,                :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :when_move,                :conditions => "list_name = 'CONFIRM_TYPE_CL4'",        :foreign_key => :when_move_code,                :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :p_tracing,                :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :p_tracing_code,                :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :p_info_source,            :conditions => "list_name = 'INFORMATION_SOURCE_CL4'",  :foreign_key => :p_info_source_code,            :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,                      'PSU_CL1'
+  ncs_coded_attribute :prefix,                   'NAME_PREFIX_CL1'
+  ncs_coded_attribute :suffix,                   'NAME_SUFFIX_CL1'
+  ncs_coded_attribute :sex,                      'GENDER_CL1'
+  ncs_coded_attribute :age_range,                'AGE_RANGE_CL1'
+  ncs_coded_attribute :deceased,                 'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :ethnic_group,             'ETHNICITY_CL1'
+  ncs_coded_attribute :language,                 'LANGUAGE_CL2'
+  ncs_coded_attribute :marital_status,           'MARITAL_STATUS_CL1'
+  ncs_coded_attribute :preferred_contact_method, 'CONTACT_TYPE_CL1'
+  ncs_coded_attribute :planned_move,             'CONFIRM_TYPE_CL1'
+  ncs_coded_attribute :move_info,                'MOVING_PLAN_CL1'
+  ncs_coded_attribute :when_move,                'CONFIRM_TYPE_CL4'
+  ncs_coded_attribute :p_tracing,                'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :p_info_source,            'INFORMATION_SOURCE_CL4'
 
   # surveyor
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
