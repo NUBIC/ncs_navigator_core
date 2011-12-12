@@ -20,9 +20,25 @@ namespace :import do
   desc 'Import operational data'
   task :operational => [:warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-
     importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(import_wh_config)
-    importer.import
+
+    tables = case
+             when ENV['TABLES']
+               ENV['TABLES'].split(',').collect(&:to_sym)
+             when ENV['START_WITH']
+               start = ENV['START_WITH'].to_sym
+               all_tables = importer.automatic_producers.collect(&:name)
+               start_i = all_tables.index(start)
+               unless start_i
+                 fail "Can't start from Unknown table #{start}"
+               end
+               all_tables[start_i .. all_tables.size] + [:events, :link_contacts, :instruments]
+             else
+               []
+             end
+
+    puts "Importing only #{tables.join(', ')}." unless tables.empty?
+    importer.import(*tables)
   end
 
   desc 'Import instrument data'
