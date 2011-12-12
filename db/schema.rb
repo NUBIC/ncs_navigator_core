@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111205213437) do
+ActiveRecord::Schema.define(:version => 20111212224350) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -216,7 +216,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "household_person_links", :force => true do |t|
-    t.string   "psu_code",          :limit => 36, :null => false
+    t.integer  "psu_code",                        :null => false
     t.string   "person_hh_id",      :limit => 36, :null => false
     t.integer  "person_id",                       :null => false
     t.integer  "household_unit_id",               :null => false
@@ -299,7 +299,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "participant_authorization_forms", :force => true do |t|
-    t.string   "psu_code",            :limit => 36, :null => false
+    t.integer  "psu_code",                          :null => false
     t.string   "auth_form_id",        :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "contact_id"
@@ -314,7 +314,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "participant_consent_samples", :force => true do |t|
-    t.string   "psu_code",                      :limit => 36, :null => false
+    t.integer  "psu_code",                                    :null => false
     t.string   "participant_consent_sample_id", :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "participant_consent_id"
@@ -326,7 +326,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "participant_consents", :force => true do |t|
-    t.string   "psu_code",                        :limit => 36, :null => false
+    t.integer  "psu_code",                                      :null => false
     t.string   "participant_consent_id",          :limit => 36, :null => false
     t.integer  "participant_id"
     t.string   "consent_version",                 :limit => 9
@@ -375,7 +375,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   add_index "participant_low_intensity_state_transitions", ["participant_id"], :name => "participant_low_intensity_state_idx"
 
   create_table "participant_person_links", :force => true do |t|
-    t.string   "psu_code",           :limit => 36, :null => false
+    t.integer  "psu_code",                         :null => false
     t.integer  "person_id",                        :null => false
     t.integer  "participant_id",                   :null => false
     t.integer  "relationship_code",                :null => false
@@ -396,7 +396,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   add_index "participant_staff_relationships", ["participant_id"], :name => "index_participant_staff_relationships_on_participant_id"
 
   create_table "participant_visit_consents", :force => true do |t|
-    t.string   "psu_code",                    :limit => 36, :null => false
+    t.integer  "psu_code",                                  :null => false
     t.string   "pid_visit_consent_id",        :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "vis_consent_type_code",                     :null => false
@@ -414,7 +414,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "participant_visit_records", :force => true do |t|
-    t.string   "psu_code",                  :limit => 36, :null => false
+    t.integer  "psu_code",                                :null => false
     t.string   "rvis_id",                   :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "rvis_language_code",                      :null => false
@@ -439,7 +439,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "participants", :force => true do |t|
-    t.string   "psu_code",                 :limit => 36,                    :null => false
+    t.integer  "psu_code",                                                  :null => false
     t.string   "p_id",                     :limit => 36,                    :null => false
     t.integer  "p_type_code",                                               :null => false
     t.string   "p_type_other"
@@ -464,7 +464,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "people", :force => true do |t|
-    t.string   "psu_code",                       :limit => 36,                    :null => false
+    t.integer  "psu_code",                                                        :null => false
     t.string   "person_id",                      :limit => 36,                    :null => false
     t.integer  "prefix_code",                                                     :null => false
     t.string   "first_name",                     :limit => 30
@@ -504,7 +504,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "person_races", :force => true do |t|
-    t.string   "psu_code",         :limit => 36, :null => false
+    t.integer  "psu_code",                       :null => false
     t.string   "person_race_id",   :limit => 36, :null => false
     t.integer  "person_id",                      :null => false
     t.integer  "race_code",                      :null => false
@@ -515,7 +515,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "ppg_details", :force => true do |t|
-    t.string   "psu_code",            :limit => 36, :null => false
+    t.integer  "psu_code",                          :null => false
     t.string   "ppg_details_id",      :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "ppg_pid_status_code",               :null => false
@@ -529,7 +529,7 @@ ActiveRecord::Schema.define(:version => 20111205213437) do
   end
 
   create_table "ppg_status_histories", :force => true do |t|
-    t.string   "psu_code",              :limit => 36, :null => false
+    t.integer  "psu_code",                            :null => false
     t.string   "ppg_history_id",        :limit => 36, :null => false
     t.integer  "participant_id"
     t.integer  "ppg_status_code",                     :null => false
