@@ -40,13 +40,13 @@ class Participant < ActiveRecord::Base
 
   acts_as_mdes_record :public_id_field => :p_id
 
-  belongs_to :psu,                  :conditions => "list_name = 'PSU_CL1'",                 :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :p_type,               :conditions => "list_name = 'PARTICIPANT_TYPE_CL1'",    :foreign_key => :p_type_code,               :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :status_info_source,   :conditions => "list_name = 'INFORMATION_SOURCE_CL4'",  :foreign_key => :status_info_source_code,   :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :status_info_mode,     :conditions => "list_name = 'CONTACT_TYPE_CL1'",        :foreign_key => :status_info_mode_code,     :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :enroll_status,        :conditions => "list_name = 'CONFIRM_TYPE_CL2'",        :foreign_key => :enroll_status_code,        :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :pid_entry,            :conditions => "list_name = 'STUDY_ENTRY_METHOD_CL1'",  :foreign_key => :pid_entry_code,            :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :pid_age_eligibility,  :conditions => "list_name = 'AGE_ELIGIBLE_CL2'",        :foreign_key => :pid_age_eligibility_code,  :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,                 'PSU_CL1'
+  ncs_coded_attribute :p_type,              'PARTICIPANT_TYPE_CL1'
+  ncs_coded_attribute :status_info_source,  'INFORMATION_SOURCE_CL4'
+  ncs_coded_attribute :status_info_mode,    'CONTACT_TYPE_CL1'
+  ncs_coded_attribute :enroll_status,       'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :pid_entry,           'STUDY_ENTRY_METHOD_CL1'
+  ncs_coded_attribute :pid_age_eligibility, 'AGE_ELIGIBLE_CL2'
 
   has_many :ppg_details, :order => "created_at DESC"
   has_many :ppg_status_histories, :order => "created_at DESC"

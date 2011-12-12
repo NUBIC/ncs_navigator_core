@@ -43,12 +43,12 @@ class DwellingUnit < ActiveRecord::Base
   accepts_nested_attributes_for :address, :allow_destroy => true
 
   belongs_to :listing_unit
-  belongs_to :psu,           :conditions => "list_name = 'PSU_CL1'",            :foreign_key => :psu_code,            :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :duplicate_du,  :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :duplicate_du_code,   :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :missed_du,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :missed_du_code,      :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :du_type,       :conditions => "list_name = 'RESIDENCE_TYPE_CL2'", :foreign_key => :du_type_code,        :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :du_ineligible, :conditions => "list_name = 'CONFIRM_TYPE_CL3'",   :foreign_key => :du_ineligible_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :du_access,     :conditions => "list_name = 'CONFIRM_TYPE_CL2'",   :foreign_key => :du_access_code,      :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,           'PSU_CL1'
+  ncs_coded_attribute :duplicate_du,  'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :missed_du,     'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :du_type,       'RESIDENCE_TYPE_CL2'
+  ncs_coded_attribute :du_ineligible, 'CONFIRM_TYPE_CL3'
+  ncs_coded_attribute :du_access,     'CONFIRM_TYPE_CL2'
 
   scope :without_household, joins("LEFT OUTER JOIN dwelling_household_links ON dwelling_units.id = dwelling_household_links.dwelling_unit_id").where("dwelling_household_links.id is NULL")
   scope :next_to_process, without_household.where("dwelling_units.being_processed IS FALSE").readonly(false)

@@ -29,8 +29,8 @@ class ListingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :list_id
 
-  belongs_to :psu,         :conditions => "list_name = 'PSU_CL1'",            :foreign_key => :psu_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :list_source, :conditions => "list_name = 'LISTING_SOURCE_CL1'", :foreign_key => :list_source_code, :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,         'PSU_CL1'
+  ncs_coded_attribute :list_source, 'LISTING_SOURCE_CL1'
 
   has_one :dwelling_unit
 

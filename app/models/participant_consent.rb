@@ -42,19 +42,19 @@ class ParticipantConsent < ActiveRecord::Base
   belongs_to :person_who_consented,  :class_name => "Person", :foreign_key => :person_who_consented_id
   belongs_to :person_wthdrw_consent, :class_name => "Person", :foreign_key => :person_wthdrw_consent_id
 
-  belongs_to :psu,                      :conditions => "list_name = 'PSU_CL1'",                     :foreign_key => :psu_code,                      :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_type,             :conditions => "list_name = 'CONSENT_TYPE_CL1'",            :foreign_key => :consent_type_code,             :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_form_type,        :conditions => "list_name = 'CONSENT_TYPE_CL1'",            :foreign_key => :consent_form_type_code,        :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_given,            :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :consent_given_code,            :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_withdraw,         :conditions => "list_name = 'CONFIRM_TYPE_CL2'",            :foreign_key => :consent_withdraw_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_withdraw_type,    :conditions => "list_name = 'CONSENT_WITHDRAW_REASON_CL1'", :foreign_key => :consent_withdraw_type_code,    :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_withdraw_reason,  :conditions => "list_name = 'CONSENT_WITHDRAW_REASON_CL2'", :foreign_key => :consent_withdraw_reason_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_language,         :conditions => "list_name = 'LANGUAGE_CL2'",                :foreign_key => :consent_language_code,         :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :who_consented,            :conditions => "list_name = 'AGE_STATUS_CL1'",              :foreign_key => :who_consented_code,            :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :who_wthdrw_consent,       :conditions => "list_name = 'AGE_STATUS_CL3'",              :foreign_key => :who_wthdrw_consent_code,       :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :consent_translate,        :conditions => "list_name = 'TRANSLATION_METHOD_CL1'",      :foreign_key => :consent_translate_code,        :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,                        'PSU_CL1'
+  ncs_coded_attribute :consent_type,               'CONSENT_TYPE_CL1'
+  ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL1'
+  ncs_coded_attribute :consent_given,              'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :consent_withdraw,           'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :consent_withdraw_type,      'CONSENT_WITHDRAW_REASON_CL1'
+  ncs_coded_attribute :consent_withdraw_reason,    'CONSENT_WITHDRAW_REASON_CL2'
+  ncs_coded_attribute :consent_language,           'LANGUAGE_CL2'
+  ncs_coded_attribute :who_consented,              'AGE_STATUS_CL1'
+  ncs_coded_attribute :who_wthdrw_consent,         'AGE_STATUS_CL3'
+  ncs_coded_attribute :consent_translate,          'TRANSLATION_METHOD_CL1'
 
-  belongs_to :reconsideration_script_use, :conditions => "list_name = 'CONFIRM_TYPE_CL21'",         :foreign_key => :reconsideration_script_use_code, :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :reconsideration_script_use, 'CONFIRM_TYPE_CL21'
 
   validates_length_of :consent_version, :maximum => 9
 

@@ -23,7 +23,7 @@ class ParticipantConsentSample < ActiveRecord::Base
   belongs_to :participant
   belongs_to :participant_consent
 
-  belongs_to :psu,                   :conditions => "list_name = 'PSU_CL1'",           :foreign_key => :psu_code,                  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :sample_consent_type,   :conditions => "list_name = 'CONSENT_TYPE_CL2'",  :foreign_key => :sample_consent_type_code,  :class_name => 'NcsCode', :primary_key => :local_code
-  belongs_to :sample_consent_given,  :conditions => "list_name = 'CONFIRM_TYPE_CL2'",  :foreign_key => :sample_consent_given_code, :class_name => 'NcsCode', :primary_key => :local_code
+  ncs_coded_attribute :psu,                  'PSU_CL1'
+  ncs_coded_attribute :sample_consent_type,  'CONSENT_TYPE_CL2'
+  ncs_coded_attribute :sample_consent_given, 'CONFIRM_TYPE_CL2'
 end
