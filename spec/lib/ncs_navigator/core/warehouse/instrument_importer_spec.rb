@@ -254,6 +254,16 @@ module NcsNavigator::Core::Warehouse
           actual.answer.should == q.answers.find_by_response_class('datetime')
         end
 
+        it 'ignores unparseable datetime values' do
+          create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1',
+            :twq_location => '1',
+            :time_stamp_1 => '9333-93-93T93:93:93')
+          importer.import
+
+          q = Question.find_by_reference_identifier('TIME_STAMP_1')
+          Response.where(:question_id => q.id).should == []
+        end
+
         it 'ignores -4 values if not present as an option' do
           create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '-4')
           importer.import
