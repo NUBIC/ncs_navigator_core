@@ -8,6 +8,8 @@ namespace :import do
 
     t.config = NcsNavigator::Warehouse::Configuration.
       from_file(source_warehouse_config_file)
+
+    NcsNavigator::Warehouse::DatabaseInitializer.new(t.config).set_up_repository
   end
 
   def import_wh_config
