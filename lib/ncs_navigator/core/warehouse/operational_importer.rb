@@ -31,7 +31,6 @@ module NcsNavigator::Core::Warehouse
       @public_id_indexes = {}
       @failed_associations = []
       @progress = ProgressTracker.new(wh_config)
-      NcsNavigator::Warehouse::DatabaseInitializer.new(wh_config).set_up_repository
     end
 
     def import(*tables)
