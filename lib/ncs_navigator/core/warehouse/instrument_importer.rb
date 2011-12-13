@@ -134,7 +134,7 @@ module NcsNavigator::Core::Warehouse
         response.answer = dt_a
         response.datetime_value = Time.iso8601(mdes_value)
       else
-        fail("Unable to map %s to a response for question %s in %s" % [
+        log.error("Unable to map %s to a response for question %s in %s" % [
             mdes_value.inspect,
             response.question.reference_identifier,
             response.question.survey_section.survey.title
