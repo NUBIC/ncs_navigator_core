@@ -18,6 +18,8 @@ module NcsNavigator::Core::Warehouse
   class OperationalImporter
     extend Forwardable
 
+    BLOCK_SIZE = 2500
+
     attr_reader :wh_config
 
     def_delegators self, :automatic_producers
@@ -65,22 +67,25 @@ module NcsNavigator::Core::Warehouse
 
     def create_simply_mapped_core_records(mdes_producer)
       core_model = core_model_for_table(mdes_producer.name)
-      @progress.loading(mdes_producer.name)
-      mdes_producer.model.all.each do |mdes_record|
-        core_record = apply_mdes_record_to_core(core_model, mdes_record)
-        save_core_record(core_record)
+      mdes_model = mdes_producer.model
+      count = mdes_model.count
+      offset = 0
+      while offset < count
+        @progress.loading(mdes_producer.name)
+        mdes_model.all(:limit => BLOCK_SIZE, :offset => offset).each do |mdes_record|
+          core_record = apply_mdes_record_to_core(core_model, mdes_record)
+          save_core_record(core_record)
+        end
+        offset += BLOCK_SIZE
       end
     end
 
     def create_events_and_instruments_and_contact_links
-      @progress.loading('events with no p state impact')
-      create_core_records_by_mdes_public_ids(Event,
+      create_core_records_by_mdes_public_ids(Event, 'events with no p state impact',
         no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id })
-      @progress.loading('instruments with no p state impact')
-      create_core_records_by_mdes_public_ids(Instrument,
+      create_core_records_by_mdes_public_ids(Instrument, 'instruments with no p state impact',
         no_state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
-      @progress.loading('contact links with no p state impact')
-      create_core_records_by_mdes_public_ids(ContactLink,
+      create_core_records_by_mdes_public_ids(ContactLink, 'contact links with no p state impact',
         no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
 
       @progress.loading('events, instruments, and links with p state impact')
@@ -174,10 +179,20 @@ module NcsNavigator::Core::Warehouse
       dates.collect { |d| (d =~ /^9/) ? nil : d }.compact.sort.first
     end
 
-    def create_core_records_by_mdes_public_ids(core_model, id_list)
-      mdes_model = find_producer(core_model.table_name).model
-      mdes_model.all(mdes_model.key.first.name => id_list).each do |mdes_record|
-        save_core_record(apply_mdes_record_to_core(core_model, mdes_record))
+    def create_core_records_by_mdes_public_ids(core_model, load_message, id_list)
+      if id_list.size > BLOCK_SIZE
+        offset = 0
+        while offset < id_list.size
+          create_core_records_by_mdes_public_ids(
+            core_model, load_message, id_list[offset ... (offset + BLOCK_SIZE)])
+          offset += BLOCK_SIZE
+        end
+      else
+        @progress.loading(load_message)
+        mdes_model = find_producer(core_model.table_name).model
+        mdes_model.all(mdes_model.key.first.name => id_list).each do |mdes_record|
+          save_core_record(apply_mdes_record_to_core(core_model, mdes_record))
+        end
       end
     end
 
