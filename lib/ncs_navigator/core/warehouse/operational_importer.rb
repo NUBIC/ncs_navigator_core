@@ -72,9 +72,11 @@ module NcsNavigator::Core::Warehouse
       offset = 0
       while offset < count
         @progress.loading(mdes_producer.name)
-        mdes_model.all(:limit => BLOCK_SIZE, :offset => offset).each do |mdes_record|
-          core_record = apply_mdes_record_to_core(core_model, mdes_record)
-          save_core_record(core_record)
+        core_model.transaction do
+          mdes_model.all(:limit => BLOCK_SIZE, :offset => offset).each do |mdes_record|
+            core_record = apply_mdes_record_to_core(core_model, mdes_record)
+            save_core_record(core_record)
+          end
         end
         offset += BLOCK_SIZE
       end
@@ -89,19 +91,21 @@ module NcsNavigator::Core::Warehouse
         no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
 
       @progress.loading('events, instruments, and links with p state impact')
-      ordered_event_sets.each do |p_id, events_and_links|
-        participant = Participant.find_by_p_id(p_id)
-        events_and_links.each do |event_and_links|
-          core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
-          if core_event.new_record?
-            participant.set_state_for_event_type(core_event.event_type)
-          end
-          save_core_record(core_event)
-          (event_and_links[:instruments] || []).each do |mdes_i|
-            save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
-          end
-          (event_and_links[:link_contacts] || []).each do |mdes_lc|
-            save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
+      Participant.transaction do
+        ordered_event_sets.each do |p_id, events_and_links|
+          participant = Participant.find_by_p_id(p_id)
+          events_and_links.each do |event_and_links|
+            core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
+            if core_event.new_record?
+              participant.set_state_for_event_type(core_event.event_type)
+            end
+            save_core_record(core_event)
+            (event_and_links[:instruments] || []).each do |mdes_i|
+              save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
+            end
+            (event_and_links[:link_contacts] || []).each do |mdes_lc|
+              save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
+            end
           end
         end
       end
@@ -190,8 +194,10 @@ module NcsNavigator::Core::Warehouse
       else
         @progress.loading(load_message)
         mdes_model = find_producer(core_model.table_name).model
-        mdes_model.all(mdes_model.key.first.name => id_list).each do |mdes_record|
-          save_core_record(apply_mdes_record_to_core(core_model, mdes_record))
+        core_model.transaction do
+          mdes_model.all(mdes_model.key.first.name => id_list).each do |mdes_record|
+            save_core_record(apply_mdes_record_to_core(core_model, mdes_record))
+          end
         end
       end
     end
@@ -261,16 +267,18 @@ module NcsNavigator::Core::Warehouse
     end
 
     def resolve_failed_associations
-      @failed_associations.each do |f|
-        ident = "#{f.mdes_table_name}[#{f.record_key}]##{f.mdes_variable}"
-        assoc_id = public_id_index(f.associated_model)[f.associated_public_id]
-        if assoc_id
-          log.debug("Late resolving #{ident}.")
-          core_record = f.core_model.find(public_id_index(f.core_model)[f.record_key])
-          core_record.update_attribute(f.core_model_association_id, assoc_id)
-        else
-          log.error(
-            "MDES association #{ident} refers to a record that is not present in Core.")
+      Person.transaction do
+        @failed_associations.each do |f|
+          ident = "#{f.mdes_table_name}[#{f.record_key}]##{f.mdes_variable}"
+          assoc_id = public_id_index(f.associated_model)[f.associated_public_id]
+          if assoc_id
+            log.debug("Late resolving #{ident}.")
+            core_record = f.core_model.find(public_id_index(f.core_model)[f.record_key])
+            core_record.update_attribute(f.core_model_association_id, assoc_id)
+          else
+            log.error(
+              "MDES association #{ident} refers to a record that is not present in Core.")
+          end
         end
       end
     end
