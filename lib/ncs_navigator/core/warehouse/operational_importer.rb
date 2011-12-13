@@ -89,7 +89,6 @@ module NcsNavigator::Core::Warehouse
       create_core_records_by_mdes_public_ids(ContactLink, 'contact links with no p state impact',
         no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
 
-      @progress.loading('events, instruments, and links with p state impact')
       Participant.transaction do
         ordered_event_sets.each do |p_id, events_and_links|
           participant = Participant.find_by_p_id(p_id)
@@ -131,55 +130,99 @@ module NcsNavigator::Core::Warehouse
     end
 
     def build_ordered_event_sets
-      event_ids = no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }
-      events = find_producer(:events).model.all(:event_id.not => event_ids)
-      contact_links = find_producer(:contact_links).model.all(:event_id.not => event_ids)
-      instruments = find_producer(:instruments).model.all(:event_id.not => event_ids)
-
-      cl_by_event = contact_links.inject({}) do |idx, cl|
-        (idx[cl.event_id] ||= []).tap { |a| a << cl }
-        idx
+      no_state_event_ids = no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }
+      state_impacting_event_ids_by_participant_id = find_producer(:events).model.all(
+        :fields => [:event_id, :participant_id],
+        :event_id.not => no_state_impact_event_and_link_contact_ids
+      ).inject({}) do |idx, row|
+        (idx[row.participant_id] ||= []) << row.event_id; idx
       end
 
-      cl_by_event.values.each { |a|
-        a.sort! { |x, y| (x.contact.contact_date || '9') <=> (y.contact.contact_date || '9') }
-      }
-
-      in_by_event = instruments.inject({}) do |idx, instr|
-        (idx[instr.event_id] ||= []).tap { |a| a << instr }
-        idx
-      end
-
-      events.inject({}) do |sets, event|
-        (sets[event.participant_id] ||= []).tap do |a|
-          a << {
-            :event => event,
-            :link_contacts => cl_by_event[event.event_id],
-            :instruments => in_by_event[event.event_id]
-          }
-        end
-        sets
-      end.tap { |sets|
-        sets.values.each { |a|
-          a.sort! { |x, y|
-            xcmp, ycmp = [x, y].map { |set|
-              e = set[:event]
-              cls = (set[:link_contacts] || [])
-              [
-                earliest_date(
-                  e.event_start_date, e.event_end_date,
-                  *cls.collect { |l| l.contact.contact_date }),
-                Event::TYPE_ORDER.index(e.event_type.to_i)
-              ]
-            }
-            xcmp <=> ycmp
-          }
+      OrderedEventSets.new(
+        @progress,
+        state_impacting_event_ids_by_participant_id,
+        {
+          :event => find_producer(:events).model,
+          :link_contact => find_producer(:contact_links).model,
+          :instrument => find_producer(:instruments).model
         }
-      }
+      )
     end
 
-    def earliest_date(*dates)
-      dates.collect { |d| (d =~ /^9/) ? nil : d }.compact.sort.first
+    class OrderedEventSets
+      include Enumerable
+
+      def initialize(progress_tracker, event_ids_by_participant_id, models)
+        @event_ids_by_participant_id = event_ids_by_participant_id
+        @mdes_models = models
+        @progress = progress_tracker
+      end
+
+      def each
+        block = []
+        p_ids = @event_ids_by_participant_id.keys
+        while !p_ids.empty?
+          block.concat(@event_ids_by_participant_id[p_ids.shift])
+          if block.size >= BLOCK_SIZE || p_ids.empty?
+            build_ordered_event_sets_for_events(block).each do |set|
+              yield set
+            end
+            block = []
+          end
+        end
+      end
+
+      def build_ordered_event_sets_for_events(event_ids)
+        @progress.loading('events, instruments, and links with p state impact')
+        events = @mdes_models[:event].all(:event_id => event_ids)
+        contact_links = @mdes_models[:link_contact].all(:event_id => event_ids)
+        instruments = @mdes_models[:instrument].all(:event_id => event_ids)
+
+        cl_by_event = contact_links.inject({}) do |idx, cl|
+          (idx[cl.event_id] ||= []).tap { |a| a << cl }
+          idx
+        end
+
+        cl_by_event.values.each { |a|
+          a.sort! { |x, y| (x.contact.contact_date || '9') <=> (y.contact.contact_date || '9') }
+        }
+
+        in_by_event = instruments.inject({}) do |idx, instr|
+          (idx[instr.event_id] ||= []).tap { |a| a << instr }
+          idx
+        end
+
+        events.inject({}) do |sets, event|
+          (sets[event.participant_id] ||= []).tap do |a|
+            a << {
+              :event => event,
+              :link_contacts => cl_by_event[event.event_id],
+              :instruments => in_by_event[event.event_id]
+            }
+          end
+          sets
+        end.tap { |sets|
+          sets.values.each { |a|
+            a.sort! { |x, y|
+              xcmp, ycmp = [x, y].map { |set|
+                e = set[:event]
+                cls = (set[:link_contacts] || [])
+                [
+                  earliest_date(
+                    e.event_start_date, e.event_end_date,
+                    *cls.collect { |l| l.contact.contact_date }),
+                  Event::TYPE_ORDER.index(e.event_type.to_i)
+                ]
+              }
+              xcmp <=> ycmp
+            }
+          }
+        }
+      end
+
+      def earliest_date(*dates)
+        dates.collect { |d| (d =~ /^9/) ? nil : d }.compact.sort.first
+      end
     end
 
     def create_core_records_by_mdes_public_ids(core_model, load_message, id_list)
