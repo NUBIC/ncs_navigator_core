@@ -7,13 +7,18 @@ module NcsNavigator::Core::Warehouse
     end
 
     def import
+      path.mkpath
       create_emitter.emit_xml
     end
 
     def create_emitter
       @emitter ||= NcsNavigator::Warehouse::XmlEmitter.new(
-        @wh_config, Rails.root + 'tmp/unused_imported_instrument_tables.xml',
+        @wh_config, path,
         :zip => false, :'include-pii' => true, :tables => Survey.mdes_unused_instrument_tables)
+    end
+
+    def path
+      @path ||= Rails.root + 'tmp/unused_imported_instrument_tables.xml'
     end
   end
 end
