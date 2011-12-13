@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
 # Schema version: 20111212224350
 #
@@ -33,7 +34,12 @@ class ContactLink < ActiveRecord::Base
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
 
-  validates_presence_of :contact
+  # Validating :contact_id instead of :contact prevents a reload of
+  # the associated contact object when creating a contact link
+  # alone. This provides a huge speedup in the importer; if validating
+  # :contact is necessary, we should provide a scoped validation so it
+  # can be excluded in the importer context.
+  validates_presence_of :contact_id
   validates_presence_of :staff_id
 
   accepts_nested_attributes_for :contact,    :allow_destroy => true
