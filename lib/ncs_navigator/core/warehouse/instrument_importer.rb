@@ -110,7 +110,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       update_response(question, response, value)
-      response.save!
+      response.save! if response.answer
     end
 
     # question is a param (instead as ref'd from response) so that the
@@ -122,6 +122,8 @@ module NcsNavigator::Core::Warehouse
       coded_ref_id = mdes_value.sub(/^-/, 'neg_')
       if coded_a = answers.detect { |a| a.reference_identifier == coded_ref_id }
         response.answer = coded_a
+      elsif mdes_value == '-4'
+        # ignore missing in error if not an explicit response option
       elsif string_a = answers.detect { |a| a.response_class == 'string' }
         response.answer = string_a
         response.string_value = mdes_value

@@ -253,6 +253,13 @@ module NcsNavigator::Core::Warehouse
           actual.datetime_value.should == Time.local(2012, 11, 12, 5, 6, 7)
           actual.answer.should == q.answers.find_by_response_class('datetime')
         end
+
+        it 'ignores -4 values if not present as an option' do
+          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '-4')
+          importer.import
+
+          Response.count.should == 0
+        end
       end
 
       describe 'for a coded-or-literal variable' do
