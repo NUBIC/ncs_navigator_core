@@ -83,7 +83,7 @@ module NcsNavigator::Core::Warehouse
 
     def create_events_and_instruments_and_contact_links
       create_core_records_by_mdes_public_ids(Event, 'events with no p state impact',
-        no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id })
+        no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }.uniq)
       create_core_records_by_mdes_public_ids(Instrument, 'instruments with no p state impact',
         no_state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
       create_core_records_by_mdes_public_ids(ContactLink, 'contact links with no p state impact',
