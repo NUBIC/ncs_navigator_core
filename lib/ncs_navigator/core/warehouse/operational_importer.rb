@@ -1,4 +1,4 @@
-require 'data_mapper'
+require 'dm-core'
 DataMapper::Property::Text.lazy(false)
 
 require 'ncs_navigator/core/warehouse'
