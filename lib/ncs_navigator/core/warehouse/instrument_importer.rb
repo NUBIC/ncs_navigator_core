@@ -131,8 +131,16 @@ module NcsNavigator::Core::Warehouse
         response.answer = int_a
         response.integer_value = mdes_value.to_i
       elsif dt_a = answers.detect { |a| a.response_class == 'datetime' }
-        response.answer = dt_a
-        response.datetime_value = Time.iso8601(mdes_value)
+        begin
+          response.datetime_value = Time.iso8601(mdes_value)
+          response.answer = dt_a
+        rescue
+          log.error("Ignoring unparsable datetime value %s for question %s in %s" % [
+              mdes_value.inspect,
+              response.question.reference_identifier,
+              response.question.survey_section.survey.title
+            ])
+        end
       else
         log.error("Unable to map %s to a response for question %s in %s" % [
             mdes_value.inspect,
