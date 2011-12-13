@@ -77,10 +77,18 @@ module NcsNavigator::Core::Warehouse
         detect { |ti, tc| tc[:table] == record.class.mdes_table_name }.last[:variables]
       variables.select { |var_name, var_mapping| var_mapping[:questions] }.each do |var_name, var_m|
         questions = var_m[:questions]
+
         if questions.size > 1
-          fail "The importer does not work with variables that map to multiple questions (#{record.class.mdes_table_name}.#{var_name})"
+          log.info("%s.%s maps to multiple questions (%s) in %s. Will create duplicate responses." % [
+              record.class.mdes_table_name,
+              var_name,
+              questions.collect { |q| q.reference_identifier }.join(', '),
+              survey.title
+            ])
         end
-        create_or_update_response(response_set, questions.first, record, var_name)
+        questions.each do |q|
+          create_or_update_response(response_set, q, record, var_name)
+        end
       end
 
       # find child records
