@@ -17,7 +17,7 @@ ssh_options[:forward_agent] = true
 default_run_options[:pty]   = true # to get the passphrase prompt from git
 default_environment['PATH'] = '/opt/ruby-enterprise/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin'
 
-set :bundle_without, [:development, :test, :ci]
+set :bundle_without, [:development, :test, :ci, :osx_development]
 
 set :scm, "git"
 set :repository, bcconf["repo"]
