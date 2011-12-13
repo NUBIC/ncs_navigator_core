@@ -7,7 +7,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def import
-      path.mkpath
+      path.parent.mkpath
       create_emitter.emit_xml
     end
 
