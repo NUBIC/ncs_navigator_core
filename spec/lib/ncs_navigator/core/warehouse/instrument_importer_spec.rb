@@ -260,6 +260,13 @@ module NcsNavigator::Core::Warehouse
 
           Response.count.should == 0
         end
+
+        it 'ignores -3 values if not present as an option' do
+          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '-3')
+          importer.import
+
+          Response.count.should == 0
+        end
       end
 
       describe 'for a coded-or-literal variable' do

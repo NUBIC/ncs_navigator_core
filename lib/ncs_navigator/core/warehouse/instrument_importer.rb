@@ -122,8 +122,8 @@ module NcsNavigator::Core::Warehouse
       coded_ref_id = mdes_value.sub(/^-/, 'neg_')
       if coded_a = answers.detect { |a| a.reference_identifier == coded_ref_id }
         response.answer = coded_a
-      elsif mdes_value == '-4'
-        # ignore missing in error if not an explicit response option
+      elsif %w(-3 -4).include?(mdes_value)
+        # ignore "Missing in Error" or "Legitimate Skip" if not an explicit response option
       elsif string_a = answers.detect { |a| a.response_class == 'string' }
         response.answer = string_a
         response.string_value = mdes_value
