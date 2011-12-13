@@ -58,6 +58,27 @@ module NcsNavigator::Core::Warehouse
             a "Number", :integer
             a_neg_1 "Refused"
             a_neg_2 "Don't know"
+
+            q_BIRTH_PLAN_OLD "So we make sure we have the correct information, where do you plan to deliver your {baby/babies}?",
+            :pick => :one,
+            :data_export_identifier=>"PREG_VISIT_2_2.BIRTH_PLAN"
+            a_1 "In a hospital"
+            a_2 "A birthing center"
+            a_3 "At home, or"
+            a_4 "Some other place?"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_birth_plan "Where do you plan to deliver your {baby/babies}?",
+            :pick => :one,
+            :data_export_identifier=>"PREG_VISIT_2_2.BIRTH_PLAN"
+            a_1 "In a hospital"
+            a_2 "A birthing center"
+            a_3 "At home, or"
+            a_4 "Some other place?"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
           end
         end
       DSL
@@ -297,6 +318,32 @@ module NcsNavigator::Core::Warehouse
           Response.first.answer.should ==
             Question.find_by_reference_identifier('HOSP_NIGHTS').
               answers.find_by_response_class('integer')
+        end
+      end
+
+      describe 'when multiple questions map to a variable' do
+        let(:q1) { Question.find_by_reference_identifier('BIRTH_PLAN_OLD') }
+        let(:q2) { Question.find_by_reference_identifier('birth_plan') }
+
+        before do
+          create_mdes_record(MdesModule::PregVisit22, 'PV22', :birth_plan => '3')
+          importer.import
+        end
+
+        it 'creates a response for each question' do
+          Response.count.should == 2
+        end
+
+        it 'has the appropriate value for the first response' do
+          actual = Response.where(:question_id => q1).first.answer
+          actual.question.should == q1
+          actual.reference_identifier.should == '3'
+        end
+
+        it 'has the appropriate value for the second response' do
+          actual = Response.where(:question_id => q2).first.answer
+          actual.reference_identifier.should == '3'
+          actual.question.should == q2
         end
       end
 
