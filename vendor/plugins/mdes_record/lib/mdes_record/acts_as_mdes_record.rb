@@ -77,15 +77,15 @@ module MdesRecord
     # If an NCS Code is missing, default the selection to 'Missing in Error' whose local_code value is -4
     def set_missing_in_error
       self.class.reflect_on_all_associations.each do |association|
-        if association.options[:class_name] == "NcsCode" && is_missing?(association.name.to_sym)
+        if association.options[:class_name] == "NcsCode" && not_set?(association.name.to_sym)
           missing_in_error_code = NcsCode.where("#{association.options[:conditions]} AND local_code = -4").first
           self.send("#{association.name}=", missing_in_error_code)
         end
       end
     end
 
-    def is_missing?(method_name)
-      self.send(method_name).blank? || self.send(method_name).local_code == -4
+    def not_set?(method_name)
+      self.send(method_name).blank?
     end
 
     def format_dates
