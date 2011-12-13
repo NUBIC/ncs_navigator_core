@@ -35,10 +35,13 @@ gem 'will_paginate'
 group :development do
   gem 'capistrano'
   gem 'watchr'
-  gem 'rb-fsevent'
-  gem 'growl_notify' # or gem 'growl'
 
   gem 'ruby-debug', :platform => :ruby_18
+end
+
+group :osx_development do
+  gem 'rb-fsevent'
+  gem 'growl_notify' # or gem 'growl'
 end
 
 group :staging, :production do
