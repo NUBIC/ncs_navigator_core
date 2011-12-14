@@ -1,6 +1,3 @@
-require 'dm-core'
-DataMapper::Property::Text.lazy(false)
-
 require 'ncs_navigator/core/warehouse'
 # To preload the same version of the models used by OperationalEnumerator
 require 'ncs_navigator/core/warehouse/operational_enumerator'
