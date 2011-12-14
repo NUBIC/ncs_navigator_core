@@ -302,7 +302,7 @@ module NcsNavigator::Core::Warehouse
           associated_public_id = mdes_record.send(mdes_variable)
 
           new_association_id = public_id_index(associated_model)[associated_public_id]
-          unless new_association_id
+          if associated_public_id && !new_association_id
             @failed_associations << FailedAssociation.new(
               mdes_key, mdes_record.class.mdes_table_name, mdes_variable,
               core_model, core_model_association_id,
