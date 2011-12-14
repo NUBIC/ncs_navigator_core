@@ -79,16 +79,12 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_events_and_instruments_and_contact_links
+      build_state_impacting_ids_table
+
       unless ENV['IMPACT_ONLY']
-        create_core_records_without_mdes_public_ids(
-          Event, 'events with no p state impact',
-          state_impact_event_and_link_contact_ids.collect { |row| row.event_id }.uniq)
-        create_core_records_without_mdes_public_ids(
-          Instrument, 'instruments with no p state impact',
-          state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
-        create_core_records_without_mdes_public_ids(
-          ContactLink, 'contact links with no p state impact',
-          state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
+        create_core_records_without_state_impact(Event)
+        create_core_records_without_state_impact(Instrument)
+        create_core_records_without_state_impact(ContactLink)
       end
 
       @progress.loading('events, instruments, and links with p state impact')
@@ -110,11 +106,24 @@ module NcsNavigator::Core::Warehouse
           end
         end
       end
+    ensure
+      drop_state_impacting_ids_table
     end
 
-    def state_impact_event_and_link_contact_ids
-      @state_impact_event_and_link_contact_ids ||= ::DataMapper.repository.adapter.select(
-        %{
+    STATE_IMPACTING_IDS_TABLE_NAME = 'scratch_core_importer_state_impacting_elci'
+
+    def build_state_impacting_ids_table
+      ::DataMapper.repository.adapter.tap do |a|
+        a.execute("DROP TABLE IF EXISTS #{STATE_IMPACTING_IDS_TABLE_NAME}")
+        a.execute(<<-SQL)
+          CREATE TABLE #{STATE_IMPACTING_IDS_TABLE_NAME} (
+            event_id VARCHAR(36),
+            participant_id VARCHAR(36),
+            contact_link_id VARCHAR(36),
+            instrument_id VARCHAR(36))
+        SQL
+        a.execute(<<-INSERT)
+          INSERT INTO #{STATE_IMPACTING_IDS_TABLE_NAME}
           SELECT e.event_id, e.participant_id, l.contact_link_id, i.instrument_id
           FROM event e
             LEFT JOIN link_contact l ON e.event_id=l.event_id
@@ -128,13 +137,23 @@ module NcsNavigator::Core::Warehouse
                   OR
                   (l.contact_link_id IS NOT NULL AND c.contact_date NOT LIKE '9%')
                  )
-        }
-      )
+        INSERT
+      end
+      @state_impacting_ids_table_built = true
+    end
+
+    def drop_state_impacting_ids_table
+      ::DataMapper.repository.adapter.tap do |a|
+        a.execute("DROP TABLE IF EXISTS #{STATE_IMPACTING_IDS_TABLE_NAME}")
+      end
     end
 
     def build_ordered_event_sets
+      build_state_impacting_ids_table unless @state_impacting_ids_table_built
       state_impacting_event_ids_by_participant_id =
-        state_impact_event_and_link_contact_ids.inject({}) do |idx, row|
+        ::DataMapper.repository.adapter.
+        select("SELECT * FROM #{STATE_IMPACTING_IDS_TABLE_NAME}").
+        inject({}) do |idx, row|
           (idx[row.participant_id] ||= []) << row.event_id; idx
         end
 
@@ -247,18 +266,25 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def create_core_records_without_mdes_public_ids(core_model, load_message, exclude_id_list)
+    def create_core_records_without_state_impact(core_model)
+      load_message = "#{core_model.name.underscore.gsub('_', ' ').pluralize} without p state impact"
       mdes_model = find_producer(core_model.table_name).model
-      key_name = mdes_model.key.first.name.to_sym
-      cond = { key_name.not => exclude_id_list }
+      key_name = mdes_model.key.first.name
+      cond = <<-SQL
+        FROM #{mdes_model.mdes_table_name} t
+          LEFT JOIN #{STATE_IMPACTING_IDS_TABLE_NAME} i ON t.#{key_name} = i.#{key_name}
+        WHERE i.#{key_name} IS NULL
+      SQL
 
-      count = mdes_model.count(cond)
+      count = ::DataMapper.repository.adapter.select("SELECT COUNT(*) #{cond}").first
       offset = 0
 
       while offset < count
         @progress.loading(load_message)
         core_model.transaction do
-          mdes_model.all(cond.merge(:order => [key_name], :limit => BLOCK_SIZE, :offset => offset)).each do |mdes_record|
+          mdes_model.find_by_sql(
+            "SELECT t.* #{cond} ORDER BY #{key_name} LIMIT #{BLOCK_SIZE} OFFSET #{offset}"
+          ).each do |mdes_record|
             save_core_record(apply_mdes_record_to_core(core_model, mdes_record))
           end
         end
