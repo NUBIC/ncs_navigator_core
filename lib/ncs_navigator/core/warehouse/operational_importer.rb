@@ -89,6 +89,7 @@ module NcsNavigator::Core::Warehouse
       create_core_records_by_mdes_public_ids(ContactLink, 'contact links with no p state impact',
         no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
 
+      @progress.loading('events, instruments, and links with p state impact')
       Participant.transaction do
         ordered_event_sets.each do |p_id, events_and_links|
           participant = Participant.find_by_p_id(p_id)
@@ -163,7 +164,7 @@ module NcsNavigator::Core::Warehouse
         p_ids = @event_ids_by_participant_id.keys
         while !p_ids.empty?
           block.concat(@event_ids_by_participant_id[p_ids.shift])
-          if block.size >= BLOCK_SIZE || p_ids.empty?
+          if block.size >= block_size || p_ids.empty?
             build_ordered_event_sets_for_events(block).each do |set|
               yield set
             end
@@ -172,11 +173,22 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
+      def block_size
+        @block_size ||= BLOCK_SIZE / 10 # average 7.5 LC's per E
+      end
+
       def build_ordered_event_sets_for_events(event_ids)
         @progress.loading('events, instruments, and links with p state impact')
         events = @mdes_models[:event].all(:event_id => event_ids)
-        contact_links = @mdes_models[:link_contact].all(:event_id => event_ids)
         instruments = @mdes_models[:instrument].all(:event_id => event_ids)
+
+        contact_links = @mdes_models[:link_contact].all(:event_id => event_ids)
+        contacts = @mdes_models[:link_contact].relationships[:contact].
+          parent_model.all(:contact_id => contact_links.collect { |cl| cl.contact_id }).to_a
+        contact_links.each do |cl|
+          match = contacts.find { |c| c.contact_id == cl.contact_id }
+          cl.contact = match if match
+        end
 
         cl_by_event = contact_links.inject({}) do |idx, cl|
           (idx[cl.event_id] ||= []).tap { |a| a << cl }
@@ -207,11 +219,13 @@ module NcsNavigator::Core::Warehouse
               xcmp, ycmp = [x, y].map { |set|
                 e = set[:event]
                 cls = (set[:link_contacts] || [])
+                ordinal = Event::TYPE_ORDER.index(e.event_type.to_i) ||
+                  fail("No ordinal for event_type #{e.event_type}")
                 [
                   earliest_date(
                     e.event_start_date, e.event_end_date,
                     *cls.collect { |l| l.contact.contact_date }),
-                  Event::TYPE_ORDER.index(e.event_type.to_i)
+                  ordinal
                 ]
               }
               xcmp <=> ycmp
