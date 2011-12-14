@@ -82,15 +82,17 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_events_and_instruments_and_contact_links
-      create_core_records_without_mdes_public_ids(
-        Event, 'events with no p state impact',
-        state_impact_event_and_link_contact_ids.collect { |row| row.event_id }.uniq)
-      create_core_records_without_mdes_public_ids(
-        Instrument, 'instruments with no p state impact',
-        state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
-      create_core_records_without_mdes_public_ids(
-        ContactLink, 'contact links with no p state impact',
-        state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
+      unless ENV['IMPACT_ONLY']
+        create_core_records_without_mdes_public_ids(
+          Event, 'events with no p state impact',
+          state_impact_event_and_link_contact_ids.collect { |row| row.event_id }.uniq)
+        create_core_records_without_mdes_public_ids(
+          Instrument, 'instruments with no p state impact',
+          state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
+        create_core_records_without_mdes_public_ids(
+          ContactLink, 'contact links with no p state impact',
+          state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
+      end
 
       @progress.loading('events, instruments, and links with p state impact')
       Participant.transaction do
