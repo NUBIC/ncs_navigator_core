@@ -51,6 +51,7 @@ end
 gem 'ncs_mdes_warehouse', '~> 0.2',
   :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
 # gem 'ncs_mdes_warehouse', '~> 0.2'
+gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
   gem 'rspec-rails', '2.6.1'
