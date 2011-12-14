@@ -82,12 +82,15 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_events_and_instruments_and_contact_links
-      create_core_records_by_mdes_public_ids(Event, 'events with no p state impact',
-        no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }.uniq)
-      create_core_records_by_mdes_public_ids(Instrument, 'instruments with no p state impact',
-        no_state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
-      create_core_records_by_mdes_public_ids(ContactLink, 'contact links with no p state impact',
-        no_state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
+      create_core_records_without_mdes_public_ids(
+        Event, 'events with no p state impact',
+        state_impact_event_and_link_contact_ids.collect { |row| row.event_id }.uniq)
+      create_core_records_without_mdes_public_ids(
+        Instrument, 'instruments with no p state impact',
+        state_impact_event_and_link_contact_ids.collect { |row| row.instrument_id }.compact.uniq)
+      create_core_records_without_mdes_public_ids(
+        ContactLink, 'contact links with no p state impact',
+        state_impact_event_and_link_contact_ids.collect { |row| row.contact_link_id }.compact)
 
       @progress.loading('events, instruments, and links with p state impact')
       Participant.transaction do
@@ -110,34 +113,31 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def no_state_impact_event_and_link_contact_ids
-      @no_state_impact_event_and_link_contact_ids ||= ::DataMapper.repository.adapter.select(
+    def state_impact_event_and_link_contact_ids
+      @state_impact_event_and_link_contact_ids ||= ::DataMapper.repository.adapter.select(
         %{
-          SELECT e.event_id, l.contact_link_id, i.instrument_id
+          SELECT e.event_id, e.participant_id, l.contact_link_id, i.instrument_id
           FROM event e
             LEFT JOIN link_contact l ON e.event_id=l.event_id
             LEFT JOIN contact c ON l.contact_id=c.contact_id
             LEFT JOIN instrument i ON e.event_id=i.event_id
-          WHERE e.participant_id IS NULL
-             OR (
-                  (e.event_start_date LIKE '9%' OR e.event_start_date IS NULL)
-                  AND
-                  (e.event_end_date LIKE '9%' OR e.event_end_date IS NULL)
-                  AND
-                  (l.contact_link_id IS NULL OR c.contact_date LIKE '9%')
-                )
+          WHERE e.participant_id IS NOT NULL
+             AND (
+                  (e.event_start_date NOT LIKE '9%' AND e.event_start_date IS NOT NULL)
+                  OR
+                  (e.event_end_date NOT LIKE '9%' AND e.event_end_date IS NOT NULL)
+                  OR
+                  (l.contact_link_id IS NOT NULL AND c.contact_date NOT LIKE '9%')
+                 )
         }
       )
     end
 
     def build_ordered_event_sets
-      no_state_event_ids = no_state_impact_event_and_link_contact_ids.collect { |row| row.event_id }
-      state_impacting_event_ids_by_participant_id = find_producer(:events).model.all(
-        :fields => [:event_id, :participant_id],
-        :event_id.not => no_state_impact_event_and_link_contact_ids
-      ).inject({}) do |idx, row|
-        (idx[row.participant_id] ||= []) << row.event_id; idx
-      end
+      state_impacting_event_ids_by_participant_id =
+        state_impact_event_and_link_contact_ids.inject({}) do |idx, row|
+          (idx[row.participant_id] ||= []) << row.event_id; idx
+        end
 
       OrderedEventSets.new(
         @progress,
@@ -146,24 +146,28 @@ module NcsNavigator::Core::Warehouse
           :event => find_producer(:events).model,
           :link_contact => find_producer(:contact_links).model,
           :instrument => find_producer(:instruments).model
-        }
+        },
+        log
       )
     end
 
     class OrderedEventSets
       include Enumerable
 
-      def initialize(progress_tracker, event_ids_by_participant_id, models)
+      attr_reader :log
+
+      def initialize(progress_tracker, event_ids_by_participant_id, models, log)
         @event_ids_by_participant_id = event_ids_by_participant_id
         @mdes_models = models
         @progress = progress_tracker
+        @log = log
       end
 
       def each
         block = []
         p_ids = @event_ids_by_participant_id.keys
         while !p_ids.empty?
-          block.concat(@event_ids_by_participant_id[p_ids.shift])
+          block.concat(@event_ids_by_participant_id[p_ids.shift].uniq)
           if block.size >= block_size || p_ids.empty?
             build_ordered_event_sets_for_events(block).each do |set|
               yield set
@@ -178,13 +182,18 @@ module NcsNavigator::Core::Warehouse
       end
 
       def build_ordered_event_sets_for_events(event_ids)
+        log.debug("Building block of ordered event sets for #{event_ids.size} event id(s)")
+
         @progress.loading('events, instruments, and links with p state impact')
         events = @mdes_models[:event].all(:event_id => event_ids)
+        log.debug("  - #{events.size} event(s)")
         instruments = @mdes_models[:instrument].all(:event_id => event_ids)
+        log.debug("  - #{instruments.size} instrument(s)")
 
         contact_links = @mdes_models[:link_contact].all(:event_id => event_ids)
+        log.debug("  - #{contact_links.size} link_contact(s)")
         contacts = @mdes_models[:link_contact].relationships[:contact].
-          parent_model.all(:contact_id => contact_links.collect { |cl| cl.contact_id }).to_a
+          parent_model.all(:contact_id => contact_links.collect { |cl| cl.contact_id })
         contact_links.each do |cl|
           match = contacts.find { |c| c.contact_id == cl.contact_id }
           cl.contact = match if match
@@ -239,22 +248,22 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def create_core_records_by_mdes_public_ids(core_model, load_message, id_list)
-      if id_list.size > BLOCK_SIZE
-        offset = 0
-        while offset < id_list.size
-          create_core_records_by_mdes_public_ids(
-            core_model, load_message, id_list[offset ... (offset + BLOCK_SIZE)])
-          offset += BLOCK_SIZE
-        end
-      else
+    def create_core_records_without_mdes_public_ids(core_model, load_message, exclude_id_list)
+      mdes_model = find_producer(core_model.table_name).model
+      key_name = mdes_model.key.first.name.to_sym
+      cond = { key_name.not => exclude_id_list }
+
+      count = mdes_model.count(cond)
+      offset = 0
+
+      while offset < count
         @progress.loading(load_message)
-        mdes_model = find_producer(core_model.table_name).model
         core_model.transaction do
-          mdes_model.all(mdes_model.key.first.name => id_list).each do |mdes_record|
+          mdes_model.all(cond.merge(:order => [key_name], :limit => BLOCK_SIZE, :offset => offset)).each do |mdes_record|
             save_core_record(apply_mdes_record_to_core(core_model, mdes_record))
           end
         end
+        offset += BLOCK_SIZE
       end
     end
 
