@@ -18,7 +18,13 @@ module NcsNavigator::Core::Warehouse
     end
 
     def path
-      @path ||= Rails.root + 'tmp/unused_imported_instrument_tables.xml'
+      @path ||= Rails.root + "importer_passthrough/instruments-#{timestamp}.xml"
+    end
+
+    private
+
+    def timestamp
+      Time.now.getutc.iso8601.gsub(/[^\d]/, '')
     end
   end
 end
