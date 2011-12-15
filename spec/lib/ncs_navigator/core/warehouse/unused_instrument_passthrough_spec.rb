@@ -46,8 +46,9 @@ end
         subject.zip?.should be_false
       end
 
-      it 'writes to a file in the tmp directory' do
-        subject.filename.to_s.should == "#{Rails.root}/tmp/unused_imported_instrument_tables.xml"
+      it 'writes to a file in the importer_passthrough directory' do
+        subject.filename.to_s.should =~
+          %r(#{Rails.root}/importer_passthrough/instruments-\d{14}.xml)
       end
 
       it 'does not include models which are represented in the available surveys' do
