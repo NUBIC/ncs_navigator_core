@@ -436,7 +436,7 @@ module NcsNavigator::Core::Warehouse
     class ProgressTracker
       extend Forwardable
 
-      def_delegators :@wh_config, :shell
+      def_delegators :@wh_config, :shell, :log
 
       def initialize(wh_config)
         @wh_config = wh_config
@@ -486,15 +486,20 @@ module NcsNavigator::Core::Warehouse
       end
 
       def complete
-        shell.clear_line_then_say(
-          "%3d new / %3d updated / %3d unchanged. %.1f/s. Operational import complete.\n" % [
-            @create_count, @update_count, @unchanged_count, total_rate
-          ]
-        )
+        msg = "%d new / %d updated / %d unchanged.\nOperational import complete in %ds (%.1f/s).\n" % [
+          @create_count, @update_count, @unchanged_count, elapsed, total_rate
+        ]
+
+        shell.clear_line_then_say(msg)
+        log.info(msg)
       end
 
       def total_rate
-        (@update_count + @create_count + @unchanged_count) / (Time.now - @start)
+        (@update_count + @create_count + @unchanged_count) / elapsed
+      end
+
+      def elapsed
+        Time.now - @start
       end
     end
   end
