@@ -70,13 +70,27 @@ namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
   end
+
   [:start, :stop].each do |t|
     desc "#{t} task is a no-op with mod_rails"
     task t, :roles => :app do ; end
   end
+
   desc "Fix permissions"
   task :permissions do
     sudo "chmod -R g+w #{shared_path} #{current_path} #{release_path}"
+  end
+
+  desc 'Set up shared paths used by the importer'
+  task :setup_import_directories do
+    shared_import  = File.join(shared_path,  'import_passthrough')
+    release_import = File.join(current_path, 'import_passthrough')
+    cmds = [
+      "mkdir -p #{shared_import}",
+      "chmod g+w #{shared_import}",
+      "if [ ! -e #{release_import} ]; then ln -s #{shared_import} #{release_import}; fi",
+    ]
+    run cmds.join(' && ')
   end
 end
 
@@ -87,7 +101,7 @@ end
 after 'deploy:update_code', 'deploy:cleanup' # , 'deploy:permissions'
 
 # after deploying symlink , copy images to current image config location.
-after 'deploy:symlink', 'config:images'
+after 'deploy:symlink', 'config:images', 'deploy:setup_import_directories'
 
 # Database
 namespace :db do
