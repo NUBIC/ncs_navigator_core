@@ -41,7 +41,10 @@ module NcsNavigator::Core::Warehouse
         table_ct = 0
         response_lists.collect do |responses|
           table_ct += 1
-          wh_create_base_record(table, table_ct, fixed_map).tap do |record|
+          imported_id =
+            responses.select { |r| r.source_mdes_table == table }.
+              collect { |r| r.source_mdes_id }.compact.first
+          wh_create_base_record(table, imported_id, table_ct, fixed_map).tap do |record|
             responses.each do |r|
               variable_name = table_map[ti][:variables].detect { |var_name, var_mapping|
                 var_mapping[:questions] && var_mapping[:questions].include?(r.question)
@@ -55,10 +58,11 @@ module NcsNavigator::Core::Warehouse
 
     private
 
-    def wh_create_base_record(table_name, serial, fixed_values)
+    def wh_create_base_record(table_name, imported_id, serial, fixed_values)
       model = MdesModule.mdes_order.detect { |m| m.mdes_table_name == table_name }
       model.new.tap do |record|
-        record.send("#{model.key.first.name}=", access_code + serial.to_s)
+        id = imported_id ? imported_id : "#{access_code}.#{serial}"
+        record.send("#{model.key.first.name}=", id)
         STATIC_RECORD_FIELD_MAPPING.each do |record_attribute, rs_attribute|
           setter = "#{record_attribute}="
           if record.respond_to?(setter)

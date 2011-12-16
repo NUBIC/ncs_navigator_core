@@ -56,16 +56,23 @@ end
     context 'external references' do
       let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pre_preg' } }
       let(:question) { questions_map['health'] }
-
-      before do
+      let!(:response) {
         create_response_for(question) { |r|
           r.answer = question.answers.find_by_text('Excellent')
         }
-      end
+      }
 
       it "has a primary key based on the response set access code" do
         response_set.access_code.should_not be_nil # test setup
         primary.key.first.should include(response_set.access_code)
+      end
+
+      it 'uses the imported ID as the PK if the responses were imported' do
+        response.source_mdes_table = 'pre_preg'
+        response.source_mdes_id = 'Eleventy-two'
+        response.save!
+
+        primary.key.first.should == 'Eleventy-two'
       end
 
       it 'uses the public ID for the associated event' do
@@ -225,6 +232,16 @@ end
       it 'gives each subrecord a unique ID' do
         secondary.collect(&:father_educ_id).uniq.size.should == 2
       end
+
+      it 'reuses the imported IDs if the responses were imported' do
+        Response.find_all_by_question_id(question).each_with_index do |r, i|
+          r.source_mdes_table = 'father_pv1_educ'
+          r.source_mdes_id = i.to_s * 4
+          r.save!
+        end
+
+        secondary.collect(&:father_educ_id).sort.should == %w(0000 1111)
+      end
     end
 
     describe 'with a multivalued question with an "other" option' do
@@ -310,6 +327,7 @@ end
       it 'records multiple coded values as separate records' do
         secondary.collect(&:renovate_room).sort.should == %w(-2 -5 1 5)
       end
+
     end
 
     describe 'with a fixed value' do
