@@ -496,6 +496,12 @@ end
         end
       end
     end
+
+    describe 'coding in date and time fields' do
+      it 'works for time-formatted questions'
+      it 'works for date-formatted questions'
+      it 'works for timestamp-formatted questions'
+    end
   end
 end
 
