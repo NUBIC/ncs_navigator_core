@@ -1,5 +1,4 @@
 require 'ncs_navigator/core/warehouse'
-require 'ncs_navigator/core/warehouse/response_set_to_warehouse'
 require 'forwardable'
 
 module NcsNavigator::Core::Warehouse
@@ -20,6 +19,9 @@ module NcsNavigator::Core::Warehouse
     end
 
     def initialize(wh_config)
+      # This is deferred to here so that .create_transformer can be
+      # called from the warehouse configuration
+      require 'ncs_navigator/core/warehouse/response_set_to_warehouse'
       @wh_config = wh_config
     end
 
@@ -62,7 +64,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       def increment_responses(ct)
-        @response_set_count += ct
+        @response_count += ct
         say_progress
       end
 
