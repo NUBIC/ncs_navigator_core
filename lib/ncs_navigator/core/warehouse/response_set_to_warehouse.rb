@@ -13,6 +13,7 @@ module NcsNavigator::Core::Warehouse
       :instrument_id => 'instrument.public_id',
       :instrument_version => 'instrument.instrument_version',
       :instrument_repeat_key => 'instrument.instrument_repeat_key',
+      :instrument_type => 'instrument.instrument_type_code',
       :p_id => 'instrument.event.participant.public_id'
     }
 
