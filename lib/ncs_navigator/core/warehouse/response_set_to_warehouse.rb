@@ -33,6 +33,15 @@ module NcsNavigator::Core::Warehouse
         h
       end
 
+      # This is all the questions whose dependencies are met but which
+      # do not have any answers.
+      missing_questions = unanswered_dependencies.collect { |dep|
+        case dep
+        when Question; dep;
+        when QuestionGroup; dep.questions
+        end
+      }.flatten
+
       records = responses_by_table_ident.collect do |ti, response_lists|
         table = table_map[ti][:table]
         fixed_map = table_map[ti][:variables].inject({}) { |h, (var_name, var_mapping)|
@@ -45,12 +54,36 @@ module NcsNavigator::Core::Warehouse
           imported_id =
             responses.select { |r| r.source_mdes_table == table }.
               collect { |r| r.source_mdes_id }.compact.first
+
+          unanswered_for_table = survey.sections_with_questions.collect(&:questions).flatten.
+            select { |q| is_unanswered?(q) && variable_for_question_in_table(table_map[ti], q) }.
+            inject({'-4' => [], '-3' => []}) { |map, q|
+              if missing_questions.include?(q)
+                # Missing in error
+                map['-4'] << q
+              else
+                # Legitimate skip
+                map['-3'] << q
+              end
+              map
+            }
+
           wh_create_base_record(table, imported_id, table_ct, fixed_map).tap do |record|
             responses.each do |r|
               variable_name = table_map[ti][:variables].detect { |var_name, var_mapping|
                 var_mapping[:questions] && var_mapping[:questions].include?(r.question)
               }.first
               record.send("#{variable_name}=", r.reportable_value)
+            end
+            unanswered_for_table.each do |code, qs|
+              qs.each do |q|
+                variable_name, dc = table_map[ti][:variables].detect { |var_name, var_mapping|
+                  var_mapping[:questions] && var_mapping[:questions].include?(q)
+                }
+                if variable_name && record.class.properties[variable_name].required?
+                  record.send("#{variable_name}=", code)
+                end
+              end
             end
           end
         end
@@ -84,6 +117,13 @@ module NcsNavigator::Core::Warehouse
       else
         object.send(attr)
       end
+    end
+
+    # returns [variable_name, variable_mapping] out of table_map
+    def variable_for_question_in_table(table_context, question)
+      table_context[:variables].detect { |var_name, var_mapping|
+        var_mapping[:questions] && var_mapping[:questions].include?(question)
+      }
     end
 
     ##
