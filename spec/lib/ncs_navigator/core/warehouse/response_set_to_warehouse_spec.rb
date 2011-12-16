@@ -403,6 +403,99 @@ end
         pending '#1653'
       end
     end
+
+    describe 'with skippable questions' do
+      let(:questions_dsl) {
+        <<-DSL
+          q_OUT_TALK "Is there a better time when we could talk?",
+          :pick => :one,
+          :data_export_identifier=>"LOW_HIGH_SCRIPT.OUT_TALK"
+          a_1 "Yes"
+          a_2 "No"
+          a_neg_1 "Refused"
+          a_neg_2 "Don’t know"
+
+          group "Call setup" do
+            dependency :rule => "A"
+            condition_A :q_OUT_TALK, "==", :a_1
+
+            q_R_BEST_TTC_1 "What would be a better time for you?",
+            :help_text => "Enter in hour and minute values",
+            :pick => :one,
+            :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_1"
+            a_time "Time", :string
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_DAY_WEEK_2 "What would be a good day to reach her?",
+            :help_text => "Enter in day(s) of week",
+            :pick => :one,
+            :data_export_identifier=>"LOW_HIGH_SCRIPT.DAY_WEEK_2"
+            a_days_of_week "Day(s) of the week", :string
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_R_BEST_TTC_2 "Select AM or PM",
+            :pick => :one,
+            :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_2"
+            a_am "AM"
+            a_pm "PM"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_R_BEST_TTC_3 "Additional info",
+            :pick => :one,
+            :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_3"
+            a_am "After time reported"
+            a_pm "Before time reported"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_R_BEST_TTC4 "Thank you. I will try again later.",
+            :help_text => "End call and code case status."
+          end
+        DSL
+      }
+
+      let(:out_talk) { questions_map['OUT_TALK'] }
+      let(:ttc1) { questions_map['R_BEST_TTC_1'] }
+      let(:ttc2) { questions_map['R_BEST_TTC_2'] }
+      let(:ttc3) { questions_map['R_BEST_TTC_3'] }
+
+      let(:record) { records.find { |rec| rec.class.mdes_table_name == 'low_high_script' } }
+
+      context 'when legitimately skipped' do
+        before do
+          create_response_for(out_talk) { |r|
+            r.answer = out_talk.answers.detect { |a| a.reference_identifier == '2' }
+          }
+        end
+
+        it 'sets no value for a non-required field' do
+          record.day_week_2.should be_nil
+        end
+
+        it 'sets the legitmate skip code for a required field' do
+          record.r_best_ttc_2.should == '-3'
+        end
+      end
+
+      context 'when missed' do
+        before do
+          create_response_for(out_talk) { |r|
+            r.answer = out_talk.answers.detect { |a| a.reference_identifier == '1' }
+          }
+        end
+
+        it 'sets no value for a non-required field' do
+          record.day_week_2.should be_nil
+        end
+
+        it 'sets the missing code for a required field' do
+          record.r_best_ttc_2.should == '-4'
+        end
+      end
+    end
   end
 end
 
