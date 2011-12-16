@@ -454,13 +454,26 @@ end
             q_R_BEST_TTC4 "Thank you. I will try again later.",
             :help_text => "End call and code case status."
           end
+
+          q_FOLLOWUP_1 "Thank you for taking the time to answer these questions today. However, at this time, we are only
+          making visits to women who are pregnant or who are trying to get pregnant. Based on what I thought I heard you say,
+          I understand that you are not pregnant or trying to get pregnant at this time. Is this correct?",
+          :help_text => "You may say [I’m sorry to hear you’ve lost your baby – I know this can be a hard time.]
+          if social cues indicate it is appropriate.",
+          :pick => :one,
+          :data_export_identifier=>"LOW_HIGH_SCRIPT.FOLLOWUP_1"
+          a_1 "Yes (not pregnant, not trying)"
+          a_2 "No (SP is trying)"
+          a_3 "No (SP is pregnant)"
+          a_neg_1 "Refused"
+          a_neg_2 "Don’t know"
+          # non-MDES dep for testing
+          dependency :rule => "A"
+          condition_A :q_OUT_TALK, "==", :a_1
         DSL
       }
 
       let(:out_talk) { questions_map['OUT_TALK'] }
-      let(:ttc1) { questions_map['R_BEST_TTC_1'] }
-      let(:ttc2) { questions_map['R_BEST_TTC_2'] }
-      let(:ttc3) { questions_map['R_BEST_TTC_3'] }
 
       let(:record) { records.find { |rec| rec.class.mdes_table_name == 'low_high_script' } }
 
@@ -475,8 +488,12 @@ end
           record.day_week_2.should be_nil
         end
 
-        it 'sets the legitmate skip code for a required field' do
+        it 'sets the legitimate skip code for a required field' do
           record.r_best_ttc_2.should == '-3'
+        end
+
+        it 'sets the missing code if the skip code is not allowed' do
+          record.followup_1.should == '-4'
         end
       end
 
