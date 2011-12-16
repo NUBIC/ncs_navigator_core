@@ -80,8 +80,13 @@ module NcsNavigator::Core::Warehouse
                 variable_name, dc = table_map[ti][:variables].detect { |var_name, var_mapping|
                   var_mapping[:questions] && var_mapping[:questions].include?(q)
                 }
+                codes = if code == '-3'
+                          %w(-3 -4)
+                        else
+                          [code]
+                        end
                 if variable_name && record.class.properties[variable_name].required?
-                  record.send("#{variable_name}=", code)
+                  wh_set_first_valid(record, variable_name, codes)
                 end
               end
             end
@@ -89,6 +94,8 @@ module NcsNavigator::Core::Warehouse
         end
       end.flatten.tap { |records| wh_resolve_internal_references(records) }
     end
+
+    protected
 
     private
 
@@ -124,6 +131,18 @@ module NcsNavigator::Core::Warehouse
       table_context[:variables].detect { |var_name, var_mapping|
         var_mapping[:questions] && var_mapping[:questions].include?(question)
       }
+    end
+
+    def wh_set_first_valid(record, variable_name, possible_values)
+      puts "Trying next from #{possible_values.inspect} for #{variable_name}"
+      record.send("#{variable_name}=", possible_values.shift)
+      unless record.class.validators[variable_name.to_sym].all? { |v| v.call(record) }
+        if possible_values.empty?
+          Rails.logger.error("Unable to find a valid value for #{record.class.mdes_table_name}##{variable_name}")
+        else
+          wh_set_first_valid(record, variable_name, possible_values)
+        end
+      end
     end
 
     ##
