@@ -134,7 +134,6 @@ module NcsNavigator::Core::Warehouse
     end
 
     def wh_set_first_valid(record, variable_name, possible_values)
-      puts "Trying next from #{possible_values.inspect} for #{variable_name}"
       record.send("#{variable_name}=", possible_values.shift)
       unless record.class.validators[variable_name.to_sym].all? { |v| v.call(record) }
         if possible_values.empty?
