@@ -103,6 +103,11 @@ end
         primary.instrument_version.should == instrument.instrument_version
       end
 
+      it 'uses the instrument type from the associated instrument' do
+        instrument.instrument_type.should_not be_nil # test setup
+        primary.instrument_type.should == instrument.instrument_type_code.to_s
+      end
+
       it 'uses the public ID for the associated participant' do
         primary.p_id.should == participant.public_id
       end
