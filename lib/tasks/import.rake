@@ -8,6 +8,7 @@ namespace :import do
 
     t.config = NcsNavigator::Warehouse::Configuration.
       from_file(source_warehouse_config_file)
+    t.config.set_up_logs
 
     NcsNavigator::Warehouse::DatabaseInitializer.new(t.config).set_up_repository
   end
@@ -17,7 +18,7 @@ namespace :import do
   end
 
   desc 'Import all data'
-  task :all => [:operational, :instruments, :unused_instruments]
+  task :all => [:operational, :unused_operational, :instruments, :unused_instruments]
 
   desc 'Import operational data'
   task :operational => [:warehouse_setup, :environment] do
@@ -56,6 +57,14 @@ namespace :import do
     require 'ncs_navigator/core'
 
     pass = NcsNavigator::Core::Warehouse::UnusedInstrumentPassthrough.new(import_wh_config)
+    pass.import
+  end
+
+  desc 'Pass unused operational data through to an XML file'
+  task :unused_operational => [:warehouse_setup, :environment] do
+    require 'ncs_navigator/core'
+
+    pass = NcsNavigator::Core::Warehouse::UnusedOperationalPassthrough.new(import_wh_config)
     pass.import
   end
 end
