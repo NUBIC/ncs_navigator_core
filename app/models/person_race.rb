@@ -23,5 +23,10 @@ class PersonRace < ActiveRecord::Base
   ncs_coded_attribute :psu,  'PSU_CL1'
   ncs_coded_attribute :race, 'RACE_CL1'
 
-  validates_presence_of :person
+  # Validating :person_id instead of :person prevents a reload of the
+  # associated object when creating an instance alone. This provides a
+  # huge speedup in the importer; if validating the associated
+  # instance is necessary, we should provide a scoped validation so it
+  # can be excluded in the importer context.
+  validates_presence_of :person_id
 end
