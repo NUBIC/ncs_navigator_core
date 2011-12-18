@@ -31,8 +31,13 @@ class ParticipantPersonLink < ActiveRecord::Base
   ncs_coded_attribute :relationship, 'PERSON_PARTCPNT_RELTNSHP_CL1'
   ncs_coded_attribute :is_active,    'CONFIRM_TYPE_CL2'
 
-  validates_presence_of :person
-  validates_presence_of :participant
+  # Validating :person_id instead of :person prevents a reload of the
+  # associated object when creating an instance alone. This provides a
+  # huge speedup in the importer; if validating the associated
+  # instance is necessary, we should provide a scoped validation so it
+  # can be excluded in the importer context.
+  validates_presence_of :person_id
+  validates_presence_of :participant_id
 
   def initialize(*args)
     super

@@ -27,7 +27,7 @@ describe PersonRace do
   it { should belong_to(:psu) }
   it { should belong_to(:race) }
 
-  it { should validate_presence_of(:person) }
+  it { should validate_presence_of(:person_id) }
 
   context "as mdes record" do
 
