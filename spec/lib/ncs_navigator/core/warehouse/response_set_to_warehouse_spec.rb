@@ -234,9 +234,14 @@ end
         secondary.collect(&:educ).sort.should == %w(2 6)
       end
 
-      it 'associates the subrecords with the parent' do
+      it 'associates the subrecords with the parent ID' do
         primary.key.should_not be_nil
         secondary.collect(&:father_id).uniq.should == [primary.key.first]
+      end
+
+      it 'associates the subrecords with the parent instance' do
+        primary.key.should_not be_nil
+        secondary.collect(&:father).uniq.should == [primary]
       end
 
       it 'gives each subrecord a unique ID' do
