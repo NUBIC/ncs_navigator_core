@@ -83,8 +83,8 @@ namespace :deploy do
 
   desc 'Set up shared paths used by the importer'
   task :setup_import_directories do
-    shared_import  = File.join(shared_path,  'import_passthrough')
-    release_import = File.join(current_path, 'import_passthrough')
+    shared_import  = File.join(shared_path,  'importer_passthrough')
+    release_import = File.join(current_path, 'importer_passthrough')
     cmds = [
       "mkdir -p #{shared_import}",
       "chmod g+w #{shared_import}",
