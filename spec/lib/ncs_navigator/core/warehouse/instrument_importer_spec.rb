@@ -84,6 +84,43 @@ module NcsNavigator::Core::Warehouse
       DSL
     }
 
+    let!(:pre_preg_survey) {
+      load_survey_string(<<-DSL)
+        survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
+          section 'CAPI' do
+            q_decorate "In the past 12 months, were any smaller projects done in your home, such as painting, wallpapering,
+            refinishing floors, or installing new carpet?", :pick=>:one,
+            :data_export_identifier=>"PRE_PREG.DECORATE"
+            a_1 "Yes"
+            a_2 "No"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_decorate_room "In which rooms were these smaller projects done?",
+            :help_text => "Probe for any other responses: Any others? Select all that apply",
+            :pick=>:any,
+            :data_export_identifier=>"PRE_PREG_PDECORATE_ROOM.DECORATE_ROOM"
+            a_1 "Kitchen"
+            a_2 "Living room"
+            a_3 "Hall/landing"
+            a_4 "Participant's bedroom"
+            a_5 "Other bedroom"
+            a_6 "Bathroom/toilet"
+            a_7 "Basement"
+            a_neg_5 "Other"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_enter_decorate_room_oth "Other rooms where smaller projects were done",
+            :pick=>:one, :data_export_identifier=>"PRE_PREG_PDECORATE_ROOM.DECORATE_ROOM_OTH"
+            a_1 "Specify", :string
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+          end
+        end
+      DSL
+    }
+
     let(:importer) { InstrumentImporter.new(wh_config) }
 
     let(:core_event) { Factory(:event) }
@@ -373,6 +410,49 @@ module NcsNavigator::Core::Warehouse
 
         it 'has one ResponseSet per primary record' do
           ResponseSet.count.should == 1
+        end
+      end
+
+      describe 'for a multivalued association with an other' do
+        let(:multi_question) { Question.find_by_reference_identifier('decorate_room') }
+        let(:other_question) { Question.find_by_reference_identifier('enter_decorate_room_oth') }
+
+        let(:response_set) { importer.import; ResponseSet.first }
+        let(:multi_responses) { response_set.responses.where(:question_id => multi_question.id) }
+        let(:other_responses) { response_set.responses.where(:question_id => other_question.id) }
+
+        before do
+          primary = create_mdes_record(MdesModule::PrePreg, 'PP1', :decorate => '1')
+          create_mdes_record(MdesModule::PrePregPdecorateRoom, 'PP1-2', :decorate_room => '2',
+            :pp => primary)
+          create_mdes_record(MdesModule::PrePregPdecorateRoom, 'PP1-oth', :decorate_room => '-5',
+            :decorate_room_oth => 'Garage', :pp => primary)
+          create_mdes_record(MdesModule::PrePregPdecorateRoom, 'PP1-4', :decorate_room => '4',
+            :pp => primary)
+        end
+
+        it 'has one Response to the coded question for each record' do
+          multi_responses.collect { |r| r.answer.reference_identifier }.sort.should == %w(2 4 neg_5)
+        end
+
+        it 'has only one Response to the other question' do
+          other_responses.collect(&:string_value).should == %w(Garage)
+        end
+
+        describe 'when the other value is filled in on the wrong records' do
+          before do
+            MdesModule::PrePregPdecorateRoom.
+              find('PP1-2').tap { |rec| rec.decorate_room_oth = 'Helipad' }.save
+          end
+
+          it 'still has one Response to the coded question for each record' do
+            multi_responses.
+              collect { |r| r.answer.reference_identifier }.sort.should == %w(2 4 neg_5)
+          end
+
+          it 'still has only one Response to the other question' do
+            other_responses.collect(&:string_value).should == %w(Garage)
+          end
         end
       end
     end

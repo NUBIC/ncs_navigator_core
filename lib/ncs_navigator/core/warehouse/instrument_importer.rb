@@ -75,7 +75,7 @@ module NcsNavigator::Core::Warehouse
       # variants (i.e., fixed values)
       variables = survey.mdes_table_map.
         detect { |ti, tc| tc[:table] == record.class.mdes_table_name }.last[:variables]
-      variables.select { |var_name, var_mapping| var_mapping[:questions] }.each do |var_name, var_m|
+      variables.select { |var_name, var_m| var_m[:questions] }.collect { |var_name, var_m|
         questions = var_m[:questions]
 
         if questions.size > 1
@@ -86,9 +86,11 @@ module NcsNavigator::Core::Warehouse
               survey.title
             ])
         end
-        questions.each do |q|
-          create_or_update_response(response_set, q, record, var_name)
-        end
+        questions.collect { |q| { :question => q, :value => record.send(var_name) } }
+      }.flatten.select { |e| e[:value] }.tap { |data|
+        exclude_extra_other_values(survey, data)
+      }.each do |entry|
+        create_or_update_response(response_set, entry[:question], record, entry[:value])
       end
 
       # find child records
@@ -101,10 +103,7 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def create_or_update_response(response_set, question, record, variable)
-      value = record.send(variable)
-      return unless value
-
+    def create_or_update_response(response_set, question, record, value)
       response = response_set.responses.find { |r|
         r.question_id == question.id &&
           r.source_mdes_table == record.class.mdes_table_name &&
@@ -167,6 +166,25 @@ module NcsNavigator::Core::Warehouse
         ActiveRecord::Base.connection.
         select_all('SELECT id, instrument_id AS public_id FROM instruments').
         inject({}) { |h, rec| h[rec['public_id']] = rec['id']; h }
+    end
+
+    ##
+    # Takes a list of maps of the structure
+    # { :question => q, :value => v } and looks for "other"
+    # questions. If an "other" question is present, it removes it
+    # unless the corresponding coded question is present with the
+    # correct value ('-5').
+    def exclude_extra_other_values(survey, data)
+      data.reject! { |entry|
+        pair = survey.mdes_other_pairs.detect { |pair| pair[:other] == entry[:question] }
+        if pair
+          data.
+            select { |entry| entry[:question] == pair[:coded] }.
+            select { |entry| entry[:value] == '-5' }.empty?
+        else
+          false
+        end
+      }
     end
 
     # @private
