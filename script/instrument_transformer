@@ -2,6 +2,12 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/data_mapper'
 require 'json'
 
+config_file = ARGV[0]
+unless config_file && File.exist?(config_file)
+  puts "Cannot read warehouse configuration file #{config_file.inspect}"
+  exit(4)
+end
+
 config = NcsNavigator::Warehouse::Configuration.from_file(ARGV[0])
 config.shell.say "Initializing Warehouse API..."
 ts = NcsNavigator::Warehouse::TransformStatus.new
