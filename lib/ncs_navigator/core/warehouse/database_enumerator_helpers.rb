@@ -25,7 +25,9 @@ module NcsNavigator::Core::Warehouse
                 end
 
           other_table = pub[:table].to_s
-          join_column = pub[:join_column] || pub[:public_ref] || other_table.singularize + '_id'
+          # don't use String#singularize because AS/core_ext is not
+          # loaded when this is executed.
+          join_column = pub[:join_column] || pub[:public_ref] || other_table.sub(/s$/,'') + '_id'
           public_id_column = pub[:public_id] || join_column
           public_id_ref = pub[:public_ref] || public_id_column
           table_alias = "pub_#{i}"

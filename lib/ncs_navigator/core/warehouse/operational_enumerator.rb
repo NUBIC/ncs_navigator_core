@@ -58,7 +58,7 @@ module NcsNavigator::Core::Warehouse
 
     produce_one_for_one(:household_person_links, LinkPersonHousehold,
       :public_ids => [
-        :people,
+        { :table => :people, :join_column => :person_id },
         { :table => :household_units, :public_id => :hh_id }
       ]
     )
@@ -77,7 +77,11 @@ module NcsNavigator::Core::Warehouse
 #      )
 #    end
 
-    produce_one_for_one(:person_races, PersonRace, :public_ids => %w(people))
+    produce_one_for_one(:person_races, PersonRace,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id }
+      ]
+    )
 
     produce_one_for_one(:participants, Participant,
       :column_map => {
@@ -87,7 +91,10 @@ module NcsNavigator::Core::Warehouse
     )
 
     produce_one_for_one(:participant_person_links, LinkPersonParticipant,
-      :public_ids => %w(people participants),
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        :participants
+      ],
       :column_map => {
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
@@ -184,7 +191,7 @@ module NcsNavigator::Core::Warehouse
 
     produce_one_for_one(:contact_links, LinkContact,
       :public_ids => [
-        :people,
+        { :table => :people, :join_column => :person_id },
         :events,
         :contacts,
         :instruments
@@ -193,7 +200,7 @@ module NcsNavigator::Core::Warehouse
 
     produce_one_for_one(:addresses, Address,
       :public_ids => [
-        :people,
+        { :table => :people, :join_column => :person_id },
         { :table => :dwelling_units, :public_id => :du_id }
       ],
       :column_map => {
@@ -204,12 +211,16 @@ module NcsNavigator::Core::Warehouse
     )
 
     produce_one_for_one(:emails, Email,
-      :public_ids => %w(people),
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+      ],
       :ignored_columns => %w(email_start_date_date email_end_date_date)
     )
 
     produce_one_for_one(:telephones, Telephone,
-      :public_ids => %w(people),
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+      ],
       :ignored_columns => %w(phone_start_date_date phone_end_date_date)
     )
   end
