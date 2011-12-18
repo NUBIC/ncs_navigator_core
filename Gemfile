@@ -66,7 +66,7 @@ group :development, :test, :ci do
 
   gem 'newrelic_rpm'
 
-  gem 'ci_reporter', :git => 'git://github.com/nicksieger/ci_reporter.git'
+  gem 'ci_reporter'
 end
 
 group :test, :ci do
