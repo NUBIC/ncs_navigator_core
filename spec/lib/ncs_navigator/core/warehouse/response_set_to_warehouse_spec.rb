@@ -208,10 +208,6 @@ end
       let(:secondary) { records.select { |r| r.class.mdes_table_name == 'father_pv1_educ' } }
 
       before do
-        create_response_for(primary_question) { |r|
-          r.answer = primary_question.answers.find_by_response_class('string')
-          r.string_value = '1967-04-07'
-        }
         create_response_for(question) { |r|
           r.answer = question.answers.find_by_text("High school diploma or GED") or fail
         }
@@ -219,6 +215,15 @@ end
           r.answer = question.answers.
             find_by_text("Post graduate degree (e.g., Masters or Doctoral)") or fail
         }
+        create_response_for(primary_question) { |r|
+          r.answer = primary_question.answers.find_by_response_class('string')
+          r.string_value = '1967-04-07'
+        }
+      end
+
+      it 'yields the primary record first' do
+        records.collect { |r| r.class.mdes_table_name }.
+          should == %w(father_pv1 father_pv1_educ father_pv1_educ)
       end
 
       it 'produces one record per answered question' do

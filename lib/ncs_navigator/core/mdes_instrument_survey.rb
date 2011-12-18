@@ -73,6 +73,7 @@ module NcsNavigator::Core
       map[table_identifier].tap do |table|
         table_name, fixed = parse_mdes_table_identifier(table_identifier)
         table[:table] = table_name
+        table[:primary] = NcsNavigatorCore.mdes[table_name].primary_instrument_table?
         table[:variables] ||= {}
 
         fixed.each do |fixed_var, fixed_val|

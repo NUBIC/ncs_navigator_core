@@ -42,7 +42,9 @@ module NcsNavigator::Core::Warehouse
         end
       }.flatten
 
-      records = responses_by_table_ident.collect do |ti, response_lists|
+      records = responses_by_table_ident.sort { |(tiA, rlA), (tiB, rlB)|
+        table_map[tiA][:primary] == table_map[tiB][:primary] ? -1 : 1
+      }.collect do |ti, response_lists|
         table = table_map[ti][:table]
         fixed_map = table_map[ti][:variables].inject({}) { |h, (var_name, var_mapping)|
           h[var_name] = var_mapping[:fixed_value] if var_mapping[:fixed_value]

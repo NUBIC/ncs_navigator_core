@@ -54,6 +54,16 @@ INSTR
           map['spec_blood_tube[tube_type=1]'][:variables]['tube_type'][:fixed_value].should == '1'
         end
       end
+
+      describe 'with primary and secondary tables' do
+        it 'is marked primary if it is primary' do
+          map['pre_preg'][:primary].should be_true
+        end
+
+        it 'is not marked primary if it is not primary' do
+          map['spec_blood_tube[tube_type=1]'][:primary].should be_false
+        end
+      end
     end
 
     describe '#mdes_other_pairs' do
