@@ -43,7 +43,13 @@ module NcsNavigator::Core::Warehouse
       }.flatten
 
       records = responses_by_table_ident.sort { |(tiA, rlA), (tiB, rlB)|
-        table_map[tiA][:primary] == table_map[tiB][:primary] ? -1 : 1
+        a = table_map[tiA][:primary]
+        b = table_map[tiB][:primary]
+        if a
+          b ?  0 : -1
+        else
+          b ?  1 :  0
+        end
       }.collect do |ti, response_lists|
         table = table_map[ti][:table]
         fixed_map = table_map[ti][:variables].inject({}) { |h, (var_name, var_mapping)|
