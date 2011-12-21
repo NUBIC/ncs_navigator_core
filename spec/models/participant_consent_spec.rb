@@ -132,4 +132,23 @@ describe ParticipantConsent do
 
   end
 
+  it "knows all of the consent types" do
+    consent_types = ParticipantConsent.consent_types
+    consent_types.size.should == 8
+    consent_types[0].should == ["1", "General consent"]
+    consent_types[6].should == ["7", "Low Intensity Consent"]
+  end
+  
+  it "knows all of the li consent types" do
+    lict = ParticipantConsent.low_intensity_consent_types
+    lict.size.should == 1
+    lict[0].should == ["7", "Low Intensity Consent"]
+  end
+  
+  it "knows all of the hi consent types" do
+    hict = ParticipantConsent.high_intensity_consent_types
+    hict.size.should == 6
+    hict[0].should == ["1", "General consent"]
+  end
+  
 end

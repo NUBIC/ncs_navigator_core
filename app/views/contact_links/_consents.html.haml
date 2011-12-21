@@ -1,0 +1,8 @@
+- if @person.participant.low_intensity?
+  - ParticipantConsent.low_intensity_consent_types.each do |ct|
+    .consent_link
+      = determine_participant_consent_path(ct[0], ct[1], @person.participant, @contact_link)
+- else
+  - ParticipantConsent.high_intensity_consent_types.each do |ct|
+    .consent_link
+      = determine_participant_consent_path(ct[0], ct[1], @person.participant, @contact_link)

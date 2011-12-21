@@ -80,10 +80,10 @@ FactoryGirl.define do
     
     ## High Intensity States
     
-    trait :consented_high_intensity do
+    trait :converted_high_intensity do
       high_intensity        true
       low_intensity_state   "moved_to_high_intensity_arm"
-      high_intensity_state  "consented_high_intensity"
+      high_intensity_state  "converted_high_intensity"
     end
     
     trait :pre_pregnancy do

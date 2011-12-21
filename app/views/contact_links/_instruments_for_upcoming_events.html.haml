@@ -20,18 +20,22 @@
     - instrument = InstrumentEventMap.instrument_for_activity(activity)
     - if instrument && survey = Survey.most_recent_for_title(instrument)
       - if @contact_link.contact.instruments.collect {|i| i.survey.title}.include?(survey.title)
-        %span.known_instrument
+        .known_instrument
           = "#{activity} - #{instrument}"
       - else
-        = link_to "#{activity} - #{instrument}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
+        .instrument
+          = link_to "#{activity} - #{instrument}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
     - elsif activity.include?("Consent")
       - no_consent = false
-      = determine_participant_consent_path(activity, @person.participant, @contact_link)
+      = render "consents"
     - else
-      = activity
-    %br
+      .instrument
+        = activity
 
 - if no_consent 
-  - if !@person.participant.consented? && !(@contact_link.event.to_s =~ /Pregnancy Screener/)
-    %p
-      = determine_participant_consent_path("Consent", @person.participant, @contact_link)
+  - if !(@contact_link.event.to_s =~ /Pregnancy Screener/)
+    %h3
+      Unscheduled Consents
+    .instructional_note
+      Use the links below to obtain consent for a participant that is not a part of the above scheduled activities.
+    = render "consents"

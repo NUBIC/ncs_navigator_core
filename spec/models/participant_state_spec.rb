@@ -136,26 +136,29 @@ describe Participant do
     let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
 
     it "moves the participant into the high intensity arm" do
+      Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
       participant.should be_in_pregnancy_probability_group
       participant.update_state_after_survey(response_set, psc)
       participant.should be_moved_to_high_intensity_arm
       participant.requires_consent.should be_true
     end
 
-    describe "a non-pregnant consented participant" do
-      it "moves to the high intensity arm" do
+    describe "a non-pregnant participant" do
+      it "requires non_pregnant informed consent" do
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
         participant.should be_in_pregnancy_probability_group
         participant.update_state_after_survey(response_set, psc)
-        participant.should be_in_high_intensity_arm
+        participant.should be_pre_pregnancy
         participant.requires_consent.should be_true
       end
     end
 
-    describe "a pregnant consented participant" do
-      it "moves to the high intensity arm" do
+    describe "a pregnant participant" do
+      it "requires pregnant informed consent" do
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status1)
         participant.should be_in_pregnancy_probability_group
         participant.update_state_after_survey(response_set, psc)
-        participant.should be_in_high_intensity_arm
+        participant.should be_pregnancy_one
         participant.requires_consent.should be_true
       end
     end
@@ -163,12 +166,12 @@ describe Participant do
 
   context "after consenting to the high intensity arm" do
 
-    let(:participant) { Factory(:participant, :low_intensity_state => 'moved_to_high_intensity_arm', :high_intensity_state => 'consented_high_intensity') }
+    let(:participant) { Factory(:participant, :low_intensity_state => 'moved_to_high_intensity_arm', :high_intensity_state => 'converted_high_intensity') }
 
     describe "a ppg 1 (pregnant) participant" do
       it "is the in the pregnancy_one state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1)
-        participant.should be_consented_high_intensity
+        participant.should be_converted_high_intensity
         participant.process_high_intensity_consent!
         participant.should be_pregnancy_one
       end
@@ -177,7 +180,7 @@ describe Participant do
     describe "a ppg 2 (trying) participant" do
       it "is the in the pre_pregnancy state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
-        participant.should be_consented_high_intensity
+        participant.should be_converted_high_intensity
         participant.process_high_intensity_consent!
         participant.should be_pre_pregnancy
       end
@@ -186,7 +189,7 @@ describe Participant do
     describe "a non ppg 1 or 2 participant" do
       it "is the in the following_high_intensity state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status4)
-        participant.should be_consented_high_intensity
+        participant.should be_converted_high_intensity
         participant.process_high_intensity_consent!
         participant.should be_following_high_intensity
       end
