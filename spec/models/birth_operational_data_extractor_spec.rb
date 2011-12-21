@@ -25,7 +25,8 @@ describe BirthOperationalDataExtractor do
       @female = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
 
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
+      @participant.person = @person
       Factory(:ppg_detail, :participant => @participant)
 
       @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
@@ -91,7 +92,8 @@ describe BirthOperationalDataExtractor do
 
     before(:each) do
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
+      @participant.person = @person
       @survey = create_birth_survey_with_tracing_operational_data
     end
 

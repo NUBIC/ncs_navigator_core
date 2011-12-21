@@ -286,7 +286,7 @@ class Participant < ActiveRecord::Base
     if ppl
       ppl.person = person
     else
-      participant_person_links.build(:relationship_code => 1, :person => person, :participant => self, :psu => self.psu)
+      participant_person_links.build(:relationship_code => 1, :person_id => person.id, :participant_id => self.id, :psu => self.psu)
     end
   end
 

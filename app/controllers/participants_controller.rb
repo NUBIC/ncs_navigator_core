@@ -144,10 +144,12 @@ class ParticipantsController < ApplicationController
   # POST /participants.json
   def create
     @participant = Participant.new(params[:participant])
-    @participant.person = Person.find(params[:person_id])
-
+    person = Person.find(params[:person_id])
+    
     respond_to do |format|
       if @participant.save
+        @participant.person = person
+        @participant.save!
         format.html { redirect_to(participants_path, :notice => 'Participant was successfully created.') }
         format.json { render :json => @participant }
       else

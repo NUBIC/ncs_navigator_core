@@ -29,7 +29,9 @@ describe ContactsController do
         @ppg12_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
 
         @person      = Factory(:person)
-        @participant = Factory(:participant, :person => @person)
+        @participant = Factory(:participant)
+        @participant.person = @person
+        @participant.save!
         
         @person.upcoming_events.should == ["LO-Intensity: Pregnancy Screener"]
         @person.should be_participant
@@ -111,7 +113,9 @@ describe ContactsController do
         Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
         @ppg12_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
         @person      = Factory(:person)
-        @participant = Factory(:low_intensity_ppg2_participant, :person => @person)
+        @participant = Factory(:low_intensity_ppg2_participant)
+        @participant.person = @person
+        @participant.save!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
         Contact.stub(:new).and_return(mock_contact)
 

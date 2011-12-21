@@ -149,7 +149,8 @@ class PregnancyVisitOperationalDataExtractor
     def extract_data(response_set)
       person = response_set.person
       if person.participant.blank?
-        participant = Participant.create(:person => person)
+        participant = Participant.create
+        participant.person = person
       else
         participant = person.participant
       end
@@ -255,6 +256,8 @@ class PregnancyVisitOperationalDataExtractor
         father_address.save! unless father_address.to_s.blank?
         father_phone.save! unless father_phone.phone_nbr.blank?
         father.save!
+        father_relationship.person_id = father.id
+        father_relationship.participant_id = participant.id
         father_relationship.save!
       end
 
@@ -262,6 +265,8 @@ class PregnancyVisitOperationalDataExtractor
         contact1address.save! unless contact1address.to_s.blank?
         contact1phone.save! unless contact1phone.phone_nbr.blank?
         contact1.save!
+        contact1relationship.person_id = contact1.id
+        contact1relationship.participant_id = participant.id
         contact1relationship.save!
       end
 
@@ -269,6 +274,8 @@ class PregnancyVisitOperationalDataExtractor
         contact2address.save! unless contact2address.to_s.blank?
         contact2phone.save! unless contact2phone.phone_nbr.blank?
         contact2.save!
+        contact2relationship.person_id = contact2.id
+        contact2relationship.participant_id = participant.id
         contact2relationship.save!
       end
 

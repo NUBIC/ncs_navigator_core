@@ -14,8 +14,8 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
 
     before(:each) do
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
-      @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person)
+      @participant = Factory(:participant)
+      @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person, :relationship_code => 1)
       Factory(:ppg_detail, :participant => @participant)
 
       @ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1", :local_code => 1)

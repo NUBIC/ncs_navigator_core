@@ -85,13 +85,13 @@ class BirthOperationalDataExtractor
     def extract_data(response_set)
       person = response_set.person
       if person.participant.blank?
-        participant = Participant.create(:person => person)
+        participant = Participant.create
+        participant.person = person
       else
         participant = person.participant
       end
 
       child = Person.new
-      child_relationship  = ParticipantPersonLink.new(:person => child, :participant => participant, :relationship_code => 8) # 8 Child
 
       mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type)
       home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu)
@@ -136,7 +136,7 @@ class BirthOperationalDataExtractor
 
       if !child.first_name.blank? && !child.last_name.blank?
         child.save!
-        child_relationship.save!
+        ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
       end
 
       email.save! unless email.email.blank?
