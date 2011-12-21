@@ -23,7 +23,7 @@ describe PregnancyVisitOperationalDataExtractor do
     age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
 
     person = Factory(:person)
-    participant = Factory(:participant, :person => person)
+    participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     survey = create_pregnancy_visit_1_survey_with_person_operational_data
@@ -67,7 +67,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
     before(:each) do
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
       @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person)
       Factory(:ppg_detail, :participant => @participant)
 
@@ -160,7 +160,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.participant_person_links.size.should == 3
+      participant.participant_person_links.size.should == 2
       participant.partner.should_not be_nil
       father = participant.partner
       father.first_name.should == "Lonnie"
@@ -220,7 +220,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.participant_person_links.size.should == 3
+      participant.participant_person_links.size.should == 2
       participant.friends.size.should == 1
       friend = participant.friends.first
       friend.first_name.should == "Donna"
@@ -281,7 +281,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.participant_person_links.size.should == 3
+      participant.participant_person_links.size.should == 2
       participant.neighbors.size.should == 1
       neighbor = participant.neighbors.first
       neighbor.first_name.should == "Carole"
@@ -317,7 +317,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.participant_person_links.size.should == 3
+      participant.participant_person_links.size.should == 2
       participant.other_relatives.size.should == 1
       aunt = participant.other_relatives.first
       aunt.first_name.should == "Ivy"
@@ -348,7 +348,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.participant_person_links.size.should == 3
+      participant.participant_person_links.size.should == 2
       participant.grandparents.size.should == 1
       mimi = participant.grandparents.first
       mimi.first_name.should == "Billie"

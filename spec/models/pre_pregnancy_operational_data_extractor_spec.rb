@@ -23,8 +23,8 @@ describe PrePregnancyOperationalDataExtractor do
     age_eligible2 = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL4", :display_text => "Age-Eligible", :local_code => 3)
 
     person = Factory(:person)
-    participant = Factory(:participant, :person => person)
-    ppl = Factory(:participant_person_link, :participant => participant, :person => person)
+    participant = Factory(:participant)
+    ppl = Factory(:participant_person_link, :participant_id => participant, :person_id => person, :relationship_code => 1)
 
     survey = create_pre_pregnancy_survey_with_person_operational_data
     survey_section = survey.sections.first
@@ -141,7 +141,9 @@ describe PrePregnancyOperationalDataExtractor do
 
 
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
       Factory(:ppg_detail, :participant => @participant)
 
       # CONTACT_RELATIONSHIP_CL2

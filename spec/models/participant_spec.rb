@@ -78,7 +78,7 @@ describe Participant do
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       create_missing_in_error_ncs_codes(Participant)
 
-      pr = Participant.new
+      pr = Participant.create
       pr.psu = Factory(:ncs_code)
       pr.person = Factory(:person)
       pr.save!
@@ -153,7 +153,12 @@ describe Participant do
 
   context "delegating to the associated person" do
     let(:person) { Factory(:person, :person_dob_date => 10.years.ago) }
-    let(:participant) { Factory(:participant, :person => person) }
+    let(:participant) { Factory(:participant) }
+
+    before :each do
+      participant.person = person
+      participant.save!
+    end
 
     it "returns age" do
       participant.age.should == person.age
@@ -237,25 +242,29 @@ describe Participant do
 
       3.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG1")
-        part = Factory(:participant, :person => pers)
+        part = Factory(:participant)
+        part.person = pers
         Factory(:ppg_status_history, :participant => part, :ppg_status => status1)
       end
 
       5.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG2")
-        part = Factory(:participant, :person => pers)
+        part = Factory(:participant)
+        part.person = pers
         Factory(:ppg_status_history, :participant => part, :ppg_status => status2)
       end
 
       1.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG3")
-        part = Factory(:participant, :person => pers)
+        part = Factory(:participant)
+        part.person = pers
         Factory(:ppg_status_history, :participant => part, :ppg_status => status3)
       end
 
       6.times do |x|
         pers = Factory(:person, :first_name => "Jane#{x}", :last_name => "PPG4")
-        part = Factory(:participant, :person => pers)
+        part = Factory(:participant)
+        part.person = pers
         Factory(:ppg_status_history, :participant => part, :ppg_status => status4)
       end
       Participant.in_ppg_group(1).size.should == 3
@@ -272,7 +281,9 @@ describe Participant do
 
       before(:each) do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
-        @participant = Factory(:participant, :high_intensity => true, :person => Factory(:person))
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => true)
+        @participant.person = person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
@@ -321,7 +332,9 @@ describe Participant do
 
       it "knows the upcoming applicable events for a new participant" do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-        @participant = Factory(:participant, :high_intensity => false, :person => Factory(:person))
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => false)
+        @participant.person = person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
@@ -335,7 +348,9 @@ describe Participant do
 
       it "knows the upcoming applicable events for a consented participant" do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "consented_high_intensity", :person => Factory(:person))
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "consented_high_intensity")
+        @participant.person = person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
@@ -352,8 +367,13 @@ describe Participant do
     context "assigned to a PPG" do
 
       context "in high intensity protocol" do
+        let(:person) { Factory(:person) }
+        let(:participant) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true) }
 
-        let(:participant) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true, :person => Factory(:person)) }
+        before :each do
+          participant.person = person
+          participant.save!
+        end
 
         describe "a participant who is pregnant - PPG 1" do
 
@@ -599,7 +619,8 @@ describe Participant do
 
     it "is associated with an instrument" do
       person = Factory(:person)
-      participant = Factory(:participant, :person => person)
+      participant = Factory(:participant)
+      participant.person = person
       participant.instruments.should be_empty
 
       link = Factory(:contact_link, :person => person)
@@ -610,8 +631,9 @@ describe Participant do
 
     it "knows if it has taken an instrument for a particular survey" do
       person = Factory(:person)
-      participant = Factory(:participant, :person => person)
-
+      participant = Factory(:participant)
+      participant.person = person
+      
       survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
       ins_type = Factory(:ncs_code, :list_name => "INSTRUMENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 99)
       create_missing_in_error_ncs_codes(Instrument)
@@ -648,13 +670,16 @@ describe Participant do
 
     before(:each) do
       @ella  = Factory(:person, :first_name => "Ella", :last_name => "Fitzgerald")
-      @mom   = Factory(:participant, :person => @ella, :p_type => age_eligible)
+      @mom   = Factory(:participant, :p_type => age_eligible)
+      @mom.person = @ella
 
       @louis = Factory(:person, :first_name => "Louis", :last_name => "Armstrong")
-      @dad   = Factory(:participant, :person => @louis, :p_type => bio_father)
+      @dad   = Factory(:participant, :p_type => bio_father)
+      @dad.person = @louis
 
       @kiddo = Factory(:person, :first_name => "Kid", :last_name => "Ory")
-      @kid   = Factory(:participant, :person => @kiddo, :p_type => child)
+      @kid   = Factory(:participant, :p_type => child)
+      @kid.person = @kiddo
 
       # Factory(:participant_person_link, :person => @ella,  :participant => @mom, :relationship => part_self)
       Factory(:participant_person_link, :person => @louis, :participant => @mom, :relationship => partner)

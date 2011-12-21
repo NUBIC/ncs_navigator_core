@@ -22,7 +22,8 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     before(:each) do
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
+      @participant.person = @person
       @survey = create_pregnancy_screener_survey_with_person_operational_data
     end
 
@@ -484,7 +485,7 @@ describe PregnancyScreenerOperationalDataExtractor do
   it "sets the ppg detail ppg status to 1 if the person responds that they are pregnant" do
 
     person = Factory(:person)
-    participant = Factory(:participant, :person => person)
+    participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1", :local_code => 1)
@@ -522,7 +523,7 @@ describe PregnancyScreenerOperationalDataExtractor do
   it "sets the ppg detail ppg status to 2 if the person responds that they are trying to become pregnant" do
 
     person = Factory(:person)
-    participant = Factory(:participant, :person => person)
+    participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     ppg2 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2", :local_code => 2)
@@ -558,7 +559,7 @@ describe PregnancyScreenerOperationalDataExtractor do
   it "sets the ppg detail ppg status to 5 if the person responds that they are unable to become pregnant" do
 
     person = Factory(:person)
-    participant = Factory(:participant, :person => person)
+    participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     ppg5 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 5", :local_code => 5)
@@ -595,7 +596,9 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     before(:each) do
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
 
       @survey = create_pregnancy_screener_survey_to_determine_due_date
 

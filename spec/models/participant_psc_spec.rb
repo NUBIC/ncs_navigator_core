@@ -10,7 +10,8 @@ describe Participant do
 
     it "is scheduled for the LO-Intensity Pregnancy Screener if not registered with the Patient Study Calendar (PSC)" do
 
-      participant = Factory(:participant, :person => Factory(:person))
+      participant = Factory(:participant)
+      participant.person = Factory(:person)
       participant.should be_pending
       participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -22,9 +23,11 @@ describe Participant do
 
     context "a registered participant" do
 
-      let(:participant) { Factory(:participant, :person => Factory(:person)) }
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.register!
       end
 
@@ -40,7 +43,12 @@ describe Participant do
 
       context "PPG Group 1: Pregnant and Eligible" do
 
-        let(:participant) { Factory(:low_intensity_ppg1_participant, :person => Factory(:person)) }
+        let(:participant) { Factory(:low_intensity_ppg1_participant) }
+        let(:person) { Factory(:person) }
+
+        before(:each) do
+          participant.person = person
+        end
 
         it "should schedule the LO-Intensity Quex" do
           participant.ppg_status.local_code.should == 1
@@ -84,8 +92,13 @@ describe Participant do
 
       context "PPG Group 2: High Probability - Trying to Conceive" do
 
-        let(:participant) { Factory(:low_intensity_ppg2_participant, :person => Factory(:person)) }
+        let(:participant) { Factory(:low_intensity_ppg2_participant) }
+        let(:person) { Factory(:person) }
 
+        before(:each) do
+          participant.person = person
+        end
+        
         it "schedules the LO-Intensity PPG 1 and 2 event on that day" do
           participant.ppg_status.local_code.should == 2
           participant.should be_in_pregnancy_probability_group
@@ -126,8 +139,13 @@ describe Participant do
       end
 
       context "PPG Group 3: High Probability - Recent Pregnancy Loss" do
-        let(:participant) { Factory(:low_intensity_ppg3_participant, :person => Factory(:person)) }
+        let(:participant) { Factory(:low_intensity_ppg3_participant) }
+        let(:person) { Factory(:person) }
 
+        before(:each) do
+          participant.person = person
+        end
+        
         it "schedules the LO-Intensity PPG Follow Up event 6 months out" do
           participant.ppg_status.local_code.should == 3
           participant.should be_in_pregnancy_probability_group
@@ -149,8 +167,13 @@ describe Participant do
       end
 
       context "PPG Group 4: Other Probability - Not Pregnant and not Trying" do
-        let(:participant) { Factory(:low_intensity_ppg4_participant, :person => Factory(:person)) }
+        let(:participant) { Factory(:low_intensity_ppg4_participant) }
+        let(:person) { Factory(:person) }
 
+        before(:each) do
+          participant.person = person
+        end
+        
         it "schedules the LO-Intensity PPG Follow Up event 6 months out" do
           participant.ppg_status.local_code.should == 4
           participant.should be_in_pregnancy_probability_group
@@ -179,8 +202,13 @@ describe Participant do
 
     context "a registered ppg1 participant" do
 
-      let(:participant) { Factory(:high_intensity_ppg1_participant, :person => Factory(:person)) }
+      let(:participant) { Factory(:high_intensity_ppg1_participant) }
+      let(:person) { Factory(:person) }
 
+      before(:each) do
+        participant.person = person
+      end
+      
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -219,8 +247,13 @@ describe Participant do
 
     context "a registered ppg2 participant" do
 
-      let(:participant) { Factory(:high_intensity_ppg2_participant, :person => Factory(:person)) }
+      let(:participant) { Factory(:high_intensity_ppg2_participant) }
+      let(:person) { Factory(:person) }
 
+      before(:each) do
+        participant.person = person
+      end
+      
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -246,8 +279,13 @@ describe Participant do
 
     context "a registered ppg3 participant" do
 
-      let(:participant) { Factory(:high_intensity_ppg3_participant, :person => Factory(:person)) }
+      let(:participant) { Factory(:high_intensity_ppg3_participant) }
+      let(:person) { Factory(:person) }
 
+      before(:each) do
+        participant.person = person
+      end
+      
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -265,8 +303,13 @@ describe Participant do
 
     context "a registered ppg4 participant" do
 
-      let(:participant) { Factory(:high_intensity_ppg4_participant, :person => Factory(:person)) }
+      let(:participant) { Factory(:high_intensity_ppg4_participant) }
+      let(:person) { Factory(:person) }
 
+      before(:each) do
+        participant.person = person
+      end
+      
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -281,7 +324,6 @@ describe Participant do
       end
 
     end
-
 
   end
 

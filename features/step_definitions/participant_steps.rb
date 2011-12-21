@@ -1,9 +1,13 @@
 Given /^a participant exists with a person$/ do
-  Factory(:participant, :person => Factory(:person))
+  person = Factory(:person)
+  participant = Factory(:participant)
+  participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
 end
 
 Given /^a high intensity participant exists with a person$/ do
-  Factory(:participant, :person => Factory(:person), :high_intensity => true)
+  person = Factory(:person)
+  participant = Factory(:participant, :high_intensity => true)
+  participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
 end
 
 Given /^a registered pregnant participant on the ppg1 page with an instrument$/ do

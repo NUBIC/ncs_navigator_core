@@ -127,10 +127,12 @@ class PatientStudyCalendar
 
   def activities_for_segment(participant, segment)
     activities = []
-    if subject_schedules = schedules(participant)    
-      subject_schedules["days"].keys.each do |date|
-        subject_schedules["days"][date]["activities"].each do |activity|          
-          activities << activity["activity"]["name"] if activity["study_segment"].include?(segment.to_s)
+    if subject_schedules = schedules(participant)
+      if subject_schedules["days"]
+        subject_schedules["days"].keys.each do |date|
+          subject_schedules["days"][date]["activities"].each do |activity|          
+            activities << activity["activity"]["name"] if activity["study_segment"].include?(segment.to_s)
+          end
         end
       end
     end

@@ -6,11 +6,11 @@ Factory.define :ncs_code do |code|
   code.list_name        "PSU_CL1"
   code.list_description "Description"
   code.display_text     "Cook County, IL (Wave 1)"
-  code.local_code       "20000030"
+  code.local_code       20000030
 end
 
 Factory.define :person do |pers|
-  pers.psu                            { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
+  pers.psu                            { |a| a.association(:ncs_code, :list_name => "PSU_CL1", :local_code => 20000030) }
   pers.prefix                         { |a| a.association(:ncs_code, :list_name => "NAME_PREFIX_CL1", :display_text => "Mr.", :local_code => 1) }
   pers.first_name                     "Fred"
   pers.last_name                      "Rogers"

@@ -16,7 +16,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
     before(:each) do
       @person = Factory(:person)
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
       @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person)
       Factory(:ppg_detail, :participant => @participant)
 

@@ -70,7 +70,8 @@ describe PatientStudyCalendar do
     before(:each) do
       @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
       @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
-      @participant = Factory(:participant, :person => @person)
+      @participant = Factory(:participant)
+      @participant.person = @person
       @participant.register!
       ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
       Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
@@ -85,7 +86,8 @@ describe PatientStudyCalendar do
       
       it "knows when the participant IS registered with the study" do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
-        participant = Factory(:participant, :person => person)
+        participant = Factory(:participant)
+        participant.person = person
         VCR.use_cassette('psc/known_subject') do
           subject.is_registered?(participant).should be_true
         end
@@ -105,7 +107,8 @@ describe PatientStudyCalendar do
       VCR.use_cassette('psc/assignment_identfier') do
         
         person = Factory(:person, :first_name => "Angela", :last_name => "Davis", :sex => @female, :person_dob => '1940-01-01')
-        participant = Factory(:participant, :person => person, :p_id => "angela_davis_public_id")
+        participant = Factory(:participant, :p_id => "angela_davis_public_id")
+        participant.person = person
         participant.register!
         ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
         Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
@@ -123,7 +126,8 @@ describe PatientStudyCalendar do
     it "pulls a registered subjects schedules" do
       VCR.use_cassette('psc/schedules') do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
-        participant = Factory(:participant, :person => person)
+        participant = Factory(:participant)
+        participant.person = person
         subject_schedules = subject.schedules(participant)
         subject_schedules.class.should == Hash
         subject = subject_schedules["subject"]

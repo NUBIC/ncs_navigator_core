@@ -74,7 +74,7 @@ describe PeopleController do
           person["title"].should == @person1.title
           person["first_name"].should == @person1.first_name
           person["last_name"].should == @person1.last_name
-          person["psu_code"].should == @person1.psu_code.to_s
+          person["psu_code"].should == @person1.psu_code
         end
       end
 

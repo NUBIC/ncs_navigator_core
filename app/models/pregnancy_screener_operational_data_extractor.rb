@@ -92,7 +92,12 @@ class PregnancyScreenerOperationalDataExtractor
 
     def extract_data(response_set)
       person = response_set.person
-      person.participant = Participant.new if person.participant.blank?
+      if person.participant.blank?
+        participant = Participant.create 
+        participant.person = person
+      else
+        participant = person.participant
+      end
       address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.home_address_type)
       mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type)
 
@@ -113,7 +118,7 @@ class PregnancyScreenerOperationalDataExtractor
         end
 
         if PARTICIPANT_MAP.has_key?(data_export_identifier)
-          person.participant.send("#{PARTICIPANT_MAP[data_export_identifier]}=", value) unless person.participant.blank?
+          participant.send("#{PARTICIPANT_MAP[data_export_identifier]}=", value) unless participant.blank?
         end
 
         if ADDRESS_MAP.has_key?(data_export_identifier)
@@ -177,7 +182,8 @@ class PregnancyScreenerOperationalDataExtractor
       phone.save! unless phone.phone_nbr.blank?
       mail_address.save! unless mail_address.to_s.blank?
       address.save! unless address.to_s.blank?
-      person.participant.save! unless person.participant.blank?
+      
+      participant.save!
       person.save!
     end
   end

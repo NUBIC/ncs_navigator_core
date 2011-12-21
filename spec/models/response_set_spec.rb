@@ -30,12 +30,14 @@ describe ResponseSet do
     describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
 
       let(:person) { Factory(:person) }
-      let(:participant) { Factory(:participant, :person => person, :high_intensity => true, :high_intensity_state => "pregnancy_one") }
+      let(:participant) { Factory(:participant, :high_intensity => true, :high_intensity_state => "pregnancy_one") }
 
       let(:access_code) { "ins-que-pregvisit1-int-ehpbhi-p2-v2-0" }
       let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
 
       it "creates a response set for the instrument with prepopulated answers" do
+
+        participant.person = person
 
         pv1survey = Survey.find_by_access_code(access_code)
         if pv1survey.blank?

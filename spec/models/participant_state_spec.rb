@@ -19,13 +19,17 @@ describe Participant do
     let(:person) { Factory(:person) }
 
     it "starts in the pending state" do
-      participant = Factory(:participant, :person => person)
+      participant = Factory(:participant)
+      person = Factory(:person)
+      participant.person = person
       participant.should be_pending
     end
 
     it "registers with psc" do
       VCR.use_cassette('psc/assign_subject') do
-        participant = Factory(:participant, :person => person)
+        participant = Factory(:participant)
+        person = Factory(:person)
+        participant.person = person
         participant.should be_pending
         psc.should_receive(:is_registered?).and_return(false)
         psc.assign_subject(participant)
@@ -39,7 +43,8 @@ describe Participant do
 
     let(:participant) { Factory(:participant, :low_intensity_state => 'registered') }
     let(:survey) { Factory(:survey, :title => "_PregScreen_") }
-    let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
+    let(:person) { Factory(:person) }
+    let(:response_set) { Factory(:response_set, :survey => survey, :person => person) }
 
     it "should assign the participant into a pregnancy probability group" do
       participant.should be_registered
@@ -265,9 +270,11 @@ describe Participant do
       #   8 :                       [start] -> Informed Consent
       #   2 :                       [start] -> Low Intensity Data Collection
 
-      let(:participant) { Factory(:participant, :person => person) }
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_pending
       end
 
@@ -311,9 +318,11 @@ describe Participant do
       #  45 :            Pregnancy Screener -> Informed Consent
       #   2 :            Pregnancy Screener -> Low Intensity Data Collection
 
-      let(:participant) { Factory(:participant, :person => person, :low_intensity_state => "in_pregnancy_probability_group") }
+      let(:participant) { Factory(:participant, :low_intensity_state => "in_pregnancy_probability_group") }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_in_pregnancy_probability_group
       end
 
@@ -348,9 +357,11 @@ describe Participant do
     end
 
     context "with a participant in the consented_low_intensity state" do
-      let(:participant) { Factory(:participant, :person => person, :low_intensity_state => "consented_low_intensity") }
+      let(:participant) { Factory(:participant, :low_intensity_state => "consented_low_intensity") }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_consented_low_intensity
       end
 
@@ -448,9 +459,11 @@ describe Participant do
     end
 
     context "with a participant in the following_low_intensity state" do
-      let(:participant) { Factory(:participant, :person => person, :low_intensity_state => "following_low_intensity") }
+      let(:participant) { Factory(:participant, :low_intensity_state => "following_low_intensity") }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_following_low_intensity
       end
 
@@ -495,9 +508,11 @@ describe Participant do
     end
 
     context "with a participant in the pre_pregnancy state" do
-      let(:participant) { Factory(:participant, :person => person, :high_intensity_state => "pre_pregnancy", :high_intensity => true) }
+      let(:participant) { Factory(:participant, :high_intensity_state => "pre_pregnancy", :high_intensity => true) }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_pre_pregnancy
         participant.should be_high_intensity
       end
@@ -525,9 +540,11 @@ describe Participant do
     end
 
     context "with a participant in the pregnancy_one state" do
-      let(:participant) { Factory(:participant, :person => person, :high_intensity_state => "pregnancy_one", :high_intensity => true) }
+      let(:participant) { Factory(:participant, :high_intensity_state => "pregnancy_one", :high_intensity => true) }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_pregnancy_one
         participant.should be_high_intensity
       end
@@ -553,9 +570,11 @@ describe Participant do
     end
 
     context "with a participant in the pregnancy_two state" do
-      let(:participant) { Factory(:participant, :person => person, :high_intensity_state => "pregnancy_two", :high_intensity => true) }
+      let(:participant) { Factory(:participant, :high_intensity_state => "pregnancy_two", :high_intensity => true) }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_pregnancy_two
         participant.should be_high_intensity
       end
@@ -573,9 +592,11 @@ describe Participant do
     end
 
     context "with a participant recently added to the high intensity arm" do
-      let(:participant) { Factory(:participant, :person => person, :low_intensity_state => "moved_to_high_intensity_arm", :high_intensity => true) }
+      let(:participant) { Factory(:participant, :low_intensity_state => "moved_to_high_intensity_arm", :high_intensity => true) }
+      let(:person) { Factory(:person) }
 
       before(:each) do
+        participant.person = person
         participant.should be_moved_to_high_intensity_arm
         participant.should be_in_high_intensity_arm
         participant.should be_high_intensity
