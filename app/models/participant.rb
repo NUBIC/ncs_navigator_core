@@ -126,24 +126,24 @@ class Participant < ActiveRecord::Base
     store_audit_trail
     before_transition :log_state_change
 
-    event :high_intensity_consent do
-      transition :in_high_intensity_arm => :consented_high_intensity
+    event :high_intensity_conversion do
+      transition :in_high_intensity_arm => :converted_high_intensity
     end
 
     event :non_pregnant_informed_consent do
-      transition [:consented_high_intensity, :in_high_intensity_arm] => :pre_pregnancy
+      transition [:converted_high_intensity, :in_high_intensity_arm] => :pre_pregnancy
     end
 
     event :pregnant_informed_consent do
-      transition [:consented_high_intensity, :in_high_intensity_arm] => :pregnancy_one
+      transition [:converted_high_intensity, :in_high_intensity_arm] => :pregnancy_one
     end
 
     event :late_pregnant_informed_consent do
-      transition [:consented_high_intensity, :in_high_intensity_arm] => :pregnancy_two
+      transition [:converted_high_intensity, :in_high_intensity_arm] => :pregnancy_two
     end
 
     event :follow do
-      transition [:consented_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one] => :following_high_intensity
+      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one] => :following_high_intensity
     end
 
     event :impregnate do
@@ -228,6 +228,8 @@ class Participant < ActiveRecord::Base
 
     if /_LIHIConversion_/ =~ survey_title && can_enroll_in_high_intensity_arm?
       enroll_in_high_intensity_arm!
+      high_intensity_conversion!
+      process_high_intensity_consent!
     end
 
     if known_to_be_pregnant? && can_impregnate_low?
@@ -253,13 +255,13 @@ class Participant < ActiveRecord::Base
   # this method determines the next state for the participant based
   # on the ppg status
   def process_high_intensity_consent!
-    return unless consented_high_intensity?
+    return unless converted_high_intensity?
 
     case ppg_status.local_code
     when 1
       pregnant_informed_consent!
     when 2
-      non_pregnant_informed_consent
+      non_pregnant_informed_consent!
     else
       follow!
     end
@@ -427,7 +429,7 @@ class Participant < ActiveRecord::Base
   # Returns true if the participant is in PPG 1 or 2 (pregnant_or_trying) and
   # has not given consent (or has withdrawn)
   def requires_consent
-    low_intensity? ? (can_consent? && !consented?) : can_high_intensity_consent?
+    !consented?
   end
 
   ##
@@ -439,10 +441,15 @@ class Participant < ActiveRecord::Base
   def consented?(consent_type = nil)
     return false if participant_consents.empty?
     if consent_type
-      consents = participant_consents.where(:consent_type_code => consent_type.local_code).all
+      consent_type_codes = [consent_type.local_code]
     else
-      consents = participant_consents
+      if low_intensity?
+        consent_type_codes = ParticipantConsent.low_intensity_consent_types.collect { |ct| ct[0] } 
+      else
+        consent_type_codes = ParticipantConsent.high_intensity_consent_types.collect { |ct| ct[0] } 
+      end
     end
+    consents = participant_consents.where("consent_type_code in (?)", consent_type_codes).all
     consents.select { |c| c.consent_given.local_code == 1 }.size > 0 && !withdrawn?
   end
 
@@ -539,7 +546,7 @@ class Participant < ActiveRecord::Base
   def switch_arm(ensure_high_intensity = false)
     val = ensure_high_intensity ? true : !self.high_intensity
     self.high_intensity = val
-    self.save
+    self.save!
   end
 
   def father
@@ -726,7 +733,7 @@ class Participant < ActiveRecord::Base
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif in_high_intensity_arm?
         PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
-      elsif following_high_intensity? || consented_high_intensity?
+      elsif following_high_intensity? || converted_high_intensity?
         PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
       elsif pre_pregnancy?
         PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
@@ -778,7 +785,7 @@ class Participant < ActiveRecord::Base
     end
 
     def consented_to_high_intensity_arm?
-      high_intensity && ["consented_high_intensity", "pre_pregnancy", "pregnancy_one", "pregnancy_two"].include?(state)
+      high_intensity && ["converted_high_intensity", "pre_pregnancy", "pregnancy_one", "pregnancy_two"].include?(state)
     end
 
     def newly_moved_to_high_intensity_arm?
@@ -815,7 +822,7 @@ class Participant < ActiveRecord::Base
         # if consented to low intensity - assume that this was a consent to high since the
         # given event is in the high intensity arm
         enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-        high_intensity_consent! if can_high_intensity_consent?
+        high_intensity_conversion! if can_high_intensity_conversion?
       end
     end
 end

@@ -293,7 +293,7 @@ describe Participant do
       end
 
       it "goes into the High Intensity Follow Up loop every 6 months after consenting" do
-        participant.high_intensity_consent!
+        participant.high_intensity_conversion!
         participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 6.months.from_now.to_date
@@ -317,7 +317,7 @@ describe Participant do
       end
 
       it "goes into the High Intensity Follow Up loop every 3 months after consenting" do
-        participant.high_intensity_consent!
+        participant.high_intensity_conversion!
         participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 3.months.from_now.to_date

@@ -57,5 +57,18 @@ class ParticipantConsent < ActiveRecord::Base
   ncs_coded_attribute :reconsideration_script_use, 'CONFIRM_TYPE_CL21'
 
   validates_length_of :consent_version, :maximum => 9
+  
+  def self.consent_types
+    NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl1' }.
+      code_list.collect { |cl| [cl.value, cl.label.to_s.strip] }
+  end
+  
+  def self.low_intensity_consent_types
+    consent_types.select { |c| c[0] == "7" } # low intensity consent code
+  end
+  
+  def self.high_intensity_consent_types
+    consent_types.select { |c| c[0] != "7" && c[0] != "-4" } # high intensity consent codes
+  end
 
 end

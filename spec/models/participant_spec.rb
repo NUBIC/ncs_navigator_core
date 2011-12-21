@@ -292,7 +292,7 @@ describe Participant do
       it "knows the upcoming applicable events when a new record" do
         @participant.ppg_status.local_code.should == 3
 
-        @participant.high_intensity_consent!
+        @participant.high_intensity_conversion!
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 6.months.from_now.to_date
       end
@@ -304,7 +304,7 @@ describe Participant do
         contact = Factory(:contact)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 5.months.ago)
 
-        @participant.high_intensity_consent!
+        @participant.high_intensity_conversion!
 
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 1.month.from_now.to_date
@@ -321,7 +321,7 @@ describe Participant do
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 4.month.ago)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 1.month.ago)
 
-        @participant.high_intensity_consent!
+        @participant.high_intensity_conversion!
 
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 5.month.from_now.to_date
@@ -349,7 +349,7 @@ describe Participant do
       it "knows the upcoming applicable events for a consented participant" do
         status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
         person = Factory(:person)
-        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "consented_high_intensity")
+        @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "converted_high_intensity")
         @participant.person = person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
@@ -383,7 +383,7 @@ describe Participant do
 
             participant.upcoming_events.should == [PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION]
 
-            participant.high_intensity_consent!
+            participant.high_intensity_conversion!
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
 
             participant.pregnant_informed_consent!
@@ -412,7 +412,7 @@ describe Participant do
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.high_intensity_consent!
+            participant.high_intensity_conversion!
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
           end
         end
@@ -422,7 +422,7 @@ describe Participant do
           it "knows the upcoming applicable events" do
             status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
-            participant.high_intensity_consent!
+            participant.high_intensity_conversion!
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
           end
         end
@@ -589,7 +589,7 @@ describe Participant do
 
         it "will be followed after consent" do
           @participant.should_not be_followed
-          @participant.high_intensity_consent!
+          @participant.high_intensity_conversion!
           @participant.non_pregnant_informed_consent!
           @participant.should be_followed
         end
@@ -603,9 +603,9 @@ describe Participant do
         end
 
         it "consents to the high intensity protocol" do
-          @participant.high_intensity_consent!
-          @participant.should be_consented_high_intensity
-          @participant.state.should == "consented_high_intensity"
+          @participant.high_intensity_conversion!
+          @participant.should be_converted_high_intensity
+          @participant.state.should == "converted_high_intensity"
           @participant.non_pregnant_informed_consent!
           @participant.should be_pre_pregnancy
           @participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY

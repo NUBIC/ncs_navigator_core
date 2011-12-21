@@ -46,6 +46,23 @@ Given /^the following registered unconsented trying participants:$/ do |table|
   end
 end
 
+Given /^the following registered unconsented high intensity trying participants:$/ do |table|
+  table.hashes.each do |hash|
+    status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 2).first
+
+    person = Factory(:person, hash)
+    participant = Factory(:participant, :high_intensity => true)
+    participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+    
+    Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
+    participant.register!
+    participant.assign_to_pregnancy_probability_group!
+    participant.enroll_in_high_intensity_arm!
+    participant.non_pregnant_informed_consent!
+  end
+end
+
+
 Given /^the following unregistered pregnant participants:$/ do |table|
   table.hashes.each do |hash|
     status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first
