@@ -327,6 +327,7 @@ describe Participant do
       before(:each) do
         participant.person = person
         participant.should be_in_pregnancy_probability_group
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
       end
 
       describe "given Pregnancy Probability" do

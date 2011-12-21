@@ -125,6 +125,7 @@ class Participant < ActiveRecord::Base
   state_machine :high_intensity_state, :initial => :in_high_intensity_arm do
     store_audit_trail
     before_transition :log_state_change
+    after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_consent!
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -256,6 +257,7 @@ class Participant < ActiveRecord::Base
   # on the ppg status
   def process_high_intensity_consent!
     return unless converted_high_intensity?
+    return if ppg_status.blank?
 
     case ppg_status.local_code
     when 1

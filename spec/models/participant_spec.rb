@@ -384,9 +384,6 @@ describe Participant do
             participant.upcoming_events.should == [PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION]
 
             participant.high_intensity_conversion!
-            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
-
-            participant.pregnant_informed_consent!
             participant.upcoming_events.should == ["HI-Intensity: Pregnancy Visit 1"]
           end
         end
@@ -590,7 +587,6 @@ describe Participant do
         it "will be followed after consent" do
           @participant.should_not be_followed
           @participant.high_intensity_conversion!
-          @participant.non_pregnant_informed_consent!
           @participant.should be_followed
         end
 
@@ -604,10 +600,8 @@ describe Participant do
 
         it "consents to the high intensity protocol" do
           @participant.high_intensity_conversion!
-          @participant.should be_converted_high_intensity
-          @participant.state.should == "converted_high_intensity"
-          @participant.non_pregnant_informed_consent!
           @participant.should be_pre_pregnancy
+          @participant.state.should == "pre_pregnancy"
           @participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
         end
 
