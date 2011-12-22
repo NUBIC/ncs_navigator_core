@@ -79,21 +79,21 @@ class PatientStudyCalendar
     resp.status < 300
   end
   
-  def assign_subject(participant)
+  def assign_subject(participant, event_type = nil, date = nil)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
-    connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant), { 'Content-Length' => '1024' })
+    connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant, event_type, date), { 'Content-Length' => '1024' })
   end
-  
+    
   def schedules(participant, format = "json")
     resp = connection.get("subjects/#{participant.person.public_id}/schedules.#{format}")
     resp.body
   end
   
-  def mark_activity_for_instrument(activity, participant, value)
+  def mark_activity_for_instrument(activity, participant, value, date = nil, reason = nil)
     if scheduled_activity_identifier = get_scheduled_activity_identifier(activity, participant)
-      resp = connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}/activities/#{scheduled_activity_identifier}", 
-        build_scheduled_activity_state_request(value), { 'Content-Length' => '1024' })
+      resp = connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}", 
+        build_scheduled_activity_state_request(value, date, reason), { 'Content-Length' => '1024' })
     end
   end
   
@@ -165,12 +165,12 @@ class PatientStudyCalendar
     next_scheduled_event      = participant.next_scheduled_event
     next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
     
-    if should_schedule_next_segment(participant, next_scheduled_event, next_scheduled_event_date)
-      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.public_id}", build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date), { 'Content-Length' => '1024' })
+    if should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
+      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date), { 'Content-Length' => '1024' })
     end
   end
   
-  def should_schedule_next_segment(participant, next_scheduled_event, next_scheduled_event_date)
+  def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
     result = true
     subject_schedules = schedules(participant)
     if subject_schedules && days = subject_schedules["days"]
@@ -185,6 +185,12 @@ class PatientStudyCalendar
       end
     end
     result
+  end
+  
+  def schedule_known_event(participant, event_type, date)
+    if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
+      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", build_known_event_request(event_type, date), { 'Content-Length' => '1024' })
+    end
   end
   
   def update_subject(participant)
@@ -205,17 +211,18 @@ class PatientStudyCalendar
   #     <xsd:attribute name="study-subject-id" type="xsd:string"/>
   # </xsd:complexType>
   #     
-  def build_subject_assignment_request(participant)
+  def build_subject_assignment_request(participant, event_type, date)
+    date = date.nil? ? Date.today.to_s : date.to_s
     subject_attributes = build_subject_attributes_hash(participant)
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
     xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                     "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                     "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                    "first-study-segment-id" => get_study_segment_id(participant.next_study_segment), 
-                    "date" => Date.today.to_s, 
+                    "first-study-segment-id" => segment_id, 
+                    "date" => date, 
                     "subject-coordinator-name" => user.username, 
-                    "desired-assignment-id" => participant.public_id) { 
+                    "desired-assignment-id" => participant.person.public_id) { 
       xm.subject(subject_attributes)
     }
     xm.target!
@@ -272,14 +279,21 @@ class PatientStudyCalendar
   #     </xsd:attribute>
   # </xsd:complexType>
   def build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date)
-  
+    build_study_segment_request(get_study_segment_id(next_scheduled_event.event), next_scheduled_event_date)
+  end
+
+  def build_known_event_request(event_type, date)
+    build_study_segment_request(get_study_segment_id(PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)), date)
+  end
+
+  def build_study_segment_request(segment_id, start_date)  
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
     xm.tag!("next-scheduled-study-segment".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                                     "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                                     "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                                    "study-segment-id" => get_study_segment_id(next_scheduled_event.event), 
-                                    "start-date" => next_scheduled_event_date,
+                                    "study-segment-id" => segment_id, 
+                                    "start-date" => start_date,
                                     "mode" => "per-protocol"})
     xm.target!
   end
@@ -302,14 +316,16 @@ class PatientStudyCalendar
   #     <xsd:attribute name="date" type="xsd:date"/>
   #     <xsd:attribute name="reason" type="xsd:string"/>
   # </xsd:complexType>
-  def build_scheduled_activity_state_request(value)
+  def build_scheduled_activity_state_request(value, date = nil, reason = nil)
+    date = date.nil? ? Date.today.strftime("%Y-%m-%d") : date
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
     xm.tag!("scheduled-activity-state".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
                                     "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                                     "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
                                     "state" => value, 
-                                    "date" => Date.today.strftime("%Y-%m-%d")})
+                                    "date" => date,
+                                    "reason" => reason.to_s })
     xm.target!
   end
   
@@ -381,6 +397,35 @@ class PatientStudyCalendar
                 event
               end
       event
+    end
+    
+    ##
+    # This method takes the event type display text from the MDES codes lists and
+    # translates it into the Segment Name as known by PSC.
+    # @param [String] - PSC Segment Name
+    # @return [String] - Master Data Element Specification Code List Event Type
+    def get_psc_segment_from_mdes_event_type(event_type)
+      event_type = case event_type
+              when "Birth"
+                "Birth Visit Interview"
+              when "Low Intensity Data Collection"
+                "PPG 1 and 2"
+              when "Pre-Pregnancy Visit"
+                "Pre-Pregnancy"
+              when "Pregnancy Visit  1"
+                "Pregnancy Visit 1"
+              when "Pregnancy Visit  2"
+                "Pregnancy Visit 2"
+              when "Pregnancy Probability"
+                "PPG Follow-Up"
+              when "Father Consent and Interview"
+                "Father"
+              when "Informed Consent"
+                # Informed Consent is an event type that does not map to a segment in PSC
+              else
+                event_type
+              end
+      event_type      
     end
     
     def uri

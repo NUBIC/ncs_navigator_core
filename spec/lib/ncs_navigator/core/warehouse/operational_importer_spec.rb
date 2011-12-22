@@ -410,6 +410,7 @@ module NcsNavigator::Core::Warehouse
         it 'creates core instruments' do
           Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
         end
+        
       end
 
       describe 'unorderable events without contacts' do
@@ -511,6 +512,26 @@ module NcsNavigator::Core::Warehouse
             importer.import # twice
             target_states.should == expected_states
           end
+
+          # describe 'associating participant with patient study calendar (PSC)' do
+          #   # before do
+          #   #   psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
+          #   #   @uri  = psc_config["uri"]
+          #   #   @user = mock(:username => "username", :cas_proxy_ticket => "PT-cas-ticket")
+          #   # end
+          #   # 
+          #   # let(:subject) { PatientStudyCalendar.new(@user) }
+          # 
+          #   it 'registers the participant with psc' 
+          # 
+          #   it 'starts the participant in the pending state' do
+          #     participant.should be_following_low_intensity
+          #   end
+          #
+          #   it 'schedules the known events with the event date'
+          # 
+          # end
+
         end
 
         it 'saves the events' do
