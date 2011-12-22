@@ -91,11 +91,19 @@ module NcsNavigator::Core::Warehouse
       Participant.transaction do
         ordered_event_sets.each do |p_id, events_and_links|
           participant = Participant.find_by_p_id(p_id)
+
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
+            
+            # TODO: register the participant with PSC if not yet registered
+            # unless psc.is_registered? participant  # or participant.can_register? psc if sure participant state is 'pending'
+            #   psc.assign_subject(participant, core_event.event_type. core_event.start_date) # or use end_date
+            # end
+            
             if core_event.new_record?
               participant.set_state_for_event_type(core_event.event_type)
             end
+            
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
               save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
@@ -109,6 +117,9 @@ module NcsNavigator::Core::Warehouse
               # seg = find existing scheduled segment for this event
               # unless seg
               #   seg = schedule segment for core_event
+
+              # -*- if psc.should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(core_event.event_type), core_event.start_date)
+              #       psc.schedule_known_event(participant, core_event.event_type, core_event.date)
               #
               # is this the last CL for this event?
               #   is the event complete?
@@ -125,6 +136,10 @@ module NcsNavigator::Core::Warehouse
               #     state: new_state,
               #     date: CL.contact.contact_date,
               #     reason: "Imported contact link {id}"
+              
+              
+              #   -*- psc.mark_activity_for_instrument(sch_activity, participant, new_state, reason)
+              
               save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
             end
           end

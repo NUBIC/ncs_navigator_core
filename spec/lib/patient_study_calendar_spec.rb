@@ -45,9 +45,25 @@ describe PatientStudyCalendar do
       segments.first.attr('name').should == "Pregnancy Screener"
     end
   end
+
+  it "gets the psc segment name from the mdes event type code" do
+    [
+      ["Pregnancy Screener", "Pregnancy Screener"],
+      ["PPG 1 and 2", "Low Intensity Data Collection"],
+      ["PPG Follow-Up", "Pregnancy Probability"],
+      ["Birth Visit Interview", "Birth"],
+      ["Low to High Conversion", "Low to High Conversion"],
+      ["Pre-Pregnancy", "Pre-Pregnancy Visit"],
+      ["Pregnancy Visit 1", "Pregnancy Visit  1"],
+      ["Pregnancy Visit 2", "Pregnancy Visit  2"],
+      # ["Child Consent", "Informed Consent"],
+      # ["Father Consent and Interview", "Father"]
+    ].each do |segment_name, event_type_display_text| 
+      PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type_display_text).should == segment_name
+    end
+  end
   
   it "maps the psc segment name to mdes event type code" do
-    
     [
       ["LO-Intensity: Pregnancy Screener", "Pregnancy Screener"],
       ["LO-Intensity: PPG 1 and 2", "Low Intensity Data Collection"],
@@ -62,7 +78,6 @@ describe PatientStudyCalendar do
     ].each do |segment_name, event_type_display_text| 
       PatientStudyCalendar.map_psc_segment_to_mdes_event_type(segment_name).should == event_type_display_text
     end
-    
   end
   
   context "with a participant" do
@@ -149,8 +164,23 @@ describe PatientStudyCalendar do
         scheduled_activities = subject.scheduled_activities_report
         scheduled_activities.size.should == 2
       end
-      
-      
+    end
+    
+    it "schedules an activity for a participant given an event type and date" do
+      VCR.use_cassette('psc/known_events') do
+        person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
+        participant = Factory(:participant, :p_id => "asdf")
+        participant.person = person
+        subject.schedules(participant).should be_nil
+        subject.schedule_known_event(participant, "Pregnancy Probability", Date.today)
+        
+        subject_schedules = subject.schedules(participant)
+        days = subject_schedules["days"]
+        date = days.keys.first
+        day = days[date]
+        activities = day["activities"]
+        activities.first["study_segment"].should == "LO-Intensity: PPG Follow-Up"
+      end      
     end
   
   end
