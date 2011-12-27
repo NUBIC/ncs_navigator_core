@@ -5,6 +5,7 @@ begin
   namespace :rcov do
     
     rcov_options = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/ --aggregate coverage/coverage.data}
+
     
     Cucumber::Rake::Task.new(:cucumber_run) do |t|
       t.cucumber_opts = "--format pretty"
@@ -15,7 +16,7 @@ begin
   
     RSpec::Core::RakeTask.new(:rspec_run) do |t|
       t.spec_opts = ["--color --format nested"]
-      t.pattern = FileList['spec/**/*_spec.rb']
+      t.pattern = FileList['spec/lib/*_spec.rb','spec/models/*_spec.rb','spec/helpers/*_spec.rb','spec/controllers/*_spec.rb']
       t.rcov = true
       t.rcov_opts = rcov_options
     end
