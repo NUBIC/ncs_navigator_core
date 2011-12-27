@@ -11,7 +11,7 @@ body {
 
 .instructional_note {
   font-size: 0.8em;
-  font-style: italic;
+/*  font-style: italic;*/
   color: $NOTE_GRAY;
   margin: 0 0 0.5em 1em;
 }
@@ -147,13 +147,7 @@ form {
     a {
       text-decoration: none;
     }
-  }
-}
-
-#title {
-  font-size: 2em;
-  @include column(16, true);
-  text-align: right;
+  }  
 }
 
 #login,

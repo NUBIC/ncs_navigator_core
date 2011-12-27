@@ -1,57 +1,54 @@
 .column-container
-  .column-1
-    = f.hidden_field :psu_code
-    = hidden_field_tag :event_type_id, @event.event_type.id
-    = hidden_field_tag :next_event, params[:next_event]
+  = f.hidden_field :psu_code
+  = hidden_field_tag :event_type_id, @event.event_type.id
+  = hidden_field_tag :next_event, params[:next_event]
 
-    = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "Contact Type", :other => :contact_type_other }
+  %p
+    = f.label :contact_date_date, "Contact Date"
+    %br
+    = f.text_field :contact_date_date, :class => "datepicker"
+
+  %p
+    = f.label :contact_start_time, "Contact Start Time"
+    %br
+    = f.text_field :contact_start_time, :class => "time"
+
+  %p
+    = f.label :contact_end_time, "Contact End Time"
+    %br
+    = f.text_field :contact_end_time, :class => "time"
+
+  = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Person Contacted", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "Contact Method", :other => :contact_type_other }
+
+  - unless f.object.new_record?
+
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }    
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private", :help_text => "contacts/contact_private_tooltip" }
 
     %p
-      = f.label :contact_date_date, "Contact Date"
-      %br
-      = f.text_field :contact_date_date, :class => "datepicker"
-  
+      = f.label :contact_private_detail, "Private Detail"
+      %span{ :class => "help_icon" }
+      = render "contacts/contact_private_detail_tooltip"
     %p
-      = f.label :contact_start_time, "Contact Start Time"
-      %br
-      = f.text_field :contact_start_time, :class => "time"
+      = f.text_field :contact_private_detail
 
     %p
-      = f.label :contact_end_time, "Contact End Time"
+      = f.label :contact_distance, "Distance (format xx.x)"
       %br
-      = f.text_field :contact_end_time, :class => "time"
+      = f.text_field :contact_distance
 
+  - unless f.object.new_record?
+    = render "shared/disposition_code", { :f => f, :code => :contact_disposition }
 
-    = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Who was contacted", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
-
-    - unless f.object.new_record?
-
-      = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }    
-      = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private", :help_text => "contacts/contact_private_tooltip" }
-
-      %p
-        = f.label :contact_private_detail, "Private Detail"
-        %span{ :class => "help_icon" }
-        = render "contacts/contact_private_detail_tooltip"
-      %p
-        = f.text_field :contact_private_detail
-
-      %p
-        = f.label :contact_distance, "Distance (format xx.x)"
-        %br
-        = f.text_field :contact_distance
-
-  .column-2 
-    - unless f.object.new_record?
-      = render "shared/disposition_code", { :f => f, :code => :contact_disposition }
-
-      = render "shared/ncs_code_select", { :f => f, :code => :contact_language_code, :label_text => "Language", :other => :contact_language_other }
-      = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other, :help_text => "contacts/contact_interpret_tooltip" }
-      
-    %p
-      = f.label :contact_comment, "Comment"
-      %br
-      = f.text_area :contact_comment
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_language_code, :label_text => "Language", :other => :contact_language_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other, :help_text => "contacts/contact_interpret_tooltip" }
+    
+  %p
+    = f.label :contact_comment, "Comment"
+    %br
+    = f.text_area :contact_comment
 
 :javascript
   $(document).ready(function() {

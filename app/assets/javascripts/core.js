@@ -12,7 +12,7 @@ function wire_up_select_other(select_id, other_id) {
 
 // Used to enable/disable 'other' input type text field
 function check_select_for_other(select_id, other_id) {
-  var s = $(select_id+" option:selected");
+  var s = $(select_id + " option:selected");
   var o = $(other_id);
 
   // making sure the object id's given above exist on page
@@ -25,7 +25,7 @@ function check_select_for_other(select_id, other_id) {
       o.css('border', '2px solid #808080'); 
     } else {
       // clear the other field
-      o.val(''); 
+      o.val('');
       o.attr('disabled', 'disabled');
       // to make disabled more visible
       o.css('border', '1px solid #ccc'); 

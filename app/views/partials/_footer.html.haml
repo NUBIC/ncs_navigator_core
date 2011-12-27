@@ -6,11 +6,6 @@
 
 .ncs_text
   = image_tag(NcsNavigatorCore.footer_right_logo_path) if NcsNavigatorCore.footer_right_logo_path
-
-- if current_user
-  .logged_in_user
-    = link_to "Logout", '/logout', :class => "logout_link icon_link"
-    = current_user.full_name
   
 .app_version
   = app_version_helper

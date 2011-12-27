@@ -1,30 +1,156 @@
 #surveyor {
-  
-  @include column($blueprint-grid-columns - 2);
-  margin: 0;
+/*  @include column($blueprint-grid-columns - 2);*/
+  @include column(22);
+  @include append(1);
+  @include prepend(1);
+/*  background-color: #FCFDFF;*/
   background: inherit !important;
+
+  margin: 0;
   
-  fieldset {
-    border: none !important;
-    border-bottom: 1px solid #ccc !important;
-    background-color: inherit !important;
-    legend {
-      background-color: inherit !important;
-      span {
-        display: block !important;
-        font-weight: normal !important;
-        font-size: 0.8em !important;
-        width: 990px !important;
-        white-space: normal !important;
-      }
-    }
-    ol {
-      margin: 0 !important;
+  .surveyor_menu {
+    float: none;
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #bcbcbc;
+      border-bottom-width: 0;
+      border-right-width: 0;
+      background-color: #dcdcdc;
+      color: #666666;
+      
       li {
-        fieldset {
-          border: none !important;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-color: #bcbcbc;
+        text-align: left;
+        overflow: hidden;
+                
+        input[type="submit"], button, a {
+          text-align: left;
+          font-size: 1.0em;
+          border: 0px;
+          padding: 0.2em;
+          margin: 0.2em;
+          cursor: pointer;
+          background-color: inherit;
+          color: #464646;
+          white-space: normal;
+        }
+        
+        a {
+          display: block;
+          text-decoration: none;
         }
       }
+      
+      li.active, li.active input[type="submit"], li.active button {
+        background-color: #ebebcc;
+        color: #262626;
+      }
     }
+  } 
+
+  .previous_section, .next_section {
+    font-size: 0.8em;
+    margin: -0.6em 0 0.5em -1em;
+    padding: 0;
+    float: left;
+  }
+  
+  .survey_title {
+	  width: 500px;
+	  margin-left: -0.5em;
+	}
+	
+  .survey_section {
+    margin: 0.5em 0.5em 0.5em -1em;
+    padding: 0.5em 0 0 0;
+    
+    fieldset {
+
+      border: none !important;
+      border-bottom: 1px solid #ccc !important;
+      background-color: inherit !important;
+
+			margin-bottom: 4px;
+			
+			ol {
+				margin: 0 0.8em 0.1em 0;
+				li {
+          list-style: none;
+          fieldset {
+            border: none !important;
+          }
+        }
+			}
+			ul, ol {
+        padding-left: 0;
+      }
+			label {
+				font-weight: normal;
+				margin-right: 5px;
+			}
+			legend {
+				font-weight: bold;
+        background-color: inherit !important;
+        span {
+          display: block !important;
+          font-weight: normal !important;
+          font-size: 0.8em !important;
+          width: 990px !important;
+          white-space: normal !important;
+        }
+			}
+			.q_dependent, .q_dependent legend {
+				background-color: inherit;
+			}
+		}
+		span.help, li.help {
+  		display: block;
+  		padding-bottom: 6px;
+  		font-style: italic;
+  		font-size: 90%;
+      margin-top: -7px;
+  	}
+		input.number {
+      display: block;
+    }
+		.question {
+      @include column(12);
+    }
+    
+  	.g_repeater,
+  	.g_inline {
+  		fieldset {
+  			legend {
+  				font-weight:normal;
+  			}
+  		}
+  		input.number {
+        display: inline;
+      }
+  	}
+  	span.title {
+  	    padding: 21px 0;
+  	}
+  }
+
+	.explanation {
+    display: block !important;
+  }
+  
+  #survey_list ul {
+    padding-left: 2em;
+    margin-top: -2em;
+  }
+
+  p {
+    padding: 0.3em;
+    margin: 0.5em;
+    margin: 0.55em;
   }
 }
