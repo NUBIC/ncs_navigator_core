@@ -214,6 +214,10 @@ class PatientStudyCalendar
   def build_subject_assignment_request(participant, event_type, date)
     date = date.nil? ? Date.today.to_s : date.to_s
     subject_attributes = build_subject_attributes_hash(participant)
+    
+    segment = event_type.blank? ? participant.next_study_segment : PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)
+    segment_id = get_study_segment_id(segment)
+    
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
     xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
