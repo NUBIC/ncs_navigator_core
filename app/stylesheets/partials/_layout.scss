@@ -29,3 +29,7 @@
   }
   
 }
+
+.other_field {
+  @include prepend(0.5);
+}

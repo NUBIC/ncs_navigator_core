@@ -18,12 +18,12 @@ Feature: Initiating a contact
     Then I should be on the new_person_contact page
     And I should see "Bessie Smith"
     And I should see "Pregnancy Visit 1"
-    When I select "In-person" from "Contact Type"
+    When I select "In-person" from "Contact Method"
     And I fill in "Contact Date" with "01/01/2001"
     # And I select "Legitimate Skip" from "Interpret"
     # And I select "Person/participant home" from "Location"
     # And I select "Yes" from "Private"
-    And I select "NCS Participant" from "Who was contacted"
+    And I select "NCS Participant" from "Person Contacted"
     And I press "Submit"
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page

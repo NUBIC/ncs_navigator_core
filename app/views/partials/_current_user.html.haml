@@ -1,0 +1,8 @@
+- if current_user
+  #current_user
+    = current_user.full_name
+    (
+    = current_user.username
+    )
+    &nbsp;|&nbsp;
+    = link_to "Logout", '/logout', :class => "logout_link icon_link"

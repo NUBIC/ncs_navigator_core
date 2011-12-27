@@ -44,18 +44,17 @@ body.ncs {
     @include rounded-corners(1em);
     padding-top: 0.5em;
     border: 2px solid $NU_PURPLE;
+
+    #current_user {
+      float: right;
+      @include prepend-top(0.5em);
+      @include append(1);
+      font-size: 13px;
+    }
     
     #app_name {
       @include prepend(1);
       font-size: 2.0em; 
-      @include column(6); 
-    }
-
-    #current_user {
-      @include prepend-top(0.5em);
-      @include column(16, true);
-      @include append(1);
-      text-align: right;
     }
     
     #tab_navigation {
@@ -142,16 +141,9 @@ body.ncs {
       }
     }
     
-    .logged_in_user {
-      color: #999;
-      @include column($blueprint-grid-columns);
-      text-align: right;
-    }
-
     .app_version {
       color: #999;
       @include column($blueprint-grid-columns);
-      text-align: right;
     }
   } // end of footer
 } // end of body

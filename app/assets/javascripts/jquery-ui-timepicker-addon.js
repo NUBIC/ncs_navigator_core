@@ -1059,7 +1059,8 @@ $.datepicker._gotoToday = function(id) {
 		tp_inst.timezone_select.val(tzoffset);
 	}
 	this._setTime(inst, now);
-	$( '.ui-datepicker-today', $dp).click(); 
+	$( '.ui-datepicker-today', $dp).click();
+	this._hideDatepicker();
 };
 
 //#######################################################################################

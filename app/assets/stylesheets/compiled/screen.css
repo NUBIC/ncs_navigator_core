@@ -1312,7 +1312,7 @@ body {
 /* line 12, ../../../stylesheets/partials/_application.scss */
 .instructional_note {
   font-size: 0.8em;
-  font-style: italic;
+  /*  font-style: italic;*/
   color: #999999;
   margin: 0 0 0.5em 1em;
 }
@@ -1493,21 +1493,7 @@ form textarea {
   text-decoration: none;
 }
 
-/* line 153, ../../../stylesheets/partials/_application.scss */
-#title {
-  font-size: 2em;
-  display: inline;
-  float: left;
-  margin-right: 0;
-  width: 770px;
-  text-align: right;
-}
-/* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html #title {
-  overflow-x: hidden;
-}
-
-/* line 160, ../../../stylesheets/partials/_application.scss */
+/* line 154, ../../../stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1523,49 +1509,188 @@ form textarea {
   overflow-x: hidden;
 }
 
-/* line 165, ../../../stylesheets/partials/_application.scss */
+/* line 159, ../../../stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }
 
 /* line 1, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor {
+  /*  @include column($blueprint-grid-columns - 2);*/
   display: inline;
   float: left;
   margin-right: 10px;
   width: 1062.5px;
-  margin: 0;
+  padding-right: 48.75px;
+  padding-left: 48.75px;
+  /*  background-color: #FCFDFF;*/
   background: inherit !important;
+  margin: 0;
 }
 /* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #surveyor {
   overflow-x: hidden;
 }
-/* line 7, ../../../stylesheets/partials/_surveyor.scss */
-#surveyor fieldset {
+/* line 11, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .surveyor_menu {
+  float: none;
+}
+/* line 13, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .surveyor_menu ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #bcbcbc;
+  border-bottom-width: 0;
+  border-right-width: 0;
+  background-color: #dcdcdc;
+  color: #666666;
+}
+/* line 25, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .surveyor_menu ul li {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: #bcbcbc;
+  text-align: left;
+  overflow: hidden;
+}
+/* line 32, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .surveyor_menu ul li input[type="submit"], #surveyor .surveyor_menu ul li button, #surveyor .surveyor_menu ul li a {
+  text-align: left;
+  font-size: 1.0em;
+  border: 0px;
+  padding: 0.2em;
+  margin: 0.2em;
+  cursor: pointer;
+  background-color: inherit;
+  color: #464646;
+  white-space: normal;
+}
+/* line 44, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .surveyor_menu ul li a {
+  display: block;
+  text-decoration: none;
+}
+/* line 50, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .surveyor_menu ul li.active, #surveyor .surveyor_menu ul li.active input[type="submit"], #surveyor .surveyor_menu ul li.active button {
+  background-color: #ebebcc;
+  color: #262626;
+}
+/* line 57, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .previous_section, #surveyor .next_section {
+  font-size: 0.8em;
+  margin: -0.6em 0 0.5em -1em;
+  padding: 0;
+  float: left;
+}
+/* line 64, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_title {
+  width: 500px;
+  margin-left: -0.5em;
+}
+/* line 69, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section {
+  margin: 0.5em 0.5em 0.5em -1em;
+  padding: 0.5em 0 0 0;
+}
+/* line 73, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset {
   border: none !important;
   border-bottom: 1px solid #ccc !important;
   background-color: inherit !important;
+  margin-bottom: 4px;
 }
-/* line 11, ../../../stylesheets/partials/_surveyor.scss */
-#surveyor fieldset legend {
+/* line 81, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset ol {
+  margin: 0 0.8em 0.1em 0;
+}
+/* line 83, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset ol li {
+  list-style: none;
+}
+/* line 85, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset ol li fieldset {
+  border: none !important;
+}
+/* line 90, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset ul, #surveyor .survey_section fieldset ol {
+  padding-left: 0;
+}
+/* line 93, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset label {
+  font-weight: normal;
+  margin-right: 5px;
+}
+/* line 97, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset legend {
+  font-weight: bold;
   background-color: inherit !important;
 }
-/* line 13, ../../../stylesheets/partials/_surveyor.scss */
-#surveyor fieldset legend span {
+/* line 100, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset legend span {
   display: block !important;
   font-weight: normal !important;
   font-size: 0.8em !important;
   width: 990px !important;
   white-space: normal !important;
 }
-/* line 21, ../../../stylesheets/partials/_surveyor.scss */
-#surveyor fieldset ol {
-  margin: 0 !important;
+/* line 108, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section fieldset .q_dependent, #surveyor .survey_section fieldset .q_dependent legend {
+  background-color: inherit;
 }
-/* line 24, ../../../stylesheets/partials/_surveyor.scss */
-#surveyor fieldset ol li fieldset {
-  border: none !important;
+/* line 112, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section span.help, #surveyor .survey_section li.help {
+  display: block;
+  padding-bottom: 6px;
+  font-style: italic;
+  font-size: 90%;
+  margin-top: -7px;
+}
+/* line 119, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section input.number {
+  display: block;
+}
+/* line 122, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section .question {
+  display: inline;
+  float: left;
+  margin-right: 10px;
+  width: 575px;
+}
+/* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
+* html #surveyor .survey_section .question {
+  overflow-x: hidden;
+}
+/* line 129, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section .g_repeater fieldset legend,
+#surveyor .survey_section .g_inline fieldset legend {
+  font-weight: normal;
+}
+/* line 133, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section .g_repeater input.number,
+#surveyor .survey_section .g_inline input.number {
+  display: inline;
+}
+/* line 137, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .survey_section span.title {
+  padding: 21px 0;
+}
+/* line 142, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor .explanation {
+  display: block !important;
+}
+/* line 146, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor #survey_list ul {
+  padding-left: 2em;
+  margin-top: -2em;
+}
+/* line 151, ../../../stylesheets/partials/_surveyor.scss */
+#surveyor p {
+  padding: 0.3em;
+  margin: 0.5em;
+  margin: 0.55em;
 }
 
 /* Link styles */
@@ -1798,6 +1923,11 @@ div.records span.value {
 /* line 27, ../../../stylesheets/partials/_layout.scss */
 .column-container select {
   width: 30em;
+}
+
+/* line 33, ../../../stylesheets/partials/_layout.scss */
+.other_field {
+  padding-left: 24.375px;
 }
 
 /* line 9, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_utilities.scss */
@@ -2035,33 +2165,18 @@ body.ncs #header {
   border: 2px solid #520063;
 }
 /* line 48, ../../../stylesheets/partials/_ncs.scss */
+body.ncs #header #current_user {
+  float: right;
+  margin-top: 0.5em;
+  padding-right: 48.75px;
+  font-size: 13px;
+}
+/* line 55, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #header #app_name {
   padding-left: 48.75px;
   font-size: 2.0em;
-  display: inline;
-  float: left;
-  margin-right: 10px;
-  width: 282.5px;
 }
-/* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html body.ncs #header #app_name {
-  overflow-x: hidden;
-}
-/* line 54, ../../../stylesheets/partials/_ncs.scss */
-body.ncs #header #current_user {
-  margin-top: 0.5em;
-  display: inline;
-  float: left;
-  margin-right: 0;
-  width: 770px;
-  padding-right: 48.75px;
-  text-align: right;
-}
-/* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html body.ncs #header #current_user {
-  overflow-x: hidden;
-}
-/* line 61, ../../../stylesheets/partials/_ncs.scss */
+/* line 60, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #header #tab_navigation {
   display: inline;
   float: left;
@@ -2072,17 +2187,17 @@ body.ncs #header #tab_navigation {
 * html body.ncs #header #tab_navigation {
   overflow-x: hidden;
 }
-/* line 63, ../../../stylesheets/partials/_ncs.scss */
+/* line 62, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #header #tab_navigation ul {
   list-style-type: none;
 }
-/* line 67, ../../../stylesheets/partials/_ncs.scss */
+/* line 66, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #header #tab_navigation ul li {
   display: inline;
   float: left;
   padding: 1em 0.5em 0 0.5em;
 }
-/* line 73, ../../../stylesheets/partials/_ncs.scss */
+/* line 72, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #header #tab_navigation li a {
   display: block;
   width: 12em;
@@ -2094,7 +2209,7 @@ body.ncs #header #tab_navigation li a {
   text-align: center;
   color: #f0f0f0;
 }
-/* line 85, ../../../stylesheets/partials/_ncs.scss */
+/* line 84, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #header #tab_navigation li.current a {
   display: block;
   width: 12em;
@@ -2106,7 +2221,7 @@ body.ncs #header #tab_navigation li.current a {
   text-align: center;
   color: #333333;
 }
-/* line 100, ../../../stylesheets/partials/_ncs.scss */
+/* line 99, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #content {
   display: inline;
   float: left;
@@ -2125,24 +2240,24 @@ body.ncs #content {
 * html body.ncs #content {
   overflow-x: hidden;
 }
-/* line 109, ../../../stylesheets/partials/_ncs.scss */
+/* line 108, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #content .block {
   background-color: #e8e8e8;
   margin-bottom: 1em;
 }
-/* line 114, ../../../stylesheets/partials/_ncs.scss */
+/* line 113, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #content .block .title {
   font-weight: bold;
   font-style: normal;
   font-size: 125%;
   padding: 0.2em 0;
 }
-/* line 123, ../../../stylesheets/partials/_ncs.scss */
+/* line 122, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer {
   background-color: transparent;
   font-size: 1.1em;
 }
-/* line 127, ../../../stylesheets/partials/_ncs.scss */
+/* line 126, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .ncs_logo {
   display: inline;
   float: left;
@@ -2153,7 +2268,7 @@ body.ncs #footer .ncs_logo {
 * html body.ncs #footer .ncs_logo {
   overflow-x: hidden;
 }
-/* line 131, ../../../stylesheets/partials/_ncs.scss */
+/* line 130, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .contact_info {
   margin-top: 1em;
   display: inline;
@@ -2166,7 +2281,7 @@ body.ncs #footer .contact_info {
 * html body.ncs #footer .contact_info {
   overflow-x: hidden;
 }
-/* line 137, ../../../stylesheets/partials/_ncs.scss */
+/* line 136, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .ncs_text {
   margin-top: 1em;
   display: inline;
@@ -2178,31 +2293,17 @@ body.ncs #footer .ncs_text {
 * html body.ncs #footer .ncs_text {
   overflow-x: hidden;
 }
-/* line 140, ../../../stylesheets/partials/_ncs.scss */
+/* line 139, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .ncs_text img {
   display: block;
 }
-/* line 145, ../../../stylesheets/partials/_ncs.scss */
-body.ncs #footer .logged_in_user {
-  color: #999;
-  display: inline;
-  float: left;
-  margin-right: 10px;
-  width: 1160px;
-  text-align: right;
-}
-/* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html body.ncs #footer .logged_in_user {
-  overflow-x: hidden;
-}
-/* line 151, ../../../stylesheets/partials/_ncs.scss */
+/* line 144, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .app_version {
   color: #999;
   display: inline;
   float: left;
   margin-right: 10px;
   width: 1160px;
-  text-align: right;
 }
 /* line 147, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html body.ncs #footer .app_version {
