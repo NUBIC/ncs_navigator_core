@@ -13,6 +13,7 @@ function wire_up_select_other(select_id, other_id) {
 // Used to enable/disable 'other' input type text field
 function check_select_for_other(select_id, other_id) {
   var s = $(select_id + " option:selected");
+  var sel = $(select_id);
   var o = $(other_id);
 
   // making sure the object id's given above exist on page
@@ -23,6 +24,7 @@ function check_select_for_other(select_id, other_id) {
       // to make the change more visible
       o.css('background-color', '#FAFAD2'); 
       o.css('border', '2px solid #808080'); 
+      sel.parent('p.ncs_select').next('p.other_field').show();
     } else {
       // clear the other field
       o.val('');
@@ -30,6 +32,7 @@ function check_select_for_other(select_id, other_id) {
       // to make disabled more visible
       o.css('border', '1px solid #ccc'); 
       o.css('background-color', '#ccc'); 
+      sel.parent('p.ncs_select').next('p.other_field').hide();
     }
   }
 }

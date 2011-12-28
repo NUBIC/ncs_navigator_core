@@ -13,12 +13,10 @@
     %span{ :class => "help_icon" }
     = render help_text
   - f.object.send("#{code}=", default_value) if default_value
-  %p
+  %p{ :class => 'ncs_select' }
     = f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" })
-
-- if other
-  .other_field
-    %p
-      = f.label other, "#{label_text} (Other)"
-      %br
-      = f.text_field other
+    - if other
+      %p.other_field
+        = f.label other, "#{label_text} (Other)"
+        %br
+        = f.text_field other

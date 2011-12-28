@@ -31,5 +31,6 @@
 }
 
 .other_field {
-  @include prepend(0.5);
+  /*@include prepend(0.5);*/
+  display: none;
 }
