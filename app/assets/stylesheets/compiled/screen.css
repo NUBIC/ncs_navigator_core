@@ -1559,10 +1559,10 @@ form textarea {
 /* line 32, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor .surveyor_menu ul li input[type="submit"], #surveyor .surveyor_menu ul li button, #surveyor .surveyor_menu ul li a {
   text-align: left;
-  font-size: 1.0em;
+  font-size: 0.7em;
   border: 0px;
   padding: 0.2em;
-  margin: 0.2em;
+  margin: 0.1em;
   cursor: pointer;
   background-color: inherit;
   color: #464646;
@@ -1927,7 +1927,8 @@ div.records span.value {
 
 /* line 33, ../../../stylesheets/partials/_layout.scss */
 .other_field {
-  padding-left: 24.375px;
+  /*@include prepend(0.5);*/
+  display: none;
 }
 
 /* line 9, ../../../../../../.rvm/gems/ree-1.8.7-2011.03@ncs_navigator_core/gems/compass-0.11.5/frameworks/blueprint/stylesheets/blueprint/_utilities.scss */
