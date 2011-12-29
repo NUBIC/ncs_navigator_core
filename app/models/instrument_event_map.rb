@@ -46,41 +46,68 @@ class InstrumentEventMap
   end
 
   ##
-  # For a given survey title (i.e. instrument filename), return the event name (i.e. the activity from a PSC segment)
+  # For a given survey title (i.e. instrument filename), return the instrument name
   #
   # @param [String] - filename for the instrument whose name matches the activity
-  # @return [String] - the name of the PSC segment activity (e.g. Pregnancy Probability Group Follow-Up Interview)
-  def self.activity_for_instrument(instrument)
+  # @return [String] - the name of the instrument (e.g. Pregnancy Probability Group Follow-Up Interview)
+  def self.name_of_instrument(instrument_filename)
+    InstrumentEventMap.instrument_map_value_for_filename(instrument_filename, "name")
+  end
+  
+  ##
+  # Get the current version number for this Instrument from the Instrumnnt and Event Map
+  # @param [String]
+  # @return [String]
+  def self.version(instrument_filename)
+    InstrumentEventMap.instrument_map_value_for_filename(instrument_filename, "version_number")
+  end
+
+  def self.instrument_map_value_for_filename(instrument_filename, value)
     result = nil
     instruments.each do |ie|
-      if instrument =~ Regexp.new(ie["filename"])
-        result = ie["name"]
+      if instrument_filename =~ Regexp.new(ie["filename"])
+        result = ie[value]
         break
       end
     end
     result
   end
+  
+  ##
+  # For a given MDES code list local code value, return the name of the instrument
+  #
+  # @param [String] - INSTRUMENT_TYPE_CL1 local code
+  # @return [String] - name for the instrument  
+  def self.name_for_instrument_type(code)
+    InstrumentEventMap.instrument_map_value_for_code(code, "name")
+  end
+  
+  ##
+  # For a given MDES code list local code value, return the filename of the instrument
+  #
+  # @param [String] - INSTRUMENT_TYPE_CL1 local code
+  # @return [String] - filename for the instrument
+  def self.filename_for_instrument_type(code)
+    InstrumentEventMap.instrument_map_value_for_code(code, "filename")
+  end
+
+  def self.instrument_map_value_for_code(code, value)
+    result = nil
+    instruments.each do |ie|
+      if code == ie["instrument_type"]
+        result = ie[value]
+        break
+      end
+    end
+    result
+  end  
+
 
   ##
   # A list of all the known event names.
   # @return [Array, <String>]
   def self.events
     instruments.collect { |ie| ie["event"].split(";") }.flatten.collect { |e| e.strip }.uniq.sort
-  end
-
-  ##
-  # Get the current version number for this Instrument from the Instrumnnt and Event Map
-  # @param [String]
-  # @return [String]
-  def self.version(filename)
-    result = nil
-    instruments.each do |ie|
-      if filename =~ Regexp.new(ie["filename"])
-        result = ie["version_number"]
-        break
-      end
-    end
-    result
   end
 
   ##

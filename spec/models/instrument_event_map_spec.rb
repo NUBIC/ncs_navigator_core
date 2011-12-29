@@ -65,7 +65,7 @@ describe InstrumentEventMap do
 
   end
 
-  it "returns the event name given the instrument filename" do
+  it "returns the instrument name given the instrument filename" do
     [
       ["Pregnancy Visit 1 Interview", "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"],
       ["Pregnancy Visit 1 SAQ", "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0"],
@@ -77,7 +77,7 @@ describe InstrumentEventMap do
       ["Pregnancy Probability Group Follow-Up Interview", "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2"],
       ["Pregnancy Probability Group Follow-Up SAQ", "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1"],
     ].each do |activity, filename|
-      InstrumentEventMap.activity_for_instrument(filename).should == activity
+      InstrumentEventMap.name_of_instrument(filename).should == activity
     end
 
   end
