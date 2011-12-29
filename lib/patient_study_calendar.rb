@@ -27,9 +27,14 @@ class PatientStudyCalendar
   HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
   HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW  = "#{HIGH_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
 
-  ACTIVITY_OCCURRED = 'occurred'
+  ACTIVITY_OCCURRED  = 'occurred'
+  ACTIVITY_CANCELED  = 'canceled'
+  ACTIVITY_SCHEDULED = 'scheduled'
 
   CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
+
+  INFORMED_CONSENT = "Informed Consent"
+  SKIPPED_EVENT_TYPES = [INFORMED_CONSENT]
 
   attr_accessor :user
   
@@ -69,11 +74,17 @@ class PatientStudyCalendar
     end
   end
   
+  ##
+  # Gets the current template from PSC and returns the nodes matching 'psc:study-segment'.
+  # @return [NodeList]
   def segments
     template = connection.get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
     template.body.xpath('//psc:study-segment', Psc.xml_namespace)
   end
 
+  ##
+  # True if the participant is known to psc by the participant public_id.
+  # @return [Boolean]
   def is_registered?(participant)
     resp = connection.get("subjects/#{participant.person.public_id}")
     resp.status < 300
@@ -81,31 +92,41 @@ class PatientStudyCalendar
   
   def assign_subject(participant, event_type = nil, date = nil)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
+    return nil if should_skip_event?(event_type)
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
-    connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", build_subject_assignment_request(participant, event_type, date), { 'Content-Length' => '1024' })
+    connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", 
+      build_subject_assignment_request(participant, event_type, date), { 'Content-Length' => '1024' })
+  end
+  
+  def should_skip_event?(event_type)
+    SKIPPED_EVENT_TYPES.include? event_type
   end
     
   def schedules(participant, format = "json")
     resp = connection.get("subjects/#{participant.person.public_id}/schedules.#{format}")
     resp.body
   end
-  
-  def mark_activity_for_instrument(activity, participant, value, date = nil, reason = nil)
-    if scheduled_activity_identifier = get_scheduled_activity_identifier(activity, participant)
+
+  ##
+  # Updates the state of the scheduled activity in PSC.
+  #
+  # @param [String] - activity_name
+  # @param [Participant] 
+  # @param [String] - one of the valid enumerable state attributes for an activity in PSC
+  # @param [Date] (optional)
+  # @param [String] (optional) - reason for change
+  def update_activity_state(activity_name, participant, value, date = nil, reason = nil)
+    if scheduled_activity_identifier = get_scheduled_activity_identifier(participant, activity_name)
       resp = connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}", 
         build_scheduled_activity_state_request(value, date, reason), { 'Content-Length' => '1024' })
     end
   end
   
-  def get_scheduled_activity_identifier(activity_name, participant)
+  def get_scheduled_activity_identifier(participant, activity_name)
     scheduled_activity_identifier = nil
-    if subject_schedules = schedules(participant)
-      subject_schedules["days"].keys.each do |date|
-        subject_schedules["days"][date]["activities"].each do |activity|
-          if activity_name =~ Regexp.new(activity["activity"]["name"])
-            scheduled_activity_identifier = activity["id"]
-          end
-        end
+    participant_activities(participant).each do |activity|
+      if activity_name =~ Regexp.new(activity["activity"]["name"])
+        scheduled_activity_identifier = activity["id"]
       end
     end
     scheduled_activity_identifier
@@ -113,12 +134,10 @@ class PatientStudyCalendar
   
   def activities_for_participant(participant)
     activities = []
-    if subject_schedules = schedules(participant)  
-      subject_schedules["days"].keys.each do |date|
-        subject_schedules["days"][date]["activities"].each do |activity|
-          participant.upcoming_events.each do |event|
-            activities << activity["activity"]["name"] if activity["study_segment"].include?(event.to_s)
-          end
+    participant_activities(participant).each do |activity|
+      participant.upcoming_events.each do |event|
+        if activity["study_segment"].include?(event.to_s)
+          activities << activity["activity"]["name"]
         end
       end
     end
@@ -127,19 +146,29 @@ class PatientStudyCalendar
 
   def activities_for_segment(participant, segment)
     activities = []
-    if subject_schedules = schedules(participant)
-      if subject_schedules["days"]
-        subject_schedules["days"].keys.each do |date|
-          subject_schedules["days"][date]["activities"].each do |activity|          
-            activities << activity["activity"]["name"] if activity["study_segment"].include?(segment.to_s)
-          end
-        end
+    participant_activities(participant).each do |activity|
+      if activity["study_segment"].include?(segment.to_s)
+        activities << activity["activity"]["name"]
       end
     end
     activities.uniq
   end
 
-  
+  def participant_activities(participant)
+    activities = []
+    if subject_schedules = schedules(participant)
+      if subject_schedules["days"]
+        subject_schedules["days"].keys.each do |date|
+          subject_schedules["days"][date]["activities"].each do |activity|
+            activities << activity
+          end
+        end
+      end
+    end
+    activities
+  end
+  private :participant_activities
+
   def scheduled_activities_report(options = {})
     filters = {:state => 'scheduled', :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
     filters = filters.merge(options)
@@ -170,7 +199,17 @@ class PatientStudyCalendar
     end
   end
   
+  ##
+  # Defaults to True. If the given scheduled event exists on the given day for the participant
+  # then return False since the participant already has that event scheduled.
+  #
+  # @param [Participant]
+  # @param [String] - event name
+  # @param [Date]
+  # @return [Boolean]
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
+    return false if should_skip_event?(next_scheduled_event)
+    
     result = true
     subject_schedules = schedules(participant)
     if subject_schedules && days = subject_schedules["days"]
@@ -187,6 +226,12 @@ class PatientStudyCalendar
     result
   end
   
+  ##
+  # Schedules the matching PSC segment to the given event on the participant's calendar.
+  #
+  # @param [Participant]
+  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
+  # @param [Date]
   def schedule_known_event(participant, event_type, date)
     if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
       connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", build_known_event_request(event_type, date), { 'Content-Length' => '1024' })
@@ -364,7 +409,7 @@ class PatientStudyCalendar
     # This method removes the prefix.
     #
     # @param [String]
-    # @return [String]   
+    # @return [String]
     def strip_epoch(segment)
       return segment unless segment.include?(":")
       segments = segment.split(":")
@@ -425,6 +470,7 @@ class PatientStudyCalendar
               when "Father Consent and Interview"
                 "Father"
               when "Informed Consent"
+                "Informed Consent"
                 # Informed Consent is an event type that does not map to a segment in PSC
               else
                 event_type

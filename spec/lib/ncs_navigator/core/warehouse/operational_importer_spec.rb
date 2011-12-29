@@ -43,6 +43,10 @@ module NcsNavigator::Core::Warehouse
         end
       end
     end
+    
+    before do
+      importer.stub!(:current_user).and_return(mock(:username => "current_user", :cas_proxy_ticket => "PT-cas-ticket"))
+    end
 
     describe 'automatic conversion' do
       describe 'of an existing record' do
@@ -298,6 +302,15 @@ module NcsNavigator::Core::Warehouse
         code, 'EVENT_TYPE_CL1', :display_text => event_type_name)
       code
     end
+    
+    def code_for_instrument_type(instrument_type_name)
+      code = NcsNavigatorCore.mdes.types.
+        find { |type| type.name == 'instrument_type_cl1' }.code_list.
+        find { |cle| cle.label == instrument_type_name }.value
+      NcsCode.find_or_create_by_local_code_and_list_name(
+        code, 'INSTRUMENT_TYPE_CL1', :display_text => instrument_type_name)
+      code
+    end
 
     describe 'Event, LinkContact, and Instrument' do
       before do
@@ -310,6 +323,24 @@ module NcsNavigator::Core::Warehouse
       let(:ginger_p) {
         create_warehouse_record_via_core(Participant, 'ginger_p')
       }
+      
+      let(:fred_pers) {
+        create_warehouse_record_via_core(Person, 'fred_pers')
+      }
+      let(:ginger_pers) {
+        create_warehouse_record_via_core(Person, 'ginger_pers')
+      }
+      
+      let!(:fred_p_pers_link) {
+        create_warehouse_record_via_core(ParticipantPersonLink, 'fred_p_pers_link',
+          :p => fred_p,
+          :person => fred_pers)
+      }
+      let!(:ginger_p_pers_link) {
+        create_warehouse_record_via_core(ParticipantPersonLink, 'ginger_p_pers_link',
+          :p => ginger_p,
+          :person => ginger_pers)
+      }
 
       let(:f_e2) {
         create_warehouse_record_via_core(Event, 'f_e2',
@@ -320,6 +351,7 @@ module NcsNavigator::Core::Warehouse
       }
       let!(:f_e2_i) {
         create_warehouse_record_via_core(Instrument, 'f_e2_i',
+          :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
           :event => f_e2)
       }
       let(:f_e3) {
@@ -345,7 +377,7 @@ module NcsNavigator::Core::Warehouse
       }
       let!(:f_c1_e2) {
         create_warehouse_record_via_core(ContactLink, 'f_c1_e2',
-          :contact => f_c1, :event => f_e2)
+          :contact => f_c1, :event => f_e2, :instrument => f_e2_i)
       }
       let!(:f_c1_e3) {
         create_warehouse_record_via_core(ContactLink, 'f_c1_e3',
@@ -381,6 +413,7 @@ module NcsNavigator::Core::Warehouse
       }
       let!(:g_e1_i) {
         create_warehouse_record_via_core(Instrument, 'g_e1_i',
+          :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
           :event => g_e1)
       }
 
@@ -389,14 +422,17 @@ module NcsNavigator::Core::Warehouse
           create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '2010-09-17')
         }
         let!(:g_c1_e1) {
-          create_warehouse_record_via_core(ContactLink, 'g_c1_e1', :contact => g_c1, :event => g_e1)
+          create_warehouse_record_via_core(ContactLink, 'g_c1_e1', 
+            :contact => g_c1, :event => g_e1, :instrument => g_e1_i)
         }
 
         before do
           g_e1.participant = nil
           g_e1.save or fail('Could not update event')
 
-          importer.import
+          VCR.use_cassette('psc/operational_importer') do
+            importer.import
+          end
         end
 
         it 'creates core events' do
@@ -419,15 +455,18 @@ module NcsNavigator::Core::Warehouse
           g_e1.event_end_date = '9777-97-97'
 
           save_wh(g_e1)
+
+          VCR.use_cassette('psc/operational_importer') do
+            importer.import
+          end
+
         end
 
         it 'creates core events' do
-          importer.import
           Event.find_by_event_id('g_e1').should_not be_nil
         end
 
         it 'creates core instruments' do
-          importer.import
           Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
         end
       end
@@ -446,7 +485,9 @@ module NcsNavigator::Core::Warehouse
 
           save_wh(g_e1)
 
-          importer.import
+          VCR.use_cassette('psc/operational_importer') do
+            importer.import
+          end
         end
 
         it 'creates core contact links' do
@@ -501,7 +542,19 @@ module NcsNavigator::Core::Warehouse
           }
 
           before do
-            importer.import
+            VCR.use_cassette('psc/operational_importer') do
+              importer.import
+            end
+          end
+          
+          it 'associates person with participant' do
+            person = Person.find_by_person_id('fred_pers')
+            person.should_not be_nil
+            participant.should_not be_nil
+            participant.participant_person_links.should_not be_empty
+            participant.participant_person_links.first.person.should == person
+            participant.person.should_not be_nil
+            participant.person.should == person
           end
 
           it 'is in the correct order' do
@@ -509,45 +562,34 @@ module NcsNavigator::Core::Warehouse
           end
 
           it 'does not duplicate already-imported events' do
-            importer.import # twice
+            VCR.use_cassette('psc/operational_importer') do
+              importer.import # twice
+            end
             target_states.should == expected_states
           end
-
-          # describe 'associating participant with patient study calendar (PSC)' do
-          #   # before do
-          #   #   psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
-          #   #   @uri  = psc_config["uri"]
-          #   #   @user = mock(:username => "username", :cas_proxy_ticket => "PT-cas-ticket")
-          #   # end
-          #   # 
-          #   # let(:subject) { PatientStudyCalendar.new(@user) }
-          # 
-          #   it 'registers the participant with psc' 
-          # 
-          #   it 'starts the participant in the pending state' do
-          #     participant.should be_following_low_intensity
-          #   end
-          #
-          #   it 'schedules the known events with the event date'
-          # 
-          # end
 
         end
 
         it 'saves the events' do
-          importer.import
+          VCR.use_cassette('psc/operational_importer') do
+            importer.import
+          end
           Event.joins(:participant).where('participants.p_id' => 'fred_p').
             collect(&:event_id).sort.should == %w(f_e1 f_e2 f_e3 f_e4)
         end
 
         it 'saves the contact_links' do
-          importer.import
+          VCR.use_cassette('psc/operational_importer') do
+            importer.import
+          end
           ContactLink.all.collect(&:contact_link_id).sort.should ==
             MdesModule::LinkContact.all.collect(&:contact_link_id).sort
         end
 
         it 'saves the instruments' do
-          importer.import
+          VCR.use_cassette('psc/operational_importer') do
+            importer.import
+          end
           MdesModule::Instrument.all.collect(&:instrument_id).sort.should == %w(f_e2_i g_e1_i)
         end
       end
