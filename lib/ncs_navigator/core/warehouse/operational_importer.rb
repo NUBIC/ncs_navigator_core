@@ -94,20 +94,20 @@ module NcsNavigator::Core::Warehouse
 
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
+            core_event_date = core_event.event_start_date.blank? ? core_event.event_end_date : core_event.event_start_date
+            core_event_type = core_event.event_type
             
-            # TODO: register the participant with PSC if not yet registered
-            # unless psc.is_registered? participant  # or participant.can_register? psc if sure participant state is 'pending'
-            #   psc.assign_subject(participant, core_event.event_type. core_event.start_date) # or use end_date
-            # end
+            assign_subject(participant, core_event_type.to_s, core_event_date)
             
             if core_event.new_record?
-              participant.set_state_for_event_type(core_event.event_type)
+              participant.set_state_for_event_type(core_event_type)
             end
             
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
               save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
             end
+            
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               # TODO: this is probably where the PSC updating should
               # happen. Pseudocode:
@@ -117,9 +117,8 @@ module NcsNavigator::Core::Warehouse
               # seg = find existing scheduled segment for this event
               # unless seg
               #   seg = schedule segment for core_event
-
-              # -*- if psc.should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(core_event.event_type), core_event.start_date)
-              #       psc.schedule_known_event(participant, core_event.event_type, core_event.date)
+              schedule_known_event(participant, core_event_type.to_s, core_event_date)
+              
               #
               # is this the last CL for this event?
               #   is the event complete?
@@ -130,15 +129,10 @@ module NcsNavigator::Core::Warehouse
               #     new_state = scheduled
               # otherwise
               #   new_state = scheduled
-              #
-              # foreach(sch_activity in seg)
-              #   update sch_activity
-              #     state: new_state,
-              #     date: CL.contact.contact_date,
-              #     reason: "Imported contact link {id}"
               
+              # TODO: determine state of activity
               
-              #   -*- psc.mark_activity_for_instrument(sch_activity, participant, new_state, reason)
+              update_activity_state(participant, mdes_lc.instrument)
               
               save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
             end
@@ -148,7 +142,55 @@ module NcsNavigator::Core::Warehouse
     ensure
       drop_state_impacting_ids_table
     end
-
+    
+    def psc
+      @psc ||= PatientStudyCalendar.new(current_user)
+    end
+    
+    def current_user
+      # TODO: get the current logged in user - for use with PatientStudyCalendar - cf. #psc above
+    end
+    
+    def assign_subject(participant, core_event_type, core_event_date)
+      if !participant.person.nil? && !psc.is_registered?(participant)
+        psc.assign_subject(participant, core_event_type, core_event_date)
+      end
+    end
+    private :assign_subject
+    
+    def schedule_known_event(participant, core_event_type, core_event_date)
+      if !participant.person.nil? && psc.is_registered?(participant)
+        psc.schedule_known_event(participant, core_event_type, core_event_date)
+      end
+    end
+    private :schedule_known_event
+    
+    def update_activity_state(participant, instrument)
+      if !participant.person.nil? && psc.is_registered?(participant)
+        if instrument
+          activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
+          psc.update_activity_state(activity_name, participant, activity_state(instrument.ins_status))
+        end
+      end
+    end
+    private :update_activity_state
+    
+    def activity_state(instrument_status)
+      case instrument_status
+      when 1 # not started
+        PatientStudyCalendar::ACTIVITY_SCHEDULED
+      when 2 # refused
+        PatientStudyCalendar::ACTIVITY_CANCELED
+      when 3 # partial
+        PatientStudyCalendar::ACTIVITY_OCCURRED
+      when 4 # complete
+        PatientStudyCalendar::ACTIVITY_OCCURRED
+      else   # nil or missing
+        PatientStudyCalendar::ACTIVITY_SCHEDULED
+      end
+    end
+    private :activity_state
+    
     STATE_IMPACTING_IDS_TABLE_NAME = 'scratch_core_importer_state_impacting_elci'
 
     def build_state_impacting_ids_table
