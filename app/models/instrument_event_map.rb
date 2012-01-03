@@ -94,7 +94,7 @@ class InstrumentEventMap
   def self.instrument_map_value_for_code(code, value)
     result = nil
     instruments.each do |ie|
-      if code == ie["instrument_type"]
+      if code.to_i == ie["instrument_type"]
         result = ie[value]
         break
       end
