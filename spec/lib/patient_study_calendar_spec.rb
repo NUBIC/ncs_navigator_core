@@ -132,7 +132,7 @@ describe PatientStudyCalendar do
         resp = subject.assign_subject(participant)
         
         resp = subject.assignment_identifier(participant)
-        subject_assignments = resp.body.search('subject-assignment')
+        subject_assignments = resp.search('subject-assignment')
         subject_assignments.size.should == 1
         subject_assignments.first['id'].should == participant.public_id
       end

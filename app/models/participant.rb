@@ -219,7 +219,7 @@ class Participant < ActiveRecord::Base
     survey_title = response_set.survey.title
 
     if /_PregScreen_/ =~ survey_title
-      resp = psc.update_subject(self)
+      psc.update_subject(self)
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     end
 

@@ -52,6 +52,13 @@ class PatientStudyCalendar
   end
   alias :connection :get_connection
   
+  require 'logger'  
+  def log
+    logfile = File.open(Rails.root.join('log', 'psc.log'), 'a')
+    logfile.sync = true
+    @@log ||= Logger.new(logfile)
+  end
+  
   # TODO: put into configuration
   def study_identifier
     "NCS Hi-Lo"
@@ -78,24 +85,24 @@ class PatientStudyCalendar
   # Gets the current template from PSC and returns the nodes matching 'psc:study-segment'.
   # @return [NodeList]
   def segments
-    template = connection.get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
-    template.body.xpath('//psc:study-segment', Psc.xml_namespace)
+    template = get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
+    template.xpath('//psc:study-segment', Psc.xml_namespace)
   end
 
   ##
   # True if the participant is known to psc by the participant public_id.
   # @return [Boolean]
   def is_registered?(participant)
-    resp = connection.get("subjects/#{participant.person.public_id}")
-    resp.status < 300
+    status = get("subjects/#{participant.person.public_id}", "status")
+    status < 300
   end
   
   def assign_subject(participant, event_type = nil, date = nil)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
     return nil if should_skip_event?(event_type)
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
-    connection.post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", 
-      build_subject_assignment_request(participant, event_type, date), { 'Content-Length' => '1024' })
+    post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", 
+      build_subject_assignment_request(participant, event_type, date))
   end
   
   def should_skip_event?(event_type)
@@ -103,8 +110,7 @@ class PatientStudyCalendar
   end
     
   def schedules(participant, format = "json")
-    resp = connection.get("subjects/#{participant.person.public_id}/schedules.#{format}")
-    resp.body
+    get("subjects/#{participant.person.public_id}/schedules.#{format}")
   end
 
   ##
@@ -117,8 +123,8 @@ class PatientStudyCalendar
   # @param [String] (optional) - reason for change
   def update_activity_state(activity_name, participant, value, date = nil, reason = nil)
     if scheduled_activity_identifier = get_scheduled_activity_identifier(participant, activity_name)
-      resp = connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}", 
-        build_scheduled_activity_state_request(value, date, reason), { 'Content-Length' => '1024' })
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}", 
+        build_scheduled_activity_state_request(value, date, reason))
     end
   end
   
@@ -179,13 +185,12 @@ class PatientStudyCalendar
     path << "&start-date=#{filters[:start_date]}" if filters[:start_date]
     path << "&responsible-user=#{filters[:current_user]}" if filters[:current_user]
     
-    resp = connection.get(path)
-    resp.body
+    get(path)
   end
   
   
   def assignment_identifier(participant)
-    connection.get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
+    get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
   end
   
   def schedule_next_segment(participant, date = nil)
@@ -194,8 +199,9 @@ class PatientStudyCalendar
     next_scheduled_event      = participant.next_scheduled_event
     next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
     
-    if should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
-      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date), { 'Content-Length' => '1024' })
+    if should_schedule_segment(participant, next_scheduled_event.event, next_scheduled_event_date)
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", 
+        build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date))
     end
   end
   
@@ -214,15 +220,19 @@ class PatientStudyCalendar
     subject_schedules = schedules(participant)
     if subject_schedules && days = subject_schedules["days"]
       days.keys.each do |day|
+        log.debug("~~~ checking if '#{day}' == '#{next_scheduled_event_date}'")
         if day == next_scheduled_event_date.to_s
           days[day]["activities"].each do |activity|
-            if activity["study_segment"].include?(next_scheduled_event.event)
+            log.debug("~~~ checking if '#{activity["study_segment"]}' includes '#{next_scheduled_event}'")
+            if activity["study_segment"].include?(next_scheduled_event)
               result = false
             end
           end
         end
       end
     end
+    
+    log.debug("~~~ should_schedule_segment returning #{result} for #{participant.person} #{next_scheduled_event} on #{next_scheduled_event_date}")
     result
   end
   
@@ -234,13 +244,15 @@ class PatientStudyCalendar
   # @param [Date]
   def schedule_known_event(participant, event_type, date)
     if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
-      connection.post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", build_known_event_request(event_type, date), { 'Content-Length' => '1024' })
+      log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")      
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", 
+        build_known_event_request(event_type, date))
     end
   end
   
   def update_subject(participant)
-    resp = connection.put("subjects/#{participant.person.public_id}", build_subject_attributes_hash(participant, "_").to_json)
-    Rails.logger.info(resp.body)
+    put("subjects/#{participant.person.public_id}", 
+      build_subject_attributes_hash(participant, "_").to_json)
   end
   
   # <xsd:element name="registration" type="psc:Registration"/>
@@ -335,7 +347,8 @@ class PatientStudyCalendar
     build_study_segment_request(get_study_segment_id(PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)), date)
   end
 
-  def build_study_segment_request(segment_id, start_date)  
+  def build_study_segment_request(segment_id, start_date)
+    log.debug("~~~ build_study_segment_request for #{segment_id} on #{start_date}")
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
     xm.tag!("next-scheduled-study-segment".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
@@ -401,6 +414,72 @@ class PatientStudyCalendar
     dob
   end
   private :formatted_dob
+  
+  ##
+  # Makes the GET request to the given path and returns the requested response
+  # section (e.g. 'body' or 'status').
+  # Logs the request.
+  # @param [String] - request path
+  # @param [String] - "body" or "status"
+  # @return [String] - response section
+  def get(path, response_section = "body")
+    begin
+      response = connection.get(path)
+      if response.status < 300
+        log.debug "DEBUG [#{Time.now}] GET to #{path} succeeded - http status #{response.status}"
+      else
+        log.info "INFO  [#{Time.now}] GET to #{path} failed - http status #{response.status}"
+      end
+      response.send response_section
+    rescue Exception => e
+      log.error "ERROR [#{Time.now}] Exception #{e} during GET request to #{path}"
+    end
+  end
+
+  ##
+  # Makes the POST request to the given path with the param and 
+  # logs the request.
+  # @param [String] - the request path
+  # @param [String] - the post parameters
+  # @return [Response]
+  def post(path, payload)
+    begin
+      response = connection.post(path, payload, { 'Content-Length' => '1024' })
+      if response.status < 300
+        log.debug "DEBUG [#{Time.now}] POST to #{path} succeeded - http status #{response.status}"
+        log.debug "      - #{response.body}"
+      else
+        log.info "INFO  [#{Time.now}] POST to #{path} failed - http status #{response.status}"
+        log.info "      - #{response.body}"
+      end
+      response
+    rescue Exception => e
+      log.error "ERROR [#{Time.now}] Exception #{e} during POST request to #{path}"
+    end
+  end
+
+  ##
+  # Makes the PUT request to the given path with the param and
+  # logs the request.
+  # @param [String] - the request path
+  # @param [String] - the put parameters
+  # @return [Response]
+  def put(path, payload)
+    begin
+      response = connection.put(path, payload)
+      if response.status < 300
+        log.debug "DEBUG [#{Time.now}] PUT to #{path} succeeded - http status #{response.status}"
+        log.debug "      - #{response.body}"
+      else
+        log.info "INFO  [#{Time.now}] PUT to #{path} failed - http status #{response.status}"
+        log.info "      - #{response.body}"
+      end
+      response
+    rescue Exception => e
+      log.error "ERROR [#{Time.now}] Exception #{e} during PUT request to #{path}"
+    end
+  end
+  
   
   class << self
     ##
