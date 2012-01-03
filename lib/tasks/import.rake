@@ -13,15 +13,24 @@ namespace :import do
     NcsNavigator::Warehouse::DatabaseInitializer.new(t.config).set_up_repository
   end
 
+  task :psc_setup do |t|
+    class << t; attr_accessor :psc_username_password; end
+
+    hl = HighLine.new
+    username = hl.ask("Username for PSC: ")
+    password = hl.ask("Password for PSC: ") { |q| q.echo = '*' }
+    t.psc_username_password = [username, password].join(',')
+  end
+
   def import_wh_config
     task('import:warehouse_setup').config
   end
 
   desc 'Import all data'
-  task :all => [:operational, :unused_operational, :instruments, :unused_instruments]
+  task :all => [:psc_setup, :operational, :unused_operational, :instruments, :unused_instruments]
 
   desc 'Import operational data'
-  task :operational => [:warehouse_setup, :environment] do
+  task :operational => [:psc_setup, :warehouse_setup, :environment] do
     require 'ncs_navigator/core'
     importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(import_wh_config)
 
@@ -41,7 +50,13 @@ namespace :import do
              end
 
     puts "Importing only #{tables.join(', ')}." unless tables.empty?
-    importer.import(*tables)
+
+    begin
+      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
+      importer.import(*tables)
+    ensure
+      ENV['PSC_USERNAME_PASSWORD'] = nil
+    end
   end
 
   desc 'Import instrument data'
