@@ -107,17 +107,19 @@ module NcsNavigator::Core::Warehouse
             (event_and_links[:instruments] || []).each do |mdes_i|
               save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
             end
+
+            # TODO: this is probably where the PSC updating should
+            # happen. Pseudocode:
+            #
+            # unless this is a new CL, do nothing
+            #
+            # seg = find existing scheduled segment for this event
+            # unless seg
+            #   seg = schedule segment for core_event
+            schedule_known_event(participant, core_event_type.to_s, core_event_date)
+
             
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
-              # TODO: this is probably where the PSC updating should
-              # happen. Pseudocode:
-              #
-              # unless this is a new CL, do nothing
-              #
-              # seg = find existing scheduled segment for this event
-              # unless seg
-              #   seg = schedule segment for core_event
-              schedule_known_event(participant, core_event_type.to_s, core_event_date)
               
               #
               # is this the last CL for this event?
@@ -132,7 +134,7 @@ module NcsNavigator::Core::Warehouse
               
               # TODO: determine state of activity
               
-              update_activity_state(participant, mdes_lc.instrument)
+              update_activity_state(participant, mdes_lc.instrument, core_event_date)
               
               save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
             end
@@ -148,6 +150,12 @@ module NcsNavigator::Core::Warehouse
     end
     
     def current_user
+      # Use the following when running the imported in development if necessary
+      # @current_user ||= Class.new(Struct.new(:username)) do
+      #   def cas_proxy_ticket(*args)
+      #     'USERNAME'
+      #   end
+      # end.new("USERNAME")
       # TODO: get the current logged in user - for use with PatientStudyCalendar - cf. #psc above
     end
     
@@ -160,16 +168,23 @@ module NcsNavigator::Core::Warehouse
     
     def schedule_known_event(participant, core_event_type, core_event_date)
       if !participant.person.nil? && psc.is_registered?(participant)
+        log.debug("~~~ schedule_known_event for #{core_event_type} on #{core_event_date} - #{participant.person}")
         psc.schedule_known_event(participant, core_event_type, core_event_date)
       end
     end
     private :schedule_known_event
     
-    def update_activity_state(participant, instrument)
+    def update_activity_state(participant, instrument, date)
+      if instrument
+        log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.id}] on #{date}")
+      end
       if !participant.person.nil? && psc.is_registered?(participant)
         if instrument
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
-          psc.update_activity_state(activity_name, participant, activity_state(instrument.ins_status))
+          new_state = activity_state(instrument.ins_status.to_i)
+          reason = "Import for instrument [#{instrument.id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
+          log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
+          psc.update_activity_state(activity_name, participant, new_state, date, reason)
         end
       end
     end
