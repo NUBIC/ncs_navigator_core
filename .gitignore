@@ -25,3 +25,5 @@ doc/notes/*
 .sass-cache/*
 public/assets
 reports
+importer_passthrough/*.xml
+shared/importer_passthrough/*.xml
