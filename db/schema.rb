@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111212224350) do
+ActiveRecord::Schema.define(:version => 20120103191119) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -872,5 +872,68 @@ ActiveRecord::Schema.define(:version => 20111212224350) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_foreign_key "addresses", "dwelling_units", :name => "addresses_dwelling_units_fk"
+  add_foreign_key "addresses", "people", :name => "addresses_people_fk"
+
+  add_foreign_key "contact_links", "contacts", :name => "contact_links_contact_fk"
+  add_foreign_key "contact_links", "events", :name => "contact_links_events_fk"
+  add_foreign_key "contact_links", "instruments", :name => "contact_links_instruments_fk"
+  add_foreign_key "contact_links", "people", :name => "contact_links_people_fk"
+
+  add_foreign_key "dwelling_household_links", "dwelling_units", :name => "dwelling_household_links_dwelling_units_fk"
+  add_foreign_key "dwelling_household_links", "household_units", :name => "dwelling_household_links_household_units_fk"
+
+  add_foreign_key "dwelling_units", "listing_units", :name => "dwelling_units_listing_units_fk"
+
+  add_foreign_key "emails", "people", :name => "emails_people_fk"
+
+  add_foreign_key "events", "participants", :name => "events_participants_fk"
+
+  add_foreign_key "household_person_links", "household_units", :name => "household_person_links_household_units_fk"
+  add_foreign_key "household_person_links", "people", :name => "household_person_links_people_fk"
+
+  add_foreign_key "instruments", "events", :name => "instruments_events_fk"
+  add_foreign_key "instruments", "people", :name => "instruments_people_fk"
+  add_foreign_key "instruments", "surveys", :name => "instruments_surveys_fk"
+
+  add_foreign_key "participant_authorization_forms", "contacts", :name => "participant_authorization_forms_contacts_fk"
+  add_foreign_key "participant_authorization_forms", "participants", :name => "participant_authorization_forms_participants_fk"
+
+  add_foreign_key "participant_consent_samples", "participant_consents", :name => "participant_consent_samples_participant_consents_fk"
+  add_foreign_key "participant_consent_samples", "participants", :name => "participant_consent_samples_participants_fk"
+
+  add_foreign_key "participant_consents", "contacts", :name => "participant_consents_contacts_fk"
+  add_foreign_key "participant_consents", "participants", :name => "participant_consents_participants_fk"
+  add_foreign_key "participant_consents", "people", :name => "participant_consents_person_consented_fk", :column => "person_who_consented_id"
+  add_foreign_key "participant_consents", "people", :name => "participant_consents_person_withdrew_fk", :column => "person_wthdrw_consent_id"
+
+  add_foreign_key "participant_high_intensity_state_transitions", "participants", :name => "participant_high_intensity_state_transitions_participants_fk"
+
+  add_foreign_key "participant_low_intensity_state_transitions", "participants", :name => "participant_low_intensity_state_transitions_participants_fk"
+
+  add_foreign_key "participant_person_links", "participants", :name => "participant_person_links_participants_fk"
+  add_foreign_key "participant_person_links", "people", :name => "participant_person_links_people_fk"
+
+  add_foreign_key "participant_staff_relationships", "participants", :name => "participant_staff_relationships_participants_fk"
+
+  add_foreign_key "participant_visit_consents", "contacts", :name => "participant_visit_consents_contacts_fk"
+  add_foreign_key "participant_visit_consents", "participants", :name => "participant_visit_consents_participants_fk"
+  add_foreign_key "participant_visit_consents", "people", :name => "participant_visit_consents_people_fk", :column => "vis_person_who_consented_id"
+
+  add_foreign_key "participant_visit_records", "contacts", :name => "participant_visit_records_contacts_fk"
+  add_foreign_key "participant_visit_records", "participants", :name => "participant_visit_records_participants_fk"
+  add_foreign_key "participant_visit_records", "people", :name => "participant_visit_records_people_fk", :column => "rvis_person_id"
+
+  add_foreign_key "person_races", "people", :name => "person_races_people_fk"
+
+  add_foreign_key "ppg_details", "participants", :name => "ppg_details_participants_fk"
+
+  add_foreign_key "ppg_status_histories", "participants", :name => "ppg_status_histories_participants_fk"
+
+  add_foreign_key "response_sets", "instruments", :name => "response_sets_instruments_fk"
+  add_foreign_key "response_sets", "people", :name => "response_sets_people_fk", :column => "user_id"
+
+  add_foreign_key "telephones", "people", :name => "telephones_people_fk"
 
 end

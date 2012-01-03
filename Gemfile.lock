@@ -159,6 +159,8 @@ GEM
       faraday (~> 0.6)
     fastercsv (1.5.4)
     ffi (1.0.11)
+    foreigner (1.1.1)
+      activerecord (>= 3.0.0)
     formtastic (1.2.4)
       actionpack (>= 2.3.7)
       activesupport (>= 2.3.7)
@@ -388,6 +390,7 @@ DEPENDENCIES
   factory_girl
   fakeweb
   fastercsv
+  foreigner
   formtastic (= 1.2.4)
   growl_notify
   guard
