@@ -12,6 +12,7 @@ gem 'pg'
 
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'ransack'
+gem 'foreigner'
 
 group :assets do
   gem 'sass-rails', "~> 3.1.0"
