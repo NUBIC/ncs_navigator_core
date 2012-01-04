@@ -1,20 +1,20 @@
 require 'forwardable'
 class PatientStudyCalendar
   extend Forwardable
-  
+
   LOW_INTENSITY  = "LO-Intensity"
   HIGH_INTENSITY = "HI-Intensity"
-  
+
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
   PPG_FOLLOW_UP         = "PPG Follow-Up"
   BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
   HI_LO_CONVERSION      = "Low to High Conversion"
-  
+
   PRE_PREGNANCY         = "Pre-Pregnancy"
   PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
-  
+
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
@@ -37,14 +37,16 @@ class PatientStudyCalendar
   SKIPPED_EVENT_TYPES = [INFORMED_CONSENT]
 
   attr_accessor :user
-  
+  attr_accessor :registered_participants
+
   def_delegators self, :uri, :psc_config, :strip_epoch
-  
+
   ##
   # User object who was authenticated using CAS
   # @param [Aker::User]
   def initialize(user)
     self.user = user || fake_user
+    self.registered_participants = []
   end
 
   def fake_user
@@ -58,14 +60,14 @@ class PatientStudyCalendar
     psc_client.connection
   end
   alias :connection :get_connection
-  
-  require 'logger'  
+
+  require 'logger'
   def log
     logfile = File.open(Rails.root.join('log', 'psc.log'), 'a')
     logfile.sync = true
     @@log ||= Logger.new(logfile)
   end
-  
+
   # TODO: put into configuration
   def study_identifier
     "NCS Hi-Lo"
@@ -75,11 +77,11 @@ class PatientStudyCalendar
   def site_identifier
     "GCSC"
   end
-  
+
   def psc_client
     @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator )
   end
-  
+
   def create_authenticator
     if ENV['PSC_USERNAME_PASSWORD']
       { :basic => ENV['PSC_USERNAME_PASSWORD'].split(',') }
@@ -87,7 +89,7 @@ class PatientStudyCalendar
       { :token => lambda { user.cas_proxy_ticket(File.join(uri.to_s, CAS_SECURITY_SUFFIX)) } }
     end
   end
-  
+
   ##
   # Gets the current template from PSC and returns the nodes matching 'psc:study-segment'.
   # @return [NodeList]
@@ -100,22 +102,37 @@ class PatientStudyCalendar
   # True if the participant is known to psc by the participant public_id.
   # @return [Boolean]
   def is_registered?(participant)
-    status = get("subjects/#{participant.person.public_id}", "status")
-    status < 300
+    result = false
+    if registered_participant?(participant)
+      result = true
+    else
+      result = get("subjects/#{participant.person.public_id}", "status") < 300
+      registered_participants << participant.person.public_id if result
+    end
+    result
   end
-  
+
+  ##
+  # True if the participant identifier is known to self.
+  # @return [Boolean]
+  def registered_participant?(participant)
+    registered_participants.include?(participant.person.public_id)
+  end
+
   def assign_subject(participant, event_type = nil, date = nil)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
     return nil if should_skip_event?(event_type)
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
-    post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments", 
+    response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
       build_subject_assignment_request(participant, event_type, date))
+    registered_participants << participant.person.public_id if valid_response?(response)
+    response
   end
-  
+
   def should_skip_event?(event_type)
     SKIPPED_EVENT_TYPES.include? event_type
   end
-    
+
   def schedules(participant, format = "json")
     get("subjects/#{participant.person.public_id}/schedules.#{format}")
   end
@@ -124,17 +141,17 @@ class PatientStudyCalendar
   # Updates the state of the scheduled activity in PSC.
   #
   # @param [String] - activity_name
-  # @param [Participant] 
+  # @param [Participant]
   # @param [String] - one of the valid enumerable state attributes for an activity in PSC
   # @param [Date] (optional)
   # @param [String] (optional) - reason for change
   def update_activity_state(activity_name, participant, value, date = nil, reason = nil)
     if scheduled_activity_identifier = get_scheduled_activity_identifier(participant, activity_name)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}", 
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}",
         build_scheduled_activity_state_request(value, date, reason))
     end
   end
-  
+
   def get_scheduled_activity_identifier(participant, activity_name)
     scheduled_activity_identifier = nil
     participant_activities(participant).each do |activity|
@@ -144,7 +161,7 @@ class PatientStudyCalendar
     end
     scheduled_activity_identifier
   end
-  
+
   def activities_for_participant(participant)
     activities = []
     participant_activities(participant).each do |activity|
@@ -185,33 +202,33 @@ class PatientStudyCalendar
   def scheduled_activities_report(options = {})
     filters = {:state => 'scheduled', :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
     filters = filters.merge(options)
-    
+
     path = "reports/scheduled-activities.json?"
     path << "state=#{filters[:state]}"
     path << "&end-date=#{filters[:end_date]}" if filters[:end_date]
     path << "&start-date=#{filters[:start_date]}" if filters[:start_date]
     path << "&responsible-user=#{filters[:current_user]}" if filters[:current_user]
-    
+
     get(path)
   end
-  
-  
+
+
   def assignment_identifier(participant)
     get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
   end
-  
+
   def schedule_next_segment(participant, date = nil)
     return nil if participant.next_study_segment.blank?
-    
+
     next_scheduled_event      = participant.next_scheduled_event
     next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
-    
+
     if should_schedule_segment(participant, next_scheduled_event.event, next_scheduled_event_date)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", 
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}",
         build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date))
     end
   end
-  
+
   ##
   # Defaults to True. If the given scheduled event exists on the given day for the participant
   # then return False since the participant already has that event scheduled.
@@ -222,7 +239,7 @@ class PatientStudyCalendar
   # @return [Boolean]
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
     return false if should_skip_event?(next_scheduled_event)
-    
+
     result = true
     subject_schedules = schedules(participant)
     if subject_schedules && days = subject_schedules["days"]
@@ -238,11 +255,11 @@ class PatientStudyCalendar
         end
       end
     end
-    
+
     log.debug("~~~ should_schedule_segment returning #{result} for #{participant.person} #{next_scheduled_event} on #{next_scheduled_event_date}")
     result
   end
-  
+
   ##
   # Schedules the matching PSC segment to the given event on the participant's calendar.
   #
@@ -251,19 +268,19 @@ class PatientStudyCalendar
   # @param [Date]
   def schedule_known_event(participant, event_type, date)
     if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
-      log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")      
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", 
+      log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}",
         build_known_event_request(event_type, date))
     end
   end
-  
+
   def update_subject(participant)
-    put("subjects/#{participant.person.public_id}", 
+    put("subjects/#{participant.person.public_id}",
       build_subject_attributes_hash(participant, "_").to_json)
   end
-  
+
   # <xsd:element name="registration" type="psc:Registration"/>
-  # 
+  #
   # <xsd:complexType name="Registration">
   #     <xsd:sequence>
   #         <xsd:element name="subject" type="psc:Subject"/>
@@ -274,23 +291,23 @@ class PatientStudyCalendar
   #     <xsd:attribute name="desired-assignment-id" type="xsd:string"/>
   #     <xsd:attribute name="study-subject-id" type="xsd:string"/>
   # </xsd:complexType>
-  #     
+  #
   def build_subject_assignment_request(participant, event_type, date)
     date = date.nil? ? Date.today.to_s : date.to_s
     subject_attributes = build_subject_attributes_hash(participant)
-    
+
     segment = event_type.blank? ? participant.next_study_segment : PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)
     segment_id = get_study_segment_id(segment)
-    
+
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
-    xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+    xm.registration("xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc",
                     "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                    "first-study-segment-id" => segment_id, 
-                    "date" => date, 
-                    "subject-coordinator-name" => user.username, 
-                    "desired-assignment-id" => participant.person.public_id) { 
+                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd",
+                    "first-study-segment-id" => segment_id,
+                    "date" => date,
+                    "subject-coordinator-name" => user.username,
+                    "desired-assignment-id" => participant.person.public_id) {
       xm.subject(subject_attributes)
     }
     xm.target!
@@ -318,13 +335,13 @@ class PatientStudyCalendar
   def build_subject_attributes_hash(participant, separator = "-")
     subject_attributes = Hash.new
     subject_attributes["person#{separator}id"]  = participant.person.public_id
-  
+
     gender = participant.gender
-    if gender.blank? || gender == "Missing in Error"         
+    if gender.blank? || gender == "Missing in Error"
       gender = "unknown"
     end
     subject_attributes["gender"] = gender
-  
+
     subject_attributes["first#{separator}name"] = participant.first_name unless participant.first_name.blank?
     subject_attributes["last#{separator}name"]  = participant.last_name  unless participant.last_name.blank?
     dob = formatted_dob(participant)
@@ -333,7 +350,7 @@ class PatientStudyCalendar
   end
 
   # <xsd:element name="next-scheduled-study-segment" type="psc:NextScheduledStudySegment"/>
-  # 
+  #
   # <xsd:complexType name="NextScheduledStudySegment">
   #     <xsd:attribute name="start-date" type="xsd:date" use="required"/>
   #     <xsd:attribute name="study-segment-id" type="xsd:string" use="required"/>
@@ -358,17 +375,17 @@ class PatientStudyCalendar
     log.debug("~~~ build_study_segment_request for #{segment_id} on #{start_date}")
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
-    xm.tag!("next-scheduled-study-segment".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+    xm.tag!("next-scheduled-study-segment".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc",
                                     "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                                    "study-segment-id" => segment_id, 
+                                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd",
+                                    "study-segment-id" => segment_id,
                                     "start-date" => start_date,
                                     "mode" => "per-protocol"})
     xm.target!
   end
-  
+
   # <xsd:element name="scheduled-activity-state" type="psc:ScheduledActivityState"/>
-  # 
+  #
   # <xsd:complexType name="ScheduledActivityState">
   #     <xsd:attribute name="state" use="required">
   #         <xsd:simpleType>
@@ -389,15 +406,15 @@ class PatientStudyCalendar
     date = date.nil? ? Date.today.strftime("%Y-%m-%d") : date
     xm = Builder::XmlMarkup.new(:target => "")
     xm.instruct!
-    xm.tag!("scheduled-activity-state".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc", 
+    xm.tag!("scheduled-activity-state".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc",
                                     "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd", 
-                                    "state" => value, 
+                                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd",
+                                    "state" => value,
                                     "date" => date,
                                     "reason" => reason.to_s })
     xm.target!
   end
-  
+
   def get_study_segment_id(segment)
     result = nil
     segment = strip_epoch(segment)
@@ -407,7 +424,7 @@ class PatientStudyCalendar
     end
     result
   end
-  
+
   def formatted_dob(participant)
     dob = nil
     if !(participant.person_dob.to_i < 0) && !participant.person_dob.blank?
@@ -415,13 +432,13 @@ class PatientStudyCalendar
         dt = Date.parse(participant.person_dob)
         dob = dt.strftime("%Y-%m-%d") if dt
       rescue
-       # NOOP - failed to parse person_dob into date - return default nil 
+       # NOOP - failed to parse person_dob into date - return default nil
       end
     end
     dob
   end
   private :formatted_dob
-  
+
   ##
   # Makes the GET request to the given path and returns the requested response
   # section (e.g. 'body' or 'status').
@@ -432,10 +449,10 @@ class PatientStudyCalendar
   def get(path, response_section = "body")
     begin
       response = connection.get(path)
-      if response.status < 300
-        log.debug "DEBUG [#{Time.now}] GET to #{path} succeeded - http status #{response.status}"
+      if valid_response? response
+        log.debug "DEBUG [#{Time.now.to_s(:db)}] GET to #{path} succeeded - http status #{response.status}"
       else
-        log.info "INFO  [#{Time.now}] GET to #{path} failed - http status #{response.status}"
+        log.info "INFO  [#{Time.now.to_s(:db)}] GET to #{path} failed - http status #{response.status}"
       end
       response.send response_section
     rescue Exception => e
@@ -444,7 +461,7 @@ class PatientStudyCalendar
   end
 
   ##
-  # Makes the POST request to the given path with the param and 
+  # Makes the POST request to the given path with the param and
   # logs the request.
   # @param [String] - the request path
   # @param [String] - the post parameters
@@ -452,16 +469,16 @@ class PatientStudyCalendar
   def post(path, payload)
     begin
       response = connection.post(path, payload, { 'Content-Length' => '1024' })
-      if response.status < 300
-        log.debug "DEBUG [#{Time.now}] POST to #{path} succeeded - http status #{response.status}"
+      if valid_response? response
+        log.debug "DEBUG [#{Time.now.to_s(:db)}] POST to #{path} succeeded - http status #{response.status}"
         log.debug "      - #{response.body}"
       else
-        log.info "INFO  [#{Time.now}] POST to #{path} failed - http status #{response.status}"
+        log.info "INFO  [#{Time.now.to_s(:db)}] POST to #{path} failed - http status #{response.status}"
         log.info "      - #{response.body}"
       end
       response
     rescue Exception => e
-      log.error "ERROR [#{Time.now}] Exception #{e} during POST request to #{path}"
+      log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during POST request to #{path}"
     end
   end
 
@@ -474,20 +491,24 @@ class PatientStudyCalendar
   def put(path, payload)
     begin
       response = connection.put(path, payload)
-      if response.status < 300
-        log.debug "DEBUG [#{Time.now}] PUT to #{path} succeeded - http status #{response.status}"
+      if valid_response? response
+        log.debug "DEBUG [#{Time.now.to_s(:db)}] PUT to #{path} succeeded - http status #{response.status}"
         log.debug "      - #{response.body}"
       else
-        log.info "INFO  [#{Time.now}] PUT to #{path} failed - http status #{response.status}"
+        log.info "INFO  [#{Time.now.to_s(:db)}] PUT to #{path} failed - http status #{response.status}"
         log.info "      - #{response.body}"
       end
       response
     rescue Exception => e
-      log.error "ERROR [#{Time.now}] Exception #{e} during PUT request to #{path}"
+      log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during PUT request to #{path}"
     end
   end
-  
-  
+
+  def valid_response?(response)
+    response.status < 300
+  end
+  private :valid_response?
+
   class << self
     ##
     # The PSC assigments returns the epoch prefix to the study segment (e.g. "HI-Intesity: HI-LO Conversion")
@@ -501,9 +522,9 @@ class PatientStudyCalendar
       segments = segment.split(":")
       return segments[1].strip
     end
-  
+
     ##
-    # The Segment in PSC often, but not always, maps directly to the Event Type as named in the 
+    # The Segment in PSC often, but not always, maps directly to the Event Type as named in the
     # Master Data Element Specification Code List.
     #
     # This method takes the segment name from PSC and translates it into the Event as named in the MDES
@@ -533,7 +554,7 @@ class PatientStudyCalendar
               end
       event
     end
-    
+
     ##
     # This method takes the event type display text from the MDES codes lists and
     # translates it into the Segment Name as known by PSC.
@@ -561,9 +582,9 @@ class PatientStudyCalendar
               else
                 event_type
               end
-      event_type      
+      event_type
     end
-    
+
     def uri
       psc_config["uri"]
     end
@@ -571,6 +592,6 @@ class PatientStudyCalendar
     def psc_config
       @psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     end
-  
-  end      
+
+  end
 end
