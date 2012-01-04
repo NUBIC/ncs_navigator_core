@@ -101,6 +101,7 @@ module NcsNavigator::Core::Warehouse
 
             if core_event.new_record?
               participant.set_state_for_event_type(core_event_type)
+              schedule_known_event(participant, core_event_type.to_s, core_event_date)
             end
 
             save_core_record(core_event)
@@ -108,35 +109,12 @@ module NcsNavigator::Core::Warehouse
               save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
             end
 
-            # TODO: this is probably where the PSC updating should
-            # happen. Pseudocode:
-            #
-            # unless this is a new CL, do nothing
-            #
-            # seg = find existing scheduled segment for this event
-            # unless seg
-            #   seg = schedule segment for core_event
-            schedule_known_event(participant, core_event_type.to_s, core_event_date)
-
-
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
-
-              #
-              # is this the last CL for this event?
-              #   is the event complete?
-              #     new_state = occurred
-              #   is the event broken off permanently?
-              #     new_state = canceled
-              #   otherwise
-              #     new_state = scheduled
-              # otherwise
-              #   new_state = scheduled
-
-              # TODO: determine state of activity
-
-              update_activity_state(participant, mdes_lc.instrument, core_event_date)
-
-              save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
+              core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
+              if core_contact_link.new_record?
+                update_activity_state(participant, mdes_lc.instrument, core_event_date)
+              end
+              save_core_record(core_contact_link)
             end
           end
         end
