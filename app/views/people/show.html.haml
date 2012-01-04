@@ -6,17 +6,22 @@
 %h3
   = @person
 
-%p.hide
-  = link_to "View Participant Record for #{@person}", participant_path(@participant), :class => "show_link icon_link"
+- if @participant.nil?
 
-= render 'participant_state'
+  = render 'relationships'
 
-= render 'participant_details'
+- else
+  %p.hide
+    = link_to "View Participant Record for #{@person}", participant_path(@participant), :class => "show_link icon_link"
 
-= render 'participant_psc'
+  = render 'participant_state'
+
+  = render 'participant_details'
+
+  = render 'participant_psc'
+
+  = render 'participant_state_transitions'
 
 = render 'participant_contact_info'
 
 = render 'participant_contacts_and_responses'
-
-= render 'participant_state_transitions'

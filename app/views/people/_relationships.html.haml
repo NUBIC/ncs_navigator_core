@@ -1,0 +1,21 @@
+.page_section
+  .relationships
+    %span.label
+      Relationships
+    - if @person.participant_person_links.blank?
+      %p
+        No relationships exist at this time.
+    - else
+      %table.records
+        %tr
+          %th Select
+          %th Name
+          %th Relationship Type
+        - @person.participant_person_links.each do |ppl|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = link_to "Edit", edit_person_path(ppl.person), :class => "edit_link icon_link"
+            %td
+              = ppl.person.name
+            %td
+              = ppl.relationship
