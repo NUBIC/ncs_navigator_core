@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'faraday/response/psc_errors'
 class PatientStudyCalendar
   extend Forwardable
 
@@ -79,7 +80,7 @@ class PatientStudyCalendar
   end
 
   def psc_client
-    @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator )
+    @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator)
   end
 
   def create_authenticator
@@ -457,6 +458,7 @@ class PatientStudyCalendar
       response.send response_section
     rescue Exception => e
       log.error "ERROR [#{Time.now}] Exception #{e} during GET request to #{path}"
+      raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
 
@@ -479,6 +481,7 @@ class PatientStudyCalendar
       response
     rescue Exception => e
       log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during POST request to #{path}"
+      raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
 
@@ -501,6 +504,7 @@ class PatientStudyCalendar
       response
     rescue Exception => e
       log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during PUT request to #{path}"
+      raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
 
