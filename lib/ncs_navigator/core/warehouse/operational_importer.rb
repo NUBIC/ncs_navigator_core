@@ -146,17 +146,8 @@ module NcsNavigator::Core::Warehouse
     end
 
     def psc
-      @psc ||= PatientStudyCalendar.new(current_user)
-    end
-
-    def current_user
-      # Use the following when running the imported in development if necessary
-      # @current_user ||= Class.new(Struct.new(:username)) do
-      #   def cas_proxy_ticket(*args)
-      #     'USERNAME'
-      #   end
-      # end.new("USERNAME")
-      # TODO: get the current logged in user - for use with PatientStudyCalendar - cf. #psc above
+      # expects PSC_USERNAME_PASSWORD to be set in the env
+      @psc ||= PatientStudyCalendar.new(nil)
     end
 
     def assign_subject(participant, core_event_type, core_event_date)
