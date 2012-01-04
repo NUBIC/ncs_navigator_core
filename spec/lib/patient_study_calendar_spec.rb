@@ -16,7 +16,7 @@ describe PatientStudyCalendar do
     cnx.should_not be_nil
     cnx.class.should == Psc::Connection
   end
-  
+
   it "uses the correct service url to request the cas-proxy-ticket" do
     # protocol:host_url/prefix
     service_url = "https://ncsn-psc.local/auth/cas_security_check"
@@ -25,7 +25,7 @@ describe PatientStudyCalendar do
       subject.segments
     end
   end
-  
+
   it "gets the study identifier" do
     VCR.use_cassette('psc/study_identifier') do
       subject.study_identifier.should == "NCS Hi-Lo"
@@ -58,11 +58,11 @@ describe PatientStudyCalendar do
       ["Pregnancy Visit 2", "Pregnancy Visit  2"],
       # ["Child Consent", "Informed Consent"],
       # ["Father Consent and Interview", "Father"]
-    ].each do |segment_name, event_type_display_text| 
+    ].each do |segment_name, event_type_display_text|
       PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type_display_text).should == segment_name
     end
   end
-  
+
   it "maps the psc segment name to mdes event type code" do
     [
       ["LO-Intensity: Pregnancy Screener", "Pregnancy Screener"],
@@ -75,13 +75,13 @@ describe PatientStudyCalendar do
       ["HI-Intensity: Pregnancy Visit 2", "Pregnancy Visit 2"],
       ["HI-Intensity: Child Consent", "Informed Consent"],
       ["HI-Intensity: Father Consent and Interview", "Father"]
-    ].each do |segment_name, event_type_display_text| 
+    ].each do |segment_name, event_type_display_text|
       PatientStudyCalendar.map_psc_segment_to_mdes_event_type(segment_name).should == event_type_display_text
     end
   end
-  
+
   context "with a participant" do
-  
+
     before(:each) do
       @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
       @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
@@ -91,14 +91,14 @@ describe PatientStudyCalendar do
       ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
       Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
     end
-  
+
     context "checking if registered" do
       it "knows when the participant is NOT registered with the study" do
         VCR.use_cassette('psc/unknown_subject') do
           subject.is_registered?(@participant).should be_false
         end
       end
-      
+
       it "knows when the participant IS registered with the study" do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
         participant = Factory(:participant)
@@ -107,8 +107,19 @@ describe PatientStudyCalendar do
           subject.is_registered?(participant).should be_true
         end
       end
+
+      it "should store the participant identifier when the participant registers" do
+        person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
+        participant = Factory(:participant)
+        participant.person = person
+        VCR.use_cassette('psc/known_subject') do
+          subject.is_registered?(participant).should be_true
+          subject.registered_participant?(participant).should be_true
+        end
+      end
+
     end
-    
+
     it "registers a participant with the study" do
       VCR.use_cassette('psc/assign_subject') do
         subject.is_registered?(@participant).should be_false
@@ -117,27 +128,27 @@ describe PatientStudyCalendar do
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
       end
     end
-    
+
     it "uses the participant public_id as the assignment identifier" do
       VCR.use_cassette('psc/assignment_identfier') do
-        
+
         person = Factory(:person, :first_name => "Angela", :last_name => "Davis", :sex => @female, :person_dob => '1940-01-01')
         participant = Factory(:participant, :p_id => "angela_davis_public_id")
         participant.person = person
         participant.register!
         ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
         Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
-        
+
         participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
         resp = subject.assign_subject(participant)
-        
+
         resp = subject.assignment_identifier(participant)
         subject_assignments = resp.search('subject-assignment')
         subject_assignments.size.should == 1
         subject_assignments.first['id'].should == participant.public_id
       end
     end
-    
+
     it "pulls a registered subjects schedules" do
       VCR.use_cassette('psc/schedules') do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
@@ -155,17 +166,17 @@ describe PatientStudyCalendar do
         activities = day["activities"]
         activities.size.should == 1
         activities.first["study_segment"].should == "LO-Intensity: Pregnancy Screener"
-        activities.first["assignment"]["id"].should == "todo_1314638760" 
+        activities.first["assignment"]["id"].should == "todo_1314638760"
       end
     end
-  
+
     it "retrieves a list of all scheduled activities" do
       VCR.use_cassette('psc/scheduled_activity_report') do
         scheduled_activities = subject.scheduled_activities_report
         scheduled_activities.size.should == 2
       end
     end
-    
+
     it "schedules an activity for a participant given an event type and date" do
       VCR.use_cassette('psc/known_events') do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
@@ -173,16 +184,16 @@ describe PatientStudyCalendar do
         participant.person = person
         subject.schedules(participant).should be_nil
         subject.schedule_known_event(participant, "Pregnancy Probability", Date.today)
-        
+
         subject_schedules = subject.schedules(participant)
         days = subject_schedules["days"]
         date = days.keys.first
         day = days[date]
         activities = day["activities"]
         activities.first["study_segment"].should == "LO-Intensity: PPG Follow-Up"
-      end      
+      end
     end
-  
+
   end
-  
+
 end
