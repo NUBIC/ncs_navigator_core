@@ -14,6 +14,7 @@ namespace :import do
   end
 
   task :psc_setup do |t|
+    require 'highline'
     class << t; attr_accessor :psc_username_password; end
 
     hl = HighLine.new
