@@ -96,13 +96,13 @@ module NcsNavigator::Core::Warehouse
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
             core_event_date = core_event.event_start_date.blank? ? core_event.event_end_date : core_event.event_start_date
             core_event_type = core_event.event_type
-            
+
             assign_subject(participant, core_event_type.to_s, core_event_date)
-            
+
             if core_event.new_record?
               participant.set_state_for_event_type(core_event_type)
             end
-            
+
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
               save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
@@ -118,9 +118,9 @@ module NcsNavigator::Core::Warehouse
             #   seg = schedule segment for core_event
             schedule_known_event(participant, core_event_type.to_s, core_event_date)
 
-            
+
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
-              
+
               #
               # is this the last CL for this event?
               #   is the event complete?
@@ -131,11 +131,11 @@ module NcsNavigator::Core::Warehouse
               #     new_state = scheduled
               # otherwise
               #   new_state = scheduled
-              
+
               # TODO: determine state of activity
-              
+
               update_activity_state(participant, mdes_lc.instrument, core_event_date)
-              
+
               save_core_record(apply_mdes_record_to_core(ContactLink, mdes_lc))
             end
           end
@@ -144,11 +144,11 @@ module NcsNavigator::Core::Warehouse
     ensure
       drop_state_impacting_ids_table
     end
-    
+
     def psc
       @psc ||= PatientStudyCalendar.new(current_user)
     end
-    
+
     def current_user
       # Use the following when running the imported in development if necessary
       # @current_user ||= Class.new(Struct.new(:username)) do
@@ -158,14 +158,14 @@ module NcsNavigator::Core::Warehouse
       # end.new("USERNAME")
       # TODO: get the current logged in user - for use with PatientStudyCalendar - cf. #psc above
     end
-    
+
     def assign_subject(participant, core_event_type, core_event_date)
       if !participant.person.nil? && !psc.is_registered?(participant)
         psc.assign_subject(participant, core_event_type, core_event_date)
       end
     end
     private :assign_subject
-    
+
     def schedule_known_event(participant, core_event_type, core_event_date)
       if !participant.person.nil? && psc.is_registered?(participant)
         log.debug("~~~ schedule_known_event for #{core_event_type} on #{core_event_date} - #{participant.person}")
@@ -173,7 +173,7 @@ module NcsNavigator::Core::Warehouse
       end
     end
     private :schedule_known_event
-    
+
     def update_activity_state(participant, instrument, date)
       if instrument
         log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.id}] on #{date}")
@@ -189,7 +189,7 @@ module NcsNavigator::Core::Warehouse
       end
     end
     private :update_activity_state
-    
+
     def activity_state(instrument_status)
       case instrument_status
       when 1 # not started
@@ -205,7 +205,7 @@ module NcsNavigator::Core::Warehouse
       end
     end
     private :activity_state
-    
+
     STATE_IMPACTING_IDS_TABLE_NAME = 'scratch_core_importer_state_impacting_elci'
 
     def build_state_impacting_ids_table

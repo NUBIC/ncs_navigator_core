@@ -43,7 +43,7 @@ module NcsNavigator::Core::Warehouse
         end
       end
     end
-    
+
     before do
       importer.stub!(:current_user).and_return(mock(:username => "current_user", :cas_proxy_ticket => "PT-cas-ticket"))
     end
@@ -302,7 +302,7 @@ module NcsNavigator::Core::Warehouse
         code, 'EVENT_TYPE_CL1', :display_text => event_type_name)
       code
     end
-    
+
     def code_for_instrument_type(instrument_type_name)
       code = NcsNavigatorCore.mdes.types.
         find { |type| type.name == 'instrument_type_cl1' }.code_list.
@@ -323,14 +323,14 @@ module NcsNavigator::Core::Warehouse
       let(:ginger_p) {
         create_warehouse_record_via_core(Participant, 'ginger_p')
       }
-      
+
       let(:fred_pers) {
         create_warehouse_record_via_core(Person, 'fred_pers')
       }
       let(:ginger_pers) {
         create_warehouse_record_via_core(Person, 'ginger_pers')
       }
-      
+
       let!(:fred_p_pers_link) {
         create_warehouse_record_via_core(ParticipantPersonLink, 'fred_p_pers_link',
           :p => fred_p,
@@ -422,7 +422,7 @@ module NcsNavigator::Core::Warehouse
           create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '2010-09-17')
         }
         let!(:g_c1_e1) {
-          create_warehouse_record_via_core(ContactLink, 'g_c1_e1', 
+          create_warehouse_record_via_core(ContactLink, 'g_c1_e1',
             :contact => g_c1, :event => g_e1, :instrument => g_e1_i)
         }
 
@@ -446,7 +446,7 @@ module NcsNavigator::Core::Warehouse
         it 'creates core instruments' do
           Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
         end
-        
+
       end
 
       describe 'unorderable events without contacts' do
@@ -546,7 +546,7 @@ module NcsNavigator::Core::Warehouse
               importer.import
             end
           end
-          
+
           it 'associates person with participant' do
             person = Person.find_by_person_id('fred_pers')
             person.should_not be_nil
