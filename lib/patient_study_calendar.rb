@@ -44,8 +44,15 @@ class PatientStudyCalendar
   # User object who was authenticated using CAS
   # @param [Aker::User]
   def initialize(user)
-    self.user = user
+    self.user = user || fake_user
   end
+
+  def fake_user
+    if ENV['PSC_USERNAME_PASSWORD']
+      Struct.new(:username).new(ENV['PSC_USERNAME_PASSWORD'].split(',').first)
+    end
+  end
+  private :fake_user
 
   def get_connection
     psc_client.connection
