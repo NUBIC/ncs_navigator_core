@@ -22,13 +22,13 @@ class ContactsController < ApplicationController
   def create
     @person     = Person.find(params[:person_id])
     @contact    = Contact.new(params[:contact])
-    
+
     @event = event_for_person
 
     respond_to do |format|
       if @contact.save
         link = find_or_create_contact_link
-        
+
         format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully created.') }
         format.json { render :json => @contact }
       else
@@ -37,7 +37,7 @@ class ContactsController < ApplicationController
       end
     end
   end
-  
+
   # GET /contact/1/edit
   def edit
     @person  = Person.find(params[:person_id])
@@ -53,18 +53,18 @@ class ContactsController < ApplicationController
       @event = @contact_link.event
     end
   end
-  
+
   def update
     @person  = Person.find(params[:person_id])
     @contact = Contact.find(params[:id])
-    
+
     @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact.id, @person.id).first
     @event = @contact_link.event
 
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
         link = find_or_create_contact_link
-        
+
         format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully updated.') }
         format.json { render :json => @contact }
       else
@@ -73,15 +73,15 @@ class ContactsController < ApplicationController
       end
     end
   end
-  
+
   private
-  
+
     def event_for_person(save = true)
       event = new_event_for_person(@person, params[:event_type_id])
       event.save! if save
       event
     end
-    
+
     def find_or_create_contact_link
       link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?", @contact, @person, @event).first
       if link.blank?
@@ -89,6 +89,6 @@ class ContactsController < ApplicationController
       end
       link
     end
-  
-  
+
+
 end
