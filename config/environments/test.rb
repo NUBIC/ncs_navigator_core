@@ -32,11 +32,13 @@ NcsNavigatorCore::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
-  
+
   config.aker do
     ui_mode :form
     static = Aker::Authorities::Static.from_file("#{Rails.root}/config/logins/static_auth.yml")
     authorities :cas, static
     central '/etc/nubic/ncs/aker-local.yml'
-  end  
+  end
 end
+
+require 'spec/active_record_fk_hack'
