@@ -35,6 +35,7 @@ class Event < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :event_id
 
   belongs_to :participant
+
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :event_type,                 'EVENT_TYPE_CL1'
   ncs_coded_attribute :event_disposition_category, 'EVENT_DSPSTN_CAT_CL1'
