@@ -46,7 +46,7 @@ class AddForeignKeyConstraints < ActiveRecord::Migration
     add_foreign_key(:participant_person_links, :people, :column => 'person_id', :name => 'participant_person_links_people_fk', :options => 'DEFERRABLE')
 
     add_foreign_key(:participant_staff_relationships, :participants, :column => 'participant_id', :name => 'participant_staff_relationships_participants_fk', :options => 'DEFERRABLE')
-    
+
     add_foreign_key(:participant_visit_consents, :participants, :column => 'participant_id', :name => 'participant_visit_consents_participants_fk', :options => 'DEFERRABLE')
     add_foreign_key(:participant_visit_consents, :contacts, :column => 'contact_id', :name => 'participant_visit_consents_contacts_fk', :options => 'DEFERRABLE')
     add_foreign_key(:participant_visit_consents, :people, :column => 'vis_person_who_consented_id', :name => 'participant_visit_consents_people_fk', :options => 'DEFERRABLE')
@@ -70,9 +70,9 @@ class AddForeignKeyConstraints < ActiveRecord::Migration
 
   def down
     # remove_foreign_key(:from, :name => 'from_to_fk')
-    
-    add_foreign_key(:addresses, :name => 'addresses_people_fk')
-    add_foreign_key(:addresses, :name => 'addresses_dwelling_units_fk')
+
+    remove_foreign_key(:addresses, :name => 'addresses_people_fk')
+    remove_foreign_key(:addresses, :name => 'addresses_dwelling_units_fk')
 
     remove_foreign_key(:contact_links, :name => 'contact_links_contact_fk')
     remove_foreign_key(:contact_links, :name => 'contact_links_people_fk')
@@ -85,7 +85,7 @@ class AddForeignKeyConstraints < ActiveRecord::Migration
     remove_foreign_key(:dwelling_units, :name => 'dwelling_units_listing_units_fk')
 
     remove_foreign_key(:emails, :name => 'emails_people_fk')
-    
+
     remove_foreign_key(:events, :name => 'events_participants_fk')
 
     remove_foreign_key(:household_person_links, :name => 'household_person_links_people_fk')
