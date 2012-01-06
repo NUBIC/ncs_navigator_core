@@ -1,8 +1,17 @@
 class WelcomeController < ApplicationController
 
   def index
-    @scheduled_activities = psc.scheduled_activities_report({ :current_user => current_staff, :end_date => 5.months.from_now.to_date.to_s })
+    criteria = { :current_user => current_staff,
+                 :start_date => 14.days.ago.to_date.to_s }
+    @scheduled_activities = psc.scheduled_activities_report(criteria)
   end
+
+  def overdue_activities
+    criteria = { :current_user => current_staff,
+                 :end_date => 1.day.ago.to_date.to_s }
+    @scheduled_activities = psc.scheduled_activities_report(criteria)
+  end
+
 
   def summary
     @dwellings    = DwellingUnit.next_to_process
