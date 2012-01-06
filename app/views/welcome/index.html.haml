@@ -1,5 +1,5 @@
 - title = "Welcome"
-    
+
 - if @scheduled_activities
   .front_page_section.page_section
     - rows = @scheduled_activities['rows']
@@ -34,6 +34,8 @@
                     n/a
                 %td
                   = row['activity_name']
+    .overdue_activities
+      = link_to "View Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
 .front_page_section.page_section
   .column-container
     = link_to "Administer New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
@@ -43,4 +45,3 @@
     = link_to "View All People", people_path, :class => "list_link icon_link"
   .column-container
     = link_to "View All Participants", participants_path, :class => "list_link icon_link"
-  
