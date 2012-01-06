@@ -1,9 +1,9 @@
 - registered = psc.is_registered?(participant)
-.upcoming
+.upcoming.page_section
   - if registered
     %span.label
       Upcoming Events
-  
+
     %table.records
       %tr
         %th Select
@@ -13,14 +13,14 @@
           = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
         %td
           = participant.upcoming_events.to_sentence
-  
+
   %div{ :id => "participant_schedule_#{participant.id}" }
     - if registered
       = render "schedule", :participant => participant
     - elsif participant.can_register? && registered
       .psc_note
         Not yet registered with PSC.
-      = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}"), :html => {:class => "register_participant_with_psc"}) do |f| 
+      = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}"), :html => {:class => "register_participant_with_psc"}) do |f|
         = render "shared/full_error_messages", :object => f.object
         %p
           = f.submit "Register with PSC"

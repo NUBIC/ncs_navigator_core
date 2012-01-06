@@ -1,9 +1,9 @@
 module ApplicationHelper
-  
+
   def javascript(*files)
     content_for(:head) { javascript_include_tag(*files) }
   end
-  
+
   def title(page_title, show_title = true)
     @show_title = show_title
     content_for(:title) { page_title.to_s }
@@ -21,6 +21,12 @@ module ApplicationHelper
       version = "#{app_version["major"]}.#{app_version["minor"]}.#{app_version["revision"]}"
     end
     "Release Version #{version}"
+  end
+
+  # text helpers
+
+  def blank_safe(str, default = "___")
+    str.blank? ? default : str
   end
 
   # Nested Attribute Form Helpers
@@ -45,12 +51,12 @@ module ApplicationHelper
   def nested_record_id(builder, association)
     builder.object.id.nil? ? "new_nested_record" : "#{association.to_s.singularize}_#{builder.object.id}"
   end
-  
+
   # Dispositions
-  
-  
+
+
   def grouped_disposition_codes(group = nil)
     grouped_options_for_select(DispositionMapper.get_grouped_options(group))
   end
-  
+
 end

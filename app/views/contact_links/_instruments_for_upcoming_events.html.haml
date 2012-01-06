@@ -5,7 +5,7 @@
   %br
   = @contact_link.event.psc_segment_name
 
-%h3 
+%h3
   = "Instruments for #{@contact_link.event.psc_segment_name}"
 
 - if initial_instrument_for_contact
@@ -15,25 +15,30 @@
     (If there is a Consent link in the list, you should obtain consent before proceeding.)
 
 - no_consent = true
-- if activities = psc.activities_for_segment(@person.participant, @contact_link.event.psc_segment_name)
-  - activities.each do |activity|
-    - instrument = InstrumentEventMap.instrument_for_activity(activity)
-    - if instrument && survey = Survey.most_recent_for_title(instrument)
-      - if @contact_link.contact.instruments.collect {|i| i.survey.title}.include?(survey.title)
-        .known_instrument
-          = "#{activity} - #{instrument}"
+- if @person.participant.blank?
+  .person_not_participant
+    = @person
+    is not a participant. No instruments exist for non participants.
+- else
+  - if activities = psc.activities_for_segment(@person.participant, @contact_link.event.psc_segment_name)
+    - activities.each do |activity|
+      - instrument = InstrumentEventMap.instrument_for_activity(activity)
+      - if instrument && survey = Survey.most_recent_for_title(instrument)
+        - if @contact_link.contact.instruments.collect {|i| i.survey.title}.include?(survey.title)
+          .known_instrument
+            = "#{activity} - #{instrument}"
+        - else
+          .instrument
+            = link_to "#{activity} - #{instrument}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
+      - elsif activity.include?("Consent")
+        - no_consent = false
+        = render "consents"
       - else
         .instrument
-          = link_to "#{activity} - #{instrument}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
-    - elsif activity.include?("Consent")
-      - no_consent = false
-      = render "consents"
-    - else
-      .instrument
-        = activity
+          = activity
 
-- if no_consent 
-  - if !(@contact_link.event.to_s =~ /Pregnancy Screener/)
+- if no_consent
+  - if !(@contact_link.event.to_s =~ /Pregnancy Screener/) && !@person.participant.blank?
     %h3
       Unscheduled Consents
     .instructional_note
