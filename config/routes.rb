@@ -2,13 +2,13 @@ NcsNavigatorCore::Application.routes.draw do
   resources :dwelling_units
   resources :household_units
   resources :people do
-    member do 
+    member do
       get :events
       get :start_instrument
       get :responses_for
       put :responses_for
     end
-    resources :contacts
+    resources :contacts, :except => [:index]
   end
   resources :participants do
     collection do
@@ -34,11 +34,12 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
   resources :participant_consents
-  
+
   match "/welcome/summary", :to => "welcome#summary"
+  match "/welcome/overdue_activities", :to => "welcome#overdue_activities"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
-  
+
   root :to => "welcome#index"
-  
+
   match 'surveyor/finalize_instrument/:response_set_id' => 'surveyor#finalize_instrument', :via => [:get]
 end
