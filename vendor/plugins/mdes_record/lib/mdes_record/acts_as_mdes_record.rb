@@ -95,7 +95,16 @@ module MdesRecord
           formatter = self.respond_to?("#{df}_formatter") ? self.send("#{df}_formatter") : '%Y-%m-%d'
 
           dt = self.send("#{df}_date")
-          self.send("#{df}=", dt.strftime(formatter)) unless dt.blank?
+          if dt.blank?
+            str_dt = self.send("#{df}")
+            begin
+              self.send("#{df}_date=", Date.parse(str_dt))
+            rescue
+              # NOOP str_dt is unparseable
+            end
+          else
+            self.send("#{df}=", dt.strftime(formatter))
+          end
 
           mod = self.send("#{df}_modifier")
 

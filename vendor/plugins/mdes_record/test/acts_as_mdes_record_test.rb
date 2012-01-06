@@ -37,6 +37,30 @@ class ActsAsMdesRecordTest < Test::Unit::TestCase
     assert_equal('9111-91-91', df.start_date)
   end
 
+  def test_save_string_date_from_date
+    df = DateFoo.new
+    df.start_date_date = Date.today
+    assert_equal(nil, df.start_date)
+    df.save!
+    assert_equal(Date.today.strftime('%Y-%m-%d'), df.start_date)
+  end
+
+  def test_save_date_from_string_date
+    df = DateFoo.new
+    df.start_date = '2011-12-25'
+    assert_equal(nil, df.start_date_date)
+    df.save!
+    assert_equal(Date.parse('2011-12-25'), df.start_date_date)
+  end
+
+  def test_saving_date_overrides_string_date
+    df = DateFoo.new
+    df.start_date = '2011-12-25'
+    df.start_date_date = Date.today
+    df.save!
+    assert_equal(Date.today.strftime('%Y-%m-%d'), df.start_date)
+  end
+
   def test_date_fields_are_accessible
     df = DateFoo.new
     assert_equal(df.date_fields, [:start_date])
