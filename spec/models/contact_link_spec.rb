@@ -56,4 +56,12 @@ describe ContactLink do
 
   end
 
+  it "knows about which participant this contact is regarding" do
+    participant = Factory(:participant)
+    person = Factory(:person)
+    event = Factory(:event, :participant => participant)
+    link = Factory(:contact_link, :person => person, :event => event)
+    link.participant.should == participant
+  end
+
 end
