@@ -58,12 +58,14 @@ describe Person do
     pers.should_not be_nil
   end
 
-  it "describes itself" do
-    pers = Factory(:person)
-    name = "#{pers.first_name} #{pers.last_name}"
-    pers.to_s.should == name
-    pers.name.should == name
-    pers.full_name.should == name
+  describe ".full_name" do
+    it "returns first and last name" do
+      pers = Factory(:person)
+      name = "#{pers.first_name} #{pers.last_name}"
+      pers.to_s.should == name
+      pers.name.should == name
+      pers.full_name.should == name
+    end
   end
 
   it { should belong_to(:psu) }
