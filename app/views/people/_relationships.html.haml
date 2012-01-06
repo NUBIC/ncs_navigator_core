@@ -16,6 +16,6 @@
             %td
               = link_to "Edit", edit_person_path(ppl.person), :class => "edit_link icon_link"
             %td
-              = ppl.person.name
+              = blank_safe(ppl.person.name)
             %td
               = ppl.relationship

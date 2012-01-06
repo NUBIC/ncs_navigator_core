@@ -41,9 +41,9 @@
           %td
             = person.psu
           %td
-            = person.first_name
+            = blank_safe(person.first_name)
           %td
-            = person.last_name
+            = blank_safe(person.last_name)
           %td
             = person.person_id
           %td

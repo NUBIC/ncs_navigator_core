@@ -1,9 +1,9 @@
 
 .participant
-  .switch_arm
+  .switch_arm.hide
     .developer_note
       (This will be replaced with the Hi/Lo Conversion Instrument)
-    = form_for(participant, :url => update_arm_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
+    = form_for(participant, :url => update_arm_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f|
       = render "shared/full_error_messages", :object => f.object
       = f.hidden_field :high_intensity
       %p
@@ -11,6 +11,6 @@
   .name
     = participant.person.to_s
     = link_to "Edit Participant Record", edit_participant_path(participant), :class => "edit_link icon_link"
-  
+
   = render "events", :participant => participant
   = render "relationships", :participant => participant
