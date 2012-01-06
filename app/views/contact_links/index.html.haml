@@ -1,0 +1,84 @@
+- title "Contacts"
+
+.mdes_table_definition
+  = render 'documentation/contact'
+
+.page_section.search
+  = search_form_for @q do |f|
+    %p
+      = f.label :contact_contact_date_date_gteq, "Date After or On"
+      = f.text_field :contact_contact_date_date_gteq, :class => 'datepicker'
+    %p
+      = f.label :contact_contact_date_date_lteq, "Date Before or On"
+      = f.text_field :contact_contact_date_date_lteq, :class => 'datepicker'
+    %p
+      = f.label :contact_who_contacted_code_eq, "Person Contacted"
+      = f.select(:contact_who_contacted_code_eq, NcsCode.ncs_code_lookup(:who_contacted_code), { :include_blank => "-- Select Person Contacted --" })
+    %p
+      = f.label :person_last_name_cont, "Last Name Contains"
+      = f.text_field :person_last_name_cont
+    %p
+      = f.label :contact_contact_type_code_eq, "Contact Type"
+      = f.select(:contact_contact_type_code_eq, NcsCode.ncs_code_lookup(:contact_type_code), { :include_blank => "-- Select Contact Type --" })
+    %p
+      = f.label :contact_contact_disposition_eq, "Contact Disposition"
+      = f.select(:contact_contact_disposition_eq, grouped_disposition_codes, { :include_blank => "-- Select Contact Disposition --" })
+    %p
+      = f.label :event_event_type_code_eq, "Event Type"
+      = f.select(:event_event_type_code_eq, NcsCode.ncs_code_lookup(:event_type_code), { :include_blank => "-- Select Event Type --" })
+    %p
+      = f.label :event_event_disposition_eq, "Event Disposition"
+      = f.select(:event_event_disposition_eq, grouped_disposition_codes, { :include_blank => "-- Select Event Disposition --" })
+    %br
+    = f.submit "Search"
+
+.page_section
+  - if @contact_links.empty?
+    #no_records
+      No contacts were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @contact_links
+    %table.records
+      %tr
+        %th
+          = sort_link @q, "contact_contact_type_code", "Type"
+        %th
+          = sort_link @q, "contact_contact_date_date", "Date"
+        %th
+          Start Time
+        %th
+          End Time
+        %th
+          = sort_link @q, "person_last_name", "Person"
+        %th
+          = sort_link @q, "contact_contact_disposition", "Contact Disp"
+        %th
+          = sort_link @q, "event_event_type_code", "Event"
+        %th
+          = sort_link @q, "event_event_disposition", "Event Disp"
+        %th
+      - @contact_links.each do |cl|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = cl.contact.contact_type
+          %td
+            = cl.contact.contact_date_date
+          %td
+            = cl.contact.contact_start_time
+          %td
+            = cl.contact.contact_end_time
+          %td
+            = blank_safe(cl.person.to_s)
+          %td
+            = cl.contact.contact_disposition
+          %td
+            = cl.event.event_type
+          %td
+            = cl.event.event_disposition
+            &nbsp;
+            = cl.event.event_disposition_category
+          %td
+            = link_to 'Edit', edit_contact_link_path(cl), :class => "edit_link icon_link"
+  = will_paginate @contact_links

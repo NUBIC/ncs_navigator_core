@@ -1,27 +1,38 @@
 class ContactLinksController < ApplicationController
-	
+
+	# GET /contact_links
+  # GET /contact_links.json
+  def index
+    params[:page] ||= 1
+
+    @q = ContactLink.search(params[:q])
+    result = @q.result
+    @contact_links = result.paginate(:page => params[:page], :per_page => 20)
+
+    respond_to do |format|
+      format.html # index.html.haml
+      format.json { render :json => result.all }
+    end
+  end
+
 	# GET /contact_links/1/edit
 	def edit
 		@contact_link = ContactLink.find(params[:id])
 		@event        = @contact_link.event
 		@instrument   = @contact_link.instrument
-		@response_set = @instrument.response_set if @instrument 
-	  
-		# TODO: remove Pregnancy Screener check
-		if params[:close_contact].blank? && @response_set.blank? && @contact_link.person.upcoming_events.select { |e| e.to_s.include?('Pregnancy Screener') }.empty?
-			redirect_to select_instrument_contact_link_path(@contact_link)
-		else
-			@person	 = @contact_link.person
-			@contact = @contact_link.contact
-			@survey	 = @response_set.survey if @response_set
-		  
-		  @contact.set_language_and_interpreter_data(@person)
-      @contact.populate_post_survey_attributes(@instrument)
-      
-      @event.populate_post_survey_attributes(@contact, @response_set)
-      @event.event_repeat_key = @person.event_repeat_key(@event)
-		end
-		
+		@response_set = @instrument.response_set if @instrument
+
+		@person  = @contact_link.person
+		@contact = @contact_link.contact
+		@survey  = @response_set.survey if @response_set
+
+	  @contact.set_language_and_interpreter_data(@person)
+    @contact.populate_post_survey_attributes(@instrument) if @instrument
+
+    @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
+    # FIXME: move this to the participant NOT the person
+    # @event.event_repeat_key = @person.event_repeat_key(@event)
+
 		set_time_and_dates
 		set_disposition_group
 	end
@@ -33,15 +44,15 @@ class ContactLinksController < ApplicationController
 
 		respond_to do |format|
 
-			if @contact_link.update_attributes(params[:contact_link]) && 
+			if @contact_link.update_attributes(params[:contact_link]) &&
 				 @contact_link.event.update_attributes(params[:event]) &&
 				 @contact_link.contact.update_attributes(params[:contact])
-				
-				format.html { 
+
+				format.html {
 				  if params[:commit] == "Continue"
 				    redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
 				  else
-				    redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.') 
+				    redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.')
 				  end
 				}
 				format.json { head :ok }
@@ -51,7 +62,7 @@ class ContactLinksController < ApplicationController
 			end
 		end
 	end
-	
+
 	def select_instrument
 		@contact_link = ContactLink.find(params[:id])
 		@contact			= @contact_link.contact
@@ -59,25 +70,25 @@ class ContactLinksController < ApplicationController
 		@participant	= @person.participant
 		@event				= @contact_link.event
 	end
-	
+
 	def edit_instrument
 		@contact_link = ContactLink.find(params[:id])
-		
+
 		@person				= @contact_link.person
-		
+
     @instrument   = find_or_create_instrument(@survey)
 		@response_set = @instrument.response_set
 		@survey				= @response_set.survey
 
   	set_instrument_time_and_date(@contact_link.contact)
-  	
+
     @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
-    @instrument.set_instrument_breakoff(@response_set)    
-    
+    @instrument.set_instrument_breakoff(@response_set)
+
     @contact_link.contact.set_language_and_interpreter_data(@person)
     @contact_link.contact.populate_post_survey_attributes(@instrument)
 	end
-	
+
 	def finalize_instrument
 		@contact_link = ContactLink.find(params[:id])
 
@@ -90,18 +101,18 @@ class ContactLinksController < ApplicationController
 				format.json { render :json => @contact_link.errors, :status => :unprocessable_entity }
 			end
 		end
-	 
+
 	end
-	
+
 	private
-	
+
 	  def set_time_and_dates
 	    contact = @contact_link.contact
 	   	contact.contact_end_time = Time.now.strftime("%H:%M")
 	   	set_event_time_and_date(contact)
 	   	set_instrument_time_and_date(contact)
 	  end
-	  
+
 	  def set_event_time_and_date(contact)
 	   	event = @contact_link.event
 	   	if event
@@ -112,7 +123,7 @@ class ContactLinksController < ApplicationController
   	   	event.event_end_time = contact.contact_end_time
 	   	end
 	  end
-	  
+
 	  def set_instrument_time_and_date(contact)
 	   	instrument = @contact_link.instrument
 	   	if instrument
@@ -123,11 +134,11 @@ class ContactLinksController < ApplicationController
   		end
 	  end
 
-	  
+
 	  def find_or_create_instrument(survey)
       @contact_link.instrument
 	  end
-	  
+
 	  ##
 	  # Determine the disposition group to be used from the contact type or instrument taken
 	  def set_disposition_group
@@ -146,5 +157,5 @@ class ContactLinksController < ApplicationController
         end
       end
 	  end
-	
+
 end
