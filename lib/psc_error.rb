@@ -1,0 +1,1 @@
+class PscError < StandardError; end

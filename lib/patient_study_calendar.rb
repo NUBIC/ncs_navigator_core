@@ -201,7 +201,7 @@ class PatientStudyCalendar
   private :participant_activities
 
   def scheduled_activities_report(options = {})
-    filters = {:state => 'scheduled', :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
+    filters = {:state => PatientStudyCalendar::ACTIVITY_SCHEDULED, :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
     filters = filters.merge(options)
 
     path = "reports/scheduled-activities.json?"
