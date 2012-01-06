@@ -34,6 +34,8 @@ class ContactLink < ActiveRecord::Base
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
 
+  delegate :participant, :to => :event
+
   # Validating :contact_id instead of :contact prevents a reload of
   # the associated contact object when creating a contact link
   # alone. This provides a huge speedup in the importer; if validating
