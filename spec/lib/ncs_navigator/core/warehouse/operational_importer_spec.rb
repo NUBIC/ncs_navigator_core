@@ -18,6 +18,14 @@ module NcsNavigator::Core::Warehouse
       OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
     }
 
+    let(:psc) {
+      PatientStudyCalendar.new(user)
+    }
+
+    let(:user) {
+      mock(:username => 'sysadmin', :cas_proxy_ticket => 'PT-CAS-foo')
+    }
+
     def save_wh(record)
       unless record.save
         messages = record.errors.keys.collect { |prop|
@@ -45,7 +53,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     before do
-      importer.stub!(:current_user).and_return(mock(:username => "current_user", :cas_proxy_ticket => "PT-cas-ticket"))
+      importer.stub!(:psc).and_return(psc)
     end
 
     describe 'automatic conversion' do
