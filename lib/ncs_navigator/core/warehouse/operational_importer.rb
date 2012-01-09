@@ -414,6 +414,12 @@ module NcsNavigator::Core::Warehouse
           else
             core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
           end
+        elsif core_attribute =~ /^normalized_.*_disposition$/
+          # dispositions are always imported as interim
+          disp = mdes_record.send(mdes_variable)
+          if disp
+            core_record.send("#{core_attribute.sub(/^normalized_/, '')}=", disp.to_i % 500)
+          end
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
         end
