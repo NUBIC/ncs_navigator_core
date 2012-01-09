@@ -2,12 +2,12 @@
 
 .mdes_table_definition
   = render 'documentation/participant'
-  
+
 .page_section.search
   = search_form_for @q do |f|
-    
+
     = f.hidden_field :participant_person_links_relationship_code_eq
-  
+
     = f.label :participant_person_links_person_last_name_cont, "Last Name"
     = f.text_field :participant_person_links_person_last_name_cont
     %br
@@ -16,6 +16,12 @@
     %br
     = f.label :p_id_cont, "Participant ID"
     = f.text_field :p_id_cont
+    %br
+    = f.label :ppg_status_histories_ppg_status_code_eq, "PPG Status"
+    = f.select(:ppg_status_histories_ppg_status_code_eq, NcsCode.ncs_code_lookup(:ppg_status_code), { :include_blank => "-- Select PPG Status --" })
+    %br
+    = f.label :ppg_details_ppg_first_code_eq, "PPG First"
+    = f.select(:ppg_details_ppg_first_code_eq, NcsCode.ncs_code_lookup(:ppg_first_code), { :include_blank => "-- Select PPG First --" })
     %br
     = f.submit "Search"
 
@@ -34,11 +40,13 @@
         %th
           PSU
         %th
-          = sort_link @q, "participant_person_links_person_first_name", "First Name"
+          First Name
         %th
-          = sort_link @q, "participant_person_links_person_last_name", "Last Name"
+          Last Name
         %th
           = sort_link @q, "p_id", "Participant ID"
+        %th
+          PPG Status
         %th{ :colspan => "2" }
 
       - @participants.each do |participant|
@@ -51,6 +59,8 @@
             = participant.last_name
           %td
             = participant.p_id
+          %td
+            = participant.ppg_status
           %td
             = link_to 'View', participant_path(participant), :class => "show_link icon_link"
           %td
