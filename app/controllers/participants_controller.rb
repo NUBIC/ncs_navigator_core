@@ -1,20 +1,20 @@
 class ParticipantsController < ApplicationController
-  layout proc { |controller| controller.request.xhr? ? nil : 'application'  } 
-  
+  layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
+
   ##
   # List all of the Participants in the application, paginated
-  # 
+  #
   # GET /participants
   # GET /participants.json
   def index
     params[:page] ||= 1
-    
+
     params[:q] ||= {}
     params[:q][:participant_person_links_relationship_code_eq] = 1
-    
+
     @q = Participant.search(params[:q])
     # @q.sorts = 'last_name asc' if @q.sorts.empty?
-    result = @q.result
+    result = @q.result(:distinct => true)
     @participants = result.paginate(:page => params[:page], :per_page => 20)
 
     respond_to do |format|
@@ -22,23 +22,23 @@ class ParticipantsController < ApplicationController
       format.json { render :json => result.all }
     end
   end
-  
+
   ##
   # List all Participants in the application who belong to this Pregnancy Probability Group
-  # 
+  #
   # GET /participants/in_ppg_group?ppg_group=X
   def in_ppg_group
     params[:ppg_group] ||= 1
     @ppg_group = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => params[:ppg_group]).first
     @participants = Participant.in_ppg_group(params[:ppg_group].to_i)
   end
-  
+
   ##
   # GET /participants/:id
   def show
     @participant = Participant.find(params[:id])
   end
-  
+
   ##
   # If the Participant is not known to PSC, register the participant
   #
@@ -75,7 +75,7 @@ class ParticipantsController < ApplicationController
     end
 
   end
-  
+
   ##
   # If the Participant is known to PSC, schedule the next event for the participant
   #
@@ -110,18 +110,18 @@ class ParticipantsController < ApplicationController
         end
       end
     end
-    
+
   end
 
   ##
   # Retrieve the schedule from PSC for the registered Participant
-  # 
+  #
   # GET /participants/:id/schedule
   def schedule
     @participant = Participant.find(params[:id])
     @subject_schedules = psc.schedules(@participant)
   end
-  
+
   # GET /participants/new
   # GET /participants/new.json
   def new
@@ -145,7 +145,7 @@ class ParticipantsController < ApplicationController
   def create
     @participant = Participant.new(params[:participant])
     person = Person.find(params[:person_id])
-    
+
     respond_to do |format|
       if @participant.save
         @participant.person = person
@@ -158,12 +158,12 @@ class ParticipantsController < ApplicationController
       end
     end
   end
-  
+
   # GET /participants/1/edit
   def edit
     @participant = Participant.find(params[:id])
   end
-  
+
   def update
     @participant = Participant.find(params[:id])
 
@@ -177,19 +177,19 @@ class ParticipantsController < ApplicationController
       end
     end
   end
-  
+
   def edit_arm
     @participant = Participant.find(params[:id])
   end
-  
+
   def update_arm
     @participant = Participant.find(params[:id])
-    
+
     @notice = "Successfully added #{@participant.person} to High Intensity Arm"
     @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
-    
+
     if @participant.switch_arm
-      
+
       url = edit_participant_path(@participant)
       url = params[:redirect_to] unless params[:redirect_to].blank?
       redirect_to(url, :notice => @notice)
@@ -197,11 +197,11 @@ class ParticipantsController < ApplicationController
       render :action => "edit_arm"
     end
   end
-  
+
   def edit_ppg_status
     @participant = Participant.find(params[:id])
   end
-  
+
   def update_ppg_status
     @participant = Participant.find(params[:id])
     respond_to do |format|
@@ -215,7 +215,7 @@ class ParticipantsController < ApplicationController
       end
     end
   end
-  
+
   ##
   # Developer view to show participant in particular state and the instruments in that state
   def development_workflow
@@ -233,5 +233,5 @@ class ParticipantsController < ApplicationController
     flash[:notice] = "Participant was moved to #{params[:new_state].titleize}."
     redirect_to development_workflow_participant_path(@participant)
   end
-  
+
 end
