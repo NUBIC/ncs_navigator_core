@@ -55,10 +55,9 @@ class Participant < ActiveRecord::Base
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id"
 
   has_many :participant_person_links
-
   has_many :participant_staff_relationships
-
   has_many :participant_consents
+  has_many :events
 
   # validates_presence_of :person
 
@@ -336,11 +335,8 @@ class Participant < ActiveRecord::Base
   #
   # @return [String]
   def next_study_segment
-    if low_intensity?
-      next_low_intensity_study_segment
-    else
-      next_high_intensity_study_segment
-    end
+    return nil if ineligible?
+    low_intensity? ? next_low_intensity_study_segment : next_high_intensity_study_segment
   end
 
   ##
@@ -361,6 +357,13 @@ class Participant < ActiveRecord::Base
     events = []
     events << next_study_segment if next_study_segment
     events
+  end
+
+  ##
+  # Returns all events where event_end_date is null
+  # @return [Array<Event>]
+  def pending_events
+    events.select { |e| e.event_end_date.blank? }
   end
 
   ##
@@ -446,9 +449,9 @@ class Participant < ActiveRecord::Base
       consent_type_codes = [consent_type.local_code]
     else
       if low_intensity?
-        consent_type_codes = ParticipantConsent.low_intensity_consent_types.collect { |ct| ct[0] } 
+        consent_type_codes = ParticipantConsent.low_intensity_consent_types.collect { |ct| ct[0] }
       else
-        consent_type_codes = ParticipantConsent.high_intensity_consent_types.collect { |ct| ct[0] } 
+        consent_type_codes = ParticipantConsent.high_intensity_consent_types.collect { |ct| ct[0] }
       end
     end
     consents = participant_consents.where("consent_type_code in (?)", consent_type_codes).all
