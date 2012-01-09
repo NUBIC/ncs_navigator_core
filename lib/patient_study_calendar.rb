@@ -1,5 +1,4 @@
 require 'forwardable'
-require 'faraday/response/psc_errors'
 class PatientStudyCalendar
   extend Forwardable
 
