@@ -63,20 +63,6 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    # TODO: maybe unnecessary
-#    produce_records :link_participant_self_person, :query => %Q(
-#      SELECT p.person_id, par.p_id
-#      FROM people p INNER JOIN participants par ON p.id=par.person_id
-#    ) do |row|
-#      LinkPersonParticipant.new(
-#        :person_pid_id => [row.p_id, '-self'].join(''),
-#        :person_id => row.person_id,
-#        :p_id => row.p_id,
-#        :relation => '1', # self
-#        :is_active => '1' # yes
-#      )
-#    end
-
     produce_one_for_one(:person_races, PersonRace,
       :public_ids => [
         { :table => :people, :join_column => :person_id }
