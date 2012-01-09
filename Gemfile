@@ -49,9 +49,9 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-#gem 'ncs_mdes_warehouse', '~> 0.2',
-#  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
-gem 'ncs_mdes_warehouse', '~> 0.3', '>= 0.3.2'
+gem 'ncs_mdes_warehouse',
+  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
+#gem 'ncs_mdes_warehouse', '~> 0.3', '>= 0.3.2'
 gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
