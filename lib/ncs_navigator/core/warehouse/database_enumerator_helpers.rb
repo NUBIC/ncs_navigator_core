@@ -9,9 +9,11 @@ module NcsNavigator::Core::Warehouse
       query = nil
       column_map = (options[:column_map] || {}).dup
       ignored_columns = (options[:ignored_columns] || []).dup
+
+      selects = [options[:selects], 't.*'].flatten.compact
+      joins = []
+
       if options[:public_ids]
-        joins = []
-        selects = ['t.*']
         options[:public_ids].each_with_index do |pub, i|
           pub = case pub
                 when String, Symbol
@@ -39,15 +41,15 @@ module NcsNavigator::Core::Warehouse
           joins << "LEFT JOIN #{other_table} #{table_alias} ON t.#{join_column} = #{table_alias}.id"
           selects << "#{table_alias}.#{public_id_column} AS #{public_id_column_alias}"
         end
-
-        query = "SELECT #{selects.join(', ')}\nFROM #{table_name} t\n  #{joins.join("\n  ")}"
       end
+
+      query = "SELECT #{selects.join(', ')}\nFROM #{table_name} t\n  #{joins.join("\n  ")}"
 
       pr_opts = {
         :column_map => column_map,
-        :ignored_columns => ignored_columns
+        :ignored_columns => ignored_columns,
+        :query => query
       }
-      pr_opts[:query] = query if query
 
       super(table_name, mdes_model, pr_opts)
     end

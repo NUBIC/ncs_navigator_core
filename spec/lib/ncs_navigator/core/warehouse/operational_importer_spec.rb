@@ -18,6 +18,14 @@ module NcsNavigator::Core::Warehouse
       OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
     }
 
+    let(:psc) {
+      PatientStudyCalendar.new(user)
+    }
+
+    let(:user) {
+      mock(:username => 'sysadmin', :cas_proxy_ticket => 'PT-CAS-foo')
+    }
+
     def save_wh(record)
       unless record.save
         messages = record.errors.keys.collect { |prop|
@@ -45,7 +53,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     before do
-      importer.stub!(:current_user).and_return(mock(:username => "current_user", :cas_proxy_ticket => "PT-cas-ticket"))
+      importer.stub!(:psc).and_return(psc)
     end
 
     describe 'automatic conversion' do
@@ -238,8 +246,7 @@ module NcsNavigator::Core::Warehouse
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
           PpgDetail, PpgStatusHistory,
-          Address, Email, Telephone,
-          Contact
+          Address, Email, Telephone
         ].each do |core_model|
           describe core_model do
             let(:core_model) { core_model }
@@ -276,6 +283,37 @@ module NcsNavigator::Core::Warehouse
           let(:core_record) {
             Factory(:participant_visit_consent, :vis_person_who_consented => consenter)
           }
+        end
+
+        describe Contact do
+          include_context 'basic model import test'
+          let(:core_model) { Contact }
+
+          describe '#contact_disposition' do
+            describe 'with an interim code' do
+              before do
+                mdes_record.contact_disp = '78'
+                save_wh(mdes_record)
+              end
+
+              it 'imports as an interim code' do
+                importer.import(core_table)
+                core_model.first.contact_disposition.should == 78
+              end
+            end
+
+            describe 'with a final code' do
+              before do
+                mdes_record.contact_disp = '558'
+                save_wh(mdes_record)
+              end
+
+              it 'imports as an interim code' do
+                importer.import(core_table)
+                core_model.first.contact_disposition.should == 58
+              end
+            end
+          end
         end
       end
     end
@@ -417,6 +455,42 @@ module NcsNavigator::Core::Warehouse
           :event => g_e1)
       }
 
+      def do_import
+        VCR.use_cassette('psc/operational_importer') do
+          importer.import
+        end
+      end
+
+      describe 'data mapping' do
+        describe 'for Event' do
+          describe '#event_disposition' do
+            describe 'with a final code' do
+              before do
+                g_e1.event_disp = 522
+                save_wh(g_e1)
+              end
+
+              it 'imports as an interim code' do
+                do_import
+                Event.find_by_event_id('g_e1').event_disposition.should == 22
+              end
+            end
+
+            describe 'with an interim code' do
+              before do
+                g_e1.event_disp = 45
+                save_wh(g_e1)
+              end
+
+              it 'imports as an interim code' do
+                do_import
+                Event.find_by_event_id('g_e1').event_disposition.should == 45
+              end
+            end
+          end
+        end
+      end
+
       describe 'events without participants' do
         let(:g_c1) {
           create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '2010-09-17')
@@ -430,9 +504,7 @@ module NcsNavigator::Core::Warehouse
           g_e1.participant = nil
           g_e1.save or fail('Could not update event')
 
-          VCR.use_cassette('psc/operational_importer') do
-            importer.import
-          end
+          do_import
         end
 
         it 'creates core events' do
@@ -446,7 +518,6 @@ module NcsNavigator::Core::Warehouse
         it 'creates core instruments' do
           Instrument.find_by_instrument_id('g_e1_i').should_not be_nil
         end
-
       end
 
       describe 'unorderable events without contacts' do
@@ -456,10 +527,7 @@ module NcsNavigator::Core::Warehouse
 
           save_wh(g_e1)
 
-          VCR.use_cassette('psc/operational_importer') do
-            importer.import
-          end
-
+          do_import
         end
 
         it 'creates core events' do
@@ -485,9 +553,7 @@ module NcsNavigator::Core::Warehouse
 
           save_wh(g_e1)
 
-          VCR.use_cassette('psc/operational_importer') do
-            importer.import
-          end
+          do_import
         end
 
         it 'creates core contact links' do
@@ -542,9 +608,7 @@ module NcsNavigator::Core::Warehouse
           }
 
           before do
-            VCR.use_cassette('psc/operational_importer') do
-              importer.import
-            end
+            do_import
           end
 
           it 'associates person with participant' do
@@ -562,34 +626,26 @@ module NcsNavigator::Core::Warehouse
           end
 
           it 'does not duplicate already-imported events' do
-            VCR.use_cassette('psc/operational_importer') do
-              importer.import # twice
-            end
+            do_import # twice
             target_states.should == expected_states
           end
 
         end
 
         it 'saves the events' do
-          VCR.use_cassette('psc/operational_importer') do
-            importer.import
-          end
+          do_import
           Event.joins(:participant).where('participants.p_id' => 'fred_p').
             collect(&:event_id).sort.should == %w(f_e1 f_e2 f_e3 f_e4)
         end
 
         it 'saves the contact_links' do
-          VCR.use_cassette('psc/operational_importer') do
-            importer.import
-          end
+          do_import
           ContactLink.all.collect(&:contact_link_id).sort.should ==
             MdesModule::LinkContact.all.collect(&:contact_link_id).sort
         end
 
         it 'saves the instruments' do
-          VCR.use_cassette('psc/operational_importer') do
-            importer.import
-          end
+          do_import
           MdesModule::Instrument.all.collect(&:instrument_id).sort.should == %w(f_e2_i g_e1_i)
         end
       end
