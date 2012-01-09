@@ -145,13 +145,13 @@ module NcsNavigator::Core::Warehouse
 
     def update_activity_state(participant, instrument, date)
       if instrument
-        log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.id}] on #{date}")
+        log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
       end
       if !participant.person.nil? && psc.is_registered?(participant)
         if instrument
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
           new_state = activity_state(instrument.ins_status.to_i)
-          reason = "Import for instrument [#{instrument.id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
+          reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
           log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
           psc.update_activity_state(activity_name, participant, new_state, date, reason)
         end
@@ -413,6 +413,12 @@ module NcsNavigator::Core::Warehouse
             end
           else
             core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
+          end
+        elsif core_attribute =~ /^normalized_.*_disposition$/
+          # dispositions are always imported as interim
+          disp = mdes_record.send(mdes_variable)
+          if disp
+            core_record.send("#{core_attribute.sub(/^normalized_/, '')}=", disp.to_i % 500)
           end
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
