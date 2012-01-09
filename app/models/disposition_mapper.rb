@@ -25,7 +25,7 @@ class DispositionMapper
       end
 
       mdes.disposition_codes.each do |code|
-        grouped_options[code.event] << [code.disposition, code.final_code] if grouped_options.has_key?(code.event)
+        grouped_options[code.event] << [code.disposition, code.interim_code] if grouped_options.has_key?(code.event)
       end
       grouped_options
     end
