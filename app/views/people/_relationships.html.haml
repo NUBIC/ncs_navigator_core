@@ -14,7 +14,7 @@
         - @person.participant_person_links.each do |ppl|
           %tr{ :class => cycle('even_record', 'odd_record') }
             %td
-              = link_to "Edit", edit_person_path(ppl.person), :class => "edit_link icon_link"
+              = link_to "Edit Person Record", edit_person_path(ppl.person), :class => "edit_link icon_link"
             %td
               = blank_safe(ppl.person.name)
             %td

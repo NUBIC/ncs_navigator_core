@@ -18,6 +18,9 @@
       = f.label :person_last_name_cont, "Last Name Contains"
       = f.text_field :person_last_name_cont
     %p
+      = f.label :contact_contact_comment_cont, "Contact Comments Contains"
+      = f.text_field :contact_contact_comment_cont
+    %p
       = f.label :contact_contact_type_code_eq, "Contact Type"
       = f.select(:contact_contact_type_code_eq, NcsCode.ncs_code_lookup(:contact_type_code), { :include_blank => "-- Select Contact Type --" })
     %p
@@ -70,7 +73,10 @@
           %td
             = cl.contact.contact_end_time
           %td
-            = blank_safe(cl.person.to_s)
+            - if cl.person.participant?
+              = link_to blank_safe(cl.person.to_s), person_path(cl.person), :class => 'edit_link icon_link'
+            - else
+              = blank_safe(cl.person.to_s)
           %td
             = cl.contact.contact_disposition
           %td

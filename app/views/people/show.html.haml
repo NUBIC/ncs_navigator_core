@@ -4,7 +4,7 @@
   = render 'documentation/person'
 
 %h3
-  = @person
+  = "#{@person} :: #{@person.public_id}"
 
 - if @participant.nil?
 
