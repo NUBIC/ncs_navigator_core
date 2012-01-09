@@ -321,7 +321,7 @@ class Person < ActiveRecord::Base
   # @return [ResponseSet]
   def last_incomplete_response_set
     rs = response_sets.last
-    rs.complete? ? nil : rs
+    rs.blank? ? nil : (rs.complete? ? nil : rs)
   end
 
   ##

@@ -83,4 +83,23 @@ namespace :import do
     pass = NcsNavigator::Core::Warehouse::UnusedOperationalPassthrough.new(import_wh_config)
     pass.import
   end
+
+  desc 'Schedules upcoming events for participants'
+  task :schedule_participant_events => [:psc_setup, :warehouse_setup, :environment]  do
+
+    begin
+      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
+      days_out = ENV['DAYS_OUT'] || 14
+
+      participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }
+
+      psc = PatientStudyCalendar.new(nil)
+
+      participants.each do |p|
+        psc.schedule_next_segment(p)
+      end
+    ensure
+      ENV['PSC_USERNAME_PASSWORD'] = nil
+    end
+  end
 end
