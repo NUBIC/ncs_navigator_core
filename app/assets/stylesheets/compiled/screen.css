@@ -2492,13 +2492,20 @@ span.known_instrument {
   font-weight: bold;
   text-decoration: underline;
 }
-
-/* line 32, ../../../stylesheets/partials/_tooltip.scss */
-.tooltip {
-  background-color: aliceblue;
+/* line 30, ../../../stylesheets/partials/_tooltip.scss */
+.notification_tooltip dt,
+.tooltip dt {
+  font-size: 1.25em;
 }
 
-/* line 36, ../../../stylesheets/partials/_tooltip.scss */
+/* line 35, ../../../stylesheets/partials/_tooltip.scss */
+.tooltip {
+  background-color: aliceblue;
+  max-height: 25em;
+  overflow-y: scroll;
+}
+
+/* line 41, ../../../stylesheets/partials/_tooltip.scss */
 .notification_tooltip {
   background-color: pink;
 }

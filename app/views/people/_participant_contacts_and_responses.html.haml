@@ -17,10 +17,14 @@
             End
           %th
             Disposition
+            %span{ :class => "help_icon" }
+            = render "documentation/disposition_code_list"
           %th
             Continue Event
           %th
             Event Disposition
+            %span{ :class => "help_icon" }
+            = render "documentation/disposition_code_list"
         - @person.contact_links.each do |cl|
           %tr{ :class => cycle('even_record', 'odd_record') }
             %td
