@@ -1,0 +1,29 @@
+.page_section
+  %b
+    Events
+  - if @participant.events.blank?
+    %p
+      No events exists at this time.
+  - else
+    %table.records
+      %tr
+        %th
+          Type
+        %th
+          Start Date
+        %th
+          End Date
+        %th
+          Disposition
+          %span{ :class => "help_icon" }
+          = render "documentation/disposition_code_list"
+      - @participant.events.each do |event|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = event.event_type
+          %td
+            = blank_safe(event.event_start_date)
+          %td
+            = blank_safe(event.event_end_date)
+          %td
+            = "#{event.event_disposition} - #{event.event_disposition_category}"

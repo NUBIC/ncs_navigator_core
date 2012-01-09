@@ -1,0 +1,30 @@
+.page_section
+  %b
+    PPG Status History
+  - if @participant.ppg_status.blank?
+    %p
+      No ppg status exists at this time.
+  - else
+    %table.records
+      %tr
+        %th
+          PPG Details
+        %th
+          Date
+      - @participant.ppg_details.each do |ppg|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = ppg.ppg_first
+          %td
+            = ppg.created_at.to_s(:db)
+      %tr
+        %th
+          PPG Status Histories
+        %th
+          Date
+      - @participant.ppg_status_histories.each do |ppg|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = ppg.ppg_status
+          %td
+            = ppg.created_at.to_s(:db)
