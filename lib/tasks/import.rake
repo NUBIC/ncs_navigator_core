@@ -91,7 +91,8 @@ namespace :import do
       ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
       days_out = ENV['DAYS_OUT'] || 14
 
-      participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }
+      participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }.
+        select { |p| p.person }
 
       psc = PatientStudyCalendar.new(nil)
 
