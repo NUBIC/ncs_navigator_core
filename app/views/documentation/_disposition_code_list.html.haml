@@ -1,0 +1,15 @@
+- opts = DispositionMapper.get_grouped_options
+.tooltip
+  %dl
+    - opts.keys.each do |key|
+      %dt
+        = key
+      %dd
+        %ul
+          - opts[key].each do |name, code|
+            %li
+              %span{ :class => 'disposition_code' }
+                = code
+              = name
+
+
