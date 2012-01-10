@@ -42,7 +42,7 @@ end
 desc "Deploy to demo"
 task :demo do
   set :app_server, bcconf["demo_app_server"]
-  set :rails_env, "staging"  
+  set :rails_env, "staging"
   set_roles
 end
 
