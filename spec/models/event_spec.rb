@@ -42,6 +42,8 @@ describe Event do
   it { should belong_to(:event_breakoff) }
   it { should belong_to(:event_incentive_type) }
 
+  it { should have_many(:contact_links) }
+
   it "knows when it is 'closed'" do
     e = Factory(:event)
     e.should_not be_closed
@@ -300,24 +302,6 @@ describe Event do
 
       @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
       @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-
-    end
-
-    describe "repeating the event" do
-
-      it "returns 0 for the event_repeat_key if this is the first time taking the instrument" do
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
-        Factory(:contact_link, :event => event, :person => @person)
-        @person.event_repeat_key(event).should == 0
-      end
-
-      it "returns 1 for the event_repeat_key if this is the second time taking the instrument" do
-        event1 = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
-        Factory(:contact_link, :event => event1, :person => @person)
-        event2 = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
-        Factory(:contact_link, :event => event2, :person => @person)
-        @person.event_repeat_key(event2).should == 1
-      end
 
     end
 

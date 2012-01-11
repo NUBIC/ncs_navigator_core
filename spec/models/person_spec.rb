@@ -90,6 +90,7 @@ describe Person do
   it { should have_many(:response_sets) }
   it { should have_many(:contact_links) }
   it { should have_many(:participant_person_links) }
+  it { should have_many(:participants).through(:participant_person_links) }
 
   it { should have_many(:household_person_links) }
   it { should have_many(:household_units).through(:household_person_links) }
