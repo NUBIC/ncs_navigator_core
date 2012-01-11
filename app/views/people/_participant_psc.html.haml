@@ -10,21 +10,21 @@
 
   - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
     .high_intensity_invitation
-      = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f| 
+      = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f|
         = render "shared/full_error_messages", :object => f.object
         = f.hidden_field :high_intensity
         %p
           = f.submit switch_arm_message(@participant)
-  
+
   = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
-  
+
   %b
   - unless @participant.can_register_with_psc?(psc)
     - if next_event = @participant.next_scheduled_event
       .schedule_next_event
         %b
-          Schedule Next Event      
-          = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f| 
+          Schedule Next Event
+          = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f|
             = render "shared/full_error_messages", :object => f.object
             %p
               = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
@@ -42,3 +42,11 @@
             Continue Event
         %p
           = link_to "Continue Pregnancy Screener", new_person_contact_path(@person), :class => "add_link icon_link"
+
+  .pending_events
+    - unless @participant.pending_events.blank?
+      %b
+        New Contact for Pending Event
+      - @participant.pending_events.each do |event|
+        .pending_event
+          = link_to "Continue #{event.event_type}", new_person_contact_path(@person, :event_id => event.id), :class => "add_link icon_link"

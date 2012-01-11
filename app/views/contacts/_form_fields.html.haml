@@ -1,6 +1,7 @@
 .column-container
   = f.hidden_field :psu_code
   = hidden_field_tag :event_type_id, @event.event_type.id
+  = hidden_field_tag :event_id, @event_id if @event_id
   = hidden_field_tag :next_event, params[:next_event]
 
   %p
@@ -24,7 +25,7 @@
 
   - unless f.object.new_record?
 
-    = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }    
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }
     = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private", :help_text => "contacts/contact_private_tooltip" }
 
     %p
@@ -44,7 +45,7 @@
 
     = render "shared/ncs_code_select", { :f => f, :code => :contact_language_code, :label_text => "Language", :other => :contact_language_other }
     = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other, :help_text => "contacts/contact_interpret_tooltip" }
-    
+
   %p
     = f.label :contact_comment, "Comment"
     %br
@@ -56,5 +57,5 @@
     wire_up_select_other("#contact_contact_language_code","#contact_contact_language_other");
     wire_up_select_other("#contact_contact_interpret_code","#contact_contact_interpret_other");
     wire_up_select_other("#contact_contact_location_code","#contact_contact_location_other");
-    wire_up_select_other("#contact_who_contacted_code","#contact_who_contacted_other");    
+    wire_up_select_other("#contact_who_contacted_code","#contact_who_contacted_other");
   });
