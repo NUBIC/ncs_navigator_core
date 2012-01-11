@@ -106,8 +106,11 @@ class PatientStudyCalendar
     if registered_participant?(participant)
       result = true
     else
-      result = get("subjects/#{participant.person.public_id}", "status") < 300
-      registered_participants << participant.person.public_id if result
+      status = get("subjects/#{participant.person.public_id}", "status")
+      if status
+        result = status < 300
+        registered_participants << participant.person.public_id if result
+      end
     end
     result
   end
