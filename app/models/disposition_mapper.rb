@@ -25,7 +25,7 @@ class DispositionMapper
       end
 
       mdes.disposition_codes.each do |code|
-        grouped_options[code.event] << [code.disposition, code.interim_code] if grouped_options.has_key?(code.event)
+        grouped_options[code.event] << [code.disposition, code.interim_code.to_i] if grouped_options.has_key?(code.event)
       end
       grouped_options
     end
@@ -46,6 +46,8 @@ class DispositionMapper
 
     def determine_event(group)
       case group
+      when /_PregScreen_/
+        PREGNANCY_SCREENER_EVENT
       when /Telephone/
         TELEPHONE_INTERVIEW_EVENT
       when /Mail/
@@ -54,8 +56,6 @@ class DispositionMapper
         MAILED_BACK_SAQ_EVENT
       when /_HHEnum_/
         HOUSEHOLD_ENUMERATION_EVENT
-      when /_PregScreen_/
-        PREGNANCY_SCREENER_EVENT
       else
         GENERAL_STUDY_VISIT_EVENT
       end

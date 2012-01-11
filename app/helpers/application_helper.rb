@@ -55,8 +55,8 @@ module ApplicationHelper
   # Dispositions
 
 
-  def grouped_disposition_codes(group = nil)
-    grouped_options_for_select(DispositionMapper.get_grouped_options(group))
+  def grouped_disposition_codes(group = nil, selected_key = nil)
+    grouped_options_for_select(DispositionMapper.get_grouped_options(group), selected_key, "-- Select Disposition --")
   end
 
 end
