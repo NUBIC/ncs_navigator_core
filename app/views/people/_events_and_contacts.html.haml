@@ -9,14 +9,15 @@
           = "Events about #{blank_safe(participant.person.to_s)}"
         - participant.events.each do |event|
           .event
-            %span.type
-              = event.event_type
-            %span.dates
-              = blank_safe(event.event_start_date)
-              = " - "
-              = blank_safe(event.event_end_date)
-            #span.disposition
-              = "#{event.event_disposition} - #{event.event_disposition_category}"
+            .header
+              %span.type
+                = event.event_type
+              %span.dates
+                = blank_safe(event.event_start_date)
+                = " - "
+                = blank_safe(event.event_end_date)
+              #span.disposition
+                = "#{event.event_disposition} - #{event.event_disposition_category}"
             .contact_link
               - if event.contact_links.blank?
                 No contacts exist for this event.
@@ -33,12 +34,8 @@
                       End
                     %th
                       Disposition
-                      %span{ :class => "help_icon" }
-                      = render "documentation/disposition_code_list"
                     %th
                       Event Disposition
-                      %span{ :class => "help_icon" }
-                      = render "documentation/disposition_code_list"
                     %th
                       Continue
                   - event.contact_links.each do |cl|

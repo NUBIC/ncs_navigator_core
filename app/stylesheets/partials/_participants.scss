@@ -13,7 +13,7 @@
   .edit_participant {
     float: right;
   }
-  
+
   .schedule {
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.5em;
@@ -24,10 +24,19 @@
 
 }
 
+.participant_events {
+  .event {
+    .header {
+      border: 1px solid $BORDER_GRAY;
+      padding: 0.25em;
+    }
+  }
+}
+
 .ppg_details {
   border: 1px solid $BORDER_GRAY;
   padding: 0.5em;
-  margin: 0 1em 0.5em 0;  
+  margin: 0 1em 0.5em 0;
 }
 
 .psc_error {

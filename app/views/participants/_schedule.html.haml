@@ -2,7 +2,7 @@
 
 .schedule
   - if subject_schedules = psc.schedules(participant)
-    - subject_schedules["days"].keys.each do |date|
+    - subject_schedules["days"].keys.sort.each do |date|
       .day
         .date
           = date

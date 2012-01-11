@@ -1777,14 +1777,15 @@ input[type="submit"] {
   padding: 2px 20px 2px 0px !important;
 }
 
-/* line 74, ../../../stylesheets/partials/_links.scss */
+/* line 75, ../../../stylesheets/partials/_links.scss */
+.disposition_icon, .disposition_icon:hover,
 .help_icon, .help_icon:hover {
   padding: 2px 2px 2px 20px;
   margin-left: 5px;
   background: url(../../assets/help.png) 0 2px no-repeat !important;
 }
 
-/* line 80, ../../../stylesheets/partials/_links.scss */
+/* line 81, ../../../stylesheets/partials/_links.scss */
 .notification_icon, .notification_icon:hover {
   padding: 2px 2px 2px 20px;
   margin-left: 5px;
@@ -2391,20 +2392,26 @@ input#instrument_instrument_start_time {
   padding-left: 0.5em;
 }
 
-/* line 27, ../../../stylesheets/partials/_participants.scss */
+/* line 29, ../../../stylesheets/partials/_participants.scss */
+.participant_events .event .header {
+  border: 1px solid #cccccc;
+  padding: 0.25em;
+}
+
+/* line 36, ../../../stylesheets/partials/_participants.scss */
 .ppg_details {
   border: 1px solid #cccccc;
   padding: 0.5em;
   margin: 0 1em 0.5em 0;
 }
 
-/* line 33, ../../../stylesheets/partials/_participants.scss */
+/* line 42, ../../../stylesheets/partials/_participants.scss */
 .psc_error {
   color: crimson;
   margin: 0.5em;
 }
 
-/* line 41, ../../../stylesheets/partials/_participants.scss */
+/* line 50, ../../../stylesheets/partials/_participants.scss */
 #edit_person_link,
 #edit_participant_link,
 #create_person_link,
@@ -2413,18 +2420,18 @@ input#instrument_instrument_start_time {
   padding-right: 1em;
 }
 
-/* line 46, ../../../stylesheets/partials/_participants.scss */
+/* line 55, ../../../stylesheets/partials/_participants.scss */
 .switch_arm {
   float: right;
 }
 
-/* line 50, ../../../stylesheets/partials/_participants.scss */
+/* line 59, ../../../stylesheets/partials/_participants.scss */
 span.known_instrument {
   color: darkorange;
   font-style: italic;
 }
 
-/* line 56, ../../../stylesheets/partials/_participants.scss */
+/* line 65, ../../../stylesheets/partials/_participants.scss */
 #low_intensity_consent_no,
 #low_intensity_consent_yes {
   border-radius: 0.5em;
@@ -2434,12 +2441,12 @@ span.known_instrument {
   padding: 0.5em;
 }
 
-/* line 62, ../../../stylesheets/partials/_participants.scss */
+/* line 71, ../../../stylesheets/partials/_participants.scss */
 #low_intensity_consent_script {
   margin-bottom: 2em;
 }
 
-/* line 68, ../../../stylesheets/partials/_participants.scss */
+/* line 77, ../../../stylesheets/partials/_participants.scss */
 .schedule .activities .activity {
   margin-left: 1em;
 }
@@ -2508,4 +2515,40 @@ span.known_instrument {
 /* line 41, ../../../stylesheets/partials/_tooltip.scss */
 .notification_tooltip {
   background-color: pink;
+}
+
+/* line 1, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs {
+  border: none !important;
+}
+/* line 3, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs .ui-widget-header {
+  background: #F0F0F0 !important;
+  border: none !important;
+}
+/* line 6, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs .ui-widget-header .ui-state-default {
+  font-weight: normal;
+  font-size: 0.9em;
+}
+/* line 10, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs .ui-widget-header .ui-state-active {
+  background-color: whitesmoke !important;
+}
+/* line 15, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs .ui-widget-content a {
+  color: #0000FF !important;
+}
+/* line 19, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs .page_section {
+  margin: 0;
+}
+/* line 22, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+#tabs .ui-tabs-panel {
+  padding: 0 !important;
+}
+
+/* line 26, ../../../stylesheets/partials/_jquery_ui_overrides.scss */
+.ui-tabs {
+  padding: 0 !important;
 }
