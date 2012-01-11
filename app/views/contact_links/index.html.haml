@@ -4,7 +4,7 @@
   = render 'documentation/contact'
 
 .page_section.search
-  = search_form_for @q do |f|
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     %p
       = f.label :contact_contact_date_date_gteq, "Date After or On"
       = f.text_field :contact_contact_date_date_gteq, :class => 'datepicker'
@@ -25,13 +25,13 @@
       = f.select(:contact_contact_type_code_eq, NcsCode.ncs_code_lookup(:contact_type_code), { :include_blank => "-- Select Contact Type --" })
     %p
       = f.label :contact_contact_disposition_eq, "Contact Disposition"
-      = f.select(:contact_contact_disposition_eq, grouped_disposition_codes, { :include_blank => "-- Select Contact Disposition --" })
+      = f.select(:contact_contact_disposition_eq, grouped_disposition_codes)
     %p
       = f.label :event_event_type_code_eq, "Event Type"
       = f.select(:event_event_type_code_eq, NcsCode.ncs_code_lookup(:event_type_code), { :include_blank => "-- Select Event Type --" })
     %p
       = f.label :event_event_disposition_eq, "Event Disposition"
-      = f.select(:event_event_disposition_eq, grouped_disposition_codes, { :include_blank => "-- Select Event Disposition --" })
+      = f.select(:event_event_disposition_eq, grouped_disposition_codes)
     %br
     = f.submit "Search"
 
@@ -73,7 +73,9 @@
           %td
             = cl.contact.contact_end_time
           %td
-            - if cl.person.participant?
+            - if cl.person.blank?
+              = blank_safe(cl.person, "N/A")
+            - elsif cl.person.participant?
               = link_to blank_safe(cl.person.to_s), person_path(cl.person), :class => 'edit_link icon_link'
             - else
               = blank_safe(cl.person.to_s)

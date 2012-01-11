@@ -4,7 +4,7 @@
   = render 'documentation/event'
 
 .page_section.search
-  = search_form_for @q do |f|
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     %p
       = f.label :event_start_date_gteq, "Start Date After or On"
       = f.text_field :event_start_date_gteq, :class => 'datepicker'

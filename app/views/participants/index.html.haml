@@ -4,7 +4,7 @@
   = render 'documentation/participant'
 
 .page_section.search
-  = search_form_for @q do |f|
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
 
     = f.hidden_field :participant_person_links_relationship_code_eq
 
