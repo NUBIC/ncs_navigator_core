@@ -40,7 +40,7 @@ describe PrePregnancyOperationalDataExtractor do
         Factory(:response, :survey_section_id => survey_section.id, :string_value => "Stafford", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_DOB"
         answer = q.answers.select { |a| a.response_class == "date" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/11/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+        Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/01/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
       when "#{PrePregnancyOperationalDataExtractor::INTERVIEW_PREFIX}.MARISTAT"
         answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{married.local_code}" }.first
         Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
@@ -55,8 +55,8 @@ describe PrePregnancyOperationalDataExtractor do
     person = Person.find(person.id)
     person.first_name.should == "Jo"
     person.last_name.should == "Stafford"
-    person.person_dob.should == "1981-01-11"
-    person.age.should == 30
+    person.person_dob.should == "1981-01-01"
+    person.age.should == Date.today.year - 1981
 
     person.marital_status.should == married
   end
