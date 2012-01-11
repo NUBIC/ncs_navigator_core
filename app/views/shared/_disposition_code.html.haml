@@ -5,4 +5,8 @@
   .notification_tooltip
     = t('mdes.disposition')
 %p
-  = f.select(code, grouped_disposition_codes(@disposition_group), { :include_blank => "-- Select Disposition --" })
+  - if f.object.is_a? Event
+    - disposition_code = f.object.event_disposition
+  - elsif f.object.is_a? Contact
+    - disposition_code = f.object.contact_disposition
+  = f.select(code, grouped_disposition_codes(@disposition_group, f.object.send(code)))
