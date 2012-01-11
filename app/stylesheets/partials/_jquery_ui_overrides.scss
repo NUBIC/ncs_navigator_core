@@ -1,0 +1,28 @@
+#tabs {
+  border: none !important;
+  .ui-widget-header {
+    background: #F0F0F0 !important;
+    border: none !important;
+    .ui-state-default {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+    .ui-state-active {
+      background-color: whitesmoke !important;
+    }
+  }
+  .ui-widget-content {
+    a {
+      color: #0000FF !important;
+    }
+  }
+  .page_section {
+    margin: 0;
+  }
+  .ui-tabs-panel {
+    padding: 0 !important;
+  }
+}
+.ui-tabs {
+  padding: 0 !important;
+}

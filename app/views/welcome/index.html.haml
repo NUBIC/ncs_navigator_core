@@ -15,7 +15,7 @@
           %th Person
           %th PPG Status
           %th Activity
-        - rows.each do |row|
+        - rows.sort_by { |r| r['scheduled_date'] }.each do |row|
           - if row['subject']
             - person = Person.find_by_person_id(row['subject']['person_id'])
             - if person
