@@ -30,8 +30,7 @@ class ContactLinksController < ApplicationController
     @contact.populate_post_survey_attributes(@instrument) if @instrument
 
     @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
-    # FIXME: move this to the participant NOT the person
-    # @event.event_repeat_key = @person.event_repeat_key(@event)
+    @event.event_repeat_key = @event.contact_links.count
 
 		set_time_and_dates
 		set_disposition_group
@@ -118,9 +117,11 @@ class ContactLinksController < ApplicationController
 	   	if event
 	   	  start_date = contact.contact_date_date.nil? ? Date.today : contact.contact_date_date
   	   	event.event_start_date = start_date if event.event_start_date.blank?
-  	   	event.event_end_date = Date.today
   	   	event.event_start_time = contact.contact_start_time
-  	   	event.event_end_time = contact.contact_end_time
+  	   	# TODO: determine if this should be prepopulated
+  	   	#       might depend on the response set
+        # event.event_end_date = Date.today
+        # event.event_end_time = contact.contact_end_time
 	   	end
 	  end
 
@@ -142,6 +143,9 @@ class ContactLinksController < ApplicationController
 	  ##
 	  # Determine the disposition group to be used from the contact type or instrument taken
 	  def set_disposition_group
+	    if @event && @event.event_type.to_s == "Pregnancy Screener"
+        return DispositionMapper::PREGNANCY_SCREENER_EVENT
+      end
 	    @disposition_group = nil
 	    instrument = @contact_link.instrument
 	    contact = @contact_link.contact
