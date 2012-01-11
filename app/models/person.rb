@@ -78,6 +78,7 @@ class Person < ActiveRecord::Base
   has_many :household_units, :through => :household_person_links
 
   has_many :participant_person_links
+  has_many :participants, :through => :participant_person_links
   # validates_presence_of :first_name
   # validates_presence_of :last_name
 
@@ -262,16 +263,6 @@ class Person < ActiveRecord::Base
   def instrument_repeat_key(survey)
     response_sets_for_survey = response_sets.select { |rs| rs.survey.title == survey.title }
     response_sets_for_survey.blank? ? 0 : response_sets_for_survey.size - 1
-  end
-
-  ##
-  # Returns the number of times (0 based) the person has been associated with the event type of the
-  # given event
-  # @param [Event]
-  # @return [Fixnum]
-  def event_repeat_key(event)
-    contacts_for_event = contact_links.select { |link| link.event && link.event.event_type == event.event_type }
-    contacts_for_event.blank? ? 0 : contacts_for_event.size - 1
   end
 
   ##
