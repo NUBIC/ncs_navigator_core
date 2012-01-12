@@ -378,6 +378,8 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next event
   # @return [Date]
   def interval
+    return 1.week unless pending_events.blank?
+
     case
     when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?, (can_consent? && eligible_for_low_intensity_follow_up?)
       0
@@ -722,7 +724,7 @@ class Participant < ActiveRecord::Base
       if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif following_low_intensity?
-        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+        lo_intensity_follow_up
       elsif eligible_for_low_intensity_follow_up?
         lo_intensity_follow_up
       elsif pregnant?
@@ -759,7 +761,19 @@ class Participant < ActiveRecord::Base
 
     def lo_intensity_follow_up
       return nil if ineligible?
-      can_consent? ? PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 : PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+      if can_consent?
+        if has_completed_low_intensity_data_collection?
+          PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+        else
+          PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        end
+      else
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+      end
+    end
+
+    def has_completed_low_intensity_data_collection?
+      events.select { |e| e.event_type_code == 33 && !e.event_end_date.blank? }.size > 0
     end
 
     def eligible_for_ppg_follow_up?

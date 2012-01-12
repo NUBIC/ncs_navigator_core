@@ -153,12 +153,7 @@ class ContactLinksController < ApplicationController
 	      @disposition_group = @contact_link.contact.contact_type.to_s
       end
       if instrument && instrument.survey
-        case instrument.survey.title
-        when /_HHEnum_/
-          @disposition_group = instrument.survey.title
-        when /_PregScreen_/
-          @disposition_group = instrument.survey.title
-        end
+        @disposition_group = instrument.survey.title
       end
 	  end
 
