@@ -14,7 +14,10 @@
         = render "shared/full_error_messages", :object => f.object
         = f.hidden_field :high_intensity
         %p
-          = f.submit switch_arm_message(@participant)
+          - if @participant.high_intensity?
+            = f.submit switch_arm_message(@participant)
+          - else
+            = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
 
   = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
 
