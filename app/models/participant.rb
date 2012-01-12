@@ -79,7 +79,8 @@ class Participant < ActiveRecord::Base
     store_audit_trail
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
-    after_transition :on => :parenthood, :do => :update_ppg_status_after_birth
+    after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
+    after_transition :on => :birth_event_low, :do => :update_ppg_status_after_birth
     after_transition :on => :lose_child, :do => :update_ppg_status_after_child_loss
 
     event :register do
@@ -238,8 +239,25 @@ class Participant < ActiveRecord::Base
       end
     end
 
+    if /_PrePreg_/ =~ survey_title
+      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow! if can_follow?
+    end
+
     if /_PregVisit1_/ =~ survey_title && can_pregnancy_one_visit?
       pregnancy_one_visit!
+    end
+
+    if /_PregVisit2_/ =~ survey_title && can_pregnancy_two_visit?
+      pregnancy_two_visit!
+    end
+
+    if /_Birth_/ =~ survey_title
+      if low_intensity?
+        birth_event_low! if can_birth_event_low?
+      else
+        birth_event! if can_birth_event?
+      end
     end
 
     if known_to_have_experienced_child_loss? && can_lose_child?
@@ -689,6 +707,7 @@ class Participant < ActiveRecord::Base
       # Pre-Pregnancy
       move_to_high_intensity_if_required
       non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow!
     when 13, 14
       # Pregnancy Visit 1
       move_to_high_intensity_if_required
