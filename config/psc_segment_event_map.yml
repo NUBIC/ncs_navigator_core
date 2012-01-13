@@ -1,6 +1,6 @@
---- 
+---
 - event_type: Household Enumeration
-  psc_segment: 
+  psc_segment:
 - event_type: Two Tier Enumeration
   psc_segment:
 - event_type: Ongoing Tracking of Dwelling Units
@@ -18,7 +18,7 @@
 - event_type: Pregnancy Screening - Household Enumeration Group
   psc_segment: Pregnancy Screener
 - event_type: Informed Consent
-  psc_segment:
+  psc_segment: Informed Consent
 - event_type: Pre-Pregnancy Visit
   psc_segment: Pre-Pregnancy
 - event_type: Pre-Pregnancy Visit SAQ
@@ -32,7 +32,7 @@
 - event_type: "Pregnancy Visit #2 SAQ"
   psc_segment: Pregnancy Visit 2
 - event_type: Pregnancy Visit - Low Intensity Group
-  psc_segment: 
+  psc_segment:
 - event_type: Birth
   psc_segment: Birth Visit Interview
 - event_type: Father
