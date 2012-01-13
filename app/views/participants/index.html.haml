@@ -17,9 +17,6 @@
     = f.label :p_id_cont, "Participant ID"
     = f.text_field :p_id_cont
     %br
-    = f.label :high_intensity_eq, "High Intensity"
-    = f.check_box :high_intensity_eq
-    %br
     = f.label :ppg_status_histories_ppg_status_code_eq, "PPG Status"
     = f.select(:ppg_status_histories_ppg_status_code_eq, NcsCode.ncs_code_lookup(:ppg_status_code), { :include_blank => "-- Select PPG Status --" })
     %br
