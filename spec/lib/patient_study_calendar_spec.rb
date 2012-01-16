@@ -99,6 +99,14 @@ describe PatientStudyCalendar do
         end
       end
 
+      it 'only checks once if the participant is NOT registered with the study' do
+        pending 'This tests does not fail when the underlying feature is broken due to #1724'
+        VCR.use_cassette('psc/unknown_subject') do
+          subject.is_registered?(@participant).should be_false
+        end
+        subject.is_registered?(@participant).should be_false
+      end
+
       it "knows when the participant IS registered with the study" do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
         participant = Factory(:participant)
