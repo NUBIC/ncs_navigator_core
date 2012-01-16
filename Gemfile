@@ -52,6 +52,8 @@ end
 gem 'ncs_mdes_warehouse',
   :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
 #gem 'ncs_mdes_warehouse', '~> 0.3', '>= 0.3.2'
+gem 'aker-cas_cli', :git => 'git://github.com/NUBIC/aker-cas_cli.git',
+  :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do

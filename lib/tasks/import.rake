@@ -13,18 +13,26 @@ namespace :import do
     NcsNavigator::Warehouse::DatabaseInitializer.new(t.config).set_up_repository
   end
 
-  task :psc_setup do |t|
+  task :psc_setup => :environment do |t|
     require 'highline'
-    class << t; attr_accessor :psc_username_password; end
+    require 'aker/cas_cli'
+    class << t; attr_accessor :user; end
+
+    cas_cli = Aker::CasCli.new(Aker.configuration)
 
     hl = HighLine.new
     username = hl.ask("Username for PSC: ")
     password = hl.ask("Password for PSC: ") { |q| q.echo = '*' }
-    t.psc_username_password = [username, password].join(',')
+
+    t.user = cas_cli.authenticate(username, password)
   end
 
   def import_wh_config
     task('import:warehouse_setup').config
+  end
+
+  def user_for_psc
+    task('import:psc_setup').user
   end
 
   desc 'Import all data'
@@ -33,7 +41,8 @@ namespace :import do
   desc 'Import operational data'
   task :operational => [:psc_setup, :warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(import_wh_config)
+    importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(
+      import_wh_config, user_for_psc)
 
     tables = case
              when ENV['TABLES']
@@ -52,12 +61,7 @@ namespace :import do
 
     puts "Importing only #{tables.join(', ')}." unless tables.empty?
 
-    begin
-      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
-      importer.import(*tables)
-    ensure
-      ENV['PSC_USERNAME_PASSWORD'] = nil
-    end
+    importer.import(*tables)
   end
 
   desc 'Import instrument data'
@@ -86,37 +90,27 @@ namespace :import do
 
   desc 'Schedules upcoming events for participants'
   task :schedule_participant_events => [:psc_setup, :warehouse_setup, :environment]  do
-    begin
-      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
-      days_out = ENV['DAYS_OUT'] || 14
+    days_out = ENV['DAYS_OUT'] || 14
 
-      participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }.
-        select { |p| p.person }
+    participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }.
+      select { |p| p.person }
 
-      psc = PatientStudyCalendar.new(nil)
+    psc = PatientStudyCalendar.new(user_for_psc)
 
-      participants.each do |p|
-        psc.schedule_next_segment(p)
-      end
-    ensure
-      ENV['PSC_USERNAME_PASSWORD'] = nil
+    participants.each do |p|
+      psc.schedule_next_segment(p)
     end
   end
 
   desc 'Re-schedule events that are pending (i.e. w/out an event_end_date)'
   task :reschedule_pending_events => [:psc_setup, :warehouse_setup, :environment] do
-    begin
-      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
-      date = 4.days.from_now.to_date
+    date = 4.days.from_now.to_date
 
-      events = Event.where("event_end_date is null and event_type_code <> 29").all
-      psc = PatientStudyCalendar.new(nil)
+    events = Event.where("event_end_date is null and event_type_code <> 29").all
+    psc = PatientStudyCalendar.new(user_for_psc)
 
-      events.each do |event|
-        psc.schedule_known_event(event.participant, event.event_type.to_s, date)
-      end
-    ensure
-      ENV['PSC_USERNAME_PASSWORD'] = nil
+    events.each do |event|
+      psc.schedule_known_event(event.participant, event.event_type.to_s, date)
     end
   end
 

@@ -22,11 +22,12 @@ module NcsNavigator::Core::Warehouse
     def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
-    def initialize(wh_config)
+    def initialize(wh_config, user)
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
       @failed_associations = []
+      @user = user
       @progress = ProgressTracker.new(wh_config)
     end
 
@@ -125,8 +126,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def psc
-      # expects PSC_USERNAME_PASSWORD to be set in the env
-      @psc ||= PatientStudyCalendar.new(nil)
+      @psc ||= PatientStudyCalendar.new(@user)
     end
 
     def assign_subject(participant, core_event_type, core_event_date)
@@ -147,9 +147,7 @@ module NcsNavigator::Core::Warehouse
     def update_activity_state(participant, instrument, date)
       if instrument
         log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
-      end
-      if !participant.person.nil? && psc.is_registered?(participant)
-        if instrument
+        if !participant.person.nil? && psc.is_registered?(participant)
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
           new_state = activity_state(instrument.ins_status.to_i)
           reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"

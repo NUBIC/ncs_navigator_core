@@ -11,15 +11,11 @@ module NcsNavigator::Core::Warehouse
     include_context :importer_spec_warehouse
 
     let(:importer) {
-      OperationalImporter.new(wh_config)
+      OperationalImporter.new(wh_config, user)
     }
 
     let(:enumerator) {
       OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
-    }
-
-    let(:psc) {
-      PatientStudyCalendar.new(user)
     }
 
     let(:user) {
@@ -50,10 +46,6 @@ module NcsNavigator::Core::Warehouse
           OperationalImporter.automatic_producers.collect(&:model).should_not include(manual)
         end
       end
-    end
-
-    before do
-      importer.stub!(:psc).and_return(psc)
     end
 
     describe 'automatic conversion' do
