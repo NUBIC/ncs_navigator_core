@@ -86,7 +86,6 @@ namespace :import do
 
   desc 'Schedules upcoming events for participants'
   task :schedule_participant_events => [:psc_setup, :warehouse_setup, :environment]  do
-
     begin
       ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
       days_out = ENV['DAYS_OUT'] || 14
@@ -103,4 +102,22 @@ namespace :import do
       ENV['PSC_USERNAME_PASSWORD'] = nil
     end
   end
+
+  desc 'Re-schedule events that are pending (i.e. w/out an event_end_date)'
+  task :reschedule_pending_events => [:psc_setup, :warehouse_setup, :environment] do
+    begin
+      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
+      date = 4.days.from_now.to_date
+
+      events = Event.where("event_end_date is null and event_type_code <> 29").all
+      psc = PatientStudyCalendar.new(nil)
+
+      events.each do |event|
+        psc.schedule_known_event(event.participant, event.event_type.to_s, date)
+      end
+    ensure
+      ENV['PSC_USERNAME_PASSWORD'] = nil
+    end
+  end
+
 end
