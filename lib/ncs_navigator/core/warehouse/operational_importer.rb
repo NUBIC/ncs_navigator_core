@@ -113,7 +113,7 @@ module NcsNavigator::Core::Warehouse
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
               if core_contact_link.new_record?
                 # TODO: determine if last contact link and if not use scheduled !!!
-                update_activity_state(participant, mdes_lc.instrument, core_event_date)
+                update_activity_state(participant, mdes_lc.instrument, core_event_type, core_event_date)
               end
               save_core_record(core_contact_link)
             end
@@ -144,17 +144,17 @@ module NcsNavigator::Core::Warehouse
     end
     private :schedule_known_event
 
-    def update_activity_state(participant, instrument, date)
-      if instrument
-        log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
-      end
+    def update_activity_state(participant, instrument, event_type, date)
       if !participant.person.nil? && psc.is_registered?(participant)
         if instrument
+          log.debug("~~~ update_activity_state with instrument #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
           new_state = activity_state(instrument.ins_status.to_i)
           reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
           log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
-          psc.update_activity_state(activity_name, participant, new_state, date, reason)
+          psc.update_activity_state_by_name(activity_name, participant, new_state, date, reason)
+        else
+          # TODO: what to do if there is not an instrument?
         end
       end
     end
