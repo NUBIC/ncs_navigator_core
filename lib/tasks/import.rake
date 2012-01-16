@@ -113,11 +113,39 @@ namespace :import do
       psc = PatientStudyCalendar.new(nil)
 
       events.each do |event|
-        psc.schedule_known_event(event.participant, event.event_type.to_s, date)
+        reason = "Import task: Rescheduling pending event [#{event.id}] #{event.event_type} to #{date}."
+        psc.schedule_pending_event(event.participant, event.event_type.to_s, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
       end
     ensure
       ENV['PSC_USERNAME_PASSWORD'] = nil
     end
+  end
+
+  desc 'After an import, set an end date and final disposition for all pregnancy screener events'
+  task :close_pregnancy_screener_events => [:psc_setup, :warehouse_setup, :environment] do
+
+    begin
+      ENV['PSC_USERNAME_PASSWORD'] = task('import:psc_setup').psc_username_password
+
+      events = Event.where("event_end_date is null and event_type_code = 29").all
+      psc = PatientStudyCalendar.new(nil)
+      disposition_category = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
+
+      events.each do |event|
+        end_date = event.event_start_date.blank? ? Date.today : event.event_start_date
+        event.event_disposition = 535 # Out of Window
+        event.event_end_date = end_date
+        event.event_disposition_category = disposition_category
+        event.save!
+
+        # TODO: create something in psc that closes pregnancy screener events since this might schedule something new
+        reason = "Import task: Closing pregnancy screener event [#{event.id}]."
+        psc.schedule_pending_event(event.participant, event.event_type.to_s, PatientStudyCalendar::ACTIVITY_CANCELED, Date.today, reason)
+      end
+    ensure
+      ENV['PSC_USERNAME_PASSWORD'] = nil
+    end
+
   end
 
 end
