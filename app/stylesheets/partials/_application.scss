@@ -16,6 +16,11 @@ body {
   margin: 0 0 0.5em 1em;
 }
 
+span.status_note {
+  font-size: 0.8em;
+  color: $NOTE_GRAY;
+}
+
 a {
   color: #0000FF;
   img {

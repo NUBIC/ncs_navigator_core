@@ -204,4 +204,58 @@ describe PatientStudyCalendar do
 
   end
 
+  context "determining schedule state" do
+
+    before(:each) do
+      @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
+      @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.register!
+      ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+      Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
+    end
+
+    it "knows about scheduled segments" do
+      VCR.use_cassette('psc/lo_i_ppg_follow_up_pending') do
+        person = Factory(:person, :first_name => "Ally", :last_name => "Goodfella", :sex => @female, :person_dob => '1980-10-31', :person_id => "allyg")
+        participant = Factory(:participant, :p_id => "allyg")
+        participant.person = person
+
+        subject_schedule_status = subject.scheduled_activities(participant)
+        subject_schedule_status.should_not be_nil
+        subject_schedule_status.size.should == 3
+
+        sss = subject_schedule_status.first
+        sss.date.should == "2011-11-14"
+        sss.study_segment.should == "LO-Intensity: PPG Follow-Up"
+        sss.activity_name.should == "Pregnancy Probability Group Follow-Up Interview"
+        sss.activity_id.should == "fb6249e5-2bf6-40cc-81e9-dc30e2012410"
+        sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+
+        sss = subject_schedule_status.last
+        sss.date.should == "2011-05-07"
+        sss.study_segment.should == "LO-Intensity: Pregnancy Screener"
+        sss.activity_name.should == "Pregnancy Screener Interview"
+        sss.current_state.should == PatientStudyCalendar::ACTIVITY_OCCURRED
+      end
+    end
+
+    it "can determine if activities are to be rescheduled" do
+      VCR.use_cassette('psc/lo_i_ppg_follow_up_pending') do
+        person = Factory(:person, :first_name => "Ally", :last_name => "Goodfella", :sex => @female, :person_dob => '1980-10-31', :person_id => "allyg")
+        participant = Factory(:participant, :p_id => "allyg")
+        participant.person = person
+
+        ppgfu_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
+        preg_screen = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
+
+        subject.activities_to_reschedule(participant, preg_screen.to_s).should be_nil
+        subject.activities_to_reschedule(participant, ppgfu_event.to_s).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
+      end
+    end
+
+
+  end
+
 end
