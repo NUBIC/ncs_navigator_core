@@ -146,9 +146,7 @@ module NcsNavigator::Core::Warehouse
     def update_activity_state(participant, instrument, date)
       if instrument
         log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
-      end
-      if !participant.person.nil? && psc.is_registered?(participant)
-        if instrument
+        if !participant.person.nil? && psc.is_registered?(participant)
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
           new_state = activity_state(instrument.ins_status.to_i)
           reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
