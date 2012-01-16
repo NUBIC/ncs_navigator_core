@@ -56,6 +56,12 @@
   float: right;
 }
 
+.pending_events {
+  border-top: 1px solid $BORDER_GRAY;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+}
+
 span.known_instrument {
   color: darkorange;
   font-style: italic;
