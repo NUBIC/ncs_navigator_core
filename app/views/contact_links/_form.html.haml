@@ -1,9 +1,9 @@
 .page_section
-  = form_for(@contact_link) do |f| 
+  = form_for(@contact_link) do |f|
     = render "shared/full_error_messages", :object => f.object
-    
+
     = f.hidden_field :person_id
-    
+
     .contact_link_section
       .mdes_table_definition
         = render 'documentation/contact'
@@ -11,7 +11,7 @@
         Contact
       = fields_for @contact_link.contact do |contact|
         = render "contacts/form_fields", { :f => contact }
-    
+
     .contact_link_section
       .mdes_table_definition
         = render 'documentation/event'
@@ -19,12 +19,13 @@
         Event
       = fields_for @contact_link.event do |event|
         = render "events/form_fields", { :f => event }
-    
+
     .contact_link_section
       %h3
         &nbsp;
       %p
-        = "Close contact for #{@contact_link.event.event_type}"
+        - psc_segment_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(@contact_link.event.event_type.to_s)
+        = "Close contact for #{psc_segment_name}"
         %br
         = f.submit "Close"
 
