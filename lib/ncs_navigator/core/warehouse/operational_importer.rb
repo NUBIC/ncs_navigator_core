@@ -22,11 +22,12 @@ module NcsNavigator::Core::Warehouse
     def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
-    def initialize(wh_config)
+    def initialize(wh_config, user)
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
       @failed_associations = []
+      @user = user
       @progress = ProgressTracker.new(wh_config)
     end
 
@@ -124,8 +125,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def psc
-      # expects PSC_USERNAME_PASSWORD to be set in the env
-      @psc ||= PatientStudyCalendar.new(nil)
+      @psc ||= PatientStudyCalendar.new(@user)
     end
 
     def assign_subject(participant, core_event_type, core_event_date)
