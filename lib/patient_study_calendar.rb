@@ -46,7 +46,7 @@ class PatientStudyCalendar
   # @param [Aker::User]
   def initialize(user)
     self.user = user || fake_user
-    self.registered_participants = []
+    self.registered_participants = RegisteredParticipantList.new(self)
   end
 
   def fake_user
@@ -102,24 +102,14 @@ class PatientStudyCalendar
   # True if the participant is known to psc by the participant public_id.
   # @return [Boolean]
   def is_registered?(participant)
-    result = false
-    if registered_participant?(participant)
-      result = true
-    else
-      status = get("subjects/#{participant.person.public_id}", "status")
-      if status
-        result = status < 300
-        registered_participants << participant.person.public_id if result
-      end
-    end
-    result
+    registered_participants.is_registered?(participant.person.public_id)
   end
 
   ##
   # True if the participant identifier is known to self.
   # @return [Boolean]
   def registered_participant?(participant)
-    registered_participants.include?(participant.person.public_id)
+    registered_participants.is_registered?(participant.person.public_id, false)
   end
 
   def assign_subject(participant, event_type = nil, date = nil)
@@ -128,7 +118,8 @@ class PatientStudyCalendar
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
     response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
       build_subject_assignment_request(participant, event_type, date))
-    registered_participants << participant.person.public_id if valid_response?(response)
+    registered_participants.cache_registration_status(
+      participant.person.public_id, valid_response?(response))
     response
   end
 
@@ -598,6 +589,29 @@ class PatientStudyCalendar
     def psc_config
       @psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     end
+  end
 
+  class RegisteredParticipantList
+    def initialize(psc)
+      @psc = psc
+      @map = {}
+    end
+
+    def is_registered?(person_id, check_server_if_not_cached=true)
+      if @map.has_key?(person_id)
+        @map[person_id]
+      elsif check_server_if_not_cached
+        cache_registration_status(person_id, check_if_registered(person_id))
+      end
+    end
+
+    def cache_registration_status(person_id, status)
+      @map[person_id] = status
+    end
+
+    def check_if_registered(person_id)
+      status = @psc.get("subjects/#{person_id}", "status")
+      status && status < 300
+    end
   end
 end
