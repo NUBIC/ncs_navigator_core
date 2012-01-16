@@ -112,6 +112,7 @@ module NcsNavigator::Core::Warehouse
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
               if core_contact_link.new_record?
+                # TODO: determine if last contact link and if not use scheduled !!!
                 update_activity_state(participant, mdes_lc.instrument, core_event_date)
               end
               save_core_record(core_contact_link)
