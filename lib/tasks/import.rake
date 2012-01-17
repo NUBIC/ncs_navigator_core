@@ -116,7 +116,7 @@ namespace :import do
   end
 
   # TODO: this could pull in and close an in-progress (i.e., not
-  # abandoned) preganancy screener.
+  # abandoned) pregnancy screener.
   desc 'After an import, set an end date and final disposition for all pregnancy screener events'
   task :close_pregnancy_screener_events => [:psc_setup, :environment] do
 
