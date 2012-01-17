@@ -109,8 +109,10 @@ namespace :import do
     events = Event.where("event_end_date is null and event_type_code <> 29").all
     psc = PatientStudyCalendar.new(user_for_psc)
 
-    reason = "Import task: Rescheduling pending event [#{event.event_id}] #{event.event_type} to #{date}."
-    psc.schedule_pending_event(event.participant, event.event_type.to_s, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
+    events.each do |event|
+      reason = "Import task: Rescheduling pending event [#{event.event_id}] #{event.event_type} to #{date}."
+      psc.schedule_pending_event(event.participant, event.event_type.to_s, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
+    end
   end
 
   # TODO: this could pull in and close an in-progress (i.e., not
