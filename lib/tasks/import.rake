@@ -89,7 +89,7 @@ namespace :import do
   end
 
   desc 'Schedules upcoming events for participants'
-  task :schedule_participant_events => [:psc_setup, :warehouse_setup, :environment]  do
+  task :schedule_participant_events => [:psc_setup, :environment]  do
     days_out = ENV['DAYS_OUT'] || 14
 
     participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }.
@@ -103,18 +103,20 @@ namespace :import do
   end
 
   desc 'Re-schedule events that are pending (i.e. w/out an event_end_date)'
-  task :reschedule_pending_events => [:psc_setup, :warehouse_setup, :environment] do
+  task :reschedule_pending_events => [:psc_setup, :environment] do
     date = 4.days.from_now.to_date
 
     events = Event.where("event_end_date is null and event_type_code <> 29").all
     psc = PatientStudyCalendar.new(user_for_psc)
 
-    reason = "Import task: Rescheduling pending event [#{event.id}] #{event.event_type} to #{date}."
+    reason = "Import task: Rescheduling pending event [#{event.event_id}] #{event.event_type} to #{date}."
     psc.schedule_pending_event(event.participant, event.event_type.to_s, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
   end
 
+  # TODO: this could pull in and close an in-progress (i.e., not
+  # abandoned) preganancy screener.
   desc 'After an import, set an end date and final disposition for all pregnancy screener events'
-  task :close_pregnancy_screener_events => [:psc_setup, :warehouse_setup, :environment] do
+  task :close_pregnancy_screener_events => [:psc_setup, :environment] do
 
     events = Event.where("event_end_date is null and event_type_code = 29").all
     psc = PatientStudyCalendar.new(user_for_psc)
@@ -122,7 +124,7 @@ namespace :import do
     events.each do |event|
       close_enumeration(event, disposition_category)
       # TODO: create something in psc that closes pregnancy screener events since this might schedule something new
-      reason = "Import task: Closing pregnancy screener event [#{event.id}]."
+      reason = "Import task: Closing pregnancy screener event [#{event.event_id}]."
       psc.schedule_pending_event(event.participant, event.event_type.to_s, PatientStudyCalendar::ACTIVITY_CANCELED, Date.today, reason)
     end
   end
