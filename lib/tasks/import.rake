@@ -106,7 +106,7 @@ namespace :import do
   task :reschedule_pending_events => [:psc_setup, :environment] do
     date = 4.days.from_now.to_date
 
-    events = Event.where("event_end_date is null and event_type_code <> 29").all
+    events = Event.where("participant_id is not null and event_end_date is null and event_type_code <> 29").all
     psc = PatientStudyCalendar.new(user_for_psc)
 
     events.each do |event|
@@ -120,7 +120,7 @@ namespace :import do
   desc 'After an import, set an end date and final disposition for all pregnancy screener events'
   task :close_pregnancy_screener_events => [:psc_setup, :environment] do
 
-    events = Event.where("event_end_date is null and event_type_code = 29").all
+    events = Event.where("participant_id is not null and event_end_date is null and event_type_code = 29").all
     psc = PatientStudyCalendar.new(user_for_psc)
     disposition_category = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
     events.each do |event|
