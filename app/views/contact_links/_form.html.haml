@@ -30,9 +30,10 @@
         = f.submit "Close"
 
       - unless params[:close_contact]
-        %p
-          = "- OR -"
-        %p
-          = "Continue onto #{@person.upcoming_events.to_sentence}"
-          %br
-          = f.submit "Continue"
+        - if @person
+          %p
+            = "- OR -"
+          %p
+            = "Continue onto #{@person.upcoming_events.to_sentence}"
+            %br
+            = f.submit "Continue"
