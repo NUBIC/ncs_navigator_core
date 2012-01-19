@@ -66,7 +66,7 @@ class ContactLinksController < ApplicationController
 		@contact_link = ContactLink.find(params[:id])
 		@contact			= @contact_link.contact
 		@person				= @contact_link.person
-		@participant	= @person.participant
+		@participant	= @person.participant if @person
 		@event				= @contact_link.event
 	end
 
