@@ -32,7 +32,7 @@
       - activities.each do |activity|
         - instrument = InstrumentEventMap.instrument_for_activity(activity)
         - if instrument && survey = Survey.most_recent_for_title(instrument)
-          - if @contact_link.contact.instruments.collect {|i| i.survey.title}.include?(survey.title)
+          - if @contact_link.contact.instrument_survey_titles.include?(survey.title)
             .known_instrument
               = "#{activity} - #{instrument}"
           - else
