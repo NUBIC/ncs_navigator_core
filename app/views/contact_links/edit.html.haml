@@ -13,6 +13,6 @@
     Instrument -
     = @survey.title
 
-= render 'instruments_for_upcoming_events', :initial_instrument_for_contact => false
+= render 'instruments_for_upcoming_events', :initial_instrument_for_contact => false if @person
 
 = render "form"
