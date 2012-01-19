@@ -33,4 +33,4 @@
           %td
             = ppg.ppg_status
           %td
-            = ppg.created_at.to_s(:db)
+            = ppg.ppg_status_date.to_s(:db) if ppg.ppg_status_date
