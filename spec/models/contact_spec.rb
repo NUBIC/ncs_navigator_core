@@ -118,10 +118,15 @@ describe Contact do
       rs, i2 = pers.start_instrument(create_pre_pregnancy_survey_with_email_operational_data)
       l2 = Factory(:contact_link, :contact => c, :instrument => i2, :person => pers)
 
+      i3 = Factory(:instrument)
+      l3 = Factory(:contact_link, :contact => c, :instrument => i3, :person => pers)
+
       c.contact_links.reload
       c.instruments.reload
-      c.contact_links.should == [l1, l2]
-      c.instruments.should == [i1, i2]
+      c.contact_links.should == [l1, l2, l3]
+      c.instruments.should == [i1, i2, i3]
+      c.instruments_with_surveys.should == [i1, i2]
+      c.instrument_survey_titles.should == [i1.survey.title, i2.survey.title]
     end
 
     describe "setting the language and interpreter values" do

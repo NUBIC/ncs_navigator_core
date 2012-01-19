@@ -68,8 +68,10 @@ class Contact < ActiveRecord::Base
   # as the initial instrument taken
   # @param [Person]
   def set_language_and_interpreter_data(person)
-    set_language(person)
-    set_interpreter(person)
+    if person
+      set_language(person)
+      set_interpreter(person)
+    end
   end
 
   ##
@@ -91,11 +93,20 @@ class Contact < ActiveRecord::Base
       self.contact_private_detail = contact_type.to_s
       self.contact_distance = 0.0
     else
+      # NOOP
     end
+  end
 
-    if response_set && (contact_language || contact_language_other)
+  ##
+  # @return [Array<Instrument>] where the instrument has an associated Survey
+  def instruments_with_surveys
+    instruments.select { |i| !i.survey.nil? }
+  end
 
-    end
+  ##
+  # @return [Array<String>] Instrument Survey titles
+  def instrument_survey_titles
+    instruments_with_surveys.collect {|i| i.survey.title}
   end
 
   private
