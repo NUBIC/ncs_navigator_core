@@ -262,7 +262,7 @@ describe PatientStudyCalendar do
     describe "#extract_scheduled_study_segment_identifier" do
 
       it "gets the identifier" do
-        xml = <<-XML
+        body = Nokogiri::XML(<<-XML)
         <?xml version="1.0" encoding="UTF-8"?>
         <scheduled-study-segment xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="6a2d2074-e5a8-4dc6-83ff-9ecea23efada" start-date="2012-01-19" start-day="1" study-segment-id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
          <scheduled-activity id="3c008584-0b55-4e43-98e9-cb5e4738a8a5" ideal-date="2012-01-19" repetition-number="0" planned-activity-id="2b68bb5c-edde-4510-81c8-b962704bc968">
@@ -274,7 +274,7 @@ describe PatientStudyCalendar do
         </scheduled-study-segment>
         XML
 
-        PatientStudyCalendar.extract_scheduled_study_segment_identifier(xml).should == "6a2d2074-e5a8-4dc6-83ff-9ecea23efada"
+        PatientStudyCalendar.extract_scheduled_study_segment_identifier(body).should == "6a2d2074-e5a8-4dc6-83ff-9ecea23efada"
 
       end
 
