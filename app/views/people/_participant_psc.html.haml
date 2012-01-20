@@ -21,40 +21,4 @@
 
   = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
 
-  %b
-  - unless @participant.can_register_with_psc?(psc)
-    - if next_event = @participant.next_scheduled_event
-      .schedule_next_event
-        %b
-          Schedule Next Event
-          = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f|
-            = render "shared/full_error_messages", :object => f.object
-            %p
-              = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
-            %p
-              = f.submit "Schedule #{next_event.event}"
-      .perform_next_event
-        %b
-          Perform Next Event
-        %p
-          = link_to "Initiate New Contact for #{@participant.upcoming_events.to_sentence}", new_person_contact_path(@person), :class => "add_link icon_link"
-    - elsif rs = @person.last_incomplete_response_set
-      - if rs.survey.title =~ /_PregScreen_/
-        .perform_next_event
-          %b
-            Continue Event
-        %p
-          = link_to "Continue Pregnancy Screener", new_person_contact_path(@person), :class => "add_link icon_link"
-
-  - unless @participant.pending_events.blank?
-    .pending_events
-      %b
-        New Contact for Pending Event
-      .instructional_note
-        %span{ :class => "warning_icon" }
-          Pending Events should be completed or closed before continuing on to subsequent events.
-      - @participant.pending_events.each do |event|
-        .pending_event
-          - epoch = @participant.high_intensity? ? PatientStudyCalendar::HIGH_INTENSITY : PatientStudyCalendar::LOW_INTENSITY
-          - psc_segment_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event.event_type.to_s)
-          = link_to "Continue #{epoch}: #{psc_segment_name}", new_person_contact_path(@person, :event_id => event.id), :class => "add_link icon_link"
+  = render "/people/schedule_or_perform_event", :participant => @participant, :person => @person

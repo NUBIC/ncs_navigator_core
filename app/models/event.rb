@@ -221,4 +221,21 @@ class Event < ActiveRecord::Base
   end
   private :set_event_breakoff
 
+
+  def self.schedule_and_create_placeholder(psc, participant, date, event_type_code)
+    resp = psc.schedule_next_segment(participant, date)
+    Event.create_placeholder_record(participant, date, event_type_code, resp.body) if resp && resp.success?
+  end
+
+  def self.create_placeholder_record(participant, date, event_type_code, response_body)
+    begin
+      date = Date.parse(date)
+    rescue
+      # NOOP - do not set unparsable date
+    end
+    study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(response_body)
+    Event.create(:participant => participant, :psu_code => participant.psu_code, :event_start_date => date,
+                 :scheduled_study_segment_identifier => study_segment_identifier, :event_type_code => event_type_code)
+  end
+
 end
