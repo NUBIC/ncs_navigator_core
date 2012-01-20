@@ -11,16 +11,12 @@
           PPG Details
         %th
           Due Date
-        %th
-          Date
       - @participant.ppg_details.each do |ppg|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
             = ppg.ppg_first
           %td
             = @participant.due_date
-          %td
-            = ppg.created_at.to_s(:db)
 
     %table.records
       %tr

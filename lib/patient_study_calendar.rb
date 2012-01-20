@@ -272,8 +272,8 @@ class PatientStudyCalendar
   # @param [Date]
   # @param [String] - reason
   def schedule_pending_event(participant, event_type, value, date, reason = nil)
-    if activities_to_reschedule = activities_to_reschedule(participant, event_type)
-      activities_to_reschedule.each do |activity_identifier|
+    if activities = activities_to_reschedule(participant, event_type)
+      activities.each do |activity_identifier|
         update_activity_state(activity_identifier, participant, value, date, reason)
       end
     else
@@ -296,7 +296,11 @@ class PatientStudyCalendar
   end
 
   ##
-  # Returns the PSC activity identifier for the par
+  # Returns the PSC activity identifier for the first participant scheduled activity
+  # matching the given activity_name
+  # @param [Participant]
+  # @param [String]
+  # @return [String]
   def get_scheduled_activity_identifier(participant, activity_name)
     scheduled_activity_identifier = nil
     scheduled_activities(participant).each do |activity|
@@ -473,6 +477,15 @@ class PatientStudyCalendar
       break if result
     end
     result
+  end
+
+  ##
+  # Given a response from psc - extract the identifier from the response
+  # @param [String] xml response body
+  # @return [String]
+  def self.extract_scheduled_study_segment_identifier(xml)
+    doc = Nokogiri::XML(xml)
+    doc.css("scheduled-study-segment").first['id']
   end
 
   def formatted_dob(participant)
