@@ -1,3 +1,4 @@
+require 'aker/authority/ncs_navigator_authority'
 NcsNavigatorCore::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -30,8 +31,8 @@ NcsNavigatorCore::Application.configure do
   config.assets.debug = true
   
   config.aker do
-    static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
-    authorities :cas, static
+    # static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
+    authorities :cas, Aker::Authority::NcsNavigatorAuthority
     central '/etc/nubic/ncs/aker-local.yml'
   end
 end
