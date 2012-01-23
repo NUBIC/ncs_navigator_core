@@ -101,7 +101,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow_low_intensity do
-      transition [:in_pregnancy_probability_group, :consented_low_intensity] => :following_low_intensity
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity] => :following_low_intensity
     end
 
     event :impregnate_low do
@@ -144,7 +144,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow do
-      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one] => :following_high_intensity
+      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one, :following_high_intensity] => :following_high_intensity
     end
 
     event :impregnate do
