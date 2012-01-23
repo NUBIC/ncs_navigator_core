@@ -484,7 +484,7 @@ class PatientStudyCalendar
   # @param [Nokogiri::Doc] xml response body
   # @return [String]
   def self.extract_scheduled_study_segment_identifier(xml)
-    xml.css("scheduled-study-segment").first['id']
+    xml.css("scheduled-study-segment").first['id'] rescue nil
   end
 
   def formatted_dob(participant)
