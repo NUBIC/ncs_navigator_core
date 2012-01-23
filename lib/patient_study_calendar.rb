@@ -481,7 +481,7 @@ class PatientStudyCalendar
 
   ##
   # Given a response from psc - extract the identifier from the response
-  # @param [String] xml response body
+  # @param [Nokogiri::Doc] xml response body
   # @return [String]
   def self.extract_scheduled_study_segment_identifier(xml)
     xml.css("scheduled-study-segment").first['id']
