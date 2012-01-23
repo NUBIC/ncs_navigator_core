@@ -144,8 +144,7 @@ module NcsNavigator::Core::Warehouse
         date = core_event_date(core_event)
         log.debug("~~~ schedule_known_event for #{core_event.event_type} on #{date} - #{participant.person}")
         if resp = psc.schedule_known_event(participant, core_event.event_type.to_s, date)
-          study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
-          core_event.update_attribute(:scheduled_study_segment_identifier, study_segment_identifier) if study_segment_identifier
+          core_event.scheduled_study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body) 
         end
       end
     end
