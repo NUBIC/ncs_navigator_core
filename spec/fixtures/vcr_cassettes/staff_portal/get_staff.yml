@@ -1,0 +1,32 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://staffportal.local/staff/lee.json
+    body: 
+    headers: 
+      authorization: 
+      - CasProxy PT-cas-ticket
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-ua-compatible: 
+      - IE=Edge
+      content-type: 
+      - application/json
+      www-authenticate: 
+      - CasProxy realm="NCSNavigator"
+      x-runtime: 
+      - "0.021019"
+      server: 
+      - WEBrick/1.3.1 (Ruby/1.8.7/2011-02-18)
+      date: 
+      - Thu, 19 Jan 2012 19:33:26 GMT
+      content-length: 
+      - "23"
+      set-cookie: 
+      - _OMA_session=BAh7ByIZYWtlci5sYXN0X3JlcXVlc3RfYXRsKwcGcBhPIg9zZXNzaW9uX2lkIiU2NjVlZjkwOGQxYTgxZTY5YzFjMTc4ODQwYjEwNGE4Nw%3D%3D--dd74d8ad11a4d4eaa3898147ef8949db4f53e66e; path=/; HttpOnly
+    body: "{\"notify\":true,\"study_center\":20000029,\"ncs_inactive_date\":null,\"staff_type_other\":null,\"roles\":[{\"name\":\"System Administrator\"},{\"name\":\"User Administrator\"},{\"name\":\"Staff Supervisor\"},{\"name\":\"Administrative Staff\"}],\"ethnicity\":null,\"staff_id\":\"test_staff_id\",\"zipcode\":null,\"race_other\":null,\"username\":\"lee\",\"gender\":null,\"external\":false,\"staff_type\":null,\"languages\":[],\"last_name\":\"Peterson\",\"subcontractor\":null,\"race\":null,\"experience\":null,\"email\":\"lee@test.com\",\"first_name\":\"Lee\",\"ncs_active_date\":null}"
+    http_version: "1.1"
