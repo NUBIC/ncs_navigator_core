@@ -27,10 +27,15 @@
     font-weight: bold;
     text-decoration: underline;
   }
+  dt {
+    font-size: 1.25em;
+  }
 }
 
 .tooltip {
   background-color: aliceblue;
+  max-height: 25em;
+  overflow-y:scroll;
 }
 
 .notification_tooltip {

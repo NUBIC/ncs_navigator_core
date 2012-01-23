@@ -1,0 +1,69 @@
+- title "Events"
+
+.mdes_table_definition
+  = render 'documentation/event'
+
+.page_section.search
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
+    %p
+      = f.label :event_start_date_gteq, "Start Date After or On"
+      = f.text_field :event_start_date_gteq, :class => 'datepicker'
+    %p
+      = f.label :event_end_date_gteq, "End Date Before or On"
+      = f.text_field :event_end_date_gteq, :class => 'datepicker'
+    %p
+      = f.label :event_end_date_null, "End Date Blank"
+      = f.check_box :event_end_date_null
+      = f.label :event_end_date_not_null, "End Date Not Blank"
+      = f.check_box :event_end_date_not_null
+    %p
+      = f.label :participant_id_not_null, "With a Participant"
+      = f.check_box :participant_id_not_null
+    %p
+      = f.label :event_type_code_eq, "Event Type"
+      = f.select(:event_type_code_eq, NcsCode.ncs_code_lookup(:event_type_code), { :include_blank => "-- Select Event Type --" })
+    %p
+      = f.label :event_disposition_eq, "Event Disposition"
+      = f.select(:event_disposition_eq, grouped_disposition_codes, { :include_blank => "-- Select Event Disposition --" })
+    %br
+    = f.submit "Search"
+
+.page_section
+  - if @events.empty?
+    #no_records
+      No events were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @events
+    %table.records
+      %tr
+        %th
+          = sort_link @q, "event_start_date", "Start Date"
+        %th
+          = sort_link @q, "event_end_date", "End Date"
+        %th
+          = sort_link @q, "event_type_code", "Event"
+        %th
+          = sort_link @q, "event_disposition", "Event Disp"
+          %span{ :class => "help_icon" }
+          = render "documentation/disposition_code_list"
+        %th
+          = sort_link @q, "event_disposition", "Disp Category"
+        %th
+          Participant
+      - @events.each do |event|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = event.event_start_date
+          %td
+            = event.event_end_date
+          %td
+            = event.event_type
+          %td
+            = event.event_disposition
+          %td
+            = event.event_disposition_category
+          %td
+            = link_to "#{event.participant.person.to_s}", participant_path(event.participant), :class => "show_link icon_link" if event.participant
+  = will_paginate @events

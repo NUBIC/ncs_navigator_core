@@ -1,12 +1,13 @@
 require 'ncs_navigator/configuration'
 
 class ContactsController < ApplicationController
+  before_filter :set_event_id
 
   # GET /contacts/new
   # GET /contacts/new.json
   def new
-    @person     = Person.find(params[:person_id])
-    @contact    = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
+    @person  = Person.find(params[:person_id])
+    @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
 
     @event = event_for_person(false)
     @requires_consent = @person.participant && @person.participant.consented? == false && @event.event_type.display_text != "Pregnancy Screener"
@@ -20,8 +21,8 @@ class ContactsController < ApplicationController
   # POST /contacts
   # POST /contacts.json
   def create
-    @person     = Person.find(params[:person_id])
-    @contact    = Contact.new(params[:contact])
+    @person  = Person.find(params[:person_id])
+    @contact = Contact.new(params[:contact])
 
     @event = event_for_person
 
@@ -77,9 +78,17 @@ class ContactsController < ApplicationController
   private
 
     def event_for_person(save = true)
-      event = new_event_for_person(@person, params[:event_type_id])
+      if @event_id.to_i > 0
+        event = Event.find(@event_id)
+      else
+        event = new_event_for_person(@person, params[:event_type_id])
+      end
       event.save! if save
       event
+    end
+
+    def set_event_id
+      @event_id = params[:event_id] if params[:event_id]
     end
 
     def find_or_create_contact_link

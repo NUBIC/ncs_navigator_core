@@ -15,7 +15,7 @@
           %th Person
           %th PPG Status
           %th Activity
-        - rows.each do |row|
+        - rows.sort_by { |r| r['scheduled_date'] }.each do |row|
           - if row['subject']
             - person = Person.find_by_person_id(row['subject']['person_id'])
             - if person
@@ -45,3 +45,7 @@
     = link_to "View All People", people_path, :class => "list_link icon_link"
   .column-container
     = link_to "View All Participants", participants_path, :class => "list_link icon_link"
+  .column-container
+    = link_to "View All Contacts", contact_links_path, :class => "list_link icon_link"
+  .column-container
+    = link_to "View All Events", events_path, :class => "list_link icon_link"

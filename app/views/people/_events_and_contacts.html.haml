@@ -1,0 +1,57 @@
+.page_section
+  - @person.participants.each do |participant|
+    .participant_events
+      - if participant.events.blank?
+        %p
+          = "No events exists for #{blank_safe(participant.person.to_s)} at this time."
+      - else
+        %b
+          = "Events about #{blank_safe(participant.person.to_s)}"
+        - participant.events.each do |event|
+          .event
+            .header
+              %span.type
+                = event.event_type
+              %span.dates
+                = blank_safe(event.event_start_date)
+                = " - "
+                = blank_safe(event.event_end_date)
+              #span.disposition
+                = "#{event.event_disposition} - #{event.event_disposition_category}"
+            .contact_link
+              - if event.contact_links.blank?
+                No contacts exist for this event.
+              - else
+                %table.records
+                  %tr
+                    %th
+                      Type
+                    %th
+                      Date
+                    %th
+                      Start
+                    %th
+                      End
+                    %th
+                      Disposition
+                    %th
+                      Event Disposition
+                    %th
+                      Continue
+                  - event.contact_links.each do |cl|
+                    %tr{ :class => cycle('even_record', 'odd_record') }
+                      %td
+                        = cl.contact.contact_type
+                      %td
+                        = link_to cl.contact.contact_date, edit_contact_link_path(cl), :class => "show_link icon_link"
+                      %td
+                        = cl.contact.contact_start_time
+                      %td
+                        = cl.contact.contact_end_time
+                      %td
+                        = cl.contact.contact_disposition
+                      %td
+                        = "#{cl.event.event_disposition} - #{cl.event.event_disposition_category}"
+                      %td
+                        - if cl.contact.contact_date_date == Date.today
+                          = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"

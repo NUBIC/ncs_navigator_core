@@ -9,7 +9,7 @@
       %p
         = f.submit switch_arm_message(participant)
   .name
-    = participant.person.to_s
+    = "#{participant.person.to_s} :: #{participant.public_id}"
     = link_to "Edit Participant Record", edit_participant_path(participant), :class => "edit_link icon_link"
 
   = render "events", :participant => participant

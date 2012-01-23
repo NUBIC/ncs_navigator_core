@@ -58,6 +58,7 @@ describe Participant do
   it { should have_many(:ppg_status_histories) }
 
   it { should have_many(:participant_person_links) }
+  it { should have_many(:events) }
 
   it { should have_many(:low_intensity_state_transition_audits) }
   it { should have_many(:high_intensity_state_transition_audits) }
@@ -364,6 +365,28 @@ describe Participant do
 
   context "with events" do
 
+    context "determining pending events" do
+      let(:participant1) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true) }
+      let(:participant2) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true) }
+      let(:participant3) { Factory(:participant, :high_intensity_state => 'in_high_intensity_arm', :high_intensity => true) }
+
+      before(:each) do
+        @e1_1 = Factory(:event, :participant => participant1, :event_end_date => 6.months.ago)
+        @e1_2 = Factory(:event, :participant => participant1, :event_end_date => nil)
+        @e2_1 = Factory(:event, :participant => participant2, :event_end_date => 6.months.ago)
+      end
+
+      describe "#pending_events" do
+
+        it "returns events without an event end date (i.e. pending)" do
+          participant1.pending_events.should == [@e1_2]
+          participant2.pending_events.should be_empty
+          participant3.pending_events.should be_empty
+        end
+      end
+
+    end
+
     context "assigned to a PPG" do
 
       context "in high intensity protocol" do
@@ -423,6 +446,18 @@ describe Participant do
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
           end
         end
+
+        describe "a participant who is ineligible - PPG 6" do
+
+          it "knows the upcoming applicable events" do
+            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 6: Withdrawn", :local_code => 6)
+            Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
+            participant.high_intensity_conversion!
+            participant.upcoming_events.should == []
+          end
+        end
+
+
       end
     end
   end
@@ -627,7 +662,7 @@ describe Participant do
       person = Factory(:person)
       participant = Factory(:participant)
       participant.person = person
-      
+
       survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
       ins_type = Factory(:ncs_code, :list_name => "INSTRUMENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 99)
       create_missing_in_error_ncs_codes(Instrument)

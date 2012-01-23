@@ -99,6 +99,14 @@ describe PatientStudyCalendar do
         end
       end
 
+      it 'only checks once if the participant is NOT registered with the study' do
+        pending 'This tests does not fail when the underlying feature is broken due to #1724'
+        VCR.use_cassette('psc/unknown_subject') do
+          subject.is_registered?(@participant).should be_false
+        end
+        subject.is_registered?(@participant).should be_false
+      end
+
       it "knows when the participant IS registered with the study" do
         person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
         participant = Factory(:participant)
@@ -192,6 +200,84 @@ describe PatientStudyCalendar do
         activities = day["activities"]
         activities.first["study_segment"].should == "LO-Intensity: PPG Follow-Up"
       end
+    end
+
+  end
+
+  context "determining schedule state" do
+
+    before(:each) do
+      @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
+      @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.register!
+      ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+      Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
+    end
+
+    it "knows about scheduled segments" do
+      VCR.use_cassette('psc/lo_i_ppg_follow_up_pending') do
+        person = Factory(:person, :first_name => "Ally", :last_name => "Goodfella", :sex => @female, :person_dob => '1980-10-31', :person_id => "allyg")
+        participant = Factory(:participant, :p_id => "allyg")
+        participant.person = person
+
+        subject_schedule_status = subject.scheduled_activities(participant)
+        subject_schedule_status.should_not be_nil
+        subject_schedule_status.size.should == 3
+
+        sss = subject_schedule_status.first
+        sss.date.should == "2011-11-14"
+        sss.study_segment.should == "LO-Intensity: PPG Follow-Up"
+        sss.activity_name.should == "Pregnancy Probability Group Follow-Up Interview"
+        sss.activity_id.should == "fb6249e5-2bf6-40cc-81e9-dc30e2012410"
+        sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+
+        sss = subject_schedule_status.last
+        sss.date.should == "2011-05-07"
+        sss.study_segment.should == "LO-Intensity: Pregnancy Screener"
+        sss.activity_name.should == "Pregnancy Screener Interview"
+        sss.current_state.should == PatientStudyCalendar::ACTIVITY_OCCURRED
+      end
+    end
+
+    it "can determine if activities are to be rescheduled" do
+      VCR.use_cassette('psc/lo_i_ppg_follow_up_pending') do
+        person = Factory(:person, :first_name => "Ally", :last_name => "Goodfella", :sex => @female, :person_dob => '1980-10-31', :person_id => "allyg")
+        participant = Factory(:participant, :p_id => "allyg")
+        participant.person = person
+
+        ppgfu_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
+        preg_screen = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
+
+        subject.activities_to_reschedule(participant, preg_screen.to_s).should be_nil
+        subject.activities_to_reschedule(participant, ppgfu_event.to_s).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
+      end
+    end
+
+  end
+
+  context "extracting the scheduled study segment id from a response from PSC" do
+
+    describe "#extract_scheduled_study_segment_identifier" do
+
+      it "gets the identifier" do
+        body = Nokogiri::XML(<<-XML)
+        <?xml version="1.0" encoding="UTF-8"?>
+        <scheduled-study-segment xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="6a2d2074-e5a8-4dc6-83ff-9ecea23efada" start-date="2012-01-19" start-day="1" study-segment-id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+         <scheduled-activity id="3c008584-0b55-4e43-98e9-cb5e4738a8a5" ideal-date="2012-01-19" repetition-number="0" planned-activity-id="2b68bb5c-edde-4510-81c8-b962704bc968">
+           <current-scheduled-activity-state reason="Initialized from template" date="2012-01-19" state="scheduled"/>
+         </scheduled-activity>
+         <scheduled-activity id="6f223054-6d5b-4b66-9c14-00571272d803" ideal-date="2012-01-19" repetition-number="0" planned-activity-id="bbb8de5c-a025-4b4c-b7d2-577a96551263">
+           <current-scheduled-activity-state reason="Initialized from template" date="2012-01-19" state="scheduled"/>
+         </scheduled-activity>
+        </scheduled-study-segment>
+        XML
+
+        PatientStudyCalendar.extract_scheduled_study_segment_identifier(body).should == "6a2d2074-e5a8-4dc6-83ff-9ecea23efada"
+
+      end
+
     end
 
   end

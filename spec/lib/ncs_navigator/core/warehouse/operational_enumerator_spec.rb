@@ -61,8 +61,8 @@ module NcsNavigator::Core::Warehouse
         results.last.send(wh_field).should == wh_value
       end
 
-      def self.verify_mapping(core_field, core_value, wh_field, wh_value=nil)
-        it "maps #{core_field} to #{wh_field}" do
+      def self.verify_mapping(core_field, core_value, wh_field, wh_value=nil, addtl_msg=nil)
+        it "maps #{core_field} to #{wh_field} #{addtl_msg}" do
           verify_mapping(core_field, core_value, wh_field, wh_value)
         end
       end
@@ -571,7 +571,6 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:event_disposition,          5,                        :event_disp],
           [:event_disposition_category, code(4),                  :event_disp_cat,    '4'],
           [:event_incentive_cash,       BigDecimal.new('7.11'),   :event_incent_cash, '7.11'],
           [:event_incentive_noncash,    'Chick-fil-a coupons',    :event_incent_noncash]
@@ -580,6 +579,48 @@ module NcsNavigator::Core::Warehouse
 
       it 'uses the public ID for participant' do
         results.first.participant_id.should == Participant.first.p_id
+      end
+
+      describe '#event_disp' do
+        describe 'for a pending event' do
+          before do
+            event.event_end_date = nil
+          end
+
+          it 'enumerates an interim code when the core code is interim' do
+            event.event_disposition = 16
+            event.save!
+
+            results.first.event_disp.should == 16
+          end
+
+          it 'enumerates an interim code when the core code is final (legacy)' do
+            event.event_disposition = 516
+            event.save!
+
+            results.first.event_disp.should == 16
+          end
+        end
+
+        describe 'for a completed event' do
+          before do
+            event.event_end_date = Time.now - 3
+          end
+
+          it 'uses a final code when the core code is interim' do
+            event.event_disposition = 18
+            event.save!
+
+            results.first.event_disp.should == 518
+          end
+
+          it 'uses a final code when the core code is final (legacy)' do
+            event.event_disposition = 522
+            event.save!
+
+            results.first.event_disp.should == 522
+          end
+        end
       end
     end
 
@@ -596,7 +637,8 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:contact_disposition,    7,         :contact_disp, '7'],
+          [:contact_disposition,    7,         :contact_disp, '507', 'always using a final code'],
+          [:contact_disposition,    507,       :contact_disp, '507'],
           [:contact_language,       code(10),  :contact_lang, '10'],
           [:contact_language_other, 'Klingon', :contact_lang_oth],
           [:who_contacted_other,    'Cat',     :who_contact_oth]

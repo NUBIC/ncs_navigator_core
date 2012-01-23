@@ -11,8 +11,8 @@ class ParticipantConsentsController < ApplicationController
     @participant  = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
     @contact = @contact_link.contact
-    @participant_consent = ParticipantConsent.new(:participant => @participant, :contact => @contact, 
-      :consent_type_code => @consent_type_code.to_i, :consent_form_type_code => @consent_type_code.to_i, 
+    @participant_consent = ParticipantConsent.new(:participant => @participant, :contact => @contact,
+      :consent_type_code => @consent_type_code.to_i, :consent_form_type_code => @consent_type_code.to_i,
       :consent_date => Date.today, :consent_given_code => 1)
 
     respond_to do |format|
@@ -25,7 +25,7 @@ class ParticipantConsentsController < ApplicationController
   def edit
     @consent_type_code = params[:consent_type_code]
     @participant_consent = ParticipantConsent.find(params[:id])
-    @contact_link = ContactLink.find(params[:contact_link_id])
+    @contact_link = ContactLink.find(params[:contact_link_id]) unless params[:contact_link_id].blank?
     @participant = @participant_consent.participant
     @contact = @participant_consent.contact
   end
@@ -35,7 +35,7 @@ class ParticipantConsentsController < ApplicationController
   def create
     @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.new(params[:participant_consent])
-    
+
     respond_to do |format|
       if @participant_consent.save
         format.html { redirect_to select_instrument_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
@@ -50,12 +50,17 @@ class ParticipantConsentsController < ApplicationController
   # PUT /participant_consents/1
   # PUT /participant_consents/1.json
   def update
-    @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.find(params[:id])
+    if params[:contact_link_id]
+      @contact_link = ContactLink.find(params[:contact_link_id])
+      redirect_action = select_instrument_contact_link_path(@contact_link)
+    else
+      redirect_action = person_path(@participant_consent.participant.person)
+    end
 
     respond_to do |format|
       if @participant_consent.update_attributes(params[:participant_consent])
-        format.html { redirect_to select_instrument_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
+        format.html { redirect_to redirect_action, :notice => 'Participant consent was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render :action => "edit" }

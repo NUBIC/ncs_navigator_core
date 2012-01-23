@@ -63,20 +63,6 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    # TODO: maybe unnecessary
-#    produce_records :link_participant_self_person, :query => %Q(
-#      SELECT p.person_id, par.p_id
-#      FROM people p INNER JOIN participants par ON p.id=par.person_id
-#    ) do |row|
-#      LinkPersonParticipant.new(
-#        :person_pid_id => [row.p_id, '-self'].join(''),
-#        :person_id => row.person_id,
-#        :p_id => row.p_id,
-#        :relation => '1', # self
-#        :is_active => '1' # yes
-#      )
-#    end
-
     produce_one_for_one(:person_races, PersonRace,
       :public_ids => [
         { :table => :people, :join_column => :person_id }
@@ -150,25 +136,36 @@ module NcsNavigator::Core::Warehouse
     )
 
     produce_one_for_one(:contacts, Contact,
+      :selects => [
+        "(t.contact_disposition % 500 + 500) normalized_contact_disposition"
+      ],
       :column_map => {
-        :contact_disposition => :contact_disp,
+        :normalized_contact_disposition => :contact_disp,
         :contact_language_code => :contact_lang,
         :contact_language_other => :contact_lang_oth,
         :who_contacted_other => :who_contact_oth
       },
-      :ignored_columns => %w(contact_date_date)
+      :ignored_columns => %w(contact_date_date contact_disposition)
     )
 
     produce_one_for_one(:events, Event,
       :public_ids => [
         { :table => :participants, :public_id => :p_id, :public_ref => :participant_id }
       ],
+      :selects => [
+        %q{(CASE
+            WHEN t.event_end_date IS NULL
+                 THEN t.event_disposition % 500
+            ELSE t.event_disposition % 500 + 500
+            END) normalized_event_disposition}
+      ],
       :column_map => {
-        :event_disposition => :event_disp,
+        :normalized_event_disposition => :event_disp,
         :event_disposition_category_code => :event_disp_cat,
         :event_incentive_cash => :event_incent_cash,
         :event_incentive_noncash => :event_incent_noncash
-      }
+      },
+      :ignored_columns => %w(event_disposition)
     )
 
     produce_one_for_one(:instruments, Instrument,
