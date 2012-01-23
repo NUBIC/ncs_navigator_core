@@ -32,6 +32,7 @@ gem 'state_machine'
 gem 'state_machine-audit_trail'
 gem 'uuid'
 gem 'will_paginate'
+gem 'faraday'
 
 group :development do
   gem 'capistrano'

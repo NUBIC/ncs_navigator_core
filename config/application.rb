@@ -49,6 +49,7 @@ module NcsNavigatorCore
     config.filter_parameters += [:password]
     
     Dir.glob("./lib/*.{rb}").each { |file| require file }
+    Dir.glob("./lib/aker/**/*.{rb}").each { |file| require file }
     
     Aker.configure do
       # The authentication protocol to use for interactive access.
