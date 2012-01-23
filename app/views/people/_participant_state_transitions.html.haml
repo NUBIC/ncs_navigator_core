@@ -2,6 +2,8 @@
   %b
     State Transitions
   - if @participant.low_intensity_state_transition_audits.size > 1
+    %br
+    Low Intensity
     %table.records
       %tr
         %th
@@ -19,3 +21,22 @@
             = t.to.titleize
           %td
             = t.created_at.to_s(:db)
+    - if @participant.high_intensity_state_transition_audits.size > 1
+      High Intensity
+      %table.records
+        %tr
+          %th
+            From
+          %th
+            To
+          %th
+            When
+        - @participant.high_intensity_state_transition_audits.each do |t|
+          - next if t.from.blank?
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = t.from.titleize
+            %td
+              = t.to.titleize
+            %td
+              = t.created_at.to_s(:db)

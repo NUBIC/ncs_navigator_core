@@ -90,7 +90,7 @@ describe Participant do
 
       end
 
-      context "PPG Group 2: High Probability - Trying to Conceive" do
+      context "xxx PPG Group 2: High Probability - Trying to Conceive" do
 
         let(:participant) { Factory(:low_intensity_ppg2_participant) }
         let(:person) { Factory(:person) }
@@ -98,7 +98,7 @@ describe Participant do
         before(:each) do
           participant.person = person
         end
-        
+
         it "schedules the LO-Intensity PPG 1 and 2 event on that day" do
           participant.ppg_status.local_code.should == 2
           participant.should be_in_pregnancy_probability_group
@@ -112,12 +112,39 @@ describe Participant do
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
 
+          event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
+          event = Factory(:event, :participant => participant, :event_end_date => Date.today, :event_type => event_type)
+
+          participant.events.reload
+          participant.pending_events.should be_empty
+          participant.events.should == [event]
+          participant.events.first.event_type_code.should == 33
+
           participant.follow_low_intensity!
           participant.should be_following_low_intensity
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 6.months.from_now.to_date
         end
+
+        it "schedules the LO-Intensity PPG 1 and 2 event if follow_low_intensity but lo I quex event is pending" do
+          event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
+          event = Factory(:event, :participant => participant, :event_end_date => nil, :event_type => event_type)
+          participant.events.reload
+          participant.pending_events.should == [event]
+
+          participant.ppg_status.local_code.should == 2
+          participant.should be_in_pregnancy_probability_group
+          participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+
+          participant.follow_low_intensity!
+          participant.should be_following_low_intensity
+
+          participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+          participant.next_scheduled_event.event.should == participant.next_study_segment
+          participant.next_scheduled_event.date.should == 1.week.from_now.to_date
+        end
+
 
         it "is eligible to be moved in the high intensity arm if in tsu" do
           du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
@@ -145,7 +172,7 @@ describe Participant do
         before(:each) do
           participant.person = person
         end
-        
+
         it "schedules the LO-Intensity PPG Follow Up event 6 months out" do
           participant.ppg_status.local_code.should == 3
           participant.should be_in_pregnancy_probability_group
@@ -173,7 +200,7 @@ describe Participant do
         before(:each) do
           participant.person = person
         end
-        
+
         it "schedules the LO-Intensity PPG Follow Up event 6 months out" do
           participant.ppg_status.local_code.should == 4
           participant.should be_in_pregnancy_probability_group
@@ -208,7 +235,7 @@ describe Participant do
       before(:each) do
         participant.person = person
       end
-      
+
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -253,7 +280,7 @@ describe Participant do
       before(:each) do
         participant.person = person
       end
-      
+
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -285,7 +312,7 @@ describe Participant do
       before(:each) do
         participant.person = person
       end
-      
+
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
@@ -309,7 +336,7 @@ describe Participant do
       before(:each) do
         participant.person = person
       end
-      
+
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment

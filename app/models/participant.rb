@@ -55,10 +55,9 @@ class Participant < ActiveRecord::Base
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id"
 
   has_many :participant_person_links
-
   has_many :participant_staff_relationships
-
   has_many :participant_consents
+  has_many :events
 
   # validates_presence_of :person
 
@@ -80,7 +79,8 @@ class Participant < ActiveRecord::Base
     store_audit_trail
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
-    after_transition :on => :parenthood, :do => :update_ppg_status_after_birth
+    after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
+    after_transition :on => :birth_event_low, :do => :update_ppg_status_after_birth
     after_transition :on => :lose_child, :do => :update_ppg_status_after_child_loss
 
     event :register do
@@ -101,7 +101,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow_low_intensity do
-      transition [:in_pregnancy_probability_group, :consented_low_intensity] => :following_low_intensity
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :following_low_intensity] => :following_low_intensity
     end
 
     event :impregnate_low do
@@ -144,7 +144,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow do
-      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one] => :following_high_intensity
+      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one, :following_high_intensity] => :following_high_intensity
     end
 
     event :impregnate do
@@ -239,8 +239,25 @@ class Participant < ActiveRecord::Base
       end
     end
 
+    if /_PrePreg_/ =~ survey_title
+      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow! if can_follow?
+    end
+
     if /_PregVisit1_/ =~ survey_title && can_pregnancy_one_visit?
       pregnancy_one_visit!
+    end
+
+    if /_PregVisit2_/ =~ survey_title && can_pregnancy_two_visit?
+      pregnancy_two_visit!
+    end
+
+    if /_Birth_/ =~ survey_title
+      if low_intensity?
+        birth_event_low! if can_birth_event_low?
+      else
+        birth_event! if can_birth_event?
+      end
     end
 
     if known_to_have_experienced_child_loss? && can_lose_child?
@@ -336,11 +353,8 @@ class Participant < ActiveRecord::Base
   #
   # @return [String]
   def next_study_segment
-    if low_intensity?
-      next_low_intensity_study_segment
-    else
-      next_high_intensity_study_segment
-    end
+    return nil if ineligible?
+    low_intensity? ? next_low_intensity_study_segment : next_high_intensity_study_segment
   end
 
   ##
@@ -364,6 +378,13 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Returns all events where event_end_date is null
+  # @return [Array<Event>]
+  def pending_events
+    events.select { |e| e.event_end_date.blank? }
+  end
+
+  ##
   # Display text from the NcsCode list PARTICIPANT_TYPE_CL1
   # cf. p_type belongs_to association
   # @return [String]
@@ -375,6 +396,8 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next event
   # @return [Date]
   def interval
+    return 1.week unless pending_events.blank?
+
     case
     when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?, (can_consent? && eligible_for_low_intensity_follow_up?)
       0
@@ -446,9 +469,9 @@ class Participant < ActiveRecord::Base
       consent_type_codes = [consent_type.local_code]
     else
       if low_intensity?
-        consent_type_codes = ParticipantConsent.low_intensity_consent_types.collect { |ct| ct[0] } 
+        consent_type_codes = ParticipantConsent.low_intensity_consent_types.collect { |ct| ct[0] }
       else
-        consent_type_codes = ParticipantConsent.high_intensity_consent_types.collect { |ct| ct[0] } 
+        consent_type_codes = ParticipantConsent.high_intensity_consent_types.collect { |ct| ct[0] }
       end
     end
     consents = participant_consents.where("consent_type_code in (?)", consent_type_codes).all
@@ -684,6 +707,7 @@ class Participant < ActiveRecord::Base
       # Pre-Pregnancy
       move_to_high_intensity_if_required
       non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow!
     when 13, 14
       # Pregnancy Visit 1
       move_to_high_intensity_if_required
@@ -719,7 +743,7 @@ class Participant < ActiveRecord::Base
       if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif following_low_intensity?
-        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+        lo_intensity_follow_up
       elsif eligible_for_low_intensity_follow_up?
         lo_intensity_follow_up
       elsif pregnant?
@@ -756,7 +780,19 @@ class Participant < ActiveRecord::Base
 
     def lo_intensity_follow_up
       return nil if ineligible?
-      can_consent? ? PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2 : PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+      if can_consent?
+        if has_completed_low_intensity_data_collection?
+          PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+        else
+          PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        end
+      else
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
+      end
+    end
+
+    def has_completed_low_intensity_data_collection?
+      events.select { |e| e.event_type_code == 33 && !e.event_end_date.blank? }.size > 0
     end
 
     def eligible_for_ppg_follow_up?

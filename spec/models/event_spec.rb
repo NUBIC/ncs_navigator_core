@@ -42,6 +42,8 @@ describe Event do
   it { should belong_to(:event_breakoff) }
   it { should belong_to(:event_incentive_type) }
 
+  it { should have_many(:contact_links) }
+
   it "knows when it is 'closed'" do
     e = Factory(:event)
     e.should_not be_closed
@@ -303,24 +305,6 @@ describe Event do
 
     end
 
-    describe "repeating the event" do
-
-      it "returns 0 for the event_repeat_key if this is the first time taking the instrument" do
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
-        Factory(:contact_link, :event => event, :person => @person)
-        @person.event_repeat_key(event).should == 0
-      end
-
-      it "returns 1 for the event_repeat_key if this is the second time taking the instrument" do
-        event1 = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
-        Factory(:contact_link, :event => event1, :person => @person)
-        event2 = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
-        Factory(:contact_link, :event => event2, :person => @person)
-        @person.event_repeat_key(event2).should == 1
-      end
-
-    end
-
     describe "the disposition category" do
 
       it "is first determined by the event type" do
@@ -405,6 +389,43 @@ describe Event do
     # = f.text_field :event_incentive_noncash
     # = f.text_area :event_comment
 
+  end
+
+  context "when scheduling an event with PSC" do
+
+    before(:each) do
+      create_missing_in_error_ncs_codes(Event)
+    end
+
+    let(:scheduled_study_segment_identifier) { "6a2d2074-e5a8-4dc6-83ff-9ecea23efada" }
+    let(:event_type_code) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+    let(:participant) { Factory(:participant) }
+    let(:date) { "2012-01-19" }
+    let(:xml) { %Q(<?xml version="1.0" encoding="UTF-8"?><scheduled-study-segment id="6a2d2074-e5a8-4dc6-83ff-9ecea23efada"></scheduled-study-segment>) }
+    describe "#create_placeholder_record" do
+
+      it "creates an event record for the participant and event type associating the scheduled-study-segment" do
+
+        Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).count.should == 0
+        event = Event.create_placeholder_record(participant, date, event_type_code, xml)
+        events = Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).all
+        events.count.should == 1
+        events.first.should == event
+        events.first.participant.should == participant
+
+        participant.pending_events.should == events
+      end
+
+      it "does not need a parseable date to create a record" do
+        Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).count.should == 0
+        event = Event.create_placeholder_record(participant, "date", event_type_code, xml)
+        events = Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).all
+        events.count.should == 1
+      end
+
+    end
 
   end
+
+
 end

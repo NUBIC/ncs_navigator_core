@@ -46,7 +46,7 @@ class PatientStudyCalendar
   # @param [Aker::User]
   def initialize(user)
     self.user = user || fake_user
-    self.registered_participants = []
+    self.registered_participants = RegisteredParticipantList.new(self)
   end
 
   def fake_user
@@ -102,21 +102,14 @@ class PatientStudyCalendar
   # True if the participant is known to psc by the participant public_id.
   # @return [Boolean]
   def is_registered?(participant)
-    result = false
-    if registered_participant?(participant)
-      result = true
-    else
-      result = get("subjects/#{participant.person.public_id}", "status") < 300
-      registered_participants << participant.person.public_id if result
-    end
-    result
+    registered_participants.is_registered?(participant.person.public_id)
   end
 
   ##
   # True if the participant identifier is known to self.
   # @return [Boolean]
   def registered_participant?(participant)
-    registered_participants.include?(participant.person.public_id)
+    registered_participants.is_registered?(participant.person.public_id, false)
   end
 
   def assign_subject(participant, event_type = nil, date = nil)
@@ -125,7 +118,8 @@ class PatientStudyCalendar
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
     response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
       build_subject_assignment_request(participant, event_type, date))
-    registered_participants << participant.person.public_id if valid_response?(response)
+    registered_participants.cache_registration_status(
+      participant.person.public_id, valid_response?(response))
     response
   end
 
@@ -135,43 +129,6 @@ class PatientStudyCalendar
 
   def schedules(participant, format = "json")
     get("subjects/#{participant.person.public_id}/schedules.#{format}")
-  end
-
-  ##
-  # Updates the state of the scheduled activity in PSC.
-  #
-  # @param [String] - activity_name
-  # @param [Participant]
-  # @param [String] - one of the valid enumerable state attributes for an activity in PSC
-  # @param [Date] (optional)
-  # @param [String] (optional) - reason for change
-  def update_activity_state(activity_name, participant, value, date = nil, reason = nil)
-    if scheduled_activity_identifier = get_scheduled_activity_identifier(participant, activity_name)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{scheduled_activity_identifier}",
-        build_scheduled_activity_state_request(value, date, reason))
-    end
-  end
-
-  def get_scheduled_activity_identifier(participant, activity_name)
-    scheduled_activity_identifier = nil
-    participant_activities(participant).each do |activity|
-      if activity_name =~ Regexp.new(activity["activity"]["name"])
-        scheduled_activity_identifier = activity["id"]
-      end
-    end
-    scheduled_activity_identifier
-  end
-
-  def activities_for_participant(participant)
-    activities = []
-    participant_activities(participant).each do |activity|
-      participant.upcoming_events.each do |event|
-        if activity["study_segment"].include?(event.to_s)
-          activities << activity["activity"]["name"]
-        end
-      end
-    end
-    activities.uniq
   end
 
   def activities_for_segment(participant, segment)
@@ -184,12 +141,49 @@ class PatientStudyCalendar
     activities.uniq
   end
 
+  ##
+  # Gets information about all activities for a participant
+  # (cf. ScheduledActivity Struct).
+  # Intended to find and re-schedule activities
+  # @param [Participant]
+  # @return [Array<ScheduledActivity>]
+  def scheduled_activities(participant)
+    scheduled_activities = []
+    participant_activities(participant).each do |activity|
+      scheduled_activities << ScheduledActivity.new(
+        activity['study_segment'], activity['id'],
+        activity['current_state']['name'], activity['current_state']['date'],
+        activity['activity']['name'], activity['activity']['type'])
+    end
+    scheduled_activities
+  end
+
+  ##
+  # Returns the activity ids for participant activities in the 'scheduled' state
+  # whose segment matches the given event type
+  # (from the MDES event code list - cf. #get_psc_segment_from_mdes_event_type)
+  #
+  # @param [Participant]
+  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
+  # @return [String or nil] - the scheduled activity identifier or nil
+  def activities_to_reschedule(participant, event_type)
+    ids = []
+    event_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)
+    scheduled_activities(participant).each do |scheduled_activity|
+      if (PatientStudyCalendar.strip_epoch(scheduled_activity.study_segment).include?(event_name)) &&
+         (scheduled_activity.current_state == ACTIVITY_SCHEDULED)
+        ids << scheduled_activity.activity_id
+      end
+    end
+    ids.blank? ? nil : ids
+  end
+
   def participant_activities(participant)
     activities = []
     if subject_schedules = schedules(participant)
       if subject_schedules["days"]
-        subject_schedules["days"].keys.each do |date|
-          subject_schedules["days"][date]["activities"].each do |activity|
+        subject_schedules["days"].values.each do |date|
+          date["activities"].each do |activity|
             activities << activity
           end
         end
@@ -211,7 +205,6 @@ class PatientStudyCalendar
 
     get(path)
   end
-
 
   def assignment_identifier(participant)
     get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
@@ -241,18 +234,11 @@ class PatientStudyCalendar
     return false if should_skip_event?(next_scheduled_event)
 
     result = true
-    subject_schedules = schedules(participant)
-    if subject_schedules && days = subject_schedules["days"]
-      days.keys.each do |day|
-        log.debug("~~~ checking if '#{day}' == '#{next_scheduled_event_date}'")
-        if day == next_scheduled_event_date.to_s
-          days[day]["activities"].each do |activity|
-            log.debug("~~~ checking if '#{activity["study_segment"]}' includes '#{next_scheduled_event}'")
-            if activity["study_segment"].include?(next_scheduled_event)
-              result = false
-            end
-          end
-        end
+    scheduled_activities(participant).each do |activity|
+      log.debug("~~~ checking if '#{activity["date"]}' == '#{next_scheduled_event_date}'")
+      log.debug("~~~ checking if '#{activity["study_segment"]}' includes '#{next_scheduled_event}'")
+      if (activity["date"] == next_scheduled_event_date.to_s) && (activity["study_segment"].include?(next_scheduled_event))
+        result = false
       end
     end
 
@@ -261,7 +247,8 @@ class PatientStudyCalendar
   end
 
   ##
-  # Schedules the matching PSC segment to the given event on the participant's calendar.
+  # Schedules the matching PSC segment to the given event on the participant's calendar
+  # if an existing event of the given type does not exist on the given date.
   #
   # @param [Participant]
   # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
@@ -274,6 +261,73 @@ class PatientStudyCalendar
     end
   end
 
+  ##
+  # Schedules the matching PSC segment to the given event on the participant's calendar.
+  # Similar to #schedule_known_event but without the check on the date, instead here we
+  # check if there are any existing scheduled activities for the given event type and
+  # update the activity state and date for those that are currently 'scheduled'
+  #
+  # @param [Participant]
+  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
+  # @param [Date]
+  # @param [String] - reason
+  def schedule_pending_event(participant, event_type, value, date, reason = nil)
+    if activities = activities_to_reschedule(participant, event_type)
+      activities.each do |activity_identifier|
+        update_activity_state(activity_identifier, participant, value, date, reason)
+      end
+    else
+      schedule_known_event(participant, event_type, date)
+    end
+  end
+
+  ##
+  # Updates the state of the scheduled activity in PSC.
+  #
+  # @param [String] - activity_name
+  # @param [Participant]
+  # @param [String] - one of the valid enumerable state attributes for an activity in PSC
+  # @param [Date] (optional)
+  # @param [String] (optional) - reason for change
+  def update_activity_state_by_name(activity_name, participant, value, date = nil, reason = nil)
+    if scheduled_activity_identifier = get_scheduled_activity_identifier(participant, activity_name)
+      update_activity_state(scheduled_activity_identifier, participant, value, date, reason)
+    end
+  end
+
+  ##
+  # Returns the PSC activity identifier for the first participant scheduled activity
+  # matching the given activity_name
+  # @param [Participant]
+  # @param [String]
+  # @return [String]
+  def get_scheduled_activity_identifier(participant, activity_name)
+    scheduled_activity_identifier = nil
+    scheduled_activities(participant).each do |activity|
+      if activity_name =~ Regexp.new(activity.activity_name)
+        scheduled_activity_identifier = activity.activity_id
+      end
+    end
+    scheduled_activity_identifier
+  end
+  private :get_scheduled_activity_identifier
+
+  ##
+  # Updates the state of the scheduled activity in PSC.
+  #
+  # @param [String] - activity_name
+  # @param [Participant]
+  # @param [String] - one of the valid enumerable state attributes for an activity in PSC
+  # @param [Date] (optional)
+  # @param [String] (optional) - reason for change
+  def update_activity_state(activity_identifier, participant, value, date = nil, reason = nil)
+    post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{activity_identifier}",
+      build_scheduled_activity_state_request(value, date, reason))
+  end
+
+  ##
+  # Updates the subject attributes in PSC for the given participant.
+  # @param [Participant]
   def update_subject(participant)
     put("subjects/#{participant.person.public_id}",
       build_subject_attributes_hash(participant, "_").to_json)
@@ -423,6 +477,14 @@ class PatientStudyCalendar
       break if result
     end
     result
+  end
+
+  ##
+  # Given a response from psc - extract the identifier from the response
+  # @param [Nokogiri::Doc] xml response body
+  # @return [String]
+  def self.extract_scheduled_study_segment_identifier(xml)
+    xml.css("scheduled-study-segment").first['id'] rescue nil
   end
 
   def formatted_dob(participant)
@@ -595,6 +657,35 @@ class PatientStudyCalendar
     def psc_config
       @psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     end
-
   end
+
+  class RegisteredParticipantList
+    def initialize(psc)
+      @psc = psc
+      @map = {}
+    end
+
+    def is_registered?(person_id, check_server_if_not_cached=true)
+      if @map.has_key?(person_id)
+        @map[person_id]
+      elsif check_server_if_not_cached
+        cache_registration_status(person_id, check_if_registered(person_id))
+      end
+    end
+
+    def cache_registration_status(person_id, status)
+      @map[person_id] = status
+    end
+
+    def check_if_registered(person_id)
+      status = @psc.get("subjects/#{person_id}", "status")
+      status && status < 300
+    end
+  end
+
+  ScheduledActivity = Struct.new(:study_segment, :activity_id, :current_state, :date, :activity_name, :activity_type)
+
 end
+
+# class ScheduledActivity <
+# end

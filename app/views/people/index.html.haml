@@ -4,7 +4,7 @@
   = render 'documentation/person'
 
 .page_section.search
-  = search_form_for @q do |f|
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     = f.label :last_name_cont
     = f.text_field :last_name_cont
     %br

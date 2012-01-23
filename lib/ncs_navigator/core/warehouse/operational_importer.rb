@@ -22,11 +22,12 @@ module NcsNavigator::Core::Warehouse
     def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
-    def initialize(wh_config)
+    def initialize(wh_config, user)
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
       @failed_associations = []
+      @user = user
       @progress = ProgressTracker.new(wh_config)
     end
 
@@ -94,14 +95,12 @@ module NcsNavigator::Core::Warehouse
 
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
-            core_event_date = core_event.event_start_date.blank? ? core_event.event_end_date : core_event.event_start_date
-            core_event_type = core_event.event_type
 
-            assign_subject(participant, core_event_type.to_s, core_event_date)
+            assign_subject(participant, core_event)
 
             if core_event.new_record?
-              participant.set_state_for_event_type(core_event_type)
-              schedule_known_event(participant, core_event_type.to_s, core_event_date)
+              participant.set_state_for_event_type(core_event.event_type)
+              schedule_known_event(participant, core_event)
             end
 
             save_core_record(core_event)
@@ -112,7 +111,8 @@ module NcsNavigator::Core::Warehouse
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
               if core_contact_link.new_record?
-                update_activity_state(participant, mdes_lc.instrument, core_event_date)
+                # TODO: determine if last contact link and if not use scheduled !!!
+                update_activity_state(participant, mdes_lc.instrument, core_event)
               end
               save_core_record(core_contact_link)
             end
@@ -124,36 +124,56 @@ module NcsNavigator::Core::Warehouse
     end
 
     def psc
-      # expects PSC_USERNAME_PASSWORD to be set in the env
-      @psc ||= PatientStudyCalendar.new(nil)
+      @psc ||= PatientStudyCalendar.new(@user)
     end
 
-    def assign_subject(participant, core_event_type, core_event_date)
+    def core_event_date(core_event)
+      core_event.event_start_date.blank? ? core_event.event_end_date : core_event.event_start_date
+    end
+    private :core_event_date
+
+    def assign_subject(participant, core_event)
       if !participant.person.nil? && !psc.is_registered?(participant)
-        psc.assign_subject(participant, core_event_type, core_event_date)
+        psc.assign_subject(participant, core_event.event_type.to_s, core_event_date(core_event))
       end
     end
     private :assign_subject
 
-    def schedule_known_event(participant, core_event_type, core_event_date)
+    def schedule_known_event(participant, core_event)
       if !participant.person.nil? && psc.is_registered?(participant)
-        log.debug("~~~ schedule_known_event for #{core_event_type} on #{core_event_date} - #{participant.person}")
-        psc.schedule_known_event(participant, core_event_type, core_event_date)
+        date = core_event_date(core_event)
+        log.debug("~~~ schedule_known_event for #{core_event.event_type} on #{date} - #{participant.person}")
+        if resp = psc.schedule_known_event(participant, core_event.event_type.to_s, date)
+          core_event.scheduled_study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body) 
+        end
       end
     end
     private :schedule_known_event
 
-    def update_activity_state(participant, instrument, date)
-      if instrument
-        log.debug("~~~ update_activity_state #{participant.person} and #{instrument.instrument_type} [#{instrument.id}] on #{date}")
-      end
+    def update_activity_state(participant, instrument, core_event)
       if !participant.person.nil? && psc.is_registered?(participant)
+
+        date = core_event_date(core_event)
+
         if instrument
+          log.debug("~~~ update_activity_state with instrument #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
           new_state = activity_state(instrument.ins_status.to_i)
-          reason = "Import for instrument [#{instrument.id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
+          reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
           log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
-          psc.update_activity_state(activity_name, participant, new_state, date, reason)
+          psc.update_activity_state_by_name(activity_name, participant, new_state, date, reason)
+        else
+          # TODO: what to do if there is not an instrument?
+          #       update all activities for the event segment to the new date && scheduled
+
+          if activity_identifiers = psc.activities_to_reschedule(participant, core_event.event_type.to_s)
+            reason = "Import for contact link without instrument should update activities for event [#{core_event.event_type.to_s}] to [#{PatientStudyCalendar::ACTIVITY_SCHEDULED}] on [#{date}]"
+            log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
+            activity_identifiers.each do |activity_id|
+              psc.update_activity_state(activity_id, participant, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
+            end
+          end
+
         end
       end
     end
@@ -413,6 +433,12 @@ module NcsNavigator::Core::Warehouse
             end
           else
             core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
+          end
+        elsif core_attribute =~ /^normalized_.*_disposition$/
+          # dispositions are always imported as interim
+          disp = mdes_record.send(mdes_variable)
+          if disp
+            core_record.send("#{core_attribute.sub(/^normalized_/, '')}=", disp.to_i % 500)
           end
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))

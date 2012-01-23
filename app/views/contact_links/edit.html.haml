@@ -5,7 +5,7 @@
 
 %p
   - if @survey
-    = @person
+    = blank_safe(@person.to_s)
     - if @response_set.complete?
       has completed
     - else
@@ -13,6 +13,6 @@
     Instrument -
     = @survey.title
 
-= render 'instruments_for_upcoming_events', :initial_instrument_for_contact => false
+= render 'instruments_for_upcoming_events', :initial_instrument_for_contact => false if @person
 
 = render "form"

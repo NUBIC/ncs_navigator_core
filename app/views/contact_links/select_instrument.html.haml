@@ -1,18 +1,18 @@
-- title "Select Instrument to Administer for Contact"
+- title "Select Instrument to Administer"
 
 .mdes_table_definition
   = render 'documentation/contact'
 
 %h3
   = @person
-  
+
 = render 'instruments_for_upcoming_events', :initial_instrument_for_contact => true
-    
+
 .close_consent
   %h3
     Contact Record
   .instructional_note
-    In cases where you attempt to make contact with a person and you are unable to administer an instrument, 
+    In cases where you attempt to make contact with a person and you are unable to administer an instrument,
     %br
     choose the 'Close Contact' link to set the proper disposition and complete the Contact record.
   = link_to "Close Contact", edit_contact_link_path(@contact_link.id, :close_contact => true), :class => "edit_link icon_link"

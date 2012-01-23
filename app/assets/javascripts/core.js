@@ -89,6 +89,8 @@ $(document).ready(function() {
   });
 
   $(".help_icon").tooltip();
+  $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
+  $("#tabs").tabs();
 });
 

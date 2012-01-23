@@ -49,7 +49,7 @@ describe PregnancyScreenerOperationalDataExtractor do
           Factory(:response, :survey_section_id => survey_section.id, :string_value => "Stafford", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_DOB"
           answer = q.answers.select { |a| a.response_class == "date" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/11/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/01/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.AGE"
           answer = q.answers.select { |a| a.response_class == "integer" }.first
           Factory(:response, :survey_section_id => survey_section.id, :integer_value => 30, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
@@ -78,8 +78,8 @@ describe PregnancyScreenerOperationalDataExtractor do
       person = Person.find(@person.id)
       person.first_name.should == "Jo"
       person.last_name.should == "Stafford"
-      person.person_dob.should == "1981-01-11"
-      person.age.should == 30
+      person.person_dob.should == "1981-01-01"
+      person.age.should == Date.today.year - 1981
 
       person.age_range.should == age_range
       person.ethnic_group.should == ethnic_group
