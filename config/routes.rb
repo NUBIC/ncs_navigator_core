@@ -36,6 +36,10 @@ NcsNavigatorCore::Application.routes.draw do
   end
   resources :participant_consents
 
+  match "/reports", :to => "reports#index", :via => [:get]
+  match "/reports/index", :to => "reports#index", :via => [:get]
+  match "/reports/case_status", :to => "reports#case_status", :via => [:get, :post]
+
   match "/welcome/summary", :to => "welcome#summary"
   match "/welcome/overdue_activities", :to => "welcome#overdue_activities"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
