@@ -24,6 +24,6 @@ doc/notes/*
 .sass-cache/
 .sass-cache/*
 public/assets
-reports
+reports/*
 importer_passthrough/*.xml
 shared/importer_passthrough/*.xml
