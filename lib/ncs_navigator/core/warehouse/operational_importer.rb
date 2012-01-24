@@ -160,7 +160,7 @@ module NcsNavigator::Core::Warehouse
           activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
           new_state = activity_state(instrument.ins_status.to_i)
           reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
-          log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
+          log.debug("~~~    for #{participant.person} #{reason}")
           psc.update_activity_state_by_name(activity_name, participant, new_state, date, reason)
         else
           # TODO: what to do if there is not an instrument?
