@@ -384,11 +384,6 @@ describe Event do
 
     end
 
-    # = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type" }
-    # = f.text_field :event_incentive_cash
-    # = f.text_field :event_incentive_noncash
-    # = f.text_area :event_comment
-
   end
 
   context "when scheduling an event with PSC" do
@@ -402,12 +397,13 @@ describe Event do
     let(:participant) { Factory(:participant) }
     let(:date) { "2012-01-19" }
     let(:xml) { %Q(<?xml version="1.0" encoding="UTF-8"?><scheduled-study-segment id="6a2d2074-e5a8-4dc6-83ff-9ecea23efada"></scheduled-study-segment>) }
+    let(:response_body) { Nokogiri::XML(xml) }
     describe "#create_placeholder_record" do
 
       it "creates an event record for the participant and event type associating the scheduled-study-segment" do
 
         Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).count.should == 0
-        event = Event.create_placeholder_record(participant, date, event_type_code, xml)
+        event = Event.create_placeholder_record(participant, date, event_type_code, response_body)
         events = Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).all
         events.count.should == 1
         events.first.should == event
@@ -418,7 +414,7 @@ describe Event do
 
       it "does not need a parseable date to create a record" do
         Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).count.should == 0
-        event = Event.create_placeholder_record(participant, "date", event_type_code, xml)
+        event = Event.create_placeholder_record(participant, "date", event_type_code, response_body)
         events = Event.where(:scheduled_study_segment_identifier => scheduled_study_segment_identifier).all
         events.count.should == 1
       end
