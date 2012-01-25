@@ -36,6 +36,7 @@ NcsNavigatorCore::Application.routes.draw do
   end
   resources :participant_consents
 
+  match "/faq", :to => "welcome#faq", :via => [:get]
   match "/reports", :to => "reports#index", :via => [:get]
   match "/reports/index", :to => "reports#index", :via => [:get]
   match "/reports/case_status", :to => "reports#case_status", :via => [:get, :post]
