@@ -2,11 +2,6 @@
   .psc_registration
     %b
       PSC
-    %br
-    - if @participant.can_register_with_psc?(psc)
-      Participant needs to be registered in PSC
-    - else
-      Participant is registered in PSC
 
   - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
     .high_intensity_invitation
@@ -19,6 +14,9 @@
           - else
             = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
 
-  = render "/participants/schedule", :participant => @participant if psc.is_registered?(@participant)
+  - if psc.is_registered?(@participant)
+    = render "/participants/schedule", :participant => @participant
+  - else
+    Participant needs to be registered in PSC
 
   = render "/people/schedule_or_perform_event", :participant => @participant, :person => @person
