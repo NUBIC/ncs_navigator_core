@@ -29,4 +29,16 @@ class PpgStatusHistory < ActiveRecord::Base
   ncs_coded_attribute :ppg_info_source, 'INFORMATION_SOURCE_CL3'
   ncs_coded_attribute :ppg_info_mode,   'CONTACT_TYPE_CL1'
 
+  ##
+  # Given a collection of participant ids return the most recent ppg_status
+  # associated with these participants
+  # @param[Array<Integer>]
+  # @result[Array[Participant]]
+  def self.current_status(participant_ids)
+    inner_select = "select max(ppg_status_date) from ppg_status_histories ppg1
+                    where ppg1.participant_id = ppg_status_histories.participant_id"
+    PpgStatusHistory.where("participant_id in (?) and ppg_status_date = (#{inner_select})", participant_ids).all
+  end
+
+
 end
