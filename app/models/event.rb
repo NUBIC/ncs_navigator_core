@@ -222,7 +222,12 @@ class Event < ActiveRecord::Base
   private :set_event_breakoff
 
 
-  def self.schedule_and_create_placeholder(psc, participant, date, event_type_code)
+  def self.schedule_and_create_placeholder(psc, participant, date = nil)
+    next_event = participant.next_scheduled_event
+    event_type_code = NcsCode.for_list_name_and_display_text('EVENT_TYPE_CL1',
+                      PatientStudyCalendar.map_psc_segment_to_mdes_event_type(next_event.event))
+    date ||= next_event.date.to_s
+
     resp = psc.schedule_next_segment(participant, date)
     Event.create_placeholder_record(participant, date, event_type_code, resp.body) if resp && resp.success?
   end
