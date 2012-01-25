@@ -23,17 +23,23 @@ NcsNavigatorCore::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-  
+
   # Do not compress assets
   config.assets.compress = false
 
   # Expands the lines which load the assets
   config.assets.debug = true
-  
+
   config.aker do
-    # static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
-    authorities :cas, Aker::Authority::NcsNavigatorAuthority
+    static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
+    authorities :cas, static #, Aker::Authority::NcsNavigatorAuthority
     central '/etc/nubic/ncs/aker-local.yml'
   end
 end
+
+require 'openssl'
+# This is necessary because there doesn't seem to be a consistent way
+# to specify a CA to trust across all the various uses of Net::HTTP in
+# all the libraries everywhere.
+OpenSSL::SSL::SSLContext::DEFAULT_PARAMS[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
 
