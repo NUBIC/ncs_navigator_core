@@ -18,7 +18,12 @@ namespace :import do
     require 'aker/cas_cli'
     class << t; attr_accessor :user; end
 
-    cas_cli = Aker::CasCli.new(Aker.configuration)
+    aker_cas_cli_options = {}
+    if ENV['DEV_ENV']
+      aker_cas_cli_options = { :verify_mode => OpenSSL::SSL::VERIFY_NONE }
+    end
+
+    cas_cli = Aker::CasCli.new(Aker.configuration, aker_cas_cli_options)
 
     hl = HighLine.new
     username = hl.ask("Username for PSC: ")
