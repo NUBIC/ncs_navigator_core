@@ -37,6 +37,9 @@ class ParticipantsController < ApplicationController
   # GET /participants/:id
   def show
     @participant = Participant.find(params[:id])
+    if @participant.person
+      redirect_to person_path(@participant.person)
+    end
   end
 
   ##
@@ -88,10 +91,7 @@ class ParticipantsController < ApplicationController
     url = params[:redirect_to] unless params[:redirect_to].blank?
 
     if @participant.pending_events.blank?
-      event_type_code = NcsCode.for_list_name_and_display_text('EVENT_TYPE_CL1',
-                        PatientStudyCalendar.map_psc_segment_to_mdes_event_type(@participant.next_scheduled_event.event))
-
-      resp = Event.schedule_and_create_placeholder(psc, @participant, params[:date], event_type_code)
+      resp = Event.schedule_and_create_placeholder(psc, @participant, params[:date])
 
       if resp && resp.success?
         respond_to do |format|
