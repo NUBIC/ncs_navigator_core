@@ -94,8 +94,14 @@ class PatientStudyCalendar
   # Gets the current template from PSC and returns the nodes matching 'psc:study-segment'.
   # @return [NodeList]
   def segments
+    result = []
     template = get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
-    template.xpath('//psc:study-segment', Psc.xml_namespace)
+    if template.blank?
+      log.error "ERROR [#{Time.now.to_s(:db)}] template is null for request to studies/#{CGI.escape(study_identifier)}/template/current.xml."
+    else
+      result = template.xpath('//psc:study-segment', Psc.xml_namespace)
+    end
+    result
   end
 
   ##
@@ -218,7 +224,7 @@ class PatientStudyCalendar
 
     if should_schedule_segment(participant, next_scheduled_event.event, next_scheduled_event_date)
       post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}",
-        build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date))
+        build_next_scheduled_study_segment_request(next_scheduled_event.event, next_scheduled_event_date))
     end
   end
 
@@ -256,8 +262,8 @@ class PatientStudyCalendar
   def schedule_known_event(participant, event_type, date)
     if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
       log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}",
-        build_known_event_request(event_type, date))
+      request_data = build_known_event_request(event_type, date)
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", request_data) if request_data
     end
   end
 
@@ -403,6 +409,28 @@ class PatientStudyCalendar
     subject_attributes
   end
 
+  ##
+  # Creates the xml request for a post to psc.
+  # This method takes a ScheduledEvent which has the PSC Segment name of the event
+  # which is used to determine the study_segment_id - cf. get_study_segment_id
+  # @param[String] - Psc Segment
+  # @param[String] - as date
+  def build_next_scheduled_study_segment_request(event, date)
+    study_segment_id = get_study_segment_id(event)
+    build_study_segment_request(study_segment_id, date) if study_segment_id
+  end
+
+  ##
+  # Creates the xml request for a post to psc.
+  # This method takes a String (Master Data Element Specification Code List Event Type)
+  # to determine the Psc Segment and delegates to the #build_next_scheduled_study_segment_request
+  # method.
+  # @param [String] - Master Data Element Specification Code List Event Type
+  # @param[String] - as date
+  def build_known_event_request(event_type, date)
+    build_next_scheduled_study_segment_request(PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
+  end
+
   # <xsd:element name="next-scheduled-study-segment" type="psc:NextScheduledStudySegment"/>
   #
   # <xsd:complexType name="NextScheduledStudySegment">
@@ -417,14 +445,6 @@ class PatientStudyCalendar
   #         </xsd:simpleType>
   #     </xsd:attribute>
   # </xsd:complexType>
-  def build_next_scheduled_study_segment_request(next_scheduled_event, next_scheduled_event_date)
-    build_study_segment_request(get_study_segment_id(next_scheduled_event.event), next_scheduled_event_date)
-  end
-
-  def build_known_event_request(event_type, date)
-    build_study_segment_request(get_study_segment_id(PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)), date)
-  end
-
   def build_study_segment_request(segment_id, start_date)
     log.debug("~~~ build_study_segment_request for #{segment_id} on #{start_date}")
     xm = Builder::XmlMarkup.new(:target => "")
@@ -518,7 +538,7 @@ class PatientStudyCalendar
       end
       response.send response_section
     rescue Exception => e
-      log.error "ERROR [#{Time.now}] Exception #{e} during GET request to #{path}"
+      log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during GET request to #{path}"
       raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
@@ -623,8 +643,8 @@ class PatientStudyCalendar
     ##
     # This method takes the event type display text from the MDES codes lists and
     # translates it into the Segment Name as known by PSC.
-    # @param [String] - PSC Segment Name
-    # @return [String] - Master Data Element Specification Code List Event Type
+    # @param [String] - Master Data Element Specification Code List Event Type
+    # @return [String] - PSC Segment Name
     def get_psc_segment_from_mdes_event_type(event_type)
       event_type = case event_type
               when "Birth"
