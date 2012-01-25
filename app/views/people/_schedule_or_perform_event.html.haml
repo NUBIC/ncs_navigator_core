@@ -14,24 +14,21 @@
         %b
           Perform Next Event
         %p
-          = link_to "Initiate New Contact for #{participant.upcoming_events.to_sentence}", new_person_contact_path(person), :class => "add_link icon_link"
+          = link_to "Initiate New Contact for #{participant.upcoming_events.to_sentence}", new_person_contact_path(person), :class => "add_link icon_link", :title => "Initiate Contact"
     - elsif rs = person.last_incomplete_response_set
       - if rs.survey.title =~ /_PregScreen_/
         .perform_next_event
           %b
             Continue Event
         %p
-          = link_to "Continue Pregnancy Screener", new_person_contact_path(person), :class => "add_link icon_link"
+          = link_to "Continue Pregnancy Screener", new_person_contact_path(person), :class => "add_link icon_link", :title => "Initiate Contact"
 
 - else
   .pending_events
     %b
       New Contact for Pending Event
-    .instructional_note
-      %span{ :class => "warning_icon" }
-        Pending Events should be completed or closed before continuing on to subsequent events.
     - participant.pending_events.each do |event|
       .pending_event
         - epoch = participant.high_intensity? ? PatientStudyCalendar::HIGH_INTENSITY : PatientStudyCalendar::LOW_INTENSITY
         - psc_segment_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event.event_type.to_s)
-        = link_to "Continue #{epoch}: #{psc_segment_name}", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link"
+        = link_to "Continue #{epoch}: #{psc_segment_name}", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "Initiate Contact"
