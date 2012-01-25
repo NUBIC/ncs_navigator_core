@@ -230,6 +230,7 @@ class Event < ActiveRecord::Base
 
     resp = psc.schedule_next_segment(participant, date)
     Event.create_placeholder_record(participant, date, event_type_code, resp.body) if resp && resp.success?
+    resp
   end
 
   def self.create_placeholder_record(participant, date, event_type_code, response_body)
