@@ -276,6 +276,30 @@ describe Participant do
 
   end
 
+  context "contacts" do
+    describe "#last_contact" do
+
+      before(:each) do
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => true)
+        @participant.person = person
+      end
+
+
+      it "returns nil if no previous contacts" do
+        @participant.last_contact.should be_nil
+      end
+
+      it "returns the most recent contact" do
+        event = Factory(:event, :participant => @participant)
+        contact = Factory(:contact, :contact_date_date => 1.day.ago)
+        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :contact => contact)
+
+        @participant.last_contact.should == contact
+      end
+    end
+  end
+
   context "when determining schedule" do
 
     describe "a participant who has had a recent pregnancy loss (PPG 3)" do
@@ -303,7 +327,7 @@ describe Participant do
         event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
         contact = Factory(:contact)
-        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 5.months.ago)
+        contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 5.months.ago, :contact => contact)
 
         @participant.high_intensity_conversion!
 
@@ -315,7 +339,6 @@ describe Participant do
         event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
         event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
-        contact = Factory(:contact)
 
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 10.month.ago)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 7.month.ago)

@@ -556,5 +556,14 @@ describe Contact do
     end
 
   end
+  
+  context "last contact for a participant" do
+    
+    
+    
+    it "returns the last contact for a participant" do
+    end
+    
+  end
 
 end
