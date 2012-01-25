@@ -1,0 +1,65 @@
+- title "Frequently Asked Questions"
+
+.page_section
+  .people
+    %h3
+      People
+    %p
+      %b
+        What is the difference between a person and a participant?
+      %br
+      A Person is an individual who may provide information on a participant.
+      All individuals contacted are Persons, including those who may also be Participants.
+      %br
+      A Participant is a living Person who has provided Study data about her/himself or a NCS Child.
+      S/he may have been administered a variety of questionnaires or assessments, including household enumeration,
+      pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
+      Every Participant is also a Person.
+    %p
+      %b
+        How do I find a person?
+      %br
+      Go to the
+      = link_to "People Index", people_path
+      page and enter search criteria in the form.
+    %p
+      %b
+        How do I find a participant?
+      %br
+      Go to the
+      = link_to "Participant Index", participants_path
+      page and enter search criteria in the form.
+
+  .workflow
+    %h3
+      Workflow
+    %p
+      %b
+        How do I start a contact?
+      %br
+      First, find the person you are attempting to contact either via the
+      = link_to "people index page", people_path
+      or the
+      = link_to "scheduled activities page", root_path
+      or the
+      = link_to "overdue activities page.", :controller => "welcome", :action => "overdue_activities"
+
+      Then, navigate to that person's page.
+      Finally, on the Participant Calendar tab of that page (the first tab) there will be a link to either create a
+      %i
+        New Contact for Pending Event
+      or to
+      %i
+        Perform Next Event.
+
+
+  .instruments
+    %h3
+      Instruments
+    %p
+      %b
+        How to I exit an Instrument?
+      %br
+      Navigate to the final section of the Instrument (the last item in the sections menu) and click
+      %i
+        Click here to finish.

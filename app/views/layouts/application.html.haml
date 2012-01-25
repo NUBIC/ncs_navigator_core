@@ -14,7 +14,7 @@
   %body.bp.ncs
     #container
       #header
-        = render 'partials/current_user', :current_user => current_user
+        = render 'partials/user_info', :current_user => current_user
         #app_name
           = link_to "NCS Navigator", root_path
           - if show_title?
@@ -25,7 +25,7 @@
         - flash.each do |message_type, message|
           %div{ :class => "flash_message", :id => "flash_#{message_type}" }
             = message
-        #content    
+        #content
           = yield
       #footer
         = render 'partials/footer'

@@ -12,10 +12,12 @@ class WelcomeController < ApplicationController
     @scheduled_activities = psc.scheduled_activities_report(criteria)
   end
 
-
   def summary
     @dwellings    = DwellingUnit.next_to_process
     @participants = Participant.all
+  end
+
+  def faq
   end
 
   def start_pregnancy_screener_instrument

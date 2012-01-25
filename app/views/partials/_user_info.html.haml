@@ -1,0 +1,13 @@
+- if current_user
+  #current_user
+    = current_user.full_name
+    (
+    = current_user.username
+    )
+    &nbsp;|&nbsp;
+    = link_to "FAQ", '/faq', :class => "faq_link"
+    &nbsp;|&nbsp;
+    = link_to "Logout", '/logout', :class => "logout_link icon_link"
+    %br
+    - if File.exists? "#{Rails.root}/app/views/help/_#{controller_name}_#{action_name}.html.haml"
+      = render "/help/#{controller_name}_#{action_name}"

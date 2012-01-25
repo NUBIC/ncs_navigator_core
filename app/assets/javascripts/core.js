@@ -88,6 +88,22 @@ $(document).ready(function() {
       });
   });
 
+  $('.help_text_link').click(function(event) {
+    var help_text = $(this).next('.help_text').val();
+    var title = $(this).next('.help_text').attr('title');
+    $('<div id="dialog">' + help_text + '</div>').appendTo('body');
+      event.preventDefault();
+      $("#dialog").dialog({
+        title: title,
+        width: 600,
+        modal: true,
+        close: function(event, ui) {
+          $("#dialog").remove();
+        }
+      });
+  });
+
+
   $(".help_icon").tooltip();
   $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
