@@ -11,6 +11,12 @@ input[type="submit"] {
   text-decoration: none;
 }
 
+.faq_link {
+  font-size: 1.1em;
+  padding: 0px;
+  text-decoration: none;
+}
+
 .sort_link {
   font-size: 1.1em;
   text-decoration: none;
@@ -21,12 +27,14 @@ input[type="submit"] {
   text-decoration: none;
 }
 
+.help_text_link {
+  margin: 0;
+  float: right;
+  width: 3.5em;
+}
 .mdes_table_definition {
   text-align: right;
   margin: 0;
-}
-
-.mdes_documentation_link {
 }
 
 .add_link, .add_link:hover {
