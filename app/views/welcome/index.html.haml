@@ -36,6 +36,13 @@
                   = row['activity_name']
     .overdue_activities
       = link_to "View Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
+
+- else
+  .front_page_section.page_section
+    No Scheduled Activities
+    .overdue_activities
+      = link_to "View Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
+
 .front_page_section.page_section
   .column-container
     = link_to "Administer New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
@@ -49,3 +56,5 @@
     = link_to "View All Contacts", contact_links_path, :class => "list_link icon_link"
   .column-container
     = link_to "View All Events", events_path, :class => "list_link icon_link"
+  .column-container
+    = link_to "Reports", {:controller => "reports", :action => "index"}, :class => "list_link icon_link"
