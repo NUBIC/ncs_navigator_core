@@ -1,7 +1,7 @@
 NcsNavigatorCore::Application.routes.draw do
   resources :dwelling_units
   resources :household_units
-  resources :events, :only => [:index]
+  resources :events, :only => [:index, :edit, :update]
   resources :people do
     member do
       get :events
@@ -23,8 +23,8 @@ NcsNavigatorCore::Application.routes.draw do
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status
-      get :development_workflow
-      put :development_update_state
+      get :correct_workflow
+      put :process_update_state
     end
   end
   resources :contact_links do

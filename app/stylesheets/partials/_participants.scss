@@ -58,8 +58,9 @@
 
 .pending_events {
   border-top: 1px solid $BORDER_GRAY;
-  margin-top: 0.5em;
-  padding-top: 0.5em;
+  border-bottom: 1px solid $BORDER_GRAY;
+  margin: 0.5em 0;
+  padding: 0.5em 0;
 }
 
 span.known_instrument {

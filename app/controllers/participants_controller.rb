@@ -214,8 +214,7 @@ class ParticipantsController < ApplicationController
     @participant = Participant.find(params[:id])
     respond_to do |format|
       if @participant.update_attributes(params[:participant])
-        path = @participant.current_contact_link.blank? ? participants_path : edit_contact_link_path(@participant.current_contact_link)
-        format.html { redirect_to(path, :notice => 'Participant was successfully updated.') }
+        format.html { redirect_to(participant_path(@participant), :notice => 'Participant PPG Status was successfully updated.') }
         format.json { render :json => @participant }
       else
         format.html { render :action => "edit_ppg_status" }
@@ -225,21 +224,23 @@ class ParticipantsController < ApplicationController
   end
 
   ##
-  # Developer view to show participant in particular state and the instruments in that state
-  def development_workflow
+  # Page to show participant in particular state and potentially update that
+  # state in case of issues
+  def correct_workflow
+    @low_intensity_states = [["registered", "Registered"], ["in_pregnancy_probability_group", "In Pregnancy Probii"]]
     @participant = Participant.find(params[:id])
   end
 
   ##
   # Simple action to move participant from one state to the next
-  # PUT /participants/1/development_update_state
-  def development_update_state
+  # PUT /participants/1/process_update_state
+  def process_update_state
     @participant = Participant.find(params[:id])
     @participant.state = params[:new_state]
     @participant.high_intensity = true if params[:new_state] == "moved_to_high_intensity_arm"
     @participant.save!
     flash[:notice] = "Participant was moved to #{params[:new_state].titleize}."
-    redirect_to development_workflow_participant_path(@participant)
+    redirect_to correct_workflow_participant_path(@participant)
   end
 
 end

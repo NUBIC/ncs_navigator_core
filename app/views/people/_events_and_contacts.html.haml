@@ -11,7 +11,7 @@
           .event
             .header
               %span.type
-                = event.event_type
+                = link_to event.event_type.to_s, edit_event_path(event), :class => "edit_link icon_link"
               %span.dates
                 = blank_safe(event.event_start_date)
                 = " - "

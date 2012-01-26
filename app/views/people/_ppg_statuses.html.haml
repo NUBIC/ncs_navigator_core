@@ -30,3 +30,5 @@
             = ppg.ppg_status
           %td
             = ppg.ppg_status_date
+  %p
+    = link_to "Update PPG Status", edit_ppg_status_participant_path(@participant), :class => "fix_link icon_link"

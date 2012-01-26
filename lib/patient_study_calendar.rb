@@ -119,9 +119,9 @@ class PatientStudyCalendar
   end
 
   def assign_subject(participant, event_type = nil, date = nil)
-    return nil if is_registered?(participant) || participant.next_study_segment.blank?
-    return nil if should_skip_event?(event_type)
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
+    return nil if should_skip_event?(event_type)
+    return nil if is_registered?(participant) || participant.next_study_segment.blank?
     response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
       build_subject_assignment_request(participant, event_type, date))
     registered_participants.cache_registration_status(
