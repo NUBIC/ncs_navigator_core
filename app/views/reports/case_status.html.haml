@@ -16,10 +16,4 @@
         %br
         = text_field_tag 'end_date', @end_date, :class => 'datepicker'
       %p
-        = check_box_tag :pending_events
-        %b
-          Show All Pending Events
-        .instructional_note
-          (i.e. Ignore Dates)
-      %p
         = submit_tag 'Generate Report'
