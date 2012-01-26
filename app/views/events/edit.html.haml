@@ -1,0 +1,22 @@
+- title "Edit Event"
+
+.mdes_table_definition
+  = render 'documentation/event'
+
+%h3
+  - if @event.participant && @event.participant.person
+    = @event.participant.person.to_s
+  - else
+    Event has no associated participant
+
+%h3
+  = @event.event_type.display_text
+
+.page_section
+  = form_for(@event) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/events/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
