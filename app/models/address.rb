@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111212224350
+# Schema version: 20120120165946
 #
 # Table name: addresses
 #
@@ -77,7 +77,7 @@ class Address < ActiveRecord::Base
     else
       addr << "#{zip}-#{zip4}" unless zip.blank?
     end
-    addr.reject { |n| n.blank? }.join(' ')
+    addr.reject { |n| n.blank? || n.to_i < 0 }.join(' ')
   end
 
 end
