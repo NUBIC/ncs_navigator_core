@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20111212224350
+# Schema version: 20120120165946
 #
 # Table name: household_person_links
 #
