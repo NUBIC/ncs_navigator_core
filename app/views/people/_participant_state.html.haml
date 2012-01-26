@@ -8,7 +8,7 @@
     %b
       Next State
     .form
-      = form_for @participant, :url => development_update_state_participant_path(@participant) do |f| 
+      = form_for @participant, :url => process_update_state_participant_path(@participant) do |f|
         - if @participant.low_intensity?
           - if @participant.pending?
             Registered
@@ -38,7 +38,7 @@
         - if !@participant.can_register_with_psc?(psc) && !@participant.pregnancy_one?
           = f.submit "Move to next state", :disable_with => 'Updating...'
     - if @participant.can_register_with_psc?(psc)
-      = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "register_participant_with_psc"}) do |f| 
+      = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "register_participant_with_psc"}) do |f|
         = render "shared/full_error_messages", :object => f.object
         %p
           = f.submit "Register with PSC"

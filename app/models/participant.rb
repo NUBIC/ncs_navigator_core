@@ -227,7 +227,7 @@ class Participant < ActiveRecord::Base
       follow_low_intensity!
     end
 
-    if /_LIHIConversion_/ =~ survey_title && can_enroll_in_high_intensity_arm?
+    if /_LIHIConversion_/ =~ survey_title
       enroll_in_high_intensity_arm!
       high_intensity_conversion!
       process_high_intensity_consent!

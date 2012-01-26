@@ -39,11 +39,11 @@
     %table.records
       %tr
         %th
+          = sort_link @q, "event_type_code", "Event"
+        %th
           = sort_link @q, "event_start_date", "Start Date"
         %th
           = sort_link @q, "event_end_date", "End Date"
-        %th
-          = sort_link @q, "event_type_code", "Event"
         %th
           = sort_link @q, "event_disposition", "Event Disp"
           %span{ :class => "help_icon" }
@@ -55,11 +55,11 @@
       - @events.each do |event|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
+            = link_to event.event_type.to_s, edit_event_path(event), :class => "edit_link icon_link"
+          %td
             = event.event_start_date
           %td
             = event.event_end_date
-          %td
-            = event.event_type
           %td
             = event.event_disposition
           %td

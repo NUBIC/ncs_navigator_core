@@ -1,0 +1,54 @@
+= render "/help/help_link"
+%textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "Welcome Page" }
+  %p
+    %b
+      Proceed with caution!
+  %p
+    %b
+      Internal Participant States
+    %br
+    The application uses the participant state to determine the next event for the participant.
+    %br
+    This page allows the user to update the participant state bypassing the normal application logic.
+    This is useful when imported data is incorrect, the application acts improperly, or if the
+    participant misses an event and needs to be moved to the next state.
+    %br
+    The normal state progression is as follows:
+    %p
+      %b
+        For Low Intensity
+    %ul
+      %li
+        Pending
+      %li
+        Registered
+      %li
+        In Pregnancy Probability Group
+      %li
+        Consented Low Intensity
+      %li
+        Following Low Intensity
+      %li
+        Pregnant Low
+      %li
+        Moved to High Intensity Arm
+    %p
+      %b
+        For High Intensity
+    %ul
+      %li
+        In High Intensity Arm
+      %li
+        Converted High Intensity
+      %li
+        Following High Intensity
+      %li
+        Pre-Pregnancy
+      %li
+        Pregnancy One
+      %li
+        Pregnancy Two
+      %li
+        Ready for Birth
+      %li
+        Parenthood

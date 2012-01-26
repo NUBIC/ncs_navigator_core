@@ -1,0 +1,92 @@
+- title "Update Participant State"
+
+%h3
+  = @participant.person.to_s
+  %span{:class => "normal"}
+    = link_to "View Person Record", person_path(@participant.person), :class => "show_link icon_link" if @participant.person
+
+.page_section
+  %p
+    %b
+      Current Participant State
+    %br
+      = @participant.state.titleize
+  %p
+    %b
+      Next State
+    .form
+      = form_for @participant, :url => process_update_state_participant_path(@participant) do |f|
+        - if @participant.low_intensity?
+          - if @participant.pending?
+            Registered
+            = hidden_field_tag :new_state, "registered"
+          - elsif @participant.registered?
+            In Pregnancy Probability Group
+            = hidden_field_tag :new_state, "in_pregnancy_probability_group"
+          - elsif @participant.in_pregnancy_probability_group? || @participant.following_low_intensity?
+            Pregnant
+            - unless @participant.known_to_be_pregnant?
+              .instructional_note
+                Ensure the participant PPG Status is PPG 1 if you move to Pregnant State
+            = hidden_field_tag :new_state, "pregnant_low"
+          - elsif @participant.pregnant_low?
+            Move to High Intensity Arm
+            = hidden_field_tag :new_state, "moved_to_high_intensity_arm"
+        - else
+          - if @participant.in_high_intensity_arm?
+            Pre-Pregnancy
+            = hidden_field_tag :new_state, "pre_pregnancy"
+          - elsif @participant.pre_pregnancy?
+            Pregnancy One
+            = hidden_field_tag :new_state, "pregnancy_one"
+          - elsif @participant.pregnancy_one?
+            Pregnancy Two
+            = hidden_field_tag :new_state, "pregnancy_two"
+          - elsif @participant.pregnancy_two?
+            Ready for Birth
+            = hidden_field_tag :new_state, "ready_for_birth"
+          - elsif @participant.ready_for_birth?
+            Parenthood
+            = hidden_field_tag :new_state, "parenthood"
+          - else
+            N/A
+        %p
+          = f.submit "Move to next state", :disable_with => 'Updating...'
+
+.page_section
+  %b
+    Switch Protocol Arm
+  - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
+    .high_intensity_invitation
+      = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f|
+        = render "shared/full_error_messages", :object => f.object
+        = f.hidden_field :high_intensity
+        %p
+          - if @participant.high_intensity?
+            = f.submit switch_arm_message(@participant)
+          - else
+            = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
+
+
+.page_section
+  .psc_registration
+    %b
+      PSC
+    %br
+    - if psc.is_registered?(@participant)
+      - if next_event = @participant.next_scheduled_event
+        .schedule_next_event
+          %b
+            Schedule Next Event
+            = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f|
+              = render "shared/full_error_messages", :object => f.object
+              %p
+                = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'
+              %p
+                = f.submit "Schedule #{next_event.event}"
+    - else
+      Participant needs to be registered in PSC
+      = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), :html => {:class => "register_participant_with_psc"}) do |f|
+        = render "shared/full_error_messages", :object => f.object
+        %p
+          = f.submit "Register with PSC"
