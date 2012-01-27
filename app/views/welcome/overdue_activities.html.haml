@@ -28,7 +28,7 @@
                 %td
                   - if person.participant
                     %span{ :title => person.participant.ppg_status.to_s }
-                      = "PPG #{person.participant.ppg_status.local_code}"
+                      = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
                   - else
                     n/a
                 %td
