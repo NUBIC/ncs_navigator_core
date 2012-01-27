@@ -1,4 +1,5 @@
 /* tooltip styling */
+.disposition_tooltip,
 .notification_tooltip,
 .tooltip {
   z-index: 999;
@@ -34,8 +35,13 @@
 
 .tooltip {
   background-color: aliceblue;
+}
+
+.disposition_tooltip {
+  background-color: aliceblue;
+  overflow-y: scroll;
   max-height: 25em;
-  overflow-y:scroll;
+  text-align: left;
 }
 
 .notification_tooltip {

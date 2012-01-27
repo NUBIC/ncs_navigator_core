@@ -87,7 +87,8 @@ namespace :deploy do
     release_import = File.join(current_path, 'importer_passthrough')
     cmds = [
       "mkdir -p #{shared_import}",
-      "chmod g+w #{shared_import}",
+      # FIXME: check for existence of dir
+      # "chmod g+w #{shared_import}",
       "if [ ! -e #{release_import} ]; then ln -s #{shared_import} #{release_import}; fi",
     ]
     run cmds.join(' && ')

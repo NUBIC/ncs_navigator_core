@@ -47,6 +47,7 @@ class ContactLinksController < ApplicationController
 				 @contact_link.event.update_attributes(params[:event]) &&
 				 @contact_link.contact.update_attributes(params[:contact])
 
+        Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)
 				format.html {
 				  if params[:commit] == "Continue"
 				    redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
@@ -144,16 +145,17 @@ class ContactLinksController < ApplicationController
 	  # Determine the disposition group to be used from the contact type or instrument taken
 	  def set_disposition_group
 	    if @event && @event.event_type.to_s == "Pregnancy Screener"
-        return DispositionMapper::PREGNANCY_SCREENER_EVENT
-      end
-	    @disposition_group = nil
-	    instrument = @contact_link.instrument
-	    contact = @contact_link.contact
-	    if contact && contact.contact_type
-	      @disposition_group = @contact_link.contact.contact_type.to_s
-      end
-      if instrument && instrument.survey
-        @disposition_group = instrument.survey.title
+        @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+      else
+  	    @disposition_group = nil
+  	    instrument = @contact_link.instrument
+  	    contact = @contact_link.contact
+  	    if contact && contact.contact_type
+  	      @disposition_group = @contact_link.contact.contact_type.to_s
+        end
+        if instrument && instrument.survey
+          @disposition_group = instrument.survey.title
+        end
       end
 	  end
 

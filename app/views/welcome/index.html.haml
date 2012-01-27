@@ -1,60 +1,78 @@
 - title = "Welcome"
 
-- if @scheduled_activities
-  .front_page_section.page_section
-    - rows = @scheduled_activities['rows']
-    - if rows.blank?
-      %h4
-        No Upcoming Activities Scheduled
-    - else
-      %h4
+#tabs
+  %ul
+    %li
+      %a{ :href => "#scheduled_activities_tab"}
         Scheduled Activities
-      %table.records
-        %tr
-          %th Date
-          %th Person
-          %th PPG Status
-          %th Activity
-        - rows.sort_by { |r| r['scheduled_date'] }.each do |row|
-          - if row['subject']
-            - person = Person.find_by_person_id(row['subject']['person_id'])
-            - if person
-              %tr{ :class => cycle('even_record', 'odd_record') }
-                %td
-                  = row['scheduled_date']
-                %td
-                  - if person
-                    = link_to row['subject']['name'], person_path(person), :class => "show_link icon_link"
-                  - else
-                    = row['subject']['name']
-                %td
-                  - if person.participant
-                    = person.participant.ppg_status
-                  - else
-                    n/a
-                %td
-                  = row['activity_name']
-    .overdue_activities
-      = link_to "View Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
+    %li
+      %a{ :href => "#actions_tab"}
+        Actions
 
-- else
-  .front_page_section.page_section
-    No Scheduled Activities
-    .overdue_activities
-      = link_to "View Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
 
-.front_page_section.page_section
-  .column-container
-    = link_to "Administer New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
-
-.front_page_section.page_section
-  .column-container
-    = link_to "View All People", people_path, :class => "list_link icon_link"
-  .column-container
-    = link_to "View All Participants", participants_path, :class => "list_link icon_link"
-  .column-container
-    = link_to "View All Contacts", contact_links_path, :class => "list_link icon_link"
-  .column-container
-    = link_to "View All Events", events_path, :class => "list_link icon_link"
-  .column-container
-    = link_to "Reports", {:controller => "reports", :action => "index"}, :class => "list_link icon_link"
+  #scheduled_activities_tab
+    - if @scheduled_activities
+      .front_page_section.page_section
+        - rows = @scheduled_activities['rows']
+        - if rows.blank?
+          %h4
+            No Upcoming Activities Scheduled
+        - else
+          %h4
+            = "From #{@start_date} to #{@end_date}"
+          %table.records
+            %tr
+              %th Date
+              %th Person
+              %th PPG Status
+              %th Activity
+            - rows.sort_by { |r| r['scheduled_date'] }.each do |row|
+              - if row['subject']
+                - person = Person.find_by_person_id(row['subject']['person_id'])
+                - if person
+                  %tr{ :class => cycle('even_record', 'odd_record') }
+                    %td
+                      = row['scheduled_date']
+                    %td
+                      - if person
+                        = link_to row['subject']['name'], person_path(person), :class => "show_link icon_link"
+                      - else
+                        = row['subject']['name']
+                    %td
+                      - if person.participant
+                        %span{ :title => person.participant.ppg_status.to_s }
+                          = "PPG #{person.participant.ppg_status.local_code}"
+                      - else
+                        n/a
+                    %td
+                      = row['activity_name']
+    - else
+      .front_page_section.page_section
+        No Scheduled Activities
+  #actions_tab
+    .front_page_section.page_section
+      .column-container
+        .column-1
+          .participants
+            %h4
+              Administer Instruments
+            = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
+          .reports
+            %h4
+              Reports
+            = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
+        .column-2
+          %h4
+            Searching
+          .model_search
+            %ul
+              %li
+                = link_to "View All Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
+              %li
+                = link_to "View All People", people_path, :class => "list_link icon_link"
+              %li
+                = link_to "View All Participants", participants_path, :class => "list_link icon_link"
+              %li
+                = link_to "View All Contacts", contact_links_path, :class => "list_link icon_link"
+              %li
+                = link_to "View All Events", events_path, :class => "list_link icon_link"

@@ -1,20 +1,23 @@
 = render "/help/help_link"
 %textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "Welcome Page" }
   %p
-    On this page you will initially see a list of upcoming activities for participants in the section with the header
-    %b
-      Scheduled Activities.
-    %br
-    Most likely from this page you would click the name of the Participant you would like to contact and view the next event to process.
+    On this page there are two tabs
   %p
-    Underneath the Scheduled Activities section you will see a link to get
     %b
-      All Overdue Activities
-    which will show you all activities that had been scheduled but have yet to be marked as 'occurred' or 'canceled'.
+      Scheduled Activities
+    %p
+      Here is a list of upcoming activities for participants in the section for the shown date range.
+      Most likely from this page you would click the name of the Participant you would like to contact
+      and view the next event to process.
   %p
-    To add a new Participant, you would click on the
     %b
-      Administer New Pregnancy Screener
-    link.
-  %p
-    Finally there is a list of links at the bottom of the page to view lists of records in the database.
+      Actions
+    %p
+      This tab will show a menu of other actions you can take in NCS Navigator. Actions such as:
+    %ul
+      %li
+        Reporting
+      %li
+        Searching
+      %li
+        Administering Instruments

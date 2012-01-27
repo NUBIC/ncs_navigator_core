@@ -56,11 +56,17 @@
   float: right;
 }
 
+.schedule_next_event,
 .pending_events {
   border-top: 1px solid $BORDER_GRAY;
   border-bottom: 1px solid $BORDER_GRAY;
   margin: 0.5em 0;
   padding: 0.5em 0;
+}
+
+span.consented {
+  color: darkgreen;
+  font-size: 0.8em;
 }
 
 span.known_instrument {

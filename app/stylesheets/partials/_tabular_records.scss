@@ -37,12 +37,12 @@ table.records {
 }
 
 div.records {
-  
+
   span.form_label {
     font-weight: bold;
   }
-  
-  span.label { 
+
+  span.label {
     font-style: italic;
     text-decoration: underline;
   }
@@ -53,3 +53,9 @@ div.records {
   }
 }
 
+.no_records {
+  border-right: 1px solid $BORDER_GRAY;
+  border-left: 1px solid $BORDER_GRAY;
+  border-bottom: 1px solid $BORDER_GRAY;
+  padding: 0.5em;
+}

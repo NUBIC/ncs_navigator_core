@@ -60,7 +60,8 @@
           %td
             = participant.p_id
           %td
-            = participant.ppg_status
+            %span{ :title => participant.ppg_status.to_s }
+              = "PPG #{participant.ppg_status.local_code}" unless participant.ppg_status.blank?
           %td
             = link_to 'View', participant_path(participant), :class => "show_link icon_link"
           %td

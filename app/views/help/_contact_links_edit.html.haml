@@ -1,0 +1,38 @@
+= render "/help/help_link"
+%textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "Edit Contact" }
+  %p
+    This is where you update the data for the Contact and Event records.
+    %br
+    Much of the data should be pre-filled for you, please take care to ensure that the data is correct.
+    %p
+      At this point you can close the Contact and Event or continue to administer additional Instruments for this
+      contact. Other Instruments for this event will be listed at the top of the page.
+    %p
+      Set the dispositions for Contact and Event and click
+      %b
+        Close
+      at the bottom of the page
+      %em
+        only
+      after you are certain that the contact has been completed.
+    %p
+      The disposition fields for Contact and Event cannot be determined programmatically;
+      please select the appropriate status for this Instrument.
+      %br
+      %b
+        %em
+          Important:
+      The Event End date is not pre-filled. The event will remain in an
+      %em
+        open or pending
+      state until this field is set. Only set the Event End date when you are certain that the participant
+      should move onto the next event. The participant will not know to move to the next event in the study until
+      the current event is completed.
+    %p
+      Closing the event will scheduled the participant for the next event on a date as
+      determined by the protocol.
+    %p
+      If it is necessary for the workflow to Continue onto the next Event during the same contact click the
+      %b
+        Continue
+      button to move onto the next Event. Note that this should happen rarely.

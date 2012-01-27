@@ -17,10 +17,12 @@
                 = " - "
                 = blank_safe(event.event_end_date)
               #span.disposition
-                = "#{event.event_disposition} - #{event.event_disposition_category}"
+                - if event.event_disposition
+                  = "#{event.event_disposition} - #{event.event_disposition_category}"
             .contact_link
               - if event.contact_links.blank?
-                No contacts exist for this event.
+                .no_records
+                  No contacts exist for this event.
               - else
                 %table.records
                   %tr
@@ -53,5 +55,5 @@
                       %td
                         = "#{cl.event.event_disposition} - #{cl.event.event_disposition_category}"
                       %td
-                        - if cl.contact.contact_date_date == Date.today
+                        - if cl.contact.contact_date_date == Date.today && cl.event.event_end_date.blank?
                           = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"

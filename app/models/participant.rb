@@ -762,7 +762,7 @@ class Participant < ActiveRecord::Base
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       elsif in_high_intensity_arm?
-        PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
+        PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
       elsif following_high_intensity? || converted_high_intensity?
         PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
       elsif pre_pregnancy?

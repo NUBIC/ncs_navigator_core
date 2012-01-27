@@ -1,4 +1,4 @@
-- title = "Overdue Activities"
+- title "Overdue Activities"
 
 - if @scheduled_activities
   .front_page_section.page_section
@@ -7,8 +7,6 @@
       %h4
         No Overdue Scheduled Activities
     - else
-      %h4
-        Overdue Activities
       %table.records
         %tr
           %th Date
@@ -29,7 +27,8 @@
                     = row['subject']['name']
                 %td
                   - if person.participant
-                    = person.participant.ppg_status
+                    %span{ :title => person.participant.ppg_status.to_s }
+                      = "PPG #{person.participant.ppg_status.local_code}"
                   - else
                     n/a
                 %td

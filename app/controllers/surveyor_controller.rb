@@ -18,7 +18,6 @@ class SurveyorController < ApplicationController
       participant = Participant.find(response_set.person.participant.id) if response_set.person.participant
       if participant
         participant.update_state_after_survey(response_set, psc)
-        Event.schedule_and_create_placeholder(psc, participant)
       end
     end
 end

@@ -1,8 +1,11 @@
 class WelcomeController < ApplicationController
 
   def index
+    @start_date = 1.day.ago.to_date.to_s
+    @end_date = 2.weeks.from_now.to_date.to_s
     criteria = { :current_user => current_staff,
-                 :start_date => 14.days.ago.to_date.to_s }
+                 :start_date => @start_date,
+                 :end_date => @end_date }
     @scheduled_activities = psc.scheduled_activities_report(criteria)
   end
 
