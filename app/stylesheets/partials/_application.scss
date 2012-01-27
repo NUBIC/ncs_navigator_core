@@ -1,6 +1,7 @@
 body {
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
+  background-color: $base_bg !important;
 }
 
 .developer_note {
@@ -130,6 +131,8 @@ form {
 
 #container,
 .container {
+  @include rounded-corners(.75em);
+  border: 2px solid $BORDER_GRAY;
   background-color: white;
   padding: 20px 40px;
   margin: 1em auto;

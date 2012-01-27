@@ -13,7 +13,7 @@ class ParticipantConsentsController < ApplicationController
     @contact = @contact_link.contact
     @participant_consent = ParticipantConsent.new(:participant => @participant, :contact => @contact,
       :consent_type_code => @consent_type_code.to_i, :consent_form_type_code => @consent_type_code.to_i,
-      :consent_date => Date.today, :consent_given_code => 1)
+      :consent_date => Date.today)
 
     respond_to do |format|
       format.html # new.html.erb

@@ -237,7 +237,7 @@ describe Participant do
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
-        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == Date.today
       end
@@ -282,7 +282,7 @@ describe Participant do
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
-        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == Date.today
       end
@@ -314,7 +314,7 @@ describe Participant do
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
-        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == Date.today
       end
@@ -338,7 +338,7 @@ describe Participant do
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
-        participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_HI_LO_CONVERSION
+        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == Date.today
       end

@@ -19,8 +19,8 @@ class PatientStudyCalendar
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
   LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
-  LOW_INTENSITY_HI_LO_CONVERSION      = "#{LOW_INTENSITY}: #{HI_LO_CONVERSION}"
 
+  HIGH_INTENSITY_HI_LO_CONVERSION       = "#{HIGH_INTENSITY}: #{HI_LO_CONVERSION}"
   HIGH_INTENSITY_PPG_FOLLOW_UP          = "#{HIGH_INTENSITY}: #{PPG_FOLLOW_UP}"
   HIGH_INTENSITY_PRE_PREGNANCY          = "#{HIGH_INTENSITY}: #{PRE_PREGNANCY}"
   HIGH_INTENSITY_PREGNANCY_VISIT_1      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_1}"
@@ -230,7 +230,7 @@ class PatientStudyCalendar
 
   ##
   # Defaults to True. If the given scheduled event exists on the given day for the participant
-  # then return False since the participant already has that event scheduled.
+  # then return False since the participant already has that event scheduled on that date.
   #
   # @param [Participant]
   # @param [String] - event name
@@ -590,7 +590,7 @@ class PatientStudyCalendar
   end
 
   def valid_response?(response)
-    response.status < 300
+    response && response.status < 300
   end
   private :valid_response?
 

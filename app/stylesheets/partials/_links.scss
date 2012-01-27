@@ -61,6 +61,10 @@ input[type="submit"] {
   background: url(../../assets/list.png) 0 2px no-repeat !important;
 }
 
+.report_link, .report_link:hover {
+  background: url(../../assets/chart_bar.png) 0 2px no-repeat !important;
+}
+
 .delete_link, .delete_link:hover {
   background: url(../../assets/delete.png) 0 2px no-repeat !important;
 }
