@@ -45,10 +45,10 @@ module Reporting
     # @return [Array<String>] - scheduled_study_segment grid_ids
     def scheduled_study_segment_identifiers
       scheduled_study_segment_ids = []
-
-      rpt = psc.scheduled_activities_report(options)
-      rpt["rows"].each do |row|
-        scheduled_study_segment_ids << row["scheduled_study_segment"]["grid_id"]
+      if rpt = psc.scheduled_activities_report(options)
+        rpt["rows"].each do |row|
+          scheduled_study_segment_ids << row["scheduled_study_segment"]["grid_id"]
+        end
       end
       scheduled_study_segment_ids.uniq
     end
@@ -59,6 +59,7 @@ module Reporting
     # @return [Array<Participant>]
     def case_statuses
       ids = scheduled_study_segment_identifiers.map {|i| "'#{i}'" }.join(',')
+      return [] if ids.blank?
       sql = <<-SQL
         select part.id as q_id, part.p_id, pers.first_name as q_first_name, pers.last_name as q_last_name,
          max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name,
@@ -92,8 +93,10 @@ module Reporting
     # @return [Hash<Integer, Contact>]
     def last_contacts(participant_identifiers)
       result = Hash.new
-      Contact.last_contact(participant_identifiers).each do |c|
-        result[c.participant_id.to_i] = c
+      if lc = Contact.last_contact(participant_identifiers)
+        lc.each do |c|
+          result[c.participant_id.to_i] = c
+        end
       end
       result
     end
@@ -104,8 +107,10 @@ module Reporting
     # @return [Hash<Integer, PpgStatusHistory>]
     def ppg_statuses(participant_identifiers)
       result = Hash.new
-      PpgStatusHistory.current_status(participant_identifiers).each do |ppg|
-        result[ppg.participant_id.to_i] = ppg
+      if ppgs = PpgStatusHistory.current_status(participant_identifiers)
+        ppgs.each do |ppg|
+          result[ppg.participant_id.to_i] = ppg
+        end
       end
       result
     end

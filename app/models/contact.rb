@@ -115,6 +115,7 @@ class Contact < ActiveRecord::Base
   # @param[Array<Integer>]
   # @result[Array[Contact]]
   def self.last_contact(participant_ids)
+    return nil if participant_ids.blank?
     inner_select = "select max(c1.contact_date) from contacts c1
     	              left outer join contact_links cl1 on cl1.contact_id = c1.id
                     left outer join events e1 on e1.id = cl1.event_id
