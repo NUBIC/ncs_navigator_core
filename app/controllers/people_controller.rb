@@ -4,7 +4,7 @@ class PeopleController < ApplicationController
   # GET /people.json
   def index
     params[:page] ||= 1
-    
+
     @q = Person.search(params[:q])
     result = @q.result(:distinct => true)
     @people = result.paginate(:page => params[:page], :per_page => 20)
@@ -14,13 +14,13 @@ class PeopleController < ApplicationController
       format.json { render :json => result.all }
     end
   end
-  
+
   # GET /people/1
   def show
     @person = Person.find(params[:id])
     @participant = @person.participant
   end
-  
+
   # GET /people/new
   # GET /people/new.json
   def new
@@ -47,7 +47,7 @@ class PeopleController < ApplicationController
       end
     end
   end
-  
+
   # GET /people/1/edit
   def edit
     @person = Person.find(params[:id])
@@ -74,18 +74,22 @@ class PeopleController < ApplicationController
     @contact_link = find_or_create_contact_link
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
-    rs, instrument = @person.start_instrument(survey) if rs.nil? or rs.complete?
-    
-    ## TODO: get instrument if rs already exists
-    #        find any response set for this event
-    
-    instrument.event = @contact_link.event
-    instrument.save!
+    if rs.nil? or rs.complete?
+      rs, instrument = @person.start_instrument(survey)
+    else
+      instrument = rs.instrument
+    end
+
+    if instrument && instrument.event.nil?
+      instrument.event = @contact_link.event
+      instrument.save!
+    end
+
     @contact_link.instrument = instrument
     @contact_link.save!
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs.access_code))
   end
-  
+
   def responses_for
     @person = Person.find(params[:id])
     @responses = []
@@ -93,11 +97,11 @@ class PeopleController < ApplicationController
       @responses = @person.responses_for(params[:data_export_identifier])
     end
   end
-  
-  private 
-  
+
+  private
+
     ##
-    # An instrument can be associated with an existing ContactLink record 
+    # An instrument can be associated with an existing ContactLink record
     # or associated with the same contact/event for the given ContactLink
     # If the pata
     def find_or_create_contact_link
@@ -109,5 +113,5 @@ class PeopleController < ApplicationController
       end
       link
     end
-  
+
 end
