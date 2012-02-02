@@ -35,6 +35,7 @@ class PpgStatusHistory < ActiveRecord::Base
   # @param[Array<Integer>]
   # @result[Array[Participant]]
   def self.current_status(participant_ids)
+    return nil if participant_ids.blank?
     inner_select = "select max(ppg_status_date) from ppg_status_histories ppg1
                     where ppg1.participant_id = ppg_status_histories.participant_id"
     PpgStatusHistory.where("participant_id in (?) and ppg_status_date = (#{inner_select})", participant_ids).all
