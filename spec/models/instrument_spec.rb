@@ -127,6 +127,21 @@ describe Instrument do
 
   end
 
+  describe 'parsing information from psc' do
+
+    context 'with label instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+
+      let(:label) { 'ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+
+      describe '#determine_version' do
+        it 'returns 1.0' do
+          Instrument.determine_version(label).should == "1.0"
+        end
+      end
+    end
+
+  end
+
   describe 'default code values' do
     {
       :supervisor_review => 'CONFIRM_TYPE_CL2',

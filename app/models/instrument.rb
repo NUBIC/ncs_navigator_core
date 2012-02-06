@@ -68,7 +68,6 @@ class Instrument < ActiveRecord::Base
     !instrument_end_date.blank? && !instrument_end_time.blank?
   end
 
-
   def set_instrument_breakoff(response_set)
     if response_set
       local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1
@@ -76,6 +75,14 @@ class Instrument < ActiveRecord::Base
     end
   end
 
+  ##
+  # Given a label from PSC determine the instrument version
+  # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0
+  # @return [String]
+  def self.determine_version(lbl)
+    ind = lbl.to_s.rindex("_v")
+    lbl[ind + 2, lbl.length]
+  end
 
   private
 
