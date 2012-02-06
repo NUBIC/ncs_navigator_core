@@ -47,13 +47,14 @@ class ContactLinksController < ApplicationController
 				 @contact_link.event.update_attributes(params[:event]) &&
 				 @contact_link.contact.update_attributes(params[:contact])
 
+        # TODO: check if you need to create the event here
         Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)
-				format.html {
-				  if params[:commit] == "Continue"
-				    redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
-				  else
-				    redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.')
-				  end
+        format.html {
+          if params[:commit] == "Continue"
+            redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
+          else
+            redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.')
+          end
 				}
 				format.json { head :ok }
 			else
