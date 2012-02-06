@@ -424,5 +424,63 @@ describe Event do
 
   end
 
+  context "matching against activity in PSC" do
+
+    context "parsing psc labels" do
+      describe "#parse_label" do
+        it "returns the event portion of the label" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Event.parse_label(lbl).should == "low_intensity_data_collection"
+        end
+
+        it "returns nil if label is blank" do
+          lbl = ""
+          Event.parse_label(lbl).should be_nil
+        end
+
+        it "returns nil if event portion is not included in label" do
+          lbl = "instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Event.parse_label(lbl).should be_nil
+        end
+      end
+    end
+
+    describe "#matches_activity" do
+      let(:event_type_code) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+      let(:date) { "2012-02-29" }
+
+      before(:each) do
+        Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+
+        @person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "janedoe_ppg2")
+        @participant = Factory(:participant, :p_id => "janedoe_ppg2")
+        @participant.person = @person
+        @participant.save!
+
+        @event = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type => event_type_code)
+      end
+
+      it "is true if event_type matches label and event_start_date matches ideal date" do
+        lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        Struct.new("ScheduledActivity", :ideal_date, :labels)
+        @event.matches_activity(Struct::ScheduledActivity.new(date, lbl)).should be_true
+      end
+
+      it "is false if event_type does not match label" do
+        lbl = "event:not_the_event instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        Struct.new("ScheduledActivity", :ideal_date, :labels)
+        @event.matches_activity(Struct::ScheduledActivity.new(date, lbl)).should be_false
+      end
+
+      it "is false if event_start_date does not match ideal date" do
+        lbl = "event:low_intensity_data_collection"
+        Struct.new("ScheduledActivity", :ideal_date, :labels)
+        @event.matches_activity(Struct::ScheduledActivity.new("2011-12-25", lbl)).should be_false
+      end
+
+    end
+
+
+  end
 
 end
