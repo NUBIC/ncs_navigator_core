@@ -207,13 +207,16 @@ describe PatientStudyCalendar do
   context "determining schedule state" do
 
     before(:each) do
-      @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
+      @female = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
       @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
       @participant = Factory(:participant)
       @participant.person = @person
       @participant.register!
       ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
       Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
+
+      @ppgfu_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
+      @preg_screen = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
     end
 
     it "knows about scheduled segments" do
@@ -247,11 +250,8 @@ describe PatientStudyCalendar do
         participant = Factory(:participant, :p_id => "allyg")
         participant.person = person
 
-        ppgfu_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
-        preg_screen = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
-
-        subject.activities_to_reschedule(participant, preg_screen.to_s).should be_nil
-        subject.activities_to_reschedule(participant, ppgfu_event.to_s).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
+        subject.activities_to_reschedule(participant, @preg_screen.to_s).should be_nil
+        subject.activities_to_reschedule(participant, @ppgfu_event.to_s).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
       end
     end
 
@@ -277,6 +277,81 @@ describe PatientStudyCalendar do
         PatientStudyCalendar.extract_scheduled_study_segment_identifier(body).should == "6a2d2074-e5a8-4dc6-83ff-9ecea23efada"
 
       end
+
+    end
+
+  end
+
+  context "determining the instruments for an event" do
+
+    context "a new ppg 2 participant" do
+
+      let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
+      let(:status2) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+      let(:status2a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+
+      let(:female) { Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2) }
+
+      let(:preg_screen) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29) }
+      let(:lo_i_quex) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+      let(:informed_consent) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Informed Consent", :local_code => 10) }
+
+      let(:date) { "2012-02-06" }
+
+      before(:each) do
+        @person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :sex => female, :person_dob => '1980-02-14', :person_id => "janedoe_ppg2")
+        @participant = Factory(:participant, :p_id => "janedoe_ppg2")
+        @participant.person = @person
+        @participant.save!
+
+        Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => date, :event_type => preg_screen)
+        @lo_i_quex = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type => lo_i_quex)
+        Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => date, :event_type => preg_screen)
+        @informed_consent = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type => informed_consent)
+
+      end
+
+      describe "#activities_for_pending_events" do
+
+        it "returns the instrument labels from psc for the given participant's pending events" do
+          VCR.use_cassette('psc/janedoe_ppg2_new_participant') do
+            Factory(:ppg_detail, :participant => @participant, :ppg_first => status2)
+            Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2a)
+
+            @participant.pending_events.should == [@lo_i_quex, @informed_consent]
+
+            subject_schedule_status = subject.scheduled_activities(@participant)
+            subject_schedule_status.size.should == 3
+
+            activities_for_pending_events = subject.activities_for_pending_events(@participant)
+            activities_for_pending_events.size.should == 2
+
+            sss = subject_schedule_status[0]
+            sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
+            sss.labels.should == "event:informed_consent"
+            sss.ideal_date.should == date
+            sss.activity_name.should == "Low-Intensity Consent"
+
+            sss = subject_schedule_status[1]
+            sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
+            sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            sss.ideal_date.should == date
+            sss.activity_name.should == "Low-Intensity Interview"
+
+            sss = subject_schedule_status[2]
+            sss.study_segment.should == "LO-Intensity: Pregnancy Screener"
+            sss.labels.should == "event:pregnancy_screener instrument:ins_que_pregscreen_int_hili_p2_v2.0"
+            sss.ideal_date.should == date
+            sss.activity_name.should == "Pregnancy Screener Interview"
+
+            activities_for_pending_events[0].should == subject_schedule_status[0]
+            activities_for_pending_events[1].should == subject_schedule_status[1]
+          end
+        end
+
+      end
+
+
 
     end
 

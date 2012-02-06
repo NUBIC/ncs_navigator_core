@@ -77,6 +77,7 @@ class ContactsController < ApplicationController
 
   private
 
+    # TODO: remove call to new_event_for_person
     def event_for_person(save = true)
       if @event_id.to_i > 0
         event = Event.find(@event_id)

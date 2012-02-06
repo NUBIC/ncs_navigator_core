@@ -122,8 +122,12 @@ class PatientStudyCalendar
     participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
     return nil if should_skip_event?(event_type)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
+    data = build_subject_assignment_request(participant, event_type, date)
+
+    Rails.logger.info("~~~ assign_subject #{data.inspect}")
+
     response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
-      build_subject_assignment_request(participant, event_type, date))
+                    data)
     registered_participants.cache_registration_status(
       participant.person.public_id, valid_response?(response))
     response
@@ -157,11 +161,28 @@ class PatientStudyCalendar
     scheduled_activities = []
     participant_activities(participant).each do |activity|
       scheduled_activities << ScheduledActivity.new(
-        activity['study_segment'], activity['id'],
-        activity['current_state']['name'], activity['current_state']['date'],
-        activity['activity']['name'], activity['activity']['type'])
+        activity['study_segment'].to_s.strip, activity['id'],
+        activity['current_state']['name'], activity['ideal_date'], activity['current_state']['date'],
+        activity['activity']['name'].to_s.strip, activity['activity']['type'],
+        activity['labels'])
     end
     scheduled_activities
+  end
+
+  ##
+  # Gets information about all activities for a participant
+  # (cf. ScheduledActivity Struct) that relate to the participant's currently
+  # pending events.
+  # @param [Participant]
+  # @return [Array<ScheduledActivity>]
+  def activities_for_pending_events(participant)
+    result = []
+    scheduled_activities(participant).each do |a|
+      participant.pending_events.each do |e|
+        result << a if e.matches_activity(a)
+      end
+    end
+    result
   end
 
   ##
@@ -703,7 +724,7 @@ class PatientStudyCalendar
     end
   end
 
-  ScheduledActivity = Struct.new(:study_segment, :activity_id, :current_state, :date, :activity_name, :activity_type)
+  ScheduledActivity = Struct.new(:study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels)
 
 end
 

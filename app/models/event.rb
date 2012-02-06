@@ -184,6 +184,17 @@ class Event < ActiveRecord::Base
     set_event_breakoff(response_set)
   end
 
+  ##
+  # Checks that the event label and ideal date from PSC
+  # matches the event_type and event_start_date
+  # @param[ScheduledActivity]
+  # @return[boolean]
+  def matches_activity(scheduled_activity)
+    et = event_type.to_s.downcase.gsub("  ", " ").gsub(" ", "_")
+    lbl = Event.parse_label(scheduled_activity.labels)
+    lbl == et && scheduled_activity.ideal_date == event_start_date.to_s
+  end
+
   def set_event_disposition_category(contact)
     case event_type.to_s
     when /Pregnancy Screen/
@@ -243,6 +254,18 @@ class Event < ActiveRecord::Base
     study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(response_body)
     Event.create(:participant => participant, :psu_code => participant.psu_code, :event_start_date => date,
                  :scheduled_study_segment_identifier => study_segment_identifier, :event_type_code => event_type_code)
+  end
+
+  ##
+  # Given a label from PSC get the part that references the event
+  # @param[String]
+  # @return[String]
+  def self.parse_label(lbl)
+    return nil if lbl.blank?
+    label_marker = "event:"
+    part = lbl.split.select{ |s| s.include?(label_marker) }.first.to_s
+    return nil if part.blank?
+    part.gsub(label_marker, "")
   end
 
 end
