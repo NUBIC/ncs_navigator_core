@@ -6,8 +6,8 @@
           = "No events exists for #{blank_safe(participant.person.to_s)} at this time."
       - else
         %b
-          = "Events about #{blank_safe(participant.person.to_s)}"
-        - participant.events.each do |event|
+          Event History
+        - participant.events.sort_by{ |e| e.event_start_date }.each do |event|
           .event
             .header
               %span.type
@@ -36,9 +36,7 @@
                       End
                     %th
                       Disposition
-                    %th
-                      Event Disposition
-                    %th
+                    %th.hide
                       Continue
                   - event.contact_links.each do |cl|
                     %tr{ :class => cycle('even_record', 'odd_record') }
@@ -52,8 +50,6 @@
                         = cl.contact.contact_end_time
                       %td
                         = cl.contact.contact_disposition
-                      %td
-                        = "#{cl.event.event_disposition} - #{cl.event.event_disposition_category}"
-                      %td
+                      %td.hide
                         - if cl.contact.contact_date_date == Date.today && cl.event.event_end_date.blank?
                           = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"
