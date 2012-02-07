@@ -165,7 +165,7 @@ module NcsNavigator::Core::Warehouse
         :event_incentive_cash => :event_incent_cash,
         :event_incentive_noncash => :event_incent_noncash
       },
-      :ignored_columns => %w(event_disposition)
+      :ignored_columns => %w(event_disposition scheduled_study_segment_identifier)
     )
 
     produce_one_for_one(:instruments, Instrument,
