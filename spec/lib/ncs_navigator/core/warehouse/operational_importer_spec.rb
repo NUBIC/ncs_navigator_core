@@ -320,7 +320,7 @@ module NcsNavigator::Core::Warehouse
           save_wh(mdes_rec)
         end
       end
-      core_model.delete_all(["#{core_model.public_id_field} = ?", wh_id])
+      core_model.destroy_all(["#{core_model.public_id_field} = ?", wh_id])
       producer.model.first(producer.model.key.first.name => wh_id)
     end
 
@@ -596,7 +596,7 @@ module NcsNavigator::Core::Warehouse
           }
 
           let(:expected_states) {
-            %w(pending registered in_pregnancy_probability_group consented_low_intensity following_low_intensity)
+            %w(pending registered in_pregnancy_probability_group consented_low_intensity following_low_intensity following_low_intensity)
           }
 
           before do
