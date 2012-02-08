@@ -282,6 +282,37 @@ describe PatientStudyCalendar do
 
   end
 
+  context "getting the scheduled activities for a newly scheduled segment" do
+
+    describe "#activities_for_event" do
+
+      let(:date) { "2012-02-06" }
+
+      before(:each) do
+        @person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "newly_scheduled_event_participant")
+        @participant = Factory(:participant, :p_id => "newly_scheduled_event_participant")
+        @participant.person = @person
+        @participant.save!
+
+        @event = Factory(:event, :participant => @participant,
+                         :event_start_date => date, :event_end_date => nil,
+                         :scheduled_study_segment_identifier => "a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
+      end
+
+      it "returns an array of ScheduledActivities for the given event" do
+        VCR.use_cassette('psc/activities_for_newly_scheduled_event') do
+          activities_for_event = subject.activities_for_event(@participant, @event.scheduled_study_segment_identifier, @event.event_start_date)
+          activities_for_event.size.should == 2
+          activities_for_event.each do |a|
+            a.ideal_date.should == @event.event_start_date.to_s
+          end
+        end
+      end
+
+    end
+
+  end
+
   context "determining the instruments for an event" do
 
     context "a new ppg 2 participant" do

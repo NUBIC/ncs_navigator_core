@@ -235,23 +235,27 @@ class Event < ActiveRecord::Base
 
 
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
-    next_event = participant.next_scheduled_event
-    event_type_code = NcsCode.for_list_name_and_display_text('EVENT_TYPE_CL1',
-                      PatientStudyCalendar.map_psc_segment_to_mdes_event_type(next_event.event))
-    date ||= next_event.date.to_s
-
+    date ||= participant.next_scheduled_event.date.to_s
     resp = psc.schedule_next_segment(participant, date)
-    Event.create_placeholder_record(participant, date, event_type_code, resp.body) if resp && resp.success?
+
+    if resp && resp.success?
+
+      study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
+
+      psc.activities_for_event(participant, study_segment_identifier, date).each do |a|
+        event_type = NcsCode.find_event_by_lbl(Event.parse_label(a.labels))
+        Event.create_placeholder_record(participant, a.ideal_date, event_type.local_code, study_segment_identifier)
+      end
+    end
     resp
   end
 
-  def self.create_placeholder_record(participant, date, event_type_code, response_body)
+  def self.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
     begin
       date = Date.parse(date)
     rescue
       # NOOP - do not set unparsable date
     end
-    study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(response_body)
     Event.create(:participant => participant, :psu_code => participant.psu_code, :event_start_date => date,
                  :scheduled_study_segment_identifier => study_segment_identifier, :event_type_code => event_type_code)
   end

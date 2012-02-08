@@ -242,6 +242,21 @@ class NcsCode < ActiveRecord::Base
     NcsCode.where(:list_name => list_name).where(:display_text => display_text).first
   end
 
+  def self.find_event_by_lbl(lbl)
+    # handle dash condition
+    dash_idx = lbl.index "-"
+    txt = lbl.gsub("_", " ").titleize
+    txt = txt.insert(dash_idx, "-").gsub("- ", "-") if dash_idx
+
+    # handle lowercase condition
+    [" To ", " In "].each do |should_downcase|
+      lc_idx = txt.index should_downcase
+      txt = txt.gsub(should_downcase, should_downcase.downcase) if lc_idx
+    end
+
+    NcsCode.for_list_name_and_display_text('EVENT_TYPE_CL1', txt)
+  end
+
   def to_s
     display_text
   end

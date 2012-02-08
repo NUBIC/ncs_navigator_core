@@ -143,7 +143,7 @@ class PatientStudyCalendar
 
   def activities_for_segment(participant, segment)
     activities = []
-    participant_activities(participant).each do |activity|
+    participant_activities(schedules(participant)).each do |activity|
       if activity["study_segment"].include?(segment.to_s)
         activities << activity["activity"]["name"]
       end
@@ -158,16 +158,21 @@ class PatientStudyCalendar
   # @param [Participant]
   # @return [Array<ScheduledActivity>]
   def scheduled_activities(participant)
+    build_scheduled_activities(participant_activities(schedules(participant)))
+  end
+
+  def build_scheduled_activities(activities)
     scheduled_activities = []
-    participant_activities(participant).each do |activity|
+    activities.each do |activity|
       scheduled_activities << ScheduledActivity.new(
-        activity['study_segment'].to_s.strip, activity['id'],
+        activity['study_segment'].to_s, activity['id'],
         activity['current_state']['name'], activity['ideal_date'], activity['current_state']['date'],
         activity['activity']['name'].to_s.strip, activity['activity']['type'],
         activity['labels'])
     end
     scheduled_activities
   end
+  private :build_scheduled_activities
 
   ##
   # Gets information about all activities for a participant
@@ -180,6 +185,40 @@ class PatientStudyCalendar
     scheduled_activities(participant).each do |a|
       participant.pending_events.each do |e|
         result << a if e.matches_activity(a)
+      end
+    end
+    result
+  end
+
+  ##
+  # Gets information about all activities for a participant
+  # (cf. ScheduledActivity Struct) that match the given
+  # Event.scheduled_study_segment_identifier
+  # pending events.
+  # @param [Participant]
+  # @param [Event]
+  # @return [Array<ScheduledActivity>]
+  def activities_for_event(participant, scheduled_study_segment_identifier, event_start_date)
+    result = []
+
+    # get name of study segment matching event scheduled_study_segment_identifier
+    study_segment_name = nil
+    subject_schedules = schedules(participant)
+    if subject_schedules && subject_schedules["study_segments"]
+      subject_schedules["study_segments"].each do |study_segment|
+        if study_segment["id"] == scheduled_study_segment_identifier
+          study_segment_name = study_segment["name"]
+          break
+        end
+      end
+    end
+
+    # filter participant activities whose segment name and ideal date match the event
+    if subject_schedules && study_segment_name
+      build_scheduled_activities(participant_activities(subject_schedules)).each do |a|
+        if (a.study_segment == study_segment_name) && (a.ideal_date.to_s == event_start_date.to_s)
+          result << a
+        end
       end
     end
     result
@@ -205,14 +244,16 @@ class PatientStudyCalendar
     ids.blank? ? nil : ids
   end
 
-  def participant_activities(participant)
+  # Helper method to gather the activities returned from call to
+  # schedules
+  # @param[Hash] - result of json call to PSC
+  # @return[Array<Hash>] - the activities under days
+  def participant_activities(subject_schedules)
     activities = []
-    if subject_schedules = schedules(participant)
-      if subject_schedules["days"]
-        subject_schedules["days"].values.each do |date|
-          date["activities"].each do |activity|
-            activities << activity
-          end
+    if subject_schedules && subject_schedules["days"]
+      subject_schedules["days"].values.each do |date|
+        date["activities"].each do |activity|
+          activities << activity
         end
       end
     end
@@ -250,6 +291,21 @@ class PatientStudyCalendar
   end
 
   ##
+  # Schedules the matching PSC segment to the given event on the participant's calendar
+  # if an existing event of the given type does not exist on the given date.
+  #
+  # @param [Participant]
+  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
+  # @param [Date]
+  def schedule_known_event(participant, event_type, date)
+    if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
+      log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")
+      request_data = build_known_event_request(event_type, date)
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", request_data) if request_data
+    end
+  end
+
+  ##
   # Defaults to True. If the given scheduled event exists on the given day for the participant
   # then return False since the participant already has that event scheduled on that date.
   #
@@ -271,21 +327,6 @@ class PatientStudyCalendar
 
     log.debug("~~~ should_schedule_segment returning #{result} for #{participant.person} #{next_scheduled_event} on #{next_scheduled_event_date}")
     result
-  end
-
-  ##
-  # Schedules the matching PSC segment to the given event on the participant's calendar
-  # if an existing event of the given type does not exist on the given date.
-  #
-  # @param [Participant]
-  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
-  # @param [Date]
-  def schedule_known_event(participant, event_type, date)
-    if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
-      log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")
-      request_data = build_known_event_request(event_type, date)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", request_data) if request_data
-    end
   end
 
   ##

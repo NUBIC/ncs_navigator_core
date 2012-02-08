@@ -1,8 +1,43 @@
 ---
+# - !ruby/struct:VCR::HTTPInteraction
+#   request: !ruby/struct:VCR::Request
+#     method: :post
+#     uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/schedules/newly_scheduled_event_participant
+#     body:
+#     headers:
+#       content-type:
+#       - text/xml
+#       authorization:
+#       - Basic cGZyOTU3OnBzYw==
+#       content-length:
+#       - "1024"
+#   response: !ruby/struct:VCR::Response
+#     status: !ruby/struct:VCR::ResponseStatus
+#       code: 201
+#       message: Created
+#     headers:
+#       location:
+#       - https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/schedules/newly_scheduled_event_participant
+#       server:
+#       - Restlet-Framework/2.0.3
+#       date:
+#       - Fri, 26 Aug 2011 20:13:03 GMT
+#       content-length:
+#       - "0"
+#       vary:
+#       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
+#       accept-ranges:
+#       - bytes
+#       cache-control:
+#       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+#       pragma:
+#       - no-cache
+#     body: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><scheduled-study-segment id=\"a5fd83f9-e2ca-4481-8ce3-70406dfbcddc\"></scheduled-study-segment>"
+#     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://ncsn-psc.local/api/v1/subjects/janedoe_ppg2/schedules.json
+    uri: https://ncsn-psc.local/api/v1/subjects/newly_scheduled_event_participant/schedules.json
     body:
     headers:
       authorization:
