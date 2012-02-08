@@ -53,7 +53,7 @@
                     </planned-activity>
                   </period>
                 </study-segment>
-                <study-segment id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" name="PPG 1 and 2 ">
+                <study-segment id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" name="PPG 1 and 2">
                   <period id="19c0ffb1-78b3-4634-adde-bc32a5cec9dd" name="Consent and Questionnaire" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
                     <planned-activity id="2b68bb5c-edde-4510-81c8-b962704bc968" day="1">
                       <activity-reference code="LIC" source="NCS"/>

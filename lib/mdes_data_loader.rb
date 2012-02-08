@@ -19,7 +19,7 @@ module MdesDataLoader
               NcsCode.create(
                 :list_name => list_name,
                 :local_code => code_list_entry.value,
-                :display_text => code_list_entry.label)
+                :display_text => code_list_entry.label.gsub("  ", " "))
             end
           end
         end
