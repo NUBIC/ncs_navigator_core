@@ -191,6 +191,19 @@ class PatientStudyCalendar
   end
 
   ##
+  # Gets all activities for an event
+  # (cf. ScheduledActivity Struct)
+  # @param [Event]
+  # @return [Array<ScheduledActivity>]
+  def activities_for_event(event)
+    result = []
+    scheduled_activities(event.participant).each do |a|
+      result << a if event.matches_activity(a)
+    end
+    result
+  end
+
+  ##
   # Gets information about all activities for a participant
   # (cf. ScheduledActivity Struct) that match the given
   # Event.scheduled_study_segment_identifier
@@ -198,7 +211,7 @@ class PatientStudyCalendar
   # @param [Participant]
   # @param [Event]
   # @return [Array<ScheduledActivity>]
-  def activities_for_event(participant, scheduled_study_segment_identifier, event_start_date)
+  def activities_for_scheduled_segment(participant, scheduled_study_segment_identifier, event_start_date)
     result = []
 
     # get name of study segment matching event scheduled_study_segment_identifier
@@ -318,14 +331,10 @@ class PatientStudyCalendar
 
     result = true
     scheduled_activities(participant).each do |activity|
-      log.debug("~~~ checking if '#{activity["date"]}' == '#{next_scheduled_event_date}'")
-      log.debug("~~~ checking if '#{activity["study_segment"]}' includes '#{next_scheduled_event}'")
       if (activity["date"] == next_scheduled_event_date.to_s) && (activity["study_segment"].include?(next_scheduled_event))
         result = false
       end
     end
-
-    log.debug("~~~ should_schedule_segment returning #{result} for #{participant.person} #{next_scheduled_event} on #{next_scheduled_event_date}")
     result
   end
 

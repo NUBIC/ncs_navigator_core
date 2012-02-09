@@ -131,15 +131,32 @@ describe Instrument do
 
     context 'with label instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
-      let(:label) { 'ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+      let(:label) { 'instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
 
       describe '#determine_version' do
         it 'returns 1.0' do
           Instrument.determine_version(label).should == "1.0"
         end
       end
-    end
 
+      describe "#parse_label" do
+        it "returns the event portion of the label" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
+        end
+
+        it "returns nil if label is blank" do
+          lbl = ""
+          Instrument.parse_label(lbl).should be_nil
+        end
+
+        it "returns nil if instrument portion is not included in label" do
+          lbl = "event:low_intensity_data_collection"
+          Instrument.parse_label(lbl).should be_nil
+        end
+      end
+
+    end
   end
 
   describe 'default code values' do
