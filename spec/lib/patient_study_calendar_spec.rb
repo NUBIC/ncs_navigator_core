@@ -284,7 +284,7 @@ describe PatientStudyCalendar do
 
   context "getting the scheduled activities for a newly scheduled segment" do
 
-    describe "#activities_for_event" do
+    describe "#activities_for_scheduled_segment" do
 
       let(:date) { "2012-02-06" }
 
@@ -301,9 +301,9 @@ describe PatientStudyCalendar do
 
       it "returns an array of ScheduledActivities for the given event" do
         VCR.use_cassette('psc/activities_for_newly_scheduled_event') do
-          activities_for_event = subject.activities_for_event(@participant, @event.scheduled_study_segment_identifier, @event.event_start_date)
-          activities_for_event.size.should == 2
-          activities_for_event.each do |a|
+          activities = subject.activities_for_scheduled_segment(@participant, @event.scheduled_study_segment_identifier, @event.event_start_date)
+          activities.size.should == 2
+          activities.each do |a|
             a.ideal_date.should == @event.event_start_date.to_s
           end
         end

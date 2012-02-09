@@ -23,11 +23,11 @@
   psc_segment: Pre-Pregnancy
 - event_type: Pre-Pregnancy Visit SAQ
   psc_segment: Pre-Pregnancy
-- event_type: Pregnancy Visit  1
+- event_type: Pregnancy Visit 1
   psc_segment: Pregnancy Visit 1
 - event_type: "Pregnancy Visit #1 SAQ"
   psc_segment: Pregnancy Visit 1
-- event_type: Pregnancy Visit  2
+- event_type: Pregnancy Visit 2
   psc_segment: Pregnancy Visit 2
 - event_type: "Pregnancy Visit #2 SAQ"
   psc_segment: Pregnancy Visit 2

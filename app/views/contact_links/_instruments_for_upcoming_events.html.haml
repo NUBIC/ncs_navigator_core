@@ -20,7 +20,7 @@
     = blank_safe(@person.to_s)
     is not a participant. No instruments exist for non participants.
 - else
-  - if activities = psc.activities_for_segment(@person.participant, @contact_link.event.psc_segment_name)
+  - if activities = psc.activities_for_event(@contact_link.event)
     - if activities.blank?
       - if @contact_link.event.psc_segment_name.include?("Consent")
         - no_consent = false
@@ -30,20 +30,20 @@
         = @contact_link.event.psc_segment_name
     - else
       - activities.each do |activity|
-        - instrument = InstrumentEventMap.instrument_for_activity(activity)
-        - if instrument && survey = Survey.most_recent_for_title(instrument)
+        - instrument_access_code = Survey.to_normalized_string(Instrument.parse_label(activity.labels))
+        - if instrument_access_code && survey = Survey.most_recent_for_access_code(instrument_access_code)
           - if @contact_link.contact.instrument_survey_titles.include?(survey.title)
             .known_instrument
-              = "#{activity} - #{instrument}"
+              = "#{activity.activity_name} - #{survey.title}"
           - else
             .instrument
-              = link_to "#{activity} - #{instrument}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
+              = link_to "#{activity.activity_name} - #{survey.title}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
         - elsif activity.include?("Consent")
           - no_consent = false
           = render "consents"
         - else
           .instrument
-            = activity
+            = activity.activity_name
 - if no_consent
   - if !(@contact_link.event.to_s =~ /Pregnancy Screener/) && !@person.participant.blank?
     %h3

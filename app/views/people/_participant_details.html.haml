@@ -12,39 +12,6 @@
       - if @participant.ppg_status.blank?
         %span.warning
           No PPG Assigned
-  .consent
-    %b
-      Consented?
-    %br
-      = @participant.consented?
-  .withdrawn
-    %b
-      Withdrawn?
-    %br
-      = @participant.withdrawn?
-  .upcoming_events
-    %b
-      Upcoming Events
-    %br
-    - if @participant.upcoming_events.blank?
-      No Upcoming Events
-    - else
-      = @participant.upcoming_events.to_sentence
-      %br
-      - @participant.upcoming_events.each do |segment|
-        %p
-          %b
-            = "Instruments from PSC for #{segment}"
-          %br
-          - if activities = psc.activities_for_segment(@participant, segment)
-            - activities.each do |activity|
-              - instrument = InstrumentEventMap.instrument_for_activity(activity)
-              - if Survey.where(:title => instrument).count > 0
-                %span.known_instrument
-                  = "#{activity}"
-              - else
-                = "#{activity}"
-              %br
   .consents
     %b
       Consents

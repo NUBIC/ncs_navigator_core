@@ -83,6 +83,18 @@ class Instrument < ActiveRecord::Base
     ind = lbl.to_s.rindex("_v")
     lbl[ind + 2, lbl.length]
   end
+  
+  ##
+  # Given a label from PSC get the part that references the instrument
+  # @param[String]
+  # @return[String]
+  def self.parse_label(lbl)
+    return nil if lbl.blank?
+    label_marker = "instrument:"
+    part = lbl.split.select{ |s| s.include?(label_marker) }.first.to_s
+    return nil if part.blank?
+    part.gsub(label_marker, "")
+  end
 
   private
 

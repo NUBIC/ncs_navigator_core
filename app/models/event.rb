@@ -242,7 +242,7 @@ class Event < ActiveRecord::Base
 
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
 
-      psc.activities_for_event(participant, study_segment_identifier, date).each do |a|
+      psc.activities_for_scheduled_segment(participant, study_segment_identifier, date).each do |a|
         event_type = NcsCode.find_event_by_lbl(Event.parse_label(a.labels))
         Event.create_placeholder_record(participant, a.ideal_date, event_type.local_code, study_segment_identifier)
       end

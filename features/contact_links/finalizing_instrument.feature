@@ -13,8 +13,6 @@ Feature: Finalizing an instrument
   And I press "Submit"
   Then I should be on the select_instrument_contact_link page
   And I should see "Bessie Smith"
-  # And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
-  # When I follow "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
   And I should see "Pregnancy Visit 1 Interview"
   When I follow "Pregnancy Visit 1 Interview"
   And I press "Pregnancy care log introduction"
