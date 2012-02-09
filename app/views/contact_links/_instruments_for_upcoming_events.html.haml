@@ -30,8 +30,8 @@
         = @contact_link.event.psc_segment_name
     - else
       - activities.each do |activity|
-        - instrument_access_code = Survey.to_normalized_string(Instrument.parse_label(activity.labels))
-        - if instrument_access_code && survey = Survey.most_recent_for_access_code(instrument_access_code)
+        - instrument_access_code = Instrument.surveyor_access_code(activity.labels)
+        - if !instrument_access_code.blank? && survey = Survey.most_recent_for_access_code(instrument_access_code)
           - if @contact_link.contact.instrument_survey_titles.include?(survey.title)
             .known_instrument
               = "#{activity.activity_name} - #{survey.title}"

@@ -38,6 +38,9 @@ class ParticipantConsentsController < ApplicationController
 
     respond_to do |format|
       if @participant_consent.save
+
+        mark_activity_occurred
+
         format.html { redirect_to edit_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
       else
@@ -68,4 +71,20 @@ class ParticipantConsentsController < ApplicationController
       end
     end
   end
+
+  private
+
+    def mark_activity_occurred
+      activities = psc.activities_for_event(@contact_link.event)
+
+	    activity = nil
+	    activities.each do |a|
+	      activity = a if Event.parse_label(a.labels) == "informed_consent"
+      end
+
+	    if activity
+	      psc.update_activity_state(activity.activity_id, @contact_link.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
+	    end
+    end
+
 end

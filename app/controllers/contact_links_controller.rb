@@ -48,7 +48,10 @@ class ContactLinksController < ApplicationController
 				 @contact_link.contact.update_attributes(params[:contact])
 
         # TODO: check if you need to create the event here
-        Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)
+        if @contact_link.event.participant.pending_events.blank?
+          Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)
+        end
+
         format.html {
           if params[:commit] == "Continue"
             redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
@@ -95,6 +98,9 @@ class ContactLinksController < ApplicationController
 
 		respond_to do |format|
 			if @contact_link.instrument.update_attributes(params[:instrument])
+
+			  mark_activity_occurred if @contact_link.instrument.complete?
+
 				format.html { redirect_to(edit_contact_link_path(@contact_link), :notice => 'Instrument was successfully updated.') }
 				format.json { head :ok }
 			else
@@ -147,6 +153,8 @@ class ContactLinksController < ApplicationController
 	  def set_disposition_group
 	    if @event && @event.event_type.to_s == "Pregnancy Screener"
         @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+      elsif @event && @event.event_type.to_s == "Informed Consent"
+        @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
       else
   	    @disposition_group = nil
   	    instrument = @contact_link.instrument
@@ -159,5 +167,18 @@ class ContactLinksController < ApplicationController
         end
       end
 	  end
+
+    def mark_activity_occurred
+      activities = psc.activities_for_event(@contact_link.event)
+
+	    activity = nil
+	    activities.each do |a|
+	      activity = a if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
+      end
+
+	    if activity
+	      psc.update_activity_state(activity.activity_id, @contact_link.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
+	    end
+    end
 
 end
