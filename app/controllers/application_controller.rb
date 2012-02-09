@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
         ets         = person.upcoming_events.collect { |e| PatientStudyCalendar.map_psc_segment_to_mdes_event_type(e) }
         event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
       end
-      Event.new(:participant => person.participant, :event_type => event_types.first, :psu_code => NcsNavigatorCore.psu_code)
+      Event.new(:participant => person.participant, :event_type => event_types.first, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today)
     end
 
 end

@@ -27,6 +27,9 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
+
+        mark_activity_occurred unless @event.event_end_date.blank?
+
         path = events_path
         if @event.participant
           path = @event.participant.person ? person_path(@event.participant.person) : participant_path(@event.participant)
@@ -40,5 +43,21 @@ class EventsController < ApplicationController
       end
     end
   end
+
+  private
+
+    def mark_activity_occurred
+      activities = psc.activities_for_event(@event)
+
+	    activity = nil
+	    activities.each do |a|
+	      activity = a if event.matches_activity(a)
+      end
+
+	    if activity
+	      psc.update_activity_state(activity.activity_id, @event.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
+	    end
+    end
+
 
 end

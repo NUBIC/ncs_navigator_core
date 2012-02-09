@@ -123,17 +123,6 @@ class Event < ActiveRecord::Base
   alias complete? closed?
 
   ##
-  # Using the InstrumentEventMap, find the existing Surveys for this event
-  # @return [Array, <Survey>]
-  def surveys
-    surveys = []
-    InstrumentEventMap.instruments_for_segment(self.to_s).each do |ins|
-      surveys << Survey.most_recent_for_title(ins)
-    end
-    surveys
-  end
-
-  ##
   # For this event.event_type return the corresponding PSC segment name from the template
   def psc_segment_name
     result = nil
@@ -242,9 +231,13 @@ class Event < ActiveRecord::Base
 
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
 
+      label_ideal_date_pairs = []
       psc.activities_for_scheduled_segment(participant, study_segment_identifier, date).each do |a|
-        event_type = NcsCode.find_event_by_lbl(Event.parse_label(a.labels))
-        Event.create_placeholder_record(participant, a.ideal_date, event_type.local_code, study_segment_identifier)
+        label_ideal_date_pairs << [Event.parse_label(a.labels), date]
+      end
+
+      label_ideal_date_pairs.uniq.each do |lbl, ideal_date|
+        Event.create_placeholder_record(participant, ideal_date, NcsCode.find_event_by_lbl(lbl).local_code, study_segment_identifier)
       end
     end
     resp

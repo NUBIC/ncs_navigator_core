@@ -46,7 +46,11 @@ class ContactsController < ApplicationController
     @contact.contact_end_time = Time.now.strftime("%H:%M")
 
     if params[:next_event]
-      @event = event_for_person
+      if @person.participant.pending_events.count > 0
+        @event = @person.participant.pending_events.first
+      else
+        @event = event_for_person
+      end
       link = find_or_create_contact_link
       redirect_to(select_instrument_contact_link_path(link))
     else
