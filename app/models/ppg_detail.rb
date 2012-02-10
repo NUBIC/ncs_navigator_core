@@ -37,6 +37,8 @@ class PpgDetail < ActiveRecord::Base
   ncs_coded_attribute :ppg_pid_status, 'PARTICIPANT_STATUS_CL1'
   ncs_coded_attribute :ppg_first,      'PPG_STATUS_CL2'
 
+  after_create :create_associated_ppg_status_history
+
   def to_s
     "#{ppg_first}"
   end
@@ -71,5 +73,14 @@ class PpgDetail < ActiveRecord::Base
       nil
     end
   end
+
+  private
+
+    def create_associated_ppg_status_history
+      ppg_status = NcsCode.for_attribute_name_and_local_code(:ppg_status_code, self.ppg_first_code)
+      if ppg_status && self.ppg_first_code < 6
+        PpgStatusHistory.create(:participant => self.participant, :psu => self.psu, :ppg_status => ppg_status)
+      end
+    end
 
 end
