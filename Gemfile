@@ -89,6 +89,7 @@ group :test, :ci do
   gem "guard-spork"
 
   gem 'capybara'
+  gem 'rack-test'
 end
 
 group :test do
