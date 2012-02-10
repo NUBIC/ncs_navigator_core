@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120120165946) do
+ActiveRecord::Schema.define(:version => 20120210200939) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -215,6 +215,15 @@ ActiveRecord::Schema.define(:version => 20120120165946) do
     t.datetime "updated_at"
     t.string   "scheduled_study_segment_identifier"
   end
+
+  create_table "fieldworks", :id => false, :force => true do |t|
+    t.string   "fieldwork_id",  :limit => 36
+    t.binary   "received_data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
 
   create_table "household_person_links", :force => true do |t|
     t.integer  "psu_code",                        :null => false
