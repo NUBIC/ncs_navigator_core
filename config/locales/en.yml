@@ -5,10 +5,10 @@ en:
   mdes:
     disposition: "Disposition cannot be determined. Please select the correct diposition code."
     notification: "Cannot determine this field. Please choose value."
-    contact: 
-      private: 
+    contact:
+      private:
         definition: "Were there privacy issues during the contact?"
-      private_detail: 
+      private_detail:
         definition: "Description of privacy issues during field contact"
       who_contacted:
         definition: "Person who provided information associated with contact"
@@ -40,3 +40,5 @@ en:
         definition: "Value of cash incentive provided to participant"
       incentive_noncash:
         definition: "Other non-cash incentive provided to participant"
+      event_end_date:
+        definition: "The Event End Date effectively closes the event. This is an essential field in determining the workflow of the participant."
