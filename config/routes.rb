@@ -38,7 +38,11 @@ NcsNavigatorCore::Application.routes.draw do
 
   namespace :api do
     scope '/v1' do
-      resources :fieldwork, :only => [:create, :update, :show]
+      resources :fieldwork, :only => [:create, :update, :show] do
+        member do
+          get :status
+        end
+      end
     end
   end
 

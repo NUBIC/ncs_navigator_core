@@ -1,4 +1,4 @@
-@wip @api
+@api
 Feature: Fieldwork check-out and check-in
   In order to keep field workers abreast of study progress
   The field client application
@@ -15,19 +15,19 @@ Feature: Fieldwork check-out and check-in
     }
     """
 
-    Then the response status is 201
+    Then the response status is 202
 
   Scenario: PUT /api/v1/fieldwork/:uuid creates pending merge sets
     Given an authenticated user
-
-    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
     """
     {
         "contacts": [],
         "participants": []
     }
     """
-    And I GET the referenced location
+
+    When I GET /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df/status
 
     Then the response status is 200
     And the response body satisfies
@@ -45,3 +45,32 @@ Feature: Fieldwork check-out and check-in
     """
 
     Then the response status is 401
+
+  Scenario: GET /api/v1/fieldwork/:uuid returns what was previously PUT
+    Given an authenticated user
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    """
+    {
+        "contacts": [
+            {
+                "contact_id": "93ac2b20-2a7b-426c-891f-3c4754139a12"
+            }
+        ],
+        "participants": []
+    }
+    """
+
+    When I GET the referenced location
+
+    Then the response status is 200
+    And the response body is
+    """
+    {
+        "contacts": [
+            {
+                "contact_id": "93ac2b20-2a7b-426c-891f-3c4754139a12"
+            }
+        ],
+        "participants": []
+    }
+    """
