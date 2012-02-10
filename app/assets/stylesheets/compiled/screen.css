@@ -1391,24 +1391,35 @@ span.required {
   color: maroon;
 }
 
-/* line 73, ../../../stylesheets/partials/_application.scss */
+/* line 72, ../../../stylesheets/partials/_application.scss */
+label.important_field {
+  color: maroon;
+}
+
+/* line 77, ../../../stylesheets/partials/_application.scss */
+select.important_field,
+input.important_field {
+  border: 2px solid maroon;
+}
+
+/* line 82, ../../../stylesheets/partials/_application.scss */
 .fieldWithErrors,
 .field_with_errors {
   display: inline;
   color: maroon;
 }
-/* line 76, ../../../stylesheets/partials/_application.scss */
+/* line 85, ../../../stylesheets/partials/_application.scss */
 .fieldWithErrors input,
 .field_with_errors input {
   border: 2px solid maroon;
 }
 
-/* line 81, ../../../stylesheets/partials/_application.scss */
+/* line 90, ../../../stylesheets/partials/_application.scss */
 #mdes_definition {
   display: none;
 }
 
-/* line 85, ../../../stylesheets/partials/_application.scss */
+/* line 94, ../../../stylesheets/partials/_application.scss */
 #errorExplanation {
   width: 400px;
   border: 2px solid maroon;
@@ -1420,7 +1431,7 @@ span.required {
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
-/* line 93, ../../../stylesheets/partials/_application.scss */
+/* line 102, ../../../stylesheets/partials/_application.scss */
 #errorExplanation h2 {
   text-align: left;
   font-weight: bold;
@@ -1430,42 +1441,42 @@ span.required {
   background-color: maroon;
   color: #fff;
 }
-/* line 102, ../../../stylesheets/partials/_application.scss */
+/* line 111, ../../../stylesheets/partials/_application.scss */
 #errorExplanation p {
   color: #333;
   margin-bottom: 0;
   padding: 8px;
 }
-/* line 107, ../../../stylesheets/partials/_application.scss */
+/* line 116, ../../../stylesheets/partials/_application.scss */
 #errorExplanation ul {
   margin: 2px 24px;
 }
-/* line 109, ../../../stylesheets/partials/_application.scss */
+/* line 118, ../../../stylesheets/partials/_application.scss */
 #errorExplanation ul li {
   font-size: 12px;
   list-style: disc;
 }
 
-/* line 116, ../../../stylesheets/partials/_application.scss */
+/* line 125, ../../../stylesheets/partials/_application.scss */
 form select {
   border-color: #bbb;
 }
-/* line 120, ../../../stylesheets/partials/_application.scss */
+/* line 129, ../../../stylesheets/partials/_application.scss */
 form input[type="text"].date,
 form input[type="text"].datepicker {
   width: 7.5em;
 }
-/* line 123, ../../../stylesheets/partials/_application.scss */
+/* line 132, ../../../stylesheets/partials/_application.scss */
 form .nested_attributes {
   margin: 1em;
 }
-/* line 126, ../../../stylesheets/partials/_application.scss */
+/* line 135, ../../../stylesheets/partials/_application.scss */
 form textarea {
   height: 200px;
   width: 325px;
 }
 
-/* line 133, ../../../stylesheets/partials/_application.scss */
+/* line 142, ../../../stylesheets/partials/_application.scss */
 #container,
 .container {
   border-radius: 0.75em;
@@ -1476,24 +1487,24 @@ form textarea {
   padding: 20px 40px;
   margin: 1em auto;
 }
-/* line 139, ../../../stylesheets/partials/_application.scss */
+/* line 148, ../../../stylesheets/partials/_application.scss */
 #container p,
 .container p {
   margin-bottom: .25em;
 }
-/* line 142, ../../../stylesheets/partials/_application.scss */
+/* line 151, ../../../stylesheets/partials/_application.scss */
 #container h3,
 .container h3 {
   padding-top: 10px;
   margin-bottom: 0.5em;
 }
-/* line 146, ../../../stylesheets/partials/_application.scss */
+/* line 155, ../../../stylesheets/partials/_application.scss */
 #container form,
 .container form {
   margin-bottom: 1em;
 }
 
-/* line 151, ../../../stylesheets/partials/_application.scss */
+/* line 160, ../../../stylesheets/partials/_application.scss */
 #header {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -1504,12 +1515,12 @@ form textarea {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 159, ../../../stylesheets/partials/_application.scss */
+/* line 168, ../../../stylesheets/partials/_application.scss */
 #header #app_name a {
   text-decoration: none;
 }
 
-/* line 166, ../../../stylesheets/partials/_application.scss */
+/* line 175, ../../../stylesheets/partials/_application.scss */
 #login,
 #logout {
   text-align: right;
@@ -1525,7 +1536,7 @@ form textarea {
   overflow-x: hidden;
 }
 
-/* line 171, ../../../stylesheets/partials/_application.scss */
+/* line 180, ../../../stylesheets/partials/_application.scss */
 #main {
   padding-bottom: 4em;
 }
@@ -2527,6 +2538,11 @@ span.known_instrument {
 /* line 90, ../../../stylesheets/partials/_participants.scss */
 .schedule .activities .activity {
   margin-left: 1em;
+}
+
+/* line 96, ../../../stylesheets/partials/_participants.scss */
+.contact_info {
+  margin: 0 1em;
 }
 
 /* line 1, ../../../stylesheets/partials/_welcome.scss */
