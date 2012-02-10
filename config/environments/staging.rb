@@ -60,6 +60,7 @@ NcsNavigatorCore::Application.configure do
 
     config.after_initialize do
     Aker.configure do
+      api_mode :cas_proxy
       static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
       authorities :cas, static
       central '/etc/nubic/ncs/aker-staging.yml'
