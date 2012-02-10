@@ -157,12 +157,12 @@ class NcsCode < ActiveRecord::Base
     ### ppg_details
     # :psu_code               => "PSU_CL1",             # already referenced
     :ppg_pid_status_code           => 'PARTICIPANT_STATUS_CL1',
-    :ppg_first_code                => 'PPG_STATUS_CL1',
+    :ppg_first_code                => 'PPG_STATUS_CL2',
 
 
     ### ppg_status_history
     # :psu_code               => "PSU_CL1",             # already referenced
-    :ppg_status_code               => 'PPG_STATUS_CL2',
+    :ppg_status_code               => 'PPG_STATUS_CL1',
     :ppg_info_source_code          => 'INFORMATION_SOURCE_CL3',
     :ppg_info_mode_code            => 'CONTACT_TYPE_CL1',
 

@@ -67,4 +67,28 @@ describe PpgDetail do
   it { should belong_to(:ppg_pid_status) }
   it { should belong_to(:ppg_first) }
 
+  context "associated ppg_status_history" do
+
+    let(:participant) { Factory(:participant) }
+    let(:pd_status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
+    let(:ppg_status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
+
+    before(:each) do
+      create_missing_in_error_ncs_codes(PpgStatusHistory)
+    end
+
+    it "creates a ppg_status_history record when first creating ppg_detail" do
+      PpgStatusHistory.where(:participant_id => participant.id).where(:ppg_status_code => ppg_status1.local_code).count.should == 0
+      Factory(:ppg_detail, :ppg_first_code => pd_status1.local_code, :participant => participant)
+      pd = PpgDetail.where(:participant_id => participant.id)
+      psh = PpgStatusHistory.where(:participant_id => participant.id)
+
+      pd.count.should == 1
+      psh.count.should == 1
+      pd.first.ppg_first.local_code.should == psh.first.ppg_status.local_code
+      pd.first.ppg_first.display_text.should == psh.first.ppg_status.display_text
+    end
+
+  end
+
 end
