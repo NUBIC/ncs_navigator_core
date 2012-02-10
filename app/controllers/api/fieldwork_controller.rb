@@ -10,13 +10,6 @@ class Api::FieldworkController < ApplicationController
     render :nothing => true, :status => :accepted
   end
 
-  def status
-    respond_with({
-      :status => 'pending',
-      :submitter => current_user.username
-    })
-  end
-
   def show
     respond_with response_for(params['id'])
   end

@@ -17,24 +17,6 @@ Feature: Fieldwork check-out and check-in
 
     Then the response status is 202
 
-  Scenario: PUT /api/v1/fieldwork/:uuid creates pending merge sets
-    Given an authenticated user
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
-    """
-    {
-        "contacts": [],
-        "participants": []
-    }
-    """
-
-    When I GET /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df/status
-
-    Then the response status is 200
-    And the response body satisfies
-      | key       | value     |
-      | status    | pending   |
-      | submitter | test_user |
-
   Scenario: PUT /api/v1/fieldwork/:uuid returns 401 to unauthorized requests
     When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
     """
