@@ -14,6 +14,10 @@ Before '@api' do
       NcsNavigatorCore::Application
     end
   end
+
+  # All API services, by default, require the client to accept and send JSON.
+  header 'Accept', 'application/json'
+  header 'Content-Type', 'application/json'
 end
 
 # For tests that test pages, we're more interested in simulating a browser.  To
@@ -39,7 +43,11 @@ Before '~@api' do
 end
 
 When /^I PUT ([^\s]+) with$/ do |url, payload|
-  put url, payload, 'Content-Type' => 'application/json'
+  put url, payload
+end
+
+When /^I GET ([^\s]+)$/ do |url|
+  get url
 end
 
 When /^I GET the referenced location$/ do
@@ -67,4 +75,8 @@ Then /^the response body satisfies$/ do |table|
   end
 
   table.diff!(actual)
+end
+
+Then /^the response body is$/ do |string|
+  last_response.body.should == string
 end
