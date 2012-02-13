@@ -11,7 +11,7 @@ class DwellingUnitsController < ApplicationController
       format.json { render :json => @dwelling_units }
     end
   end
-  
+
   # GET /dwelling_units/new
   # GET /dwelling_units/new.json
   def new
@@ -38,7 +38,7 @@ class DwellingUnitsController < ApplicationController
       end
     end
   end
-  
+
   # GET /dwelling_units/1/edit
   def edit
     @dwelling_unit = DwellingUnit.find(params[:id])
@@ -52,12 +52,12 @@ class DwellingUnitsController < ApplicationController
     respond_to do |format|
       if @dwelling_unit.update_attributes(params[:dwelling_unit])
         format.html { redirect_to(dwelling_units_path, :notice => 'Dwelling was successfully updated.') }
-        format.json { head :ok }
+        format.json { render :json => @dwelling_unit }
       else
         format.html { render :action => "edit" }
         format.json { render :json => @dwelling_unit.errors, :status => :unprocessable_entity }
       end
     end
   end
-  
+
 end
