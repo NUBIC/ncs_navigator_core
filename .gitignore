@@ -27,3 +27,4 @@ public/assets
 reports/*
 importer_passthrough/*.xml
 shared/importer_passthrough/*.xml
+*.sw?
