@@ -1,4 +1,4 @@
-- title "Person Record"
+- title "Person"
 
 .mdes_table_definition
   = render 'documentation/person'
@@ -9,13 +9,13 @@
 
 %h3
   = "#{@person} :: #{@person.public_id}"
+- if @person.participant
+  %p
+    = link_to "View Participant Record", participant_path(@person.participant), :class => "show_link icon_link"
+
 
 #tabs
   %ul
-    - if @participant
-      %li
-        %a{ :href => "#patient_study_calendar_tab" }
-          Participant Calendar
     %li
       %a{ :href => "#events_and_contacts_tab"}
         Event History
@@ -25,44 +25,18 @@
     %li
       %a{ :href => "#contact_information_tab"}
         Contact Information
-
     %li
       %a{ :href => "#relationships_tab"}
         Relationships
 
-    - if @participant
-      %li
-        %a{ :href => "#participant_details_tab" }
-          Participant Details
-      %li
-        %a{ :href => "#participant_status_history_tab" }
-          Status History
-
-  - if @participant.nil?
-    #relationships_tab
-      = render 'relationships'
-
-  - else
-    %p.hide
-      = link_to "View Participant Record for #{@person}", participant_path(@participant), :class => "show_link icon_link"
-
-    #participant_details_tab
-      = render 'participant_details'
-
-    #patient_study_calendar_tab
-      = render 'participant_psc'
-
-    #relationships_tab
-      = render 'participants/relationships', :participant => @participant
-
-    #participant_status_history_tab
-      = render 'participant_state_transitions'
-      = render 'ppg_statuses'
-
   #events_and_contacts_tab
-    = render 'events_and_contacts'
+    = render 'people/events_and_contacts'
+
   #survey_responses_tab
-    = render 'survey_responses'
+    = render 'people/survey_responses'
 
   #contact_information_tab
-    = render 'participant_contact_info'
+    = render 'people/_contact_info'
+
+  #relationships_tab
+    = render 'people/relationships'
