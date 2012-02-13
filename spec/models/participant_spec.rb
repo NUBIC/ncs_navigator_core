@@ -485,7 +485,6 @@ describe Participant do
     end
   end
 
-
   context "with state" do
 
     let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
@@ -703,7 +702,6 @@ describe Participant do
 
   end
 
-
   context "participant types" do
 
     let(:age_eligible) { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Age-eligible woman",      :local_code => 1) }
@@ -800,5 +798,41 @@ describe Participant do
 
   end
 
+  context "switching from Low to High Intensity" do
 
+    let(:participant) { Factory(:participant) }
+    let(:person) { Factory(:person) }
+
+    let(:preg_screen) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29) }
+    let(:lo_i_quex) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+    let(:informed_consent) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Informed Consent", :local_code => 10) }
+
+    let(:date) { "2012-02-06" }
+
+    before(:each) do
+      participant.person = person
+      participant.save!
+      participant.should be_low_intensity
+
+      Factory(:event, :participant => participant, :event_start_date => date, :event_end_date => date, :event_type => preg_screen)
+      @lo_i_quex = Factory(:event, :participant => participant, :event_start_date => date, :event_end_date => nil, :event_type => lo_i_quex)
+      @informed_consent = Factory(:event, :participant => participant, :event_start_date => date, :event_end_date => nil, :event_type => informed_consent)
+    end
+
+    describe "#switch_arm" do
+
+      it "moves the participant to high intensity" do
+        participant.switch_arm
+        participant.should be_high_intensity
+      end
+
+      it "closes all pending events" do
+        participant.pending_events.should == [@lo_i_quex, @informed_consent]
+        participant.switch_arm
+        participant.pending_events.should == []
+      end
+
+    end
+
+  end
 end

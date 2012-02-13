@@ -576,6 +576,8 @@ class Participant < ActiveRecord::Base
     val = ensure_high_intensity ? true : !self.high_intensity
     self.high_intensity = val
     self.save!
+
+    close_pending_events
   end
 
   def father
@@ -865,6 +867,16 @@ class Participant < ActiveRecord::Base
         # given event is in the high intensity arm
         enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
         high_intensity_conversion! if can_high_intensity_conversion?
+      end
+    end
+
+    ##
+    # Sets the end date of all pending events
+    # to the start date for the event (or today)
+    def close_pending_events
+      pending_events.each do |e|
+        end_date = e.event_start_date.blank? ? Date.today : e.event_start_date
+        e.update_attribute(:event_end_date, end_date)
       end
     end
 end

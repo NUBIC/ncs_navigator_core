@@ -77,9 +77,13 @@ input[type="submit"] {
   background: url(../../assets/door_out.png) 0 2px no-repeat !important;
 }
 
-.fix_link, .fix_link:hover,
-.scheduled_link, .scheduled_link:hover {
+.fix_link, .fix_link:hover {
   background: url(../../assets/wrench_orange.png) 0 2px no-repeat !important;
+  padding-right: 10px;
+}
+
+.scheduled_link, .scheduled_link:hover {
+  background: url(../../assets/clock.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 

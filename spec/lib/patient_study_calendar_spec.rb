@@ -337,7 +337,6 @@ describe PatientStudyCalendar do
 
         Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => date, :event_type => preg_screen)
         @lo_i_quex = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type => lo_i_quex)
-        Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => date, :event_type => preg_screen)
         @informed_consent = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type => informed_consent)
 
       end
