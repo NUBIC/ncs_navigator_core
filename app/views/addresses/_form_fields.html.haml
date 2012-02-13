@@ -1,0 +1,72 @@
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+= render "shared/ncs_code_select", { :f => f, :code => :address_type_code, :label_text => "Type", :other => :address_type_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :address_description_code, :label_text => "Description", :other => :address_description_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :address_info_source_code, :label_text => "Info Source", :other => :address_info_source_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :address_info_mode_code, :label_text => "Info Mode", :other => :address_info_mode_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :address_rank_code, :label_text => "Rank", :other => :address_rank_other }
+
+%p
+  = f.label :address_start_date, "Address Start Date"
+  %br
+  = f.text_field :address_start_date, :class => "datepicker"
+
+%p
+  = f.label :address_end_date, "Address End Date"
+  %br
+  = f.text_field :address_end_date, :class => "datepicker"
+
+%p
+  = f.label :address_one, "Address One"
+  %br
+  = f.text_field :address_one
+
+%p
+  = f.label :address_two, "Address Two"
+  %br
+  = f.text_field :address_two
+
+%p
+  = f.label :unit, "Unit"
+  %br
+  = f.text_field :unit
+
+%p
+  = f.label :city, "City"
+  %br
+  = f.text_field :city
+
+= render "shared/ncs_code_select", { :f => f, :code => :state_code, :label_text => "State" }
+
+%p
+  = f.label :zip, "Zipcode"
+  %br
+  = f.text_field :zip
+
+%p
+  = f.label :zip4, "Zip+4"
+  %br
+  = f.text_field :zip4
+
+%p
+  = f.label :address_comment, "Comment"
+  %br
+  = f.text_area :address_comment
+
+%p
+  %b
+    TODO: associate Dwelling Unit
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#address_address_type_code","#address_address_type_other");
+    wire_up_select_other("#address_address_description_code","#address_address_description_other");
+    wire_up_select_other("#address_address_info_source_code","#address_address_info_source_other");
+    wire_up_select_other("#address_address_info_mode_code","#address_address_info_mode_other");
+    wire_up_select_other("#address_address_rank_code","#address_address_rank_other");
+  });

@@ -10,6 +10,9 @@ NcsNavigatorCore::Application.routes.draw do
       put :responses_for
     end
     resources :contacts, :except => [:index]
+    resources :addresses, :except => [:index, :destroy]
+    resources :telephones, :except => [:index, :destroy]
+    resources :emails, :except => [:index, :destroy]
   end
   resources :participants do
     collection do

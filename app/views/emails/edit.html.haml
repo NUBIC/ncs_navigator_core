@@ -1,0 +1,13 @@
+- title "Edit Email"
+
+.mdes_table_definition
+  = render 'documentation/emails'
+
+.page_section
+  = form_for([@person, @email]) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/emails/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
