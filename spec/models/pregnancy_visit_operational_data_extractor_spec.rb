@@ -169,7 +169,7 @@ describe PregnancyVisitOperationalDataExtractor do
       father.telephones.first.phone_nbr.should == "3125551212"
 
       father.addresses.first.should_not be_nil
-      father.addresses.first.to_s.should == "123 Easy St. Chicago IL 65432-1234"
+      father.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
     end
 
     it "creates a new person record and associates it with the particpant" do
@@ -229,7 +229,7 @@ describe PregnancyVisitOperationalDataExtractor do
       friend.telephones.first.phone_nbr.should == "3125551212"
 
       friend.addresses.first.should_not be_nil
-      friend.addresses.first.to_s.should == "123 Easy St. Chicago IL 65432-1234"
+      friend.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
     end
 
 
@@ -290,7 +290,7 @@ describe PregnancyVisitOperationalDataExtractor do
       neighbor.telephones.first.phone_nbr.should == "3125551212"
 
       neighbor.addresses.first.should_not be_nil
-      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago IL 65432-1234"
+      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, IL 65432-1234"
     end
 
     it "creates an other relative person record and associates it with the particpant" do
@@ -468,7 +468,7 @@ describe PregnancyVisitOperationalDataExtractor do
     person  = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
-    address.to_s.should == "123 Hospital Way Chicago IL 65432"
+    address.to_s.should == "123 Hospital Way Chicago, IL 65432"
 
   end
 

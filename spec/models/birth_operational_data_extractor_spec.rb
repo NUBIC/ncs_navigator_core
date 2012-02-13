@@ -167,7 +167,7 @@ describe BirthOperationalDataExtractor do
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago IL 65432-1234"
+      address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
     end
 
     it "extracts telephone operational data" do

@@ -67,8 +67,6 @@ describe DwellingUnit do
 
   end
 
-
-
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

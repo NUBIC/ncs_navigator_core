@@ -65,19 +65,24 @@ class Address < ActiveRecord::Base
   # Concatentate Address information into a complete string
   # if that data exists.
   # @return [String]
-  def to_s
+  def to_s(separator = ' ')
     addr = []
+    city_state = []
+    postal_code = []
     addr << address_one
     addr << address_two
     addr << unit
-    addr << city
-    addr << state.to_s if state && state.local_code != -4
+    city_state << city
+    city_state << state.to_s if state && state.local_code != -4
+    addr << city_state.reject { |n| n.blank? || n.to_i < 0 }.join(', ')
+
     if zip4.blank? || zip4.to_i < 0
       addr << zip
     else
       addr << "#{zip}-#{zip4}" unless zip.blank?
     end
-    addr.reject { |n| n.blank? || n.to_i < 0 }.join(' ')
+
+    addr.reject { |n| n.blank? || n.to_i < 0 }.join(separator)
   end
 
 end
