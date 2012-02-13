@@ -51,14 +51,14 @@ describe Address do
 
     addr.address_one = "1 Main"
     addr.city = "Detroit"
-    addr.to_s.should == "1 Main Detroit #{addr.state}"
+    addr.to_s.should == "1 Main Detroit, #{addr.state}"
 
     addr.zip = "48220"
-    addr.to_s.should == "1 Main Detroit #{addr.state} 48220"
+    addr.to_s.should == "1 Main Detroit, #{addr.state} 48220"
 
 
     addr.zip4 = "1111"
-    addr.to_s.should == "1 Main Detroit #{addr.state} 48220-1111"
+    addr.to_s.should == "1 Main Detroit, #{addr.state} 48220-1111"
   end
 
   it { should belong_to(:person) }

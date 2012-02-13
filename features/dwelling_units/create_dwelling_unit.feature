@@ -3,7 +3,7 @@ Feature: Creating a dwelling unit
   When a dwelling unit is identified
   As a user
   I want to be able to create a dwelling unit record
-  
+
   Scenario: Creating a new dwelling unit
     Given valid ncs codes
     And an authenticated user
@@ -13,11 +13,11 @@ Feature: Creating a dwelling unit
       | CONFIRM_TYPE_CL3          | No                       | 2          |
       | RESIDENCE_TYPE_CL2        | Single-Family Home       | 1          |
       | STATE_CL1                 | ILLINOIS                 | 1          |
-    When I am on the dwelling units page    
+    When I am on the dwelling units page
     Then I should see "Dwelling Units"
     And I should see "No dwelling units were found."
     And I should see "New Dwelling Unit"
-    When I follow "New Dwelling Unit" 
+    When I follow "New Dwelling Unit"
     Then I should be on the new dwelling unit page
     And I should see "New Dwelling Unit"
     When I select "Yes" from "Duplicate Address"
@@ -30,4 +30,6 @@ Feature: Creating a dwelling unit
     And I press "Submit"
     Then I should see "Dwelling was successfully created."
     And I should be on the dwelling units page
-    And I should see "1 State Str. Apt 2B Chicago ILLINOIS 60611"
+    And I should see "1 State Str."
+    And I should see "Chicago, ILLINOIS"
+    And I should see "60611"
