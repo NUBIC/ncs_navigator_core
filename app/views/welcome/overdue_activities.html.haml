@@ -21,10 +21,8 @@
                 %td
                   = row['scheduled_date']
                 %td
-                  - if person
-                    = link_to row['subject']['name'], person_path(person), :class => "show_link icon_link"
-                  - else
-                    = row['subject']['name']
+                  - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
+                  = link_to row['subject']['name'], path, :class => "show_link icon_link"
                 %td
                   - if person.participant
                     %span{ :title => person.participant.ppg_status.to_s }

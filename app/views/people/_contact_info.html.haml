@@ -1,0 +1,37 @@
+.page_section
+  - unless @person.telephones.blank?
+    .telephones
+      %b
+        Telephones
+      %br
+      - @person.telephones.each do |t|
+        = "#{t.phone_type}:"
+        = link_to 'Edit', edit_person_telephone_path(@person, t), :class => "edit_link icon_link"
+        .contact_info
+          = t.phone_nbr
+        %br
+      = link_to 'Add New Telephone', edit_person_telephone_path(@person), :class => "add_link icon_link"
+  - unless @person.emails.blank?
+    .emails
+      %b
+        Emails
+      %br
+      - @person.emails.each do |e|
+        = "#{e.email_type}:"
+        = link_to 'Edit', edit_person_email_path(@person, e), :class => "edit_link icon_link"
+        .contact_info
+          = e.email
+        %br
+      = link_to 'Add New Email', edit_person_email_path(@person), :class => "add_link icon_link"
+  - unless @person.addresses.blank?
+    .addresses
+      %b
+        Addresses
+      %br
+      - @person.addresses.each do |a|
+        = "#{a.address_type}:"
+        = link_to 'Edit', edit_person_address_path(@person, a), :class => "edit_link icon_link"
+        .contact_info
+          = raw(a.to_s("<br />"))
+        %br
+      = link_to 'Add New Address', new_person_address_path(@person), :class => "add_link icon_link"

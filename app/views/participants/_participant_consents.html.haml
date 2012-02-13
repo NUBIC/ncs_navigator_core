@@ -1,17 +1,4 @@
 .page_section
-  .intensity
-    %b
-      Hi/Lo
-    %br
-      = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
-  .pregnancy_probability_group
-    %b
-      Pregnancy Probability Group
-    %br
-      = @participant.ppg_status
-      - if @participant.ppg_status.blank?
-        %span.warning
-          No PPG Assigned
   .consents
     %b
       Consents

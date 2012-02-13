@@ -1,6 +1,66 @@
-- title "Participant Record"
+- title "Participant"
 
 .mdes_table_definition
   = render 'documentation/participant'
+  %br
+    Disposition Codes
+    %span{ :class => "disposition_icon" }
+    = render "documentation/disposition_code_list"
 
-= render "participants/participant", :participant => @participant
+%h3
+  = "#{@person} :: #{@person.public_id}"
+
+%p
+  = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
+  %b
+    = "::"
+  = @participant.ppg_status
+  - if @participant.ppg_status.blank?
+    %span.warning
+      No PPG Assigned
+
+#tabs
+  %ul
+    %li
+      %a{ :href => "#patient_study_calendar_tab" }
+        Participant Calendar
+    %li
+      %a{ :href => "#events_and_contacts_tab"}
+        Event History
+    %li
+      %a{ :href => "#survey_responses_tab"}
+        Survey Responses
+    %li
+      %a{ :href => "#contact_information_tab"}
+        Contact Information
+    %li
+      %a{ :href => "#relationships_tab"}
+        Relationships
+    %li
+      %a{ :href => "#participant_consents_tab" }
+        Consents
+    %li
+      %a{ :href => "#participant_status_history_tab" }
+        Status History
+
+  #patient_study_calendar_tab
+    = render 'participants/participant_psc'
+
+  #events_and_contacts_tab
+    = render 'people/events_and_contacts'
+
+  #survey_responses_tab
+    = render 'people/survey_responses'
+
+  #contact_information_tab
+    = render 'people/contact_info'
+
+  #relationships_tab
+    = render 'participants/relationships', :participant => @participant
+
+  #participant_consents_tab
+    = render 'participants/participant_consents'
+
+  #participant_status_history_tab
+    = render 'people/participant_state_transitions'
+    = render 'people/ppg_statuses'

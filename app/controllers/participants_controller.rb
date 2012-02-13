@@ -37,9 +37,7 @@ class ParticipantsController < ApplicationController
   # GET /participants/:id
   def show
     @participant = Participant.find(params[:id])
-    if @participant.person
-      redirect_to person_path(@participant.person)
-    end
+    @person = @participant.person
   end
 
   ##
