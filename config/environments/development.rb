@@ -31,6 +31,7 @@ NcsNavigatorCore::Application.configure do
   config.assets.debug = true
 
   config.aker do
+    api_mode :cas_proxy
     static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
     authorities :cas, static #, Aker::Authority::NcsNavigatorAuthority
     central '/etc/nubic/ncs/aker-local.yml'

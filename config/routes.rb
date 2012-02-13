@@ -39,6 +39,12 @@ NcsNavigatorCore::Application.routes.draw do
   end
   resources :participant_consents
 
+  namespace :api do
+    scope '/v1' do
+      resources :fieldwork, :only => [:update, :show]
+    end
+  end
+
   match "/faq", :to => "welcome#faq", :via => [:get]
   match "/reports", :to => "reports#index", :via => [:get]
   match "/reports/index", :to => "reports#index", :via => [:get]
