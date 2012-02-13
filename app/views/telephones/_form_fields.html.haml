@@ -1,0 +1,59 @@
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+= render "shared/ncs_code_select", { :f => f, :code => :phone_info_source_code, :label_text => "Info Source", :other => :phone_info_source_other }
+
+%p
+  = f.label :phone_info_date, "Phone Info Date"
+  %br
+  = f.text_field :phone_info_date, :class => "datepicker"
+
+%p
+  = f.label :phone_info_update, "Phone Info Upate"
+  %br
+  = f.text_field :phone_info_update, :class => "datepicker"
+
+= render "shared/ncs_code_select", { :f => f, :code => :phone_type_code, :label_text => "Phone Type", :other => :phone_type_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :phone_rank_code, :label_text => "Phone Rank", :other => :phone_rank_other }
+
+%p
+  = f.label :phone_start_date, "Phone Start Date"
+  %br
+  = f.text_field :phone_start_date, :class => "datepicker"
+
+%p
+  = f.label :phone_end_date, "Phone End Date"
+  %br
+  = f.text_field :phone_end_date, :class => "datepicker"
+
+= render "shared/ncs_code_select", { :f => f, :code => :phone_landline_code, :label_text => "Landline" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :phone_share_code, :label_text => "Shared" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :cell_permission_code, :label_text => "Cell Permission" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :text_permission_code, :label_text => "Text Permission" }
+
+%p
+  = f.label :phone_nbr, "Phone Number"
+  %br
+  = f.text_field :phone_nbr
+
+%p
+  = f.label :phone_ext, "Extension"
+  %br
+  = f.text_field :phone_ext
+
+%p
+  = f.label :phone_comment, "Comment"
+  %br
+  = f.text_area :phone_comment
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#telephone_phone_info_source_code","#telephone_phone_info_source_other");
+    wire_up_select_other("#telephone_phone_type_code","#telephone_phone_type_other");
+    wire_up_select_other("#telephone_phone_rank_code","#telephone_phone_rank_other");
+  });
+

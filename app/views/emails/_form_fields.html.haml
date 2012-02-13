@@ -1,0 +1,50 @@
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+= render "shared/ncs_code_select", { :f => f, :code => :email_info_source_code, :label_text => "Info Source", :other => :email_info_source_other }
+
+%p
+  = f.label :email_info_date, "Email Info Date"
+  %br
+  = f.text_field :email_info_date, :class => "datepicker"
+
+%p
+  = f.label :email_info_update, "Email Info Upate"
+  %br
+  = f.text_field :email_info_update, :class => "datepicker"
+
+= render "shared/ncs_code_select", { :f => f, :code => :email_type_code, :label_text => "Email Type", :other => :email_type_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :email_rank_code, :label_text => "Email Rank", :other => :email_rank_other }
+
+%p
+  = f.label :email_start_date, "Email Start Date"
+  %br
+  = f.text_field :email_start_date, :class => "datepicker"
+
+%p
+  = f.label :email_end_date, "Email End Date"
+  %br
+  = f.text_field :email_end_date, :class => "datepicker"
+
+= render "shared/ncs_code_select", { :f => f, :code => :email_active_code, :label_text => "Active" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :email_share_code, :label_text => "Shared" }
+
+%p
+  = f.label :email, "Email"
+  %br
+  = f.text_field :email
+
+%p
+  = f.label :email_comment, "Comment"
+  %br
+  = f.text_area :email_comment
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#email_email_info_source_code","#email_email_info_source_other");
+    wire_up_select_other("#email_email_type_code","#email_email_type_other");
+    wire_up_select_other("#email_email_rank_code","#email_email_rank_other");
+  });
+

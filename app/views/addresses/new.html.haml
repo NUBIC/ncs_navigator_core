@@ -1,0 +1,13 @@
+- title "New Address"
+
+.mdes_table_definition
+  = render 'documentation/address'
+
+.page_section
+  = form_for([@person, @address]) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/addresses/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

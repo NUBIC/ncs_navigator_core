@@ -1,0 +1,13 @@
+- title "New Telephone"
+
+.mdes_table_definition
+  = render 'documentation/telephone'
+
+.page_section
+  = form_for([@person, @telephone]) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/telephones/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
