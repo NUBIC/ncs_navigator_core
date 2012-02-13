@@ -616,7 +616,6 @@ describe Participant do
       # 6 :        Low to High Conversion -> Pregnancy Visit  1
       # 1 :        Low to High Conversion -> Pregnancy Probability
 
-
       describe "given Pre-Pregnancy Visit" do
         it "should be in the pre_pregnancy state" do
           participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 11).first)
@@ -639,8 +638,6 @@ describe Participant do
       end
     end
 
-
   end
-
 
 end

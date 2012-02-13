@@ -194,7 +194,11 @@ class ParticipantsController < ApplicationController
     @notice = "Successfully added #{@participant.person} to High Intensity Arm"
     @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
 
+    mark_pending_event_activities_canceled(@participant)
     if @participant.switch_arm
+
+      # TODO: how to handle failure when scheduling next event?
+      resp = Event.schedule_and_create_placeholder(psc, @participant)
 
       url = edit_participant_path(@participant)
       url = params[:redirect_to] unless params[:redirect_to].blank?
@@ -240,5 +244,21 @@ class ParticipantsController < ApplicationController
     flash[:notice] = "Participant was moved to #{params[:new_state].titleize}."
     redirect_to correct_workflow_participant_path(@participant)
   end
+
+  private
+
+    def mark_pending_event_activities_canceled(participant)
+      participant.pending_events.each do |e|
+
+  	    activity = nil
+  	    psc.activities_for_event(e).each do |a|
+  	      activity = a if e.matches_activity(a)
+        end
+
+  	    if activity
+  	      psc.update_activity_state(activity.activity_id, participant, PatientStudyCalendar::ACTIVITY_CANCELED)
+  	    end
+      end
+    end
 
 end
