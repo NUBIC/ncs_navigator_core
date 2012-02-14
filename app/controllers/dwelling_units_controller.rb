@@ -60,4 +60,31 @@ class DwellingUnitsController < ApplicationController
     end
   end
 
+  ##
+  # Creates a household_unit record and associates it with this
+  # DwellingUnit and all People at this address
+  #
+  # TODO: This is really only to be used in development !!!
+  def create_household_unit
+    @dwelling_unit = DwellingUnit.find(params[:id])
+    url = edit_dwelling_unit_path(@dwelling_unit)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    hh = HouseholdUnit.create(:psu_code => @dwelling_unit.psu_code)
+    DwellingHouseholdLink.create(:psu_code => @dwelling_unit.psu_code, :dwelling_unit => @dwelling_unit, :household_unit => hh)
+    if @dwelling_unit.address.person
+      HouseholdPersonLink.create(:psu_code => @dwelling_unit.psu_code, :person => @dwelling_unit.address.person, :household_unit => hh)
+    end
+
+    respond_to do |format|
+      format.html do
+        redirect_to(url, :notice => "Household was successfully created!")
+      end
+      format.json do
+        render :json => { :id => @dwelling_unit.id, :errors => [] }, :status => :ok
+      end
+    end
+
+  end
+
 end

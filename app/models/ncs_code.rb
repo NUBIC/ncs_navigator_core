@@ -257,6 +257,12 @@ class NcsCode < ActiveRecord::Base
     NcsCode.for_list_name_and_display_text('EVENT_TYPE_CL1', txt)
   end
 
+  # Special case helper method to get EVENT_TYPE_CL1 for Low Intensity Data Collection
+  # Used to determine if participant is eligible for conversion to High Intensity Arm
+  def self.low_intensity_data_collection
+    NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+  end
+
   def to_s
     display_text
   end

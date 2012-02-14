@@ -1,5 +1,9 @@
 NcsNavigatorCore::Application.routes.draw do
-  resources :dwelling_units
+  resources :dwelling_units do
+    member do
+      put :create_household_unit
+    end
+  end
   resources :household_units
   resources :events, :only => [:index, :edit, :update]
   resources :people do
