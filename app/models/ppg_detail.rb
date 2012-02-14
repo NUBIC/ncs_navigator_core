@@ -43,7 +43,6 @@ class PpgDetail < ActiveRecord::Base
     "#{ppg_first}"
   end
 
-
   ##
   # Return the most recently updated due date
   # @return [String]
