@@ -56,7 +56,8 @@ class ContactLinksController < ApplicationController
           if params[:commit] == "Continue"
             redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
           else
-            redirect_to(person_path(@contact_link.person), :notice => 'Contact was successfully updated.')
+            path = @contact_link.person.participant ? participant_path(@contact_link.person.participant) : person_path(@contact_link.person)
+            redirect_to(path, :notice => 'Contact was successfully updated.')
           end
 				}
 				format.json { head :ok }
