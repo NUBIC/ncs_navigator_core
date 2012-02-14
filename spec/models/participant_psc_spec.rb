@@ -48,6 +48,7 @@ describe Participant do
 
         before(:each) do
           participant.person = person
+          @lo_i_quex = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Low Intensity Data Collection", :local_code => 33)
         end
 
         it "should schedule the LO-Intensity Quex" do
@@ -78,25 +79,32 @@ describe Participant do
           dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
           hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
 
+          Factory(:event, :event_type => @lo_i_quex, :participant => participant, :event_end_date => Date.today)
+
           participant.should be_in_tsu
           participant.should be_eligible_for_high_intensity_invitation
         end
 
-        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu"
-        # it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
-        #   participant.should_not be_in_tsu
-        #   participant.should_not be_eligible_for_high_intensity_invitation
-        # end
+        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
+          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
+          hh = Factory(:household_unit)
+          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+
+          participant.should_not be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
+        end
 
       end
 
-      context "xxx PPG Group 2: High Probability - Trying to Conceive" do
+      context "PPG Group 2: High Probability - Trying to Conceive" do
 
         let(:participant) { Factory(:low_intensity_ppg2_participant) }
         let(:person) { Factory(:person) }
 
         before(:each) do
           participant.person = person
+          @lo_i_quex = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Low Intensity Data Collection", :local_code => 33)
         end
 
         it "schedules the LO-Intensity PPG 1 and 2 event on that day" do
@@ -152,16 +160,29 @@ describe Participant do
           dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
           hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
 
+          Factory(:event, :event_type => @lo_i_quex, :participant => participant, :event_end_date => Date.today)
+
           participant.person.should be_in_tsu
           participant.should be_in_tsu
           participant.should be_eligible_for_high_intensity_invitation
         end
 
-        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu"
-        # it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
-        #   participant.should_not be_in_tsu
-        #   participant.should_not be_eligible_for_high_intensity_invitation
-        # end
+        it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
+          participant.should_not be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
+        end
+
+        it "is NOT eligible to be moved in the high intensity until participant has taken Lo I Quex" do
+          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
+          hh = Factory(:household_unit)
+          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+
+          participant.should be_in_tsu
+          participant.should_not be_eligible_for_high_intensity_invitation
+
+          participant.completed_event(@lo_i_quex).should be_false
+        end
 
       end
 

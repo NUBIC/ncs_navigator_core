@@ -53,4 +53,34 @@ class DwellingUnit < ActiveRecord::Base
   scope :without_household, joins("LEFT OUTER JOIN dwelling_household_links ON dwelling_units.id = dwelling_household_links.dwelling_unit_id").where("dwelling_household_links.id is NULL")
   scope :next_to_process, without_household.where("dwelling_units.being_processed IS FALSE").readonly(false)
 
+  ##
+  # Gets the ssu_id and ssu_name from the
+  # NcsNavigator.configuration.sampling_units_file
+  # @return [Array<Array>]
+  def self.ssus
+    result = []
+    FasterCSV.parse(File.open(DwellingUnit.sampling_units_file.to_s), :headers => true, :header_converters => :symbol) do |row|
+      result << [row[:ssu_name], row[:ssu_id]]
+    end
+    result
+  end
+
+  ##
+  # Gets the tsu_id and tsu_name from the
+  # NcsNavigator.configuration.sampling_units_file
+  # @return [Array<Array>]
+  def self.tsus
+    result = []
+    FasterCSV.parse(File.open(DwellingUnit.sampling_units_file.to_s), :headers => true, :header_converters => :symbol) do |row|
+      result << [row[:tsu_name], row[:tsu_id]] unless row[:tsu_id] == "."
+    end
+    result
+  end
+
+  private
+
+    def self.sampling_units_file
+      NcsNavigator.configuration.sampling_units_file
+    end
+
 end

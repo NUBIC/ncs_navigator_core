@@ -1,5 +1,8 @@
 - title "Dwelling Units"
-  
+
+.mdes_table_definition
+  = render 'documentation/dwelling_unit'
+
 .page_section
   - if @dwelling_units.empty?
     #no_records
@@ -14,10 +17,6 @@
           PSU
         %th
           Type of Residence
-        %th
-          Eligibility
-        %th
-          Access
         %th
           Address
         %th{ :colspan => "2" }

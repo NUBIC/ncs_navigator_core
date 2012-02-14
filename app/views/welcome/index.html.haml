@@ -65,12 +65,16 @@
           .model_search
             %ul
               %li
-                = link_to "View All Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
+                = link_to "Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
               %li
-                = link_to "View All People", people_path, :class => "list_link icon_link"
+                = link_to "People", people_path, :class => "list_link icon_link"
               %li
-                = link_to "View All Participants", participants_path, :class => "list_link icon_link"
+                = link_to "Participants", participants_path, :class => "list_link icon_link"
               %li
-                = link_to "View All Contacts", contact_links_path, :class => "list_link icon_link"
+                = link_to "Contacts", contact_links_path, :class => "list_link icon_link"
               %li
-                = link_to "View All Events", events_path, :class => "list_link icon_link"
+                = link_to "Events", events_path, :class => "list_link icon_link"
+              %li
+                = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
+              %li
+                = link_to "Household Units", household_units_path, :class => "list_link icon_link"

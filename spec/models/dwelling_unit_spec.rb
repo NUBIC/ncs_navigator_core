@@ -67,6 +67,36 @@ describe DwellingUnit do
 
   end
 
+  context "ssu and tsu" do
+
+    require 'pathname'
+    before(:each) do
+      pathname = Pathname.new("#{Rails.root}/spec/spec_ssus.csv")
+      DwellingUnit.stub!(:sampling_units_file).and_return(pathname)
+    end
+
+    describe "#ssus" do
+
+      it "returns the list of ssu_ids and ssu_names from the configuration sampling_units_file" do
+        ssus = DwellingUnit.ssus
+        ssus.size.should == 2
+        ssus.first.should == ["Area 51", '51']
+      end
+
+    end
+
+    describe "#tsus" do
+
+      it "returns the list of tsu_ids and tsu_names from the configuration sampling_units_file" do
+        tsus = DwellingUnit.tsus
+        tsus.size.should == 1
+        tsus.first.should == ["Area 51", '51']
+      end
+
+    end
+
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

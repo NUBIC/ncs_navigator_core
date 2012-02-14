@@ -1,5 +1,11 @@
 .page_section
-  = form_for(@dwelling_unit) do |f| 
+  - if @dwelling_unit.household_units.blank? && !@dwelling_unit.new_record?
+    = form_for(@dwelling_unit, :url => create_household_unit_dwelling_unit_path(@dwelling_unit, :redirect_to => "#{request.path}?#{request.query_string}")) do |f|
+      = render "shared/full_error_messages", :object => f.object
+      = f.submit "Create Household Unit for all People at this Address", :confirm => "Are you certain?"
+
+
+  = form_for(@dwelling_unit) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
@@ -13,6 +19,17 @@
     = render "shared/ncs_code_select", { :f => f, :code => :du_ineligible_code, :label_text => "Ineligible" }
 
     = render "shared/ncs_code_select", { :f => f, :code => :du_access_code, :label_text => "Access is restricted" }
+
+    %p
+      %b
+        Secondary Sampling Unit (SSU)
+      %br
+      = f.select(:ssu_id, DwellingUnit.ssus, { :include_blank => "-- Select SSU --" })
+    %p
+      %b
+        Tertiary Sampling Unit (TSU)
+      %br
+      = f.select(:tsu_id, DwellingUnit.tsus, { :include_blank => "-- Select TSU --" })
 
     .nested_attributes
       %h3
@@ -48,7 +65,7 @@
 
 .links
   = link_to "All Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
-  
+
 :javascript
   // For the 'other' field
   // Check on pageload

@@ -385,6 +385,21 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Returns all events where event_end_date is not null
+  # @return [Array<Event>]
+  def completed_events
+    events.select { |e| !e.event_end_date.blank? }
+  end
+
+  ##
+  # True if completed events has event of given type
+  # @param [NcsCode] - Event Type
+  # @return [Boolean]
+  def completed_event(event_type)
+    completed_events.select { |e| e.event_type == event_type }.count > 0
+  end
+
+  ##
   # Display text from the NcsCode list PARTICIPANT_TYPE_CL1
   # cf. p_type belongs_to association
   # @return [String]
@@ -522,11 +537,11 @@ class Participant < ActiveRecord::Base
 
   ##
   # Any low intensity participant who has been consented and is in PPG 1 or 2 should
-  # take the Lo I Quex every six months.
+  # take the Lo I Quex before taking the ppg follow up every six months.
   # A pregnant woman whose due_date is > 6 months out should take this Lo I Quex too
   def should_take_low_intensity_questionnaire?
     # TODO: determine if due date is > 6 mos
-    low_intensity? && consented_low_intensity? && pregnant_or_trying?
+    low_intensity? && pregnant_or_trying? && !completed_event(NcsCode.low_intensity_data_collection)
   end
 
   ##
@@ -566,7 +581,7 @@ class Participant < ActiveRecord::Base
   ##
   # True if a participant in the low_intensity arm has a ppg status of pregnant or trying and is in tsu
   def eligible_for_high_intensity_invitation?
-    low_intensity? && pregnant_or_trying? && in_tsu?
+    low_intensity? && pregnant_or_trying? && in_tsu? && completed_event(NcsCode.low_intensity_data_collection)
   end
 
   ##

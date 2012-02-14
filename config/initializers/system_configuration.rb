@@ -44,6 +44,10 @@ module NcsNavigatorCore
       NcsNavigator.configuration.core['with_specimens']
     end
 
+    def sampling_units_file_path
+      NcsNavigator.configuration.sampling_units_file.to_s
+    end
+
     ##
     # @return [NcsNavigator::Mdes::Specification] the specification
     #   for the MDES version that Core currently corresponds to.
