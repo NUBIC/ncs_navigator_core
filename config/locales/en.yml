@@ -41,4 +41,4 @@ en:
       incentive_noncash:
         definition: "Other non-cash incentive provided to participant"
       event_end_date:
-        definition: "The Event End Date effectively closes the event. This is an essential field in determining the workflow of the participant."
+        definition: "The Event End Date effectively closes the event. This is an essential field in determining the workflow of the participant. Do not set this value if the event has not been completed."
