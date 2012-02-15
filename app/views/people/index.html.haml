@@ -5,11 +5,11 @@
 
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
-    = f.label :last_name_cont
-    = f.text_field :last_name_cont
+    = f.label :last_name_start
+    = f.text_field :last_name_start
     %br
-    = f.label :first_name_cont
-    = f.text_field :first_name_cont
+    = f.label :first_name_start
+    = f.text_field :first_name_start
     %br
     = f.label :person_id_cont, "Person Identifier"
     = f.text_field :person_id_cont

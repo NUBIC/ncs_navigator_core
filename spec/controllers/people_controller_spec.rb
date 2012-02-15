@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PeopleController do
-  
+
   context "with an authenticated user" do
     before(:each) do
       login(user_login)
@@ -9,13 +9,13 @@ describe PeopleController do
       @person2 = Factory(:person, :first_name => "Alice", :last_name => "Doe")
       @person3 = Factory(:person, :first_name => "Annie", :last_name => "Hall")
     end
-    
+
     describe "GET index" do
-      
+
       before(:each) do
         Person.count.should == 3
       end
-      
+
       describe "without search parameters" do
         it "assigns all people as @people" do
           get :index
@@ -25,18 +25,18 @@ describe PeopleController do
           assigns[:people].should include @person3
         end
       end
-      
+
       describe "searching by last name" do
         it "returns complete matches" do
-          get :index, :q => { :last_name_cont => "Doe" }
+          get :index, :q => { :last_name_start => "Doe" }
           assigns[:people].count.should equal(2)
           assigns[:people].should include @person1
           assigns[:people].should include @person2
           assigns[:people].should_not include @person3
         end
-        
+
         it "returns partial matches" do
-          get :index, :q => { :last_name_cont => "Do" }
+          get :index, :q => { :last_name_start => "Do" }
           assigns[:people].count.should equal(2)
           assigns[:people].should include @person1
           assigns[:people].should include @person2
@@ -46,15 +46,15 @@ describe PeopleController do
 
       describe "searching by first name" do
         it "returns complete matches" do
-          get :index, :q => { :first_name_cont => "Jane" }
+          get :index, :q => { :first_name_start => "Jane" }
           assigns[:people].count.should equal(1)
           assigns[:people].should include @person1
           assigns[:people].should_not include @person2
           assigns[:people].should_not include @person3
         end
-        
+
         it "returns partial matches" do
-          get :index, :q => { :first_name_cont => "Ja" }
+          get :index, :q => { :first_name_start => "Ja" }
           assigns[:people].count.should equal(1)
           assigns[:people].should include @person1
           assigns[:people].should_not include @person2
@@ -63,9 +63,9 @@ describe PeopleController do
       end
 
       describe "json" do
-        
+
         it "returns the result" do
-          get :index, :q => { :first_name_cont => "Ja" }, :format => :json
+          get :index, :q => { :first_name_start => "Ja" }, :format => :json
           # response.body.should == [@person1].to_json - does not work since psu_code is a string
           parsed_body = ActiveSupport::JSON.decode(response.body)
           parsed_body.size.should == 1
@@ -79,7 +79,7 @@ describe PeopleController do
       end
 
     end
-    
-    
+
+
   end
 end
