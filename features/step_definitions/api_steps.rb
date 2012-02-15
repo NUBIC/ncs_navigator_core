@@ -84,5 +84,14 @@ Then /^the response body satisfies$/ do |table|
 end
 
 Then /^the response body is$/ do |string|
-  last_response.body.should == string
+  JSON.parse(last_response.body).should == JSON.parse(string)
+end
+
+Then /^the referenced entity is a fieldwork set$/ do
+  location = last_response.headers['Location']
+  raise 'Response contains a blank location' if location.blank?
+
+  get location
+
+  last_response.body.should be_a_fieldwork_set
 end

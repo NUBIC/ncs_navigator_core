@@ -63,3 +63,13 @@ Feature: Fieldwork check-out and check-in
       | 2012-01-01 | 2012-02-01 | 123456789 |
 
     Then the response status is 401
+
+  Scenario: POST /api/v1/fieldwork returns a fieldwork set
+    Given an authenticated user
+
+    When I POST /api/v1/fieldwork with
+      | start_date | end_date   | client_id |
+      | 2012-01-01 | 2012-02-01 | 123456789 |
+
+    Then the response status is 201
+    And the referenced entity is a fieldwork set

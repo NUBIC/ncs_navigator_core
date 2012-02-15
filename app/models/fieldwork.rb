@@ -12,4 +12,12 @@ class Fieldwork < ActiveRecord::Base
   def set_default_id
     self.fieldwork_id ||= UUID.generate
   end
+
+  def as_json(options = nil)
+    if received_data
+      JSON.parse(received_data)
+    else
+      { 'contacts' => [], 'participants' => [] }
+    end
+  end
 end
