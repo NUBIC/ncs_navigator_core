@@ -1,6 +1,9 @@
 class Api::FieldworkController < ApplicationController
   respond_to :json
 
+  def create
+  end
+
   def update
     fw = Fieldwork.for(params['id'])
 

@@ -46,6 +46,12 @@ When /^I PUT ([^\s]+) with$/ do |url, payload|
   put url, payload
 end
 
+When /^I POST ([^\s]+) with$/ do |url, table|
+  header 'Content-Type', 'application/x-www-form-urlencoded'
+
+  post url, table.hashes.first
+end
+
 When /^I GET ([^\s]+)$/ do |url|
   get url
 end
