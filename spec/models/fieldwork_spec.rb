@@ -16,6 +16,7 @@ describe Fieldwork do
       fw = Fieldwork.for(id)
 
       fw.id.should == id
+      fw.should_not be_new_record
     end
   end
 
