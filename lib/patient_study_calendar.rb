@@ -11,7 +11,7 @@ class PatientStudyCalendar
   BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
   HI_LO_CONVERSION      = "Low to High Conversion"
 
-  PRE_PREGNANCY         = "Pre-Pregnancy"
+  PRE_PREGNANCY         = "Pre-Pregnancy Visit"
   PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
 
