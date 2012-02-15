@@ -92,9 +92,11 @@ class PeopleController < ApplicationController
 
   def responses_for
     @person = Person.find(params[:id])
-    @responses = []
-    if params[:data_export_identifier]
-      @responses = @person.responses_for(params[:data_export_identifier])
+    if request.put?
+      @responses = []
+      if params[:data_export_identifier]
+        @responses = @person.responses_for(params[:data_export_identifier])
+      end
     end
   end
 
