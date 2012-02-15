@@ -41,4 +41,37 @@ describe DispositionMapper do
       grouped_options.keys.should == ["Pregnancy Screener Event"]
     end
   end
+
+  context "determining disposition for an event" do
+
+    before(:each) do
+      @general_study = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => "General Study Visits (including CASI SAQs)", :local_code => 3)
+      @pregnancy_screen = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => "Pregnancy Screening Events", :local_code => 2)
+    end
+
+    describe "#get_key_from_event_disposition_category" do
+
+      it "finds GENERAL_STUDY_VISIT_EVENT" do
+        DispositionMapper.get_key_from_event_disposition_category(@general_study).should == DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+      end
+
+      it "finds PREGNANCY_SCREENER_EVENT" do
+        DispositionMapper.get_key_from_event_disposition_category(@pregnancy_screen).should == DispositionMapper::PREGNANCY_SCREENER_EVENT
+      end
+    end
+
+    describe "#disposition_text_for_event" do
+
+      it "returns the given disposition code if no event disposition category given" do
+        DispositionMapper.disposition_text_for_event(nil, 55).should == 55
+      end
+
+      it "returns the disposition text for a matching event disposition category and code" do
+        DispositionMapper.disposition_text_for_event(@general_study, 55).should == "Eligible Non-response- Other"
+        DispositionMapper.disposition_text_for_event(@general_study, 16).should == "Participant incarcerated"
+      end
+
+    end
+
+  end
 end
