@@ -56,3 +56,10 @@ Feature: Fieldwork check-out and check-in
         "participants": []
     }
     """
+
+  Scenario: POST /api/v1/fieldwork requires authentication
+    When I POST /api/v1/fieldwork with
+      | start_date | end_date   | client_id |
+      | 2012-01-01 | 2012-02-01 | 123456789 |
+
+    Then the response status is 401
