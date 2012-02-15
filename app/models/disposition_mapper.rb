@@ -64,6 +64,23 @@ class DispositionMapper
     # Contact Type
     # In-person, Mail, Telephone, Email, Text Message, Website, Other
 
+    def disposition_text_for_event(category, code)
+      return code if category.blank?
+      key = get_key_from_event_disposition_category(category)
+      opts = get_grouped_options[key]
+      match = opts.select { |k,v| v == code }.first
+      match[0] if match
+    end
+
+    def get_key_from_event_disposition_category(category)
+      result = nil
+      part = category.to_s.split(' ').first
+      EVENTS.each do |e|
+        result = e if e.split(' ').first == part
+      end
+      result
+    end
+
   end
 
 end

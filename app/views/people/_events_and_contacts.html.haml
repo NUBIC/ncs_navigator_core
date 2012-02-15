@@ -18,7 +18,8 @@
                 = blank_safe(event.event_end_date)
               #span.disposition
                 - if event.event_disposition
-                  = "#{event.event_disposition} - #{event.event_disposition_category}"
+                  - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
+                  = disp.blank? ? "#{event.event_disposition} - #{event.event_disposition_category}" : disp
             .contact_link
               - if event.contact_links.blank?
                 .no_records
@@ -49,7 +50,8 @@
                       %td
                         = cl.contact.contact_end_time
                       %td
-                        = cl.contact.contact_disposition
+                        - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, cl.contact.contact_disposition)
+                        = disp.blank? ? cl.contact.contact_disposition : disp
                       %td.hide
                         - if cl.contact.contact_date_date == Date.today && cl.event.event_end_date.blank?
                           = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"
