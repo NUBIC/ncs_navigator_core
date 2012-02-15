@@ -1,0 +1,3 @@
+[submodule "vendor/ncs_navigator_schema"]
+	path = vendor/ncs_navigator_schema
+	url = https://github.com/NUBIC/ncs_navigator_schema.git
