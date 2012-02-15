@@ -5,6 +5,14 @@ class Fieldwork < ActiveRecord::Base
 
   before_create :set_default_id
 
+  attr_accessible :client_id
+  attr_accessible :end_date
+  attr_accessible :start_date
+
+  validates_presence_of :client_id
+  validates_presence_of :end_date
+  validates_presence_of :start_date
+
   def self.for(id)
     find_or_create_by_fieldwork_id(id)
   end

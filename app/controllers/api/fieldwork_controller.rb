@@ -2,13 +2,17 @@ class Api::FieldworkController < ApplicationController
   respond_to :json
 
   def create
-    fw = Fieldwork.create
+    begin
+      fw = Fieldwork.create!(params)
 
-    respond_to do |wants|
-      wants.json do
-        headers['Location'] = api_fieldwork_path(fw.id)
-        render :json => fw
+      respond_to do |wants|
+        wants.json do
+          headers['Location'] = api_fieldwork_path(fw.id)
+          render :json => fw
+        end
       end
+    rescue ActiveRecord::RecordInvalid
+      render :nothing => true, :status => :bad_request
     end
   end
 
