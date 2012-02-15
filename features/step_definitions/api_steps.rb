@@ -92,6 +92,19 @@ Then /^the referenced entity is a fieldwork set$/ do
   raise 'Response contains a blank location' if location.blank?
 
   get location
+end
 
+Then /^the response is a fieldwork set$/ do
   last_response.body.should be_a_fieldwork_set
+end
+
+Then /^the response contains a reference to itself$/ do
+  original_set = last_response.body
+
+  location = last_response.headers['Location']
+  raise 'Response contains a blank location' if location.blank?
+
+  get location
+
+  JSON.parse(last_response.body).should == JSON.parse(original_set)
 end

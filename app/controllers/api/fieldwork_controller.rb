@@ -7,7 +7,7 @@ class Api::FieldworkController < ApplicationController
     respond_to do |wants|
       wants.json do
         headers['Location'] = api_fieldwork_path(fw.id)
-        render :nothing => true, :status => :created
+        render :json => fw
       end
     end
   end

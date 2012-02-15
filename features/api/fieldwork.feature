@@ -71,5 +71,6 @@ Feature: Fieldwork check-out and check-in
       | start_date | end_date   | client_id |
       | 2012-01-01 | 2012-02-01 | 123456789 |
 
-    Then the response status is 201
-    And the referenced entity is a fieldwork set
+    Then the response status is 200
+    And the response is a fieldwork set
+    And the response contains a reference to itself
