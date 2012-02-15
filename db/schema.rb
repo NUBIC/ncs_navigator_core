@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120210200939) do
+ActiveRecord::Schema.define(:version => 20120215225058) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -221,6 +221,9 @@ ActiveRecord::Schema.define(:version => 20120210200939) do
     t.binary   "received_data"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "client_id"
+    t.date     "end_date"
+    t.date     "start_date"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true

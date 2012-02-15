@@ -126,5 +126,11 @@ Factory.define :instrument do |ins|
   ins.supervisor_review     { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",            :display_text => "Yes", :local_code => 1) }
   ins.data_problem          { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2",            :display_text => "Yes", :local_code => 1) }
   ins.instrument_version "1.2"
-  
+
+end
+
+Factory.define :fieldwork do |f|
+  f.start_date  { Date.today }
+  f.end_date    { Date.today + 7 }
+  f.client_id   { '1234567890' }
 end

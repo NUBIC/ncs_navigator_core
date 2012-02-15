@@ -74,3 +74,21 @@ Feature: Fieldwork check-out and check-in
     Then the response status is 200
     And the response is a fieldwork set
     And the response contains a reference to itself
+
+  Scenario: POST /api/v1/fieldwork requires start_date, end_date, and client_id
+    Given an authenticated user
+
+    When I POST /api/v1/fieldwork with
+      | end_date   | client_id |
+      | 2012-02-01 | 123456789 |
+    Then the response status is 400
+
+    When I POST /api/v1/fieldwork with
+      | start_date | client_id |
+      | 2012-02-01 | 123456789 |
+    Then the response status is 400
+
+    When I POST /api/v1/fieldwork with
+      | end_date   | start_date |
+      | 2012-01-01 | 2012-02-01 |
+    Then the response status is 400
