@@ -5,6 +5,7 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
   resources :household_units
+  resources :addresses, :except => [:destroy]
   resources :events, :only => [:index, :edit, :update]
   resources :people do
     member do
@@ -14,7 +15,6 @@ NcsNavigatorCore::Application.routes.draw do
       put :responses_for
     end
     resources :contacts, :except => [:index]
-    resources :addresses, :except => [:index, :destroy]
     resources :telephones, :except => [:index, :destroy]
     resources :emails, :except => [:index, :destroy]
   end

@@ -1,0 +1,70 @@
+- title "Addresses"
+
+.mdes_table_definition
+  = render 'documentation/address'
+
+.page_section.search
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
+    = f.label :address_one_cont
+    = f.text_field :address_one_cont
+    %br
+    = f.label :address_two_cont
+    = f.text_field :address_two_cont
+    %br
+    = f.label :city_start
+    = f.text_field :city_start
+    %br
+    = f.label :state_code_eq, "State"
+    - states = NcsCode.ncs_code_lookup(:state_code).sort_by { |a| a[0] }
+    - odds   = states.select { |i| i[1] < 0 }
+    - states = states - odds
+    - odds.each { |o| states << o }
+    = f.select(:state_code_eq, states, { :include_blank => "-- Select State --" })
+    %br
+    = f.label :zip_start
+    = f.text_field :zip_start
+    %br
+    = f.submit "Search"
+
+.page_section
+  - if @addresses.empty?
+    #no_records
+      No addresses were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @addresses
+    %table.records
+      %tr
+        %th
+          = sort_link @q, "address_one"
+        %th
+          = sort_link @q, "address_two"
+        %th
+          = sort_link @q, "city"
+        %th
+          = sort_link @q, "state_code", "State"
+        %th
+          = sort_link @q, "zip"
+        %th{ :colspan => "2" }
+
+      - @addresses.each do |a|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = blank_safe(a.address_one)
+          %td
+            = blank_safe(a.address_two)
+          %td
+            = blank_safe(a.city)
+          %td
+            = blank_safe(a.state)
+          %td
+            = blank_safe(a.zip)
+          %td
+            = link_to 'View', address_path(a), :class => "show_link icon_link"
+          %td
+            = link_to 'Edit', edit_address_path(a), :class => "edit_link icon_link"
+  .links
+    = link_to 'Add New Address', new_address_path, :class => "add_link icon_link"
+
+  = will_paginate @addresses

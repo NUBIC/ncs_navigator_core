@@ -1,8 +1,30 @@
 class AddressesController < ApplicationController
 
+  def index
+    params[:page] ||= 1
+
+    @q = Address.search(params[:q])
+    result = @q.result(:distinct => true)
+    @addresses = result.paginate(:page => params[:page], :per_page => 20)
+
+    respond_to do |format|
+      format.html
+      format.json { render :json => result.all }
+    end
+  end
+
+  def show
+    @address = Address.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json { render :json => @address }
+    end
+  end
+
   def new
-    @person = Person.find(params[:person_id])
     @address = Address.new
+    @person = Person.find(params[:person_id]) if params[:person_id]
 
     respond_to do |format|
       format.html
@@ -11,7 +33,6 @@ class AddressesController < ApplicationController
   end
 
   def edit
-    @person = Person.find(params[:person_id])
     @address = Address.find(params[:id])
 
     respond_to do |format|
@@ -21,14 +42,12 @@ class AddressesController < ApplicationController
   end
 
   def create
-    @person = Person.find(params[:person_id])
     @address = Address.new(params[:address])
 
     respond_to do |format|
       if @address.save
-        path = @person.participant? ? participant_path(@person.participant) : person_path(@person)
         flash[:notice] = 'Address was successfully created.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(edit_address_path(@address)) }
         format.json  { render :json => @address }
       else
         format.html { render :action => "new" }
@@ -38,14 +57,12 @@ class AddressesController < ApplicationController
   end
 
   def update
-    @person = Person.find(params[:person_id])
     @address = Address.find(params[:id])
 
     respond_to do |format|
       if @address.update_attributes(params[:address])
-        path = @person.participant? ? participant_path(@person.participant) : person_path(@person)
         flash[:notice] = 'Address was successfully updated.'
-        format.html { redirect_to(path) }
+        format.html { redirect_to(edit_address_path(@address)) }
         format.json  { render :json => @address }
       else
         format.html { render :action => "edit" }
