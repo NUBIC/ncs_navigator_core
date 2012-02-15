@@ -17,7 +17,7 @@ Feature: Fieldwork check-out and check-in
 
     Then the response status is 202
 
-  Scenario: PUT /api/v1/fieldwork/:uuid returns 401 to unauthorized requests
+  Scenario: PUT /api/v1/fieldwork/:uuid requires authentication
     When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
     """
     {
