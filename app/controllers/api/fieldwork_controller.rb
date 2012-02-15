@@ -20,8 +20,7 @@ class Api::FieldworkController < ApplicationController
     fw = Fieldwork.for(params['id'])
 
     begin
-      fw.received_data = request.body.read
-      fw.save
+      fw.update_attribute(:received_data, request.body.read)
     ensure
       request.body.rewind
     end
