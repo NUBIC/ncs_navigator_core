@@ -44,7 +44,6 @@ end
 
 group :osx_development do
   gem 'rb-fsevent'
-  gem 'growl_notify' # or gem 'growl'
 end
 
 group :staging, :production do
