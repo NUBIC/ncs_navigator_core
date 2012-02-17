@@ -9,6 +9,7 @@
     margin-bottom: 0;
     margin-top: 0.5em;
   }
+  .activities,
   .model_search {
     ul {
       li {
@@ -24,4 +25,25 @@
       list-style: none !important;
     }
   }
+}
+
+.events_for_date {
+  margin-top: 0.5em;
+
+  .event_participant {
+    margin-left: 1em;
+
+    span {
+      display: inline-block;
+    }
+
+    span.participant_link {
+      width: 15em;
+    }
+
+    span.ppg_status {
+      width: 5em;
+    }
+  }
+
 }

@@ -36,4 +36,4 @@
           %p
             = "Continue onto #{@person.upcoming_events.to_sentence}"
             %br
-            = f.submit "Continue"
+            = f.submit "Continue", :confirm => "Are you sure you would like to continue to #{@person.upcoming_events.to_sentence}?"

@@ -7,7 +7,7 @@
       - else
         %b
           Event History
-        - participant.events.sort_by{ |e| e.event_start_date }.each do |event|
+        - participant.events.sort_by{ |e| e.event_start_date }.reverse.each do |event|
           .event
             .header
               %span.type
@@ -37,10 +37,13 @@
                       End
                     %th
                       Disposition
+                    %th
+                      Staff
                     %th.hide
                       Continue
                   - event.contact_links.each do |cl|
-                    %tr{ :class => cycle('even_record', 'odd_record') }
+                    - cls = cycle('even_record', 'odd_record')
+                    %tr{ :class => cls }
                       %td
                         = cl.contact.contact_type
                       %td
@@ -52,6 +55,13 @@
                       %td
                         - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, cl.contact.contact_disposition)
                         = disp.blank? ? cl.contact.contact_disposition : disp
+                      %td
+                        = cl.staff_id
                       %td.hide
                         - if cl.contact.contact_date_date == Date.today && cl.event.event_end_date.blank?
                           = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"
+                    - unless cl.contact.contact_comment.blank?
+                      %tr{ :class => "comment_#{cls} #{cls}"  }
+                        %td{ :colspan => 6 }
+                          = blank_safe(cl.contact.contact_comment, 'No comment')
+
