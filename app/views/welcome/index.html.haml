@@ -21,11 +21,12 @@
             - @events[date].each do |e|
               .event_participant
                 %span.participant_link
-                  = link_to e.participant.person.to_s, participant_path(e.participant), :class => "show_link icon_link"
+                  - path = e.person.participant? ? participant_path(e.person.participant) : person_path(e.person)
+                  = link_to e.person.to_s, path, :class => "show_link icon_link"
                 %span.ppg_status
-                  = "PPG #{e.participant.ppg_status.local_code}" unless e.participant.ppg_status.blank?
+                  = "PPG #{e.person.participant.ppg_status.local_code}" if e.person.participant && !e.person.participant.ppg_status.blank?
                 %span.event_type
-                  = e.event_type.to_s
+                  = e.event_type
     - else
       .front_page_section.page_section
         No Scheduled Activities
