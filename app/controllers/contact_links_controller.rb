@@ -32,6 +32,8 @@ class ContactLinksController < ApplicationController
     @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
     @event.event_repeat_key = @event.contact_links.count
 
+    @event_activities = psc.activities_for_event(@event)
+
 		set_time_and_dates
 		set_disposition_group
 	end
@@ -74,6 +76,7 @@ class ContactLinksController < ApplicationController
 		@person				= @contact_link.person
 		@participant	= @person.participant if @person
 		@event				= @contact_link.event
+		@event_activities = psc.activities_for_event(@event)
 	end
 
 	def edit_instrument
