@@ -1,0 +1,32 @@
+.page_section
+  .psc_registration
+    %b
+      Upcoming Activities
+
+  - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
+    .high_intensity_invitation
+      = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => "#{request.path}?#{request.query_string}")) do |f|
+        = render "shared/full_error_messages", :object => f.object
+        = f.hidden_field :high_intensity
+        %p
+          - if @participant.high_intensity?
+            = f.submit switch_arm_message(@participant)
+          - else
+            = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
+
+  = render "/people/schedule_or_perform_event", :participant => @participant, :person => @person
+
+  .schedule
+    - if @scheduled_activities && !@participant.pending_events.blank?
+      %b
+        Activities for Pending Events
+      .activities
+        - @scheduled_activities.each do |a|
+          - @participant.pending_events.each do |e|
+            - if e.matches_activity(a)
+              .activity
+                %span{ :title => a.current_state, :class => "#{a.current_state}_link" }
+                  &nbsp;
+                = link_to a.activity_name, psc_assignment_path(a.activity_id), :class => "icon_link external_link"
+    - else
+      Subject does not have a schedule matching pending events

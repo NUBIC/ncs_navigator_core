@@ -1,20 +1,18 @@
 - seen_activities = Array.new
 
 .schedule
-  - if subject_schedules = psc.schedules(participant)
-    - subject_schedules["days"].keys.sort.each do |date|
+  - if @scheduled_activities_grouped_by_date
+    - @scheduled_activities_grouped_by_date.keys.sort.each do |date|
       .day
         .date
           = date
         .activities
-          - subject_schedules["days"][date]["activities"].each do |activity|
-            - activity_name = activity["activity"]["name"]
-            - unless seen_activities.include?([date, activity_name])
-              - seen_activities << [date, activity_name]
-              - state = activity["current_state"]["name"]
+          - @scheduled_activities_grouped_by_date[date].each do |activity|
+            - unless seen_activities.include?(activity)
+              - seen_activities << activity
               .activity
-                %span{ :title => state, :class => "#{state}_link" }
+                %span{ :title => activity.current_state, :class => "#{activity.current_state}_link" }
                   &nbsp;
-                = link_to "#{activity_name}", psc_assignment_path(activity["assignment"]["id"]), :class => "icon_link external_link"
+                = link_to "#{activity.activity_name}", psc_assignment_path(activity.activity_id), :class => "icon_link external_link"
   - else
     Subject does not yet have a schedule

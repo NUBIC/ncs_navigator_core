@@ -22,8 +22,8 @@
 #tabs
   %ul
     %li
-      %a{ :href => "#patient_study_calendar_tab" }
-        Participant Calendar
+      %a{ :href => "#activities_tab" }
+        Upcoming Activities
     %li
       %a{ :href => "#events_and_contacts_tab"}
         Event History
@@ -40,11 +40,14 @@
       %a{ :href => "#participant_consents_tab" }
         Consents
     %li
+      %a{ :href => "#patient_study_calendar_tab" }
+        Participant Calendar
+    %li
       %a{ :href => "#participant_status_history_tab" }
         Status History
 
-  #patient_study_calendar_tab
-    = render 'participants/participant_psc'
+  #activities_tab
+    = render 'participants/activities'
 
   #events_and_contacts_tab
     = render 'people/events_and_contacts'
@@ -60,6 +63,9 @@
 
   #participant_consents_tab
     = render 'participants/participant_consents'
+
+  #patient_study_calendar_tab
+    = render 'participants/participant_psc'
 
   #participant_status_history_tab
     = render 'people/participant_state_transitions'
