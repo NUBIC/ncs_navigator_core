@@ -96,3 +96,10 @@ span.known_instrument {
 .contact_info {
   margin: 0 1em;
 }
+
+.telephones,
+.emails,
+.addresses {
+  border-bottom: 1px solid $BORDER_GRAY;
+  padding: 1em 0;
+}

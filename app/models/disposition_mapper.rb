@@ -65,7 +65,7 @@ class DispositionMapper
     # In-person, Mail, Telephone, Email, Text Message, Website, Other
 
     def disposition_text_for_event(category, code)
-      return code if category.blank?
+      return code if category.blank? || category.local_code.to_i < 0
       key = get_key_from_event_disposition_category(category)
       opts = get_grouped_options[key]
       match = opts.select { |k,v| v == code }.first

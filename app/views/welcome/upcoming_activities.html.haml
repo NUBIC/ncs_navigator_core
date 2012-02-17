@@ -1,0 +1,36 @@
+- title "Upcoming Activities"
+
+- if @scheduled_activities
+  .front_page_section.page_section
+    - rows = @scheduled_activities['rows']
+    - if rows.blank?
+      %h4
+        No Scheduled Activities
+        = " from #{@start_date} to #{@end_date}"
+    - else
+      %h4
+        = "From #{@start_date} to #{@end_date}"
+      %table.records
+        %tr
+          %th Date
+          %th Person
+          %th PPG Status
+          %th Activity
+        - rows.each do |row|
+          - if row['subject']
+            - person = Person.find_by_person_id(row['subject']['person_id'])
+            - if person
+              %tr{ :class => cycle('even_record', 'odd_record') }
+                %td
+                  = row['scheduled_date']
+                %td
+                  - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
+                  = link_to row['subject']['name'], path, :class => "show_link icon_link"
+                %td
+                  - if person.participant
+                    %span{ :title => person.participant.ppg_status.to_s }
+                      = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
+                  - else
+                    n/a
+                %td
+                  = row['activity_name']

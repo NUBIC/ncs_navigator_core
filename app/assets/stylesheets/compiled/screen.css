@@ -1876,6 +1876,7 @@ input[type="submit"] {
 table.records {
   width: 100%;
   border-collapse: collapse;
+  /* for contact comments */
 }
 /* line 12, ../../../stylesheets/partials/_tabular_records.scss */
 table.records td {
@@ -1910,23 +1911,39 @@ table.records tr.odd_record {
 table.records tr.current_record {
   background-color: aliceblue;
 }
+/* line 38, ../../../stylesheets/partials/_tabular_records.scss */
+table.records tr.comment_even_record {
+  border-top: 2px solid whitesmoke !important;
+}
+/* line 40, ../../../stylesheets/partials/_tabular_records.scss */
+table.records tr.comment_even_record td {
+  padding: 0.75em 1em;
+}
+/* line 44, ../../../stylesheets/partials/_tabular_records.scss */
+table.records tr.comment_odd_record {
+  border-top: 2px solid white !important;
+}
+/* line 46, ../../../stylesheets/partials/_tabular_records.scss */
+table.records tr.comment_odd_record td {
+  padding: 0.75em 1em;
+}
 
-/* line 41, ../../../stylesheets/partials/_tabular_records.scss */
+/* line 54, ../../../stylesheets/partials/_tabular_records.scss */
 div.records span.form_label {
   font-weight: bold;
 }
-/* line 45, ../../../stylesheets/partials/_tabular_records.scss */
+/* line 58, ../../../stylesheets/partials/_tabular_records.scss */
 div.records span.label {
   font-style: italic;
   text-decoration: underline;
 }
-/* line 50, ../../../stylesheets/partials/_tabular_records.scss */
+/* line 63, ../../../stylesheets/partials/_tabular_records.scss */
 div.records span.value {
   padding-left: 1em;
   font-size: 1.2em;
 }
 
-/* line 56, ../../../stylesheets/partials/_tabular_records.scss */
+/* line 69, ../../../stylesheets/partials/_tabular_records.scss */
 .no_records {
   border-right: 1px solid #cccccc;
   border-left: 1px solid #cccccc;
@@ -2402,6 +2419,11 @@ body.ncs #footer .app_version {
   padding: 0 1em;
 }
 
+/* line 13, ../../../stylesheets/partials/_contact_links.scss */
+.contact_link .no_records {
+  margin-bottom: 1em;
+}
+
 /* line 2, ../../../stylesheets/partials/_contacts.scss */
 input#contact_contact_end_time,
 input#contact_contact_start_time {
@@ -2550,6 +2572,14 @@ span.known_instrument {
   margin: 0 1em;
 }
 
+/* line 102, ../../../stylesheets/partials/_participants.scss */
+.telephones,
+.emails,
+.addresses {
+  border-bottom: 1px solid #cccccc;
+  padding: 1em 0;
+}
+
 /* line 1, ../../../stylesheets/partials/_welcome.scss */
 .front_page_section {
   margin: 0.5em 0;
@@ -2565,14 +2595,36 @@ span.known_instrument {
   margin-bottom: 0;
   margin-top: 0.5em;
 }
-/* line 14, ../../../stylesheets/partials/_welcome.scss */
+/* line 15, ../../../stylesheets/partials/_welcome.scss */
+.front_page_section .activities ul li,
 .front_page_section .model_search ul li {
   list-style-type: none;
 }
 
-/* line 23, ../../../stylesheets/partials/_welcome.scss */
+/* line 24, ../../../stylesheets/partials/_welcome.scss */
 .dialog ul li {
   list-style: none !important;
+}
+
+/* line 30, ../../../stylesheets/partials/_welcome.scss */
+.events_for_date {
+  margin-top: 0.5em;
+}
+/* line 33, ../../../stylesheets/partials/_welcome.scss */
+.events_for_date .event_participant {
+  margin-left: 1em;
+}
+/* line 36, ../../../stylesheets/partials/_welcome.scss */
+.events_for_date .event_participant span {
+  display: inline-block;
+}
+/* line 40, ../../../stylesheets/partials/_welcome.scss */
+.events_for_date .event_participant span.participant_link {
+  width: 15em;
+}
+/* line 44, ../../../stylesheets/partials/_welcome.scss */
+.events_for_date .event_participant span.ppg_status {
+  width: 5em;
 }
 
 /* tooltip styling */
