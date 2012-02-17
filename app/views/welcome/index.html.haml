@@ -9,41 +9,23 @@
       %a{ :href => "#actions_tab"}
         Actions
 
-
   #scheduled_activities_tab
-    - if @scheduled_activities
+    - if @events
       .front_page_section.page_section
-        - rows = @scheduled_activities['rows']
-        - if rows.blank?
-          %h4
-            No Upcoming Activities Scheduled
-        - else
-          %h4
-            = "From #{@start_date} to #{@end_date}"
-          %table.records
-            %tr
-              %th Date
-              %th Person
-              %th PPG Status
-              %th Activity
-            - rows.sort_by { |r| r['scheduled_date'] }.each do |row|
-              - if row['subject']
-                - person = Person.find_by_person_id(row['subject']['person_id'])
-                - if person
-                  %tr{ :class => cycle('even_record', 'odd_record') }
-                    %td
-                      = row['scheduled_date']
-                    %td
-                      - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
-                      = link_to row['subject']['name'], path, :class => "show_link icon_link"
-                    %td
-                      - if person.participant
-                        %span{ :title => person.participant.ppg_status.to_s }
-                          = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
-                      - else
-                        n/a
-                    %td
-                      = row['activity_name']
+        %h4
+          = "From #{@start_date} to #{@end_date}"
+        - @events.keys.sort.each do |date|
+          .events_for_date
+            %b
+              = date
+            - @events[date].each do |e|
+              .event_participant
+                %span.participant_link
+                  = link_to e.participant.person.to_s, participant_path(e.participant), :class => "show_link icon_link"
+                %span.ppg_status
+                  = "PPG #{e.participant.ppg_status.local_code}" unless e.participant.ppg_status.blank?
+                %span.event_type
+                  = e.event_type.to_s
     - else
       .front_page_section.page_section
         No Scheduled Activities
@@ -65,8 +47,6 @@
           .model_search
             %ul
               %li
-                = link_to "Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
-              %li
                 = link_to "People", people_path, :class => "list_link icon_link"
               %li
                 = link_to "Participants", participants_path, :class => "list_link icon_link"
@@ -78,3 +58,12 @@
                 = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
               %li
                 = link_to "Household Units", household_units_path, :class => "list_link icon_link"
+        .column-3
+          %h4
+            Activities
+          .activities
+            %ul
+              %li
+                = link_to "Upcoming Activities", {:controller => "welcome", :action => "upcoming_activities"}, :class => "list_link icon_link"
+              %li
+                = link_to "Overdue Activities", {:controller => "welcome", :action => "overdue_activities"}, :class => "list_link icon_link"
