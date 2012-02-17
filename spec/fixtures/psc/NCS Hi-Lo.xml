@@ -1,0 +1,1404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-02-17T17:00:14.773Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+  <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 7" date="2012-02-17" mandatory="true" released-date="2012-02-17T17:00:14.773Z" updated-date="2012-02-17T16:59:52.985Z" previous-amendment-key="2012-02-15~Rev 6">
+    <planned-activity-delta id="f8386eaa-d33a-4f64-913f-e75d9cf2b496" node-id="71eff7d1-e4a3-446b-a878-ef835b368181">
+      <property-change id="01d40180-7311-4304-975c-ac1906140de3" property-name="day" old-value="366" new-value="366"/>
+      <remove id="52c3f331-fd0f-4274-b8fe-3aa711444a33" child-id="b0ecea76-a064-49ee-86d9-4d17f939b052"/>
+      <add id="3a876226-6ee7-43e7-a921-12640adf7f39">
+        <label id="bf9adf26-86a7-4b84-be97-bd0c61ff7a38" name="event:12_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="78ce0bcf-622c-4c5e-8619-c07095760505" node-id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b">
+      <property-change id="6f9ee957-8aa7-401c-8af0-a2e99f82b245" property-name="day" old-value="183" new-value="183"/>
+      <remove id="6055f5cd-a211-476a-b296-2d218fe194f6" child-id="94b0ab23-d5bb-4ea0-8a77-a120599033f1"/>
+      <add id="f7d66189-a4aa-43f2-aa29-f6256fb5a106">
+        <label id="4daa8cef-6bb7-4301-9967-99b88c3f1703" name="event:6_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="985e9ea8-8122-43ce-b84f-634768de898f" node-id="4487f930-29aa-464d-a1d8-0b182cecfd40">
+      <property-change id="fdb6ac72-7ed5-4c65-bf8e-c39e2566d6e7" property-name="day" old-value="366" new-value="366"/>
+      <remove id="c7a37e17-c2c8-4f4e-b0ae-f777c5481726" child-id="12258bd9-b8b3-47f1-9d43-dbb069985f41"/>
+      <add id="32dce586-0c83-4579-b9ee-7fb2e7d34608">
+        <label id="a9e62c4b-b58c-4575-afd1-0b4766b65175" name="event:12_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="9e47a0dc-9933-4e70-8bca-df78a92ff19f" node-id="599d1e75-7d6e-4933-a69a-76c83a7b9f80">
+      <property-change id="dccb747e-2a7c-4fae-b3f9-3b3fda41d6e3" property-name="day" old-value="366" new-value="366"/>
+      <remove id="1e0711a9-b35c-45a5-aee4-3cc6dd032474" child-id="801361b8-d7e4-4228-889b-90d4452f6afe"/>
+      <add id="15a8c420-dbdf-4c8e-8b68-6bf040535b09">
+        <label id="5b67a669-f3fb-4630-8d1a-1fc78dc7c3e1" name="event:12_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8aa69c44-63be-4127-802a-2c0a797c0738" node-id="735de02c-bdc9-44fd-ac59-d901a90e3799">
+      <property-change id="b8585757-2656-4d7e-95bd-529d15baea63" property-name="day" old-value="548" new-value="548"/>
+      <remove id="f2b8df93-cde2-443d-a500-8ec541b25041" child-id="476f03f7-7a15-4436-bd00-bcb2e6bf277e"/>
+      <add id="53e225f1-85ce-4165-83c0-4441fb17111f">
+        <label id="5e3df048-ad94-4f8e-bf3e-3bf25e34576a" name="event:18_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f46b06dc-1fa7-42f2-86ba-0a09b83edc32" node-id="0a0919e3-79c3-435f-b897-9e0c4fa4247f">
+      <property-change id="85451437-62e4-487e-9895-2a9acc86f5ca" property-name="day" old-value="548" new-value="548"/>
+      <remove id="e29a2c08-42ff-43c8-94e8-fa9ffe09fadc" child-id="9d9dedfa-d3d0-4657-afe1-4ba08dcf88bb"/>
+      <add id="c68b92a9-10ef-4364-8a88-48ec2f9344ce">
+        <label id="96eeff0b-6593-4d6e-83ac-d9ad65e0ac88" name="event:18_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="93cba083-7da9-4af5-96ca-e45d13cf0c12" node-id="d3a1f314-a163-4bb3-aa42-ccf639034814">
+      <property-change id="8e563e38-b262-4e91-9039-7e1e6daac7f0" property-name="day" old-value="730" new-value="730"/>
+      <remove id="3d7f69d1-fd90-4702-b518-027d53bf3437" child-id="bef2aaf1-896e-4bc5-8349-61552c0e67f5"/>
+      <add id="848104ad-b4c6-451d-8192-e4cb623529c0">
+        <label id="99a2fd43-51ae-47c2-894b-98776e6e313c" name="event:24_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="123c6b2f-f3a7-43b1-8ecd-8db6b0d09e6d" node-id="06b1e674-3af9-45e1-ac7e-2c30843fd365">
+      <property-change id="a89e42d4-f8c2-493c-821b-86ac3d31d30a" property-name="day" old-value="730" new-value="730"/>
+      <remove id="d1a26042-e66a-44eb-943a-b3679b0ad1b8" child-id="becdb7d9-085f-432a-b728-cf750c1eaed0"/>
+      <add id="6c584aeb-a19b-4d84-85ff-6b1843a38bd9">
+        <label id="749cabe1-5099-4363-ad58-cbbeacb49143" name="event:24_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f95e6a0b-0c64-40a3-b323-236f0b82ef94" node-id="88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b">
+      <property-change id="886a006c-fc08-47fb-b568-6862251c2ab2" property-name="day" old-value="92" new-value="92"/>
+      <remove id="a2d61b43-1184-473b-8865-abb0d945ae85" child-id="5749c2a2-681d-4393-93ac-3d0ed7f5a2c5"/>
+      <add id="26f33309-c16a-4382-bac2-fc64cbdb5aea">
+        <label id="3bde1836-76e7-4df1-8e05-d3e825d5665e" name="event:3_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="dcfa5211-7297-4c61-a9cf-14c45beb9b52" node-id="01be00a9-bcf1-4d40-918e-d41d65ccaac6">
+      <property-change id="48f6cae6-b1b2-4e4f-9737-562dce9e9c55" property-name="day" old-value="183" new-value="183"/>
+      <remove id="0ef78ff9-8423-4117-8d9b-1b7e77f43338" child-id="3302fed0-4416-4608-8d85-5a99918129d6"/>
+      <add id="b7620f68-3022-44c7-b763-c235fe523cb5">
+        <label id="5be5edee-0162-478b-8991-a37ba5bfaf13" name="event:6_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="30b788b6-7c26-487a-a17b-46e7d8fc57ac" node-id="e2531488-58e7-4721-b5f0-cbf9e8850ffd">
+      <property-change id="3654375d-a1bc-47cd-a770-bc9bfedd0933" property-name="day" old-value="183" new-value="183"/>
+      <remove id="8c048740-740f-44f8-a302-392862628d77" child-id="13dadc65-c5cd-40e1-8922-aea5c4ef644a"/>
+      <add id="500831fd-e64c-4f44-9234-aceb5554b3bd">
+        <label id="aec9a866-3d89-4649-86b7-ae9f7fead13c" name="event:6_month"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="ee05bd21-c576-4a6b-866e-1a7a9b0172cd" node-id="d0e3ac20-b91f-4c2a-8217-a42b114afde6">
+      <property-change id="9a866b56-46e0-410d-835f-289ee46b4a81" property-name="day" old-value="274" new-value="274"/>
+      <remove id="e1590d83-5924-4de0-a27d-11c79b1554fd" child-id="ce0b2d4c-0568-49f9-904b-fde9e346d444"/>
+      <add id="a27f02ca-fac9-4001-829c-c9b710b2b723">
+        <label id="9a9b94be-c01a-4669-addb-f05eaf0f18c7" name="event:9_month"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 6" date="2012-02-15" mandatory="true" released-date="2012-02-15T15:16:09.691Z" updated-date="2012-02-15T15:15:57.926Z" previous-amendment-key="2012-02-15~Rev 5">
+    <planned-activity-delta id="57468a44-93d5-4bb2-b201-0a2d64d9e629" node-id="2eab7a03-9e0b-449f-82c4-9087b705ff29">
+      <property-change id="de5e66c3-944a-4be4-8c28-6cf28c30265c" property-name="day" old-value="1" new-value="1"/>
+      <remove id="1d17e921-705b-483a-8f1b-5a46ca4e431e" child-id="28014a43-d786-4d06-adcd-d9fec07bb699"/>
+      <add id="9f0b80a4-da36-4765-bfb3-e19afe739fa2">
+        <label id="b8373078-d348-4c01-8cc5-0afb7d735488" name="event:pre-pregnancy_visit"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="c175645b-5d4b-4cd2-8705-5397c24fb4e8" node-id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9">
+      <property-change id="a7c61149-285c-4b67-85d5-21196bce147b" property-name="day" old-value="1" new-value="1"/>
+      <remove id="e0ad4279-fd2e-46aa-b08d-d75b70cd8da3" child-id="cd749cc0-098d-4c80-bdd4-19c9f27f7075"/>
+      <add id="1e40fbf6-6c59-41aa-854b-6f692ef99aa9">
+        <label id="1ec034c7-ebda-4eb8-b099-77040f440670" name="event:pre-pregnancy_visit"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4a1c3ebc-44d7-4bf9-b32c-bd64430170b9" node-id="52c7cd03-c066-468f-967c-6022601c608d">
+      <property-change id="33464359-cf0d-4a7a-8900-a5a2a338d0c7" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="d0c6a31d-4306-4fb9-8081-435f217fb0a6" node-id="3300cff6-43d5-42fb-b143-b36d91438a50">
+      <property-change id="75ccba73-607a-433c-9ae8-40e6c0d18aad" property-name="day" old-value="1" new-value="1"/>
+      <remove id="7e97c471-6f16-4c36-889e-2dede4fb1835" child-id="a5f0b1a3-00a5-4fc2-9b1d-84ebb3e0b657"/>
+      <add id="4b5b8d57-a804-4999-aea3-bbba82eddf7a">
+        <label id="b1b68dcf-9ce5-4845-8cd2-a97910c260cd" name="event:pre-pregnancy_visit"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6df61344-23c8-438a-af41-62a4f8bd9738" node-id="e0149f26-2fd8-4be0-9f4c-45ec3ace25ca">
+      <property-change id="af03938d-6606-4339-b083-17140b27216b" property-name="day" old-value="1" new-value="1"/>
+      <remove id="90125212-03a0-4681-9b49-e02ad57f6a47" child-id="1146b9d4-c90c-4676-9c03-64b06f775d89"/>
+      <add id="4ef696cc-59d3-458c-ba22-8256049d63ac">
+        <label id="58c66ba1-cf6d-48cd-9a88-e7ddb2ac95df" name="event:pre-pregnancy_visit"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f634ec80-379e-48cd-9a42-dcc277d27c68" node-id="c767a6de-4bc5-4143-b76d-59439ec82a63">
+      <property-change id="deb4492e-d75e-4fd3-94e2-c2a6a55eb58f" property-name="day" old-value="1" new-value="1"/>
+      <remove id="a90c810d-f072-4038-8399-71661aa787ba" child-id="96ce67e8-8250-4bb3-b8aa-2ace13e8b132"/>
+      <add id="ae7ba770-eb20-4576-9909-bc7669881193">
+        <label id="b07d5166-bef3-4777-8ecd-1399b5224b31" name="event:pre-pregnancy_visit"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 5" date="2012-02-15" mandatory="true" released-date="2012-02-15T14:49:24.933Z" previous-amendment-key="2012-02-08~Rev 4">
+    <study-segment-delta id="e8209b82-d6ff-4d81-9300-98031b12eef7" node-id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624">
+      <property-change id="850ac70c-92fc-42bf-aabc-a16509dd23fc" property-name="name" old-value="Pre-Pregnancy" new-value="Pre-Pregnancy Visit"/>
+    </study-segment-delta>
+  </amendment>
+  <amendment name="Rev 4" date="2012-02-08" mandatory="true" released-date="2012-02-08T12:21:54.813Z" previous-amendment-key="2012-02-03~Rev 3">
+    <study-segment-delta id="def1d1a4-7823-422f-876d-f16f336d9238" node-id="76025607-f7aa-41e1-8ce9-29e0793cd6d4">
+      <property-change id="637a158a-95b1-4723-a661-e49ba2c568c2" property-name="name" old-value="PPG 1 and 2 " new-value="PPG 1 and 2"/>
+    </study-segment-delta>
+  </amendment>
+  <amendment name="Rev 3" date="2012-02-03" mandatory="true" released-date="2012-02-06T11:57:44.609Z" previous-amendment-key="2011-12-29~Rev 2">
+    <planned-activity-delta id="fd9b7b88-f94f-46c6-af07-2dd0343a75d4" node-id="cad092e0-5863-44ee-9439-506bf34c1a97">
+      <property-change id="7bf0af6b-ac68-4d21-b859-0f873778fc66" property-name="day" old-value="1" new-value="1"/>
+      <remove id="679b18aa-af79-4f71-8d01-8b03aaf26c69" child-id="1e262426-39da-4cc8-8d60-feb3a528c527"/>
+      <add id="6fad7d50-97e2-4028-908e-b5013bf0b6d5">
+        <label id="a4cb1abb-5b0f-4523-83a3-9d21495fa9b6" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="00f67c11-ed77-454d-9334-eddfb01fede3">
+        <label id="92040828-3cd9-4777-ba6f-3f8432264c31" name="instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+      </add>
+      <add id="2fdcd968-a5db-4d56-836f-e98843521f4c">
+        <label id="3f795fc9-7941-41db-a341-dd9aa9f840db" name="collection:biological"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="9671194b-f910-4cba-b1e1-96b7ffe1c39f" node-id="803eaa20-6a1d-4e39-807d-fa2eba112ba9">
+      <property-change id="1d9d34c2-7703-4bf0-a649-a7a0114c727a" property-name="day" old-value="1" new-value="1"/>
+      <remove id="8d34b87e-bf13-4a30-a3e6-4aff044b360c" child-id="ec32caa6-06b1-4a60-9e85-4f6bad4122c4"/>
+      <add id="d93a7e9c-aed8-4b06-896e-5f9403e05958">
+        <label id="046606e6-31c2-41c6-8df9-3c7d46345877" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="4b86247d-b0ea-45e7-b24c-2072bc003a95">
+        <label id="c22157d5-7b63-4ec9-900a-f4d3af17f4a1" name="instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+      </add>
+      <add id="1789b1b1-fa98-48fb-b03b-7d40b34a7565">
+        <label id="998c9799-ab7b-4974-ba36-50d7c018c1bb" name="collection:biological"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="cf152d7b-1827-4f1f-a41d-12c7ed4cdde0" node-id="3a9323d6-7435-49ec-9f99-722a3c7b9be4">
+      <property-change id="70ee080e-8a67-4154-8eef-acfac81fa9b4" property-name="day" old-value="1" new-value="1"/>
+      <remove id="69ff5ca5-42a4-40cc-91f4-172a5b9d31a2" child-id="4a78e860-c4c4-4160-8986-3a2678108ded"/>
+      <add id="aca795f0-a741-4267-9704-a74aa8c98ff0">
+        <label id="c834ba38-3b32-494e-8ae5-99b186214632" name="event:informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="ea2d246e-25c7-434d-b4f9-deb989909d89" node-id="920d662a-5a70-4b64-880e-dd1511496caf">
+      <property-change id="3dc76acd-9c22-4844-880f-cc3cf3e19fc2" property-name="day" old-value="1" new-value="1"/>
+      <remove id="0fb3c1d4-5e24-43d2-b4d9-2db961fb2989" child-id="209f1989-a59c-45be-be5b-329d85e8cfd2"/>
+      <add id="46f6f64b-67d3-4558-a7c5-627619d7a40b">
+        <label id="b0f450c3-863b-4d5f-9f2a-3b5da19dec26" name="collection:environmental"/>
+      </add>
+      <add id="51e1ec85-973c-4999-a960-5de60c618d49">
+        <label id="dc970423-209d-436b-9408-0b6e41edbe22" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="5d1dc9ee-5a6e-469c-a22f-0071b3ba2652">
+        <label id="1b9efbe0-8b31-4bc6-afba-75ee9b87894e" name="instrument:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="ee9dfa26-8af2-4bc9-a1c6-afa8a9775963" node-id="fa8ccc94-9353-4819-ad59-e33301c6062a">
+      <property-change id="05ce3fcc-7189-40f8-a040-b2a7125510a9" property-name="day" old-value="1" new-value="1"/>
+      <remove id="982ebf8a-7d01-4ba9-a074-56a6e6631b0d" child-id="175fe00d-7f2d-4ea7-bf85-71524f2c5ca0"/>
+      <add id="1f574b16-0ce6-4149-af46-e481b7262fcc">
+        <label id="7d7cf2ca-d8d7-4237-b2f2-4c8a0b56738c" name="collection:environmental"/>
+      </add>
+      <add id="8b72fbf8-bb85-4a7d-b3d8-a46d252c0df2">
+        <label id="a9c25071-f0ae-417a-88ea-cce562c0e967" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="1bcb51d2-cfb4-451d-959e-73a262e2bcc5">
+        <label id="2234b690-2541-4b5f-b154-8a8036904221" name="instrument:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="5c87ae01-af12-4247-8840-8e2dbec9bba4" node-id="81956a56-e5c0-4c15-ba7b-386dec3697e9">
+      <property-change id="05ced24d-fc23-4a91-9cd5-e97b46b0f6a1" property-name="day" old-value="1" new-value="1"/>
+      <remove id="b32b3a14-811f-44f7-8e00-277d1d239ea2" child-id="c58694fb-d34e-4891-8a4c-3592d0aebbb9"/>
+      <add id="a8279ec6-6bbb-44bc-be96-734e09a73e50">
+        <label id="999bf9c7-3aae-4e47-bf27-553d9819109b" name="collection:environmental"/>
+      </add>
+      <add id="9e8e9653-0552-4762-bb32-8e206990cd10">
+        <label id="85ffeb95-ca7f-472c-a25c-d139e91f6bb2" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="908e6ff1-f4b1-42ea-b99b-1f7996225f3d">
+        <label id="68c020f9-6107-4509-9342-0509fa4d423d" name="instrument:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="52d5c4e2-f227-4589-826c-8324101f62b7" node-id="39ba335d-b52e-48e6-8e5c-41768f2e4377">
+      <property-change id="3c6fb9e0-c5ac-4d6e-a4c1-d22309cbf482" property-name="day" old-value="1" new-value="1"/>
+      <remove id="10b3ad97-497f-44bb-9b99-abbc6d9d93d1" child-id="a912a256-ecdf-4dc3-ad34-87a7c3a9f0a8"/>
+      <add id="9cbf925f-0101-4781-b0c6-ca5adc7b3c6b">
+        <label id="3b07c7f7-dae1-4119-a342-d08431cded59" name="event:pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="53ead1cc-c018-4fd4-9912-f88e606481d0" node-id="99aa3b3b-e262-4385-881b-49a23fc47a13">
+      <property-change id="cfc269d1-559d-4f4d-b051-8bffd7951369" property-name="day" old-value="1" new-value="1"/>
+      <remove id="db5f55d3-ac01-4c50-adb7-376a7c1e873e" child-id="4eecedf3-a2b5-4a62-a0c3-b5814f94aa93"/>
+      <add id="35d98205-1f69-46e4-8fc5-13a7fa13d4eb">
+        <label id="75f9e745-271d-49b2-9ea3-c742b11bc2f2" name="event:pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="63ad3cfb-f969-4e4b-89fd-1752f111b9dd" node-id="aee4d64b-7e08-4ec4-8667-4711c9e48cc7">
+      <property-change id="99319eb5-162f-4950-a6be-d4bef1d303db" property-name="day" old-value="1" new-value="1"/>
+      <remove id="16df7c9d-fabe-4e7d-8039-0ec561cf3301" child-id="709b16a9-44d7-46cc-a6a9-572c284e9fe4"/>
+      <add id="d0f9f815-8049-4292-8c38-937e509fd8a4">
+        <label id="123e276d-61ff-4276-8176-1d9a86926108" name="event:pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="0fe9d38a-059b-4776-9909-e638c02aa13f" node-id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9">
+      <property-change id="7274961d-2ab6-4592-a980-48a63f13492c" property-name="day" old-value="1" new-value="1"/>
+      <remove id="72691096-f245-4ff4-b68f-2c47387bdbd6" child-id="e5ee9103-8de7-4446-b45f-1735ef4ad24a"/>
+      <add id="cda8ccc6-f0bd-4c82-8263-c67615369eed">
+        <label id="34abbbe0-eef3-4025-a6d8-b42e2003b5c4" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="442548bb-d079-450d-af7a-a08b59dce729">
+        <label id="54becd59-931f-4857-a2da-979d1860c2a0" name="instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="331bbc44-90a3-4b40-be5f-ba797f26c3ef" node-id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b">
+      <property-change id="e2937682-992c-48e2-9b6c-109365bb15c0" property-name="day" old-value="1" new-value="1"/>
+      <remove id="d09f19f1-611c-4779-af6d-0e47918b37e7" child-id="c8fa27eb-e8b0-40c9-8191-0e893f01c2fd"/>
+      <add id="eff576df-1c1d-45a4-ad08-98f291dcf3c6">
+        <label id="cfb573b9-60fb-4f99-90b9-654816875621" name="event:pregnancy_visit_1"/>
+      </add>
+      <add id="dfaadbbb-74e6-4927-a468-cd20b0e302fb">
+        <label id="bb9cac0f-6d57-47f8-b3d8-6f8f50077687" name="instrument:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="c8c29512-622e-4183-a3af-a8dfe6c44690" node-id="2eab7a03-9e0b-449f-82c4-9087b705ff29">
+      <property-change id="49c04783-89db-4ea3-9ed2-646e0b40b916" property-name="day" old-value="1" new-value="1"/>
+      <remove id="de09f0df-7ca4-45ae-9a65-ec109c55376a" child-id="4049e590-1c91-424c-9f05-d55994c34be1"/>
+      <add id="91a318f7-0b41-4bce-8977-6ada094353d8">
+        <label id="5a22bcdc-0fe0-4dcd-ae44-7db45f07a2ac" name="collection:biological"/>
+      </add>
+      <add id="86f5dad1-b076-40b1-ab91-8bdac63e3cd5">
+        <label id="28014a43-d786-4d06-adcd-d9fec07bb699" name="event:pre-pregnancy"/>
+      </add>
+      <add id="fa220eb7-a1b3-45d3-9418-2867af8701d8">
+        <label id="4552cb4e-e5e2-47ce-98dc-7ecaf8f26aa5" name="instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="de6e05fc-c84a-47f0-ad7a-e260790b2103" node-id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9">
+      <property-change id="1e26a797-117b-4f6b-bf60-03588d4d8ae8" property-name="day" old-value="1" new-value="1"/>
+      <remove id="059e20a0-09ec-4317-b913-4f64ffd128ee" child-id="305d2c30-4be4-4fa1-b2f8-577d848b421b"/>
+      <add id="dd4dd90b-6214-41c9-9668-cdb86943ee37">
+        <label id="72ebaff1-850f-4941-87da-032e270e8edb" name="collection:biological"/>
+      </add>
+      <add id="e5337bba-128d-4002-98da-2b5fa20ab9b9">
+        <label id="cd749cc0-098d-4c80-bdd4-19c9f27f7075" name="event:pre-pregnancy"/>
+      </add>
+      <add id="8b8b19f2-f884-43bc-a1c0-05231521cba8">
+        <label id="269b21dc-0a23-42e5-8de1-b988cd9d9a61" name="instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="c307a011-9514-4884-9c24-ef91bd373684" node-id="52c7cd03-c066-468f-967c-6022601c608d">
+      <property-change id="8ac9d377-e934-4573-9476-b64d72abc0ba" property-name="day" old-value="1" new-value="1"/>
+      <remove id="c3076f66-1dfd-42f6-a1f0-7a4ee111a8ed" child-id="0d10ff3b-7be5-48a0-87f2-d690e34227f5"/>
+      <add id="f51fb226-47d3-49b0-95f9-ac6bf17bd406">
+        <label id="50a5530c-1b51-49e9-a720-6c3feca78da1" name="event:informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="81e3eb38-d0f0-4090-b30f-21fb8917e2ac" node-id="3300cff6-43d5-42fb-b143-b36d91438a50">
+      <property-change id="d9d662a2-7c4e-4463-8656-8e4203cfc7cd" property-name="day" old-value="1" new-value="1"/>
+      <remove id="9a91087f-d828-4edf-a41a-2f359ecae40b" child-id="8bfdc720-cff9-41b8-a90c-013f1a25f223"/>
+      <add id="8300e1e1-5904-4882-a59a-6d489ded0e91">
+        <label id="a5f0b1a3-00a5-4fc2-9b1d-84ebb3e0b657" name="event:pre-pregnancy"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8f699ed5-05cf-46f0-a5f8-f83d477be8ea" node-id="e0149f26-2fd8-4be0-9f4c-45ec3ace25ca">
+      <property-change id="0593c1fd-aa08-4c6d-bd8a-9b2d9cace3be" property-name="day" old-value="1" new-value="1"/>
+      <remove id="29467398-8a2c-4cd9-891c-a82e0070d405" child-id="bda948a0-51bc-4748-bd80-b407c732673f"/>
+      <add id="bef5d55f-89b4-4bee-a3f3-82c4a29eb785">
+        <label id="1146b9d4-c90c-4676-9c03-64b06f775d89" name="event:pre-pregnancy"/>
+      </add>
+      <add id="aab5c506-4bc5-4eae-9e29-380e8f3de1a0">
+        <label id="08a8a14e-bdbc-43f5-9bb0-2ffec744f344" name="instrument:ins_que_prepreg_int_ehpbhi_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="abd1f4fe-580e-4da1-8710-8d9892a7c5f1" node-id="c767a6de-4bc5-4143-b76d-59439ec82a63">
+      <property-change id="6c1d45b8-b800-49be-b31e-3d5c2f13d476" property-name="day" old-value="1" new-value="1"/>
+      <remove id="3ee2b74e-3c34-4e17-8a17-4307ace9f6ec" child-id="bc2d9dd6-474e-4d20-a256-5c1088c266b7"/>
+      <add id="d5763612-0a0b-4acc-868b-bed2884e8036">
+        <label id="96ce67e8-8250-4bb3-b8aa-2ace13e8b132" name="event:pre-pregnancy"/>
+      </add>
+      <add id="77c65243-dab2-4b15-ae07-b5dabf530de5">
+        <label id="e1241d4a-e252-48e1-bf3c-d8cf138899d0" name="instrument:ins_que_prepreg_saq_ehpbhi_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6ac06301-0648-4b96-aaeb-e3c3ba4a733e" node-id="30a79ffb-f7de-41dd-841e-0f8ca6a97c0c">
+      <property-change id="f49d360c-33d6-4471-b7f0-fc8e53f734e5" property-name="day" old-value="1" new-value="1"/>
+      <add id="79a56d88-150b-4359-940e-7e1222628149">
+        <label id="9895a789-1885-4f37-9345-087430caa2d1" name="collection:biological"/>
+      </add>
+      <add id="3de3afb1-581b-4b06-8fe9-e956908c23be">
+        <label id="10cdfe34-e5bc-4f70-ba4a-04fedcd826f6" name="event:pregnancy_visit_2"/>
+      </add>
+      <add id="f3e08365-8744-4646-ae98-62ce5132c18d">
+        <label id="4fa14fb9-78a2-427a-a21b-ca1fdb2f4dbc" name="instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="3d5f5264-4e03-41e7-8735-90ed252e79b6" node-id="f75e6c58-4bb2-4330-81c5-ff5d6dd2c9d0">
+      <property-change id="374bc64f-9fc2-4887-9e7a-8ad232301046" property-name="day" old-value="1" new-value="1"/>
+      <add id="2e5249ed-bcff-4021-a919-2faa960d72da">
+        <label id="87c2806b-3f66-4992-ba38-a5d60e5474af" name="collection:biological"/>
+      </add>
+      <add id="0884a593-aea8-4383-9507-780bdf7f59fe">
+        <label id="c5e51fdd-d0d3-44d4-b41d-bd7d5456ddb0" name="event:pregnancy_visit_2"/>
+      </add>
+      <add id="410b4ec2-ed86-499e-b75d-1e5206009527">
+        <label id="71c8e1cc-b0cc-4de3-bf9f-2bd0d95abeae" name="instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="e4ef9093-d846-4174-ae74-f61f814c1576" node-id="af2e94c7-0355-4e75-9b30-99bacb6a5163">
+      <property-change id="72c9bf48-9d71-4e4b-b217-fd11cce3bcd0" property-name="day" old-value="1" new-value="1"/>
+      <add id="4eb93932-fa58-4ca6-80ab-ab04791e0676">
+        <label id="5deaa56c-1a22-45b0-9e7b-6c9523d7b0ab" name="collection:environmental"/>
+      </add>
+      <add id="307c4b4e-2e55-4e07-952f-2586f6a3ab8b">
+        <label id="82eb7556-a478-416a-9b5f-7f3d1a0b6a64" name="event:pregnancy_visit_2"/>
+      </add>
+      <add id="18592bf4-9327-46f1-90bb-7b0386a9a601">
+        <label id="7e5e8ecd-26fc-4389-a792-2464eb1cc363" name="instrument:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="b360727a-a219-41c1-baae-e1178268659a" node-id="20a940d5-fc5d-4d8d-9427-68fff2638845">
+      <property-change id="3a8e9620-b45f-4859-b108-4bbb434b4305" property-name="day" old-value="1" new-value="1"/>
+      <add id="40e4eedd-91ae-42c1-9846-7b92966d1b83">
+        <label id="d2ff8f33-dddb-4895-8144-f661af32df63" name="collection:environmental"/>
+      </add>
+      <add id="e76402ba-4c3a-4917-8e4e-1719ec8bb590">
+        <label id="e12e9da2-5af5-47fe-88c1-01d2203e6d1a" name="event:pregnancy_visit_2"/>
+      </add>
+      <add id="41cb4ea7-9051-405e-9e98-fd913c4bd754">
+        <label id="873367e5-9986-41a3-9e6c-787fc6706e19" name="instrument:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4262915f-051a-4e51-ad8f-8d2580c57851" node-id="1c5d3b15-57e5-4cce-b933-c354b4e71238">
+      <property-change id="58d814cc-8f33-4d80-8e1a-8acb24366178" property-name="day" old-value="1" new-value="1"/>
+      <add id="fe1028e2-26a2-4d1e-98fc-78fd3afac034">
+        <label id="33d27114-f32e-4831-8a6c-b27c60220d78" name="event:pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="fa80e463-1f82-469b-be2a-5664ab7a5e16" node-id="6bb3cb8e-5e47-42e7-9b00-352106c9bfb5">
+      <property-change id="5c04bebd-40d8-41c7-af91-6bfa7d0c8676" property-name="day" old-value="1" new-value="1"/>
+      <add id="c35f7d40-4fe7-45d8-aaac-7c54080dae74">
+        <label id="7c8a108d-e1b1-4b8b-9e8f-d033a259b39a" name="event:pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6e365fda-e761-42bc-bc3e-4f21822c1a91" node-id="93589159-2493-4d02-9c7c-dc253692bd80">
+      <property-change id="d15b3ce0-f253-4ca0-acec-357486aa1dd5" property-name="day" old-value="1" new-value="1"/>
+      <add id="03401064-c731-46e7-8a59-69d071897779">
+        <label id="b727f337-3e0a-4f6e-8169-967e71d51490" name="event:pregnancy_visit_2"/>
+      </add>
+      <add id="1baf2103-2a4e-4c00-a8e9-794671e90da2">
+        <label id="e86ee865-096f-4d9d-b386-2105c430725d" name="instrument:ins_que_pregvisit2_int_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="328761b5-8799-4f80-868f-0a7043055c74" node-id="4a3ec00c-7aeb-489e-9f54-acf445219ece">
+      <property-change id="2e797d26-a2a3-45ba-9855-79537d333fb1" property-name="day" old-value="1" new-value="1"/>
+      <add id="3f9862c1-19fc-4ab3-ae9b-28aba476ca52">
+        <label id="28fecb6c-5a22-41b6-9df1-bafb7cd98fd5" name="event:pregnancy_visit_2"/>
+      </add>
+      <add id="37e0c202-26e6-4705-b1b1-2738d0359e66">
+        <label id="63d4e566-1569-49dc-8b02-7d1e0c99d6cb" name="instrument:ins_que_pregvisit2_saq_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="74107c54-b5a3-474a-8c9e-130dc25029d8" node-id="e1c269f7-a880-49fd-9b6e-c79d68d5b93b">
+      <property-change id="c800c8ed-a80d-41b6-8240-e2f24b85cd0d" property-name="day" old-value="1" new-value="1"/>
+      <remove id="514a2899-fddd-46e7-8e0d-4297e653fc33" child-id="8021a873-30cb-4b92-8e49-fe9d46c0f392"/>
+      <remove id="6f091ca8-0ea6-460a-b5ce-77dd87cede1e" child-id="e944fc2d-57ef-4bbb-b667-b0171b413479"/>
+      <remove id="bd751f04-c102-43c1-b3d9-f05f0d551265" child-id="d2fff2bd-b51a-4a44-ae2c-d18d8c9eb6a6"/>
+      <remove id="3fd04995-54c2-4e8c-8dd2-c8dc2e7d6b3b" child-id="219e4c35-d4ac-4001-b082-8db6ef2d5553"/>
+      <add id="3cff76a0-8d7d-4e6b-b801-12ba4fb7b4f0">
+        <label id="7104c9cd-b6e4-49fb-9a2f-8b27c6a3e7ca" name="event:informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="250cf619-f3fe-4cbb-a0bf-25814e437f77" node-id="4e33bea0-cefa-4132-bd1b-5179eec993d9">
+      <property-change id="bd40d822-dfdc-4ec0-98a6-fd4733be0b6d" property-name="day" old-value="1" new-value="1"/>
+      <remove id="aaff9514-2d03-4ec6-a6f4-aa69f8070014" child-id="40edabe3-1d6b-40ce-a8a8-d6d50c40c0f1"/>
+      <add id="36a04655-ded2-4d31-be73-640b15208cfb">
+        <label id="aaf73ccc-ccf1-42ec-a475-a77617eff4ef" name="event:father"/>
+      </add>
+      <add id="bc0fc3b5-4d13-4102-9d47-7f22eff157e7">
+        <label id="3ce40ce5-609f-4e53-ace9-11e3a3880abd" name="event:informed_consent"/>
+      </add>
+      <add id="950ab50d-3ae7-4166-9018-44344a1047b5">
+        <label id="7598ebcc-ac8d-4611-8b30-c191f985a3b9" name="instrument:ins_que_father_int_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="90a9a816-3299-457d-bb3f-55f97f43bac4" node-id="9db060c7-93fe-47d4-8941-e706b4459c5f">
+      <property-change id="a40afc07-d620-4d1a-a4f4-23e69b31d956" property-name="day" old-value="1" new-value="1"/>
+      <remove id="14d304fd-4ca4-4e55-b7e8-143ea78e53b9" child-id="513a6185-f593-4b51-bd80-25c9d3b4b389"/>
+      <add id="eb14cc04-cec7-4a38-b157-55991965c128">
+        <label id="2b7732f0-0faf-4747-92d6-bd222d31e874" name="event:pregnancy_probability"/>
+      </add>
+      <add id="ed490a23-b41a-45bc-8643-3186f82eab36">
+        <label id="a30be0ad-b1b9-4473-9e69-2db7c6dea999" name="instrument:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6f121b1d-6aec-424c-abce-eb96ae59e4c5" node-id="930ce80d-b991-42db-99df-ac3e4bcce069">
+      <property-change id="a66569f5-706d-4674-bdc6-5d0d8c8af6ad" property-name="day" old-value="1" new-value="1"/>
+      <remove id="a01a94a4-0b3d-4985-9737-209106835d11" child-id="32368c66-69cb-4c5c-ac3a-004730b38b7d"/>
+      <add id="8b12b137-a0ff-4026-949e-2685f6e40ec9">
+        <label id="1463c9f5-2421-43fc-bd38-03e01de3e5db" name="event:pregnancy_probability"/>
+      </add>
+      <add id="2a1e5909-c2b8-4232-b386-c78aacbdce31">
+        <label id="42412825-d08c-4762-8045-aa251e69f18d" name="instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="914f113b-e837-4883-8cef-9df97e8db12a" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
+      <property-change id="76f666d0-63fa-422d-97bd-ffb54bd68e1f" property-name="day" old-value="1" new-value="1"/>
+      <remove id="9519ceee-799c-4589-925b-10a385b17b92" child-id="14748334-366b-4540-ac0e-7ddda92ecd85"/>
+      <add id="6470fd42-a57a-4661-9977-9b072574c3cc">
+        <label id="d3c7a36d-704f-4e6a-ae70-e7abfeb6ea6e" name="event:pregnancy_screener"/>
+      </add>
+      <add id="5e75c2cd-6a25-4a3d-a999-9e61ea24897b">
+        <label id="c372514f-1f4d-44f2-8eb6-13b15b94cf38" name="instrument:ins_que_pregscreen_int_hili_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="09318ecb-bc33-4665-96bd-13e6bbca0dad" node-id="2b68bb5c-edde-4510-81c8-b962704bc968">
+      <property-change id="4146c37e-b049-4866-85bd-b526499f05ae" property-name="day" old-value="1" new-value="1"/>
+      <remove id="c2b9b3ff-f90e-4524-939d-9e5f629c119c" child-id="671b6648-7bb1-4480-be88-267188863f7b"/>
+      <add id="f63921f2-1806-4497-bf9f-f3d7647c9622">
+        <label id="1eb2883c-edfb-4deb-a718-864ef9887dae" name="event:informed_consent"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6512cb9b-6509-42ec-a11d-9c8645bf7c44" node-id="bbb8de5c-a025-4b4c-b7d2-577a96551263">
+      <property-change id="d31960f1-03ab-43f5-973e-ab1eff8e5e63" property-name="day" old-value="1" new-value="1"/>
+      <remove id="91713112-4622-4e9f-a591-0800a7ea7dab" child-id="47cd5390-7feb-4544-b99e-a3cc362ea8f3"/>
+      <add id="477cf65f-008c-4a5c-8da5-f61c56ab6957">
+        <label id="9a66686c-7f6b-433e-8832-5dc8240036f8" name="event:low_intensity_data_collection"/>
+      </add>
+      <add id="cd13632e-4f23-46a6-8bdd-6e35f1c26823">
+        <label id="cbd382ef-6fc6-4569-8e37-f1e0f3d30128" name="instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="87f40b3b-3948-4c37-be3e-f2ae464e1f9c" node-id="0fd3ef61-49ce-49dc-aa70-b23e01428ae8">
+      <property-change id="311af4d4-1396-4a41-bf84-4d48f6ef8e64" property-name="day" old-value="1" new-value="1"/>
+      <add id="fd1d98a3-0a2e-4fe1-bbb5-3337c75cf51e">
+        <label id="8f3f5e27-50b2-4133-b106-ee1fb423b3f5" name="event:pregnancy_probability"/>
+      </add>
+      <add id="942f9b83-b223-4dfe-8722-f4150f652bae">
+        <label id="bcf6c0ac-31ee-4294-91de-3c39380ed539" name="instrument:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f00a4b84-2938-4e18-bf8d-9ded20f81466" node-id="3613113a-fae4-4af4-b6f0-c30ae09a67b2">
+      <property-change id="62b74c73-bfa1-4190-83c0-32136ba74f44" property-name="day" old-value="1" new-value="1"/>
+      <add id="5eb8e2a7-5a74-468e-906f-f50ce1b4f88e">
+        <label id="92f83b61-f61d-4e2e-b37e-bab62efcb706" name="event:pregnancy_probability"/>
+      </add>
+      <add id="66529448-ef28-4ec6-84da-5d66e8661857">
+        <label id="e272e18d-4fa9-4324-aa1e-baf49fd6cca3" name="instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="e2a99268-3232-4a43-b673-6b5339e7f6f0" node-id="32d4d5e0-36d2-4fe5-ad01-53c7cdb1d87f">
+      <property-change id="856d8e01-f7bd-4362-aa31-0530c70c75b7" property-name="day" old-value="1" new-value="1"/>
+      <remove id="c7bb6a1d-6dc6-4531-a701-1c0a41c37f1c" child-id="ea1cbb13-b98e-4ff7-a9ff-00b274ccfa98"/>
+      <add id="6018d4d7-e048-4147-a315-111058ec92ea">
+        <label id="2a47b454-9322-48d4-ad48-7b4f1777eea7" name="event:birth"/>
+      </add>
+      <add id="4d29a5bc-e838-49f6-aa18-9341fb92f36e">
+        <label id="9475cef4-137e-44ec-81e0-27f218cf5279" name="mode:low_intensity_birth"/>
+      </add>
+      <add id="1d9ff118-9f4f-46d5-8e9d-fff278593e70">
+        <label id="0a4b7e0c-b8aa-44b5-9f96-a5d754a5092e" name="instrument:ins_que_birth_int_li_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="cabaafcf-db89-4138-8472-6c735a8e334b" node-id="3ff90782-a30e-425f-96ad-2ea589c756fc">
+      <property-change id="99152bba-ff33-4f8b-9f35-0abfce1cc540" property-name="day" old-value="1" new-value="1"/>
+      <remove id="1d58999c-23ed-47b6-a810-d7df7c6c040b" child-id="dedf2b03-b7a5-4c78-ab94-9def7d892464"/>
+      <add id="a457cc5f-de94-4bcb-a463-9d47fc556c11">
+        <label id="2e59ea43-6d6d-41e0-b5cc-e66ecff8fcc4" name="event:low_to_high_conversion"/>
+      </add>
+      <add id="33cf2626-d307-43fc-b632-b6e19fb2f794">
+        <label id="d6b78228-39a3-4bd7-9107-e23dcaf931ec" name="instrument:ins_que_lihiconversion_int_hili_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="7b75f232-e5ee-49a5-8c2c-f0165277572c" node-id="a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd">
+      <property-change id="7e80128e-3db6-40b7-82a7-a49293f45b1e" property-name="day" old-value="1" new-value="1"/>
+      <remove id="3bd5e3a5-8b13-4f15-97b9-6c5d9d15b6cd" child-id="f911ee80-e693-432d-a658-d2dcfb02ead0"/>
+      <add id="9632f180-adc6-44d1-98fd-305e41933713">
+        <label id="9e4e1d42-e357-4a25-b1c6-42eb35010c4c" name="collection:biological"/>
+      </add>
+      <add id="466ca355-704b-49b6-b19e-e3739fc56ffc">
+        <label id="ed032231-ea7a-4307-89be-2426ae314d6e" name="event:birth"/>
+      </add>
+      <add id="9987f212-bdc7-467a-af8e-0485e4ad4726">
+        <label id="0cc411b2-454f-4d2f-8d74-41461241a36e" name="instrument:ins_bio_cordblood_dci_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="7c7cad22-7dc3-4887-a5af-61764060b81e" node-id="71eff7d1-e4a3-446b-a878-ef835b368181">
+      <property-change id="c2883f68-4323-4eed-a9bf-08942e83ec5f" property-name="day" old-value="366" new-value="366"/>
+      <remove id="9513b10e-02bf-4a8d-a23d-9fff40e56845" child-id="4eb8ec56-4d9b-4c43-b0a8-ab1837c9b9ad"/>
+      <add id="e90d50ef-33eb-40a3-bb6f-76ef66f1b40a">
+        <label id="b0ecea76-a064-49ee-86d9-4d17f939b052" name="event:12m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="00e38507-ecf2-4510-897a-7237c9c7958f" node-id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b">
+      <property-change id="29b6e949-45f8-4acf-a882-83a13c84c2cd" property-name="day" old-value="183" new-value="183"/>
+      <remove id="6c6fd543-e798-4f32-b1ed-67ac3ac9b953" child-id="3a7c52fd-e6e8-469e-9a03-d4b3042efd3d"/>
+      <add id="9164137e-726b-43d5-9d51-9b13261b28c6">
+        <label id="94b0ab23-d5bb-4ea0-8a77-a120599033f1" name="event:6m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="7b6162c8-bc0d-4c06-84e2-4f86cef6e6eb" node-id="39aa9050-31b0-41a3-81cf-a513b57d2fff">
+      <property-change id="c6c9dc14-f282-4bab-82a2-be9acd675e31" property-name="day" old-value="1" new-value="1"/>
+      <remove id="b8436680-65b9-4f96-8e4f-fbd4e44228eb" child-id="a851f308-2d8f-48dc-8d43-277f85d1473f"/>
+      <add id="cc79d8bd-9ab6-4403-bcdc-72424c231fdd">
+        <label id="76258c52-6a8d-4d30-a74d-a1669202d068" name="event:birth"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="0cdfa269-4fd7-47e7-8d40-c2a6c6cb357a" node-id="4487f930-29aa-464d-a1d8-0b182cecfd40">
+      <property-change id="40fe5f9e-757b-44ab-bc24-bdbf6be1c06f" property-name="day" old-value="366" new-value="366"/>
+      <remove id="490f60ba-ec13-46aa-9c73-b0f898ab67f2" child-id="6732bf38-74f0-4e3e-950c-6b219173fcfe"/>
+      <add id="ac529ddb-95d0-4583-b6ed-91ee1058e381">
+        <label id="12258bd9-b8b3-47f1-9d43-dbb069985f41" name="event:12m"/>
+      </add>
+      <add id="407093b6-7927-4b23-a6d7-98d7cd29c4ea">
+        <label id="b697464d-d3d3-4293-8d68-c1e3a26a0309" name="instrument:ins_que_12mmother_int_ehpbhi_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="d3c27d7a-8708-49b5-b2be-1e3f88708a7b" node-id="599d1e75-7d6e-4933-a69a-76c83a7b9f80">
+      <property-change id="260c5bcf-8a8d-48d8-8aaf-a118a45ed309" property-name="day" old-value="366" new-value="366"/>
+      <remove id="f0231e18-9d73-4e40-9c34-f29b4974fb8c" child-id="500a5bc5-2344-4223-9cf9-746e5bbd0fe9"/>
+      <add id="90a6768e-a803-433a-a564-d545e2438a26">
+        <label id="801361b8-d7e4-4228-889b-90d4452f6afe" name="event:12m"/>
+      </add>
+      <add id="bcd5368f-b4b1-497a-a3a6-32c578409aea">
+        <label id="3b89598e-b873-46e0-a8fa-5bd845c82a05" name="instrument:ins_que_12mmother_saq_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="18cc5a1b-6cc0-4de3-b2aa-0067477782f4" node-id="735de02c-bdc9-44fd-ac59-d901a90e3799">
+      <property-change id="e84b2e70-83f6-4ee9-98e6-7a7416614753" property-name="day" old-value="548" new-value="548"/>
+      <remove id="94f109fc-c36c-410b-bab4-75008691de58" child-id="27bcabcb-b283-485c-9a2e-4041144db863"/>
+      <add id="0b29ed3a-8be4-41c1-a97f-cd2fc40dd2c4">
+        <label id="476f03f7-7a15-4436-bd00-bcb2e6bf277e" name="event:18m"/>
+      </add>
+      <add id="fa0bb7f9-1054-4e1b-b4d4-c238e14e4fe3">
+        <label id="7599d952-d8d2-49bd-a270-9892059b100f" name="instrument:ins_que_18mmother_int_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4a3d6a58-d252-4302-be53-95c062462919" node-id="0a0919e3-79c3-435f-b897-9e0c4fa4247f">
+      <property-change id="0d667c57-ef89-455a-acb6-5cad55d134c7" property-name="day" old-value="548" new-value="548"/>
+      <remove id="4a4343a6-d288-4e13-a39a-b0e2bf6a52ca" child-id="c64c357f-d10c-44a5-ba7a-394b85ac781f"/>
+      <add id="4e703612-b397-462e-a7f5-7caa74bd9dba">
+        <label id="9d9dedfa-d3d0-4657-afe1-4ba08dcf88bb" name="event:18m"/>
+      </add>
+      <add id="c2922c9a-4ee1-451b-b204-f3fed3e8bf42">
+        <label id="ba384749-012d-4a4d-8bcf-15a0d1666bcf" name="instrument:ins_que_18mmother_saq_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f9ad2800-9a73-4ce9-b667-bc7e7f528727" node-id="d3a1f314-a163-4bb3-aa42-ccf639034814">
+      <property-change id="336b2513-ac54-4089-a5ae-0be49f2cca6b" property-name="day" old-value="730" new-value="730"/>
+      <remove id="e39f2ec8-5227-409a-9c75-d0dafd0ed5b6" child-id="34896ee3-5e37-4e00-8cda-4dfed061e288"/>
+      <add id="371c18f4-3ed8-4bd2-a2cf-55c744b790dd">
+        <label id="bef2aaf1-896e-4bc5-8349-61552c0e67f5" name="event:24m"/>
+      </add>
+      <add id="fd3b2516-b471-4307-926c-86c78a39be67">
+        <label id="1839494a-8f09-4831-85d1-a882aa16073d" name="instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="fff12acb-11f3-4ea3-817a-c1adc07dd243" node-id="06b1e674-3af9-45e1-ac7e-2c30843fd365">
+      <property-change id="9b6209fd-9040-4f91-9e58-ec9045bdfa26" property-name="day" old-value="730" new-value="730"/>
+      <remove id="fde17cda-c219-4f43-b3dd-7ad4ec065125" child-id="3d8ebd58-6e18-4f8f-bd08-bfbbe222ef3c"/>
+      <add id="98b154c8-f61d-4b63-ba0f-bd5a4df92f3f">
+        <label id="becdb7d9-085f-432a-b728-cf750c1eaed0" name="event:24m"/>
+      </add>
+      <add id="c222e475-99d6-43e7-a2fa-4ee01f60bf28">
+        <label id="2ee9c976-0f6d-44ad-ada4-5c603ca4dd21" name="instrument:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="b0507adf-e2d7-45d3-9ab9-c737c6c1e194" node-id="88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b">
+      <property-change id="6b772438-34f7-488f-b51c-1e498d7c1ff3" property-name="day" old-value="92" new-value="92"/>
+      <remove id="4c2de27a-9b02-4fa7-8096-cafefab06ef9" child-id="7ec6d5d7-e2fb-4c8d-b69e-970d314ee33c"/>
+      <add id="358db8d0-010d-4469-b175-416d479a2f30">
+        <label id="5749c2a2-681d-4393-93ac-3d0ed7f5a2c5" name="event:3m"/>
+      </add>
+      <add id="63dad9f6-5008-4ccb-9674-52daac7e19e4">
+        <label id="bd4eb4f4-5d13-4101-860e-3f40178dcaff" name="instrument:ins_que_3mmother_int_ehpbhi_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="eea48ccf-2495-4a25-bd4f-aa4dae80976a" node-id="01be00a9-bcf1-4d40-918e-d41d65ccaac6">
+      <property-change id="395c269c-2059-424a-aca1-beb7595d6536" property-name="day" old-value="183" new-value="183"/>
+      <remove id="a22ffba5-b2cd-49d4-9c93-40e1b7da7288" child-id="321ffe7b-6e7c-448f-8c2c-7f3a2e42106a"/>
+      <add id="39664b26-74b3-40fa-9537-2a7241b23183">
+        <label id="3302fed0-4416-4608-8d85-5a99918129d6" name="event:6m"/>
+      </add>
+      <add id="f31368b8-89f1-40bd-a9de-1489a86dd690">
+        <label id="e5ebadb8-44d1-4f6b-9de5-57decfc1d96c" name="instrument:ins_que_6minfantfeed_saq_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="7f6e9c75-a2ba-4b75-919d-fbe6d2b5a2a9" node-id="e2531488-58e7-4721-b5f0-cbf9e8850ffd">
+      <property-change id="2ce398ec-b55f-437b-bcd1-f774bdf45c55" property-name="day" old-value="183" new-value="183"/>
+      <remove id="6121486e-6f36-4675-ae45-0fc2de514581" child-id="ec6b42b4-366c-46dc-ac3c-cadd1f53ca3b"/>
+      <add id="a287debd-558a-4c6d-b014-ea7f512f492d">
+        <label id="13dadc65-c5cd-40e1-8922-aea5c4ef644a" name="event:6m"/>
+      </add>
+      <add id="087d8f05-c488-4ff6-878b-1b6d00178935">
+        <label id="28e02ee9-014c-4fb8-8b94-569926483ebe" name="instrument:ins_que_6mmother_int_ehpbhi_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="46bc98a5-5b63-49e4-a0ef-9c1bbb0ac5ed" node-id="d0e3ac20-b91f-4c2a-8217-a42b114afde6">
+      <property-change id="f29be4b7-ae74-4665-826d-7723e0693c3a" property-name="day" old-value="274" new-value="274"/>
+      <remove id="8b5258a2-8cdc-44ce-8a98-4125b2d93248" child-id="b4c197d7-9ad0-48b8-9f8e-ed6b4b5ecc3f"/>
+      <add id="93e147b2-db1d-402a-bff2-223c565be630">
+        <label id="ce0b2d4c-0568-49f9-904b-fde9e346d444" name="event:9m"/>
+      </add>
+      <add id="d7f1bd64-5b3b-46f9-b0b3-672d036de9c5">
+        <label id="00d2ec12-dd27-47f9-a64f-563e0f179c73" name="instrument:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="5cda11b5-c31d-4a0c-9d2e-835bc55e01d1" node-id="6140789b-b3fe-4276-ac43-38b4d447e6e9">
+      <property-change id="c8c61e4a-9508-4671-9829-9c62ea52b261" property-name="day" old-value="1" new-value="1"/>
+      <remove id="7352ccb7-6c43-4c97-bf57-f00ead7fa658" child-id="a08e9114-4307-4abb-87b2-c9d3f91f56cd"/>
+      <add id="d02c8478-0bce-476f-b443-af1a4d0c3465">
+        <label id="7e428ee1-e954-4b46-9d3b-c8eac1be14c2" name="event:birth"/>
+      </add>
+      <add id="b5a216d4-c180-48a1-9bac-556948db9891">
+        <label id="eff1b533-188b-4e0e-b883-fc4caa2c15e8" name="instrument:ins_que_birth_int_ehpbhi_p2_v2.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="5c8f6cb4-7f0b-4683-82ee-a584a4c8fda0" node-id="d2419f3b-021b-40a8-b68a-547094382a49">
+      <property-change id="f6ff34ad-3b64-459e-bf62-2e909888edf1" property-name="day" old-value="1" new-value="1"/>
+      <remove id="04848d3e-ae84-4559-a05d-ca43d784beeb" child-id="ab6afc22-b234-481d-aa10-e4ba590389bb"/>
+      <add id="1a7f4268-edbe-4faa-9e4f-1686749e01a9">
+        <label id="b42b8463-3b9e-4fde-b21b-5390fe6407a0" name="event:birth"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 2" date="2011-12-29" mandatory="true" released-date="2012-02-06T11:57:44.21Z" previous-amendment-key="2011-09-16~Rev1">
+    <period-delta id="b97fcdf0-06d5-4eda-a935-a9a689fe2dcb" node-id="fa423dbe-cccb-4f36-966b-a03988aa88ba">
+      <remove id="ecb08905-b25d-46eb-a050-b5cac8e02826" child-id="b8eb6fcd-6eae-4b61-840f-1c178ce985c6"/>
+      <remove id="09dd8b9f-5569-42bf-9f45-43e8b67c99ad" child-id="77b3820b-05d3-4afc-a6b3-3b9e8cf0ad6f"/>
+      <property-change id="2fc79cba-6a8f-40df-b908-5b78d70501ae" property-name="duration.quantity" old-value="182" new-value="1"/>
+      <add id="59ed0e70-521b-4bfb-ae99-769e4d321254">
+        <planned-activity id="0fd3ef61-49ce-49dc-aa70-b23e01428ae8" day="1">
+          <activity-reference code="PPGFUI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="17414f42-179d-47be-861d-81b1f21a6474">
+        <planned-activity id="3613113a-fae4-4af4-b6f0-c30ae09a67b2" day="1">
+          <activity-reference code="PPGFUSAQ" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <period-delta id="9d762dc8-9870-4cfe-8845-3965e9f94a29" node-id="6357145c-4d43-4527-ad9d-f277b353c70c">
+      <remove id="a7a1edf5-4f9b-458d-8f81-181694d9ded4" child-id="1d3157ca-b173-4d4c-88a7-60e93257c8f7"/>
+      <remove id="d4839ba1-7d65-41c3-bb42-2843b4dfb3a6" child-id="2c37381c-1433-4e59-bf5f-f3aac17aff9e"/>
+      <remove id="a641fc89-d614-4e2d-b2b2-241101950e48" child-id="05ccc637-17de-479f-8a0a-e620cee84795"/>
+      <remove id="e1518b74-fbcb-4fe6-a5be-364271891466" child-id="6aae9925-daa6-47f8-b12f-9576a84ea5f1"/>
+      <remove id="620e9a22-836c-43d3-9e3b-3f89039fed61" child-id="4a4b3357-1c98-4b58-9d9b-2444df21ca17"/>
+      <remove id="7715687a-a488-486b-8e82-df665248a63a" child-id="25cf4b4d-c0e8-4240-84cf-f5aa764e3cb2"/>
+      <remove id="bc0ab8d2-858c-4620-b10a-1fdb9c8f8409" child-id="e2d20285-f495-4a6b-8856-75120befbe79"/>
+      <remove id="dd4e5c58-3ae7-4972-9e43-589f0996de38" child-id="f9e60d77-205e-40ff-81d3-63b7d23bf620"/>
+      <property-change id="65e85a57-f7c4-44f5-8512-5b3dcbffeda1" property-name="duration.quantity" old-value="60" new-value="1"/>
+      <add id="324e2e31-a6be-4e09-ba4f-56a81a39ee1b">
+        <planned-activity id="30a79ffb-f7de-41dd-841e-0f8ca6a97c0c" day="1">
+          <activity-reference code="BABI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="1ff58197-e819-49b1-9ade-ef5fc1da7ff3">
+        <planned-activity id="f75e6c58-4bb2-4330-81c5-ff5d6dd2c9d0" day="1">
+          <activity-reference code="BAUI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="15f7d946-3ce6-4001-8509-e84110ea7aab">
+        <planned-activity id="af2e94c7-0355-4e75-9b30-99bacb6a5163" day="1">
+          <activity-reference code="ETWPharmTCI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="da0569be-1470-4a1b-8ad6-052af770c891">
+        <planned-activity id="20a940d5-fc5d-4d8d-9427-68fff2638845" day="1">
+          <activity-reference code="EVBDTCI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="29cc0d8a-d886-47b6-bfc4-84a3822d204b">
+        <planned-activity id="6bb3cb8e-5e47-42e7-9b00-352106c9bfb5" day="1">
+          <activity-reference code="PHCL" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="c595dc98-1af2-43bb-998f-81ffd1313b71">
+        <planned-activity id="1c5d3b15-57e5-4cce-b933-c354b4e71238" day="1">
+          <activity-reference code="VIS 2" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="91d63235-a22d-4eb2-8547-c45a5bcb7979">
+        <planned-activity id="93589159-2493-4d02-9c7c-dc253692bd80" day="1">
+          <activity-reference code="PV2I" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="dba0e6e3-664e-47d1-9ca9-3fa660363cb1">
+        <planned-activity id="4a3ec00c-7aeb-489e-9f54-acf445219ece" day="1">
+          <activity-reference code="PV2SAQ" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+  </amendment>
+  <amendment name="Rev1" date="2011-09-16" mandatory="true" released-date="2012-02-06T11:57:41.85Z" previous-amendment-key="2011-07-07~[Original]">
+    <planned-activity-delta id="abe0b219-2ab6-4870-aacf-60d6de803b03" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
+      <property-change id="41448d97-1a49-4f5b-8fcf-b09072e5caa6" property-name="day" old-value="1" new-value="1"/>
+      <add id="a7e4da16-68bc-4fa6-8c16-8f703015b061">
+        <label id="14748334-366b-4540-ac0e-7ddda92ecd85" name="pregnancy_screener"/>
+      </add>
+    </planned-activity-delta>
+    <period-delta id="950d59de-8b7a-439f-8406-3293a26119d1" node-id="c791d8a3-e26e-461a-8425-f5acce73ac1b">
+      <property-change id="5e5546bb-60f7-4e9f-a153-071af8165852" property-name="name" old-value="sreener" new-value="screener"/>
+    </period-delta>
+    <epoch-delta id="236a51f4-a9a2-4ccb-b6fe-2f2c92bea0d2" node-id="73f6c858-4069-411a-8d82-c9d558c07d68">
+      <reorder id="951498dd-daf9-46c8-a4df-bf666e463e1e" child-id="6a141368-5229-4262-b3c5-45212520ec76" old-index="1" new-index="2"/>
+      <remove id="b1c099bc-c5ba-499d-8b98-bc6ce08c534c" child-id="cbd73e59-700f-4a7a-b437-961f1af9e4b2"/>
+      <add id="c9b6fb04-c68c-46ba-80cd-a673b2320f9e" index="4">
+        <study-segment id="34d4638b-6f7f-4801-881d-db242d6f7ee5" name="Low to High Conversion">
+          <period id="8f6e304c-a0a4-494b-84d7-811ffb14d927" name="Low to High Conversion" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+            <planned-activity id="3ff90782-a30e-425f-96ad-2ea589c756fc" day="1">
+              <label id="dedf2b03-b7a5-4c78-ab94-9def7d892464" name="low_to_high_conversion"/>
+              <activity-reference code="LIITHICI" source="NCS"/>
+            </planned-activity>
+          </period>
+        </study-segment>
+      </add>
+      <reorder id="49ca0bb3-ce8c-452b-8497-aa594710c51e" child-id="6a141368-5229-4262-b3c5-45212520ec76" old-index="2" new-index="2"/>
+    </epoch-delta>
+    <period-delta id="5afaaa04-52aa-4b7f-85c3-6f23de94d42c" node-id="fa423dbe-cccb-4f36-966b-a03988aa88ba">
+      <property-change id="5cba66b3-7d86-47dc-abbb-215e9bd059c9" property-name="duration.quantity" old-value="6" new-value="182"/>
+      <property-change id="5c6810da-ca7c-40db-ae3b-8a5ef1aece4d" property-name="duration.unit" old-value="month" new-value="day"/>
+      <add id="5339c7d7-b8f4-4020-9121-de2a13a0e85a">
+        <planned-activity id="77b3820b-05d3-4afc-a6b3-3b9e8cf0ad6f" day="182">
+          <label id="9583a027-bcbd-4fa6-9d6b-f1c75da4d2a3" name="pregnancy_probability"/>
+          <activity-reference code="PPGFUSAQ" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="178de5b6-1804-4a92-bed6-a0b75505c346" node-id="b8eb6fcd-6eae-4b61-840f-1c178ce985c6">
+      <property-change id="99872989-a920-427b-b3a9-bdf6727881cd" property-name="day" old-value="168" new-value="182"/>
+      <add id="2d7a0e22-6a06-43eb-a5eb-3811bbab5f0c">
+        <label id="4606c1a0-4ac6-42ce-a628-6f26a19f24d4" name="pregnancy_probability"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f7ae1b49-b1bb-48e3-92aa-3296969cb75f" node-id="2b68bb5c-edde-4510-81c8-b962704bc968">
+      <property-change id="6737a5a2-1606-4867-8b23-758f2c6ed1f7" property-name="day" old-value="1" new-value="1"/>
+      <add id="91d7b0d0-9567-4998-a6ea-b44b4b183e7b">
+        <label id="671b6648-7bb1-4480-be88-267188863f7b" name="low_intensity_data_collection"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6a5f20e9-1a31-4e5e-bac0-babd40548899" node-id="bbb8de5c-a025-4b4c-b7d2-577a96551263">
+      <property-change id="23d479cf-c785-49e1-ac42-a2fa96d6f571" property-name="day" old-value="1" new-value="1"/>
+      <add id="a5264115-ea97-42e2-80b2-4d563ad06cf3">
+        <label id="47cd5390-7feb-4544-b99e-a3cc362ea8f3" name="low_intensity_data_collection"/>
+      </add>
+    </planned-activity-delta>
+    <period-delta id="bcf4448c-438b-4ad4-b460-175e1e304e79" node-id="3902c526-01ee-4183-a16d-0179b7f43bef">
+      <remove id="e865c667-6a44-489a-9893-a953eb95ed88" child-id="33dbd9b9-7288-4684-97a5-56c9dac5eb22"/>
+      <add id="37a88da7-030e-4eb7-85de-559060076f47">
+        <planned-activity id="32d4d5e0-36d2-4fe5-ad01-53c7cdb1d87f" day="1">
+          <label id="ea1cbb13-b98e-4ff7-a9ff-00b274ccfa98" name="low_intensity_birth"/>
+          <activity-reference code="LIBI" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <study-segment-delta id="38616663-6584-455e-acce-af12e69af0cb" node-id="ca65bbbb-7e47-4f71-a4f0-071e7f73f380">
+      <property-change id="061be291-3880-4d78-bff1-173a4f5b9793" property-name="name" old-value="HI-LO Conversion - Pregnant" new-value="Pregnancy Visit 1"/>
+    </study-segment-delta>
+    <study-segment-delta id="f6acacec-f42e-4c61-a800-94dc038f71e5" node-id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624">
+      <property-change id="cb9731ce-7d42-452c-9187-75005b158d51" property-name="name" old-value="HI-LO Conversion - Non-Pregnant" new-value="Pre-Pregnancy"/>
+    </study-segment-delta>
+    <period-delta id="23826fdb-6dca-4f84-befb-516dba448eeb" node-id="c849fb47-1917-47d3-aacd-74331aa46ed8">
+      <property-change id="6818cb07-390b-487b-9507-60e33d8c6bfc" property-name="name" old-value="HiLo conversion Pregnant" new-value="Pregnancy Visit 1"/>
+      <remove id="e3dfb73b-2743-434f-88d3-8e6f718e1f86" child-id="840a0c23-4fa4-4348-b389-6cd6d376b074"/>
+      <remove id="f8054aba-26a8-428b-94a6-c6e06ea26713" child-id="de770c10-c50e-43b3-9b3e-53ac12373342"/>
+      <add id="0c9e272e-2d82-494e-9235-667f91d90bfe">
+        <planned-activity id="920d662a-5a70-4b64-880e-dd1511496caf" day="1">
+          <label id="209f1989-a59c-45be-be5b-329d85e8cfd2" name="pregnancy_visit_1"/>
+          <activity-reference code="ETWPestTCI" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="4cf08fa8-2d02-4c89-9951-ab4b85b203e9" node-id="cad092e0-5863-44ee-9439-506bf34c1a97">
+      <property-change id="923e8ccc-bb0c-4450-9734-7e439fa048ad" property-name="day" old-value="1" new-value="1"/>
+      <add id="d8ff4803-14b6-4165-813b-ef5d40406b1c">
+        <label id="1e262426-39da-4cc8-8d60-feb3a528c527" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="fc6c1259-15f6-4350-944c-6a74c8acfdff" node-id="803eaa20-6a1d-4e39-807d-fa2eba112ba9">
+      <property-change id="0c86e4a4-dfff-4639-b9c8-1926f3a7c3c4" property-name="day" old-value="1" new-value="1"/>
+      <add id="50d82f73-09f3-4376-98f0-0715298b2f1e">
+        <label id="ec32caa6-06b1-4a60-9e85-4f6bad4122c4" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="99389c99-db36-452a-98c5-fb573d6b0368" node-id="3a9323d6-7435-49ec-9f99-722a3c7b9be4">
+      <property-change id="70708f46-a3e3-4a4a-a046-ff101753ad59" property-name="day" old-value="1" new-value="1"/>
+      <add id="ad1ca73b-84b6-42cc-81d0-06c318bdca30">
+        <label id="4a78e860-c4c4-4160-8986-3a2678108ded" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="d0afb295-5c19-4df4-a642-18fb66e60690" node-id="fa8ccc94-9353-4819-ad59-e33301c6062a">
+      <property-change id="8f17207d-3664-49ad-8bf0-bfe88ad151d9" property-name="day" old-value="1" new-value="1"/>
+      <add id="8927c025-7c89-4b9d-a75d-6e83a4e51bf2">
+        <label id="175fe00d-7f2d-4ea7-bf85-71524f2c5ca0" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="249edb7a-0391-4e7d-a662-c99e3b2788b2" node-id="81956a56-e5c0-4c15-ba7b-386dec3697e9">
+      <property-change id="4d0da2ad-331c-4cf6-b6aa-f52d6076b90f" property-name="day" old-value="1" new-value="1"/>
+      <add id="43553461-67b8-4bd6-88bb-9ee1c9ce0010">
+        <label id="c58694fb-d34e-4891-8a4c-3592d0aebbb9" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="33a53c13-ad7e-4987-8672-7c7b039a95dd" node-id="39ba335d-b52e-48e6-8e5c-41768f2e4377">
+      <property-change id="cd04463b-4e89-4a66-8dff-4291447a90cb" property-name="day" old-value="1" new-value="1"/>
+      <add id="366c95fd-b096-42bc-9797-3c9ef7f72aa1">
+        <label id="a912a256-ecdf-4dc3-ad34-87a7c3a9f0a8" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8079d1c1-ef32-4208-b8f8-7845f6dc3f5f" node-id="99aa3b3b-e262-4385-881b-49a23fc47a13">
+      <property-change id="09de6612-caf5-4457-b330-ec082b779ab2" property-name="day" old-value="1" new-value="1"/>
+      <add id="b331b153-9bff-4b26-92d4-dc5c54007282">
+        <label id="4eecedf3-a2b5-4a62-a0c3-b5814f94aa93" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="d79aa549-46b3-4491-be60-60fed5888a66" node-id="aee4d64b-7e08-4ec4-8667-4711c9e48cc7">
+      <property-change id="5f9feac0-4acf-45e4-a16c-7f077f201738" property-name="day" old-value="1" new-value="1"/>
+      <add id="759d8552-6552-4b0f-a00c-929066e8f301">
+        <label id="709b16a9-44d7-46cc-a6a9-572c284e9fe4" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="901cb626-c7d8-481e-9155-75312f600b6d" node-id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9">
+      <property-change id="7f8b94aa-9994-4f6e-9865-d1b6fd996a4c" property-name="day" old-value="1" new-value="1"/>
+      <add id="1ec63c5a-ebd2-4318-a487-c6887fc17dcd">
+        <label id="e5ee9103-8de7-4446-b45f-1735ef4ad24a" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="da2e4498-a4d6-40f4-a263-85839262c9a7" node-id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b">
+      <property-change id="d3adcc38-7beb-4cd1-84e3-e3fb709bbeb4" property-name="day" old-value="1" new-value="1"/>
+      <add id="672c1f40-b93a-47d9-8de4-8b4ae9a91e45">
+        <label id="c8fa27eb-e8b0-40c9-8191-0e893f01c2fd" name="pregnancy_visit_1"/>
+      </add>
+    </planned-activity-delta>
+    <period-delta id="d18dc5fd-02b2-4de3-8135-778bc9cbb386" node-id="2d298ba8-d832-4414-83bf-a5128eb54d96">
+      <property-change id="6068ed28-99b9-4834-acfc-92578ff73722" property-name="name" old-value="HiLo conversion Non-Pregnant" new-value="Pre-Pregnancy"/>
+      <add id="fa2f2faf-f86f-4d32-9853-736647a649b5">
+        <planned-activity id="e0149f26-2fd8-4be0-9f4c-45ec3ace25ca" day="1">
+          <label id="bda948a0-51bc-4748-bd80-b407c732673f" name="pre-pregnancy"/>
+          <activity-reference code="PPI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="c3252610-0229-4b78-91b2-bd4b7e206441" child-id="0c27ee78-85d3-48d0-afd3-96dc26d36926"/>
+      <remove id="6d2fb502-efc1-451e-91d5-e6f749925c95" child-id="0ad94d57-7d79-4a0b-915f-daaf5fae273b"/>
+    </period-delta>
+    <planned-activity-delta id="3137ffd6-c062-4c1c-b0c1-912ad425e368" node-id="c767a6de-4bc5-4143-b76d-59439ec82a63">
+      <property-change id="dd36df7a-a942-458c-92c0-b7904be9488e" property-name="day" old-value="1" new-value="1"/>
+      <add id="d03cddaf-7b93-4c63-8988-9a75aedf1ec8">
+        <label id="bc2d9dd6-474e-4d20-a256-5c1088c266b7" name="pre-pregnancy"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="2cc14aa1-53aa-4d0f-912d-b2ac44a33d1c" node-id="3300cff6-43d5-42fb-b143-b36d91438a50">
+      <property-change id="c570b066-87a7-4e7f-9cd1-87f0244e34ae" property-name="day" old-value="1" new-value="1"/>
+      <add id="eaa126c7-4f01-49de-b4c7-23ea05cba671">
+        <label id="8bfdc720-cff9-41b8-a90c-013f1a25f223" name="pre-pregnancy"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="0492b93e-b236-4e77-9160-4381aab2ab46" node-id="52c7cd03-c066-468f-967c-6022601c608d">
+      <property-change id="361f9c6a-024d-4716-a8aa-10e433071308" property-name="day" old-value="1" new-value="1"/>
+      <add id="fd793965-b308-42de-aa31-9b736bbc2d5a">
+        <label id="0d10ff3b-7be5-48a0-87f2-d690e34227f5" name="pre-pregnancy"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8f19077f-b2a6-43b7-9a55-70fd57755fa0" node-id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9">
+      <property-change id="adb8fd62-18ea-47af-8e7f-aba196173524" property-name="day" old-value="1" new-value="1"/>
+      <add id="33662d0d-96cb-41e0-a388-19d3bfa6c5e2">
+        <label id="305d2c30-4be4-4fa1-b2f8-577d848b421b" name="pre-pregnancy"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="72c512dd-5971-49d8-b9f5-0199b3b798d6" node-id="2eab7a03-9e0b-449f-82c4-9087b705ff29">
+      <property-change id="6fa500d0-e0cd-44db-8698-0b6b7553f060" property-name="day" old-value="1" new-value="1"/>
+      <add id="02538b7c-b898-4d39-94b1-1f02b5bac26e">
+        <label id="4049e590-1c91-424c-9f05-d55994c34be1" name="pre-pregnancy"/>
+      </add>
+    </planned-activity-delta>
+    <study-segment-delta id="91a99786-f2ce-4c8f-bd10-19690a277fbf" node-id="cef89a1e-5a08-4d94-811d-1aea62700d61">
+      <property-change id="d1790422-30d3-4b5d-9cba-2878c790f254" property-name="name" old-value="Pregnancy Visit 2 Interview" new-value="Pregnancy Visit 2"/>
+    </study-segment-delta>
+    <period-delta id="fe2c7c71-7146-4aa7-a5dc-a090bcdd9eb2" node-id="6357145c-4d43-4527-ad9d-f277b353c70c">
+      <remove id="27fb7348-3149-4d3a-81ff-0f91bffff57d" child-id="a8250ae2-245e-4cb3-96b6-a05e0318e9fa"/>
+    </period-delta>
+    <planned-activity-delta id="16a4ff18-6440-4d97-b5b0-5f81ae4f36e9" node-id="25cf4b4d-c0e8-4240-84cf-f5aa764e3cb2">
+      <property-change id="98e17dd5-e701-4fbb-99c6-5514e07145a1" property-name="day" old-value="60" new-value="60"/>
+      <add id="8ef08b43-3dca-44b4-88b5-8425eb9917b5">
+        <label id="8d9e28d5-2a32-4eb4-bb1b-193418bc2a31" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="28465e9a-d7f8-47b9-8b2a-79e4790844ff" node-id="e2d20285-f495-4a6b-8856-75120befbe79">
+      <property-change id="e36649a9-c271-40c6-8419-e0429f4964c6" property-name="day" old-value="60" new-value="60"/>
+      <add id="3c3b3ee6-dfc8-4f46-a6d5-d8211cdfa7b5">
+        <label id="bf2fa4be-8cc2-420e-b625-b11250254be9" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f89f605f-8157-45b4-af16-4d085acf2555" node-id="6aae9925-daa6-47f8-b12f-9576a84ea5f1">
+      <property-change id="e0c9e0e3-d589-49bc-847a-a51adf789086" property-name="day" old-value="60" new-value="60"/>
+      <add id="90f9a9ea-b79d-475b-a5bb-02678da79191">
+        <label id="436a5aa1-9664-4eeb-8100-d997b693f559" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4d51a7b9-d922-4b95-90a5-299ffc559830" node-id="4a4b3357-1c98-4b58-9d9b-2444df21ca17">
+      <property-change id="26fc09b2-d3d8-48bc-9a0c-e82226d19a8f" property-name="day" old-value="60" new-value="60"/>
+      <add id="f2d7a71d-6626-48b2-a30a-52d49752c5bc">
+        <label id="c396a3c6-e029-446c-9625-b9c933784470" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6be99a39-bc8e-43d3-80bb-e0d9e81ed5d8" node-id="1d3157ca-b173-4d4c-88a7-60e93257c8f7">
+      <property-change id="81cc2b52-3a76-4784-a80e-9bacb11833fd" property-name="day" old-value="60" new-value="60"/>
+      <add id="600420c2-15cd-4569-ad5e-5b453e207b5d">
+        <label id="17891da1-ba87-4e84-a5a1-bd642a7d70a7" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="f4d90c65-8f38-43ce-a10f-cef3969f41c2" node-id="f9e60d77-205e-40ff-81d3-63b7d23bf620">
+      <property-change id="52e8a34c-28fa-438e-ac69-983e370c7062" property-name="day" old-value="60" new-value="60"/>
+      <add id="52815ba3-4e51-454f-9fe5-e3b206cae59b">
+        <label id="a84c20c8-b3ba-4a32-a5b2-71ee034e1fa3" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="71e463e7-8cb9-4bb0-a9f9-be2d6ac262e9" node-id="2c37381c-1433-4e59-bf5f-f3aac17aff9e">
+      <property-change id="bae58e5e-6293-4907-8271-bf99e2dce5a6" property-name="day" old-value="60" new-value="60"/>
+      <add id="e15e6472-a878-42b4-9b6a-27be30e4b20f">
+        <label id="0a7cf64f-e6cd-4cb4-beec-7935f4fbcd0f" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="82417cdf-018c-4f90-b62e-2c181d486f39" node-id="05ccc637-17de-479f-8a0a-e620cee84795">
+      <property-change id="c5d10908-e451-471d-88f4-a3be14beaf2d" property-name="day" old-value="60" new-value="60"/>
+      <add id="715daab3-1c37-4cd3-a828-191a5454d7d0">
+        <label id="20ae605a-bb3a-400f-9602-e6c8af75af58" name="pregnancy_visit_2"/>
+      </add>
+    </planned-activity-delta>
+    <period-delta id="c474631f-e26a-4acb-a412-6d7c8a5046cf" node-id="6e9424b8-461f-48c2-a3f8-b67b164159bc">
+      <property-change id="6dfe4876-943b-4b6d-8f05-76601c46862d" property-name="name" old-value="Child Concent" new-value="Child Consent"/>
+      <remove id="a6434456-bdbe-423c-a751-3f041854c044" child-id="14d6ed35-1104-4da6-9784-9de30c1e8a6b"/>
+      <property-change id="b2c38630-ef92-4c0a-b0ea-2e3f86cb661e" property-name="duration.quantity" old-value="168" new-value="1"/>
+      <add id="33d8763f-4a5d-43fe-95eb-a04a8a742306">
+        <planned-activity id="e1c269f7-a880-49fd-9b6e-c79d68d5b93b" day="1">
+          <label id="8021a873-30cb-4b92-8e49-fe9d46c0f392" name="3m"/>
+          <label id="e944fc2d-57ef-4bbb-b667-b0171b413479" name="6m"/>
+          <label id="d2fff2bd-b51a-4a44-ae2c-d18d8c9eb6a6" name="birth"/>
+          <label id="219e4c35-d4ac-4001-b082-8db6ef2d5553" name="pregnancy_visit_2"/>
+          <activity-reference code="CC" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="52d45bcf-79ae-4462-97ed-3c9bcb23fa27" node-id="4e33bea0-cefa-4132-bd1b-5179eec993d9">
+      <property-change id="4c385ced-32fe-48a1-8b7a-50770169206a" property-name="day" old-value="1" new-value="1"/>
+      <add id="f6745102-e132-43f8-afa1-f3cd15cd461d">
+        <label id="40edabe3-1d6b-40ce-a8a8-d6d50c40c0f1" name="father"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4c3e03f8-04c7-4db9-8548-cfadf4826683" node-id="a7f71d09-59d1-474a-8414-3fdb6c15eb2c">
+      <property-change id="f5e25444-dda6-41c2-90f4-2f873b7372ba" property-name="day" old-value="1" new-value="1"/>
+      <add id="702a11b1-c93f-4065-87e3-a5714579acea">
+        <label id="30c947eb-c3dc-44f7-a13c-1254406a3a10" name="father"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="8502ee3d-7e6b-4042-a343-78d4c010abe6" node-id="b1b535d1-6c50-4865-9dda-610f7e5d0261">
+      <property-change id="918a1f5a-a607-4118-8d2a-53e2668c08c4" property-name="day" old-value="1" new-value="1"/>
+      <add id="933ba62b-f5e7-4c5d-9afd-dfe60322ff10">
+        <label id="8543c849-a117-40f6-ac14-2b4eb0d035a7" name="father"/>
+      </add>
+    </planned-activity-delta>
+    <epoch-delta id="327a43cc-7bab-46d6-a5a8-52e47933cb24" node-id="7955eab9-f505-45d2-9c79-eeaa19cf5382">
+      <reorder id="98d6a44d-13ad-445d-b139-c3ecfffcf994" child-id="a7068506-37db-4fe2-80ca-88f6d518b1e1" old-index="6" new-index="5"/>
+      <remove id="fb870e24-a38a-4020-a410-b85a213e8826" child-id="db7a095e-cff0-4d38-9cc0-81774aad382f"/>
+    </epoch-delta>
+    <period-delta id="4122d7ae-8615-4671-8cae-e778ffc5cedc" node-id="d5886fe9-0ddb-4683-9b99-4b01212ce300">
+      <property-change id="4f834fcc-abbc-437e-befc-647653cc0158" property-name="name" old-value="PPG Follow UP CATI after 3 months" new-value="PPG Follow-Up"/>
+      <remove id="62c9d7e5-5c18-4633-b7cb-5ac00a523d7f" child-id="64c499d9-13e9-4fe1-a76c-2dfc8263ca24"/>
+      <property-change id="2c367d03-a253-4139-9377-0386cda6e39c" property-name="duration.quantity" old-value="84" new-value="1"/>
+      <add id="c4182a24-9012-41f2-b320-262ebecd6dbc">
+        <planned-activity id="9db060c7-93fe-47d4-8941-e706b4459c5f" day="1">
+          <label id="513a6185-f593-4b51-bd80-25c9d3b4b389" name="pregnancy_probability"/>
+          <activity-reference code="PPGFUI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="495ecef3-ab83-4b88-b20a-db89fe2e04d2">
+        <planned-activity id="930ce80d-b991-42db-99df-ac3e4bcce069" day="1">
+          <label id="32368c66-69cb-4c5c-ac3a-004730b38b7d" name="pregnancy_probability"/>
+          <activity-reference code="PPGFUSAQ" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <study-segment-delta id="da674639-d334-4124-886f-2646e4c53b41" node-id="a7068506-37db-4fe2-80ca-88f6d518b1e1">
+      <property-change id="d3c963da-913f-47b0-b6b6-855099470a0f" property-name="name" old-value="PPG Follow UP CATI after 3 months" new-value="PPG Follow-Up"/>
+    </study-segment-delta>
+    <study-segment-delta id="63cee455-f764-4372-8c85-1e05c7a2a045" node-id="6a141368-5229-4262-b3c5-45212520ec76">
+      <property-change id="c25c2c78-d677-437f-8641-d2f5d561b5c3" property-name="name" old-value="PPG Follow Up" new-value="PPG Follow-Up"/>
+    </study-segment-delta>
+    <period-delta id="d22ee1ad-5878-4e17-8970-ef470baf04a3" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
+      <property-change id="99ba4923-5b77-4f9b-a23b-b3f373e133b9" property-name="duration.quantity" old-value="672" new-value="730"/>
+    </period-delta>
+    <planned-activity-delta id="4c0a70cb-0efb-4e4a-a91c-5f301fb80fc0" node-id="a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd">
+      <property-change id="0bb4cfea-4ac2-43e8-98c9-3f325ac8383c" property-name="day" old-value="1" new-value="1"/>
+      <add id="27097986-1375-43bb-b870-a4594253ed61">
+        <label id="f911ee80-e693-432d-a658-d2dcfb02ead0" name="birth"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="2b5b536e-de27-40c6-b3c9-dcb313af94d3" node-id="39aa9050-31b0-41a3-81cf-a513b57d2fff">
+      <property-change id="93d6736c-c9d9-4a5b-91b9-f8aea026bd15" property-name="day" old-value="1" new-value="1"/>
+      <add id="76ea5d23-c3ce-48b9-a091-2a0aed81cf02">
+        <label id="a851f308-2d8f-48dc-8d43-277f85d1473f" name="birth"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="6ed8bbe6-6e92-4270-87a3-a054c25e57d1" node-id="6140789b-b3fe-4276-ac43-38b4d447e6e9">
+      <property-change id="7e27be61-a422-40d6-9b22-31c8b6ea7f8b" property-name="day" old-value="1" new-value="1"/>
+      <add id="646bcc85-62f3-4d5a-b1e5-c56b49658e18">
+        <label id="a08e9114-4307-4abb-87b2-c9d3f91f56cd" name="birth"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4c6d3a23-4b23-485f-8ec4-6b6dcbaf810c" node-id="d2419f3b-021b-40a8-b68a-547094382a49">
+      <property-change id="2f0186a6-ce21-4454-ab4a-d97f27aeab16" property-name="day" old-value="1" new-value="1"/>
+      <add id="6c702730-d028-4378-80ae-2bd7a42fb677">
+        <label id="ab6afc22-b234-481d-aa10-e4ba590389bb" name="birth"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="dbe7900e-353a-4b48-99e0-3f97c946918e" node-id="88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b">
+      <property-change id="1ff81849-8380-4038-a6c0-e9cd06b7c8d4" property-name="day" old-value="84" new-value="92"/>
+      <add id="2b939c60-2361-4036-9c5a-5d69f00ec15d">
+        <label id="7ec6d5d7-e2fb-4c8d-b69e-970d314ee33c" name="3m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="2aed0b38-e025-4322-9bda-b18cc16f512b" node-id="01be00a9-bcf1-4d40-918e-d41d65ccaac6">
+      <property-change id="333adfcd-61ff-4e1a-ac96-7eb48814f707" property-name="day" old-value="168" new-value="183"/>
+      <add id="58fb839e-db15-4dd5-b911-8f96f5ca5c39">
+        <label id="321ffe7b-6e7c-448f-8c2c-7f3a2e42106a" name="6m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4b46d167-d2d0-4881-8575-ef72ede2a083" node-id="e2531488-58e7-4721-b5f0-cbf9e8850ffd">
+      <property-change id="b8a25417-ae0b-4ed3-83c3-8cfa1b1444a8" property-name="day" old-value="168" new-value="183"/>
+      <add id="a869399a-dd02-44fc-9f5c-eca7d9e98d73">
+        <label id="ec6b42b4-366c-46dc-ac3c-cadd1f53ca3b" name="6m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="18880b83-988d-4ce5-b45b-dc885022e696" node-id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b">
+      <property-change id="2441985e-7357-434f-84d5-cde516e01f1d" property-name="day" old-value="168" new-value="183"/>
+      <add id="f2174f9d-9a2d-441f-b982-6356d4d69029">
+        <label id="3a7c52fd-e6e8-469e-9a03-d4b3042efd3d" name="6m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="acf10645-aa33-458c-a249-6870cb1c2a15" node-id="d0e3ac20-b91f-4c2a-8217-a42b114afde6">
+      <property-change id="3499e0a7-a303-4780-a276-5d9b78641404" property-name="day" old-value="252" new-value="274"/>
+      <add id="baec1ab9-19d0-4935-bbb3-96c96f8370f8">
+        <label id="b4c197d7-9ad0-48b8-9f8e-ed6b4b5ecc3f" name="9m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="af9cae66-8d56-41fe-881f-489e17e76933" node-id="4487f930-29aa-464d-a1d8-0b182cecfd40">
+      <property-change id="d2a8a921-be18-4f99-96c3-62ca002734d1" property-name="day" old-value="336" new-value="366"/>
+      <add id="935d514a-8166-4f6d-a862-9890740ed34d">
+        <label id="6732bf38-74f0-4e3e-950c-6b219173fcfe" name="12m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="2c99bc13-5320-404f-96c8-8f355ea9c372" node-id="599d1e75-7d6e-4933-a69a-76c83a7b9f80">
+      <property-change id="a1f8610e-9d5a-4838-a6d9-1f23b94f1339" property-name="day" old-value="336" new-value="366"/>
+      <add id="60899054-609b-4bff-97fa-1147d0d8b981">
+        <label id="500a5bc5-2344-4223-9cf9-746e5bbd0fe9" name="12m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="ded7f2cc-d6c5-4c99-8626-b15bbb2a2d73" node-id="71eff7d1-e4a3-446b-a878-ef835b368181">
+      <property-change id="f2b65520-f91c-4ee1-9583-12315f53ee51" property-name="day" old-value="336" new-value="366"/>
+      <add id="130330de-e7f1-4fa1-a3ae-753827ccf20b">
+        <label id="4eb8ec56-4d9b-4c43-b0a8-ab1837c9b9ad" name="12m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="e30aea94-67c5-4395-823f-08f53504cda1" node-id="735de02c-bdc9-44fd-ac59-d901a90e3799">
+      <property-change id="053d1861-b483-4802-a490-71d2556bac2e" property-name="day" old-value="504" new-value="548"/>
+      <add id="244ce334-b148-45fb-a4ce-94070e539472">
+        <label id="27bcabcb-b283-485c-9a2e-4041144db863" name="18m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="3fca6d15-533f-4e70-b40d-acd49c79ccd6" node-id="0a0919e3-79c3-435f-b897-9e0c4fa4247f">
+      <property-change id="731b565c-28d7-4c09-bcf5-49a122611568" property-name="day" old-value="504" new-value="548"/>
+      <add id="b303bb64-96b6-4b17-9bc5-19f2c6e8fa8f">
+        <label id="c64c357f-d10c-44a5-ba7a-394b85ac781f" name="18m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="4f682a34-c73e-4753-b7bf-df87caf9bf19" node-id="d3a1f314-a163-4bb3-aa42-ccf639034814">
+      <property-change id="ea5210e5-147a-4c55-9868-f6f950767e7f" property-name="day" old-value="672" new-value="730"/>
+      <add id="de8e1961-9842-4c1a-8997-c254303c8ae2">
+        <label id="34896ee3-5e37-4e00-8cda-4dfed061e288" name="24m"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="cf85b190-8e93-4baf-b14d-06a67f8bdfd3" node-id="06b1e674-3af9-45e1-ac7e-2c30843fd365">
+      <property-change id="5a9fbb74-d669-46d7-9dc3-c5d824bd4e17" property-name="day" old-value="672" new-value="730"/>
+      <add id="b84cdfda-1e65-4cc6-a727-c0edc1317f44">
+        <label id="3d8ebd58-6e18-4f8f-bd08-bfbbe222ef3c" name="24m"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="[Original]" date="2011-07-07" mandatory="true" released-date="2012-02-06T11:57:40.143Z">
+    <planned-calendar-delta id="1d6f50a9-8a4d-46dc-8f89-aebb8c00f2f4" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
+      <add id="714bdfea-1c46-4adc-88f3-978f9a37e756" index="0">
+        <epoch id="73f6c858-4069-411a-8d82-c9d558c07d68" name="LO-Intensity">
+          <study-segment id="6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8" name="Pregnancy Screener">
+            <period id="c791d8a3-e26e-461a-8425-f5acce73ac1b" name="sreener" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="df1ceee2-0b0d-45ad-9a5d-982c15738817" day="1">
+                <activity-reference code="PSI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="6a141368-5229-4262-b3c5-45212520ec76" name="PPG Follow Up">
+            <period id="fa423dbe-cccb-4f36-966b-a03988aa88ba" name="Follow Up CATI" repetitions="1" start-day="1" duration-quantity="6" duration-unit="month">
+              <planned-activity id="b8eb6fcd-6eae-4b61-840f-1c178ce985c6" day="168">
+                <activity-reference code="PPGFUI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" name="PPG 1 and 2 ">
+            <period id="19c0ffb1-78b3-4634-adde-bc32a5cec9dd" name="Consent and Questionnaire" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="2b68bb5c-edde-4510-81c8-b962704bc968" day="1">
+                <activity-reference code="LIC" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="bbb8de5c-a025-4b4c-b7d2-577a96551263" day="1">
+                <activity-reference code="LII" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="53318f20-d21f-452e-a8e8-3f2ed6bb6c93" name="Birth Visit Interview">
+            <period id="3902c526-01ee-4183-a16d-0179b7f43bef" name="Birth Visit" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="33dbd9b9-7288-4684-97a5-56c9dac5eb22" details="w/in 30 days of birth" day="1">
+                <activity-reference code="BI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="cbd73e59-700f-4a7a-b437-961f1af9e4b2" name="Questionnaire after 6 months">
+            <period id="06ca1595-94d2-4a15-b8f6-242e2a45f455" name="Questionnaire after 6 months" repetitions="1" start-day="1" duration-quantity="6" duration-unit="month">
+              <planned-activity id="86032899-f453-46bf-aa5b-ddf9dc86de91" day="168">
+                <activity-reference code="LII" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+        </epoch>
+      </add>
+      <add id="2931a9de-0e22-4b0e-a523-3c9dd328b678" index="1">
+        <epoch id="7955eab9-f505-45d2-9c79-eeaa19cf5382" name="HI-Intensity">
+          <study-segment id="ca65bbbb-7e47-4f71-a4f0-071e7f73f380" name="HI-LO Conversion - Pregnant">
+            <period id="c849fb47-1917-47d3-aacd-74331aa46ed8" name="HiLo conversion Pregnant" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="3a9323d6-7435-49ec-9f99-722a3c7b9be4" day="1">
+                <activity-reference code="IC" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9" day="1">
+                <activity-reference code="PV1I" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="99aa3b3b-e262-4385-881b-49a23fc47a13" day="1">
+                <activity-reference code="VIS 1" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b" day="1">
+                <activity-reference code="PV1SAQ" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="fa8ccc94-9353-4819-ad59-e33301c6062a" day="1">
+                <activity-reference code="ETWPharmTCI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="81956a56-e5c0-4c15-ba7b-386dec3697e9" day="1">
+                <activity-reference code="EVBDTCI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="803eaa20-6a1d-4e39-807d-fa2eba112ba9" day="1">
+                <activity-reference code="BAUI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="cad092e0-5863-44ee-9439-506bf34c1a97" day="1">
+                <activity-reference code="BABI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="39ba335d-b52e-48e6-8e5c-41768f2e4377" day="1" condition="if this is only visit before birth of baby">
+                <activity-reference code="BVIS" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="aee4d64b-7e08-4ec4-8667-4711c9e48cc7" day="1">
+                <activity-reference code="PHCL" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="de770c10-c50e-43b3-9b3e-53ac12373342" day="1">
+                <activity-reference code="PR 1" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="840a0c23-4fa4-4348-b389-6cd6d376b074" day="1">
+                <activity-reference code="LIITHICI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624" name="HI-LO Conversion - Non-Pregnant">
+            <period id="2d298ba8-d832-4414-83bf-a5128eb54d96" name="HiLo conversion Non-Pregnant" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="52c7cd03-c066-468f-967c-6022601c608d" day="1">
+                <activity-reference code="IC (non)" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="3300cff6-43d5-42fb-b143-b36d91438a50" day="1">
+                <activity-reference code="VIS (pre)" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9" day="1">
+                <activity-reference code="BAUI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="2eab7a03-9e0b-449f-82c4-9087b705ff29" details="non-fasting" day="1">
+                <activity-reference code="BABI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="c767a6de-4bc5-4143-b76d-59439ec82a63" day="1">
+                <activity-reference code="SAQ (pre)" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="0ad94d57-7d79-4a0b-915f-daaf5fae273b" day="1">
+                <activity-reference code="CATI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="0c27ee78-85d3-48d0-afd3-96dc26d36926" day="1">
+                <activity-reference code="LIITHICI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="cef89a1e-5a08-4d94-811d-1aea62700d61" name="Pregnancy Visit 2 Interview">
+            <period id="6357145c-4d43-4527-ad9d-f277b353c70c" name="Pregnancy Visit 2 Interview" repetitions="1" start-day="1" duration-quantity="60" duration-unit="day">
+              <planned-activity id="f9e60d77-205e-40ff-81d3-63b7d23bf620" day="60">
+                <activity-reference code="PHCL" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="e2d20285-f495-4a6b-8856-75120befbe79" day="60" condition="if was collected only once before">
+                <activity-reference code="BAUI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="25cf4b4d-c0e8-4240-84cf-f5aa764e3cb2" day="60" condition="if was collected only once before">
+                <activity-reference code="BABI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="4a4b3357-1c98-4b58-9d9b-2444df21ca17" day="60" condition="if was not collected in PV1">
+                <activity-reference code="EVBDTCI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="6aae9925-daa6-47f8-b12f-9576a84ea5f1" day="60" condition="if was not collected in PV1">
+                <activity-reference code="ETWPharmTCI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="05ccc637-17de-479f-8a0a-e620cee84795" day="60">
+                <activity-reference code="PV2SAQ" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="2c37381c-1433-4e59-bf5f-f3aac17aff9e" day="60">
+                <activity-reference code="PV2I" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="1d3157ca-b173-4d4c-88a7-60e93257c8f7" day="60">
+                <activity-reference code="VIS 2" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="a8250ae2-245e-4cb3-96b6-a05e0318e9fa" day="60">
+                <activity-reference code="PR 2" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="645376f4-5ca1-49e8-a31a-8f1030059348" name="Child Consent">
+            <period id="6e9424b8-461f-48c2-a3f8-b67b164159bc" name="Child Concent" repetitions="1" start-day="1" duration-quantity="168" duration-unit="day">
+              <planned-activity id="14d6ed35-1104-4da6-9784-9de30c1e8a6b" day="168">
+                <activity-reference code="CC" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="a6af42b4-6aec-4c63-a8d3-8b59474da940" name="Father Consent and Interview">
+            <period id="e526bc74-f474-4544-85d2-ced85b6d16f0" name="Father Consent and Interview" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="4e33bea0-cefa-4132-bd1b-5179eec993d9" day="1">
+                <activity-reference code="FC" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="a7f71d09-59d1-474a-8414-3fdb6c15eb2c" day="1">
+                <activity-reference code="VIS (father)" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="b1b535d1-6c50-4865-9dda-610f7e5d0261" day="1">
+                <activity-reference code="FI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="db7a095e-cff0-4d38-9cc0-81774aad382f" name="PPG Follow Up CATI after 6 months">
+            <period id="b75c5859-6302-4ac6-85a3-893d3b53ec82" name="PPG Follow Up CATI at 6 months" repetitions="1" start-day="1" duration-quantity="168" duration-unit="day">
+              <planned-activity id="0fa54f95-bd9d-43ef-8374-722acab023e6" day="168">
+                <activity-reference code="PPGFUI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="a7068506-37db-4fe2-80ca-88f6d518b1e1" name="PPG Follow UP CATI after 3 months">
+            <period id="d5886fe9-0ddb-4683-9b99-4b01212ce300" name="PPG Follow UP CATI after 3 months" repetitions="1" start-day="1" duration-quantity="84" duration-unit="day">
+              <planned-activity id="64c499d9-13e9-4fe1-a76c-2dfc8263ca24" day="84">
+                <activity-reference code="PPGFUI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+        </epoch>
+      </add>
+      <add id="60d1be0d-b3ac-4fe3-a3f9-4f1159612da8" index="2">
+        <epoch id="5eed8d3f-2b03-4bac-9bcd-1420c06f9339" name="Child">
+          <study-segment id="072db970-d32a-4006-83b0-3f0240833894" name="Child">
+            <period id="85842db8-bec8-4eb8-84ff-fcc40aa30b02" name="Child" repetitions="1" start-day="1" duration-quantity="672" duration-unit="day">
+              <planned-activity id="39aa9050-31b0-41a3-81cf-a513b57d2fff" day="1">
+                <activity-reference code="BVIS" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="6140789b-b3fe-4276-ac43-38b4d447e6e9" details="w/in 10 days of birth" day="1">
+                <activity-reference code="BI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd" day="1">
+                <activity-reference code="BCBI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="d2419f3b-021b-40a8-b68a-547094382a49" day="1">
+                <activity-reference code="IHCL" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b" details="2-4 month window" day="84">
+                <activity-reference code="3MMPI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b" details="5-7 month window" day="168">
+                <activity-reference code="6MVIS" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="e2531488-58e7-4721-b5f0-cbf9e8850ffd" details="5-7 month window" day="168">
+                <activity-reference code="6MMI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="01be00a9-bcf1-4d40-918e-d41d65ccaac6" details="5-7 month window" day="168">
+                <activity-reference code="6MIFSAQ" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="d0e3ac20-b91f-4c2a-8217-a42b114afde6" details="8-10 month window" day="252">
+                <activity-reference code="9MMPI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="71eff7d1-e4a3-446b-a878-ef835b368181" details="11-15 month window" day="336">
+                <activity-reference code="12MVIS" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="4487f930-29aa-464d-a1d8-0b182cecfd40" details="11-15 month window" day="336">
+                <activity-reference code="12MMI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="599d1e75-7d6e-4933-a69a-76c83a7b9f80" details="11-15 month window" day="336">
+                <activity-reference code="12MMSAQ" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="735de02c-bdc9-44fd-ac59-d901a90e3799" details="16-22 month window" day="504">
+                <activity-reference code="18MMI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="0a0919e3-79c3-435f-b897-9e0c4fa4247f" details="16-22 month window" day="504">
+                <activity-reference code="18MMSAQ" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="d3a1f314-a163-4bb3-aa42-ccf639034814" details="23-28 month window" day="672">
+                <activity-reference code="24MMI" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="06b1e674-3af9-45e1-ac7e-2c30843fd365" details="23-28 month window" day="672">
+                <activity-reference code="24MMSAQ" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+        </epoch>
+      </add>
+    </planned-calendar-delta>
+  </amendment>
+  <sources>
+    <source name="NCS">
+      <activity name="Pregnancy Visit 1 SAQ" code="PV1SAQ" description="Pregnancy Visit 1 SAQ" type="Instrument"/>
+      <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview" type="Instrument"/>
+      <activity name="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" code="ETWPharmTCI" description="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" type="Environment"/>
+      <activity name="Father Interview" code="FI" description="Father Interview" type="Instrument"/>
+      <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
+      <activity name="Pregnancy Visit 2 SAQ" code="PV2SAQ" description="Pregnancy Visit 2 SAQ" type="Instrument"/>
+      <activity name="6-Month Infant Feeding SAQ" code="6MIFSAQ" description="6-Month Infant Feeding SAQ" type="Instrument"/>
+      <activity name="Environmental Tap Water Pesticides Technician Collect Instrument" code="ETWPestTCI" description="Environmental Tap Water Pesticides Technician Collect Instrument" type="Environment"/>
+      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview" type="Instrument"/>
+      <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
+      <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
+      <activity name="Low Intensity Invitation to High-Intensity Conversion Interview" code="LIITHICI" description="Low Intensity Invitation to High-Intensity Conversion Interview" type="Instrument"/>
+      <activity name="Father Consent" code="FC" description="Father Consent" type="Consent"/>
+      <activity name="Pregnancy Visit 2 Information Sheet" code="VIS 2" description="Pregnancy Visit 2 Information Sheet" type="Information Sheet"/>
+      <activity name="Pregnancy Visit 1 Information Sheet" code="VIS 1" description="Pregnancy Visit 1 Information Sheet" type="Information Sheet"/>
+      <activity name="12-Month Visit Information Sheet" code="12MVIS" description="12-Month Visit Information Sheet" type="Information Sheet"/>
+      <activity name="9-Month Mother Phone Interview" code="9MMPI" description="9-Month Mother Phone Interview" type="Instrument"/>
+      <activity name="Biospecimen Adult Urine Instrument" code="BAUI" description="Biospecimen Adult Urine Instrument" type="Biospecimen"/>
+      <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
+      <activity name="Birth Interview" code="BI" description="Birth Interview" type="Instrument"/>
+      <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
+      <activity name="Low-Intensity Birth Interview" code="LIBI" description="Low-Intensity Birth Interview" type="Instrument"/>
+      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview" type="Instrument"/>
+      <activity name="Pregnancy Probability Group Follow-Up Interview" code="PPGFUI" description="Pregnancy Probability Group Follow-Up Interview" type="Instrument"/>
+      <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview" type="Instrument"/>
+      <activity name="Pregnancy Probability Group Instrument CATI" code="CATI" description="Pregnancy Probability Group Instrument CATI" type="Instrument"/>
+      <activity name="18-Month Mother SAQ" code="18MMSAQ" description="18-Month Mother SAQ" type="Instrument"/>
+      <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
+      <activity name="Child Consent" code="CC" description="Child Consent" type="Consent"/>
+      <activity name="Father Visit Information Sheet" code="VIS (father)" description="Father Visit Information Sheet" type="Information Sheet"/>
+      <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
+      <activity name="Pre-Pregnancy SAQ" code="SAQ (pre)" description="Pre-Pregnancy SAQ" type="Instrument"/>
+      <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
+      <activity name="Pregnancy Probability Group Follow-Up SAQ" code="PPGFUSAQ" description="Pregnancy Probability Group Follow-Up SAQ" type="Instrument"/>
+      <activity name="24-Month Mother Interview" code="24MMI" description="24-Month Mother Interview" type="Instrument"/>
+      <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Pregnancy 2 Record of VIS" code="PR 2" description="Pregnancy 2 Record of VIS" type="Consent"/>
+      <activity name="Pregnancy 1 Record of VIS" code="PR 1" description="Pregnancy 1 Record of VIS" type="Consent"/>
+      <activity name="Low-Intensity Interview" code="LII" description="Low-Intensity Interview" type="Instrument"/>
+      <activity name="Pre-Pregnancy Interview" code="PPI" description="Pre-Pregnancy Interview" type="Instrument"/>
+      <activity name="Low-Intensity Consent" code="LIC" description="Low-Intensity Consent" type="Consent"/>
+      <activity name="Infant Health Care Log" code="IHCL" description="Infant Health Care Log" type="Instrument"/>
+      <activity name="Pregnancy Visit 2 Interview" code="PV2I" description="Pregnancy Visit 2 Interview" type="Instrument"/>
+      <activity name="6-Month Visit Information Sheet" code="6MVIS" description="6-Month Visit Information Sheet" type="Information Sheet"/>
+      <activity name="Pregnancy Visit 1 Interview" code="PV1I" description="Pregnancy Visit 1 Interview" type="Instrument"/>
+      <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
+    </source>
+  </sources>
+</study>
