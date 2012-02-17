@@ -46,6 +46,12 @@ When /^I PUT ([^\s]+) with$/ do |url, payload|
   put url, payload
 end
 
+When /^I POST ([^\s]+) with$/ do |url, table|
+  header 'Content-Type', 'application/x-www-form-urlencoded'
+
+  post url, table.hashes.first
+end
+
 When /^I GET ([^\s]+)$/ do |url|
   get url
 end
@@ -78,5 +84,27 @@ Then /^the response body satisfies$/ do |table|
 end
 
 Then /^the response body is$/ do |string|
-  last_response.body.should == string
+  JSON.parse(last_response.body).should == JSON.parse(string)
+end
+
+Then /^the referenced entity is a fieldwork set$/ do
+  location = last_response.headers['Location']
+  raise 'Response contains a blank location' if location.blank?
+
+  get location
+end
+
+Then /^the response is a fieldwork set$/ do
+  last_response.body.should be_a_fieldwork_set
+end
+
+Then /^the response contains a reference to itself$/ do
+  original_set = last_response.body
+
+  location = last_response.headers['Location']
+  raise 'Response contains a blank location' if location.blank?
+
+  get location
+
+  JSON.parse(last_response.body).should == JSON.parse(original_set)
 end
