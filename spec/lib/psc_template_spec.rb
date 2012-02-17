@@ -42,7 +42,6 @@ describe 'PSC template' do
     }
 
     it 'covers only known event types' do
-      pending 'This needs to be fixed'
       (events_named_in_labels - event_types_from_mdes).uniq.should == []
     end
 
