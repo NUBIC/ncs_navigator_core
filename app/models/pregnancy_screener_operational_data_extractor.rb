@@ -93,7 +93,7 @@ class PregnancyScreenerOperationalDataExtractor
     def extract_data(response_set)
       person = response_set.person
       if person.participant.blank?
-        participant = Participant.create 
+        participant = Participant.create
         participant.person = person
       else
         participant = person.participant
@@ -175,16 +175,21 @@ class PregnancyScreenerOperationalDataExtractor
 
       end
 
-      ppg_detail.save! unless ppg_detail.ppg_first.blank?
+
+      unless ppg_detail.ppg_first.blank?
+        OperationalDataExtractor.set_participant_type(participant, ppg_detail.ppg_first_code)
+        ppg_detail.save!
+      end
       email.save! unless email.email.blank?
       home_phone.save! unless home_phone.phone_nbr.blank?
       cell_phone.save! unless cell_phone.phone_nbr.blank?
       phone.save! unless phone.phone_nbr.blank?
       mail_address.save! unless mail_address.to_s.blank?
       address.save! unless address.to_s.blank?
-      
+
       participant.save!
       person.save!
     end
+
   end
 end

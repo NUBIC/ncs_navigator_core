@@ -170,6 +170,22 @@ class OperationalDataExtractor
 
     end
 
+    def set_participant_type(participant, ppg_code)
+      p_type_code = nil
+      case ppg_code
+      when 1
+        p_type_code = 3
+      when 2
+        p_type_code = 2
+      when 3,4
+        p_type_code = 1
+      end
+      if p_type_code
+        participant.p_type = NcsCode.for_attribute_name_and_local_code(:p_type_code, p_type_code)
+      end
+    end
+    
+
   end
 
 end
