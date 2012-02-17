@@ -134,9 +134,13 @@ class PpgFollowUpOperationalDataExtractor
       cell_phone.save! unless cell_phone.phone_nbr.blank?
       other_phone.save! unless other_phone.phone_nbr.blank?
       phone.save! unless phone.phone_nbr.blank?
-      ppg_status_history.save! unless ppg_status_history.ppg_status_code.blank?
+      unless ppg_status_history.ppg_status_code.blank?
+        OperationalDataExtractor.set_participant_type(participant, ppg_status_history.ppg_status_code)        
+        ppg_status_history.save!
+      end
       participant.save!
       person.save!
     end
+
   end
 end

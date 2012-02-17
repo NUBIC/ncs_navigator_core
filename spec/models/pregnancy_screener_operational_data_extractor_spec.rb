@@ -490,6 +490,8 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1", :local_code => 1)
 
+    p_type = Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Pregnant Eligible Woman", :local_code => 3)
+
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
@@ -517,6 +519,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     participant.ppg_details.first.ppg_first.local_code.should == 1
     participant.ppg_status.local_code.should == 1
     participant.due_date.should == Date.parse("2011-12-25")
+    participant.p_type.should == p_type
 
   end
 
@@ -527,6 +530,8 @@ describe PregnancyScreenerOperationalDataExtractor do
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     ppg2 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2", :local_code => 2)
+
+    p_type = Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "High Trier", :local_code => 2)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
@@ -552,6 +557,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     participant.ppg_details.first.ppg_first.local_code.should == 2
     participant.ppg_status.local_code.should == 2
     participant.due_date.should be_nil
+    participant.p_type.should == p_type
 
   end
 

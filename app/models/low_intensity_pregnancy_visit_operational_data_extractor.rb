@@ -49,7 +49,10 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
 
       end
 
-      ppg_status_history.save! unless ppg_status_history.ppg_status_code.blank?
+      unless ppg_status_history.ppg_status_code.blank?
+        OperationalDataExtractor.set_participant_type(participant, ppg_status_history.ppg_status_code)
+        ppg_status_history.save!
+      end
       participant.save!
       person.save!
     end
