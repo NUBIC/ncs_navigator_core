@@ -448,9 +448,7 @@ module NcsNavigator::Core::Warehouse
       }
 
       def do_import
-        VCR.use_cassette('psc/operational_importer') do
-          importer.import
-        end
+        importer.import
       end
 
       describe 'data mapping' do
