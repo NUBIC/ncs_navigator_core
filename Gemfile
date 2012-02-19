@@ -35,6 +35,8 @@ gem 'uuid'
 gem 'will_paginate'
 gem 'faraday'
 
+gem 'redis'
+
 group :development do
   gem 'capistrano'
   gem 'watchr'

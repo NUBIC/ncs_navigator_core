@@ -328,6 +328,7 @@ GEM
     rcov (0.9.11)
     rdoc (3.12)
       json (~> 1.4)
+    redis (2.2.2)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)
@@ -446,6 +447,7 @@ DEPENDENCIES
   ransack
   rb-fsevent
   rcov
+  redis
   rspec-rails (= 2.6.1)
   ruby-debug
   sass-rails (~> 3.1.0)
