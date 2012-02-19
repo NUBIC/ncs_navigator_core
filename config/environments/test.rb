@@ -33,6 +33,8 @@ NcsNavigatorCore::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
+  config.redis_url = 'redis://localhost:6379/4'
+
   config.aker do
     ui_mode :form
     api_mode :http_basic
