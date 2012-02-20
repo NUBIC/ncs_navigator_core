@@ -2,6 +2,10 @@
 require 'spec_helper'
 
 describe PatientStudyCalendar do
+  let(:template_snapshot_file) {
+    File.expand_path(File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))
+  }
+
 
   before(:each) do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
@@ -11,6 +15,14 @@ describe PatientStudyCalendar do
   end
 
   let(:subject) { PatientStudyCalendar.new(@user) }
+
+  def use_template_snapshot_cassette
+    VCR.use_cassette(
+      'psc/template_snapshot', :erb => { :snapshot_file => template_snapshot_file }
+    ) do
+      yield
+    end
+  end
 
   it "connects to the running instance of PSC configured in by the NcsNavigator::Configuration" do
     cnx = subject.get_connection
@@ -22,7 +34,7 @@ describe PatientStudyCalendar do
     # protocol:host_url/prefix
     service_url = "https://ncsn-psc.local/auth/cas_security_check"
     @user.should_receive(:cas_proxy_ticket).with(service_url).and_return('PT-CAS-2')
-    VCR.use_cassette('psc/segments') do
+    use_template_snapshot_cassette do
       subject.segments
     end
   end
@@ -40,9 +52,9 @@ describe PatientStudyCalendar do
   end
 
   it "gets the segments for the study" do
-    VCR.use_cassette('psc/segments') do
+    use_template_snapshot_cassette do
       segments = subject.segments
-      segments.size.should == 13
+      segments.size.should == 12
       segments.first.attr('name').should == "Pregnancy Screener"
     end
   end
