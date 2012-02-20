@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe PatientStudyCalendar do
@@ -99,6 +100,12 @@ describe PatientStudyCalendar do
         end
       end
 
+      it 'can check registration status from the assignment ID directly' do
+        VCR.use_cassette('psc/unknown_subject') do
+          subject.is_registered?(@person.public_id).should be_false
+        end
+      end
+
       it 'only checks once if the participant is NOT registered with the study' do
         pending 'This tests does not fail when the underlying feature is broken due to #1724'
         VCR.use_cassette('psc/unknown_subject') do
@@ -107,22 +114,36 @@ describe PatientStudyCalendar do
         subject.is_registered?(@participant).should be_false
       end
 
-      it "knows when the participant IS registered with the study" do
-        person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
-        participant = Factory(:participant)
-        participant.person = person
-        VCR.use_cassette('psc/known_subject') do
-          subject.is_registered?(participant).should be_true
-        end
-      end
+      describe 'when is registered' do
+        let(:person) {
+          Factory(:person, :first_name => "As", :last_name => "Df",
+            :sex => @female, :person_dob => '1900-01-01', :person_id =>
+            "asdf")
+        }
 
-      it "should store the participant identifier when the participant registers" do
-        person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
-        participant = Factory(:participant)
-        participant.person = person
-        VCR.use_cassette('psc/known_subject') do
-          subject.is_registered?(participant).should be_true
-          subject.registered_participant?(participant).should be_true
+        let(:participant) {
+          Factory(:participant).tap do |p|
+            p.person = person
+          end
+        }
+
+        it "knows when the participant IS registered with the study" do
+          VCR.use_cassette('psc/known_subject') do
+            subject.is_registered?(participant).should be_true
+          end
+        end
+
+        it 'can check from the assignment ID directly' do
+          VCR.use_cassette('psc/known_subject') do
+            subject.is_registered?(person.public_id).should be_true
+          end
+        end
+
+        it "should store the participant identifier when the participant registers" do
+          VCR.use_cassette('psc/known_subject') do
+            subject.is_registered?(participant).should be_true
+            subject.registered_participant?(participant).should be_true
+          end
         end
       end
 
@@ -255,6 +276,11 @@ describe PatientStudyCalendar do
       end
     end
 
+    it 'accepts a participant person ID directly' do
+      VCR.use_cassette('psc/lo_i_ppg_follow_up_pending') do
+        subject.scheduled_activities(@person.public_id).should_not be_nil
+      end
+    end
   end
 
   context "extracting the scheduled study segment id from a response from PSC" do
