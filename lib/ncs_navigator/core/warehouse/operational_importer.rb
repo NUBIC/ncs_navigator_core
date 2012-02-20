@@ -22,12 +22,11 @@ module NcsNavigator::Core::Warehouse
     def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
-    def initialize(wh_config, user)
+    def initialize(wh_config)
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
       @failed_associations = []
-      @user = user
       @progress = ProgressTracker.new(wh_config)
     end
 
