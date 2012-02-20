@@ -149,6 +149,7 @@ module NcsNavigator::Core::Warehouse
         'status', core_contact_link.new_record? ? 'new' : 'changed',
         'contact_link_id', core_contact_link.public_id,
         'event_id', core_event.public_id,
+        'contact_id', core_contact_link.contact.public_id,
         'contact_date', core_contact_link.contact.contact_date,
         'sort_key', [
           core_event.public_id,
@@ -158,6 +159,8 @@ module NcsNavigator::Core::Warehouse
 
       if instrument_type_code
         link_contact_fields << 'instrument_type' << instrument_type_code
+        link_contact_fields << 'instrument_status' <<
+          core_contact_link.instrument.instrument_status.display_text.downcase
       end
 
       collection_key =
