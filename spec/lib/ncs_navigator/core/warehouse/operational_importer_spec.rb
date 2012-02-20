@@ -11,15 +11,11 @@ module NcsNavigator::Core::Warehouse
     include_context :importer_spec_warehouse
 
     let(:importer) {
-      OperationalImporter.new(wh_config, user)
+      OperationalImporter.new(wh_config)
     }
 
     let(:enumerator) {
       OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
-    }
-
-    let(:user) {
-      mock(:username => 'sysadmin', :cas_proxy_ticket => 'PT-CAS-foo')
     }
 
     def save_wh(record)

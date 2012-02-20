@@ -41,13 +41,12 @@ namespace :import do
   end
 
   desc 'Import all data'
-  task :all => [:psc_setup, :operational, :unused_operational, :instruments, :unused_instruments]
+  task :all => [:operational, :unused_operational, :instruments, :unused_instruments]
 
   desc 'Import operational data'
-  task :operational => [:psc_setup, :warehouse_setup, :environment] do
+  task :operational => [:warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(
-      import_wh_config, user_for_psc)
+    importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(import_wh_config)
 
     tables = case
              when ENV['TABLES']
