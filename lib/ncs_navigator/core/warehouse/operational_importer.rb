@@ -102,7 +102,7 @@ module NcsNavigator::Core::Warehouse
               participant.set_state_for_event_type(core_event.event_type)
             end
 
-            cache_event_for_psc_sync(participant.person.public_id, core_event)
+            cache_event_for_psc_sync(participant.person.public_id, core_event, participant)
 
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
@@ -125,7 +125,7 @@ module NcsNavigator::Core::Warehouse
       [self.class.name, 'psc_sync', key_parts].flatten.join(':')
     end
 
-    def cache_event_for_psc_sync(person_id, core_event)
+    def cache_event_for_psc_sync(person_id, core_event, participant)
       return unless core_event.changed?
 
       Rails.application.redis.tap do |r|
@@ -136,6 +136,7 @@ module NcsNavigator::Core::Warehouse
           'end_date', core_event.event_end_date,
           'event_type_code', core_event.event_type_code,
           'event_type_label', core_event.event_type.display_text.downcase.strip.gsub(/\s+/, '_'),
+          'recruitment_arm', participant.low_intensity? ? 'lo' : 'hi',
           'sort_key', [core_event.event_start_date, '%03d' % core_event.event_type_code].join(':')
         )
         r.sadd(sync_key('p', person_id, 'events'), core_event.public_id)
