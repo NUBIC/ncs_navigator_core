@@ -92,7 +92,7 @@ module NcsNavigator::Core::Warehouse
         ordered_event_sets.each do |p_id, events_and_links|
           participant = Participant.where(:p_id => p_id).first
 
-          Rails.application.redis.sadd(sync_key('participants'), participant.person.public_id)
+          Rails.application.redis.sadd(sync_key('participants'), participant.public_id)
 
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
@@ -101,7 +101,7 @@ module NcsNavigator::Core::Warehouse
               participant.set_state_for_event_type(core_event.event_type)
             end
 
-            cache_event_for_psc_sync(participant.person.public_id, core_event, participant)
+            cache_event_for_psc_sync(participant, core_event)
 
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
@@ -110,7 +110,7 @@ module NcsNavigator::Core::Warehouse
 
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
-              cache_link_contact_for_psc_sync(participant.person.public_id, core_contact_link)
+              cache_link_contact_for_psc_sync(participant, core_event, core_contact_link)
               save_core_record(core_contact_link)
             end
           end
@@ -124,7 +124,7 @@ module NcsNavigator::Core::Warehouse
       [self.class.name, 'psc_sync', key_parts].flatten.join(':')
     end
 
-    def cache_event_for_psc_sync(person_id, core_event, participant)
+    def cache_event_for_psc_sync(participant, core_event)
       return unless core_event.changed?
 
       Rails.application.redis.tap do |r|
@@ -138,20 +138,20 @@ module NcsNavigator::Core::Warehouse
           'recruitment_arm', participant.low_intensity? ? 'lo' : 'hi',
           'sort_key', [core_event.event_start_date, '%03d' % core_event.event_type_code].join(':')
         )
-        r.sadd(sync_key('p', person_id, 'events'), core_event.public_id)
+        r.sadd(sync_key('p', participant.public_id, 'events'), core_event.public_id)
       end
     end
 
-    def cache_link_contact_for_psc_sync(person_id, core_contact_link)
+    def cache_link_contact_for_psc_sync(participant, core_event, core_contact_link)
       instrument_type_code = core_contact_link.instrument.try(:instrument_type_code)
 
       link_contact_fields = [
         'status', core_contact_link.new_record? ? 'new' : 'changed',
         'contact_link_id', core_contact_link.public_id,
-        'event_id', core_contact_link.event.public_id,
+        'event_id', core_event.public_id,
         'contact_date', core_contact_link.contact.contact_date,
         'sort_key', [
-          core_contact_link.event.public_id,
+          core_event.public_id,
           core_contact_link.contact.contact_date,
           ('%03d' % instrument_type_code if instrument_type_code)].compact.join(':')
       ]
@@ -162,9 +162,9 @@ module NcsNavigator::Core::Warehouse
 
       collection_key =
         if core_contact_link.instrument_id
-          sync_key('p', person_id, 'link_contacts_with_instrument')
+          sync_key('p', participant.public_id, 'link_contacts_with_instrument')
         else
-          sync_key('p', person_id, 'link_contacts_without_instrument')
+          sync_key('p', participant.public_id, 'link_contacts_without_instrument')
         end
 
       Rails.application.redis.tap do |r|
