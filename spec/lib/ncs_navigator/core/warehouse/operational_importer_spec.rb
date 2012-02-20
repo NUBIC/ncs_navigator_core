@@ -701,6 +701,10 @@ module NcsNavigator::Core::Warehouse
               event_hash['event_type_label'].should == 'informed_consent'
             end
 
+            it 'knows whether the person is hi or lo' do
+              event_hash['recruitment_arm'].should == 'lo'
+            end
+
             it 'has the sort key' do
               event_hash['sort_key'].should == '2010-09-03:010'
             end
