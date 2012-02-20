@@ -378,6 +378,7 @@ module NcsNavigator::Core::Warehouse
       let!(:f_e2_i) {
         create_warehouse_record_via_core(Instrument, 'f_e2_i',
           :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
+          :ins_status => 1,
           :event => f_e2)
       }
       let(:f_e3) {
@@ -722,12 +723,20 @@ module NcsNavigator::Core::Warehouse
                 lc_hash['contact_date'].should == '2010-09-03'
               end
 
+              it 'has the contact ID' do
+                lc_hash['contact_id'].should == 'f_c1'
+              end
+
               it 'has the event ID' do
                 lc_hash['event_id'].should == 'f_e2'
               end
 
               it 'has the instrument type' do
                 lc_hash['instrument_type'].should == '5'
+              end
+
+              it 'knows if the instrument was complete' do
+                lc_hash['instrument_status'].should == 'not started'
               end
 
               it 'has the sort key' do
