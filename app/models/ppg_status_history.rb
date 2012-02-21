@@ -24,6 +24,7 @@ class PpgStatusHistory < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :ppg_history_id
 
   belongs_to :participant
+  belongs_to :response_set
   ncs_coded_attribute :psu,             'PSU_CL1'
   ncs_coded_attribute :ppg_status,      'PPG_STATUS_CL1'
   ncs_coded_attribute :ppg_info_source, 'INFORMATION_SOURCE_CL3'

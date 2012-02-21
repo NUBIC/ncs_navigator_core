@@ -70,6 +70,7 @@ describe Address do
   it { should belong_to(:address_type) }
   it { should belong_to(:address_description) }
   it { should belong_to(:state) }
+  it { should belong_to(:response_set) }
 
   context "as mdes record" do
 

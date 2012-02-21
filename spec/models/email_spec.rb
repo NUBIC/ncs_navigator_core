@@ -43,6 +43,7 @@ describe Email do
   it { should belong_to(:email_rank) }
   it { should belong_to(:email_share) }
   it { should belong_to(:email_active) }
+  it { should belong_to(:response_set) }
 
   context "as mdes record" do
 

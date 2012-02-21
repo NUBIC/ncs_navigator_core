@@ -66,6 +66,7 @@ class Person < ActiveRecord::Base
   ncs_coded_attribute :p_tracing,                'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :p_info_source,            'INFORMATION_SOURCE_CL4'
 
+  belongs_to :response_set
   # surveyor
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
   has_many :contact_links, :order => "created_at DESC"
@@ -122,12 +123,15 @@ class Person < ActiveRecord::Base
 
   ##
   # Helper method to set first and last name from full name
+  # Sets first name if there is no space in the name
   # @param [String]
   def full_name=(full_name)
     full_name = full_name.split
     if full_name.size >= 2
       self.last_name = full_name.last
       self.first_name = full_name[0, (full_name.size - 1) ].join(" ")
+    else
+      self.first_name = full_name
     end
   end
 

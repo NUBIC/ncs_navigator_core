@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120215225058) do
+ActiveRecord::Schema.define(:version => 20120220192653) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "answers", :force => true do |t|
@@ -190,6 +191,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "events", :force => true do |t|
@@ -398,6 +400,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.string   "person_pid_id",      :limit => 36, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "participant_staff_relationships", :force => true do |t|
@@ -514,6 +517,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                              :default => false
+    t.integer  "response_set_id"
   end
 
   create_table "person_races", :force => true do |t|
@@ -539,6 +543,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.string   "transaction_type",    :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "ppg_status_histories", :force => true do |t|
@@ -555,6 +560,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.string   "transaction_type",      :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "pregnancy_visit1s", :force => true do |t|
@@ -771,7 +777,6 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
   end
 
@@ -858,6 +863,7 @@ ActiveRecord::Schema.define(:version => 20120215225058) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "validation_conditions", :force => true do |t|

@@ -33,6 +33,7 @@ class PpgDetail < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :ppg_details_id
 
   belongs_to :participant
+  belongs_to :response_set
   ncs_coded_attribute :psu,            'PSU_CL1'
   ncs_coded_attribute :ppg_pid_status, 'PARTICIPANT_STATUS_CL1'
   ncs_coded_attribute :ppg_first,      'PPG_STATUS_CL2'

@@ -27,6 +27,7 @@ class ParticipantPersonLink < ActiveRecord::Base
 
   belongs_to :person
   belongs_to :participant
+  belongs_to :response_set
   ncs_coded_attribute :psu,          'PSU_CL1'
   ncs_coded_attribute :relationship, 'PERSON_PARTCPNT_RELTNSHP_CL1'
   ncs_coded_attribute :is_active,    'CONFIRM_TYPE_CL2'

@@ -40,6 +40,7 @@ describe ParticipantPersonLink do
 
   it { should validate_presence_of(:person_id) }
   it { should validate_presence_of(:participant_id) }
+  it { should belong_to(:response_set) }
 
   context "as mdes record" do
 

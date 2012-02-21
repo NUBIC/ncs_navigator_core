@@ -66,6 +66,7 @@ describe PpgDetail do
   it { should belong_to(:participant) }
   it { should belong_to(:ppg_pid_status) }
   it { should belong_to(:ppg_first) }
+  it { should belong_to(:response_set) }
 
   context "associated ppg_status_history" do
 

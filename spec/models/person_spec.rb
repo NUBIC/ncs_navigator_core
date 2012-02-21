@@ -87,6 +87,7 @@ describe Person do
   # it { should validate_presence_of(:first_name) }
   # it { should validate_presence_of(:last_name) }
 
+  it { should belong_to(:response_set) }
   it { should have_many(:response_sets) }
   it { should have_many(:contact_links) }
   it { should have_many(:participant_person_links) }
