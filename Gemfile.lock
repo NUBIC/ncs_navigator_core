@@ -197,6 +197,9 @@ GEM
     ffi (1.0.11)
     foreigner (1.1.1)
       activerecord (>= 3.0.0)
+    foreman (0.39.0)
+      term-ansicolor (~> 1.0.7)
+      thor (>= 0.13.6)
     formtastic (1.2.4)
       actionpack (>= 2.3.7)
       activesupport (>= 2.3.7)
@@ -422,6 +425,7 @@ DEPENDENCIES
   faraday
   fastercsv
   foreigner
+  foreman
   formtastic (= 1.2.4)
   guard
   guard-bundler
