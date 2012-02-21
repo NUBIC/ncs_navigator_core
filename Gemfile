@@ -12,6 +12,7 @@ gem 'pg'
 
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'ransack'
+gem 'foreman'
 gem 'foreigner'
 
 group :assets do
