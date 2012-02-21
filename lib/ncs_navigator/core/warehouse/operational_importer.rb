@@ -22,12 +22,11 @@ module NcsNavigator::Core::Warehouse
     def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
-    def initialize(wh_config, user)
+    def initialize(wh_config)
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
       @failed_associations = []
-      @user = user
       @progress = ProgressTracker.new(wh_config)
     end
 
@@ -91,17 +90,18 @@ module NcsNavigator::Core::Warehouse
       @progress.loading('events, instruments, and links with p state impact')
       Participant.transaction do
         ordered_event_sets.each do |p_id, events_and_links|
-          participant = Participant.find_by_p_id(p_id)
+          participant = Participant.where(:p_id => p_id).first
+
+          Rails.application.redis.sadd(sync_key('participants'), participant.public_id)
 
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
-            assign_subject(participant, core_event)
-
             if core_event.new_record?
               participant.set_state_for_event_type(core_event.event_type)
-              schedule_known_event(participant, core_event)
             end
+
+            cache_event_for_psc_sync(participant, core_event)
 
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
@@ -110,10 +110,7 @@ module NcsNavigator::Core::Warehouse
 
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
-              if core_contact_link.new_record?
-                # TODO: determine if last contact link and if not use scheduled !!!
-                update_activity_state(participant, mdes_lc.instrument, core_event)
-              end
+              cache_link_contact_for_psc_sync(participant, core_event, core_contact_link)
               save_core_record(core_contact_link)
             end
           end
@@ -123,77 +120,61 @@ module NcsNavigator::Core::Warehouse
       drop_state_impacting_ids_table
     end
 
-    def psc
-      @psc ||= PatientStudyCalendar.new(@user)
+    def sync_key(*key_parts)
+      [self.class.name, 'psc_sync', key_parts].flatten.join(':')
     end
 
-    def core_event_date(core_event)
-      core_event.event_start_date.blank? ? core_event.event_end_date : core_event.event_start_date
-    end
-    private :core_event_date
+    def cache_event_for_psc_sync(participant, core_event)
+      return unless core_event.changed?
 
-    def assign_subject(participant, core_event)
-      if !participant.person.nil? && !psc.is_registered?(participant)
-        psc.assign_subject(participant, core_event.event_type.to_s, core_event_date(core_event))
+      Rails.application.redis.tap do |r|
+        r.hmset(sync_key('event', core_event.public_id),
+          'status', core_event.new_record? ? 'new' : 'changed',
+          'event_id', core_event.public_id,
+          'start_date', core_event.event_start_date,
+          'end_date', core_event.event_end_date,
+          'event_type_code', core_event.event_type_code,
+          'event_type_label', core_event.event_type.display_text.downcase.strip.gsub(/\s+/, '_'),
+          'recruitment_arm', participant.low_intensity? ? 'lo' : 'hi',
+          'sort_key', [core_event.event_start_date, '%03d' % core_event.event_type_code].join(':')
+        )
+        r.sadd(sync_key('p', participant.public_id, 'events'), core_event.public_id)
       end
     end
-    private :assign_subject
 
-    def schedule_known_event(participant, core_event)
-      if !participant.person.nil? && psc.is_registered?(participant)
-        date = core_event_date(core_event)
-        log.debug("~~~ schedule_known_event for #{core_event.event_type} on #{date} - #{participant.person}")
-        if resp = psc.schedule_known_event(participant, core_event.event_type.to_s, date)
-          core_event.scheduled_study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body) 
-        end
+    def cache_link_contact_for_psc_sync(participant, core_event, core_contact_link)
+      instrument_type_code = core_contact_link.instrument.try(:instrument_type_code)
+
+      link_contact_fields = [
+        'status', core_contact_link.new_record? ? 'new' : 'changed',
+        'contact_link_id', core_contact_link.public_id,
+        'event_id', core_event.public_id,
+        'contact_id', core_contact_link.contact.public_id,
+        'contact_date', core_contact_link.contact.contact_date,
+        'sort_key', [
+          core_event.public_id,
+          core_contact_link.contact.contact_date,
+          ('%03d' % instrument_type_code if instrument_type_code)].compact.join(':')
+      ]
+
+      if instrument_type_code
+        link_contact_fields << 'instrument_type' << instrument_type_code
+        link_contact_fields << 'instrument_status' <<
+          core_contact_link.instrument.instrument_status.display_text.downcase
       end
-    end
-    private :schedule_known_event
 
-    def update_activity_state(participant, instrument, core_event)
-      if !participant.person.nil? && psc.is_registered?(participant)
-
-        date = core_event_date(core_event)
-
-        if instrument
-          log.debug("~~~ update_activity_state with instrument #{participant.person} and #{instrument.instrument_type} [#{instrument.instrument_id}] on #{date}")
-          activity_name = InstrumentEventMap.name_for_instrument_type(instrument.instrument_type)
-          new_state = activity_state(instrument.ins_status.to_i)
-          reason = "Import for instrument [#{instrument.instrument_id}] with status [#{instrument.ins_status}] should update activity [#{activity_name}] to [#{new_state}] on [#{date}]"
-          log.debug("~~~    for #{participant.person} #{reason}")
-          psc.update_activity_state_by_name(activity_name, participant, new_state, date, reason)
+      collection_key =
+        if core_contact_link.instrument_id
+          sync_key('p', participant.public_id, 'link_contacts_with_instrument')
         else
-          # TODO: what to do if there is not an instrument?
-          #       update all activities for the event segment to the new date && scheduled
-
-          if activity_identifiers = psc.activities_to_reschedule(participant, core_event.event_type.to_s)
-            reason = "Import for contact link without instrument should update activities for event [#{core_event.event_type.to_s}] to [#{PatientStudyCalendar::ACTIVITY_SCHEDULED}] on [#{date}]"
-            log.debug("~~~ update_activity_state for #{participant.person} #{reason}")
-            activity_identifiers.each do |activity_id|
-              psc.update_activity_state(activity_id, participant, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
-            end
-          end
-
+          sync_key('p', participant.public_id, 'link_contacts_without_instrument')
         end
-      end
-    end
-    private :update_activity_state
 
-    def activity_state(instrument_status)
-      case instrument_status
-      when 1 # not started
-        PatientStudyCalendar::ACTIVITY_SCHEDULED
-      when 2 # refused
-        PatientStudyCalendar::ACTIVITY_CANCELED
-      when 3 # partial
-        PatientStudyCalendar::ACTIVITY_OCCURRED
-      when 4 # complete
-        PatientStudyCalendar::ACTIVITY_OCCURRED
-      else   # nil or missing
-        PatientStudyCalendar::ACTIVITY_SCHEDULED
+      Rails.application.redis.tap do |r|
+        r.hmset(sync_key('link_contact', core_contact_link.public_id), *link_contact_fields)
+        r.sadd(collection_key, core_contact_link.public_id)
       end
     end
-    private :activity_state
 
     STATE_IMPACTING_IDS_TABLE_NAME = 'scratch_core_importer_state_impacting_elci'
 

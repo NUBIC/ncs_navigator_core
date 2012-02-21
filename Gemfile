@@ -12,6 +12,7 @@ gem 'pg'
 
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'ransack'
+gem 'foreman'
 gem 'foreigner'
 
 group :assets do
@@ -34,6 +35,8 @@ gem 'state_machine-audit_trail'
 gem 'uuid'
 gem 'will_paginate'
 gem 'faraday'
+
+gem 'redis'
 
 group :development do
   gem 'capistrano'

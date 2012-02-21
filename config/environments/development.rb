@@ -30,6 +30,8 @@ NcsNavigatorCore::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  config.redis_url = 'redis://localhost:6379/'
+
   config.aker do
     api_mode :cas_proxy
     static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")

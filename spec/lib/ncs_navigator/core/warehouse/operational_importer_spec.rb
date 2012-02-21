@@ -11,15 +11,11 @@ module NcsNavigator::Core::Warehouse
     include_context :importer_spec_warehouse
 
     let(:importer) {
-      OperationalImporter.new(wh_config, user)
+      OperationalImporter.new(wh_config)
     }
 
     let(:enumerator) {
       OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
-    }
-
-    let(:user) {
-      mock(:username => 'sysadmin', :cas_proxy_ticket => 'PT-CAS-foo')
     }
 
     def save_wh(record)
@@ -382,6 +378,7 @@ module NcsNavigator::Core::Warehouse
       let!(:f_e2_i) {
         create_warehouse_record_via_core(Instrument, 'f_e2_i',
           :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
+          :ins_status => 1,
           :event => f_e2)
       }
       let(:f_e3) {
@@ -403,7 +400,7 @@ module NcsNavigator::Core::Warehouse
       }
       let!(:f_c1_e1) {
         create_warehouse_record_via_core(ContactLink, 'f_c1_e1',
-          :contact => f_c1, :event => f_e1)
+          :contact => f_c1, :event => f_e1, :instrument => nil)
       }
       let!(:f_c1_e2) {
         create_warehouse_record_via_core(ContactLink, 'f_c1_e2',
@@ -411,13 +408,14 @@ module NcsNavigator::Core::Warehouse
       }
       let!(:f_c1_e3) {
         create_warehouse_record_via_core(ContactLink, 'f_c1_e3',
-          :contact => f_c1, :event => f_e3)
+          :contact => f_c1, :event => f_e3, :instrument => nil)
       }
       let(:f_c2) {
         create_warehouse_record_via_core(Contact, 'f_c2', :contact_date => '2010-09-17')
       }
       let!(:f_c2_e3) {
-        create_warehouse_record_via_core(ContactLink, 'f_c2_e3', :contact => f_c2, :event => f_e3)
+        create_warehouse_record_via_core(ContactLink, 'f_c2_e3',
+          :contact => f_c2, :event => f_e3, :instrument => nil)
       }
 
       let(:f_e4) {
@@ -431,7 +429,8 @@ module NcsNavigator::Core::Warehouse
         create_warehouse_record_via_core(Contact, 'f_c3', :contact_date => '2011-03-08')
       }
       let!(:f_c3_e4) {
-        create_warehouse_record_via_core(ContactLink, 'f_c3_e4', :contact => f_c3, :event => f_e4)
+        create_warehouse_record_via_core(ContactLink, 'f_c3_e4',
+          :contact => f_c3, :event => f_e4, :instrument => nil)
       }
 
       let!(:g_e1) {
@@ -448,9 +447,7 @@ module NcsNavigator::Core::Warehouse
       }
 
       def do_import
-        VCR.use_cassette('psc/operational_importer') do
-          importer.import
-        end
+        importer.import
       end
 
       describe 'data mapping' do
@@ -621,7 +618,6 @@ module NcsNavigator::Core::Warehouse
             do_import # twice
             target_states.should == expected_states
           end
-
         end
 
         it 'saves the events' do
@@ -639,6 +635,127 @@ module NcsNavigator::Core::Warehouse
         it 'saves the instruments' do
           do_import
           MdesModule::Instrument.all.collect(&:instrument_id).sort.should == %w(f_e2_i g_e1_i)
+        end
+
+        describe 'PSC sync records' do
+          let(:redis) { Rails.application.redis }
+          let(:ns) { 'NcsNavigator::Core::Warehouse::OperationalImporter' }
+
+          before do
+            keys = redis.keys('*')
+            redis.del(*keys) unless keys.empty?
+
+            f_e3.event_end_date = '2010-09-08'
+            save_wh(f_e3)
+
+            do_import
+          end
+
+          it "stores a set of participants that need to be sync'd" do
+            redis.smembers("#{ns}:psc_sync:participants").sort.
+              should == %w(fred_p ginger_p)
+          end
+
+          it "stores a list of events that need to be sync'd for each participant" do
+            redis.smembers("#{ns}:psc_sync:p:fred_p:events").
+              should == %w(f_e1 f_e2 f_e3 f_e4)
+          end
+
+          it "stores a set of link contacts without instruments that need to be sync'd for each p" do
+            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument").sort.
+              should == %w(f_c1_e1 f_c1_e3 f_c2_e3 f_c3_e4)
+          end
+
+          it "stores a set of link contacts with instruments that need to be sync'd for each p" do
+            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument").
+              should == %w(f_c1_e2)
+          end
+
+          describe 'an event hash' do
+            let(:event_hash) { redis.hgetall("#{ns}:psc_sync:event:f_e3") }
+
+            it 'has the status' do
+              event_hash['status'].should == 'new'
+            end
+
+            it 'has the event ID' do
+              event_hash['event_id'].should == 'f_e3'
+            end
+
+            it 'has the event start date' do
+              event_hash['start_date'].should == '2010-09-03'
+            end
+
+            it 'has the event end date' do
+              event_hash['end_date'].should == '2010-09-08'
+            end
+
+            it 'has the event type code' do
+              event_hash['event_type_code'].should == '10'
+            end
+
+            it 'has the event type label' do
+              event_hash['event_type_label'].should == 'informed_consent'
+            end
+
+            it 'knows whether the person is hi or lo' do
+              event_hash['recruitment_arm'].should == 'lo'
+            end
+
+            it 'has the sort key' do
+              event_hash['sort_key'].should == '2010-09-03:010'
+            end
+          end
+
+          describe 'a link_contact hash' do
+            describe 'with an instrument' do
+              let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e2") }
+
+              it 'has the status' do
+                lc_hash['status'].should == 'new'
+              end
+
+              it 'has the link_contact ID' do
+                lc_hash['contact_link_id'].should == 'f_c1_e2'
+              end
+
+              it 'has the contact date' do
+                lc_hash['contact_date'].should == '2010-09-03'
+              end
+
+              it 'has the contact ID' do
+                lc_hash['contact_id'].should == 'f_c1'
+              end
+
+              it 'has the event ID' do
+                lc_hash['event_id'].should == 'f_e2'
+              end
+
+              it 'has the instrument type' do
+                lc_hash['instrument_type'].should == '5'
+              end
+
+              it 'knows if the instrument was complete' do
+                lc_hash['instrument_status'].should == 'not started'
+              end
+
+              it 'has the sort key' do
+                lc_hash['sort_key'].should == 'f_e2:2010-09-03:005'
+              end
+            end
+
+            describe 'without an instrument' do
+              let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e3") }
+
+              it 'does not have an instrument type' do
+                lc_hash['instrument_type'].should be_nil
+              end
+
+              it 'has the appropriate sort key' do
+                lc_hash['sort_key'].should == 'f_e3:2010-09-03'
+              end
+            end
+          end
         end
       end
     end
