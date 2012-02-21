@@ -4,6 +4,7 @@ log/*.log
 log/newrelic*
 tmp/
 ncs_navigator_core.tmproj
+tmtags
 coverage.data
 coverage/
 coverage/*
@@ -19,6 +20,8 @@ spec/javascripts/helpers/SpecHelper.js
 spec/javascripts/math_spec.js
 doc/survey_to_operational_data_maps/
 doc/survey_to_operational_data_maps/*
+doc/data/
+doc/data/*
 doc/notes/
 doc/notes/*
 .sass-cache/
