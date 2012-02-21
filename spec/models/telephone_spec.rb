@@ -48,6 +48,7 @@ describe Telephone do
   it { should belong_to(:phone_landline) }
   it { should belong_to(:cell_permission) }
   it { should belong_to(:text_permission) }
+  it { should belong_to(:response_set) }
 
   context "as mdes record" do
 

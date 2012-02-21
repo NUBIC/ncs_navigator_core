@@ -34,6 +34,7 @@ class Email < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :email_id, :date_fields => [:email_start_date, :email_end_date]
 
   belongs_to :person
+  belongs_to :response_set
 
   ncs_coded_attribute :psu,               'PSU_CL1'
   ncs_coded_attribute :email_info_source, 'INFORMATION_SOURCE_CL2'

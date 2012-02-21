@@ -11,10 +11,7 @@ class OperationalDataExtractor
 
   class << self
     def process(response_set)
-      if !response_set.processed_for_operational_data_extraction
-        success = extractor_for(response_set).extract_data(response_set)
-        response_set.update_attribute(:processed_for_operational_data_extraction, true) if success
-      end
+      extractor_for(response_set).extract_data(response_set)
     end
 
 
@@ -184,7 +181,7 @@ class OperationalDataExtractor
         participant.p_type = NcsCode.for_attribute_name_and_local_code(:p_type_code, p_type_code)
       end
     end
-    
+
 
   end
 

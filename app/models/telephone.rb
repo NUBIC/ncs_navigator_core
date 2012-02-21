@@ -37,6 +37,7 @@ class Telephone < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :phone_id, :date_fields => [:phone_start_date, :phone_end_date]
 
   belongs_to :person
+  belongs_to :response_set
 
   ncs_coded_attribute :psu,               'PSU_CL1'
   ncs_coded_attribute :phone_info_source, 'INFORMATION_SOURCE_CL2'

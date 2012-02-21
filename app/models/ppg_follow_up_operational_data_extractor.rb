@@ -60,14 +60,14 @@ class PpgFollowUpOperationalDataExtractor
       else
         participant = person.participant
       end
-      ppg_status_history = PpgStatusHistory.new(:participant => participant)
 
-      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type)
-      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type)
-      work_phone = Telephone.new(:person => person, :phone_type => Telephone.work_phone_type)
-      other_phone = Telephone.new(:person => person, :phone_type => Telephone.other_phone_type)
-      phone = Telephone.new(:person => person)
-      email = Email.new(:person => person)
+      ppg_status_history = nil
+      home_phone         = nil
+      cell_phone         = nil
+      work_phone         = nil
+      other_phone        = nil
+      phone              = nil
+      email              = nil
 
       response_set.responses.each do |r|
         value = OperationalDataExtractor.response_value(r)
@@ -75,31 +75,80 @@ class PpgFollowUpOperationalDataExtractor
         data_export_identifier = r.question.data_export_identifier
 
         if TELEPHONE_MAP.has_key?(data_export_identifier)
-          phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            phone ||= Telephone.where(:response_set_id => response_set.id).first
+            if phone.nil?
+              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
+            end
+
+            phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if HOME_PHONE_MAP.has_key?(data_export_identifier)
-          home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
+            if home_phone.nil?
+              home_phone = Telephone.new(:person => person, :psu => person.psu,
+                                         :phone_type => Telephone.home_phone_type, :response_set => response_set)
+            end
+
+            home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if CELL_PHONE_MAP.has_key?(data_export_identifier)
-          cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
+            if cell_phone.nil?
+              cell_phone = Telephone.new(:person => person, :psu => person.psu,
+                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set)
+            end
+            cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if OTHER_PHONE_MAP.has_key?(data_export_identifier)
-          other_phone.send("#{OTHER_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            other_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.other_phone_type.local_code).last
+            if other_phone.nil?
+              other_phone = Telephone.new(:person => person, :psu => person.psu,
+                                          :phone_type => Telephone.other_phone_type, :response_set => response_set)
+            end
+
+            other_phone.send("#{OTHER_PHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if WORK_PHONE_MAP.has_key?(data_export_identifier)
-          work_phone.send("#{WORK_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            work_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.work_phone_type.local_code).last
+            if work_phone.nil?
+              work_phone = Telephone.new(:person => person, :psu => person.psu,
+                                         :phone_type => Telephone.work_phone_type, :response_set => response_set)
+            end
+            work_phone.send("#{WORK_PHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if EMAIL_MAP.has_key?(data_export_identifier)
-          email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+          unless value.blank?
+            email ||= Email.where(:response_set_id => response_set.id).first
+            if email.nil?
+              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
+            end
+            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+          end
         end
 
         # TODO: do not hard code ppg code
         if PPG_STATUS_MAP.has_key?(data_export_identifier)
+
+          ppg_status_history ||= PpgStatusHistory.where(:response_set_id => response_set.id).first
+          if ppg_status_history.nil?
+            ppg_status_history = PpgStatusHistory.new(:participant => person.participant, :psu => person.psu, :response_set => response_set)
+          end
+
           case data_export_identifier
           when "#{INTERVIEW_PREFIX}.PREGNANT", "#{SAQ_PREFIX}.PREGNANT"
             # Do not set status code if answer to PREGNANT is "No" or "Refused" or "Don't Know"
@@ -128,16 +177,35 @@ class PpgFollowUpOperationalDataExtractor
 
       end
 
-      email.save! unless email.email.blank?
-      home_phone.save! unless home_phone.phone_nbr.blank?
-      work_phone.save! unless work_phone.phone_nbr.blank?
-      cell_phone.save! unless cell_phone.phone_nbr.blank?
-      other_phone.save! unless other_phone.phone_nbr.blank?
-      phone.save! unless phone.phone_nbr.blank?
-      unless ppg_status_history.ppg_status_code.blank?
-        OperationalDataExtractor.set_participant_type(participant, ppg_status_history.ppg_status_code)        
+      if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
+        OperationalDataExtractor.set_participant_type(participant, ppg_status_history.ppg_status_code)
         ppg_status_history.save!
       end
+
+      if email && !email.email.blank?
+        email.save!
+      end
+
+      if home_phone && !home_phone.phone_nbr.blank?
+        home_phone.save!
+      end
+
+      if cell_phone && !cell_phone.phone_nbr.blank?
+        cell_phone.save!
+      end
+
+      if work_phone && !work_phone.phone_nbr.blank?
+        work_phone.save!
+      end
+
+      if other_phone && !other_phone.phone_nbr.blank?
+        other_phone.save!
+      end
+
+      if phone && !phone.phone_nbr.blank?
+        phone.save!
+      end
+
       participant.save!
       person.save!
     end

@@ -98,15 +98,14 @@ class PregnancyScreenerOperationalDataExtractor
       else
         participant = person.participant
       end
-      address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.home_address_type)
-      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type)
 
-      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu)
-      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu)
-      phone = Telephone.new(:person => person, :psu => person.psu)
-
-      email = Email.new(:person => person, :psu => person.psu)
-      ppg_detail = PpgDetail.new(:participant => person.participant, :psu => person.psu)
+      ppg_detail   = nil
+      email        = nil
+      home_phone   = nil
+      cell_phone   = nil
+      phone        = nil
+      mail_address = nil
+      address      = nil
 
       response_set.responses.each do |r|
 
@@ -122,31 +121,78 @@ class PregnancyScreenerOperationalDataExtractor
         end
 
         if ADDRESS_MAP.has_key?(data_export_identifier)
-          address.send("#{ADDRESS_MAP[data_export_identifier]}=", value)
+          unless value.blank?
+            address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.home_address_type.local_code).first
+            if address.nil?
+              address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
+                                    :address_type => Address.home_address_type, :response_set => response_set)
+            end
+            address.send("#{ADDRESS_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if MAIL_ADDRESS_MAP.has_key?(data_export_identifier)
-          mail_address.send("#{MAIL_ADDRESS_MAP[data_export_identifier]}=", value)
+          unless value.blank?
+            mail_address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.mailing_address_type.local_code).first
+            if mail_address.nil?
+              mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
+                                         :address_type => Address.mailing_address_type, :response_set => response_set)
+            end
+            mail_address.send("#{MAIL_ADDRESS_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if TELEPHONE_MAP.has_key?(data_export_identifier)
-          phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            phone ||= Telephone.where(:response_set_id => response_set.id).first
+            if phone.nil?
+              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
+            end
+
+            phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if HOME_PHONE_MAP.has_key?(data_export_identifier)
-          home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
+            if home_phone.nil?
+              home_phone = Telephone.new(:person => person, :psu => person.psu,
+                                         :phone_type => Telephone.home_phone_type, :response_set => response_set)
+            end
+
+            home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if CELL_PHONE_MAP.has_key?(data_export_identifier)
-          cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value) unless value.blank?
+          unless value.blank?
+            cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
+            if cell_phone.nil?
+              cell_phone = Telephone.new(:person => person, :psu => person.psu,
+                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set)
+            end
+            cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
+          end
         end
 
         if EMAIL_MAP.has_key?(data_export_identifier)
-          email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+          unless value.blank?
+            email ||= Email.where(:response_set_id => response_set.id).first
+            if email.nil?
+              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
+            end
+            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+          end
         end
 
         # TODO: do not hard code ppg code
         if PPG_DETAILS_MAP.has_key?(data_export_identifier)
+
+          ppg_detail ||= PpgDetail.where(:response_set_id => response_set.id).first
+          if ppg_detail.nil?
+            ppg_detail = PpgDetail.new(:participant => person.participant, :psu => person.psu, :response_set => response_set)
+          end
 
           case data_export_identifier
           when "#{INTERVIEW_PREFIX}.PREGNANT"
@@ -172,20 +218,36 @@ class PregnancyScreenerOperationalDataExtractor
           due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
           ppg_detail.orig_due_date = due_date if due_date
         end
-
       end
 
-
-      unless ppg_detail.ppg_first.blank?
+      if ppg_detail && !ppg_detail.ppg_first.blank?
         OperationalDataExtractor.set_participant_type(participant, ppg_detail.ppg_first_code)
         ppg_detail.save!
       end
-      email.save! unless email.email.blank?
-      home_phone.save! unless home_phone.phone_nbr.blank?
-      cell_phone.save! unless cell_phone.phone_nbr.blank?
-      phone.save! unless phone.phone_nbr.blank?
-      mail_address.save! unless mail_address.to_s.blank?
-      address.save! unless address.to_s.blank?
+
+      if email && !email.email.blank?
+        email.save!
+      end
+
+      if home_phone && !home_phone.phone_nbr.blank?
+        home_phone.save!
+      end
+
+      if cell_phone && !cell_phone.phone_nbr.blank?
+        cell_phone.save!
+      end
+
+      if phone && !phone.phone_nbr.blank?
+        phone.save!
+      end
+
+      if mail_address && !mail_address.to_s.blank?
+        mail_address.save!
+      end
+
+      if address && !address.to_s.blank?
+        address.save!
+      end
 
       participant.save!
       person.save!

@@ -32,5 +32,6 @@ describe PpgStatusHistory do
   it { should belong_to(:ppg_status) }
   it { should belong_to(:ppg_info_source) }
   it { should belong_to(:ppg_info_mode) }
+  it { should belong_to(:response_set) }
 
 end

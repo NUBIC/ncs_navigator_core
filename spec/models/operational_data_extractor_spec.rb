@@ -61,7 +61,7 @@ describe OperationalDataExtractor do
     handler.should == PregnancyVisitOperationalDataExtractor
   end
 
-  describe "processing the response set" do
+  context "processing the response set" do
 
     before(:each) do
       @person = Factory(:person)
@@ -70,24 +70,50 @@ describe OperationalDataExtractor do
       question = Factory(:question, :data_export_identifier => "PREG_SCREEN_HI_2.HOME_PHONE")
       answer = Factory(:answer, :response_class => "string")
       home_phone_response = Factory(:response, :string_value => "3125551212", :question => question, :answer => answer, :response_set => @response_set)
+
+      Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 1, :display_text => "Home")
+      Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 4, :display_text => "Mail")
+
+      Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 1, :display_text => "Home")
+      Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
+
       @response_set.responses << home_phone_response
-      OperationalDataExtractor.process(@response_set)
     end
 
-    it "processes the response set once" do
-      ResponseSet.find(@response_set.id).should be_processed_for_operational_data_extraction
-    end
+    describe "#process" do
 
-    it "creates only one data record for the extracted data" do
-      person = Person.find(@person.id)
-      phones = person.telephones
-      phones.should_not be_empty
-      phones.first.phone_nbr.should == "3125551212"
+      before(:each) do
+        OperationalDataExtractor.process(@response_set)
+      end
 
-      OperationalDataExtractor.process(@response_set)
-      person = Person.find(@person.id)
-      person.telephones.should == phones
-      person.telephones.first.phone_nbr.should == "3125551212"
+      it "creates only one data record for the extracted data" do
+        person = Person.find(@person.id)
+        phones = person.telephones
+        phones.should_not be_empty
+        phones.size.should == 1
+        phones.first.phone_nbr.should == "3125551212"
+
+        OperationalDataExtractor.process(@response_set)
+        person = Person.find(@person.id)
+        person.telephones.should == phones
+        person.telephones.first.phone_nbr.should == "3125551212"
+      end
+
+      it "updates one data record if re-processed" do
+        person = Person.find(@person.id)
+        phones = person.telephones
+        phones.should_not be_empty
+        phones.size.should == 1
+        phones.first.phone_nbr.should == "3125551212"
+
+        @response_set.responses.first.string_value = "3125556789"
+
+        OperationalDataExtractor.process(@response_set)
+        person = Person.find(@person.id)
+        person.telephones.should == phones
+        person.telephones.first.phone_nbr.should == "3125556789"
+      end
+
     end
 
   end

@@ -11,6 +11,12 @@ describe PregnancyScreenerOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Participant)
     create_missing_in_error_ncs_codes(PpgDetail)
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+
+    Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 1, :display_text => "Home")
+    Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 4, :display_text => "Mail")
+
+    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 1, :display_text => "Home")
+    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
   end
 
   context "extracting person operational data" do
@@ -197,7 +203,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     PregnancyScreenerOperationalDataExtractor.extract_data(response_set)
 
-    person  = Person.find(person.id)
+    person = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
     address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
