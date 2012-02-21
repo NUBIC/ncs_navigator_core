@@ -91,6 +91,18 @@ class PatientStudyCalendar
   end
 
   ##
+  # @return [String] the value that should be used as PSC's assignment
+  #   ID for this participant on the NCS primary protocol.
+  def psc_assignment_id(participant)
+    case participant
+    when String
+      participant
+    else
+      participant.person.public_id
+    end
+  end
+
+  ##
   # Gets the current template from PSC and returns the nodes matching 'psc:study-segment'.
   # @return [NodeList]
   def segments
@@ -108,14 +120,14 @@ class PatientStudyCalendar
   # True if the participant is known to psc by the participant public_id.
   # @return [Boolean]
   def is_registered?(participant)
-    registered_participants.is_registered?(participant.person.public_id)
+    registered_participants.is_registered?(psc_assignment_id(participant))
   end
 
   ##
   # True if the participant identifier is known to self.
   # @return [Boolean]
   def registered_participant?(participant)
-    registered_participants.is_registered?(participant.person.public_id, false)
+    registered_participants.is_registered?(psc_assignment_id(participant), false)
   end
 
   def assign_subject(participant, event_type = nil, date = nil)
@@ -129,7 +141,7 @@ class PatientStudyCalendar
     response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
                     data)
     registered_participants.cache_registration_status(
-      participant.person.public_id, valid_response?(response))
+      psc_assignment_id(participant), valid_response?(response))
     response
   end
 
@@ -138,7 +150,7 @@ class PatientStudyCalendar
   end
 
   def schedules(participant, format = "json")
-    get("subjects/#{participant.person.public_id}/schedules.#{format}")
+    get("subjects/#{psc_assignment_id(participant)}/schedules.#{format}")
   end
 
   def activities_for_segment(participant, segment)
@@ -155,7 +167,7 @@ class PatientStudyCalendar
   # Gets information about all activities for a participant
   # (cf. ScheduledActivity Struct).
   # Intended to find and re-schedule activities
-  # @param [Participant]
+  # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
   def scheduled_activities(participant)
     build_scheduled_activities(participant_activities(schedules(participant)))
@@ -178,7 +190,7 @@ class PatientStudyCalendar
   # Gets information about all activities for a participant
   # (cf. ScheduledActivity Struct) that relate to the participant's currently
   # pending events.
-  # @param [Participant]
+  # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
   def activities_for_pending_events(participant)
     result = []
@@ -298,7 +310,7 @@ class PatientStudyCalendar
     next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
 
     if should_schedule_segment(participant, next_scheduled_event.event, next_scheduled_event_date)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}",
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}",
         build_next_scheduled_study_segment_request(next_scheduled_event.event, next_scheduled_event_date))
     end
   end
@@ -314,7 +326,7 @@ class PatientStudyCalendar
     if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
       log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")
       request_data = build_known_event_request(event_type, date)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}", request_data) if request_data
+      post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}", request_data) if request_data
     end
   end
 
@@ -398,7 +410,7 @@ class PatientStudyCalendar
   # @param [Date] (optional)
   # @param [String] (optional) - reason for change
   def update_activity_state(activity_identifier, participant, value, date = nil, reason = nil)
-    post("studies/#{CGI.escape(study_identifier)}/schedules/#{participant.person.public_id}/activities/#{activity_identifier}",
+    post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}/activities/#{activity_identifier}",
       build_scheduled_activity_state_request(value, date, reason))
   end
 
@@ -406,7 +418,7 @@ class PatientStudyCalendar
   # Updates the subject attributes in PSC for the given participant.
   # @param [Participant]
   def update_subject(participant)
-    put("subjects/#{participant.person.public_id}",
+    put("subjects/#{psc_assignment_id(participant)}",
       build_subject_attributes_hash(participant, "_").to_json)
   end
 
@@ -438,7 +450,7 @@ class PatientStudyCalendar
                     "first-study-segment-id" => segment_id,
                     "date" => date,
                     "subject-coordinator-name" => user.username,
-                    "desired-assignment-id" => participant.person.public_id) {
+                    "desired-assignment-id" => psc_assignment_id(participant)) {
       xm.subject(subject_attributes)
     }
     xm.target!
