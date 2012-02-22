@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120220192653) do
+ActiveRecord::Schema.define(:version => 20120222225559) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -145,6 +145,17 @@ ActiveRecord::Schema.define(:version => 20120220192653) do
     t.integer  "du_rank_code",                    :null => false
     t.string   "du_rank_other"
     t.string   "transaction_type",  :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "dwelling_unit_type_non_interview_reports", :force => true do |t|
+    t.integer  "psu_code",                                   :null => false
+    t.string   "nir_dutype_id",                :limit => 36, :null => false
+    t.integer  "non_interview_report_id"
+    t.integer  "nir_dwelling_unit_type_code",                :null => false
+    t.string   "nir_dwelling_unit_type_other"
+    t.string   "transaction_type",             :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -309,6 +320,62 @@ ActiveRecord::Schema.define(:version => 20120220192653) do
     t.string   "display_text"
     t.integer  "local_code"
     t.string   "global_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "no_access_non_interview_reports", :force => true do |t|
+    t.integer  "psu_code",                              :null => false
+    t.string   "nir_no_access_id",        :limit => 36, :null => false
+    t.integer  "non_interview_report_id"
+    t.integer  "nir_no_access_code",                    :null => false
+    t.string   "nir_no_access_other"
+    t.string   "transaction_type",        :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "non_interview_reports", :force => true do |t|
+    t.integer  "psu_code",                                                                   :null => false
+    t.string   "nir_id",                         :limit => 36,                               :null => false
+    t.integer  "contact_id"
+    t.text     "nir"
+    t.integer  "dwelling_unit_id"
+    t.integer  "person_id"
+    t.integer  "nir_vacancy_information_code",                                               :null => false
+    t.string   "nir_vacancy_information_other"
+    t.integer  "nir_no_access_code",                                                         :null => false
+    t.string   "nir_no_access_other"
+    t.integer  "nir_access_attempt_code",                                                    :null => false
+    t.string   "nir_access_attempt_other"
+    t.integer  "nir_type_person_code",                                                       :null => false
+    t.string   "nir_type_person_other"
+    t.integer  "cog_inform_relation_code",                                                   :null => false
+    t.string   "cog_inform_relation_other"
+    t.text     "cog_disability_description"
+    t.integer  "permanent_disability_code",                                                  :null => false
+    t.integer  "deceased_inform_relation_code",                                              :null => false
+    t.string   "deceased_inform_relation_other"
+    t.integer  "year_of_death"
+    t.integer  "state_of_death_code",                                                        :null => false
+    t.integer  "who_refused_code",                                                           :null => false
+    t.string   "who_refused_other"
+    t.integer  "refuser_strength_code",                                                      :null => false
+    t.integer  "refusal_action_code",                                                        :null => false
+    t.text     "long_term_illness_description"
+    t.integer  "permanent_long_term_code",                                                   :null => false
+    t.integer  "reason_unavailable_code",                                                    :null => false
+    t.string   "reason_unavailable_other"
+    t.date     "date_unavailable_date"
+    t.string   "date_unavailable",               :limit => 10
+    t.date     "date_moved_date"
+    t.string   "date_moved",                     :limit => 10
+    t.decimal  "moved_length_time",                            :precision => 6, :scale => 2
+    t.integer  "moved_unit_code",                                                            :null => false
+    t.integer  "moved_inform_relation_code",                                                 :null => false
+    t.string   "moved_inform_relation_other"
+    t.text     "nir_other"
+    t.string   "transaction_type",               :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -769,6 +836,17 @@ ActiveRecord::Schema.define(:version => 20120220192653) do
     t.string   "api_id"
   end
 
+  create_table "refusal_non_interview_reports", :force => true do |t|
+    t.integer  "psu_code",                              :null => false
+    t.string   "nir_refusal_id",          :limit => 36, :null => false
+    t.integer  "non_interview_report_id"
+    t.integer  "refusal_reason_code",                   :null => false
+    t.string   "refusal_reason_other"
+    t.string   "transaction_type",        :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "response_sets", :force => true do |t|
     t.integer  "user_id"
     t.integer  "survey_id"
@@ -864,6 +942,17 @@ ActiveRecord::Schema.define(:version => 20120220192653) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+  end
+
+  create_table "vacant_non_interview_reports", :force => true do |t|
+    t.integer  "psu_code",                              :null => false
+    t.string   "nir_vacant_id",           :limit => 36, :null => false
+    t.integer  "non_interview_report_id"
+    t.integer  "nir_vacant_code",                       :null => false
+    t.string   "nir_vacant_other"
+    t.string   "transaction_type",        :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "validation_conditions", :force => true do |t|
