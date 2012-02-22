@@ -2580,6 +2580,13 @@ span.known_instrument {
   padding: 1em 0;
 }
 
+/* line 107, ../../../stylesheets/partials/_participants.scss */
+.participant_identifiers {
+  border-bottom: 1px solid #cccccc;
+  padding: 1em 0;
+  margin-bottom: 1em;
+}
+
 /* line 1, ../../../stylesheets/partials/_welcome.scss */
 .front_page_section {
   margin: 0.5em 0;
