@@ -1,3 +1,19 @@
+# == Schema Information
+# Schema version: 20120222225559
+#
+# Table name: no_access_non_interview_reports
+#
+#  id                      :integer         not null, primary key
+#  psu_code                :integer         not null
+#  nir_no_access_id        :string(36)      not null
+#  non_interview_report_id :integer
+#  nir_no_access_code      :integer         not null
+#  nir_no_access_other     :string(255)
+#  transaction_type        :string(36)
+#  created_at              :datetime
+#  updated_at              :datetime
+#
+
 require 'spec_helper'
 
 describe NoAccessNonInterviewReport do

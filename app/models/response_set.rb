@@ -1,18 +1,17 @@
 # == Schema Information
-# Schema version: 20120120165946
+# Schema version: 20120222225559
 #
 # Table name: response_sets
 #
-#  id                                        :integer         not null, primary key
-#  user_id                                   :integer
-#  survey_id                                 :integer
-#  access_code                               :string(255)
-#  started_at                                :datetime
-#  completed_at                              :datetime
-#  created_at                                :datetime
-#  updated_at                                :datetime
-#  processed_for_operational_data_extraction :boolean
-#  instrument_id                             :integer
+#  id            :integer         not null, primary key
+#  user_id       :integer
+#  survey_id     :integer
+#  access_code   :string(255)
+#  started_at    :datetime
+#  completed_at  :datetime
+#  created_at    :datetime
+#  updated_at    :datetime
+#  instrument_id :integer
 #
 
 class ResponseSet < ActiveRecord::Base

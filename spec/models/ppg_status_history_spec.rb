@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120120165946
+# Schema version: 20120222225559
 #
 # Table name: ppg_status_histories
 #
@@ -17,6 +17,7 @@
 #  transaction_type      :string(36)
 #  created_at            :datetime
 #  updated_at            :datetime
+#  response_set_id       :integer
 #
 
 require 'spec_helper'

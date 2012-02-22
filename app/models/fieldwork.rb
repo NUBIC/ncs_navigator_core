@@ -1,3 +1,17 @@
+# == Schema Information
+# Schema version: 20120222225559
+#
+# Table name: fieldworks
+#
+#  fieldwork_id  :string(36)      primary key
+#  received_data :binary
+#  created_at    :datetime
+#  updated_at    :datetime
+#  client_id     :string(255)
+#  end_date      :date
+#  start_date    :date
+#
+
 require 'uuid'
 
 class Fieldwork < ActiveRecord::Base
