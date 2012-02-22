@@ -30,10 +30,7 @@ class EventsController < ApplicationController
 
         mark_activity_occurred unless @event.event_end_date.blank?
 
-        path = events_path
-        if @event.participant
-          path = @event.participant.person ? person_path(@event.participant.person) : participant_path(@event.participant)
-        end
+        path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
 
         format.html { redirect_to(path, :notice => 'Event was successfully updated.') }
         format.json { head :ok }
@@ -51,7 +48,7 @@ class EventsController < ApplicationController
 
 	    activity = nil
 	    activities.each do |a|
-	      activity = a if event.matches_activity(a)
+	      activity = a if @event.matches_activity(a)
       end
 
 	    if activity

@@ -1402,7 +1402,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       that all the information you provide is confidential and will not be provided to anyone outside the National Children’s Study."
 
 
-  # TODO
+      # TODO
       # PROGRAMMER INSTRUCTIONS:
       # • ASK COMM_EMAIL ONLY IF A PRE-PREGNANCY INTERVIEW WAS COMPLETED;
       # • ELSE SKIP TO HAVE_EMAIL
@@ -1454,7 +1454,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       dependency :rule=> "A"
       condition_A :q_pregnant, "==", :a_1
 
-      #TODO
+      # TODO
       # PROGRAMMER INSTRUCTIONS:
       # • ASK COMM_CELL ONLY IF A PRE-PREGNANCY INTERVIEW WAS COMPLETED
       # • ELSE SKIP TO CELL_PHONE_1
@@ -1519,7 +1519,7 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       q_hipv1_time_stamp_16 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_1_2.TIME_STAMP_16"
       a :datetime, :custom_class => "datetime"
 
-      #       TODO
+      # TODO
       # PROGRAMMER INSTRUCTIONS:
       # • ASK comm_contact ONLY IF A PRE-PREGNANCY INTERVIEW WAS COMPLETED
       # • ELSE SKIP TO contact_1
