@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120120165946
+# Schema version: 20120222225559
 #
 # Table name: ppg_details
 #
@@ -15,6 +15,7 @@
 #  transaction_type    :string(36)
 #  created_at          :datetime
 #  updated_at          :datetime
+#  response_set_id     :integer
 #
 
 require 'spec_helper'

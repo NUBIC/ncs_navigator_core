@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120120165946
+# Schema version: 20120222225559
 #
 # Table name: emails
 #
@@ -26,6 +26,7 @@
 #  transaction_type        :string(255)
 #  created_at              :datetime
 #  updated_at              :datetime
+#  response_set_id         :integer
 #
 
 # A Person, an Institution and a Provider will have at least one and sometimes many Email addresses.

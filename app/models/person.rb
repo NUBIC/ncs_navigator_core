@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120120165946
+# Schema version: 20120222225559
 #
 # Table name: people
 #
@@ -41,6 +41,7 @@
 #  created_at                     :datetime
 #  updated_at                     :datetime
 #  being_processed                :boolean
+#  response_set_id                :integer
 #
 
 # A Person is an individual who may provide information on a participant.

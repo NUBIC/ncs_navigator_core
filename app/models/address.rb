@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120120165946
+# Schema version: 20120222225559
 #
 # Table name: addresses
 #
@@ -35,6 +35,7 @@
 #  transaction_type          :string(255)
 #  created_at                :datetime
 #  updated_at                :datetime
+#  response_set_id           :integer
 #
 
 # A Dwelling Unit will have exactly one Address.
