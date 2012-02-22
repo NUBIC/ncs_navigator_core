@@ -8,7 +8,7 @@
     = render "documentation/disposition_code_list"
 
 %h3
-  = "#{@person} :: #{@person.public_id}"
+  = @person.to_s.blank? ? "#{@person.public_id}" : "#{@person}"
 
 %p
   = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
@@ -68,5 +68,5 @@
     = render 'participants/participant_psc'
 
   #participant_status_history_tab
-    = render 'people/participant_state_transitions'
-    = render 'people/ppg_statuses'
+    = render 'participants/ppg_statuses'
+    = render 'participants/participant_state_transitions'

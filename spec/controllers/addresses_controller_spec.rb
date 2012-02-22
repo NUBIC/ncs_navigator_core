@@ -106,6 +106,41 @@ describe AddressesController do
           end
         end
 
+        describe "with html request for person" do
+          it "associates person with address" do
+            person = Factory(:person)
+            person.addresses.should be_empty
+
+            address_attrs = {
+              :person_id => person.id,
+              :address_one => "2 Main",
+              :city => "Chicago",
+              :state_code => Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "ILLINOIS", :local_code => 1),
+              :zip => "60666"
+            }
+
+            post :create, :address => address_attrs
+            assigns(:address).should be_a(Address)
+
+            person = Person.find(person.id)
+            person.addresses.should_not be_empty
+          end
+
+          it "redirects to the edit person form" do
+            person = Factory(:person)
+            address_attrs = {
+              :person_id => person.id,
+              :address_one => "2 Main",
+              :city => "Chicago",
+              :state_code => Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "ILLINOIS", :local_code => 1),
+              :zip => "60666"
+            }
+
+            post :create, :address => address_attrs
+            response.should redirect_to(person_path(person))
+          end
+        end
+
         describe "with json request" do
           it "creates a new Address" do
             expect {

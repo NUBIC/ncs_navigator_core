@@ -47,10 +47,21 @@ describe Survey do
       Survey.most_recent_for_title(title).should == surveys[0]
     end
 
-    it "finds the most recent survey for a given access code" do
-      title = "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
-      access_code = Survey.to_normalized_string(title)
-      Survey.most_recent_for_access_code(access_code).should == Survey.most_recent_for_title(title)
+    describe "#most_recent_for_access_code" do
+      it "finds the most recent survey for a given access code" do
+        title = "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
+        access_code = Survey.to_normalized_string(title)
+        Survey.most_recent_for_access_code(access_code).should == Survey.most_recent_for_title(title)
+      end
+      it "returns nil if code is blank" do
+        Survey.most_recent_for_access_code("").should be_nil
+      end
+    end
+
+    describe "#where_access_code_like" do
+      it "returns an empty array if code is blank" do
+        Survey.where_access_code_like("").should be_empty
+      end
     end
 
     it 'finds all the most recent surveys' do

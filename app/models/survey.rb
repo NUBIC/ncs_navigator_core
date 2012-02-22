@@ -34,6 +34,7 @@ class Survey < ActiveRecord::Base
   end
 
   def self.where_access_code_like(code)
+    return [] if code.blank?
     Survey.where("access_code like ?", "%#{code}%").order("created_at DESC")
   end
 

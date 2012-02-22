@@ -1,4 +1,20 @@
 .page_section
+  .participant_identifiers
+    - if @participant.known_to_be_pregnant?
+      %p
+        %b
+          Due Date:
+        = blank_safe(@participant.due_date, "Unknown")
+
+    - if @participant.person
+      %p
+        %b
+          Person ID:
+        = @participant.person.public_id
+    %p
+      %b
+        Participant ID:
+      = @participant.public_id
   %b
     PPG Status History
   - if @participant.ppg_status.blank?
