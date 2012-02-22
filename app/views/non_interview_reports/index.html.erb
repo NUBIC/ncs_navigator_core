@@ -1,0 +1,21 @@
+<h1>Listing non_interview_reports</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @non_interview_reports.each do |non_interview_report| %>
+  <tr>
+    <td><%= link_to 'Show', non_interview_report %></td>
+    <td><%= link_to 'Edit', edit_non_interview_report_path(non_interview_report) %></td>
+    <td><%= link_to 'Destroy', non_interview_report, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Non interview report', new_non_interview_report_path %>
