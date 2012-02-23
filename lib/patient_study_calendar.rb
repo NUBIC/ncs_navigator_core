@@ -96,6 +96,19 @@ class PatientStudyCalendar
   end
 
   ##
+  # @return [PscParticipant] a PscParticipant for the given
+  #   participant record. Repeated invocations will return the same
+  #   instance for the same participant.
+  def psc_participant(participant)
+    psc_participants[participant.p_id] ||= PscParticipant.new(self, participant)
+  end
+
+  def psc_participants
+    @psc_participants ||= {}
+  end
+  private :psc_participants
+
+  ##
   # @return [String] the value that should be used as PSC's assignment
   #   ID for this participant on the NCS primary protocol.
   def psc_assignment_id(participant)
