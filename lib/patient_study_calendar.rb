@@ -103,18 +103,25 @@ class PatientStudyCalendar
   end
 
   ##
+  # Loads and caches the current template snapshot.
+  #
+  # @return [Nokogiri::XML::Document]
+  def template_snapshot
+    return @template_snapshot unless @template_snapshot.nil?
+
+    response = connection.get("studies/#{URI.escape study_identifier}/template/current.xml")
+    if response.success?
+      @template_snapshot = response.body
+    else
+      raise ResponseError.new(response.status, response.body)
+    end
+  end
+
+  ##
   # Gets the current template from PSC and returns the nodes matching 'psc:study-segment'.
   # @return [NodeList]
   def segments
-    result = []
-    template = get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
-
-    if template.blank?
-      log.error "ERROR [#{Time.now.to_s(:db)}] template is null for request to studies/#{CGI.escape(study_identifier)}/template/current.xml."
-    else
-      result = template.xpath('//psc:study-segment', Psc.xml_namespace)
-    end
-    result
+    template_snapshot.xpath('//psc:study-segment', Psc.xml_namespace)
   end
 
   ##
