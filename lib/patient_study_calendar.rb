@@ -108,6 +108,7 @@ class PatientStudyCalendar
   def segments
     result = []
     template = get("studies/#{CGI.escape(study_identifier)}/template/current.xml")
+
     if template.blank?
       log.error "ERROR [#{Time.now.to_s(:db)}] template is null for request to studies/#{CGI.escape(study_identifier)}/template/current.xml."
     else
@@ -788,6 +789,15 @@ class PatientStudyCalendar
 
   ScheduledActivity = Struct.new(:study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels)
 
+  class ResponseError < StandardError
+    attr_reader :status, :body
+
+    def initialize(status, body, message=nil)
+      super(message || body)
+      @status = status
+      @body = body
+    end
+  end
 end
 
 # class ScheduledActivity <
