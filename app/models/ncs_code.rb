@@ -217,6 +217,25 @@ class NcsCode < ActiveRecord::Base
     :rvis_after_saq_code       => 'CONFIRM_TYPE_CL21',
     :rvis_reconsideration_code => 'CONFIRM_TYPE_CL21',
 
+    ### non_interview_report
+    # :psu_code               => "PSU_CL1",             # already referenced
+    :nir_vacancy_information_code   => 'DU_VACANCY_INFO_SOURCE_CL1',
+    :nir_no_access_code             => 'NO_ACCESS_DESCR_CL1',
+    :nir_access_attempt_code        => 'ACCESS_ATTEMPT_CL1',
+    :nir_type_person_code           => 'NIR_REASON_PERSON_CL1',
+    :cog_inform_relation_code       => 'NIR_INFORM_RELATION_CL1',
+    :permanent_disability_code      => 'CONFIRM_TYPE_CL10',
+    :deceased_inform_relation_code  => 'NIR_INFORM_RELATION_CL1',
+    :state_of_death_code            => 'STATE_CL3',
+    :who_refused_code               => 'NIR_INFORM_RELATION_CL2',
+    :refuser_strength_code          => 'REFUSAL_INTENSITY_CL1',
+    :refusal_action_code            => 'REFUSAL_ACTION_CL1',
+    :permanent_long_term_code       => 'CONFIRM_TYPE_CL10',
+    :reason_unavailable_code        => 'UNAVAILABLE_REASON_CL1',
+    :moved_unit_code                => 'TIME_UNIT_PAST_CL1',
+    :moved_inform_relation_code     => 'MOVED_INFORM_RELATION_CL1',
+
+
   }
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)

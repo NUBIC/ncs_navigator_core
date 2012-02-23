@@ -12,3 +12,14 @@ input#instrument_instrument_end_time,
 input#instrument_instrument_start_time {
   width: 3em;
 }
+
+.nir_section {
+  padding: 1em;
+  border-top: 1px solid $BORDER_GRAY;
+  width: 85%;
+  b {
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 0.5em;
+  }
+}

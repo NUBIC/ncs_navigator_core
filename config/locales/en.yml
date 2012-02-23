@@ -42,3 +42,11 @@ en:
         definition: "Other non-cash incentive provided to participant"
       event_end_date:
         definition: "The Event End Date effectively closes the event. This is an essential field in determining the workflow of the participant. Do not set this value if the event has not been completed."
+    non_interview_report:
+      nir:
+        definition: "Text field describing outcome"
+      nir_vacancy_information:
+        definition: "Source of Verified Vacancy Information or Other Knowledge of Vacancy"
+      nir_no_access:
+        definition: "Description of lack of building access"
+      

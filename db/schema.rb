@@ -366,8 +366,8 @@ ActiveRecord::Schema.define(:version => 20120222225559) do
     t.integer  "permanent_long_term_code",                                                   :null => false
     t.integer  "reason_unavailable_code",                                                    :null => false
     t.string   "reason_unavailable_other"
-    t.date     "date_unavailable_date"
-    t.string   "date_unavailable",               :limit => 10
+    t.date     "date_available_date"
+    t.string   "date_available",                 :limit => 10
     t.date     "date_moved_date"
     t.string   "date_moved",                     :limit => 10
     t.decimal  "moved_length_time",                            :precision => 6, :scale => 2

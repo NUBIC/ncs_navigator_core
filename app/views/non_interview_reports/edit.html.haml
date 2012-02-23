@@ -1,0 +1,20 @@
+- title "Edit Non-Interview Report"
+
+.mdes_table_definition
+  = render 'documentation/non_interview_report'
+
+%h3
+  Non-Interview Report for
+  = @person
+  = "::" unless @person.to_s.blank?
+  = @event.event_type.display_text
+
+.page_section
+  = form_for(@non_interview_report) do |f|
+    = hidden_field_tag :contact_link_id, @contact_link.id
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "non_interview_reports/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

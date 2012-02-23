@@ -34,8 +34,8 @@
 #  permanent_long_term_code       :integer         not null
 #  reason_unavailable_code        :integer         not null
 #  reason_unavailable_other       :string(255)
-#  date_unavailable_date          :date
-#  date_unavailable               :string(10)
+#  date_available_date            :date
+#  date_available                 :string(10)
 #  date_moved_date                :date
 #  date_moved                     :string(10)
 #  moved_length_time              :decimal(6, 2)

@@ -39,8 +39,8 @@ class CreateNonInterviewReports < ActiveRecord::Migration
       t.integer :reason_unavailable_code,       :null => false
       t.string :reason_unavailable_other
 
-      t.date :date_unavailable_date
-      t.string :date_unavailable,               :limit => 10
+      t.date :date_available_date
+      t.string :date_available,               :limit => 10
 
       t.date :date_moved_date
       t.string :date_moved,                     :limit => 10

@@ -2442,6 +2442,19 @@ input#instrument_instrument_start_time {
   width: 3em;
 }
 
+/* line 16, ../../../stylesheets/partials/_contacts.scss */
+.nir_section {
+  padding: 1em;
+  border-top: 1px solid #cccccc;
+  width: 85%;
+}
+/* line 20, ../../../stylesheets/partials/_contacts.scss */
+.nir_section b {
+  font-size: 1.1em;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
 /* line 1, ../../../stylesheets/partials/_dwelling_unit.scss */
 #dwelling_unit_address_attributes_zip {
   width: 4em;

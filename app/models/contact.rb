@@ -51,6 +51,7 @@ class Contact < ActiveRecord::Base
 
   has_many :contact_links
   has_many :instruments, :through => :contact_links
+  has_many :non_interview_reports
 
   ##
   # An event is 'closed' or 'completed' if the disposition has been set.
