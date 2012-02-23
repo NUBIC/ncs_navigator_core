@@ -87,6 +87,7 @@ group :test, :ci do
   gem 'pickle'
   gem 'vcr'
   gem 'fakeweb'
+  gem 'webmock', :require => false
 
   gem "spork", "> 0.9.0.rc"
   gem "guard-spork"
