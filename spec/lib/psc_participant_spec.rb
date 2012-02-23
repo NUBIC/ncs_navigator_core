@@ -26,7 +26,7 @@ describe PscParticipant do
     ].flatten.join('/')
   end
 
-  let(:registration_path) { psc_url('studies', 'NCS Hi-Lo', 'schedules', person_id) }
+  let(:registration_path) { psc_url('studies', 'NCS%20Hi-Lo', 'schedules', person_id) }
 
   def stub_registration_check(response=nil)
     stub_request(:get, registration_path).
@@ -90,7 +90,7 @@ describe PscParticipant do
 
   describe '#register!' do
     let(:assignments_path) {
-      psc_url('studies', 'NCS Hi-Lo', 'sites', 'GCSC', 'subject-assignments')
+      psc_url('studies', 'NCS%20Hi-Lo', 'sites', 'GCSC', 'subject-assignments')
     }
 
     describe 'when already registered' do
