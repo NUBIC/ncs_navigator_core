@@ -24,134 +24,115 @@ describe NonInterviewReportsController do
   # NonInterviewReport. As you add validations to NonInterviewReport, be sure to
   # update the return value of this method accordingly.
   def valid_attributes
-    {}
+    {
+
+    }
   end
 
-  describe "GET index" do
-    it "assigns all non_interview_reports as @non_interview_reports" do
-      non_interview_report = NonInterviewReport.create! valid_attributes
-      get :index
-      assigns(:non_interview_reports).should eq([non_interview_report])
-    end
-  end
-
-  describe "GET show" do
-    it "assigns the requested non_interview_report as @non_interview_report" do
-      non_interview_report = NonInterviewReport.create! valid_attributes
-      get :show, :id => non_interview_report.id.to_s
-      assigns(:non_interview_report).should eq(non_interview_report)
-    end
-  end
-
-  describe "GET new" do
-    it "assigns a new non_interview_report as @non_interview_report" do
-      get :new
-      assigns(:non_interview_report).should be_a_new(NonInterviewReport)
-    end
-  end
-
-  describe "GET edit" do
-    it "assigns the requested non_interview_report as @non_interview_report" do
-      non_interview_report = NonInterviewReport.create! valid_attributes
-      get :edit, :id => non_interview_report.id.to_s
-      assigns(:non_interview_report).should eq(non_interview_report)
-    end
-  end
-
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new NonInterviewReport" do
-        expect {
-          post :create, :non_interview_report => valid_attributes
-        }.to change(NonInterviewReport, :count).by(1)
-      end
-
-      it "assigns a newly created non_interview_report as @non_interview_report" do
-        post :create, :non_interview_report => valid_attributes
-        assigns(:non_interview_report).should be_a(NonInterviewReport)
-        assigns(:non_interview_report).should be_persisted
-      end
-
-      it "redirects to the created non_interview_report" do
-        post :create, :non_interview_report => valid_attributes
-        response.should redirect_to(NonInterviewReport.last)
-      end
+  context "with an authenticated user" do
+    before(:each) do
+      create_missing_in_error_ncs_codes(NonInterviewReport)
+      @contact_link = Factory(:contact_link)
+      login(user_login)
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved non_interview_report as @non_interview_report" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        NonInterviewReport.any_instance.stub(:save).and_return(false)
-        post :create, :non_interview_report => {}
+    describe "GET new" do
+
+
+
+      it "assigns a new non_interview_report as @non_interview_report" do
+        get :new, :contact_link_id => @contact_link.id
         assigns(:non_interview_report).should be_a_new(NonInterviewReport)
       end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        NonInterviewReport.any_instance.stub(:save).and_return(false)
-        post :create, :non_interview_report => {}
-        response.should render_template("new")
-      end
     end
-  end
 
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested non_interview_report" do
-        non_interview_report = NonInterviewReport.create! valid_attributes
-        # Assuming there are no other non_interview_reports in the database, this
-        # specifies that the NonInterviewReport created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        NonInterviewReport.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => non_interview_report.id, :non_interview_report => {'these' => 'params'}
-      end
-
+    describe "GET edit" do
       it "assigns the requested non_interview_report as @non_interview_report" do
         non_interview_report = NonInterviewReport.create! valid_attributes
-        put :update, :id => non_interview_report.id, :non_interview_report => valid_attributes
+        get :edit, :id => non_interview_report.id.to_s, :contact_link_id => @contact_link.id
         assigns(:non_interview_report).should eq(non_interview_report)
-      end
-
-      it "redirects to the non_interview_report" do
-        non_interview_report = NonInterviewReport.create! valid_attributes
-        put :update, :id => non_interview_report.id, :non_interview_report => valid_attributes
-        response.should redirect_to(non_interview_report)
       end
     end
 
-    describe "with invalid params" do
-      it "assigns the non_interview_report as @non_interview_report" do
-        non_interview_report = NonInterviewReport.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        NonInterviewReport.any_instance.stub(:save).and_return(false)
-        put :update, :id => non_interview_report.id.to_s, :non_interview_report => {}
-        assigns(:non_interview_report).should eq(non_interview_report)
+    describe "POST create" do
+      describe "with valid params" do
+        it "creates a new NonInterviewReport" do
+          expect {
+            post :create, :non_interview_report => valid_attributes, :contact_link_id => @contact_link.id
+          }.to change(NonInterviewReport, :count).by(1)
+        end
+
+        it "assigns a newly created non_interview_report as @non_interview_report" do
+          post :create, :non_interview_report => valid_attributes, :contact_link_id => @contact_link.id
+          assigns(:non_interview_report).should be_a(NonInterviewReport)
+          assigns(:non_interview_report).should be_persisted
+        end
+
+        it "redirects to the created non_interview_report" do
+          post :create, :non_interview_report => valid_attributes, :contact_link_id => @contact_link.id
+          response.should redirect_to(edit_contact_link_path(@contact_link.id, :close_contact => true))
+        end
       end
 
-      it "re-renders the 'edit' template" do
-        non_interview_report = NonInterviewReport.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        NonInterviewReport.any_instance.stub(:save).and_return(false)
-        put :update, :id => non_interview_report.id.to_s, :non_interview_report => {}
-        response.should render_template("edit")
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved non_interview_report as @non_interview_report" do
+          # Trigger the behavior that occurs when invalid params are submitted
+          NonInterviewReport.any_instance.stub(:save).and_return(false)
+          post :create, :non_interview_report => {}, :contact_link_id => @contact_link.id
+          assigns(:non_interview_report).should be_a_new(NonInterviewReport)
+        end
+
+        it "re-renders the 'new' template" do
+          # Trigger the behavior that occurs when invalid params are submitted
+          NonInterviewReport.any_instance.stub(:save).and_return(false)
+          post :create, :non_interview_report => {}, :contact_link_id => @contact_link.id
+          response.should render_template("new")
+        end
+      end
+    end
+
+    describe "PUT update" do
+      describe "with valid params" do
+        it "updates the requested non_interview_report" do
+          non_interview_report = NonInterviewReport.create! valid_attributes
+          # Assuming there are no other non_interview_reports in the database, this
+          # specifies that the NonInterviewReport created on the previous line
+          # receives the :update_attributes message with whatever params are
+          # submitted in the request.
+          NonInterviewReport.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
+          put :update, :id => non_interview_report.id, :non_interview_report => {'these' => 'params'}, :contact_link_id => @contact_link.id
+        end
+
+        it "assigns the requested non_interview_report as @non_interview_report" do
+          non_interview_report = NonInterviewReport.create! valid_attributes
+          put :update, :id => non_interview_report.id, :non_interview_report => valid_attributes, :contact_link_id => @contact_link.id
+          assigns(:non_interview_report).should eq(non_interview_report)
+        end
+
+        it "redirects to the non_interview_report" do
+          non_interview_report = NonInterviewReport.create! valid_attributes
+          put :update, :id => non_interview_report.id, :non_interview_report => valid_attributes, :contact_link_id => @contact_link.id
+          response.should redirect_to(edit_contact_link_path(@contact_link.id, :close_contact => true))
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns the non_interview_report as @non_interview_report" do
+          non_interview_report = NonInterviewReport.create! valid_attributes
+          # Trigger the behavior that occurs when invalid params are submitted
+          NonInterviewReport.any_instance.stub(:save).and_return(false)
+          put :update, :id => non_interview_report.id.to_s, :non_interview_report => {}, :contact_link_id => @contact_link.id
+          assigns(:non_interview_report).should eq(non_interview_report)
+        end
+
+        it "re-renders the 'edit' template" do
+          non_interview_report = NonInterviewReport.create! valid_attributes
+          # Trigger the behavior that occurs when invalid params are submitted
+          NonInterviewReport.any_instance.stub(:save).and_return(false)
+          put :update, :id => non_interview_report.id.to_s, :non_interview_report => {}, :contact_link_id => @contact_link.id
+          response.should render_template("edit")
+        end
       end
     end
   end
-
-  describe "DELETE destroy" do
-    it "destroys the requested non_interview_report" do
-      non_interview_report = NonInterviewReport.create! valid_attributes
-      expect {
-        delete :destroy, :id => non_interview_report.id.to_s
-      }.to change(NonInterviewReport, :count).by(-1)
-    end
-
-    it "redirects to the non_interview_reports list" do
-      non_interview_report = NonInterviewReport.create! valid_attributes
-      delete :destroy, :id => non_interview_report.id.to_s
-      response.should redirect_to(non_interview_reports_url)
-    end
-  end
-
 end

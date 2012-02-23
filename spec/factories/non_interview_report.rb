@@ -34,7 +34,7 @@ Factory.define :non_interview_report do |nir|
   nir.moved_unit                { |a| a.association(:ncs_code, :list_name => 'TIME_UNIT_PAST_CL1') }
   nir.moved_inform_relation     { |a| a.association(:ncs_code, :list_name => 'MOVED_INFORM_RELATION_CL1') }
   nir.moved_inform_relation_other nil
-  nir.date_unavailable          nil
+  nir.date_available            nil
   nir.date_moved                nil
   nir.nir_other                 nil
   nir.transaction_type          nil

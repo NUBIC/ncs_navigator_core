@@ -1,0 +1,118 @@
+.column-container
+  = f.hidden_field :contact_id
+  = f.hidden_field :person_id
+  = f.hidden_field :psu_code
+
+  %p
+    = f.label :nir, "Report Text"
+    %span{ :class => "help_icon" }
+    = render "non_interview_reports/nir_tooltip"
+  %p
+    = f.text_area :nir
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_vacancy_information_code, :label_text => "Source of Vacancy Information", :other => :nir_vacancy_information_other, :help_text => "non_interview_reports/nir_vacancy_information_tooltip" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_no_access_code, :label_text => "No Access Description", :other => :nir_no_access_other, :help_text => "non_interview_reports/nir_no_access_tooltip" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_access_attempt_code, :label_text => "How access was attempted", :other => :nir_access_attempt_other }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_type_person_code, :label_text => "Description of Non-Interview of Person", :other => :nir_type_person_other }
+
+  .nir_section
+    %b
+      Cognitive Disability
+
+    = render "shared/ncs_code_select", { :f => f, :code => :cog_inform_relation_code, :label_text => "Relationship of informant to participant", :other => :cog_inform_relation_other }
+
+    %p
+      = f.label :cog_disability_description, "Description of cognitive disability"
+      %br
+      = f.text_area :cog_disability_description
+
+    = render "shared/ncs_code_select", { :f => f, :code => :permanent_disability_code, :label_text => "Is the disability permanent?" }
+
+  .nir_section
+    %b
+      Deceased
+
+    = render "shared/ncs_code_select", { :f => f, :code => :deceased_inform_relation_code, :label_text => "Relationship of informant to participant", :other => :deceased_inform_relation_other }
+
+    %p
+      = f.label :year_of_death, "Year of Death"
+      %br
+      = f.text_field :year_of_death
+
+    = render "shared/ncs_code_select", { :f => f, :code => :state_of_death_code, :label_text => "State of Death" }
+
+  .nir_section
+    %b
+      Refusal
+    
+    = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :label_text => "Relationship of informant to participant", :other => :who_refused_other }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :label_text => "Strength/Intensity of Refusal" }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :refusal_action_code, :label_text => "Recommended next steps for case" }
+
+  .nir_section
+    %b
+      Long-term Illness
+
+    %p
+      = f.label :long_term_illness_description, "Description of long term illness"
+      %br
+      = f.text_area :long_term_illness_description
+
+  .nir_section
+    %b
+      Unavailable to Participate
+
+    = render "shared/ncs_code_select", { :f => f, :code => :permanent_long_term_code, :label_text => "Will the participant ever be able to participate in the study" }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :reason_unavailable_code, :label_text => "Reason the participant is unavailable (long term) to participate", :other => :reason_unavailable_other }
+
+    %p
+      = f.label :date_available_date, "Date participant will be available"
+      %br
+      = f.text_field :date_available_date, :class => "datepicker"
+  .nir_section
+    %b
+      Moved
+    %p
+      = f.label :date_moved_date, "Date participant moved"
+      %br
+      = f.text_field :date_moved_date, :class => "datepicker"
+
+    %p
+      = f.label :moved_length_time, "Period of time participant moved away"
+      %br
+      = f.text_field :moved_length_time
+
+    = render "shared/ncs_code_select", { :f => f, :code => :moved_unit_code, :label_text => "Unit of time participant moved away" }
+
+    = render "shared/ncs_code_select", { :f => f, :code => :moved_inform_relation_code, :label_text => "Relationship of informant to participant", :other => :moved_inform_relation_other }
+
+  .nir_section
+    %b
+      Other
+    %p
+      = f.label :nir_other, "Other reason for NIR"
+      %br
+      = f.text_area :nir_other
+
+  %p
+    TODO: associate dwelling unit
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#non_interview_report_nir_vacancy_information_code","#non_interview_report_nir_vacancy_information_other");
+    wire_up_select_other("#non_interview_report_nir_no_access_code","#non_interview_report_nir_no_access_other");
+    wire_up_select_other("#non_interview_report_nir_access_attempt_code","#non_interview_report_nir_access_attempt_other");
+    wire_up_select_other("#non_interview_report_nir_type_person_code","#non_interview_report_nir_type_person_other");
+    wire_up_select_other("#non_interview_report_cog_inform_relation_code","#non_interview_report_cog_inform_relation_other");
+    wire_up_select_other("#non_interview_report_deceased_inform_relation_code","#non_interview_report_deceased_inform_relation_other");
+    wire_up_select_other("#non_interview_report_who_refused_code","#non_interview_report_who_refused_other");
+    wire_up_select_other("#non_interview_report_reason_unavailable_code","#non_interview_report_reason_unavailable_other");
+    wire_up_select_other("#non_interview_report_moved_inform_relation_code","#non_interview_report_moved_inform_relation_other");
+
+  });

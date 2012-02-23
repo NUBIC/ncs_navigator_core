@@ -64,4 +64,11 @@
                       %tr{ :class => "comment_#{cls} #{cls}"  }
                         %td{ :colspan => 6 }
                           = blank_safe(cl.contact.contact_comment, 'No comment')
+                    - unless cl.contact.non_interview_reports.blank?
+                      %tr{ :class => "comment_#{cls} #{cls}"  }
+                        %td{ :colspan => 6 }
+                          %b
+                            Non-Interview Reports
+                          - cl.contact.non_interview_reports.each do |nir|
+                            = link_to "#{nir.nir_type_person}", edit_non_interview_report_path(nir, :contact_link_id => cl.id), :class => "edit_link icon_link", :title => nir.nir
 

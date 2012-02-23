@@ -1,6 +1,4 @@
 NcsNavigatorCore::Application.routes.draw do
-  resources :non_interview_reports
-
   resources :dwelling_units do
     member do
       put :create_household_unit
@@ -43,6 +41,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :finalize_instrument
     end
   end
+  resources :non_interview_reports, :except => [:index, :destroy, :show]
   resources :participant_consents
 
   namespace :api do
