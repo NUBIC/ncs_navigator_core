@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
+require 'webmock/rspec'
 
 describe PatientStudyCalendar do
   let(:template_snapshot_file) {
@@ -14,7 +15,15 @@ describe PatientStudyCalendar do
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
-  let(:subject) { PatientStudyCalendar.new(@user) }
+  subject { PatientStudyCalendar.new(@user) }
+
+  def psc_url(*parts)
+    [
+      NcsNavigator.configuration.psc_uri.to_s.sub(%r{/$}, ''),
+      'api', 'v1',
+      parts
+    ].flatten.join('/')
+  end
 
   def use_template_snapshot_cassette
     VCR.use_cassette(
@@ -56,6 +65,39 @@ describe PatientStudyCalendar do
       segments = subject.segments
       segments.size.should == 12
       segments.first.attr('name').should == "Pregnancy Screener"
+    end
+  end
+
+  describe '#template_snapshot' do
+    let(:template_snapshot_url) { psc_url('studies', 'NCS Hi-Lo', 'template', 'current.xml') }
+
+    context do
+      before do
+        stub_request(:get, template_snapshot_url).
+          to_return(
+            :status => 200,
+            :body => File.read(template_snapshot_file),
+            :headers => { 'Content-Type' => 'text/xml' }
+          ).times(1).then.to_raise('Should be called at most once')
+      end
+
+      it 'returns the parsed XML for the template' do
+        subject.template_snapshot.root['assigned-identifier'].should == 'NCS Hi-Lo'
+      end
+
+      it 'caches the template' do
+        subject.template_snapshot
+        lambda { subject.template_snapshot }.should_not raise_error
+      end
+    end
+
+    describe 'with an error' do
+      it 'fails if the template is not found' do
+        stub_request(:get, template_snapshot_url).to_return(:status => 404, :body => 'NF')
+
+        lambda { subject.template_snapshot }.
+          should raise_error(PatientStudyCalendar::ResponseError, 'NF')
+      end
     end
   end
 
