@@ -430,8 +430,12 @@ describe Participant do
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION]
 
             participant.high_intensity_conversion!
-            participant.upcoming_events.should == ["HI-Intensity: Pregnancy Visit 1"]
+            participant.should be_pregnancy_one
+            participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1]
+            participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+            participant.next_scheduled_event.date.should == Date.today
           end
+
         end
 
         describe "a participant who is not pregnant but actively trying - PPG 2" do

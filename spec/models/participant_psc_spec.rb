@@ -255,6 +255,7 @@ describe Participant do
 
       before(:each) do
         participant.person = person
+        create_missing_in_error_ncs_codes(PpgStatusHistory)
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
@@ -290,8 +291,24 @@ describe Participant do
         participant.next_scheduled_event.date.should == 271.days.from_now.to_date
       end
 
-    end
+      describe "having a due date before the next scheduled event date" do
 
+        it "schedules the birth event before Pregnancy Visit 2" do
+          status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+          Factory(:ppg_detail, :participant => participant, :ppg_first => status, :orig_due_date => 24.days.from_now.to_date)
+
+          participant.pregnant_informed_consent!
+          participant.pregnancy_one_visit!
+          # Next event is not PV2
+          # participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
+          participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW
+          participant.next_scheduled_event.event.should == participant.next_study_segment
+          participant.next_scheduled_event.date.should == 25.days.from_now.to_date
+        end
+
+      end
+
+    end
 
     context "a registered ppg2 participant" do
 
