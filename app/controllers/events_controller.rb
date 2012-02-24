@@ -41,6 +41,23 @@ class EventsController < ApplicationController
     end
   end
 
+
+  def reschedule
+    @event = Event.find(params[:id])
+    @date = @event.event_start_date
+
+    if request.put?
+      reason = params[:reason]
+      @date = params[:date]
+
+      psc.schedule_pending_event(@event.participant, @event.event_type.to_s, PatientStudyCalendar::ACTIVITY_SCHEDULED, @date, reason)
+
+      path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
+
+      redirect_to(path, :notice => 'Event was successfully rescheduled.')
+    end
+  end
+
   private
 
     def mark_activity_occurred

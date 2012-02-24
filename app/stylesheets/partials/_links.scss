@@ -87,6 +87,11 @@ input[type="submit"] {
   padding-right: 10px;
 }
 
+.reschedule_link, .reschedule_link:hover {
+  background: url(../../assets/clock_red.png) 0 2px no-repeat !important;
+  padding-right: 10px;
+}
+
 .occurred_link, .occurred_link:hover {
   background: url(../../assets/accept.png) 0 2px no-repeat !important;
   padding-right: 10px;

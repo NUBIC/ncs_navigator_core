@@ -78,6 +78,11 @@ class PatientStudyCalendar
     "GCSC"
   end
 
+  # TODO: put in configuration
+  def activity_source_name
+    "NCS"
+  end
+
   def psc_client
     @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator)
   end

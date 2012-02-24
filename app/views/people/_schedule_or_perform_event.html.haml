@@ -32,3 +32,4 @@
         - epoch = participant.high_intensity? ? PatientStudyCalendar::HIGH_INTENSITY : PatientStudyCalendar::LOW_INTENSITY
         - psc_segment_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event.event_type.to_s)
         = link_to "Create Contact for #{epoch}: #{psc_segment_name}", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "Initiate Contact"
+        = link_to "Reschedule", reschedule_event_path(event), :class => "reschedule_link icon_link"

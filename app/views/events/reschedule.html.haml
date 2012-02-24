@@ -1,0 +1,17 @@
+- title "Reschedule Event"
+
+.page_section
+  %h3
+    = "Reschedule #{@event.event_type} for #{@event.participant.person}"
+  .reschedule_event
+    = form_for(@event, :url => reschedule_event_path(@event, :redirect_to => "#{request.path}"), :html => {:class => "reschedule_event"}) do |f|
+      %p
+        = label_tag :date, "Date"
+        %br
+        = text_field_tag :date, @date.to_s, :class => 'datepicker'
+      %p
+        = label_tag :reason, "Reason"
+        %br
+        = text_area_tag :reason
+      %p
+        = f.submit "Re-Schedule #{@event}"
