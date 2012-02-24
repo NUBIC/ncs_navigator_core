@@ -6,7 +6,12 @@ NcsNavigatorCore::Application.routes.draw do
   end
   resources :household_units
   resources :addresses, :except => [:destroy]
-  resources :events, :only => [:index, :edit, :update]
+  resources :events, :only => [:index, :edit, :update] do
+    member do
+      get :reschedule
+      put :reschedule
+    end
+  end
   resources :people do
     member do
       get :events
