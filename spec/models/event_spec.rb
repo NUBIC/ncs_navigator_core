@@ -423,12 +423,14 @@ describe Event do
         @ppg_fu = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Low Intensity Data Collection", :local_code => 33)
       end
 
-      let(:subject) { PatientStudyCalendar.new(@user) }
+      let(:psc) { PatientStudyCalendar.new(@user) }
       let(:date) { "2012-02-06" }
 
       it "creates as many placeholder events as activities per scheduled segment" do
 
         PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
+        psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
+              File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
         VCR.use_cassette('psc/schedule_and_create_placeholder') do
 
@@ -436,7 +438,7 @@ describe Event do
           participant.save!
 
           participant.events.should be_empty
-          Event.schedule_and_create_placeholder(subject, participant, date)
+          Event.schedule_and_create_placeholder(psc, participant, date)
           participant.events.reload
           participant.events.should_not be_empty
           participant.events.size.should == 2

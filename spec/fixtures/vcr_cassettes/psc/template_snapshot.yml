@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/template/current.xml
+    uri: https://ncsn-psc.local/api/v1/studies/NCS%20Hi-Lo/template/current.xml
     body:
     headers:
       authorization:
