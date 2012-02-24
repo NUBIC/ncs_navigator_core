@@ -24,9 +24,7 @@ describe NonInterviewReportsController do
   # NonInterviewReport. As you add validations to NonInterviewReport, be sure to
   # update the return value of this method accordingly.
   def valid_attributes
-    {
-
-    }
+    {}
   end
 
   context "with an authenticated user" do
@@ -38,7 +36,7 @@ describe NonInterviewReportsController do
 
     describe "GET new" do
 
-
+      it "should redirect if no contact_link_id parameter present"
 
       it "assigns a new non_interview_report as @non_interview_report" do
         get :new, :contact_link_id => @contact_link.id
@@ -47,6 +45,9 @@ describe NonInterviewReportsController do
     end
 
     describe "GET edit" do
+
+      it "should redirect if no contact_link_id parameter present"
+
       it "assigns the requested non_interview_report as @non_interview_report" do
         non_interview_report = NonInterviewReport.create! valid_attributes
         get :edit, :id => non_interview_report.id.to_s, :contact_link_id => @contact_link.id

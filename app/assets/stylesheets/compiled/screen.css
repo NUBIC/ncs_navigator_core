@@ -2600,6 +2600,34 @@ span.known_instrument {
   margin-bottom: 1em;
 }
 
+/* line 2, ../../../stylesheets/partials/_non_interview_reports.scss */
+table.refusal_non_interview_reports select {
+  width: 20em;
+}
+/* line 5, ../../../stylesheets/partials/_non_interview_reports.scss */
+table.refusal_non_interview_reports input {
+  width: 30em;
+}
+
+/* line 12, ../../../stylesheets/partials/_non_interview_reports.scss */
+table.dwelling_unit_type_non_interview_reports,
+table.vacant_non_interview_reports,
+table.no_access_non_interview_reports {
+  width: 85%;
+}
+/* line 14, ../../../stylesheets/partials/_non_interview_reports.scss */
+table.dwelling_unit_type_non_interview_reports select,
+table.vacant_non_interview_reports select,
+table.no_access_non_interview_reports select {
+  width: 20em;
+}
+/* line 17, ../../../stylesheets/partials/_non_interview_reports.scss */
+table.dwelling_unit_type_non_interview_reports input,
+table.vacant_non_interview_reports input,
+table.no_access_non_interview_reports input {
+  width: 30em;
+}
+
 /* line 1, ../../../stylesheets/partials/_welcome.scss */
 .front_page_section {
   margin: 0.5em 0;

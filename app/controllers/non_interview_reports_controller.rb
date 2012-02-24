@@ -53,6 +53,7 @@ class NonInterviewReportsController < ApplicationController
   private
 
     def set_contact_link_associations
+      # TODO: what to do in case of no contact_link_id
       @contact_link = ContactLink.find(params[:contact_link_id])
       @contact			= @contact_link.contact
   		@person				= @contact_link.person

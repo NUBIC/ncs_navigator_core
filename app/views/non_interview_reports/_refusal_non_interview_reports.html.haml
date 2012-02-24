@@ -1,0 +1,7 @@
+%tr{ :class => "refusal_non_interview_report fields row" }
+  %td.select_col
+    %span{ :class => "hide" }
+      = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
+    = render "shared/inline_ncs_code_select", { :f => f, :code => :refusal_reason_code, :label_text => "Reason", :other => :refusal_reason_other }
+  %td.remove_col
+    = link_to_remove_fields 'Remove', f, :refusal_non_interview_reports

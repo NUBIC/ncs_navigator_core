@@ -16,6 +16,39 @@
 
   = render "shared/ncs_code_select", { :f => f, :code => :nir_access_attempt_code, :label_text => "How access was attempted", :other => :nir_access_attempt_other }
 
+  .no_access_non_interview_reports
+    - @noAccessNonInterviewReportTemplate = generate_nested_attributes_template(f, :no_access_non_interview_reports, 'non_interview_reports/no_access_non_interview_reports')
+    %table{ :class => 'records no_access_non_interview_reports' }
+      %tbody.nested_records_no_access_non_interview_reports
+        = f.fields_for :no_access_non_interview_reports do |nanir|
+          = render :partial => 'non_interview_reports/no_access_non_interview_reports', :locals => { :f => nanir }
+      %tfoot
+        %tr.row
+          %td{ :colspan => '2' }
+            = link_to_add_fields "Add No Access Non-Interview Report", :no_access_non_interview_reports
+
+  .dwelling_unit_type_non_interview_reports
+    - @dwellingUnitTypeNonInterviewReportTemplate = generate_nested_attributes_template(f, :dwelling_unit_type_non_interview_reports, 'non_interview_reports/dwelling_unit_type_non_interview_reports')
+    %table{ :class => 'records dwelling_unit_type_non_interview_reports' }
+      %tbody.nested_records_dwelling_unit_type_non_interview_reports
+        = f.fields_for :dwelling_unit_type_non_interview_reports do |dutnir|
+          = render :partial => 'non_interview_reports/dwelling_unit_type_non_interview_reports', :locals => { :f => dutnir }
+      %tfoot
+        %tr.row
+          %td{ :colspan => '2' }
+            = link_to_add_fields "Add Dwelling Unit Type Non-Interview Report", :dwelling_unit_type_non_interview_reports
+
+  .vacant_non_interview_reports
+    - @vacantNonInterviewReportTemplate = generate_nested_attributes_template(f, :vacant_non_interview_reports, 'non_interview_reports/vacant_non_interview_reports')
+    %table{ :class => 'records vacant_non_interview_reports' }
+      %tbody.nested_records_vacant_non_interview_reports
+        = f.fields_for :vacant_non_interview_reports do |dutnir|
+          = render :partial => 'non_interview_reports/vacant_non_interview_reports', :locals => { :f => dutnir }
+      %tfoot
+        %tr.row
+          %td{ :colspan => '2' }
+            = link_to_add_fields "Add Vacant Non-Interview Report", :vacant_non_interview_reports
+
   = render "shared/ncs_code_select", { :f => f, :code => :nir_type_person_code, :label_text => "Description of Non-Interview of Person", :other => :nir_type_person_other }
 
   .nir_section
@@ -47,12 +80,23 @@
   .nir_section
     %b
       Refusal
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :label_text => "Relationship of informant to participant", :other => :who_refused_other }
 
     = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :label_text => "Strength/Intensity of Refusal" }
 
     = render "shared/ncs_code_select", { :f => f, :code => :refusal_action_code, :label_text => "Recommended next steps for case" }
+
+    .refusal_non_interview_reports
+      - @refusalNonInterviewReportTemplate = generate_nested_attributes_template(f, :refusal_non_interview_reports, 'non_interview_reports/refusal_non_interview_reports')
+      %table{ :class => 'records refusal_non_interview_reports' }
+        %tbody.nested_records_refusal_non_interview_reports
+          = f.fields_for :refusal_non_interview_reports do |dutnir|
+            = render :partial => 'non_interview_reports/refusal_non_interview_reports', :locals => { :f => dutnir }
+        %tfoot
+          %tr.row
+            %td{ :colspan => '2' }
+              = link_to_add_fields "Add Refusal Non-Interview Report", :refusal_non_interview_reports
 
   .nir_section
     %b
@@ -115,4 +159,11 @@
     wire_up_select_other("#non_interview_report_reason_unavailable_code","#non_interview_report_reason_unavailable_other");
     wire_up_select_other("#non_interview_report_moved_inform_relation_code","#non_interview_report_moved_inform_relation_other");
 
+    noAccessNonInterviewReportAttributesForm = new NCSCore.UI.NonInterviewReportAssociation({
+      noAccessNonInterviewReportTemplate: '#{@noAccessNonInterviewReportTemplate}',
+      refusalNonInterviewReportTemplate: '#{@refusalNonInterviewReportTemplate}',
+      dwellingUnitTypeNonInterviewReportTemplate: '#{@dwellingUnitTypeNonInterviewReportTemplate}',
+      vacantNonInterviewReportTemplate: '#{@vacantNonInterviewReportTemplate}' });
+
   });
+
