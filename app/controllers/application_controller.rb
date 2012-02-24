@@ -8,6 +8,14 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_system_defaults
 
+  ##
+  # Save the current_user [Aker::User] username
+  # in the versions whodunnit field for auditing
+  # cf. https://github.com/airblade/paper_trail
+  def user_for_paper_trail
+    current_staff
+  end
+
   protected
 
     def psc
@@ -21,7 +29,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_staff
-      current_user.username
+      current_user ? current_user.username : 'unknown'
     end
 
     # TODO: delete this method - events should be created as placeholder methods via Event.schedule_and_create_placeholder

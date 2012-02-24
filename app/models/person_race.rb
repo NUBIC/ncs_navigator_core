@@ -18,6 +18,7 @@
 class PersonRace < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_race_id
+  has_paper_trail
 
   belongs_to :person
   ncs_coded_attribute :psu,  'PSU_CL1'

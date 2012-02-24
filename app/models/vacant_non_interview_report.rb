@@ -17,6 +17,7 @@
 class VacantNonInterviewReport < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :nir_vacant_id
+  has_paper_trail
 
   belongs_to :non_interview_report
 

@@ -42,6 +42,7 @@
 class HouseholdUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :hh_id
+  has_paper_trail
 
   ncs_coded_attribute :psu,            'PSU_CL1'
   ncs_coded_attribute :hh_status,      'CONFIRM_TYPE_CL2'

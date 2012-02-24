@@ -24,6 +24,7 @@
 class ContactLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :contact_link_id
+  has_paper_trail
 
   ncs_coded_attribute :psu, 'PSU_CL1'
 

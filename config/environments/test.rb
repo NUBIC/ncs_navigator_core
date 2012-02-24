@@ -35,6 +35,10 @@ NcsNavigatorCore::Application.configure do
 
   config.redis_url = 'redis://localhost:6379/4'
 
+  config.after_initialize do
+    PaperTrail.enabled = false
+  end
+
   config.aker do
     ui_mode :form
     api_mode :http_basic

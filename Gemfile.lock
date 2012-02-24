@@ -285,6 +285,8 @@ GEM
     newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
     ntlm-http (0.1.1)
+    paper_trail (2.2.2)
+      rails (~> 3)
     pg (0.12.2)
     pickle (0.4.10)
       cucumber (>= 0.8)
@@ -447,6 +449,7 @@ DEPENDENCIES
   ncs_mdes_warehouse!
   ncs_navigator_configuration
   newrelic_rpm
+  paper_trail (~> 2)
   pg
   pickle
   psc
