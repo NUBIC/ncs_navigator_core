@@ -34,6 +34,7 @@
 class Event < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :event_id
+  has_paper_trail
 
   belongs_to :participant
   has_many :contact_links

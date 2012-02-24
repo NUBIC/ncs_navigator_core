@@ -28,6 +28,7 @@
 class ListingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :list_id
+  has_paper_trail
 
   ncs_coded_attribute :psu,         'PSU_CL1'
   ncs_coded_attribute :list_source, 'LISTING_SOURCE_CL1'

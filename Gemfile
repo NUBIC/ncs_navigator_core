@@ -11,6 +11,7 @@ gem 'haml', '~> 3.1'
 gem 'pg'
 
 gem 'exception_notification', :require => 'exception_notifier'
+gem 'paper_trail', '~> 2'
 gem 'ransack'
 gem 'foreman'
 gem 'foreigner'

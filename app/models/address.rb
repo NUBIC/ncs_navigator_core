@@ -43,6 +43,7 @@
 class Address < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :address_id, :date_fields => [:address_start_date, :address_end_date]
+  has_paper_trail
 
   belongs_to :person
   belongs_to :dwelling_unit
