@@ -126,6 +126,7 @@ class Participant < ActiveRecord::Base
     store_audit_trail
     before_transition :log_state_change
     after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_consent!
+    after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -160,7 +161,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :late_pregnancy_one_visit do
-      transition :pregnancy_one => :ready_for_birth
+      transition [:pregnancy_one, :pregnancy_two] => :ready_for_birth
     end
 
     event :birth_event do
@@ -284,7 +285,16 @@ class Participant < ActiveRecord::Base
     else
       follow!
     end
+  end
 
+  ##
+  # After a pregnancy visit one this method
+  # determines if the due date is before the next scheduled event date
+  # in which case moves the participant to the ready for birth state
+  def process_pregnancy_visit_one!
+    if due_date && due_date <= next_scheduled_event_date
+      late_pregnancy_one_visit!
+    end
   end
 
   def self_link
