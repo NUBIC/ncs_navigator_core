@@ -235,6 +235,17 @@ class NcsCode < ActiveRecord::Base
     :moved_unit_code                => 'TIME_UNIT_PAST_CL1',
     :moved_inform_relation_code     => 'MOVED_INFORM_RELATION_CL1',
 
+    ### no_access_nir
+    # :nir_no_access                => 'NO_ACCESS_DESCR_CL1' # already referenced
+
+    ### dwelling_unit_type_nir
+    :nir_dwelling_unit_type_code    => 'DU_NIR_REASON_CL1',
+
+    ### vacant_nir
+    :nir_vacant_code                => 'DU_VACANCY_INDICATOR_CL1',
+
+    ### refusal nir
+    :refusal_reason_code            => 'REFUSAL_REASON_CL1',
 
   }
 

@@ -61,6 +61,11 @@ class NonInterviewReport < ActiveRecord::Base
   has_many :refusal_non_interview_reports
   has_many :dwelling_unit_type_non_interview_reports
 
+  accepts_nested_attributes_for :vacant_non_interview_reports, :allow_destroy => true
+  accepts_nested_attributes_for :no_access_non_interview_reports, :allow_destroy => true
+  accepts_nested_attributes_for :refusal_non_interview_reports, :allow_destroy => true
+  accepts_nested_attributes_for :dwelling_unit_type_non_interview_reports, :allow_destroy => true
+
   ncs_coded_attribute :psu,                       'PSU_CL1'
   ncs_coded_attribute :nir_vacancy_information,   'DU_VACANCY_INFO_SOURCE_CL1'
   ncs_coded_attribute :nir_no_access,             'NO_ACCESS_DESCR_CL1'
