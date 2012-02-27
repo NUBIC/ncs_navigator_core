@@ -328,6 +328,7 @@ describe Person do
     end
 
     it "knows the last incomplete response set" do
+      @rs.save!
 
       pers = Person.find(@pers.id)
       pers.response_sets.size.should == 1
@@ -365,6 +366,8 @@ describe Person do
       survey = create_pregnancy_screener_survey_with_cell_phone_permissions
       survey_section = survey.sections.first
       response_set, instrument = person.start_instrument(survey)
+      response_set.save!
+
       response_set.responses.size.should == 0
 
       survey_section.questions.each do |q|
@@ -409,6 +412,9 @@ describe Person do
       it "returns 1 for the instrument_repeat_key if this is the second time taking the instrument" do
         response_set0, instrument0 = @person.start_instrument(@survey)
         response_set1, instrument1 = @person.start_instrument(@survey)
+        response_set0.save!
+        response_set1.save!
+
         @person.instrument_repeat_key(instrument1.survey).should == 1
       end
 
