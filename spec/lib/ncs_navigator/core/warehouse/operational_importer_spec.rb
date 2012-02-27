@@ -32,7 +32,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        OperationalImporter.automatic_producers.size.should == 20
+        OperationalImporter.automatic_producers.size.should == 25
       end
 
       [
@@ -234,7 +234,9 @@ module NcsNavigator::Core::Warehouse
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
           PpgDetail, PpgStatusHistory,
-          Address, Email, Telephone
+          Address, Email, Telephone,
+          NonInterviewReport, NoAccessNonInterviewReport, DwellingUnitTypeNonInterviewReport,
+          RefusalNonInterviewReport, VacantNonInterviewReport
         ].each do |core_model|
           describe core_model do
             let(:core_model) { core_model }
