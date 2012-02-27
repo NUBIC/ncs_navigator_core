@@ -53,7 +53,7 @@ module NcsNavigator::Core::Warehouse
         :preferred_contact_method_other => :pref_contact_oth,
         :planned_move_code => :plan_move
       },
-      :ignored_columns => %w(person_dob_date date_move_date)
+      :ignored_columns => %w(person_dob_date date_move_date response_set_id)
     )
 
     produce_one_for_one(:household_person_links, LinkPersonHousehold,
@@ -84,7 +84,8 @@ module NcsNavigator::Core::Warehouse
       :column_map => {
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
-      }
+      },
+      :ignored_columns => %w(response_set_id)
     )
 
     produce_one_for_one(:participant_consents, ParticipantConsent,
@@ -129,10 +130,14 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    produce_one_for_one(:ppg_details, PpgDetails, :public_ids => %w(participants))
+    produce_one_for_one(:ppg_details, PpgDetails,
+      :public_ids => %w(participants),
+      :ignored_columns => %w(response_set_id)
+    )
 
     produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
-      :public_ids => %w(participants)
+      :public_ids => %w(participants),
+      :ignored_columns => %w(response_set_id)
     )
 
     produce_one_for_one(:contacts, Contact,
@@ -204,21 +209,21 @@ module NcsNavigator::Core::Warehouse
         :address_one => :address_1,
         :address_two => :address_2
       },
-      :ignored_columns => %w(address_start_date_date address_end_date_date)
+      :ignored_columns => %w(address_start_date_date address_end_date_date response_set_id)
     )
 
     produce_one_for_one(:emails, Email,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
-      :ignored_columns => %w(email_start_date_date email_end_date_date)
+      :ignored_columns => %w(email_start_date_date email_end_date_date response_set_id)
     )
 
     produce_one_for_one(:telephones, Telephone,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
-      :ignored_columns => %w(phone_start_date_date phone_end_date_date)
+      :ignored_columns => %w(phone_start_date_date phone_end_date_date response_set_id)
     )
   end
 end
