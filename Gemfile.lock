@@ -7,8 +7,40 @@ GIT
       mechanize (~> 2.1.0)
 
 GIT
-  remote: git://github.com/NUBIC/surveyor.git
-  revision: 81848d4b8063c610123e01a9687a688fbba34cc1
+  remote: git://github.com/NUBIC/ncs_mdes_warehouse.git
+  revision: 848d8bf38278a1cb9c69cd879af0d74ee5e0e98c
+  specs:
+    ncs_mdes_warehouse (0.4.0.pre)
+      activesupport (~> 3.0)
+      bcdatabase (~> 1.1)
+      builder (>= 2.1.2)
+      childprocess (~> 0.2.3)
+      dm-aggregates (~> 1.2.0)
+      dm-constraints (~> 1.2.0)
+      dm-core (~> 1.2.0)
+      dm-migrations (~> 1.2.0)
+      dm-postgres-adapter (~> 1.2.0)
+      dm-transactions (~> 1.2.0)
+      dm-types (~> 1.2.0)
+      dm-validations (~> 1.2.0)
+      i18n (~> 0.4)
+      json (~> 1.6)
+      ncs_mdes (~> 0.5)
+      ncs_navigator_configuration (~> 0.2)
+      nokogiri (~> 1.5.0)
+      rubyzip (~> 0.9.4)
+      thor (~> 0.14.6)
+
+GIT
+  remote: git://github.com/bmabey/database_cleaner.git
+  revision: 98675ee71d7af1514192eef11ab5db487a656e2f
+  specs:
+    database_cleaner (0.7.0)
+
+GIT
+  remote: git://github.com/yipdw/surveyor.git
+  revision: a8f30c1826d3e8554850dc066cec2538cd11320a
+  branch: relax-response-paranoia
   specs:
     surveyor (0.21.0)
       fastercsv (~> 1.5.4)
@@ -17,12 +49,6 @@ GIT
       rails (~> 3.0)
       sass
       uuid
-
-GIT
-  remote: git://github.com/bmabey/database_cleaner.git
-  revision: 98675ee71d7af1514192eef11ab5db487a656e2f
-  specs:
-    database_cleaner (0.7.0)
 
 GEM
   remote: http://rubygems.org/
