@@ -41,7 +41,7 @@ class PscParticipant
     return @registered unless @registered.nil?
 
     result = connection.get(
-      "studies/#{URI.escape psc.study_identifier}/schedules/#{URI.escape assignment_identifier}")
+      resource_path('studies', psc.study_identifier, 'schedules', assignment_identifier))
     case
     when result.success?
       @registered = true
@@ -70,9 +70,9 @@ class PscParticipant
       reg.subject(subject_attributes(:xml))
     end
 
-    response = connection.post(
-      "studies/#{URI.escape psc.study_identifier}/sites/#{URI.escape psc.site_identifier}/subject-assignments",
-      registration_message)
+    response = connection.post(resource_path(
+        'studies', psc.study_identifier, 'sites', psc.site_identifier, 'subject-assignments'
+      ), registration_message)
 
     if response.success?
       @registered = true
@@ -116,7 +116,7 @@ class PscParticipant
     )
 
     response = connection.post(
-      "studies/#{URI.escape psc.study_identifier}/schedules/#{URI.escape assignment_identifier}",
+      resource_path('studies', psc.study_identifier, 'schedules', assignment_identifier),
       next_study_segment_message)
 
     if response.success?
@@ -138,7 +138,7 @@ class PscParticipant
   def schedule(validity=:sa_content)
     return @schedule if @valid[validity]
 
-    response = connection.get("subjects/#{URI.escape subject_person_id}/schedules.json")
+    response = connection.get(resource_path('subjects', subject_person_id, 'schedules.json'))
 
     if response.success?
       ALL_SCHEDULED_ACTIVITY_CACHE_LEVELS.each { |k| @valid[k] = true }
@@ -212,7 +212,7 @@ class PscParticipant
   #   match those you can submit to PSC's batch SA update resource.
   def update_scheduled_activity_states(new_states)
     response = connection.post(
-      "subjects/#{URI.escape subject_person_id}/schedules/activities", new_states)
+      resource_path('subjects', subject_person_id, 'schedules', 'activities'), new_states)
     if response.success?
       valid[:sa_content] = false
       if response.status == 207
@@ -230,4 +230,12 @@ class PscParticipant
       raise PatientStudyCalendar::ResponseError.new(response.status, response.body)
     end
   end
+
+  ##
+  # Receives a set of path components, encodes them, and returns the
+  # result joined with '/'.
+  def resource_path(*components)
+    components.collect { |c| URI.escape c }.join('/')
+  end
+  private :resource_path
 end
