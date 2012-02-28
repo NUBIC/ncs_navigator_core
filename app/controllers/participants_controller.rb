@@ -185,7 +185,7 @@ class ParticipantsController < ApplicationController
 
     respond_to do |format|
       if @participant.update_attributes(params[:participant])
-        format.html { redirect_to(participants_path, :notice => 'Participant was successfully created.') }
+        format.html { redirect_to(participants_path, :notice => 'Participant was successfully updated.') }
         format.json { render :json => @participant }
       else
         format.html { render :action => "edit" }
@@ -253,6 +253,15 @@ class ParticipantsController < ApplicationController
     @participant.save!
     flash[:notice] = "Participant was moved to #{params[:new_state].titleize}."
     redirect_to correct_workflow_participant_path(@participant)
+  end
+
+  ##
+  # Show changes
+  def versions
+    @participant = Participant.find(params[:id])
+    if params[:export]
+      send_data(@participant.export_versions, :filename => "#{@participant.public_id}.csv")
+    end
   end
 
   private

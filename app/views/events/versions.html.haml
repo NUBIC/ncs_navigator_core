@@ -1,0 +1,6 @@
+- title "Versions - Event"
+
+= render "/shared/versions", :versions => @event.versions,
+                             :export_path => versions_event_path(@event, :export => "true"),
+                             :view_path => edit_event_path(@event),
+                             :description => @event.to_s
