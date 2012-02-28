@@ -861,7 +861,7 @@ ActiveRecord::Schema.define(:version => 20120227210125) do
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
 
   create_table "responses", :force => true do |t|
-    t.integer  "response_set_id"
+    t.integer  "response_set_id",                  :null => false
     t.integer  "question_id"
     t.integer  "answer_id"
     t.datetime "datetime_value"
@@ -1053,6 +1053,8 @@ ActiveRecord::Schema.define(:version => 20120227210125) do
 
   add_foreign_key "response_sets", "instruments", :name => "response_sets_instruments_fk"
   add_foreign_key "response_sets", "people", :name => "response_sets_people_fk", :column => "user_id"
+
+  add_foreign_key "responses", "response_sets", :name => "response_set_id_to_response_sets_fk"
 
   add_foreign_key "telephones", "people", :name => "telephones_people_fk"
 
