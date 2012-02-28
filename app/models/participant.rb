@@ -34,9 +34,6 @@
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
   include MdesRecord
-  include ActiveModel::Dirty
-  include ActiveModel::Validations
-  include ActiveModel::Observing
 
   acts_as_mdes_record :public_id_field => :p_id
   has_paper_trail
