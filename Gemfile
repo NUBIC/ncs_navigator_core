@@ -27,7 +27,7 @@ gem 'json-schema'
 
 gem 'ncs_mdes', '~> 0.5'
 gem 'formtastic', '1.2.4'
-gem 'surveyor', :git => 'git://github.com/yipdw/surveyor.git', :branch => 'relax-response-paranoia'
+gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git'
 gem 'psc'
 gem 'ncs_navigator_configuration'
 

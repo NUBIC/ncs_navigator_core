@@ -7,23 +7,23 @@ GIT
       mechanize (~> 2.1.0)
 
 GIT
-  remote: git://github.com/bmabey/database_cleaner.git
-  revision: 98675ee71d7af1514192eef11ab5db487a656e2f
-  specs:
-    database_cleaner (0.7.0)
-
-GIT
-  remote: git://github.com/yipdw/surveyor.git
-  revision: a8f30c1826d3e8554850dc066cec2538cd11320a
-  branch: relax-response-paranoia
+  remote: git://github.com/NUBIC/surveyor.git
+  revision: e58fd81af3bed01b39dd8361bf1c0a1315cf366f
   specs:
     surveyor (0.21.0)
       fastercsv (~> 1.5.4)
       formtastic (~> 1.2.4)
       haml (~> 3.1.3)
+      mustache (= 0.99.4)
       rails (~> 3.0)
       sass
       uuid
+
+GIT
+  remote: git://github.com/bmabey/database_cleaner.git
+  revision: 98675ee71d7af1514192eef11ab5db487a656e2f
+  specs:
+    database_cleaner (0.7.0)
 
 GEM
   remote: http://rubygems.org/
@@ -242,6 +242,7 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.4)
     multipart-post (1.1.4)
+    mustache (0.99.4)
     ncs_mdes (0.5.0)
       nokogiri (~> 1.4)
     ncs_mdes_warehouse (0.4.0)
@@ -351,7 +352,7 @@ GEM
       linecache (>= 0.3)
     rubytree (0.7.0)
     rubyzip (0.9.5)
-    sass (3.1.12)
+    sass (3.1.15)
     sass-rails (3.1.5)
       actionpack (~> 3.1.0)
       railties (~> 3.1.0)
@@ -388,7 +389,7 @@ GEM
     unf (0.0.4)
       unf_ext
     unf_ext (0.0.4)
-    uuid (2.3.4)
+    uuid (2.3.5)
       macaddr (~> 1.0)
     uuidtools (2.1.2)
     vcr (1.11.3)
