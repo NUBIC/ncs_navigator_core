@@ -29,6 +29,10 @@ module ApplicationHelper
     str.blank? ? default : str
   end
 
+  def nil_safe(str, default = "___")
+    str.nil? ? str.inspect : blank_safe(str, default)
+  end
+
   # Nested Attribute Form Helpers
 
   def generate_nested_attributes_template(f, association, association_prefix = nil )
