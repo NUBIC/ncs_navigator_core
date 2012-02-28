@@ -680,6 +680,124 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
+    describe 'for NonInterviewReport' do
+      let(:producer_names) { [:non_interview_reports] }
+      let(:warehouse_model) { MdesModule::NonInterviewRpt }
+      let(:core_model) { NonInterviewReport }
+
+      let!(:non_interview_report) { Factory(:non_interview_report) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for contact' do
+        results.first.contact_id.should == Contact.first.contact_id
+      end
+
+      it 'uses the public ID for dwelling unit' do
+        results.first.du_id.should == DwellingUnit.first.du_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:nir_vacancy_information,        code(4),     :nir_vac_info, '4'],
+          [:nir_vacancy_information_other,  'L',         :nir_vac_info_oth],
+          [:nir_no_access,                  code(3),     :nir_noaccess, '3'],
+          [:nir_no_access_other,            'B',         :nir_noaccess_oth],
+          [:cog_disability_description,     'Small hat', :cog_dis_desc],
+          [:permanent_disability,           code(2),     :perm_disability, '2'],
+          [:deceased_inform_relation_other, 'Postman',   :deceased_inform_oth],
+          [:year_of_death,                  '1865',      :yod],
+          [:state_of_death,                 code(15),    :state_death, '15'],
+          [:refusal_action,                 code(2),     :ref_action, '2'],
+          [:long_term_illness_description,  'EB',        :lt_illness_desc],
+          [:permanent_long_term,            code(-6),    :perm_ltr, '-6'],
+          [:reason_unavailable,             code(4),     :reason_unavail, '4'],
+          [:reason_unavailable_other,       'Bats',      :reason_unavail_oth],
+          [:moved_inform_relation_other,    'Mr. Chips', :moved_relation_oth]
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for DwellingUnitTypeNonInterviewReport' do
+      let(:producer_names) { [:dwelling_unit_type_non_interview_reports] }
+      let(:warehouse_model) { MdesModule::NonInterviewRptDutype }
+      let(:core_model) { DwellingUnitTypeNonInterviewReport }
+
+      let!(:non_interview_report) { Factory(:dwelling_unit_type_non_interview_report) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the non-interview report' do
+        results.first.nir_id.should == NonInterviewReport.first.public_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:nir_dwelling_unit_type,       code(1),     :nir_type_du, '1'],
+          [:nir_dwelling_unit_type_other, 'Houseboat', :nir_type_du_oth]
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for NoAccessNonInterviewReport' do
+      let(:producer_names) { [:no_access_non_interview_reports] }
+      let(:warehouse_model) { MdesModule::NonInterviewRptNoaccess }
+      let(:core_model) { NoAccessNonInterviewReport }
+
+      let!(:non_interview_report) { Factory(:no_access_non_interview_report) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the non-interview report' do
+        results.first.nir_id.should == NonInterviewReport.first.public_id
+      end
+
+      it 'uses the MDES name for its own ID' do
+        results.first.nir_noaccess_id.should == NoAccessNonInterviewReport.first.public_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:nir_no_access,       code(-5), :nir_noaccess, '-5'],
+          [:nir_no_access_other, 'Bats',   :nir_noaccess_oth]
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for RefusalNonInterviewReport' do
+      let(:producer_names) { [:refusal_non_interview_reports] }
+      let(:warehouse_model) { MdesModule::NonInterviewRptRefusal }
+      let(:core_model) { RefusalNonInterviewReport }
+
+      let!(:non_interview_report) { Factory(:refusal_non_interview_report) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the non-interview report' do
+        results.first.nir_id.should == NonInterviewReport.first.public_id
+      end
+    end
+
+    describe 'for VacantNonInterviewReport' do
+      let(:producer_names) { [:vacant_non_interview_reports] }
+      let(:warehouse_model) { MdesModule::NonInterviewRptVacant }
+      let(:core_model) { VacantNonInterviewReport }
+
+      let!(:non_interview_report) { Factory(:vacant_non_interview_report) }
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the non-interview report' do
+        results.first.nir_id.should == NonInterviewReport.first.public_id
+      end
+    end
+
     describe "a producer's metadata" do
       let(:producer) {
         OperationalEnumerator.record_producers.find { |rp| rp.name == :participants }

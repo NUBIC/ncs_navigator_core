@@ -76,6 +76,7 @@ class PeopleController < ApplicationController
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
     if rs.nil? or rs.complete?
       rs, instrument = @person.start_instrument(survey)
+      rs.save!
     else
       instrument = rs.instrument
     end

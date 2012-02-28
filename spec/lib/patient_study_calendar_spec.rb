@@ -467,4 +467,30 @@ describe PatientStudyCalendar do
 
   end
 
+  describe '#psc_participant' do
+    let(:p) { Factory(:participant, :p_id => p_id) }
+    let(:p_id) { 'p_54' }
+
+    let(:person) { Factory(:person) }
+
+    before do
+      p.person = person
+    end
+
+    it 'returns a PscParticipant' do
+      subject.psc_participant(p).should be_a(PscParticipant)
+    end
+
+    it 'is initialized with the participant' do
+      subject.psc_participant(p).participant.should be p
+    end
+
+    it 'is initialized with a reference to the parent PatientStudyCalendar instance' do
+      subject.psc_participant(p).psc.should be subject
+    end
+
+    it 'is cached' do
+      subject.psc_participant(p).should be subject.psc_participant(p)
+    end
+  end
 end

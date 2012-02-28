@@ -211,7 +211,7 @@ class Person < ActiveRecord::Base
     # TODO: raise Exception if survey is nil
     return if survey.nil?
     instrument = create_instrument(survey)
-    response_set = ResponseSet.create(:survey => survey, :user_id => self.id, :instrument => instrument)
+    response_set = ResponseSet.new(:survey => survey, :user_id => self.id, :instrument => instrument)
 
     response_set = prepopulate_response_set(survey, response_set)
     [response_set, instrument]
@@ -255,7 +255,7 @@ class Person < ActiveRecord::Base
                   nil
                 end
 
-        Response.create(:response_set => response_set, :question => question, :answer => answer, response_type.to_sym => value)
+        response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
       end
     end
     response_set
