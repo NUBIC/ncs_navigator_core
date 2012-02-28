@@ -669,7 +669,7 @@ module NcsNavigator::Core::Warehouse
           end
 
           it "stores a set of link contacts with instruments that need to be sync'd for each p" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument").
+            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument:f_e2_i").
               should == %w(f_c1_e2)
           end
 
