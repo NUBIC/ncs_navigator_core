@@ -35,7 +35,7 @@
     %br
     = f.submit "Search"
 
-.page_section
+.page_section.tabular_mdes_records
   - if @contact_links.empty?
     #no_records
       No contacts were found.
@@ -50,9 +50,7 @@
         %th
           = sort_link @q, "contact_contact_date_date", "Date"
         %th
-          Start Time
-        %th
-          End Time
+          Time
         %th
           = sort_link @q, "person_last_name", "Person"
         %th
@@ -69,9 +67,7 @@
           %td
             = cl.contact.contact_date_date
           %td
-            = cl.contact.contact_start_time
-          %td
-            = cl.contact.contact_end_time
+            = "#{cl.contact.contact_start_time}-#{blank_safe(cl.contact.contact_end_time)}"
           %td
             - if cl.person.blank?
               = blank_safe(cl.person, "N/A")
@@ -80,12 +76,14 @@
             - else
               = blank_safe(cl.person.to_s)
           %td
-            = cl.contact.contact_disposition
+            - disp =  DispositionMapper.disposition_text_for_event(cl.event.event_disposition_category, cl.contact.contact_disposition)
+            = disp.blank? ? cl.contact.contact_disposition : disp
           %td
             = cl.event.event_type
           %td
-            = cl.event.event_disposition
-            &nbsp;
+            - disp =  DispositionMapper.disposition_text_for_event(cl.event.event_disposition_category, cl.event.event_disposition)
+            = disp.blank? ? cl.event.event_disposition : disp
+            %br
             = cl.event.event_disposition_category
           %td
             = link_to 'Edit', edit_contact_link_path(cl), :class => "edit_link icon_link"

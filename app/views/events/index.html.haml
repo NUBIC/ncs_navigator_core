@@ -28,7 +28,7 @@
     %br
     = f.submit "Search"
 
-.page_section
+.page_section.tabular_mdes_records
   - if @events.empty?
     #no_records
       No events were found.
@@ -40,6 +40,8 @@
       %tr
         %th
           = sort_link @q, "event_type_code", "Event"
+        %th
+          Versions
         %th
           = sort_link @q, "event_start_date", "Start Date"
         %th
@@ -57,11 +59,14 @@
           %td
             = link_to event.event_type.to_s, edit_event_path(event), :class => "edit_link icon_link"
           %td
+            = link_to 'Versions', versions_event_path(event), :class => "version_link icon_link"
+          %td
             = event.event_start_date
           %td
             = event.event_end_date
           %td
-            = event.event_disposition
+            - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
+            = disp.blank? ? event.event_disposition : disp
           %td
             = event.event_disposition_category
           %td

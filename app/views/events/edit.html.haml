@@ -5,11 +5,10 @@
 
 %h3
   - if @event.participant && @event.participant.person
-    = @event.participant.person.to_s
+    = link_to @event.participant.person.to_s, participant_path(@event.participant), :class => "header_link"
   - else
-    Event has no associated participant
-
-%h3
+    Event has no associated participant.
+  = " :: "
   = @event.event_type.display_text
 
 .page_section

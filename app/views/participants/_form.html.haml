@@ -1,16 +1,18 @@
 %h3
   = @participant.person.to_s
+  %span{ :class => "normal" }
+    = link_to "View", participant_path(@participant), :class => "show_link icon_link"
 
 .page_section
   #edit_person_link
     = link_to "Edit Person Record", edit_person_path(@participant.person), :class => "edit_link icon_link"
-  = form_for(@participant) do |f| 
+  = form_for(@participant) do |f|
     = render "shared/full_error_messages", :object => f.object
-    
+
     = hidden_field_tag :person_id, @person_id
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :p_type_code, :label_text => "Type", :other => :p_type_other }
 
     = render "shared/ncs_code_select", { :f => f, :code => :status_info_source_code, :label_text => "Status Info Source", :other => :status_info_source_other }
@@ -42,7 +44,7 @@
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
-      
+
 :javascript
   // For the 'other' field
   // Check on pageload
