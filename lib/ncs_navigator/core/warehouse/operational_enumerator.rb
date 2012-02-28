@@ -53,7 +53,7 @@ module NcsNavigator::Core::Warehouse
         :preferred_contact_method_other => :pref_contact_oth,
         :planned_move_code => :plan_move
       },
-      :ignored_columns => %w(person_dob_date date_move_date)
+      :ignored_columns => %w(person_dob_date date_move_date response_set_id)
     )
 
     produce_one_for_one(:household_person_links, LinkPersonHousehold,
@@ -84,7 +84,8 @@ module NcsNavigator::Core::Warehouse
       :column_map => {
         :relationship_code => :relation,
         :relationship_other => :relation_oth,
-      }
+      },
+      :ignored_columns => %w(response_set_id)
     )
 
     produce_one_for_one(:participant_consents, ParticipantConsent,
@@ -129,10 +130,14 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    produce_one_for_one(:ppg_details, PpgDetails, :public_ids => %w(participants))
+    produce_one_for_one(:ppg_details, PpgDetails,
+      :public_ids => %w(participants),
+      :ignored_columns => %w(response_set_id)
+    )
 
     produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
-      :public_ids => %w(participants)
+      :public_ids => %w(participants),
+      :ignored_columns => %w(response_set_id)
     )
 
     produce_one_for_one(:contacts, Contact,
@@ -195,6 +200,64 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
+    produce_one_for_one(:non_interview_reports, NonInterviewRpt,
+      :public_ids => [
+        :contacts,
+        { :table => :dwelling_units, :public_id => :du_id }
+      ],
+      :column_map => {
+        :nir_vacancy_information_code  => :nir_vac_info,
+        :nir_vacancy_information_other => :nir_vac_info_oth,
+        :nir_no_access_code => :nir_noaccess,
+        :nir_no_access_other => :nir_noaccess_oth,
+        :cog_disability_description => :cog_dis_desc,
+        :permanent_disability_code => :perm_disability,
+        :deceased_inform_relation_other => :deceased_inform_oth,
+        :year_of_death => :yod,
+        :state_of_death_code => :state_death,
+        :refusal_action_code => :ref_action,
+        :long_term_illness_description => :lt_illness_desc,
+        :permanent_long_term_code => :perm_ltr,
+        :reason_unavailable_code => :reason_unavail,
+        :reason_unavailable_other => :reason_unavail_oth,
+        :moved_inform_relation_other => :moved_relation_oth
+      },
+      :ignored_columns => %w(date_available_date date_moved_date)
+    )
+
+    produce_one_for_one(:dwelling_unit_type_non_interview_reports, NonInterviewRptDutype,
+      :public_ids => [
+        { :table => :non_interview_reports, :public_id => :nir_id }
+      ],
+      :column_map => {
+        :nir_dwelling_unit_type_code => :nir_type_du,
+        :nir_dwelling_unit_type_other => :nir_type_du_oth
+      }
+    )
+
+    produce_one_for_one(:no_access_non_interview_reports, NonInterviewRptNoaccess,
+      :public_ids => [
+        { :table => :non_interview_reports, :public_id => :nir_id }
+      ],
+      :column_map => {
+        :nir_no_access_id => :nir_noaccess_id,
+        :nir_no_access_code  => :nir_noaccess,
+        :nir_no_access_other => :nir_noaccess_oth
+      }
+    )
+
+    produce_one_for_one(:refusal_non_interview_reports, NonInterviewRptRefusal,
+      :public_ids => [
+        { :table => :non_interview_reports, :public_id => :nir_id }
+      ]
+    )
+
+    produce_one_for_one(:vacant_non_interview_reports, NonInterviewRptVacant,
+      :public_ids => [
+        { :table => :non_interview_reports, :public_id => :nir_id }
+      ]
+    )
+
     produce_one_for_one(:addresses, Address,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
@@ -204,21 +267,21 @@ module NcsNavigator::Core::Warehouse
         :address_one => :address_1,
         :address_two => :address_2
       },
-      :ignored_columns => %w(address_start_date_date address_end_date_date)
+      :ignored_columns => %w(address_start_date_date address_end_date_date response_set_id)
     )
 
     produce_one_for_one(:emails, Email,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
-      :ignored_columns => %w(email_start_date_date email_end_date_date)
+      :ignored_columns => %w(email_start_date_date email_end_date_date response_set_id)
     )
 
     produce_one_for_one(:telephones, Telephone,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
-      :ignored_columns => %w(phone_start_date_date phone_end_date_date)
+      :ignored_columns => %w(phone_start_date_date phone_end_date_date response_set_id)
     )
   end
 end
