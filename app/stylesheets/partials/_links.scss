@@ -5,6 +5,10 @@ input[type="submit"] {
   margin-top: 0.5em;
 }
 
+.header_link {
+  text-decoration: none;
+}
+
 .icon_link {
   font-size: 1.1em;
   padding: 2px 2px 2px 20px;
@@ -61,6 +65,10 @@ input[type="submit"] {
   background: url(../../assets/list.png) 0 2px no-repeat !important;
 }
 
+.search_link, .search_link:hover {
+  background: url(../../assets/find.png) 0 2px no-repeat !important;
+}
+
 .report_link, .report_link:hover {
   background: url(../../assets/chart_bar.png) 0 2px no-repeat !important;
 }
@@ -82,11 +90,17 @@ input[type="submit"] {
   padding-right: 10px;
 }
 
+.back_link, .back_link:hover {
+  background: url(../../assets/arrow_left.png) 0 2px no-repeat !important;
+  padding-right: 10px;
+}
+
 .scheduled_link, .scheduled_link:hover {
   background: url(../../assets/clock.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
+.version_link, .version_link:hover,
 .reschedule_link, .reschedule_link:hover {
   background: url(../../assets/clock_red.png) 0 2px no-repeat !important;
   padding-right: 10px;
