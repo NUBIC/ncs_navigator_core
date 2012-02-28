@@ -165,7 +165,8 @@ module NcsNavigator::Core::Warehouse
 
       collection_key =
         if core_contact_link.instrument_id
-          sync_key('p', participant.public_id, 'link_contacts_with_instrument')
+          sync_key('p', participant.public_id,
+            'link_contacts_with_instrument', core_contact_link.instrument.instrument_id)
         else
           sync_key('p', participant.public_id, 'link_contacts_without_instrument')
         end
