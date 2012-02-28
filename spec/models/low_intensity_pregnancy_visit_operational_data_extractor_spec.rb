@@ -27,7 +27,7 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
       @survey = create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
       @survey_section = @survey.sections.first
       @response_set, @instrument = @person.start_instrument(@survey)
-
+      @response_set.save!
       @response_set.responses.size.should == 0
       @participant.ppg_status.local_code.should == 2
     end

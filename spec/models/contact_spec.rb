@@ -154,6 +154,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
@@ -183,6 +184,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
@@ -212,6 +214,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
@@ -244,6 +247,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         language_value = "Ojibwa"
@@ -283,6 +287,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
@@ -313,6 +318,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
@@ -346,6 +352,7 @@ describe Contact do
 
         survey_section = @survey.sections.first
         response_set, instrument = person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         interpreter_value = "Other interpreter"
@@ -416,6 +423,7 @@ describe Contact do
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
 
           response_set, instrument = @person.start_instrument(@survey)
+          response_set.save!
           response_set.responses.size.should == 0
 
           link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
@@ -500,6 +508,7 @@ describe Contact do
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
 
           response_set, instrument = @person.start_instrument(@survey)
+          response_set.save!
           response_set.responses.size.should == 0
 
           link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
@@ -556,14 +565,14 @@ describe Contact do
     end
 
   end
-  
+
   context "last contact for a participant" do
-    
-    
-    
+
+
+
     it "returns the last contact for a participant" do
     end
-    
+
   end
 
 end

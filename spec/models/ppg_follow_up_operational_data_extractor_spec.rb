@@ -34,7 +34,7 @@ describe PpgFollowUpOperationalDataExtractor do
       @survey = create_follow_up_survey_with_ppg_status_history_operational_data
       @survey_section = @survey.sections.first
       @response_set, @instrument = @person.start_instrument(@survey)
-
+      @response_set.save!
       @response_set.responses.size.should == 0
       @participant.ppg_status.local_code.should == 2
     end
@@ -205,6 +205,7 @@ describe PpgFollowUpOperationalDataExtractor do
     survey = create_follow_up_survey_with_telephone_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
 
     survey_section.questions.each do |q|
@@ -245,6 +246,7 @@ describe PpgFollowUpOperationalDataExtractor do
     survey = create_follow_up_survey_with_contact_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
 
     survey_section.questions.size.should == 5

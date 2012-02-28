@@ -32,7 +32,7 @@ describe BirthOperationalDataExtractor do
       @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
       @survey_section = @survey.sections.first
       @response_set, @instrument = @person.start_instrument(@survey)
-
+      @response_set.save!
       @response_set.responses.size.should == 0
       @participant.participant_person_links.size.should == 1
     end
@@ -42,6 +42,7 @@ describe BirthOperationalDataExtractor do
       survey = create_birth_survey_with_child_operational_data
       survey_section = survey.sections.first
       response_set, instrument = @person.start_instrument(survey)
+      response_set.save!
 
       response_set.responses.size.should == 0
 
@@ -100,6 +101,7 @@ describe BirthOperationalDataExtractor do
     it "extracts person operational data from the survey responses" do
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
+      response_set.save!
       response_set.responses.size.should == 0
       survey_section.questions.each do |q|
         case q.data_export_identifier
@@ -132,6 +134,7 @@ describe BirthOperationalDataExtractor do
 
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
+      response_set.save!
       response_set.responses.size.should == 0
       survey_section.questions.each do |q|
         case q.data_export_identifier
@@ -173,6 +176,7 @@ describe BirthOperationalDataExtractor do
     it "extracts telephone operational data" do
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
+      response_set.save!
       response_set.responses.size.should == 0
       @person.telephones.size.should == 0
 
@@ -227,6 +231,7 @@ describe BirthOperationalDataExtractor do
 
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
+      response_set.save!
       response_set.responses.size.should == 0
 
       survey_section.questions.each do |q|
