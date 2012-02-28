@@ -44,6 +44,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     it "extracts person operational data from the survey responses" do
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
+      response_set.save!
       response_set.responses.size.should == 0
       survey_section.questions.each do |q|
         case q.data_export_identifier
@@ -101,6 +102,7 @@ describe PregnancyScreenerOperationalDataExtractor do
         entered_dob = "1981-01-11"
         survey_section = @survey.sections.first
         response_set, instrument = @person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
         survey_section.questions.each do |q|
           case q.data_export_identifier
@@ -126,6 +128,7 @@ describe PregnancyScreenerOperationalDataExtractor do
         entered_dob = "01/11/1981"
         survey_section = @survey.sections.first
         response_set, instrument = @person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
         survey_section.questions.each do |q|
           case q.data_export_identifier
@@ -171,6 +174,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     survey = create_pregnancy_screener_survey_with_address_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
       case q.data_export_identifier
@@ -223,6 +227,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     survey = create_pregnancy_screener_survey_with_mail_address_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
     survey_section.questions.each do |q|
       case q.data_export_identifier
@@ -281,6 +286,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     it "extracts telephone operational data" do
       survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
+      response_set.save!
       response_set.responses.size.should == 0
 
       survey_section.questions.each do |q|
@@ -331,6 +337,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       it "handles xxx.xxx.xxxx" do
         survey_section = @survey.sections.first
         response_set, instrument = @person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         survey_section.questions.each do |q|
@@ -358,6 +365,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       it "handles (xxx) xxx-xxxx" do
         survey_section = @survey.sections.first
         response_set, instrument = @person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         survey_section.questions.each do |q|
@@ -385,6 +393,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       it "handles (xxx) xxxxxxx" do
         survey_section = @survey.sections.first
         response_set, instrument = @person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         survey_section.questions.each do |q|
@@ -412,6 +421,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       it "handles xxx-xxx-xxxx" do
         survey_section = @survey.sections.first
         response_set, instrument = @person.start_instrument(@survey)
+        response_set.save!
         response_set.responses.size.should == 0
 
         survey_section.questions.each do |q|
@@ -450,6 +460,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     survey = create_pregnancy_screener_survey_with_email_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
 
     survey_section.questions.each do |q|
@@ -501,6 +512,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
 
     survey_section.questions.each do |q|
@@ -542,6 +554,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
 
     survey_section.questions.each do |q|
@@ -579,6 +592,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
+    response_set.save!
     response_set.responses.size.should == 0
 
     survey_section.questions.each do |q|
@@ -616,6 +630,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
       @survey_section = @survey.sections.first
       @response_set, @instrument = @person.start_instrument(@survey)
+      @response_set.save!
       @response_set.responses.size.should == 0
     end
 
