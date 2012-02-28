@@ -96,6 +96,55 @@ describe Participant do
     end
   end
 
+  context "audit history" do
+
+    describe ".versions" do
+      it "retrieves the versioning information" do
+        with_versioning do
+          pr = Factory(:participant)
+          pr.versions.size.should == 1
+          pr.register!
+          Participant.find(pr.id).versions.size.should == 2
+        end
+      end
+    end
+
+    describe ".changeset" do
+      it "shows the specific changes" do
+        with_versioning do
+          pr = Factory(:participant)
+          orig_date = pr.enroll_date
+          new_date  = Date.parse("2012-02-25")
+          pr.enroll_date = new_date
+          pr.save!
+
+          cs = Participant.find(pr.id).versions.last.changeset
+
+          cs.keys.should == ["enroll_date"]
+          cs.values.should == [[orig_date, new_date]]
+        end
+      end
+    end
+
+    describe ".export_versions" do
+      it "outputs all versioning history as csv" do
+        with_versioning do
+          pr = Factory(:participant)
+          pr.enroll_date = Date.parse("2012-02-25")
+          pr.save!
+          csv = pr.export_versions
+          csv.should_not be_blank
+          arr_of_arrs = FasterCSV.parse(csv)
+
+          arr_of_arrs[0][0].should == "When"
+          arr_of_arrs[0][22].should == "Enroll Date"
+          arr_of_arrs[1][22].should == Date.today.to_s(:db)
+          arr_of_arrs[2][22].should == "2012-02-25"
+        end
+      end
+    end
+  end
+
   context "relationship between person and participant" do
     let(:participant) { Factory(:participant) }
     let(:person) { Factory(:person) }
@@ -697,7 +746,8 @@ describe Participant do
 
       participant.started_survey(survey).should be_false
 
-      participant.start_instrument(survey)
+      rs, ins = participant.start_instrument(survey)
+      rs.save!
       participant.started_survey(survey).should be_true
 
       participant.instrument_for(survey).should_not be_complete

@@ -8,12 +8,14 @@ NcsNavigatorCore::Application.routes.draw do
   resources :addresses, :except => [:destroy]
   resources :events, :only => [:index, :edit, :update] do
     member do
+      get :versions
       get :reschedule
       put :reschedule
     end
   end
   resources :people do
     member do
+      get :versions
       get :events
       get :start_instrument
       get :responses_for
@@ -28,6 +30,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :in_ppg_group
     end
     member do
+      get :versions
       get :edit_arm
       put :update_arm
       put :register_with_psc

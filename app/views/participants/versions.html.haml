@@ -1,0 +1,6 @@
+- title "Versions - Participant"
+
+= render "/shared/versions", :versions => @participant.versions,
+                             :export_path => versions_participant_path(@participant, :export => "true"),
+                             :view_path => participant_path(@participant),
+                             :description => @participant.person.to_s

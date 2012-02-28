@@ -1,0 +1,33 @@
+- if versions.blank?
+  .no_records No versions were found for #{description}.
+- else
+  %h3
+    Below are the changes for #{description}.
+
+  - versions.each do |v|
+    .version.page_section
+      %p
+        %b
+          Who:
+        = v.whodunnit
+      %p
+        %b
+          When:
+        = v.created_at.to_s(:db)
+      %p
+        %b
+          What:
+        = v.event.titleize
+      - v.changeset.each do |k, v|
+        %p
+          %b
+            = k
+          changed from
+          %b
+            = nil_safe(v[0])
+          to
+          %b
+            = nil_safe(v[1])
+.links
+  = link_to 'View Record', view_path, :class => "show_link icon_link"
+  = link_to 'Export all changes', export_path, :class => "export_link icon_link" unless versions.blank?

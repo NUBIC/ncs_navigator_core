@@ -101,6 +101,15 @@ class PeopleController < ApplicationController
     end
   end
 
+  ##
+  # Show changes
+  def versions
+    @person = Person.find(params[:id])
+    if params[:export]
+      send_data(@person.export_versions, :filename => "#{@person.public_id}.csv")
+    end
+  end
+
   private
 
     ##

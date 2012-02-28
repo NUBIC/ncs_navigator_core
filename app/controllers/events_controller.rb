@@ -41,7 +41,6 @@ class EventsController < ApplicationController
     end
   end
 
-
   def reschedule
     @event = Event.find(params[:id])
     @date = @event.event_start_date
@@ -55,6 +54,15 @@ class EventsController < ApplicationController
       path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
 
       redirect_to(path, :notice => 'Event was successfully rescheduled.')
+    end
+  end
+
+  ##
+  # Show changes
+  def versions
+    @event = Event.find(params[:id])
+    if params[:export]
+      send_data(@event.export_versions, :filename => "#{@event.public_id}.csv")
     end
   end
 
