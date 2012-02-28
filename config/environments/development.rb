@@ -46,3 +46,12 @@ require 'openssl'
 # all the libraries everywhere.
 OpenSSL::SSL::SSLContext::DEFAULT_PARAMS[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
 
+
+# Use ruby-debug from Passenger
+# http://duckpunching.com/passenger-mod_rails-for-development-now-with-debugger
+if File.exists?(File.join(Rails.root, 'tmp', 'debug.txt'))
+  require 'ruby-debug'
+  Debugger.wait_connection = true
+  Debugger.start_remote
+  File.delete(File.join(Rails.root, 'tmp', 'debug.txt'))
+end
