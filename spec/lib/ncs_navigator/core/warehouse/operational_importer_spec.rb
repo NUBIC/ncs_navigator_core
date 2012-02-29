@@ -733,6 +733,10 @@ module NcsNavigator::Core::Warehouse
                 lc_hash['event_id'].should == 'f_e2'
               end
 
+              it 'has the instrument ID' do
+                lc_hash['instrument_id'].should == 'f_e2_i'
+              end
+
               it 'has the instrument type' do
                 lc_hash['instrument_type'].should == '5'
               end

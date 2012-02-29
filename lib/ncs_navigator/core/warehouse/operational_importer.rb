@@ -158,6 +158,7 @@ module NcsNavigator::Core::Warehouse
       ]
 
       if instrument_type_code
+        link_contact_fields << 'instrument_id' << core_contact_link.instrument.instrument_id
         link_contact_fields << 'instrument_type' << instrument_type_code
         link_contact_fields << 'instrument_status' <<
           core_contact_link.instrument.instrument_status.display_text.downcase
