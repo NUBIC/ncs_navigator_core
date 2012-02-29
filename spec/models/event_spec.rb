@@ -44,6 +44,7 @@ describe Event do
   it { should belong_to(:event_incentive_type) }
 
   it { should have_many(:contact_links) }
+  it { should have_many(:instruments).through(:contact_links) }
 
   it "knows when it is 'closed'" do
     e = Factory(:event)

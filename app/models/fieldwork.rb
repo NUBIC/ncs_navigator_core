@@ -13,13 +13,11 @@
 #  original_data :binary
 #
 
-require 'ncs_navigator/core/sync/from_psc'
+require 'ncs_navigator/core/psc'
 require 'patient_study_calendar'
 require 'uuid'
 
 class Fieldwork < ActiveRecord::Base
-  extend NcsNavigator::Core::Sync::FromPsc
-
   set_primary_key :fieldwork_id
 
   before_create :set_default_id
@@ -49,7 +47,7 @@ class Fieldwork < ActiveRecord::Base
 
   ##
   # Retrieves scheduled activities from PSC for a given closed date interval
-  # and creates an unpersisted fieldwork set from that data.
+  # and builds a fieldwork set from that data.
   #
   # The constructed fieldwork set will be associated with other unpersisted
   # model objects that will be saved once the fieldwork set is saved.
@@ -62,12 +60,12 @@ class Fieldwork < ActiveRecord::Base
   #
   # @param Hash params fieldwork parameters
   # @param PatientStudyCalendar psc a PSC client instance
+  # @return [Fieldwork]
   def self.from_psc(params, psc)
-    report = psc.scheduled_activities_report(:start_date => params[:start_date],
-                                             :end_date => params[:end_date],
-                                             :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
-
-    collection = fieldwork_entity_collection_for(report)
+    report = NcsNavigator::Core::Psc::ScheduledActivityReport.from_psc(psc,
+                                                   :start_date => params[:start_date],
+                                                   :end_date => params[:end_date],
+                                                   :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
 
     Fieldwork.new(:start_date => params[:start_date],
                   :end_date => params[:end_date],
