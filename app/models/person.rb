@@ -72,6 +72,7 @@ class Person < ActiveRecord::Base
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
   has_many :contact_links, :order => "created_at DESC"
   has_many :instruments, :through => :contact_links
+  has_many :events, :through => :contact_links
   has_many :addresses
   has_many :telephones
   has_many :emails
