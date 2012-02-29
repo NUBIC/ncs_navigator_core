@@ -44,17 +44,21 @@ describe Fieldwork do
       }
     end
 
+    let(:report) do
+      { 'filters' => [], 'rows' => [] }
+    end
+
     it "retrieves PSC's scheduled activities report" do
       psc = mock
       psc.should_receive(:scheduled_activities_report).
         with(:start_date => '2012-02-01', :end_date => '2012-03-01', :state =>
-             PatientStudyCalendar::ACTIVITY_SCHEDULED)
+             PatientStudyCalendar::ACTIVITY_SCHEDULED).and_return(report)
 
       Fieldwork.from_psc(params, psc)
     end
 
     describe 'return value' do
-      let(:psc) { stub(:scheduled_activities_report => { 'rows' => [] }) }
+      let(:psc) { stub(:scheduled_activities_report => report) }
       let(:fieldwork) { Fieldwork.from_psc(params, psc) }
 
       it 'is unpersisted' do

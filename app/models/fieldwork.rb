@@ -13,10 +13,13 @@
 #  original_data :binary
 #
 
+require 'ncs_navigator/core/sync/from_psc'
 require 'patient_study_calendar'
 require 'uuid'
 
 class Fieldwork < ActiveRecord::Base
+  extend NcsNavigator::Core::Sync::FromPsc
+
   set_primary_key :fieldwork_id
 
   before_create :set_default_id
@@ -63,6 +66,8 @@ class Fieldwork < ActiveRecord::Base
     report = psc.scheduled_activities_report(:start_date => params[:start_date],
                                              :end_date => params[:end_date],
                                              :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
+
+    collection = fieldwork_entity_collection_for(report)
 
     Fieldwork.new(:start_date => params[:start_date],
                   :end_date => params[:end_date],
