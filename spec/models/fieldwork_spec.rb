@@ -10,6 +10,7 @@
 #  client_id     :string(255)
 #  end_date      :date
 #  start_date    :date
+#  original_data :binary
 #
 
 require 'spec_helper'
