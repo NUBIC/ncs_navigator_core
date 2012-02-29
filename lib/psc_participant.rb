@@ -5,12 +5,13 @@ require 'forwardable'
 # assume that the PSC schedule already exists.
 #
 # Provides for caching of scheduled activities with invalidation at
-# two levels: `:sa_ids` (has the list of SAs changed?) and SA content
-# (have any SAs' states changed, including date, reason, etc.). Since
-# things like ideal date and SA labels are fixed at segment
-# initialization, this allows for quicker repeat access to some
-# schedule attributes.  (Invalidation only works if all changes to the
-# participant's schedule are made through an instance of this class.)
+# two levels: `:sa_list` (has the list of SAs changed?) and
+# `:sa_content` (have any SAs' states changed, including date, reason,
+# etc.). Since things like ideal date and SA labels are fixed at
+# segment initialization, this allows for quicker repeat access to
+# some schedule attributes. (Caching and invalidation only works if
+# all changes to the participant's schedule are made through the same
+# instance of this class.)
 class PscParticipant
   extend Forwardable
 
