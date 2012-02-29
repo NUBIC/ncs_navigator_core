@@ -81,12 +81,7 @@ module NcsNavigator::Core::Warehouse
       label = event_details['event_type_label']
       say_subtask_message("looking for #{label} on #{start_date}")
 
-      start_date_d = Date.parse(start_date)
-      acceptable_match_range = ((start_date_d - 14) .. (start_date_d + 14))
-      existing_psc_event = psc_participant.scheduled_events.
-        select { |psc_event| psc_event[:event_type_label] == label }.
-        find { |psc_event| acceptable_match_range.include?(Date.parse(psc_event[:start_date])) }
-      unless existing_psc_event
+      unless find_psc_event(psc_participant, start_date, label)
         schedule_new_segment_for_event(psc_participant, event_id, event_details, opts)
       end
 
@@ -148,6 +143,120 @@ module NcsNavigator::Core::Warehouse
     end
     private :select_segments
 
+    ###### CONTACT LINK SA HISTORY UPDATES
+
+    def update_sa_histories(psc_participant)
+      update_instrument_sa_histories(psc_participant)
+      update_other_event_sa_histories(psc_participant)
+    end
+
+    def update_instrument_sa_histories(psc_participant)
+      p_id = psc_participant.participant.p_id
+
+      say_subtask_message('finding link contact sets (with instruments)')
+      lc_set_keys =
+        redis.keys(sync_key('p', p_id, 'link_contacts_with_instrument', '*'))
+
+      all_sas = psc_participant.scheduled_activities(:sa_list)
+
+      update_sa_histories_from_link_contacts(psc_participant, lc_set_keys, 'with instruments',
+        lambda { |psc_event, lc_details|
+          instrument_filename = InstrumentEventMap.
+            instrument_map_value_for_code(lc_details['instrument_type'].to_i, 'filename').downcase
+          psc_event[:scheduled_activities].select { |event_sa_id|
+            all_sas[event_sa_id]['labels'] =~ /\binstrument:#{instrument_filename}\b/
+          }
+        },
+        lambda { |link_contact_ids, scheduled_activities|
+          last_details = redis.hgetall(sync_key('link_contact', link_contact_ids.last))
+          if last_details['instrument_status'] == 'completed'
+            say_subtask_message("marking SA for a completed instrument occurred")
+            batch_update_sa_states(psc_participant, scheduled_activities, {
+                'date' => last_details['contact_date'],
+                'reason' => "Imported completed instrument #{last_details['instrument_id']}",
+                'state' => 'occurred'
+              })
+          end
+        })
+
+    end
+    private :update_instrument_sa_histories
+
+    def update_other_event_sa_histories(psc_participant)
+      p_id = psc_participant.participant.p_id
+
+      # sort is for stable testing order
+      say_subtask_message('finding link contact sets (with event only)')
+      lc_set_keys =
+        redis.keys(sync_key('p', p_id, 'link_contacts_without_instrument', '*')).sort
+
+      update_sa_histories_from_link_contacts(psc_participant, lc_set_keys, 'with event only',
+        lambda { |psc_event, lc_details|
+          psc_event[:scheduled_activities] -
+            redis.smembers(sync_key('p', p_id, 'link_contact_updated_scheduled_activities'))
+        })
+    end
+    private :update_other_event_sa_histories
+
+    def update_sa_histories_from_link_contacts(
+        psc_participant, link_contact_set_keys, set_type,
+        scheduled_activity_selector, link_contact_set_post_processor=nil
+    )
+      while lc_set_key = link_contact_set_keys.shift
+        say_subtask_message("beginning another link contact set (#{set_type})")
+        lcs = redis.sort(
+          lc_set_key,
+          :by => sync_key('link_contact', '*') + '->sort_key',
+          :order => 'alpha')
+
+        # each LC is guaranteed to be for the same event so we can use
+        # an exemplar LC to load common pieces
+        ex_lc_details = redis.hgetall(sync_key('link_contact', lcs.first))
+        ex_event_details = redis.hgetall(sync_key('event', ex_lc_details['event_id']))
+        psc_event = find_psc_event(
+          psc_participant, ex_event_details['start_date'], ex_event_details['event_type_label'])
+
+        sas = scheduled_activity_selector.call(psc_event, ex_lc_details)
+        if sas.empty?
+          log.warn("Found no scheduled activities for LC set #{set_type}\n" <<
+            "- event #{ex_event_details.inspect}\n" <<
+            "- example LC #{ex_lc_details.inspect}\n" <<
+            "- LC IDs #{lcs.inspect}")
+        end
+
+        say_subtask_message('Updating %d SA%s for a set with %d LC%s (%s)' % [
+            sas.size, ('s' if sas.size != 1),
+            lcs.size, ('s' if lcs.size != 1),
+            set_type
+          ])
+        lcs.each do |lc_id|
+          lc_details = redis.hgetall(sync_key('link_contact', lc_id))
+
+          batch_update_sa_states(psc_participant, sas, {
+              'date' => lc_details['contact_date'],
+              'reason' => "Imported #{lc_details['status']} contact link #{lc_id}",
+              'state' => 'scheduled'
+            })
+        end
+
+        if link_contact_set_post_processor
+          link_contact_set_post_processor.call(lcs, sas)
+        end
+
+        sas.each do |sa_id|
+          redis.sadd(sync_key('p', psc_participant.participant.p_id, 'link_contact_updated_scheduled_activities'), sa_id)
+        end
+      end
+    end
+    private :update_sa_histories_from_link_contacts
+
+    def batch_update_sa_states(psc_participant, scheduled_activities, new_state)
+      return if scheduled_activities.empty?
+      psc_participant.update_scheduled_activity_states(
+        scheduled_activities.inject({}) { |update, sa_id| update[sa_id] = new_state; update })
+    end
+    private :batch_update_sa_states
+
     ###### GENERAL INFRASTRUCTURE
 
     private
@@ -180,5 +289,15 @@ module NcsNavigator::Core::Warehouse
       shell.clear_line_then_say(
         "Loaded #{ct} participant#{'s' unless ct == 1} for PSC sync.\n")
     end
+
+    def find_psc_event(psc_participant, start_date, event_type_label)
+      fail 'Cannot find a PSC event without a start date' unless start_date
+      start_date_d = Date.parse(start_date)
+      acceptable_match_range = ((start_date_d - 14) .. (start_date_d + 14))
+      psc_participant.scheduled_events.
+        select { |psc_event| psc_event[:event_type_label] == event_type_label }.
+        find { |psc_event| acceptable_match_range.include?(Date.parse(psc_event[:start_date])) }
+    end
+    private :find_psc_event
   end
 end
