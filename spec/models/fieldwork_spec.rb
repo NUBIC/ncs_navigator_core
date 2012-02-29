@@ -35,6 +35,46 @@ describe Fieldwork do
     end
   end
 
+  describe '.from_psc' do
+    let(:params) do
+      {
+        :start_date => '2012-02-01',
+        :end_date => '2012-03-01',
+        :client_id => '123456789'
+      }
+    end
+
+    it "retrieves PSC's scheduled activities report" do
+      psc = mock
+      psc.should_receive(:scheduled_activities_report).
+        with(:start_date => '2012-02-01', :end_date => '2012-03-01', :state =>
+             PatientStudyCalendar::ACTIVITY_SCHEDULED)
+
+      Fieldwork.from_psc(params, psc)
+    end
+
+    describe 'return value' do
+      let(:psc) { stub(:scheduled_activities_report => { 'rows' => [] }) }
+      let(:fieldwork) { Fieldwork.from_psc(params, psc) }
+
+      it 'is unpersisted' do
+        fieldwork.should_not be_persisted
+      end
+
+      it 'contains the given client ID' do
+        fieldwork.client_id.should == params[:client_id]
+      end
+
+      it 'contains the given start date' do
+        fieldwork.start_date.should == Date.new(2012, 02, 01)
+      end
+
+      it 'contains the given end date' do
+        fieldwork.end_date.should == Date.new(2012, 03, 01)
+      end
+    end
+  end
+
   describe '#fieldwork_id' do
     it 'is the primary key' do
       Fieldwork.primary_key.should == 'fieldwork_id'

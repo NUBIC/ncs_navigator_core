@@ -3,7 +3,7 @@ class Api::FieldworkController < ApplicationController
 
   def create
     begin
-      fw = Fieldwork.create!(params)
+      fw = Fieldwork.from_psc(params, psc).tap(&:save!)
 
       respond_to do |wants|
         wants.json do
