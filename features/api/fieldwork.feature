@@ -45,7 +45,7 @@ Feature: Fieldwork check-out and check-in
     When I GET the referenced location
 
     Then the response status is 200
-    And the response body is
+    And the response body matches
     """
     {
         "contacts": [
@@ -64,16 +64,48 @@ Feature: Fieldwork check-out and check-in
 
     Then the response status is 401
 
-  Scenario: POST /api/v1/fieldwork returns a fieldwork set
+  @wip
+  Scenario: POST /api/v1/fieldwork builds contacts for the given date range
     Given an authenticated user
 
     When I POST /api/v1/fieldwork with
       | start_date | end_date   | client_id |
-      | 2012-01-01 | 2012-02-01 | 123456789 |
+      | 2012-02-01 | 2012-03-01 | 123456789 |
 
     Then the response status is 200
     And the response is a fieldwork set
     And the response contains a reference to itself
+    And the response body matches
+    """
+    {
+        "contacts": [
+            {
+                "person_id": "b9696270-3586-012f-ca18-58b035fb69ca",
+                "start_date": "2012-02-16T00:00:00Z"
+            },
+            {
+                "person_id": "f76a39d0-34d2-012f-c14a-58b035fb69ca",
+                "start_date": "2012-02-08T00:00:00Z"
+            },
+            {
+                "person_id": "f76a39d0-34d2-012f-c14a-58b035fb69ca",
+                "start_date": "2012-02-08T00:00:00Z"
+            },
+            {
+                "person_id": "98463040-3321-012f-8aa6-58b035fb69ca",
+                "start_date": "2012-02-13T00:00:00Z"
+            },
+            {
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca",
+                "start_date": "2012-02-17T00:00:00Z"
+            },
+            {
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca",
+                "start_date": "2012-02-17T00:00:00Z"
+            }
+        ]
+    }
+    """
 
   Scenario: POST /api/v1/fieldwork requires start_date, end_date, and client_id
     Given an authenticated user
