@@ -1,0 +1,297 @@
+{
+    "filters": {
+        "end_date": "2012-03-01",
+        "start_date": "2012-02-01",
+        "states": [
+            "Scheduled"
+        ]
+    },
+    "rows": [
+        {
+            "activity_name": "Low-Intensity Consent",
+            "activity_status": "Scheduled",
+            "activity_type": "Consent",
+            "grid_id": "36420748-72f5-4dfb-afcc-8d7c6c189eaf",
+            "ideal_date": "2012-02-08",
+            "labels": [
+                "event:informed_consent"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-08",
+            "scheduled_study_segment": {
+                "grid_id": "9754db98-1cad-42ed-b5bb-410efe6cfb7b",
+                "start_date": "2012-02-08",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "4c988762-84cd-4339-8e76-29fa76c604b4",
+                "name": "Bobbi Brown",
+                "person_id": "f76a39d0-34d2-012f-c14a-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Low-Intensity Interview",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "e1398a19-a955-4ff5-9861-b9e296da90b2",
+            "ideal_date": "2012-02-08",
+            "labels": [
+                "event:low_intensity_data_collection",
+                "instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-08",
+            "scheduled_study_segment": {
+                "grid_id": "9754db98-1cad-42ed-b5bb-410efe6cfb7b",
+                "start_date": "2012-02-08",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "4c988762-84cd-4339-8e76-29fa76c604b4",
+                "name": "Bobbi Brown",
+                "person_id": "f76a39d0-34d2-012f-c14a-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Pregnancy Probability Group Follow-Up Interview",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "c60ccc51-e5c1-4f79-8aa1-a14789a4631e",
+            "ideal_date": "2012-02-16",
+            "labels": [
+                "event:pregnancy_probability",
+                "instrument:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"
+            ],
+            "last_change_reason": "Participant requested",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-29",
+            "scheduled_study_segment": {
+                "grid_id": "976f857d-10e6-40e1-9767-4f9eb8f239eb",
+                "start_date": "2012-02-16",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "cdabfc40-578f-4dd5-8152-c5c501fcdf10",
+                "name": "Betty Boop",
+                "person_id": "b9696270-3586-012f-ca18-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Pregnancy Probability Group Follow-Up SAQ",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "cbcc8575-b1b9-4bd1-8a3c-51b885b903b6",
+            "ideal_date": "2012-02-16",
+            "labels": [
+                "event:pregnancy_probability",
+                "instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"
+            ],
+            "last_change_reason": "Participant requested",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-29",
+            "scheduled_study_segment": {
+                "grid_id": "976f857d-10e6-40e1-9767-4f9eb8f239eb",
+                "start_date": "2012-02-16",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "cdabfc40-578f-4dd5-8152-c5c501fcdf10",
+                "name": "Betty Boop",
+                "person_id": "b9696270-3586-012f-ca18-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Low Intensity Invitation to High-Intensity Conversion Interview",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "be47878e-999d-45d1-8ebf-079e2c85a255",
+            "ideal_date": "2012-02-13",
+            "labels": [
+                "event:low_to_high_conversion",
+                "instrument:ins_que_lihiconversion_int_hili_p2_v1.0"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-13",
+            "scheduled_study_segment": {
+                "grid_id": "50cc6d92-32b8-4f34-98ae-a812c3de325e",
+                "start_date": "2012-02-13",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "d73fcb65-9159-4f69-92f1-c802bf96d794",
+                "name": "Jane Doe",
+                "person_id": "98463040-3321-012f-8aa6-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Non-Pregnant Woman Informed Consent",
+            "activity_status": "Scheduled",
+            "activity_type": "Consent",
+            "grid_id": "6f9cc96b-18a8-48cc-8a47-847f1b2753d9",
+            "ideal_date": "2012-02-17",
+            "labels": [
+                "event:informed_consent"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-17",
+            "scheduled_study_segment": {
+                "grid_id": "d7a778d5-c7b9-44af-9643-304bad9b792c",
+                "start_date": "2012-02-17",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "6eec8119-1a06-47a7-b246-d6b06ea81ea0",
+                "name": "Julia Bushman",
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Pre-Pregnancy Visit Information Sheet",
+            "activity_status": "Scheduled",
+            "activity_type": "Information Sheet",
+            "grid_id": "3c787154-74b0-4735-848d-44abd63adc25",
+            "ideal_date": "2012-02-17",
+            "labels": [
+                "event:pre-pregnancy_visit"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-17",
+            "scheduled_study_segment": {
+                "grid_id": "d7a778d5-c7b9-44af-9643-304bad9b792c",
+                "start_date": "2012-02-17",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "6eec8119-1a06-47a7-b246-d6b06ea81ea0",
+                "name": "Julia Bushman",
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Biospecimen Adult Urine Instrument",
+            "activity_status": "Scheduled",
+            "activity_type": "Biospecimen",
+            "grid_id": "756bf95c-cfea-45ee-ac22-ce9fc550b041",
+            "ideal_date": "2012-02-17",
+            "labels": [
+                "collection:biological",
+                "event:pre-pregnancy_visit",
+                "instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-17",
+            "scheduled_study_segment": {
+                "grid_id": "d7a778d5-c7b9-44af-9643-304bad9b792c",
+                "start_date": "2012-02-17",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "6eec8119-1a06-47a7-b246-d6b06ea81ea0",
+                "name": "Julia Bushman",
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Biospecimen Adult Blood Instrument",
+            "activity_status": "Scheduled",
+            "activity_type": "Biospecimen",
+            "details": "non-fasting",
+            "grid_id": "96cb3f17-0725-4c09-9193-cf9117a04499",
+            "ideal_date": "2012-02-17",
+            "labels": [
+                "collection:biological",
+                "event:pre-pregnancy_visit",
+                "instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-17",
+            "scheduled_study_segment": {
+                "grid_id": "d7a778d5-c7b9-44af-9643-304bad9b792c",
+                "start_date": "2012-02-17",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "6eec8119-1a06-47a7-b246-d6b06ea81ea0",
+                "name": "Julia Bushman",
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Pre-Pregnancy SAQ",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "063c4e10-5a08-4a15-82ed-20ac43923c24",
+            "ideal_date": "2012-02-17",
+            "labels": [
+                "event:pre-pregnancy_visit",
+                "instrument:ins_que_prepreg_saq_ehpbhi_p2_v1.1"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-17",
+            "scheduled_study_segment": {
+                "grid_id": "d7a778d5-c7b9-44af-9643-304bad9b792c",
+                "start_date": "2012-02-17",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "6eec8119-1a06-47a7-b246-d6b06ea81ea0",
+                "name": "Julia Bushman",
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca"
+            }
+        },
+        {
+            "activity_name": "Pre-Pregnancy Interview",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "d9a324d6-a192-44a2-948f-0ee1c44c6255",
+            "ideal_date": "2012-02-17",
+            "labels": [
+                "event:pre-pregnancy_visit",
+                "instrument:ins_que_prepreg_int_ehpbhi_p2_v1.1"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-17",
+            "scheduled_study_segment": {
+                "grid_id": "d7a778d5-c7b9-44af-9643-304bad9b792c",
+                "start_date": "2012-02-17",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "6eec8119-1a06-47a7-b246-d6b06ea81ea0",
+                "name": "Julia Bushman",
+                "person_id": "b0b39b70-38be-012f-11d5-58b035fb69ca"
+            }
+        }
+    ]
+}
