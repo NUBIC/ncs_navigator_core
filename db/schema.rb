@@ -237,6 +237,7 @@ ActiveRecord::Schema.define(:version => 20120321181032) do
     t.string   "client_id"
     t.date     "end_date"
     t.date     "start_date"
+    t.binary   "original_data"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
