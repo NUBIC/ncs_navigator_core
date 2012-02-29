@@ -26,6 +26,12 @@ module NcsNavigator::Core::Warehouse
             '../../../../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__)))
     }
 
+    let(:p_id) { 'par-foo' }
+    let(:person_id) { 'per-foo' }
+
+    let(:participant) { Factory(:participant, :p_id => p_id) }
+    let(:person) { Factory(:person, :person_id => person_id) }
+
     before do
       keys = redis.keys('*')
       redis.del(*keys) unless keys.empty?
@@ -33,6 +39,9 @@ module NcsNavigator::Core::Warehouse
       psc.stub!(:psc_participant).and_return(psc_participant)
       psc.stub!(:template_snapshot).and_return(template_xml)
       psc_participant.stub!(:psc).and_return(psc)
+
+      participant.person = person
+      psc_participant.stub!(:participant).and_return(participant)
     end
 
     def add_event_hash(event_id, start_date, overrides={})
@@ -53,17 +62,9 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'scheduling segments for events' do
-      let(:p_id) { 'par-foo' }
-      let(:person_id) { 'per-foo' }
-
-      let(:participant) { Factory(:participant, :p_id => p_id) }
-      let(:person) { Factory(:person, :person_id => person_id) }
-
       before do
-        participant.person = person
         participant.stub!(:low_intensity?).and_return(false)
 
-        psc_participant.stub!(:participant).and_return(participant)
         psc_participant.stub!(:scheduled_events).and_return([{}])
         psc_participant.stub!(:registered?).and_return(true)
         psc_participant.stub!(:append_study_segment)
@@ -230,6 +231,200 @@ module NcsNavigator::Core::Warehouse
         importer.schedule_events(psc_participant)
 
         redis.smembers("#{ns}:psc_sync:p:#{p_id}:events_closed").should == %w(e4)
+      end
+    end
+
+    def add_link_contact_hash(lc_id, event_id, contact_date, overrides={})
+      key = "#{ns}:psc_sync:link_contact:#{lc_id}"
+      redis.hmset(key, *{
+          :link_contact_id => lc_id,
+          :event_id => event_id,
+          :contact_date => contact_date,
+          :sort_key => "#{event_id}:#{contact_date}",
+          :status => 'new'
+        }.merge(overrides).to_a.flatten)
+    end
+
+    describe 'updating activities for contact links' do
+      before do
+        add_event_hash('e1', '2010-01-11',
+          :event_type_label => 'pregnancy_visit_1')
+        add_link_contact_hash('e1_lc1', 'e1', '2010-01-11')
+        add_link_contact_hash('e1_lc2', 'e1', '2010-01-12')
+        add_link_contact_hash('e1_lc3', 'e1', '2010-01-18')
+
+        instrument_props = {
+          :instrument_id => 'e1_i1',
+          :instrument_status => 'partial',
+          :instrument_type => '9'
+        }
+        add_link_contact_hash('e1_lc1i', 'e1', '2010-01-11', instrument_props)
+        add_link_contact_hash('e1_lc2i', 'e1', '2010-01-12', instrument_props)
+        add_link_contact_hash('e1_lc3i', 'e1', '2010-01-18', instrument_props)
+
+        add_event_hash('e2', '2010-04-01',
+          :event_type_label => 'pregnancy_visit_2')
+        add_link_contact_hash('e2_lc4', 'e2', '2010-04-04')
+
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+        psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
+        psc_participant.stub!(:update_scheduled_activity_states)
+      end
+
+      let(:scheduled_events) {
+        [
+          {
+            :event_type_label => 'pregnancy_visit_1',
+            :start_date => '2010-01-11',
+            :scheduled_activities => %w(sa1 sa3 sa4)
+          },
+          {
+            :event_type_label => 'pregnancy_visit_2',
+            :start_date => '2010-04-04',
+            :scheduled_activities => %w(sa2)
+          }
+        ]
+      }
+
+      let(:scheduled_activities) {
+        {
+          'sa1' => {
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_1'
+          },
+          'sa2' => {
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_2'
+          },
+          'sa3' => {
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
+          },
+          'sa4' => {
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_1'
+          }
+        }
+      }
+
+      describe 'for contact links with instruments' do
+        before do
+          %w(e1_lc1i e1_lc3i e1_lc2i).each do |lc_id|
+            redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contacts_with_instrument:e1_i1", lc_id)
+          end
+        end
+
+        it 'uses the sa_list only' do
+          psc_participant.should_receive(:scheduled_activities).at_least(:once).with(:sa_list)
+          psc_participant.should_not_receive(:scheduled_activities).with(:sa_activities)
+          psc_participant.should_not_receive(:scheduled_activities).with
+
+          importer.update_sa_histories(psc_participant)
+        end
+
+        describe 'when a matching SA exists' do
+          it 'updates the SA once for each LC in order' do
+            psc_participant.should_receive(:update_scheduled_activity_states).with(
+              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i', 'state' => 'scheduled' }).
+              ordered
+            psc_participant.should_receive(:update_scheduled_activity_states).with(
+              'sa3' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2i', 'state' => 'scheduled' }).
+              ordered
+            psc_participant.should_receive(:update_scheduled_activity_states).with(
+              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3i', 'state' => 'scheduled' }).
+              ordered
+
+            importer.update_sa_histories(psc_participant)
+          end
+
+          it 'closes the SA when completed' do
+            %w(e1_lc1i e1_lc2i e1_lc3i).each do |lc_id|
+              redis.hset("#{ns}:psc_sync:link_contact:#{lc_id}", 'instrument_status', 'completed')
+            end
+
+            psc_participant.should_receive(:update_scheduled_activity_states).with(
+              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported completed instrument e1_i1', 'state' => 'occurred' })
+
+            importer.update_sa_histories(psc_participant)
+          end
+
+          it 'records the SA as handled' do
+            importer.update_sa_histories(psc_participant)
+
+            redis.smembers("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities").
+              should == %w(sa3)
+          end
+        end
+
+        describe 'when no matching SA exists' do
+          before do
+            scheduled_activities['sa3']['labels'] = 'event:pregnancy_visit_1'
+          end
+
+          it 'does not update the SA' do
+            psc_participant.should_not_receive(:update_scheduled_activity_states).with(
+              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i', 'state' => 'scheduled' }
+            )
+
+            importer.update_sa_histories(psc_participant)
+          end
+
+          it 'does not issue an empty update to PSC' do
+            psc_participant.should_not_receive(:update_scheduled_activity_states).with({})
+
+            importer.update_sa_histories(psc_participant)
+          end
+
+          it 'does not record the SA as handled' do
+            redis.smembers("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities").
+              should == []
+          end
+        end
+      end
+
+      describe 'for contact links without instruments' do
+        before do
+          {
+            'e1' => %w(e1_lc3 e1_lc2 e1_lc1),
+            'e2' => %w(e2_lc4)
+          }.each do |event_id, lc_ids|
+            lc_ids.each do |lc_id|
+              redis.sadd(
+                "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:#{event_id}",
+                lc_id)
+            end
+          end
+
+          redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities", 'sa3')
+        end
+
+        it 'uses the sa_list only' do
+          psc_participant.should_receive(:scheduled_activities).at_least(:once).with(:sa_list)
+          psc_participant.should_not_receive(:scheduled_activities).with(:sa_activities)
+          psc_participant.should_not_receive(:scheduled_activities).with # nothing
+
+          importer.update_sa_histories(psc_participant)
+        end
+
+        it 'batch updates all SAs at each LC' do
+          psc_participant.should_receive(:update_scheduled_activity_states).with(
+            'sa1' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1', 'state' => 'scheduled' },
+            'sa4' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1', 'state' => 'scheduled' }
+            ).ordered
+          psc_participant.should_receive(:update_scheduled_activity_states).with(
+            'sa1' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2', 'state' => 'scheduled' },
+            'sa4' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2', 'state' => 'scheduled' }
+            ).ordered
+          psc_participant.should_receive(:update_scheduled_activity_states).with(
+            'sa1' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3', 'state' => 'scheduled' },
+            'sa4' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3', 'state' => 'scheduled' }
+            ).ordered
+          psc_participant.should_receive(:update_scheduled_activity_states).with(
+            'sa2' => { 'date' => '2010-04-04', 'reason' => 'Imported new contact link e2_lc4', 'state' => 'scheduled' }
+            ).ordered
+
+          importer.update_sa_histories(psc_participant)
+        end
       end
     end
   end
