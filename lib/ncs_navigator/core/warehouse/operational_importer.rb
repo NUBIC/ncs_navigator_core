@@ -169,7 +169,8 @@ module NcsNavigator::Core::Warehouse
           sync_key('p', participant.public_id,
             'link_contacts_with_instrument', core_contact_link.instrument.instrument_id)
         else
-          sync_key('p', participant.public_id, 'link_contacts_without_instrument')
+          sync_key('p', participant.public_id,
+            'link_contacts_without_instrument', core_event.event_id)
         end
 
       Rails.application.redis.tap do |r|

@@ -663,12 +663,12 @@ module NcsNavigator::Core::Warehouse
               should == %w(f_e1 f_e2 f_e3 f_e4)
           end
 
-          it "stores a set of link contacts without instruments that need to be sync'd for each p" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument").sort.
-              should == %w(f_c1_e1 f_c1_e3 f_c2_e3 f_c3_e4)
+          it "stores a set of link contacts without instruments that need to be sync'd for each event for each p" do
+            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument:f_e3").sort.
+              should == %w(f_c1_e3 f_c2_e3)
           end
 
-          it "stores a set of link contacts with instruments that need to be sync'd for each p" do
+          it "stores a set of link contacts with instruments that need to be sync'd for each instrument for each p" do
             redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument:f_e2_i").
               should == %w(f_c1_e2)
           end
