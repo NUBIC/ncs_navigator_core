@@ -57,6 +57,8 @@ class Instrument < ActiveRecord::Base
 
   before_create :set_default_codes
 
+  LABEL_MARKER = "instrument:"
+
   ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
@@ -77,12 +79,13 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
-  # Given a label from PSC determine the instrument version
+  # Given a label from PSC or surveyor access code determine the instrument version
   # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0
   # @return [String]
   def self.determine_version(lbl)
-    ind = lbl.to_s.rindex("_v")
-    lbl[ind + 2, lbl.length]
+    lbl = Instrument.surveyor_access_code(lbl)
+    ind = lbl.to_s.rindex("-v")
+    lbl[ind + 2, lbl.length].sub("-", ".")
   end
 
   ##
@@ -91,14 +94,14 @@ class Instrument < ActiveRecord::Base
   # @return[String]
   def self.parse_label(lbl)
     return nil if lbl.blank?
-    label_marker = "instrument:"
-    part = lbl.split.select{ |s| s.include?(label_marker) }.first.to_s
+    part = lbl.split.select{ |s| s.include?(LABEL_MARKER) }.first.to_s
     return nil if part.blank?
-    part.gsub(label_marker, "")
+    part.gsub(LABEL_MARKER, "")
   end
-  
+
   def self.surveyor_access_code(lbl)
-    Survey.to_normalized_string(Instrument.parse_label(lbl))
+    lbl = Instrument.parse_label(lbl) if lbl.include? LABEL_MARKER
+    Survey.to_normalized_string(lbl)
   end
 
   private

@@ -290,7 +290,7 @@ class Person < ActiveRecord::Base
   # @return [ResponseSet]
   def create_instrument(survey)
     Instrument.create!(:psu_code => NcsNavigatorCore.psu,
-      :instrument_version => InstrumentEventMap.version(survey.title),
+      :instrument_version => Instrument.determine_version(survey.title),
       :instrument_type => InstrumentEventMap.instrument_type(survey.title),
       :person => self,
       :survey => survey)
