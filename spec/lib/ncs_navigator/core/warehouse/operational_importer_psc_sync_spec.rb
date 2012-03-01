@@ -427,5 +427,107 @@ module NcsNavigator::Core::Warehouse
         end
       end
     end
+
+    describe 'canceling incomplete activities for closed events' do
+      before do
+        add_event_hash('e1', '2010-01-11',
+          :event_type_label => 'pregnancy_visit_1',
+          :end_date => '2010-01-22')
+        add_event_hash('e2', '2010-04-4',
+          :event_type_label => 'pregnancy_visit_2')
+
+        redis.sadd("#{ns}:psc_sync:p:#{p_id}:events_closed", 'e1')
+
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+        psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
+        psc_participant.stub!(:update_scheduled_activity_states)
+      end
+
+      let(:scheduled_events) {
+        [
+          {
+            :event_type_label => 'pregnancy_visit_1',
+            :start_date => '2010-01-11',
+            :scheduled_activities => %w(sa1 sa3)
+          },
+          {
+            :event_type_label => 'pregnancy_visit_2',
+            :start_date => '2010-04-04',
+            :scheduled_activities => %w(sa2)
+          }
+        ]
+      }
+
+      let(:scheduled_activities) {
+        {
+          'sa1' => {
+            'id' => 'sa1',
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_1'
+          },
+          'sa2' => {
+            'id' => 'sa2',
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_2'
+          },
+          'sa3' => {
+            'id' => 'sa3',
+            'current_state' => { 'name' => 'occurred' },
+            'labels' => 'event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
+          },
+        }
+      }
+
+      it 'uses the full schedule content' do
+        psc_participant.should_receive(:scheduled_activities).once.with(:sa_content)
+
+        importer.cancel_pending_activities_for_closed_events(psc_participant)
+      end
+
+      it 'does not load the full schedule if there are no closed events' do
+        redis.del("#{ns}:psc_sync:p:#{p_id}:events_closed")
+
+        psc_participant.should_not_receive(:scheduled_activities)
+
+        importer.cancel_pending_activities_for_closed_events(psc_participant)
+      end
+
+      it 'only cancels activities for closed events' do
+        psc_participant.should_receive(:update_scheduled_activity_states).once do |arg|
+          arg.keys.should == %w(sa1) # not sa2
+        end
+
+        importer.cancel_pending_activities_for_closed_events(psc_participant)
+      end
+
+      {
+        'scheduled' => 'canceled',
+        'conditional' => 'NA',
+      }.each do |in_state, out_state|
+        it "makes a '#{in_state}' activity '#{out_state}'" do
+          scheduled_activities['sa1']['current_state']['name'] = in_state
+
+          psc_participant.should_receive(:update_scheduled_activity_states).once.with({
+              'sa1' => {
+                'date' => '2010-01-22',
+                'reason' => 'Imported closed event e1.',
+                'state' => out_state
+              }
+            })
+
+          importer.cancel_pending_activities_for_closed_events(psc_participant)
+        end
+      end
+
+      %w(occurred canceled missed NA).each do |closed_state|
+        it "does not change the state of a '#{closed_state}' activity" do
+          scheduled_activities['sa1']['current_state']['name'] = closed_state
+
+          psc_participant.should_not_receive(:update_scheduled_activity_states)
+
+          importer.cancel_pending_activities_for_closed_events(psc_participant)
+        end
+      end
+    end
   end
 end

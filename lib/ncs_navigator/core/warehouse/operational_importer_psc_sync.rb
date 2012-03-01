@@ -250,12 +250,43 @@ module NcsNavigator::Core::Warehouse
     end
     private :update_sa_histories_from_link_contacts
 
+    ##
+    # Updates a list of SAs to a new state (the same state for all of them)
     def batch_update_sa_states(psc_participant, scheduled_activities, new_state)
       return if scheduled_activities.empty?
       psc_participant.update_scheduled_activity_states(
         scheduled_activities.inject({}) { |update, sa_id| update[sa_id] = new_state; update })
     end
     private :batch_update_sa_states
+
+    ###### CANCEL REMAINING ACTIVITIES FOR CLOSED EVENTS
+
+    def cancel_pending_activities_for_closed_events(psc_participant)
+      p_id = psc_participant.participant.p_id
+
+      say_subtask_message('examining closed events')
+
+      while closed_event_id = redis.spop(sync_key('p', p_id, 'events_closed'))
+        all_sas ||= psc_participant.scheduled_activities(:sa_content)
+
+        event_details = redis.hgetall(sync_key('event', closed_event_id))
+        psc_event = find_psc_event(
+          psc_participant, event_details['start_date'], event_details['event_type_label'])
+
+        updates = psc_event[:scheduled_activities].select { |sa_id|
+          %w(scheduled conditional).include?(all_sas[sa_id]['current_state']['name'])
+        }.collect { |sa_id| all_sas[sa_id] }.inject({}) do |u, sa|
+          u[sa['id']] = {
+            'date' => event_details['end_date'],
+            'state' => sa['current_state']['name'] == 'conditional' ? 'NA' : 'canceled',
+            'reason' => "Imported closed event #{closed_event_id}."
+          }
+          u
+        end
+
+        psc_participant.update_scheduled_activity_states(updates) unless updates.empty?
+      end
+    end
 
     ###### GENERAL INFRASTRUCTURE
 
