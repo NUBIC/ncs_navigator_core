@@ -131,11 +131,21 @@ describe Instrument do
 
     context 'with label instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
-      let(:label) { 'instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+      let(:lbl) { 'instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
+      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0' }
 
       describe '#determine_version' do
-        it 'returns 1.0' do
-          Instrument.determine_version(label).should == "1.0"
+        it 'returns 1.0 for psc label' do
+          Instrument.determine_version(lbl).should == "1.0"
+        end
+
+        it 'returns 1.0 for surveyor access code' do
+          Instrument.determine_version(code).should == "1.0"
+        end
+
+        it 'returns 1.0 for survey title' do
+          Instrument.determine_version(title).should == "1.0"
         end
       end
 
