@@ -15,6 +15,10 @@
     (If there is a Consent link in the list, you should obtain consent before proceeding.)
 
 - no_consent = true
+
+- if @contact_link.event.psc_segment_name.include?("Consent")
+  - no_consent = false
+
 - if @person.participant.blank?
   .person_not_participant
     = blank_safe(@person.to_s)
@@ -22,30 +26,13 @@
 - else
   - if @event_activities
     - @event_activities.each do |activity|
-      - if survey = Survey.most_recent_for_access_code(Instrument.surveyor_access_code(activity.labels))
-        - if @contact_link.contact.instrument_survey_titles.include?(survey.title)
-          .known_instrument
-            = "#{activity.activity_name} - #{survey.title}"
-        - else
-          .instrument
-            = link_to "#{activity.activity_name} - #{survey.title}", start_instrument_person_path(@person, :survey_access_code => survey.access_code, :contact_link_id => @contact_link.id, :initial_instrument_for_contact => initial_instrument_for_contact), :class => "edit_link icon_link"
-      - elsif activity.include?("Consent")
-        - no_consent = false
-        = render "consents"
-      - else
-        .instrument
-          = activity.activity_name
+      - no_consent = false if activity.include?("Consent")
+      = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link,
+                                          :initial_instrument_for_contact => initial_instrument_for_contact
   - else
-    - if @contact_link.event.psc_segment_name.include?("Consent")
-      - no_consent = false
-      = render "consents"
-    - else
-      No activities are associated with
-      = @contact_link.event.psc_segment_name
+    %b
+      event_activities is nil
+    = render "consent_or_empty", :contact_link => @contact_link
+
 - if no_consent
-  - if !(@contact_link.event.to_s =~ /Pregnancy Screener/) && !@person.participant.blank?
-    %h3
-      Unscheduled Consents
-    .instructional_note
-      Use the links below to obtain consent for a participant that is not a part of the above scheduled activities.
-    = render "consents"
+  = render "unscheduled_consents", :person => @person, :contact_link => @contact_link

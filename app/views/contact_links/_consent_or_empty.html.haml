@@ -1,0 +1,5 @@
+- if contact_link.event.psc_segment_name.include?("Consent")
+  = render "consents"
+- else
+  No activities are associated with
+  = contact_link.event.psc_segment_name

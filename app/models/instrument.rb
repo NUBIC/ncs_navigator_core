@@ -57,7 +57,8 @@ class Instrument < ActiveRecord::Base
 
   before_create :set_default_codes
 
-  LABEL_MARKER = "instrument:"
+  INSTRUMENT_LABEL_MARKER = "instrument:"
+  COLLECTION_LABEL_MARKER = "collection:"
 
   ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
@@ -94,14 +95,18 @@ class Instrument < ActiveRecord::Base
   # @return[String]
   def self.parse_label(lbl)
     return nil if lbl.blank?
-    part = lbl.split.select{ |s| s.include?(LABEL_MARKER) }.first.to_s
+    part = lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first.to_s
     return nil if part.blank?
-    part.gsub(LABEL_MARKER, "")
+    part.gsub(INSTRUMENT_LABEL_MARKER, "")
   end
 
   def self.surveyor_access_code(lbl)
-    lbl = Instrument.parse_label(lbl) if lbl.include? LABEL_MARKER
+    lbl = Instrument.parse_label(lbl) if lbl.include? INSTRUMENT_LABEL_MARKER
     Survey.to_normalized_string(lbl)
+  end
+
+  def self.collection?(lbl)
+    lbl.include? COLLECTION_LABEL_MARKER
   end
 
   private

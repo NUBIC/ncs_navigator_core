@@ -1,0 +1,6 @@
+- if !(contact_link.event.to_s =~ /Pregnancy Screener/) && !person.participant.blank?
+  %h3
+    Unscheduled Consents
+  .instructional_note
+    Use the links below to obtain consent for a participant that is not a part of the above scheduled activities.
+  = render "consents"
