@@ -137,14 +137,7 @@ Spork.prefork do
   end
 
   def load_survey_string(s)
-    require 'stringio'
-    begin
-      original_stdout = $stdout
-      $stdout = StringIO.new
-      Surveyor::Parser.new.parse(s)
-    ensure
-      $stdout = original_stdout if original_stdout
-    end
+    Surveyor::Parser.new.parse(s)
   end
 
   def with_versioning

@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git://github.com/NUBIC/surveyor.git
-  revision: e58fd81af3bed01b39dd8361bf1c0a1315cf366f
+  revision: 2c0e453509b03c3b1683acf075913000612addfe
   specs:
     surveyor (0.21.0)
       fastercsv (~> 1.5.4)
