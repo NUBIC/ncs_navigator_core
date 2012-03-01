@@ -166,6 +166,18 @@ describe Instrument do
         end
       end
 
+      describe "#collection?" do
+        it "returns true if label denotes a collection activity" do
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
+          Instrument.collection?(lbl).should be_true
+        end
+
+        it "returns false if label does not denote a collection activity" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Instrument.collection?(lbl).should be_false
+        end
+      end
+
     end
   end
 

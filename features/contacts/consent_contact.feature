@@ -42,10 +42,10 @@ Feature: Obtaining participant consent
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"
     And I should see "General consent"
-    And I should see "Consent to collect biospecimens"
-    And I should see "Consent to collect environmental samples"
-    And I should see "Consent to collect genetic material"
-    And I should see "Consent to collect birth samples"
+    # And I should see "Consent to collect biospecimens"
+    # And I should see "Consent to collect environmental samples"
+    # And I should see "Consent to collect genetic material"
+    # And I should see "Consent to collect birth samples"
     And I should see "Consent for the child’s participation"
     When I follow "General consent"
     Then I should be on the new participant consent page
