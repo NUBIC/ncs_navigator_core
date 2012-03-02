@@ -74,7 +74,7 @@ class PeopleController < ApplicationController
     @contact_link = find_or_create_contact_link
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
-    if rs.nil? or rs.complete?
+    if should_create_new_instrument?(rs, @contact_link.event)
       rs, instrument = @person.start_instrument(survey)
       rs.save!
     else
@@ -111,6 +111,13 @@ class PeopleController < ApplicationController
   end
 
   private
+
+    ##
+    # Use existing instrument if the response set for this survey exists
+    # and the event has not been completed
+    def should_create_new_instrument?(response_set, event)
+      response_set.nil? or (event && !event.event_end_date.blank?)
+    end
 
     ##
     # An instrument can be associated with an existing ContactLink record
