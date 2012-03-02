@@ -3,7 +3,7 @@ class TelephonesController < ApplicationController
   def new
     @person = Person.find(params[:person_id])
     @telephone = Telephone.new
-
+    @telephone.person = @person
     @telephone.phone_info_date = Date.today
     @telephone.phone_info_update = Date.today
 

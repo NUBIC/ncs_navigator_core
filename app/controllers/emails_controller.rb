@@ -3,6 +3,7 @@ class EmailsController < ApplicationController
   def new
     @person = Person.find(params[:person_id])
     @email = Email.new
+    @email.person = @person
 
     @email.email_info_date = Date.today
     @email.email_info_update = Date.today

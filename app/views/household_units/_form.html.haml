@@ -1,5 +1,5 @@
 .page_section
-  = form_for(@household_unit) do |f| 
+  = form_for(@household_unit, :html => {:autocomplete => "off"}) do |f| 
   
     = render "shared/custom_error_messages", :object => f.object
 

@@ -6,7 +6,7 @@
 .page_section
   #edit_person_link
     = link_to "Edit Person Record", edit_person_path(@participant.person), :class => "edit_link icon_link"
-  = form_for(@participant) do |f|
+  = form_for(@participant, :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
 
     = hidden_field_tag :person_id, @person_id

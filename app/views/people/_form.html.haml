@@ -1,6 +1,6 @@
 %h3
   = @person.to_s
-  
+
 .page_section
   - if @person.participant?
     #edit_participant_link
@@ -8,13 +8,13 @@
   - else
     #create_participant_link
       = link_to "Create Participant Record", new_participant_path(:person_id => @person.id), :class => "edit_link icon_link"
-  = form_for(@person) do |f| 
+  = form_for(@person, :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :prefix_code, :label_text => "Prefix" }
-    
+
     %p
       = f.label :first_name, "First Name"
       %br
@@ -34,21 +34,21 @@
       = f.label :maiden_name, "Maiden Name"
       %br
       = f.text_field :maiden_name
-      
+
     = render "shared/ncs_code_select", { :f => f, :code => :suffix_code, :label_text => "Suffix" }
-    
+
     %p
       = f.label :title, "Title"
       %br
       = f.text_field :title
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
-    
+
     %p
       = f.label :age, "Age"
       %br
       = f.text_field :age
-      
+
     = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
 
     %p
@@ -67,7 +67,7 @@
     = render "shared/ncs_code_select", { :f => f, :code => :language_code, :label_text => "Language", :other => :language_other }
 
     = render "shared/ncs_code_select", { :f => f, :code => :marital_status_code, :label_text => "Marital Status", :other => :marital_status_other }
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :preferred_contact_method_code, :label_text => "Preferred Contact Method", :other => :preferred_contact_method_other }
 
     = render "shared/ncs_code_select", { :f => f, :code => :planned_move_code, :label_text => "Planned Move" }
@@ -88,14 +88,14 @@
       = f.radio_button :date_move_modifier, :not_applicable
 
     = render "shared/ncs_code_select", { :f => f, :code => :p_tracing_code, :label_text => "Tracing" }
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :p_info_source_code, :label_text => "Info Source", :other => :p_info_source_other }
 
     %p
       = f.label :p_info_date, "Info Date"
       %br
       = f.text_field :p_info_date, :class => "datepicker"
-      
+
     %p
       = f.label :p_info_update, "Info Update"
       %br
@@ -105,13 +105,13 @@
       = f.label :person_comment, "Comment"
       %br
       = f.text_area :person_comment
-      
+
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
 
 .links
   = link_to "All People", people_path, :class => "list_link icon_link"
-  
+
 :javascript
   // For the 'other' field
   // Check on pageload

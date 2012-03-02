@@ -12,7 +12,7 @@
   = @event.event_type.display_text
 
 .page_section
-  = form_for(@event) do |f|
+  = form_for(@event, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "/events/form_fields", :f => f

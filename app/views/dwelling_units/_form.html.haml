@@ -4,8 +4,7 @@
       = render "shared/full_error_messages", :object => f.object
       = f.submit "Create Household Unit for all People at this Address", :confirm => "Are you certain?"
 
-
-  = form_for(@dwelling_unit) do |f|
+  = form_for(@dwelling_unit, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }

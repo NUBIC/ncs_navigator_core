@@ -11,7 +11,7 @@
   = @event.event_type.display_text
 
 .page_section
-  = form_for(@non_interview_report) do |f|
+  = form_for(@non_interview_report, :html => {:autocomplete => "off"}) do |f|
     = hidden_field_tag :contact_link_id, @contact_link.id
     = render "shared/custom_error_messages", :object => f.object
 

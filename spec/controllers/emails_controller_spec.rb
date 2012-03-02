@@ -58,6 +58,38 @@ describe EmailsController do
             }.to change(Email, :count).by(1)
           end
         end
+
+        describe "with html request for person" do
+          it "associates person with email" do
+            person = Factory(:person)
+            person.emails.should be_empty
+
+            email_addr = "asdf@asdf.com"
+            email_attrs = {
+              :person_id => person.id,
+              :email => email_addr
+            }
+
+            post :create, :person_id => person.id, :email => email_attrs
+            assigns(:email).should be_a(Email)
+
+            person = Person.find(person.id)
+            person.emails.should_not be_empty
+            person.emails.first.email.should == email_addr
+          end
+
+          it "redirects to the edit person form" do
+            person = Factory(:person)
+            email_addr = "asdf@asdf.com"
+            email_attrs = {
+              :person_id => person.id,
+              :email => email_addr
+            }
+
+            post :create, :person_id => person.id, :email => email_attrs
+            response.should redirect_to(person_path(person))
+          end
+        end
       end
 
       describe "with invalid params" do

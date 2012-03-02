@@ -20,7 +20,8 @@
     - elsif participant.can_register? && registered
       .psc_note
         Not yet registered with PSC.
-      = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}"), :html => {:class => "register_participant_with_psc"}) do |f|
+      = form_for(participant, :url => register_with_psc_participant_path(participant, :redirect_to => "#{request.path}?#{request.query_string}"),
+                              :html => {:class => "register_participant_with_psc", :autocomplete => "off"}) do |f|
         = render "shared/full_error_messages", :object => f.object
         %p
           = f.submit "Register with PSC"
