@@ -4,7 +4,8 @@
       .schedule_next_event
         %b
           Schedule Next Event
-          = form_for(participant, :url => schedule_next_event_with_psc_participant_path(participant, :redirect_to => "#{request.path}"), :html => {:class => "schedule_next_event_with_psc"}) do |f|
+          = form_for(participant, :url => schedule_next_event_with_psc_participant_path(participant, :redirect_to => "#{request.path}"),
+                                  :html => {:class => "schedule_next_event_with_psc", :autocomplete => "off"}) do |f|
             = render "shared/full_error_messages", :object => f.object
             %p
               = text_field_tag :date, next_event.date.to_s, :class => 'datepicker'

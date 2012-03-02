@@ -7,11 +7,12 @@
   Enter the data export identifier for the specific response given to an instrument question.
   %br
   The 'data export identifier' is the table name and the variable name from the MDES separated
-  by a period '.' 
+  by a period '.'
   %br
   (e.g. PREG_SCREEN_HI_2.R_FNAME)
 
-= form_for @person, :url => responses_for_person_path(@person) do |f|
+= form_for(@person, :url => responses_for_person_path(@person),
+                    :html => {:autocomplete => "off"}) do |f|
 
   = text_field_tag :data_export_identifier, params[:data_export_identifier]
 

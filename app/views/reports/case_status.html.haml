@@ -4,7 +4,7 @@
   %p
     Enter in the time period for the report and click 'Generate Report' to download the case status report file.
   %p
-    = form_tag('/reports/case_status') do |f|
+    = form_tag('/reports/case_status', :html => {:autocomplete => "off"}) do |f|
       %p
         %b
           From:

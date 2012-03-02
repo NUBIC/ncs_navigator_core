@@ -41,6 +41,8 @@
   %br
   = f.text_area :email_comment
 
+  = f.hidden_field :person_id
+
 :javascript
   $(document).ready(function() {
     wire_up_select_other("#email_email_info_source_code","#email_email_info_source_other");

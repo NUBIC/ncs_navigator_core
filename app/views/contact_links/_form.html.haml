@@ -1,5 +1,5 @@
 .page_section
-  = form_for(@contact_link) do |f|
+  = form_for(@contact_link, :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
 
     = f.hidden_field :person_id

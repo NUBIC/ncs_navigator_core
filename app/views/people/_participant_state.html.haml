@@ -8,7 +8,8 @@
     %b
       Next State
     .form
-      = form_for @participant, :url => process_update_state_participant_path(@participant) do |f|
+      = form_for(@participant, :url => process_update_state_participant_path(@participant),
+                               :html => {:autocomplete => "off"}) do |f|
         - if @participant.low_intensity?
           - if @participant.pending?
             Registered

@@ -9,7 +9,7 @@
       .contact_info
         = t.phone_nbr
       %br
-    = link_to 'Add New Telephone', edit_person_telephone_path(@person), :class => "add_link icon_link"
+    = link_to 'Add New Telephone', new_person_telephone_path(@person), :class => "add_link icon_link"
   .emails
     %b
       Emails
@@ -20,7 +20,7 @@
       .contact_info
         = e.email
       %br
-    = link_to 'Add New Email', edit_person_email_path(@person), :class => "add_link icon_link"
+    = link_to 'Add New Email', new_person_email_path(@person), :class => "add_link icon_link"
   .addresses
     %b
       Addresses

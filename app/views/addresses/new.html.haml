@@ -4,7 +4,7 @@
   = render 'documentation/address'
 
 .page_section
-  = form_for(@address) do |f|
+  = form_for(@address, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "/addresses/form_fields", :f => f

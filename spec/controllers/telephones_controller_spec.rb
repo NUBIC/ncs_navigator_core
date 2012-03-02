@@ -58,6 +58,38 @@ describe TelephonesController do
             }.to change(Telephone, :count).by(1)
           end
         end
+
+        describe "with html request for person" do
+          it "associates person with telephone" do
+            person = Factory(:person)
+            person.telephones.should be_empty
+
+            phone_nbr = "3125551212"
+            phone_attrs = {
+              :person_id => person.id,
+              :phone_nbr => phone_nbr
+            }
+
+            post :create, :person_id => person.id, :telephone => phone_attrs
+            assigns(:telephone).should be_a(Telephone)
+
+            person = Person.find(person.id)
+            person.telephones.should_not be_empty
+            person.telephones.first.phone_nbr.should == phone_nbr
+          end
+
+          it "redirects to the edit person form" do
+            person = Factory(:person)
+            phone_nbr = "3125551212"
+            phone_attrs = {
+              :person_id => person.id,
+              :phone_nbr => phone_nbr
+            }
+
+            post :create, :person_id => person.id, :telephone => phone_attrs
+            response.should redirect_to(person_path(person))
+          end
+        end
       end
 
       describe "with invalid params" do

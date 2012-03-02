@@ -4,7 +4,7 @@
   = render 'documentation/telephone'
 
 .page_section
-  = form_for([@person, @telephone]) do |f|
+  = form_for([@person, @telephone], :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "/telephones/form_fields", :f => f
