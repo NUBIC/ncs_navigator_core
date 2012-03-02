@@ -11,7 +11,7 @@
                                                         :contact_link_id => contact_link.id,
                                                         :initial_instrument_for_contact => initial_instrument_for_contact),
                   :class => "edit_link icon_link"
-  - elsif activity.include?("Consent")
+  - elsif activity.activity_name.include?("Consent")
     = render "consents"
   - else
     .instrument
