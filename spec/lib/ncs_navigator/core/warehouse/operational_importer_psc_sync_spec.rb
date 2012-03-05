@@ -56,9 +56,81 @@ module NcsNavigator::Core::Warehouse
 
     # mini-integration tests; details are tested below
     describe '#import' do
-      it 'schedules segments for events'
-      it 'updates activity states from linked contacts'
-      it 'updates activity states for closed events'
+      let(:scheduled_events) {
+        [ {
+            :event_type_label => 'pregnancy_visit_1',
+            :start_date => '2010-01-11',
+            :scheduled_activities => %w(sa1)
+          } ]
+      }
+
+      let(:scheduled_activities) {
+        {
+          'sa1' => {
+            'id' => 'sa1',
+            'current_state' => { 'name' => 'scheduled' },
+            'labels' => 'event:pregnancy_visit_1'
+          }
+        }
+      }
+
+      before do
+        participant.stub!(:low_intensity?).and_return(false)
+
+        psc_participant.stub!(:registered?).and_return(true)
+        psc_participant.stub!(:append_study_segment)
+        psc_participant.stub!(:scheduled_events).and_return([])
+        psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
+        psc_participant.stub!(:update_scheduled_activity_states)
+
+        redis.sadd("#{ns}:psc_sync:participants", p_id)
+
+        add_event_hash('e1', '2010-01-11',
+          :event_type_label => 'pregnancy_visit_1',
+          :end_date => '2010-01-14')
+        redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
+
+        add_link_contact_hash('e1_lc2', 'e1', '2010-01-12')
+        redis.sadd(
+          "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:e1",
+          'e1_lc2')
+      end
+
+      it 'schedules segments for events' do
+        psc_participant.stub!(:scheduled_events).and_return([], scheduled_events)
+
+        psc_participant.should_receive(:append_study_segment).with('2010-01-11', SEGMENT_IDS[:pv1])
+
+        importer.import
+      end
+
+      it 'updates activity states from linked contacts' do
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+
+        psc_participant.should_receive(:update_scheduled_activity_states).with({
+            'sa1' => {
+              'state' => 'scheduled',
+              'date' => '2010-01-12',
+              'reason' => 'Imported new contact link e1_lc2.'
+            }
+          })
+
+        importer.import
+      end
+
+      it 'updates activity states for closed events' do
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+
+        psc_participant.should_receive(:update_scheduled_activity_states).with({
+            'sa1' => {
+              'state' => 'canceled',
+              'date' => '2010-01-14',
+              'reason' => 'Imported closed event e1.'
+            }
+          })
+
+        importer.import
+      end
     end
 
     describe 'scheduling segments for events' do
@@ -325,13 +397,13 @@ module NcsNavigator::Core::Warehouse
         describe 'when a matching SA exists' do
           it 'updates the SA once for each LC in order' do
             psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i', 'state' => 'scheduled' }).
+              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i.', 'state' => 'scheduled' }).
               ordered
             psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2i', 'state' => 'scheduled' }).
+              'sa3' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2i.', 'state' => 'scheduled' }).
               ordered
             psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3i', 'state' => 'scheduled' }).
+              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3i.', 'state' => 'scheduled' }).
               ordered
 
             importer.update_sa_histories(psc_participant)
@@ -343,7 +415,7 @@ module NcsNavigator::Core::Warehouse
             end
 
             psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported completed instrument e1_i1', 'state' => 'occurred' })
+              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported completed instrument e1_i1.', 'state' => 'occurred' })
 
             importer.update_sa_histories(psc_participant)
           end
@@ -363,7 +435,7 @@ module NcsNavigator::Core::Warehouse
 
           it 'does not update the SA' do
             psc_participant.should_not_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i', 'state' => 'scheduled' }
+              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i.', 'state' => 'scheduled' }
             )
 
             importer.update_sa_histories(psc_participant)
@@ -408,19 +480,19 @@ module NcsNavigator::Core::Warehouse
 
         it 'batch updates all SAs at each LC' do
           psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa1' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1', 'state' => 'scheduled' },
-            'sa4' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1', 'state' => 'scheduled' }
+            'sa1' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1.', 'state' => 'scheduled' },
+            'sa4' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1.', 'state' => 'scheduled' }
             ).ordered
           psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa1' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2', 'state' => 'scheduled' },
-            'sa4' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2', 'state' => 'scheduled' }
+            'sa1' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2.', 'state' => 'scheduled' },
+            'sa4' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2.', 'state' => 'scheduled' }
             ).ordered
           psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa1' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3', 'state' => 'scheduled' },
-            'sa4' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3', 'state' => 'scheduled' }
+            'sa1' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3.', 'state' => 'scheduled' },
+            'sa4' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3.', 'state' => 'scheduled' }
             ).ordered
           psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa2' => { 'date' => '2010-04-04', 'reason' => 'Imported new contact link e2_lc4', 'state' => 'scheduled' }
+            'sa2' => { 'date' => '2010-04-04', 'reason' => 'Imported new contact link e2_lc4.', 'state' => 'scheduled' }
             ).ordered
 
           importer.update_sa_histories(psc_participant)
