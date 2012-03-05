@@ -22,7 +22,7 @@ module NcsNavigator::Core::Warehouse
         p = participants[p_id]
         unless p
           log.error("Participant #{p_id} was registered for PSC sync but not found in core.")
-          shell.say("not found in core.")
+          say_subtask_message("not found in core.")
           next
         end
 
@@ -36,7 +36,8 @@ module NcsNavigator::Core::Warehouse
 
         i += 1
       end
-      shell.clear_line_and_say("PSC sync complete. #{i} participant#{'s' if i != 1} processed.")
+      shell.clear_line_and_say(
+        "PSC sync complete. #{i}/#{p_count} participant#{'s' if p_count != 1} processed.")
 
       report_about_indefinitely_deferred_events
     end
