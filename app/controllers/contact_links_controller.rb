@@ -49,17 +49,19 @@ class ContactLinksController < ApplicationController
 				 @contact_link.event.update_attributes(params[:event]) &&
 				 @contact_link.contact.update_attributes(params[:contact])
 
-        # TODO: check if you need to create the event here
+         notice = 'Contact was successfully updated.'
+
         if @contact_link.event.participant.pending_events.blank?
-          Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)
+          resp = Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)
+          notice += " Could not schedule next event [#{@contact_link.event.participant.next_study_segment}]" unless resp
         end
 
         format.html {
           if params[:commit] == "Continue"
-            redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true))
+            redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true), :notice => notice)
           else
             path = @contact_link.person.participant ? participant_path(@contact_link.person.participant) : person_path(@contact_link.person)
-            redirect_to(path, :notice => 'Contact was successfully updated.')
+            redirect_to(path, :notice => notice)
           end
 				}
 				format.json { head :ok }
@@ -162,7 +164,7 @@ class ContactLinksController < ApplicationController
         set_disposition_group_for_contact_link
       end
 	  end
-	  
+
     ##
     # Disposition group based on specific events
 	  def set_disposition_group_for_event

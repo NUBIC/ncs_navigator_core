@@ -223,8 +223,9 @@ class Event < ActiveRecord::Base
   end
   private :set_event_breakoff
 
-
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
+    return nil unless participant.next_scheduled_event
+
     date ||= participant.next_scheduled_event.date.to_s
     resp = psc.schedule_next_segment(participant, date)
 
