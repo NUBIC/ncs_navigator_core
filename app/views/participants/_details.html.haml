@@ -1,0 +1,24 @@
+.page_section
+  - if @participant.known_to_be_pregnant?
+    %p
+      %b
+        Due Date:
+      = blank_safe(@participant.due_date, "Unknown")
+
+  - if @participant.person
+    %p
+      %b
+        Person ID:
+      = @participant.person.public_id
+      = link_to "Edit Person Record", edit_person_path(@participant.person), :class => "edit_link icon_link"
+  %p
+    %b
+      Participant ID:
+    = @participant.public_id
+    = link_to "Edit Participant Record", edit_participant_path(@participant), :class => "edit_link icon_link"
+  %p
+    %b
+      Next Study Segment:
+    - event = @participant.next_scheduled_event
+    = "#{nil_safe(event.event)} - #{nil_safe(event.date)}"
+
