@@ -201,14 +201,16 @@ class ParticipantsController < ApplicationController
   def update_arm
     @participant = Participant.find(params[:id])
 
-    @notice = "Successfully added #{@participant.person} to High Intensity Arm"
-    @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
-
     mark_pending_event_activities_canceled(@participant)
     if @participant.switch_arm
 
-      # TODO: how to handle failure when scheduling next event?
       resp = Event.schedule_and_create_placeholder(psc, @participant)
+      if resp && resp.success?
+        @notice = "Successfully added #{@participant.person} to High Intensity Arm"
+        @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
+      else
+        @notice = "Switched arm but could not schedule next event [#{@participant.next_study_segment.inspect}]"
+      end
 
       url = edit_participant_path(@participant)
       url = params[:redirect_to] unless params[:redirect_to].blank?

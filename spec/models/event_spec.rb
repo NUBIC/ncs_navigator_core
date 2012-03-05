@@ -426,6 +426,12 @@ describe Event do
       let(:psc) { PatientStudyCalendar.new(@user) }
       let(:date) { "2012-02-06" }
 
+      it "returns nil if there is no event to schedule" do
+        part = Factory(:low_intensity_ppg5_participant)
+        part.next_scheduled_event.should be_blank
+        Event.schedule_and_create_placeholder(psc, part).should be_nil
+      end
+
       it "creates as many placeholder events as activities per scheduled segment" do
 
         PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
