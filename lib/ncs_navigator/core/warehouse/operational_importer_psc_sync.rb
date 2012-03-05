@@ -14,8 +14,11 @@ module NcsNavigator::Core::Warehouse
 
     def import
       init_participants_cache
+
+      i = 1
+      p_count = redis.scard(sync_key('participants'))
       while p_id = redis.spop(sync_key('participants'))
-        shell.clear_line_and_say("PSC sync of #{p_id}: %#{SUBTASK_MSG_LEN}s" % '')
+        shell.clear_line_and_say("PSC sync of #{p_id} (#{i}/#{p_count}): %#{SUBTASK_MSG_LEN}s" % '')
         p = participants[p_id]
         unless p
           log.error("Participant #{p_id} was registered for PSC sync but not found in core.")
@@ -25,17 +28,42 @@ module NcsNavigator::Core::Warehouse
 
         psc_participant = psc.psc_participant(participants[p_id])
         schedule_events(psc_participant)
-        # update_activities_for_contacts
-        # update_activities_for_closed_events
+        update_sa_histories(psc_participant)
+        cancel_pending_activities_for_closed_events(psc_participant)
 
         # TODO: find schedule-implied events that have no Event
         # records in Core and do something with them.
 
-        # TODO: report on indefinitely deferred events, if any.
+        i += 1
       end
+      shell.clear_line_and_say("PSC sync complete. #{i} participant#{'s' if i != 1} processed.")
+
+      report_about_indefinitely_deferred_events
     end
 
-    SUBTASK_MSG_LEN = 49
+    def report_about_indefinitely_deferred_events
+      unschedulable_sets = redis.keys(sync_key('p', '*', 'events_unschedulable')).
+        select { |set_key| redis.scard(set_key) > 0 }
+      unless unschedulable_sets.empty?
+        shell.say_line(
+          "%d participant%s had events that could not be sync'd. See log for details." %
+          [unschedulable_sets.size, ('s' if unschedulable_sets.size > 1)])
+        log.error((
+            "The following %d participant%s had one or more events that were not sync'd " +
+            'to PSC because they could never be unambiguously mapped to PSC segments.') %
+          [unschedulable_sets.size, ('s' if unschedulable_sets.size > 1)])
+        unschedulable_sets.each do |set_key|
+          p_id = set_key.scan(/p\:([^:]+)\:events_/).first.first
+          log.error("= Participant #{p_id}")
+          redis.smembers(set_key) do |event_id|
+            event_details_key = sync_key('event', event_id)
+            event_details = redis.hgetall(event_details_key)
+            log.error("  - Event #{event_id} #{event_details.inspect}")
+          end
+        end
+      end
+    end
+    private :report_about_indefinitely_deferred_events
 
     ###### SCHEDULING SEGMENTS FOR EVENTS
 
@@ -173,7 +201,7 @@ module NcsNavigator::Core::Warehouse
             say_subtask_message("marking SA for a completed instrument occurred")
             batch_update_sa_states(psc_participant, scheduled_activities, {
                 'date' => last_details['contact_date'],
-                'reason' => "Imported completed instrument #{last_details['instrument_id']}",
+                'reason' => "Imported completed instrument #{last_details['instrument_id']}.",
                 'state' => 'occurred'
               })
           end
@@ -215,6 +243,10 @@ module NcsNavigator::Core::Warehouse
         ex_event_details = redis.hgetall(sync_key('event', ex_lc_details['event_id']))
         psc_event = find_psc_event(
           psc_participant, ex_event_details['start_date'], ex_event_details['event_type_label'])
+        unless psc_event
+          log.error "No PSC event found for event #{ex_event_details.inspect}. This should not be possible."
+          return
+        end
 
         sas = scheduled_activity_selector.call(psc_event, ex_lc_details)
         if sas.empty?
@@ -234,7 +266,7 @@ module NcsNavigator::Core::Warehouse
 
           batch_update_sa_states(psc_participant, sas, {
               'date' => lc_details['contact_date'],
-              'reason' => "Imported #{lc_details['status']} contact link #{lc_id}",
+              'reason' => "Imported #{lc_details['status']} contact link #{lc_id}.",
               'state' => 'scheduled'
             })
         end
@@ -299,6 +331,8 @@ module NcsNavigator::Core::Warehouse
     def redis
       Rails.application.redis
     end
+
+    SUBTASK_MSG_LEN = 49
 
     def say_subtask_message(message)
       if message.size > SUBTASK_MSG_LEN
