@@ -41,7 +41,11 @@ namespace :import do
   end
 
   desc 'Import all data'
-  task :all => [:operational, :unused_operational, :instruments, :unused_instruments]
+  task :all => [
+    :psc_setup,
+    :operational, :operational_psc, :unused_operational,
+    :instruments, :unused_instruments
+  ]
 
   desc 'Import operational data'
   task :operational => [:warehouse_setup, :environment] do
@@ -66,6 +70,15 @@ namespace :import do
     puts "Importing only #{tables.join(', ')}." unless tables.empty?
 
     importer.import(*tables)
+  end
+
+  desc 'Synchronize PSC to the data imported by import:operational'
+  task :operational_psc => [:psc_setup, :warehouse_setup, :environment] do
+    require 'ncs_navigator/core'
+    psc = PatientStudyCalendar.new(user_for_psc)
+
+    importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
+    importer.import
   end
 
   desc 'Import instrument data'
