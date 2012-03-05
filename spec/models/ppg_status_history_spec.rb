@@ -35,4 +35,18 @@ describe PpgStatusHistory do
   it { should belong_to(:ppg_info_mode) }
   it { should belong_to(:response_set) }
 
+  describe ".set_ppg_status_date" do
+
+    it "sets the ppg_status_date to created_at if not set" do
+      ppg = Factory(:ppg_status_history, :ppg_status_date => nil)
+      ppg.ppg_status_date.should == Time.now.strftime(MdesRecord::DEFAULT_DATE_FORMAT)
+    end
+
+    it "does not update the ppg_status_date if already set" do
+      ppg = Factory(:ppg_status_history, :ppg_status_date => '2012-01-01')
+      ppg.ppg_status_date.should == '2012-01-01'
+    end
+
+  end
+
 end

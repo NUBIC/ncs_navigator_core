@@ -2,6 +2,8 @@ require 'active_support/concern'
 module MdesRecord
   extend ActiveSupport::Concern
 
+  DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+
   included do
     before_create :set_public_id
     before_validation :set_missing_in_error
@@ -92,7 +94,7 @@ module MdesRecord
       if self.date_fields
         self.date_fields.each do |df|
 
-          formatter = self.respond_to?("#{df}_formatter") ? self.send("#{df}_formatter") : '%Y-%m-%d'
+          formatter = self.respond_to?("#{df}_formatter") ? self.send("#{df}_formatter") : MdesRecord::DEFAULT_DATE_FORMAT
 
           dt = self.send("#{df}_date")
           if dt.blank?
