@@ -24,13 +24,15 @@ class PpgStatusHistory < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :ppg_history_id
   has_paper_trail
-  
+
   belongs_to :participant
   belongs_to :response_set
   ncs_coded_attribute :psu,             'PSU_CL1'
   ncs_coded_attribute :ppg_status,      'PPG_STATUS_CL1'
   ncs_coded_attribute :ppg_info_source, 'INFORMATION_SOURCE_CL3'
   ncs_coded_attribute :ppg_info_mode,   'CONTACT_TYPE_CL1'
+
+  before_save :set_ppg_status_date
 
   ##
   # Given a collection of participant ids return the most recent ppg_status
@@ -44,5 +46,13 @@ class PpgStatusHistory < ActiveRecord::Base
     PpgStatusHistory.where("participant_id in (?) and ppg_status_date = (#{inner_select})", participant_ids).all
   end
 
+  private
+
+    def set_ppg_status_date
+      if self.ppg_status_date.blank?
+        date = self.created_at.blank? ? Time.now : self.created_at
+        self.ppg_status_date = date.strftime(MdesRecord::DEFAULT_DATE_FORMAT)
+      end
+    end
 
 end
