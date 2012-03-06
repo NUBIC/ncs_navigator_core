@@ -246,7 +246,7 @@ module NcsNavigator::Core::Warehouse
           psc_participant, ex_event_details['start_date'], ex_event_details['event_type_label'])
         unless psc_event
           log.error "No PSC event found for event #{ex_event_details.inspect}. This should not be possible."
-          return
+          next
         end
 
         sas = scheduled_activity_selector.call(psc_event, ex_lc_details)
@@ -300,11 +300,19 @@ module NcsNavigator::Core::Warehouse
       say_subtask_message('examining closed events')
 
       while closed_event_id = redis.spop(sync_key('p', p_id, 'events_closed'))
+        if redis.sismember(sync_key('p', p_id, 'events_unschedulable'), closed_event_id)
+          next
+        end
+
         all_sas ||= psc_participant.scheduled_activities(:sa_content)
 
         event_details = redis.hgetall(sync_key('event', closed_event_id))
         psc_event = find_psc_event(
           psc_participant, event_details['start_date'], event_details['event_type_label'])
+        unless psc_event
+          log.error "No PSC event found for closed event #{event_details.inspect}. This should not be possible."
+          next
+        end
 
         updates = psc_event[:scheduled_activities].select { |sa_id|
           %w(scheduled conditional).include?(all_sas[sa_id]['current_state']['name'])
