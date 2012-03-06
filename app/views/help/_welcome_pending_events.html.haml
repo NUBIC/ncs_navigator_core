@@ -1,0 +1,6 @@
+= render "/help/help_link"
+%textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "Pending Events" }
+  %p
+    On this page lists all the pending events in the database.
+    A pending event is one that does not have an end date and therefore is not 'closed' in the application.
+    An event must be 'closed' before the participant can move onto the next event.

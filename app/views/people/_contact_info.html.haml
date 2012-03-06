@@ -7,7 +7,7 @@
       = "#{t.phone_type}:"
       = link_to 'Edit', edit_person_telephone_path(@person, t), :class => "edit_link icon_link"
       .contact_info
-        = t.phone_nbr
+        = phone_number_formatter(t.phone_nbr)
       %br
     = link_to 'Add New Telephone', new_person_telephone_path(@person), :class => "add_link icon_link"
   .emails

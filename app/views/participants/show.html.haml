@@ -8,7 +8,7 @@
     = render "documentation/disposition_code_list"
 
 %h3
-  = @person.to_s.blank? ? "#{@person.public_id}" : "#{@person}"
+  = display_person @person
 
 %p
   = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
