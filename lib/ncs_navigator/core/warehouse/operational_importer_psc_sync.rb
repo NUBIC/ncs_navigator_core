@@ -341,7 +341,7 @@ module NcsNavigator::Core::Warehouse
       Rails.application.redis
     end
 
-    SUBTASK_MSG_LEN = 49
+    SUBTASK_MSG_LEN = 70
 
     def say_subtask_message(message)
       if message.size > SUBTASK_MSG_LEN
