@@ -92,7 +92,8 @@ module NcsNavigator::Core::Warehouse
         ordered_event_sets.each do |p_id, events_and_links|
           participant = Participant.where(:p_id => p_id).first
 
-          Rails.application.redis.sadd(sync_key('participants'), participant.public_id)
+          for_psc = (participant.enroll_status_code == 1)
+          Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
 
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
@@ -101,7 +102,7 @@ module NcsNavigator::Core::Warehouse
               participant.set_state_for_event_type(core_event.event_type)
             end
 
-            cache_event_for_psc_sync(participant, core_event)
+            cache_event_for_psc_sync(participant, core_event) if for_psc
 
             save_core_record(core_event)
             (event_and_links[:instruments] || []).each do |mdes_i|
@@ -110,7 +111,7 @@ module NcsNavigator::Core::Warehouse
 
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
-              cache_link_contact_for_psc_sync(participant, core_event, core_contact_link)
+              cache_link_contact_for_psc_sync(participant, core_event, core_contact_link) if for_psc
               save_core_record(core_contact_link)
             end
           end
