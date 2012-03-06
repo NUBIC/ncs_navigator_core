@@ -77,6 +77,7 @@ class PscParticipant
 
     if response.success?
       @registered = true
+      ALL_SCHEDULED_ACTIVITY_CACHE_LEVELS.each { |k| @valid[k] = false }
     else
       raise PatientStudyCalendar::ResponseError.new(response.status, response.body)
     end
@@ -144,6 +145,9 @@ class PscParticipant
     if response.success?
       ALL_SCHEDULED_ACTIVITY_CACHE_LEVELS.each { |k| @valid[k] = true }
       @schedule = response.body
+    elsif response.status == 404
+      ALL_SCHEDULED_ACTIVITY_CACHE_LEVELS.each { |k| @valid[k] = true }
+      @schedule = {}
     else
       raise PatientStudyCalendar::ResponseError.new(response.status, response.body)
     end
@@ -162,7 +166,9 @@ class PscParticipant
   # @return [Hash<String, Hash<String, Object>]
   def scheduled_activities(validity=:sa_content)
     # TODO: how to memoize with proper cache invalidation?
-    schedule(validity)['days'].inject({}) do |index, (day, day_value)|
+    days = schedule(validity)['days']
+    return {} unless days
+    days.inject({}) do |index, (day, day_value)|
       day_value['activities'].each do |sa|
         index[sa['id']] = sa
       end
