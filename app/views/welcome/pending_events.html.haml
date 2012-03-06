@@ -1,0 +1,24 @@
+- title "Pending Events"
+
+.page_section
+  - if @pending_events
+    %table.records
+      %tr
+        %th Participant
+        %th Event
+        %th Date
+      - @pending_events.each do |event|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            - txt = blank_safe(display_participant(event.participant))
+            - if event.participant
+              = link_to txt, participant_path(event.participant), :class => "show_link icon_link"
+            - else
+              = txt
+          %td
+            = event
+          %td
+            = blank_safe(event.event_start_date)
+  - else
+    .no_records
+      As unlikely as it may seem, there are no pending events currently in the database.

@@ -33,6 +33,22 @@ module ApplicationHelper
     str.nil? ? str.inspect : blank_safe(str, default)
   end
 
+  def display_person(person)
+    person.to_s.blank? ? "#{person.public_id}" : "#{person}"
+  end
+
+  def display_participant(participant)
+    participant.person ? display_person(participant.person) : "#{participant.public_id}"
+  end
+
+  ##
+  # Takes MDES formatted phone number (XXXYYYZZZZ)
+  # and parses into area code, exchange, and line number
+  def phone_number_formatter(nbr, separator = "-")
+    return nbr if nbr.to_s.length != 10
+    nbr.insert(3, separator).insert(7, separator)
+  end
+
   # Nested Attribute Form Helpers
 
   def generate_nested_attributes_template(f, association, association_prefix = nil )

@@ -10,7 +10,6 @@ class WelcomeController < ApplicationController
     @scheduled_activities = get_upcoming_activities
   end
 
-
   def overdue_activities
     criteria = { :current_user => current_staff,
                  :end_date => 1.day.ago.to_date.to_s }
@@ -20,6 +19,12 @@ class WelcomeController < ApplicationController
   def summary
     @dwellings    = DwellingUnit.next_to_process
     @participants = Participant.all
+  end
+
+  def pending_events
+    @pending_events = Event.where("event_end_date is null").
+                            order("event_start_date").
+                            paginate(:page => params[:page], :per_page => 20)
   end
 
   def faq
