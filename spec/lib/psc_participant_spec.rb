@@ -112,6 +112,7 @@ describe PscParticipant do
       context do
         before do
           stub_request(:post, assignments_path).to_return(:status => 201)
+          subject.valid.keys.each { |k| subject.valid[k] = true }
           subject.register!('2011-03-07', 'dc')
         end
 
@@ -154,6 +155,10 @@ describe PscParticipant do
         it 'caches the fact the the participant is registered when successful' do
           subject.register!('2010-04-05', 'Pregnancy Screener')
           subject.should be_registered
+        end
+
+        it 'invalidates the schedule cache' do
+          subject.valid.values.uniq.should == [false]
         end
       end
 
@@ -315,8 +320,19 @@ describe PscParticipant do
       end
     end
 
+    describe 'when there is no such schedule' do
+      before do
+        stub_request(:get, schedules_path).
+          to_return(:status => 404, :body => 'No such')
+      end
+
+      it 'returns empty' do
+        subject.schedule.should == {}
+      end
+    end
+
     describe 'when there is an unexpected response status' do
-      [400, 403, 404, 500].each do |s|
+      [400, 403, 500].each do |s|
         it "fails with #{s}" do
           stub_request(:get, schedules_path).
             to_return(:status => s, :body => 'No frob allowed')
@@ -354,6 +370,11 @@ describe PscParticipant do
 
     it 'can retrieve an arbitrary activity' do
       subject.scheduled_activities['352']['activity']['name'].should == 'Bar'
+    end
+
+    it 'is empty if the schedule is empty' do
+      subject.schedule = {}
+      subject.scheduled_activities.should be_empty
     end
   end
 
@@ -418,6 +439,11 @@ describe PscParticipant do
 
     it 'ignores non-event labels' do
       subject.scheduled_events
+    end
+
+    it 'is empty if the schedule is empty' do
+      subject.schedule = {}
+      subject.scheduled_events.should == []
     end
   end
 
