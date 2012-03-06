@@ -50,6 +50,7 @@ module NcsNavigator::Core::Warehouse
           :status => 'new',
           :event_id => event_id,
           :start_date => start_date,
+          :end_date => '',
           :sort_key => "#{start_date}:030"
         }.merge(overrides).to_a.flatten)
     end
