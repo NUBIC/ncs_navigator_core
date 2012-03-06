@@ -91,6 +91,42 @@ describe PpgDetail do
       pd.first.ppg_first.display_text.should == psh.first.ppg_status.display_text
     end
 
+    describe "#importer_mode" do
+
+      it "suppresses the creation of associated ppg_status_history" do
+        PpgStatusHistory.where(:participant_id => participant.id).where(:ppg_status_code => ppg_status1.local_code).count.should == 0
+        PpgDetail.importer_mode do
+          Factory(:ppg_detail, :ppg_first_code => pd_status1.local_code, :participant => participant)
+          pd = PpgDetail.where(:participant_id => participant.id)
+          psh = PpgStatusHistory.where(:participant_id => participant.id)
+
+          pd.count.should == 1
+          psh.count.should == 0
+        end
+      end
+
+      it "turns the callback back on after processing in importer mode" do
+        PpgStatusHistory.where(:participant_id => participant.id).where(:ppg_status_code => ppg_status1.local_code).count.should == 0
+
+        PpgDetail.importer_mode do
+          Factory(:ppg_detail, :ppg_first_code => pd_status1.local_code, :participant => participant)
+          pd = PpgDetail.where(:participant_id => participant.id)
+          psh = PpgStatusHistory.where(:participant_id => participant.id)
+
+          pd.count.should == 1
+          psh.count.should == 0
+        end
+
+        Factory(:ppg_detail, :ppg_first_code => pd_status1.local_code, :participant => participant)
+        pd = PpgDetail.where(:participant_id => participant.id)
+        psh = PpgStatusHistory.where(:participant_id => participant.id)
+
+        pd.count.should == 2
+        psh.count.should == 1
+      end
+
+    end
+
   end
 
 end

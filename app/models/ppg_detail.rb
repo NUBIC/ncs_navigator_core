@@ -76,6 +76,12 @@ class PpgDetail < ActiveRecord::Base
     end
   end
 
+  def self.importer_mode
+    PpgDetail.skip_callback(:create, :after, :create_associated_ppg_status_history)
+    yield
+    PpgDetail.set_callback(:create, :after, :create_associated_ppg_status_history)
+  end
+
   private
 
     def create_associated_ppg_status_history
