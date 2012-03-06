@@ -102,7 +102,7 @@ module NcsNavigator::Core::Warehouse
         fail "Could not find event details using #{event_details_key}"
       end
 
-      if event_details['end_date']
+      unless event_details['end_date'].blank?
         redis.sadd(sync_key('p', p_id, 'events_closed'), event_id)
       end
 
