@@ -115,7 +115,7 @@ namespace :import do
     psc = PatientStudyCalendar.new(user_for_psc)
 
     participants.each do |p|
-      psc.schedule_next_segment(p)
+      Event.schedule_and_create_placeholder(psc, p)
     end
   end
 
