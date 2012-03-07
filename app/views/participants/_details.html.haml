@@ -20,5 +20,6 @@
     %b
       Next Study Segment:
     - event = @participant.next_scheduled_event
-    = "#{nil_safe(event.event)} - #{nil_safe(event.date)}"
+    = event.nil? "Unknown" : "#{nil_safe(event.event)} - #{nil_safe(event.date)}"
+
 
