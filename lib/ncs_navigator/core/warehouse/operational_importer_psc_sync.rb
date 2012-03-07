@@ -131,10 +131,10 @@ module NcsNavigator::Core::Warehouse
         fail "No segment found for event type label #{label.inspect}"
       elsif possible_segments.size == 1
         selected_segment = possible_segments.first
-      elsif label == 'birth'
+      elsif segment_selectable_by_hi_v_lo?(possible_segments)
         selected_segment = possible_segments.inject({}) { |h, seg|
-          h[seg.parent['name'] == 'LO-Intensity'] = seg; h
-        }[psc_participant.participant.low_intensity?]
+          h[seg.parent['name'] == 'LO-Intensity' ? 'lo' : 'hi'] = seg; h
+        }[event_details['recruitment_arm']]
       else
         say_subtask_message("deferring due to multiple segment options")
         log.debug("Deferring #{event_id} to #{opts[:defer_key]} due to multiple possible segments:")
@@ -172,6 +172,12 @@ module NcsNavigator::Core::Warehouse
     end
     private :select_segments
 
+    def segment_selectable_by_hi_v_lo?(possible_segments)
+      epoch_names = possible_segments.collect { |seg| seg.parent['name'] }
+      # "there are two different epochs and one of them is LO-Intensity"
+      epoch_names.size == 2 && epoch_names.include?('LO-Intensity') && epoch_names.uniq.size == 2
+    end
+
     ###### CONTACT LINK SA HISTORY UPDATES
 
     def update_sa_histories(psc_participant)
@@ -198,7 +204,7 @@ module NcsNavigator::Core::Warehouse
         },
         lambda { |link_contact_ids, scheduled_activities|
           last_details = redis.hgetall(sync_key('link_contact', link_contact_ids.last))
-          if last_details['instrument_status'] == 'completed'
+          if last_details['instrument_status'] == 'complete'
             say_subtask_message("marking SA for a completed instrument occurred")
             batch_update_sa_states(psc_participant, scheduled_activities, {
                 'date' => last_details['contact_date'],

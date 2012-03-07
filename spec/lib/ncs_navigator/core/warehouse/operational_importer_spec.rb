@@ -233,7 +233,7 @@ module NcsNavigator::Core::Warehouse
           Participant, ParticipantConsentSample,
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
-          PpgDetail, PpgStatusHistory,
+          PpgStatusHistory,
           Address, Email, Telephone,
           NonInterviewReport, NoAccessNonInterviewReport, DwellingUnitTypeNonInterviewReport,
           RefusalNonInterviewReport, VacantNonInterviewReport
@@ -242,6 +242,23 @@ module NcsNavigator::Core::Warehouse
             let(:core_model) { core_model }
 
             include_context 'basic model import test'
+          end
+        end
+
+        describe PpgDetail do
+          let(:core_model) { PpgDetail }
+          include_context 'basic model import test'
+
+          before do
+            # TODO: we should really have all the lookup values in the
+            # test database at all times
+            Factory(:ncs_code, :list_name => 'PPG_STATUS_CL1', :local_code => 2)
+          end
+
+          it 'does not create a status history record' do
+            initial_history_count = PpgStatusHistory.count
+            importer.import(core_table)
+            initial_history_count.should == PpgStatusHistory.count
           end
         end
 
@@ -343,13 +360,19 @@ module NcsNavigator::Core::Warehouse
     describe 'Event, LinkContact, and Instrument' do
       before do
         Event.count.should == 0
+
+        # for enroll status
+        { 'Yes' => '1', 'No' => '2' }.each do |text, code|
+          Factory(
+            :ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => text, :local_code => code)
+        end
       end
 
       let(:fred_p) {
-        create_warehouse_record_via_core(Participant, 'fred_p')
+        create_warehouse_record_via_core(Participant, 'fred_p', :enroll_status => '1')
       }
       let(:ginger_p) {
-        create_warehouse_record_via_core(Participant, 'ginger_p')
+        create_warehouse_record_via_core(Participant, 'ginger_p', :enroll_status => '2')
       }
 
       let(:fred_pers) {
@@ -654,8 +677,11 @@ module NcsNavigator::Core::Warehouse
           end
 
           it "stores a set of participants that need to be sync'd" do
-            redis.smembers("#{ns}:psc_sync:participants").sort.
-              should == %w(fred_p ginger_p)
+            redis.smembers("#{ns}:psc_sync:participants").should include('fred_p')
+          end
+
+          it "ignores participants that are not enrolled" do
+            redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
           end
 
           it "stores a list of events that need to be sync'd for each participant" do
