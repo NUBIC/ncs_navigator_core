@@ -64,15 +64,11 @@ class PpgDetail < ActiveRecord::Base
   ##
   # Helper method to set the most recently known due_date
   # @param [Date]
-  def update_due_date(due_date)
-    if orig_due_date.blank?
-      self.update_attribute(:orig_due_date, due_date)
-    elsif due_date_2.blank?
-      self.update_attribute(:due_date_2, due_date)
-    elsif due_date_3.blank?
-      self.update_attribute(:due_date_3, due_date)
+  def update_due_date(due_date, attribute = nil)
+    if attribute.nil?
+      set_next_due_date(due_date)
     else
-      nil
+      self.update_attribute(attribute, due_date)
     end
   end
 
@@ -88,6 +84,18 @@ class PpgDetail < ActiveRecord::Base
       ppg_status = NcsCode.for_attribute_name_and_local_code(:ppg_status_code, self.ppg_first_code)
       if ppg_status && self.ppg_first_code < 6
         PpgStatusHistory.create(:participant => self.participant, :psu => self.psu, :ppg_status => ppg_status)
+      end
+    end
+
+    def set_next_due_date(due_date)
+      if orig_due_date.blank?
+        self.update_attribute(:orig_due_date, due_date)
+      elsif due_date_2.blank?
+        self.update_attribute(:due_date_2, due_date)
+      elsif due_date_3.blank?
+        self.update_attribute(:due_date_3, due_date)
+      else
+        nil
       end
     end
 

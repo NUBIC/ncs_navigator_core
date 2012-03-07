@@ -166,13 +166,13 @@ class PpgFollowUpOperationalDataExtractor
           end
 
           if (data_export_identifier == "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1" || data_export_identifier == "#{SAQ_PREFIX}.PPG_DUE_DATE") && !value.blank?
-            participant.ppg_details.first.update_due_date(value)
+            participant.ppg_details.first.update_due_date(value, :orig_due_date)
           end
         end
 
         if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
           due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
-          participant.ppg_details.first.update_due_date(due_date) if due_date
+          participant.ppg_details.first.update_due_date(due_date, :orig_due_date) if due_date
         end
 
       end

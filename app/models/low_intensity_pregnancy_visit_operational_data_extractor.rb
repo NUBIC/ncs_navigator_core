@@ -50,7 +50,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
           end
 
           if (data_export_identifier == "#{INTERVIEW_PREFIX}.DUE_DATE") && !value.blank?
-            participant.ppg_details.first.update_due_date(value)
+            participant.ppg_details.first.update_due_date(value, :due_date_2)
           end
         end
 
