@@ -133,8 +133,8 @@ module NcsNavigator::Core::Warehouse
         selected_segment = possible_segments.first
       elsif segment_selectable_by_hi_v_lo?(possible_segments)
         selected_segment = possible_segments.inject({}) { |h, seg|
-          h[seg.parent['name'] == 'LO-Intensity'] = seg; h
-        }[psc_participant.participant.low_intensity?]
+          h[seg.parent['name'] == 'LO-Intensity' ? 'lo' : 'hi'] = seg; h
+        }[event_details['recruitment_arm']]
       else
         say_subtask_message("deferring due to multiple segment options")
         log.debug("Deferring #{event_id} to #{opts[:defer_key]} due to multiple possible segments:")
