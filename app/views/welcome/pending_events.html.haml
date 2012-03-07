@@ -2,6 +2,9 @@
 
 .page_section
   - if @pending_events
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @pending_events
     %table.records
       %tr
         %th Participant
@@ -23,3 +26,5 @@
   - else
     .no_records
       As unlikely as it may seem, there are no pending events currently in the database.
+
+  = will_paginate @pending_events
