@@ -51,6 +51,7 @@ module NcsNavigator::Core::Warehouse
           :event_id => event_id,
           :start_date => start_date,
           :end_date => '',
+          :recruitment_arm => 'hi',
           :sort_key => "#{start_date}:030"
         }.merge(overrides).to_a.flatten)
     end
@@ -76,8 +77,6 @@ module NcsNavigator::Core::Warehouse
       }
 
       before do
-        participant.stub!(:low_intensity?).and_return(false)
-
         psc_participant.stub!(:registered?).and_return(true)
         psc_participant.stub!(:append_study_segment)
         psc_participant.stub!(:scheduled_events).and_return([])
@@ -136,8 +135,6 @@ module NcsNavigator::Core::Warehouse
 
     describe 'scheduling segments for events' do
       before do
-        participant.stub!(:low_intensity?).and_return(false)
-
         psc_participant.stub!(:scheduled_events).and_return([{}])
         psc_participant.stub!(:registered?).and_return(true)
         psc_participant.stub!(:append_study_segment)
@@ -251,7 +248,7 @@ module NcsNavigator::Core::Warehouse
           end
 
           it 'schedules the lo birth segment when the participant is lo' do
-            participant.should_receive(:low_intensity?).at_least(:once).and_return(true)
+            redis.hset "#{ns}:psc_sync:event:e10", "recruitment_arm", "lo"
             psc_participant.should_receive(:append_study_segment).
               with('2010-10-10', SEGMENT_IDS[:lo_birth]).ordered
 
@@ -259,7 +256,7 @@ module NcsNavigator::Core::Warehouse
           end
 
           it 'schedules the hi birth segment when the participant is hi' do
-            participant.should_receive(:low_intensity?).and_return(false)
+            redis.hset "#{ns}:psc_sync:event:e10", "recruitment_arm", "hi"
             psc_participant.should_receive(:append_study_segment).
               with('2010-10-10', SEGMENT_IDS[:hi_child]).ordered
 
