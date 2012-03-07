@@ -16,12 +16,17 @@ module NcsNavigator::Core::Warehouse
     end
 
     def import
-      @progress.start
-      Survey.mdes_primary_instrument_tables.each do |primary|
-        create_or_update_response_sets_for_model(
-          @wh_config.models_module.mdes_order.detect { |model| model.mdes_table_name == primary })
+      PaperTrail.whodunnit = 'instrument_importer'
+      begin
+        @progress.start
+        Survey.mdes_primary_instrument_tables.each do |primary|
+          create_or_update_response_sets_for_model(
+            @wh_config.models_module.mdes_order.detect { |model| model.mdes_table_name == primary })
+        end
+        @progress.complete
+      ensure
+        PaperTrail.whodunnit = nil
       end
-      @progress.complete
     end
 
     private

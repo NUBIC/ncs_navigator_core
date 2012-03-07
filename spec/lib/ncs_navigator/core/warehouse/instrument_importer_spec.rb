@@ -246,6 +246,20 @@ module NcsNavigator::Core::Warehouse
         importer.import
         ResponseSet.all.collect(&:access_code).should == %w(tap_water_twq#PV11)
       end
+
+      it 'is audited on creation' do
+        with_versioning { importer.import }
+
+        audit_record = Version.where(:item_type => ResponseSet.to_s).first
+        audit_record.should_not be_nil
+      end
+
+      it 'is audited as being from the importer' do
+        with_versioning { importer.import }
+
+        audit_record = Version.where(:item_type => ResponseSet.to_s).first
+        audit_record.whodunnit.should == 'instrument_importer'
+      end
     end
 
     describe 'a Response' do
