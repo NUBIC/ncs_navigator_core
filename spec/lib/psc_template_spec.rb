@@ -43,7 +43,8 @@ describe 'PSC template' do
 
     let(:event_labels_by_segment_by_day) {
       template_xml.css('study-segment').inject({}) do |segments, seg|
-        segments[seg['name']] = seg.css('planned-activity').inject({}) do |by_day, pa|
+        name = "#{seg.parent['name']}: #{seg['name']}"
+        segments[name] = seg.css('planned-activity').inject({}) do |by_day, pa|
           one_day = (by_day[pa['day'].to_i] ||= [])
           pa.css('label').collect { |l| l['name'] }.select { |n| n =~ prefix }.each do |event|
             # uniq! instead of a set because sets don't behave like
@@ -56,6 +57,17 @@ describe 'PSC template' do
       end
     }
 
+    let(:segments_by_event_label_by_day) {
+      event_labels_by_segment_by_day.inject({}) do |events, (segment_name, by_day)|
+        by_day.each { |day, labels|
+          labels.each { |label|
+            events[label] ||= {}
+            (events[label][segment_name] ||= []) << day
+          }
+        }
+        events
+      end
+    }
 
     it 'covers only known event types' do
       (events_named_in_labels - event_types_from_mdes).uniq.should == []
@@ -84,33 +96,43 @@ describe 'PSC template' do
     #   - Find a single corresponding segment to schedule
     #   - Defer the event until the first condition is true
     #
-    # It special-cases the birth event by lo vs. hi, so this test
-    # special-cases it also.
+    # The importer special-cases the events that appear once in the Lo
+    # epoch and once in another epoch, so this test does also.
     it 'schedules any event that occurs on multiple days alongside an event that occurs on only one day' do
       pending 'Until Child Consent segment is removed'
 
-      multiply_scheduled_event_and_counts = event_labels_by_segment_by_day.inject({}) do |counts, (segment_name, event_labels_by_day)|
-        event_labels_by_day.each do |day, event_labels|
-          event_labels.each { |event| counts[event] = (counts[event] || 0) + 1 }
-        end
-        counts
-      end.select { |event, count| count > 1 }
+      multiple_segment_events = segments_by_event_label_by_day.
+        collect { |label, days_by_segment| [label, days_by_segment.keys.flatten.uniq] }.
+        select { |label, segments| segments.size > 1 }.
+        collect { |label, segments| label }
 
-      # special case for Hi-Lo birth; see above
-      if template_xml.css('study-snapshot').first['assigned-identifier'] =~ /Hi-Lo/
-        multiply_scheduled_event_and_counts -= [['event:birth', 2]]
+      # appearances of (events which are in multiple segments) in
+      # segment-days that do not have any lone events
+      unshared_multiple_segment_events = multiple_segment_events.inject({}) do |idx, event|
+        idx[event] = segments_by_event_label_by_day[event].reject { |event_segment, days|
+          days.detect { |day|
+            other_events = event_labels_by_segment_by_day[event_segment][day]
+            other_events.detect { |other_event| !multiple_segment_events.include?(other_event) }
+          }
+        }
+        idx
       end
 
-      multiply_scheduled_events = multiply_scheduled_event_and_counts.collect { |e, c| e }
+      # special case for Hi-Lo; see above
+      if template_xml.css('study-snapshot').first['assigned-identifier'] =~ /Hi-Lo/
+        # ignore multiple segment events where one event is in LO and
+        # the other one isn't
+        unshared_multiple_segment_events.reject! { |event, segment_days|
+          epochs = segment_days.keys.collect { |segment_name| segment_name.split(':', 2).first }
+          epochs.size == 2 && epochs.uniq.size == 2 && epochs.include?('LO-Intensity')
+        }
+      end
 
-      problems = event_labels_by_segment_by_day.collect do |segment_name, event_labels_by_day|
-        multiply_scheduled_events.collect do |mult_event|
-          event_labels_by_day.
-            select { |day, events| events.include?(mult_event) }.
-            select { |day, events| (events - multiply_scheduled_events).empty? }.
-            collect  { |day, _| "#{mult_event} occurs without any one-day events on day #{day} of #{segment_name}" }
-        end
-      end.flatten.compact
+      problems = unshared_multiple_segment_events.collect { |event, segment_days|
+        segment_days.collect { |segment_name, days|
+          days.collect { |day| "#{event} appears alone on day #{day} of #{segment_name}" }
+        }
+      }.flatten
 
       problems.should == []
     end
