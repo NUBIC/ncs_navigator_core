@@ -51,7 +51,6 @@
 class NonInterviewReport < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :nir_id, :date_fields => [:date_available, :date_moved]
-  has_paper_trail
 
   belongs_to :contact
   belongs_to :dwelling_unit

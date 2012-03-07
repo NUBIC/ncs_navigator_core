@@ -36,7 +36,6 @@
 class Telephone < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :phone_id, :date_fields => [:phone_start_date, :phone_end_date]
-  has_paper_trail
 
   belongs_to :person
   belongs_to :response_set

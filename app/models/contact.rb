@@ -37,7 +37,6 @@
 class Contact < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :contact_id, :date_fields => [:contact_date]
-  has_paper_trail
 
   TELEPHONE_CONTACT_CODE = 3
   MAILING_CONTACT_CODE   = 2

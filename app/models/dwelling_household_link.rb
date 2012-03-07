@@ -34,7 +34,6 @@
 class DwellingHouseholdLink < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :hh_du_id
-  has_paper_trail
 
   belongs_to :dwelling_unit
   belongs_to :household_unit

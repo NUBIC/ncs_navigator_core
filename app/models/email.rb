@@ -33,7 +33,6 @@
 class Email < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :email_id, :date_fields => [:email_start_date, :email_end_date]
-  has_paper_trail
 
   belongs_to :person
   belongs_to :response_set
