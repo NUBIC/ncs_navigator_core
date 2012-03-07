@@ -71,7 +71,11 @@ module NcsNavigator::Core::Warehouse
         core_model.transaction do
           mdes_model.all(:limit => BLOCK_SIZE, :offset => offset).each do |mdes_record|
             core_record = apply_mdes_record_to_core(core_model, mdes_record)
-            save_core_record(core_record)
+            if core_model.respond_to?(:importer_mode)
+              core_model.importer_mode { save_core_record(core_record) }
+            else
+              save_core_record(core_record)
+            end
           end
         end
         offset += BLOCK_SIZE

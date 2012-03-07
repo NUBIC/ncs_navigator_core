@@ -233,7 +233,7 @@ module NcsNavigator::Core::Warehouse
           Participant, ParticipantConsentSample,
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
-          PpgDetail, PpgStatusHistory,
+          PpgStatusHistory,
           Address, Email, Telephone,
           NonInterviewReport, NoAccessNonInterviewReport, DwellingUnitTypeNonInterviewReport,
           RefusalNonInterviewReport, VacantNonInterviewReport
@@ -242,6 +242,23 @@ module NcsNavigator::Core::Warehouse
             let(:core_model) { core_model }
 
             include_context 'basic model import test'
+          end
+        end
+
+        describe PpgDetail do
+          let(:core_model) { PpgDetail }
+          include_context 'basic model import test'
+
+          before do
+            # TODO: we should really have all the lookup values in the
+            # test database at all times
+            Factory(:ncs_code, :list_name => 'PPG_STATUS_CL1', :local_code => 2)
+          end
+
+          it 'does not create a status history record' do
+            initial_history_count = PpgStatusHistory.count
+            importer.import(core_table)
+            initial_history_count.should == PpgStatusHistory.count
           end
         end
 
