@@ -122,6 +122,31 @@ module NcsNavigator::Core::Warehouse
             Address.count.should == 1
           end
         end
+
+        describe 'auditing' do
+          let(:audit_records) {
+            Version.where(
+              :item_type => Person.to_s,
+              :item_id => core_person.id,
+              :event => 'update'
+              )
+          }
+
+          before do
+            mdes_person.last_name = 'Astaire'
+            save_wh(mdes_person)
+
+            with_versioning { importer.import(:people) }
+          end
+
+          it 'happens' do
+            audit_records.size.should == 1
+          end
+
+          it 'indicates that the record came from the importer' do
+            audit_records.first.whodunnit.should == 'operational_importer'
+          end
+        end
       end
 
       describe 'of a completely new record' do
@@ -138,7 +163,7 @@ module NcsNavigator::Core::Warehouse
         }
 
         before do
-          importer.import(:addresses)
+          with_versioning { importer.import(:addresses) }
         end
 
         it 'creates a new record' do
@@ -155,6 +180,20 @@ module NcsNavigator::Core::Warehouse
 
         it 'creates a new record with correct code associations' do
           Address.first.state.local_code.should == 23
+        end
+
+        describe 'auditing' do
+          let(:audit_records) {
+            Version.where(:item_type => Address.to_s, :item_id => Address.first.id)
+          }
+
+          it 'happens' do
+            audit_records.size.should == 1
+          end
+
+          it 'indicates that the record came from the importer' do
+            audit_records.first.whodunnit.should == 'operational_importer'
+          end
         end
       end
 

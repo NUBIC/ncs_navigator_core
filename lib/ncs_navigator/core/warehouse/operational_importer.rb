@@ -3,6 +3,7 @@ require 'ncs_navigator/core/warehouse'
 require 'ncs_navigator/core/warehouse/operational_enumerator'
 
 require 'forwardable'
+require 'paper_trail'
 
 module NcsNavigator::Core::Warehouse
   ##
@@ -31,21 +32,26 @@ module NcsNavigator::Core::Warehouse
     end
 
     def import(*tables)
-      @progress.start
+      PaperTrail.whodunnit = 'operational_importer'
+      begin
+        @progress.start
 
-      automatic_producers.
-        select { |rp| tables.empty? || tables.include?(rp.name) }.
-        each do |one_to_one_producer|
-          create_simply_mapped_core_records(one_to_one_producer)
+        automatic_producers.
+          select { |rp| tables.empty? || tables.include?(rp.name) }.
+          each do |one_to_one_producer|
+            create_simply_mapped_core_records(one_to_one_producer)
+          end
+
+        if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
+          create_events_and_instruments_and_contact_links
         end
 
-      if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
-        create_events_and_instruments_and_contact_links
+        resolve_failed_associations
+
+        @progress.complete
+      ensure
+        PaperTrail.whodunnit = nil
       end
-
-      resolve_failed_associations
-
-      @progress.complete
     end
 
     def self.automatic_producers
