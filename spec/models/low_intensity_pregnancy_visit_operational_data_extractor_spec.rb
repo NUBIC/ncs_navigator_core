@@ -56,7 +56,7 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
       participant.ppg_status_histories.first.ppg_status.local_code.should == 1
       participant.ppg_status.local_code.should == 1
       participant.due_date.should == Date.parse("2011-12-25")
-
+      participant.ppg_details.first.due_date_2.should == "2011-12-25"
     end
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child during pregnancy" do

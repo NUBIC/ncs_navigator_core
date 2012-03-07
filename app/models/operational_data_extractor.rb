@@ -4,7 +4,6 @@ class OperationalDataExtractor
     [/_PPGFollUp_/,     PpgFollowUpOperationalDataExtractor],
     [/_PrePreg_/,       PrePregnancyOperationalDataExtractor],
     [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
-    [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
     [/_LIPregNotPreg/,  LowIntensityPregnancyVisitOperationalDataExtractor],
     [/_LIPregNotPreg/,  BirthOperationalDataExtractor],
   ]
