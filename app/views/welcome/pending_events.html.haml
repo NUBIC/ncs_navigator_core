@@ -10,11 +10,12 @@
       - @pending_events.each do |event|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
-            - txt = blank_safe(display_participant(event.participant))
             - if event.participant
-              = link_to txt, participant_path(event.participant), :class => "show_link icon_link"
+              = link_to blank_safe(display_participant(event.participant)),
+                        participant_path(event.participant),
+                        :class => "show_link icon_link"
             - else
-              = txt
+              N/A
           %td
             = event
           %td

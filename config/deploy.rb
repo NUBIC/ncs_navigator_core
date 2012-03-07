@@ -99,7 +99,7 @@ end
 # before 'deploy:migrate', 'db:backup'
 
 # after deploying, generate static pages, copy over uploads and results, cleanup old deploys, aggressively set permissions
-after 'deploy:update_code', 'deploy:permissions', 'deploy:cleanup'
+after 'deploy:update_code', 'deploy:permissions' #, 'deploy:cleanup'
 
 # after deploying symlink , copy images to current image config location.
 after 'deploy:symlink', 'config:images', 'deploy:setup_import_directories'
