@@ -23,7 +23,6 @@
 class PpgStatusHistory < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :ppg_history_id
-  has_paper_trail
 
   belongs_to :participant
   belongs_to :response_set

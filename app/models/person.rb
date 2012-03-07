@@ -50,7 +50,6 @@ require 'ncs_navigator/configuration'
 class Person < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob]
-  has_paper_trail
 
   ncs_coded_attribute :psu,                      'PSU_CL1'
   ncs_coded_attribute :prefix,                   'NAME_PREFIX_CL1'

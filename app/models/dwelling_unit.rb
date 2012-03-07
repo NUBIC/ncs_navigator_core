@@ -35,7 +35,6 @@
 class DwellingUnit < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :du_id
-  has_paper_trail
 
   has_many :dwelling_household_links
   has_many :household_units, :through => :dwelling_household_links
