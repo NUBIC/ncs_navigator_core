@@ -4,6 +4,7 @@ class PatientStudyCalendar
 
   LOW_INTENSITY  = "LO-Intensity"
   HIGH_INTENSITY = "HI-Intensity"
+  CHILD_EPOCH    = "Child"
 
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
@@ -14,6 +15,7 @@ class PatientStudyCalendar
   PRE_PREGNANCY         = "Pre-Pregnancy Visit"
   PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
+  CHILD                 = "Child"
 
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
@@ -25,7 +27,8 @@ class PatientStudyCalendar
   HIGH_INTENSITY_PRE_PREGNANCY          = "#{HIGH_INTENSITY}: #{PRE_PREGNANCY}"
   HIGH_INTENSITY_PREGNANCY_VISIT_1      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_1}"
   HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
-  HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW  = "#{HIGH_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
+
+  CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"
 
   ACTIVITY_OCCURRED  = 'occurred'
   ACTIVITY_CANCELED  = 'canceled'

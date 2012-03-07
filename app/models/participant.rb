@@ -797,7 +797,9 @@ class Participant < ActiveRecord::Base
       elsif pregnancy_two?
         PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
       elsif ready_for_birth?
-        PatientStudyCalendar::HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW
+        PatientStudyCalendar::CHILD_CHILD
+      elsif parenthood?
+        PatientStudyCalendar::CHILD_CHILD
       else
         nil
       end

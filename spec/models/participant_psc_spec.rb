@@ -286,7 +286,7 @@ describe Participant do
 
         participant.stub!(:due_date).and_return { 270.days.from_now.to_date }
 
-        participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW
+        participant.next_study_segment.should == PatientStudyCalendar::CHILD_CHILD
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 271.days.from_now.to_date
       end
@@ -301,7 +301,7 @@ describe Participant do
           participant.pregnancy_one_visit!
           # Next event is not PV2
           # participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
-          participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_BIRTH_VISIT_INTERVIEW
+          participant.next_study_segment.should == PatientStudyCalendar::CHILD_CHILD
           participant.next_scheduled_event.event.should == participant.next_study_segment
           participant.next_scheduled_event.date.should == 25.days.from_now.to_date
         end
