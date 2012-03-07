@@ -131,7 +131,7 @@ module NcsNavigator::Core::Warehouse
         fail "No segment found for event type label #{label.inspect}"
       elsif possible_segments.size == 1
         selected_segment = possible_segments.first
-      elsif label == 'birth'
+      elsif segment_selectable_by_hi_v_lo?(possible_segments)
         selected_segment = possible_segments.inject({}) { |h, seg|
           h[seg.parent['name'] == 'LO-Intensity'] = seg; h
         }[psc_participant.participant.low_intensity?]
@@ -171,6 +171,12 @@ module NcsNavigator::Core::Warehouse
         collect { |label_elt| label_elt.xpath('../../..') }.flatten.uniq
     end
     private :select_segments
+
+    def segment_selectable_by_hi_v_lo?(possible_segments)
+      epoch_names = possible_segments.collect { |seg| seg.parent['name'] }
+      # "there are two different epochs and one of them is LO-Intensity"
+      epoch_names.size == 2 && epoch_names.include?('LO-Intensity') && epoch_names.uniq.size == 2
+    end
 
     ###### CONTACT LINK SA HISTORY UPDATES
 
