@@ -204,7 +204,7 @@ module NcsNavigator::Core::Warehouse
         },
         lambda { |link_contact_ids, scheduled_activities|
           last_details = redis.hgetall(sync_key('link_contact', link_contact_ids.last))
-          if last_details['instrument_status'] == 'completed'
+          if last_details['instrument_status'] == 'complete'
             say_subtask_message("marking SA for a completed instrument occurred")
             batch_update_sa_states(psc_participant, scheduled_activities, {
                 'date' => last_details['contact_date'],

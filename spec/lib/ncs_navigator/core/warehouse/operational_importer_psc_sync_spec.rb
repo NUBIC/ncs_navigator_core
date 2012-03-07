@@ -412,7 +412,7 @@ module NcsNavigator::Core::Warehouse
 
           it 'closes the SA when completed' do
             %w(e1_lc1i e1_lc2i e1_lc3i).each do |lc_id|
-              redis.hset("#{ns}:psc_sync:link_contact:#{lc_id}", 'instrument_status', 'completed')
+              redis.hset("#{ns}:psc_sync:link_contact:#{lc_id}", 'instrument_status', 'complete')
             end
 
             psc_participant.should_receive(:update_scheduled_activity_states).with(
