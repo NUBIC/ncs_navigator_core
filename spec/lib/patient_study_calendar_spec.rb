@@ -68,6 +68,20 @@ describe PatientStudyCalendar do
     end
   end
 
+  describe '#connection' do
+    describe 'retries' do
+      before do
+        stub_request(:get, psc_url('system-status')).
+          to_return(:status => 502).times(2).then.
+          to_return(:status => 200)
+      end
+
+      it 'automatically retries on failure' do
+        subject.connection.get('system-status').status.should == 200
+      end
+    end
+  end
+
   describe '#template_snapshot' do
     let(:template_snapshot_url) { psc_url('studies', 'NCS Hi-Lo', 'template', 'current.xml') }
 
