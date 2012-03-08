@@ -13,8 +13,10 @@ module NcsNavigator::Core::Psc
 
     def call(env)
       attempts = 0
+      request_body = env[:body]
       begin
         attempts += 1
+        env[:body] = request_body # restore for retry
         app.call(env).tap do
           fail TryAgain if should_retry?(env)
         end
