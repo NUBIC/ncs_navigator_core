@@ -8,10 +8,12 @@ module NcsNavigator::Core::Psc
 
     let(:app) {
       Class.new do
-        attr_accessor :statuses
+        attr_accessor :statuses, :last_request_body
 
         def call(env)
           env[:status] = statuses.shift or fail 'all statuses used'
+          self.last_request_body = env[:body]
+          env[:body] = "This is the response with #{env[:status]}."
         end
       end.new
     }
@@ -43,6 +45,13 @@ module NcsNavigator::Core::Psc
 
         it 'stops retrying when there is a non-failure response' do
           expect_status_series(status, status, 204)
+        end
+
+        it 'retries with the original request body' do
+          env[:body] = "Some important info"
+          expect_status_series(status, 301)
+
+          app.last_request_body.should == "Some important info"
         end
       end
     end
