@@ -108,7 +108,7 @@ module NcsNavigator::Core::Warehouse
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
-            if core_event.new_record?
+            if should_affect_participant_state?(core_event)
               participant.set_state_for_event_type(core_event.event_type)
             end
 
@@ -129,6 +129,22 @@ module NcsNavigator::Core::Warehouse
       end
     ensure
       drop_state_impacting_ids_table
+    end
+
+    def should_affect_participant_state?(core_event)
+      return false unless core_event.new_record?
+      # low-high conversion
+      if core_event.event_type_code == 32
+        low_high_script_model = wh_config.models_module.const_get(:LowHighScript)
+        interview = low_high_script_model.first(:event_id => core_event.public_id)
+        if interview
+          interview.out_visit == '1'
+        else
+          false
+        end
+      else
+        true
+      end
     end
 
     def sync_key(*key_parts)
@@ -326,12 +342,16 @@ module NcsNavigator::Core::Warehouse
               xcmp, ycmp = [x, y].map { |set|
                 e = set[:event]
                 cls = (set[:link_contacts] || [])
+                dates = [
+                  e.event_start_date, e.event_end_date,
+                  *cls.collect { |l| l.contact.contact_date }
+                ]
+
                 ordinal = Event::TYPE_ORDER.index(e.event_type.to_i) ||
                   fail("No ordinal for event_type #{e.event_type}")
                 [
-                  earliest_date(
-                    e.event_start_date, e.event_end_date,
-                    *cls.collect { |l| l.contact.contact_date }),
+                  # 32 is low-high conversion
+                  e.event_type == '32' ? latest_date(*dates) : earliest_date(*dates),
                   ordinal
                 ]
               }
@@ -343,6 +363,10 @@ module NcsNavigator::Core::Warehouse
 
       def earliest_date(*dates)
         dates.collect { |d| (d =~ /^9/) ? nil : d }.compact.sort.first
+      end
+
+      def latest_date(*dates)
+        dates.collect { |d| (d =~ /^9/) ? nil : d }.compact.sort.last
       end
     end
 
