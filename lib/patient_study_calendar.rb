@@ -87,7 +87,9 @@ class PatientStudyCalendar
   end
 
   def psc_client
-    @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator)
+    @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator) do |builder|
+      builder.use NcsNavigator::Core::Psc::Retry
+    end
   end
 
   def create_authenticator
