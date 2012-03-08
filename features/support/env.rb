@@ -67,6 +67,10 @@ Spork.prefork do
 
   NcsNavigator.configuration =
     NcsNavigator::Configuration.new(File.expand_path('../../../spec/navigator.ini', __FILE__))
+
+  # Enable auditing for integration tests to make sure it doesn't
+  # cause trouble.
+  PaperTrail.enabled = true
 end
 
 Spork.each_run do
