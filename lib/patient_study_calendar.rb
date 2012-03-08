@@ -66,9 +66,11 @@ class PatientStudyCalendar
 
   require 'logger'
   def log
-    logfile = File.open(Rails.root.join('log', 'psc.log'), 'a')
-    logfile.sync = true
-    @@log ||= Logger.new(logfile)
+    @@log ||= begin
+                logfile = File.open(Rails.root.join('log', 'psc.log'), 'a')
+                logfile.sync = true
+                Logger.new(logfile)
+              end
   end
 
   # TODO: put into configuration
@@ -89,6 +91,7 @@ class PatientStudyCalendar
   def psc_client
     @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator) do |builder|
       builder.use NcsNavigator::Core::Psc::Retry
+      builder.use NcsNavigator::Core::Psc::Logger, log
     end
   end
 
