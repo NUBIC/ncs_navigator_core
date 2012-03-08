@@ -28,6 +28,11 @@ module NcsNavigator::Core::Warehouse
         }.flatten
         fail "Could not save #{record} due to validation failures: #{messages.join(', ')}"
       end
+      record
+    end
+
+    def create_warehouse_record_with_defaults(mdes_model, attributes={})
+      save_wh(mdes_model.new(all_missing_attributes(mdes_model).merge(attributes)))
     end
 
     describe 'strategy selection' do
@@ -497,6 +502,28 @@ module NcsNavigator::Core::Warehouse
           :contact => f_c3, :event => f_e4, :instrument => nil)
       }
 
+      let(:f_e5) {
+        create_warehouse_record_via_core(Event, 'f_e5',
+          :participant => fred_p,
+          :event_disp => 4,
+          :event_type => code_for_event_type('Low to High Conversion'),
+          :event_start_date => '2011-01-08',
+          :event_end_date => '2011-04-04')
+      }
+      let(:f_e5_i) {
+        create_warehouse_record_via_core(Instrument, 'f_e5_i',
+          :instrument_type => code_for_instrument_type(
+            'Low Intensity Invitation to High-Intensity Conversion Interview'),
+          :event => f_e5)
+      }
+      let!(:f_e5_i_script) {
+        create_warehouse_record_with_defaults(MdesModule::LowHighScript,
+          :instrument => f_e5_i, :instrument_type => code_for_instrument_type(
+            'Low Intensity Invitation to High-Intensity Conversion Interview'),
+          :event => f_e5, :event_type => code_for_event_type('Low to High Conversion'),
+          :p => fred_p)
+      }
+
       let!(:g_e1) {
         create_warehouse_record_via_core(Event, 'g_e1',
           :participant => ginger_p,
@@ -640,8 +667,8 @@ module NcsNavigator::Core::Warehouse
           end
 
           # TODO: this is a way crappy test
-          it 'orders by the contact date followed by the event start date followed by the event end date followed by the type' do
-            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e3 f_e1 f_e4)
+          it 'orders by the earliest set date date followed by the type, except for lo-hi conversion which goes by last date' do
+            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e3 f_e1 f_e4 f_e5)
           end
 
           it 'includes events without link_contact' do
@@ -660,34 +687,48 @@ module NcsNavigator::Core::Warehouse
             %w(pending registered in_pregnancy_probability_group consented_low_intensity following_low_intensity following_low_intensity)
           }
 
-          before do
-            do_import
+          context do
+            before do
+              do_import
+            end
+
+            it 'associates person with participant' do
+              person = Person.find_by_person_id('fred_pers')
+              person.should_not be_nil
+              participant.should_not be_nil
+              participant.participant_person_links.should_not be_empty
+              participant.participant_person_links.first.person.should == person
+              participant.person.should_not be_nil
+              participant.person.should == person
+            end
+
+            it 'is in the correct order' do
+              target_states.should == expected_states
+            end
+
+            it 'does not duplicate already-imported events' do
+              do_import # twice
+              target_states.should == expected_states
+            end
           end
 
-          it 'associates person with participant' do
-            person = Person.find_by_person_id('fred_pers')
-            person.should_not be_nil
-            participant.should_not be_nil
-            participant.participant_person_links.should_not be_empty
-            participant.participant_person_links.first.person.should == person
-            participant.person.should_not be_nil
-            participant.person.should == person
-          end
+          # without import in before
+          context do
+            it 'imports the low-high conversion state only if the low-high conversion was completed' do
+              f_e5_i_script.out_visit = '1'
+              f_e5_i_script.save
 
-          it 'is in the correct order' do
-            target_states.should == expected_states
-          end
+              do_import
 
-          it 'does not duplicate already-imported events' do
-            do_import # twice
-            target_states.should == expected_states
+              target_states.should == expected_states + ['moved_to_high_intensity_arm']
+            end
           end
         end
 
         it 'saves the events' do
           do_import
           Event.joins(:participant).where('participants.p_id' => 'fred_p').
-            collect(&:event_id).sort.should == %w(f_e1 f_e2 f_e3 f_e4)
+            collect(&:event_id).sort.should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
         end
 
         it 'saves the contact_links' do
@@ -698,7 +739,8 @@ module NcsNavigator::Core::Warehouse
 
         it 'saves the instruments' do
           do_import
-          MdesModule::Instrument.all.collect(&:instrument_id).sort.should == %w(f_e2_i g_e1_i)
+          MdesModule::Instrument.all.collect(&:instrument_id).sort.
+            should == %w(f_e2_i f_e5_i g_e1_i)
         end
 
         describe 'PSC sync records' do
@@ -725,7 +767,7 @@ module NcsNavigator::Core::Warehouse
 
           it "stores a list of events that need to be sync'd for each participant" do
             redis.smembers("#{ns}:psc_sync:p:fred_p:events").
-              should == %w(f_e1 f_e2 f_e3 f_e4)
+              should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
           end
 
           it "stores a set of link contacts without instruments that need to be sync'd for each event for each p" do
