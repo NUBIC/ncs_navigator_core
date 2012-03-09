@@ -24,14 +24,16 @@
     = blank_safe(@person.to_s)
     is not a participant. No instruments exist for non participants.
 - else
-  - if @event_activities
+  - unless @event_activities.blank?
     - @event_activities.each do |activity|
       - no_consent = false if activity.include?("Consent")
       = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link,
                                           :initial_instrument_for_contact => initial_instrument_for_contact
   - else
     %b
-      event_activities is nil
+      There are no scheduled Activities associated with this Event.
+    .instructional_note
+      This is probably due to a disconnect between this Event and the scheduled for this Participant in PSC.
     = render "consent_or_empty", :contact_link => @contact_link
 
 - if no_consent
