@@ -380,29 +380,81 @@ describe PatientStudyCalendar do
 
     describe "#activities_for_scheduled_segment" do
 
-      let(:date) { "2012-02-06" }
-
-      before(:each) do
-        @person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "newly_scheduled_event_participant")
-        @participant = Factory(:participant, :p_id => "newly_scheduled_event_participant")
-        @participant.person = @person
-        @participant.save!
-
-        @event = Factory(:event, :participant => @participant,
-                         :event_start_date => date, :event_end_date => nil,
-                         :scheduled_study_segment_identifier => "a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
-      end
-
       it "returns an array of ScheduledActivities for the given event" do
+
+        person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14',
+                         :person_id => "newly_scheduled_event_participant")
+        participant = Factory(:participant, :p_id => "newly_scheduled_event_participant")
+        participant.person = person
+        participant.save!
+
+        event = Factory(:event, :participant => participant,
+                         :event_start_date => "2012-02-06", :event_end_date => nil,
+                         :scheduled_study_segment_identifier => "a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
+
         VCR.use_cassette('psc/activities_for_newly_scheduled_event') do
-          activities = subject.activities_for_scheduled_segment(@participant, @event.scheduled_study_segment_identifier, @event.event_start_date)
+          activities = subject.activities_for_scheduled_segment(participant, event.scheduled_study_segment_identifier)
           activities.size.should == 2
           activities.each do |a|
-            a.ideal_date.should == @event.event_start_date.to_s
+            a.ideal_date.should == event.event_start_date.to_s
           end
+          activities.first.labels.should_not eql(activities.last.labels)
         end
       end
 
+    end
+  end
+
+  context "getting the scheduled activities for the birth/child segment" do
+
+    before(:each) do
+      @person = Factory(:person, :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
+                       :person_id => "child_segment_participant")
+      @participant = Factory(:participant, :p_id => "child_segment_participant")
+      @participant.person = @person
+      @participant.save!
+
+      @event = Factory(:event, :participant => @participant,
+                       :event_start_date => "2012-08-09", :event_end_date => nil,
+                       :scheduled_study_segment_identifier => "f699ac2e-9784-48b7-bfc6-229e54d233b7")
+    end
+
+    describe "#activities_for_scheduled_segment" do
+
+      it "returns all ScheduledActivities" do
+
+        VCR.use_cassette('psc/activities_for_child_segment') do
+          activities = subject.activities_for_scheduled_segment(@participant, @event.scheduled_study_segment_identifier)
+          activities.size.should == 16
+          event_labels = activities.map(&:labels).collect{ |l| Event.parse_label(l) }
+          ["birth", "3_month", "6_month", "9_month", "12_month"].each { |l| event_labels.should include(l) }
+          event_dates = activities.map(&:ideal_date).uniq
+          ["2012-08-09", "2012-11-08", "2013-02-07", "2013-05-09", "2013-08-09", "2014-02-07", "2014-08-08"].each do |dt|
+            event_dates.should include(dt)
+          end
+        end
+
+      end
+    end
+
+    describe "#unique_label_ideal_date_pairs_for_scheduled_segment" do
+
+      it "returns all label ideal date pairs" do
+        VCR.use_cassette('psc/activities_for_child_segment') do
+          label_ideal_date_pairs = subject.unique_label_ideal_date_pairs_for_scheduled_segment(@participant, @event.scheduled_study_segment_identifier)
+          label_ideal_date_pairs.size.should == 7
+          [ ["birth", "2012-08-09"],
+            ["3_month", "2012-11-08"],
+            ["6_month", "2013-02-07"],
+            ["9_month", "2013-05-09"],
+            ["12_month", "2013-08-09"],
+            ["18_month", "2014-02-07"],
+            ["24_month", "2014-08-08"]
+          ].each do |l_dt|
+            label_ideal_date_pairs.should include(l_dt)
+          end
+        end
+      end
     end
 
   end

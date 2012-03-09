@@ -432,7 +432,7 @@ describe Event do
         Event.schedule_and_create_placeholder(psc, part).should be_nil
       end
 
-      it "creates as many placeholder events as activities per scheduled segment" do
+      it "creates events as for ppg followup activities" do
 
         PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
@@ -454,6 +454,56 @@ describe Event do
           end
         end
       end
+    end
+  end
+
+  context "child events" do
+    before(:each) do
+      create_missing_in_error_ncs_codes(Event)
+      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+    end
+    describe "#schedule_and_create_placeholder" do
+
+      let(:scheduled_study_segment_identifier) { "f699ac2e-9784-48b7-bfc6-229e54d233b7" }
+      let(:person) {Factory(:person, :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
+                            :person_id => "placeholder_child_participant")}
+      let(:participant) { Factory(:participant, :p_id => "placeholder_child_participant") }
+      let(:xml) { %Q(<?xml version="1.0" encoding="UTF-8"?><scheduled-study-segment id="a5fd83f9-e2ca-4481-8ce3-70406dfbcddc"></scheduled-study-segment>) }
+      let(:response_body) { Nokogiri::XML(xml) }
+
+      before(:each) do
+        @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
+
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Birth", :local_code => 18)
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "3 Month", :local_code => 23)
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "6 Month", :local_code => 24)
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "9 Month", :local_code => 26)
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "12 Month", :local_code => 27)
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "18 Month", :local_code => 30)
+        Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "24 Month", :local_code => 31)
+      end
+
+      let(:psc) { PatientStudyCalendar.new(@user) }
+
+      it "creates events for birth/child activities" do
+
+        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return(scheduled_study_segment_identifier)
+        psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
+              File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
+
+        VCR.use_cassette('psc/schedule_and_create_child_placeholder') do
+
+          participant.person = person
+          participant.save!
+
+          participant.events.should be_empty
+          Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
+          participant.events.reload
+          participant.events.should_not be_empty
+          participant.events.size.should == 7
+        end
+      end
+
 
     end
 
