@@ -1827,50 +1827,60 @@ input[type="submit"] {
 }
 
 /* line 88, ../../../stylesheets/partials/_links.scss */
+.toggle_show_link, .toggle_show_link:hover {
+  background: url(../../assets/bullet_arrow_up.png) 0 2px no-repeat !important;
+}
+
+/* line 92, ../../../stylesheets/partials/_links.scss */
+.toggle_hide_link, .toggle_hide_link:hover {
+  background: url(../../assets/bullet_arrow_down.png) 0 2px no-repeat !important;
+}
+
+/* line 96, ../../../stylesheets/partials/_links.scss */
 .fix_link, .fix_link:hover {
   background: url(../../assets/wrench_orange.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 93, ../../../stylesheets/partials/_links.scss */
+/* line 101, ../../../stylesheets/partials/_links.scss */
 .back_link, .back_link:hover {
   background: url(../../assets/arrow_left.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 98, ../../../stylesheets/partials/_links.scss */
+/* line 106, ../../../stylesheets/partials/_links.scss */
 .scheduled_link, .scheduled_link:hover {
   background: url(../../assets/clock.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 104, ../../../stylesheets/partials/_links.scss */
+/* line 112, ../../../stylesheets/partials/_links.scss */
 .version_link, .version_link:hover,
 .reschedule_link, .reschedule_link:hover {
   background: url(../../assets/clock_red.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 109, ../../../stylesheets/partials/_links.scss */
+/* line 117, ../../../stylesheets/partials/_links.scss */
 .occurred_link, .occurred_link:hover {
   background: url(../../assets/accept.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 114, ../../../stylesheets/partials/_links.scss */
+/* line 122, ../../../stylesheets/partials/_links.scss */
 .canceled_link, .canceled_link:hover {
   background: url(../../assets/cancel.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 119, ../../../stylesheets/partials/_links.scss */
+/* line 127, ../../../stylesheets/partials/_links.scss */
 .external_link, .external_link:hover {
   background: url(../../assets/external_link_icon.png) 0 2px no-repeat;
   background-position: right top;
   padding: 2px 20px 2px 0px !important;
 }
 
-/* line 126, ../../../stylesheets/partials/_links.scss */
+/* line 134, ../../../stylesheets/partials/_links.scss */
 .disposition_icon, .disposition_icon:hover,
 .help_icon, .help_icon:hover {
   padding: 2px 2px 2px 20px;
@@ -1878,7 +1888,7 @@ input[type="submit"] {
   background: url(../../assets/help.png) 0 2px no-repeat !important;
 }
 
-/* line 133, ../../../stylesheets/partials/_links.scss */
+/* line 141, ../../../stylesheets/partials/_links.scss */
 .warning_icon, .warning_icon:hover,
 .notification_icon, .notification_icon:hover {
   padding: 2px 2px 2px 20px;
@@ -2450,6 +2460,11 @@ body.ncs #footer .app_version {
 /* line 13, ../../../stylesheets/partials/_contact_links.scss */
 .contact_link .no_records {
   margin-bottom: 1em;
+}
+
+/* line 18, ../../../stylesheets/partials/_contact_links.scss */
+#event_end_date_fields {
+  display: none;
 }
 
 /* line 2, ../../../stylesheets/partials/_contacts.scss */
