@@ -117,6 +117,10 @@ class Participant < ActiveRecord::Base
       transition [:in_pregnancy_probability_group, :pregnant_low, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
     end
 
+    event :move_back_to_low_intensity do
+      transition [:moved_to_high_intensity_arm] => :following_low_intensity
+    end
+
   end
 
   state_machine :high_intensity_state, :initial => :in_high_intensity_arm do
@@ -599,6 +603,7 @@ class Participant < ActiveRecord::Base
     self.high_intensity = val
     self.save!
 
+    set_switch_arm_state(val)
     close_pending_events
   end
 
@@ -901,6 +906,15 @@ class Participant < ActiveRecord::Base
       pending_events.each do |e|
         end_date = e.event_start_date.blank? ? Date.today : e.event_start_date
         e.update_attribute(:event_end_date, end_date)
+      end
+    end
+
+    def set_switch_arm_state(hi_intensity)
+      case hi_intensity
+      when true
+        enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      when false
+        move_back_to_low_intensity! if can_move_back_to_low_intensity?
       end
     end
 end
