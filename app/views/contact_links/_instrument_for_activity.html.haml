@@ -1,5 +1,4 @@
-- if Instrument.collection?(activity.labels) && NcsNavigatorCore.with_specimens == "false"
-- else
+- if can_show_activity_link?(activity)
   - if survey = Survey.most_recent_for_access_code(Instrument.surveyor_access_code(activity.labels))
     - if contact_link.contact.instrument_survey_titles.include?(survey.title)
       .known_instrument
