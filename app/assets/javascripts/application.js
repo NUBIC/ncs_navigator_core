@@ -6,4 +6,5 @@
 //= require_self
 //= require 'surveyor/jquery.surveyor.new'
 //= require consent
+//= require nested_attributes
 //= require_tree .

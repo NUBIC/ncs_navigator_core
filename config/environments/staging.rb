@@ -37,10 +37,10 @@ NcsNavigatorCore::Application.configure do
   config.assets.compress = true
 
   # Don't fallback to assets pipeline
-  config.assets.compile = false
+  config.assets.compile = true
 
   # Generate digests for assets URLs
-  config.assets.digest = true 
+  config.assets.digest = true
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -58,20 +58,18 @@ NcsNavigatorCore::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-    config.after_initialize do
-    Aker.configure do
-      api_mode :cas_proxy
-      static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
-      authorities :cas, static
-      central '/etc/nubic/ncs/aker-staging.yml'
-    end
+  config.aker do
+    api_mode :cas_proxy
+    static = Aker::Authorities::Static.from_file("/etc/nubic/ncs/staff_portal_users.yml")
+    authorities :cas, static
+    central '/etc/nubic/ncs/aker-staging.yml'
   end
-  
+
   config.middleware.use ExceptionNotifier,
     :email_prefix => "[NCS Navigator Core] ",
     :sender_address => %{"Paul Friedman" <p-friedman@northwestern.edu>},
     :exception_recipients => %w{p-friedman@northwestern.edu r-sutphin@northwestern.edu}
-    
+
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = { :address => "ns.northwestern.edu", :port => 25, :domain => "northwestern.edu" }
 
