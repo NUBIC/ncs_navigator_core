@@ -255,9 +255,9 @@ class PatientStudyCalendar
   # Event.scheduled_study_segment_identifier
   # pending events.
   # @param [Participant]
-  # @param [Event]
+  # @param [String] - segment id
   # @return [Array<ScheduledActivity>]
-  def activities_for_scheduled_segment(participant, scheduled_study_segment_identifier, event_start_date)
+  def activities_for_scheduled_segment(participant, scheduled_study_segment_identifier)
     result = []
 
     # get name of study segment matching event scheduled_study_segment_identifier
@@ -272,15 +272,30 @@ class PatientStudyCalendar
       end
     end
 
-    # filter participant activities whose segment name and ideal date match the event
+    # filter participant activities whose segment name matches the event
     if subject_schedules && study_segment_name
       build_scheduled_activities(participant_activities(subject_schedules)).each do |a|
-        if (a.study_segment == study_segment_name) && (a.ideal_date.to_s == event_start_date.to_s)
+        if (a.study_segment == study_segment_name)
           result << a
         end
       end
     end
     result
+  end
+
+  ##
+  # Get the unique ideal_date label pairs from a segment that
+  # match the given Event.scheduled_study_segment_identifier
+  # pending events.
+  # @param [Participant]
+  # @param [String] - segment id
+  # @return [Array<Array>]
+  def unique_label_ideal_date_pairs_for_scheduled_segment(participant, scheduled_study_segment_identifier)
+    label_ideal_date_pairs = []
+    activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
+      label_ideal_date_pairs << [Event.parse_label(a.labels), a.ideal_date]
+    end
+    label_ideal_date_pairs.uniq
   end
 
   ##

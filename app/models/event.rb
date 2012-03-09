@@ -229,16 +229,10 @@ class Event < ActiveRecord::Base
     resp = psc.schedule_next_segment(participant, date)
 
     if resp && resp.success?
-
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
 
-      label_ideal_date_pairs = []
-      psc.activities_for_scheduled_segment(participant, study_segment_identifier, date).each do |a|
-        label_ideal_date_pairs << [Event.parse_label(a.labels), date]
-      end
-
-      label_ideal_date_pairs.uniq.each do |lbl, ideal_date|
-        Event.create_placeholder_record(participant, ideal_date, NcsCode.find_event_by_lbl(lbl).local_code, study_segment_identifier)
+      psc.unique_label_ideal_date_pairs_for_scheduled_segment(participant, study_segment_identifier).each do |lbl, dt|
+        Event.create_placeholder_record(participant, dt, NcsCode.find_event_by_lbl(lbl).local_code, study_segment_identifier)
       end
     end
     resp
