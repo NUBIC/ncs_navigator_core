@@ -867,6 +867,8 @@ describe Participant do
       participant.person = person
       participant.save!
       participant.should be_low_intensity
+      participant.register!
+      participant.assign_to_pregnancy_probability_group!
 
       Factory(:event, :participant => participant, :event_start_date => date, :event_end_date => date, :event_type => preg_screen)
       @lo_i_quex = Factory(:event, :participant => participant, :event_start_date => date, :event_end_date => nil, :event_type => lo_i_quex)
@@ -878,12 +880,20 @@ describe Participant do
       it "moves the participant to high intensity" do
         participant.switch_arm
         participant.should be_high_intensity
+        participant.should be_moved_to_high_intensity_arm
       end
 
       it "closes all pending events" do
         participant.pending_events.should == [@lo_i_quex, @informed_consent]
         participant.switch_arm
         participant.pending_events.should == []
+      end
+
+      it "puts the participant into following_low_intensity when switching from high to low" do
+        participant.switch_arm
+        participant.should be_high_intensity
+        participant.switch_arm
+        participant.should be_following_low_intensity
       end
 
     end
