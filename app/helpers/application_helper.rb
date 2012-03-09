@@ -41,6 +41,15 @@ module ApplicationHelper
     participant.person ? display_person(participant.person) : "#{participant.public_id}"
   end
 
+  # Do not show collection activities when SC is not configured to run them
+  def can_show_activity_link?(activity)
+    if Instrument.collection?(activity.labels) && NcsNavigatorCore.with_specimens == "false"
+      false
+    else
+      true
+    end
+  end
+
   ##
   # Takes MDES formatted phone number (XXXYYYZZZZ)
   # and parses into area code, exchange, and line number
