@@ -108,5 +108,15 @@ $(document).ready(function() {
   $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
   $("#tabs").tabs();
+  
+  $("#event_show_close_fields a").click(function() {
+    $('#event_end_date_fields').toggle();
+    $('#event_show_close_fields').toggle();
+  });
+  
+  $("#event_end_date_fields a").click(function() {
+    $('#event_show_close_fields').toggle();
+    $('#event_end_date_fields').toggle();
+  });
 });
 
