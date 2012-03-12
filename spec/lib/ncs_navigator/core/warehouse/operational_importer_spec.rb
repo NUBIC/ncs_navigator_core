@@ -269,7 +269,7 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      describe 'of core model' do
+      describe 'of core model', :slow do
         # with no special data needs
         [
           ListingUnit, DwellingUnit, DwellingHouseholdLink, HouseholdUnit, HouseholdPersonLink,
@@ -401,7 +401,7 @@ module NcsNavigator::Core::Warehouse
       code
     end
 
-    describe 'Event, LinkContact, and Instrument' do
+    describe 'Event, LinkContact, and Instrument', :slow do
       before do
         Event.count.should == 0
 
