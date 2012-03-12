@@ -198,23 +198,25 @@ class PatientStudyCalendar
   end
 
   ##
-  # Gets information about all activities for a participant
+  # Gets information about all scheduled activities for a participant
   # (cf. ScheduledActivity Struct).
   # Intended to find and re-schedule activities
   # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
   def scheduled_activities(participant)
-    build_scheduled_activities(participant_activities(schedules(participant)))
+    build_scheduled_activities(participant_activities(schedules(participant)), [ACTIVITY_SCHEDULED])
   end
 
-  def build_scheduled_activities(activities)
+  def build_scheduled_activities(activities, states = nil)
     scheduled_activities = []
     activities.each do |activity|
-      scheduled_activities << ScheduledActivity.new(
-        activity['study_segment'].to_s, activity['id'],
-        activity['current_state']['name'], activity['ideal_date'], activity['current_state']['date'],
-        activity['activity']['name'].to_s.strip, activity['activity']['type'],
-        activity['labels'])
+      if states.nil? or states.include?(activity['current_state']['name'])
+        scheduled_activities << ScheduledActivity.new(
+          activity['study_segment'].to_s, activity['id'],
+          activity['current_state']['name'], activity['ideal_date'], activity['current_state']['date'],
+          activity['activity']['name'].to_s.strip, activity['activity']['type'],
+          activity['labels'])
+      end
     end
     scheduled_activities
   end

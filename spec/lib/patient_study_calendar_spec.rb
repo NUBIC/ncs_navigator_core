@@ -316,7 +316,7 @@ describe PatientStudyCalendar do
 
         subject_schedule_status = subject.scheduled_activities(participant)
         subject_schedule_status.should_not be_nil
-        subject_schedule_status.size.should == 3
+        subject_schedule_status.size.should == 2
 
         sss = subject_schedule_status.first
         sss.date.should == "2011-11-14"
@@ -326,10 +326,11 @@ describe PatientStudyCalendar do
         sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
 
         sss = subject_schedule_status.last
-        sss.date.should == "2011-05-07"
-        sss.study_segment.should == "LO-Intensity: Pregnancy Screener"
-        sss.activity_name.should == "Pregnancy Screener Interview"
-        sss.current_state.should == PatientStudyCalendar::ACTIVITY_OCCURRED
+        sss.date.should == "2011-11-14"
+        sss.study_segment.should == "LO-Intensity: PPG Follow-Up"
+        sss.activity_name.should == "Pregnancy Probability Group Follow-Up SAQ"
+        sss.activity_id.should == "bfb76131-58cd-4db5-b0df-17b82fd2de17"
+        sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
       end
     end
 
@@ -487,6 +488,26 @@ describe PatientStudyCalendar do
 
       end
 
+      describe ".scheduled_activities" do
+        it "returns only scheduled activities" do
+          VCR.use_cassette('psc/janedoe_canceled_activities') do
+            Factory(:ppg_detail, :participant => @participant, :ppg_first => status2)
+            Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2a)
+
+            subject_schedule_status = subject.scheduled_activities(@participant)
+            subject_schedule_status.size.should == 1
+
+            sss = subject_schedule_status[0]
+            sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
+            sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            sss.ideal_date.should == date
+            sss.activity_name.should == "Low-Intensity Interview"
+            sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+          end
+
+        end
+      end
+
       describe "#activities_for_pending_events" do
 
         it "returns the instrument labels from psc for the given participant's pending events" do
@@ -497,7 +518,7 @@ describe PatientStudyCalendar do
             @participant.pending_events.should == [@lo_i_quex, @informed_consent]
 
             subject_schedule_status = subject.scheduled_activities(@participant)
-            subject_schedule_status.size.should == 3
+            subject_schedule_status.size.should == 2
 
             activities_for_pending_events = subject.activities_for_pending_events(@participant)
             activities_for_pending_events.size.should == 2
@@ -513,12 +534,6 @@ describe PatientStudyCalendar do
             sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
-
-            sss = subject_schedule_status[2]
-            sss.study_segment.should == "LO-Intensity: Pregnancy Screener"
-            sss.labels.should == "event:pregnancy_screener instrument:ins_que_pregscreen_int_hili_p2_v2.0"
-            sss.ideal_date.should == date
-            sss.activity_name.should == "Pregnancy Screener Interview"
 
             activities_for_pending_events[0].should == subject_schedule_status[0]
             activities_for_pending_events[1].should == subject_schedule_status[1]
