@@ -1,5 +1,3 @@
-- seen_activities = Array.new
-
 .schedule
   - if @scheduled_activities_grouped_by_date
     - @scheduled_activities_grouped_by_date.keys.sort.each do |date|
@@ -8,11 +6,9 @@
           = date
         .activities
           - @scheduled_activities_grouped_by_date[date].each do |activity|
-            - unless seen_activities.include?(activity)
-              - seen_activities << activity
-              .activity
-                %span{ :title => activity.current_state, :class => "#{activity.current_state}_link" }
-                  &nbsp;
-                = link_to "#{activity.activity_name}", psc_assignment_path(activity.activity_id), :class => "icon_link external_link"
+            .activity
+              %span{ :title => activity.current_state, :class => "#{activity.current_state}_link" }
+                &nbsp;
+              = link_to "#{activity.activity_name}", psc_assignment_path(activity.activity_id), :class => "icon_link external_link"
   - else
     Subject does not yet have a schedule
