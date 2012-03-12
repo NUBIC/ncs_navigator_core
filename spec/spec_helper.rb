@@ -136,6 +136,34 @@ Spork.prefork do
     end
   end
 
+  def create_all_event_types
+
+    [
+      [7,	"Pregnancy Probability"],
+      [9,	"Pregnancy Screening - Household Enumeration Group"],
+      [10,	"Informed Consent"],
+      [11,	"Pre-Pregnancy Visit"],
+      [13,	"Pregnancy Visit 1"],
+      [15,	"Pregnancy Visit 2"],
+      [18,	"Birth"],
+      [19,	"Father"],
+      [21,	"Validation"],
+      [23,	"3 Month"],
+      [24,	"6 Month"],
+      [26,	"9 Month"],
+      [27,	"12 Month"],
+      [29,	"Pregnancy Screener"],
+      [30,	"18 Month"],
+      [31,	"24 Month"],
+      [32,	"Low to High Conversion"],
+      [33,	"Low Intensity Data Collection"],
+      [-5,	"Other"]
+    ].each do |lc, txt|
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => txt, :local_code => lc)
+    end
+
+  end
+
   def load_survey_string(s)
     Surveyor::Parser.new.parse(s)
   end

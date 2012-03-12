@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  
+
   factory :participant do
     psu                       { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
     p_type                    { |a| a.association(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Age-eligible woman", :local_code => 1) }
@@ -20,92 +20,92 @@ FactoryGirl.define do
     low_intensity_state       "pending"
     high_intensity_state      "in_high_intensity_arm"
     p_id                      nil
-    
+
     trait :in_high_intensity_arm do
       high_intensity          true
       low_intensity_state     "moved_to_high_intensity_arm"
     end
-    
+
     ## Pregnancy Probability Groups
-    
+
     trait :in_ppg1 do
       ppg_status_histories { |ppg| [ppg.association(:ppg1_status)] }
     end
-    
+
     trait :in_ppg2 do
       ppg_status_histories { |ppg| [ppg.association(:ppg2_status)] }
     end
-    
+
     trait :in_ppg3 do
       ppg_status_histories { |ppg| [ppg.association(:ppg3_status)] }
     end
-    
+
     trait :in_ppg4 do
       ppg_status_histories { |ppg| [ppg.association(:ppg4_status)] }
     end
-    
+
     trait :in_ppg5 do
       ppg_status_histories { |ppg| [ppg.association(:ppg5_status)] }
     end
-    
+
     trait :in_ppg6 do
       ppg_status_histories { |ppg| [ppg.association(:ppg6_status)] }
     end
-    
+
     ## Low Intesity States
-    
+
     trait :registered do
       low_intensity_state "registered"
     end
-    
+
     trait :in_pregnancy_probability_group do
       low_intensity_state "in_pregnancy_probability_group"
     end
-    
+
     trait :consented_low_intensity do
       low_intensity_state "consented_low_intensity"
     end
-    
+
     trait :pregnant_low do
       low_intensity_state "pregnant_low"
     end
-    
+
     trait :moved_to_high_intensity_arm do
       low_intensity_state "moved_to_high_intensity_arm"
     end
-    
+
     trait :birth_low do
       low_intensity_state "birth_low"
     end
-    
+
     ## High Intensity States
-    
+
     trait :converted_high_intensity do
       high_intensity        true
       low_intensity_state   "moved_to_high_intensity_arm"
       high_intensity_state  "converted_high_intensity"
     end
-    
+
     trait :pre_pregnancy do
       high_intensity        true
       low_intensity_state   "moved_to_high_intensity_arm"
       high_intensity_state  "pre_pregnancy"
     end
-    
+
     trait :pregnancy_one do
       high_intensity        true
       low_intensity_state   "moved_to_high_intensity_arm"
       high_intensity_state  "pregnancy_one"
     end
-    
+
     trait :pregnancy_two do
       high_intensity        true
       low_intensity_state   "moved_to_high_intensity_arm"
       high_intensity_state  "pregnancy_two"
     end
-    
+
     ## Low Intensity Participants
-    
+
     factory :low_intensity_ppg1_participant, :traits => [:in_ppg1, :in_pregnancy_probability_group]
     factory :low_intensity_ppg2_participant, :traits => [:in_ppg2, :in_pregnancy_probability_group]
     factory :low_intensity_ppg3_participant, :traits => [:in_ppg3, :in_pregnancy_probability_group]
@@ -114,15 +114,17 @@ FactoryGirl.define do
     factory :low_intensity_ppg6_participant, :traits => [:in_ppg6, :in_pregnancy_probability_group]
 
     ## High Intensity Participants
-    
+
     factory :high_intensity_ppg1_participant, :traits => [:in_high_intensity_arm, :in_ppg1]
     factory :high_intensity_ppg2_participant, :traits => [:in_high_intensity_arm, :in_ppg2]
     factory :high_intensity_ppg3_participant, :traits => [:in_high_intensity_arm, :in_ppg3]
     factory :high_intensity_ppg4_participant, :traits => [:in_high_intensity_arm, :in_ppg4]
     factory :high_intensity_ppg5_participant, :traits => [:in_high_intensity_arm, :in_ppg5]
     factory :high_intensity_ppg6_participant, :traits => [:in_high_intensity_arm, :in_ppg6]
+
+    factory :high_intensity_pregnancy_one_participant, :traits => [:in_high_intensity_arm, :in_ppg1, :pregnancy_one]
   end
-  
+
 end
 
 Factory.define :participant_person_link do |link|
