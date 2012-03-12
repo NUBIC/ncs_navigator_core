@@ -206,8 +206,11 @@ class ParticipantsController < ApplicationController
 
       resp = Event.schedule_and_create_placeholder(psc, @participant)
       if resp && resp.success?
-        @notice = "Successfully added #{@participant.person} to High Intensity Arm"
-        @notice = "Successfully added #{@participant.person} to Low Intensity Arm" if @participant.high_intensity
+        if @participant.high_intensity
+          @notice = "Successfully added #{@participant.person} to High Intensity Arm"
+        else
+          @notice = "Successfully added #{@participant.person} to Low Intensity Arm"
+        end
       else
         @notice = "Switched arm but could not schedule next event [#{@participant.next_study_segment.inspect}]"
       end
