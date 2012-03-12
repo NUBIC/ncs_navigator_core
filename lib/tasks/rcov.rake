@@ -3,20 +3,20 @@ begin
   require 'rspec/core/rake_task'
 
   namespace :rcov do
-    
+
     rcov_options = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/ --aggregate coverage/coverage.data}
 
-    
+
     Cucumber::Rake::Task.new(:cucumber_run) do |t|
       t.cucumber_opts = "--format pretty"
       t.rcov = true
       t.rcov_opts = rcov_options
       t.rcov_opts << %[-o "coverage"]
     end
-  
+
     RSpec::Core::RakeTask.new(:rspec_run) do |t|
-      t.spec_opts = ["--color --format nested"]
-      t.pattern = FileList['spec/lib/*_spec.rb','spec/lib/aker/authority/*_spec.rb','spec/models/*_spec.rb','spec/helpers/*_spec.rb','spec/controllers/*_spec.rb']
+      t.spec_opts = ["--color --format nested -t ~slow"]
+      t.pattern = FileList['spec/**/*_spec.rb']
       t.rcov = true
       t.rcov_opts = rcov_options
     end
@@ -33,7 +33,7 @@ begin
       puts "~~~ running rspecs"
       Rake::Task["rcov:rspec_run"].invoke
     end
-  
+
     desc "Run only rspecs"
     task :rspec do |t|
       Rake::Task["rcov:clean"].invoke
