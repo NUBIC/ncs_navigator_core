@@ -3,6 +3,7 @@ require 'spec_helper'
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::Psc
+  RESULT_VALUE = "Result value of call"
   describe Retry do
     subject { Retry.new(app, 4) }
 
@@ -14,6 +15,7 @@ module NcsNavigator::Core::Psc
           env[:status] = statuses.shift or fail 'all statuses used'
           self.last_request_body = env[:body]
           env[:body] = "This is the response with #{env[:status]}."
+          return RESULT_VALUE
         end
       end.new
     }
@@ -34,6 +36,11 @@ module NcsNavigator::Core::Psc
         it 'does not retry' do
           expect_status_series(status)
         end
+
+        it 'returns the result value from app.call' do
+          app.statuses = [status]
+          subject.call(env).should eql(RESULT_VALUE)
+        end
       end
     end
 
@@ -52,6 +59,11 @@ module NcsNavigator::Core::Psc
           expect_status_series(status, 301)
 
           app.last_request_body.should == "Some important info"
+        end
+
+        it 'returns the result value from app.call' do
+          app.statuses = [status, 200]
+          subject.call(env).should eql(RESULT_VALUE)
         end
       end
     end
