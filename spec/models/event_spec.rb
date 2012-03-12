@@ -419,8 +419,7 @@ describe Event do
 
       before(:each) do
         @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
-        @consent = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Informed Consent", :local_code => 10)
-        @ppg_fu = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Low Intensity Data Collection", :local_code => 33)
+        create_all_event_types
       end
 
       let(:psc) { PatientStudyCalendar.new(@user) }
@@ -454,6 +453,41 @@ describe Event do
           end
         end
       end
+
+      it "cancels events for phase2 activities if configured to do so" do
+        NcsNavigatorCore.with_specimens?.should be_false
+
+        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("f6abc107-a24e-4169-a260-d407fe816910")
+        psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
+              File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
+
+        part = Factory(:high_intensity_pregnancy_one_participant)
+        part.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+
+        phase2person = Factory(:person, :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
+                              :person_id => "placeholder_phase2_participant")
+
+        VCR.use_cassette('psc/schedule_and_create_phase2_placeholder') do
+
+          part.person = phase2person
+          part.save!
+
+          Event.schedule_and_create_placeholder(psc, part, "2012-08-09")
+
+          subject_schedule = psc.scheduled_activities(part)
+          subject_schedule.size.should == 4
+
+          subject_schedule.each do |s|
+            s.study_segment.should == "HI-Intensity: Pregnancy Visit 1"
+            s.ideal_date.should == "2012-08-09"
+            s.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+          end
+
+        end
+
+
+      end
+
     end
   end
 
@@ -486,7 +520,6 @@ describe Event do
       let(:psc) { PatientStudyCalendar.new(@user) }
 
       it "creates events for birth/child activities" do
-
         PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return(scheduled_study_segment_identifier)
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
@@ -503,7 +536,6 @@ describe Event do
           participant.events.size.should == 7
         end
       end
-
 
     end
 

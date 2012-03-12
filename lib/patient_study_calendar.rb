@@ -466,6 +466,19 @@ class PatientStudyCalendar
   end
 
   ##
+  # Cancels all activities labelled as collection instruments (environmental or biological)
+  # for the participant. Called when scheduling new segments.
+  # @param[Participant]
+  # @param[String]
+  def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
+    activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
+      if Instrument.collection?(a.labels)
+        update_activity_state(a.activity_id, participant, PatientStudyCalendar::ACTIVITY_CANCELED, date, reason)
+      end
+    end
+  end
+
+  ##
   # Updates the subject attributes in PSC for the given participant.
   # @param [Participant]
   def update_subject(participant)

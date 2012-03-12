@@ -44,6 +44,10 @@ module NcsNavigatorCore
       NcsNavigator.configuration.core['with_specimens']
     end
 
+    def with_specimens?
+      with_specimens == "true"
+    end
+
     def sampling_units_file_path
       NcsNavigator.configuration.sampling_units_file.to_s
     end
