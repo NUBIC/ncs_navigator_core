@@ -18,12 +18,15 @@ module NcsNavigator::Core::Psc
         attempts += 1
         env[:body] = env[request_body_key] # restore for retry
         app.call(env).tap do
-          fail TryAgain if should_retry?(env)
+          if should_retry?(env)
+            fail TryAgain
+          else
+            env[request_body_key] = nil
+          end
         end
       rescue TryAgain
         retry if attempts < max_attempts
       end
-      env[request_body_key] = nil
     end
 
     def should_retry?(env)
