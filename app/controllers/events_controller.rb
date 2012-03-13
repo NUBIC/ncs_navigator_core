@@ -18,6 +18,7 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    set_disposition_group
   end
 
   # PUT /events/1
@@ -81,5 +82,25 @@ class EventsController < ApplicationController
 	    end
     end
 
+    ##
+	  # Determine the disposition group to be used from the contact type or instrument taken
+	  def set_disposition_group
+	    @disposition_group = nil
+	    if @event
+  	    case @event.event_type.to_s
+  	    when "Pregnancy Screener"
+          @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+        when "Informed Consent"
+          @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+        else
+          contact = @event.contact_links.last.contact unless @event.contact_links.blank?
+          if contact && contact.contact_type
+    	      @disposition_group = contact.contact_type.to_s
+    	    else
+    	      @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+          end
+        end
+      end
+	  end
 
 end
