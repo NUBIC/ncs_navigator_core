@@ -12,7 +12,7 @@ module ParticipantsHelper
   end
 
   def determine_participant_consent_path(consent_type_code, consent_type_text, participant, contact_link)
-    return nil if consent_type_text.include?("collect") && NcsNavigatorCore.with_specimens == "false"
+    return nil if should_hide_consent?(consent_type_text)
     consent_type = consent_type_text.underscore.gsub(' ', '_')
     if participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code))
       consent = ParticipantConsent.where(:participant_id => participant.id).where(:contact_id => ContactLink.find(contact_link.id).contact.id).first
@@ -20,6 +20,10 @@ module ParticipantsHelper
     else
       link_to consent_type_text, new_participant_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :consent_type => consent_type, :consent_type_code => consent_type_code), :class => "add_link icon_link"
     end
+  end
+  
+  def should_hide_consent?(consent_type_text)
+    consent_type_text.include?("collect") && NcsNavigatorCore.with_specimens == "false"
   end
 
 end
