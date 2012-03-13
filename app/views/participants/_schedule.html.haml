@@ -9,6 +9,6 @@
             .activity
               %span{ :title => activity.current_state, :class => "#{activity.current_state}_link" }
                 &nbsp;
-              = link_to "#{activity.activity_name}", psc_assignment_path(activity.activity_id), :class => "icon_link external_link"
+              = link_to "#{activity.activity_name}", psc_assignment_path(@participant.person.public_id), :class => "icon_link external_link"
   - else
     Subject does not yet have a schedule
