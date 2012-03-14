@@ -875,6 +875,7 @@ class Participant < ActiveRecord::Base
       elsif contact_links.blank?
         self.created_at.to_date
       else
+        # contact_links are delegated to person and ordered by created_at DESC
         contact_links.first.created_at.to_date
       end
     end

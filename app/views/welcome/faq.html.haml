@@ -30,6 +30,22 @@
       = link_to "Participant Index", participants_path
       page and enter search criteria in the form.
 
+  .terminology
+    %h3
+      Events and Activities
+    %p
+      %b
+        What's the difference between an Activity and an Event?
+      %br
+      An Activity is a scheduled item in Patient Study Calendar (PSC) and is something to be performed
+      at the next Contact with the Participant. Consider this a checklist of items during a scheduled interaction
+      between the Study Center Staff and the Participant.
+      %br
+      An Event is an MDES record that denotes the type or context of a Contact with a Participant. The Event may
+      have many Activities scheduled to be performed during a Contact. For instance, a Pregnancy Visit 1 Event will
+      have the Pregnancy Visit 1 Interview, Pregnant Woman Informed Consent, Biological and Environmental Instrument
+      Activities scheduled for that Event.
+
   .workflow
     %h3
       Workflow
@@ -55,7 +71,14 @@
       %b
         How do I move from a participant from Low to High Intensity?
       %br
-      Put steps in here . . .
+      Users who are allowed to move a participant between arms will be shown a button on the Participant page
+      with the text "Invite [PARTICIPANT] to join High Intensity Arm". Clicking this button will cancel all
+      pending low intensity events for the participant and schedule the participant for the Low to High Conversion
+      event.
+      %br
+      Conversely, when a participant is in the High Intensity Arm, a button will appear with the text
+      "Move [PARTICIPANT] from High Intensity to Low Intensity". This action cancels all pending high intensity
+      events and schedules the participant for the next low intensity event for the participant.
 
   .instruments
     %h3
