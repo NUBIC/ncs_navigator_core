@@ -105,6 +105,10 @@ module NcsNavigator::Core::Warehouse
           for_psc = (participant.enroll_status_code == 1)
           Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
 
+          # caches
+          core_instruments = {}
+          core_contacts = {}
+
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
@@ -115,13 +119,23 @@ module NcsNavigator::Core::Warehouse
             cache_event_for_psc_sync(participant, core_event) if for_psc
 
             save_core_record(core_event)
+
             (event_and_links[:instruments] || []).each do |mdes_i|
-              save_core_record(apply_mdes_record_to_core(Instrument, mdes_i))
+              core_i = apply_mdes_record_to_core(Instrument, mdes_i)
+              save_core_record(core_i)
+              core_instruments[core_i.id] = core_i
             end
 
             (event_and_links[:link_contacts] || []).each do |mdes_lc|
               core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
-              cache_link_contact_for_psc_sync(participant, core_event, core_contact_link) if for_psc
+              if for_psc
+                contact_id = core_contact_link.contact_id
+                core_contact = (core_contacts[contact_id] ||= Contact.find(contact_id))
+
+                cache_link_contact_for_psc_sync(
+                  participant, core_event, core_contact_link, core_contact,
+                  core_instruments[core_contact_link.instrument_id])
+              end
               save_core_record(core_contact_link)
             end
           end
@@ -169,32 +183,32 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def cache_link_contact_for_psc_sync(participant, core_event, core_contact_link)
-      instrument_type_code = core_contact_link.instrument.try(:instrument_type_code)
+    def cache_link_contact_for_psc_sync(participant, core_event, core_contact_link, core_contact, core_instrument)
+      instrument_type_code = core_instrument.try(:instrument_type_code)
 
       link_contact_fields = [
         'status', core_contact_link.new_record? ? 'new' : 'changed',
         'contact_link_id', core_contact_link.public_id,
         'event_id', core_event.public_id,
-        'contact_id', core_contact_link.contact.public_id,
-        'contact_date', core_contact_link.contact.contact_date,
+        'contact_id', core_contact.public_id,
+        'contact_date', core_contact.contact_date,
         'sort_key', [
           core_event.public_id,
-          core_contact_link.contact.contact_date,
+          core_contact.contact_date,
           ('%03d' % instrument_type_code if instrument_type_code)].compact.join(':')
       ]
 
       if instrument_type_code
-        link_contact_fields << 'instrument_id' << core_contact_link.instrument.instrument_id
+        link_contact_fields << 'instrument_id' << core_instrument.instrument_id
         link_contact_fields << 'instrument_type' << instrument_type_code
         link_contact_fields << 'instrument_status' <<
-          core_contact_link.instrument.instrument_status.display_text.downcase
+          core_instrument.instrument_status.display_text.downcase
       end
 
       collection_key =
         if core_contact_link.instrument_id
           sync_key('p', participant.public_id,
-            'link_contacts_with_instrument', core_contact_link.instrument.instrument_id)
+            'link_contacts_with_instrument', core_instrument.instrument_id)
         else
           sync_key('p', participant.public_id,
             'link_contacts_without_instrument', core_event.event_id)
@@ -553,6 +567,8 @@ module NcsNavigator::Core::Warehouse
         @update_count = 0
         @create_count = 0
         @unchanged_count = 0
+
+        @rails_log_last_unit = nil
       end
 
       def start
@@ -580,19 +596,21 @@ module NcsNavigator::Core::Warehouse
       end
 
       def say_progress_message
-        shell.clear_line_then_say(
-          "%3d new / %3d updated / %3d unchanged. Importing %s. %.1f/s" % [
-            @create_count, @update_count, @unchanged_count, @unit_name, total_rate
-          ]
-        )
+        msg = "%3d new / %3d updated / %3d unchanged. Importing %s. %.1f/s" % [
+          @create_count, @update_count, @unchanged_count, @unit_name, total_rate
+        ]
+
+        shell.clear_line_then_say(msg)
+        rails_info(msg, log_progress_to_rails_log?)
       end
 
       def say_loading_message
-        shell.clear_line_then_say(
-          "%3d new / %3d updated / %3d unchanged. Importing %s. [loading]" % [
-            @create_count, @update_count, @unchanged_count, @unit_name
-          ]
-        )
+        msg = "%3d new / %3d updated / %3d unchanged. Importing %s. [loading]" % [
+          @create_count, @update_count, @unchanged_count, @unit_name
+        ]
+
+        shell.clear_line_then_say(msg)
+        rails_info(msg, true)
       end
 
       def complete
@@ -604,12 +622,27 @@ module NcsNavigator::Core::Warehouse
         log.info(msg)
       end
 
+      def total_count
+        @update_count + @create_count + @unchanged_count
+      end
+
       def total_rate
-        (@update_count + @create_count + @unchanged_count) / elapsed
+        total_count / elapsed
       end
 
       def elapsed
         Time.now - @start
+      end
+
+      def log_progress_to_rails_log?
+        (@unit_name != @rails_log_last_unit) || ((total_count % 250) == 0)
+      end
+
+      def rails_info(msg, definitely_log)
+        if definitely_log
+          Rails.logger.info(msg)
+          @rails_log_last_unit = @unit_name
+        end
       end
     end
   end
