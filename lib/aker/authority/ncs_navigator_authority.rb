@@ -29,7 +29,7 @@ module Aker::Authority
             u.send(setter, staff[a])
           end
         end
-        
+        u.identifiers[:staff_id] = staff["staff_id"]
         groups = staff['roles'].collect do |role|
           role['name']
         end
