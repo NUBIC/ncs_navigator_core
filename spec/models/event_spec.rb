@@ -363,7 +363,6 @@ describe Event do
         event.event_breakoff.should == @n
       end
 
-
       it "should set the breakoff code to yes if the reponse set does not have questions answered in each section" do
         response_set = Factory(:response_set)
         response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
@@ -485,7 +484,6 @@ describe Event do
 
         end
 
-
       end
 
     end
@@ -596,7 +594,6 @@ describe Event do
       end
 
     end
-
 
   end
 
