@@ -81,6 +81,15 @@ namespace :import do
     importer.import
   end
 
+  desc 'Reset the PSC sync caches so that the PSC sync can be retried. (You should wipe the subject info in PSC also.)'
+  task 'operational_psc:reset' => [:psc_setup, :warehouse_setup, :environment] do
+    require 'ncs_navigator/core'
+    psc = PatientStudyCalendar.new(user_for_psc)
+
+    importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
+    importer.reset
+  end
+
   desc 'Import instrument data'
   task :instruments => [:warehouse_setup, :environment] do
     require 'ncs_navigator/core'

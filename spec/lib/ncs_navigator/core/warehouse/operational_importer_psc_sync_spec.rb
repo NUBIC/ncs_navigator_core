@@ -131,6 +131,74 @@ module NcsNavigator::Core::Warehouse
 
         importer.import
       end
+
+      it 'destroys the participants list' do
+        importer.import
+        redis.smembers("#{ns}:psc_sync:participants").should == []
+      end
+
+      it 'copies the participants list to a backup key for reset' do
+        importer.import
+        redis.smembers("#{ns}:psc_sync:participants_backup").should == [p_id]
+      end
+
+      it 'does not overwrite the backup if resuming from interrupted' do
+        # simulated situation: participants p_id and "another" were
+        # originally set to be syncd. Only "another" was before the
+        # system was interrupted.
+        redis.sadd("#{ns}:psc_sync:participants_backup", p_id)
+        redis.sadd("#{ns}:psc_sync:participants_backup", 'another')
+
+        importer.import
+        redis.smembers("#{ns}:psc_sync:participants_backup").sort.should == ['another', p_id]
+      end
+    end
+
+    describe '#reset' do
+      before do
+        redis.del("#{ns}:psc_sync:participants")
+        redis.sadd("#{ns}:psc_sync:participants_backup", 'par-bar')
+      end
+
+      it 'copies the participant set back from the backup key' do
+        importer.reset
+
+        redis.smembers("#{ns}:psc_sync:participants").should == %w(par-bar)
+      end
+
+      it 'does not blank out the participant list if reset twice' do
+        importer.reset
+        importer.reset
+
+        redis.smembers("#{ns}:psc_sync:participants").should == %w(par-bar)
+      end
+
+      it 'does not blank out the participant list if reset without a backup' do
+        redis.sadd("#{ns}:psc_sync:participants", 'par-quux')
+        redis.del("#{ns}:psc_sync:participants_backup")
+
+        importer.reset
+
+        redis.smembers("#{ns}:psc_sync:participants").should == %w(par-quux)
+      end
+
+      it "wipes every participant's events_order list" do
+        redis.lpush("#{ns}:psc_sync:p:gil:events_order", 'a')
+
+        importer.reset
+
+        redis.exists("#{ns}:psc_sync:p:gil:events_order").should be_false
+      end
+
+      %w(events_deferred events_unschedulable events_closed).each do |set|
+        it "wipes every participant's #{set} set" do
+          redis.sadd("#{ns}:psc_sync:p:gil:#{set}", 'a')
+
+          importer.reset
+
+          redis.exists("#{ns}:psc_sync:p:gil:#{set}").should be_false
+        end
+      end
     end
 
     describe 'scheduling segments for events' do
