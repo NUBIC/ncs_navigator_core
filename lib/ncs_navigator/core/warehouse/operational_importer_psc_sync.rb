@@ -15,6 +15,8 @@ module NcsNavigator::Core::Warehouse
     def import
       init_participants_cache
 
+      backup_participants
+
       i = 1
       p_count = redis.scard(sync_key('participants'))
       while p_id = redis.spop(sync_key('participants'))
@@ -56,7 +58,7 @@ module NcsNavigator::Core::Warehouse
         unschedulable_sets.each do |set_key|
           p_id = set_key.scan(/p\:([^:]+)\:events_/).first.first
           log.error("= Participant #{p_id}")
-          redis.smembers(set_key) do |event_id|
+          redis.smembers(set_key).each do |event_id|
             event_details_key = sync_key('event', event_id)
             event_details = redis.hgetall(event_details_key)
             log.error("  - Event #{event_id} #{event_details.inspect}")
@@ -65,6 +67,17 @@ module NcsNavigator::Core::Warehouse
       end
     end
     private :report_about_indefinitely_deferred_events
+
+    def reset
+      p_backup_key = sync_key('participants_backup')
+      if redis.exists p_backup_key
+        redis.sunionstore(sync_key('participants'), p_backup_key)
+      end
+
+      %w(events_deferred events_unschedulable events_closed events_order).each do |reset_key|
+        redis.del redis.keys(sync_key('p', '*', reset_key))
+      end
+    end
 
     ###### SCHEDULING SEGMENTS FOR EVENTS
 
@@ -379,5 +392,16 @@ module NcsNavigator::Core::Warehouse
         find { |psc_event| acceptable_match_range.include?(Date.parse(psc_event[:start_date])) }
     end
     private :find_psc_event
+
+    def backup_participants
+      backup_key = sync_key('participants_backup')
+      p_key = sync_key('participants')
+      if redis.sdiff(backup_key, p_key).empty?
+        redis.sunionstore(backup_key, p_key)
+      else
+        shell.say_line("Resuming without reset; not backing up participant list.")
+      end
+    end
+    private :backup_participants
   end
 end
