@@ -286,8 +286,8 @@ class Person < ActiveRecord::Base
   #
   # @param [Survey]
   # @return [ResponseSet]
-  def create_instrument(survey)
-    Instrument.create!(:psu_code => NcsNavigatorCore.psu,
+  def build_instrument(survey)
+    Instrument.new(:psu_code => NcsNavigatorCore.psu,
       :instrument_version => Instrument.determine_version(survey.title),
       :instrument_type => InstrumentEventMap.instrument_type(survey.title),
       :person => self,
