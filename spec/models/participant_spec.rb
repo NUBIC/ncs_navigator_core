@@ -30,7 +30,7 @@
 
 require 'spec_helper'
 
-describe Participant (do)
+describe Participant do
 
   before(:each) do
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
