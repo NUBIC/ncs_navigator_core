@@ -28,7 +28,7 @@ describe Aker::Authority::NcsNavigatorAuthority do
     it "generate group membership from staff role" do
       @return_user.group_memberships(:NCSNavigator).include?("Staff Supervisor").should be_true
     end
-    
+
     it "copies staff_id as identifiers from staff portal staff_id" do
       @return_user.identifiers[:staff_id].should == "test_staff_id"
     end
