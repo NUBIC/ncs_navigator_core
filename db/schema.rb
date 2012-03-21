@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120307190224) do
+ActiveRecord::Schema.define(:version => 20120321181032) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -662,6 +662,9 @@ ActiveRecord::Schema.define(:version => 20120307190224) do
     t.datetime "updated_at"
     t.integer  "response_set_id"
   end
+
+  add_index "ppg_status_histories", ["created_at"], :name => "index_ppg_status_histories_on_created_at"
+  add_index "ppg_status_histories", ["updated_at"], :name => "index_ppg_status_histories_on_updated_at"
 
   create_table "pregnancy_visit1s", :force => true do |t|
     t.string   "psu_code",                :limit => 36,                                :null => false

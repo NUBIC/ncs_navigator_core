@@ -49,4 +49,38 @@ describe PpgStatusHistory do
 
   end
 
+  context "determining the current ppg_status" do
+
+    let(:participant1) { Factory(:participant) }
+    let(:participant2) { Factory(:participant) }
+
+    describe "#current_ppg_status" do
+
+      before(:each) do
+        @ppg2_1 = Factory(:ppg2_status, :participant => participant1)
+        @ppg1_1 = Factory(:ppg1_status, :participant => participant1)
+
+        @ppg2_2 = Factory(:ppg2_status, :participant => participant2)
+      end
+
+      it "returns the most recent ppg_status" do
+        all = PpgStatusHistory.current_ppg_status.all
+        all.should include @ppg1_1
+        all.should include @ppg2_2
+      end
+
+      it "returns the most recent ppg_status for the given participant" do
+        @ppg3 = Factory(:ppg3_status, :participant => participant1)
+        PpgStatusHistory.current_ppg_status.for_participant(participant1).all.should == [@ppg3]
+      end
+
+      it "returns all records matching the given status code" do
+        PpgStatusHistory.current_ppg_status.with_status(2).all.should == [@ppg2_2]
+      end
+
+    end
+
+  end
+
+
 end

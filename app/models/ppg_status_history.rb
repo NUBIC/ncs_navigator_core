@@ -33,6 +33,10 @@ class PpgStatusHistory < ActiveRecord::Base
 
   before_save :set_ppg_status_date
 
+  scope :current_ppg_status, joins("inner join (select participant_id, max(updated_at) as updated_at from ppg_status_histories group by participant_id) as inner_ppg on inner_ppg.participant_id = ppg_status_histories.participant_id and inner_ppg.updated_at = ppg_status_histories.updated_at")
+  scope :for_participant, lambda { |participant| where(:participant_id => participant.id) }
+  scope :with_status, lambda { |code| where(:ppg_status_code => code) }
+
   ##
   # Given a collection of participant ids return the most recent ppg_status
   # associated with these participants
