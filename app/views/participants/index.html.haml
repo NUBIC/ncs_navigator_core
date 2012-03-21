@@ -22,7 +22,7 @@
     = f.label :high_intensity_false, "Low Intensity"
     = f.check_box :high_intensity_false
     %br
-    = f.label :ppg_status_histories_ppg_status_code_eq, "PPG Status"
+    = f.label :ppg_status_histories_ppg_status_code_eq, "Current PPG Status"
     = f.select(:ppg_status_histories_ppg_status_code_eq, NcsCode.ncs_code_lookup(:ppg_status_code), { :include_blank => "-- Select PPG Status --" })
     %br
     = f.label :ppg_details_ppg_first_code_eq, "PPG First"
@@ -50,7 +50,7 @@
         %th
           = sort_link @q, "p_id", "Participant ID"
         %th
-          PPG Status
+          Current PPG Status
         %th{ :colspan => "3" }
 
       - @participants.each do |participant|
