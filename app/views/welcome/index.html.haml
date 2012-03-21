@@ -37,11 +37,17 @@
           .participants
             %h4
               Administer Instruments
-            = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
+            %ul
+              %li
+                = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
           .reports
             %h4
               Reports
-            = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
+            %ul
+              %li
+                = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
+              %li
+                = link_to "Upcoming Birth Report", {:controller => "reports", :action => "upcoming_births"}, :class => "report_link icon_link"
         .column-2
           %h4
             Searching

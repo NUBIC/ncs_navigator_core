@@ -31,15 +31,19 @@ class ReportsController < ApplicationController
     if request.post?
       @outfile = "case_status_report_" + Time.now.strftime("%m-%d-%Y") + ".csv"
 
-      reporter = Reporting::CaseStatusReport.new(psc, 
+      reporter = Reporting::CaseStatusReport.new(psc,
                   { :start_date => @start_date, :end_date => @end_date })
       csv_data = reporter.generate_report
       send_data csv_data,
         :type => 'text/csv; charset=iso-8859-1; header=present',
         :disposition => "attachment; filename=#{@outfile}"
     end
+  end
 
-
+  ##
+  # Returns all the participants known to have a birth in the future
+  def upcoming_births
+    @pregnant_participants = Participant.upcoming_births.select { |participant| participant.known_to_be_pregnant? }.sort_by { |e| e.due_date }
   end
 
 end

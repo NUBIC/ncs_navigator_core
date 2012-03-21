@@ -2686,34 +2686,37 @@ table.no_access_non_interview_reports input {
   margin-bottom: 0;
   margin-top: 0.5em;
 }
-/* line 15, ../../../stylesheets/partials/_welcome.scss */
+/* line 18, ../../../stylesheets/partials/_welcome.scss */
+.front_page_section .participants ul li,
+.front_page_section .reports ul li,
+.front_page_section .events ul li,
 .front_page_section .activities ul li,
 .front_page_section .model_search ul li {
   list-style-type: none;
 }
 
-/* line 24, ../../../stylesheets/partials/_welcome.scss */
+/* line 27, ../../../stylesheets/partials/_welcome.scss */
 .dialog ul li {
   list-style: none !important;
 }
 
-/* line 30, ../../../stylesheets/partials/_welcome.scss */
+/* line 33, ../../../stylesheets/partials/_welcome.scss */
 .events_for_date {
   margin-top: 0.5em;
 }
-/* line 33, ../../../stylesheets/partials/_welcome.scss */
+/* line 36, ../../../stylesheets/partials/_welcome.scss */
 .events_for_date .event_participant {
   margin-left: 1em;
 }
-/* line 36, ../../../stylesheets/partials/_welcome.scss */
+/* line 39, ../../../stylesheets/partials/_welcome.scss */
 .events_for_date .event_participant span {
   display: inline-block;
 }
-/* line 40, ../../../stylesheets/partials/_welcome.scss */
+/* line 43, ../../../stylesheets/partials/_welcome.scss */
 .events_for_date .event_participant span.participant_link {
   width: 15em;
 }
-/* line 44, ../../../stylesheets/partials/_welcome.scss */
+/* line 47, ../../../stylesheets/partials/_welcome.scss */
 .events_for_date .event_participant span.ppg_status {
   width: 5em;
 }

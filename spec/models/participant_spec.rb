@@ -30,7 +30,7 @@
 
 require 'spec_helper'
 
-describe Participant do
+describe Participant (do)
 
   before(:each) do
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
@@ -349,6 +349,31 @@ describe Participant do
     end
   end
 
+  describe "#upcoming_births" do
+
+    let(:ppg1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
+    let(:ppg3) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
+
+    before(:each) do
+
+      person1 = Factory(:person)
+      participant1 = Factory(:participant, :high_intensity => true)
+      participant1.person = person1
+      Factory(:ppg_detail, :participant => participant1, :ppg_first => ppg1)
+
+      person2 = Factory(:person)
+      participant2 = Factory(:participant, :high_intensity => true)
+      participant2.person = person2
+      Factory(:ppg_detail, :orig_due_date => 3.months.from_now.strftime('%Y-%m-%d'), :participant => participant2, :ppg_first => ppg1)
+    end
+
+    it "returns all participants with an upcoming due date" do
+      Participant.count.should == 2
+      Participant.upcoming_births.count.should == 1
+    end
+
+  end
+
   context "when determining schedule" do
 
     describe "a participant who has had a recent pregnancy loss (PPG 3)" do
@@ -599,11 +624,11 @@ describe Participant do
       it "transitions from in pregnancy probability group to pregnant" do
         participant = Factory(:participant)
         participant.register!
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status3, :ppg_status_date => '2011-01-01' )
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
         participant.next_study_segment.should == "LO-Intensity: PPG Follow-Up"
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-02-02')
         participant = Participant.find(participant.id)
         participant.ppg_status.local_code.should == 1
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
@@ -632,7 +657,7 @@ describe Participant do
       it "transitions from pregnant to loss" do
         participant = Factory(:participant)
         participant.register!
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-01-01')
         participant.assign_to_pregnancy_probability_group!
         participant.impregnate_low!
 
@@ -648,7 +673,7 @@ describe Participant do
       it "transitions from in ppg to loss" do
         participant = Factory(:participant)
         participant.register!
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status2)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status2, :ppg_status_date => '2011-01-01')
         participant.assign_to_pregnancy_probability_group!
 
         participant = Participant.find(participant.id)
@@ -689,7 +714,7 @@ describe Participant do
         before(:each) do
           @participant = Factory(:participant)
           @participant.register!
-          Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2)
+          Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2, :ppg_status_date => '2011-01-01')
           @participant.assign_to_pregnancy_probability_group!
           @participant.enroll_in_high_intensity_arm!
         end

@@ -1,0 +1,31 @@
+- title "Upcoming Birth Report"
+
+.page_section
+  - if @pregnant_participants.empty?
+    #no_records
+      No participants were found.
+  - else
+    %h4
+      Pregnant Participants
+    %table.records
+      %tr
+        %th
+          First Name
+        %th
+          Last Name
+        %th
+          Due Date
+        %th{ :colspan => "2" }
+      - @pregnant_participants.each do |participant|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = participant.first_name
+          %td
+            = participant.last_name
+          %td
+            %span{ :title => participant.ppg_status.to_s }
+              = participant.due_date
+          %td
+            = link_to 'View', participant_path(participant), :class => "show_link icon_link"
+          %td
+            = link_to 'Edit', edit_participant_path(participant), :class => "edit_link icon_link"

@@ -46,7 +46,7 @@ class Participant < ActiveRecord::Base
   ncs_coded_attribute :pid_age_eligibility, 'AGE_ELIGIBLE_CL2'
 
   has_many :ppg_details, :order => "created_at DESC"
-  has_many :ppg_status_histories, :order => "created_at DESC"
+  has_many :ppg_status_histories, :order => "ppg_status_date DESC"
 
   has_many :low_intensity_state_transition_audits,  :class_name => "ParticipantLowIntensityStateTransition",  :foreign_key => "participant_id", :dependent => :destroy
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id", :dependent => :destroy
@@ -67,6 +67,8 @@ class Participant < ActiveRecord::Base
   scope :all_for_staff, lambda { |staff_id| joins(:participant_staff_relationships).where("participant_staff_relationships.staff_id = ?", staff_id) }
   scope :primary_for_staff, lambda { |staff_id| all_for_staff(staff_id).where("participant_staff_relationships.primary = ?", true) }
   scope :all_people_for_self, lambda { |person_id| joins(:participant_person_links).where("participant_person_links.person_id = ? AND participant_person_links.relationship_code = 1", person_id) }
+
+  scope :upcoming_births, joins(:ppg_details).where("ppg_details.orig_due_date > '#{Date.today.to_s(:db)}' or ppg_details.due_date_2 > '#{Date.today.to_s(:db)}' or ppg_details.due_date_3 > '#{Date.today.to_s(:db)}'")
 
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
