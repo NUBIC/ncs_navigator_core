@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_staff
+      # TODO: use Aker::User.identifiers hash to get staff_id
       current_user ? current_user.username : 'unknown'
     end
 
