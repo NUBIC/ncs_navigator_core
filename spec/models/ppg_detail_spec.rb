@@ -33,12 +33,20 @@ describe PpgDetail do
   end
 
   context "due date" do
-    it "should return nil if no due date" do
+    it "returns nil if no due date" do
       ppg = Factory(:ppg_detail, :orig_due_date => nil, :due_date_2 => nil, :due_date_3 => nil)
       ppg.due_date.should be_nil
     end
 
-    it "should return the most recently known due date" do
+    it "does not include the 'unknown' due date (i.e. 9777-97-97)" do
+      ppg = Factory(:ppg_detail, :orig_due_date => '2011-12-25', :due_date_2 => '9777-97-97', :due_date_3 => '9777-97-97')
+      ppg.due_date.should == '2011-12-25'
+
+      ppg.update_due_date('2011-12-26', :due_date_2)
+      ppg.due_date.should == '2011-12-26'
+    end
+
+    it "returns the most recently known due date" do
       ppg = Factory(:ppg_detail, :orig_due_date => nil, :due_date_2 => nil, :due_date_3 => nil)
       ppg.due_date.should be_nil
 
