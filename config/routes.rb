@@ -63,6 +63,9 @@ NcsNavigatorCore::Application.routes.draw do
   match "/reports/index", :to => "reports#index", :via => [:get]
   match "/reports/case_status", :to => "reports#case_status", :via => [:get, :post]
   match "/reports/upcoming_births", :to => "reports#upcoming_births", :via => [:get]
+  match "/reports/ppg_status", :to => "reports#ppg_status", :via => [:get]
+  match "/reports/number_of_consents_by_type", :to => "reports#number_of_consents_by_type", :via => [:get]
+  match "/reports/consented_participants", :to => "reports#consented_participants", :via => [:get]
 
   match "/welcome/summary", :to => "welcome#summary"
   match "/welcome/upcoming_activities", :to => "welcome#upcoming_activities"

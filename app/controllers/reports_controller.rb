@@ -46,4 +46,37 @@ class ReportsController < ApplicationController
     @pregnant_participants = Participant.upcoming_births.select { |participant| participant.known_to_be_pregnant? }.sort_by { |e| e.due_date }
   end
 
+  ##
+  # Return all participants with the current given PpgStatus
+  def ppg_status
+    params[:page] ||= 1
+
+    default_ppg_status_code = "1"
+    @ppg_status_code = params[:ppg_status_code] || default_ppg_status_code
+
+    result = PpgStatusHistory.current_ppg_status.with_status(@ppg_status_code).select("distinct ppg_status_histories.*, people.last_name").joins(
+      "inner join participant_person_links on participant_person_links.participant_id = ppg_status_histories.participant_id
+       inner join people on people.id = participant_person_links.person_id"
+    ).where("participant_person_links.relationship_code = '1'").order("people.last_name")
+    @ppg_statuses = result.paginate(:page => params[:page], :per_page => 20)
+
+    respond_to do |format|
+      format.html # index.html.haml
+      format.json { render :json => result.all }
+    end
+  end
+
+  def number_of_consents_by_type
+
+  end
+
+  def consented_participants
+    params[:page] ||= 1
+    result = ParticipantConsent.where(:consent_type_code => params[:consent_type_code]).select("distinct participant_consents.*, people.last_name").joins(
+      "inner join participant_person_links on participant_person_links.participant_id = participant_consents.participant_id
+       inner join people on people.id = participant_person_links.person_id"
+    ).where("participant_person_links.relationship_code = '1'").order("people.last_name")
+    @consents = result.paginate(:page => params[:page], :per_page => 20)
+  end
+
 end
