@@ -32,6 +32,32 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
       @participant.ppg_status.local_code.should == 2
     end
 
+    it "handles due dates entered in the MDES format (YYYYMMDD)" do
+      @survey_section.questions.each do |q|
+        case q.data_export_identifier
+        when "#{LowIntensityPregnancyVisitOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        when "#{LowIntensityPregnancyVisitOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+          answer = q.answers.select { |a| a.response_class == "date" }.first
+          Factory(:response, :survey_section_id => @survey_section.id, :datetime_value => "20111226", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+        end
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 2
+
+      LowIntensityPregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.first.ppg_status.local_code.should == 1
+      participant.ppg_status.local_code.should == 1
+      participant.due_date.should == Date.parse("2011-12-26")
+      participant.ppg_details.first.due_date_2.should == "2011-12-26"
+    end
+
     it "updates the ppg status to 1 if the person responds that they are pregnant" do
 
       @survey_section.questions.each do |q|

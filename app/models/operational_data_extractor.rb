@@ -5,7 +5,7 @@ class OperationalDataExtractor
     [/_PrePreg_/,       PrePregnancyOperationalDataExtractor],
     [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
     [/_LIPregNotPreg/,  LowIntensityPregnancyVisitOperationalDataExtractor],
-    [/_LIPregNotPreg/,  BirthOperationalDataExtractor],
+    [/_Birth/,          BirthOperationalDataExtractor],
   ]
 
   class << self
