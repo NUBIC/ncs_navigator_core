@@ -1,0 +1,11 @@
+- title "Participant Consents"
+
+.page_section
+  %dl
+    - ParticipantConsent.consent_types.each do |val, txt|
+      - if val.to_i > 0
+        %dt
+          = txt
+        %dd
+          = link_to ParticipantConsent.where(:consent_type_code => val).where(:consent_given_code => '1').count,
+            {:controller => "reports", :action => "consented_participants", :consent_type_code => val}, { :class => "show_link icon_link" }
