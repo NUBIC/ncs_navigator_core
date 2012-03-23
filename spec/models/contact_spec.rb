@@ -33,6 +33,8 @@
 require 'spec_helper'
 
 describe Contact do
+  include SurveyCompletion
+
   it "should create a new instance given valid attributes" do
     c = Factory(:contact)
     c.should_not be_nil
@@ -109,13 +111,13 @@ describe Contact do
     it "knows all instruments associated with this contact" do
       c  = Factory(:contact)
       pers = Factory(:person)
-      rs, i1 = pers.start_instrument(create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
+      rs, i1 = prepare_instrument(pers, create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
       l1 = Factory(:contact_link, :contact => c, :instrument => i1, :person => pers)
 
       c.contact_links.should == [l1]
       c.instruments.should == [i1]
 
-      rs, i2 = pers.start_instrument(create_pre_pregnancy_survey_with_email_operational_data)
+      rs, i2 = prepare_instrument(pers, create_pre_pregnancy_survey_with_email_operational_data)
       l2 = Factory(:contact_link, :contact => c, :instrument => i2, :person => pers)
 
       i3 = Factory(:instrument)
@@ -137,10 +139,11 @@ describe Contact do
         @survey = create_survey_with_language_and_interpreter_data
         @person = Factory(:person)
         @english = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'English', :local_code => 1)
-        @spanish = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Spanish', :local_code => 2)
-                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Spanish', :local_code => 1)
-        @farsi   = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Farsi',   :local_code => 17)
-                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Farsi',   :local_code => 16)
+        @spanish     = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Spanish', :local_code => 2)
+        @spanish_cl5 = Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Spanish', :local_code => 1)
+        @farsi       = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Farsi',   :local_code => 17)
+        @farsi_cl5   = Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Farsi',   :local_code => 16)
+        @other       = Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Other',   :local_code => -5)
 
         @legitimate_skip  = Factory(:ncs_code, :list_name => 'TRANSLATION_METHOD_CL3', :display_text => 'Legitimate Skip', :local_code => -3)
         @sign_interpreter = Factory(:ncs_code, :list_name => 'TRANSLATION_METHOD_CL3', :display_text => 'Sign Language Interpreter', :local_code => 6)
@@ -152,19 +155,12 @@ describe Contact do
         contact = Factory(:contact, :contact_language => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.yes "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
         end
 
         response_set.responses.reload
@@ -182,19 +178,12 @@ describe Contact do
         contact = Factory(:contact, :contact_language => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG", @spanish_cl5
         end
 
         response_set.responses.reload
@@ -212,22 +201,13 @@ describe Contact do
         contact = Factory(:contact, :contact_language => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "16" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.no "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG", @farsi_cl5
         end
 
         response_set.responses.reload
@@ -245,27 +225,16 @@ describe Contact do
         contact = Factory(:contact, :contact_language => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         language_value = "Ojibwa"
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "-5" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG_OTH"
-            answer = q.answers.select { |a| a.response_class == "string" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :string_value => language_value, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.no "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG", @other
+          a.str "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG_OTH", language_value
         end
 
         response_set.responses.reload
@@ -279,25 +248,17 @@ describe Contact do
         contact.contact_language_other.should == language_value
       end
 
-
       it "sets the contact interpret to Legitimate Skip if no Interpreter was used" do
 
         contact = Factory(:contact, :contact_interpret => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.no "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
         end
 
         response_set.responses.reload
@@ -316,22 +277,13 @@ describe Contact do
         contact = Factory(:contact, :contact_interpret => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "6" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.yes "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
+          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET", @sign_interpreter
         end
 
         response_set.responses.reload
@@ -350,27 +302,16 @@ describe Contact do
         contact = Factory(:contact, :contact_interpret => nil)
         person  = Factory(:person)
 
-        survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
-        response_set.save!
-        response_set.responses.size.should == 0
+        response_set, instrument = prepare_instrument(person, @survey)
 
         interpreter_value = "Other interpreter"
 
         link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
 
-        survey_section.questions.each do |q|
-          case q.data_export_identifier
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET"
-            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "-5" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH"
-            answer = q.answers.select { |a| a.response_class == "string" }.first
-            Factory(:response, :survey_section_id => survey_section.id, :string_value => interpreter_value, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-          end
+        take_survey(@survey, response_set) do |a|
+          a.yes "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
+          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET", @other
+          a.str "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH", interpreter_value
         end
 
         response_set.responses.reload
@@ -420,10 +361,7 @@ describe Contact do
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
-
-          response_set, instrument = @person.start_instrument(@survey)
-          response_set.save!
-          response_set.responses.size.should == 0
+          response_set, instrument = prepare_instrument(@person, @survey)
 
           link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
 
@@ -506,9 +444,7 @@ describe Contact do
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
 
-          response_set, instrument = @person.start_instrument(@survey)
-          response_set.save!
-          response_set.responses.size.should == 0
+          response_set, instrument = prepare_instrument(@person, @survey)
 
           link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
 

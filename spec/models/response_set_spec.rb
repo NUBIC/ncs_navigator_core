@@ -54,7 +54,7 @@ describe ResponseSet do
         create_missing_in_error_ncs_codes(Instrument)
         instrument_type = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => 'Pregnancy Visit 1 Interview')
 
-        rs, ins = person.start_instrument(pv1survey)
+        rs, ins = prepare_instrument(person, pv1survey)
         rs.save!
         rs = ResponseSet.where(:user_id => person.id).first
         rs.should_not be_nil
@@ -80,7 +80,7 @@ describe ResponseSet do
 
       it "knows that the response set does not have responses in each section" do
         survey_section = @survey.sections.first
-        response_set, instrument = person.start_instrument(@survey)
+        response_set, instrument = prepare_instrument(person, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
@@ -93,7 +93,7 @@ describe ResponseSet do
     describe "a survey that has a few responses but not in all sections" do
 
       it "knows that the response set does not have responses in each section" do
-        response_set, instrument = person.start_instrument(@survey)
+        response_set, instrument = prepare_instrument(person, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
@@ -119,7 +119,7 @@ describe ResponseSet do
 
       it "knows that the response set does not have responses in the last section with questions" do
 
-        response_set, instrument = person.start_instrument(@survey)
+        response_set, instrument = prepare_instrument(person, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
@@ -153,7 +153,7 @@ describe ResponseSet do
     describe "a survey that has at least one response in all sections" do
 
       it "knows that the response set does have responses in each section" do
-        response_set, instrument = person.start_instrument(@survey)
+        response_set, instrument = prepare_instrument(person, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
