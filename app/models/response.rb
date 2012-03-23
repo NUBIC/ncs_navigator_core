@@ -1,10 +1,10 @@
 # == Schema Information
-# Schema version: 20120222225559
+# Schema version: 20120321181032
 #
 # Table name: responses
 #
 #  id                :integer         not null, primary key
-#  response_set_id   :integer
+#  response_set_id   :integer         not null
 #  question_id       :integer
 #  answer_id         :integer
 #  datetime_value    :datetime
