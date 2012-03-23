@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe PpgFollowUpOperationalDataExtractor do
+  include SurveyCompletion
 
   before(:each) do
     create_missing_in_error_ncs_codes(Instrument)
@@ -32,7 +33,6 @@ describe PpgFollowUpOperationalDataExtractor do
       @ppg5 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5", :local_code => 5)
 
       @survey = create_follow_up_survey_with_ppg_status_history_operational_data
-      @survey_section = @survey.sections.first
       @response_set, @instrument = @person.start_instrument(@survey)
       @response_set.save!
       @response_set.responses.size.should == 0
@@ -40,16 +40,9 @@ describe PpgFollowUpOperationalDataExtractor do
     end
 
     it "updates the ppg status to 1 if the person responds that they are pregnant" do
-
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PPG_DUE_DATE_1"
-          answer = q.answers.select { |a| a.response_class == "date" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :datetime_value => "2011-12-25", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT", @ppg1
+        a.date "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PPG_DUE_DATE_1", '2011-12-25'
       end
 
       @response_set.responses.reload
@@ -67,13 +60,8 @@ describe PpgFollowUpOperationalDataExtractor do
     end
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child during pregnancy" do
-
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "3" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT", @ppg3
       end
 
       @response_set.responses.reload
@@ -91,13 +79,8 @@ describe PpgFollowUpOperationalDataExtractor do
     end
 
     it "updates the ppg status to 2 if the person responds that they are trying" do
-
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.yes "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
       end
 
       @response_set.responses.reload
@@ -116,13 +99,8 @@ describe PpgFollowUpOperationalDataExtractor do
 
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child" do
-
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "3" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING", @ppg3
       end
 
       @response_set.responses.reload
@@ -141,13 +119,8 @@ describe PpgFollowUpOperationalDataExtractor do
 
 
     it "updates the ppg status to 4 if the person responds that they recently gave birth" do
-
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "4" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING", @ppg4
       end
 
       @response_set.responses.reload
@@ -165,13 +138,8 @@ describe PpgFollowUpOperationalDataExtractor do
     end
 
     it "updates the ppg status to 5 if the person responds that they are medically unable to become pregnant" do
-
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.MED_UNABLE"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.yes "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.MED_UNABLE"
       end
 
       @response_set.responses.reload
@@ -203,20 +171,13 @@ describe PpgFollowUpOperationalDataExtractor do
     person.telephones.size.should == 0
 
     survey = create_follow_up_survey_with_telephone_operational_data
-    survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.save!
     response_set.responses.size.should == 0
 
-    survey_section.questions.each do |q|
-      case q.data_export_identifier
-      when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PHONE_NBR"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125551234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PHONE_TYPE"
-        answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{cell.local_code}" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      end
+    take_survey(survey, response_set) do |a|
+      a.str "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PHONE_NBR", '3125551234'
+      a.choice "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.PHONE_TYPE", cell
     end
 
     response_set.responses.reload
@@ -244,32 +205,16 @@ describe PpgFollowUpOperationalDataExtractor do
     person.emails.size.should == 0
 
     survey = create_follow_up_survey_with_contact_operational_data
-    survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.save!
     response_set.responses.size.should == 0
 
-    survey_section.questions.size.should == 5
-
-    survey_section.questions.each do |q|
-      case q.data_export_identifier
-      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.HOME_PHONE"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125551234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.CELL_PHONE"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125555678", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.WORK_PHONE"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125559012", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.OTHER_PHONE"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125553456", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.EMAIL"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      end
-
+    take_survey(survey, response_set) do |a|
+      a.str "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.HOME_PHONE", '3125551234'
+      a.str "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.CELL_PHONE", '3125555678'
+      a.str "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.WORK_PHONE", '3125559012'
+      a.str "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.OTHER_PHONE", '3125553456'
+      a.str "#{PpgFollowUpOperationalDataExtractor::SAQ_PREFIX}.EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload
