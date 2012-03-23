@@ -174,7 +174,6 @@ describe PregnancyVisitOperationalDataExtractor do
       friend.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
     end
 
-
     it "creates another new person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
 
@@ -347,6 +346,5 @@ describe PregnancyVisitOperationalDataExtractor do
     address.to_s.should == "123 Hospital Way Chicago, IL 65432"
 
   end
-
 
 end

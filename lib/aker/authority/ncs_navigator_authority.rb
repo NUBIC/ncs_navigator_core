@@ -16,7 +16,7 @@ module Aker::Authority
       return user unless base
       user.merge!(base)
     end
-    
+
     def user(user)
       staff = get_staff(user)
       if staff
@@ -33,7 +33,7 @@ module Aker::Authority
         groups = staff['roles'].collect do |role|
           role['name']
         end
-      
+
         if groups
           u.group_memberships(@portal).concat(load_group_memberships(@portal, groups))
         end
@@ -42,13 +42,13 @@ module Aker::Authority
         nil
       end
     end
-    
-    private 
-    
+
+    private
+
     def staff_portal_uri
       NcsNavigator.configuration.staff_portal_uri
     end
-    
+
     def get_connection(user)
       connection = Faraday::Connection.new(
         :url => staff_portal_uri
@@ -59,7 +59,7 @@ module Aker::Authority
           builder.use FaradayStack::ResponseJSON, :content_type => 'application/json'
         end
     end
-    
+
     def load_group_memberships(portal, group_data)
       group_data.collect do |group|
         Aker::GroupMembership.new(find_or_create_group(portal, group))
@@ -70,11 +70,11 @@ module Aker::Authority
       existing = (@groups[portal] ||= []).collect { |top|
         top.find { |g| g.name == group_name }
       }.compact.first
-      return existing if existing      
+      return existing if existing
       @groups[portal] << Aker::Group.new(group_name)
       @groups[portal].last
     end
-    
+
     def get_staff(user)
       connection = get_connection(user)
       response = connection.get '/staff/' << user.username << '.json'
@@ -84,6 +84,6 @@ module Aker::Authority
         nil
       end
     end
-    
+
   end
 end

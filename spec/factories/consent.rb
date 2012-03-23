@@ -20,9 +20,8 @@ Factory.define :participant_consent do |pc|
   pc.consent_translate          { |a| a.association(:ncs_code, :list_name => "TRANSLATION_METHOD_CL1", :display_text => "No Translation Needed", :local_code => 1) }
   pc.reconsideration_script_use { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
   pc.consent_version "1.2"
-  
-end
 
+end
 
 Factory.define :participant_visit_consent do |pc|
 
@@ -36,9 +35,8 @@ Factory.define :participant_visit_consent do |pc|
   pc.vis_language         { |a| a.association(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
   pc.vis_who_consented    { |a| a.association(:ncs_code, :list_name => "AGE_STATUS_CL1", :display_text => "Adult", :local_code => 2) }
   pc.vis_translate        { |a| a.association(:ncs_code, :list_name => "TRANSLATION_METHOD_CL1", :display_text => "No Translation Needed", :local_code => 1) }
-  
-end
 
+end
 
 Factory.define :participant_authorization_form do |paf|
 
@@ -49,9 +47,8 @@ Factory.define :participant_authorization_form do |paf|
   paf.psu            { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
   paf.auth_form_type { |a| a.association(:ncs_code, :list_name => "AUTH_FORM_TYPE_CL1", :display_text => "HIPPA Auth", :local_code => 1) }
   paf.auth_status    { |a| a.association(:ncs_code, :list_name => "AUTH_STATUS_CL1", :display_text => "Authorization Requested and Granted", :local_code => 1) }
-  
-end
 
+end
 
 Factory.define :participant_consent_sample do |pcs|
 
@@ -61,9 +58,8 @@ Factory.define :participant_consent_sample do |pcs|
   pcs.psu                   { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
   pcs.sample_consent_type   { |a| a.association(:ncs_code, :list_name => "CONSENT_TYPE_CL2", :display_text => "Consent to collect", :local_code => 1) }
   pcs.sample_consent_given  { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
-  
-end
 
+end
 
 Factory.define :participant_visit_record do |pc|
 
@@ -75,7 +71,7 @@ Factory.define :participant_visit_record do |pc|
   pc.rvis_language        { |a| a.association(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
   pc.rvis_who_consented   { |a| a.association(:ncs_code, :list_name => "AGE_STATUS_CL1", :display_text => "Adult", :local_code => 2) }
   pc.rvis_translate       { |a| a.association(:ncs_code, :list_name => "TRANSLATION_METHOD_CL1", :display_text => "No Translation Needed", :local_code => 1) }
-  
+
   pc.rvis_sections        { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
   pc.rvis_during_interv   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
   pc.rvis_during_bio      { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
@@ -84,5 +80,5 @@ Factory.define :participant_visit_record do |pc|
   pc.rvis_during_thanks   { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
   pc.rvis_after_saq       { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
   pc.rvis_reconsideration { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL21", :display_text => "Yes", :local_code => 1) }
-  
+
 end

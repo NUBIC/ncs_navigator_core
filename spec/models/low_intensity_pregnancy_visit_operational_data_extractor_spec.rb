@@ -130,5 +130,4 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
 
   end
 
-
 end

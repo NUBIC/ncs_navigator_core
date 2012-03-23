@@ -2,7 +2,7 @@
   %div{ :id => "errorExplanation", :class => "errorExplanation"}
     %h2
       = pluralize(object.errors.count, "error")
-      prohibited this 
+      prohibited this
       = object.class.to_s.titleize
       from being saved
     %ul

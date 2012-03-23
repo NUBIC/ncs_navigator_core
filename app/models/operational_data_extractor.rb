@@ -13,7 +13,6 @@ class OperationalDataExtractor
       extractor_for(response_set).extract_data(response_set)
     end
 
-
     def extractor_for(response_set)
       extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
       extractor ? extractor[1] : PregnancyScreenerOperationalDataExtractor
@@ -86,7 +85,6 @@ class OperationalDataExtractor
         nil     # No mapping value
       end
     end
-
 
     # PREG_SCREEN_HI_2.ORIG_DUE_DATE
     # PREG_VISIT_LI_2.DUE_DATE
@@ -180,7 +178,6 @@ class OperationalDataExtractor
         participant.p_type = NcsCode.for_attribute_name_and_local_code(:p_type_code, p_type_code)
       end
     end
-
 
   end
 

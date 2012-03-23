@@ -14,7 +14,7 @@ class CreateHouseholdUnits < ActiveRecord::Migration
       t.integer :number_of_pregnant_adults
       t.integer :number_of_pregnant_over49
       t.string :transaction_type,     :limit => 36
-      
+
       t.binary :hh_id,                :null => false
 
       t.timestamps

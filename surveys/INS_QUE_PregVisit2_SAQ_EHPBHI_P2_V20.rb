@@ -67,7 +67,6 @@ survey "INS_QUE_PregVisit2_SAQ_EHPBHI_P2_V2.0" do
     a_2 "Somewhat important"
     a_3 "Very important"
 
-
     q_DOCTOR "(How important was...) Having my doctor or health care provider support my choice to take part in the study?",
     :pick => :one,
     :data_export_identifier=>"PREG_VISIT_2_SAQ_2.DOCTOR"

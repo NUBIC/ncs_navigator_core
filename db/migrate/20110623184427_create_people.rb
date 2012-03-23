@@ -37,7 +37,7 @@ class CreatePeople < ActiveRecord::Migration
       t.date :p_info_update
       t.text :person_comment
       t.string :transaction_type,               :limit => 36
-      
+
       t.timestamps
     end
   end

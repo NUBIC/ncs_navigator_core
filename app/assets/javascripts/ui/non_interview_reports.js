@@ -6,7 +6,7 @@ NCSCore.UI.NonInterviewReportAssociation = function (config) {
       addHandler: null,
       caller: this
    });
-   
+
   var refusalNonInterviewReportAttributesForm = new NestedAttributes({
       container: $('.refusal_non_interview_reports'),
       association: 'refusal_non_interview_reports',
@@ -14,7 +14,7 @@ NCSCore.UI.NonInterviewReportAssociation = function (config) {
       addHandler: null,
       caller: this
    });
-   
+
   var dwellingUnitTypeNonInterviewReportAttributesForm = new NestedAttributes({
       container: $('.dwelling_unit_type_non_interview_reports'),
       association: 'dwelling_unit_type_non_interview_reports',
@@ -22,7 +22,7 @@ NCSCore.UI.NonInterviewReportAssociation = function (config) {
       addHandler: null,
       caller: this
    });
-   
+
  var vacantInterviewReportAttributesForm = new NestedAttributes({
      container: $('.vacant_non_interview_reports'),
      association: 'vacant_non_interview_reports',

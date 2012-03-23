@@ -119,7 +119,6 @@ describe PrePregnancyOperationalDataExtractor do
       @contact_friend = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Friend", :local_code => 6)
       Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Other", :local_code => -5)
 
-
       @person = Factory(:person)
       @participant = Factory(:participant)
       @participant.person = @person
@@ -274,8 +273,6 @@ describe PrePregnancyOperationalDataExtractor do
       mimi.last_name.should == "Holiday"
     end
 
-
   end
-
 
 end

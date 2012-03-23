@@ -19,7 +19,7 @@ Factory.define :ppg1_status, :class => PpgStatusHistory do |ppg|
   ppg.ppg_status         { |a| a.association(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
   ppg.ppg_info_source    { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL3", :display_text => "Person/Self", :local_code => 1) }
   ppg.ppg_info_mode      { |a| a.association(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :display_text => "In-person", :local_code => 1) }
-end 
+end
 
 Factory.define :ppg2_status, :class => PpgStatusHistory do |ppg|
   ppg.association :participant,  :factory => :participant

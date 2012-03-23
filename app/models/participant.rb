@@ -182,7 +182,6 @@ class Participant < ActiveRecord::Base
     Rails.logger.info("Participant State Change #{id}: #{from} => #{to} on #{event}")
   end
 
-
   ##
   # Helper method to get the current state of the Participant
   # Since there are two state_machines (one for Low Intensity and one for High (or PB or EH))
@@ -677,7 +676,6 @@ class Participant < ActiveRecord::Base
   def primary_staff_relationships
     participant_staff_relationships.where(:primary => true).all
   end
-
 
   # [1, "Household Enumeration"],
   # [2, "Two Tier Enumeration"],

@@ -1,32 +1,32 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: https://ncsn-psc.local/api/v1/subjects/asdf
-    body: 
-    headers: 
-      authorization: 
+    body:
+    headers:
+      authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - application/json
-      server: 
+      server:
       - Restlet-Framework/2.0.3
-      date: 
+      date:
       - Fri, 26 Aug 2011 18:54:05 GMT
-      vary: 
+      vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges: 
+      accept-ranges:
       - bytes
-      cache-control: 
+      cache-control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      transfer-encoding: 
+      transfer-encoding:
       - chunked
-      pragma: 
+      pragma:
       - no-cache
     body: "{\"first_name\":\"As\",\"last_name\":\"Df\",\"full_name\":\"As Df\",\"last_first\":\"Df, As\",\"birth_date\":\"1900-01-01\",\"gender\":\"Female\",\"person_id\":\"asdf\",\"subject_identifier\":\"asdf\",\"properties\":[],\"href\":{\"schedules\":\"https://ncsn-psc.local/api/v1/subjects/asdf/schedules\"}}"
     http_version: "1.1"

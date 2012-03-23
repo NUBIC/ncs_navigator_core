@@ -33,9 +33,6 @@ require 'ncs_navigator/configuration'
 # These instructions should self-destruct in 10 seconds.  If they don't, feel
 # free to delete them.
 
-
-
-
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
@@ -77,7 +74,6 @@ Spork.prefork do
       end
     end
   end
-
 
   RSpec.configure do |config|
     config.treat_symbols_as_metadata_keys_with_true_values = true

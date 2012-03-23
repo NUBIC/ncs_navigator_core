@@ -62,5 +62,3 @@ describe InstrumentEventMap do
   end
 
 end
-
-

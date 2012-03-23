@@ -97,7 +97,6 @@ describe PpgFollowUpOperationalDataExtractor do
 
     end
 
-
     it "updates the ppg status to 3 if the person responds that they recently lost their child" do
       take_survey(@survey, @response_set) do |a|
         a.choice "#{PpgFollowUpOperationalDataExtractor::INTERVIEW_PREFIX}.TRYING", @ppg3
@@ -116,7 +115,6 @@ describe PpgFollowUpOperationalDataExtractor do
       participant.due_date.should be_nil
 
     end
-
 
     it "updates the ppg status to 4 if the person responds that they recently gave birth" do
       take_survey(@survey, @response_set) do |a|
@@ -156,7 +154,6 @@ describe PpgFollowUpOperationalDataExtractor do
 
     end
 
-
   end
 
   it "extracts telephone operational data from the survey responses" do
@@ -192,7 +189,6 @@ describe PpgFollowUpOperationalDataExtractor do
     telephone.phone_nbr.should == "3125551234"
 
   end
-
 
   it "extracts contact data from the SAQ survey responses" do
     home = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1)

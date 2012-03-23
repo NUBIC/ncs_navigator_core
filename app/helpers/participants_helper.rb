@@ -21,7 +21,7 @@ module ParticipantsHelper
       link_to consent_type_text, new_participant_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :consent_type => consent_type, :consent_type_code => consent_type_code), :class => "add_link icon_link"
     end
   end
-  
+
   def should_hide_consent?(consent_type_text)
     consent_type_text.include?("collect") && NcsNavigatorCore.with_specimens == "false"
   end

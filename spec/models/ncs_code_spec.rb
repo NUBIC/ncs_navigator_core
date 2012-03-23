@@ -31,7 +31,6 @@ describe NcsCode do
   it { should validate_presence_of(:display_text) }
   it { should validate_presence_of(:local_code) }
 
-
   context "finding event type using psc labels" do
 
     describe "#find_event_by_label" do
@@ -60,11 +59,11 @@ describe NcsCode do
           ["low_intensity_data_collection", "Low Intensity Data Collection"],
           ["other", "Other"],
           ["missing_in_error", "Missing in Error"],
-        ].each do |lbl, txt| 
-          
+        ].each do |lbl, txt|
+
           code = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => txt)
           NcsCode.find_event_by_lbl(lbl).should == code
-          
+
         end
 
       end

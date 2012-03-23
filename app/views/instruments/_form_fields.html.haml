@@ -18,12 +18,12 @@
       = f.label :instrument_start_date, "Instrument Start Date"
       %br
       = f.text_field :instrument_start_date, :class => "date"
-  
+
     %p
       = f.label :instrument_start_time, "Instrument Start Time"
       %br
       = f.text_field :instrument_start_time, :class => "time"
-  
+
     %p
       = f.label :instrument_end_date, "Instrument End Date"
       %br
@@ -46,7 +46,6 @@
     = render "shared/ncs_code_select", { :f => f, :code => :supervisor_review_code, :label_text => "Supervisor Review", :help_text => "instruments/instrument_supervisor_review_tooltip" }
 
     = render "shared/ncs_code_select", { :f => f, :code => :data_problem_code, :label_text => "Data Problem", :help_text => "instruments/instrument_data_problem_tooltip" }
-
 
     %p
       = f.label :instrument_comment, "Comment"

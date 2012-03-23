@@ -238,4 +238,3 @@ survey "INS_BIO_CordBlood_DCI_EHPBHI_P2_V1.0" do
     a :datetime, :custom_class => "datetime"
   end
 end
-

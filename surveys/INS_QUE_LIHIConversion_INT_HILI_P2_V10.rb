@@ -70,7 +70,6 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
       staff to talk about the Study, to get your permission, in writing, for you to take part in the visits, and to have you
       answer some more detailed questions."
 
-
       q_OUT_VISIT "Would you like to schedule a visit?",
       :pick => :one,
       :data_export_identifier=>"LOW_HIGH_SCRIPT.OUT_VISIT"
@@ -501,4 +500,3 @@ survey "INS_QUE_LIHIConversion_INT_HILI_P2_V1.0" do
     condition_C :q_prepopulated_ppg_status, "==", {:integer_value => "2"}
   end
 end
-

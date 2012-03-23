@@ -7,7 +7,7 @@ class CreateParticipantAuthorizationForms < ActiveRecord::Migration
       t.references :participant
       t.references :contact
       t.references :provider
-      
+
       t.integer :auth_form_type_code,   :null => false
       t.string :auth_type_other
       t.integer :auth_status_code,      :null => false

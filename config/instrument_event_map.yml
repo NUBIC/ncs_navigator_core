@@ -1,7 +1,7 @@
---- 
+---
 - name: Household Enumeration Interview
   filename: INS_QUE_HHEnum_INT_EH_P2_V1.2
-  event: Household Enumeration 
+  event: Household Enumeration
   instrument_type: 1
   version_number: 1.2
 - name: Pregnancy Screener Interview (EH)
@@ -44,7 +44,7 @@
   event: Pregnancy Visit 1
   instrument_type: 10
   version_number: 2.0
-- name: Pregnancy Visit 2 Interview 
+- name: Pregnancy Visit 2 Interview
   filename: INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0
   event: Pregnancy Visit 2
   instrument_type: 11

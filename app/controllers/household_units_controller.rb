@@ -11,7 +11,7 @@ class HouseholdUnitsController < ApplicationController
       format.json  { render :json => @household_units }
     end
   end
-  
+
   # GET /household_units/new
   # GET /household_units/new.json
   def new
@@ -37,7 +37,7 @@ class HouseholdUnitsController < ApplicationController
       end
     end
   end
-  
+
   # GET /household_units/1/edit
   def edit
     @household_unit = HouseholdUnit.find(params[:id])
@@ -58,5 +58,5 @@ class HouseholdUnitsController < ApplicationController
       end
     end
   end
-  
+
 end

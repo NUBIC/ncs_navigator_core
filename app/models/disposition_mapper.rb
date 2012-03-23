@@ -43,7 +43,6 @@ class DispositionMapper
     end
     private :should_add
 
-
     def determine_event(group)
       case group
       when /_PregScreen_/

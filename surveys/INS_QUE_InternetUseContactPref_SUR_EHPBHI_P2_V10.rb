@@ -163,4 +163,3 @@ survey "INS_QUE_InternetUseContactPref_SUR_EHPBHI_P2_V1.0" do
     a :datetime, :custom_class => "datetime"
   end
 end
-

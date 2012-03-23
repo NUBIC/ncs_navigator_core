@@ -3,7 +3,7 @@ Feature: Creating a household unit
   In order to have a household unit with which to associate one or more persons
   As a user
   I want to be able to create a household unit record
-  
+
   Scenario: Creating a new household unit
     Given valid ncs codes
     And an authenticated user
@@ -16,7 +16,7 @@ Feature: Creating a household unit
     Then I should see "Household Units"
     And I should see "No household units were found."
     And I should see "New Household Unit"
-    When I follow "New Household Unit" 
+    When I follow "New Household Unit"
     Then I should be on the new household unit page
     And I should see "New Household Unit"
     When I select "Yes" from "Status"
@@ -26,7 +26,7 @@ Feature: Creating a household unit
     Then I should see "Household was successfully created."
     And I should be on the household units page
     And I should see "Single-Family Home"
-    
+
   @javascript
   Scenario: Associating a person with a household unit
     Given valid ncs codes
@@ -41,7 +41,7 @@ Feature: Creating a household unit
     Then I should see "Household Units"
     And I should see "No household units were found."
     And I should see "New Household Unit"
-    When I follow "New Household Unit" 
+    When I follow "New Household Unit"
     Then I should be on the new household unit page
     And I should see "New Household Unit"
     When I select "Yes" from "Status"
@@ -58,14 +58,14 @@ Feature: Creating a household unit
     Then I should see "Household was successfully created."
     And I should be on the household units page
     And I should see "Single-Family Home"
-    
+
     # Scenario: Creating a new household unit without selecting required attributes
     #   Given valid ncs codes
     #   When I am on the household units page
     #   Then I should see "Household Units"
     #   And I should see "No household units were found."
     #   And I should see "New Household Unit"
-    #   When I follow "New Household Unit" 
+    #   When I follow "New Household Unit"
     #   Then I should be on the new household unit page
     #   And I should see "New Household Unit"
     #   When I press "Submit"

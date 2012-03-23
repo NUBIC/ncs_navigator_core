@@ -145,7 +145,6 @@ survey "INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0" do
     condition_B :q_BOTTLE2_FILLED, "!=", :a_1
     condition_C :q_BOTTLE3_FILLED, "!=", :a_1
 
-
     # TODO
     #     PROGRAMMER INSTRUCTIONS:
     #     • LIMIT FREE TEXT TO 250 CHARACTERS.
@@ -477,7 +476,6 @@ survey "INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0" do
     condition_B :q_REAS_TWF_BL_N_COLLECTED, "==", :a_2
     condition_C :q_REAS_TWF_BL_N_COLLECTED, "==", :a_neg_5
     # ****TWF_DP END****
-
 
    # check this:  TWF160/(REASON_TWF_N_COLLECTED_OTH).
    #

@@ -13,7 +13,7 @@ class CreateEvents < ActiveRecord::Migration
       t.date :event_start_date
       t.string :event_start_time
       t.date :event_end_date
-      t.string :event_end_time      
+      t.string :event_end_time
       t.integer :event_breakoff_code,       :null => false
       t.integer :event_incentive_type_code, :null => false
       t.decimal :event_incentive_cash,      :precision => 3, :scale => 2

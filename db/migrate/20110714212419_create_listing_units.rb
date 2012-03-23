@@ -8,7 +8,7 @@ class CreateListingUnits < ActiveRecord::Migration
       t.integer :list_source_code, :null => false
       t.text :list_comment
       t.string :transaction_type,  :limit => 36
-      
+
       # TODO: determine how to reference these other ncs core models:
       # t.integer :ssu_id
       # t.integer :tsu_id
