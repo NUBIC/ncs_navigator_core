@@ -29,6 +29,7 @@
     = f.select(:ppg_details_ppg_first_code_eq, NcsCode.ncs_code_lookup(:ppg_first_code), { :include_blank => "-- Select PPG First --" })
     %br
     = f.submit "Search"
+    = link_to "Export All Results", { :controller => "participants", :action => "index", :format => "csv", :q => params[:q] }, { :class => "export_link icon_link" }
 
 .page_section
   - if @participants.empty?

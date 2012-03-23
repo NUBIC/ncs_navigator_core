@@ -251,6 +251,24 @@ describe Participant do
 
   end
 
+  context "exporting as csv" do
+
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:expected_due_date) { 6.months.from_now.strftime('%Y-%m-%d') }
+
+    before :each do
+      participant.person = person
+      participant.save!
+      Factory(:ppg_detail, :orig_due_date => expected_due_date, :participant => participant)
+    end
+
+    it "renders in comma-separated value format" do
+      participant.to_comma.should == [participant.p_id, person.last_name, person.first_name, participant.ppg_status.to_s, expected_due_date]
+    end
+
+  end
+
   context "with an assigned pregnancy probability group" do
 
     let(:participant) { Factory(:participant) }

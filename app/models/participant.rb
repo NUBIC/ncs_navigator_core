@@ -768,6 +768,15 @@ class Participant < ActiveRecord::Base
     end
   end
 
+  comma do
+
+    p_id 'Participant ID'
+    person :last_name => 'Last Name', :first_name => 'First Name'
+    ppg_status 'PPG Status'
+    due_date
+
+  end
+
   private
 
     def relationships(code)
