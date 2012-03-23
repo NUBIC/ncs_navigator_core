@@ -33,9 +33,7 @@ describe PpgFollowUpOperationalDataExtractor do
       @ppg5 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5", :local_code => 5)
 
       @survey = create_follow_up_survey_with_ppg_status_history_operational_data
-      @response_set, @instrument = @person.start_instrument(@survey)
-      @response_set.save!
-      @response_set.responses.size.should == 0
+      @response_set, @instrument = prepare_instrument(@person, @survey)
       @participant.ppg_status.local_code.should == 2
     end
 
@@ -168,7 +166,7 @@ describe PpgFollowUpOperationalDataExtractor do
     person.telephones.size.should == 0
 
     survey = create_follow_up_survey_with_telephone_operational_data
-    response_set, instrument = person.start_instrument(survey)
+    response_set, instrument = prepare_instrument(person, survey)
     response_set.save!
     response_set.responses.size.should == 0
 
@@ -201,7 +199,7 @@ describe PpgFollowUpOperationalDataExtractor do
     person.emails.size.should == 0
 
     survey = create_follow_up_survey_with_contact_operational_data
-    response_set, instrument = person.start_instrument(survey)
+    response_set, instrument = prepare_instrument(person, survey)
     response_set.save!
     response_set.responses.size.should == 0
 

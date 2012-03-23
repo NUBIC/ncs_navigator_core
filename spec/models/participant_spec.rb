@@ -813,7 +813,7 @@ describe Participant do
 
       participant.started_survey(survey).should be_false
 
-      rs, ins = participant.start_instrument(survey)
+      rs, ins = prepare_instrument(participant, survey)
       rs.save!
       participant.started_survey(survey).should be_true
 

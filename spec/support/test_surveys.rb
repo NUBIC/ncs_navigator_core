@@ -1,5 +1,12 @@
 module TestSurveys
-  
+  def prepare_instrument(p, s)
+    rs, instr = p.start_instrument(s)
+    instr.save!
+    rs.save!
+
+    [rs, instr]
+  end
+
   def create_test_survey_for_person
     survey = Factory(:survey, :title => "INS_QUE_Something_INT_LI_P2_V2.0", :access_code => "ins-que-something-int-li-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)

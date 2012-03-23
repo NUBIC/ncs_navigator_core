@@ -29,18 +29,14 @@ describe BirthOperationalDataExtractor do
       @participant.person = @person
       Factory(:ppg_detail, :participant => @participant)
 
-      @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
-      @survey_section = @survey.sections.first
-      @response_set, @instrument = @person.start_instrument(@survey)
-      @response_set.save!
-      @response_set.responses.size.should == 0
+      @instrument, @response_set = prepare_instrument(@person, create_pregnancy_visit_1_survey_with_contact_operational_data)
+
       @participant.participant_person_links.size.should == 1
     end
 
     it "creates a new person (Child) record and associates it with the particpant" do
       survey = create_birth_survey_with_child_operational_data
-      response_set, instrument = @person.start_instrument(survey)
-      response_set.save!
+      response_set, instrument = prepare_instrument(@person, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
@@ -85,8 +81,7 @@ describe BirthOperationalDataExtractor do
     end
 
     it "extracts person operational data from the survey responses" do
-      response_set, instrument = @person.start_instrument(@survey)
-      response_set.save!
+      response_set, instrument = prepare_instrument(@person, @survey)
 
       take_survey(@survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
@@ -111,8 +106,7 @@ describe BirthOperationalDataExtractor do
 
       @person.addresses.size.should == 0
 
-      response_set, instrument = @person.start_instrument(@survey)
-      response_set.save!
+      response_set, instrument = prepare_instrument(@person, @survey)
 
       take_survey(@survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
@@ -136,8 +130,7 @@ describe BirthOperationalDataExtractor do
     end
 
     it "extracts telephone operational data" do
-      response_set, instrument = @person.start_instrument(@survey)
-      response_set.save!
+      response_set, instrument = prepare_instrument(@person, @survey)
       @person.telephones.size.should == 0
 
       take_survey(@survey, response_set) do |a|
@@ -171,9 +164,7 @@ describe BirthOperationalDataExtractor do
 
       @person.emails.size.should == 0
 
-      response_set, instrument = @person.start_instrument(@survey)
-      response_set.save!
-      response_set.responses.size.should == 0
+      response_set, instrument = prepare_instrument(@person, @survey)
 
       take_survey(@survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'
