@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe BirthOperationalDataExtractor do
+  include SurveyCompletion
 
   before(:each) do
     create_missing_in_error_ncs_codes(DwellingUnit)
@@ -16,7 +17,6 @@ describe BirthOperationalDataExtractor do
   end
 
   context "creating a new person record for the child" do
-
     before(:each) do
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self", :local_code => 1)
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
@@ -38,29 +38,15 @@ describe BirthOperationalDataExtractor do
     end
 
     it "creates a new person (Child) record and associates it with the particpant" do
-
       survey = create_birth_survey_with_child_operational_data
-      survey_section = survey.sections.first
       response_set, instrument = @person.start_instrument(survey)
       response_set.save!
 
-      response_set.responses.size.should == 0
-
-      survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Mary", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_MNAME"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Jane", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_LNAME"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Williams", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_SEX"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{@female.local_code}" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        end
+      take_survey(survey, response_set) do |a|
+        a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
+        a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_MNAME", 'Jane'
+        a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_LNAME", 'Williams'
+        a.choice "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_SEX", @female
       end
 
       response_set.responses.reload
@@ -99,19 +85,12 @@ describe BirthOperationalDataExtractor do
     end
 
     it "extracts person operational data from the survey responses" do
-      survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
       response_set.save!
-      response_set.responses.size.should == 0
-      survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_FNAME"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "Jocelyn", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_LNAME"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "Goldsmith", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        end
+
+      take_survey(@survey, response_set) do |a|
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_LNAME", 'Goldsmith'
       end
 
       response_set.responses.reload
@@ -132,34 +111,17 @@ describe BirthOperationalDataExtractor do
 
       @person.addresses.size.should == 0
 
-      survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
       response_set.save!
-      response_set.responses.size.should == 0
-      survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "123 Easy St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_UNIT"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_CITY"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_STATE"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ZIP"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ZIP4"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        end
+
+      take_survey(@survey, response_set) do |a|
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
+        a.choice "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
       end
 
       response_set.responses.reload
@@ -174,39 +136,19 @@ describe BirthOperationalDataExtractor do
     end
 
     it "extracts telephone operational data" do
-      survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
       response_set.save!
-      response_set.responses.size.should == 0
       @person.telephones.size.should == 0
 
-      survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125551234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_TYPE"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{cell.local_code}" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.HOME_PHONE"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125554321", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE_2"
-          answer = q.answers.select { |a| a.response_class == "answer" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE_4"
-          answer = q.answers.select { |a| a.response_class == "answer" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125557890", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        end
+      take_survey(@survey, response_set) do |a|
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR", '3125551234'
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH", ''
+        a.choice "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_TYPE", cell
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH", ''
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.HOME_PHONE", '3125554321'
+        a.yes "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE_2"
+        a.yes "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE_4"
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       response_set.responses.reload
@@ -229,20 +171,13 @@ describe BirthOperationalDataExtractor do
 
       @person.emails.size.should == 0
 
-      survey_section = @survey.sections.first
       response_set, instrument = @person.start_instrument(@survey)
       response_set.save!
       response_set.responses.size.should == 0
 
-      survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL_TYPE"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{home.local_code}" }.first
-          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        end
+      take_survey(@survey, response_set) do |a|
+        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'
+        a.choice "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL_TYPE", home
       end
 
       response_set.responses.reload
