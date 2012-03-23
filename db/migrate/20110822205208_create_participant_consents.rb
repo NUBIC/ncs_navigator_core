@@ -26,7 +26,7 @@ class CreateParticipantConsents < ActiveRecord::Migration
       t.references :contact
       t.integer :reconsideration_script_use_code, :null => false
       t.string :transaction_type,               :limit => 36
-      
+
       t.timestamps
     end
   end

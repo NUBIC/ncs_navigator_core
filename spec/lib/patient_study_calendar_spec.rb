@@ -7,7 +7,6 @@ describe PatientStudyCalendar do
     File.expand_path(File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))
   }
 
-
   before(:each) do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
@@ -541,8 +540,6 @@ describe PatientStudyCalendar do
         end
 
       end
-
-
 
     end
 

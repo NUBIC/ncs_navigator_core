@@ -593,7 +593,7 @@
                                   \"name\": \"Environmental Vacuum Bag Dust Technician Collect Instrument\",
                                   \"type\": \"Environment\"
                               },
-                              \"assignment\": { 
+                              \"assignment\": {
                                   \"id\": \"9406b640-3f96-012f-87cf-58b035fb69ca\",
                                   \"name\": \"NCS Hi-Lo\",
                                   \"subject_coordinator\": {

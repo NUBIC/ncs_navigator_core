@@ -10,7 +10,7 @@ class CreateDwellingHouseholdLinks < ActiveRecord::Migration
       t.integer :du_rank_code,      :null => false
       t.string :du_rank_other,      :limit => 255
       t.string :transaction_type,   :limit => 36
-      
+
       t.timestamps
     end
   end

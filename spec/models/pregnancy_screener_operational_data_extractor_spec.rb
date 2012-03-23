@@ -123,10 +123,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     end
 
-
   end
-
-
 
   # ADDRESS_1             Address.address_one
   # ADDRESS_2             Address.address_two
@@ -166,7 +163,6 @@ describe PregnancyScreenerOperationalDataExtractor do
     address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
 
   end
-
 
   it "extracts mail address operational data from the survey responses" do
 
@@ -370,7 +366,6 @@ describe PregnancyScreenerOperationalDataExtractor do
 
   end
 
-
   # PREGNANT              PpgDetail.ppg_first               PPG_STATUS_CL2/PREGNANCY_STATUS_CL1
   # ORIG_DUE_DATE         PpgDetail.orig_due_date
   # TRYING                PpgDetail.ppg_first               PPG_STATUS_CL2/PREGNANCY_TRYING_STATUS_CL2
@@ -450,7 +445,6 @@ describe PregnancyScreenerOperationalDataExtractor do
 
   end
 
-
   it "sets the ppg detail ppg status to 5 if the person responds that they are unable to become pregnant" do
 
     person = Factory(:person)
@@ -500,7 +494,6 @@ describe PregnancyScreenerOperationalDataExtractor do
       @response_set, @instrument = @person.start_instrument(@survey)
       @response_set.save!
     end
-
 
     it "sets the due date to the date provided by the participant" do
 
@@ -696,6 +689,5 @@ describe PregnancyScreenerOperationalDataExtractor do
     end
 
   end
-
 
 end

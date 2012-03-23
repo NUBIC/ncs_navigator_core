@@ -1,14 +1,14 @@
 .page_section
-  = form_for(@household_unit, :html => {:autocomplete => "off"}) do |f| 
-  
+  = form_for(@household_unit, :html => {:autocomplete => "off"}) do |f|
+
     = render "shared/custom_error_messages", :object => f.object
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
 
     = render "shared/ncs_code_select", { :f => f, :code => :hh_status_code, :label_text => "Status" }
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :hh_eligibility_code, :label_text => "Eligibility" }
-    
+
     = render "shared/ncs_code_select", { :f => f, :code => :hh_structure_code, :label_text => "Structure", :other => :hh_structure_other }
 
     %p
@@ -41,7 +41,7 @@
       %tr.row
         %td{ :colspan => '3' }
           People in household
-          %span{ :class => "required" } * 
+          %span{ :class => "required" } *
           (Click the 'Add person' link to add one or more people to this household)
       %tbody.nested_records_household_person_links
         = f.fields_for :household_person_links do |hh_pers_link|
@@ -61,7 +61,7 @@
 
 .links
   = link_to "All Household Units", household_units_path, :class => "list_link icon_link"
-  
+
 :javascript
   // For the 'other' field
   // Check on pageload

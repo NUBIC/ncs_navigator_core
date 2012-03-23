@@ -132,7 +132,7 @@ class CreatePregnancyVisit1s < ActiveRecord::Migration
       t.integer :c_addr1_id
       t.string :c_addr1_1,                :limit => 100
       t.string :c_addr2_1,                :limit => 100
-      t.string :c_unit_1,                 :limit => 10 
+      t.string :c_unit_1,                 :limit => 10
       t.string :c_city_1,                 :limit => 50
       t.integer :c_state_1_code,          :null => false
       t.string :c_zipcode_1,              :limit => 5
@@ -148,14 +148,14 @@ class CreatePregnancyVisit1s < ActiveRecord::Migration
       t.integer :c_addr2_id
       t.string :c_addr2_1,                :limit => 100
       t.string :c_addr2_2,                :limit => 100
-      t.string :c_unit_2,                 :limit => 10 
+      t.string :c_unit_2,                 :limit => 10
       t.string :c_city_2,                 :limit => 50
       t.integer :c_state_2_code,          :null => false
       t.string :c_zipcode_2,              :limit => 5
       t.string :c_zip4_2,                 :limit => 4
       t.string :contact_phone_2,          :limit => 10
       t.string :transaction_type,         :limit => 36
-      
+
       t.datetime :time_stamp_1
       t.datetime :time_stamp_2
       t.datetime :time_stamp_3

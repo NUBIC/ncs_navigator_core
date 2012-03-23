@@ -3,7 +3,7 @@ Feature: Initiating a contact
   In order to ensure a contact record is created
   As a user
   I want to initiate a contact for a person and an event
-  
+
   Scenario: Initiating contact
     Given valid ncs codes
     And an authenticated user

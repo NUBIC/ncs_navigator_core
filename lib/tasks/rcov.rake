@@ -6,7 +6,6 @@ begin
 
     rcov_options = %w{--rails --exclude osx\/objc,gems\/,spec\/,features\/ --aggregate coverage/coverage.data}
 
-
     Cucumber::Rake::Task.new(:cucumber_run) do |t|
       t.cucumber_opts = "--format pretty"
       t.rcov = true

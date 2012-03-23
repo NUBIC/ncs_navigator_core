@@ -334,7 +334,6 @@ describe Participant do
         @participant.person = person
       end
 
-
       it "returns nil if no previous contacts" do
         @participant.last_contact.should be_nil
       end
@@ -532,7 +531,6 @@ describe Participant do
             participant.upcoming_events.should == []
           end
         end
-
 
       end
     end

@@ -4,18 +4,18 @@ describe Aker::Authority::AkerToken do
   let(:app) { mock('app') }
   let(:env) { { :request_headers => ::Faraday::Utils::Headers.new } }
   let(:headers) { env[:request_headers] }
-  
+
   before { app.stub!(:call) }
-  
+
   describe "static token" do
     subject { Aker::Authority::AkerToken.new(app, 'jo-9') }
-  
+
     it 'adds the appropriate Authorization header' do
       subject.call(env)
       headers['Authorization'].should == 'CasProxy jo-9'
     end
   end
-  
+
   describe "dynamic token" do
     subject do
       i = 6

@@ -1,10 +1,9 @@
-
 .participant
   .edit_participant
     = link_to "Edit Participant Record", edit_participant_path(participant), :class => "edit_link icon_link"
   .name
     = link_to "#{participant.person}", participant_path(participant), :class => "show_link icon_link"
-  
+
   - registered = psc.is_registered?(participant)
   .upcoming
     - if registered

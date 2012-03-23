@@ -260,7 +260,6 @@ class Person < ActiveRecord::Base
     response_set
   end
 
-
   ##
   # Returns the number of times (0 based) this instrument has been taken for the given survey
   # @param [Survey]

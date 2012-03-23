@@ -51,8 +51,8 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Specify", :response_class => "string")
 
     survey
-  end  
-  
+  end
+
   def create_pregnancy_screener_survey_with_cell_phone_permissions
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -60,13 +60,13 @@ module TestSurveys
     q = Factory(:question, :reference_identifier => "CELL_PHONE_2", :data_export_identifier => "PREG_SCREEN_HI_2.CELL_PHONE_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
-    
+
     q = Factory(:question, :reference_identifier => "CELL_PHONE_4", :data_export_identifier => "PREG_SCREEN_HI_2.CELL_PHONE_4", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
     survey
   end
-  
+
   def create_pregnancy_screener_survey_with_person_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -119,7 +119,6 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Age Eligible", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "Ineligible - too young", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "Ineligible - too old", :response_class => "answer", :reference_identifier => "3")
-    
 
     survey
   end
@@ -153,7 +152,6 @@ module TestSurveys
 
     survey
   end
-
 
   def create_pregnancy_screener_survey_with_mail_address_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
@@ -220,7 +218,6 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
 
-
     survey
   end
 
@@ -237,7 +234,6 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Family/Shared", :response_class => "answer", :reference_identifier => "3")
     survey
   end
-
 
   def create_pregnancy_screener_survey_with_ppg_detail_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
@@ -309,11 +305,9 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "3rd trimester (7-9 months pregnant)", :response_class => "answer", :reference_identifier => "3")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
-    
+
     survey
   end
-
-
 
   def create_follow_up_survey_with_ppg_status_history_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2", :access_code => "ins-que-ppgfollup-int-ehpbhili-p2-v1-2")
@@ -340,7 +334,7 @@ module TestSurveys
 
     survey
   end
-  
+
   def create_follow_up_survey_with_telephone_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PPGFollUp_INT_EHPBHILI_P2_V1.2", :access_code => "ins-que-ppgfollup-int-ehpbhili-p2-v1-2")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -358,7 +352,7 @@ module TestSurveys
 
     survey
   end
-  
+
   def create_follow_up_survey_with_contact_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PPGFollUp_SAQ_EHPBHILI_P2_V1.1", :access_code => "ins-que-ppgfollup-saq-ehpbhili-p2-v1-1")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -377,10 +371,10 @@ module TestSurveys
     # Other Phone
     q = Factory(:question, :reference_identifier => "OTHER_PHONE", :data_export_identifier => "PPG_SAQ.OTHER_PHONE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
-    
+
     survey
   end
-  
+
   def create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
 
     survey = Factory(:survey, :title => "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0", :access_code => "ins-que-lipregnotpreg-int-li-p2-v2-0")
@@ -398,7 +392,7 @@ module TestSurveys
 
     survey
   end
-  
+
   def create_pre_pregnancy_survey_with_person_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -426,15 +420,15 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Separated", :response_class => "answer", :reference_identifier => "5")
     a = Factory(:answer, :question_id => q.id, :text => "Widowed", :response_class => "answer", :reference_identifier => "6")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
-    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")    
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
     survey
   end
-  
+
   def create_pre_pregnancy_survey_with_telephone_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
-    
+
     # Cell Phone
     q = Factory(:question, :reference_identifier => "CELL_PHONE", :data_export_identifier => "PRE_PREG.CELL_PHONE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
@@ -446,10 +440,10 @@ module TestSurveys
     q = Factory(:question, :reference_identifier => "CELL_PHONE_4", :data_export_identifier => "PRE_PREG.CELL_PHONE_4", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
-    
+
     survey
   end
-  
+
   def create_pre_pregnancy_survey_with_email_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -457,10 +451,10 @@ module TestSurveys
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "PRE_PREG.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
-    
+
     survey
   end
-  
+
   def create_survey_with_many_sections
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
 
@@ -479,13 +473,11 @@ module TestSurveys
     q = Factory(:question, :reference_identifier => "DUE_DATE", :data_export_identifier => "PREG_SCREEN_HI_2.DUE_DATE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Due Date", :response_class => "date")
 
-    
     survey_section = Factory(:survey_section, :survey_id => survey.id)
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "PREG_SCREEN_HI_2.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
-    
-    
+
     survey_section = Factory(:survey_section, :survey_id => survey.id)
     # English
     q = Factory(:question, :reference_identifier => "ENGLISH", :data_export_identifier => "PREG_SCREEN_HI_2.ENGLISH", :survey_section_id => survey_section.id)
@@ -522,15 +514,15 @@ module TestSurveys
     q = Factory(:question, :text => "Thank you again", :reference_identifier => nil, :data_export_identifier => "thanks_again", :survey_section_id => survey_section.id)
 
     survey
-    
+
   end
-  
+
   # CONTACT_FNAME_1       Person.first_name
   # CONTACT_LNAME_1       Person.last_name
-  # 
+  #
   # CONTACT_RELATE_1      ParticipantPersonLink.relationship_code   PERSON_PARTCPNT_RELTNSHP_CL1/CONTACT_RELATIONSHIP_CL2
   # CONTACT_RELATE1_OTH   ParticipantPersonLink.relationship_other
-  # 
+  #
   # C_ADDR_1_1            Address.address_one
   # C_ADDR_2_1            Address.address_two
   # C_UNIT_1              Address.unit
@@ -538,7 +530,7 @@ module TestSurveys
   # C_STATE_1             Address.state_code                        STATE_CL1
   # C_ZIP_1               Address.zip
   # C_ZIP4_1              Address.zip4
-  # 
+  #
   # CONTACT_PHONE_1       Telephone.phone_nbr
   def create_pre_pregnancy_survey_with_contact_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1")
@@ -587,7 +579,7 @@ module TestSurveys
     # Contact 1 phone
     q = Factory(:question, :reference_identifier => "CONTACT_PHONE_1", :data_export_identifier => "PRE_PREG.CONTACT_PHONE_1", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
-    
+
     # Contact 2 First Name
     q = Factory(:question, :reference_identifier => "CONTACT_FNAME_2", :data_export_identifier => "PRE_PREG.CONTACT_FNAME_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
@@ -633,7 +625,7 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
     survey
   end
-  
+
   def create_pregnancy_visit_1_survey_with_person_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -657,10 +649,10 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Age Eligible", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "Ineligible - too young", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "Ineligible - too old", :response_class => "answer", :reference_identifier => "3")
-    
+
     survey
   end
-  
+
   def create_pregnancy_visit_1_survey_with_contact_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -708,7 +700,7 @@ module TestSurveys
     # Contact 1 phone
     q = Factory(:question, :reference_identifier => "CONTACT_PHONE_1", :data_export_identifier => "PREG_VISIT_1_2.CONTACT_PHONE_1", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
-    
+
     # Contact 2 First Name
     q = Factory(:question, :reference_identifier => "CONTACT_FNAME_2", :data_export_identifier => "PREG_VISIT_1_2.CONTACT_FNAME_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "First Name", :response_class => "string")
@@ -754,11 +746,11 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
     survey
   end
-  
+
   def create_pregnancy_visit_1_survey_with_telephone_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
-    
+
     # Cell Phone
     q = Factory(:question, :reference_identifier => "CELL_PHONE", :data_export_identifier => "PREG_VISIT_1_2.CELL_PHONE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
@@ -770,10 +762,10 @@ module TestSurveys
     q = Factory(:question, :reference_identifier => "CELL_PHONE_4", :data_export_identifier => "PREG_VISIT_1_2.CELL_PHONE_4", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
-    
+
     survey
   end
-  
+
   def create_pregnancy_visit_1_survey_with_email_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -781,10 +773,10 @@ module TestSurveys
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "PREG_VISIT_1_2.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
-    
+
     survey
   end
-  
+
   def create_pregnancy_visit_survey_with_birth_address_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-p2-v2-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -811,8 +803,7 @@ module TestSurveys
 
     survey
   end
-  
-  
+
   def create_pregnancy_visit_1_saq_survey_with_father_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-saq-ehpbhi-p2-v2-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -849,7 +840,7 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
     survey
   end
-  
+
   def create_birth_survey_with_child_operational_data
     survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHI_P2_V2.0", :access_code => "ins_que_birth_int_ehpbhi_p2_v2_0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -867,11 +858,10 @@ module TestSurveys
     q = Factory(:question, :reference_identifier => "BABY_SEX", :data_export_identifier => "BIRTH_VISIT_BABY_NAME_2.BABY_SEX", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Male", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "Female", :response_class => "answer", :reference_identifier => "2")
-    
-    
+
     survey
   end
-  
+
   def create_birth_survey_with_tracing_operational_data
     survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-birth-int-ehpbhil-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -940,7 +930,6 @@ module TestSurveys
     q = Factory(:question, :reference_identifier => "MAIL_ZIP4", :data_export_identifier => "BIRTH_VISIT_2.MAIL_ZIP4", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
 
-
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "BIRTH_VISIT_2.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
@@ -952,6 +941,5 @@ module TestSurveys
 
     survey
   end
-  
 
 end

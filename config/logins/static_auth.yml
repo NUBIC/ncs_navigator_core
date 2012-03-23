@@ -1,6 +1,6 @@
---- 
-groups: 
-  NCSNavigator: 
+---
+groups:
+  NCSNavigator:
   - staff
   - supervisor
 users:
@@ -12,4 +12,3 @@ users:
     last_name: Usr
     email: t-usr@dev.null
     first_name: T.
-    

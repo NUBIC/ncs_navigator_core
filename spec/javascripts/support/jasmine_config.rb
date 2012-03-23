@@ -6,7 +6,6 @@ module Jasmine
   end
 end
 
-
 # Note - this is necessary for rspec2, which has removed the backtrace
 module Jasmine
   class SpecBuilder

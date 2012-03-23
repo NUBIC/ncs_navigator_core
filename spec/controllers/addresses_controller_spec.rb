@@ -11,7 +11,6 @@ describe AddressesController do
     }
   end
 
-
   context "with an authenticated user" do
     before(:each) do
       create_missing_in_error_ncs_codes(Address)

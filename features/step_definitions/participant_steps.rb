@@ -73,7 +73,6 @@ Given /^a registered unconsented high intensity trying participant$/ do
   }
 end
 
-
 Given /^a registered pregnant participant on the ppg1 page$/ do
   steps %Q{
     Given a registered pregnant participant

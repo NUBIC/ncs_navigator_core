@@ -1,61 +1,61 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: !ruby/regexp /^https:\/\/ncsn-psc.local\/api\/v1\/subjects\//
-    body: 
-    headers: 
-      authorization: 
+    body:
+    headers:
+      authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 404
       message: Not Found
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - text/html;charset=utf-8
-      date: 
+      date:
       - Fri, 26 Aug 2011 20:13:02 GMT
-      server: 
+      server:
       - Apache-Coyote/1.1
-      content-length: 
+      content-length:
       - "1090"
     body: "<html><head><title>Apache Tomcat/6.0.32 - Error report</title><style><!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}A.name {color : black;}HR {color : #525D76;}--></style> </head><body><h1>HTTP Status 404 - /subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca</h1><HR size=\"1\" noshade=\"noshade\"><p><b>type</b> Status report</p><p><b>message</b> <u>/subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca</u></p><p><b>description</b> <u>The requested resource (/subjects/b9cf6dc0-b24d-012e-8136-58b035fb69ca) is not available.</u></p><HR size=\"1\" noshade=\"noshade\"><h3>Apache Tomcat/6.0.32</h3></body></html>"
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: https://ncsn-psc.local/api/v1/studies/NCS%20Hi-Lo/template/current.xml
-    body: 
-    headers: 
-      authorization: 
+    body:
+    headers:
+      authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      last-modified: 
+    headers:
+      last-modified:
       - Thu, 25 Aug 2011 21:04:27 GMT
-      content-type: 
+      content-type:
       - text/xml;charset=UTF-8
-      server: 
+      server:
       - Restlet-Framework/2.0.3
-      date: 
+      date:
       - Fri, 26 Aug 2011 20:13:02 GMT
-      content-length: 
+      content-length:
       - "21647"
-      vary: 
+      vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges: 
+      accept-ranges:
       - bytes
-      cache-control: 
+      cache-control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma: 
+      pragma:
       - no-cache
     body: |
       <?xml version="1.0" encoding="UTF-8"?>
-      
+
       <study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2011-08-25T16:04:27.214Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
         <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
         <amendment name="[Original]" date="2011-07-07" mandatory="true" released-date="2011-08-25T16:04:27.214Z">
@@ -344,38 +344,38 @@
       </study>
 
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/sites/GCSC/subject-assignments
-    body: 
-    headers: 
-      content-type: 
+    body:
+    headers:
+      content-type:
       - text/xml
-      authorization: 
+      authorization:
       - Basic cGZyOTU3OnBzYw==
-      content-length: 
+      content-length:
       - "1024"
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 201
       message: Created
-    headers: 
-      location: 
+    headers:
+      location:
       - https://ncsn-psc.local/api/v1/studies/NCS+Hi-Lo/schedules/todo
-      server: 
+      server:
       - Restlet-Framework/2.0.3
-      date: 
+      date:
       - Fri, 26 Aug 2011 20:13:03 GMT
-      content-length: 
+      content-length:
       - "0"
-      vary: 
+      vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges: 
+      accept-ranges:
       - bytes
-      cache-control: 
+      cache-control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma: 
+      pragma:
       - no-cache
-    body: 
+    body:
     http_version: "1.1"

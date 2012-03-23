@@ -80,6 +80,5 @@ describe PeopleController do
 
     end
 
-
   end
 end

@@ -60,4 +60,3 @@ module NcsNavigatorCore
     end
   end
 end
-

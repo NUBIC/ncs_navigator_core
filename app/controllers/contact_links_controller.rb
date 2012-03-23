@@ -149,7 +149,6 @@ class ContactLinksController < ApplicationController
       end
     end
 
-
     def find_or_create_instrument(survey)
       @contact_link.instrument
     end

@@ -9,7 +9,6 @@ class CreatePersonRaces < ActiveRecord::Migration
       t.string :race_other,       :limit => 255
       t.string :transaction_type, :limit => 36
 
-
       t.timestamps
     end
   end

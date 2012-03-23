@@ -20,7 +20,6 @@
       %br
       = f.text_field :consent_expiration, :class => "date"
 
-
     = render "shared/ncs_code_select", { :f => f, :code => :consent_type_code,      :label_text => "Consent Type" }
     = render "shared/ncs_code_select", { :f => f, :code => :consent_form_type_code, :label_text => "Consent Form Type" }
     = render "shared/ncs_code_select", { :f => f, :code => :consent_given_code,     :label_text => "Consent Given" }
@@ -54,4 +53,3 @@
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
-

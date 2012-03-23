@@ -22,16 +22,16 @@ function check_select_for_other(select_id, other_id) {
     if (s.val() == "-5") {
       o.removeAttr('disabled');
       // to make the change more visible
-      o.css('background-color', '#FAFAD2'); 
-      o.css('border', '2px solid #808080'); 
+      o.css('background-color', '#FAFAD2');
+      o.css('border', '2px solid #808080');
       sel.parent('p.ncs_select').next('p.other_field').show();
     } else {
       // clear the other field
       o.val('');
       o.attr('disabled', 'disabled');
       // to make disabled more visible
-      o.css('border', '1px solid #ccc'); 
-      o.css('background-color', '#ccc'); 
+      o.css('border', '1px solid #ccc');
+      o.css('background-color', '#ccc');
       sel.parent('p.ncs_select').next('p.other_field').hide();
     }
   }
@@ -39,11 +39,11 @@ function check_select_for_other(select_id, other_id) {
 
 function stop_default_action(e) {
   if (e &&e.preventDefault) {
-    // to disable the default event we call the preventDefault() method of the event handler 
+    // to disable the default event we call the preventDefault() method of the event handler
     // (for those browsers that recognise standard event listeners)
     e.preventDefault();
   } else if (window.event && window.event.returnValue) {
-    // we set the eventReturnValue property to false for Internet Explorer 
+    // we set the eventReturnValue property to false for Internet Explorer
     // (which uses its own proprietary means of attaching events)
     window.eventReturnValue = false;
   }
@@ -59,13 +59,13 @@ $(document).ready(function() {
   	changeYear: true,
   	yearRange: '1920:2020'
   });
-  $("input[type='text'].date").datepicker( { 
+  $("input[type='text'].date").datepicker( {
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
   	changeYear: true,
   	yearRange: '1920:2020'
   } );
-  $("input[type='text'].datepicker").datepicker( { 
+  $("input[type='text'].datepicker").datepicker( {
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
   	changeYear: true,
@@ -103,20 +103,18 @@ $(document).ready(function() {
       });
   });
 
-
   $(".help_icon").tooltip();
   $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
   $("#tabs").tabs();
-  
+
   $("#event_show_close_fields a").click(function() {
     $('#event_end_date_fields').toggle();
     $('#event_show_close_fields').toggle();
   });
-  
+
   $("#event_end_date_fields a").click(function() {
     $('#event_show_close_fields').toggle();
     $('#event_end_date_fields').toggle();
   });
 });
-

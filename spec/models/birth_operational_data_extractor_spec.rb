@@ -192,7 +192,6 @@ describe BirthOperationalDataExtractor do
 
     end
 
-
   end
 
 end

@@ -1,4 +1,3 @@
-
 class BirthOperationalDataExtractor
 
   BABY_NAME_PREFIX   = "BIRTH_VISIT_BABY_NAME_2"
@@ -78,7 +77,6 @@ class BirthOperationalDataExtractor
     "#{BIRTH_LI_PREFIX}.EMAIL"           => "email",
     "#{BIRTH_LI_PREFIX}.EMAIL_TYPE"      => "email_type_code"
   }
-
 
   class << self
 

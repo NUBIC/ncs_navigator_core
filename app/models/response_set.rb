@@ -19,7 +19,6 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :instrument
 
-
   def has_responses_in_each_section_with_questions?
     result = false
     survey.sections_with_questions.each do |section|

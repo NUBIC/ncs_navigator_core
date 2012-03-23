@@ -14,7 +14,7 @@
     = @survey.title
 
 .page_section
-  = form_for(@contact_link, :url => finalize_instrument_contact_link_path(@contact_link), :html => {:autocomplete => "off"}) do |f| 
+  = form_for(@contact_link, :url => finalize_instrument_contact_link_path(@contact_link), :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
 
     = f.hidden_field :person_id
