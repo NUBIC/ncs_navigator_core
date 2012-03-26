@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'ncs_navigator/core/warehouse/response_set_to_warehouse'
 
 module NcsNavigator::Core::Warehouse
-  describe ResponseSetToWarehouse do
+  describe ResponseSetToWarehouse, :warehouse do
     it 'is mixed into ResponseSet' do
       ::ResponseSet.ancestors.should include(ResponseSetToWarehouse)
     end

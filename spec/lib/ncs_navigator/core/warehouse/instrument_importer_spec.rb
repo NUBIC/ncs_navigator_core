@@ -3,7 +3,7 @@ require 'spec_helper'
 require File.expand_path('../importer_warehouse_setup', __FILE__)
 
 module NcsNavigator::Core::Warehouse
-  describe InstrumentImporter, :clean_with_truncation, :slow do
+  describe InstrumentImporter, :clean_with_truncation, :slow, :warehouse do
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     include_context :importer_spec_warehouse

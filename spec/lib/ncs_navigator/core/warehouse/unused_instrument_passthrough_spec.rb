@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Warehouse
-  describe UnusedInstrumentPassthrough do
+  describe UnusedInstrumentPassthrough, :warehouse do
     before do
       load_survey_string(<<-S1)
 survey "INS_BIO_AdultBlood_DCI_EHPBHI_P2_V1.0" do
