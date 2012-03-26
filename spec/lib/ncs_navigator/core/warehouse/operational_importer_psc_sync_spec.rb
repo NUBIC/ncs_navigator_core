@@ -59,11 +59,18 @@ module NcsNavigator::Core::Warehouse
     # mini-integration tests; details are tested below
     describe '#import' do
       let(:scheduled_events) {
-        [ {
+        [
+          {
             :event_type_label => 'pregnancy_visit_1',
             :start_date => '2010-01-11',
             :scheduled_activities => %w(sa1)
-          } ]
+          },
+          {
+            :event_type_label => 'birth',
+            :start_date => '2011-03-09',
+            :scheduled_activities => %w(sa3)
+          }
+        ]
       }
 
       let(:scheduled_activities) {
@@ -94,6 +101,9 @@ module NcsNavigator::Core::Warehouse
         redis.sadd(
           "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:e1",
           'e1_lc2')
+
+        create_all_event_types
+        create_missing_in_error_ncs_codes(Event)
       end
 
       it 'schedules segments for events' do
@@ -128,6 +138,14 @@ module NcsNavigator::Core::Warehouse
               'reason' => 'Imported closed event e1.'
             }
           })
+
+        importer.import
+      end
+
+      it 'creates events implied by the PSC events list' do
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+        Event.should_receive(:create_placeholder_record).
+          with(participant, '2011-03-09', 18, nil)
 
         importer.import
       end
@@ -665,6 +683,63 @@ module NcsNavigator::Core::Warehouse
 
           importer.cancel_pending_activities_for_closed_events(psc_participant)
         end
+      end
+    end
+
+    describe 'creating new events implied by PSC' do
+      let(:scheduled_events) {
+        [
+          {
+            :event_type_label => 'informed_consent',
+            :start_date => '2009-06-21',
+            :scheduled_activities => %w(sa0)
+          },
+          {
+            :event_type_label => 'birth',
+            :start_date => '2010-09-30',
+            :scheduled_activities => %w(sa1)
+          },
+          {
+            :event_type_label => '3_month',
+            :start_date => '2010-12-31',
+            :scheduled_activities => %w(sa2)
+          },
+          {
+            :event_type_label => '6_month',
+            :start_date => '2011-03-16',
+            :scheduled_activities => %w(sa3)
+          }
+        ]
+      }
+
+      before do
+        add_event_hash('e1', '2010-09-30',
+          :event_type_label => 'birth',
+          :end_date => '2010-09-30')
+        redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
+
+        create_all_event_types
+        create_missing_in_error_ncs_codes(Event)
+
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+
+        importer.create_placeholders_for_implied_events(psc_participant)
+      end
+
+      it 'does not create events for PSC events that are earlier than some imported events' do
+        # informed consent
+        participant.events.where(:event_type_code => 10).should == []
+      end
+
+      it 'does not create duplicate events for PSC events which correspond to imported core events' do
+        # birth
+        participant.events.where(:event_type_code => 18).should == []
+      end
+
+      it 'creates placeholders for PSC events that are later than all imported events' do
+        # 3 month
+        participant.events.where(:event_type_code => 23).first.
+          event_start_date.to_s.should == '2010-12-31'
       end
     end
   end
