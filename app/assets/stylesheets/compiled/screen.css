@@ -2357,7 +2357,7 @@ body.ncs #header #tab_navigation li.current a {
   text-align: center;
   color: #333333;
 }
-/* line 99, ../../../stylesheets/partials/_ncs.scss */
+/* line 98, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #content {
   display: inline;
   float: left;
@@ -2376,24 +2376,24 @@ body.ncs #content {
 * html body.ncs #content {
   overflow-x: hidden;
 }
-/* line 108, ../../../stylesheets/partials/_ncs.scss */
+/* line 107, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #content .block {
   background-color: #e8e8e8;
   margin-bottom: 1em;
 }
-/* line 113, ../../../stylesheets/partials/_ncs.scss */
+/* line 112, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #content .block .title {
   font-weight: bold;
   font-style: normal;
   font-size: 125%;
   padding: 0.2em 0;
 }
-/* line 122, ../../../stylesheets/partials/_ncs.scss */
+/* line 121, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer {
   background-color: transparent;
   font-size: 1.1em;
 }
-/* line 126, ../../../stylesheets/partials/_ncs.scss */
+/* line 125, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .ncs_logo {
   display: inline;
   float: left;
@@ -2404,7 +2404,7 @@ body.ncs #footer .ncs_logo {
 * html body.ncs #footer .ncs_logo {
   overflow-x: hidden;
 }
-/* line 130, ../../../stylesheets/partials/_ncs.scss */
+/* line 129, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .contact_info {
   margin-top: 1em;
   display: inline;
@@ -2417,7 +2417,7 @@ body.ncs #footer .contact_info {
 * html body.ncs #footer .contact_info {
   overflow-x: hidden;
 }
-/* line 136, ../../../stylesheets/partials/_ncs.scss */
+/* line 135, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .ncs_text {
   margin-top: 1em;
   display: inline;
@@ -2429,11 +2429,11 @@ body.ncs #footer .ncs_text {
 * html body.ncs #footer .ncs_text {
   overflow-x: hidden;
 }
-/* line 139, ../../../stylesheets/partials/_ncs.scss */
+/* line 138, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .ncs_text img {
   display: block;
 }
-/* line 144, ../../../stylesheets/partials/_ncs.scss */
+/* line 143, ../../../stylesheets/partials/_ncs.scss */
 body.ncs #footer .app_version {
   color: #999;
   display: inline;
