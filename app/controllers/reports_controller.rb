@@ -43,7 +43,7 @@ class ReportsController < ApplicationController
   ##
   # Returns all the participants known to have a birth in the future
   def upcoming_births
-    @pregnant_participants = Participant.upcoming_births.select { |participant| participant.known_to_be_pregnant? }.sort_by { |e| e.due_date }
+    @pregnant_participants = Participant.upcoming_births.select { |participant| participant.known_to_be_pregnant? }.sort_by { |e| e.due_date.to_s }
   end
 
   ##
