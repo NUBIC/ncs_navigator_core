@@ -10,7 +10,7 @@ class CreateContacts < ActiveRecord::Migration
       t.string :contact_date,               :limit => 10
       t.date :contact_date_date
       t.string :contact_start_time
-      t.string :contact_end_time      
+      t.string :contact_end_time
       t.integer :contact_language_code,     :null => false
       t.string :contact_language_other
       t.integer :contact_interpret_code,    :null => false

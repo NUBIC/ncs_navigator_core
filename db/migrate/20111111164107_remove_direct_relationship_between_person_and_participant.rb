@@ -2,7 +2,7 @@ class RemoveDirectRelationshipBetweenPersonAndParticipant < ActiveRecord::Migrat
   def up
     remove_column :participants, :person_id
   end
-  
+
   def down
     # NOOP
   end

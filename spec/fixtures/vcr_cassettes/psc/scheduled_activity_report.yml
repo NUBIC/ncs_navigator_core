@@ -1,32 +1,32 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: !ruby/regexp /^https:\/\/ncsn-psc.local\/api\/v1\/reports\/scheduled-activities.json/
-    body: 
-    headers: 
-      authorization: 
+    body:
+    headers:
+      authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - application/json
-      server: 
+      server:
       - Restlet-Framework/2.0.3
-      date: 
+      date:
       - Tue, 04 Oct 2011 15:28:03 GMT
-      vary: 
+      vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges: 
+      accept-ranges:
       - bytes
-      cache-control: 
+      cache-control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      transfer-encoding: 
+      transfer-encoding:
       - chunked
-      pragma: 
+      pragma:
       - no-cache
     body: "{\"filters\":{\"start_date\":\"2011-10-04\",\"end_date\":\"2012-01-04\"},\"rows\":[{\"grid_id\":\"b31f2521-7851-4223-9c89-f8e6e3b3aee9\",\"activity_name\":\"Low-Intensity Consent\",\"activity_type\":\"Consent\",\"activity_status\":\"Scheduled\",\"scheduled_date\":\"2011-10-07\",\"last_change_reason\":\"Shifted forward 0 days in revision 09/16/2011 (Rev1)\",\"ideal_date\":\"2011-10-07\",\"subject\":{\"name\":\"Sojourner Truth\",\"person_id\":\"194b7d90-ccf9-012e-6ecd-58b035fb69ca\",\"grid_id\":\"6193b048-2764-4d2e-86e6-da5a6c5c6042\"},\"responsible_user\":\"pfr957\",\"study\":\"NCS Hi-Lo\",\"site\":\"Greater Chicago Study Center\"},{\"grid_id\":\"cc0029a5-e1e0-4cb0-962b-af03e03e1930\",\"activity_name\":\"Low-Intensity Interview\",\"activity_type\":\"Instrument\",\"activity_status\":\"Scheduled\",\"scheduled_date\":\"2011-10-07\",\"last_change_reason\":\"Shifted forward 0 days in revision 09/16/2011 (Rev1)\",\"ideal_date\":\"2011-10-07\",\"subject\":{\"name\":\"Sojourner Truth\",\"person_id\":\"194b7d90-ccf9-012e-6ecd-58b035fb69ca\",\"grid_id\":\"6193b048-2764-4d2e-86e6-da5a6c5c6042\"},\"responsible_user\":\"pfr957\",\"study\":\"NCS Hi-Lo\",\"site\":\"Greater Chicago Study Center\"}]}"
     http_version: "1.1"

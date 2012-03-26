@@ -3,7 +3,7 @@ Feature: Accessing the application
   In order to have a person easily work with those records
   As a user
   I want to view them when I access the application
-  
+
   Scenario: Accessing a new instance of the application
     Given valid ncs codes
     And an authenticated user
@@ -15,14 +15,14 @@ Feature: Accessing the application
     # And I should see "No dwellings were found."
     # And I should see "People"
     # And I should see "No people were found."
-    
+
   # Scenario: Accessing an instance of the application with dwelling units without households
   #   Given a dwelling_unit exists with du_type_other: "Test Dwelling"
   #   When I go to the home page
   #   Then I should see "NCS Navigator"
   #   And I should see "Test Dwelling"
   #   And I should see "Household Enumeration"
-  
+
   @javascript
   Scenario: Accessing an instance of the application with participants
     Given valid ncs codes

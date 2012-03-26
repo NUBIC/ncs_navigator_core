@@ -37,7 +37,6 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     # FOR EACH CHILD UNTIL CHILD_NUM=CHILD_QNUM. THEN GO TO DRINK.
     #     o LOOP THROUGH ROOM_MOLD_CHILD UNTIL CHILD_NUM=CHILD_QNUM.
 
-
     q_CHILD_QNUM "Which number child is this questionnaire for?",
     :data_export_identifier=>"TWENTY_FOUR_MTH_MOTHER_DETAIL.CHILD_QNUM"
     a_which_child "Number", :integer
@@ -656,7 +655,6 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     dependency :rule => "A"
     condition_A :q_PRESCR_TAKE, "==", :a_1
 
-
 # TODO
 # MED004A/(INTRO_PRESCRMED_1). Let’s first talk about the {PRESCRMED}.
 # MED004B/(INTRO_PRESCRMED_2_10). Now let’s talk about the {PRESCRMED}.
@@ -737,7 +735,6 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     # • IF FIRST LOOP, DISPLAY INTRO_OTCMED_1. OTHERWISE, DISPLAY INTRO_OTCMED_2_10.
     # • FOR INTRO_OTCMED_1, INTRO_OTCMED_2_10, OTC_ADMIN, OTC_TAKESTILL AND OTC_FREQ INSERT CORRECT MEDICATION OTCMED FOR
     # APPROPRIATE CYCLE.
-
 
     label "Please list the name of all non-prescription medicines taken in the past 30 days:",
     :help_text => "Enter up to 10 medications; if more than 10 medications provided, enter first 10 provided by participant.
@@ -2068,4 +2065,3 @@ survey "INS_QUE_24MMother_INT_EHPBHI_P2_V1.0" do
     a :datetime, :custom_class => "datetime"
   end
 end
-

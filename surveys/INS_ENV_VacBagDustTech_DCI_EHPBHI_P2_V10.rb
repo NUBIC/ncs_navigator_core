@@ -74,7 +74,6 @@ survey "INS_ENV_VacBagDustTechCollect_DCI_EHPBHI_P2_V1.0" do
       a_9 "Shop vac"
       a_neg_5 "Other"
 
-
       # TODO
       # • ALLOW UP TO 250 CHARACTERS
       q_VAC_TYPE_OTH "Other vacuum type",

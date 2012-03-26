@@ -33,7 +33,7 @@ class CreateAddresses < ActiveRecord::Migration
       t.string :zip4,                     :limit => 4
       t.text :address_comment
       t.string :transaction_type
-      
+
       t.timestamps
     end
   end

@@ -40,7 +40,7 @@ require 'pickle/world'
 
 Pickle.configure do |config|
   config.adapters = [:factory_girl]
-  config.predicates = %w(exist) 
+  config.predicates = %w(exist)
 end
 
 require 'pickle/path/world'

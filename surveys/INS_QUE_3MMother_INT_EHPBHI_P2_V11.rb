@@ -642,7 +642,6 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-
       q_HOMECARE_HRS "I’d like you to think about all the regularly scheduled care your child receives on a weekly basis
       from non-relatives in a home setting. (This includes all regularly scheduled care arrangements with non-relatives that
       happen at least weekly, including home child care providers, regularly scheduled sitter arrangements, or neighbors.
@@ -783,7 +782,6 @@ survey "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1" do
     a :datetime, :custom_class => "datetime"
 
     # TODO - questionare for the second baby
-
 
     label "Thank you for your time and for being a part of this important research study. This is the end of our interview.",
     :help_text => "Include information about next contact (6 month home visit) and verification of contact information."

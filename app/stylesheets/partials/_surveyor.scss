@@ -7,7 +7,7 @@
   background: inherit !important;
 
   margin: 0;
-  
+
   .surveyor_menu {
     float: none;
     ul {
@@ -21,14 +21,14 @@
       border-right-width: 0;
       background-color: #dcdcdc;
       color: #666666;
-      
+
       li {
         border-bottom-style: solid;
         border-bottom-width: 1px;
         border-color: #bcbcbc;
         text-align: left;
         overflow: hidden;
-                
+
         input[type="submit"], button, a {
           text-align: left;
           font-size: 0.7em;
@@ -40,19 +40,19 @@
           color: #464646;
           white-space: normal;
         }
-        
+
         a {
           display: block;
           text-decoration: none;
         }
       }
-      
+
       li.active, li.active input[type="submit"], li.active button {
         background-color: #ebebcc;
         color: #262626;
       }
     }
-  } 
+  }
 
   .previous_section, .next_section {
     font-size: 0.8em;
@@ -60,16 +60,16 @@
     padding: 0;
     float: left;
   }
-  
+
   .survey_title {
 	  width: 500px;
 	  margin-left: -0.5em;
 	}
-	
+
   .survey_section {
     margin: 0.5em 0.5em 0.5em -1em;
     padding: 0.5em 0 0 0;
-    
+
     fieldset {
 
       border: none !important;
@@ -77,7 +77,7 @@
       background-color: inherit !important;
 
 			margin-bottom: 4px;
-			
+
 			ol {
 				margin: 0 0.8em 0.1em 0;
 				li {
@@ -122,7 +122,7 @@
 		.question {
       @include column(12);
     }
-    
+
   	.g_repeater,
   	.g_inline {
   		fieldset {
@@ -142,7 +142,7 @@
 	.explanation {
     display: block !important;
   }
-  
+
   #survey_list ul {
     padding-left: 2em;
     margin-top: -2em;

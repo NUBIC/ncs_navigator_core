@@ -90,7 +90,6 @@ class PrePregnancyOperationalDataExtractor
       contact2phone        = nil
       contact2address      = nil
 
-
       cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type)
       email = Email.new(:person => person)
 
@@ -103,7 +102,6 @@ class PrePregnancyOperationalDataExtractor
       contact2phone = Telephone.new(:person => contact2)
       contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new)
       contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant)
-
 
       response_set.responses.each do |r|
 

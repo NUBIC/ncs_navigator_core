@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe PregnancyVisitOperationalDataExtractor do
+  include SurveyCompletion
 
   before(:each) do
     create_missing_in_error_ncs_codes(Instrument)
@@ -27,25 +28,14 @@ describe PregnancyVisitOperationalDataExtractor do
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     survey = create_pregnancy_visit_1_survey_with_person_operational_data
-    survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.save!
-    response_set.responses.size.should == 0
-    survey_section.questions.each do |q|
-      case q.data_export_identifier
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "Jo", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_LNAME"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "Stafford", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.PERSON_DOB"
-        answer = q.answers.select { |a| a.response_class == "date" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :datetime_value => Date.parse("01/01/1981"), :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG"
-        answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{age_eligible.local_code}" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      end
+
+    take_survey(survey, response_set) do |a|
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+      a.date "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
+      a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
     end
 
     response_set.responses.reload
@@ -103,10 +93,8 @@ describe PregnancyVisitOperationalDataExtractor do
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Other", :local_code => -5)
 
       @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
-      @survey_section = @survey.sections.first
       @response_set, @instrument = @person.start_instrument(@survey)
       @response_set.save!
-      @response_set.responses.size.should == 0
       @participant.participant_person_links.size.should == 1
     end
 
@@ -117,41 +105,18 @@ describe PregnancyVisitOperationalDataExtractor do
       survey_section = survey.sections.first
       response_set, instrument = @person.start_instrument(survey)
       response_set.save!
-      response_set.responses.size.should == 0
 
-      survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Lonnie Johnson", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE"
-          answer = q.answers.select { |a| a.response_class == "integer" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :integer_value => "23", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "123 Easy St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_UNIT"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_CITY"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_STATE"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIPCODE"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "3125551212", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        end
+      take_survey(survey, response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME", 'Lonnie Johnson'
+        a.int "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE", 23
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_1", '123 Easy St.'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_UNIT", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_CITY", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_STATE", state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIPCODE", '65432'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4", '1234'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE", '3125551212'
       end
 
       response_set.responses.reload
@@ -176,42 +141,18 @@ describe PregnancyVisitOperationalDataExtractor do
     it "creates a new person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
 
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Donna", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Noble", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{@contact_friend.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "123 Easy St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_1"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "3125551212", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Donna'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Noble'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_friend
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_1", '123 Easy St.'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_1", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_1", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_1", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_1", state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_1", '65432'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_1", '1234'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_1", '3125551212'
       end
 
       @response_set.responses.reload
@@ -233,46 +174,21 @@ describe PregnancyVisitOperationalDataExtractor do
       friend.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
     end
 
-
     it "creates another new person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
 
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Carole", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "King", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_2"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{@contact_neighbor.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "123 Tapestry St.", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_2"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "1234", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_2"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "3125551212", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2", 'Carole'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_2", 'King'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_2", '123 Tapestry St.'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_2", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_2", state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_2", '65432'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_2", '1234'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_2", '3125551212'
       end
 
       @response_set.responses.reload
@@ -297,18 +213,10 @@ describe PregnancyVisitOperationalDataExtractor do
     it "creates an other relative person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
 
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Ivy", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Anderson", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{@contact_aunt_uncle.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Ivy'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Anderson'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_aunt_uncle
       end
 
       @response_set.responses.reload
@@ -328,18 +236,10 @@ describe PregnancyVisitOperationalDataExtractor do
     it "creates a grandparent person record and associates it with the particpant" do
       state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
 
-      @survey_section.questions.each do |q|
-        case q.data_export_identifier
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Billie", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1"
-          answer = q.answers.select { |a| a.response_class == "string" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :string_value => "Holiday", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1"
-          answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{@contact_grandparent.local_code}" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        end
+      take_survey(@survey, @response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Billie'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Holiday'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_grandparent
       end
 
       @response_set.responses.reload
@@ -367,23 +267,13 @@ describe PregnancyVisitOperationalDataExtractor do
     person.telephones.size.should == 0
 
     survey = create_pregnancy_visit_1_survey_with_telephone_operational_data
-    survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.save!
-    response_set.responses.size.should == 0
 
-    survey_section.questions.each do |q|
-      case q.data_export_identifier
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"
-        answer = q.answers.select { |a| a.response_class == "answer" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_4"
-        answer = q.answers.select { |a| a.response_class == "answer" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "3125557890", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      end
+    take_survey(survey, response_set) do |a|
+      a.yes "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"
+      a.yes "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_4"
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
     end
 
     response_set.responses.reload
@@ -411,12 +301,8 @@ describe PregnancyVisitOperationalDataExtractor do
     response_set.save!
     response_set.responses.size.should == 0
 
-    survey_section.questions.each do |q|
-      case q.data_export_identifier
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      end
+    take_survey(survey, response_set) do |a|
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload
@@ -437,31 +323,16 @@ describe PregnancyVisitOperationalDataExtractor do
     person.addresses.size.should == 0
 
     survey = create_pregnancy_visit_survey_with_birth_address_operational_data
-    survey_section = survey.sections.first
     response_set, instrument = person.start_instrument(survey)
     response_set.save!
-    response_set.responses.size.should == 0
-    survey_section.questions.each do |q|
-      case q.data_export_identifier
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_1"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "123 Hospital Way", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_2"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_UNIT"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "Chicago", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE"
-        answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "#{state.local_code}" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      when "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE"
-        answer = q.answers.select { |a| a.response_class == "string" }.first
-        Factory(:response, :survey_section_id => survey_section.id, :string_value => "65432", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-      end
+
+    take_survey(survey, response_set) do |a|
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_1", '123 Hospital Way'
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_2", ''
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_UNIT", ''
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+      a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE", state
+      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
     end
 
     response_set.responses.reload
@@ -475,6 +346,5 @@ describe PregnancyVisitOperationalDataExtractor do
     address.to_s.should == "123 Hospital Way Chicago, IL 65432"
 
   end
-
 
 end

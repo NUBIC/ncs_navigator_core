@@ -385,7 +385,6 @@ describe Contact do
 
       end
 
-
     end
 
     describe "auto-completing MDES data" do
@@ -550,7 +549,6 @@ describe Contact do
 
       end
 
-
       describe "setting the disposition based on instrument responses" do
 
         it "sets the disposition to complete in English"
@@ -561,14 +559,11 @@ describe Contact do
 
       end
 
-
     end
 
   end
 
   context "last contact for a participant" do
-
-
 
     it "returns the last contact for a participant" do
     end

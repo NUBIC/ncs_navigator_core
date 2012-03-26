@@ -3,7 +3,7 @@ Feature: Editing a person
   In order to edit a person
   As a user
   I want to be able to select and edit a person record
-  
+
   Scenario: Editing a new  person
     Given valid ncs codes
     And an authenticated user
@@ -12,7 +12,7 @@ Feature: Editing a person
     When I am on the people page
     Then I should see "People"
     And I should see "Edit"
-    When I follow "Edit" 
+    When I follow "Edit"
     Then I should be on the edit person page
     And I should see "Edit Person"
     When I fill in "Comment" with "A new comment"

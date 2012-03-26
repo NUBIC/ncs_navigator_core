@@ -187,7 +187,6 @@ survey "INS_QUE_PregScreen_INT_HILI_P2_V2.0" do
       a_3 "Participant is over 49"
       a_neg_6 "Age eligibility is unknown"
 
-
       q_TIME_STAMP_4 "Insert date/time stamp", :data_export_identifier=>"PREG_SCREEN_HI_2.TIME_STAMP_4"
       a :datetime, :custom_class => "datetime"
 

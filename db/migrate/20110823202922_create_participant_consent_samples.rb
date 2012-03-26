@@ -6,7 +6,7 @@ class CreateParticipantConsentSamples < ActiveRecord::Migration
       t.binary :participant_consent_sample_id, :null => false
       t.references :participant
       t.references :participant_consent
-      
+
       t.integer :sample_consent_type_code,     :null => false
       t.integer :sample_consent_given_code,    :null => false
 

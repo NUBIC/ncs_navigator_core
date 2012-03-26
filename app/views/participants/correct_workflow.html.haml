@@ -15,7 +15,7 @@
     %b
       Next State
     .form
-      = form_for(@participant, :url => process_update_state_participant_path(@participant), 
+      = form_for(@participant, :url => process_update_state_participant_path(@participant),
                                :html => {:autocomplete => "off"}) do |f|
         - if @participant.low_intensity?
           - if @participant.pending?
@@ -68,7 +68,6 @@
           - else
             = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
 
-
 .page_section
   .psc_registration
     %b
@@ -79,7 +78,7 @@
         .schedule_next_event
           %b
             Schedule Next Event
-            = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), 
+            = form_for(@participant, :url => schedule_next_event_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"),
                                      :html => {:class => "schedule_next_event_with_psc", :autocomplete => "off"}) do |f|
               = render "shared/full_error_messages", :object => f.object
               %p
@@ -88,7 +87,7 @@
                 = f.submit "Schedule #{next_event.event}"
     - else
       Participant needs to be registered in PSC
-      = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"), 
+      = form_for(@participant, :url => register_with_psc_participant_path(@participant, :redirect_to => "#{request.path}"),
                                :html => {:class => "register_participant_with_psc"}) do |f|
         = render "shared/full_error_messages", :object => f.object
         %p

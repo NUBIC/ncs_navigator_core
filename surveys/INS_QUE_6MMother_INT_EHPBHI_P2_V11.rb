@@ -104,7 +104,6 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     # • IF PARTICIPANT REFUSES TO PROVIDE NAME, INITIALS OR IDENTIFIER C_FNAME AND C_LNAME=-1, USE “YOUR CHILD” FOR C_FNAME
     # IN REMAINDER OF QUESTIONNAIRE.
 
-
     # TODO
     # PROGRAMMER INSTRUCTIONS:
     # •  PRELOAD CHILD’S DOB IF COLLECTED PREVIOUSLY AS MM/DD/YYYY.
@@ -341,7 +340,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     a_2 "Back"
     a_3 "Side"
     a_neg_1 "Refused"
-    a_neg_2 "Don’t know"	
+    a_neg_2 "Don’t know"
 
     q_SLEEP_POSITION_NAP "In what position do you most often lay {C_FNAME or YOUR CHILD} down for naps? On the",
     :pick => :one,
@@ -964,7 +963,7 @@ survey "INS_QUE_6MMother_INT_EHPBHI_P2_V1.1" do
     a_1 "Yes"
     a_2 "No"
     a_neg_1 "Refused"
-    a_neg_2 "Don't know"	
+    a_neg_2 "Don't know"
 
     q_SMOKE_RULES "Which of the following statements describes the rules about smoking inside your home now?",
     :pick => :one,

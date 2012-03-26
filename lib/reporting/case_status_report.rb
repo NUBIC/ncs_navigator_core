@@ -157,7 +157,6 @@ module Reporting
   end
 end
 
-
 # select part.id as q_id, part.p_id, pers.first_name as q_first_name, pers.last_name as q_last_name,
 #        max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name,
 #        t.phone_nbr as q_phone,

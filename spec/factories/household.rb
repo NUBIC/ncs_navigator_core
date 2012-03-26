@@ -1,4 +1,3 @@
-
 Factory.define :listing_unit do |lu|
   lu.psu              { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
   lu.list_line        1
@@ -45,7 +44,6 @@ Factory.define :dwelling_household_link do |link|
   link.is_active  { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
   link.du_rank    { |a| a.association(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1) }
 end
-
 
 Factory.define :household_person_link do |link|
   link.association :person,  :factory => :person

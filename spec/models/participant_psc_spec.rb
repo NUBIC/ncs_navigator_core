@@ -153,7 +153,6 @@ describe Participant do
           participant.next_scheduled_event.date.should == 1.week.from_now.to_date
         end
 
-
         it "is eligible to be moved in the high intensity arm if in tsu" do
           du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
           hh = Factory(:household_unit)

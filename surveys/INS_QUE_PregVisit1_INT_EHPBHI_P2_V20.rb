@@ -715,7 +715,6 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
       #   o IF RECENT_MOVE WAS ASKED DURING PRE-PREGNANCY QUESTIONNAIRE AND WAS CODED AS “YES”; SKIP REST OF SECTION AND GO TO TIME_STAMP_9
       #   o IF RECENT_MOVE WAS ASKED DURING PRE-PREGNANCY QUESTIONNAIRE AND WAS NOT CODED AS “YES”; GO TO (AGE_HOME) AND CONTINUE THROUGH SECTION
 
-
       q_age_home "Can you tell us, which of these categories do you think best describes when your home or building was built?",
       :help_text => "Show response options on card to participant", :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_1_2.AGE_HOME"
@@ -1400,7 +1399,6 @@ survey "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0" do
 
       label "The next set of questions asks about different ways we might be able to keep in touch with you. Please remember
       that all the information you provide is confidential and will not be provided to anyone outside the National Children’s Study."
-
 
       # TODO
       # PROGRAMMER INSTRUCTIONS:

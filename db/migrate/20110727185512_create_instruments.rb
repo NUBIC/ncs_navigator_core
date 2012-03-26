@@ -1,7 +1,7 @@
 class CreateInstruments < ActiveRecord::Migration
   def self.up
     create_table :instruments do |t|
-      
+
       t.integer :psu_code,                  :null => false, :limit => 36
       t.binary :instrument_id,              :null => false
       t.references :event
@@ -12,7 +12,7 @@ class CreateInstruments < ActiveRecord::Migration
       t.date :instrument_start_date
       t.string :instrument_start_time
       t.date :instrument_end_date
-      t.string :instrument_end_time      
+      t.string :instrument_end_time
       t.integer :instrument_breakoff_code,  :null => false
       t.integer :instrument_status_code,    :null => false
       t.integer :instrument_mode_code,      :null => false

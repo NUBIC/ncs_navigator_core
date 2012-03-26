@@ -57,7 +57,6 @@ describe Address do
     addr.zip = "48220"
     addr.to_s.should == "1 Main Detroit, #{addr.state} 48220"
 
-
     addr.zip4 = "1111"
     addr.to_s.should == "1 Main Detroit, #{addr.state} 48220-1111"
   end

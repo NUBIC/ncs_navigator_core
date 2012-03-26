@@ -8,7 +8,7 @@ body.bp {
 }
 
 form.bp {
-  @include blueprint-form; 
+  @include blueprint-form;
 }
 
 // Page layout can be done using mixins applied to your semantic classes and IDs:
@@ -18,7 +18,7 @@ body.ncs {
     // background-color: $tab_nav_bg;
     color: orange;
   }
-  
+
   /* jQuery UI - Override the jQuery CSS*/
   .ui-widget {
     font-family: inherit;
@@ -30,11 +30,11 @@ body.ncs {
     padding-left: 0 !important;
     border-bottom: 1px solid #AAAAAA !important;
   }
-  
+
   #container {
     @include container;
   }
-  
+
   #header, #footer {
     @include column($blueprint-grid-columns);
   }
@@ -51,12 +51,12 @@ body.ncs {
       @include append(1);
       font-size: 13px;
     }
-    
+
     #app_name {
       @include prepend(1);
-      font-size: 2.0em; 
+      font-size: 2.0em;
     }
-    
+
     #tab_navigation {
       @include column($blueprint-grid-columns);
       ul {
@@ -80,7 +80,7 @@ body.ncs {
         text-align: center;
         color: $tab_nav_txt;
       }
-            
+
       li.current a{
         display: block;
         width: 12em;
@@ -90,57 +90,56 @@ body.ncs {
         border: 1px solid $tab_nav_border;
         border-bottom: 0px;
         text-align: center;
-        color: $tab_nav_current_txt; 
+        color: $tab_nav_current_txt;
       }
     } // end of tab nav
   } // end of header
 
-  
   #content {
     @include column($blueprint-grid-columns - 2);
     padding: 1em 0;
     @include prepend(1);
-    @include append(1); 
+    @include append(1);
     background-color: $tab_nav_current_bg;
     @include rounded-corners(1em);
     border: 2px solid #ccc;
-    
+
     .block {
       background-color: $form_table_bg;
       @include append-bottom(1em);
     }
-    
+
     .block .title {
       font-weight: bold;
       font-style: normal;
       font-size: 125%;
       padding: 0.2em 0;
     }
-    
+
   }
 
   #footer {
     background-color: $footer_bg;
     font-size: 1.1em;
-  
+
     .ncs_logo {
       @include column(6);
     }
-  
+
     .contact_info {
       @include prepend-top(1em);
       @include column(14);
       text-align: center;
     }
-  
+
     .ncs_text {
       @include prepend-top(1em);
-      @include column(3,true); 
+      @include column(3,true);
       img {
         display: block;
       }
     }
-    
+
     .app_version {
       color: #999;
       @include column($blueprint-grid-columns);

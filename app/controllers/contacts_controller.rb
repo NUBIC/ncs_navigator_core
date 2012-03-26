@@ -104,5 +104,4 @@ class ContactsController < ApplicationController
       link
     end
 
-
 end

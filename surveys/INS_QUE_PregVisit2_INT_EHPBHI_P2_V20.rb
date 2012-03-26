@@ -832,7 +832,6 @@ survey "INS_QUE_PregVisit2_INT_EHPBHI_P2_V2.0" do
       q_time_stamp_8 "Insert date/time stamp", :data_export_identifier=>"PREG_VISIT_2_2.TIME_STAMP_8"
       a :datetime, :custom_class => "datetime"
 
-
     label "The next few questions ask about any recent additions or renovations to your home."
 
       q_prenovate2 "Since we last spoke with you, have any additions been built onto your home to make
