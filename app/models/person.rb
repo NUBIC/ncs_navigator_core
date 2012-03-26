@@ -201,22 +201,23 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Create a new ResponseSet for the Person associated with the given Survey
-  # and pre-populate questions to which we have previous data.
+  # Builds a new ResponseSet for the Person associated with the given Survey
+  # and pre-populates questions to which we have previous data.
   #
   # @param [Survey]
   # @return [ResponseSet]
   def start_instrument(survey)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
-    instrument = create_instrument(survey)
-    response_set = ResponseSet.new(:survey => survey, :user_id => self.id, :instrument => instrument)
 
-    response_set = prepopulate_response_set(survey, response_set)
-    [response_set, instrument]
+    build_instrument(survey).tap do |instr|
+      instr.build_response_set(:survey => survey, :user_id => self.id)
+
+      prepopulate_response_set(instr.response_set, survey)
+    end
   end
 
-  def prepopulate_response_set(survey, response_set)
+  def prepopulate_response_set(response_set, survey)
     # TODO: determine way to know about initializing data for each survey
     reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_ppg_status", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
 

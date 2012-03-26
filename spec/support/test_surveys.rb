@@ -1,10 +1,12 @@
 module TestSurveys
+  ##
+  # Starts an Instrument for a {Person} p and {Survey} s, saves it, and
+  # returns the created ResponseSet along with the Instrument.
   def prepare_instrument(p, s)
-    rs, instr = p.start_instrument(s)
+    instr = p.start_instrument(s)
     instr.save!
-    rs.save!
 
-    [rs, instr]
+    [instr.response_set, instr]
   end
 
   def create_test_survey_for_person
