@@ -37,7 +37,7 @@ module NcsNavigator::Core::Warehouse
         i += 1
       end
       shell.clear_line_and_say(
-        "PSC sync complete. #{i}/#{p_count} participant#{'s' if p_count != 1} processed.")
+        "PSC sync complete. #{i - 1}/#{p_count} participant#{'s' if p_count != 1} processed.")
 
       report_about_indefinitely_deferred_events
     end
@@ -316,6 +316,9 @@ module NcsNavigator::Core::Warehouse
 
       say_subtask_message('examining closed events')
 
+      # cache processed SAs
+      all_sas = nil
+
       while closed_event_id = redis.spop(sync_key('p', p_id, 'events_closed'))
         if redis.sismember(sync_key('p', p_id, 'events_unschedulable'), closed_event_id)
           next
@@ -342,7 +345,10 @@ module NcsNavigator::Core::Warehouse
           u
         end
 
-        psc_participant.update_scheduled_activity_states(updates) unless updates.empty?
+        unless updates.empty?
+          say_subtask_message("canceling pending SAs for closed event #{closed_event_id}")
+          psc_participant.update_scheduled_activity_states(updates)
+        end
       end
     end
 
