@@ -184,10 +184,10 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
     end
 
     q_DUE_DATE "What is your current due date? ", :pick => :one,
-    :help_text => "Format as YYYYMMDD. Verify if date is more than 9 months after current date, or if date is more than 1 month before current date
+    :help_text => "Verify if date is more than 9 months after current date, or if date is more than 1 month before current date
     If response was determined to be invalid, ask question again and probe for valid response",
     :data_export_identifier=>"PREG_VISIT_LI_2.DUE_DATE"
-    a_date "Due Date", :string
+    a_date "Due Date", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=> "A"
@@ -237,11 +237,11 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
     condition_A :q_DUE_DATE, "==", :a_date
 
     q_DATE_PERIOD "What was the first day of your last menstrual period?",
-    :help_text => "Format as YYYYMMDD. Verify if date is more than 10 months before current date, or if date is after current date.
+    :help_text => "Verify if date is more than 10 months before current date, or if date is after current date.
     Code day as '15' if participant is unsure/unable to estimate day.
     If response was determined to be invalid, ask question again and probe for valid response.",
     :pick=>:one, :data_export_identifier=>"PREG_VISIT_LI_2.DATE_PERIOD"
-    a_date "Specify", :string
+    a_date "Specify", :string, :custom_class => "date"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
     dependency :rule=> "A"
@@ -448,9 +448,9 @@ survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
 
-      q_DATE_VISIT "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant? (YYYYMMDD)", :pick=>:one,
+      q_DATE_VISIT "What was the date of your most recent doctor’s visit or checkup since you’ve become pregnant?", :pick=>:one,
       :data_export_identifier=>"PREG_VISIT_LI_2.DATE_VISIT"
-      a :string
+      a :string, :custom_class => "date"
       a_neg_1 "Refused"
       a_neg_2 "Don't know"
       a_neg_7 "Have not had a visit/not applicable"
