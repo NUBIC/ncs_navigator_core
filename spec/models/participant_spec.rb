@@ -264,7 +264,33 @@ describe Participant do
     end
 
     it "renders in comma-separated value format" do
-      participant.to_comma.should == [participant.p_id, person.last_name, person.first_name, participant.ppg_status.to_s, expected_due_date]
+
+      participant.to_comma.should == [
+        participant.p_id.to_s,
+        person.prefix.to_s,
+        person.first_name.to_s,
+        person.middle_name.to_s,
+        person.last_name.to_s,
+        person.maiden_name.to_s,
+        person.suffix.to_s,
+        person.title.to_s,
+        participant.ppg_status.to_s,
+        participant.person_dob.to_s,
+        participant.gender.to_s,
+        person.age.to_s,
+        person.age_range.to_s,
+        person.deceased.to_s,
+        person.ethnic_group.to_s,
+        person.language.to_s,
+        person.language_other.to_s,
+        person.marital_status.to_s,
+        person.marital_status_other.to_s,
+        participant.pending_events.to_sentence,
+        expected_due_date,
+        participant.high_intensity ? 'High' : 'Low',
+        participant.enroll_status.to_s,
+        participant.enroll_date.to_s
+      ]
     end
 
   end

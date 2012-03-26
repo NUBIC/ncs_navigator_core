@@ -771,9 +771,29 @@ class Participant < ActiveRecord::Base
   comma do
 
     p_id 'Participant ID'
-    person :last_name => 'Last Name', :first_name => 'First Name'
+    person :prefix => 'Prefix'
+    person :first_name => 'First Name'
+    person :middle_name => 'Middle Name'
+    person :last_name => 'Last Name'
+    person :maiden_name => 'Maiden Name'
+    person :suffix => 'Suffix'
+    person :title => 'Title'
     ppg_status 'PPG Status'
+    person_dob 'Date of Birth'
+    person :gender => 'Gender'
+    person :age => 'Age'
+    person :age_range => 'Age Range'
+    person :deceased => 'Deceased'
+    person :ethnic_group => 'Ethnic Group'
+    person :language => 'Language'
+    person :language_other => 'Other Language'
+    person :marital_status => 'Marital Status'
+    person :marital_status_other => 'Other Marital Status'
+    pending_events :to_sentence => 'Pending Events'
     due_date
+    high_intensity { |hi| hi ? 'High' : 'Low' }
+    enroll_status
+    enroll_date
 
   end
 
