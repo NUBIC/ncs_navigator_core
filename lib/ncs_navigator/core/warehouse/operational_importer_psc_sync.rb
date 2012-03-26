@@ -32,14 +32,12 @@ module NcsNavigator::Core::Warehouse
         schedule_events(psc_participant)
         update_sa_histories(psc_participant)
         cancel_pending_activities_for_closed_events(psc_participant)
-
-        # TODO: find schedule-implied events that have no Event
-        # records in Core and do something with them.
+        create_placeholders_for_implied_events(psc_participant)
 
         i += 1
       end
       shell.clear_line_and_say(
-        "PSC sync complete. #{i}/#{p_count} participant#{'s' if p_count != 1} processed.")
+        "PSC sync complete. #{i - 1}/#{p_count} participant#{'s' if p_count != 1} processed.")
 
       report_about_indefinitely_deferred_events
     end
@@ -318,6 +316,9 @@ module NcsNavigator::Core::Warehouse
 
       say_subtask_message('examining closed events')
 
+      # cache processed SAs
+      all_sas = nil
+
       while closed_event_id = redis.spop(sync_key('p', p_id, 'events_closed'))
         if redis.sismember(sync_key('p', p_id, 'events_unschedulable'), closed_event_id)
           next
@@ -344,7 +345,45 @@ module NcsNavigator::Core::Warehouse
           u
         end
 
-        psc_participant.update_scheduled_activity_states(updates) unless updates.empty?
+        unless updates.empty?
+          say_subtask_message("canceling pending SAs for closed event #{closed_event_id}")
+          psc_participant.update_scheduled_activity_states(updates)
+        end
+      end
+    end
+
+    def create_placeholders_for_implied_events(psc_participant)
+      p_id = psc_participant.participant.p_id
+
+      say_subtask_message('looking for implied future events')
+
+      imported_events = redis.smembers(sync_key('p', p_id, 'events')).
+        collect { |event_id| event = redis.hgetall(sync_key('event', event_id)) }
+      latest_imported_event_date = imported_events.collect { |e| e['start_date'] }.max
+
+      # this doesn't seem like the clearest way to do this
+      scheduled_events = psc_participant.scheduled_events.reject { |psc_event|
+        imported_events.find { |imported_event|
+          find_psc_event([psc_event], imported_event['start_date'], imported_event['event_type_label'])
+        }
+      }.reject { |psc_event| psc_event[:start_date] < latest_imported_event_date }
+
+      scheduled_events.each do |implied_event|
+        event_type = NcsCode.find_event_by_lbl(implied_event[:event_type_label])
+        say_subtask_message(
+          "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
+
+        begin
+          PaperTrail.whodunnit = 'operational_importer_psc_sync'
+          Event.create_placeholder_record(
+            psc_participant.participant,
+            implied_event[:start_date],
+            event_type.local_code,
+            nil # skip scheduled segment id because it is no longer used
+            )
+        ensure
+          PaperTrail.whodunnit = nil
+        end
       end
     end
 
@@ -383,11 +422,20 @@ module NcsNavigator::Core::Warehouse
         "Loaded #{ct} participant#{'s' unless ct == 1} for PSC sync.\n")
     end
 
-    def find_psc_event(psc_participant, start_date, event_type_label)
+    def find_psc_event(psc_participant_or_scheduled_events, start_date, event_type_label)
       fail 'Cannot find a PSC event without a start date' unless start_date
+
+      scheduled_events = case psc_participant_or_scheduled_events
+                         when Array
+                           psc_participant_or_scheduled_events
+                         else
+                           # must be a psc_participant, then
+                           psc_participant_or_scheduled_events.scheduled_events
+                         end
+
       start_date_d = Date.parse(start_date)
       acceptable_match_range = ((start_date_d - 14) .. (start_date_d + 14))
-      psc_participant.scheduled_events.
+      scheduled_events.
         select { |psc_event| psc_event[:event_type_label] == event_type_label }.
         find { |psc_event| acceptable_match_range.include?(Date.parse(psc_event[:start_date])) }
     end
