@@ -61,7 +61,7 @@ NcsNavigatorCore::Application.configure do
   config.aker do
     api_mode :cas_proxy
     authorities :cas, Aker::Authority::NcsNavigatorAuthority
-    central '/etc/nubic/ncs/aker-production.yml'
+    central '/etc/nubic/ncs/aker-prod.yml'
   end
 
   config.middleware.use ExceptionNotifier,
