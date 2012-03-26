@@ -1,5 +1,5 @@
 module WelcomeHelper
-  
+
   def activities(json_response)
     json = ActiveSupport::JSON.decode(json_response)
     result = { "dates" => Array.new }
@@ -8,9 +8,9 @@ module WelcomeHelper
       if !result['dates'].include?(date)
         result['dates'] << date
       end
-      
+
     end
     result
   end
-  
+
 end

@@ -3,7 +3,7 @@ Feature: Creating a person record
   In order to have a person with which to associate with other records
   As a user
   I want to be able to create a person record
-  
+
   Scenario: Creating a new person
     Given valid ncs codes
     And an authenticated user
@@ -11,7 +11,7 @@ Feature: Creating a person record
     Then I should see "People"
     And I should see "No people were found."
     And I should see "New Person"
-    When I follow "New Person" 
+    When I follow "New Person"
     Then I should be on the new person page
     And I should see "New Person"
     When I select "Mr." from "Prefix"
@@ -41,11 +41,10 @@ Feature: Creating a person record
   #   Then I should see "People"
   #   And I should see "No people were found."
   #   And I should see "New Person"
-  #   When I follow "New Person" 
+  #   When I follow "New Person"
   #   Then I should be on the new person page
   #   And I should see "New Person"
   #   When I press "Submit"
   #   Then I should see "2 errors prohibited this Person from being saved"
   #   And I should see "First name can't be blank"
   #   And I should see "Last name can't be blank"
-

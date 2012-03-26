@@ -18,7 +18,7 @@ class InstrumentEventMap
   def self.name_of_instrument(instrument_filename)
     InstrumentEventMap.instrument_map_value_for_filename(instrument_filename, "name")
   end
-  
+
   ##
   # Get the current version number for this Instrument from the Instrumnnt and Event Map
   # @param [String]
@@ -37,16 +37,16 @@ class InstrumentEventMap
     end
     result
   end
-  
+
   ##
   # For a given MDES code list local code value, return the name of the instrument
   #
   # @param [String] - INSTRUMENT_TYPE_CL1 local code
-  # @return [String] - name for the instrument  
+  # @return [String] - name for the instrument
   def self.name_for_instrument_type(code)
     InstrumentEventMap.instrument_map_value_for_code(code, "name")
   end
-  
+
   ##
   # For a given MDES code list local code value, return the filename of the instrument
   #
@@ -65,8 +65,7 @@ class InstrumentEventMap
       end
     end
     result
-  end  
-
+  end
 
   ##
   # A list of all the known event names.

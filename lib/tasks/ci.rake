@@ -41,4 +41,3 @@ rescue LoadError => e
     $stderr.puts "#{e.class}: #{e}"
   end
 end
-

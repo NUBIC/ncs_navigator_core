@@ -161,4 +161,3 @@ module NcsNavigator::Core
     private :all_questions
   end
 end
-

@@ -52,4 +52,3 @@ Feature: Obtaining participant consent
     When I press "Submit"
     Then I should see "Participant consent was successfully created."
     And I should be on the edit_contact_link page
-

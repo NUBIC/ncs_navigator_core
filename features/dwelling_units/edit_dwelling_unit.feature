@@ -3,7 +3,7 @@ Feature: Editing a dwelling unit
   In order to edit a dwelling unit
   As a user
   I want to be able to select and edit a dwelling unit record
-  
+
   Scenario: Editing a new dwelling unit
     Given valid ncs codes
     And an authenticated user
@@ -12,7 +12,7 @@ Feature: Editing a dwelling unit
     When I am on the dwelling units page
     Then I should see "Dwelling Units"
     And I should see "Edit"
-    When I follow "Edit" 
+    When I follow "Edit"
     Then I should be on the edit dwelling unit page
     And I should see "Edit Dwelling Unit"
     When I fill in "Comment" with "A new comment"

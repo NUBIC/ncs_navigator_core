@@ -6,10 +6,10 @@ class CreateNcsCodes < ActiveRecord::Migration
       t.string :display_text
       t.integer :local_code
       t.string :global_code
-      
+
       t.timestamps
     end
-    
+
   end
 
   def self.down

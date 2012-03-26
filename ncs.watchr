@@ -5,7 +5,7 @@ def growl(message)
   growlnotify = `which growlnotify`.chomp
   title = "Watchr Test Results"
   # passed = message.include?('0 failures, 0 errors')
-  passed = message.match(/\s0\s(errors|failures)/) 
+  passed = message.match(/\s0\s(errors|failures)/)
   image = passed ? "~/.watchr_images/pass.png" : "~/.watchr_images/fail.png"
   severity = passed ? "-1" : "1"
   options = "-w -n Watchr --image '#{File.expand_path(image)}'"

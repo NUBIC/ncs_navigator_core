@@ -10,13 +10,13 @@ module NavigationHelpers
 
     when /the home\s?page/
       '/'
-      
+
     when /the welcome summary page/
       '/welcome/summary'
 
     when /login/
       '/login'
-    
+
     when /logout/
       '/logout'
 
@@ -34,22 +34,22 @@ module NavigationHelpers
 
     when /^the people page$/
       people_path
-      
+
     when /^the edit person page$/
       edit_person_path(Person.last)
-      
+
     when /^the events_person page$/
       events_person_path(Participant.first.person.id)
-      
+
     when /^the new_person_contact page$/
       new_person_contact_path(Participant.last.person.id)
-      
+
     when /^the edit_person_contact page$/
       edit_person_contact_path(Participant.first.person.id, Contact.last)
 
     when /^the new participant page for that person$/
       new_participant_path(:person_id => Person.last.id)
-      
+
     when /^the new participant page for that participant$/
       new_participant_path(:person_id => Participant.last.person.id)
 
@@ -61,25 +61,25 @@ module NavigationHelpers
 
     when /^the ppg1 page$/
       in_ppg_group_participants_path
-      
+
     when /^the edit_arm_participant page$/
       edit_arm_participant_path(Participant.last)
 
     when /^the edit_contact_link page$/
       edit_contact_link_path(ContactLink.last)
-      
+
     when /^the edit_instrument_contact_link page$/
       edit_instrument_contact_link_path(ContactLink.last)
 
     when /^the select_instrument_contact_link page$/
       select_instrument_contact_link_path(ContactLink.last)
-      
+
     when /^the consent_contact_link page$/
       consent_contact_link_path(ContactLink.last)
 
     when /^the new contact path for the participant$/
       new_person_contact_path(:person_id => Participant.last.person.id)
-      
+
     when /^the new participant consent page$/
       new_participant_consent_path
 

@@ -4,9 +4,9 @@
       = flash_messages(types)
       .close
   = semantic_form_for(@response_set, :as => :r, :url => update_my_survey_path, :html => {:method => :put, :id => "survey_form", :class => @survey.custom_class, :autocomplete => "off"}) do |f|
-  
+
     = hidden_field_tag :surveyor_javascript_enabled, false
-  
+
     = render 'partials/section_menu' # unless @sections.size < 3
     .survey_title= @survey.title
     = render 'partials/dependents' unless @dependents.empty?

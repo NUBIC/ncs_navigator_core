@@ -47,7 +47,7 @@ NestedAttributes.prototype = {
     $(link).prev("input[type=hidden]").val("1");
     if (removeStyle === 'hide' ) {
       $(link).closest(".fields").hide();
-      
+
     }
     else if (removeStyle === 'clear' ) {
       $(link).closest(".fields").find('input').clearFields();
@@ -63,7 +63,7 @@ NestedAttributes.prototype = {
     var new_id = new Date().getTime(),
     regexp1 = new RegExp("new_" + association, "g"),
     regexp2 = new RegExp("new_nested_record", "g");
-  
+
     content = content.replace(regexp1, new_id);
     content = content.replace(regexp2, 'new_nested_record_' + new_id);
     $(link).closest("." + association).find('.nested_records_' + association).append(content);

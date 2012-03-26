@@ -9,7 +9,7 @@ class CreateHouseholdPersonLinks < ActiveRecord::Migration
       t.integer :is_active_code,    :null => false
       t.integer :hh_rank_code,      :null => false
       t.string :hh_rank_other,      :limit => 255
-      
+
       t.string :transaction_type,   :limit => 36
       t.timestamps
     end

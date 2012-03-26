@@ -1,32 +1,32 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: !ruby/regexp /^https:\/\/ncsn-psc.local\/api\/v1\/reports\/scheduled-activities.json/
-    body: 
-    headers: 
-      authorization: 
+    body:
+    headers:
+      authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - application/json
-      server: 
+      server:
       - Restlet-Framework/2.0.3
-      date: 
+      date:
       - Tue, 04 Oct 2011 15:28:03 GMT
-      vary: 
+      vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges: 
+      accept-ranges:
       - bytes
-      cache-control: 
+      cache-control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      transfer-encoding: 
+      transfer-encoding:
       - chunked
-      pragma: 
+      pragma:
       - no-cache
     body: "{\"filters\":{\"start_date\":\"2012-02-01\",\"end_date\":\"2012-02-07\",\"responsible_user\":\"user\",\"states\":[\"Scheduled\",\"Conditional\"]},\"rows\":[
             {\"grid_id\":\"74b12ef2-4239-4430-9e45-c786c42516d5\",\"activity_name\":\"Low-Intensity Consent\",\"activity_type\":\"Consent\",\"activity_status\":\"Scheduled\",\"scheduled_date\":\"2012-02-01\",\"last_change_reason\":\"Initialized from template\",\"ideal_date\":\"2012-02-01\",\"labels\":[\"low_intensity_data_collection\"],\"scheduled_study_segment\":{\"grid_id\":\"fdbf8c20-7805-4d7f-b82c-ee3624641509\",\"start_date\":\"2012-02-01\",\"start_day\":1},\"subject\":{\"name\":\"HENRIETTA BROWN\",\"person_id\":\"51039101\",\"grid_id\":\"bd6b532e-e72f-492d-8312-662a02f5b5fc\"},\"responsible_user\":\"user\",\"study\":\"NCS Hi-Lo\",\"site\":\"Greater Chicago Study Center\"},

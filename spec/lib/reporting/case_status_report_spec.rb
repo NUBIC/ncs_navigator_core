@@ -114,7 +114,6 @@ describe Reporting::CaseStatusReport do
       end
     end
 
-
   end
 
 end

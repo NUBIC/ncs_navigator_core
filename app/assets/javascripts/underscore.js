@@ -391,7 +391,6 @@
     return -1;
   };
 
-
   // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
   _.lastIndexOf = function(array, item) {
     if (array == null) return -1;
@@ -537,7 +536,6 @@
       if (--times < 1) { return func.apply(this, arguments); }
     };
   };
-
 
   // Object Functions
   // ----------------

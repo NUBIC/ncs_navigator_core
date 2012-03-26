@@ -26,7 +26,7 @@ class CreateTelephones < ActiveRecord::Migration
       t.string :phone_end_date,           :limit => 10
       t.date :phone_end_date_date
       t.string :transaction_type
-      
+
       t.timestamps
     end
   end
