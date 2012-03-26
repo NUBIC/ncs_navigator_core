@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'ncs_navigator/core/warehouse'
 
 module NcsNavigator::Core::Warehouse
-  describe OperationalEnumerator, :clean_with_truncation, :slow do
+  describe OperationalEnumerator, :clean_with_truncation, :slow, :warehouse do
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     let(:wh_config) {

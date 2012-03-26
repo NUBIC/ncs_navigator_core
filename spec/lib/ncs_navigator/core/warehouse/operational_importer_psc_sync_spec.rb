@@ -4,7 +4,7 @@ require Rails.root + 'spec/warehouse_setup'
 require 'ncs_navigator/core/warehouse'
 
 module NcsNavigator::Core::Warehouse
-  describe OperationalImporterPscSync do
+  describe OperationalImporterPscSync, :warehouse do
     include NcsNavigator::Core::Spec::WarehouseSetup
 
     SEGMENT_IDS = {

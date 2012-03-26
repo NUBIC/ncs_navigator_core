@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Warehouse
-  describe UnusedOperationalPassthrough do
+  describe UnusedOperationalPassthrough, :warehouse do
     let(:wh_config)   { NcsNavigator::Warehouse::Configuration.new }
     let(:passthrough) { UnusedOperationalPassthrough.new(wh_config) }
 

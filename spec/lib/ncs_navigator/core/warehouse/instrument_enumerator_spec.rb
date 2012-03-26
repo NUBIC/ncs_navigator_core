@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Warehouse
-  describe InstrumentEnumerator do
+  describe InstrumentEnumerator, :warehouse do
     let(:configuration) {
       NcsNavigator::Warehouse::Configuration.new.tap { |c|
         c.configuration_file = '/foo/b.rb'
