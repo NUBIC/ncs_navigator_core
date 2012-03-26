@@ -34,6 +34,7 @@
       = f.select(:event_event_disposition_eq, grouped_disposition_codes)
     %br
     = f.submit "Search"
+    = link_to "Export All Results", { :controller => "contact_links", :action => "index", :format => "csv", :q => params[:q] }, { :class => "export_link icon_link" }
 
 .page_section.tabular_mdes_records
   - if @contact_links.empty?
@@ -76,13 +77,11 @@
             - else
               = blank_safe(cl.person.to_s)
           %td
-            - disp =  DispositionMapper.disposition_text_for_event(cl.event.event_disposition_category, cl.contact.contact_disposition)
-            = disp.blank? ? cl.contact.contact_disposition : disp
+            = cl.contact_disposition
           %td
             = cl.event.event_type
           %td
-            - disp =  DispositionMapper.disposition_text_for_event(cl.event.event_disposition_category, cl.event.event_disposition)
-            = disp.blank? ? cl.event.event_disposition : disp
+            = cl.event_disposition
             %br
             = cl.event.event_disposition_category
           %td
