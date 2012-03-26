@@ -217,6 +217,10 @@ module NcsNavigator::Core::Warehouse
           redis.exists("#{ns}:psc_sync:p:gil:#{set}").should be_false
         end
       end
+
+      it 'deletes placeholder events created by import'
+
+      it 'does not delete other events'
     end
 
     describe 'scheduling segments for events' do
@@ -723,7 +727,7 @@ module NcsNavigator::Core::Warehouse
 
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
 
-        importer.create_placeholders_for_implied_events(psc_participant)
+        with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
       end
 
       it 'does not create events for PSC events that are earlier than some imported events' do
@@ -740,6 +744,15 @@ module NcsNavigator::Core::Warehouse
         # 3 month
         participant.events.where(:event_type_code => 23).first.
           event_start_date.to_s.should == '2010-12-31'
+      end
+
+      it 'audits the new events as coming from the PSC sync' do
+        versions = Version.where(
+          :item_type => Event.to_s,
+          :item_id => participant.events.first.id
+          )
+
+        versions.first.whodunnit.should == 'operational_importer_psc_sync'
       end
     end
   end

@@ -373,12 +373,17 @@ module NcsNavigator::Core::Warehouse
         say_subtask_message(
           "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
 
-        Event.create_placeholder_record(
-          psc_participant.participant,
-          implied_event[:start_date],
-          event_type.local_code,
-          nil # skip scheduled segment id because it is no longer used
-          )
+        begin
+          PaperTrail.whodunnit = 'operational_importer_psc_sync'
+          Event.create_placeholder_record(
+            psc_participant.participant,
+            implied_event[:start_date],
+            event_type.local_code,
+            nil # skip scheduled segment id because it is no longer used
+            )
+        ensure
+          PaperTrail.whodunnit = nil
+        end
       end
     end
 
