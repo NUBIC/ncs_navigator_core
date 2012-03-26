@@ -75,8 +75,8 @@ class PeopleController < ApplicationController
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
     rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
     if should_create_new_instrument?(rs, @contact_link.event)
-      rs, instrument = @person.start_instrument(survey)
-      rs.save!
+      instrument = @person.start_instrument(survey)
+      rs = instrument.response_set
     else
       instrument = rs.instrument
     end
