@@ -12,6 +12,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html # index.html.haml
       format.json { render :json => result.all }
+      format.csv { render :csv => result.all, :force_quotes => true, :filename => 'events' }
     end
   end
 

@@ -27,6 +27,7 @@
       = f.select(:event_disposition_eq, grouped_disposition_codes, { :include_blank => "-- Select Event Disposition --" })
     %br
     = f.submit "Search"
+    = link_to "Export All Results", { :controller => "events", :action => "index", :format => "csv", :q => params[:q] }, { :class => "export_link icon_link" }
 
 .page_section.tabular_mdes_records
   - if @events.empty?

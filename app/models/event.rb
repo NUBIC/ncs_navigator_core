@@ -222,6 +222,11 @@ class Event < ActiveRecord::Base
   end
   private :set_event_breakoff
 
+  def event_disposition_text
+    disp =  DispositionMapper.disposition_text_for_event(event_disposition_category, event_disposition)
+    disp.blank? ? event_disposition : disp
+  end
+
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
     return nil unless participant.next_scheduled_event
 
@@ -263,6 +268,26 @@ class Event < ActiveRecord::Base
     part = lbl.split.select{ |s| s.include?(label_marker) }.first.to_s
     return nil if part.blank?
     part.gsub(label_marker, "")
+  end
+
+  comma do
+
+    participant :last_name => 'Last Name', :first_name => 'First Name'
+    event_type
+    event_type_other
+    event_repeat_key
+    event_disposition_text 'Event Disposition'
+    event_disposition_category
+    event_start_date
+    event_start_time
+    event_end_date
+    event_end_time
+    event_breakoff
+    event_incentive_type
+    event_incentive_cash
+    event_incentive_noncash
+    event_comment
+
   end
 
 end

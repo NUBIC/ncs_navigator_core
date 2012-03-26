@@ -58,4 +58,26 @@ class ContactLink < ActiveRecord::Base
   alias completed? closed?
   alias complete? closed?
 
+  def contact_disposition
+    disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
+    disp.blank? ? contact.contact_disposition : disp
+  end
+
+  def event_disposition
+    event.event_disposition_text
+  end
+
+  comma do
+
+    contact :contact_type => 'Contact Type', :contact_date_date => 'Contact Date'
+    contact :contact_start_time => 'Start Time', :contact_end_time => 'End Time'
+    person :first_name => 'First Name', :last_name => 'Last Name'
+    contact_disposition
+    event :event_type => 'Event Type'
+    event_disposition
+    event :event_disposition_category => 'Event Disposition Category'
+    contact :contact_comment => 'Contact Comment'
+
+  end
+
 end
