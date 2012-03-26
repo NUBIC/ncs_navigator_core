@@ -33,14 +33,15 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
     end
 
     it "handles due dates entered in the MDES format (YYYYMMDD)" do
-      @survey_section.questions.each do |q|
+      survey_section = @survey.sections.first
+      survey_section.questions.each do |q|
         case q.data_export_identifier
         when "#{LowIntensityPregnancyVisitOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+          Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         when "#{LowIntensityPregnancyVisitOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
           answer = q.answers.select { |a| a.response_class == "date" }.first
-          Factory(:response, :survey_section_id => @survey_section.id, :datetime_value => "20111226", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
+          Factory(:response, :survey_section_id => survey_section.id, :datetime_value => "20111226", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
       end
 
