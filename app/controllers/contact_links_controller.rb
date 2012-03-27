@@ -73,6 +73,37 @@ class ContactLinksController < ApplicationController
     end
   end
 
+  def start_instrument
+    contact_link = ContactLink.includes(:person, :event).find(params[:id])
+    survey = Survey.most_recent_for_access_code(params[:survey_access_code])
+    person = contact_link.person
+
+    if params[:initial_instrument_for_contact] == true
+      contact = contact_link.contact
+      event = contact_link.event
+      contact_link = ContactLink.create(:contact => contact, :event => event, :staff_id => current_staff, :psu_code => NcsNavigatorCore.psu_code)
+    end
+
+    survey = Survey.most_recent_for_access_code(params[:survey_access_code])
+    rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, person.id).first
+
+    if rs.nil? or (event && !event.event_end_date.blank?)
+      instrument = person.start_instrument(survey)
+      rs = instrument.response_set
+    else
+      instrument = rs.instrument
+    end
+
+    if instrument && instrument.event.nil?
+      instrument.event = contact_link.event
+      instrument.save!
+    end
+
+    contact_link.instrument = instrument
+    contact_link.save!
+    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs.access_code))
+  end
+
   def select_instrument
     @contact_link = ContactLink.find(params[:id])
     @contact      = @contact_link.contact
@@ -210,5 +241,4 @@ class ContactLinksController < ApplicationController
         psc.update_activity_state(activity.activity_id, @contact_link.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
       end
     end
-
 end
