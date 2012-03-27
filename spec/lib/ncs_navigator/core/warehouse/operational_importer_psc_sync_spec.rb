@@ -694,7 +694,7 @@ module NcsNavigator::Core::Warehouse
       let(:scheduled_events) {
         [
           {
-            :event_type_label => 'informed_consent',
+            :event_type_label => 'father',
             :start_date => '2009-06-21',
             :scheduled_activities => %w(sa0)
           },
@@ -712,6 +712,11 @@ module NcsNavigator::Core::Warehouse
             :event_type_label => '6_month',
             :start_date => '2011-03-16',
             :scheduled_activities => %w(sa3)
+          },
+          {
+            :event_type_label => 'informed_consent',
+            :start_date => '2011-06-11',
+            :scheduled_activities => %w(sa7)
           }
         ]
       }
@@ -730,8 +735,12 @@ module NcsNavigator::Core::Warehouse
         with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
       end
 
-      it 'does not create events for PSC events that are earlier than some imported events' do
-        # informed consent
+      it 'does not create events for PSC events that are earlier than some imported event' do
+        # father
+        participant.events.where(:event_type_code => 19).should == []
+      end
+
+      it 'does not create events for PSC informed consent events' do
         participant.events.where(:event_type_code => 10).should == []
       end
 

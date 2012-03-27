@@ -37,7 +37,7 @@ module NcsNavigator::Core::Warehouse
         i += 1
       end
       shell.clear_line_and_say(
-        "PSC sync complete. #{i - 1}/#{p_count} participant#{'s' if p_count != 1} processed.")
+        "PSC sync complete. #{i - 1}/#{p_count} participant#{'s' if p_count != 1} processed.\n")
 
       report_about_indefinitely_deferred_events
     end
@@ -366,7 +366,8 @@ module NcsNavigator::Core::Warehouse
         imported_events.find { |imported_event|
           find_psc_event([psc_event], imported_event['start_date'], imported_event['event_type_label'])
         }
-      }.reject { |psc_event| psc_event[:start_date] < latest_imported_event_date }
+      }.reject { |psc_event| psc_event[:start_date] < latest_imported_event_date }.
+        reject { |psc_event| psc_event[:event_type_label] == 'informed_consent' }
 
       scheduled_events.each do |implied_event|
         event_type = NcsCode.find_event_by_lbl(implied_event[:event_type_label])
@@ -405,6 +406,7 @@ module NcsNavigator::Core::Warehouse
       if message.size > SUBTASK_MSG_LEN
         message = message[0, SUBTASK_MSG_LEN - 1] + '*'
       end
+      log.info(message)
       shell.back_up_and_say(SUBTASK_MSG_LEN, "%-#{SUBTASK_MSG_LEN}s" % message)
     end
 
