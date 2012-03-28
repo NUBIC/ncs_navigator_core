@@ -46,13 +46,28 @@ describe Event do
   it { should have_many(:contact_links) }
   it { should have_many(:instruments).through(:contact_links) }
 
-  it "knows when it is 'closed'" do
-    e = Factory(:event)
-    e.should_not be_closed
+  describe '#closed?' do
+    subject { Factory(:event) }
 
-    e.event_disposition = 510
-    e.should be_closed
-    e.should be_completed
+    describe 'if end date is not blank' do
+      before do
+        subject.event_end_date = Date.today
+      end
+
+      it 'is true' do
+        subject.should be_closed
+      end
+    end
+
+    describe 'if end date is blank' do
+      before do
+        subject.event_end_date = nil
+      end
+
+      it 'is false' do
+        subject.should_not be_closed
+      end
+    end
   end
 
   context "as mdes record" do
