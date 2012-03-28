@@ -115,10 +115,10 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # An event is 'closed' or 'completed' if the disposition has been set.
+  # An event is 'closed' or 'completed' if its end date is set.
   # @return [true, false]
   def closed?
-    event_disposition.to_i > 0
+    !event_end_date.blank?
   end
   alias completed? closed?
   alias complete? closed?

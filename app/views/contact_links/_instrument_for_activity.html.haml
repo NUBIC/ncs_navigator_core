@@ -7,8 +7,7 @@
       .instrument
         = link_to "#{activity.activity_name} - #{survey.title}",
                   start_instrument_person_path(person, :survey_access_code => survey.access_code,
-                                                        :contact_link_id => contact_link.id,
-                                                        :initial_instrument_for_contact => initial_instrument_for_contact),
+                                                       :contact_link_id => contact_link.id),
                   :class => "edit_link icon_link"
   - elsif activity.activity_name.include?("Consent")
     = render "consents"

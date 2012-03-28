@@ -25,8 +25,7 @@
   - unless @event_activities.blank?
     - @event_activities.each do |activity|
       - no_consent = false if activity.include?("Consent")
-      = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link,
-                                          :initial_instrument_for_contact => initial_instrument_for_contact
+      = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link
   - else
     %b
       There are no scheduled Activities associated with this Event.

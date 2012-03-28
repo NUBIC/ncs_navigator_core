@@ -67,6 +67,61 @@ describe Instrument do
 
   it { should validate_presence_of(:instrument_version) }
 
+  describe '.start' do
+    let(:event) { Factory(:event) }
+    let(:person) { Factory(:person) }
+    let(:survey) { Factory(:survey, :title => 'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0') }
+    let(:inst) { Factory(:instrument, :survey => survey) }
+
+    describe 'if there is no response set for the (person, survey) pair' do
+      it 'returns the result of Person#start_instrument' do
+        person.should_receive(:start_instrument).with(survey).and_return(inst)
+
+        Instrument.start(person, survey, event).should == inst
+      end
+
+      it "sets the instrument's event to event" do
+        inst = Instrument.start(person, survey, event)
+
+        inst.event.should == event
+      end
+    end
+
+    describe 'if there is a response set for the (person, survey) pair' do
+      before do
+        Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
+      end
+
+      describe 'if the event is closed' do
+        before do
+          event.stub(:closed? => true)
+        end
+
+        it 'returns the result of Person#start_instrument' do
+          person.should_receive(:start_instrument).with(survey).and_return(inst)
+
+          Instrument.start(person, survey, event).should == inst
+        end
+
+        it "sets the instrument's event to event" do
+          inst = Instrument.start(person, survey, event)
+
+          inst.event.should == event
+        end
+      end
+
+      describe 'if the event is not closed' do
+        before do
+          event.stub(:closed? => false)
+        end
+
+        it "returns the response set's instrument" do
+          Instrument.start(person, survey, event).should == inst
+        end
+      end
+    end
+  end
+
   describe '#response_set' do
     it 'is the inverse of ResponseSet#instrument' do
       Instrument.reflections[:response_set].options[:inverse_of].should == :instrument
@@ -223,6 +278,61 @@ describe Instrument do
           new_instrument_attributes[attr] = other_code
           new_instrument.save!
           Instrument.last.send(attr).should == other_code
+        end
+      end
+    end
+  end
+
+  describe '#link_to' do
+    describe 'given a contact C, person P, event E, and instrument I' do
+      let(:c) { Factory(:contact) }
+      let(:p) { Factory(:person) }
+      let(:e) { Factory(:event) }
+      let(:i) { Factory(:instrument) }
+
+      let(:staff_id) { 'staff' }
+
+      describe 'if P is already linked to (C, E, I)' do
+        before do
+          @link = Factory(:contact_link, :contact => c, :person => p, :event => e, :instrument => i)
+        end
+
+        it 'returns that link' do
+          i.link_to(p, c, e, staff_id).should == @link
+        end
+      end
+
+      describe 'if P is not already linked to (C, E, I)' do
+        describe 'the returned link' do
+          let(:link) { i.link_to(p, c, e, staff_id) }
+
+          it 'is unpersisted' do
+            link.should be_new_record
+          end
+
+          it 'links to C' do
+            link.contact.should == c
+          end
+
+          it 'links to P' do
+            link.person.should == p
+          end
+
+          it 'links to E' do
+            link.event.should == e
+          end
+
+          it 'links to I' do
+            link.instrument.should == i
+          end
+
+          it 'links to the user who initiated the link' do
+            link.staff_id.should == staff_id
+          end
+
+          it "has NcsNavigatorCore's psu_code" do
+            link.psu_code.should == ::NcsNavigatorCore.psu_code.to_i
+          end
         end
       end
     end

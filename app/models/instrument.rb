@@ -60,6 +60,45 @@ class Instrument < ActiveRecord::Base
   COLLECTION_LABEL_MARKER = "collection:"
 
   ##
+  # Finds or builds a record to indicate that a person has begun taking a
+  # survey on an event.
+  def self.start(person, survey, event)
+    rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
+
+    if !rs || event.closed?
+      person.start_instrument(survey)
+    else
+      rs.instrument
+    end.tap { |i| i.event = event }
+  end
+
+  ##
+  # Begins administration of this instrument to a person.
+  #
+  #
+  # An explanation of this method's parameters
+  # ------------------------------------------
+  #
+  # Instruments are administered to a Person by a staff member; a record of the
+  # staff member contacting a Person is created as a Contact, which in turn
+  # exists in the context of one or more Events.
+  #
+  #
+  # Optimization
+  # ------------
+  #
+  # When running link_to on many persons, it is recommended that you eager-load
+  # Person#contact_links.
+  def link_to(person, contact, event, staff_id)
+    link = person.contact_links.detect do |cl|
+      cl.contact_id == contact.id && cl.event_id == event.id && cl.instrument_id == id
+    end
+
+    link or person.contact_links.build(:contact => contact, :event => event, :instrument => self,
+                                       :staff_id => staff_id, :psu_code => ::NcsNavigatorCore.psu_code)
+  end
+
+  ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]
