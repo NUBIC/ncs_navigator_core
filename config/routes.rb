@@ -17,6 +17,7 @@ NcsNavigatorCore::Application.routes.draw do
     member do
       get :versions
       get :events
+      get :start_instrument
       get :responses_for
       put :responses_for
     end
@@ -43,7 +44,6 @@ NcsNavigatorCore::Application.routes.draw do
   end
   resources :contact_links do
     member do
-      get :start_instrument
       get :select_instrument
       get :edit_instrument
       put :finalize_instrument
