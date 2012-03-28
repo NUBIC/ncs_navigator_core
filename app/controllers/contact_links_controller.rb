@@ -85,7 +85,7 @@ class ContactLinksController < ApplicationController
     end
 
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
-    rs = ResponseSet.where(:survey_id => survey.id, :user_id => person.id).first
+    rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, person.id).first
 
     if rs.nil? or (event && !event.event_end_date.blank?)
       instrument = person.start_instrument(survey)
