@@ -99,7 +99,7 @@ class ContactsController < ApplicationController
     def find_or_create_contact_link
       link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?", @contact, @person, @event).first
       if link.blank?
-        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff, :psu_code => NcsNavigatorCore.psu_code)
+        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff_id, :psu_code => NcsNavigatorCore.psu_code)
       end
       link
     end

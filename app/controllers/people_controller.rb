@@ -128,7 +128,7 @@ class PeopleController < ApplicationController
       if params[:initial_instrument_for_contact] == true
         @contact = link.contact
         @event = link.event
-        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff, :psu_code => NcsNavigatorCore.psu_code)
+        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff_id, :psu_code => NcsNavigatorCore.psu_code)
       end
       link
     end
