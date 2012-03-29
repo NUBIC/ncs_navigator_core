@@ -67,6 +67,12 @@ describe Instrument do
 
   it { should validate_presence_of(:instrument_version) }
 
+  describe '#response_set' do
+    it 'is the inverse of ResponseSet#instrument' do
+      Instrument.reflections[:response_set].options[:inverse_of].should == :instrument
+    end
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
