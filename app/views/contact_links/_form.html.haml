@@ -24,8 +24,7 @@
       %h3
         &nbsp;
       %p
-        - psc_segment_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(@contact_link.event.event_type.to_s)
-        = "Close contact for #{psc_segment_name}"
+        = "Close contact for #{@contact_link.event.to_s}"
         %br
         = f.submit "Close"
 

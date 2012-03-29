@@ -2,11 +2,9 @@
 
 %p.hide
   = @contact_link.event
-  %br
-  = @contact_link.event.psc_segment_name
 
 %h3
-  = "Instruments for #{@contact_link.event.psc_segment_name}"
+  = "Instruments for #{@contact_link.event}"
 
 - if initial_instrument_for_contact
   .instructional_note
@@ -16,7 +14,7 @@
 
 - no_consent = true
 
-- if @contact_link.event.psc_segment_name.include?("Consent")
+- if @contact_link.event.to_s.include?("Consent")
   - no_consent = false
 
 - if @person.participant.blank?
