@@ -59,30 +59,34 @@ describe Participant do
           participant.next_scheduled_event.date.should == Date.today
         end
 
-        it "schedules the LO-Intensity Birth Visit Interview the day after the due_date if consented and known to be pregnant" do
-          participant.should be_in_pregnancy_probability_group
-          participant.should be_known_to_be_pregnant
-          participant.impregnate_low!
-          # participant.birth_event_low!
+        describe "participant is consented and known to be pregnant" do
+          it "schedules the LO-Intensity Birth Visit Interview the day after the due_date" do
+            participant.should be_in_pregnancy_probability_group
+            participant.should be_known_to_be_pregnant
+            participant.impregnate_low!
+            # participant.birth_event_low!
 
-          participant.stub!(:due_date).and_return { 270.days.from_now.to_date }
+            participant.stub!(:due_date).and_return { 150.days.from_now.to_date }
 
-          participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
-          participant.next_scheduled_event.event.should == participant.next_study_segment
-          participant.next_scheduled_event.date.should == 271.days.from_now.to_date
+            participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
+            participant.next_scheduled_event.event.should == participant.next_study_segment
+            participant.next_scheduled_event.date.should == 151.days.from_now.to_date
+          end
 
-        end
+          it "schedules the LO-Intensity Follow-Up if the due date is greater than 6 months from now"
 
-        it "is eligible to be moved in the high intensity arm if in tsu" do
-          du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
-          hh = Factory(:household_unit)
-          dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
-          hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
+          it "is eligible to be moved in the high intensity arm if in tsu" do
+            du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
+            hh = Factory(:household_unit)
+            dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
+            hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
 
-          Factory(:event, :event_type => @lo_i_quex, :participant => participant, :event_end_date => Date.today)
+            Factory(:event, :event_type => @lo_i_quex, :participant => participant, :event_end_date => Date.today)
 
-          participant.should be_in_tsu
-          participant.should be_eligible_for_high_intensity_invitation
+            participant.should be_in_tsu
+            participant.should be_eligible_for_high_intensity_invitation
+          end
+
         end
 
         it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do

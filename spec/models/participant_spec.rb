@@ -678,6 +678,7 @@ describe Participant do
 
         participant.impregnate_low!
         participant.should be_pregnant
+        participant.stub!(:due_date).and_return { 150.days.from_now.to_date }
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       end
 
