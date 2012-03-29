@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   # in the versions whodunnit field for auditing
   # cf. https://github.com/airblade/paper_trail
   def user_for_paper_trail
-    current_staff
+    current_username
   end
 
   protected
@@ -28,9 +28,12 @@ class ApplicationController < ActionController::Base
       @psu_code = NcsNavigatorCore.psu
     end
 
-    def current_staff
-      # TODO: use Aker::User.identifiers hash to get staff_id
+    def current_username
       current_user ? current_user.username : 'unknown'
+    end
+
+    def current_staff_id
+      current_user.identifiers[:staff_id]
     end
 
     # TODO: delete this method - events should be created as placeholder methods via Event.schedule_and_create_placeholder

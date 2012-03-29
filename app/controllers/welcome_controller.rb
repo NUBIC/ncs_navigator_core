@@ -11,7 +11,7 @@ class WelcomeController < ApplicationController
   end
 
   def overdue_activities
-    criteria = { :current_user => current_staff,
+    criteria = { :current_user => current_username,
                  :end_date => 1.day.ago.to_date.to_s }
     @scheduled_activities = psc.scheduled_activities_report(criteria)
   end
@@ -54,7 +54,7 @@ class WelcomeController < ApplicationController
     def get_upcoming_activities
       @start_date = 1.day.ago.to_date.to_s
       @end_date = 2.weeks.from_now.to_date.to_s
-      criteria = { :current_user => current_staff,
+      criteria = { :current_user => current_username,
                    :start_date => @start_date,
                    :end_date => @end_date }
       psc.scheduled_activities_report(criteria)
