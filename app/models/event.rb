@@ -123,19 +123,6 @@ class Event < ActiveRecord::Base
   alias complete? closed?
 
   ##
-  # For this event.event_type return the corresponding PSC segment name from the template
-  def psc_segment_name
-    result = nil
-    PSC_SEGMENT_EVENT_CONFIG.each do |e|
-      if event_type.to_s == e["event_type"]
-        result = e["psc_segment"]
-        break
-      end
-    end
-    result
-  end
-
-  ##
   # Determines if the disposition code is complete based on the disposition category
   # and the disposition code
   # @return [true,false]
