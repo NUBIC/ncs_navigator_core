@@ -804,12 +804,16 @@ class Participant < ActiveRecord::Base
     def next_low_intensity_study_segment
       if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      elsif pregnant?
+        if due_date && !due_date_is_greater_than_follow_up_interval
+          PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
+        else
+          lo_intensity_follow_up
+        end
       elsif following_low_intensity?
         lo_intensity_follow_up
       elsif eligible_for_low_intensity_follow_up?
         lo_intensity_follow_up
-      elsif pregnant?
-        PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
       else
         nil
       end
