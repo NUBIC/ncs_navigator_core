@@ -1,8 +1,9 @@
 class BirthOperationalDataExtractor
 
-  BABY_NAME_PREFIX   = "BIRTH_VISIT_BABY_NAME_2"
-  BIRTH_VISIT_PREFIX = "BIRTH_VISIT_2"
-  BIRTH_LI_PREFIX    = "BIRTH_VISIT_LI"
+  BABY_NAME_PREFIX    = "BIRTH_VISIT_BABY_NAME_2"
+  BIRTH_VISIT_PREFIX  = "BIRTH_VISIT_2"
+  BABY_NAME_LI_PREFIX = "BIRTH_VISIT_LI_BABY_NAME"
+  BIRTH_LI_PREFIX     = "BIRTH_VISIT_LI"
 
   CHILD_PERSON_MAP = {
     "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
@@ -10,10 +11,10 @@ class BirthOperationalDataExtractor
     "#{BABY_NAME_PREFIX}.BABY_LNAME"        => "last_name",
     "#{BABY_NAME_PREFIX}.BABY_SEX"          => "sex_code",
 
-    "#{BIRTH_VISIT_PREFIX}.BABY_FNAME"      => "first_name",
-    "#{BIRTH_VISIT_PREFIX}.BABY_MNAME"      => "middle_name",
-    "#{BIRTH_VISIT_PREFIX}.BABY_LNAME"      => "last_name",
-    "#{BIRTH_VISIT_PREFIX}.BABY_SEX"        => "sex_code",
+    "#{BABY_NAME_LI_PREFIX}.BABY_FNAME"      => "first_name",
+    "#{BABY_NAME_LI_PREFIX}.BABY_MNAME"      => "middle_name",
+    "#{BABY_NAME_LI_PREFIX}.BABY_LNAME"      => "last_name",
+    "#{BABY_NAME_LI_PREFIX}.BABY_SEX"        => "sex_code",
   }
 
   PERSON_MAP = {
@@ -81,6 +82,9 @@ class BirthOperationalDataExtractor
   class << self
 
     def extract_data(response_set)
+
+      Rails.logger.info("~~~~ extract_data called")
+
       person = response_set.person
       if person.participant.blank?
         participant = Participant.create
@@ -118,6 +122,7 @@ class BirthOperationalDataExtractor
 
             if child.nil?
               child = Person.new(:psu => person.psu, :response_set => response_set)
+              Rails.logger.info("~~~ created child #{child.inspect}")
             end
             child.send("#{CHILD_PERSON_MAP[data_export_identifier]}=", value)
           end
@@ -180,7 +185,7 @@ class BirthOperationalDataExtractor
 
       end
 
-      if child && (!child.first_name.blank? && !child.last_name.blank?)
+      if child
         child.save!
         ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
       end

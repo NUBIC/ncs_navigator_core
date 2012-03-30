@@ -11,6 +11,7 @@ class PatientStudyCalendar
   PPG_FOLLOW_UP         = "PPG Follow-Up"
   BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
   HI_LO_CONVERSION      = "Low to High Conversion"
+  POSTNATAL             = "Postnatal"
 
   PRE_PREGNANCY         = "Pre-Pregnancy Visit"
   PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
@@ -21,6 +22,8 @@ class PatientStudyCalendar
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
   LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
+  LOW_INTENSITY_POSTNATAL             = "#{LOW_INTENSITY}: #{POSTNATAL}"
+
 
   HIGH_INTENSITY_HI_LO_CONVERSION       = "#{HIGH_INTENSITY}: #{HI_LO_CONVERSION}"
   HIGH_INTENSITY_PPG_FOLLOW_UP          = "#{HIGH_INTENSITY}: #{PPG_FOLLOW_UP}"

@@ -436,7 +436,7 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?, in_pregnancy_probability_group?, following_low_intensity?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
       follow_up_interval
     when in_pregnant_state?
       due_date ? 1.day : 0
@@ -816,6 +816,8 @@ class Participant < ActiveRecord::Base
     def next_low_intensity_study_segment
       if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      elsif postnatal?
+        PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
         if due_date && !due_date_is_greater_than_follow_up_interval
           PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
