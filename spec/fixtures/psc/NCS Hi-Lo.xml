@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-02-17T17:00:14.773Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-03-30T11:19:44.274Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 8" date="2012-03-30" mandatory="true" released-date="2012-03-30T11:19:44.274Z" previous-amendment-key="2012-02-17~Rev 7">
+    <epoch-delta id="72a507d0-6058-49d4-a32c-1c2a16116969" node-id="73f6c858-4069-411a-8d82-c9d558c07d68">
+      <add id="ac07d12b-aa8a-4b1c-84e3-b248b63b4d7a" index="5">
+        <study-segment id="d0faf572-4208-4a43-adc6-5748f80ac321" name="Postnatal">
+          <period id="98b4e024-066b-4712-a7ff-47c9eba3f0e2" name="Questionnaire" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+            <planned-activity id="c6ca0a71-c3c0-48b8-af52-77bd246c0992" day="1">
+              <label id="c83eb8c5-2e2d-47fa-b267-7bfd676f63c6" name="event:low_intensity_data_collection"/>
+              <label id="9a34b0f1-dc49-4117-b6aa-c3573ca693b0" name="instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"/>
+              <activity-reference code="LII" source="NCS"/>
+            </planned-activity>
+          </period>
+        </study-segment>
+      </add>
+    </epoch-delta>
+  </amendment>
   <amendment name="Rev 7" date="2012-02-17" mandatory="true" released-date="2012-02-17T17:00:14.773Z" updated-date="2012-02-17T16:59:52.985Z" previous-amendment-key="2012-02-15~Rev 6">
     <planned-activity-delta id="f8386eaa-d33a-4f64-913f-e75d9cf2b496" node-id="71eff7d1-e4a3-446b-a878-ef835b368181">
       <property-change id="01d40180-7311-4304-975c-ac1906140de3" property-name="day" old-value="366" new-value="366"/>
