@@ -79,7 +79,7 @@ class PeopleController < ApplicationController
     instrument = Instrument.start(person, survey, event)
     instrument.save!
 
-    link = instrument.link_to(person, cl.contact, event, current_staff)
+    link = instrument.link_to(person, cl.contact, event, current_staff_id)
     link.save!
 
     rs_access_code = instrument.response_set.access_code
