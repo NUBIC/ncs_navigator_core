@@ -73,8 +73,6 @@ describe Participant do
             participant.next_scheduled_event.date.should == 151.days.from_now.to_date
           end
 
-          it "schedules the LO-Intensity Follow-Up if the due date is greater than 6 months from now"
-
           it "is eligible to be moved in the high intensity arm if in tsu" do
             du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => 'tsu')
             hh = Factory(:household_unit)
@@ -88,6 +86,25 @@ describe Participant do
           end
 
         end
+
+        describe "participant has given birth" do
+          it "schedules the LO-Intensity Postnatal segement 6.months after the birth event" do
+            create_missing_in_error_ncs_codes PpgStatusHistory
+            participant.should be_in_pregnancy_probability_group
+            participant.should be_known_to_be_pregnant
+            participant.impregnate_low!
+            participant.birth_event_low!
+
+            event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Birth", :local_code => 18)
+            event = Factory(:event, :participant => participant, :event_end_date => Date.today, :event_type => event_type)
+
+            participant.should be_postnatal
+            participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
+            participant.next_scheduled_event.event.should == participant.next_study_segment
+            participant.next_scheduled_event.date.should == 6.months.from_now.to_date
+          end
+        end
+
 
         it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
           du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
