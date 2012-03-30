@@ -37,6 +37,7 @@ class Event < ActiveRecord::Base
 
   belongs_to :participant
   has_many :contact_links
+  has_many :instruments, :through => :contact_links
 
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :event_type,                 'EVENT_TYPE_CL1'
@@ -114,10 +115,10 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # An event is 'closed' or 'completed' if the disposition has been set.
+  # An event is 'closed' or 'completed' if its end date is set.
   # @return [true, false]
   def closed?
-    event_disposition.to_i > 0
+    !event_end_date.blank?
   end
   alias completed? closed?
   alias complete? closed?

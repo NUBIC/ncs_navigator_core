@@ -42,6 +42,10 @@ module NcsNavigator::Core::Warehouse
             create_simply_mapped_core_records(one_to_one_producer)
           end
 
+        if tables.empty? || tables.include?(:ppg_status_histories)
+          insert_initial_ppg_status_into_history_if_necessary
+        end
+
         if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
           create_events_and_instruments_and_contact_links
         end
@@ -258,6 +262,10 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
+    def mdes_model_for_core_table(core_table)
+      find_producer(core_table).model
+    end
+
     def build_ordered_event_sets
       build_state_impacting_ids_table unless @state_impacting_ids_table_built
       state_impacting_event_ids_by_participant_id =
@@ -271,9 +279,9 @@ module NcsNavigator::Core::Warehouse
         @progress,
         state_impacting_event_ids_by_participant_id,
         {
-          :event => find_producer(:events).model,
-          :link_contact => find_producer(:contact_links).model,
-          :instrument => find_producer(:instruments).model
+          :event => mdes_model_for_core_table(:events),
+          :link_contact => mdes_model_for_core_table(:contact_links),
+          :instrument => mdes_model_for_core_table(:instruments)
         },
         log
       )
@@ -407,6 +415,41 @@ module NcsNavigator::Core::Warehouse
           end
         end
         offset += BLOCK_SIZE
+      end
+    end
+
+    def insert_initial_ppg_status_into_history_if_necessary
+      @progress.loading('PPG Details not present in PPG Status History')
+      ppg_details_model = mdes_model_for_core_table(:ppg_details)
+      ppg_details_requiring_correction = ppg_details_model.find_by_sql(<<-SQL)
+        SELECT d.* FROM ppg_details d
+        WHERE d.ppg_first <> (
+          SELECT ppg_status FROM ppg_status_history h
+          WHERE h.p_id=d.p_id ORDER BY h.ppg_status_date LIMIT 1
+        )
+      SQL
+
+      ppg_details_requiring_correction.each do |ppg_details|
+        query = <<-SQL
+          SELECT contact_date, contact_type
+          FROM contact
+            INNER JOIN link_contact USING (contact_id)
+            INNER JOIN event USING (event_id)
+          WHERE event_type = '29' AND participant_id='#{ppg_details.p_id}'
+          ORDER BY contact_date DESC
+          LIMIT 1
+        SQL
+        result = ::DataMapper.repository.adapter.select(query).first
+
+        PpgStatusHistory.create(
+          :participant_id => Participant.find_by_p_id(ppg_details.p_id).id,
+          :ppg_status_code => ppg_details.ppg_first,
+          :ppg_status_date => result.contact_date,
+          :ppg_info_source_code => 1,
+          :ppg_info_mode_code => result.contact_type,
+          :ppg_comment => 'Missing history entry inferred from ppg_details.ppg_first during import into NCS Navigator.'
+        )
+        @progress.increment_creates
       end
     end
 
