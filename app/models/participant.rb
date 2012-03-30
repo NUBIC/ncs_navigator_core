@@ -33,6 +33,8 @@
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
 # Every Participant is also a Person. People do not become Participants until they are determined eligible for a pregnancy screener.
 class Participant < ActiveRecord::Base
+  class << self; attr_accessor :importer_mode_on; end
+
   include MdesRecord
 
   acts_as_mdes_record :public_id_field => :p_id
@@ -72,13 +74,16 @@ class Participant < ActiveRecord::Base
 
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
+  def after_initialize
+    self.class.importer_mode_on = false;
+  end
+
   ##
   # State Machine used to manage relationship with Patient Study Calendar
   state_machine :low_intensity_state, :initial => :pending do
     store_audit_trail
     before_transition :log_state_change
     after_transition :on => :enroll_in_high_intensity_arm, :do => :add_to_high_intensity_protocol
-    after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
     after_transition :on => :birth_event_low, :do => :update_ppg_status_after_birth
     after_transition :on => :lose_child, :do => :update_ppg_status_after_child_loss
 
@@ -130,6 +135,7 @@ class Participant < ActiveRecord::Base
     before_transition :log_state_change
     after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_consent!
     after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
+    after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -569,13 +575,13 @@ class Participant < ActiveRecord::Base
   ##
   # Change the Participant status from Pregnant to Other Probability after having given birth
   def update_ppg_status_after_birth
-    post_transition_ppg_status_update(4)
+    post_transition_ppg_status_update(4) unless self.class.importer_mode_on
   end
 
   ##
   # Change the Participant status to PPG 3 after child loss
   def update_ppg_status_after_child_loss
-    post_transition_ppg_status_update(3)
+    post_transition_ppg_status_update(3) unless self.class.importer_mode_on
   end
 
   def last_contact
@@ -764,6 +770,12 @@ class Participant < ActiveRecord::Base
     else
       fail "Unhandled event type for participant state #{event_type.local_code.inspect}"
     end
+  end
+
+  def self.importer_mode
+    self.importer_mode_on = true
+    yield
+    self.importer_mode_on = false
   end
 
   comma do
