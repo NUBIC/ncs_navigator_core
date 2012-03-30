@@ -32,6 +32,7 @@ describe ContactLink do
 
     link.contact.contact_disposition = 510
     link.event.event_disposition = 510
+    link.event.event_end_date = Date.today
     link.should be_closed
   end
 

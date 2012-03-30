@@ -117,7 +117,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :birth_event_low do
-      transition [:consented_low_intensity, :pregnant_low, :following_low_intensity] => :following_low_intensity
+      transition [:consented_low_intensity, :pregnant_low, :following_low_intensity] => :postnatal
     end
 
     event :enroll_in_high_intensity_arm do
