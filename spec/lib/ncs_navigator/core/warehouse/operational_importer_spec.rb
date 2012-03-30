@@ -369,6 +369,110 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
+    describe 'correcting PPG status history' do
+      let(:participant) {
+        create_warehouse_record_with_defaults(MdesModule::Participant, :p_id => 'elf')
+      }
+
+      let(:ppg_first) { '2' }
+      let!(:ppg_details) {
+        create_warehouse_record_with_defaults(MdesModule::PpgDetails,
+          :ppg_first => ppg_first, :p => participant)
+      }
+
+      let!(:ppg_status_history_current) {
+        create_warehouse_record_with_defaults(MdesModule::PpgStatusHistory,
+          :p => participant, :ppg_status => '1', :ppg_status_date => '2011-06-04')
+      }
+
+      let(:screener_date) { '2010-03-06' }
+      let!(:screener_event) {
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :participant => participant, :event_type => 29,
+          :event_start_date => '2010-03-04', :event_end_date => screener_date)
+      }
+      let(:screener_contact_1) {
+        create_warehouse_record_with_defaults(MdesModule::Contact, :contact_id => '1',
+          :contact_type => '2', :contact_date => '2010-03-05')
+      }
+      let(:screener_contact_2) {
+        create_warehouse_record_with_defaults(MdesModule::Contact, :contact_id => '2',
+          :contact_type => '3', :contact_date => '2010-03-06')
+      }
+      let!(:screener_lc_1) {
+        create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '1',
+          :contact => screener_contact_1, :event => screener_event)
+      }
+      let!(:screener_lc_2) {
+        create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '2',
+          :contact => screener_contact_2, :event => screener_event)
+      }
+
+      before do
+        # TODO: we should really have all the lookup values in the
+        # test database at all times
+        {
+          :contact_type_cl1 => [2, 3],
+          :ppg_status_cl1 => [1, 2],
+          :information_source_cl3 => [1]
+        }.each do |list, codes|
+          codes.each do |code|
+            Factory(:ncs_code, :local_code => code, :list_name => list.to_s.upcase)
+          end
+        end
+        [PpgStatusHistory, PpgDetail, Event, Contact, ContactLink, Participant].each do |cls|
+          create_missing_in_error_ncs_codes(cls)
+        end
+      end
+
+      describe 'when the source history is correct' do
+        it 'leaves the history alone' do
+          create_warehouse_record_with_defaults(MdesModule::PpgStatusHistory,
+            :ppg_history_id => 'existing',
+            :p => participant, :ppg_status => ppg_first, :ppg_status_date => screener_date)
+
+          importer.import(:ppg_status_histories)
+
+          PpgStatusHistory.order(:ppg_status_date).collect(&:ppg_status_code).should == [2, 1]
+        end
+      end
+
+      describe 'when the source history is missing the initial status' do
+        before do
+          importer.import(:participants, :ppg_status_histories)
+        end
+
+        let(:first_history_entry) {
+          PpgStatusHistory.order(:ppg_status_date).first
+        }
+
+        it 'inserts a new history record using the pregnancy screener date if the initial state does not match' do
+          PpgStatusHistory.order(:ppg_status_date).collect(&:ppg_status_code).should == [2, 1]
+        end
+
+        it 'uses the screener end date as the date for the new status history entry' do
+          first_history_entry.ppg_status_date.should == screener_date
+        end
+
+        it 'notes that status was obtained from the participant (as part of the screener)' do
+          first_history_entry.ppg_info_source_code.should == 1
+        end
+
+        it 'notes that status was obtained in the same mode as the pregnancy screener' do
+          first_history_entry.ppg_info_mode_code.should == 3
+        end
+
+        it 'provides a comment indicating it was inferred' do
+          first_history_entry.ppg_comment.should ==
+            'Missing history entry inferred from ppg_details.ppg_first during import into NCS Navigator.'
+        end
+      end
+
+      it 'only attempts to correct for the first ppg_details for a participant' do
+        pending '#1953'
+      end
+    end
+
     def create_warehouse_record_via_core(core_model, wh_id, wh_attributes={})
       Factory(core_model.to_s.underscore, core_model.public_id_field => wh_id)
       producer = OperationalEnumerator.record_producers.

@@ -21,6 +21,12 @@ describe ResponseSet do
   it { should belong_to(:person) }
   it { should belong_to(:instrument) }
 
+  describe '#instrument' do
+    it 'is the inverse of Instrument#response_set' do
+      ResponseSet.reflections[:instrument].options[:inverse_of].should == :response_set
+    end
+  end
+
   context "with instruments" do
     before(:each) do
       Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)

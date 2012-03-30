@@ -10,6 +10,7 @@
 #  client_id     :string(255)
 #  end_date      :date
 #  start_date    :date
+#  original_data :binary
 #
 
 require 'spec_helper'
@@ -31,6 +32,41 @@ describe Fieldwork do
 
       fw.id.should == id
       fw.should_not be_new_record
+    end
+  end
+
+  describe '.from_psc' do
+    let(:params) do
+      {
+        :start_date => '2012-02-01',
+        :end_date => '2012-03-01',
+        :client_id => '123456789'
+      }
+    end
+
+    describe 'return value' do
+      let(:fieldwork) { Fieldwork.from_psc(params, stub) }
+
+      before do
+        NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
+          :from_psc => NcsNavigator::Core::Psc::ScheduledActivityReport.new)
+      end
+
+      it 'is unpersisted' do
+        fieldwork.should_not be_persisted
+      end
+
+      it 'contains the given client ID' do
+        fieldwork.client_id.should == params[:client_id]
+      end
+
+      it 'contains the given start date' do
+        fieldwork.start_date.should == Date.new(2012, 02, 01)
+      end
+
+      it 'contains the given end date' do
+        fieldwork.end_date.should == Date.new(2012, 03, 01)
+      end
     end
   end
 

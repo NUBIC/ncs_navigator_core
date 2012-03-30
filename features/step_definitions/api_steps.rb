@@ -83,8 +83,11 @@ Then /^the response body satisfies$/ do |table|
   table.diff!(actual)
 end
 
-Then /^the response body is$/ do |string|
-  JSON.parse(last_response.body).should == JSON.parse(string)
+Then /^the response body matches$/ do |string|
+  actual = JSON.parse(last_response.body)
+  expected = JSON.parse(string)
+
+  actual.diff(expected).should == {}
 end
 
 Then /^the referenced entity is a fieldwork set$/ do

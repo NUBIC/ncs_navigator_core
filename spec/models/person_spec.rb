@@ -91,6 +91,7 @@ describe Person do
   it { should belong_to(:response_set) }
   it { should have_many(:response_sets) }
   it { should have_many(:contact_links) }
+  it { should have_many(:events).through(:contact_links) }
   it { should have_many(:participant_person_links) }
   it { should have_many(:participants).through(:participant_person_links) }
 

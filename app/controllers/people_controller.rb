@@ -69,26 +69,22 @@ class PeopleController < ApplicationController
     end
   end
 
+  # GET /people/1/start_instrument
   def start_instrument
-    @person = Person.find(params[:id])
-    @contact_link = find_or_create_contact_link
+    person = Person.find(params[:id])
     survey = Survey.most_recent_for_access_code(params[:survey_access_code])
-    rs = ResponseSet.where("survey_id = ? and user_id = ?", survey.id, @person.id).first
-    if should_create_new_instrument?(rs, @contact_link.event)
-      instrument = @person.start_instrument(survey)
-      rs = instrument.response_set
-    else
-      instrument = rs.instrument
-    end
+    cl = person.contact_links.includes(:event, :contact).find(params[:contact_link_id])
+    event = cl.event
 
-    if instrument && instrument.event.nil?
-      instrument.event = @contact_link.event
-      instrument.save!
-    end
+    instrument = Instrument.start(person, survey, event)
+    instrument.save!
 
-    @contact_link.instrument = instrument
-    @contact_link.save!
-    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs.access_code))
+    link = instrument.link_to(person, cl.contact, event, current_staff)
+    link.save!
+
+    rs_access_code = instrument.response_set.access_code
+
+    redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
 
   def responses_for
