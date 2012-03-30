@@ -310,6 +310,7 @@ describe Person do
 
       pers.current_contact_link.contact.contact_disposition = 510
       pers.current_contact_link.event.event_disposition = 510
+      pers.current_contact_link.event.event_end_date = Date.today
       pers.current_contact_link.should be_nil
 
     end
