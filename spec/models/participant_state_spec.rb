@@ -553,6 +553,7 @@ describe Participant do
       let(:person) { Factory(:person) }
 
       before(:each) do
+        create_missing_in_error_ncs_codes PpgStatusHistory
         participant.person = person
         participant.should be_pregnancy_one
         participant.should be_high_intensity
@@ -583,6 +584,7 @@ describe Participant do
       let(:person) { Factory(:person) }
 
       before(:each) do
+        create_missing_in_error_ncs_codes PpgStatusHistory
         participant.person = person
         participant.should be_pregnancy_two
         participant.should be_high_intensity
@@ -636,6 +638,46 @@ describe Participant do
           participant.should be_following_high_intensity
         end
       end
+    end
+
+    context "postnatal" do
+      let(:participant) { Factory(:participant, :low_intensity_state => "moved_to_high_intensity_arm", :high_intensity => true) }
+      let(:person) { Factory(:person) }
+
+      let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
+      let(:status1a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
+      let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
+
+      before(:each) do
+
+        create_missing_in_error_ncs_codes(PpgStatusHistory)
+
+        participant.person = person
+        participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+        participant.should be_pregnancy_one
+
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status1a)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
+
+        participant.ppg_details.should_not be_empty
+        participant.ppg_status_histories.should_not be_empty
+        participant.ppg_status.should == status1
+        participant.ppg_status.should_not == status4
+      end
+
+      it "should update the ppg status to 4" do
+        participant.birth_event!
+        Participant.find(participant.id).ppg_status.should == status4
+      end
+
+      it "should not run the postnatal transitions in importer mode" do
+        previous_status = participant.ppg_status
+        Participant.importer_mode do
+          participant.birth_event!
+          Participant.find(participant.id).ppg_status.should == previous_status
+        end
+      end
+
     end
 
   end

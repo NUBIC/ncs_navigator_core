@@ -465,7 +465,9 @@ describe Participant do
         @participant.high_intensity_conversion!
 
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
-        @participant.next_scheduled_event.date.should == 5.month.from_now.to_date
+        near_date = 5.month.from_now.to_date
+        dt_range = [near_date + 1.day, near_date, near_date - 1.day]
+        @participant.next_scheduled_event.date.should be_in dt_range
       end
     end
 
