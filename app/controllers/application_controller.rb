@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_staff_id
-      current_user.identifiers[:staff_id]
+      current_user.identifiers[:staff_id] || 'unknown_staff_id'
     end
 
     # TODO: delete this method - events should be created as placeholder methods via Event.schedule_and_create_placeholder
