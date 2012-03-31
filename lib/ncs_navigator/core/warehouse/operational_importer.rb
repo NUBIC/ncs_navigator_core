@@ -116,7 +116,7 @@ module NcsNavigator::Core::Warehouse
           events_and_links.each do |event_and_links|
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
-            if should_affect_participant_state?(core_event)
+            if should_affect_participant_state?(participant, core_event)
               participant.set_state_for_event_type(core_event.event_type)
             end
 
@@ -149,17 +149,18 @@ module NcsNavigator::Core::Warehouse
       drop_state_impacting_ids_table
     end
 
-    def should_affect_participant_state?(core_event)
+    def should_affect_participant_state?(core_participant, core_event)
       return false unless core_event.new_record?
       # low-high conversion
       if core_event.event_type_code == 32
-        low_high_script_model = wh_config.models_module.const_get(:LowHighScript)
-        interview = low_high_script_model.first(:event_id => core_event.public_id)
-        if interview
-          interview.out_visit == '1'
-        else
-          false
-        end
+        # only apply if eventually consented
+        results = ::DataMapper.repository.adapter.select(<<-SQL)
+          SELECT COUNT(*) hi_consents FROM participant_consent
+          WHERE p_id='#{core_participant.p_id}'
+            AND (consent_type='1' OR consent_form_type='1')
+            AND consent_given='1'
+        SQL
+        results.first > 0
       else
         true
       end
