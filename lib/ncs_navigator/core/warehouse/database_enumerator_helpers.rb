@@ -44,6 +44,9 @@ module NcsNavigator::Core::Warehouse
       end
 
       query = "SELECT #{selects.join(', ')}\nFROM #{table_name} t\n  #{joins.join("\n  ")}"
+      if options[:where]
+        query << "\nWHERE #{options[:where]}"
+      end
 
       pr_opts = {
         :column_map => column_map,

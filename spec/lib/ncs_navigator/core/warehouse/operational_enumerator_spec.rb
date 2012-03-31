@@ -567,6 +567,14 @@ module NcsNavigator::Core::Warehouse
 
       include_examples 'one to one'
 
+      before do
+        # This rigamarole is because you apparently can't stop
+        # FactoryGirl from initializing associations, even if you
+        # provide an override.
+        ContactLink.create!(
+          :psu_code => 20000030, :event => event, :contact => Factory(:contact), :staff_id => 'dc')
+      end
+
       describe 'with manually mapped variables' do
         include_context 'mapping test'
 
@@ -579,6 +587,11 @@ module NcsNavigator::Core::Warehouse
 
       it 'uses the public ID for participant' do
         results.first.participant_id.should == Participant.first.p_id
+      end
+
+      it 'emits nothing when there are no associated contact links' do
+        ContactLink.destroy_all
+        results.should == []
       end
 
       describe '#event_disp' do
