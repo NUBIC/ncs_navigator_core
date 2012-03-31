@@ -164,6 +164,9 @@ module NcsNavigator::Core::Warehouse
             ELSE t.event_disposition % 500 + 500
             END) normalized_event_disposition}
       ],
+      :where => %q{
+        EXISTS(SELECT 'x' FROM contact_links cl WHERE cl.event_id=t.id)
+      },
       :column_map => {
         :normalized_event_disposition => :event_disp,
         :event_disposition_category_code => :event_disp_cat,
