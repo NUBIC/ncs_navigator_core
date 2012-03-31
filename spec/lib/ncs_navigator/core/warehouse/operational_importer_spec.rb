@@ -509,10 +509,13 @@ module NcsNavigator::Core::Warehouse
       before do
         Event.count.should == 0
 
-        # for enroll status
-        { 'Yes' => '1', 'No' => '2' }.each do |text, code|
-          Factory(
-            :ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => text, :local_code => code)
+        {
+          :confirm_type_cl2 => [1, 2], # for enroll status
+          :consent_type_cl1 => [1, 7]
+        }.each do |list_name, codes|
+          codes.each do |code|
+            Factory(:ncs_code, :list_name => list_name.to_s.upcase, :local_code => code)
+          end
         end
       end
 
@@ -539,6 +542,11 @@ module NcsNavigator::Core::Warehouse
         create_warehouse_record_via_core(ParticipantPersonLink, 'ginger_p_pers_link',
           :p => ginger_p,
           :person => ginger_pers)
+      }
+
+      let!(:f_consent) {
+        create_warehouse_record_via_core(ParticipantConsent, 'f_consent',
+          :p => fred_p, :consent_given => '1', :consent_type => '7', :consent_form_type => '7')
       }
 
       let(:f_e2) {
@@ -818,13 +826,40 @@ module NcsNavigator::Core::Warehouse
 
           # without import in before
           context do
-            it 'imports the low-high conversion state only if the low-high conversion was completed' do
-              f_e5_i_script.out_visit = '1'
-              f_e5_i_script.save
+            describe 'low-high conversion' do
+              it 'is taken if the participant has a consent with consent_type=1' do
+                f_consent.consent_type = '1'
+                save_wh(f_consent)
 
-              do_import
+                do_import
 
-              target_states.should == expected_states + ['moved_to_high_intensity_arm']
+                target_states.should == expected_states + ['moved_to_high_intensity_arm']
+              end
+
+              it 'is taken if the participant has a consent with consent_form_type=1' do
+                f_consent.consent_form_type = '1'
+                save_wh(f_consent)
+
+                do_import
+
+                target_states.should == expected_states + ['moved_to_high_intensity_arm']
+              end
+
+              it 'is not taken if the participant consent was not given' do
+                f_consent.consent_form_type = '1'
+                f_consent.consent_given = '2'
+                save_wh(f_consent)
+
+                do_import
+
+                target_states.should == expected_states
+              end
+
+              it 'is not taken if the participant only has consents of other types' do
+                do_import
+
+                target_states.should == expected_states
+              end
             end
           end
         end
