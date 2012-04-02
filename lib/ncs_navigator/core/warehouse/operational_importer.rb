@@ -117,7 +117,7 @@ module NcsNavigator::Core::Warehouse
             core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
             if should_affect_participant_state?(participant, core_event)
-              participant.set_state_for_event_type(core_event.event_type)
+              participant.set_state_for_event_type(core_event)
             end
 
             cache_event_for_psc_sync(participant, core_event) if for_psc

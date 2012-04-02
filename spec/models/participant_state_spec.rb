@@ -283,29 +283,34 @@ describe Participant do
 
       describe "given any Pregnancy Screener event" do
         it "should be in the in_pregnancy_probability_group state for Pregnancy Screener" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)
+          participant.set_state_for_event_type(event)
           participant.should be_in_pregnancy_probability_group
         end
 
         it "should be in the in_pregnancy_probability_group state for Pregnancy Screening - Provider Group" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 4).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 4).first)
+          participant.set_state_for_event_type(event)
           participant.should be_in_pregnancy_probability_group
         end
 
         it "should be in the in_pregnancy_probability_group state for Pregnancy Screening – High Intensity  Group" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 5).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 5).first)
+          participant.set_state_for_event_type(event)
           participant.should be_in_pregnancy_probability_group
         end
 
         it "should be in the in_pregnancy_probability_group state for Pregnancy Screening – Low Intensity Group " do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 6).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 6).first)
+          participant.set_state_for_event_type(event)
           participant.should be_in_pregnancy_probability_group
         end
       end
 
       describe "given Informed Consent" do
         it "should be in the consented_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
+          participant.set_state_for_event_type(event)
           participant.should be_consented_low_intensity
         end
       end
@@ -332,28 +337,32 @@ describe Participant do
 
       describe "given Pregnancy Probability" do
         it "should be in the following_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
       end
 
       describe "given PPG Follow-Up by Mailed SAQ" do
         it "should be in the following_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 8).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 8).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
       end
 
       describe "given Informed Consent" do
         it "should be in the consented_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
+          participant.set_state_for_event_type(event)
           participant.should be_consented_low_intensity
         end
       end
 
       describe "given Low Intensity Data Collection" do
         it "should be in the following_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 33).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 33).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
       end
@@ -381,27 +390,41 @@ describe Participant do
 
       describe "given Pregnancy Screener" do
         it "should be in the consented_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)
+          participant.set_state_for_event_type(event)
           participant.should be_consented_low_intensity
         end
       end
 
       describe "given Low Intensity Data Collection" do
         it "should be in the following_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 33).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 33).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
+
+        it "should be in the pregnant_low state if pregnant at the time of the event" do
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 33).first, :event_start_date => Date.today)
+          pregnant_participant = Factory(:low_intensity_ppg1_participant)
+          pregnant_participant.ppg_status.local_code.should == 1
+          pregnant_participant.should be_pregnant
+          pregnant_participant.set_state_for_event_type(event)
+          pregnant_participant.should be_pregnant_low
+        end
+
       end
 
       describe "given Pre-Pregnancy Visit" do
         it "should be in the following high intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 11).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 11).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_high_intensity
           participant.should be_high_intensity
         end
 
         it "should be in the pre_pregnancy state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 12).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 12).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_high_intensity
           participant.should be_high_intensity
         end
@@ -409,22 +432,34 @@ describe Participant do
 
       describe "given Pregnancy Probability" do
         it "should be in the pre_pregnancy state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
           participant.should be_low_intensity
+        end
+
+        it "should be in the pregnant_low state if pregnant at the time of the event" do
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first, :event_start_date => Date.today)
+          pregnant_participant = Factory(:low_intensity_ppg1_participant)
+          pregnant_participant.ppg_status.local_code.should == 1
+          pregnant_participant.should be_pregnant
+          pregnant_participant.set_state_for_event_type(event)
+          pregnant_participant.should be_pregnant_low
         end
 
       end
 
       describe "given Pregnancy Visit 1" do
         it "should be in the pregnancy_one state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_one
           participant.should be_high_intensity
         end
 
         it "should be in the pregnancy_one state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 14).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 14).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_one
           participant.should be_high_intensity
         end
@@ -436,7 +471,8 @@ describe Participant do
           Factory(:ncs_code, :list_name => "INFORMATION_SOURCE_CL3", :local_code => -5)
           Factory(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :local_code => -5)
 
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
+          participant.set_state_for_event_type(event)
           participant.should be_postnatal
           participant.ppg_status.should == status4a
         end
@@ -444,13 +480,15 @@ describe Participant do
 
       describe "given Pregnancy Visit 2" do
         it "should be in the pregnancy_two state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 15).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 15).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_two
           participant.should be_high_intensity
         end
 
         it "should be in the pregnancy_two state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 16).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 16).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_two
           participant.should be_high_intensity
         end
@@ -458,7 +496,8 @@ describe Participant do
 
       describe "given Low to High Conversion" do
         it "should be in the moved_to_high_intensity_arm state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 32).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 32).first)
+          participant.set_state_for_event_type(event)
           participant.should be_high_intensity
           participant.should be_moved_to_high_intensity_arm
           participant.should be_in_high_intensity_arm
@@ -485,14 +524,16 @@ describe Participant do
 
       describe "given Pregnancy Screener" do
         it "should be in the following_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
       end
 
       describe "given Pregnancy Probability" do
         it "should be in the following_low_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
           participant.should be_low_intensity
         end
@@ -500,14 +541,16 @@ describe Participant do
 
       describe "given Informed Consent" do
         it "should be in the following_high_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 10).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
       end
 
       describe "given Low to High Conversion" do
         it "should be in the moved_to_high_intensity_arm state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 32).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 32).first)
+          participant.set_state_for_event_type(event)
           participant.should be_high_intensity
           participant.should be_moved_to_high_intensity_arm
           participant.should be_in_high_intensity_arm
@@ -532,7 +575,8 @@ describe Participant do
 
       describe "given Pregnancy Probability" do
         it "should be in the following_high_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          participant.set_state_for_event_type(event)
           # participant.should be_pre_pregnancy
           # participant.should be_following_high_intensity
           # TODO: check if this happens in cases of loss
@@ -541,7 +585,8 @@ describe Participant do
 
       describe "given Pregnancy Visit  1" do
         it "should be in the pregnancy_one state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_one
         end
       end
@@ -565,14 +610,16 @@ describe Participant do
 
       describe "given Pregnancy Visit  2" do
         it "should be in the pregnancy_two state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 15).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 15).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_two
         end
       end
 
       describe "given Birth" do
         it "should be in the parenthood state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
+          participant.set_state_for_event_type(event)
           participant.should be_parenthood
         end
       end
@@ -595,7 +642,8 @@ describe Participant do
 
       describe "given Birth" do
         it "should be in the parenthood state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
+          participant.set_state_for_event_type(event)
           participant.should be_parenthood
         end
       end
@@ -620,21 +668,24 @@ describe Participant do
 
       describe "given Pre-Pregnancy Visit" do
         it "should be in the pre_pregnancy state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 11).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 11).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_high_intensity
         end
       end
 
       describe "given Pregnancy Visit  1" do
         it "should be in the pregnancy_one state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+          participant.set_state_for_event_type(event)
           participant.should be_pregnancy_one
         end
       end
 
       describe "given Pregnancy Probability" do
         it "should be in the following_high_intensity state" do
-          participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 7).first)
+          participant.set_state_for_event_type(event)
           participant.should be_following_high_intensity
         end
       end
@@ -653,7 +704,8 @@ describe Participant do
         create_missing_in_error_ncs_codes(PpgStatusHistory)
 
         participant.person = person
-        participant.set_state_for_event_type(NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+        event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+        participant.set_state_for_event_type(event)
         participant.should be_pregnancy_one
 
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1a)
