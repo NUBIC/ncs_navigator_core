@@ -285,6 +285,100 @@ module NcsNavigator::Core::Psc
           end
         end
       end
+
+      describe '#save_entities' do
+        let(:c) { Factory.build(:contact) }
+        let(:e) { Factory(:event) }
+        let(:i) { Instrument.start(p, s, e) }
+        let(:p) { Factory(:person) }
+        let(:s) { Factory(:survey, :title => 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1', :access_code => 'ins_que_ppgfollup_saq_ehpbhili_p2') }
+
+        let(:r1) do
+          OpenStruct.new(:contact => c,
+                         :event => e,
+                         :instrument => i,
+                         :person => p,
+                         :survey => s)
+        end
+
+        let(:staff_id) { 'test' }
+
+        before do
+          # Expected by Person#start_instrument.
+          create_missing_in_error_ncs_codes(Instrument)
+          InstrumentEventMap.stub!(:instrument_type => Factory(:ncs_code))
+
+          report.rows = [r1]
+        end
+
+        it 'saves new contacts' do
+          report.save_entities(staff_id)
+
+          c.should_not be_new_record
+        end
+
+        it 'builds a contact link between a contact and its event' do
+          report.save_entities(staff_id)
+
+          ContactLink.exists?(:contact_id => c.id, :event_id => e.id).should be_true
+        end
+
+        it 'saves new instruments' do
+          report.save_entities(staff_id)
+
+          i.should_not be_new_record
+        end
+
+        it 'builds a contact link between an instrument and its event' do
+          report.save_entities(staff_id)
+
+          ContactLink.exists?(:event_id => e.id, :instrument_id => i.id).should be_true
+        end
+
+        it 'returns true if all entities were saved' do
+          report.save_entities(staff_id).should be_true
+        end
+
+        it 'returns false if an instrument could not be saved' do
+          i.stub!(:save => false)
+
+          report.save_entities(staff_id).should be_false
+        end
+
+        it 'returns false if a contact could not be saved' do
+          c.stub!(:save => false)
+
+          report.save_entities(staff_id).should be_false
+        end
+
+        it 'returns false if links could not be established' do
+          cl = stub.as_null_object
+          ContactLink.stub!(:new => cl)
+          cl.stub!(:save => false)
+
+          report.save_entities(staff_id).should be_false
+        end
+
+        describe 'if a row does not have a contact' do
+          before do
+            r1.contact = nil
+          end
+
+          it 'does not raise NoMethodError' do
+            lambda { report.save_entities(staff_id) }.should_not raise_error(NoMethodError)
+          end
+        end
+
+        describe 'if a row does not have an instrument' do
+          before do
+            r1.instrument = nil
+          end
+
+          it 'does not raise NoMethodError' do
+            lambda { report.save_entities(staff_id) }.should_not raise_error(NoMethodError)
+          end
+        end
+      end
     end
   end
 end

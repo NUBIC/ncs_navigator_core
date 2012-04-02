@@ -5,18 +5,31 @@ module NcsNavigator::Core::Psc
   ##
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
+    autoload :JsonForFieldwork, 'ncs_navigator/core/psc/scheduled_activity_report/json_for_fieldwork'
+
+    include JsonForFieldwork
+
     ##
     # Associations (rooted at {Person}) to eager-load when mapping report rows
     # to Core entities.
-    MAPPING_ASSOCIATIONS = {
-      :participant_person_links => {
-        :participant => {
-          :events => [
-            :instruments, :contacts
-          ]
-        }
-      }
-    }
+    MAPPING_ASSOCIATIONS = [
+      # for mapping entities
+      {
+        :participant_person_links => [
+          {
+            :participant => {
+              :events => [
+                :instruments, :contacts
+              ]
+            }
+          },
+          :person
+        ]
+      },
+
+      # for Instrument#link_to
+      :contact_links
+    ]
 
     ##
     # Filters used in generating the report.
@@ -58,6 +71,40 @@ module NcsNavigator::Core::Psc
 
       self.logger = ::Logger.new(io)
       self.rows = []
+    end
+
+    ##
+    # Maps entities referenced in the scheduled activities report to Core entities.
+    def map_entities
+      map_participants
+      map_events
+      map_instruments
+      map_contacts
+    end
+
+    ##
+    # Invokes #save across all dirty entities in an all-or-nothing fashion.
+    # Requires the name of the user performing the save.
+    #
+    # If any entity could not be saved, returns false; otherwise, returns
+    # true.
+    def save_entities(staff_id)
+      ActiveRecord::Base.transaction do
+        contacts_ok = rows.select(&:contact).all? { |r| r.contact.save }
+
+        raise ActiveRecord::Rollback unless contacts_ok
+
+        instruments_ok = rows.select(&:instrument).all? do |r|
+          instr = r.instrument
+
+          instr.save and
+            instr.link_to(r.person, r.contact, r.event, staff_id).save
+        end
+
+        raise ActiveRecord::Rollback unless instruments_ok
+
+        contacts_ok && instruments_ok
+      end
     end
 
     ##

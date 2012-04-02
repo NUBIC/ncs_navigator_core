@@ -45,7 +45,7 @@ describe Fieldwork do
     end
 
     describe 'return value' do
-      let(:fieldwork) { Fieldwork.from_psc(params, stub) }
+      let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test') }
 
       before do
         NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
@@ -141,6 +141,80 @@ describe Fieldwork do
       subject.client_id = nil
 
       subject.should have(1).error_on(:client_id)
+    end
+  end
+
+  describe 'before save' do
+    describe 'if #report is not nil' do
+      let(:report) { NcsNavigator::Core::Psc::ScheduledActivityReport.new }
+
+      before do
+        subject.report = report
+
+        report.stub!(:contacts_as_json)
+        report.stub!(:participants_as_json)
+        report.stub!(:instrument_templates_as_json)
+      end
+
+      it "saves all report entities" do
+        report.should_receive(:save_entities)
+
+        subject.save
+      end
+
+      it "sets #original_data" do
+        report.stub!(:save_entities => true)
+
+        subject.save
+
+        subject.original_data.should_not be_nil
+      end
+
+      describe 'if report entities cannot be saved' do
+        it 'aborts the save' do
+          report.stub!(:save_entities => false)
+
+          lambda { subject.save! }.should raise_error(ActiveRecord::RecordNotSaved)
+        end
+      end
+
+      describe 'the JSON in #original_data' do
+        let(:json) { JSON.parse(subject.original_data) }
+
+        before do
+          report.stub!(:save_entities => true)
+
+          report.should_receive(:contacts_as_json).and_return([])
+          report.should_receive(:participants_as_json).and_return([])
+          report.should_receive(:instrument_templates_as_json).and_return([])
+
+          subject.save
+        end
+
+        it 'has a "contacts" key' do
+          json.should have_key('contacts')
+        end
+
+        it 'has a "participants" key' do
+          json.should have_key('participants')
+        end
+
+        it 'has an "instrument_templates" key' do
+          json.should have_key('instrument_templates')
+        end
+      end
+    end
+
+    describe 'if #report is nil' do
+      before do
+        subject.report = nil
+      end
+
+      it 'does not modify #original_data' do
+        subject.save
+
+        subject.original_data.should be_nil
+      end
     end
   end
 end
