@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'aker/authority/aker_token'
+
 describe Aker::Authority::AkerToken do
   let(:app) { mock('app') }
   let(:env) { { :request_headers => ::Faraday::Utils::Headers.new } }
