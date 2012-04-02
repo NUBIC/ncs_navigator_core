@@ -22,7 +22,7 @@
 
 class PpgStatusHistory < ActiveRecord::Base
   include MdesRecord
-  acts_as_mdes_record :public_id_field => :ppg_history_id
+  acts_as_mdes_record :public_id_field => :ppg_history_id, :date_fields => [:ppg_status_date]
 
   belongs_to :participant
   belongs_to :response_set
@@ -52,8 +52,9 @@ class PpgStatusHistory < ActiveRecord::Base
   private
 
     def set_ppg_status_date
-      if self.ppg_status_date.blank?
+      if self.ppg_status_date.blank? && self.ppg_status_date_date.blank?
         date = self.created_at.blank? ? Time.now : self.created_at
+        self.ppg_status_date_date = date
         self.ppg_status_date = date.strftime(MdesRecord::DEFAULT_DATE_FORMAT)
       end
     end

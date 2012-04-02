@@ -357,13 +357,20 @@ class Participant < ActiveRecord::Base
   # 6 or 7 - Ineligible Dwelling Unit
   #
   # @return [NcsCode]
-  def ppg_status
-    if ppg_status_histories.blank?
-      ppg_details.blank? ? nil : ppg_details.first.ppg_first
-    else
-      ppg_status_histories.first.ppg_status
-    end
+  def ppg_status(date = Date.today)
+    ppg_status_histories.blank? ? ppg_status_from_ppg_details : ppg_status_from_ppg_status_histories(date)
   end
+
+  def ppg_status_from_ppg_details
+    ppg_details.blank? ? nil : ppg_details.first.ppg_first
+  end
+  private :ppg_status_from_ppg_details
+
+  def ppg_status_from_ppg_status_histories(date)
+    psh = ppg_status_histories.where("ppg_status_date_date <= '#{date}'").order("ppg_status_date_date DESC").all
+    psh.blank? ? ppg_status_histories.first.ppg_status : psh.first.ppg_status
+  end
+  private :ppg_status_from_ppg_status_histories
 
   ##
   # The next segment in PSC for the participant
