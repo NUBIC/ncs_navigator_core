@@ -367,6 +367,7 @@ class Participant < ActiveRecord::Base
   private :ppg_status_from_ppg_details
 
   def ppg_status_from_ppg_status_histories(date)
+    date = Date.today if date.blank?
     psh = ppg_status_histories.where("ppg_status_date_date <= '#{date}'").order("ppg_status_date_date DESC").all
     psh.blank? ? ppg_status_histories.first.ppg_status : psh.first.ppg_status
   end
@@ -550,14 +551,14 @@ class Participant < ActiveRecord::Base
 
   ##
   # Participants are known to be pregnant if in the proper Pregnancy Probability Group
-  def known_to_be_pregnant?
-    pregnant?
+  def known_to_be_pregnant?(date = Date.today)
+    pregnant?(date)
   end
 
   ##
   # Participants are known to have experienced child loss if in the proper Pregnancy Probability Group
-  def known_to_have_experienced_child_loss?
-    recent_loss?
+  def known_to_have_experienced_child_loss?(date = Date.today)
+    recent_loss?(date)
   end
 
   ##
@@ -731,11 +732,11 @@ class Participant < ActiveRecord::Base
   # This method is reactive and cannot know the outcome of the event
   # so it simply will set the state to the most probable given the
   # event type and the current state
-  # @param [NcsCode]
-  def set_state_for_event_type(event_type)
+  # @param [Event]
+  def set_state_for_event_type(event)
     register! if can_register?  # assume known to PSC
 
-    case event_type.local_code
+    case event.event_type.local_code
     when 4, 5, 6, 29
       # Pregnancy Screener Events
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
@@ -746,9 +747,11 @@ class Participant < ActiveRecord::Base
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
       follow! if can_follow?
+      impregnate_low! if can_impregnate_low? && known_to_be_pregnant?(event.import_sort_date)
     when 33
       # Lo I Quex
       follow_low_intensity if can_follow_low_intensity?
+      impregnate_low! if can_impregnate_low? && known_to_be_pregnant?(event.import_sort_date)
     when 11, 12
       # Pre-Pregnancy
       move_to_high_intensity_if_required
@@ -891,24 +894,24 @@ class Participant < ActiveRecord::Base
       status_codes.include?(ppg_status.local_code)
     end
 
-    def ineligible?
-      ppg_status && ppg_status.local_code > 4
+    def ineligible?(date = Date.today)
+      ppg_status(date) && ppg_status(date).local_code > 4
     end
 
-    def pregnant_or_trying?
-      pregnant? || trying?
+    def pregnant_or_trying?(date = Date.today)
+      pregnant?(date) || trying?(date)
     end
 
-    def pregnant?
-      ppg_status && ppg_status.local_code == 1
+    def pregnant?(date = Date.today)
+      ppg_status(date) && ppg_status(date).local_code == 1
     end
 
-    def trying?
-      ppg_status && ppg_status.local_code == 2
+    def trying?(date = Date.today)
+      ppg_status(date) && ppg_status(date).local_code == 2
     end
 
-    def recent_loss?
-      ppg_status && ppg_status.local_code == 3
+    def recent_loss?(date = Date.today)
+      ppg_status(date) && ppg_status(date).local_code == 3
     end
 
     def consented_to_high_intensity_arm?
