@@ -70,6 +70,25 @@ describe Event do
     end
   end
 
+  describe ".import_sort_date" do
+
+    it "returns the event start date if the event end date is null" do
+      event = Factory(:event, :event_end_date => nil)
+      event.import_sort_date.should == event.event_start_date
+    end
+
+    it "returns the event start date if the event end date is some variant of '9777-97-97'" do
+      event = Factory(:event, :event_end_date => '9777-97-97')
+      event.import_sort_date.should == event.event_start_date
+    end
+
+    it "returns the event end date if it exists and is valid" do
+      event = Factory(:event, :event_end_date => Date.today)
+      event.import_sort_date.should == event.event_end_date
+    end
+
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

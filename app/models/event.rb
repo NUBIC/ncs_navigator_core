@@ -115,6 +115,17 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns the event_end_date if it exists and is a valid date
+  # otherwise it returns the event_start_date
+  def import_sort_date
+    if event_end_date && event_end_date.to_s !~ /^9/
+      event_end_date
+    else
+      event_start_date
+    end
+  end
+
+  ##
   # An event is 'closed' or 'completed' if its end date is set.
   # @return [true, false]
   def closed?
