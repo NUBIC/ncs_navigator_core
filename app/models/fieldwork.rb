@@ -21,6 +21,7 @@ class Fieldwork < ActiveRecord::Base
   set_primary_key :fieldwork_id
 
   before_create :set_default_id
+  before_save :serialize_report
 
   attr_accessible :client_id
   attr_accessible :end_date
@@ -29,6 +30,28 @@ class Fieldwork < ActiveRecord::Base
   validates_presence_of :client_id
   validates_presence_of :end_date
   validates_presence_of :start_date
+
+  ##
+  # An ephemeral attribute that, if set, should point to a
+  # {ScheduledActivityReport}.
+  #
+  # When this is set on a Fieldwork instance FW and FW is saved, the following
+  # actions occur in a before_save hook on FW:
+  #
+  # 1) All new entities associated with the report are saved.
+  # 2) FW's original_data attribute is set to a Fieldwork-specific JSON
+  #    representation of the report.
+  #
+  # For more information on said representation, see the fieldwork schema in
+  # the ncs_navigator_schema repository.
+  #
+  # @see https://github.com/NUBIC/ncs_navigator_schema
+  attr_accessor :report
+
+  ##
+  # An ephemeral attribute that, if set, names the user responsible for
+  # generating fieldwork data.
+  attr_accessor :staff_id
 
   ##
   # Retrieves a fieldwork set by ID.  If no fieldwork set by that ID can be
@@ -60,16 +83,23 @@ class Fieldwork < ActiveRecord::Base
   #
   # @param Hash params fieldwork parameters
   # @param PatientStudyCalendar psc a PSC client instance
+  # @param staff_id the name of the user running this process;
+  #   should usually be the value of ApplicationController#current_staff_id
   # @return [Fieldwork]
-  def self.from_psc(params, psc)
+  def self.from_psc(params, psc, staff_id)
     report = NcsNavigator::Core::Psc::ScheduledActivityReport.from_psc(psc,
                                                    :start_date => params[:start_date],
                                                    :end_date => params[:end_date],
                                                    :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
 
+    report.map_entities
+
     Fieldwork.new(:start_date => params[:start_date],
                   :end_date => params[:end_date],
-                  :client_id => params[:client_id])
+                  :client_id => params[:client_id]).tap do |f|
+                    f.report = report
+                    f.staff_id = staff_id
+                  end
   end
 
   def set_default_id
@@ -77,10 +107,18 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def as_json(options = nil)
-    if received_data
-      JSON.parse(received_data)
-    else
-      { 'contacts' => [], 'participants' => [] }
-    end
+    JSON.parse(received_data || original_data)
+  end
+
+  def serialize_report
+    return true unless report
+
+    report.extend(NcsNavigator::Core::Psc::ScheduledActivityReport::JsonForFieldwork)
+
+    report.save_entities(staff_id) and self.original_data = {
+      'contacts' => report.contacts_as_json,
+      'instrument_templates' => report.instrument_templates_as_json,
+      'participants' => report.participants_as_json
+    }.to_json
   end
 end
