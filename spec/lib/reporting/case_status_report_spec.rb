@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe Reporting::CaseStatusReport do
@@ -51,11 +52,11 @@ describe Reporting::CaseStatusReport do
       Factory(:address, :person => @per2, :state => @state, :address_one => "2 Main St")
       Factory(:telephone, :person => @per2, :phone_nbr => "3125559999")
 
-      @p1 = Factory(:participant)
+      @p1 = Factory(:participant, :p_id => 'p1')
       @p1.person = @per1
       @p1.save!
 
-      @p2 = Factory(:participant)
+      @p2 = Factory(:participant, :p_id => 'p2')
       @p2.person = @per2
       @p2.save!
 

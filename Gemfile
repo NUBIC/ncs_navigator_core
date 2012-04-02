@@ -34,7 +34,7 @@ gem 'ncs_navigator_configuration'
 
 gem 'state_machine'
 gem 'state_machine-audit_trail'
-gem 'uuid'
+gem 'uuidtools'
 gem 'will_paginate'
 gem 'faraday'
 

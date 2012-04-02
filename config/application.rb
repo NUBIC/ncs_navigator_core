@@ -48,9 +48,6 @@ module NcsNavigatorCore
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
 
-    Dir.glob("./lib/*.{rb}").each { |file| require file }
-    Dir.glob("./lib/aker/**/*.{rb}").each { |file| require file }
-
     Aker.configure do
       # The authentication protocol to use for interactive access.
       # `:form` is the default.
@@ -65,6 +62,9 @@ module NcsNavigatorCore
     end
   end
 end
+
+require 'patient_study_calendar'
+require 'reporting'
 
 require 'ncs_navigator/core'
 require 'ncs_navigator/mdes_ext'

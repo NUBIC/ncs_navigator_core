@@ -471,7 +471,7 @@ DEPENDENCIES
   surveyor!
   therubyracer
   uglifier
-  uuid
+  uuidtools
   vcr
   watchr
   webmock

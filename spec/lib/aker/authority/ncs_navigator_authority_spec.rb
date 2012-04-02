@@ -1,4 +1,7 @@
 require 'spec_helper'
+
+require 'aker/authority/ncs_navigator_authority'
+
 describe Aker::Authority::NcsNavigatorAuthority do
 
   before do

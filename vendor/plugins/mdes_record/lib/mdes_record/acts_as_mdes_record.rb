@@ -1,4 +1,5 @@
 require 'active_support/concern'
+require 'uuidtools'
 module MdesRecord
   extend ActiveSupport::Concern
 
@@ -61,7 +62,7 @@ module MdesRecord
   module InstanceMethods
 
     def set_public_id
-      self.send("#{self.public_id_field}=", UUID.new.generate) if self.uuid.blank?
+      self.send("#{self.public_id_field}=", UUIDTools::UUID.random_create.to_s) if self.uuid.blank?
     end
 
     def public_id
