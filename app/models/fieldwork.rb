@@ -15,7 +15,7 @@
 
 require 'ncs_navigator/core/psc'
 require 'patient_study_calendar'
-require 'uuid'
+require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
   set_primary_key :fieldwork_id
@@ -73,7 +73,7 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def set_default_id
-    self.fieldwork_id ||= UUID.generate
+    self.fieldwork_id ||= UUIDTools::UUID.random_create.to_s
   end
 
   def as_json(options = nil)
