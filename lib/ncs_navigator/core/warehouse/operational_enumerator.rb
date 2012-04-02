@@ -137,7 +137,7 @@ module NcsNavigator::Core::Warehouse
 
     produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
       :public_ids => %w(participants),
-      :ignored_columns => %w(response_set_id)
+      :ignored_columns => %w(response_set_id ppg_status_date_date)
     )
 
     produce_one_for_one(:contacts, Contact,

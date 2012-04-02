@@ -332,6 +332,25 @@ describe Participant do
       participant.ppg_status.should == status1
     end
 
+    describe "given a date" do
+
+      it "determines the ppg_status at that time" do
+
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status2,  :ppg_status_date => '2011-01-01')
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-06-01')
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-12-01')
+        Factory(:ppg_status_history, :participant => participant, :ppg_status => status4, :ppg_status_date => '2012-02-01')
+
+        participant.ppg_status.should == status4
+        participant.ppg_status(Date.parse('2011-12-31')).should == status1
+        participant.ppg_status(Date.parse('2011-06-01')).should == status1
+        participant.ppg_status(Date.parse('2011-04-01')).should == status2
+
+      end
+
+    end
+
     it "finds participants in that group" do
 
       3.times do |x|
