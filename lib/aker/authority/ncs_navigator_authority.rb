@@ -2,6 +2,7 @@ require 'aker'
 require 'faraday'
 require 'faraday_stack'
 require 'ncs_navigator/configuration'
+require 'aker/authority/aker_token'
 
 module Aker::Authority
   class NcsNavigatorAuthority
