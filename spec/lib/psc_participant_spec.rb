@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
+require 'psc_participant'
+
 describe PscParticipant do
   let(:person_id) { 'this_one_person' }
   let(:person) { Factory(:person, :person_id => person_id) }

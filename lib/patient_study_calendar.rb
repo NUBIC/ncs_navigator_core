@@ -1,4 +1,7 @@
 require 'forwardable'
+require 'psc_error'
+require 'psc_participant'
+
 class PatientStudyCalendar
   extend Forwardable
 
