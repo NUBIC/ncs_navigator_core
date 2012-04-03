@@ -15,16 +15,16 @@ module NcsNavigator::Core::Psc
     MAPPING_ASSOCIATIONS = [
       # for mapping entities
       {
-        :participant_person_links => [
-          {
-            :participant => {
+        :participant_person_links => {
+          :participant => [
+            {
               :events => [
                 :instruments, :contacts
-              ]
-            }
-          },
-          :person
-        ]
+              ],
+            },
+            :people
+          ]
+        }
       },
 
       # for Instrument#link_to
