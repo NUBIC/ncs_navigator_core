@@ -99,8 +99,6 @@ describe 'PSC template' do
     # The importer special-cases the events that appear once in the Lo
     # epoch and once in another epoch, so this test does also.
     it 'schedules any event that occurs on multiple days alongside an event that occurs on only one day' do
-      pending 'Until Child Consent segment is removed'
-
       multiple_segment_events = segments_by_event_label_by_day.
         collect { |label, days_by_segment| [label, days_by_segment.keys.flatten.uniq] }.
         select { |label, segments| segments.size > 1 }.
