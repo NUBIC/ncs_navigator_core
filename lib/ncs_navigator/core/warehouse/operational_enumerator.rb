@@ -88,6 +88,29 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(response_set_id)
     )
 
+    produce_one_for_one(:ppg_details, PpgDetails,
+      :public_ids => %w(participants),
+      :ignored_columns => %w(response_set_id)
+    )
+
+    produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
+      :public_ids => %w(participants),
+      :ignored_columns => %w(response_set_id ppg_status_date_date)
+    )
+
+    produce_one_for_one(:contacts, Contact,
+      :selects => [
+        "(t.contact_disposition % 500 + 500) normalized_contact_disposition"
+      ],
+      :column_map => {
+        :normalized_contact_disposition => :contact_disp,
+        :contact_language_code => :contact_lang,
+        :contact_language_other => :contact_lang_oth,
+        :who_contacted_other => :who_contact_oth
+      },
+      :ignored_columns => %w(contact_date_date contact_disposition)
+    )
+
     produce_one_for_one(:participant_consents, ParticipantConsent,
       :public_ids => [
         :participants,
@@ -128,29 +151,6 @@ module NcsNavigator::Core::Warehouse
           :join_column => :rvis_person_id,
           :public_ref => :rvis_person }
       ]
-    )
-
-    produce_one_for_one(:ppg_details, PpgDetails,
-      :public_ids => %w(participants),
-      :ignored_columns => %w(response_set_id)
-    )
-
-    produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
-      :public_ids => %w(participants),
-      :ignored_columns => %w(response_set_id ppg_status_date_date)
-    )
-
-    produce_one_for_one(:contacts, Contact,
-      :selects => [
-        "(t.contact_disposition % 500 + 500) normalized_contact_disposition"
-      ],
-      :column_map => {
-        :normalized_contact_disposition => :contact_disp,
-        :contact_language_code => :contact_lang,
-        :contact_language_other => :contact_lang_oth,
-        :who_contacted_other => :who_contact_oth
-      },
-      :ignored_columns => %w(contact_date_date contact_disposition)
     )
 
     produce_one_for_one(:events, Event,
