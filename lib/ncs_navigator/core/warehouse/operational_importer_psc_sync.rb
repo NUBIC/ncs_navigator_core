@@ -4,6 +4,8 @@ module NcsNavigator::Core::Warehouse
   class OperationalImporterPscSync
     extend Forwardable
 
+    WHODUNNIT = 'operational_importer_psc_sync'
+
     attr_reader :psc, :wh_config
     def_delegators :wh_config, :shell, :log
 
@@ -78,6 +80,10 @@ module NcsNavigator::Core::Warehouse
       ).each do |reset_key|
         redis.del redis.keys(sync_key('p', '*', reset_key))
       end
+
+      core_placeholder_event_ids =
+        Version.where(:whodunnit => WHODUNNIT, :item_type => 'Event').collect(&:item_id)
+      Event.where('id IN (?)', core_placeholder_event_ids).destroy_all
     end
 
     ###### SCHEDULING SEGMENTS FOR EVENTS
@@ -393,7 +399,7 @@ module NcsNavigator::Core::Warehouse
           "creating Core #{event_type.display_text} event on #{implied_event[:start_date]} implied by PSC")
 
         begin
-          PaperTrail.whodunnit = 'operational_importer_psc_sync'
+          PaperTrail.whodunnit = WHODUNNIT
           Event.create_placeholder_record(
             psc_participant.participant,
             implied_event[:start_date],
