@@ -352,6 +352,48 @@ class Person < ActiveRecord::Base
     dwelling_units.map(&:tsu_id).compact.size > 0
   end
 
+  ##
+  # Returns the primary cell phone number for this person, or nil if no such
+  # phone record exists.
+  def primary_cell_phone
+    cell_code = Telephone.cell_phone_type.to_i
+
+    primary_contacts(telephones, :phone_rank_code) do |ts|
+      ts.detect { |t| t.phone_type_code == cell_code }
+    end
+  end
+
+  ##
+  # Returns the primary cell phone number for this person, or nil if no such
+  # phone record exists.
+  def primary_home_phone
+    home_code = Telephone.home_phone_type.to_i
+
+    primary_contacts(telephones, :phone_rank_code) do |ts|
+      ts.detect { |t| t.phone_type_code == home_code }
+    end
+  end
+
+  ##
+  # Returns the primary address for this person, or nil if no such address
+  # record exists.
+  def primary_address
+    primary_contacts(addresses, :address_rank_code, &:first)
+  end
+
+  ##
+  # Returns the primary email for this person, or nil if no such email record
+  # exists.
+  def primary_email
+    primary_contacts(emails, :email_rank_code, &:first)
+  end
+
+  ##
+  # @private
+  def primary_contacts(collection, code_key)
+    yield collection.select { |c| c.send(code_key) == 1 }
+  end
+
   private
 
     def dob

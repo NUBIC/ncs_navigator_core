@@ -498,4 +498,69 @@ describe Person do
 
   end
 
+  describe 'phone number helpers' do
+    let!(:primary) { Factory(:ncs_code, :list_name => 'COMMUNICATION_RANK_CL1', :local_code => 1) }
+    let!(:person) { Factory(:person) }
+
+    describe '#primary_cell_phone' do
+      let!(:cell) { Factory(:ncs_code, :list_name => 'PHONE_TYPE_CL1', :local_code => 3) }
+      let!(:phone) { Factory(:telephone, :phone_rank => primary, :phone_type => cell, :person => person) }
+
+      it 'returns the primary cell phone for the person' do
+        person.primary_cell_phone.should == phone
+      end
+
+      it 'returns nil if no such phone number exists' do
+        phone.destroy
+
+        person.primary_cell_phone.should be_nil
+      end
+    end
+
+    describe '#primary_home_phone' do
+      let!(:home) { Factory(:ncs_code, :list_name => 'PHONE_TYPE_CL1', :local_code => 1) }
+      let!(:phone) { Factory(:telephone, :phone_rank => primary, :phone_type => home, :person => person) }
+
+      it 'returns the primary home phone for the person' do
+        person.primary_home_phone.should == phone
+      end
+
+      it 'returns nil if no such phone number exists' do
+        phone.destroy
+
+        person.primary_home_phone.should be_nil
+      end
+    end
+  end
+
+  describe 'contact information helpers' do
+    let!(:primary) { Factory(:ncs_code, :list_name => 'COMMUNICATION_RANK_CL1', :local_code => 1) }
+    let!(:address) { Factory(:address, :address_rank_code => primary.to_i, :person => person) }
+    let!(:email) { Factory(:email, :email_rank_code => primary.to_i, :person => person) }
+    let!(:person) { Factory(:person) }
+
+    describe '#primary_address' do
+      it 'returns the primary address for the person' do
+        person.primary_address.should == address
+      end
+
+      it 'returns nil if no such address exists' do
+        address.destroy
+
+        person.primary_address.should be_nil
+      end
+    end
+
+    describe '#primary_email' do
+      it 'returns the primary email for the person' do
+        person.primary_email.should == email
+      end
+
+      it 'returns nil if no such email exists' do
+        email.destroy
+
+        person.primary_email.should be_nil
+      end
+    end
+  end
 end
