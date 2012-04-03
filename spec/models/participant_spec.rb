@@ -58,6 +58,7 @@ describe Participant do
   it { should have_many(:ppg_status_histories) }
 
   it { should have_many(:participant_person_links) }
+  it { should have_many(:people).through(:participant_person_links) }
   it { should have_many(:events) }
 
   it { should have_many(:low_intensity_state_transition_audits) }
