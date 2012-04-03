@@ -72,7 +72,10 @@ module NcsNavigator::Core::Warehouse
         redis.sunionstore(sync_key('participants'), p_backup_key)
       end
 
-      %w(events_deferred events_unschedulable events_closed events_order).each do |reset_key|
+      %w(
+        events_deferred events_unschedulable events_closed events_order
+        postnatal
+      ).each do |reset_key|
         redis.del redis.keys(sync_key('p', '*', reset_key))
       end
     end
@@ -125,6 +128,10 @@ module NcsNavigator::Core::Warehouse
         schedule_new_segment_for_event(psc_participant, event_id, event_details, opts)
       end
 
+      if event_details['event_type_label'] == 'birth'
+        redis.set(sync_key('p', p_id, 'postnatal'), 'true')
+      end
+
       # TODO: if still needed, update the event record to associate
       # the seg ID
     end
@@ -146,6 +153,11 @@ module NcsNavigator::Core::Warehouse
         selected_segment = possible_segments.inject({}) { |h, seg|
           h[seg.parent['name'] == 'LO-Intensity' ? 'lo' : 'hi'] = seg; h
         }[event_details['recruitment_arm']]
+      elsif segment_selectable_by_pre_post_natal?(possible_segments)
+        pre_or_post = redis.get(sync_key('p', p_id, 'postnatal')) ? 'post' : 'pre'
+        selected_segment = possible_segments.inject({}) { |h, seg|
+          h[seg['name'] == 'Postnatal' ? 'post' : 'pre'] = seg; h
+        }[pre_or_post]
       else
         say_subtask_message("deferring due to multiple segment options")
         log.debug("Deferring #{event_id} to #{opts[:defer_key]} due to multiple possible segments:")
@@ -187,6 +199,12 @@ module NcsNavigator::Core::Warehouse
       epoch_names = possible_segments.collect { |seg| seg.parent['name'] }
       # "there are two different epochs and one of them is LO-Intensity"
       epoch_names.size == 2 && epoch_names.include?('LO-Intensity') && epoch_names.uniq.size == 2
+    end
+
+    def segment_selectable_by_pre_post_natal?(possible_segments)
+      segment_names = possible_segments.collect { |seg| seg['name'] }
+      # "there are two segments and one of them is Postnatal"
+      possible_segments.size == 2 && segment_names.include?('Postnatal') && segment_names.uniq.size == 2
     end
 
     ###### CONTACT LINK SA HISTORY UPDATES

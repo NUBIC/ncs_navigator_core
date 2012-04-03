@@ -11,7 +11,9 @@ module NcsNavigator::Core::Warehouse
       :pv1 => 'ca65bbbb-7e47-4f71-a4f0-071e7f73f380',
       :pv2 => 'cef89a1e-5a08-4d94-811d-1aea62700d61',
       :hi_child => '072db970-d32a-4006-83b0-3f0240833894',
-      :lo_birth => '53318f20-d21f-452e-a8e8-3f2ed6bb6c93'
+      :lo_birth => '53318f20-d21f-452e-a8e8-3f2ed6bb6c93',
+      :lo_ppg_12 => '76025607-f7aa-41e1-8ce9-29e0793cd6d4',
+      :lo_postnatal => 'd0faf572-4208-4a43-adc6-5748f80ac321'
     }
 
     let(:redis) { Rails.application.redis }
@@ -200,6 +202,14 @@ module NcsNavigator::Core::Warehouse
         redis.smembers("#{ns}:psc_sync:participants").should == %w(par-quux)
       end
 
+      it "clears every participant's postnatal flag" do
+        redis.set("#{ns}:psc_sync:p:gil:postnatal", 'true')
+
+        importer.reset
+
+        redis.exists("#{ns}:psc_sync:p:gil:postnatal").should be_false
+      end
+
       it "wipes every participant's events_order list" do
         redis.lpush("#{ns}:psc_sync:p:gil:events_order", 'a')
 
@@ -381,6 +391,32 @@ module NcsNavigator::Core::Warehouse
             importer.schedule_events(psc_participant)
 
             redis.smembers(unschedulable_key).should == %w(e2)
+          end
+        end
+
+        describe 'when a lo participant with both pre and post natal quexes' do
+          before do
+            redis.del("#{ns}:psc_sync:p:#{p_id}:events")
+            %w(e11 e5 e2).each do |e|
+              redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", e)
+            end
+            add_event_hash('e5', '2010-04-04',
+              :event_type_label => 'birth', :recruitment_arm => 'lo')
+            add_event_hash('e2', '2010-01-11',
+              :event_type_label => 'low_intensity_data_collection', :recruitment_arm => 'lo')
+            add_event_hash('e11', '2010-10-10',
+              :event_type_label => 'low_intensity_data_collection', :recruitment_arm => 'lo')
+          end
+
+          it 'schedules the correct segments before and after the birth event' do
+            psc_participant.should_receive(:append_study_segment).
+              with('2010-01-11', SEGMENT_IDS[:lo_ppg_12]).ordered
+            psc_participant.should_receive(:append_study_segment).
+              with('2010-04-04', SEGMENT_IDS[:lo_birth]).ordered
+            psc_participant.should_receive(:append_study_segment).
+              with('2010-10-10', SEGMENT_IDS[:lo_postnatal]).ordered
+
+            importer.schedule_events(psc_participant)
           end
         end
       end
