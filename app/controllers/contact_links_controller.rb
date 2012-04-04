@@ -168,20 +168,29 @@ class ContactLinksController < ApplicationController
     ##
     # Disposition group based on specific events
     def set_disposition_group_for_event
-      case @event.event_type.to_s
-      when "Pregnancy Screener"
-        @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
-      when "Informed Consent"
-        @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-      when "Low to High Conversion"
-        contact = @contact_link.contact
-        if contact && contact.contact_type
-          @disposition_group = @contact_link.contact.contact_type.to_s
+      if @event.event_disposition_category_code.to_i > 0
+	      @disposition_group =
+	        DispositionMapper.for_event_disposition_category_code(@event.event_disposition_category_code)
+	    else
+  	    case @event.event_type.to_s
+  	    when "Pregnancy Screener"
+          @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+        when "Informed Consent"
+          if @event.try(:participant).low_intensity?
+            @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT
+          else
+            @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+          end
+        when "Low to High Conversion"
+          contact = @contact_link.contact
+          if contact && contact.contact_type
+            @disposition_group = @contact_link.contact.contact_type.to_s
+          else
+            @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+          end
         else
-          @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+          set_disposition_group_for_contact_link
         end
-      else
-        set_disposition_group_for_contact_link
       end
     end
 
