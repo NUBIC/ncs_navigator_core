@@ -14,6 +14,21 @@ describe DispositionMapper do
     grouped_options.keys.should == ["General Study Visit Event"]
   end
 
+  it "returns the category by for_event_disposition_category_code" do
+    [
+      [1, DispositionMapper::HOUSEHOLD_ENUMERATION_EVENT],
+      [2, DispositionMapper::PREGNANCY_SCREENER_EVENT],
+      [3, DispositionMapper::GENERAL_STUDY_VISIT_EVENT],
+      [4, DispositionMapper::MAILED_BACK_SAQ_EVENT],
+      [5, DispositionMapper::TELEPHONE_INTERVIEW_EVENT],
+      [6, DispositionMapper::INTERNET_SURVEY_EVENT],
+      [0, DispositionMapper::GENERAL_STUDY_VISIT_EVENT]
+    ].each do |code, expected|
+      DispositionMapper.for_event_disposition_category_code(code).should == expected
+    end
+
+  end
+
   context "determining the event given a contact type" do
     it "handles Telephone" do
       grouped_options = DispositionMapper.get_grouped_options("Telephone")

@@ -1,11 +1,11 @@
 class DispositionMapper
 
-  GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"
-  HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"
-  INTERNET_SURVEY_EVENT       = "Internet Survey Event"
-  MAILED_BACK_SAQ_EVENT       = "Mailed Back SAQ Event"
-  PREGNANCY_SCREENER_EVENT    = "Pregnancy Screener Event"
-  TELEPHONE_INTERVIEW_EVENT   = "Telephone Interview Event"
+  GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"     #3
+  HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"   #2
+  INTERNET_SURVEY_EVENT       = "Internet Survey Event"         #6
+  MAILED_BACK_SAQ_EVENT       = "Mailed Back SAQ Event"         #4
+  PREGNANCY_SCREENER_EVENT    = "Pregnancy Screener Event"      #1
+  TELEPHONE_INTERVIEW_EVENT   = "Telephone Interview Event"     #5
   EVENTS =  [
               GENERAL_STUDY_VISIT_EVENT,
               HOUSEHOLD_ENUMERATION_EVENT,
@@ -55,6 +55,25 @@ class DispositionMapper
         MAILED_BACK_SAQ_EVENT
       when /_HHEnum_/
         HOUSEHOLD_ENUMERATION_EVENT
+      else
+        GENERAL_STUDY_VISIT_EVENT
+      end
+    end
+
+    def for_event_disposition_category_code(code)
+      case code
+      when 1
+        HOUSEHOLD_ENUMERATION_EVENT
+      when 2
+        PREGNANCY_SCREENER_EVENT
+      when 3
+        GENERAL_STUDY_VISIT_EVENT
+      when 4
+        MAILED_BACK_SAQ_EVENT
+      when 5
+        TELEPHONE_INTERVIEW_EVENT
+      when 6
+        INTERNET_SURVEY_EVENT
       else
         GENERAL_STUDY_VISIT_EVENT
       end

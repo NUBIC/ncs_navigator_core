@@ -87,12 +87,19 @@ class EventsController < ApplicationController
 	  # Determine the disposition group to be used from the contact type or instrument taken
 	  def set_disposition_group
 	    @disposition_group = nil
-	    if @event
+	    if @event.event_disposition_category_code.to_i > 0
+	      @disposition_group =
+	        DispositionMapper.for_event_disposition_category_code(@event.event_disposition_category_code)
+	    else
   	    case @event.event_type.to_s
   	    when "Pregnancy Screener"
           @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
         when "Informed Consent"
-          @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+          if @event.try(:participant).low_intensity?
+            @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT
+          else
+            @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+          end
         else
           contact = @event.contact_links.last.contact unless @event.contact_links.blank?
           if contact && contact.contact_type
