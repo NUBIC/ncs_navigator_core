@@ -126,32 +126,114 @@ module NcsNavigator::Core::Psc
     end
 
     describe '#participants_as_json' do
-      let(:participants) { subject.participants_as_json }
-      let(:persons) { participants[0]['persons'] }
+      let(:json) { subject.participants_as_json }
 
-      it 'sets #/0/p_id' do
-        participants[0]['p_id'].should == p.person_id
+      let(:participant) { Factory(:participant) }
+      let(:other_person) { Factory(:person) }
+
+      let(:cell) { Factory(:telephone, :phone_nbr => '123-456-7890') }
+      let(:home) { Factory(:telephone, :phone_nbr => '987-654-3210') }
+      let(:email) { Factory(:email, :email => 'foo@example.com') }
+      let(:address) do
+        Factory(:address, :city => 'Anywhere', :zip => '12345', :zip4 => '6789')
       end
 
-      it 'sets #/0/persons/0/cell_phone'
+      let(:link) do
+        participant.participant_person_links.build(:person => other_person, :relationship_code => 1)
+      end
 
-      it 'sets #/0/persons/0/city'
+      before do
+        # NCS code infrastructure.
+        create_missing_in_error_ncs_codes(Participant)
+        Factory(:ncs_code, :list_name => 'PERSON_PARTCPNT_RELTNSHP_CL1', :local_code => 1)
+        Factory(:ncs_code, :list_name => 'STATE_CL1', :local_code => 1)
 
-      it 'sets #/0/persons/0/email'
+        # Stub out the participant accessor in the row.
+        r1.participant = participant
 
-      it 'sets #/0/persons/0/home_phone'
+        # Link the participant to a person.
+        link.save!
 
-      it 'sets #/0/persons/0/name'
+        # Set up information for the person.
+        other_person.stub!(:primary_cell_phone => cell,
+                           :primary_home_phone => home,
+                           :primary_address => address,
+                           :primary_email => email)
+      end
 
-      it 'sets #/0/persons/0/person_id'
+      it 'emits one record per unique participant' do
+        subject.rows = [r1, r1]
 
-      it 'sets #/0/persons/0/relationship_code'
+        json.length.should == 1
+      end
 
-      it 'sets #/0/persons/0/state'
+      it 'does not raise an error if primary_cell_phone is nil' do
+        other_person.stub!(:primary_cell_phone => nil)
 
-      it 'sets #/0/persons/0/street'
+        lambda { json }.should_not raise_error
+      end
 
-      it 'sets #/0/persons/0/zip_code'
+      it 'does not raise an error if primary_home_phone is nil' do
+        other_person.stub!(:primary_home_phone => nil)
+
+        lambda { json }.should_not raise_error
+      end
+
+      it 'does not raise an error if primary_address is nil' do
+        other_person.stub!(:primary_address => nil)
+
+        lambda { json }.should_not raise_error
+      end
+
+      it 'does not raise an error if primary_email is nil' do
+        other_person.stub!(:primary_email => nil)
+
+        lambda { json }.should_not raise_error
+      end
+
+      it 'sets #/0/p_id' do
+        json[0]['p_id'].should == participant.p_id
+      end
+
+      it 'sets #/0/persons/0/cell_phone' do
+        json[0]['persons'][0]['cell_phone'].should == cell.phone_nbr
+      end
+
+      it 'sets #/0/persons/0/city' do
+        json[0]['persons'][0]['city'].should == address.city
+      end
+
+      it 'sets #/0/persons/0/email' do
+        json[0]['persons'][0]['email'].should == email.email
+      end
+
+      it 'sets #/0/persons/0/home_phone' do
+        json[0]['persons'][0]['home_phone'].should == home.phone_nbr
+      end
+
+      it 'sets #/0/persons/0/name' do
+        json[0]['persons'][0]['name'].should == other_person.name
+      end
+
+      it 'sets #/0/persons/0/person_id' do
+        json[0]['persons'][0]['person_id'].should == other_person.person_id
+      end
+
+      it 'sets #/0/persons/0/relationship_code' do
+        json[0]['persons'][0]['relationship_code'].should == link.relationship_code.to_i
+      end
+
+      it 'sets #/0/persons/0/state' do
+        json[0]['persons'][0]['state'].should == address.state.display_text
+      end
+
+      it 'sets #/0/persons/0/street' do
+        json[0]['persons'][0]['street'].should == [address.address_one, address.address_two].join("\n")
+      end
+
+      it 'sets #/0/persons/0/zip_code' do
+        json[0]['persons'][0]['zip_code'].should == [address.zip, address.zip4].join('-')
+      end
     end
 
     describe '#instrument_templates_as_json' do
