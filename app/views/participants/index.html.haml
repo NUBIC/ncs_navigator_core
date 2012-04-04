@@ -7,29 +7,32 @@
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
 
     = f.hidden_field :participant_person_links_relationship_code_eq
-
-    = f.label :participant_person_links_person_last_name_start, "Last Name starts with"
-    = f.text_field :participant_person_links_person_last_name_start
-    %br
-    = f.label :participant_person_links_person_first_name_start, "First Name starts with"
-    = f.text_field :participant_person_links_person_first_name_start
-    %br
-    = f.label :p_id_cont, "Participant ID"
-    = f.text_field :p_id_cont
-    %br
-    = f.label :high_intensity_true, "High Intensity"
-    = f.check_box :high_intensity_true
-    = f.label :high_intensity_false, "Low Intensity"
-    = f.check_box :high_intensity_false
-    %br
-    = f.label :ppg_status_histories_ppg_status_code_eq, "Current PPG Status"
-    = f.select(:ppg_status_histories_ppg_status_code_eq, NcsCode.ncs_code_lookup(:ppg_status_code), { :include_blank => "-- Select PPG Status --" })
-    %br
-    = f.label :ppg_details_ppg_first_code_eq, "PPG First"
-    = f.select(:ppg_details_ppg_first_code_eq, NcsCode.ncs_code_lookup(:ppg_first_code), { :include_blank => "-- Select PPG First --" })
-    %br
-    = f.submit "Search"
-    = link_to "Export All Results", { :controller => "participants", :action => "index", :format => "csv", :q => params[:q] }, { :class => "export_link icon_link" }
+    %p
+      = f.label :participant_person_links_person_last_name_start, "Last Name starts with"
+      = f.text_field :participant_person_links_person_last_name_start
+    %p
+      = f.label :participant_person_links_person_first_name_start, "First Name starts with"
+      = f.text_field :participant_person_links_person_first_name_start
+    %p
+      = f.label :p_id_cont, "Participant ID"
+      = f.text_field :p_id_cont
+    %p
+      = f.label :enroll_status_code_eq, "Enroll Status"
+      = f.select(:enroll_status_code_eq, NcsCode.ncs_code_lookup(:enroll_status_code), { :include_blank => "-- Select Enroll Status --" })
+    %p
+      = f.label :ppg_status_histories_ppg_status_code_eq, "PPG Status"
+      = f.select(:ppg_status_histories_ppg_status_code_eq, NcsCode.ncs_code_lookup(:ppg_status_code), { :include_blank => "-- Select PPG Status --" })
+    %p
+      = f.label :ppg_details_ppg_first_code_eq, "PPG First"
+      = f.select(:ppg_details_ppg_first_code_eq, NcsCode.ncs_code_lookup(:ppg_first_code), { :include_blank => "-- Select PPG First --" })
+    %p
+      = f.label :high_intensity_true, "High Intensity"
+      = f.check_box :high_intensity_true
+      = f.label :high_intensity_false, "Low Intensity"
+      = f.check_box :high_intensity_false
+    %p
+      = f.submit "Search"
+      = link_to "Export All Results", { :controller => "participants", :action => "index", :format => "csv", :q => params[:q] }, { :class => "export_link icon_link" }
 
 .page_section
   - if @participants.empty?
