@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/NUBIC/aker-cas_cli.git
-  revision: 2c8ac76cc2d6588abbab75ad8ed30868917a7be7
-  specs:
-    aker-cas_cli (0.0.1.pre)
-      aker (~> 3.0)
-      mechanize (~> 2.1.0)
-
-GIT
   remote: git://github.com/bmabey/database_cleaner.git
   revision: f4a8e311574456d447c155487b7cdf9eff3fd0de
   specs:
@@ -51,6 +43,9 @@ GEM
       net-ldap (~> 0.1.1)
       rubytree (~> 0.7.0)
       warden (~> 1.0)
+    aker-cas_cli (1.0.0)
+      aker (~> 3.0)
+      mechanize (~> 2.1.0)
     aker-rails (3.0.2)
       aker (~> 3.0)
       rails (~> 3.0, >= 3.0.4)
@@ -256,7 +251,7 @@ GEM
       inifile (~> 0.4.1)
       ncs_mdes (~> 0.4)
     net-http-digest_auth (1.2)
-    net-http-persistent (2.5.2)
+    net-http-persistent (2.6)
     net-ldap (0.1.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
@@ -400,7 +395,7 @@ GEM
     uglifier (1.2.3)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
-    unf (0.0.4)
+    unf (0.0.5)
       unf_ext
     unf_ext (0.0.4)
     uuidtools (2.1.2)
@@ -423,7 +418,7 @@ PLATFORMS
 
 DEPENDENCIES
   aker (~> 3.0)
-  aker-cas_cli!
+  aker-cas_cli (~> 1.0)
   aker-rails
   bcdatabase (~> 1.0)
   capistrano
