@@ -43,6 +43,10 @@ module NcsNavigator::Core::Psc
         contacts[0]['contact_date'].should == d
       end
 
+      it 'sets #/0/version' do
+        contacts[0]['version'].should == subject.rows[0].contact.updated_at.utc
+      end
+
       describe 'if contacts[0] has a start time' do
         before do
           c.contact_start_time = '12:00'
@@ -86,8 +90,11 @@ module NcsNavigator::Core::Psc
       end
 
       it 'sets #/0/events/0/name' do
-        contacts[0]['events'][0]['name'].should ==
-          e.event_type.to_s
+        contacts[0]['events'][0]['name'].should == e.event_type.to_s
+      end
+
+      it 'sets #/0/events/0/version' do
+        contacts[0]['events'][0]['version'].should == e.updated_at.utc
       end
 
       it 'sets #/0/events/0/instruments to [] if the row has no instruments' do
@@ -109,6 +116,10 @@ module NcsNavigator::Core::Psc
       it 'sets #/0/events/0/instruments/0/name' do
         contacts[0]['events'][0]['instruments'][0]['name'].should ==
           s.title
+      end
+
+      it 'sets #/0/events/0/instruments/0/version' do
+        contacts[0]['events'][0]['instruments'][0]['version'].should == i.updated_at.utc
       end
 
       it 'sets #/0/events/0/instruments/0/response_set' do
@@ -195,6 +206,10 @@ module NcsNavigator::Core::Psc
         json[0]['p_id'].should == participant.p_id
       end
 
+      it 'sets #/0/version' do
+        json[0]['version'].should == participant.updated_at.utc
+      end
+
       it 'sets #/0/persons/0/cell_phone' do
         json[0]['persons'][0]['cell_phone'].should == cell.phone_nbr
       end
@@ -233,6 +248,10 @@ module NcsNavigator::Core::Psc
 
       it 'sets #/0/persons/0/zip_code' do
         json[0]['persons'][0]['zip_code'].should == [address.zip, address.zip4].join('-')
+      end
+
+      it 'sets #/0/persons/0/version' do
+        json[0]['persons'][0]['version'].should == other_person.updated_at.utc
       end
     end
 

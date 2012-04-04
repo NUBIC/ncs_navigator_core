@@ -104,43 +104,45 @@ module NcsNavigator::Core::Warehouse
       @progress.loading('events, instruments, and links with p state impact')
       Participant.transaction do
         ordered_event_sets.each do |p_id, events_and_links|
-          participant = Participant.where(:p_id => p_id).first
+          Participant.importer_mode do
+            participant = Participant.where(:p_id => p_id).first
 
-          for_psc = (participant.enroll_status_code == 1)
-          Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
+            for_psc = (participant.enroll_status_code == 1)
+            Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
 
-          # caches
-          core_instruments = {}
-          core_contacts = {}
+            # caches
+            core_instruments = {}
+            core_contacts = {}
 
-          events_and_links.each do |event_and_links|
-            core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
+            events_and_links.each do |event_and_links|
+              core_event = apply_mdes_record_to_core(Event, event_and_links[:event])
 
-            if should_affect_participant_state?(participant, core_event)
-              participant.set_state_for_event_type(core_event)
-            end
-
-            cache_event_for_psc_sync(participant, core_event) if for_psc
-
-            save_core_record(core_event)
-
-            (event_and_links[:instruments] || []).each do |mdes_i|
-              core_i = apply_mdes_record_to_core(Instrument, mdes_i)
-              save_core_record(core_i)
-              core_instruments[core_i.id] = core_i
-            end
-
-            (event_and_links[:link_contacts] || []).each do |mdes_lc|
-              core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
-              if for_psc
-                contact_id = core_contact_link.contact_id
-                core_contact = (core_contacts[contact_id] ||= Contact.find(contact_id))
-
-                cache_link_contact_for_psc_sync(
-                  participant, core_event, core_contact_link, core_contact,
-                  core_instruments[core_contact_link.instrument_id])
+              if should_affect_participant_state?(participant, core_event)
+                participant.set_state_for_event_type(core_event)
               end
-              save_core_record(core_contact_link)
+
+              cache_event_for_psc_sync(participant, core_event) if for_psc
+
+              save_core_record(core_event)
+
+              (event_and_links[:instruments] || []).each do |mdes_i|
+                core_i = apply_mdes_record_to_core(Instrument, mdes_i)
+                save_core_record(core_i)
+                core_instruments[core_i.id] = core_i
+              end
+
+              (event_and_links[:link_contacts] || []).each do |mdes_lc|
+                core_contact_link = apply_mdes_record_to_core(ContactLink, mdes_lc)
+                if for_psc
+                  contact_id = core_contact_link.contact_id
+                  core_contact = (core_contacts[contact_id] ||= Contact.find(contact_id))
+
+                  cache_link_contact_for_psc_sync(
+                    participant, core_event, core_contact_link, core_contact,
+                    core_instruments[core_contact_link.instrument_id])
+                end
+                save_core_record(core_contact_link)
+              end
             end
           end
         end

@@ -31,6 +31,7 @@ gem 'formtastic', '1.2.4'
 gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git'
 gem 'psc'
 gem 'ncs_navigator_configuration'
+gem 'resque'
 
 gem 'state_machine'
 gem 'state_machine-audit_trail'
