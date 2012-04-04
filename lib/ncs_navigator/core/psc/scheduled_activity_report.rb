@@ -22,7 +22,13 @@ module NcsNavigator::Core::Psc
                 :instruments, :contacts
               ],
             },
-            :people
+            {
+              :people => [
+                { :addresses => :state },
+                :telephones,
+                :emails
+              ]
+            }
           ]
         }
       },
