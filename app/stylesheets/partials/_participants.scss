@@ -24,6 +24,8 @@
 
 }
 
+
+
 .participant_events {
   .event {
     .header {
@@ -62,6 +64,12 @@
   border-bottom: 1px solid $BORDER_GRAY;
   margin: 0.5em 0;
   padding: 0.5em 0;
+
+  .pending_event {
+    form {
+      display: inline-block;
+    }
+  }
 }
 
 span.consented {

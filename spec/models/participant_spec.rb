@@ -524,6 +524,49 @@ describe Participant do
 
   end
 
+  context "missing events" do
+
+    describe "#mark_event_out_of_window" do
+
+      setup_schedule_and_create_child_placeholder
+
+      it "creates events for birth/child activities" do
+        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return(scheduled_study_segment_identifier)
+        psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
+              File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
+
+        general_study_visit = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => 'General Study Visits (including CASI SAQs)', :local_code => 3)
+
+        VCR.use_cassette('psc/schedule_and_create_child_placeholder') do
+
+          participant.person = person
+          participant.save!
+
+          Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
+          participant.events.reload
+          pending_events = participant.pending_events
+          pending_events.size.should == 7
+          birth_event_type = pending_events.first.event_type
+          birth_event_type.to_s.should == "Birth"
+
+          participant.mark_event_out_of_window(psc)
+          pending_events = participant.pending_events
+
+          pending_events.size.should == 6
+          pending_events.first.event_type.to_s.should == "3 Month"
+
+          participant.completed_event?(birth_event_type).should be_true
+          ce = participant.completed_events(birth_event_type)
+          ce.size.should == 1
+          ce.first.event_disposition.should == 48
+          ce.first.event_disposition_category.should == general_study_visit
+        end
+      end
+
+    end
+
+  end
+
   context "with events" do
 
     context "determining pending events" do
@@ -588,7 +631,6 @@ describe Participant do
 
             participant.follow!
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
-
           end
         end
 

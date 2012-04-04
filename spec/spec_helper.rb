@@ -183,6 +183,38 @@ Spork.prefork do
     require 'ncs_navigator/warehouse/models/two_point_zero'
     NcsNavigatorCore.mdes.transmission_tables
   end
+
+  def setup_schedule_and_create_child_placeholder
+
+    let(:scheduled_study_segment_identifier) { "f699ac2e-9784-48b7-bfc6-229e54d233b7" }
+    let(:person) {Factory(:person, :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
+                          :person_id => "placeholder_child_participant")}
+    let(:participant) { Factory(:participant, :p_id => "placeholder_child_participant") }
+    let(:xml) { %Q(<?xml version="1.0" encoding="UTF-8"?><scheduled-study-segment id="a5fd83f9-e2ca-4481-8ce3-70406dfbcddc"></scheduled-study-segment>) }
+    let(:response_body) { Nokogiri::XML(xml) }
+
+    before(:each) do
+      create_missing_in_error_ncs_codes(Event)
+      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+
+      @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
+
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Birth", :local_code => 18)
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "3 Month", :local_code => 23)
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "6 Month", :local_code => 24)
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "9 Month", :local_code => 26)
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "12 Month", :local_code => 27)
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "18 Month", :local_code => 30)
+      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "24 Month", :local_code => 31)
+
+      participant.person = person
+      participant.save!
+    end
+
+    let(:psc) { PatientStudyCalendar.new(@user) }
+
+  end
+
 end
 
 Spork.each_run do

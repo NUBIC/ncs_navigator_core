@@ -40,6 +40,8 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_ppg_status
       get :correct_workflow
       put :process_update_state
+      get :mark_event_out_of_window
+      put :process_mark_event_out_of_window
     end
   end
   resources :contact_links do

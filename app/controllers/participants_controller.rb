@@ -241,6 +241,23 @@ class ParticipantsController < ApplicationController
     end
   end
 
+  def mark_event_out_of_window
+    @participant = Participant.find(params[:id])
+    @person = @participant.person
+  end
+
+  def process_mark_event_out_of_window
+    @participant = Participant.find(params[:id])
+    current_event = @participant.pending_events.first
+    resp = @participant.mark_event_out_of_window(psc)
+    if resp && resp.success?
+      flash[:notice] = "#{current_event.to_s} for Participant was marked 'Out of Window'."
+    else
+      flash[:warning] = "Could not scheduled next event after marking #{current_event.to_s} 'Out of Window'."
+    end
+    redirect_to participant_path(@participant)
+  end
+
   ##
   # Page to show participant in particular state and potentially update that
   # state in case of issues
@@ -274,15 +291,7 @@ class ParticipantsController < ApplicationController
 
     def mark_pending_event_activities_canceled(participant)
       participant.pending_events.each do |e|
-
-  	    activity = nil
-  	    psc.activities_for_event(e).each do |a|
-  	      activity = a if e.matches_activity(a)
-        end
-
-  	    if activity
-  	      psc.update_activity_state(activity.activity_id, participant, PatientStudyCalendar::ACTIVITY_CANCELED)
-  	    end
+        e.cancel_activity(psc)
       end
     end
 

@@ -114,6 +114,11 @@ input[type="submit"] {
   padding-right: 10px;
 }
 
+.out_of_window_link, .out_of_window_link:hover {
+  background: url(../../assets/date_error.png) 0 2px no-repeat !important;
+  padding-right: 10px;
+}
+
 .occurred_link, .occurred_link:hover {
   background: url(../../assets/accept.png) 0 2px no-repeat !important;
   padding-right: 10px;

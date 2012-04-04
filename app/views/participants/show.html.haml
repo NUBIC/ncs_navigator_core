@@ -7,17 +7,7 @@
     %span{ :class => "disposition_icon" }
     = render "documentation/disposition_code_list"
 
-%h3
-  = display_person @person
-
-%p
-  = @participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
-  %b
-    = "::"
-  = @participant.ppg_status
-  - if @participant.ppg_status.blank?
-    %span.warning
-      No PPG Assigned
+= render "participants/header_information", :person => @person, :participant => @participant
 
 #tabs
   %ul

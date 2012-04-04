@@ -1,0 +1,11 @@
+%h3
+  = display_person person
+
+%p
+  = participant.high_intensity? ? "High Intensity Participant" : "Low Intensity Participant"
+  %b
+    = "::"
+  = participant.ppg_status
+  - if participant.ppg_status.blank?
+    %span.warning
+      No PPG Assigned

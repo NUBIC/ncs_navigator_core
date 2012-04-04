@@ -117,7 +117,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :birth_event_low do
-      transition [:consented_low_intensity, :pregnant_low, :following_low_intensity] => :postnatal
+      transition [:in_pregnancy_probability_group, :consented_low_intensity, :pregnant_low, :following_low_intensity] => :postnatal
     end
 
     event :enroll_in_high_intensity_arm do
@@ -413,16 +413,36 @@ class Participant < ActiveRecord::Base
   ##
   # Returns all events where event_end_date is not null
   # @return [Array<Event>]
-  def completed_events
-    events.select { |e| !e.event_end_date.blank? }
+  def completed_events(event_type = nil)
+    result = events.select { |e| !e.event_end_date.blank? }
+    result = result.select { |e| e.event_type == event_type } if event_type
+    result
   end
 
   ##
   # True if completed events has event of given type
   # @param [NcsCode] - Event Type
   # @return [Boolean]
-  def completed_event(event_type)
-    completed_events.select { |e| e.event_type == event_type }.count > 0
+  def completed_event?(event_type)
+    completed_events(event_type).count > 0
+  end
+
+  ##
+  # If an event is missed this method will do the following:
+  # 1. Closed the current pending event (i.e. set the event_end_date to now)
+  # 2. Set the disposition for that event to 'Out if Window'
+  # 3. Cancel scheduled activity in PSC with reason of 'Out of Window'
+  # 4. If there are no remaining pending events, schedule and create placeholder for the next event
+  def mark_event_out_of_window(psc)
+    resp = nil
+    if current_event = pending_events.first
+      current_event.mark_out_of_window
+      current_event.close!
+      current_event.cancel_activity(psc, "Missed Event - Out of Window")
+      set_state_for_event_type(current_event)
+      resp = Event.schedule_and_create_placeholder(psc, self)
+    end
+    resp
   end
 
   ##
@@ -567,7 +587,7 @@ class Participant < ActiveRecord::Base
   # A pregnant woman whose due_date is > 6 months out should take this Lo I Quex too
   def should_take_low_intensity_questionnaire?
     # TODO: determine if due date is > 6 mos
-    low_intensity? && pregnant_or_trying? && !completed_event(NcsCode.low_intensity_data_collection)
+    low_intensity? && pregnant_or_trying? && !completed_event?(NcsCode.low_intensity_data_collection)
   end
 
   ##
@@ -607,7 +627,7 @@ class Participant < ActiveRecord::Base
   ##
   # True if a participant in the low_intensity arm has a ppg status of pregnant or trying and is in tsu
   def eligible_for_high_intensity_invitation?
-    low_intensity? && pregnant_or_trying? && in_tsu? && completed_event(NcsCode.low_intensity_data_collection)
+    low_intensity? && pregnant_or_trying? && in_tsu? && completed_event?(NcsCode.low_intensity_data_collection)
   end
 
   ##
@@ -895,7 +915,7 @@ class Participant < ActiveRecord::Base
     end
 
     def ineligible?(date = Date.today)
-      ppg_status(date) && ppg_status(date).local_code > 4
+      ppg_status(date).try(:local_code).to_i > 4
     end
 
     def pregnant_or_trying?(date = Date.today)
@@ -903,15 +923,15 @@ class Participant < ActiveRecord::Base
     end
 
     def pregnant?(date = Date.today)
-      ppg_status(date) && ppg_status(date).local_code == 1
+      ppg_status(date).try(:local_code) == 1
     end
 
     def trying?(date = Date.today)
-      ppg_status(date) && ppg_status(date).local_code == 2
+      ppg_status(date).try(:local_code) == 2
     end
 
     def recent_loss?(date = Date.today)
-      ppg_status(date) && ppg_status(date).local_code == 3
+      ppg_status(date).try(:local_code) == 3
     end
 
     def consented_to_high_intensity_arm?
