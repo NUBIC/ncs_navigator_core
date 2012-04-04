@@ -44,14 +44,18 @@ describe Fieldwork do
       }
     end
 
+    let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test') }
+
+    before do
+      NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
+        :from_psc => NcsNavigator::Core::Psc::ScheduledActivityReport.new)
+    end
+
+    it 'logs to #generation_log' do
+      fieldwork.generation_log.should_not be_empty
+    end
+
     describe 'return value' do
-      let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test') }
-
-      before do
-        NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
-          :from_psc => NcsNavigator::Core::Psc::ScheduledActivityReport.new)
-      end
-
       it 'is unpersisted' do
         fieldwork.should_not be_persisted
       end

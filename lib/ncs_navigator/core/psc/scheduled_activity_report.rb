@@ -6,8 +6,15 @@ module NcsNavigator::Core::Psc
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
     autoload :JsonForFieldwork, 'ncs_navigator/core/psc/scheduled_activity_report/json_for_fieldwork'
+    autoload :Logging,          'ncs_navigator/core/psc/scheduled_activity_report/logging'
+
+    include ActiveSupport::Callbacks
+
+    define_callbacks :map_entities
+    define_callbacks :map_persons, :map_events, :map_instruments, :map_contacts
 
     include JsonForFieldwork
+    include Logging
 
     ##
     # Associations (rooted at {Person}) to eager-load when mapping report rows
@@ -50,9 +57,8 @@ module NcsNavigator::Core::Psc
     attr_accessor :rows
 
     ##
-    # This report's logger.
-    #
-    # By default, the logger logs to #{Rails.root}/log/psc.log.
+    # This report's logger.  By default, this is a Logger that bit-buckets its
+    # messages; set it to another Logger-like object if you want logs.
     attr_accessor :logger
 
     ##
@@ -73,19 +79,19 @@ module NcsNavigator::Core::Psc
     end
 
     def initialize
-      io = File.open("#{Rails.root}/log/psc.log", "a")
-
-      self.logger = ::Logger.new(io)
       self.rows = []
+      self.logger = ::Logger.new(nil)
     end
 
     ##
     # Maps entities referenced in the scheduled activities report to Core entities.
     def map_entities
-      map_participants
-      map_events
-      map_instruments
-      map_contacts
+      run_callbacks :map_entities do
+        map_persons
+        map_events
+        map_instruments
+        map_contacts
+      end
     end
 
     ##
@@ -111,15 +117,6 @@ module NcsNavigator::Core::Psc
 
         contacts_ok && instruments_ok
       end
-    end
-
-    ##
-    # Maps entities referenced in the scheduled activities report to Core entities.
-    def map_entities
-      map_persons
-      map_events
-      map_instruments
-      map_contacts
     end
 
     ##
@@ -155,14 +152,16 @@ module NcsNavigator::Core::Psc
     # NB: {Participant} access is accomplished via Person#participant.  See
     # {Row} for more information.
     def map_persons
-      ids = rows.map(&:person_id).uniq
+      run_callbacks :map_persons do
+        ids = rows.map(&:person_id).uniq
 
-      {}.tap do |map|
-        Person.where(:person_id => ids).
-          includes(MAPPING_ASSOCIATIONS).
-          each { |p| map[p.person_id] = p }
+        {}.tap do |map|
+          Person.where(:person_id => ids).
+            includes(MAPPING_ASSOCIATIONS).
+            each { |p| map[p.person_id] = p }
 
-        rows.each { |r| r.person = map[r.person_id] }
+          rows.each { |r| r.person = map[r.person_id] }
+        end
       end
     end
 
@@ -176,13 +175,19 @@ module NcsNavigator::Core::Psc
     # The row's event will be nil if no event label matches an event on the
     # Participant.
     def map_events
-      rows.each do |r|
-        possible = r.participant.try(:events) || []
-        expected = OpenStruct.new(:labels => r.event_label, :ideal_date => r.ideal_date)
-        accepted = possible.detect { |event| event.matches_activity(expected) }
+      run_callbacks :map_events do
+        rows_with_events.each do |r|
+          possible = r.participant.try(:events) || []
+          expected = OpenStruct.new(:labels => r.event_label, :ideal_date => r.ideal_date)
+          accepted = possible.detect { |event| event.matches_activity(expected) }
 
-        r.event = accepted
+          r.event = accepted
+        end
       end
+    end
+
+    def rows_with_events
+      rows.select(&:event_label)
     end
 
     ##
@@ -201,15 +206,15 @@ module NcsNavigator::Core::Psc
     # - a survey cannot be found for the row
     # - an event cannot be found for the row
     def map_instruments
-      {}.tap do |survey_map|
-        rows.select(&:instrument_label).uniq.each do |r|
-          c = r.survey_access_code
+      run_callbacks :map_instruments do
+        {}.tap do |survey_map|
+          targeted = rows_with_instruments
 
-          survey_map[c] = Survey.most_recent_for_access_code(c)
-        end
+          targeted.map(&:survey_access_code).uniq.each do |sac|
+            survey_map[sac] = Survey.most_recent_for_access_code(sac)
+          end
 
-        rows.each do |r|
-          if r.instrument_label
+          targeted.each do |r|
             r.survey = survey_map[r.survey_access_code]
 
             if r.person && r.survey && r.event
@@ -218,6 +223,10 @@ module NcsNavigator::Core::Psc
           end
         end
       end
+    end
+
+    def rows_with_instruments
+      rows.select(&:instrument_label)
     end
 
     ##
@@ -235,26 +244,30 @@ module NcsNavigator::Core::Psc
     # If the row's event is nil, then this method sets the row's contact to
     # nil.
     def map_contacts
-      new_cache = {}
+      run_callbacks :map_contacts do
+        new_cache = {}
 
-      rows.each do |r|
-        next unless r.event
+        rows_with_contacts.each do |r|
+          possible = r.event.contacts
+          accepted = possible.detect { |c| c.contact_date == r.scheduled_date && c.contact_end_time.blank? }
 
-        possible = r.event.contacts
-        accepted = possible.detect { |c| c.contact_date == r.scheduled_date && c.contact_end_time.blank? }
+          r.contact = if accepted
+                        accepted
+                      else
+                        key = [r.event, r.scheduled_date]
 
-        r.contact = if accepted
-                      accepted
-                    else
-                      key = [r.event, r.scheduled_date]
+                        unless new_cache.has_key?(key)
+                          new_cache[key] = Contact.new(:contact_date => r.scheduled_date)
+                        end
 
-                      unless new_cache.has_key?(key)
-                        new_cache[key] = Contact.new(:contact_date => r.scheduled_date)
+                        new_cache[key]
                       end
-
-                      new_cache[key]
-                    end
+        end
       end
+    end
+
+    def rows_with_contacts
+      rows.select(&:event)
     end
 
     ##
