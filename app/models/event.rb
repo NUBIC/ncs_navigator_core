@@ -38,6 +38,7 @@ class Event < ActiveRecord::Base
   belongs_to :participant
   has_many :contact_links
   has_many :instruments, :through => :contact_links
+  has_many :contacts, :through => :contact_links
 
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :event_type,                 'EVENT_TYPE_CL1'

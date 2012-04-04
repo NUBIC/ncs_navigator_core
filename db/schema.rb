@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120402153232) do
+ActiveRecord::Schema.define(:version => 20120404164346) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -230,7 +230,7 @@ ActiveRecord::Schema.define(:version => 20120402153232) do
   end
 
   create_table "fieldworks", :id => false, :force => true do |t|
-    t.string   "fieldwork_id",  :limit => 36
+    t.string   "fieldwork_id",   :limit => 36
     t.binary   "received_data"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -238,6 +238,8 @@ ActiveRecord::Schema.define(:version => 20120402153232) do
     t.date     "end_date"
     t.date     "start_date"
     t.binary   "original_data"
+    t.text     "generation_log"
+    t.text     "merge_log"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -272,39 +274,6 @@ ActiveRecord::Schema.define(:version => 20120402153232) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
-  end
-
-  create_table "incidents", :force => true do |t|
-    t.integer  "psu_code",                                             :null => false
-    t.string   "incident_id",                            :limit => 36, :null => false
-    t.string   "incident_date",                          :limit => 10
-    t.string   "incident_time",                          :limit => 5
-    t.string   "incident_report_date",                   :limit => 10
-    t.string   "incident_report_time",                   :limit => 5
-    t.string   "incident_staff_reporter_id",             :limit => 36
-    t.string   "incident_staff_supervisor_id",           :limit => 36
-    t.integer  "contact_id"
-    t.integer  "incident_recipient_is_participant_id"
-    t.integer  "incident_recipient_is_dwelling_unit_id"
-    t.string   "incident_recipient_is_staff",            :limit => 36
-    t.integer  "incident_recipient_is_family_id"
-    t.integer  "incident_recipient_is_acquaintance_id"
-    t.integer  "incident_recipient_is_other"
-    t.integer  "incident_contact_person_id"
-    t.integer  "incident_type_code",                                   :null => false
-    t.string   "incident_type_other"
-    t.string   "incident_loss_computer_model",           :limit => 16
-    t.string   "incident_loss_computer_serial_number",   :limit => 32
-    t.string   "incident_loss_computer_decal",           :limit => 32
-    t.string   "incident_loss_removable_media",          :limit => 32
-    t.string   "incident_loss_paper",                    :limit => 32
-    t.string   "incident_loss_other"
-    t.text     "incident_description"
-    t.text     "incident_action"
-    t.integer  "incident_reported_code",                               :null => false
-    t.string   "transaction_type",                       :limit => 36
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "instruments", :force => true do |t|
@@ -893,6 +862,7 @@ ActiveRecord::Schema.define(:version => 20120402153232) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
   end
 
