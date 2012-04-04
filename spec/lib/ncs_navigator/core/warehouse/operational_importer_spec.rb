@@ -437,17 +437,14 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      describe 'when the source history is missing the initial status' do
-        before do
-          importer.import(:participants, :ppg_status_histories)
-        end
-
+      shared_context 'new history entry' do
         let(:first_history_entry) {
           PpgStatusHistory.order(:ppg_status_date).first
         }
 
-        it 'inserts a new history record using the pregnancy screener date if the initial state does not match' do
-          PpgStatusHistory.order(:ppg_status_date).collect(&:ppg_status_code).should == [2, 1]
+        it 'inserts a new history record' do
+          PpgStatusHistory.order(:ppg_status_date).collect(&:ppg_status_code).
+            should == expected_statuses
         end
 
         it 'uses the screener end date as the date for the new status history entry' do
@@ -466,6 +463,29 @@ module NcsNavigator::Core::Warehouse
           first_history_entry.ppg_comment.should ==
             'Missing history entry inferred from ppg_details.ppg_first during import into NCS Navigator.'
         end
+      end
+
+      describe 'when the source history is missing the initial status' do
+        let(:expected_statuses) { [2, 1] }
+
+        before do
+          importer.import(:participants, :ppg_status_histories)
+        end
+
+        include_context 'new history entry'
+      end
+
+      describe 'when the source history is empty' do
+        let(:expected_statuses) { [2] }
+
+        before do
+          ppg_status_history_current.destroy
+          MdesModule::PpgStatusHistory.count.should == 0
+
+          importer.import(:participants, :ppg_status_histories)
+        end
+
+        include_context 'new history entry'
       end
 
       it 'only attempts to correct for the first ppg_details for a participant' do

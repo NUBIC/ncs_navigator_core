@@ -429,6 +429,8 @@ module NcsNavigator::Core::Warehouse
         WHERE d.ppg_first <> (
           SELECT ppg_status FROM ppg_status_history h
           WHERE h.p_id=d.p_id ORDER BY h.ppg_status_date LIMIT 1
+        ) OR NOT EXISTS (
+          SELECT 'x' FROM ppg_status_history h WHERE h.p_id=d.p_id
         )
       SQL
 
