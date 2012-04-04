@@ -7,18 +7,12 @@
   - else
     %table.records
       %tr
-        %th
-          PPG Details
-        %th
-          Due Date
+        %th{ :colspan => 2 }
+          Initial PPG Statuses
       - @participant.ppg_details.each do |ppg|
         %tr{ :class => cycle('even_record', 'odd_record') }
-          %td
+          %td{ :colspan => 2 }
             = ppg.ppg_first
-          %td
-            = @participant.due_date
-
-    %table.records
       %tr
         %th
           PPG Status Histories

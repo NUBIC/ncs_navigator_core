@@ -1862,25 +1862,31 @@ input[type="submit"] {
 }
 
 /* line 117, ../../../stylesheets/partials/_links.scss */
+.out_of_window_link, .out_of_window_link:hover {
+  background: url(../../assets/date_error.png) 0 2px no-repeat !important;
+  padding-right: 10px;
+}
+
+/* line 122, ../../../stylesheets/partials/_links.scss */
 .occurred_link, .occurred_link:hover {
   background: url(../../assets/accept.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 122, ../../../stylesheets/partials/_links.scss */
+/* line 127, ../../../stylesheets/partials/_links.scss */
 .canceled_link, .canceled_link:hover {
   background: url(../../assets/cancel.png) 0 2px no-repeat !important;
   padding-right: 10px;
 }
 
-/* line 127, ../../../stylesheets/partials/_links.scss */
+/* line 132, ../../../stylesheets/partials/_links.scss */
 .external_link, .external_link:hover {
   background: url(../../assets/external_link_icon.png) 0 2px no-repeat;
   background-position: right top;
   padding: 2px 20px 2px 0px !important;
 }
 
-/* line 134, ../../../stylesheets/partials/_links.scss */
+/* line 139, ../../../stylesheets/partials/_links.scss */
 .disposition_icon, .disposition_icon:hover,
 .help_icon, .help_icon:hover {
   padding: 2px 2px 2px 20px;
@@ -1888,7 +1894,7 @@ input[type="submit"] {
   background: url(../../assets/help.png) 0 2px no-repeat !important;
 }
 
-/* line 141, ../../../stylesheets/partials/_links.scss */
+/* line 146, ../../../stylesheets/partials/_links.scss */
 .warning_icon, .warning_icon:hover,
 .notification_icon, .notification_icon:hover {
   padding: 2px 2px 2px 20px;
@@ -2549,26 +2555,26 @@ input#instrument_instrument_start_time {
   padding-left: 0.5em;
 }
 
-/* line 29, ../../../stylesheets/partials/_participants.scss */
+/* line 31, ../../../stylesheets/partials/_participants.scss */
 .participant_events .event .header {
   border: 1px solid #cccccc;
   padding: 0.25em;
 }
 
-/* line 36, ../../../stylesheets/partials/_participants.scss */
+/* line 38, ../../../stylesheets/partials/_participants.scss */
 .ppg_details {
   border: 1px solid #cccccc;
   padding: 0.5em;
   margin: 0 1em 0.5em 0;
 }
 
-/* line 42, ../../../stylesheets/partials/_participants.scss */
+/* line 44, ../../../stylesheets/partials/_participants.scss */
 .psc_error {
   color: crimson;
   margin: 0.5em;
 }
 
-/* line 50, ../../../stylesheets/partials/_participants.scss */
+/* line 52, ../../../stylesheets/partials/_participants.scss */
 #edit_person_link,
 #edit_participant_link,
 #create_person_link,
@@ -2577,12 +2583,12 @@ input#instrument_instrument_start_time {
   padding-right: 1em;
 }
 
-/* line 55, ../../../stylesheets/partials/_participants.scss */
+/* line 57, ../../../stylesheets/partials/_participants.scss */
 .switch_arm {
   float: right;
 }
 
-/* line 60, ../../../stylesheets/partials/_participants.scss */
+/* line 62, ../../../stylesheets/partials/_participants.scss */
 .schedule_next_event,
 .pending_events {
   border-top: 1px solid #cccccc;
@@ -2590,20 +2596,25 @@ input#instrument_instrument_start_time {
   margin: 0.5em 0;
   padding: 0.5em 0;
 }
+/* line 69, ../../../stylesheets/partials/_participants.scss */
+.schedule_next_event .pending_event form,
+.pending_events .pending_event form {
+  display: inline-block;
+}
 
-/* line 67, ../../../stylesheets/partials/_participants.scss */
+/* line 75, ../../../stylesheets/partials/_participants.scss */
 span.consented {
   color: darkgreen;
   font-size: 0.8em;
 }
 
-/* line 72, ../../../stylesheets/partials/_participants.scss */
+/* line 80, ../../../stylesheets/partials/_participants.scss */
 span.known_instrument {
   color: darkorange;
   font-style: italic;
 }
 
-/* line 78, ../../../stylesheets/partials/_participants.scss */
+/* line 86, ../../../stylesheets/partials/_participants.scss */
 #low_intensity_consent_no,
 #low_intensity_consent_yes {
   border-radius: 0.5em;
@@ -2613,22 +2624,22 @@ span.known_instrument {
   padding: 0.5em;
 }
 
-/* line 84, ../../../stylesheets/partials/_participants.scss */
+/* line 92, ../../../stylesheets/partials/_participants.scss */
 #low_intensity_consent_script {
   margin-bottom: 2em;
 }
 
-/* line 90, ../../../stylesheets/partials/_participants.scss */
+/* line 98, ../../../stylesheets/partials/_participants.scss */
 .schedule .activities .activity {
   margin-left: 1em;
 }
 
-/* line 96, ../../../stylesheets/partials/_participants.scss */
+/* line 104, ../../../stylesheets/partials/_participants.scss */
 .contact_info {
   margin: 0 1em;
 }
 
-/* line 102, ../../../stylesheets/partials/_participants.scss */
+/* line 110, ../../../stylesheets/partials/_participants.scss */
 .telephones,
 .emails,
 .addresses {
@@ -2636,7 +2647,7 @@ span.known_instrument {
   padding: 1em 0;
 }
 
-/* line 107, ../../../stylesheets/partials/_participants.scss */
+/* line 115, ../../../stylesheets/partials/_participants.scss */
 .participant_identifiers {
   border-bottom: 1px solid #cccccc;
   padding: 1em 0;

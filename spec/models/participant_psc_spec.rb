@@ -201,7 +201,7 @@ describe Participant do
           participant.should be_in_tsu
           participant.should_not be_eligible_for_high_intensity_invitation
 
-          participant.completed_event(@lo_i_quex).should be_false
+          participant.completed_event?(@lo_i_quex).should be_false
         end
 
       end

@@ -16,6 +16,7 @@
                 = blank_safe(event.event_start_date)
                 = " - "
                 = blank_safe(event.event_end_date)
+                = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(participant), :class => "out_of_window_link icon_link" unless event.closed?
               #span.disposition
                 - if event.event_disposition
                   - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
@@ -37,8 +38,6 @@
                       End
                     %th
                       Disposition
-                    %th
-                      Staff
                     %th.hide
                       Continue
                   - event.contact_links.each do |cl|
@@ -55,8 +54,6 @@
                       %td
                         - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, cl.contact.contact_disposition)
                         = disp.blank? ? cl.contact.contact_disposition : disp
-                      %td
-                        = cl.staff_id
                       %td.hide
                         - if cl.contact.contact_date_date == Date.today && cl.event.event_end_date.blank?
                           = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"

@@ -135,6 +135,46 @@ class Event < ActiveRecord::Base
   alias complete? closed?
 
   ##
+  # Sets the event_end_date and event_end_time
+  # attributes and saves the record
+  # @param [Time]
+  def close!(now = Time.now)
+    self.close(now)
+    self.save!
+  end
+
+  ##
+  # Sets the event_end_date and event_end_time
+  # @param [Time]
+  def close(now = Time.now)
+    self.event_end_date = now.to_date
+    self.event_end_time = now.strftime("%H:%M")
+  end
+
+  ##
+  # Helper method to set the disposition to Out of Window
+  # TODO: determine better way to get disposition out of NcsNavigatorCore.mdes.disposition_codes
+  def mark_out_of_window
+    self.event_disposition = 48
+    self.event_disposition_category = NcsCode.for_list_name_and_local_code("EVENT_DSPSTN_CAT_CL1", "3")
+  end
+
+  ##
+  # Marks the activity associated with this event as canceled in PSC
+  # @param[PatientStudyCalendar]
+  # @param[String] - reason for cancellation (optional)
+  def cancel_activity(psc, reason = nil)
+    activity = nil
+    psc.activities_for_event(self).each do |a|
+      activity = a if self.matches_activity(a)
+    end
+    if activity
+      psc.update_activity_state(activity.activity_id, participant,
+                                PatientStudyCalendar::ACTIVITY_CANCELED, Date.today, reason)
+    end
+  end
+
+  ##
   # Determines if the disposition code is complete based on the disposition category
   # and the disposition code
   # @return [true,false]
