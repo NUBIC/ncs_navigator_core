@@ -869,6 +869,32 @@ module NcsNavigator::Core::Warehouse
               end
             end
           end
+
+          describe 'when transitioning into birth' do
+            let!(:g_e3) {
+              create_warehouse_record_via_core(Event, 'g_e3',
+                :participant => ginger_p,
+                :event_disp => 4,
+                :event_type => code_for_event_type('Informed Consent'),
+                :event_start_date => '2010-11-08')
+            }
+
+            let!(:g_e8) {
+              create_warehouse_record_via_core(Event, 'g_e8',
+                :participant => ginger_p,
+                :event_disp => 4,
+                :event_type => code_for_event_type('Birth'),
+                :event_start_date => '2010-12-09')
+            }
+
+            before do
+              do_import
+            end
+
+            it 'does not create a new PPG Status History' do
+              PpgStatusHistory.all.should == []
+            end
+          end
         end
 
         it 'saves the events' do
