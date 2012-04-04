@@ -12,7 +12,8 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
               'instrument_id' => r.instrument.instrument_id,
               'instrument_template_id' => r.survey.api_id,
               'name' => r.survey.title,
-              'response_set' => r.instrument.response_set
+              'response_set' => r.instrument.response_set,
+              'version' => r.instrument.updated_at.utc
             }
           end
         end
@@ -22,7 +23,8 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
             a << {
               'event_id' => r.event.event_id,
               'name' => r.event.event_type.to_s,
-              'instruments' => instruments
+              'instruments' => instruments,
+              'version' => r.event.updated_at.utc
             }
           end
         end
@@ -34,7 +36,8 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
           'start_time' => c.contact_start_time,
           'events' => events,
           'person_id' => r.person.person_id,
-          'type' => c.contact_type_code
+          'type' => c.contact_type_code,
+          'version' => c.updated_at.utc
         }
       end
     end
@@ -61,12 +64,14 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
               'home_phone' => person.primary_home_phone.try(:phone_nbr),
               'name' => person.name,
               'person_id' => person.person_id,
-              'relationship_code' => l.relationship_code.to_i
+              'relationship_code' => l.relationship_code.to_i,
+              'version' => person.updated_at.utc
             }.merge(address_hash[person.primary_address])
           end
 
           h['p_id'] = pa.p_id
           h['persons'] = persons
+          h['version'] = pa.updated_at.utc
         end
       end
     end

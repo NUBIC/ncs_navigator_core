@@ -12,7 +12,6 @@ module DeferredRedisConnection
       fail 'Please set config.redis_url for this environment'
     end
   end
-  private :redis_url
 
   def redis_connection
     Rails.logger.info "Connecting to #{redis_url}"
