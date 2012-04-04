@@ -228,9 +228,58 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      it 'deletes placeholder events created by import'
+      describe 'and placeholder events' do
+        let(:scheduled_events) {
+          [
+            {
+              :event_type_label => 'birth',
+              :start_date => '2010-09-30',
+              :scheduled_activities => %w(sa1)
+            },
+            {
+              :event_type_label => '3_month',
+              :start_date => '2010-12-31',
+              :scheduled_activities => %w(sa2)
+            },
+          ]
+        }
 
-      it 'does not delete other events'
+        before do
+          add_event_hash('e1', '2010-09-30',
+            :event_type_label => 'birth',
+            :end_date => '2010-09-30')
+          redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
+
+          create_all_event_types
+          create_missing_in_error_ncs_codes(Event)
+
+          psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+
+          with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
+        end
+
+        it 'deletes placeholder events created by import' do
+          Event.where(:event_type_code => 23).size.should == 1
+
+          importer.reset
+
+          Event.where(:event_type_code => 23).should == []
+        end
+
+        it 'does not delete other events' do
+          with_versioning { Factory(:event) }
+          Event.count.should == 2
+
+          importer.reset
+
+          Event.count.should == 1
+        end
+
+        it 'does not fail when reset twice' do
+          importer.reset
+          importer.reset
+        end
+      end
     end
 
     describe 'scheduling segments for events' do

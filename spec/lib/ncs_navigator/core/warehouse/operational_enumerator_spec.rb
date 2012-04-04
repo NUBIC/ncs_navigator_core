@@ -811,6 +811,18 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
+    describe 'ordering' do
+      let(:order) { OperationalEnumerator.record_producers.collect(&:name) }
+
+      OperationalEnumerator.record_producers.each do |rp|
+        it "places :#{rp.name} after all its dependencies" do
+          joined_tables = rp.query.scan(/JOIN (\w+)/).collect(&:first)
+          predecessors = order[0, order.index(rp.name)].collect(&:to_s)
+          joined_tables.reject { |t| predecessors.include?(t) }.should == []
+        end
+      end
+    end
+
     describe "a producer's metadata" do
       let(:producer) {
         OperationalEnumerator.record_producers.find { |rp| rp.name == :participants }

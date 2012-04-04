@@ -54,6 +54,7 @@ class Participant < ActiveRecord::Base
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id", :dependent => :destroy
 
   has_many :participant_person_links
+  has_many :people, :through => :participant_person_links
   has_many :participant_staff_relationships
   has_many :participant_consents
   has_many :events, :order => 'events.event_start_date'
