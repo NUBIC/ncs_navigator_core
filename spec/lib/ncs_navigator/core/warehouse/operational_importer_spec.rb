@@ -474,7 +474,14 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_warehouse_record_via_core(core_model, wh_id, wh_attributes={})
-      Factory(core_model.to_s.underscore, core_model.public_id_field => wh_id)
+      core_instances = []
+      core_instances << Factory(core_model.to_s.underscore, core_model.public_id_field => wh_id)
+
+      # event enumerator skips events w/o link contact
+      if (core_model == Event)
+        core_instances.unshift Factory(:contact_link, :event_id => core_instances.first.id)
+      end
+
       producer = OperationalEnumerator.record_producers.
         find { |rp| rp.name == core_model.table_name.to_sym }
       enumerator.each(producer.name) do |mdes_rec|
@@ -483,7 +490,7 @@ module NcsNavigator::Core::Warehouse
           save_wh(mdes_rec)
         end
       end
-      core_model.destroy_all(["#{core_model.public_id_field} = ?", wh_id])
+      core_instances.each(&:destroy)
       producer.model.first(producer.model.key.first.name => wh_id)
     end
 
