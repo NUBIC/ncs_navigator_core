@@ -13,11 +13,15 @@
 #  original_data :binary
 #
 
+require 'logger'
 require 'ncs_navigator/core/psc'
 require 'patient_study_calendar'
+require 'stringio'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
+  include NcsNavigator::Core::Psc
+
   set_primary_key :fieldwork_id
 
   before_create :set_default_id
@@ -81,25 +85,30 @@ class Fieldwork < ActiveRecord::Base
   # * `:end_date`: the end date
   # * `:client_id`: the ID of the field client
   #
+  # This method stores logs about the PSC -> Core entity mapping process in
+  # {#generation_log}.
+  #
   # @param Hash params fieldwork parameters
   # @param PatientStudyCalendar psc a PSC client instance
   # @param staff_id the name of the user running this process;
   #   should usually be the value of ApplicationController#current_staff_id
   # @return [Fieldwork]
   def self.from_psc(params, psc, staff_id)
-    report = NcsNavigator::Core::Psc::ScheduledActivityReport.from_psc(psc,
-                                                   :start_date => params[:start_date],
-                                                   :end_date => params[:end_date],
-                                                   :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
+    sd = params[:start_date]
+    ed = params[:end_date]
+    cid = params[:client_id]
 
-    report.map_entities
+    new(:start_date => sd, :end_date => ed, :client_id => cid).tap do |f|
+      sio = StringIO.new
+      report = ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
+      report.logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
 
-    Fieldwork.new(:start_date => params[:start_date],
-                  :end_date => params[:end_date],
-                  :client_id => params[:client_id]).tap do |f|
-                    f.report = report
-                    f.staff_id = staff_id
-                  end
+      report.map_entities
+
+      f.generation_log = sio.string
+      f.report = report
+      f.staff_id = staff_id
+    end
   end
 
   def set_default_id

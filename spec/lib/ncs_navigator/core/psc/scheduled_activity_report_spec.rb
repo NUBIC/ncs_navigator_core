@@ -72,6 +72,9 @@ module NcsNavigator::Core::Psc
       let(:person) { Factory(:person, :person_id => 'b9696270-3586-012f-ca18-58b035fb69ca') }
       let(:report) { ScheduledActivityReport.new }
 
+      let(:logdev) { StringIO.new }
+      let(:log) { logdev.string }
+
       before do
         Factory(:participant_person_link,
                 :person => person,
@@ -79,6 +82,7 @@ module NcsNavigator::Core::Psc
                 :relationship_code => 1)
 
         report.rows = psc_data['rows'].map { |r| ScheduledActivityReport::Row.new(r) }
+        report.logger = ::Logger.new(logdev)
       end
 
       describe '#map_persons' do
@@ -100,6 +104,23 @@ module NcsNavigator::Core::Psc
 
           rows[0].participant.should be_nil
         end
+
+        it 'logs results' do
+          report.map_persons
+
+          log.should =~ /person search: 1 attempted, 1 matched/i
+        end
+
+        it 'logs failures' do
+          original_person_id = person.person_id
+
+          person.update_attribute(:person_id, 'foo')
+
+          report.map_persons
+
+          log.should =~ /person search: 1 attempted, 0 matched/i
+          log.should =~ /could not match subject ID #{original_person_id} to a person/i
+        end
       end
 
       describe '#map_events' do
@@ -120,6 +141,25 @@ module NcsNavigator::Core::Psc
           report.map_events
 
           report.rows[0].event.should be_nil
+        end
+
+        it 'logs results' do
+          report.map_persons
+          report.map_events
+
+          log.should =~ /event search: 1 attempted, 1 matched/i
+        end
+
+        it 'logs failures' do
+          event.destroy
+
+          event_label = 'event:pregnancy_probability'
+
+          report.map_persons
+          report.map_events
+
+          log.should =~ /event search: 1 attempted, 0 matched/i
+          log.should =~ /could not match event label #{event_label} to an event on subject id #{person.person_id}/i
         end
       end
 
@@ -181,16 +221,54 @@ module NcsNavigator::Core::Psc
             rows[0].instrument.should be_nil
           end
         end
+
+        it 'logs results' do
+          report.map_persons
+          report.map_events
+          report.map_instruments
+
+          log.should =~ /instrument search: 1 attempted, 1 matched/i
+        end
+
+        it 'logs instantiations' do
+          response_set.destroy
+          instrument.destroy
+
+          row = rows.first
+
+          l = row.instrument_label
+          subject_id = row.person_id
+
+          log.should =~ /using newly instantiated instrument for instrument label #{l}, subject ID #{subject_id}/i
+        end
+
+        it 'logs failures' do
+          event.destroy
+
+          row = rows.first
+
+          event_label = row.event_label
+          l = row.instrument_label
+          sac = row.survey_access_code
+          subject_id = row.person_id
+
+          log.should =~ /instrument search: 1 attempted, 0 matched/i
+          log.should =~ /could not match instrument label #{l} to an instrument for subject ID #{subject_id}, survey access code #{sac}, event label #{event_label}/i
+        end
       end
 
       describe '#map_contacts' do
         let!(:event_type) { Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Probability') }
         let!(:event) { Factory(:event, :participant => participant, :event_start_date => Date.new(2012, 2, 16), :event_type => event_type) }
 
-        let(:rows) do
+        def do_mapping
           report.map_persons
           report.map_events
           report.map_contacts
+        end
+
+        let(:rows) do
+          do_mapping
 
           report.rows
         end
@@ -228,10 +306,18 @@ module NcsNavigator::Core::Psc
           it 'does not set a contact end time' do
             row_contact.contact_end_time.should be_blank
           end
+
+          it 'logs instantiations' do
+            do_mapping
+
+            el = row.event_label
+            subject_id = row.person_id
+
+            log.should =~ /using newly instantiated contact for event label #{el}, subject ID #{subject_id}/i
+          end
         end
 
-        describe "if there is not a contact with date equal to the row's scheduled date" do
-          let!(:contact) do
+        describe "if there is not a contact with date equal to the row's scheduled date" do let!(:contact) do
             Factory(:contact, :contact_date => Date.new(2011, 1, 1))
           end
 
