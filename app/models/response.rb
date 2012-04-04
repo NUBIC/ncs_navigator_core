@@ -25,6 +25,8 @@
 class Response < ActiveRecord::Base
   include Surveyor::Models::ResponseMethods
 
+  def self.default_scope; end
+
   def source_mdes_record=(record)
     self.source_mdes_table = record.class.mdes_table_name
     self.source_mdes_id = record.key.first
