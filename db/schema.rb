@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120404164346) do
+ActiveRecord::Schema.define(:version => 20120404202444) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(:version => 20120404164346) do
     t.binary   "original_data"
     t.text     "generation_log"
     t.text     "merge_log"
+    t.boolean  "merged",                       :default => false
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
