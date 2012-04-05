@@ -126,15 +126,15 @@ class Fieldwork < ActiveRecord::Base
   #
   # Returns the value written to #merged.
   def merge
-    sio = StringIO.new
-    logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
-
     begin
+      sio = StringIO.new
+      logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
       violations = schema_violations
 
       unless violations.values.all? { |v| v.empty? }
         logger.fatal { "Schema violations detected; aborting merge" }
         logger.fatal { violations.inspect }
+
         return
       end
 
