@@ -124,7 +124,7 @@ module NcsNavigator::Core::Psc
 
       it 'sets #/0/events/0/instruments/0/response_set' do
         contacts[0]['events'][0]['instruments'][0]['response_set'].should ==
-          i.response_set
+          JSON.parse(i.response_set.to_json)
       end
 
       it 'sets #/0/person_id' do
@@ -259,7 +259,7 @@ module NcsNavigator::Core::Psc
       let(:templates) { subject.instrument_templates_as_json }
 
       it 'includes each survey in the report' do
-        templates.should == [s]
+        templates.should == [JSON.parse(s.to_json)]
       end
     end
   end

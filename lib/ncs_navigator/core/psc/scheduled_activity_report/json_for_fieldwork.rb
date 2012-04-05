@@ -12,7 +12,7 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
               'instrument_id' => r.instrument.instrument_id,
               'instrument_template_id' => r.survey.api_id,
               'name' => r.survey.title,
-              'response_set' => r.instrument.response_set,
+              'response_set' => JSON.parse(r.instrument.response_set.to_json),
               'version' => r.instrument.updated_at.utc
             }
           end
@@ -77,7 +77,7 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
     end
 
     def instrument_templates_as_json
-      rows.map(&:survey).compact.uniq
+      rows.map(&:survey).compact.uniq.map { |s| JSON.parse(s.to_json) }
     end
   end
 end
