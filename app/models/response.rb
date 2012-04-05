@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120321181032
+# Schema version: 20120404205955
 #
 # Table name: responses
 #
@@ -20,6 +20,7 @@
 #  survey_section_id :integer
 #  source_mdes_table :string(100)
 #  source_mdes_id    :string(36)
+#  api_id            :string(255)
 #
 
 class Response < ActiveRecord::Base
