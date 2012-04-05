@@ -1,0 +1,49 @@
+{
+    "contacts": [
+        {
+            "contact_date": "2012-02-09",
+            "contact_id": "dc2a6c42-3b01-4c91-9e27-104c5aa3ef49",
+            "end_time": "12:30",
+            "events": [
+                {
+                    "event_id": "bce1e030-34d3-012f-c157-58b035fb69ca",
+                    "instruments": [
+                        {
+                            "instrument_id": "c41f14e0-356c-012f-c15d-58b035fb69ca",
+                            "instrument_template_id": "612c9eb0-331b-012f-8a99-58b035fb69ca",
+                            "name": "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0",
+                            "response_set": {
+                                "completed_at": "2012-02-08T22:39:51Z",
+                                "uuid": "5a4c42f8-1687-4a14-9398-41a176f83f48"
+                            },
+                            "version": "2012-02-09T16:55:17Z"
+                        }
+                    ],
+                    "name": "Low Intensity Data Collection",
+                    "version": "2012-02-08T22:39:51Z"
+                }
+            ],
+            "person_id": "f76a39d0-34d2-012f-c14a-58b035fb69ca",
+            "start_time": "11:45",
+            "type": -4,
+            "version": "2012-04-03T18:11:11Z"
+        }
+    ],
+    "participants": [
+        {
+            "p_id": "f7b1da00-34d2-012f-c14b-58b035fb69ca",
+            "persons": [
+                {
+                    "cell_phone": "1234567890",
+                    "email": "foo@example.com",
+                    "home_phone": "9876543210",
+                    "name": "Bobbi Brown",
+                    "person_id": "f76a39d0-34d2-012f-c14a-58b035fb69ca",
+                    "relationship_code": 1,
+                    "version": "2012-02-08T22:38:54Z"
+                }
+            ],
+            "version": "2012-02-08T22:38:55Z"
+        }
+    ]
+}

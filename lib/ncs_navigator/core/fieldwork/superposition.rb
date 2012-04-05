@@ -4,7 +4,7 @@ module NcsNavigator::Core::Fieldwork
   ##
   # A Superposition represents three states of the entities involved with a
   # {Fieldwork} set:
-  # 
+  #
   # 1. the entities as they were when the Fieldwork set was generated
   #    (original),
   # 2. the entities an offline client sees them (proposed), and
@@ -40,12 +40,8 @@ module NcsNavigator::Core::Fieldwork
   # * {Participant}
   # * {Person}
   # * {ResponseSet}
-  # * {Response}
   #
-  # In the case of Response and ResponseSet, it may also build related
-  # entities such as Answer and Question.
   #
-  # 
   # Performing a merge
   # ==================
   #
@@ -54,5 +50,79 @@ module NcsNavigator::Core::Fieldwork
   #
   # @see MergeTheirs
   class Superposition
+    attr_accessor :contacts
+    attr_accessor :events
+    attr_accessor :instruments
+    attr_accessor :participants
+    attr_accessor :people
+    attr_accessor :response_sets
+
+    def initialize
+      self.contacts = {}
+      self.events = {}
+      self.instruments = {}
+      self.participants = {}
+      self.people = {}
+      self.response_sets = {}
+    end
+
+    def set_original(data)
+      set_state(:original, data)
+    end
+
+    def set_proposed(data)
+      set_state(:proposed, data)
+    end
+
+    def resolve_current
+      set_current_state(:contacts, Contact, 'contact_id')
+      set_current_state(:events, Event, 'event_id')
+      set_current_state(:instruments, Instrument, 'instrument_id')
+      set_current_state(:participants, Participant, 'p_id')
+      set_current_state(:people, Person, 'person_id')
+      set_current_state(:response_sets, ResponseSet, 'api_id')
+    end
+
+    private
+
+    def set_state(state, data)
+      data['contacts'].each do |contact|
+        add(state, :contacts, contact, 'contact_id')
+
+        contact['events'].each do |event|
+          add(state, :events, event, 'event_id')
+
+          event['instruments'].each do |instrument|
+            add(state, :instruments, instrument, 'instrument_id')
+            add(state, :response_sets, instrument['response_set'], 'uuid')
+          end
+        end
+      end
+
+      data['participants'].each do |participant|
+        add(state, :participants, participant, 'p_id')
+
+        participant['persons'].each do |person|
+          add(state, :people, person, 'person_id')
+        end
+      end
+    end
+
+    def set_current_state(collection, entity, public_id)
+      entity.where(public_id => send(collection).keys.uniq).each do |e|
+        add(:current, collection, e, public_id)
+      end
+    end
+
+    def add(state, collection, object, key)
+      c = send(collection)
+      k = object[key]
+
+      unless c.has_key?(k)
+        c[k] = {}
+      end
+
+      c[k][state] = object
+    end
   end
 end
