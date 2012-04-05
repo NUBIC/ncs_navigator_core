@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120321181032
+# Schema version: 20120404205955
 #
 # Table name: response_sets
 #
@@ -12,6 +12,7 @@
 #  created_at    :datetime
 #  updated_at    :datetime
 #  instrument_id :integer
+#  api_id        :string(255)
 #
 
 require 'spec_helper'

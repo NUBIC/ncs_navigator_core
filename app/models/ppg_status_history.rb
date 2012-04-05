@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120321181032
+# Schema version: 20120404205955
 #
 # Table name: ppg_status_histories
 #
@@ -18,6 +18,7 @@
 #  created_at            :datetime
 #  updated_at            :datetime
 #  response_set_id       :integer
+#  ppg_status_date_date  :date
 #
 
 class PpgStatusHistory < ActiveRecord::Base
