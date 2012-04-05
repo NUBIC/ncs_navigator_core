@@ -505,6 +505,20 @@ describe Participant do
         @participant.next_scheduled_event.date.should == Date.today
       end
 
+      it "uses the birth event contact date to determine the next scheduled event date" do
+        create_missing_in_error_ncs_codes(PpgStatusHistory)
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => false)
+        @participant.person = person
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
+        @participant.birth_event_low!
+        contact = Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01')
+        Factory(:contact_link, :person => person, :contact => contact)
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
+        @participant.next_scheduled_event.date.should == Date.parse('2012-07-01')
+      end
+
     end
 
     context "in the high intensity protocol" do

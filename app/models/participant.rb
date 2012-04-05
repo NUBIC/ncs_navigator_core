@@ -953,9 +953,22 @@ class Participant < ActiveRecord::Base
       elsif contact_links.blank?
         self.created_at.to_date
       else
-        # contact_links are delegated to person and ordered by created_at DESC
-        contact_links.first.created_at.to_date
+        get_date_to_schedule_next_event_from_contact_link
       end
+    end
+
+    ##
+    # Use Most recent contact link contact date if it exists
+    # otherwise use the created at attribute for the contact link
+    # @return [Date]
+    def get_date_to_schedule_next_event_from_contact_link
+      # contact_links are delegated to person and ordered by created_at DESC
+      most_recent_contact_link = contact_links.first
+      result = most_recent_contact_link.created_at.to_date
+      if most_recent_contact_link.contact && most_recent_contact_link.contact.contact_date_date
+        result = most_recent_contact_link.contact.contact_date_date
+      end
+      result
     end
 
     def in_pregnant_state?
