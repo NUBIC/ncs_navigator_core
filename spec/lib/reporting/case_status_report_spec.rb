@@ -33,6 +33,11 @@ describe Reporting::CaseStatusReport do
 
   end
 
+  it "handles an empty response from psc" do
+    subject.stub!(:scheduled_activities_report).and_return Hash.new
+    reporter.scheduled_study_segment_identifiers.should == []
+  end
+
   context "creating a status report for a given period" do
 
     before(:each) do

@@ -46,8 +46,10 @@ module Reporting
     def scheduled_study_segment_identifiers
       scheduled_study_segment_ids = []
       if rpt = psc.scheduled_activities_report(options)
-        rpt["rows"].each do |row|
-          scheduled_study_segment_ids << row["scheduled_study_segment"]["grid_id"] if row["scheduled_study_segment"]
+        if rows = rpt["rows"]
+          rows.each do |row|
+            scheduled_study_segment_ids << row["scheduled_study_segment"]["grid_id"] if row["scheduled_study_segment"]
+          end
         end
       end
       scheduled_study_segment_ids.uniq
