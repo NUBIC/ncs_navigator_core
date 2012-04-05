@@ -22,9 +22,15 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
         events = [].tap do |a|
           if r.event
             a << {
+              'disposition' => r.event.event_disposition,
+              'disposition_category' => r.event.event_disposition_category_code,
+              'end_date' => r.event.event_end_date,
+              'end_time' => r.event.event_end_time,
               'event_id' => r.event.event_id,
-              'name' => r.event.event_type.to_s,
               'instruments' => instruments,
+              'name' => r.event.event_type.to_s,
+              'start_date' => r.event.event_start_date,
+              'start_time' => r.event.event_start_time,
               'version' => r.event.updated_at.utc
             }
           end
@@ -33,10 +39,11 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
         {
           'contact_date' => c.contact_date,
           'contact_id' => c.contact_id,
+          'disposition' => c.contact_disposition,
           'end_time' => c.contact_end_time,
-          'start_time' => c.contact_start_time,
           'events' => events,
           'person_id' => r.person.person_id,
+          'start_time' => c.contact_start_time,
           'type' => c.contact_type_code,
           'version' => c.updated_at.utc
         }
@@ -78,7 +85,13 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
     end
 
     def instrument_templates_as_json
-      rows.map(&:survey).compact.uniq.map { |s| JSON.parse(s.to_json) }
+      rows.map(&:survey).compact.uniq.map do |s|
+        {
+          'instrument_template_id' => s.api_id,
+          'survey' => JSON.parse(s.to_json),
+          'version' => s.updated_at.utc
+        }
+      end
     end
   end
 end
