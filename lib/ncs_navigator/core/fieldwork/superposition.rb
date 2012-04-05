@@ -55,6 +55,7 @@ module NcsNavigator::Core::Fieldwork
     attr_accessor :instruments
     attr_accessor :participants
     attr_accessor :people
+    attr_accessor :responses
     attr_accessor :response_sets
 
     ##
@@ -68,6 +69,7 @@ module NcsNavigator::Core::Fieldwork
       self.instruments = {}
       self.participants = {}
       self.people = {}
+      self.responses = {}
       self.response_sets = {}
 
       self.logger = Logger.new(nil)
@@ -88,6 +90,7 @@ module NcsNavigator::Core::Fieldwork
       set_current_state(:participants, Participant, 'p_id')
       set_current_state(:people, Person, 'person_id')
       set_current_state(:response_sets, ResponseSet, 'api_id')
+      set_current_state(:responses, Response, 'api_id')
     end
 
     def set_state(state, data)
@@ -100,6 +103,19 @@ module NcsNavigator::Core::Fieldwork
           event['instruments'].each do |instrument|
             add(state, :instruments, instrument, 'instrument_id')
             add(state, :response_sets, instrument['response_set'], 'uuid')
+
+            responses = instrument['response_set']['responses']
+
+            # FYI: The responses key should always exist, but there's currently
+            # a bug in Surveyor that makes that not the case.
+            #
+            # See https://github.com/NUBIC/surveyor/issues/294.
+            if responses
+              responses.each do |response|
+                unrooted = response['response']
+                add(state, :responses, unrooted, 'uuid')
+              end
+            end
           end
         end
       end

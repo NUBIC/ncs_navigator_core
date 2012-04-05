@@ -22,7 +22,8 @@ module NcsNavigator::Core::Fieldwork
     let(:instrument_id) { 'c41f14e0-356c-012f-c15d-58b035fb69ca' }
     let(:participant_id) { 'f7b1da00-34d2-012f-c14b-58b035fb69ca' }
     let(:person_id) { 'f76a39d0-34d2-012f-c14a-58b035fb69ca' }
-    let(:response_set_id) { '5a4c42f8-1687-4a14-9398-41a176f83f48' }
+    let(:response_id) { 'e8661d8d-7bde-4a4d-bb79-6d807f4d3bf3' }
+    let(:response_set_id) { '266ad829-f5d8-4df0-b821-3d33bb95be08' }
 
     def load_original
       subject.set_original(original_json)
@@ -174,6 +175,9 @@ module NcsNavigator::Core::Fieldwork
       let!(:instrument) { Factory(:instrument, :instrument_id => instrument_id) }
       let!(:participant) { Factory(:participant, :p_id => participant_id) }
       let!(:person) { Factory(:person, :person_id => person_id) }
+      let!(:q) { Factory(:question) }
+      let!(:a) { Factory(:answer) }
+      let!(:response) { Factory(:response, :api_id => response_id, :question => q, :answer => a) }
       let!(:response_set) { Factory(:response_set, :api_id => response_set_id) }
 
       before do
@@ -205,6 +209,10 @@ module NcsNavigator::Core::Fieldwork
 
       it 'resolves response sets' do
         subject.response_sets[response_set_id][:current].should == response_set
+      end
+
+      it 'resolves responses' do
+        subject.responses[response_id][:current].should == response
       end
     end
   end
