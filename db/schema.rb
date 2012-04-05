@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120404164346) do
+ActiveRecord::Schema.define(:version => 20120404205955) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(:version => 20120404164346) do
     t.binary   "original_data"
     t.text     "generation_log"
     t.text     "merge_log"
+    t.boolean  "merged",                       :default => false
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -851,6 +852,7 @@ ActiveRecord::Schema.define(:version => 20120404164346) do
     t.string   "custom_renderer"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "api_id"
   end
 
   create_table "questions", :force => true do |t|
@@ -896,6 +898,7 @@ ActiveRecord::Schema.define(:version => 20120404164346) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "instrument_id"
+    t.string   "api_id"
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
@@ -917,6 +920,7 @@ ActiveRecord::Schema.define(:version => 20120404164346) do
     t.integer  "survey_section_id"
     t.string   "source_mdes_table", :limit => 100
     t.string   "source_mdes_id",    :limit => 36
+    t.string   "api_id"
   end
 
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"

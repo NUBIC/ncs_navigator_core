@@ -28,7 +28,7 @@ gem 'json-schema'
 
 gem 'ncs_mdes', '~> 0.5'
 gem 'formtastic', '1.2.4'
-gem 'surveyor', :git => 'git://github.com/NUBIC/surveyor.git'
+gem 'surveyor', '~> 0.22'
 gem 'psc'
 gem 'ncs_navigator_configuration'
 gem 'resque'
@@ -59,8 +59,7 @@ end
 #gem 'ncs_mdes_warehouse',
 #  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
 gem 'ncs_mdes_warehouse', '~> 0.4'
-gem 'aker-cas_cli', :git => 'git://github.com/NUBIC/aker-cas_cli.git',
-  :require => false
+gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
