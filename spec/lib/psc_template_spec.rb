@@ -97,7 +97,10 @@ describe 'PSC template' do
     #   - Defer the event until the first condition is true
     #
     # The importer special-cases the events that appear once in the Lo
-    # epoch and once in another epoch, so this test does also.
+    # epoch and once in another epoch, so this test does also. The
+    # importer also special cases the pre- and post-natal
+    # event:low_intensity_data_collection, so that is handled here as
+    # well.
     it 'schedules any event that occurs on multiple days alongside an event that occurs on only one day' do
       multiple_segment_events = segments_by_event_label_by_day.
         collect { |label, days_by_segment| [label, days_by_segment.keys.flatten.uniq] }.
@@ -123,6 +126,11 @@ describe 'PSC template' do
         unshared_multiple_segment_events.reject! { |event, segment_days|
           epochs = segment_days.keys.collect { |segment_name| segment_name.split(':', 2).first }
           epochs.size == 2 && epochs.uniq.size == 2 && epochs.include?('LO-Intensity')
+        }
+
+        unshared_multiple_segment_events.reject! { |event, segment_days|
+          event == 'event:low_intensity_data_collection' &&
+            segment_days.keys.sort == ['LO-Intensity: PPG 1 and 2', 'LO-Intensity: Postnatal']
         }
       end
 
