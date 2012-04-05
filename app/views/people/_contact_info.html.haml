@@ -39,9 +39,9 @@
           = a.address_rank
         %span.type
           = a.address_type
-        %span.value
-          = raw(a.to_s("<br />"))
         = link_to 'Edit', edit_address_path(a), :class => "edit_link icon_link"
         = link_to 'Dwelling Unit', edit_dwelling_unit_path(a.dwelling_unit), :class => "edit_link icon_link" if a.dwelling_unit
+        .address
+          = raw(a.to_s("<br />"))
       %br
     = link_to 'Add New Address', new_address_path(:person_id => @person.id), :class => "add_link icon_link"
