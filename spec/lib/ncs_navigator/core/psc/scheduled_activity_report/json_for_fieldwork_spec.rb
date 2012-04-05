@@ -79,6 +79,10 @@ module NcsNavigator::Core::Psc
         end
       end
 
+      it 'sets #/0/disposition' do
+        contacts[0]['disposition'].should == subject.rows[0].contact.contact_disposition
+      end
+
       it 'sets #/0/events to [] if the row has no event' do
         r1.event = nil
 
@@ -95,6 +99,30 @@ module NcsNavigator::Core::Psc
 
       it 'sets #/0/events/0/version' do
         contacts[0]['events'][0]['version'].should == e.updated_at.utc
+      end
+
+      it 'sets #/0/events/0/disposition' do
+        contacts[0]['events'][0]['disposition'].should == e.event_disposition
+      end
+
+      it 'sets #/0/events/0/disposition_category' do
+        contacts[0]['events'][0]['disposition_category'].should == e.event_disposition_category_code
+      end
+
+      it 'sets #/0/events/0/start_date' do
+        contacts[0]['events'][0]['start_date'].should == e.event_start_date
+      end
+
+      it 'sets #/0/events/0/start_time' do
+        contacts[0]['events'][0]['start_time'].should == e.event_start_time
+      end
+
+      it 'sets #/0/events/0/end_date' do
+        contacts[0]['events'][0]['end_date'].should == e.event_end_date
+      end
+
+      it 'sets #/0/events/0/end_time' do
+        contacts[0]['events'][0]['end_time'].should == e.event_end_time
       end
 
       it 'sets #/0/events/0/instruments to [] if the row has no instruments' do
@@ -258,8 +286,16 @@ module NcsNavigator::Core::Psc
     describe '#instrument_templates_as_json' do
       let(:templates) { subject.instrument_templates_as_json }
 
-      it 'includes each survey in the report' do
-        templates.should == [JSON.parse(s.to_json)]
+      it 'sets #/0/instrument_template_id' do
+        templates[0]['instrument_template_id'].should == s.api_id
+      end
+
+      it 'sets #/0/version' do
+        templates[0]['version'].should == s.updated_at.utc
+      end
+
+      it 'sets #/0/survey' do
+        templates[0]['survey'].should == JSON.parse(s.to_json)
       end
     end
   end
