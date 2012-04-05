@@ -57,6 +57,11 @@ module NcsNavigator::Core::Fieldwork
     attr_accessor :people
     attr_accessor :response_sets
 
+    ##
+    # By default, this logger throws messages to a bit bucket.  If you want log
+    # messages, provide your own logger.
+    attr_accessor :logger
+
     def initialize
       self.contacts = {}
       self.events = {}
@@ -64,6 +69,8 @@ module NcsNavigator::Core::Fieldwork
       self.participants = {}
       self.people = {}
       self.response_sets = {}
+
+      self.logger = Logger.new(nil)
     end
 
     def set_original(data)
@@ -82,8 +89,6 @@ module NcsNavigator::Core::Fieldwork
       set_current_state(:people, Person, 'person_id')
       set_current_state(:response_sets, ResponseSet, 'api_id')
     end
-
-    private
 
     def set_state(state, data)
       data['contacts'].each do |contact|
