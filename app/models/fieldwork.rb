@@ -23,6 +23,7 @@ require 'stringio'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
+  include NcsNavigator::Core::Fieldwork
   include NcsNavigator::Core::Psc
 
   set_primary_key :fieldwork_id
@@ -114,12 +115,79 @@ class Fieldwork < ActiveRecord::Base
     end
   end
 
+  ##
+  # Merges a fieldwork set with Core's datastore.  The log of the operation is
+  # written to #merge_log.  If the merge completes without conflicts, #merged
+  # will be set to true; otherwise, #merged will be false and the conflicts
+  # will be in the merge log.
+  #
+  # The merge only proceeds if both JSON objects in original_data and
+  # received_data conform to the fieldwork data schema.
+  #
+  # Returns the value written to #merged.
+  def merge
+    sio = StringIO.new
+    logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
+
+    begin
+      violations = schema_violations
+
+      unless violations.values.all? { |v| v.empty? }
+        logger.fatal { "Schema violations detected; aborting merge" }
+        logger.fatal { violations.inspect }
+        return
+      end
+
+      sp = Superposition.new
+      sp.extend(MergeTheirs)
+
+      sp.logger = logger
+
+      sp.set_original(JSON.parse(original_data))
+      sp.set_proposed(JSON.parse(received_data))
+      sp.resolve_current
+
+      sp.merge
+
+      sp.save.tap do |result|
+        update_attribute(:merged, result)
+      end
+    ensure
+      update_attribute(:merge_log, sio.string)
+    end
+  end
+
   def set_default_id
     self.fieldwork_id ||= UUIDTools::UUID.random_create.to_s
   end
 
   def as_json(options = nil)
     JSON.parse(received_data || original_data)
+  end
+
+  ##
+  # Returns the fieldwork schema violations, if any, in the #original_data
+  # and #received_data JSON objects.  The return value is as follows:
+  #
+  #     {
+  #       :original_data => [violations],
+  #       :received_data => [violations]
+  #     }
+  #
+  # If either field is blank, then {} is validated in lieu of that field.
+  # (At present, this will generate schema errors, but that's acceptable: the
+  # lack of an object is arguably a violation.)
+  #
+  # This method expects the URI of the fieldwork schema to be present in
+  def schema_violations
+    validator = Validator.new
+
+    validator.with_referenced_schemata do
+      {
+        :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
+        :received_data => validator.fully_validate(JSON.parse(received_data || '{}'))
+      }
+    end
   end
 
   def serialize_report
