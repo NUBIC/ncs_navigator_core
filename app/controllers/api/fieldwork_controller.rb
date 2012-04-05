@@ -25,6 +25,7 @@ class Api::FieldworkController < ApplicationController
       request.body.rewind
     end
 
+    Resque.enqueue(NcsNavigator::Core::Jobs::MergeFieldwork, fw.id)
     headers['Location'] = api_fieldwork_path(fw.id)
     render :nothing => true, :status => :accepted
   end
