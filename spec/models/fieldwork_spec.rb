@@ -224,4 +224,80 @@ describe Fieldwork do
       end
     end
   end
+
+  describe '#schema_violations' do
+    ##
+    # The smallest possible valid fieldwork object.
+    let(:valid) do
+      { 'contacts' => [], 'participants' => [], 'instrument_templates' => [] }
+    end
+
+    let(:invalid) do
+      {
+        'contacts' => [
+          {}
+        ],
+        'participants' => []
+      }
+    end
+
+    describe 'if #original_data is free of fieldwork schema violations' do
+      before do
+        subject.original_data = valid.to_json
+      end
+
+      it 'returns an empty array for original_data' do
+        subject.schema_violations[:original_data].should == []
+      end
+    end
+
+    describe 'if #original_data has schema violations' do
+      before do
+        subject.original_data = invalid.to_json
+      end
+
+      it 'returns those violations' do
+        subject.schema_violations[:original_data].should_not be_empty
+      end
+    end
+
+    describe 'if #received_data is free of fieldwork schema violations' do
+      before do
+        subject.received_data = valid.to_json
+      end
+
+      it 'returns an empty array for received_data' do
+        subject.schema_violations[:received_data].should == []
+      end
+    end
+
+    describe 'if #received_data has schema violations' do
+      before do
+        subject.received_data = invalid.to_json
+      end
+
+      it 'returns those violations' do
+        subject.schema_violations[:received_data].should_not be_empty
+      end
+    end
+
+    describe 'if #original_data and #received_data is blank' do
+      before do
+        subject.original_data = nil
+        subject.received_data = nil
+      end
+
+      it 'does not raise an error' do
+        lambda { subject.schema_violations }.should_not raise_error
+      end
+    end
+  end
+
+  describe '#merge' do
+    it 'saves the merge log' do
+      subject.merge
+
+      subject.reload.merge_log.should_not be_empty
+    end
+  end
 end
