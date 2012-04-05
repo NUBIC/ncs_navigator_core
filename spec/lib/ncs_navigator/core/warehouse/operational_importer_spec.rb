@@ -223,24 +223,6 @@ module NcsNavigator::Core::Warehouse
               Person.find_by_person_id('P24')
           end
         end
-
-        describe 'forward' do
-          let!(:mdes_contact) { create_warehouse_record_via_core(Contact, 'C5') }
-          let!(:mdes_consent) {
-            create_warehouse_record_via_core(ParticipantConsent, 'PC3', :contact => mdes_contact)
-          }
-
-          before do
-            # test setup
-            auto_names.index(:participant_consents).should < auto_names.index(:contacts)
-            importer.import(:participant_consents, :contacts)
-          end
-
-          it 'works' do
-            ParticipantConsent.find_by_participant_consent_id('PC3').
-              contact.should == Contact.find_by_contact_id('C5')
-          end
-        end
       end
 
       describe 'when the MDES data creates an invalid Core record' do
