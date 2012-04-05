@@ -1,4 +1,5 @@
 require 'ncs_navigator/core'
+require 'rabl'
 
 class NcsNavigator::Core::Psc::ScheduledActivityReport
   module JsonForFieldwork
