@@ -78,7 +78,8 @@ module NcsNavigator::Core::Fieldwork
             'contact_date' => '2012-03-01',
             'start_time' => '12:34',
             'end_time' => '13:45',
-            'disposition' => 1
+            'disposition' => 1,
+            'type' => 1
           }
         end
 
@@ -109,6 +110,12 @@ module NcsNavigator::Core::Fieldwork
           merge
 
           current.contact_disposition.should == proposed['disposition']
+        end
+
+        it 'copies P.type -> C.contact_type_code' do
+          merge
+
+          current.contact_type_code.should == proposed['type']
         end
       end
 
