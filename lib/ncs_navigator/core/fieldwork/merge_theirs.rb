@@ -122,6 +122,7 @@ module NcsNavigator::Core::Fieldwork
         c.contact_disposition = p['disposition']
         c.contact_end_time = p['end_time']
         c.contact_start_time = p['start_time']
+        c.contact_type_code = ['type']
       end
     end
 
