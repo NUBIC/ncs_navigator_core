@@ -112,8 +112,7 @@ module NcsNavigator::Core::Fieldwork
             # See https://github.com/NUBIC/surveyor/issues/294.
             if responses
               responses.each do |response|
-                unrooted = response['response']
-                add(state, :responses, unrooted, 'uuid')
+                add(state, :responses, response, 'uuid')
               end
             end
           end
