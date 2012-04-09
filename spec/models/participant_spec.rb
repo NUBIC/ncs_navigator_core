@@ -138,9 +138,9 @@ describe Participant do
           arr_of_arrs = FasterCSV.parse(csv)
 
           arr_of_arrs[0][0].should == "When"
-          arr_of_arrs[0][22].should == "Enroll Date"
-          arr_of_arrs[1][22].should == Date.today.to_s(:db)
-          arr_of_arrs[2][22].should == "2012-02-25"
+          arr_of_arrs[0][23].should == "Enroll Date"
+          arr_of_arrs[1][23].should == Date.today.to_s(:db)
+          arr_of_arrs[2][23].should == "2012-02-25"
         end
       end
     end
@@ -1042,6 +1042,56 @@ describe Participant do
         participant.should be_following_low_intensity
       end
 
+    end
+
+  end
+
+  context "unenrolling a participant" do
+
+    let(:participant) { Factory(:participant) }
+    let(:person) { Factory(:person) }
+    let(:lo_i_quex) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+
+    before(:each) do
+      @enrolled   = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
+      @unenrolled = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+
+      participant.person = person
+      participant.save!
+
+      participant.should be_enrolled
+
+      psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
+      @uri  = psc_config["uri"]
+      @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
+    end
+
+    let(:psc) { PatientStudyCalendar.new(@user) }
+
+    it "sets the enroll status to No" do
+      participant.unenroll!(psc)
+      participant.should_not be_enrolled
+    end
+
+    it "deletes all pending events" do
+      Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
+      participant.pending_events.size.should == 1
+      participant.unenroll!(psc)
+      participant.events.reload
+      participant.pending_events.should be_empty
+      participant.events.should be_empty
+    end
+
+    it "closes all pending events that have been started" do
+      e = Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
+      cl = Factory(:contact_link, :event => e, :person => person)
+
+      participant.pending_events.size.should == 1
+      participant.unenroll!(psc)
+      participant.events.reload
+      participant.pending_events.should be_empty
+      participant.events.should_not be_empty
+      participant.events.first.should be_closed
     end
 
   end
