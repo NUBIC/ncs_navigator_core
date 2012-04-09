@@ -564,12 +564,14 @@ class Participant < ActiveRecord::Base
 
   ##
   # Unenrolling does the following:
-  # 1. Sets the participant enroll status to No
-  # 2. Cancels all scheduled activities in PSC
-  # 3. Closes or Deletes all pending events
+  # 1. Withdraws the participant from the Study
+  # 2. Sets the participant enroll status to No
+  # 3. Cancels all scheduled activities in PSC
+  # 4. Closes or Deletes all pending events
   # @param [PatientStudyCalendar]
   def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
     self.enrollment_status_comment = reason
+    self.participant_consents.each { |c| c.withdraw! }
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, 2)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
   end

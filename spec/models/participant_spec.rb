@@ -1094,5 +1094,22 @@ describe Participant do
       participant.events.first.should be_closed
     end
 
+    it "withdraws the participant from the study" do
+      Factory(:participant_consent, :participant => participant)
+      Factory(:ncs_code, :list_name => 'CONSENT_WITHDRAW_REASON_CL1', :display_text => "Involuntary withdrawal initiated by the Study", :local_code => 2)
+
+      participant.participant_consents.should_not be_empty
+      participant.participant_consents.each do |c|
+        c.should be_consented
+      end
+
+      participant.unenroll!(psc)
+
+      participant.participant_consents.each do |c|
+        c.should_not be_consented
+      end
+
+    end
+
   end
 end
