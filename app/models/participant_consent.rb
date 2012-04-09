@@ -71,4 +71,27 @@ class ParticipantConsent < ActiveRecord::Base
     consent_types.select { |c| c[0] != "7" && c[0] != "-4" } # high intensity consent codes
   end
 
+  ##
+  # True if the participant gave consent in the affirmative
+  # and has not withdrawn that consent
+  # @return [Boolean]
+  def consented?
+    consent_given_code == 1 && consent_withdraw_code != 1
+  end
+
+  ##
+  # Sets the consent_withdraw to Yes (1)
+  # and sets the withdraw type code to the given
+  # (defaulting to Involuntary withdrawal initiated by the Study)
+  # @param [Integer] cf. CONSENT_WITHDRAW_REASON_CL1
+  def withdraw(withdraw_type_code = 2)
+    self.consent_withdraw_code = 1
+    self.consent_withdraw_type_code = withdraw_type_code
+  end
+
+  def withdraw!(withdraw_type_code = 2)
+    self.withdraw
+    self.save!
+  end
+
 end
