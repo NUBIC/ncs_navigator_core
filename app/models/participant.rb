@@ -27,37 +27,6 @@
 #  low_intensity_state      :string(255)
 #  high_intensity_state     :string(255)
 #
-
-  # == Schema Information
-# Schema version: 20120321181032
-#
-# Table name: participants
-#
-#  id                       :integer         not null, primary key
-#  psu_code                 :integer         not null
-#  p_id                     :string(36)      not null
-#  p_type_code              :integer         not null
-#  p_type_other             :string(255)
-#  status_info_source_code  :integer         not null
-#  status_info_source_other :string(255)
-#  status_info_mode_code    :integer         not null
-#  status_info_mode_other   :string(255)
-#  status_info_date         :date
-#  enroll_status_code       :integer         not null
-#  enroll_date              :date
-#  pid_entry_code           :integer         not null
-#  pid_entry_other          :string(255)
-#  pid_age_eligibility_code :integer         not null
-#  pid_comment              :text
-#  transaction_type         :string(36)
-#  created_at               :datetime
-#  updated_at               :datetime
-#  being_processed          :boolean
-#  high_intensity           :boolean
-#  low_intensity_state      :string(255)
-#  high_intensity_state     :string(255)
-#
-
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child.
 # S/he may have been administered a variety of questionnaires or assessments, including household enumeration,
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
@@ -584,6 +553,33 @@ class Participant < ActiveRecord::Base
       consents = participant_consents
     end
     consents.select { |c| c.consent_withdraw.local_code == 1 }.size > 0
+  end
+
+  ##
+  # Returns true if participant enroll status is 'Yes' (i.e. local_code == 1)
+  # @return [Boolean]
+  def enrolled?
+    enroll_status.try(:local_code) == 1
+  end
+
+  ##
+  # Unenrolling does the following:
+  # 1. Sets the participant enroll status to No
+  # 2. Cancels all scheduled activities in PSC
+  # 3. Closes or Deletes all pending events
+  # @param [PatientStudyCalendar]
+  def unenroll(psc, reason = "Participant has been un-enrolled from the study.")
+    self.enrollment_status_comment = reason
+    self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, 2)
+    self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
+  end
+
+  ##
+  # Unenroll and save!
+  # @param [PatientStudyCalendar]
+  def unenroll!(psc)
+    self.unenroll(psc)
+    self.save!
   end
 
   ##

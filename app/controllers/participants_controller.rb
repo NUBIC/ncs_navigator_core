@@ -258,6 +258,22 @@ class ParticipantsController < ApplicationController
     redirect_to participant_path(@participant)
   end
 
+  def enroll
+    @participant = Participant.find(params[:id])
+    @participant.enroll!
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+    redirect_to(url, :notice => "Participant was successfully enrolled into the study.")
+  end
+
+  def unenroll
+    @participant = Participant.find(params[:id])
+    @participant.unenroll!(psc, params[:enrollment_status_comment])
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+    redirect_to(url, :notice => "Participant was successfully un-enrolled from the study.")
+  end
+
   ##
   # Page to show participant in particular state and potentially update that
   # state in case of issues

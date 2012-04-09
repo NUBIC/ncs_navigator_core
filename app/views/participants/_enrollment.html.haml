@@ -1,0 +1,37 @@
+- redirection = "#{request.path}?#{request.query_string}"
+.page_section
+  .arm
+    - if permit?(Role::FIELD_STAFF Role::STAFF_SUPERVISOR)
+      %b
+        Switch Protocol Arm
+      - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
+        .high_intensity_invitation
+          = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => redirection)) do |f|
+            = render "shared/full_error_messages", :object => f.object
+            = f.hidden_field :high_intensity
+            %p
+              - if @participant.high_intensity?
+                = f.submit switch_arm_message(@participant)
+              - else
+                = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
+  .enrollment
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::DATA_MANAGER, Role::ADMINISTRATIVE_STAFF)
+      %b
+        Enrollment
+      %div
+        - if @participant.enrolled?
+          - path = unenroll_participant_path(@participant, :redirect_to => redirection)
+          - msg = "Un-enroll Participant from Study"
+          - show_enrollment_status_comment = true
+        - else
+          - path = enroll_participant_path(@participant, :redirect_to => redirection)
+          - msg = "Enroll Participant in Study"
+          - show_enrollment_status_comment = false
+        = form_for(@participant, :url => path) do |f|
+          - if show_enrollment_status_comment
+            %p
+              = label_tag :enrollment_status_comment, "Reason for un-enrolling:"
+              %br
+              = text_area_tag :enrollment_status_comment
+          %p
+            = f.submit msg, :confirm => "Are you certain you would like to #{msg}?"

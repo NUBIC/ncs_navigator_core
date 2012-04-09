@@ -55,6 +55,8 @@
           = sort_link @q, "p_id", "Participant ID"
         %th
           Current PPG Status
+        %th
+          Enrolled
         %th{ :colspan => "3" }
 
       - @participants.each do |participant|
@@ -70,6 +72,8 @@
           %td
             %span{ :title => participant.ppg_status.to_s }
               = "PPG #{participant.ppg_status.local_code}" unless participant.ppg_status.blank?
+          %td
+            = participant.enroll_status
           %td
             = link_to 'View', participant_path(participant), :class => "show_link icon_link"
           %td

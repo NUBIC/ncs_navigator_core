@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120404205955) do
+ActiveRecord::Schema.define(:version => 20120409185229) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -559,28 +559,29 @@ ActiveRecord::Schema.define(:version => 20120404205955) do
   end
 
   create_table "participants", :force => true do |t|
-    t.integer  "psu_code",                                                  :null => false
-    t.string   "p_id",                     :limit => 36,                    :null => false
-    t.integer  "p_type_code",                                               :null => false
+    t.integer  "psu_code",                                                   :null => false
+    t.string   "p_id",                      :limit => 36,                    :null => false
+    t.integer  "p_type_code",                                                :null => false
     t.string   "p_type_other"
-    t.integer  "status_info_source_code",                                   :null => false
+    t.integer  "status_info_source_code",                                    :null => false
     t.string   "status_info_source_other"
-    t.integer  "status_info_mode_code",                                     :null => false
+    t.integer  "status_info_mode_code",                                      :null => false
     t.string   "status_info_mode_other"
     t.date     "status_info_date"
-    t.integer  "enroll_status_code",                                        :null => false
+    t.integer  "enroll_status_code",                                         :null => false
     t.date     "enroll_date"
-    t.integer  "pid_entry_code",                                            :null => false
+    t.integer  "pid_entry_code",                                             :null => false
     t.string   "pid_entry_other"
-    t.integer  "pid_age_eligibility_code",                                  :null => false
+    t.integer  "pid_age_eligibility_code",                                   :null => false
     t.text     "pid_comment"
-    t.string   "transaction_type",         :limit => 36
+    t.string   "transaction_type",          :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "being_processed",                        :default => false
-    t.boolean  "high_intensity",                         :default => false
+    t.boolean  "being_processed",                         :default => false
+    t.boolean  "high_intensity",                          :default => false
     t.string   "low_intensity_state"
     t.string   "high_intensity_state"
+    t.text     "enrollment_status_comment"
   end
 
   create_table "people", :force => true do |t|

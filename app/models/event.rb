@@ -153,6 +153,13 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns true if not closed and there is no association to a ContactLink
+  # @return [Boolean]
+  def can_delete?
+    !closed? && contact_links.blank?
+  end
+
+  ##
   # Helper method to set the disposition to Out of Window
   # TODO: determine better way to get disposition out of NcsNavigatorCore.mdes.disposition_codes
   def mark_out_of_window
@@ -173,6 +180,14 @@ class Event < ActiveRecord::Base
       psc.update_activity_state(activity.activity_id, participant,
                                 PatientStudyCalendar::ACTIVITY_CANCELED, Date.today, reason)
     end
+  end
+
+  ##
+  # Cancels the activity in PSC and then either closes or deletes the event
+  def cancel_and_close_or_delete!(psc, reason = nil)
+    self.cancel_activity(psc, reason)
+    self.can_delete? ? self.destroy : self.close
+    self.save!
   end
 
   ##
