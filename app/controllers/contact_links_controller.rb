@@ -95,6 +95,9 @@ class ContactLinksController < ApplicationController
 
     @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
     @instrument.set_instrument_breakoff(@response_set)
+    if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
+      @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
+    end
 
     @contact_link.contact.set_language_and_interpreter_data(@person)
     @contact_link.contact.populate_post_survey_attributes(@instrument)
