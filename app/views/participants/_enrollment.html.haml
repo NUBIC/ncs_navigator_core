@@ -1,7 +1,7 @@
 - redirection = "#{request.path}?#{request.query_string}"
 .page_section
   .arm
-    - if permit?(Role::FIELD_STAFF Role::STAFF_SUPERVISOR)
+    - if permit?(Role::FIELD_STAFF, Role::STAFF_SUPERVISOR)
       %b
         Switch Protocol Arm
       - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
