@@ -40,6 +40,7 @@ class ParticipantConsentsController < ApplicationController
       if @participant_consent.save
 
         mark_activity_occurred
+        update_enrollment_status
 
         format.html { redirect_to edit_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
@@ -63,6 +64,9 @@ class ParticipantConsentsController < ApplicationController
 
     respond_to do |format|
       if @participant_consent.update_attributes(params[:participant_consent])
+
+        update_enrollment_status
+
         format.html { redirect_to redirect_action, :notice => 'Participant consent was successfully updated.' }
         format.json { head :ok }
       else
@@ -85,6 +89,18 @@ class ParticipantConsentsController < ApplicationController
 	    if activity
 	      psc.update_activity_state(activity.activity_id, @contact_link.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
 	    end
+    end
+
+    ##
+    # Either enroll or unenroll the participant based on the
+    # recently updated participant consent
+    def update_enrollment_status
+      participant = @participant_consent.participant
+      if @participant_consent.consented?
+        participant.enroll! unless participant.enrolled?
+      else
+        participant.unenroll!(psc) unless participant.unenrolled?
+      end
     end
 
 end
