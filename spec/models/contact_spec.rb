@@ -385,13 +385,13 @@ describe Contact do
         it "sets the contact_private code to Yes" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
-          @contact.contact_private.to_s.should == "Yes"
+          @contact.contact_private.to_s.should == "No"
         end
 
         it "sets the contact_private_detail to the text of the contact type" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
-          @contact.contact_private_detail.should == @contact.contact_type.to_s
+          @contact.contact_private_detail.should be_empty
         end
 
         it "sets the contact_distance to 0.0" do
@@ -418,13 +418,13 @@ describe Contact do
         it "sets the contact_private code to Yes" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
-          @contact.contact_private.to_s.should == "Yes"
+          @contact.contact_private.to_s.should == "No"
         end
 
         it "sets the contact_private_detail to the text of the contact type" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
-          @contact.contact_private_detail.should == @contact.contact_type.to_s
+          @contact.contact_private_detail.should be_empty
         end
 
         it "sets the contact_distance to 0.0" do
