@@ -90,8 +90,7 @@ class Contact < ActiveRecord::Base
     case contact_type.to_i
     when TELEPHONE_CONTACT_CODE, MAILING_CONTACT_CODE
       self.contact_location = NcsCode.for_attribute_name_and_local_code(:contact_location_code, 2)
-      self.contact_private  = NcsCode.for_attribute_name_and_local_code(:contact_private_code, 1)
-      self.contact_private_detail = contact_type.to_s
+      self.contact_private  = NcsCode.for_attribute_name_and_local_code(:contact_private_code, 2)
       self.contact_distance = 0.0
     else
       # NOOP

@@ -31,7 +31,7 @@ class ContactLinksController < ApplicationController
     @contact.populate_post_survey_attributes(@instrument) if @instrument
 
     @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
-    @event.event_repeat_key = @event.contact_links.count
+    @event.event_repeat_key = @event.contact_links.count - 1 # zero based
 
     @event_activities = psc.activities_for_event(@event)
 
@@ -98,9 +98,6 @@ class ContactLinksController < ApplicationController
     if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
       @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
     end
-
-    @contact_link.contact.set_language_and_interpreter_data(@person)
-    @contact_link.contact.populate_post_survey_attributes(@instrument)
   end
 
   def finalize_instrument
@@ -123,11 +120,11 @@ class ContactLinksController < ApplicationController
 
   private
 
-    def set_time_and_dates
+    def set_time_and_dates(include_instrument = false)
       contact = @contact_link.contact
       contact.contact_end_time = Time.now.strftime("%H:%M")
       set_event_time_and_date(contact)
-      set_instrument_time_and_date(contact)
+      set_instrument_time_and_date(contact) if include_instrument
     end
 
     def set_event_time_and_date(contact)
