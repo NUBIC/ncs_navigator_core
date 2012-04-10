@@ -3,35 +3,39 @@
 %p.hide
   = @contact_link.event
 
-%h3
-  = "Instruments for #{@contact_link.event}"
-
-- if initial_instrument_for_contact
-  .instructional_note
-    Choose the Instrument from the list below to administer for this contact.
-    %br
-    (If there is a Consent link in the list, you should obtain consent before proceeding.)
-
-- no_consent = true
-
-- if @contact_link.event.to_s.include?("Consent")
-  - no_consent = false
-
-- if @person.participant.blank?
-  .person_not_participant
-    = blank_safe(@person.to_s)
-    is not a participant. No instruments exist for non participants.
+- if @contact_link.instrument.try(:instrument_type).to_s =~ /Screener/
+  %h3
+    = "#{@contact_link.event}"
 - else
-  - unless @event_activities.blank?
-    - @event_activities.each do |activity|
-      - no_consent = false if activity.include?("Consent")
-      = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link
-  - else
-    %b
-      There are no scheduled Activities associated with this Event.
-    .instructional_note
-      This is probably due to a disconnect between this Event and the scheduled for this Participant in PSC.
-    = render "consent_or_empty", :contact_link => @contact_link
+  %h3
+    = "Instruments for #{@contact_link.event}"
 
-- if no_consent
-  = render "unscheduled_consents", :person => @person, :contact_link => @contact_link
+  - if initial_instrument_for_contact
+    .instructional_note
+      Choose the Instrument from the list below to administer for this contact.
+      %br
+      (If there is a Consent link in the list, you should obtain consent before proceeding.)
+
+  - no_consent = true
+
+  - if @contact_link.event.to_s.include?("Consent")
+    - no_consent = false
+
+  - if @person.participant.blank?
+    .person_not_participant
+      = blank_safe(@person.to_s)
+      is not a participant. No instruments exist for non participants.
+  - else
+    - if !@event_activities.blank?
+      - @event_activities.each do |activity|
+        - no_consent = false if activity.include?("Consent")
+        = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link
+    - else
+      %b
+        There are no scheduled Activities associated with this Event.
+      .instructional_note
+        This is probably due to a disconnect between this Event and the scheduled for this Participant in PSC.
+      = render "consent_or_empty", :contact_link => @contact_link
+
+  - if no_consent
+    = render "unscheduled_consents", :person => @person, :contact_link => @contact_link
