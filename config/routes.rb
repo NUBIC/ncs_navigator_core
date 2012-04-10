@@ -78,6 +78,4 @@ NcsNavigatorCore::Application.routes.draw do
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
 
   root :to => "welcome#index"
-
-  match 'surveyor/finalize_instrument/:response_set_id' => 'surveyor#finalize_instrument', :via => [:get]
 end
