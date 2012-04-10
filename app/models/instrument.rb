@@ -91,8 +91,10 @@ class Instrument < ActiveRecord::Base
   # Person#contact_links.
   def link_to(person, contact, event, staff_id)
     link = person.contact_links.detect do |cl|
-      cl.contact_id == contact.id && cl.event_id == event.id && cl.instrument_id == id
+      cl.contact_id == contact.id && cl.event_id == event.id && cl.staff_id == staff_id && (cl.instrument_id.blank? || cl.instrument_id == id)
     end
+
+    link.instrument = self if link
 
     link or person.contact_links.build(:contact => contact, :event => event, :instrument => self,
                                        :staff_id => staff_id, :psu_code => ::NcsNavigatorCore.psu_code)

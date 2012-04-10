@@ -284,7 +284,7 @@ describe Instrument do
   end
 
   describe '#link_to' do
-    describe 'given a contact C, person P, event E, and instrument I' do
+    describe 'given a contact C, person P, event E, staff S, and instrument I' do
       let(:c) { Factory(:contact) }
       let(:p) { Factory(:person) }
       let(:e) { Factory(:event) }
@@ -292,14 +292,31 @@ describe Instrument do
 
       let(:staff_id) { 'staff' }
 
-      describe 'if P is already linked to (C, E, I)' do
+      describe 'if P is already linked to (C, E, S, I)' do
         before do
-          @link = Factory(:contact_link, :contact => c, :person => p, :event => e, :instrument => i)
+          @link = Factory(:contact_link, :contact => c, :person => p, :event => e, :staff_id => staff_id, :instrument => i)
         end
 
         it 'returns that link' do
           i.link_to(p, c, e, staff_id).should == @link
         end
+      end
+
+      describe 'if P is already linked to (C, E, S) but not I' do
+
+        before do
+          @link = Factory(:contact_link, :contact => c, :person => p, :event => e, :staff_id => staff_id, :instrument => i)
+        end
+
+        it 'returns that link' do
+          i.link_to(p, c, e, staff_id).should == @link
+        end
+
+        it 'associates I with that link' do
+          link = i.link_to(p, c, e, staff_id)
+          link.instrument.should == i
+        end
+
       end
 
       describe 'if P is not already linked to (C, E, I)' do
