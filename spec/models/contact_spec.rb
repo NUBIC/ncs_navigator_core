@@ -382,16 +382,11 @@ describe Contact do
           @contact.contact_location.local_code.should == -4
         end
 
-        it "sets the contact_private code to Yes" do
+        it "sets the contact_private code to No and private_detail is nil" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_private.to_s.should == "No"
-        end
-
-        it "sets the contact_private_detail to the text of the contact type" do
-          @contact.populate_post_survey_attributes(nil)
-          @contact.save!
-          @contact.contact_private_detail.should be_empty
+          @contact.contact_private_detail.should be_nil
         end
 
         it "sets the contact_distance to 0.0" do
@@ -415,16 +410,11 @@ describe Contact do
           @contact.contact_location.local_code.should == -4
         end
 
-        it "sets the contact_private code to Yes" do
+        it "sets the contact_private code to No and private_detail is nil" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_private.to_s.should == "No"
-        end
-
-        it "sets the contact_private_detail to the text of the contact type" do
-          @contact.populate_post_survey_attributes(nil)
-          @contact.save!
-          @contact.contact_private_detail.should be_empty
+          @contact.contact_private_detail.should be_nil
         end
 
         it "sets the contact_distance to 0.0" do
