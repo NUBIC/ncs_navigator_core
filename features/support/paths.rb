@@ -14,6 +14,9 @@ module NavigationHelpers
     when /the welcome summary page/
       '/welcome/summary'
 
+    when /the welcome index page/
+      '/'
+
     when /login/
       '/login'
 

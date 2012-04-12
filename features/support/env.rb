@@ -79,3 +79,5 @@ Spork.each_run do
 end
 
 ENV['PSC_USERNAME_PASSWORD'] = %w(pscuser pscpwd).join(',')
+
+require File.expand_path(File.dirname(__FILE__) + '/stop')
