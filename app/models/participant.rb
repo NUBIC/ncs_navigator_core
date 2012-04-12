@@ -586,8 +586,8 @@ class Participant < ActiveRecord::Base
   ##
   # Unenroll and save!
   # @param [PatientStudyCalendar]
-  def unenroll!(psc)
-    self.unenroll(psc)
+  def unenroll!(psc, reason)
+    self.unenroll(psc, reason)
     self.save!
   end
 
