@@ -23,7 +23,8 @@ Feature: Obtaining participant consent
     And I should see "Low Intensity Consent"
     When I follow "Low Intensity Consent"
     Then I should be on the new participant consent page
-    When I press "Submit"
+    When I select "Yes" from "Consent Given"
+    And I press "Submit"
     Then I should see "Participant consent was successfully created."
     And I should be on the edit_contact_link page
 
@@ -49,6 +50,7 @@ Feature: Obtaining participant consent
     And I should see "Consent for the child’s participation"
     When I follow "General consent"
     Then I should be on the new participant consent page
-    When I press "Submit"
+    When I select "Yes" from "Consent Given"
+    And I press "Submit"
     Then I should see "Participant consent was successfully created."
     And I should be on the edit_contact_link page

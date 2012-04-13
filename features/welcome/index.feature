@@ -15,14 +15,14 @@ Feature: Accessing the application
     Given an authenticated user
     When I go to the welcome index page
     Then I should see "NCS Navigator"
-    When I press 'Actions'
-    Then I should see 'Searching'
-    And I should see 'Participants'
-    And I should see 'Activities'
-    And I should see 'Upcoming Activities'
-    And I should see 'Overdue Activities'
-    And I should see 'Pending Activities'
-    And I should see 'Reports'
-    And I should see 'Case Status Report'
-    And I should see 'Upcoming Birth Reports'
-    And I should see 'Consented Participants'
+    When I follow "Actions"
+    Then I should see "Searching"
+    And I should see "Participants"
+    And I should see "Activities"
+    And I should see "Upcoming Activities"
+    And I should see "Overdue Activities"
+    And I should see "Pending Events"
+    And I should see "Reports"
+    And I should see "Case Status Report"
+    And I should see "Upcoming Birth Report"
+    And I should see "Consented Participants"

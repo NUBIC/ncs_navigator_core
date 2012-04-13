@@ -1069,14 +1069,14 @@ describe Participant do
     let(:psc) { PatientStudyCalendar.new(@user) }
 
     it "sets the enroll status to No" do
-      participant.unenroll!(psc)
+      participant.unenroll!(psc, "unenroll reason")
       participant.should_not be_enrolled
     end
 
     it "deletes all pending events" do
       Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
       participant.pending_events.size.should == 1
-      participant.unenroll!(psc)
+      participant.unenroll!(psc, "unenroll reason")
       participant.events.reload
       participant.pending_events.should be_empty
       participant.events.should be_empty
@@ -1087,7 +1087,7 @@ describe Participant do
       cl = Factory(:contact_link, :event => e, :person => person)
 
       participant.pending_events.size.should == 1
-      participant.unenroll!(psc)
+      participant.unenroll!(psc, "unenroll reason")
       participant.events.reload
       participant.pending_events.should be_empty
       participant.events.should_not be_empty
@@ -1103,7 +1103,7 @@ describe Participant do
         c.should be_consented
       end
 
-      participant.unenroll!(psc)
+      participant.unenroll!(psc, "unenroll reason")
 
       participant.participant_consents.each do |c|
         c.should_not be_consented

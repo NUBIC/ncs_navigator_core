@@ -95,11 +95,11 @@ class ParticipantConsentsController < ApplicationController
     # Either enroll or unenroll the participant based on the
     # recently updated participant consent
     def update_enrollment_status
-      participant = @participant_consent.participant
+      participant = Participant.find(@participant_consent.participant_id)
       if @participant_consent.consented?
         participant.enroll! unless participant.enrolled?
       else
-        participant.unenroll!(psc) unless participant.unenrolled?
+        participant.unenroll!(psc, "Consent withdrawn") unless participant.unenrolled?
       end
     end
 
