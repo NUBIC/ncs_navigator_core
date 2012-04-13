@@ -38,22 +38,26 @@ jQuery(document).ready(function(){
   	timeFormat: 'hh:mm:ss',
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
-  	changeYear: true
+  	changeYear: true,
+  	yearRange: '1920:2020'
   });
   jQuery("li.date input").datepicker({ 
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
-  	changeYear: true
+  	changeYear: true,
+  	yearRange: '1920:2020'
   });
   jQuery("input[type='text'].date").datepicker({ 
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
-  	changeYear: true
+  	changeYear: true,
+  	yearRange: '1920:2020'
   });
   jQuery("input[type='text'].datepicker").datepicker({ 
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
-  	changeYear: true
+  	changeYear: true,
+  	yearRange: '1920:2020'
   });
   jQuery("input[type='text'].time").timepicker({});
   
