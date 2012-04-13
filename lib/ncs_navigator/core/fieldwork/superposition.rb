@@ -50,6 +50,8 @@ module NcsNavigator::Core::Fieldwork
   #
   # @see MergeTheirs
   class Superposition
+    include Adapters
+
     attr_accessor :contacts
     attr_accessor :events
     attr_accessor :instruments
@@ -95,14 +97,14 @@ module NcsNavigator::Core::Fieldwork
 
     def set_state(state, data)
       data['contacts'].each do |contact|
-        add(state, :contacts, contact, 'contact_id')
+        add(state, :contacts, contact, 'contact_id') { |o| adapt_hash(:contact, o) }
 
         contact['events'].each do |event|
-          add(state, :events, event, 'event_id')
+          add(state, :events, event, 'event_id') { |o| adapt_hash(:event, o) }
 
           event['instruments'].each do |instrument|
             add(state, :instruments, instrument, 'instrument_id')
-            add(state, :response_sets, instrument['response_set'], 'uuid')
+            add(state, :response_sets, instrument['response_set'], 'uuid') { |o| adapt_hash(:response_set, o) }
 
             responses = instrument['response_set']['responses']
 
@@ -112,7 +114,7 @@ module NcsNavigator::Core::Fieldwork
             # See https://github.com/NUBIC/surveyor/issues/294.
             if responses
               responses.each do |response|
-                add(state, :responses, response, 'uuid')
+                add(state, :responses, response, 'uuid') { |o| adapt_hash(:response, o) }
               end
             end
           end
@@ -123,14 +125,14 @@ module NcsNavigator::Core::Fieldwork
         add(state, :participants, participant, 'p_id')
 
         participant['persons'].each do |person|
-          add(state, :people, person, 'person_id')
+          add(state, :people, person, 'person_id') { |o| adapt_hash(:person, o) }
         end
       end
     end
 
     def set_current_state(collection, entity, public_id)
       entity.where(public_id => send(collection).keys.uniq).each do |e|
-        add(:current, collection, e, public_id)
+        add(:current, collection, e, public_id) { |m| adapt_model(m) }
       end
     end
 
@@ -142,7 +144,7 @@ module NcsNavigator::Core::Fieldwork
         c[k] = {}
       end
 
-      c[k][state] = object
+      c[k][state] = (yield object if block_given?) || object
     end
   end
 end
