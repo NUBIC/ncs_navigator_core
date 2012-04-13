@@ -4,6 +4,11 @@
       .schedule_next_event
         %b
           Schedule Next Event
+        .instructions
+          The participant is not currently scheduled for any future event.
+          %br
+          = "Please choose a date to schedule the #{next_event.event}."
+        .schedule_form
           = form_for(participant, :url => schedule_next_event_with_psc_participant_path(participant, :redirect_to => "#{request.path}"),
                                   :html => {:class => "schedule_next_event_with_psc", :autocomplete => "off"}) do |f|
             = render "shared/full_error_messages", :object => f.object
