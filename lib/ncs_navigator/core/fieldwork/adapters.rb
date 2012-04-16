@@ -3,7 +3,7 @@ require 'ncs_navigator/core'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: 5e5db04601d3081d44b20e6233c27eadcec384fb
+# Schema revision: d47b2ee9b71dd5e2002f0f19704648781433eb21
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -29,6 +29,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
   class ContactModelAdapter < Struct.new(:target)
 
+    def comments
+    end
+
+    def comments=(val)
+    end
+
     def contact_date
     end
 
@@ -47,16 +53,70 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def disposition=(val)
     end
 
+    def distance_traveled
+    end
+
+    def distance_traveled=(val)
+    end
+
     def end_time
     end
 
     def end_time=(val)
     end
 
+    def interpreter
+    end
+
+    def interpreter=(val)
+    end
+
+    def interpreter_other
+    end
+
+    def interpreter_other=(val)
+    end
+
+    def language
+    end
+
+    def language=(val)
+    end
+
+    def language_other
+    end
+
+    def language_other=(val)
+    end
+
+    def location
+    end
+
+    def location=(val)
+    end
+
+    def location_other
+    end
+
+    def location_other=(val)
+    end
+
     def person_id
     end
 
     def person_id=(val)
+    end
+
+    def private
+    end
+
+    def private=(val)
+    end
+
+    def private_detail
+    end
+
+    def private_detail=(val)
     end
 
     def start_time
@@ -71,6 +131,18 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def type=(val)
     end
 
+    def who_contacted
+    end
+
+    def who_contacted=(val)
+    end
+
+    def who_contacted_other
+    end
+
+    def who_contacted_other=(val)
+    end
+
     def to_model
       target
     end
@@ -81,6 +153,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
   end
 
   class ContactHashAdapter < Struct.new(:target)
+
+    def comments
+      target[%q{comments}]
+    end
 
     def contact_date
       target[%q{contact_date}]
@@ -94,12 +170,48 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{disposition}]
     end
 
+    def distance_traveled
+      target[%q{distance_traveled}]
+    end
+
     def end_time
       target[%q{end_time}]
     end
 
+    def interpreter
+      target[%q{interpreter}]
+    end
+
+    def interpreter_other
+      target[%q{interpreter_other}]
+    end
+
+    def language
+      target[%q{language}]
+    end
+
+    def language_other
+      target[%q{language_other}]
+    end
+
+    def location
+      target[%q{location}]
+    end
+
+    def location_other
+      target[%q{location_other}]
+    end
+
     def person_id
       target[%q{person_id}]
+    end
+
+    def private
+      target[%q{private}]
+    end
+
+    def private_detail
+      target[%q{private_detail}]
     end
 
     def start_time
@@ -108,6 +220,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def type
       target[%q{type}]
+    end
+
+    def who_contacted
+      target[%q{who_contacted}]
+    end
+
+    def who_contacted_other
+      target[%q{who_contacted_other}]
     end
 
     def to_hash
@@ -120,6 +240,18 @@ module NcsNavigator::Core::Fieldwork::Adapters
   end
 
   class EventModelAdapter < Struct.new(:target)
+
+    def break_off
+    end
+
+    def break_off=(val)
+    end
+
+    def comments
+    end
+
+    def comments=(val)
+    end
 
     def disposition
     end
@@ -151,10 +283,28 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def event_id=(val)
     end
 
+    def incentive
+    end
+
+    def incentive=(val)
+    end
+
+    def incentive_cash
+    end
+
+    def incentive_cash=(val)
+    end
+
     def name
     end
 
     def name=(val)
+    end
+
+    def repeat_key
+    end
+
+    def repeat_key=(val)
     end
 
     def start_date
@@ -169,6 +319,18 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def start_time=(val)
     end
 
+    def type
+    end
+
+    def type=(val)
+    end
+
+    def type_other
+    end
+
+    def type_other=(val)
+    end
+
     def to_model
       target
     end
@@ -179,6 +341,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
   end
 
   class EventHashAdapter < Struct.new(:target)
+
+    def break_off
+      target[%q{break_off}]
+    end
+
+    def comments
+      target[%q{comments}]
+    end
 
     def disposition
       target[%q{disposition}]
@@ -200,8 +370,20 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{event_id}]
     end
 
+    def incentive
+      target[%q{incentive}]
+    end
+
+    def incentive_cash
+      target[%q{incentive_cash}]
+    end
+
     def name
       target[%q{name}]
+    end
+
+    def repeat_key
+      target[%q{repeat_key}]
     end
 
     def start_date
@@ -210,6 +392,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def start_time
       target[%q{start_time}]
+    end
+
+    def type
+      target[%q{type}]
+    end
+
+    def type_other
+      target[%q{type_other}]
     end
 
     def to_hash
@@ -351,16 +541,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def answer_id=(val)
     end
 
-    def api_id
-    end
-
-    def api_id=(val)
-    end
-
     def created_at
     end
 
     def created_at=(val)
+    end
+
+    def entity_id
+    end
+
+    def entity_id=(val)
     end
 
     def question_id
@@ -396,12 +586,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{answer_id}]
     end
 
-    def api_id
-      target[%q{api_id}]
-    end
-
     def created_at
       target[%q{created_at}]
+    end
+
+    def entity_id
+      target[%q{entity_id}]
     end
 
     def question_id
@@ -427,12 +617,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
   class ResponseSetModelAdapter < Struct.new(:target)
 
-    def api_id
-    end
-
-    def api_id=(val)
-    end
-
     def completed_at
     end
 
@@ -443,6 +627,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def created_at=(val)
+    end
+
+    def entity_id
+    end
+
+    def entity_id=(val)
     end
 
     def survey_id
@@ -462,16 +652,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
   class ResponseSetHashAdapter < Struct.new(:target)
 
-    def api_id
-      target[%q{api_id}]
-    end
-
     def completed_at
       target[%q{completed_at}]
     end
 
     def created_at
       target[%q{created_at}]
+    end
+
+    def entity_id
+      target[%q{entity_id}]
     end
 
     def survey_id
