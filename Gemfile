@@ -5,6 +5,7 @@ gem 'rails', '3.1.1'
 gem 'bcdatabase', '~> 1.0'
 gem 'aker', '~> 3.0'
 gem 'aker-rails'
+gem 'case'
 gem 'comma'
 gem 'compass'
 gem 'fastercsv'
@@ -84,6 +85,7 @@ group :test, :ci do
   # database_cleaner 0.6.7 doesn't work with DataMapper on PostgreSQL
   gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'shoulda'
+  gem 'facets', :require => false
   gem 'factory_girl'
   gem 'rcov'
   gem 'pickle'

@@ -6,5 +6,6 @@ module NcsNavigator::Core
     autoload :Validator,      'ncs_navigator/core/fieldwork/validator'
     autoload :Superposition,  'ncs_navigator/core/fieldwork/superposition'
     autoload :MergeTheirs,    'ncs_navigator/core/fieldwork/merge_theirs'
+    autoload :Merge,          'ncs_navigator/core/fieldwork/merge'
   end
 end

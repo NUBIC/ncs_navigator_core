@@ -70,6 +70,7 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
+    case (0.5.2.1)
     castanet (1.0.1)
     childprocess (0.2.9)
       ffi (~> 1.0.6)
@@ -144,6 +145,7 @@ GEM
       actionmailer (>= 3.0.4)
     execjs (1.3.0)
       multi_json (~> 1.0)
+    facets (2.9.3)
     factory_girl (2.6.0)
       activesupport (>= 2.3.9)
     fakeweb (1.3.0)
@@ -423,6 +425,7 @@ DEPENDENCIES
   bcdatabase (~> 1.0)
   capistrano
   capybara
+  case
   ci_reporter
   coffee-rails (~> 3.1.0)
   comma
@@ -432,6 +435,7 @@ DEPENDENCIES
   database_cleaner!
   dm-ar-finders (~> 1.2.0)
   exception_notification
+  facets
   factory_girl
   fakeweb
   faraday
