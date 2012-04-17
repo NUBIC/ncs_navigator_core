@@ -86,10 +86,12 @@ namespace :deploy do
     shared_import  = File.join(shared_path,  'importer_passthrough')
     release_import = File.join(current_path, 'importer_passthrough')
     cmds = [
-      "mkdir -p #{shared_import}",
-      # FIXME: check for existence of dir
-      # "chmod g+w #{shared_import}",
-      "if [ ! -e #{release_import} ]; then ln -s #{shared_import} #{release_import}; fi",
+      "mkdir -p '#{shared_import}'",
+      # Only chmod if owned; this is the only case in which chmod is
+      # allowed. Will be owned if just created, which is the important
+      # case.
+      "if [ -O '#{shared_import}' ]; then chmod g+w '#{shared_import}'; fi",
+      "if [ ! -e '#{release_import}' ]; then ln -s '#{shared_import}' '#{release_import}'; fi"
     ]
     run cmds.join(' && ')
   end
