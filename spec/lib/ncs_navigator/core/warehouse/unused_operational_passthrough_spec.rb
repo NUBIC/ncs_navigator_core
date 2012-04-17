@@ -45,7 +45,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'does include other operational models which are not represented in the system' do
-        model_tables.should include('non_interview_rpt')
+        model_tables.should include('incident_media')
       end
 
       it 'does not include instrument models' do
