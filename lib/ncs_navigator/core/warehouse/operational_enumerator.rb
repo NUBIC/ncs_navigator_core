@@ -73,7 +73,10 @@ module NcsNavigator::Core::Warehouse
       :column_map => {
         :pid_age_eligibility_code => :pid_age_elig
       },
-      :ignored_columns => %w(person_id high_intensity low_intensity_state high_intensity_state)
+      :ignored_columns => %w(
+        person_id high_intensity low_intensity_state high_intensity_state
+        enrollment_status_comment
+      )
     )
 
     produce_one_for_one(:participant_person_links, LinkPersonParticipant,
