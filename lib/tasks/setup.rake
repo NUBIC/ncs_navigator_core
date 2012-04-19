@@ -8,7 +8,8 @@ namespace :setup do
         puts "--- Completed survey #{f}"
       end
     else
-      puts "WARNING: #{Rails.root}/surveys/ directory does not exist. Please place NCS surveys in #{Rails.root}/surveys/ directory."
+      puts "WARNING: #{Rails.root}/surveys/ directory does not exist."
+      puts "         Please place NCS surveys in #{Rails.root}/surveys/ directory."
     end
   end
 
