@@ -16,5 +16,5 @@ Given /^the survey has been completed$/ do
 end
 
 Given /^a pregnancy visit 1 survey exists$/ do
-  `cd #{Rails.root}; rake surveyor FILE=surveys/INS_QUE_PregVisit1_INT_EHPBHI_P2_V20.rb`
+  `cd #{Rails.root}; rake surveyor FILE=spec/fixtures/surveys/INS_QUE_PregVisit1_INT_EHPBHI_P2_V20.rb`
 end
