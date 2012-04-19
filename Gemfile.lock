@@ -262,7 +262,6 @@ GEM
     net-ssh (2.3.0)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
-    newrelic_rpm (3.3.2)
     nokogiri (1.5.0)
     ntlm-http (0.1.1)
     paper_trail (2.6.0)
@@ -406,7 +405,6 @@ GEM
       rack (>= 1.0.0)
     warden (1.1.1)
       rack (>= 1.0)
-    watchr (0.7)
     webmock (1.8.0)
       addressable (>= 2.2.7)
       crack (>= 0.1.7)
@@ -458,7 +456,6 @@ DEPENDENCIES
   ncs_mdes (~> 0.5)
   ncs_mdes_warehouse (~> 0.4)
   ncs_navigator_configuration
-  newrelic_rpm
   paper_trail (~> 2)
   pg
   pickle
@@ -482,6 +479,5 @@ DEPENDENCIES
   uglifier
   uuidtools
   vcr
-  watchr
   webmock
   will_paginate

@@ -44,8 +44,6 @@ gem 'redis'
 
 group :development do
   gem 'capistrano'
-  gem 'watchr'
-
   gem 'ruby-debug', :platform => :ruby_18
 end
 
@@ -73,8 +71,6 @@ group :development, :test, :ci do
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'jasmine'
-
-  gem 'newrelic_rpm'
 
   gem 'ci_reporter'
 end
