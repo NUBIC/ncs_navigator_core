@@ -209,6 +209,7 @@ module NcsNavigator::Core::Warehouse
     produce_one_for_one(:non_interview_reports, NonInterviewRpt,
       :public_ids => [
         :contacts,
+        { :table => :people, :join_column => :person_id },
         { :table => :dwelling_units, :public_id => :du_id }
       ],
       :column_map => {

@@ -710,6 +710,10 @@ module NcsNavigator::Core::Warehouse
         results.first.du_id.should == DwellingUnit.first.du_id
       end
 
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.person_id
+      end
+
       describe 'with manually mapped variables' do
         include_context 'mapping test'
 
