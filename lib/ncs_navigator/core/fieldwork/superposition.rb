@@ -50,7 +50,7 @@ module NcsNavigator::Core::Fieldwork
   # Once a Superposition has been built, you can mix in a merge algorithm
   # to collapse the states of the superposition.
   #
-  # @see MergeTheirs
+  # @see Merge
   class Superposition
     include Adapters
 
