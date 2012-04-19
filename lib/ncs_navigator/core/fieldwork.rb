@@ -4,9 +4,10 @@ require 'ncs_navigator/core'
 
 module NcsNavigator::Core
   module Fieldwork
-    autoload :Adapters,       'ncs_navigator/core/fieldwork/adapters'
-    autoload :Merge,          'ncs_navigator/core/fieldwork/merge'
-    autoload :Superposition,  'ncs_navigator/core/fieldwork/superposition'
-    autoload :Validator,      'ncs_navigator/core/fieldwork/validator'
+    autoload :Adapters,         'ncs_navigator/core/fieldwork/adapters'
+    autoload :Merge,            'ncs_navigator/core/fieldwork/merge'
+    autoload :ResponseGrouping, 'ncs_navigator/core/fieldwork/response_grouping'
+    autoload :Superposition,    'ncs_navigator/core/fieldwork/superposition'
+    autoload :Validator,        'ncs_navigator/core/fieldwork/validator'
   end
 end
