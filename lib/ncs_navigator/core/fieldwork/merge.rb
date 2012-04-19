@@ -135,46 +135,58 @@ module NcsNavigator::Core::Fieldwork
   # ================================
   #
   # Instead of attempting to merge response sets directly, we deal with
-  # response sets on a per-question basis.
+  # response sets on a per-question basis.  Hereafter, we call these response
+  # groups or RGs.
+  #
+  #
+  # Equality of response groups
+  # ---------------------------
+  #
+  # Two response groups RG1 and RG2 are considered equal iff
+  #
+  # 1. |RG1| = |RG2|, and
+  # 2. question_id(RG1) == question_id(RG2)
+  #
+  # .
   #
   #
   # Nomenclature
   # ------------
   #
-  # * QR(K, O): the original state of the responses for question K
-  # * QR(K, C): the current state of the responses for question K
-  # * QR(K, P): the proposed state of the responses for question K
+  # * RG(K, O): the original state of the responses for question K
+  # * RG(K, C): the current state of the responses for question K
+  # * RG(K, P): the proposed state of the responses for question K
   # * R: the merge result
   #
   #
   # Entity states
   # -------------
   #
-  # A set of responses for question K may be in states ∅, QR1, QR2, or QR3,
-  # where ∅ means "empty set" and ∅ != QR1 != QR2 != QR3.
+  # A set of responses for question K may be in states ∅, RG1, RG2, or RG3,
+  # where ∅ means "empty set" and ∅ != RG1 != RG2 != RG3.
   #
   #
   # Actions
   # -------
   #
-  # * QR1: use response set QR1
+  # * RG1: use response group RG1
   # * ∅: use empty set
   # * conflict: signal a conflict
   #
-  #   QR(K, O)    QR(K, C)    QR(K, P)    R
+  #   RG(K, O)    RG(K, C)    RG(K, P)    R
   #   --------------------------------------------
   #   ∅           ∅           ∅           ∅
-  #   ∅           ∅           QR1         QR1
-  #   ∅           QR1         ∅           QR1
-  #   ∅           QR1         QR1         QR1
-  #   ∅           QR1         QR2         conflict
-  #   QR1         ∅           ∅           ∅
-  #   QR1         ∅           QR1         conflict
-  #   QR2         ∅           QR3         conflict
-  #   QR1         QR1         ∅           ∅
-  #   QR1         QR1         QR1         QR1
-  #   QR2         QR2         QR3         conflict
-  #   QR1         QR2         QR3         conflict
+  #   ∅           ∅           RG1         RG1
+  #   ∅           RG1         ∅           RG1
+  #   ∅           RG1         RG1         RG1
+  #   ∅           RG1         RG2         conflict
+  #   RG1         ∅           ∅           ∅
+  #   RG1         ∅           RG1         conflict
+  #   RG2         ∅           RG3         conflict
+  #   RG1         RG1         ∅           ∅
+  #   RG1         RG1         RG1         RG1
+  #   RG2         RG2         RG3         conflict
+  #   RG1         RG2         RG3         conflict
   #
   # @see https://code.bioinformatics.northwestern.edu/issues/wiki/ncs-navigator-core/Field_-%3E_Core_merge#Response-set
   module Merge
