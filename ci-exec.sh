@@ -42,4 +42,8 @@ set -e
 
 bundle _${BUNDLER_VERSION}_ install
 
-bundle _${BUNDLER_VERSION}_ exec rake ci:all --trace
+if [ "x${CI_ONLY_CORE}" = "xyes" ]; then
+  bundle _${BUNDLER_VERSION}_ exec rake ci:core --trace
+else
+  bundle _${BUNDLER_VERSION}_ exec rake ci:all --trace
+fi

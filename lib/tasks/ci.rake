@@ -7,6 +7,9 @@ begin
     desc 'Run full CI build'
     task :all => [:spec, :cucumber]
 
+    desc 'Run CI build minus warehouse specs'
+    task :core => [:spec_core, :cucumber]
+
     task :setup => ['log:clear', :navigator_configuration, 'db:migrate']
 
     # Initializes NcsNavigator.configuration in an
@@ -25,6 +28,12 @@ begin
     desc "Run specs for CI (i.e., without db:test:prepare)"
     RSpec::Core::RakeTask.new(:spec => [:setup, :spec_setup, 'ci:setup:rspecbase']) do |t|
       t.pattern = "spec/**/*_spec.rb"
+    end
+
+    desc "Run non-warehouse specs for CI (i.e., without db:test:prepare)"
+    RSpec::Core::RakeTask.new(:spec_core => [:setup, :spec_setup, 'ci:setup:rspecbase']) do |t|
+      t.pattern = "spec/**/*_spec.rb"
+      t.rspec_opts = "-t ~warehouse"
     end
 
     Cucumber::Rake::Task.new(

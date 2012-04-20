@@ -41,3 +41,5 @@ NcsNavigatorCore::Application.configure do
     authorities static
   end
 end
+
+require 'spec/active_record_fk_hack'
