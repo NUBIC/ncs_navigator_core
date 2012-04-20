@@ -94,7 +94,7 @@ module NcsNavigator::Core::Fieldwork
       set_current_state(:participants, Participant, 'p_id')
       set_current_state(:people, Person, 'person_id')
       set_current_state(:response_sets, ResponseSet, 'api_id')
-      set_current_state(:responses, Response, 'api_id')
+      set_current_state(:responses, Response, 'api_id') { |q| q.includes(:question, :answer) }
     end
 
     def set_state(state, data)
@@ -133,9 +133,10 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def set_current_state(collection, entity, public_id)
-      entity.where(public_id => send(collection).keys.uniq).each do |e|
-        add(:current, collection, e, public_id) { |m| adapt_model(m) }
-      end
+      q = entity.where(public_id => send(collection).keys.uniq)
+      q = (yield q if block_given?) || q
+
+      q.each { |e| add(:current, collection, e, public_id) { |m| adapt_model(m) } }
     end
 
     def add(state, collection, object, key)
