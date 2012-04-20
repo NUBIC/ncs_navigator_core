@@ -30,6 +30,8 @@ NcsNavigatorCore::Application.configure do
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
 
+  config.redis_url = 'redis://localhost:6379/'
+
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
