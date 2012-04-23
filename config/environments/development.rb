@@ -1,5 +1,4 @@
-require 'aker/authority/ncs_navigator_authority'
-
+require 'ncs_navigator/authorization'
 NcsNavigatorCore::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -35,7 +34,7 @@ NcsNavigatorCore::Application.configure do
 
   config.aker do
     api_mode :cas_proxy
-    authorities :cas, Aker::Authority::NcsNavigatorAuthority
+    authorities :cas, NcsNavigator::Authorization::Core::Authority.new
     central '/etc/nubic/ncs/aker-local.yml'
   end
 end

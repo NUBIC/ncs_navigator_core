@@ -7,6 +7,6 @@ module Role
   OUTREACH_STAFF                = "Outreach Staff"
   BIOLOGICAL_SPECIMEN_COLLECTOR = "Biological Specimen Collector"
   SPECIMEN_PROCESSOR            = "Specimen Processor"
-  DATA_MANAGER                  = "Data Manager"
+  DATA_READER                   = "Data Reader"
   ADMINISTRATIVE_STAFF          = "Administrative Staff"
 end

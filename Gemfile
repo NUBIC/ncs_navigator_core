@@ -11,6 +11,7 @@ gem 'compass'
 gem 'fastercsv'
 gem 'haml', '~> 3.1'
 gem 'pg'
+gem 'ncs_navigator_authority'
 
 gem 'exception_notification', :require => 'exception_notifier'
 gem 'paper_trail', '~> 2'
