@@ -1066,6 +1066,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
+    def answer_id
+      target.answer.try(:api_id)
+    end
+
+    def question_id
+      target.question.try(:api_id)
+    end
+
     def [](a)
       send(a)
     end
