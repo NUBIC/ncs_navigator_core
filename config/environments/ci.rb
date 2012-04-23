@@ -37,6 +37,7 @@ NcsNavigatorCore::Application.configure do
 
   config.aker do
     ui_mode :form
+    api_mode :http_basic
     static = Aker::Authorities::Static.from_file("#{Rails.root}/config/logins/static_auth.yml")
     authorities static
   end
