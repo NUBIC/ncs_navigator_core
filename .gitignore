@@ -3,7 +3,7 @@ db/*.sqlite3
 log/*.log
 log/newrelic*
 tmp/
-ncs_navigator_core.tmproj
+*.tmproj
 tmtags
 coverage.data
 coverage/
@@ -24,6 +24,8 @@ doc/data/
 doc/data/*
 doc/notes/
 doc/notes/*
+surveys/
+surveys/*
 .sass-cache/
 .sass-cache/*
 public/assets
