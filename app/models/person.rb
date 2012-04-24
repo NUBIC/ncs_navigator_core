@@ -87,7 +87,9 @@ class Person < ActiveRecord::Base
 
   validates_length_of :title, :maximum => 5, :allow_blank => true
 
-  before_save :set_age
+  before_save do
+    self.age = self.computed_age if self.age.blank?
+  end
 
   ##
   # How to format the date_move attribute
@@ -402,10 +404,6 @@ class Person < ActiveRecord::Base
       return person_dob_date unless person_dob_date.blank?
       return Date.parse(person_dob) if person_dob.to_i > 0 && !person_dob.blank? && (person_dob !~ /^9/ && person_dob !~ /-9/)
       return nil
-    end
-
-    def set_age
-      self.age = self.computed_age if self.age.blank?
     end
 
 end

@@ -233,56 +233,53 @@ describe Person do
     end
   end
 
-  context "determining age" do
+  describe "#computed_age" do
 
-    describe "#computed_age" do
+    it "returns the person's age" do
+      pers = Factory(:person, :person_dob_date => 10.years.ago, :age => nil)
+      pers.age.should == 10
+      pers.computed_age.should == 10
+    end
 
-      it "returns the person's age" do
-        pers = Factory(:person, :person_dob_date => 10.years.ago, :age => nil)
-        pers.age.should == 10
-        pers.computed_age.should == 10
-      end
+    it "does not blowup on leap year" do
+      dob = Date.parse('02/29/1992')
+      pers = Factory(:person, :person_dob_date => dob)
+      (pers.computed_age > 18).should be_true
+    end
 
-      it "does not blowup on leap year" do
-        dob = Date.parse('02/29/1992')
-        pers = Factory(:person, :person_dob_date => dob)
-        (pers.computed_age > 18).should be_true
-      end
+    it "does not return anything if person dob is unknown" do
+      pers = Factory(:person)
+      pers.person_dob_modifier = "unknown"
+      pers.save!
 
-      it "does not return anything if person dob is unknown" do
-        pers = Factory(:person)
-        pers.person_dob_modifier = "unknown"
+      Person.last.computed_age.should be_nil
+    end
+
+    it "does not return anything if person dob is refused" do
+      pers = Factory(:person)
+      pers.person_dob_modifier = "refused"
+      pers.save!
+
+      Person.last.computed_age.should be_nil
+    end
+
+    it "handles a string date" do
+      dob = 10.years.ago
+      pers = Factory(:person, :person_dob_date => nil, :person_dob => dob.strftime('%Y-%m-%d'))
+      pers.computed_age.should == 10
+    end
+
+    %w(
+      9111-91-91
+      9666-96-96
+      9777-97-97
+      1980-91-91
+      1963-07-91
+    ).each do |n|
+      it "handles a string unknown date of type #{n}" do
+        pers = Factory(:person, :person_dob_date => nil, :person_dob => n)
         pers.save!
-
-        Person.last.computed_age.should be_nil
-      end
-
-      it "does not return anything if person dob is refused" do
-        pers = Factory(:person)
-        pers.person_dob_modifier = "refused"
-        pers.save!
-
-        Person.last.computed_age.should be_nil
-      end
-
-      it "handles a string date" do
-        dob = 10.years.ago
-        pers = Factory(:person, :person_dob_date => nil, :person_dob => dob.strftime('%Y-%m-%d'))
-        pers.computed_age.should == 10
-      end
-
-      %w(
-        9111-91-91
-        9666-96-96
-        9777-97-97
-        1980-91-91
-        1963-07-91
-      ).each do |n|
-        it "handles a string unknown date of type #{n}" do
-          pers = Factory(:person, :person_dob_date => nil, :person_dob => n)
-          pers.save!
-          pers.computed_age.should be_nil
-        end
+        pers.computed_age.should be_nil
       end
     end
   end
