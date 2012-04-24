@@ -23,7 +23,7 @@ describe PrePregnancyOperationalDataExtractor do
     age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 3)
     age_eligible2 = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL4", :display_text => "Age-Eligible", :local_code => 3)
 
-    person = Factory(:person)
+    person = Factory(:person, :age => nil)
     participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant_id => participant, :person_id => person, :relationship_code => 1)
 
@@ -48,7 +48,9 @@ describe PrePregnancyOperationalDataExtractor do
     person.first_name.should == "Jo"
     person.last_name.should == "Stafford"
     person.person_dob.should == "1981-01-01"
-    person.age.should == Date.today.year - 1981
+    expected_age = Date.today.year - 1981
+    person.computed_age.should == expected_age
+    person.age.should == expected_age
 
     person.marital_status.should == married
   end
