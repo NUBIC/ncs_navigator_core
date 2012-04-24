@@ -127,6 +127,14 @@ Then /^(?:|I )should not see "([^"]*)"$/ do |text|
   end
 end
 
+Then /^I should not see the "([^"]+)" ([^\s]+) field$/ do |name, type|
+  if page.respond_to? :should
+    page.should have_no_selector(:xpath, "//input[@type='#{type}' and @name='#{name}']")
+  else
+    assert page.have_no_selector(:xpath, "//input[@type='#{type}' and @name='#{name}']")
+  end
+end
+
 Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
   regexp = Regexp.new(regexp)
 

@@ -23,6 +23,8 @@ Feature: Obtaining participant consent
     And I should see "Low Intensity Consent"
     When I follow "Low Intensity Consent"
     Then I should be on the new participant consent page
+    And I should see "Consent Form Type"
+    And I should not see the "participant_consent_consent_type_code" text field
     When I select "Yes" from "Consent Given"
     And I press "Submit"
     Then I should see "Participant consent was successfully created."
