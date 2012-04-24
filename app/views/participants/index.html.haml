@@ -20,6 +20,11 @@
       = f.label :enroll_status_code_eq, "Enroll Status"
       = f.select(:enroll_status_code_eq, NcsCode.ncs_code_lookup(:enroll_status_code), { :include_blank => "-- Select Enroll Status --" })
     %p
+      = f.label :being_followed_false, "Actively Being Followed"
+      = f.check_box :being_followed_true
+      = f.label :being_followed_false, "Not Followed"
+      = f.check_box :being_followed_false
+    %p
       = f.label :ppg_status_histories_ppg_status_code_eq, "PPG Status"
       = f.select(:ppg_status_histories_ppg_status_code_eq, NcsCode.ncs_code_lookup(:ppg_status_code), { :include_blank => "-- Select PPG Status --" })
     %p

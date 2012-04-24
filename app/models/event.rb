@@ -161,9 +161,19 @@ class Event < ActiveRecord::Base
 
   ##
   # Helper method to set the disposition to Out of Window
-  # TODO: determine better way to get disposition out of NcsNavigatorCore.mdes.disposition_codes
   def mark_out_of_window
-    self.event_disposition = 48
+    update_disposition 48
+  end
+
+  ##
+  # Helper method to set the disposition to Not Worked
+  def mark_not_worked
+    update_disposition 34
+  end
+
+  # TODO: determine better way to get disposition out of NcsNavigatorCore.mdes.disposition_codes
+  def update_disposition(code)
+    self.event_disposition = code
     self.event_disposition_category = NcsCode.for_list_name_and_local_code("EVENT_DSPSTN_CAT_CL1", "3")
   end
 
@@ -183,10 +193,15 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Cancels the activity in PSC and then either closes or deletes the event
+  # Cancels the activity in PSC and then either closes (and updates disposition) or deletes the event
   def cancel_and_close_or_delete!(psc, reason = nil)
     self.cancel_activity(psc, reason)
-    self.can_delete? ? self.destroy : self.close
+    if self.can_delete?
+      self.destroy
+    else
+      self.mark_not_worked
+      self.close
+    end
     self.save!
   end
 

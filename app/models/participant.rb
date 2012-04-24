@@ -581,6 +581,7 @@ class Participant < ActiveRecord::Base
     self.participant_consents.each { |c| c.withdraw! if c.consented? }
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, 2)
     self.pending_events.each { |e| e.cancel_and_close_or_delete!(psc, reason) }
+    self.being_followed = false
   end
 
   ##
@@ -595,10 +596,30 @@ class Participant < ActiveRecord::Base
   # Sets the enroll status to Yes (i.e. local_code = 1)
   def enroll
     self.enroll_status = NcsCode.for_attribute_name_and_local_code(:enroll_status_code, 1)
+    self.being_followed = true
   end
 
   def enroll!
     self.enroll
+    self.save!
+  end
+
+  ##
+  # Removing from active followup does the following:
+  # 1. Sets the participant being_followed flag to false
+  # 2. Cancels all scheduled activities in PSC
+  # 3. Closes or Deletes all pending events
+  # @param [PatientStudyCalendar]
+  def remove_from_active_followup(psc, reason = "Participant is not actively being followed in the study.")
+    self.enrollment_status_comment = reason
+    self.pending_events.each do |e|
+      e.cancel_and_close_or_delete!(psc, reason)
+    end
+    self.being_followed = false
+  end
+
+  def remove_from_active_followup!(psc, reason)
+    self.remove_from_active_followup(psc, reason)
     self.save!
   end
 

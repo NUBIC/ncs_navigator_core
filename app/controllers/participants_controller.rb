@@ -274,6 +274,14 @@ class ParticipantsController < ApplicationController
     redirect_to(url, :notice => "Participant was successfully un-enrolled from the study.")
   end
 
+  def remove_from_active_followup
+    @participant = Participant.find(params[:id])
+    @participant.unenroll!(psc, params[:enrollment_status_comment])
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+    redirect_to(url, :notice => "Participant is no longer being actively followed in the study.")
+  end
+
   ##
   # Page to show participant in particular state and potentially update that
   # state in case of issues

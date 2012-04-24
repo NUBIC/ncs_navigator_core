@@ -44,6 +44,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :process_mark_event_out_of_window
       put :enroll
       put :unenroll
+      put :remove_from_active_followup
     end
   end
   resources :contact_links do
