@@ -33,6 +33,10 @@
       %br
       = f.text_field :enroll_date, :class => "datepicker"
 
+    %p
+      = f.check_box :being_followed
+      = f.label :being_followed
+
     = render "shared/ncs_code_select", { :f => f, :code => :pid_entry_code, :label_text => "Entry Mechanism", :other => :pid_entry_other }
 
     = render "shared/ncs_code_select", { :f => f, :code => :pid_age_eligibility_code, :label_text => "Age Eligibility" }

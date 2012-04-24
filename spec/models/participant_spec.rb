@@ -1046,7 +1046,7 @@ describe Participant do
 
   end
 
-  context "unenrolling a participant" do
+  context "removing a participant from the study" do
 
     let(:participant) { Factory(:participant) }
     let(:person) { Factory(:person) }
@@ -1055,11 +1055,13 @@ describe Participant do
     before(:each) do
       @enrolled   = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
       @unenrolled = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+      @event_disposition_category = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => "General Study Visits",  :local_code => 3)
 
       participant.person = person
       participant.save!
 
       participant.should be_enrolled
+      participant.should be_being_followed
 
       psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
       @uri  = psc_config["uri"]
@@ -1068,45 +1070,82 @@ describe Participant do
 
     let(:psc) { PatientStudyCalendar.new(@user) }
 
-    it "sets the enroll status to No" do
-      participant.unenroll!(psc, "unenroll reason")
-      participant.should_not be_enrolled
-    end
+    describe "#unenroll" do
 
-    it "deletes all pending events" do
-      Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
-      participant.pending_events.size.should == 1
-      participant.unenroll!(psc, "unenroll reason")
-      participant.events.reload
-      participant.pending_events.should be_empty
-      participant.events.should be_empty
-    end
-
-    it "closes all pending events that have been started" do
-      e = Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
-      cl = Factory(:contact_link, :event => e, :person => person)
-
-      participant.pending_events.size.should == 1
-      participant.unenroll!(psc, "unenroll reason")
-      participant.events.reload
-      participant.pending_events.should be_empty
-      participant.events.should_not be_empty
-      participant.events.first.should be_closed
-    end
-
-    it "withdraws the participant from the study" do
-      Factory(:participant_consent, :participant => participant)
-      Factory(:ncs_code, :list_name => 'CONSENT_WITHDRAW_REASON_CL1', :display_text => "Involuntary withdrawal initiated by the Study", :local_code => 2)
-
-      participant.participant_consents.should_not be_empty
-      participant.participant_consents.each do |c|
-        c.should be_consented
+      it "sets the enroll status to No" do
+        participant.unenroll!(psc, "unenroll reason")
+        participant.should_not be_enrolled
+        participant.should_not be_being_followed
       end
 
-      participant.unenroll!(psc, "unenroll reason")
+      it "deletes all pending events" do
+        Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
+        participant.pending_events.size.should == 1
+        participant.unenroll!(psc, "unenroll reason")
+        participant.events.reload
+        participant.pending_events.should be_empty
+        participant.events.should be_empty
+      end
 
-      participant.participant_consents.each do |c|
-        c.should_not be_consented
+      it "closes all pending events that have been started" do
+        e = Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
+        cl = Factory(:contact_link, :event => e, :person => person)
+
+        participant.pending_events.size.should == 1
+        participant.unenroll!(psc, "unenroll reason")
+        participant.events.reload
+        participant.pending_events.should be_empty
+        participant.events.should_not be_empty
+        participant.events.first.should be_closed
+        participant.events.first.event_disposition.should == 34
+        participant.events.first.event_disposition_category.should == @event_disposition_category
+      end
+
+      it "withdraws the participant from the study" do
+        Factory(:participant_consent, :participant => participant)
+        Factory(:ncs_code, :list_name => 'CONSENT_WITHDRAW_REASON_CL1', :display_text => "Involuntary withdrawal initiated by the Study", :local_code => 2)
+
+        participant.participant_consents.should_not be_empty
+        participant.participant_consents.each do |c|
+          c.should be_consented
+        end
+
+        participant.unenroll!(psc, "unenroll reason")
+
+        participant.participant_consents.each do |c|
+          c.should_not be_consented
+        end
+
+      end
+    end
+
+    describe "#remove_from_active_followup" do
+      it "sets the being_followed flag to false" do
+        participant.remove_from_active_followup!(psc, "removal reason")
+        participant.should_not be_being_followed
+      end
+
+      it "deletes all pending events" do
+        Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
+        participant.pending_events.size.should == 1
+        participant.remove_from_active_followup!(psc, "removal reason")
+        participant.events.reload
+        participant.pending_events.should be_empty
+        participant.events.should be_empty
+      end
+
+      it "closes all pending events that have been started" do
+        e = Factory(:event, :participant => participant, :event_start_date => "2012-04-01", :event_end_date => nil, :event_type => lo_i_quex)
+        cl = Factory(:contact_link, :event => e, :person => person)
+
+        participant.pending_events.size.should == 1
+        participant.remove_from_active_followup!(psc, "removal reason")
+        participant.events.reload
+        participant.pending_events.should be_empty
+        participant.events.should_not be_empty
+        participant.events.first.should be_closed
+        participant.events.first.event_disposition.should == 34
+        participant.events.first.event_disposition_category.should == @event_disposition_category
       end
 
     end

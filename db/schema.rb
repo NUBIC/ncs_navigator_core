@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120409185229) do
+ActiveRecord::Schema.define(:version => 20120423204102) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -582,6 +582,7 @@ ActiveRecord::Schema.define(:version => 20120409185229) do
     t.string   "low_intensity_state"
     t.string   "high_intensity_state"
     t.text     "enrollment_status_comment"
+    t.boolean  "being_followed",                          :default => false
   end
 
   create_table "people", :force => true do |t|

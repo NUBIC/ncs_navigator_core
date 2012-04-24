@@ -21,3 +21,7 @@
       Next Study Segment:
     - event = @participant.next_scheduled_event
     = event.nil? ? "Unknown" : "#{nil_safe(event.event)} - #{nil_safe(event.date)}"
+  %p
+    %b
+      Actively Being Followed:
+    = @participant.being_followed

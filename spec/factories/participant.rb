@@ -20,6 +20,7 @@ FactoryGirl.define do
     low_intensity_state       "pending"
     high_intensity_state      "in_high_intensity_arm"
     p_id                      nil
+    being_followed            true
 
     trait :in_high_intensity_arm do
       high_intensity          true
