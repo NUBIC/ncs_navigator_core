@@ -9,4 +9,6 @@ module Role
   SPECIMEN_PROCESSOR            = "Specimen Processor"
   DATA_READER                   = "Data Reader"
   ADMINISTRATIVE_STAFF          = "Administrative Staff"
+
+  SUPERVISORS = [SYSTEM_ADMINISTRATOR, USER_ADMINISTRATOR, ADMINISTRATIVE_STAFF, STAFF_SUPERVISOR]
 end
