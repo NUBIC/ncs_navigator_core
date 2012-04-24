@@ -41,7 +41,11 @@ module NcsNavigator::Core::Fieldwork
   # * {Instrument}
   # * {Participant}
   # * {Person}
+  # * {Response}
   # * {ResponseSet}
+  #
+  # Furthermore, a Superposition can also group {Response}s by their (public)
+  # question ID.  See {#group_responses}.
   #
   #
   # Performing a merge
@@ -59,8 +63,9 @@ module NcsNavigator::Core::Fieldwork
     attr_accessor :instruments
     attr_accessor :participants
     attr_accessor :people
-    attr_accessor :responses
+    attr_accessor :response_groups
     attr_accessor :response_sets
+    attr_accessor :responses
 
     ##
     # By default, this logger throws messages to a bit bucket.  If you want log
@@ -95,6 +100,26 @@ module NcsNavigator::Core::Fieldwork
       set_current_state(:people, Person, 'person_id')
       set_current_state(:response_sets, ResponseSet, 'api_id')
       set_current_state(:responses, Response, 'api_id') { |q| q.includes(:question, :answer) }
+    end
+
+    def group_responses
+      self.response_groups = {}.tap do |h|
+        responses.each do |_, states|
+          states.each do |state, response|
+            qid = response.question_id
+
+            unless h.has_key?(qid)
+              h[qid] = {}
+            end
+
+            unless h[qid].has_key?(state)
+              h[qid][state] = ResponseGroup.new
+            end
+
+            h[qid][state] << response
+          end
+        end
+      end
     end
 
     def set_state(state, data)

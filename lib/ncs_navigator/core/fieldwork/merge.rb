@@ -131,62 +131,11 @@ module NcsNavigator::Core::Fieldwork
   # executes 7 if 6 is false.
   #
   #
-  # The response set merge algorithm
-  # ================================
+  # Responses are grouped by question
+  # =================================
   #
-  # Instead of attempting to merge response sets directly, we deal with
-  # response sets on a per-question basis.  Hereafter, we call these response
-  # groups or RGs.
-  #
-  #
-  # Equality of response groups
-  # ---------------------------
-  #
-  # Two response groups RG1 and RG2 are considered equal iff
-  #
-  # 1. |RG1| = |RG2|, and
-  # 2. question_id(RG1) == question_id(RG2)
-  #
-  # .
-  #
-  #
-  # Nomenclature
-  # ------------
-  #
-  # * RG(K, O): the original state of the responses for question K
-  # * RG(K, C): the current state of the responses for question K
-  # * RG(K, P): the proposed state of the responses for question K
-  # * R: the merge result
-  #
-  #
-  # Entity states
-  # -------------
-  #
-  # A set of responses for question K may be in states ∅, RG1, RG2, or RG3,
-  # where ∅ means "empty set" and ∅ != RG1 != RG2 != RG3.
-  #
-  #
-  # Actions
-  # -------
-  #
-  # * RG1: use response group RG1
-  # * ∅: use empty set
-  # * conflict: signal a conflict
-  #
-  #   RG(K, O)    RG(K, C)    RG(K, P)    R
-  #   --------------------------------------------
-  #   ∅           ∅           ∅           ∅
-  #   ∅           ∅           RG1         RG1
-  #   ∅           RG1         ∅           RG1
-  #   ∅           RG1         RG1         RG1
-  #   ∅           RG1         RG2         conflict
-  #   RG1         ∅           ∅           ∅
-  #   RG1         ∅           RG1         conflict
-  #   RG2         ∅           RG3         conflict
-  #   RG1         RG1         ∅           ∅
-  #   RG1         RG1         RG1         RG1
-  #   RG2         RG2         RG3         conflict
-  #   RG1         RG2         RG3         conflict
+  # Responses are first grouped by question; those groups are then merged
+  # according to the above algorithm.
   #
   # @see https://code.bioinformatics.northwestern.edu/issues/wiki/ncs-navigator-core/Field_-%3E_Core_merge#Response-set
   module Merge
