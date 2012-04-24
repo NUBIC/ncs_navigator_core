@@ -34,22 +34,22 @@ module NcsNavigator::Core::Fieldwork
 
   ##
   # A Group defines an equivalence relation on a list of {Response}s.
-  class Group
+  class Group < Struct.new(:responses)
     extend Forwardable
-
-    attr_accessor :responses
 
     def_delegators :responses, :<<, :length
 
-    def initialize(responses = [])
-      self.responses = responses
+    def initialize(*args)
+      super
+
+      self.responses ||= []
     end
 
     def question_id
       responses.first.try(&:question_id)
     end
 
-    def ==(other)
+    def =~(other)
       length == other.length && question_id == other.question_id
     end
   end

@@ -79,13 +79,13 @@ module NcsNavigator::Core::Fieldwork
         end
       end
 
-      describe '#==' do
+      describe '#=~' do
         let(:g1) { Group.new }
         let(:g2) { Group.new }
 
         describe 'given two empty groups' do
           it 'returns true' do
-            g1.should == g2
+            g1.should =~ g2
           end
         end
 
@@ -96,7 +96,7 @@ module NcsNavigator::Core::Fieldwork
           end
 
           it 'returns true' do
-            g1.should == g2
+            g1.should =~ g2
           end
         end
 
@@ -107,7 +107,7 @@ module NcsNavigator::Core::Fieldwork
           end
 
           it 'returns false' do
-            g1.should_not == g2
+            g1.should_not =~ g2
           end
         end
 
@@ -119,7 +119,7 @@ module NcsNavigator::Core::Fieldwork
           end
 
           it 'returns false' do
-            g1.should_not == g2
+            g1.should_not =~ g2
           end
         end
       end
