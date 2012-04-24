@@ -145,6 +145,7 @@ module NcsNavigator::Core::Fieldwork
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
+      response_groups.each { |id, state| merge_entity(state, 'ResponseGroup', id) }
     end
 
     module_function
@@ -169,6 +170,10 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def resolve(o, c, p, entity, id)
+      if [o, c, p].all? { |e| e.nil? || ResponseGroup === e }
+        return resolve_response_group(o, c, p, entity, id)
+      end
+
       {}.tap do |h|
         p.to_hash.each do |k, v|
           vo = o[k] if o
@@ -188,6 +193,14 @@ module NcsNavigator::Core::Fieldwork
 
         c.attributes = h
       end
+    end
+
+    def resolve_response_group(o, c, p, entity, id)
+      unless c =~ p
+        add_conflict(entity, id, :self, o, c, p)
+        return
+      end
+
     end
 
     def add_conflict(entity, entity_id, key, o, c, p)

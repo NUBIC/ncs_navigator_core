@@ -1,11 +1,13 @@
+# encoding: utf-8
+
 require 'ncs_navigator/core'
 
 require 'forwardable'
 
 module NcsNavigator::Core::Fieldwork
   ##
-  # Groups {Response}s by their public question ID, and acts as a facade for
-  # merge.
+  # Groups {Response}s by their public question ID; also acts as a merge
+  # façade.
   class ResponseGroup < Struct.new(:responses)
     extend Forwardable
 
@@ -19,6 +21,18 @@ module NcsNavigator::Core::Fieldwork
 
     def question_id
       responses.first.try(&:question_id)
+    end
+
+    def changed?
+      responses.any?(&:changed?)
+    end
+
+    def persisted?
+      responses.all?(&:persisted?)
+    end
+
+    def to_model
+      self.class.new(responses.map(&:to_model))
     end
 
     def =~(other)

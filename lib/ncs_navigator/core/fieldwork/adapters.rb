@@ -1070,8 +1070,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target.answer.try(:api_id)
     end
 
+    def answer_id=(val)
+      target.answer = Answer.where(:api_id => val).first
+    end
+
     def question_id
       target.question.try(:api_id)
+    end
+
+    def question_id=(val)
+      target.question = Question.where(:api_id => val).first
     end
 
     def [](a)
