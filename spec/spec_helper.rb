@@ -4,6 +4,8 @@ require 'database_cleaner'
 
 require 'ncs_navigator/configuration'
 
+require 'spec/active_record_query_profiler'
+
 # --- Instructions ---
 # Sort the contents of this file into a Spork.prefork and a Spork.each_run
 # block.
@@ -121,6 +123,10 @@ Spork.prefork do
 
     config.include TestLogins
     config.include TestSurveys
+
+    if ENV['PROFILE_DB']
+      ActiveRecordQueryProfiler.register(config)
+    end
   end
 
   def create_missing_in_error_ncs_codes(cls)
