@@ -44,4 +44,15 @@ class Email < ActiveRecord::Base
   ncs_coded_attribute :email_share,       'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :email_active,      'CONFIRM_TYPE_CL2'
 
+  ##
+  # Updates the rank to secondary if current rank is primary
+  def demote_primary_rank_to_secondary
+    return unless self.email_rank_code == 1
+    secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
+    if !secondary_rank.blank?
+      self.email_rank = secondary_rank
+      self.save
+    end
+  end
+
 end

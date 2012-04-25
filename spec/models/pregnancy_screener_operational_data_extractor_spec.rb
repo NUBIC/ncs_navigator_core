@@ -18,6 +18,8 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 1, :display_text => "Home")
     Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
+
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
   end
 
   context "extracting person operational data" do
@@ -26,6 +28,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     let(:ethnic_group)   { Factory(:ncs_code, :list_name => "ETHNICITY_CL1", :display_text => "Not Hispanic or Latino", :local_code => 2) }
     let(:language)       { Factory(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
     let(:age_eligible)   { Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1) }
+    let(:entered_age)    { 30 }
 
     before(:each) do
       @person = Factory(:person)
@@ -50,7 +53,7 @@ describe PregnancyScreenerOperationalDataExtractor do
         a.str "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
         a.str "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
         a.date "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
-        a.int "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.AGE", 30
+        a.int "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.AGE", entered_age
         a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.AGE_RANGE", age_range
         a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ETHNICITY", ethnic_group
         a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_LANG", language
@@ -66,7 +69,10 @@ describe PregnancyScreenerOperationalDataExtractor do
       person.first_name.should == "Jo"
       person.last_name.should == "Stafford"
       person.person_dob.should == "1981-01-01"
-      person.age.should == Date.today.year - 1981
+
+      expected_age = Date.today.year - 1981
+      person.computed_age.should == expected_age
+      person.age.should == entered_age
 
       person.age_range.should == age_range
       person.ethnic_group.should == ethnic_group
@@ -161,7 +167,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     person.addresses.size.should == 1
     address = person.addresses.first
     address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
-
+    address.address_rank_code.should == 1
   end
 
   it "extracts mail address operational data from the survey responses" do
@@ -197,6 +203,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     address = person.addresses.first
     address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
     address.address_type.should == mail
+    address.address_rank_code.should == 1
   end
 
   context "extracting telephone operational data from the survey responses" do
@@ -240,6 +247,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       person.telephones.each do |t|
         t.phone_type.should_not be_nil
         t.phone_nbr[0,6].should == "312555"
+        t.phone_rank_code.should == 1
       end
 
     end
@@ -363,6 +371,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     person.emails.size.should == 1
     person.emails.first.email.should == "email@dev.null"
     person.emails.first.email_type.local_code.should == 1
+    person.emails.first.email_rank_code.should == 1
 
   end
 

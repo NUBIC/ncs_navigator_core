@@ -40,5 +40,6 @@
               = t.to.titleize
             %td
               = t.created_at.to_s(:db)
-  %p
-    = link_to "Correct Participant State", correct_workflow_participant_path(@participant), :class => "fix_link icon_link"
+  - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+    %p
+      = link_to "Correct Participant State", correct_workflow_participant_path(@participant), :class => "fix_link icon_link"

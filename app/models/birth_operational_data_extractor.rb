@@ -93,6 +93,8 @@ class BirthOperationalDataExtractor
         participant = person.participant
       end
 
+      primary_rank = OperationalDataExtractor.primary_rank
+
       child        = nil
       email        = nil
       home_phone   = nil
@@ -100,11 +102,11 @@ class BirthOperationalDataExtractor
       phone        = nil
       mail_address = nil
 
-      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type)
-      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu)
-      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu)
-      phone = Telephone.new(:person => person, :psu => person.psu)
-      email = Email.new(:person => person, :psu => person.psu)
+      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type, :address_rank => primary_rank)
+      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu, :phone_rank => primary_rank)
+      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu, :phone_rank => primary_rank)
+      phone = Telephone.new(:person => person, :psu => person.psu, :phone_rank => primary_rank)
+      email = Email.new(:person => person, :psu => person.psu, :email_rank => primary_rank)
 
       response_set.responses.each do |r|
 
@@ -191,11 +193,19 @@ class BirthOperationalDataExtractor
       end
 
       if email && !email.email.blank?
+        person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
       end
 
       if mail_address && !mail_address.to_s.blank?
+        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
         mail_address.save!
+      end
+
+      if (cell_phone && !cell_phone.phone_nbr.blank?) ||
+         (home_phone && !home_phone.phone_nbr.blank?) ||
+         (phone && !phone.phone_nbr.blank?)
+        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
       end
 
       if cell_phone && !cell_phone.phone_nbr.blank?

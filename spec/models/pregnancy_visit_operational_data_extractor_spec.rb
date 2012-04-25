@@ -14,6 +14,9 @@ describe PregnancyVisitOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Address)
     create_missing_in_error_ncs_codes(DwellingUnit)
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
   end
 
   # R_FNAME               Person.first_name
@@ -23,7 +26,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
     age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
 
-    person = Factory(:person)
+    person = Factory(:person, :age => nil)
     participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
@@ -47,7 +50,9 @@ describe PregnancyVisitOperationalDataExtractor do
     person.first_name.should == "Jo"
     person.last_name.should == "Stafford"
     person.person_dob.should == "1981-01-01"
-    person.age.should == Date.today.year - 1981
+    expected_age = Date.today.year - 1981
+    person.computed_age.should == expected_age
+    person.age.should == expected_age
 
     person.participant.pid_age_eligibility.display_text.should == age_eligible.display_text
     person.participant.pid_age_eligibility.local_code.should == age_eligible.local_code
@@ -133,9 +138,11 @@ describe PregnancyVisitOperationalDataExtractor do
       father.last_name.should == "Johnson"
       father.telephones.first.should_not be_nil
       father.telephones.first.phone_nbr.should == "3125551212"
+      father.telephones.first.phone_rank_code.should == 1
 
       father.addresses.first.should_not be_nil
       father.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+      father.addresses.first.address_rank_code.should == 1
     end
 
     it "creates a new person record and associates it with the particpant" do
@@ -264,7 +271,10 @@ describe PregnancyVisitOperationalDataExtractor do
     Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
 
     person = Factory(:person)
-    person.telephones.size.should == 0
+
+    Factory(:telephone, :person => person)
+
+    person.telephones.size.should == 1
 
     survey = create_pregnancy_visit_1_survey_with_telephone_operational_data
     response_set, instrument = prepare_instrument(person, survey)
@@ -282,11 +292,14 @@ describe PregnancyVisitOperationalDataExtractor do
     PregnancyVisitOperationalDataExtractor.extract_data(response_set)
 
     person  = Person.find(person.id)
-    person.telephones.size.should == 1
-    telephone = person.telephones.first
+    person.telephones.size.should == 2
+    person.telephones.first.phone_rank_code.should == 2
+
+    telephone = person.telephones.last
 
     telephone.phone_type.should == cell
     telephone.phone_nbr.should == "3125557890"
+    telephone.phone_rank_code.should == 1
     telephone.cell_permission.local_code.should == 1
     telephone.text_permission.local_code.should == 1
   end
@@ -313,6 +326,7 @@ describe PregnancyVisitOperationalDataExtractor do
     person = Person.find(person.id)
     person.emails.size.should == 1
     person.emails.first.email.should == "email@dev.null"
+    person.emails.first.email_rank_code.should == 1
   end
 
   it "extracts birth address operational data from the survey responses" do

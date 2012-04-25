@@ -61,6 +61,8 @@ class PpgFollowUpOperationalDataExtractor
         participant = person.participant
       end
 
+      primary_rank = OperationalDataExtractor.primary_rank
+
       ppg_status_history = nil
       home_phone         = nil
       cell_phone         = nil
@@ -78,7 +80,7 @@ class PpgFollowUpOperationalDataExtractor
           unless value.blank?
             phone ||= Telephone.where(:response_set_id => response_set.id).first
             if phone.nil?
-              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
+              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
 
             phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
@@ -90,7 +92,7 @@ class PpgFollowUpOperationalDataExtractor
             home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
             if home_phone.nil?
               home_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.home_phone_type, :response_set => response_set)
+                                         :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
 
             home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
@@ -102,7 +104,7 @@ class PpgFollowUpOperationalDataExtractor
             cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
             if cell_phone.nil?
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set)
+                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
             cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
           end
@@ -113,7 +115,7 @@ class PpgFollowUpOperationalDataExtractor
             other_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.other_phone_type.local_code).last
             if other_phone.nil?
               other_phone = Telephone.new(:person => person, :psu => person.psu,
-                                          :phone_type => Telephone.other_phone_type, :response_set => response_set)
+                                          :phone_type => Telephone.other_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
 
             other_phone.send("#{OTHER_PHONE_MAP[data_export_identifier]}=", value)
@@ -125,7 +127,7 @@ class PpgFollowUpOperationalDataExtractor
             work_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.work_phone_type.local_code).last
             if work_phone.nil?
               work_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.work_phone_type, :response_set => response_set)
+                                         :phone_type => Telephone.work_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
             work_phone.send("#{WORK_PHONE_MAP[data_export_identifier]}=", value)
           end
@@ -135,7 +137,7 @@ class PpgFollowUpOperationalDataExtractor
           unless value.blank?
             email ||= Email.where(:response_set_id => response_set.id).first
             if email.nil?
-              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
+              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
             email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
           end
@@ -183,7 +185,16 @@ class PpgFollowUpOperationalDataExtractor
       end
 
       if email && !email.email.blank?
+        person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
+      end
+
+      if (home_phone && !home_phone.phone_nbr.blank?) ||
+         (cell_phone && !cell_phone.phone_nbr.blank?) ||
+         (work_phone && !work_phone.phone_nbr.blank?) ||
+         (other_phone && !other_phone.phone_nbr.blank?) ||
+         (phone && !phone.phone_nbr.blank?)
+        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
       end
 
       if home_phone && !home_phone.phone_nbr.blank?

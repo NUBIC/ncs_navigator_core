@@ -87,6 +87,10 @@ class Person < ActiveRecord::Base
 
   validates_length_of :title, :maximum => 5, :allow_blank => true
 
+  before_save do
+    self.age = self.computed_age if self.age.blank?
+  end
+
   ##
   # How to format the date_move attribute
   # cf. MdesRecord
@@ -98,7 +102,7 @@ class Person < ActiveRecord::Base
   ##
   # Determine the age of the Person based on the date of birth
   # @return [Integer]
-  def age
+  def computed_age
     return nil if dob.blank?
     now = Time.now.utc.to_date
     offset = ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
