@@ -9,7 +9,7 @@ class ActiveRecordQueryProfiler
     $qp.subscribe_to_queries
     $qp.start = Time.now
 
-    spec_config.after(:all) do
+    spec_config.after(:suite) do
       $qp.end = Time.now
       $qp.print_slow_queries
     end
@@ -50,7 +50,7 @@ class ActiveRecordQueryProfiler
 
     ordered_summaries[0..9].each do |summary|
       $stderr.puts "- #{summary[:sql]}"
-      $stderr.puts "  => Invoked %d time(s), taking %.1f ms; average %.1f ms\n" % [
+      $stderr.puts "  => Invoked %d time(s) taking %.1f ms; average %.1f ms.\n" % [
         summary[:count], summary[:total_duration],
         summary[:total_duration] / summary[:count]
       ]
