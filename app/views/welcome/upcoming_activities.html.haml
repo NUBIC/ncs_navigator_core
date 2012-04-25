@@ -2,6 +2,14 @@
 
 - if @scheduled_activities
   .front_page_section.page_section
+    = form_tag("upcoming_activities", :method => "get") do
+      = label_tag :start_date, "From:"
+      = text_field_tag :start_date, @start_date, :disabled => true, :class => "datepicker"
+
+      = label_tag :end_date, "To:"
+      = text_field_tag :end_date, @end_date, :class => "datepicker"
+      = submit_tag "Search"
+
     - rows = @scheduled_activities['rows']
     - if rows.blank?
       %h4
@@ -34,3 +42,4 @@
                     n/a
                 %td
                   = row['activity_name']
+
