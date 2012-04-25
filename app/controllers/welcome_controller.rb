@@ -53,7 +53,7 @@ class WelcomeController < ApplicationController
 
     def get_upcoming_activities
       @start_date = 1.day.ago.to_date.to_s
-      @end_date   = params[:end_date] || 2.weeks.from_now.to_date.to_s
+      @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
       criteria = { :current_user => current_username,
                    :start_date => @start_date,
                    :end_date => @end_date }
