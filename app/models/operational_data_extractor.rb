@@ -179,6 +179,10 @@ class OperationalDataExtractor
       end
     end
 
+    def primary_rank
+      @primary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+    end
+
   end
 
 end

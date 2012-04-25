@@ -14,6 +14,9 @@ describe BirthOperationalDataExtractor do
 
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Mother", :local_code => 2)
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
+
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
   end
 
   context "creating a new person record for the child" do
@@ -127,6 +130,7 @@ describe BirthOperationalDataExtractor do
       person.addresses.size.should == 1
       address = person.addresses.first
       address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+      address.address_rank_code.should == 1
     end
 
     it "extracts telephone operational data" do
@@ -154,6 +158,7 @@ describe BirthOperationalDataExtractor do
       person.telephones.each do |t|
         t.phone_type.should_not be_nil
         t.phone_nbr[0,6].should == "312555"
+        t.phone_rank_code.should == 1
       end
     end
 
@@ -162,7 +167,7 @@ describe BirthOperationalDataExtractor do
       home = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Personal", :local_code => 1)
       work = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Work", :local_code => 2)
 
-      @person.emails.size.should == 0
+      email = Factory(:email, :email => "asdf@asdf.asdf", :person => @person)
 
       response_set, instrument = prepare_instrument(@person, @survey)
 
@@ -177,9 +182,12 @@ describe BirthOperationalDataExtractor do
       BirthOperationalDataExtractor.extract_data(response_set)
 
       person  = Person.find(@person.id)
-      person.emails.size.should == 1
-      person.emails.first.email.should == "email@dev.null"
-      person.emails.first.email_type.local_code.should == 1
+      person.emails.size.should == 2
+      person.emails.first.email.should == "asdf@asdf.asdf"
+      person.emails.first.email_rank_code.should == 2
+
+      person.emails.last.email.should == "email@dev.null"
+      person.emails.last.email_rank_code.should == 1
 
     end
 

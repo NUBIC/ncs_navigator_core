@@ -16,6 +16,9 @@ describe PpgFollowUpOperationalDataExtractor do
     Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 2, :display_text => "Work")
     Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
     Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => -5, :display_text => "Other")
+
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
   end
 
   context "updating the ppg status history" do
@@ -185,7 +188,7 @@ describe PpgFollowUpOperationalDataExtractor do
     telephone = person.telephones.first
     telephone.phone_type.local_code.should == 3
     telephone.phone_nbr.should == "3125551234"
-
+    telephone.phone_rank_code.should == 1
   end
 
   it "extracts contact data from the SAQ survey responses" do
@@ -195,8 +198,10 @@ describe PpgFollowUpOperationalDataExtractor do
     oth  = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Other", :local_code => -5)
 
     person = Factory(:person)
+    email = Factory(:email, :email => "asdf@asdf.asdf", :person => person)
+
     person.telephones.size.should == 0
-    person.emails.size.should == 0
+    person.emails.size.should == 1
 
     survey = create_follow_up_survey_with_contact_operational_data
     response_set, instrument = prepare_instrument(person, survey)
@@ -222,11 +227,17 @@ describe PpgFollowUpOperationalDataExtractor do
     person.telephones.each do |t|
       t.phone_type.should_not be_nil
       t.phone_nbr[0,6].should == "312555"
+      t.phone_rank_code.should == 1
     end
 
-    person.emails.size.should == 1
-    person.emails.first.email.should == "email@dev.null"
-    person.emails.first.email_type.local_code.should == -4
+    person = Person.find(person.id)
+    person.emails.size.should == 2
+    person.emails.first.email.should == "asdf@asdf.asdf"
+    person.emails.first.email_rank_code.should == 2
+
+    person.emails.last.email.should == "email@dev.null"
+    person.emails.last.email_rank_code.should == 1
+    person.emails.last.email_type.local_code.should == -4
 
   end
 

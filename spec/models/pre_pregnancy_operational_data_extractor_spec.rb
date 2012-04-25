@@ -14,6 +14,8 @@ describe PrePregnancyOperationalDataExtractor do
     create_missing_in_error_ncs_codes(Address)
     create_missing_in_error_ncs_codes(DwellingUnit)
     Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
+    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
   end
 
   it "extracts person operational data from the survey responses" do
@@ -84,12 +86,15 @@ describe PrePregnancyOperationalDataExtractor do
 
     telephone.phone_type.should == cell
     telephone.phone_nbr.should == "3125557890"
+    telephone.phone_rank_code.should == 1
 
   end
 
   it "extracts email operational data from the survey responses" do
     person = Factory(:person)
     person.telephones.size.should == 0
+
+    email = Factory(:email, :email => "asdf@asdf.asdf", :person => person)
 
     survey = create_pre_pregnancy_survey_with_email_operational_data
     response_set, instrument = prepare_instrument(person, survey)
@@ -106,8 +111,12 @@ describe PrePregnancyOperationalDataExtractor do
     PrePregnancyOperationalDataExtractor.extract_data(response_set)
 
     person = Person.find(person.id)
-    person.emails.size.should == 1
-    person.emails.first.email.should == "email@dev.null"
+    person.emails.size.should == 2
+    person.emails.first.email.should == "asdf@asdf.asdf"
+    person.emails.first.email_rank_code.should == 2
+
+    person.emails.last.email.should == "email@dev.null"
+    person.emails.last.email_rank_code.should == 1
   end
 
   context "extracting contact information from the survey responses" do
@@ -191,6 +200,7 @@ describe PrePregnancyOperationalDataExtractor do
 
       friend.addresses.first.should_not be_nil
       friend.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+      friend.addresses.first.address_rank_code.should == 1
     end
 
     it "creates another new person record and associates it with the particpant" do

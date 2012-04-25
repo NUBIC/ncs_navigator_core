@@ -99,6 +99,8 @@ class PregnancyScreenerOperationalDataExtractor
         participant = person.participant
       end
 
+      primary_rank = OperationalDataExtractor.primary_rank
+
       ppg_detail   = nil
       email        = nil
       home_phone   = nil
@@ -125,7 +127,7 @@ class PregnancyScreenerOperationalDataExtractor
             address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.home_address_type.local_code).first
             if address.nil?
               address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                    :address_type => Address.home_address_type, :response_set => response_set)
+                                    :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
             address.send("#{ADDRESS_MAP[data_export_identifier]}=", value)
           end
@@ -136,7 +138,7 @@ class PregnancyScreenerOperationalDataExtractor
             mail_address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.mailing_address_type.local_code).first
             if mail_address.nil?
               mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                         :address_type => Address.mailing_address_type, :response_set => response_set)
+                                         :address_type => Address.mailing_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
             mail_address.send("#{MAIL_ADDRESS_MAP[data_export_identifier]}=", value)
           end
@@ -146,7 +148,7 @@ class PregnancyScreenerOperationalDataExtractor
           unless value.blank?
             phone ||= Telephone.where(:response_set_id => response_set.id).first
             if phone.nil?
-              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
+              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
 
             phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
@@ -158,7 +160,7 @@ class PregnancyScreenerOperationalDataExtractor
             home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
             if home_phone.nil?
               home_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.home_phone_type, :response_set => response_set)
+                                         :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
 
             home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
@@ -170,7 +172,7 @@ class PregnancyScreenerOperationalDataExtractor
             cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
             if cell_phone.nil?
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set)
+                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
             cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
           end
@@ -180,7 +182,7 @@ class PregnancyScreenerOperationalDataExtractor
           unless value.blank?
             email ||= Email.where(:response_set_id => response_set.id).first
             if email.nil?
-              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
+              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
             email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
           end

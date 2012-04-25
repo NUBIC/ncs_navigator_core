@@ -90,17 +90,19 @@ class PrePregnancyOperationalDataExtractor
       contact2phone        = nil
       contact2address      = nil
 
-      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type)
-      email = Email.new(:person => person)
+      primary_rank = OperationalDataExtractor.primary_rank
+
+      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :phone_rank => primary_rank)
+      email = Email.new(:person => person, :email_rank => primary_rank)
 
       contact1 = Person.new
-      contact1phone = Telephone.new(:person => contact1)
-      contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new)
+      contact1phone = Telephone.new(:person => contact1, :phone_rank => primary_rank)
+      contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
       contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant)
 
       contact2 = Person.new
-      contact2phone = Telephone.new(:person => contact2)
-      contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new)
+      contact2phone = Telephone.new(:person => contact2, :phone_rank => primary_rank)
+      contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
       contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant)
 
       response_set.responses.each do |r|
@@ -255,10 +257,12 @@ class PrePregnancyOperationalDataExtractor
       end
 
       if email && !email.email.blank?
+        person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
       end
 
       if cell_phone && !cell_phone.phone_nbr.blank?
+        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
         cell_phone.save!
       end
 
