@@ -1,13 +1,28 @@
 namespace :mdes do
-  desc 'Initialize the code lookup values.'
-  task :load_codes_from_schema => :environment do
-    puts 'Tip: you can load all the lookup data using db:seed'
-    require 'mdes_data_loader'
-    MdesDataLoader::load_codes_from_schema
-  end
+  namespace :code_lists do
+    task :base => :environment do
+      require 'ncs_navigator/core/mdes_code_list_loader'
+    end
 
-  desc 'outputs the count of ncs data elements'
-  task :count_codes => :environment do
-    puts "There are #{NcsCode.count} codes."
+    desc 'Generate the code list YAML file'
+    task :yaml => :base do
+      NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true).create_yaml
+      $stderr.puts "Code list YAML regenerated. Please verify and commit it."
+    end
+
+    desc 'Load the code lists into the ncs_codes table'
+    task :load => :base do
+      $stderr.puts "Tip: you can load all the seed data with db:seed."
+
+      require 'benchmark'
+      $stderr.puts(Benchmark.measure do
+        NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true).load_from_yaml
+      end)
+    end
+
+    desc 'Counts the number of code list entries'
+    task :count => :base do
+      $stderr.puts "There are #{NcsCode.count} codes."
+    end
   end
 end
