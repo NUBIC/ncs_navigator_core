@@ -48,6 +48,10 @@ module NcsNavigator::Core::Fieldwork
       responses.inject({}) { |h, (uuid, r)| h.update(uuid => r.answer_id) }
     end
 
+    def save
+      responses.all? { |_, v| v.save }
+    end
+
     def answer_ids=(values)
       values.each do |k, answer_id|
         if (resp = responses[k])

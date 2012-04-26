@@ -7,6 +7,34 @@ module NcsNavigator::Core::Fieldwork
     let(:r1) { stub(:question_id => 'abcdef', :uuid => 'foo') }
     let(:r2) { stub(:question_id => '123456', :uuid => 'bar') }
 
+    describe '#save' do
+      before do
+        subject << r1
+        subject << r2
+      end
+
+      it 'saves each response' do
+        r1.should_receive(:save).and_return(true)
+        r2.should_receive(:save).and_return(true)
+
+        subject.save
+      end
+
+      it 'returns true if all responses were saved' do
+        r1.stub!(:save => true)
+        r2.stub!(:save => true)
+
+        subject.save.should be_true
+      end
+
+      it 'returns false if a response could not be saved' do
+        r1.stub!(:save => true)
+        r2.stub!(:save => false)
+
+        subject.save.should be_false
+      end
+    end
+
     describe '#<<' do
       it 'adds a response to the group' do
         subject << r1
