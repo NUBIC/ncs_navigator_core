@@ -47,4 +47,4 @@ NcsNavigatorCore::Application.configure do
   end
 end
 
-require 'spec/active_record_fk_hack'
+require File.expand_path('../../../spec/active_record_fk_hack', __FILE__)

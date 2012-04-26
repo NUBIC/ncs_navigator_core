@@ -4,7 +4,7 @@ require 'database_cleaner'
 
 require 'ncs_navigator/configuration'
 
-require 'spec/active_record_query_profiler'
+require File.expand_path('../active_record_query_profiler', __FILE__)
 
 # --- Instructions ---
 # Sort the contents of this file into a Spork.prefork and a Spork.each_run
