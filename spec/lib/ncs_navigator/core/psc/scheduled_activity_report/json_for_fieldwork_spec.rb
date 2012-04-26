@@ -184,11 +184,6 @@ module NcsNavigator::Core::Psc
       end
 
       before do
-        # NCS code infrastructure.
-        create_missing_in_error_ncs_codes(Participant)
-        Factory(:ncs_code, :list_name => 'PERSON_PARTCPNT_RELTNSHP_CL1', :local_code => 1)
-        Factory(:ncs_code, :list_name => 'STATE_CL1', :local_code => 1)
-
         # Stub out the participant accessor in the row.
         r1.participant = participant
 

@@ -25,11 +25,11 @@ describe ReportsController do
 
     end
 
-    describe "GET upcoming_births" do
+    describe "GET upcoming_births", :bad_2024 do
 
-      let(:pregnant_participant) { Factory(:participant) }
-      let(:trying_participant) { Factory(:participant) }
-      let(:loss_participant) { Factory(:participant) }
+      let(:pregnant_participant) { Factory(:participant, :p_id => 'PREG01') }
+      let(:trying_participant) { Factory(:participant, :p_id => 'TRY01') }
+      let(:loss_participant) { Factory(:participant, :p_id => 'LOSS01') }
 
       before(:each) do
         Factory(:ppg1_detail, :participant => pregnant_participant, :orig_due_date => 6.months.from_now.strftime("%Y-%m-%d"))

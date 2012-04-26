@@ -12,7 +12,6 @@ describe TelephonesController do
 
   context "with an authenticated user" do
     before(:each) do
-      create_missing_in_error_ncs_codes(Telephone)
       @person = Factory(:person)
       @telephone = Factory(:telephone, :person => @person)
       login(user_login)

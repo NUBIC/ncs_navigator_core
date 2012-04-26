@@ -25,10 +25,8 @@ describe ContactsController do
     context "for a new person" do
       before(:each) do
         login(user_login)
-        Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
-        @preg_screen_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
-        @ppg12_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
+        @preg_screen_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29)
+        @ppg12_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
 
         @person      = Factory(:person)
         @participant = Factory(:participant)
@@ -83,15 +81,13 @@ describe ContactsController do
 
       describe "GET edit with next_event param" do
         it "creates a new contact link and event when continuing to next event" do
-          create_missing_in_error_ncs_codes(Event)
           @contact = Factory(:contact)
           contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => Factory(:event, :event_type => @preg_screen_event))
-          status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
           @person.upcoming_events.should == ["LO-Intensity: Pregnancy Screener"]
 
           @participant.register!
           @participant.assign_to_pregnancy_probability_group!
-          Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+          Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
 
           @person.participant.reload
           @person.contact_links.reload
@@ -111,23 +107,21 @@ describe ContactsController do
     context "for a low_intensity_ppg2_participant" do
       before(:each) do
         login(user_login)
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
-        Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-        @ppg12_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
         @person      = Factory(:person)
         @participant = Factory(:low_intensity_ppg2_participant)
         @participant.person = @person
         @participant.save!
-        Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
         Contact.stub(:new).and_return(mock_contact)
 
         @person.upcoming_events.should == ["LO-Intensity: PPG 1 and 2"]
       end
 
-      describe "GET new" do
+      describe "GET new", :bad_2024 do
 
         before(:each) do
-          params = {:participant => @participant, :event_type => @ppg12_event, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
+          params = {:participant => @participant, :event_type_code => 33, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
+          # TODO: Event is a value object. Why stub?
           Event.stub(:new).with(params).and_return(mock_event(params))
         end
 
@@ -139,15 +133,16 @@ describe ContactsController do
         it "assigns a new event as @event" do
           get :new, :person_id => @person.id
           assigns[:event].should equal(mock_event)
-          assigns[:event].event_type.should equal(@ppg12_event)
+          assigns[:event].event_type.local_code.should equal(33)
         end
       end
 
       describe "GET new with a given event_type" do
         it "assigns a new event as @event with the given event type" do
-          @preg_screen_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
+          # TODO: code?
+          @preg_screen_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29)
           get :new, :person_id => @person.id, :event_type_id => @preg_screen_event.id
-          assigns[:event].event_type.should == @preg_screen_event
+          assigns[:event].event_type.local_code.should == @preg_screen_event.local_code
         end
       end
 

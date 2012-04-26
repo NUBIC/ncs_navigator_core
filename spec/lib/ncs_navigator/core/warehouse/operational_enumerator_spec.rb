@@ -37,10 +37,6 @@ module NcsNavigator::Core::Warehouse
     let(:producer_names) { [] }
     let(:results) { enumerator.to_a(*producer_names) }
 
-    def self.code(i)
-      Factory(:ncs_code, :local_code => i)
-    end
-
     shared_examples 'one to one' do
       it 'creates one record per source entry' do
         results.collect(&:class).should == [warehouse_model]
@@ -130,7 +126,7 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:hh_eligibility,               code(7), :hh_elig,         '7'],
+          [:hh_eligibility_code,                3, :hh_elig,         '3'],
           [:number_of_age_eligible_women,      11, :num_age_elig,   '11'],
           [:number_of_pregnant_women,           4, :num_preg,        '4'],
           [:number_of_pregnant_minors,          1, :num_preg_minor,  '1'],
@@ -181,13 +177,13 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:marital_status,                 code(9),     :maristat,     '9'],
+          [:marital_status_code,                  2,     :maristat,     '2'],
           [:marital_status_other,           'On fire',   :maristat_oth],
-          [:language,                       code(4),     :person_lang,  '4'],
+          [:language_code,                        4,     :person_lang,  '4'],
           [:language_other,                 'Esperanto', :person_lang_oth],
-          [:preferred_contact_method,       code(1),     :pref_contact, '1'],
+          [:preferred_contact_method_code,        1,     :pref_contact, '1'],
           [:preferred_contact_method_other, 'Pigeon',    :pref_contact_oth],
-          [:planned_move,                   code(4),     :plan_move,    '4'],
+          [:planned_move_code,                    1,     :plan_move,    '1'],
         ].each do |core_field, core_value, wh_field, wh_value|
           verify_mapping(core_field, core_value, wh_field, wh_value)
         end
@@ -227,8 +223,7 @@ module NcsNavigator::Core::Warehouse
       before do
         Factory(:person)
         Factory(:person_race, :person => Person.first)
-        Factory(:person_race, :person => Person.first,
-          :race => Factory(:ncs_code, :local_code => 2))
+        Factory(:person_race, :person => Person.first, :race_code => 2)
 
         producer_names << :person_races
       end
@@ -263,7 +258,7 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:pid_age_eligibility, code(8), :pid_age_elig, '8']
+          [:pid_age_eligibility_code, 3, :pid_age_elig, '3']
         ].each do |core_field, core_value, wh_field, wh_value|
           it "maps #{core_field} to #{wh_field}" do
             verify_mapping(core_field, core_value, wh_field, wh_value)
@@ -549,13 +544,13 @@ module NcsNavigator::Core::Warehouse
           [:instrument_start_time, '23:30',              :ins_start_time],
           [:instrument_end_date,   Date.new(2009, 5, 9), :ins_date_end,   '2009-05-09'],
           [:instrument_end_time,   '01:30',              :ins_end_time],
-          [:instrument_breakoff,   code(2),              :ins_breakoff,   '2'],
-          [:instrument_status,     code(4),              :ins_status,     '4'],
-          [:instrument_mode,       code(2),              :ins_mode,       '2'],
+          [:instrument_breakoff_code,    2,              :ins_breakoff,   '2'],
+          [:instrument_status_code,      4,              :ins_status,     '4'],
+          [:instrument_mode_code,        2,              :ins_mode,       '2'],
           [:instrument_mode_other, 'Helicopter drop',    :ins_mode_oth],
-          [:instrument_method,     code(1),              :ins_method,     '1'],
+          [:instrument_method_code,      1,              :ins_method,     '1'],
           [:instrument_comment,    'Confused',           :instru_comment],
-          [:supervisor_review,     code(1),              :sup_review,     '1']
+          [:supervisor_review_code,      1,              :sup_review,     '1']
         ].each { |crit| verify_mapping(*crit) }
       end
     end
@@ -581,7 +576,7 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:event_disposition_category, code(4),                  :event_disp_cat,    '4'],
+          [:event_disposition_category_code,  4,                  :event_disp_cat,    '4'],
           [:event_incentive_cash,       BigDecimal.new('7.11'),   :event_incent_cash, '7.11'],
           [:event_incentive_noncash,    'Chick-fil-a coupons',    :event_incent_noncash]
         ].each { |crit| verify_mapping(*crit) }
@@ -654,7 +649,7 @@ module NcsNavigator::Core::Warehouse
         [
           [:contact_disposition,    7,         :contact_disp, '507', 'always using a final code'],
           [:contact_disposition,    507,       :contact_disp, '507'],
-          [:contact_language,       code(10),  :contact_lang, '10'],
+          [:contact_language_code,        10,  :contact_lang, '10'],
           [:contact_language_other, 'Klingon', :contact_lang_oth],
           [:who_contacted_other,    'Cat',     :who_contact_oth]
         ].each { |crit| verify_mapping(*crit) }
@@ -720,19 +715,19 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:nir_vacancy_information,        code(4),     :nir_vac_info, '4'],
+          [:nir_vacancy_information_code,         4,     :nir_vac_info, '4'],
           [:nir_vacancy_information_other,  'L',         :nir_vac_info_oth],
-          [:nir_no_access,                  code(3),     :nir_noaccess, '3'],
+          [:nir_no_access_code,                   3,     :nir_noaccess, '3'],
           [:nir_no_access_other,            'B',         :nir_noaccess_oth],
           [:cog_disability_description,     'Small hat', :cog_dis_desc],
-          [:permanent_disability,           code(2),     :perm_disability, '2'],
+          [:permanent_disability_code,            2,     :perm_disability, '2'],
           [:deceased_inform_relation_other, 'Postman',   :deceased_inform_oth],
           [:year_of_death,                  '1865',      :yod],
-          [:state_of_death,                 code(15),    :state_death, '15'],
-          [:refusal_action,                 code(2),     :ref_action, '2'],
+          [:state_of_death_code,                  15,    :state_death, '15'],
+          [:refusal_action_code,                  2,     :ref_action, '2'],
           [:long_term_illness_description,  'EB',        :lt_illness_desc],
-          [:permanent_long_term,            code(-6),    :perm_ltr, '-6'],
-          [:reason_unavailable,             code(4),     :reason_unavail, '4'],
+          [:permanent_long_term_code,             -6,    :perm_ltr, '-6'],
+          [:reason_unavailable_code,              4,     :reason_unavail, '4'],
           [:reason_unavailable_other,       'Bats',      :reason_unavail_oth],
           [:moved_inform_relation_other,    'Mr. Chips', :moved_relation_oth]
         ].each { |crit| verify_mapping(*crit) }
@@ -756,7 +751,7 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:nir_dwelling_unit_type,       code(1),     :nir_type_du, '1'],
+          [:nir_dwelling_unit_type_code,        1,     :nir_type_du, '1'],
           [:nir_dwelling_unit_type_other, 'Houseboat', :nir_type_du_oth]
         ].each { |crit| verify_mapping(*crit) }
       end
@@ -783,7 +778,7 @@ module NcsNavigator::Core::Warehouse
         include_context 'mapping test'
 
         [
-          [:nir_no_access,       code(-5), :nir_noaccess, '-5'],
+          [:nir_no_access_code,        -5, :nir_noaccess, '-5'],
           [:nir_no_access_other, 'Bats',   :nir_noaccess_oth]
         ].each { |crit| verify_mapping(*crit) }
       end

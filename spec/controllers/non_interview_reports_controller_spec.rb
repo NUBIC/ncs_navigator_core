@@ -31,7 +31,6 @@ describe NonInterviewReportsController do
 
   context "with an authenticated user" do
     before(:each) do
-      create_missing_in_error_ncs_codes(NonInterviewReport)
       @contact_link = Factory(:contact_link)
       login(user_login)
     end

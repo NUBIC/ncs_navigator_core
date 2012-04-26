@@ -11,7 +11,6 @@ describe PatientStudyCalendar do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
     @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   subject { PatientStudyCalendar.new(@user) }
@@ -151,12 +150,12 @@ describe PatientStudyCalendar do
   context "with a participant" do
 
     before(:each) do
-      @female  = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
+      @female  = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
       @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
       @participant = Factory(:participant)
       @participant.person = @person
       @participant.register!
-      ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+      ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
       Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
     end
 
@@ -232,7 +231,7 @@ describe PatientStudyCalendar do
         participant = Factory(:participant, :p_id => "angela_davis_public_id")
         participant.person = person
         participant.register!
-        ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+        ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
         Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
 
         participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
@@ -295,16 +294,16 @@ describe PatientStudyCalendar do
   context "determining schedule state" do
 
     before(:each) do
-      @female = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
+      @female = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
       @person = Factory(:person, :first_name => "Etta", :last_name => "Baker", :sex => @female, :person_dob => '1900-01-01')
       @participant = Factory(:participant)
       @participant.person = @person
       @participant.register!
-      ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+      ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
       Factory(:ppg_status_history, :participant => @participant, :ppg_status => ppg1)
 
-      @ppgfu_event = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
-      @preg_screen = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29)
+      @ppgfu_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 7)
+      @preg_screen = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29)
     end
 
     it "knows about scheduled segments" do
@@ -463,15 +462,15 @@ describe PatientStudyCalendar do
 
     context "a new ppg 2 participant" do
 
-      let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
-      let(:status2) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
-      let(:status2a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+      let(:status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+      let(:status2) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 2) }
+      let(:status2a) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2) }
 
-      let(:female) { Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2) }
+      let(:female) { NcsCode.for_list_name_and_local_code("GENDER_CL1", 2) }
 
-      let(:preg_screen) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29) }
-      let(:lo_i_quex) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
-      let(:informed_consent) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Informed Consent", :local_code => 10) }
+      let(:preg_screen) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29) }
+      let(:lo_i_quex) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33) }
+      let(:informed_consent) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 10) }
 
       let(:date) { "2012-02-06" }
 

@@ -126,7 +126,8 @@ module NcsNavigator::Core::Psc
       end
 
       describe '#map_events' do
-        let!(:event_type) { Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Probability') }
+        # pregnancy probability
+        let(:event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7) }
         let!(:event) { Factory(:event, :participant => participant, :event_start_date => Date.new(2012, 2, 16), :event_type => event_type) }
 
         it 'maps the first event label to an event on the participant' do
@@ -166,7 +167,7 @@ module NcsNavigator::Core::Psc
       end
 
       describe '#map_instruments' do
-        let!(:event_type) { Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Probability') }
+        let!(:event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7) }
         let!(:event) { Factory(:event, :participant => participant, :event_start_date => Date.new(2012, 2, 16), :event_type => event_type) }
         let!(:survey) { Factory(:survey, :title => 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1', :access_code => 'ins_que_ppgfollup_saq_ehpbhili_p2') }
         let!(:response_set) { Factory(:response_set, :instrument => instrument, :survey => survey, :person => person) }
@@ -260,7 +261,7 @@ module NcsNavigator::Core::Psc
       end
 
       describe '#map_contacts' do
-        let!(:event_type) { Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => 'Pregnancy Probability') }
+        let!(:event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7) }
         let!(:event) { Factory(:event, :participant => participant, :event_start_date => Date.new(2012, 2, 16), :event_type => event_type) }
 
         def do_mapping
@@ -393,8 +394,8 @@ module NcsNavigator::Core::Psc
 
         before do
           # Expected by Person#start_instrument.
-          create_missing_in_error_ncs_codes(Instrument)
-          InstrumentEventMap.stub!(:instrument_type => Factory(:ncs_code))
+          InstrumentEventMap.stub!(
+            :instrument_type => NcsCode.for_attribute_name_and_local_code(:instrument_type, 4))
 
           report.rows = [r1]
         end

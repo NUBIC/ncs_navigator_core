@@ -105,9 +105,6 @@ module NcsNavigator::Core::Warehouse
         redis.sadd(
           "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:e1",
           'e1_lc2')
-
-        create_all_event_types
-        create_missing_in_error_ncs_codes(Event)
       end
 
       it 'schedules segments for events' do
@@ -251,9 +248,6 @@ module NcsNavigator::Core::Warehouse
             :event_type_label => 'birth',
             :end_date => '2010-09-30')
           redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
-
-          create_all_event_types
-          create_missing_in_error_ncs_codes(Event)
 
           psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
 
@@ -813,9 +807,6 @@ module NcsNavigator::Core::Warehouse
           :event_type_label => 'birth',
           :end_date => '2010-09-30')
         redis.sadd("#{ns}:psc_sync:p:#{p_id}:events", 'e1')
-
-        create_all_event_types
-        create_missing_in_error_ncs_codes(Event)
 
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
 

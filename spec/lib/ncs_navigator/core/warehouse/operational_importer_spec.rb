@@ -89,7 +89,7 @@ module NcsNavigator::Core::Warehouse
 
         describe 'when a code field is updated' do
           let!(:new_coded_value) {
-            Factory(:ncs_code, :local_code => 4, :list_name => 'MARITAL_STATUS_CL1')
+            NcsCode.for_list_name_and_local_code('MARITAL_STATUS_CL1', 4)
           }
 
           before do
@@ -277,12 +277,6 @@ module NcsNavigator::Core::Warehouse
           let(:core_model) { PpgDetail }
           include_context 'basic model import test'
 
-          before do
-            # TODO: we should really have all the lookup values in the
-            # test database at all times
-            Factory(:ncs_code, :list_name => 'PPG_STATUS_CL1', :local_code => 2)
-          end
-
           it 'does not create a status history record' do
             initial_history_count = PpgStatusHistory.count
             importer.import(core_table)
@@ -391,23 +385,6 @@ module NcsNavigator::Core::Warehouse
         create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '2',
           :contact => screener_contact_2, :event => screener_event)
       }
-
-      before do
-        # TODO: we should really have all the lookup values in the
-        # test database at all times
-        {
-          :contact_type_cl1 => [2, 3],
-          :ppg_status_cl1 => [1, 2],
-          :information_source_cl3 => [1]
-        }.each do |list, codes|
-          codes.each do |code|
-            Factory(:ncs_code, :local_code => code, :list_name => list.to_s.upcase)
-          end
-        end
-        [PpgStatusHistory, PpgDetail, Event, Contact, ContactLink, Participant].each do |cls|
-          create_missing_in_error_ncs_codes(cls)
-        end
-      end
 
       describe 'when the source history is correct' do
         it 'leaves the history alone' do
@@ -519,15 +496,6 @@ module NcsNavigator::Core::Warehouse
     describe 'Event, LinkContact, and Instrument', :slow do
       before do
         Event.count.should == 0
-
-        {
-          :confirm_type_cl2 => [1, 2], # for enroll status
-          :consent_type_cl1 => [1, 7]
-        }.each do |list_name, codes|
-          codes.each do |code|
-            Factory(:ncs_code, :list_name => list_name.to_s.upcase, :local_code => code)
-          end
-        end
       end
 
       let(:fred_p) {

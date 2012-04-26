@@ -7,16 +7,15 @@ describe Reporting::CaseStatusReport do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
     @user = mock(:username => "user", :cas_proxy_ticket => "PT-cas-ticket")
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-    @state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "ILLINOIS", :local_code => 14)
-    @pv1 = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "PV1", :local_code => 13)
-    @loi = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Lo I Quex", :local_code => 33)
+    @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+    @pv1 = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 13)
+    @loi = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
   end
 
   let(:subject) { PatientStudyCalendar.new(@user) }
 
-  let(:ppg1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
-  let(:ppg2) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+  let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
+  let(:ppg2) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2) }
 
   let(:scheduled_study_segment_identifier_1) { 'b3e4b432-b4f6-4b27-ad6b-6a37e17da5ab' } # LUCY
   let(:scheduled_study_segment_identifier_2) { 'fdbf8c20-7805-4d7f-b82c-ee3624641509' } # HENRIETTA
@@ -41,13 +40,6 @@ describe Reporting::CaseStatusReport do
   context "creating a status report for a given period" do
 
     before(:each) do
-      create_missing_in_error_ncs_codes(Person)
-      create_missing_in_error_ncs_codes(Participant)
-      create_missing_in_error_ncs_codes(Address)
-      create_missing_in_error_ncs_codes(Telephone)
-      create_missing_in_error_ncs_codes(Event)
-      create_missing_in_error_ncs_codes(Contact)
-      create_missing_in_error_ncs_codes(ContactLink)
 
       @per1 = Factory(:person, :first_name => 'LUCY', :last_name => 'VANPELT')
       Factory(:address, :person => @per1, :state => @state, :address_one => "1 Peanut Drive")

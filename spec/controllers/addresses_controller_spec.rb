@@ -8,14 +8,13 @@ describe AddressesController do
     {
       :address_one => "2 Main",
       :city => "Chicago",
-      :state_code => Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "ILLINOIS", :local_code => 1),
+      :state_code => 1,
       :zip => "60666"
     }
   end
 
   context "with an authenticated user" do
     before(:each) do
-      create_missing_in_error_ncs_codes(Address)
       @person = Factory(:person)
       @address1 = Factory(:address, :person => @person, :address_one => "1 Main Street")
       @address2 = Factory(:address, :person => @person, :address_one => "2 State Street")
@@ -116,7 +115,7 @@ describe AddressesController do
               :person_id => person.id,
               :address_one => "2 Main",
               :city => "Chicago",
-              :state_code => Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "ILLINOIS", :local_code => 1),
+              :state_code => 1,
               :zip => "60666"
             }
 
@@ -133,7 +132,7 @@ describe AddressesController do
               :person_id => person.id,
               :address_one => "2 Main",
               :city => "Chicago",
-              :state_code => Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "ILLINOIS", :local_code => 1),
+              :state_code => 1,
               :zip => "60666"
             }
 

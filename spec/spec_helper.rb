@@ -107,7 +107,7 @@ Spork.prefork do
     end
 
     config.before(:each, :clean_with_truncation) do
-      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = [:truncation, { :except => %w(ncs_codes) }]
     end
 
     config.after(:each, :clean_with_truncation) do
