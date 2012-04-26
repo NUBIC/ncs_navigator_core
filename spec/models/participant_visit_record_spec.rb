@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # == Schema Information
-# Schema version: 20120404205955
+# Schema version: 20120426034324
 #
 # Table name: participant_visit_records
 #

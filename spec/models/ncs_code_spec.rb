@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
 # == Schema Information
-# Schema version: 20120404205955
+# Schema version: 20120426034324
 #
 # Table name: ncs_codes
 #
-#  id               :integer         not null, primary key
-#  list_name        :string(255)
-#  list_description :string(255)
-#  display_text     :string(255)
-#  local_code       :integer
-#  global_code      :string(255)
-#  created_at       :datetime
-#  updated_at       :datetime
+#  id           :integer         not null, primary key
+#  list_name    :string(255)
+#  display_text :string(255)
+#  local_code   :integer
+#  created_at   :datetime
+#  updated_at   :datetime
 #
 
 require 'spec_helper'
