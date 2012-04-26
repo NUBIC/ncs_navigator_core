@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'fastercsv'
+require 'csv'
 
 module Reporting
   class CaseStatusReport
@@ -121,7 +121,7 @@ module Reporting
 
     ##
     # Generate a csv of the data collected
-    # @return [FasterCSV]
+    # @return [CSV]
     def generate_report
       statuses = case_statuses
       p_ids = statuses.collect { |c| c.q_id }
@@ -129,7 +129,7 @@ module Reporting
       last_contacts = last_contacts(p_ids)
       current_ppg_statuses = ppg_statuses(p_ids)
 
-      FasterCSV.generate do |csv|
+      CSV.generate do |csv|
         csv << REPORT_HEADERS
         statuses.each do |c|
           last_contact = last_contacts[c.q_id.to_i]

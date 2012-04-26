@@ -1,7 +1,9 @@
 # encoding: utf-8
 
 require 'active_support/concern'
+require 'csv'
 require 'uuidtools'
+
 module MdesRecord
   extend ActiveSupport::Concern
 
@@ -138,7 +140,7 @@ module MdesRecord
 
     def export_versions
       keys = ["when", "who", "what"] + get_attribute_names
-      csv_string = FasterCSV.generate do |csv|
+      csv_string = CSV.generate do |csv|
         add_headers(csv, keys)
         add_version_values(csv)
         add_object_values(csv)
