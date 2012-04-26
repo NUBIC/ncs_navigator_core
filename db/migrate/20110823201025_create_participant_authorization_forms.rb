@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateParticipantAuthorizationForms < ActiveRecord::Migration
   def self.up
     create_table :participant_authorization_forms do |t|

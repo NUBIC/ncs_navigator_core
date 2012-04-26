@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AddResponseMdesSourceTracking < ActiveRecord::Migration
   def up
     add_column :responses, :source_mdes_table, :string, :limit => 100

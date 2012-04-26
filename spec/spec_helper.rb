@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'rubygems'
 require 'spork'
 require 'database_cleaner'

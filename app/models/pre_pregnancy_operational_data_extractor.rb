@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class PrePregnancyOperationalDataExtractor
 
   INTERVIEW_PREFIX = "PRE_PREG"

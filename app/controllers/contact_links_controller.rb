@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class ContactLinksController < ApplicationController
 
   # GET /contact_links

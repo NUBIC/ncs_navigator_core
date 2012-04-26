@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'json-schema'
 require 'ncs_navigator/core'
 require 'uri'

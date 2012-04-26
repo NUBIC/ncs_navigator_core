@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'active_support/concern'
 require 'csv'
 require 'uuidtools'

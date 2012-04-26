@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/warehouse'
 
 module NcsNavigator::Core::Spec

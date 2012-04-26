@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class TelephonesController < ApplicationController
 
   def new

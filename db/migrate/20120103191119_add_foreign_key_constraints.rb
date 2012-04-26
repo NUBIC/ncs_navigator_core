@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AddForeignKeyConstraints < ActiveRecord::Migration
   def up
     # add_foreign_key(:from, :to, :column => 'xxx_id', :name => 'from_to_fk')

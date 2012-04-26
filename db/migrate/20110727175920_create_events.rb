@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateEvents < ActiveRecord::Migration
   def self.up
     create_table :events do |t|

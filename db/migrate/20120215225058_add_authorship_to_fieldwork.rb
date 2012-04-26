@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AddAuthorshipToFieldwork < ActiveRecord::Migration
   def up
     add_column :fieldworks, :client_id, :string

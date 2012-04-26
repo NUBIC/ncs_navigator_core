@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AddHiLoToParticipants < ActiveRecord::Migration
   def self.up
     add_column :participants, :high_intensity, :boolean

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AddDisplayTypeToAnswers < ActiveRecord::Migration
   def self.up
     add_column :answers, :display_type, :string

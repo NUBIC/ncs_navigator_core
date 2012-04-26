@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 module SurveyorHelper
   include Surveyor::Helpers::SurveyorHelperMethods
 

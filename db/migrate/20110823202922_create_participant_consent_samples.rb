@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateParticipantConsentSamples < ActiveRecord::Migration
   def self.up
     create_table :participant_consent_samples do |t|

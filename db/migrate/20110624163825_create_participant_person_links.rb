@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateParticipantPersonLinks < ActiveRecord::Migration
   def self.up
     create_table :participant_person_links do |t|

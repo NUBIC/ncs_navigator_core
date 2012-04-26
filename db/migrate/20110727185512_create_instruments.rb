@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateInstruments < ActiveRecord::Migration
   def self.up
     create_table :instruments do |t|

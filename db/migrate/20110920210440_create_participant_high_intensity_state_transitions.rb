@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateParticipantHighIntensityStateTransitions < ActiveRecord::Migration
   def change
     create_table :participant_high_intensity_state_transitions do |t|

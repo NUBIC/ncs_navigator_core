@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreatePpgStatusHistories < ActiveRecord::Migration
   def self.up
     create_table :ppg_status_histories do |t|

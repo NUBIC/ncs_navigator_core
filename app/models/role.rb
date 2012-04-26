@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 module Role
   SYSTEM_ADMINISTRATOR          = "System Administrator"
   USER_ADMINISTRATOR            = "User Administrator"

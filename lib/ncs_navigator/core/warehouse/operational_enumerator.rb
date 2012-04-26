@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core'
 
 require 'ncs_navigator/warehouse/models/two_point_zero'

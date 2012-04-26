@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateNonInterviewReports < ActiveRecord::Migration
   def change
     create_table :non_interview_reports do |t|

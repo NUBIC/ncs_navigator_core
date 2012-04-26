@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 module WelcomeHelper
 
   def activities(json_response)

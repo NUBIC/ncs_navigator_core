@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 require 'aker/authority/ncs_navigator_authority'

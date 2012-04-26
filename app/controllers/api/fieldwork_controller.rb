@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class Api::FieldworkController < ApplicationController
   respond_to :json
 

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core/warehouse'
 require 'forwardable'
 

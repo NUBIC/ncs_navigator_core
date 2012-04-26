@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 Factory.define :listing_unit do |lu|
   lu.psu              { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
   lu.list_line        1

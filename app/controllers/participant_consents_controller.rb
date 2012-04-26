@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class ParticipantConsentsController < ApplicationController
 
   # TODO: set the person who consented or who withdrew consent

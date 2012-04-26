@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class AddLogsToFieldwork < ActiveRecord::Migration
   def change
     add_column :fieldworks, :generation_log, :text

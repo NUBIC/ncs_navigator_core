@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class CreateParticipantVisitRecords < ActiveRecord::Migration
   def self.up
     create_table :participant_visit_records do |t|

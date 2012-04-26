@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 Factory.define :ppg_detail do |ppg|
   ppg.association :participant,  :factory => :participant
   ppg.psu                { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
