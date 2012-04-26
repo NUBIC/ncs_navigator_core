@@ -373,13 +373,13 @@ describe Contact do
           @contact.who_contacted.local_code.should == -4
         end
 
-        it "sets the contact_location to missing in error", :bad_2024 do
+        it "sets the contact_location to NCS Site office" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
-          @contact.contact_location.local_code.should == -4
+          @contact.contact_location.to_s == "NCS Site office"
         end
 
-        it "sets the contact_private code to No and private_detail is nil", :bad_2024 do
+        it "sets the contact_private code to No and private_detail is nil" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_private.to_s.should == "No"
@@ -401,13 +401,13 @@ describe Contact do
                                        :contact_location => nil, :contact_private => nil, :who_contacted => nil)
         end
 
-        it "sets the contact_location to missing in error", :bad_2024 do
+        it "sets the contact_location to NCS Site office" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
-          @contact.contact_location.local_code.should == -4
+          @contact.contact_location.to_s == "NCS Site office"
         end
 
-        it "sets the contact_private code to No and private_detail is nil", :bad_2024 do
+        it "sets the contact_private code to No and private_detail is nil" do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_private.to_s.should == "No"
