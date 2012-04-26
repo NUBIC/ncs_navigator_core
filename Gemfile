@@ -94,6 +94,10 @@ group :test, :ci do
 
   gem 'capybara'
   gem 'rack-test'
+
+  platform :ruby_19 do
+    gem 'test-unit', :require => 'test/unit'
+  end
 end
 
 group :test do
