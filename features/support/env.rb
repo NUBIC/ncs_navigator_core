@@ -34,14 +34,6 @@ Spork.prefork do
   #
   ActionController::Base.allow_rescue = false
 
-  # Remove/comment out the lines below if your app doesn't have a database.
-  # For some databases (like MongoDB and CouchDB) you may need to use :truncation instead.
-  begin
-    DatabaseCleaner.strategy = :transaction
-  rescue NameError
-    raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
-  end
-
   # You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
   # See the DatabaseCleaner documentation for details. Example:
   #
@@ -78,6 +70,12 @@ end
 Spork.each_run do
   # This code will be run each time you run your specs.
   FactoryGirl.reload
+
+  DatabaseCleaner.clean_with(:truncation)
+  NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
+
+  DatabaseCleaner.strategy = :transaction
+  Cucumber::Rails::Database.javascript_strategy = [:truncation, { :except => %w(ncs_codes) }]
 end
 
 ENV['PSC_USERNAME_PASSWORD'] = %w(pscuser pscpwd).join(',')

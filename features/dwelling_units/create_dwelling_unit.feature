@@ -7,12 +7,6 @@ Feature: Creating a dwelling unit
   Scenario: Creating a new dwelling unit
     Given valid ncs codes
     And an authenticated user
-    And the following ncs_code records:
-      | list_name                 | display_text             | local_code |
-      | CONFIRM_TYPE_CL2          | Yes                      | 1          |
-      | CONFIRM_TYPE_CL3          | No                       | 2          |
-      | RESIDENCE_TYPE_CL2        | Single-Family Home       | 1          |
-      | STATE_CL1                 | ILLINOIS                 | 1          |
     When I am on the dwelling units page
     Then I should see "Dwelling Units"
     And I should see "No dwelling units were found."
@@ -21,7 +15,7 @@ Feature: Creating a dwelling unit
     Then I should be on the new dwelling unit page
     And I should see "New Dwelling Unit"
     When I select "Yes" from "Duplicate Address"
-    And I select "Single-Family Home" from "Type of Residence"
+    And I select "Single Family Home" from "Type of Residence"
     And I fill in "Address One" with "1 State Str."
     And I fill in "Address Two" with "Apt 2B"
     And I fill in "City" with "Chicago"

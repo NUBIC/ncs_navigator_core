@@ -14,9 +14,9 @@ end
 
 Given /^a pregnancy_visit_1 pending event$/ do
   participant = Participant.last
-  et = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Visit 1", :local_code => 13)
+  et = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 13)
   Factory(:event, :participant => participant, :event_type => et, :event_start_date => "2011-11-09")
-  et = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
+  et = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
   Factory(:event, :participant => participant, :event_type => et, :event_start_date => "2012-05-09")
 end
 
