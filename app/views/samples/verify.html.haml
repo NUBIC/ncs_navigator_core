@@ -1,0 +1,112 @@
+= label "label", "Manifest for samples"
+- if defined?(errors) && errors.any?
+  %div{ :id => "errorExplanation", :class => "errorExplanation"}
+    %h2
+      = pluralize(errors.count, "error")
+      prohibited this shipment
+      from being saved
+    %ul
+      - errors.full_messages.each do |msg|
+        %li
+          = msg
+.page_section
+  = form_tag generate_samples_path do
+    %div{:id => 'sample_table', :class => 'sample_table'}
+      %table.records
+        %tr
+          %th
+            Specimen ID
+          %th
+            Sample Type
+          %th
+            Volume
+          %th
+            Root ID
+          %th
+            Extension
+        - @sample_receipt_stores.each do |srs|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = srs.sample_id
+              = hidden_field_tag "sample_id[]", srs.sample_id
+            %td
+              = sample_type(srs.sample_id)
+            %td
+              %input{:type=>"text", :class => 'volume', :name=>"volume[#{srs.sample_id}][]", :value=>""}              
+            %td
+              = sample_root_id(srs.sample_id)
+            %td
+              = sample_extenstion(srs.sample_id)            
+    %div{:id => 'manifest_form', :class => 'manifest_form'}
+      Ship Date and Time: 
+      - if @shipment_date_and_time.blank?
+        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>""}
+      - else
+        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>@shipment_date_and_time}      
+      %br
+
+      Shipment ID:
+      = @shipper_id
+      %br
+
+      PSU ID:
+      = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
+      %br
+
+      Site Code:
+      = @sample_receipt_shipping_center_id
+      = hidden_field_tag "sample_receipt_shipping_center_id", @sample_receipt_shipping_center_id
+      %br
+
+      Contact Name:
+      - if @contact_name.blank?
+        %input{:type=>"text", :name=>"contact_name", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"contact_name", :value=>@contact_name}
+      %br
+
+      Contact Phone:
+      - if @contact_phone.blank?
+        %input{:type=>"text", :name=>"contact_phone", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"contact_phone", :value=>@contact_phone}
+      %br
+
+      Sent to Site:
+      - if @send_to_site_selected.blank?
+        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site))
+      - else
+        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site, @send_to_site_selected))
+      %br
+
+      Carrier:
+      - if @carrier.blank?
+        %input{:type=>"text", :name=>"carrier", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"carrier", :value=>@carrier}      
+      %br
+
+      Tracking Number:
+      - if @shipment_tracking_number.blank?
+        %input{:type=>"text", :name=>"shipment_tracking_number", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"shipment_tracking_number", :value=>@shipment_tracking_number}
+      %br
+    
+      Shipping Temperature:
+      - if @shipment_temperature_code.blank?
+        = select_tag("temp[]", options_for_select([["-- Select Temperature --", ""]] + @shipping_temperature))
+      - else
+        = select_tag("temp[]", options_for_select([["-- Select Temperature --", ""]] + @shipping_temperature, @shipment_temperature_code))
+      %br
+    
+      Total # Containers:
+      = @total_number_of_containers
+      = hidden_field_tag "total_number_of_containers", @total_number_of_containers
+      %br
+    
+      Total # Samples:
+      = @total_number_of_samples
+      = hidden_field_tag "total_number_of_samples", @total_number_of_samples
+      %br  
+    = submit_tag "Generate Manifest"

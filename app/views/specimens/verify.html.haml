@@ -1,0 +1,118 @@
+= label "label", "Manifest for specimens"
+- if defined?(errors) && errors.any?
+  %div{ :id => "errorExplanation", :class => "errorExplanation"}
+    %h2
+      = pluralize(errors.count, "error")
+      prohibited this shipment
+      from being saved
+    %ul
+      - errors.full_messages.each do |msg|
+        %li
+          = msg
+.page_section
+  = form_tag generate_specimens_path do
+    %div{:id => 'specimen_table', :class => 'specimen_table'}
+      %table.records
+        %tr
+          %th
+            Storage Container ID
+          %th
+            Specimen ID
+          %th
+            Sample Type
+          %th
+            Volume
+          %th
+            Root ID
+          %th
+            Extension
+        - @specimen_receipts_hash.each do |k, v|
+          - cycle_var = cycle('even_record', 'odd_record')
+          - v.each_with_index do |sr, index|
+            %tr{ :class => cycle_var }
+              - if index == 0                  
+                %td{:rowspan=>v.size}
+                  = k
+                  = hidden_field_tag "storage_container_id[]", k
+              %td
+                = sr.specimen_id
+                = hidden_field_tag "spec_id[]", sr.specimen_id
+              %td
+                = sample_type(sr.specimen_id)
+              %td
+                %input{:type=>"text", :class => 'volume', :name=>"volume[#{sr.specimen_id}][]", :value=>""}
+              %td
+                = sample_root_id(sr.specimen_id)
+              %td
+                = sample_extenstion(sr.specimen_id)
+    %div{:id => 'manifest_form', :class => 'manifest_form'}
+      Ship Date and Time: 
+      - if @shipment_date_and_time.blank?
+        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>""}
+      - else
+        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>@shipment_date_and_time}      
+      %br
+
+      Shipment ID:
+      = @shipper_id
+      %br
+
+      PSU ID:
+      = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
+      %br
+
+      Site Code:
+      = @specimen_processing_shipping_center_id
+      = hidden_field_tag "specimen_processing_shipping_center_id", @specimen_processing_shipping_center_id
+      %br
+
+      Contact Name:
+      - if @contact_name.blank?
+        %input{:type=>"text", :name=>"contact_name", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"contact_name", :value=>@contact_name}
+      %br
+
+      Contact Phone:
+      - if @contact_phone.blank?
+        %input{:type=>"text", :name=>"contact_phone", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"contact_phone", :value=>@contact_phone}
+      %br
+
+      Sent to Site:
+      - if @send_to_site_selected.blank?
+        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site))
+      - else
+        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site, @send_to_site_selected))
+      %br
+
+      Carrier:
+      - if @carrier.blank?
+        %input{:type=>"text", :name=>"carrier", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"carrier", :value=>@carrier}      
+      %br
+
+      Tracking Number:
+      - if @shipment_tracking_number.blank?
+        %input{:type=>"text", :name=>"shipment_tracking_number", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"shipment_tracking_number", :value=>@shipment_tracking_number}
+      %br
+    
+      Shipping Temperature:
+      - if @shipment_temperature_code.blank?
+        = select_tag("temp[]", options_for_select([["-- Select Temperature --", ""]] + @shipping_temperature))
+      - else
+        = select_tag("temp[]", options_for_select([["-- Select Temperature --", ""]] + @shipping_temperature, @shipment_temperature_code))
+      %br
+    
+      Total # Containers:
+      = @specimen_receipts_hash.size
+      %br
+    
+      Total # Samples:
+      = @specimen_receipts.size
+      %br  
+    = submit_tag "Generate Manifest"

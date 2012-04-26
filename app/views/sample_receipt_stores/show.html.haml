@@ -1,0 +1,4 @@
+- if @receive
+  = render "sample_receipt_stores/sample_receipt", :specimen_receipt => @sample_receipt_store
+- else
+  = render "sample_receipt_stores/sample_store", :specimen_receipt => @sample_receipt_store

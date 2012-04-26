@@ -1,0 +1,92 @@
+= label "label", "Manifest for samples"
+.page_section
+  = form_tag :action => 'send_email' do
+    %div{:id => 'manifest_form', :class => 'manifest_form'}
+      Ship Date and Time: 
+      = @shipment_date_and_time
+      = hidden_field_tag "shipment_date_and_time", @shipment_date_and_time
+      %br
+
+      Shipment ID:
+      = @shipper_id
+      %br
+
+      PSU ID:
+      = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_id)      
+      %br
+
+      Site Code:
+      = @sample_receipt_shipping_center_id
+      = hidden_field_tag "sample_receipt_shipping_center_id", @sample_receipt_shipping_center_id
+      %br
+
+      Contact Name:
+      = @contact_name
+      = hidden_field_tag "contact_name", @contact_name
+      %br
+
+      Contact Phone:
+      = @contact_phone
+      = hidden_field_tag "contact_phone", @contact_phone
+      %br
+
+      Sent to Site:
+      = @send_to_site_selected
+      = hidden_field_tag "send_to_site_selected", @send_to_site_selected
+      %br
+
+      Carrier:
+      = @carrier
+      = hidden_field_tag "carrier", @carrier
+      %br
+
+      Tracking Number:
+      = @shipment_tracking_number
+      = hidden_field_tag "shipment_tracking_number", @shipment_tracking_number
+      %br
+    
+      Shipping Temperature:
+      = @shipping_temperature_selected
+      = hidden_field_tag "shipping_temperature_selected", @shipping_temperature_selected
+      %br
+    
+      Total # Containers:
+      = @sample_receipt_stores.size
+      = hidden_field_tag "total_number_of_containers", @sample_receipt_stores.size
+      %br
+    
+      Total # Samples:
+      = @sample_receipt_stores.size
+      = hidden_field_tag "total_number_of_samples", @sample_receipt_stores.size
+      %br  
+      
+      = hidden_field_tag "kind", "ENV"
+    %div{:id => 'sample_table', :class => 'sample_table'}
+      %table.records
+        %tr
+          %th
+            Sample ID
+          %th
+            Sample Type
+          %th
+            Volume
+          %th
+            Root ID
+          %th
+            Extension
+        - @sample_receipt_stores.each do |srs|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = srs.sample_id
+              = hidden_field_tag "sample_id[]", srs.sample_id
+            %td
+              = sample_type(srs.sample_id)
+            %td
+              = @volume[srs.sample_id].first
+              = hidden_field_tag "volume[#{srs.sample_id}][]", @volume[srs.sample_id]             
+            %td
+              = sample_root_id(srs.sample_id)
+            %td
+              = sample_extenstion(srs.sample_id)            
+    %input{:type=>"button", :class => "print_manifest", :value =>"Print Manifest", :onclick => "javascript:print()"}
+    = submit_tag "Email Manifest"   

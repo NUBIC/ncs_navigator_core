@@ -1,0 +1,35 @@
+= form_for @sample_receipt_store do |f|
+  = "Sample ID:"
+  = f.object.sample_id
+  = f.hidden_field :sample_id  
+  %div{:class => "spec_sample_receipt"}
+    = "Sample Condition: " 
+    = NcsCode.for_attribute_name_and_local_code(:sample_condition_code, @sample_receipt_store.sample_condition_code)
+    %br
+    - if not f.object.receipt_comment_other.blank?
+      = "Receipt comment other: "
+      = f.object.receipt_comment_other
+      %br
+    - if not f.object.receipt_datetime.blank?
+      = "Receipt Date and Time: "
+      = f.object.receipt_datetime
+      %br
+    = "Cooler Temp Condition: " 
+    = NcsCode.for_attribute_name_and_local_code(:cooler_temp_condition_code, @sample_receipt_store.cooler_temp_condition_code)
+    %br
+    - if not f.object.environmental_equipment_id.blank?
+      = "Equipment ID: "
+      = f.object.environmental_equipment_id
+      %br
+    = "Temp Event Occurred: " 
+    = NcsCode.for_attribute_name_and_local_code(:temp_event_occurred_code, @sample_receipt_store.temp_event_occurred_code)
+    %br
+    = "Temp Event Action: " 
+    = NcsCode.for_attribute_name_and_local_code(:temp_event_action_code, @sample_receipt_store.temp_event_action_code)
+    %br
+    - if not f.object.temp_event_action_other.blank?
+      = "Temp Event Action Other: "
+      = f.object.temp_event_action_other
+      %br
+    -#= link_to 'Edit123', receive_edit_sample_receipt_store_path(@sample_receipt_store), :class => "edit_link icon_link sample_receipt_edit"
+  = link_to 'Edit', edit_sample_receipt_store_path(@sample_receipt_store), :class => "edit_link icon_link sample_receipt_edit"

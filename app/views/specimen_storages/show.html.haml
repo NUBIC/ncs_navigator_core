@@ -1,0 +1,34 @@
+= form_for @specimen_storage do |f|
+  %div{ :id => @specimen_storage}
+    - if not f.object.placed_in_storage_datetime.blank?
+      = "Placed in Storage Date and Time: "
+      = f.object.placed_in_storage_datetime
+      %br
+    = "Master Storage Unit: "
+    = NcsCode.for_attribute_name_and_local_code(:master_storage_unit_code, @specimen_storage.master_storage_unit_code)  
+    %br
+    - if not f.object.storage_comment.blank?
+      = "Storage Comment: "
+      = f.object.storage_comment
+      %br
+    - if not f.object.storage_comment_other.blank?
+      = "Storage Comment Other: "
+      = f.object.storage_comment_other
+      %br
+    - if not f.object.temp_event_starttime.blank?
+      = "Temperature event Start Time: "
+      = f.object.temp_event_starttime
+      %br
+    - if not f.object.temp_event_endtime.blank?
+      = "Temperature event End Time: "
+      = f.object.temp_event_endtime
+      %br
+    - if not f.object.temp_event_low_temp.blank?
+      = "Temperature event - Low Temperature"
+      = f.object.temp_event_low_temp
+      %br
+    - if not f.object.temp_event_high_temp.blank?
+      = "Temperature event - High Temperature"
+      = f.object.temp_event_high_temp
+    %br
+    = link_to 'Edit', edit_specimen_storage_path(@specimen_storage), :class => "edit_link icon_link specimen_storage_edit"

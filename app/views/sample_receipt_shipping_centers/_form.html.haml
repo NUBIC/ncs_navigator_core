@@ -1,0 +1,37 @@
+.page_section
+  = form_for(@sample_receipt_shipping_center) do |f| 
+    = render "shared/custom_error_messages", :object => f.object
+
+    .psu_code
+      %b
+        = "PSU:"
+      = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
+    .nested_attributes
+      %h3
+        Address
+      = f.fields_for :address do |address_form|
+        %p
+          = address_form.label :address_one, "Address One"
+          %br
+          = address_form.text_field :address_one
+        %p
+          = address_form.label :address_two, "Address Two"
+          %br
+          = address_form.text_field :address_two
+        %p
+          = address_form.label :city, "City"
+          %br
+          = address_form.text_field :city
+        = render "shared/ncs_state_select", { :f => address_form, :code => :state_code, :label_text => "State" }
+        %p
+          = address_form.label :zip, "Zip Code"
+          %br
+          = address_form.text_field :zip
+          &mdash;
+          = address_form.text_field :zip4
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'
+
+.links
+  = link_to "All Sample Receipt Shipping Centers", sample_receipt_shipping_centers_path, :class => "list_link icon_link"

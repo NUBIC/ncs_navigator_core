@@ -1,0 +1,38 @@
+= label "label", "Specimen Pickup Form"
+- if defined?(errors) && errors.any?
+  %div{ :id => "errorExplanation", :class => "errorExplanation"}
+    %h2
+      = pluralize(errors.count, "error")
+      prohibited this shipment
+      from being saved
+    %ul
+      - errors.full_messages.each do |msg|
+        %li
+          = msg
+.page_section
+  = form_for(@specimen_pickup) do |f|
+      
+    %p    
+      = f.fields_for :specimens do |s|
+        = s.label :specimen_id, "Specimen Id:"
+        = s.text_field :specimen_id      
+        
+        = s.hidden_field :instrument_id
+      
+    %p
+      = f.label :specimen_pickup_datetime, "Specimen Pickup Date and Time:"
+      = f.text_field :specimen_pickup_datetime, :class => "datetime"
+      
+    %p
+      = f.label :specimen_pickup_comment_code, "Specimen Pickup Comment Code:"
+      = f.select(:specimen_pickup_comment_code, NcsCode.ncs_code_lookup(:spec_pickup_comment_code), { :include_blank => "-- Select Pickup Comment Code --" })
+      
+    %p
+      = f.label :specimen_pickup_comment_other, "Specimen Pickup Comment:"
+      = f.text_field :specimen_pickup_comment_other
+
+    %p
+      = f.label :specimen_transport_temperature, "Specimen Transport Temperature:"
+      = f.text_field :specimen_transport_temperature
+      
+    = submit_tag "Create Form"

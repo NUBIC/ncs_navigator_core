@@ -1,0 +1,25 @@
+- title "Sample Receipt Shipping Centers"
+  
+.page_section
+  - if @sample_receipt_shipping_centers.empty?
+    #no_records
+      No sample receipt shipping centers were found.
+  - else
+    %table.records
+      %tr
+        %th
+          PSU
+        %th
+          Address
+        %th{ :colspan => "2" }
+
+      - @sample_receipt_shipping_centers.each do |spsc|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = spsc.psu
+          %td
+            = spsc.address
+          %td
+            = link_to 'Edit', edit_sample_receipt_shipping_center_path(spsc), :class => "edit_link icon_link"
+  .links
+    = link_to 'New Sample Receipt Shipping Center', new_sample_receipt_shipping_center_path, :class => "add_link icon_link"

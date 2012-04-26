@@ -1,0 +1,35 @@
+.page_section
+  %p
+    %b
+      = form_tag receive_specimen_sample_processes_path do
+        New Specimens
+        %table.records
+          %tr
+            %th
+              Select
+            %th
+              Specimen ID
+          - @specimens.each do |sp|
+            %tr{ :class => cycle('even_record', 'odd_record') }
+              %td 
+                %input{:type=>"checkbox", :id => sp.specimen_id, :name=> "specimen_id[]", :value => sp.specimen_id, :checked=>false}
+              %td
+                = sp.specimen_id
+        %p
+        New Samples
+        %table.records
+          %tr
+            %th
+              Select
+            %th
+              Sample ID
+          - @samples.each do |s|
+            %tr{ :class => cycle('even_record', 'odd_record') }
+              %td 
+                %input{:type=>"checkbox", :id => s.sample_id, :name=> "sample_id[]", :value => s.sample_id, :checked=>false}
+              %td
+                = s.sample_id
+          %p        
+        = submit_tag "Receive"
+        = submit_tag "Report Problem"
+                

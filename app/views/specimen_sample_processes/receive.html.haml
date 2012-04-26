@@ -1,0 +1,36 @@
+= label "label", "Receive Specimens Samples"
+.page_section
+  %p
+    = form_tag store_specimen_sample_processes_path do
+      - if @specimens.blank? and @samples.blank?
+        %p
+          Nothing to display.
+      - else
+        - if not @specimens.blank?
+          - @specimens.each do |sp|
+            = hidden_field_tag "specimen_id[]", sp
+            %div{ :id => sp}
+              - @specimen_receipt = SpecimenReceipt.where(:specimen_id => sp).first
+              - if @specimen_receipt.blank?
+                Specimen ID:
+                %a{ :href => new_specimen_receipt_path(:specimen_id => sp), :class => "specimen_sample_receive" }
+                  = sp
+                %br                
+              - else
+                = render :partial => "specimen_receipts/specimen_receipt", :specimen_receipt => @specimen_receipt
+          %br
+        - if not @samples.blank?  
+          - @samples.each do |s|
+            = hidden_field_tag "sample_id[]", s
+            %div{ :id => s}            
+              - @sample_receipt_store = SampleReceiptStore.where(:sample_id => s).first
+              - if @sample_receipt_store.blank?
+                Sample ID:
+                %a{ :href => new_sample_receipt_store_path(:sample_id => s), :class => "specimen_sample_receive" }
+                  = s
+                %br
+              - else
+                = render :partial => "sample_receipt_stores/sample_receipt", :sample_receipt_store => @sample_receipt_store, :locals => { :receive => true }
+          %br
+        = button_tag "Store"
+%div{ :id => 'popup_dialog', :class => "form", :hidden => true }

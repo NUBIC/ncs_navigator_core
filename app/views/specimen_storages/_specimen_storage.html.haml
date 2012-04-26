@@ -1,0 +1,45 @@
+- if defined?(@specimen_storage.errors) && @specimen_storage.errors.any?
+  %div{ :id => "errorExplanation", :class => "errorExplanation"}
+    %h2
+      = pluralize(@specimen_storage.errors.count, "error")
+      prohibited this specimen from being stored
+    %ul
+      - @specimen_storage.errors.full_messages.each do |msg|
+        %li
+          = msg
+= form_tag specimen_storage, :class => "specimen_storage_form", :id => specimen_storage.storage_container_id do
+  = label_tag "specimen_storage[placed_in_storage_datetime]", "Placed in Storage Date and Time:"
+  = text_field_tag "specimen_storage[placed_in_storage_datetime]"+"["+specimen_storage.storage_container_id+"]", specimen_storage.placed_in_storage_datetime, :class => "datetime"
+  %br
+
+  = label_tag "Master Storage Unit:"
+  - opts = [["-- Select Master Storage Unit --", ""]] + NcsCode.ncs_code_lookup(:master_storage_unit_code)
+  = select_tag("specimen_storage[master_storage_unit_code]", options_for_select(opts))
+  %br  
+
+  = label_tag "Storage Comment:"
+  = text_field_tag "specimen_storage[storage_comment]", specimen_storage.storage_comment
+  %br
+
+  = label_tag "Storage Comment Other:"
+  = text_field_tag "specimen_storage[storage_comment_other]", specimen_storage.storage_comment_other
+  %br
+
+  = label_tag "Temperature event Start Time:"
+  = text_field_tag "specimen_storage[temp_event_starttime]"+"["+specimen_storage.storage_container_id+"]", specimen_storage.temp_event_starttime, :class => "time"
+  %br
+
+  = label_tag "Temperature event End Time:"
+  = text_field_tag "specimen_storage[temp_event_endtime]"+"["+specimen_storage.storage_container_id+"]", specimen_storage.temp_event_endtime, :class => "time"
+  %br
+
+  = label_tag "Temperature event - Low Temperature:"
+  = text_field_tag "specimen_storage[temp_event_low_temp]", specimen_storage.temp_event_low_temp
+  %br  
+
+  = label_tag "Temperature event - High Temperature:"
+  = text_field_tag "specimen_storage[temp_event_high_temp]", specimen_storage.temp_event_high_temp
+  %br
+
+  = hidden_field_tag "specimen_storage[storage_container_id]", specimen_storage.storage_container_id
+  = submit_tag "Submit", :disable_with => 'Submitting...', :id => specimen_storage.storage_container_id

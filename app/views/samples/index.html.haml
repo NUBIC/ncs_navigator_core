@@ -1,0 +1,31 @@
+= label "label", "Manifest for samples"
+.page_section
+  %div{:id => 'sample_table', :class => 'sample_table'}
+    = form_tag verify_samples_path do
+      %table.records
+        %tr
+          %th
+            Select
+          %th
+            Sample ID
+          %th
+            Sample Type
+          %th
+            Root ID
+          %th
+            Extension
+        - @sample_receipt_stores.each do |srs|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td 
+              %input{:type=>"checkbox", :id => srs.sample_id, :name=> "sample_id[]", :value => srs.sample_id, :checked=>false}
+            %td
+              = srs.sample_id
+            %td
+              = sample_type(srs.sample_id)
+            %td
+              = sample_root_id(srs.sample_id)
+            %td
+              = sample_extenstion(srs.sample_id)
+      %p
+        = submit_tag "Ship"
+        

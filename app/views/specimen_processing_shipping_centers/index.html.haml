@@ -1,0 +1,25 @@
+- title "Specimen Processing Shipping Centers"
+  
+.page_section
+  - if @specimen_processing_shipping_centers.empty?
+    #no_records
+      No specimen processing shipping centers were found.
+  - else
+    %table.records
+      %tr
+        %th
+          PSU
+        %th
+          Address
+        %th{ :colspan => "2" }
+
+      - @specimen_processing_shipping_centers.each do |spsc|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = spsc.psu
+          %td
+            = spsc.address
+          %td
+            = link_to 'Edit', edit_specimen_processing_shipping_center_path(spsc), :class => "edit_link icon_link"
+  .links
+    = link_to 'New Specimen Processing Shipping Center', new_specimen_processing_shipping_center_path, :class => "add_link icon_link"

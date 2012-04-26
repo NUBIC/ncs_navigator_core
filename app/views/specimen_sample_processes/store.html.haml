@@ -1,0 +1,26 @@
+.page_section
+  %div{:id => 'specimen_table', :class => 'specimen_table'}
+    - @specimen_receipts_hash.each do |k, v|
+      %table.records
+        %tr
+          %th
+            Storage Container ID
+          %th
+            Specimen ID
+        - cycle_var = cycle('even_record', 'odd_record')
+        - v.each_with_index do |sr, index|
+          %tr{ :class => cycle_var }
+            - if index == 0                  
+              %td{:rowspan=>v.size}
+                = k
+            %td
+              = sr
+        %tr
+          %td
+            - @specimen_storages.select{ |s| s.storage_container_id.eql? k }.each do |s|
+              %div{ :id => k}
+                = render :partial => "specimen_storages/specimen_storage", :locals => { :specimen_storage => s }
+    - @sample_receipt_stores.each do |@sample_receipt_store|
+      %div{ :id => @sample_receipt_store.id, :class => "sample_store_form_border"}
+        = render :partial => "sample_receipt_stores/sample_store_edit", :locals => { :sample_receipt_store => @sample_receipt_store}
+      %br  

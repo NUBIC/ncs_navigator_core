@@ -1,0 +1,74 @@
+.page_section
+  %p
+    %b
+      = form_tag receive_specimen_sample_processes_path do
+        Receipt comment:
+        - opts = [["-- Select Comment --", ""]] + NcsCode.ncs_code_lookup(:receipt_comment_code)
+        = select_tag(:receipt_comment_code, options_for_select(opts))
+        %br
+        
+        Receipt comment other:
+        %input{:type=>"text", :name=>"receipt_comment_oth", :value=>""}
+        %br
+        
+        Receipt Date and Time: 
+        %input{:type=>"text", :class => "datetime", :name=>"receipt_dt", :value=>""}
+        %br
+        
+        Cooler Temperature (in Celsius):
+        %input{:type=>"text", :name=>"receipt_dt", :value=>""}
+        %br
+        
+        Monitor Status:
+        - opts = [["-- Select Status --", ""]] + NcsCode.ncs_code_lookup(:monitor_status_code)
+        = select_tag(:monitor_status_code, options_for_select(opts))
+        %br
+        
+        Upper Trigger:
+        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:upper_trigger_code)
+        = select_tag(:upper_trigger_code, options_for_select(opts))
+        %br
+        
+        Upper Trigger Level:
+        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:upper_trigger_lvl_code)
+        = select_tag(:upper_trigger_lvl_code, options_for_select(opts))
+        %br
+
+        Lower Trigger Cold:
+        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:lower_trigger_cold_code)
+        = select_tag(:lower_trigger_cold_code, options_for_select(opts))
+        %br              
+        
+        Lower Trigger Ambient:
+        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:lower_trigger_ambient_code)
+        = select_tag(:lower_trigger_ambient_code, options_for_select(opts))
+        %br              
+        
+        Storage Container ID:
+        %input{:type=>"text", :name=>"storage_container_id", :value=>""}
+        %br
+        
+        Centrifuge Comment:
+        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:centrifuge_comment_code)
+        = select_tag(:centrifuge_comment_code, options_for_select(opts))
+        %br           
+        
+        Centrifuge Comment Other:   
+        %input{:type=>"text", :name=>"centrifuge_comment_oth", :value=>""}
+        %br
+        
+        Centrifuge Start Time:
+        %input{:type=>"text", :class => "time", :name=>"centrifuge_starttime", :value=>""}
+        %br
+        
+        Centrifuge End Time:
+        %input{:type=>"text", :class => "time", :name=>"centrifuge_endtime", :value=>""}
+        %br
+        
+        Centrifuge Staff ID:
+        %input{:type=>"text", :name=>"centrifuge_staff_id", :value=>""}
+        %br
+        
+        Equipment ID:
+        %input{:type=>"text", :name=>"equipment_id", :value=>""}
+        %br

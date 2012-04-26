@@ -1,0 +1,33 @@
+= label "label", "Specimen Pickup Form"
+- if defined?(errors) && errors.any?
+  %div{ :id => "errorExplanation", :class => "errorExplanation"}
+    %h2
+      = pluralize(errors.count, "error")
+      prohibited this shipment
+      from being saved
+    %ul
+      - errors.full_messages.each do |msg|
+        %li
+          = msg
+.page_section
+  = form_for(@specimen_pickup) do |f|
+    %p   
+      = f.fields_for :specimens do |s|
+        = s.label :specimen_id, "Specimen Id:"
+        = s.text_field :specimen_id, :disabled => true    
+    
+    %p
+      = f.label :specimen_pickup_datetime, "Specimen Pickup Date and Time:"
+      = f.text_field :specimen_pickup_datetime, :disabled => true
+    
+    %p
+      = f.label :specimen_pickup_comment_code, "Specimen Pickup Comment Code:"
+      = f.text_field :specimen_pickup_comment_code, :value => NcsCode.for_attribute_name_and_local_code(:spec_pickup_comment_code, @specimen_pickup.specimen_pickup_comment_code), :disabled => true    
+
+    %p
+      = f.label :specimen_pickup_comment_other, "Specimen Pickup Comment:"
+      = f.text_field :specimen_pickup_comment_other, :disabled => true
+
+    %p
+      = f.label :specimen_transport_temperature, "Specimen Transport Temperature:"
+      = f.text_field :specimen_transport_temperature, :disabled => true

@@ -1,0 +1,10 @@
+.page_section
+  %p
+    %b
+      Samples Received
+      = form_tag receive_specimen_sample_processes_path do
+        - if !@samples.blank?
+          - @samples.each do |s|
+            = s
+        %p
+          = submit_tag "Store"

@@ -1,0 +1,39 @@
+= label "label", "Manifest for specimens"
+.page_section
+  %div{:id => 'specimen_table', :class => 'specimen_table'}
+    = form_tag verify_specimens_path do
+      %table.records
+        %tr
+          %th
+            Select
+          %th
+            Storage Container ID
+          %th
+            Specimen ID
+          %th
+            Sample Type
+          %th
+            Root ID
+          %th
+            Extension
+        - @specimen_receipts_hash.each do |k, v|
+          - cycle_var = cycle('even_record', 'odd_record')
+          - v.each_with_index do |sr, index|
+            %tr{ :class => cycle_var }
+              - if index == 0
+                %td{:rowspan=>v.size} 
+                  %input{:type=>"checkbox", :id => k, :name=> "storage_container_id[]", :value => k, :checked=>false}
+              - if index == 0                  
+                %td{:rowspan=>v.size}
+                  = k
+              %td
+                = sr.specimen_id
+              %td
+                = sample_type(sr.specimen_id)
+              %td
+                = sample_root_id(sr.specimen_id)
+              %td
+                = sample_extenstion(sr.specimen_id)
+      %p
+        = submit_tag "Ship"
+        
