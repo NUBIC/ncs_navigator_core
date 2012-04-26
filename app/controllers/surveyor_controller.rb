@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 class SurveyorController < ApplicationController
   include Surveyor::SurveyorControllerMethods

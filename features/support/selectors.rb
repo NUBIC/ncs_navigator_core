@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 module HtmlSelectorsHelpers
   # Maps a name to a selector. Used primarily by the

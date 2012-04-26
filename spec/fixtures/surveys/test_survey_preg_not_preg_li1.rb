@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do
   section "Interviewer-completed questions", :reference_identifier=>"LIPregNotPreg_INT" do

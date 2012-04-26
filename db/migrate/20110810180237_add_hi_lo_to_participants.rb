@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 class AddHiLoToParticipants < ActiveRecord::Migration
   def self.up

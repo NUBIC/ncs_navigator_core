@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 Given /^a participant exists with a person$/ do
   person = Factory(:person)

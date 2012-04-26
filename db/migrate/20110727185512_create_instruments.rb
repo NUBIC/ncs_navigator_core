@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 class CreateInstruments < ActiveRecord::Migration
   def self.up

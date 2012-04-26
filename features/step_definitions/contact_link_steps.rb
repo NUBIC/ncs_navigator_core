@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 Given /^the survey has been completed$/ do
   steps %Q{

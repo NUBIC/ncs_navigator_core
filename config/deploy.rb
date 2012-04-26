@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 # developer machine will log in with username(netID) to server (either staging or production)
 # developer machine will also log in with username(netID) to code repositary to do a git ls-remote to resolve branch/tag to commit hash

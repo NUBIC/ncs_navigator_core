@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 class PublicIdsToVarchar < ActiveRecord::Migration
   def tables_to_public_ids

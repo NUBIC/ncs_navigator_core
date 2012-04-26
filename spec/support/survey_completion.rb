@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 ##
 # A DSL for answering questions on Surveyor surveys.  See the *DataExtractor

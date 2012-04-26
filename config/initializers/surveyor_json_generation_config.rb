@@ -1,4 +1,5 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+
 
 # Disable JSON root generation for Surveyor.
 # FIXME: This should really live somewhere else, like an #as_json option.
