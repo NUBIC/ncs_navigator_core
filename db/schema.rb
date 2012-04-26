@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120423204102) do
+ActiveRecord::Schema.define(:version => 20120426034324) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -321,13 +321,15 @@ ActiveRecord::Schema.define(:version => 20120423204102) do
 
   create_table "ncs_codes", :force => true do |t|
     t.string   "list_name"
-    t.string   "list_description"
     t.string   "display_text"
     t.integer  "local_code"
-    t.string   "global_code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ncs_codes", ["list_name"], :name => "idx_ncs_codes_list"
+  add_index "ncs_codes", ["local_code", "list_name"], :name => "un_ncs_codes_code_and_list", :unique => true
+  add_index "ncs_codes", ["local_code"], :name => "idx_ncs_codes_code"
 
   create_table "no_access_non_interview_reports", :force => true do |t|
     t.integer  "psu_code",                              :null => false
