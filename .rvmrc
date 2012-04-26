@@ -1,5 +1,1 @@
-if [[ -n "$rvm_environments_path" && -s "$rvm_environments_path/ree-1.8.7-2011.03@ncs_navigatore_core" ]] ; then
-  \. "$rvm_environments_path/ree-1.8.7-2011.03@ncs_navigator_core"
-else
-  rvm --create use  "ree-1.8.7-2011.03@ncs_navigator_core"
-fi
+rvm --create use "ruby-1.9.3@ncs_navigator_core"

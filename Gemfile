@@ -84,7 +84,7 @@ group :test, :ci do
   gem 'shoulda'
   gem 'facets', :require => false
   gem 'factory_girl'
-  gem 'rcov'
+  gem 'simplecov', :require => false
   gem 'pickle'
   gem 'vcr'
   gem 'fakeweb'
