@@ -1,0 +1,23 @@
+input.text, 
+input[type="text"] {
+  border: none;
+}
+
+#header{
+  display: none !important;
+}
+
+#footer{
+  display: none !important;
+}
+
+input.submit, 
+input[type="submit"],
+input.button, 
+input[type="button"] {
+  display: none;
+}
+
+a {
+  display: none;
+}
