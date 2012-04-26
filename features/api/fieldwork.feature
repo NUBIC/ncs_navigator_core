@@ -1,4 +1,4 @@
-@api
+@api @wip
 Feature: Fieldwork check-out and check-in
   In order to keep field workers abreast of study progress
   The field client application
@@ -27,7 +27,7 @@ Feature: Fieldwork check-out and check-in
     """
 
     Then the response status is 401
-
+  @wip
   Scenario: GET /api/v1/fieldwork/:uuid returns what was previously PUT
     Given an authenticated user
     And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
