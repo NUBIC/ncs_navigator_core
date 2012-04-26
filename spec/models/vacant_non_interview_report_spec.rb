@@ -38,10 +38,8 @@ describe VacantNonInterviewReport do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(VacantNonInterviewReport)
 
       vnir = VacantNonInterviewReport.new
-      vnir.psu = Factory(:ncs_code)
       vnir.save!
 
       obj = VacantNonInterviewReport.first

@@ -4,17 +4,6 @@ require 'spec_helper'
 
 describe OperationalDataExtractor do
 
-  before(:each) do
-    create_missing_in_error_ncs_codes(Instrument)
-    create_missing_in_error_ncs_codes(Address)
-    create_missing_in_error_ncs_codes(DwellingUnit)
-    create_missing_in_error_ncs_codes(Telephone)
-    create_missing_in_error_ncs_codes(Email)
-    create_missing_in_error_ncs_codes(Participant)
-    create_missing_in_error_ncs_codes(PpgDetail)
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-  end
-
   it "sets up the test properly" do
 
     person = Factory(:person)
@@ -83,12 +72,6 @@ describe OperationalDataExtractor do
       question = Factory(:question, :data_export_identifier => "PREG_SCREEN_HI_2.HOME_PHONE")
       answer = Factory(:answer, :response_class => "string")
       home_phone_response = Factory(:response, :string_value => "3125551212", :question => question, :answer => answer, :response_set => @response_set)
-
-      Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 1, :display_text => "Home")
-      Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 4, :display_text => "Mail")
-
-      Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 1, :display_text => "Home")
-      Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
 
       @response_set.responses << home_phone_response
     end

@@ -102,10 +102,8 @@ describe Event do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Event)
 
       e = Event.new
-      e.psu = Factory(:ncs_code)
       e.participant = Factory(:participant)
       e.save!
 
@@ -144,7 +142,7 @@ describe Event do
 
     describe "household enumeration" do
       before(:each) do
-        @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 1, :display_text => "Household Enumeration Events")
+        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 1)
       end
 
       it "knows if it is complete" do
@@ -165,7 +163,7 @@ describe Event do
 
     describe "pregnancy screener" do
       before(:each) do
-        @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 2, :display_text => "Pregnancy Screening Events")
+        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
       end
 
       it "knows if it is complete" do
@@ -186,7 +184,7 @@ describe Event do
 
     describe "general study" do
       before(:each) do
-        @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 3, :display_text => "General Study Visits (including CASI SAQs)")
+        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
       end
 
       it "knows if it is complete" do
@@ -207,7 +205,7 @@ describe Event do
 
     describe "mailed back saq" do
       before(:each) do
-        @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 4, :display_text => "Mailed Back Self Administered Questionnaires")
+        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 4)
       end
 
       it "knows if it is complete" do
@@ -227,7 +225,7 @@ describe Event do
 
     describe "telephone interview" do
       before(:each) do
-        @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 5, :display_text => "Telephone Interview Events")
+        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 5)
       end
 
       it "knows if it is complete" do
@@ -247,7 +245,7 @@ describe Event do
 
     describe "internet survey" do
       before(:each) do
-        @cat = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :local_code => 6, :display_text => "Internet Survey Events")
+        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 6)
       end
 
       it "knows if it is complete" do
@@ -285,35 +283,22 @@ describe Event do
   context "auto-completing MDES data" do
 
     before(:each) do
-      create_missing_in_error_ncs_codes(Event)
 
       @person = Factory(:person)
       @participant = Factory(:participant)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
       @participant.person = @person
-      @ppg_fu = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Probability", :local_code => 7)
-      @preg_screen = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Pregnancy Screener", :local_code => 29)
-      @hh = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Household Enumeration", :local_code => 1)
+      @ppg_fu = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7)
+      @preg_screen = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
+      @hh = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 1)
 
-      [
-        [1, "Household Enumeration Events"],
-        [2, "Pregnancy Screening Events"],
-        [3, "General Study Visits (including CASI SAQs)"],
-        [4, "Mailed Back Self Administered Questionnaires"],
-        [5, "Telephone Interview Events"],
-        [6, "Internet Survey Events"]
-      ].each do |local_code, display_text|
-        Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => display_text, :local_code => local_code)
-      end
+      @telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
+      @mail      = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 2)
+      @in_person = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1)
+      @txtmsg    = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 5)
+      @website   = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 6)
 
-      @telephone = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Telephone', :local_code => 3)
-      @mail      = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Mail', :local_code => 2)
-      @in_person = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'In-Person', :local_code => 1)
-      @txtmsg    = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Text Message', :local_code => 5)
-      @website   = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Website', :local_code => 6)
-
-      @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-      @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
+      @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+      @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
 
     end
 
@@ -398,14 +383,8 @@ describe Event do
   end
 
   context "when scheduling an event with PSC " do
-
-    before(:each) do
-      create_missing_in_error_ncs_codes(Event)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-    end
-
     let(:scheduled_study_segment_identifier) { "a5fd83f9-e2ca-4481-8ce3-70406dfbcddc" }
-    let(:event_type_code) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+    let(:event_type_code) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33) }
     let(:person) {Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "placeholder_event_participant")}
     let(:participant) { Factory(:participant, :p_id => "placeholder_event_participant") }
     let(:date) { "2012-02-06" }
@@ -439,7 +418,6 @@ describe Event do
 
       before(:each) do
         @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
-        create_all_event_types
       end
 
       let(:psc) { PatientStudyCalendar.new(@user) }
@@ -562,18 +540,16 @@ describe Event do
     end
 
     describe "#matches_activity" do
-      let(:event_type_code) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+      let(:event_type_code) { 33 }
       let(:date) { "2012-02-29" }
 
       before(:each) do
-        Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
         @person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "janedoe_ppg2")
         @participant = Factory(:participant, :p_id => "janedoe_ppg2")
         @participant.person = @person
         @participant.save!
 
-        @event = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type => event_type_code)
+        @event = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type_code => event_type_code)
       end
 
       it "is true if event_type matches label and event_start_date matches ideal date" do

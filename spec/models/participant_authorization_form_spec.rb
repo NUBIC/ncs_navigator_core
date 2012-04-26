@@ -46,10 +46,8 @@ describe ParticipantAuthorizationForm do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ParticipantAuthorizationForm)
 
       paf = ParticipantAuthorizationForm.new
-      paf.psu = Factory(:ncs_code)
       paf.participant = Factory(:participant)
       paf.save!
 

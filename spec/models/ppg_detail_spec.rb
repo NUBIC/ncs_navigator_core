@@ -82,11 +82,10 @@ describe PpgDetail do
   context "associated ppg_status_history" do
 
     let(:participant) { Factory(:participant) }
-    let(:pd_status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
-    let(:ppg_status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
+    let(:pd_status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+    let(:ppg_status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
 
     before(:each) do
-      create_missing_in_error_ncs_codes(PpgStatusHistory)
     end
 
     it "creates a ppg_status_history record when first creating ppg_detail" do

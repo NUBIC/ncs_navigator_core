@@ -5,25 +5,7 @@ require 'spec_helper'
 describe PpgFollowUpOperationalDataExtractor do
   include SurveyCompletion
 
-  before(:each) do
-    create_missing_in_error_ncs_codes(Instrument)
-    create_missing_in_error_ncs_codes(Participant)
-    create_missing_in_error_ncs_codes(PpgDetail)
-    create_missing_in_error_ncs_codes(PpgStatusHistory)
-    create_missing_in_error_ncs_codes(Telephone)
-    create_missing_in_error_ncs_codes(Email)
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
-    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 1, :display_text => "Home")
-    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 2, :display_text => "Work")
-    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
-    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => -5, :display_text => "Other")
-
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
-  end
-
-  context "updating the ppg status history" do
+  context "updating the ppg status history", :bad_2024 do
 
     before(:each) do
       @person = Factory(:person)
@@ -31,11 +13,11 @@ describe PpgFollowUpOperationalDataExtractor do
       @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person)
       Factory(:ppg_detail, :participant => @participant)
 
-      @ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1", :local_code => 1)
-      @ppg2 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2", :local_code => 2)
-      @ppg3 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3", :local_code => 3)
-      @ppg4 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4", :local_code => 4)
-      @ppg5 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5", :local_code => 5)
+      @ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
+      @ppg2 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
+      @ppg3 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 3)
+      @ppg4 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4)
+      @ppg5 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 5)
 
       @survey = create_follow_up_survey_with_ppg_status_history_operational_data
       @response_set, @instrument = prepare_instrument(@person, @survey)
@@ -161,11 +143,11 @@ describe PpgFollowUpOperationalDataExtractor do
 
   it "extracts telephone operational data from the survey responses" do
 
-    home = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1)
-    work = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Work", :local_code => 2)
-    cell = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3)
-    frre = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Friend/Relative", :local_code => 4)
-    oth  = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Other", :local_code => -5)
+    home = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 1)
+    work = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 2)
+    cell = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3)
+    frre = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 4)
+    oth  = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", -5)
 
     person = Factory(:person)
     person.telephones.size.should == 0
@@ -194,10 +176,10 @@ describe PpgFollowUpOperationalDataExtractor do
   end
 
   it "extracts contact data from the SAQ survey responses" do
-    home = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1)
-    work = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Work", :local_code => 2)
-    cell = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3)
-    oth  = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Other", :local_code => -5)
+    home = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 1)
+    work = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 2)
+    cell = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3)
+    oth  = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", -5)
 
     person = Factory(:person)
     email = Factory(:email, :email => "asdf@asdf.asdf", :person => person)

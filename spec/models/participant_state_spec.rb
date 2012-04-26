@@ -8,13 +8,12 @@ describe Participant do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
     @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
   end
 
   let(:psc) { PatientStudyCalendar.new(@user) }
-  let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
-  let(:status2) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
-  let(:status4) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 4: Not Pregnant Not Trying", :local_code => 4) }
+  let(:status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+  let(:status2) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 2) }
+  let(:status4) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 4) }
 
   context "a new record" do
 
@@ -73,7 +72,7 @@ describe Participant do
         participant.requires_consent.should be_true
       end
 
-      it "administers the low intensity questionnaire as soon as possible" do
+      it "administers the low intensity questionnaire as soon as possible", :bad_2024 do
         participant = Factory(:participant, :low_intensity_state => 'consented_low_intensity')
         Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
 
@@ -218,47 +217,6 @@ describe Participant do
 
   context "updating a participant state given an event type" do
     let(:person) { Factory(:person) }
-    before(:each) do
-      [
-        [1, "Household Enumeration"],
-        [2, "Two Tier Enumeration"],
-        [3, "Ongoing Tracking of Dwelling Units"],
-        [4, "Pregnancy Screening - Provider Group"],
-        [5, "Pregnancy Screening – High Intensity  Group"],
-        [6, "Pregnancy Screening – Low Intensity Group "],
-        [7, "Pregnancy Probability"],
-        [8, "PPG Follow-Up by Mailed SAQ"],
-        [9, "Pregnancy Screening - Household Enumeration Group"],
-        [10, "Informed Consent"],
-        [11, "Pre-Pregnancy Visit"],
-        [12, "Pre-Pregnancy Visit SAQ"],
-        [13, "Pregnancy Visit  1"],
-        [14, "Pregnancy Visit #1 SAQ"],
-        [15, "Pregnancy Visit  2"],
-        [16, "Pregnancy Visit #2 SAQ"],
-        [17, "Pregnancy Visit - Low Intensity Group"],
-        [18, "Birth"],
-        [19, "Father"],
-        [20, "Father Visit SAQ"],
-        [21, "Validation"],
-        [22, "Provider-Based Recruitment"],
-        [23, "3 Month"],
-        [24, "6 Month"],
-        [25, "6-Month Infant Feeding SAQ"],
-        [26, "9 Month"],
-        [27, "12 Month"],
-        [28, "12 Month Mother Interview SAQ"],
-        [29, "Pregnancy Screener"],
-        [30, "18 Month"],
-        [31, "24 Month"],
-        [32, "Low to High Conversion"],
-        [33, "Low Intensity Data Collection"],
-        [-5, "Other"],
-        [-4, "Missing in Error"]
-      ].each do |code, text|
-        Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => text, :local_code => code)
-      end
-    end
 
     context "moving to an invalid state" do
       let(:participant) { Factory(:participant, :person => person) }
@@ -469,9 +427,7 @@ describe Participant do
 
       describe "given Birth" do
         it "should be in the postnatal state" do
-          status4a = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Not Pregnant Not Trying", :local_code => 4)
-          Factory(:ncs_code, :list_name => "INFORMATION_SOURCE_CL3", :local_code => -5)
-          Factory(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :local_code => -5)
+          status4a = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4)
 
           event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 18).first)
           participant.set_state_for_event_type(event)
@@ -600,7 +556,6 @@ describe Participant do
       let(:person) { Factory(:person) }
 
       before(:each) do
-        create_missing_in_error_ncs_codes PpgStatusHistory
         participant.person = person
         participant.should be_pregnancy_one
         participant.should be_high_intensity
@@ -633,7 +588,6 @@ describe Participant do
       let(:person) { Factory(:person) }
 
       before(:each) do
-        create_missing_in_error_ncs_codes PpgStatusHistory
         participant.person = person
         participant.should be_pregnancy_two
         participant.should be_high_intensity
@@ -697,16 +651,14 @@ describe Participant do
       let(:participant) { Factory(:participant, :low_intensity_state => "moved_to_high_intensity_arm", :high_intensity => true) }
       let(:person) { Factory(:person) }
 
-      let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
-      let(:status1a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
-      let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
+      let(:status1)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
+      let(:status1a) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+      let(:status4)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4) }
 
       before(:each) do
-
-        create_missing_in_error_ncs_codes(PpgStatusHistory)
-
         participant.person = person
-        event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 13).first)
+        event = Factory(:event,
+          :event_type => NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 13))
         participant.set_state_for_event_type(event)
         participant.should be_pregnancy_one
 
@@ -719,7 +671,7 @@ describe Participant do
         participant.ppg_status.should_not == status4
       end
 
-      it "should update the ppg status to 4" do
+      it "should update the ppg status to 4", :bad_2024 do
         participant.birth_event!
         Participant.find(participant.id).ppg_status.should == status4
       end

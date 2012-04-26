@@ -5,31 +5,12 @@ require 'spec_helper'
 describe PregnancyScreenerOperationalDataExtractor do
   include SurveyCompletion
 
-  before(:each) do
-    create_missing_in_error_ncs_codes(Instrument)
-    create_missing_in_error_ncs_codes(Address)
-    create_missing_in_error_ncs_codes(DwellingUnit)
-    create_missing_in_error_ncs_codes(Telephone)
-    create_missing_in_error_ncs_codes(Email)
-    create_missing_in_error_ncs_codes(Participant)
-    create_missing_in_error_ncs_codes(PpgDetail)
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
-    Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 1, :display_text => "Home")
-    Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :local_code => 4, :display_text => "Mail")
-
-    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 1, :display_text => "Home")
-    Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :local_code => 3, :display_text => "Cell")
-
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
-  end
-
   context "extracting person operational data" do
 
-    let(:age_range)      { Factory(:ncs_code, :list_name => "AGE_RANGE_CL1", :display_text => "25-34", :local_code => 3) }
-    let(:ethnic_group)   { Factory(:ncs_code, :list_name => "ETHNICITY_CL1", :display_text => "Not Hispanic or Latino", :local_code => 2) }
-    let(:language)       { Factory(:ncs_code, :list_name => "LANGUAGE_CL2", :display_text => "English", :local_code => 1) }
-    let(:age_eligible)   { Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1) }
+    let(:age_range)      { NcsCode.for_list_name_and_local_code("AGE_RANGE_CL1", 3) }
+    let(:ethnic_group)   { NcsCode.for_list_name_and_local_code("ETHNICITY_CL1", 2) }
+    let(:language)       { NcsCode.for_list_name_and_local_code("LANGUAGE_CL2", 1) }
+    let(:age_eligible)   { NcsCode.for_list_name_and_local_code("AGE_ELIGIBLE_CL2", 1) }
     let(:entered_age)    { 30 }
 
     before(:each) do
@@ -141,7 +122,7 @@ describe PregnancyScreenerOperationalDataExtractor do
   # ZIP                   Address.zip
   # ZIP4                  Address.zip4
   it "extracts address operational data from the survey responses" do
-    state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+    state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
     person = Factory(:person)
     person.addresses.size.should == 0
@@ -168,15 +149,15 @@ describe PregnancyScreenerOperationalDataExtractor do
     person = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
-    address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+    address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
     address.address_rank_code.should == 1
   end
 
   it "extracts mail address operational data from the survey responses" do
 
-    state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-    home = Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Home", :local_code => 1)
-    mail = Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Mailing", :local_code => 4)
+    state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+    home = NcsCode.for_list_name_and_local_code("ADDRESS_CATEGORY_CL1", 1)
+    mail = NcsCode.for_list_name_and_local_code("ADDRESS_CATEGORY_CL1", 4)
 
     person = Factory(:person)
     person.addresses.size.should == 0
@@ -203,19 +184,19 @@ describe PregnancyScreenerOperationalDataExtractor do
     person  = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
-    address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+    address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
     address.address_type.should == mail
     address.address_rank_code.should == 1
   end
 
   context "extracting telephone operational data from the survey responses" do
 
-    let(:home) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1) }
-    let(:work) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Work", :local_code => 2) }
-    let(:cell) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3) }
-    let(:frre) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Friend/Relative", :local_code => 4) }
-    let(:fax)  { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Fax", :local_code => 5) }
-    let(:oth)  { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Other", :local_code => -5) }
+    let(:home) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 1) }
+    let(:work) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 2) }
+    let(:cell) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3) }
+    let(:frre) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 4) }
+    let(:fax)  { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 5) }
+    let(:oth)  { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", -5) }
 
     before(:each) do
       @person = Factory(:person)
@@ -349,8 +330,8 @@ describe PregnancyScreenerOperationalDataExtractor do
 
   it "extracts email information from the survey responses" do
 
-    home = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Personal", :local_code => 1)
-    work = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Work", :local_code => 2)
+    home = NcsCode.for_list_name_and_local_code("EMAIL_TYPE_CL1", 1)
+    work = NcsCode.for_list_name_and_local_code("EMAIL_TYPE_CL1", 2)
 
     person = Factory(:person)
     person.emails.size.should == 0
@@ -395,9 +376,9 @@ describe PregnancyScreenerOperationalDataExtractor do
     participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
-    ppg1 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1", :local_code => 1)
+    ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1)
 
-    p_type = Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Pregnant Eligible Woman", :local_code => 3)
+    p_type = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 3)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     response_set, instrument = prepare_instrument(person, survey)
@@ -429,9 +410,9 @@ describe PregnancyScreenerOperationalDataExtractor do
     participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
-    ppg2 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2", :local_code => 2)
+    ppg2 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 2)
 
-    p_type = Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "High Trier", :local_code => 2)
+    p_type = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 2)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     response_set, instrument = prepare_instrument(person, survey)
@@ -462,7 +443,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     participant = Factory(:participant)
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
-    ppg5 = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 5", :local_code => 5)
+    ppg5 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 5)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
     response_set, instrument = prepare_instrument(person, survey)
@@ -487,7 +468,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
   context "determining the due date of a pregnant woman" do
 
-    let(:ppg1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1", :local_code => 1) }
+    let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
     let(:neg_1) { stub(:local_code => 'neg_1') }
     let(:neg_2) { stub(:local_code => 'neg_2') }
     let(:tri1) { stub(:local_code => '1') }

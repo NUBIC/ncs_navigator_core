@@ -50,10 +50,9 @@ require 'spec_helper'
 
 describe Person do
   before(:each) do
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-    @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-    @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-    @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
+    @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+    @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
+    @q = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', -4)
   end
 
   it "creates a new instance given valid attributes" do
@@ -114,10 +113,8 @@ describe Person do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Person)
 
       pers = Person.new
-      pers.psu = Factory(:ncs_code)
       pers.first_name = "John"
       pers.last_name = "Doe"
       pers.save!
@@ -323,9 +320,8 @@ describe Person do
   context "with a response set" do
 
     before(:each) do
-      create_missing_in_error_ncs_codes(Instrument)
       InstrumentEventMap.stub!(:version).and_return("1.0")
-      InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
+      InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
       @pers = Factory(:person)
       @survey = create_test_survey_for_person
       @rs, @instrument = prepare_instrument(@pers, @survey)
@@ -362,7 +358,6 @@ describe Person do
   context "responses to instrument questions" do
 
     before(:each) do
-      create_missing_in_error_ncs_codes(Instrument)
     end
 
     it "should get responses by data_export_identifier" do
@@ -399,9 +394,8 @@ describe Person do
     context "repeating the instrument" do
 
       before(:each) do
-        create_missing_in_error_ncs_codes(Instrument)
         InstrumentEventMap.stub!(:version).and_return("1.0")
-        InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
+        InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
         @person = Factory(:person)
         @survey = create_test_survey_for_person
       end
@@ -425,9 +419,8 @@ describe Person do
     context "setting default instrument values" do
 
       before(:each) do
-        create_missing_in_error_ncs_codes(Instrument)
         InstrumentEventMap.stub!(:version).and_return("1.0")
-        InstrumentEventMap.stub!(:instrument_type).and_return(Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1'))
+        InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
         @person = Factory(:person)
         @survey = create_test_survey_for_person
 
@@ -444,13 +437,13 @@ describe Person do
       end
 
       it "should set the instrument_mode_code" do
-        telephone_computer_administered = Factory(:ncs_code, :list_name => 'INSTRUMENT_ADMIN_MODE_CL1', :local_code => 2, :display_text => "Telephone, Computer Assisted (CATI)")
+        telephone_computer_administered = NcsCode.for_list_name_and_local_code('INSTRUMENT_ADMIN_MODE_CL1', 2)
         response_set, instrument = prepare_instrument(@person, @survey)
         instrument.instrument_mode.should == telephone_computer_administered
       end
 
       it "should set the instrument_method_code" do
-        interviewer_administered = Factory(:ncs_code, :list_name => 'INSTRUMENT_ADMIN_METHOD_CL1', :local_code => 2, :display_text => "Interviewer Administered")
+        interviewer_administered = NcsCode.for_list_name_and_local_code('INSTRUMENT_ADMIN_METHOD_CL1', 2)
         response_set, instrument = prepare_instrument(@person, @survey)
         instrument.instrument_method.should == interviewer_administered
       end
@@ -502,11 +495,11 @@ describe Person do
   end
 
   describe 'phone number helpers' do
-    let!(:primary) { Factory(:ncs_code, :list_name => 'COMMUNICATION_RANK_CL1', :local_code => 1) }
+    let!(:primary) { NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1) }
     let!(:person) { Factory(:person) }
 
     describe '#primary_cell_phone' do
-      let!(:cell) { Factory(:ncs_code, :list_name => 'PHONE_TYPE_CL1', :local_code => 3) }
+      let!(:cell) { NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 3) }
       let!(:phone) { Factory(:telephone, :phone_rank => primary, :phone_type => cell, :person => person) }
 
       it 'returns the primary cell phone for the person' do
@@ -521,7 +514,7 @@ describe Person do
     end
 
     describe '#primary_home_phone' do
-      let!(:home) { Factory(:ncs_code, :list_name => 'PHONE_TYPE_CL1', :local_code => 1) }
+      let!(:home) { NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 1) }
       let!(:phone) { Factory(:telephone, :phone_rank => primary, :phone_type => home, :person => person) }
 
       it 'returns the primary home phone for the person' do
@@ -537,7 +530,7 @@ describe Person do
   end
 
   describe 'contact information helpers' do
-    let!(:primary) { Factory(:ncs_code, :list_name => 'COMMUNICATION_RANK_CL1', :local_code => 1) }
+    let!(:primary) { NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1) }
     let!(:address) { Factory(:address, :address_rank_code => primary.to_i, :person => person) }
     let!(:email) { Factory(:email, :email_rank_code => primary.to_i, :person => person) }
     let!(:person) { Factory(:person) }

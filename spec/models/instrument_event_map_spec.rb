@@ -50,7 +50,7 @@ describe InstrumentEventMap do
   context "finding the instrument type" do
 
     before(:each) do
-      @psi = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => "Pregnancy Screener Interview (HI,LI)")
+      @psi = NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 5)
     end
 
     # INS_QUE_PregScreen_INT_HILI_P2_V2.0 2

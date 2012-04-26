@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 describe Participant do
-
-  before(:each) do
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-  end
-
   context "a new participant" do
 
     it "is scheduled for the LO-Intensity Pregnancy Screener if not registered with the Patient Study Calendar (PSC)" do
@@ -50,7 +45,7 @@ describe Participant do
 
         before(:each) do
           participant.person = person
-          @lo_i_quex = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Low Intensity Data Collection", :local_code => 33)
+          @lo_i_quex = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
         end
 
         it "should schedule the LO-Intensity Quex" do
@@ -91,13 +86,12 @@ describe Participant do
 
         describe "participant has given birth" do
           it "schedules the LO-Intensity Postnatal segement 6.months after the birth event" do
-            create_missing_in_error_ncs_codes PpgStatusHistory
             participant.should be_in_pregnancy_probability_group
             participant.should be_known_to_be_pregnant
             participant.impregnate_low!
             participant.birth_event_low!
 
-            event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Birth", :local_code => 18)
+            event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 18)
             event = Factory(:event, :participant => participant, :event_end_date => Date.today, :event_type => event_type)
 
             participant.should be_postnatal
@@ -127,7 +121,7 @@ describe Participant do
 
         before(:each) do
           participant.person = person
-          @lo_i_quex = Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Low Intensity Data Collection", :local_code => 33)
+          @lo_i_quex = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
         end
 
         it "schedules the LO-Intensity PPG 1 and 2 event on that day" do
@@ -143,7 +137,7 @@ describe Participant do
           participant.should be_in_pregnancy_probability_group
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
 
-          event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
+          event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
           event = Factory(:event, :participant => participant, :event_end_date => Date.today, :event_type => event_type)
 
           participant.events.reload
@@ -159,7 +153,7 @@ describe Participant do
         end
 
         it "schedules the LO-Intensity PPG 1 and 2 event if follow_low_intensity but lo I quex event is pending" do
-          event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33)
+          event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
           event = Factory(:event, :participant => participant, :event_end_date => nil, :event_type => event_type)
           participant.events.reload
           participant.pending_events.should == [event]
@@ -277,7 +271,6 @@ describe Participant do
 
       before(:each) do
         participant.person = person
-        create_missing_in_error_ncs_codes(PpgStatusHistory)
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
@@ -316,7 +309,7 @@ describe Participant do
       describe "having a due date before the next scheduled event date" do
 
         it "schedules the birth event before Pregnancy Visit 2" do
-          status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+          status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1)
           Factory(:ppg_detail, :participant => participant, :ppg_first => status, :orig_due_date => 24.days.from_now.to_date)
 
           participant.pregnant_informed_consent!

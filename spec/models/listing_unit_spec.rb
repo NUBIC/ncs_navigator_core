@@ -74,10 +74,8 @@ describe ListingUnit do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ListingUnit)
 
       lu = ListingUnit.new
-      lu.psu = Factory(:ncs_code)
       lu.save!
 
       ListingUnit.first.list_source.local_code.should == -4

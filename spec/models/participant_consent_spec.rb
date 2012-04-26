@@ -73,10 +73,8 @@ describe ParticipantConsent do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ParticipantConsent)
 
       pc = ParticipantConsent.new
-      pc.psu = Factory(:ncs_code)
       pc.participant = Factory(:participant)
       pc.consent_version = "asdf"
       pc.save!
@@ -99,16 +97,16 @@ describe ParticipantConsent do
   context "for a participant" do
 
     before(:each) do
-      @yes = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
-      @no  = Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "No", :local_code => 2)
+      @yes = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 1)
+      @no  = NcsCode.for_list_name_and_local_code("CONFIRM_TYPE_CL2", 2)
 
-      @general       = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 1, :display_text => "General consent")
-      @biospecimens  = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 2, :display_text => "Consent to collect biospecimens")
-      @environmental = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 3, :display_text => "Consent to collect environmental samples")
-      @genetic       = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 4, :display_text => "Consent to collect genetic material")
-      @birth         = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 5, :display_text => "Consent to collect birth samples")
-      @child         = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 6, :display_text => "Consent for the child’s participation")
-      @low_intensity = Factory(:ncs_code, :list_name => "CONSENT_TYPE_CL1", :local_code => 7, :display_text => "Low Intensity Consent")
+      @general       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 1)
+      @biospecimens  = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 2)
+      @environmental = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 3)
+      @genetic       = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 4)
+      @birth         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 5)
+      @child         = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 6)
+      @low_intensity = NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
     end
 
     it "cannot have consented without a participant_consent record" do

@@ -84,10 +84,8 @@ describe Address do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Address)
-
       addr = Address.new
-      addr.psu = Factory(:ncs_code)
+      addr.psu_code = 20000030
       addr.person = Factory(:person)
       addr.dwelling_unit = Factory(:dwelling_unit)
       addr.save!

@@ -71,10 +71,8 @@ describe Contact do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Contact)
 
       c = Contact.new
-      c.psu = Factory(:ncs_code)
       c.save!
 
       obj = Contact.first
@@ -90,10 +88,9 @@ describe Contact do
   context "contact links and instruments" do
 
     before(:each) do
-      create_missing_in_error_ncs_codes(Instrument)
-      @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-      @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-      @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
+      @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+      @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
+      @q = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', -4)
     end
 
     it "knows all contact links associated with this contact" do
@@ -136,19 +133,18 @@ describe Contact do
     describe "setting the language and interpreter values" do
 
       before(:each) do
-        create_missing_in_error_ncs_codes(Contact)
 
         @survey = create_survey_with_language_and_interpreter_data
         @person = Factory(:person)
-        @english = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'English', :local_code => 1)
-        @spanish     = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Spanish', :local_code => 2)
-        @spanish_cl5 = Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Spanish', :local_code => 1)
-        @farsi       = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Farsi',   :local_code => 17)
-        @farsi_cl5   = Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Farsi',   :local_code => 16)
-        @other       = Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Other',   :local_code => -5)
+        @english = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 1)
+        @spanish     = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 2)
+        @spanish_cl5 = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 1)
+        @farsi       = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 17)
+        @farsi_cl5   = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 16)
+        @other       = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', -5)
 
-        @legitimate_skip  = Factory(:ncs_code, :list_name => 'TRANSLATION_METHOD_CL3', :display_text => 'Legitimate Skip', :local_code => -3)
-        @sign_interpreter = Factory(:ncs_code, :list_name => 'TRANSLATION_METHOD_CL3', :display_text => 'Sign Language Interpreter', :local_code => 6)
+        @legitimate_skip  = NcsCode.for_list_name_and_local_code('TRANSLATION_METHOD_CL3', -3)
+        @sign_interpreter = NcsCode.for_list_name_and_local_code('TRANSLATION_METHOD_CL3', 6)
 
       end
 
@@ -333,25 +329,24 @@ describe Contact do
     describe "auto-completing MDES data" do
 
       before(:each) do
-        create_missing_in_error_ncs_codes(Contact)
 
-        @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-        @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-        @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
+        @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+        @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
+        @q = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', -4)
 
-        @ncs_participant = Factory(:ncs_code, :list_name => 'CONTACTED_PERSON_CL1', :display_text => "NCS Participant", :local_code => 1)
+        @ncs_participant = NcsCode.for_list_name_and_local_code('CONTACTED_PERSON_CL1', 1)
 
-        @telephone = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Telephone', :local_code => 3)
-        @mail      = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'Mail', :local_code => 2)
-        @in_person = Factory(:ncs_code, :list_name => 'CONTACT_TYPE_CL1', :display_text => 'In-Person', :local_code => 1)
+        @telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
+        @mail      = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 2)
+        @in_person = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1)
 
         @survey = create_survey_with_language_and_interpreter_data
         @person = Factory(:person)
-        @english = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'English', :local_code => 1)
-        @spanish = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Spanish', :local_code => 2)
-                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Spanish', :local_code => 1)
-        @farsi   = Factory(:ncs_code, :list_name => 'LANGUAGE_CL2', :display_text => 'Farsi',   :local_code => 17)
-                   Factory(:ncs_code, :list_name => 'LANGUAGE_CL5', :display_text => 'Farsi',   :local_code => 16)
+        @english = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 1)
+        @spanish = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 2)
+                   NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 1)
+        @farsi   = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 17)
+                   NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 16)
 
       end
 
@@ -359,7 +354,7 @@ describe Contact do
 
         before(:each) do
           @contact = Factory(:contact, :contact_type => @telephone, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+                                       :contact_location_code => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
@@ -378,13 +373,13 @@ describe Contact do
           @contact.who_contacted.local_code.should == -4
         end
 
-        it "sets the contact_location to missing in error" do
+        it "sets the contact_location to missing in error", :bad_2024 do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_location.local_code.should == -4
         end
 
-        it "sets the contact_private code to No and private_detail is nil" do
+        it "sets the contact_private code to No and private_detail is nil", :bad_2024 do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_private.to_s.should == "No"
@@ -406,13 +401,13 @@ describe Contact do
                                        :contact_location => nil, :contact_private => nil, :who_contacted => nil)
         end
 
-        it "sets the contact_location to missing in error" do
+        it "sets the contact_location to missing in error", :bad_2024 do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_location.local_code.should == -4
         end
 
-        it "sets the contact_private code to No and private_detail is nil" do
+        it "sets the contact_private code to No and private_detail is nil", :bad_2024 do
           @contact.populate_post_survey_attributes(nil)
           @contact.save!
           @contact.contact_private.to_s.should == "No"

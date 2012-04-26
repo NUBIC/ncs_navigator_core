@@ -62,8 +62,8 @@ describe DispositionMapper do
   context "determining disposition for an event" do
 
     before(:each) do
-      @general_study = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => "General Study Visits (including CASI SAQs)", :local_code => 3)
-      @pregnancy_screen = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => "Pregnancy Screening Events", :local_code => 2)
+      @general_study = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
+      @pregnancy_screen = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
     end
 
     describe "#get_key_from_event_disposition_category" do

@@ -51,10 +51,8 @@ describe HouseholdUnit do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(HouseholdUnit)
 
       hu = HouseholdUnit.new
-      hu.psu = Factory(:ncs_code)
       hu.save!
 
       obj = HouseholdUnit.first

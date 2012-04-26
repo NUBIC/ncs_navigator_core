@@ -55,10 +55,8 @@ describe ParticipantPersonLink do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ParticipantPersonLink)
 
       ppl = ParticipantPersonLink.new
-      ppl.psu = Factory(:ncs_code)
       ppl.participant = Factory(:participant)
       ppl.person = Factory(:person)
       ppl.save!

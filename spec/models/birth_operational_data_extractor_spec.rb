@@ -5,29 +5,10 @@ require 'spec_helper'
 describe BirthOperationalDataExtractor do
   include SurveyCompletion
 
-  before(:each) do
-    create_missing_in_error_ncs_codes(DwellingUnit)
-    create_missing_in_error_ncs_codes(Instrument)
-    create_missing_in_error_ncs_codes(Address)
-    create_missing_in_error_ncs_codes(Telephone)
-    create_missing_in_error_ncs_codes(Participant)
-    create_missing_in_error_ncs_codes(Person)
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Mother", :local_code => 2)
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
-
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
-  end
-
   context "creating a new person record for the child" do
     before(:each) do
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self", :local_code => 1)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
-
-      @male   = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Male", :local_code => 1)
-      @female = Factory(:ncs_code, :list_name => "GENDER_CL1", :display_text => "Female", :local_code => 2)
+      @male   = NcsCode.for_list_name_and_local_code("GENDER_CL1", 1)
+      @female = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
 
       @person = Factory(:person)
       @participant = Factory(:participant)
@@ -71,12 +52,12 @@ describe BirthOperationalDataExtractor do
 
   context "extracting tracing operational data" do
 
-    let(:home) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Home", :local_code => 1) }
-    let(:work) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Work", :local_code => 2) }
-    let(:cell) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3) }
-    let(:frre) { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Friend/Relative", :local_code => 4) }
-    let(:fax)  { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Fax", :local_code => 5) }
-    let(:oth)  { Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Other", :local_code => -5) }
+    let(:home) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 1) }
+    let(:work) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 2) }
+    let(:cell) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3) }
+    let(:frre) { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 4) }
+    let(:fax)  { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 5) }
+    let(:oth)  { NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", -5) }
 
     before(:each) do
       @person = Factory(:person)
@@ -105,9 +86,7 @@ describe BirthOperationalDataExtractor do
 
     it "extracts mailing address data" do
 
-      state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
-      Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Home", :local_code => 1)
-      Factory(:ncs_code, :list_name => "ADDRESS_CATEGORY_CL1", :display_text => "Mailing", :local_code => 4)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       @person.addresses.size.should == 0
 
@@ -131,7 +110,7 @@ describe BirthOperationalDataExtractor do
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
       address.address_rank_code.should == 1
     end
 
@@ -166,8 +145,8 @@ describe BirthOperationalDataExtractor do
 
     it "extracts email information from the survey responses" do
 
-      home = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Personal", :local_code => 1)
-      work = Factory(:ncs_code, :list_name => "EMAIL_TYPE_CL1", :display_text => "Work", :local_code => 2)
+      home = NcsCode.for_list_name_and_local_code("EMAIL_TYPE_CL1", 1)
+      work = NcsCode.for_list_name_and_local_code("EMAIL_TYPE_CL1", 2)
 
       email = Factory(:email, :email => "asdf@asdf.asdf", :person => @person)
 

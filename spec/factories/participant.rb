@@ -3,19 +3,19 @@
 FactoryGirl.define do
 
   factory :participant do
-    psu                       { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
-    p_type                    { |a| a.association(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Age-eligible woman", :local_code => 1) }
+    psu_code                  20000030
+    p_type_code               1
     p_type_other              nil
-    status_info_source        { |a| a.association(:ncs_code, :list_name => "INFORMATION_SOURCE_CL4", :display_text => "Person/Self", :local_code => 1) }
+    status_info_source_code   1
     status_info_source_other  nil
-    status_info_mode          { |a| a.association(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :display_text => "In-person", :local_code => 1) }
+    status_info_mode_code     1
     status_info_mode_other    nil
     status_info_date          Date.today
-    enroll_status             { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+    enroll_status_code        1
     enroll_date               Date.today
-    pid_entry                 { |a| a.association(:ncs_code, :list_name => "STUDY_ENTRY_METHOD_CL1", :display_text => "Advance letter mailed by NCS.", :local_code => 1) }
+    pid_entry_code            1
     pid_entry_other           nil
-    pid_age_eligibility       { |a| a.association(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1) }
+    pid_age_eligibility_code  1
     pid_comment               nil
     transaction_type          nil
     high_intensity            nil
@@ -133,10 +133,10 @@ end
 Factory.define :participant_person_link do |link|
   link.association :participant,  :factory => :participant
   link.association :person,  :factory => :person
-  link.psu                { |a| a.association(:ncs_code, :list_name => "PSU_CL1") }
-  link.relationship       { |a| a.association(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self", :local_code => 1) }
+  link.psu_code                2000030
+  link.relationship_code       1
   link.relationship_other nil
-  link.is_active          { |a| a.association(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1) }
+  link.is_active_code          1
   link.transaction_type   nil
 end
 

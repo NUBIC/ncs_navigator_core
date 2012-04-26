@@ -38,10 +38,8 @@ describe DwellingUnitTypeNonInterviewReport do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(DwellingUnitTypeNonInterviewReport)
 
       dutnir = DwellingUnitTypeNonInterviewReport.new
-      dutnir.psu = Factory(:ncs_code)
       dutnir.save!
 
       obj = DwellingUnitTypeNonInterviewReport.first

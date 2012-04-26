@@ -65,10 +65,8 @@ describe ParticipantVisitRecord do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ParticipantVisitRecord)
 
       pvr = ParticipantVisitRecord.new
-      pvr.psu = Factory(:ncs_code)
       pvr.participant = Factory(:participant)
       pvr.rvis_person = Factory(:person)
       pvr.contact = Factory(:contact)

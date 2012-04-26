@@ -5,28 +5,12 @@ require 'spec_helper'
 describe PregnancyVisitOperationalDataExtractor do
   include SurveyCompletion
 
-  before(:each) do
-    create_missing_in_error_ncs_codes(Instrument)
-    create_missing_in_error_ncs_codes(Person)
-    create_missing_in_error_ncs_codes(Participant)
-    create_missing_in_error_ncs_codes(PpgDetail)
-    create_missing_in_error_ncs_codes(PpgStatusHistory)
-    create_missing_in_error_ncs_codes(Telephone)
-    create_missing_in_error_ncs_codes(Email)
-    create_missing_in_error_ncs_codes(Address)
-    create_missing_in_error_ncs_codes(DwellingUnit)
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Primary", :local_code => 1)
-    Factory(:ncs_code, :list_name => "COMMUNICATION_RANK_CL1", :display_text => "Secondary", :local_code => 2)
-  end
-
   # R_FNAME               Person.first_name
   # R_LNAME               Person.last_name
   # PERSON_DOB            Person.person_dob
   it "extracts person operational data from the survey responses" do
 
-    age_eligible  = Factory(:ncs_code, :list_name => "AGE_ELIGIBLE_CL2", :display_text => "Age-Eligible", :local_code => 1)
+    age_eligible  = NcsCode.for_list_name_and_local_code("AGE_ELIGIBLE_CL2", 1)
 
     person = Factory(:person, :age => nil)
     participant = Factory(:participant)
@@ -70,34 +54,16 @@ describe PregnancyVisitOperationalDataExtractor do
       Factory(:ppg_detail, :participant => @participant)
 
       # CONTACT_RELATIONSHIP_CL2
-      Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Mother/Father", :local_code => 1)
-      Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Brother/Sister", :local_code => 2)
-      @contact_aunt_uncle = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Aunt/Uncle", :local_code => 3)
-      @contact_grandparent = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Grandparent", :local_code => 4)
-      @contact_neighbor = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Neighbor", :local_code => 5)
-      @contact_friend = Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Friend", :local_code => 6)
-      Factory(:ncs_code, :list_name => "CONTACT_RELATIONSHIP_CL2", :display_text => "Other", :local_code => -5)
+      @contact_aunt_uncle = NcsCode.for_list_name_and_local_code("CONTACT_RELATIONSHIP_CL2", 3)
+      @contact_grandparent = NcsCode.for_list_name_and_local_code("CONTACT_RELATIONSHIP_CL2", 4)
+      @contact_neighbor = NcsCode.for_list_name_and_local_code("CONTACT_RELATIONSHIP_CL2", 5)
+      @contact_friend = NcsCode.for_list_name_and_local_code("CONTACT_RELATIONSHIP_CL2", 6)
 
       # PERSON_PARTCPNT_RELTNSHP_CL1
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self", :local_code => 1)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Mother", :local_code => 2)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Non-Biological Mother", :local_code => 3)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Father", :local_code => 4)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Non-Biological Father", :local_code => 5)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Spouse", :local_code => 6)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Partner/Significant Other", :local_code => 7)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child", :local_code => 8)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Sibling", :local_code => 9)
-      @ppr_grandparent = Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Grandparent", :local_code => 10)
-      @ppr_other_rel = Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Other relative", :local_code => 11)
-      @ppr_friend = Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Friend", :local_code => 12)
-      @ppr_neighbor = Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Neighbor", :local_code => 13)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Co-Worker", :local_code => 14)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Care-giver", :local_code => 15)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Teacher", :local_code => 16)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Primary health care provider", :local_code => 17)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Other health care provider", :local_code => 18)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Other", :local_code => -5)
+      @ppr_grandparent = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 10)
+      @ppr_other_rel = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 11)
+      @ppr_friend = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 12)
+      @ppr_neighbor = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 13)
 
       @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
       @response_set, @instrument = prepare_instrument(@person, @survey)
@@ -106,7 +72,7 @@ describe PregnancyVisitOperationalDataExtractor do
     end
 
     it "creates a new person (for the Child's Father) record and associates it with the particpant" do
-      state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       survey = create_pregnancy_visit_1_saq_survey_with_father_operational_data
       survey_section = survey.sections.first
@@ -143,12 +109,12 @@ describe PregnancyVisitOperationalDataExtractor do
       father.telephones.first.phone_rank_code.should == 1
 
       father.addresses.first.should_not be_nil
-      father.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+      father.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
       father.addresses.first.address_rank_code.should == 1
     end
 
     it "creates a new person record and associates it with the particpant" do
-      state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
         a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Donna'
@@ -180,11 +146,11 @@ describe PregnancyVisitOperationalDataExtractor do
       friend.telephones.first.phone_nbr.should == "3125551212"
 
       friend.addresses.first.should_not be_nil
-      friend.addresses.first.to_s.should == "123 Easy St. Chicago, IL 65432-1234"
+      friend.addresses.first.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
     end
 
     it "creates another new person record and associates it with the particpant" do
-      state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
         a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2", 'Carole'
@@ -216,11 +182,11 @@ describe PregnancyVisitOperationalDataExtractor do
       neighbor.telephones.first.phone_nbr.should == "3125551212"
 
       neighbor.addresses.first.should_not be_nil
-      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, IL 65432-1234"
+      neighbor.addresses.first.to_s.should == "123 Tapestry St. Chicago, ILLINOIS 65432-1234"
     end
 
     it "creates an other relative person record and associates it with the particpant" do
-      state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
         a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Ivy'
@@ -243,7 +209,7 @@ describe PregnancyVisitOperationalDataExtractor do
     end
 
     it "creates a grandparent person record and associates it with the particpant" do
-      state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
         a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Billie'
@@ -269,8 +235,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
   it "extracts cell phone operational data from the survey responses" do
 
-    cell = Factory(:ncs_code, :list_name => "PHONE_TYPE_CL1", :display_text => "Cell", :local_code => 3)
-    Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)
+    cell = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3)
 
     person = Factory(:person)
 
@@ -333,7 +298,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
   it "extracts birth address operational data from the survey responses" do
 
-    state = Factory(:ncs_code, :list_name => "STATE_CL1", :display_text => "IL", :local_code => 14)
+    state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
     person = Factory(:person)
     person.addresses.size.should == 0
@@ -359,7 +324,7 @@ describe PregnancyVisitOperationalDataExtractor do
     person  = Person.find(person.id)
     person.addresses.size.should == 1
     address = person.addresses.first
-    address.to_s.should == "123 Hospital Way Chicago, IL 65432"
+    address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
 
   end
 

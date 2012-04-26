@@ -90,10 +90,8 @@ describe NonInterviewReport do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(NonInterviewReport)
 
       nir = NonInterviewReport.new
-      nir.psu = Factory(:ncs_code)
       nir.save!
 
       obj = NonInterviewReport.first

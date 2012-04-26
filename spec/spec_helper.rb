@@ -100,9 +100,10 @@ Spork.prefork do
     # Using DatabaseCleaner instead
     # config.use_transactional_fixtures = true
 
-    config.before(:all) do
+    config.before(:suite) do
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.clean_with(:truncation)
+      NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
     end
 
     config.before(:each, :clean_with_truncation) do
@@ -129,43 +130,6 @@ Spork.prefork do
     if ENV['PROFILE_DB']
       ActiveRecordQueryProfiler.register(config)
     end
-  end
-
-  def create_missing_in_error_ncs_codes(cls)
-    cls.reflect_on_all_associations.each do |association|
-      if association.options[:class_name] == "NcsCode"
-        list_name = association.options[:conditions].gsub("'", "").gsub("list_name = ", "")
-        Factory(:ncs_code, :local_code => '-4', :display_text => 'Missing in Error', :list_name => list_name)
-      end
-    end
-  end
-
-  def create_all_event_types
-
-    [
-      [7,	"Pregnancy Probability"],
-      [9,	"Pregnancy Screening - Household Enumeration Group"],
-      [10,	"Informed Consent"],
-      [11,	"Pre-Pregnancy Visit"],
-      [13,	"Pregnancy Visit 1"],
-      [15,	"Pregnancy Visit 2"],
-      [18,	"Birth"],
-      [19,	"Father"],
-      [21,	"Validation"],
-      [23,	"3 Month"],
-      [24,	"6 Month"],
-      [26,	"9 Month"],
-      [27,	"12 Month"],
-      [29,	"Pregnancy Screener"],
-      [30,	"18 Month"],
-      [31,	"24 Month"],
-      [32,	"Low to High Conversion"],
-      [33,	"Low Intensity Data Collection"],
-      [-5,	"Other"]
-    ].each do |lc, txt|
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => txt, :local_code => lc)
-    end
-
   end
 
   def load_survey_string(s)
@@ -202,18 +166,7 @@ Spork.prefork do
     let(:response_body) { Nokogiri::XML(xml) }
 
     before(:each) do
-      create_missing_in_error_ncs_codes(Event)
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-
       @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
-
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "Birth", :local_code => 18)
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "3 Month", :local_code => 23)
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "6 Month", :local_code => 24)
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "9 Month", :local_code => 26)
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "12 Month", :local_code => 27)
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "18 Month", :local_code => 30)
-      Factory(:ncs_code, :list_name => 'EVENT_TYPE_CL1', :display_text => "24 Month", :local_code => 31)
 
       participant.person = person
       participant.save!

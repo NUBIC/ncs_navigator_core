@@ -31,17 +31,13 @@ describe ResponseSet do
   end
 
   context "with instruments" do
-    before(:each) do
-      Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-    end
-
     describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
 
       let(:person) { Factory(:person) }
       let(:participant) { Factory(:participant, :high_intensity => true, :high_intensity_state => "pregnancy_one") }
 
       let(:access_code) { "ins-que-pregvisit1-int-ehpbhi-p2-v2-0" }
-      let(:status1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
+      let(:status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
 
       it "creates a response set for the instrument with prepopulated answers" do
 
@@ -59,9 +55,7 @@ describe ResponseSet do
         answer    = Factory(:answer, :question => question)
 
         ResponseSet.where(:user_id => person.id).should be_empty
-
-        create_missing_in_error_ncs_codes(Instrument)
-        instrument_type = Factory(:ncs_code, :list_name => 'INSTRUMENT_TYPE_CL1', :display_text => 'Pregnancy Visit 1 Interview')
+        instrument_type = NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1)
 
         rs, ins = prepare_instrument(person, pv1survey)
         rs.save!
@@ -77,7 +71,6 @@ describe ResponseSet do
 
   context "knowing if the user answered questions in each section" do
     before(:each) do
-      create_missing_in_error_ncs_codes(Instrument)
 
       @survey = create_survey_with_many_sections
       @survey.sections_with_questions.size.should == 5

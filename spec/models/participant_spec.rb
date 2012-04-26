@@ -36,10 +36,6 @@ require 'spec_helper'
 
 describe Participant do
 
-  before(:each) do
-    Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Self", :local_code => 1)
-  end
-
   it "creates a new instance given valid attributes" do
     par = Factory(:participant)
     par.should_not be_nil
@@ -82,10 +78,8 @@ describe Participant do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Participant)
 
       pr = Participant.create
-      pr.psu = Factory(:ncs_code)
       pr.person = Factory(:person)
       pr.save!
 
@@ -300,15 +294,15 @@ describe Participant do
 
   end
 
-  context "with an assigned pregnancy probability group" do
+  context "with an assigned pregnancy probability group", :bad_2024 do
 
     let(:participant) { Factory(:participant) }
-    let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
-    let(:status2)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
-    let(:status2a) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
+    let(:status1)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
+    let(:status2)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2) }
+    let(:status2a) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 2) }
 
-    let(:status3)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
-    let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
+    let(:status3)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 3) }
+    let(:status4)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4) }
 
     it "determines the ppg from the ppg_details if there is no ppg_status_history record" do
       Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
@@ -418,8 +412,8 @@ describe Participant do
 
   describe "#upcoming_births" do
 
-    let(:ppg1) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 1: Pregnant", :local_code => 1) }
-    let(:ppg3) { Factory(:ncs_code, :list_name => "PPG_STATUS_CL2", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
+    let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+    let(:ppg3) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 3) }
 
     before(:each) do
 
@@ -446,7 +440,7 @@ describe Participant do
     describe "a participant who has had a recent pregnancy loss (PPG 3)" do
 
       before(:each) do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
+        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 3)
         person = Factory(:person)
         @participant = Factory(:participant, :high_intensity => true)
         @participant.person = person
@@ -464,8 +458,8 @@ describe Participant do
       end
 
       it "knows the upcoming applicable events who has had a followup already" do
-        event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
-        event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
+        event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 7)
+        event_disposition_category = NcsCode.for_list_name_and_local_code("EVENT_DSPSTN_CAT_CL1", 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
         contact = Factory(:contact)
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 5.months.ago, :contact => contact)
@@ -477,8 +471,8 @@ describe Participant do
       end
 
       it "knows the upcoming applicable events who has had several followups already" do
-        event_type = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Probability", :local_code => 7)
-        event_disposition_category = Factory(:ncs_code, :list_name => "EVENT_DSPSTN_CAT_CL1",  :display_text => "Telephone Interview Events", :local_code => 5)
+        event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 7)
+        event_disposition_category = NcsCode.for_list_name_and_local_code("EVENT_DSPSTN_CAT_CL1", 5)
         event = Factory(:event, :event_type => event_type, :event_disposition_category => event_disposition_category)
 
         contact_link = Factory(:contact_link, :person => @participant.person, :event => event, :created_at => 10.month.ago)
@@ -498,7 +492,7 @@ describe Participant do
     context "in the low intensity protocol" do
 
       it "knows the upcoming applicable events for a new participant" do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
         person = Factory(:person)
         @participant = Factory(:participant, :high_intensity => false)
         @participant.person = person
@@ -510,7 +504,6 @@ describe Participant do
       end
 
       it "uses the birth event contact date to determine the next scheduled event date" do
-        create_missing_in_error_ncs_codes(PpgStatusHistory)
         person = Factory(:person)
         @participant = Factory(:participant, :high_intensity => false)
         @participant.person = person
@@ -528,7 +521,7 @@ describe Participant do
     context "in the high intensity protocol" do
 
       it "knows the upcoming applicable events for a consented participant" do
-        status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
         person = Factory(:person)
         @participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "converted_high_intensity")
         @participant.person = person
@@ -554,7 +547,7 @@ describe Participant do
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
-        general_study_visit = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => 'General Study Visits (including CASI SAQs)', :local_code => 3)
+        general_study_visit = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
 
         VCR.use_cassette('psc/schedule_and_create_child_placeholder') do
 
@@ -624,7 +617,7 @@ describe Participant do
         describe "a participant who is pregnant - PPG 1" do
 
           it "knows the upcoming applicable events" do
-            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1)
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
 
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION]
@@ -641,7 +634,7 @@ describe Participant do
         describe "a participant who is not pregnant but actively trying - PPG 2" do
 
           it "knows the upcoming applicable events" do
-            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2)
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION]
 
@@ -656,7 +649,7 @@ describe Participant do
         describe "a participant who has had a recent pregnancy loss - PPG 3" do
 
           it "knows the upcoming applicable events" do
-            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 3)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.high_intensity_conversion!
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
@@ -666,7 +659,7 @@ describe Participant do
         describe "a participant who is not pregnant and not trying - PPG 4" do
 
           it "knows the upcoming applicable events" do
-            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4)
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.high_intensity_conversion!
             participant.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP]
@@ -676,7 +669,7 @@ describe Participant do
         describe "a participant who is ineligible - PPG 6" do
 
           it "knows the upcoming applicable events" do
-            status = Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 6: Withdrawn", :local_code => 6)
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 6)
             Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
             participant.high_intensity_conversion!
             participant.upcoming_events.should == []
@@ -689,11 +682,11 @@ describe Participant do
 
   context "with state" do
 
-    let(:status1)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 1: Pregnant and Eligible", :local_code => 1) }
-    let(:status2)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 2: High Probability – Trying to Conceive", :local_code => 2) }
-    let(:status3)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3) }
-    let(:status4)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 4: Other Probability – Not Pregnancy and not Trying", :local_code => 4) }
-    let(:status5)  { Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 5: Ineligible", :local_code => 5) }
+    let(:status1)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
+    let(:status2)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2) }
+    let(:status3)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 3) }
+    let(:status4)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4) }
+    let(:status5)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 5) }
 
     context "for the Low Intensity Protocol" do
 
@@ -767,18 +760,6 @@ describe Participant do
     end
 
     context "experience Pregnancy Loss" do
-      before(:each) do
-        if (NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 3).count == 0)
-          Factory(:ncs_code, :list_name => "PPG_STATUS_CL1", :display_text => "PPG Group 3: High Probability – Recent Pregnancy Loss", :local_code => 3)
-        end
-        if (NcsCode.where(:list_name => "INFORMATION_SOURCE_CL3").where(:local_code => -5).count == 0)
-          Factory(:ncs_code, :list_name => "INFORMATION_SOURCE_CL3", :display_text => "Unknown", :local_code => -5)
-        end
-        if (NcsCode.where(:list_name => "CONTACT_TYPE_CL1").where(:local_code => -5).count == 0)
-          Factory(:ncs_code, :list_name => "CONTACT_TYPE_CL1", :display_text => "Unknown", :local_code => -5)
-        end
-      end
-
       it "transitions from pregnant to loss" do
         participant = Factory(:participant)
         participant.register!
@@ -889,8 +870,7 @@ describe Participant do
       participant.person = person
 
       survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
-      ins_type = Factory(:ncs_code, :list_name => "INSTRUMENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 99)
-      create_missing_in_error_ncs_codes(Instrument)
+      ins_type = NcsCode.for_list_name_and_local_code("INSTRUMENT_TYPE_CL1", 99)
 
       survey.should_not be_nil
 
@@ -908,19 +888,19 @@ describe Participant do
 
   context "participant types" do
 
-    let(:age_eligible) { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Age-eligible woman",      :local_code => 1) }
-    let(:trying)       { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "High Trier",              :local_code => 2) }
-    let(:pregnant)     { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Pregnant eligible woman", :local_code => 3) }
-    let(:bio_father)   { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Biological Father",       :local_code => 4) }
-    let(:soc_father)   { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "Social Father",           :local_code => 5) }
-    let(:child)        { Factory(:ncs_code, :list_name => "PARTICIPANT_TYPE_CL1", :display_text => "NCS Child",               :local_code => 6) }
+    let(:age_eligible) { NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 1) }
+    let(:trying)       { NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 2) }
+    let(:pregnant)     { NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 3) }
+    let(:bio_father)   { NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 4) }
+    let(:soc_father)   { NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 5) }
+    let(:child)        { NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 6) }
 
-    let(:part_self)    { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Participant/Self",          :local_code => 1) }
-    let(:mother)       { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Mother",         :local_code => 2) }
-    let(:father)       { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Biological Father",         :local_code => 4) }
-    let(:spouse)       { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Spouse",                    :local_code => 6) }
-    let(:partner)      { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Partner/Significant Other", :local_code => 7) }
-    let(:child_rel)    { Factory(:ncs_code, :list_name => "PERSON_PARTCPNT_RELTNSHP_CL1", :display_text => "Child",                     :local_code => 8) }
+    let(:part_self)    { NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 1) }
+    let(:mother)       { NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 2) }
+    let(:father)       { NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 4) }
+    let(:spouse)       { NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 6) }
+    let(:partner)      { NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 7) }
+    let(:child_rel)    { NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 8) }
 
     before(:each) do
       @ella  = Factory(:person, :first_name => "Ella", :last_name => "Fitzgerald")
@@ -954,9 +934,9 @@ describe Participant do
 
     describe "self" do
       it "knows it's own participant type" do
-        @mom.participant_type.should == "Age-eligible woman"
-        @dad.participant_type.should == "Biological Father"
-        @kid.participant_type.should == "NCS Child"
+        @mom.participant_type.should == age_eligible.display_text
+        @dad.participant_type.should == bio_father.display_text
+        @kid.participant_type.should == child.display_text
       end
     end
 
@@ -1007,9 +987,9 @@ describe Participant do
     let(:participant) { Factory(:participant) }
     let(:person) { Factory(:person) }
 
-    let(:preg_screen) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Pregnancy Screener", :local_code => 29) }
-    let(:lo_i_quex) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
-    let(:informed_consent) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Informed Consent", :local_code => 10) }
+    let(:preg_screen) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29) }
+    let(:lo_i_quex) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33) }
+    let(:informed_consent) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 10) }
 
     let(:date) { "2012-02-06" }
 
@@ -1054,12 +1034,12 @@ describe Participant do
 
     let(:participant) { Factory(:participant) }
     let(:person) { Factory(:person) }
-    let(:lo_i_quex) { Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => "Low Intensity Data Collection", :local_code => 33) }
+    let(:lo_i_quex) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33) }
 
     before(:each) do
-      @enrolled   = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-      @unenrolled = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-      @event_disposition_category = Factory(:ncs_code, :list_name => 'EVENT_DSPSTN_CAT_CL1', :display_text => "General Study Visits",  :local_code => 3)
+      @enrolled   = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+      @unenrolled = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
+      @event_disposition_category = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
 
       participant.person = person
       participant.save!
@@ -1107,7 +1087,6 @@ describe Participant do
 
       it "withdraws the participant from the study" do
         Factory(:participant_consent, :participant => participant)
-        Factory(:ncs_code, :list_name => 'CONSENT_WITHDRAW_REASON_CL1', :display_text => "Involuntary withdrawal initiated by the Study", :local_code => 2)
 
         participant.participant_consents.should_not be_empty
         participant.participant_consents.each do |c|

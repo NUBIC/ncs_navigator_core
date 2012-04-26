@@ -38,10 +38,8 @@ describe RefusalNonInterviewReport do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(RefusalNonInterviewReport)
 
       rnir = RefusalNonInterviewReport.new
-      rnir.psu = Factory(:ncs_code)
       rnir.save!
 
       obj = RefusalNonInterviewReport.first

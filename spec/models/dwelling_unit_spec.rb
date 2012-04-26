@@ -109,10 +109,8 @@ describe DwellingUnit do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(DwellingUnit)
 
       du = DwellingUnit.new
-      du.psu = Factory(:ncs_code)
       du.save!
 
       DwellingUnit.first.duplicate_du.local_code.should == -4

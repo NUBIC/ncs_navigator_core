@@ -53,10 +53,8 @@ describe ParticipantVisitConsent do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ParticipantVisitConsent)
 
       pvc = ParticipantVisitConsent.new
-      pvc.psu = Factory(:ncs_code)
       pvc.participant = Factory(:participant)
       pvc.vis_person_who_consented = Factory(:person)
       pvc.save!

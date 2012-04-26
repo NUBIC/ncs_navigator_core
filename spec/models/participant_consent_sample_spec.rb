@@ -42,10 +42,8 @@ describe ParticipantConsentSample do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(ParticipantConsentSample)
 
       pcs = ParticipantConsentSample.new
-      pcs.psu = Factory(:ncs_code)
       pcs.participant = Factory(:participant)
       pcs.participant_consent = Factory(:participant_consent)
       pcs.save!

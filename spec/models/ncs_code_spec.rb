@@ -17,12 +17,8 @@ require 'spec_helper'
 
 describe NcsCode do
 
-  it "should create a new instance given valid attributes" do
-    code = Factory(:ncs_code)
-  end
-
   it "should display attributes with user friendly method names (syntactic sugar)" do
-    code = Factory(:ncs_code)
+    code = NcsCode.new(:display_text => 'foo', :local_code => 5)
     code.to_s.should == "#{code.display_text}"
     code.code.should == code.local_code
   end
@@ -32,11 +28,8 @@ describe NcsCode do
   it { should validate_presence_of(:local_code) }
 
   context "finding event type using psc labels" do
-
     describe "#find_event_by_label" do
-
       it "returns the event type code" do
-
         [
           ["household_enumeration", "Household Enumeration"],
           ["pregnancy_probability", "Pregnancy Probability"],
@@ -60,16 +53,10 @@ describe NcsCode do
           ["other", "Other"],
           ["missing_in_error", "Missing in Error"],
         ].each do |lbl, txt|
-
-          code = Factory(:ncs_code, :list_name => "EVENT_TYPE_CL1", :display_text => txt)
+          code = NcsCode.for_list_name_and_display_text("EVENT_TYPE_CL1", txt)
           NcsCode.find_event_by_lbl(lbl).should == code
-
         end
-
       end
-
     end
-
   end
-
 end

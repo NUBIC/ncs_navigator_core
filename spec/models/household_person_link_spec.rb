@@ -43,10 +43,8 @@ describe HouseholdPersonLink do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(HouseholdPersonLink)
 
       hpl = HouseholdPersonLink.new
-      hpl.psu = Factory(:ncs_code)
       hpl.person = Factory(:person)
       hpl.household_unit = Factory(:household_unit)
       hpl.save!

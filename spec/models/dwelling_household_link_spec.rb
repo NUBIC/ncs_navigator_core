@@ -41,10 +41,8 @@ describe DwellingHouseholdLink do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(DwellingHouseholdLink)
 
       dhl = DwellingHouseholdLink.new
-      dhl.psu = Factory(:ncs_code)
       dhl.dwelling_unit = Factory(:dwelling_unit)
       dhl.household_unit = Factory(:household_unit)
       dhl.save!

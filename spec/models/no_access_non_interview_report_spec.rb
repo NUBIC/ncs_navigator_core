@@ -38,10 +38,8 @@ describe NoAccessNonInterviewReport do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(NoAccessNonInterviewReport)
 
       nanir = NoAccessNonInterviewReport.new
-      nanir.psu = Factory(:ncs_code)
       nanir.save!
 
       obj = NoAccessNonInterviewReport.first

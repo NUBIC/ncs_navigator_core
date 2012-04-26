@@ -37,9 +37,9 @@ require 'spec_helper'
 describe Instrument do
 
   before(:each) do
-    @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-    @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-    @q = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "?",   :local_code => -4)
+    @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+    @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
+    @q = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', -4)
   end
 
   it "creates a new instance given valid attributes" do
@@ -139,11 +139,9 @@ describe Instrument do
       ins.instrument_id.length.should == 36
     end
 
-    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Instrument)
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes", :bad_2024 do
 
       ins = Instrument.new(:instrument_version => "0.1")
-      ins.psu = Factory(:ncs_code)
       ins.event = Factory(:event)
       ins.save!
 
@@ -162,9 +160,8 @@ describe Instrument do
   describe "the breakoff code" do
 
     before(:each) do
-      @y = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "Yes", :local_code => 1)
-      @n = Factory(:ncs_code, :list_name => 'CONFIRM_TYPE_CL2', :display_text => "No",  :local_code => 2)
-      create_missing_in_error_ncs_codes(Instrument)
+      @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+      @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
     end
 
     it "should set the breakoff code to no if the reponse set has questions answered" do
@@ -260,7 +257,7 @@ describe Instrument do
         }
 
         let(:new_instrument_attributes) {
-          { :instrument_version => '0.0', :psu => Factory(:ncs_code), :event => Factory(:event) }
+          { :instrument_version => '0.0', :event => Factory(:event) }
         }
 
         let(:new_instrument) {
@@ -268,7 +265,6 @@ describe Instrument do
         }
 
         before do
-          create_missing_in_error_ncs_codes(Instrument)
         end
 
         it 'defaults to 2' do

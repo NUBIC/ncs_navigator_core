@@ -58,10 +58,8 @@ describe Email do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(Email)
 
       email = Email.new
-      email.psu = Factory(:ncs_code)
       email.person = Factory(:person)
       email.save!
 
