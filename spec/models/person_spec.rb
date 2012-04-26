@@ -244,7 +244,7 @@ describe Person do
     end
 
     it "does not blowup on leap year" do
-      dob = Date.parse('02/29/1992')
+      dob = Date.parse('1992-02-29')
       pers = Factory(:person, :person_dob_date => dob)
       (pers.computed_age > 18).should be_true
     end

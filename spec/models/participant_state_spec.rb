@@ -108,7 +108,7 @@ describe Participant do
 
         due_date = 8.months.from_now
 
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime("%m/%d/%Y"))
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime('%Y-%m-%d'))
 
         participant.should be_in_pregnancy_probability_group
         participant.update_state_after_survey(response_set, psc)
