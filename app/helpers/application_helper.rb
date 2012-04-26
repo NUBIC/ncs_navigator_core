@@ -76,8 +76,34 @@ module ApplicationHelper
 
   # Dispositions
 
+
   def grouped_disposition_codes(group = nil, selected_key = nil)
     grouped_options_for_select(DispositionMapper.get_grouped_options(group), selected_key, "-- Select Disposition --")
   end
 
+  def sample_type(value)
+    value = sample_extenstion(value).downcase
+    if value.include? "ur"
+      "URINE"
+    elsif value.include? "rb"
+      "WHOLE BLOOD"
+    elsif value.include? "db"
+      "DUST"
+    elsif value.include? "w"
+      "WATER"
+    else
+      "TYPE UNKNOWN"
+    end
+    
+  end
+  
+  def sample_root_id(value)
+    dash = value.index("-")
+    value[0, dash]
+  end
+  
+  def sample_extenstion(value)
+    dash = value.index("-") + 1
+    value[dash, value.length]
+  end
 end

@@ -81,4 +81,50 @@ NcsNavigatorCore::Application.routes.draw do
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
 
   root :to => "welcome#index"
+
+  resources :specimens do
+    collection do
+      post :verify
+      get  :verify
+      post :generate
+      post :send_email
+    end
+  end
+
+  resources :samples do
+    collection do
+      post :verify
+      get  :verify
+      post :generate
+      post :send_email
+    end
+  end    
+  
+  match "/manifest", :to => "manifest#index"
+  
+  resources :specimen_processing_shipping_centers
+  resources :sample_receipt_shipping_centers  
+  resources :specimen_pickups, :only => [:new, :create, :show]
+  resources :specimen_sample_processes do
+    collection do
+      get :index
+      post :receive
+      post :store
+      put :store
+    end
+  end
+
+  resources :specimen_receipts
+
+  resources :sample_receipt_stores do
+    member do
+      post :update
+    end
+  end
+
+  resources :specimen_storages do
+    member do
+      post :update
+    end
+  end
 end
