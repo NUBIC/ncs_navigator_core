@@ -42,6 +42,7 @@ describe ContactsController do
         before(:each) do
           Contact.stub(:new).and_return(mock_contact)
           params = {:participant => @participant, :event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
+          # TODO: Event is a value object. Why stub?
           Event.stub(:new).with(params).and_return(mock_event(params))
         end
 
@@ -117,12 +118,16 @@ describe ContactsController do
         @person.upcoming_events.should == ["LO-Intensity: PPG 1 and 2"]
       end
 
-      describe "GET new", :bad_2024 do
-
+      describe "GET new" do
         before(:each) do
-          params = {:participant => @participant, :event_type_code => 33, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
+          expected_params = {
+            :participant => @participant,
+            :event_type => NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33),
+            :psu_code => NcsNavigatorCore.psu_code,
+            :event_start_date => Date.today
+          }
           # TODO: Event is a value object. Why stub?
-          Event.stub(:new).with(params).and_return(mock_event(params))
+          Event.stub(:new).with(expected_params).and_return(mock_event(expected_params))
         end
 
         it "assigns a new contact as @contact" do
