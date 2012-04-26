@@ -32,7 +32,7 @@ gem 'formtastic', '1.2.4'
 gem 'surveyor', '~> 0.22'
 gem 'psc'
 gem 'ncs_navigator_configuration'
-gem 'resque'
+gem 'sidekiq'
 
 gem 'state_machine'
 gem 'state_machine-audit_trail'

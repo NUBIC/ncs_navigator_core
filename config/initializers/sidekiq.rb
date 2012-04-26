@@ -7,6 +7,7 @@
 # Lexicographical ordering means we're fine for now (d < r), but why rely on
 # that when you don't have to?
 Rails.application.config.after_initialize do
-  Resque.redis = Rails.application.redis_url
-  Resque.redis.namespace = 'nubic:ncs_navigator_core:resque'
+  Sidekiq.configure_server do |config|
+    config.redis = { :url => Rails.application.redis_url, :namespace => 'nubic:ncs_navigator_core:resque' }
+  end
 end
