@@ -140,9 +140,9 @@ describe Participant do
           arr_of_arrs = CSV.parse(csv)
 
           arr_of_arrs[0][0].should == "When"
-          arr_of_arrs[0][23].should == "Enroll Date"
-          arr_of_arrs[1][23].should == Date.today.to_s(:db)
-          arr_of_arrs[2][23].should == "2012-02-25"
+          arr_of_arrs[0][6].should == "Enroll Date"
+          arr_of_arrs[1][6].should == Date.today.to_s(:db)
+          arr_of_arrs[2][6].should == "2012-02-25"
         end
       end
     end

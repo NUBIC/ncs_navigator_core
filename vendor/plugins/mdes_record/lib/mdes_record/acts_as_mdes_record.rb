@@ -175,7 +175,7 @@ module MdesRecord
     private :add_object_values
 
     def get_attribute_names
-      self.attribute_names - ["id"]
+      (self.attribute_names - ["id"]).sort
     end
     private :get_attribute_names
 
