@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 RSpec::Matchers.define :be_a_fieldwork_set do
   match do |actual|
     schema_file = "#{Rails.root}/vendor/ncs_navigator_schema/fieldwork_schema.json"

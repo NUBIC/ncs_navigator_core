@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'active_record/base'
 require 'paper_trail'
 

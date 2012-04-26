@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # http://github.com/thoughtbot/factory_girl/tree/master
 require 'rubygems'
 require 'factory_girl'

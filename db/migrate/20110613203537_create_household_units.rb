@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateHouseholdUnits < ActiveRecord::Migration
   def self.up
     create_table :household_units do |t|

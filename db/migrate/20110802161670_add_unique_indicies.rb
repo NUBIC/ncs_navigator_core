@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class AddUniqueIndicies < ActiveRecord::Migration
   def self.up
     remove_index(:response_sets, :name => 'response_sets_ac_idx')

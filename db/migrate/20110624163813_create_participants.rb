@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateParticipants < ActiveRecord::Migration
   def self.up
     create_table :participants do |t|

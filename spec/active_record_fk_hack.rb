@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Hack taken from http://kopongo.com/2008/7/25/postgres-ri_constrainttrigger-error
 require 'active_record/connection_adapters/postgresql_adapter'
 module ActiveRecord

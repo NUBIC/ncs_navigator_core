@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'active_support/concern'
 require 'uuidtools'
 module MdesRecord

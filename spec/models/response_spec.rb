@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # == Schema Information
 # Schema version: 20120404205955
 #
@@ -23,7 +25,6 @@
 #  api_id            :string(255)
 #
 
-# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe Response do

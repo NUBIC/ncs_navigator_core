@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateNoAccessNonInterviewReports < ActiveRecord::Migration
   def change
     create_table :no_access_non_interview_reports do |t|

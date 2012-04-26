@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 NcsNavigatorCore::Application.routes.draw do
   resources :dwelling_units do
     member do

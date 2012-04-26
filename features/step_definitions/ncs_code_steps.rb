@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 Given /^valid ncs codes$/ do
   Factory(:ncs_code, :list_name => "PSU_CL1", :display_text => "Cook County, IL (Wave 1)", :local_code => NcsNavigatorCore.psu)
   Factory(:ncs_code, :list_name => "CONFIRM_TYPE_CL2", :display_text => "Yes", :local_code => 1)

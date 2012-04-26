@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateResponses < ActiveRecord::Migration
   def self.up
     create_table :responses do |t|

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 Factory.define :participant_consent do |pc|
 
   pc.association :participant, :factory => :participant

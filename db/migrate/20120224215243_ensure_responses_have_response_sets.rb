@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class EnsureResponsesHaveResponseSets < ActiveRecord::Migration
   def up
     change_column :responses, :response_set_id, :integer, :null => false

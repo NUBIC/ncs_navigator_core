@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 ##
 # A DSL for answering questions on Surveyor surveys.  See the *DataExtractor
 # specs for example usage.

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 
 ActiveRecord::Schema.define(:version => 0) do
   create_table :foos, :force => true do |t|

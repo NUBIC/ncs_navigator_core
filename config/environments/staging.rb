@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'aker/authority/ncs_navigator_authority'
 
 NcsNavigatorCore::Application.configure do

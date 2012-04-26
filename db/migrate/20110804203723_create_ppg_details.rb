@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreatePpgDetails < ActiveRecord::Migration
   def self.up
     create_table :ppg_details do |t|

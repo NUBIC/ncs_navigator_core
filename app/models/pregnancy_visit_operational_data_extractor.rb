@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class PregnancyVisitOperationalDataExtractor
 
   PREGNANCY_VISIT_1_INTERVIEW_PREFIX = "PREG_VISIT_1_2"

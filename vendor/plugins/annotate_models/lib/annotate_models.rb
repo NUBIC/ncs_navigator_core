@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require "config/environment"
 
 MODEL_DIR   = File.join(Rails.root, "app/models")

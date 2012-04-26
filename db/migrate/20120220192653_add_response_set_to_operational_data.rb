@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class AddResponseSetToOperationalData < ActiveRecord::Migration
   def change
     add_column :people,                   :response_set_id, :integer

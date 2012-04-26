@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class ActiveRecordQueryProfiler
   attr_reader :query_events
   attr_accessor :start, :end

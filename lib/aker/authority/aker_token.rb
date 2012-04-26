@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'faraday'
 module Aker::Authority
   class AkerToken < Faraday::Middleware

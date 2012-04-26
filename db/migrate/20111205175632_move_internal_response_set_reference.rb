@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class MoveInternalResponseSetReference < ActiveRecord::Migration
   def up
     add_column :response_sets, :instrument_id, :integer

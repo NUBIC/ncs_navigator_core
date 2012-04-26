@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateVersions < ActiveRecord::Migration
   def self.up
     create_table :versions do |t|

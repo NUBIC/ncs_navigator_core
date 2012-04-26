@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateDependencies < ActiveRecord::Migration
   def self.up
     create_table :dependencies do |t|

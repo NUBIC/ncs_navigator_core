@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreateParticipantConsents < ActiveRecord::Migration
   def self.up
     create_table :participant_consents do |t|

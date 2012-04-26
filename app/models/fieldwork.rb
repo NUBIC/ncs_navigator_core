@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # == Schema Information
 # Schema version: 20120404205955
 #

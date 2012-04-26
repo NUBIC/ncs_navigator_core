@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class InstrumentEventMap
 
   # FIXME: PSC template activities should match MDES instruments

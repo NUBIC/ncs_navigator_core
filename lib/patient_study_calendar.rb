@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'forwardable'
 require 'psc_error'
 require 'psc_participant'

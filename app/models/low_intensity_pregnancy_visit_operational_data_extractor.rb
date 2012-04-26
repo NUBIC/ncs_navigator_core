@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class LowIntensityPregnancyVisitOperationalDataExtractor
 
   INTERVIEW_PREFIX = "PREG_VISIT_LI_2"

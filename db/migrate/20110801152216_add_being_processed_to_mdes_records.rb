@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class AddBeingProcessedToMdesRecords < ActiveRecord::Migration
   def self.up
     add_column :listing_units,   :being_processed, :boolean, :default => false

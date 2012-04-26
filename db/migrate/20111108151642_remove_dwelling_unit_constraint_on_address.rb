@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class RemoveDwellingUnitConstraintOnAddress < ActiveRecord::Migration
   def up
     change_column :addresses, :dwelling_unit_id, :integer, :null => true

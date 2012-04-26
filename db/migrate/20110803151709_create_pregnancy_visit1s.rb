@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class CreatePregnancyVisit1s < ActiveRecord::Migration
   def self.up
     create_table :pregnancy_visit1s do |t|

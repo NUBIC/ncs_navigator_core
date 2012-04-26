@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class DispositionMapper
 
   GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"     #3

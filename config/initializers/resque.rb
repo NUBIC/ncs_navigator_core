@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 ##
 # NB: This is in an after_initialize block because we need
 # deferrable_redis_connection.rb to have run before we do any Resque configuration.

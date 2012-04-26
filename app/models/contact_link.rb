@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # == Schema Information
 # Schema version: 20120404205955
 #
@@ -17,7 +19,6 @@
 #  updated_at       :datetime
 #
 
-# -*- coding: utf-8 -*-
 # Each Contact Link record associates a unique combination
 # of Staff Member, Person, Event, and/or Instrument that occurs during a Contact. 
 # There should be at least 1 contact link record for every contact.

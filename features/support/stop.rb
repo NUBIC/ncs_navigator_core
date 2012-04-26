@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Usage:
 #  @wip @stop
 #  Scenario: NAME OF SCENARIO

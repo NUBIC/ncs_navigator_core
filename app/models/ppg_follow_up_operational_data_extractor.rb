@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class PpgFollowUpOperationalDataExtractor
 
   INTERVIEW_PREFIX = "PPG_CATI"

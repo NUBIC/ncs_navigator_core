@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class AllPsuCodesToIntegers < ActiveRecord::Migration
   AFFECTED_TABLES = %w(
     household_person_links participants participant_authorization_forms participant_consents

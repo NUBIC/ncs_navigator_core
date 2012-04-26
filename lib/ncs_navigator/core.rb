@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module NcsNavigator
   module Core
     autoload :Fieldwork,            'ncs_navigator/core/fieldwork'

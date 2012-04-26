@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class AddSsuAndTsuToListingAndDwellingUnits < ActiveRecord::Migration
   def change
     add_column :listing_units, :ssu_id, :string
