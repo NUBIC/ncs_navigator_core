@@ -441,6 +441,7 @@ DEPENDENCIES
   factory_girl
   fakeweb
   faraday
+  fastercsv
   foreigner
   foreman
   formtastic (= 1.2.4)

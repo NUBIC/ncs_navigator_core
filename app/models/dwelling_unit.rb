@@ -61,7 +61,7 @@ class DwellingUnit < ActiveRecord::Base
   # @return [Array<Array>]
   def self.ssus
     result = []
-    CSV.parse(File.open(DwellingUnit.sampling_units_file.to_s), :headers => true, :header_converters => :symbol) do |row|
+    FasterCSV.parse(File.open(DwellingUnit.sampling_units_file.to_s), :headers => true, :header_converters => :symbol) do |row|
       result << [row[:ssu_name], row[:ssu_id]]
     end
     result
@@ -73,7 +73,7 @@ class DwellingUnit < ActiveRecord::Base
   # @return [Array<Array>]
   def self.tsus
     result = []
-    CSV.parse(File.open(DwellingUnit.sampling_units_file.to_s), :headers => true, :header_converters => :symbol) do |row|
+    FasterCSV.parse(File.open(DwellingUnit.sampling_units_file.to_s), :headers => true, :header_converters => :symbol) do |row|
       result << [row[:tsu_name], row[:tsu_id]] unless row[:tsu_id] == "."
     end
     result
