@@ -139,7 +139,7 @@ describe Instrument do
       ins.instrument_id.length.should == 36
     end
 
-    it "uses the ncs_code 'Missing in Error' for all required ncs codes", :bad_2024 do
+    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
 
       ins = Instrument.new(:instrument_version => "0.1")
       ins.event = Factory(:event)
@@ -149,9 +149,9 @@ describe Instrument do
       obj.instrument_type.local_code.should == -4
       obj.instrument_breakoff.local_code.should == -4
       obj.instrument_status.local_code.should == -4
-      obj.instrument_mode.local_code.should == -4
-      obj.instrument_method.local_code.should == -4
       # These values are defaulted to No
+      obj.instrument_mode.local_code.should == 2
+      obj.instrument_method.local_code.should == 2
       obj.supervisor_review.local_code.should == 2
       obj.data_problem.local_code.should == 2
     end
