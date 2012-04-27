@@ -5,7 +5,6 @@ Feature: Obtaining participant consent
   I want to initiate a contact for a participant to obtain consent
 
   Scenario: Obtaining low intensity consent
-    Given valid ncs codes
     And an authenticated user
     And a registered unconsented trying participant
     When I am on the new contact path for the participant
@@ -31,7 +30,6 @@ Feature: Obtaining participant consent
     And I should be on the edit_contact_link page
 
   Scenario: Obtaining high intensity consent
-    Given valid ncs codes
     And an authenticated user
     And a registered unconsented high intensity trying participant
     When I am on the new contact path for the participant

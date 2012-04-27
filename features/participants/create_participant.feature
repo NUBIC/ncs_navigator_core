@@ -5,7 +5,6 @@ Feature: Creating a participant record
   I want to select a Person and make them a Participant
 
   Scenario: Creating a new participant without a reference to a person
-    Given valid ncs codes
     And an authenticated user
     When I go to the new participant page
     Then I should be on the people page
@@ -26,7 +25,6 @@ Feature: Creating a participant record
   #   And I should be on the participants page
 
   Scenario: Attempting to create a new participant from a person who is already a participant
-    Given valid ncs codes
     And an authenticated user
     And a participant exists with a person
     When I go to the new participant page for that participant

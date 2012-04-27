@@ -5,7 +5,6 @@ Feature: Assigning to new arm
   I want to select the user and make the assignment change
 
   Scenario: Assigning to high intensity arm from low
-    Given valid ncs codes
     And an authenticated user
     And a participant exists with a person
     When I go to the edit_arm_participant page
@@ -15,7 +14,6 @@ Feature: Assigning to new arm
     And I should be on the edit participant page
 
   Scenario: Assigning to high intensity arm from low
-    Given valid ncs codes
     And an authenticated user
     And a high intensity participant exists with a person
     When I go to the edit_arm_participant page

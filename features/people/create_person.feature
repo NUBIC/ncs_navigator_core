@@ -5,7 +5,6 @@ Feature: Creating a person record
   I want to be able to create a person record
 
   Scenario: Creating a new person
-    Given valid ncs codes
     And an authenticated user
     When I am on the people page
     Then I should see "People"

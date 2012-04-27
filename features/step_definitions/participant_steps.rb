@@ -37,7 +37,6 @@ end
 
 Given /^a pregnant participant$/ do
   steps %Q{
-    Given valid ncs codes
     And an authenticated user
     And the following pregnant participants:
       | first_name | last_name |
@@ -47,7 +46,6 @@ end
 
 Given /^an unregistered pregnant participant$/ do
   steps %Q{
-    Given valid ncs codes
     And an authenticated user
     And the following unregistered pregnant participants:
       | first_name | last_name |
@@ -57,7 +55,6 @@ end
 
 Given /^a registered unconsented trying participant$/ do
   steps %Q{
-    Given valid ncs codes
     And an authenticated user
     And the following registered unconsented trying participants:
     | first_name | last_name | person_id           |
@@ -67,7 +64,6 @@ end
 
 Given /^a registered unconsented high intensity trying participant$/ do
   steps %Q{
-    Given valid ncs codes
     And an authenticated user
     And the following registered unconsented high intensity trying participants:
     | first_name | last_name | person_id           |
@@ -91,7 +87,6 @@ end
 
 Given /^a registered pregnant participant$/ do
   steps %Q{
-    Given valid ncs codes
     And an authenticated user
     And the following pregnant participants:
       | first_name | last_name | person_id           |

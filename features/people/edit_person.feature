@@ -5,7 +5,6 @@ Feature: Editing a person
   I want to be able to select and edit a person record
 
   Scenario: Editing a new  person
-    Given valid ncs codes
     And an authenticated user
     And a person exists
     Then a person should exist

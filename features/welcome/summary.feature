@@ -5,7 +5,6 @@ Feature: Accessing the application
   I want to view them when I access the application
 
   Scenario: Accessing a new instance of the application
-    Given valid ncs codes
     And an authenticated user
     When I go to the welcome summary page
     Then I should see "NCS Navigator"
@@ -25,7 +24,6 @@ Feature: Accessing the application
 
   @javascript
   Scenario: Accessing an instance of the application with participants
-    Given valid ncs codes
     And an authenticated user
     And the following pregnant participants:
       | first_name | last_name |

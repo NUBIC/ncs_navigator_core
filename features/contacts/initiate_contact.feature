@@ -5,7 +5,6 @@ Feature: Initiating a contact
   I want to initiate a contact for a person and an event
 
   Scenario: Initiating contact
-    Given valid ncs codes
     And an authenticated user
     And a registered pregnant participant
     When I go to the welcome summary page

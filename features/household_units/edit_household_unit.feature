@@ -5,7 +5,6 @@ Feature: Editing a household unit
   I want to be able to select and edit a household unit record
 
   Scenario: Editing a new household unit
-    Given valid ncs codes
     And an authenticated user
     And a household_unit exists
     Then a household_unit should exist

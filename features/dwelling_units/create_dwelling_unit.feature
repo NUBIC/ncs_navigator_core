@@ -5,7 +5,6 @@ Feature: Creating a dwelling unit
   I want to be able to create a dwelling unit record
 
   Scenario: Creating a new dwelling unit
-    Given valid ncs codes
     And an authenticated user
     When I am on the dwelling units page
     Then I should see "Dwelling Units"

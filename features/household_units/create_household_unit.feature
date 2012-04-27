@@ -5,7 +5,6 @@ Feature: Creating a household unit
   I want to be able to create a household unit record
 
   Scenario: Creating a new household unit
-    Given valid ncs codes
     And an authenticated user
     When I am on the household units page
     Then I should see "Household Units"
@@ -24,7 +23,6 @@ Feature: Creating a household unit
 
   @javascript
   Scenario: Associating a person with a household unit
-    Given valid ncs codes
     And an authenticated user
     And a person exists with first_name: "Bix", last_name: "Beiderbecke"
     When I am on the household units page
