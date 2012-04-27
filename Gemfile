@@ -8,7 +8,7 @@ gem 'aker-rails'
 gem 'case'
 gem 'comma'
 gem 'compass'
-gem 'fastercsv'
+gem 'fastercsv', :platform => :ruby_18
 gem 'haml', '~> 3.1'
 gem 'pg'
 gem 'ncs_navigator_authority'

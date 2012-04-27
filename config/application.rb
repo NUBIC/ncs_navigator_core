@@ -62,6 +62,16 @@ module NcsNavigatorCore
       # The portal to which this application belongs.  Optional.
       portal :NCSNavigator
     end
+
+    def csv_impl
+      @csv_impl ||= if RUBY_VERSION < '1.9'
+                       require 'fastercsv'
+                       FasterCSV
+                     else
+                       require 'csv'
+                       CSV
+                     end
+    end
   end
 end
 

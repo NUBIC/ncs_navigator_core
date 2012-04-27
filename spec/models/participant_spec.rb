@@ -137,7 +137,7 @@ describe Participant do
           pr.save!
           csv = pr.export_versions
           csv.should_not be_blank
-          arr_of_arrs = FasterCSV.parse(csv)
+          arr_of_arrs = Rails.application.csv_impl.parse(csv)
 
           arr_of_arrs[0][0].should == "When"
           arr_of_arrs[0][6].should == "Enroll Date"

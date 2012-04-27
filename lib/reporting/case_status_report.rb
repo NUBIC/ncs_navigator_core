@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-require 'fastercsv'
-
 module Reporting
   class CaseStatusReport
 
@@ -129,7 +127,7 @@ module Reporting
       last_contacts = last_contacts(p_ids)
       current_ppg_statuses = ppg_statuses(p_ids)
 
-      FasterCSV.generate do |csv|
+      Rails.application.csv_impl.generate do |csv|
         csv << REPORT_HEADERS
         statuses.each do |c|
           last_contact = last_contacts[c.q_id.to_i]

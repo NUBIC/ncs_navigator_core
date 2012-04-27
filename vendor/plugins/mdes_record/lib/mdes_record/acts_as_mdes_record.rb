@@ -138,7 +138,7 @@ module MdesRecord
 
     def export_versions
       keys = ["when", "who", "what"] + get_attribute_names
-      csv_string = FasterCSV.generate do |csv|
+      csv_string = Rails.application.csv_impl.generate do |csv|
         add_headers(csv, keys)
         add_version_values(csv)
         add_object_values(csv)
