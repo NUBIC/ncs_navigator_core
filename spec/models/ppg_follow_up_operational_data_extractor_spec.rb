@@ -5,13 +5,13 @@ require 'spec_helper'
 describe PpgFollowUpOperationalDataExtractor do
   include SurveyCompletion
 
-  context "updating the ppg status history", :bad_2024 do
+  context "updating the ppg status history" do
 
     before(:each) do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @ppl = Factory(:participant_person_link, :participant => @participant, :person => @person)
-      Factory(:ppg_detail, :participant => @participant)
+      Factory(:ppg_detail, :participant => @participant, :desired_history_date => '2010-01-01')
 
       @ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
       @ppg2 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
@@ -37,7 +37,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.size.should == 2
       participant.ppg_status_histories.first.ppg_status.local_code.should == 1
       participant.ppg_status.local_code.should == 1
       participant.due_date.should == Date.parse("2011-12-25")
@@ -56,7 +56,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.size.should == 2
       participant.ppg_status_histories.first.ppg_status.local_code.should == 3
       participant.ppg_status.local_code.should == 3
       participant.due_date.should be_nil
@@ -75,7 +75,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.size.should == 2
       participant.ppg_status_histories.first.ppg_status.local_code.should == 2
       participant.ppg_status.local_code.should == 2
       participant.due_date.should be_nil
@@ -94,7 +94,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.size.should == 2
       participant.ppg_status_histories.first.ppg_status.local_code.should == 3
       participant.ppg_status.local_code.should == 3
       participant.due_date.should be_nil
@@ -113,7 +113,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.size.should == 2
       participant.ppg_status_histories.first.ppg_status.local_code.should == 4
       participant.ppg_status.local_code.should == 4
       participant.due_date.should be_nil
@@ -132,7 +132,7 @@ describe PpgFollowUpOperationalDataExtractor do
 
       person  = Person.find(@person.id)
       participant = person.participant
-      participant.ppg_status_histories.size.should == 1
+      participant.ppg_status_histories.size.should == 2
       participant.ppg_status_histories.first.ppg_status.local_code.should == 5
       participant.ppg_status.local_code.should == 5
       participant.due_date.should be_nil

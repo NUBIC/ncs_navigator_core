@@ -294,7 +294,7 @@ describe Participant do
 
   end
 
-  context "with an assigned pregnancy probability group", :bad_2024 do
+  context "with an assigned pregnancy probability group" do
 
     let(:participant) { Factory(:participant) }
     let(:status1)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
@@ -304,8 +304,11 @@ describe Participant do
     let(:status3)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 3) }
     let(:status4)  { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 4) }
 
+    # TODO: this behavior isn't necessary and could be removed to
+    # simplify Participant
     it "determines the ppg from the ppg_details if there is no ppg_status_history record" do
       Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
+      PpgStatusHistory.where(:participant_id => participant).delete_all
 
       participant.ppg_details.should_not be_empty
       participant.ppg_status_histories.should be_empty
@@ -313,7 +316,8 @@ describe Participant do
     end
 
     it "determines the ppg from the ppg_status_history" do
-      Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
+      Factory(:ppg_detail, :participant => participant, :ppg_first => status2a,
+        :desired_history_date => '2010-01-01')
       Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
 
       participant.ppg_details.should_not be_empty
@@ -322,7 +326,8 @@ describe Participant do
     end
 
     it "determines the ppg from the most recent ppg_status_history" do
-      Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
+      Factory(:ppg_detail, :participant => participant, :ppg_first => status2a,
+        :desired_history_date => '2010-01-01')
       Factory(:ppg_status_history, :participant => participant, :ppg_status => status2,  :ppg_status_date => '2011-01-02')
       Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-01-31')
 
@@ -335,7 +340,8 @@ describe Participant do
 
       it "determines the ppg_status at that time" do
 
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status2a)
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status2a,
+          :desired_history_date => '2010-01-01')
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status2,  :ppg_status_date => '2011-01-01')
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-06-01')
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1, :ppg_status_date => '2011-12-01')

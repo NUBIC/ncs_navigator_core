@@ -25,7 +25,7 @@ describe ReportsController do
 
     end
 
-    describe "GET upcoming_births", :bad_2024 do
+    describe "GET upcoming_births" do
 
       let(:pregnant_participant) { Factory(:participant, :p_id => 'PREG01') }
       let(:trying_participant) { Factory(:participant, :p_id => 'TRY01') }
@@ -34,7 +34,9 @@ describe ReportsController do
       before(:each) do
         Factory(:ppg1_detail, :participant => pregnant_participant, :orig_due_date => 6.months.from_now.strftime("%Y-%m-%d"))
         Factory(:ppg2_detail, :participant => trying_participant, :orig_due_date => nil)
-        Factory(:ppg1_detail, :participant => loss_participant, :orig_due_date => 6.months.from_now.strftime("%Y-%m-%d"), :created_at => 2.months.ago)
+        Factory(:ppg1_detail, :participant => loss_participant,
+          :orig_due_date => 6.months.from_now.strftime("%Y-%m-%d"),
+          :desired_history_date => 2.months.ago)
         Factory(:ppg3_status, :participant => loss_participant)
       end
 

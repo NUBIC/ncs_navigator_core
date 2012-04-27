@@ -13,6 +13,7 @@ describe Participant do
   let(:psc) { PatientStudyCalendar.new(@user) }
   let(:status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
   let(:status2) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 2) }
+  let(:status2_cl1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2) }
   let(:status4) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 4) }
 
   context "a new record" do
@@ -65,18 +66,18 @@ describe Participant do
 
         Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
 
-        participant.ppg_details.reload
+        participant = Participant.find(participant.id)
         participant.ppg_details.should_not be_empty
-        participant.ppg_status.should == status2
+        participant.ppg_status.should == status2_cl1
 
         participant.requires_consent.should be_true
       end
 
-      it "administers the low intensity questionnaire as soon as possible", :bad_2024 do
+      it "administers the low intensity questionnaire as soon as possible" do
         participant = Factory(:participant, :low_intensity_state => 'consented_low_intensity')
         Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
 
-        participant.ppg_status.should == status2
+        participant.ppg_status.should == status2_cl1
         participant.should be_consented_low_intensity
         participant.should_take_low_intensity_questionnaire?.should be_true
       end
@@ -662,7 +663,8 @@ describe Participant do
         participant.set_state_for_event_type(event)
         participant.should be_pregnancy_one
 
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1a)
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status1a,
+          :desired_history_date => '2010-01-01')
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
 
         participant.ppg_details.should_not be_empty
@@ -671,7 +673,7 @@ describe Participant do
         participant.ppg_status.should_not == status4
       end
 
-      it "should update the ppg status to 4", :bad_2024 do
+      it "should update the ppg status to 4" do
         participant.birth_event!
         Participant.find(participant.id).ppg_status.should == status4
       end
