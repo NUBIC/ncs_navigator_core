@@ -80,24 +80,70 @@ describe PpgDetail do
   it { should belong_to(:response_set) }
 
   context "associated ppg_status_history" do
-
     let(:participant) { Factory(:participant) }
     let(:pd_status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
     let(:ppg_status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
 
-    before(:each) do
-    end
+    describe 'automatically created history entry' do
+      let(:ppg_details) { PpgDetail.where(:participant_id => participant.id) }
+      let(:ppg_status_histories) { PpgStatusHistory.where(:participant_id => participant.id) }
 
-    it "creates a ppg_status_history record when first creating ppg_detail" do
-      PpgStatusHistory.where(:participant_id => participant.id).where(:ppg_status_code => ppg_status1.local_code).count.should == 0
-      Factory(:ppg_detail, :ppg_first_code => pd_status1.local_code, :participant => participant)
-      pd = PpgDetail.where(:participant_id => participant.id)
-      psh = PpgStatusHistory.where(:participant_id => participant.id)
+      context do
+        before(:each) do
+          PpgStatusHistory.where(
+            :participant_id => participant.id, :ppg_status_code => ppg_status1.local_code).
+            count.should == 0
+          Factory(:ppg_detail, :participant => participant)
+          ppg_details.count.should == 1
+          ppg_status_histories.count.should == 1
+        end
 
-      pd.count.should == 1
-      psh.count.should == 1
-      pd.first.ppg_first.local_code.should == psh.first.ppg_status.local_code
-      pd.first.ppg_first.display_text.should == psh.first.ppg_status.display_text
+        it 'uses the same code value as ppg_first' do
+          ppg_details.first.ppg_first.local_code.should ==
+            ppg_status_histories.first.ppg_status.local_code
+        end
+
+        it 'uses a code value from PPG_STATUS_CL1' do
+          ppg_status_histories.first.ppg_status.list_name.should == 'PPG_STATUS_CL1'
+        end
+      end
+
+      describe 'history date' do
+        describe 'when specified' do
+          let(:desired_date_s) { '2010-04-07' }
+          let(:desired_date)   { Date.parse(desired_date_s) }
+
+          before do
+            Factory(:ppg_detail, :participant => participant,
+            :desired_history_date => desired_date)
+          end
+
+          it 'is the desired date for ppg_status_date' do
+            ppg_status_histories.first.ppg_status_date.should == desired_date_s
+          end
+
+          it 'is the desired date for ppg_status_date_date' do
+            ppg_status_histories.first.ppg_status_date_date.should == desired_date
+          end
+        end
+
+        describe 'when not specified' do
+          let(:today)   { Date.today }
+          let(:today_s) { today.to_s }
+
+          before do
+            Factory(:ppg_detail, :participant => participant)
+          end
+
+          it "uses today's date for ppg_status_date" do
+            ppg_status_histories.first.ppg_status_date.should == today_s
+          end
+
+          it "is today's date for ppg_status_date_date" do
+            ppg_status_histories.first.ppg_status_date_date.should == today
+          end
+        end
+      end
     end
 
     describe "#importer_mode" do

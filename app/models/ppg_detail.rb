@@ -43,6 +43,12 @@ class PpgDetail < ActiveRecord::Base
 
   after_create :create_associated_ppg_status_history
 
+  ##
+  # When creating a new record, this attribute may be used to specify
+  # the ppg_status_date of the automatically-created corresponding
+  # PpgStatusHistory instance.
+  attr_accessor :desired_history_date
+
   def to_s
     "#{ppg_first}"
   end
@@ -76,7 +82,10 @@ class PpgDetail < ActiveRecord::Base
     def create_associated_ppg_status_history
       ppg_status = NcsCode.for_attribute_name_and_local_code(:ppg_status_code, self.ppg_first_code)
       if ppg_status && self.ppg_first_code < 6
-        PpgStatusHistory.create(:participant => self.participant, :psu => self.psu, :ppg_status => ppg_status)
+        PpgStatusHistory.create(
+          :participant => self.participant, :psu => self.psu, :ppg_status => ppg_status,
+          :ppg_status_date_date => desired_history_date
+        )
       end
     end
 
