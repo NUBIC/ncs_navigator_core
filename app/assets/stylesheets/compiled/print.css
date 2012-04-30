@@ -71,3 +71,42 @@ body.bp .quiet {
 body.bp .hide {
   display: none;
 }
+
+/* line 2, ../../../stylesheets/partials/_print.scss */
+input.text,
+input[type="text"] {
+  border: none;
+}
+
+/* line 6, ../../../stylesheets/partials/_print.scss */
+#header {
+  display: none !important;
+}
+
+/* line 10, ../../../stylesheets/partials/_print.scss */
+#footer {
+  display: none !important;
+}
+
+/* line 14, ../../../stylesheets/partials/_print.scss */
+#flash_notice {
+  display: none !important;
+}
+
+/* line 18, ../../../stylesheets/partials/_print.scss */
+#header {
+  display: none !important;
+}
+
+/* line 25, ../../../stylesheets/partials/_print.scss */
+input.submit,
+input[type="submit"],
+input.button,
+input[type="button"] {
+  display: none;
+}
+
+/* line 29, ../../../stylesheets/partials/_print.scss */
+a {
+  display: none;
+}

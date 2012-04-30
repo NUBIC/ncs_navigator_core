@@ -1541,6 +1541,44 @@ form textarea {
   padding-bottom: 4em;
 }
 
+/* line 184, ../../../stylesheets/partials/_application.scss */
+#popup_dialog p {
+  margin: 0 0 0;
+  display: inline;
+}
+
+/* line 189, ../../../stylesheets/partials/_application.scss */
+#edit_specimen_receipt_form, #edit_sample_receipt_form {
+  margin-left: 2em;
+  font-size: 12px;
+  font-weight: normal;
+}
+/* line 194, ../../../stylesheets/partials/_application.scss */
+#edit_specimen_receipt_form p, #edit_sample_receipt_form p {
+  margin: 0 0 0;
+  display: inline;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* line 202, ../../../stylesheets/partials/_application.scss */
+.spec_sample_receipt {
+  margin-left: 2em;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* line 208, ../../../stylesheets/partials/_application.scss */
+.sample_store_form_border {
+  border: 1px solid lightgray;
+  padding-left: 0.3em;
+}
+
+/* line 213, ../../../stylesheets/partials/_application.scss */
+.print_manifest {
+  font-size: 1.1em;
+}
+
 /* line 1, ../../../stylesheets/partials/_surveyor.scss */
 #surveyor {
   /*  @include column($blueprint-grid-columns - 2);*/
