@@ -41,7 +41,6 @@ describe EnvironmentalEquipment do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(EnvironmentalEquipment)
       ee = EnvironmentalEquipment.create(:equipment_id => "equipment_id", :serial_number => "123SerialNumber")
       ee.save!
  

@@ -1,6 +1,4 @@
 Given /^valid specimen receipts$/ do
-  create_missing_in_error_ncs_codes(SpecimenReceipt)
-  
   Factory(:specimen_receipt, :specimen_id => "FIXTURES-UR01", :staff_id => "me", :storage_container_id => "FIXTURES001")
   Factory(:specimen_receipt, :specimen_id => "FIXTURES-UR11", :staff_id => "me", :storage_container_id => "FIXTURES001")
   Factory(:specimen_receipt, :specimen_id => "FIXTURES-UR21", :staff_id => "me", :storage_container_id => "FIXTURES001")
@@ -10,7 +8,6 @@ Given /^valid specimen receipts$/ do
 end
 
 Given /^valid specimen shippings$/ do
-  create_missing_in_error_ncs_codes(SpecimenShipping)
   Factory(:specimen_shipping, :storage_container_id => "FIXTURES002", :staff_id => "abc1", :shipper_id => "FEDEX", :shipper_destination => "LAB", :shipment_date => "01/27/2012", :shipment_tracking_number => "001FEDEXTRACK")  
   Factory(:specimen_shipping, :storage_container_id => "FIXTURES004", :staff_id => "abc2", :shipper_id => "FEDEX", :shipper_destination => "LAB", :shipment_date => "01/28/2012", :shipment_tracking_number => "002FEDEXTRACK")
   Factory(:specimen_shipping, :storage_container_id => "FIXTURES006", :staff_id => "abc3", :shipper_id => "FEDEX", :shipper_destination => "LAB", :shipment_date => "01/29/2012", :shipment_tracking_number => "003FEDEXTRACK")

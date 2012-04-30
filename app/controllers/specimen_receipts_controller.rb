@@ -3,7 +3,7 @@ class SpecimenReceiptsController < ApplicationController
   def new
     @specimen_receipt = SpecimenReceipt.new(:specimen_id => params[:specimen_id])
   end
-  
+
   def create
     @params = params[:specimen_receipt]
     @params[:psu_code] = @psu_code
@@ -18,27 +18,25 @@ class SpecimenReceiptsController < ApplicationController
         format.html { render :action => "new"}
         format.json { render :json => @specimen_receipt.errors, :status => :unprocessable_entity }
       end
-    end    
+    end
   end
-  
+
   def show
     @specimen_receipt = SpecimenReceipt.find(params[:id])
   end
-  
+
   def edit
     @specimen_receipt = SpecimenReceipt.find(params[:id])
   end
-  
+
   def update
     @specimen_receipt = SpecimenReceipt.find(params[:id])
-    puts ("---- #{@specimen_receipt.inspect}")
-    puts ("---- #{params.inspect}")    
     respond_to do |format|
       if @specimen_receipt.update_attributes(params[:specimen_receipt])
         format.json { render :json => @specimen_receipt}
       else
         format.json { render :json => @specimen_receipt.errors, :status => :unprocessable_entity }
       end
-    end    
+    end
   end
 end

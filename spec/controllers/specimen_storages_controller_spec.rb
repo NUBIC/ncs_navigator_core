@@ -4,7 +4,6 @@ describe SpecimenStoragesController do
   context "with an authenticated user" do
     before(:each) do
       login(user_login)
-      create_missing_in_error_ncs_codes(SpecimenStorage)
       @specimen_storage = Factory(:specimen_storage)
     end
 

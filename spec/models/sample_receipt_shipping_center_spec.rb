@@ -31,7 +31,6 @@ describe SampleReceiptShippingCenter do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(SampleReceiptShippingCenter)
       srsc = SampleReceiptShippingCenter.create(:sample_receipt_shipping_center_id => "spscId134")
       srsc.save!
  

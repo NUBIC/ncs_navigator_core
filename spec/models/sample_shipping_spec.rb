@@ -44,7 +44,6 @@ describe SampleShipping do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(SampleShipping)
       ss = SampleShipping.create(:sample_id => "sampleId", :staff_id => "me", :shipper_id => "123", :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98")
       ss.save!
  

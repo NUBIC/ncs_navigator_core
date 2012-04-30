@@ -11,8 +11,6 @@ describe SpecimenPickupsController do
   context "with an authenticated user" do
     before(:each) do
       login(user_login)
-      create_missing_in_error_ncs_codes(SpecimenPickup)
-      create_missing_in_error_ncs_codes(SpecimenProcessingShippingCenter)      
     end
     
     describe "POST create" do

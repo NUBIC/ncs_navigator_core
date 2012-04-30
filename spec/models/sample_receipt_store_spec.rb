@@ -51,7 +51,6 @@ describe SampleReceiptStore do
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      create_missing_in_error_ncs_codes(SampleReceiptStore)
       srs = SampleReceiptStore.create(:sample_id => "sampleId", :staff_id => "me", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
       srs.save!
  

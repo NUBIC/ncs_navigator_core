@@ -1,5 +1,4 @@
 Given /^valid sample receipts$/ do
-  create_missing_in_error_ncs_codes(SampleReceiptStore)
   Factory(:sample_receipt_store, :sample_id => "SAMPLE_FIXTURES-UR01", :staff_id => "test", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
   Factory(:sample_receipt_store, :sample_id => "SAMPLE_FIXTURES-UR11", :staff_id => "test", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
   Factory(:sample_receipt_store, :sample_id => "SAMPLE_FIXTURES-UR21", :staff_id => "test", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
@@ -9,8 +8,6 @@ Given /^valid sample receipts$/ do
 end
 
 Given /^valid sample shippings$/ do
-  create_missing_in_error_ncs_codes(SampleShipping)
-  
   Factory(:sample_shipping, :sample_id => "SAMPLE_FIXTURES-UR21", :staff_id => "me", :shipper_id => "123", :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98", :shipment_coolant => nil)
   Factory(:sample_shipping, :sample_id => "SAMPLE_FIXTURES-RB13", :staff_id => "me", :shipper_id => "123", :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98", :shipment_coolant => nil)
 end
@@ -31,7 +28,7 @@ Then /^I should see selected samples$/ do
     And I should not see "SAMPLE_FIXTURES-UR45"
     And I should not see "SAMPLE_FIXTURES-UR01"
     And I should see "Total # Containers: 2"
-    And I should see "Total # Samples: 2"    
+    And I should see "Total # Samples: 2"
   }
 end
 
@@ -46,6 +43,6 @@ And /^I should see entered sample drop_down parameters$/ do
   steps %Q{
     And I should see "Shipping Temperature: Dry Ice"
     And I should see "Sent to Site: Vacuum Bag Dust Processing Lab"
-  }  
+  }
 end
 

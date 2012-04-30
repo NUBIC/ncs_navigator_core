@@ -3,9 +3,6 @@ require 'spec_helper'
 describe SpecimensController do
   before(:each) do
     login(user_login)
-    create_missing_in_error_ncs_codes(SpecimenReceipt)
-    create_missing_in_error_ncs_codes(SpecimenShipping)
-    create_missing_in_error_ncs_codes(SpecimenProcessingShippingCenter)    
   end
   
   it "returns the result of not shipped specs" do
