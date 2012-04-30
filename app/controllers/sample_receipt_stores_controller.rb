@@ -7,8 +7,12 @@ class SampleReceiptStoresController < ApplicationController
   def create
     @params = params[:sample_receipt_store]
     @params[:psu_code] = @psu_code
-    @params[:staff_id] = current_staff
-    @params[:sample_receipt_shipping_center_id] = SampleReceiptShippingCenter.last.id
+    @params[:staff_id] = current_staff_id
+    # if not SampleReceiptShippingCenter.all.blank?
+      @params[:sample_receipt_shipping_center_id] = SampleReceiptShippingCenter.last.id
+    # else
+    #   @params[:sample_receipt_shipping_center_id] = "0"
+    # end
     @params[:placed_in_storage_datetime] = DateTime.now
     @sample_receipt_store = SampleReceiptStore.new(@params)
     respond_to do |format|
