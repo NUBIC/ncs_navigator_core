@@ -5,6 +5,7 @@ describe SpecimensController do
     login(user_login)
     create_missing_in_error_ncs_codes(SpecimenReceipt)
     create_missing_in_error_ncs_codes(SpecimenShipping)
+    create_missing_in_error_ncs_codes(SpecimenProcessingShippingCenter)    
   end
   
   it "returns the result of not shipped specs" do
@@ -47,6 +48,7 @@ describe SpecimensController do
   end
   
   it "should fail on error" do
+    Factory(:specimen_processing_shipping_center)
     SpecimenShipping.any_instance.stub(:save).and_return(false)
     post :generate, :specimen_shipping => {}
   end
@@ -84,6 +86,7 @@ describe SpecimensController do
   describe "setting parameters" do
     
     it "should set the shipper id" do
+      Factory(:specimen_processing_shipping_center)
       NcsNavigatorCore.stub!(:shipper_id).and_return "shipper_id"
       get :verify
       assigns[:shipper_id].should == NcsNavigatorCore.shipper_id

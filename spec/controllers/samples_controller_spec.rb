@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 require 'spec_helper'
 
 describe SamplesController do
@@ -5,6 +7,7 @@ describe SamplesController do
     login(user_login)
     create_missing_in_error_ncs_codes(SampleReceiptStore)
     create_missing_in_error_ncs_codes(SampleShipping)
+    create_missing_in_error_ncs_codes(SampleReceiptShippingCenter)
   end
   
   it "returns the result of not shipped samples" do
@@ -31,7 +34,7 @@ describe SamplesController do
   end
   
   it "should fail on error" do
-    create_missing_in_error_ncs_codes(SampleShipping)
+    Factory(:sample_receipt_shipping_center)
     SampleShipping.any_instance.stub(:save).and_return(false)
     post :generate, :sample_shipping => {}
   end

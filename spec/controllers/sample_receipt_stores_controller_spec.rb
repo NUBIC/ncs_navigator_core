@@ -87,26 +87,19 @@ describe SampleReceiptStoresController do
     end
     
     describe "PUT update" do
-      describe "with json request" do
-        it "forms json with updated  @sample_receipt_store id" do
-          put :update, :id =>  @sample_receipt_store.id, :sample_receipt_store => {}, :format => 'json'
-          # response.body.should eq @sample_receipt_store.to_json
-        end
-      end
-      
       describe "with json request and date change" do
         it "forms json with updated @sample_receipt_store storage_container_id" do
           put :update, :id => @sample_receipt_store.id, :sample_receipt_store => {:receipt_datetime =>"2012-03-07 15:36:19"}, :format => 'json'
-          specimen_receipt = SampleReceiptStore.last
-          response.body.should eq specimen_receipt.to_json
+          sample_receipt_store = SampleReceiptStore.last
+          response.body.should eq sample_receipt_store.to_json
         end
       end  
       
       describe "with json request" do
         it "forms json with updated @sample_receipt_store" do
           put :update, :id => @sample_receipt_store.id, :sample_receipt_store => {:receipt_datetime => nil}, :format => 'json'
-          json = { "storage_container_id"  => ["can't be blank"]}
-          # ActiveSupport::JSON.decode(response.body).should eq json
+          json = { "receipt_datetime"  => ["can't be blank"]}
+          ActiveSupport::JSON.decode(response.body).should eq json
         end
       end      
     end
