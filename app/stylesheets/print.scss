@@ -4,3 +4,4 @@
 body.bp {
   @include blueprint-print(true);
 }
+@import "partials/print";
