@@ -42,6 +42,10 @@ module NcsNavigatorCore
       NcsNavigator.configuration.core['recruitment_type']
     end
 
+    def shipper_id
+      NcsNavigator.configuration.core['shipper_id']
+    end
+    
     def with_specimens
       NcsNavigator.configuration.core['with_specimens']
     end
