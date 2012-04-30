@@ -18,5 +18,6 @@ Given /^the survey has been completed$/ do
 end
 
 Given /^a pregnancy visit 1 survey exists$/ do
-  `rake surveyor FILE=spec/fixtures/surveys/INS_QUE_PregVisit1_INT_EHPBHI_P2_V20.rb`
+  f = "#{Rails.root}/spec/fixtures/surveys/INS_QUE_PregVisit1_INT_EHPBHI_P2_V20.rb"
+  Surveyor::Parser.parse File.read(f)
 end
