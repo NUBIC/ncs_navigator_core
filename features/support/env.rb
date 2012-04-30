@@ -7,8 +7,13 @@
 # files.
 
 require 'spork'
+require 'ncs_navigator/configuration'
 
 Spork.prefork do
+
+  NcsNavigator.configuration =
+    NcsNavigator::Configuration.new(File.expand_path('../../../spec/navigator.ini', __FILE__))
+
   require 'cucumber/rails'
 
   # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In
@@ -58,9 +63,6 @@ Spork.prefork do
   #   Dir.glob(File.join(File.dirname(__FILE__), '../../spec/factories/ppg.rb')).each {|f| require f }
   # end
   # ***********************
-
-  NcsNavigator.configuration =
-    NcsNavigator::Configuration.new(File.expand_path('../../../spec/navigator.ini', __FILE__))
 
   # Enable auditing for integration tests to make sure it doesn't
   # cause trouble.
