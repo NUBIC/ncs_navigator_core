@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
 require 'ncs_navigator/core'
+require 'sidekiq/worker'
 
-module NcsNavigator::Core::Jobs
+module NcsNavigator::Core::Fieldwork
   ##
   # Merges fieldwork sets.
   #
-  # This job is triggered by {Api::FieldworkController#update}.
-  class MergeFieldwork
+  # This worker is triggered by {Api::FieldworkController#update}.
+  class MergeWorker
     include Sidekiq::Worker
 
     def perform(fieldwork_id)
       verify_database_connection
 
       fw = Fieldwork.find(fieldwork_id)
-
       fw.merge
     end
 
