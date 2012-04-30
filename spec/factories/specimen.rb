@@ -13,9 +13,9 @@ FactoryGirl.define do
   end
 
   factory :specimen do |s|
-    s.association :specimen_pickup,  :factory => :specimen_pickup
+    # s.association :specimen_pickup,  :factory => :specimen_pickup
     s.specimen_id                           {"AAA10001AA20"}  
-    s.instrument_id                         {"instrument123"}
+    s.association :instrument,  :factory => :instrument
   end  
   
   factory :specimen_receipt do |sr|

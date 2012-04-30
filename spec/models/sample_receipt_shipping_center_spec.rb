@@ -19,7 +19,7 @@ describe SampleReceiptShippingCenter do
     sample_receipt_shipping_center.should_not be_nil
   end
   
-  it { should belong_to(:address) }
+  # it { should belong_to(:address) }
   it { should belong_to(:psu) } 
   
   context "as mdes record" do
