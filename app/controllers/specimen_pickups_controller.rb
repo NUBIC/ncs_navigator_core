@@ -10,10 +10,9 @@ class SpecimenPickupsController < ApplicationController
     #TODO - have to hard-code params below. should get those from config page later
     @params = params[:specimen_pickup]
     @params[:psu_code] = @psu_code
-    @params[:staff_id] = "Jane Dow"
+    @params[:staff_id] = current_staff_id
     @params[:event_id] = "associated event"
-    @params[:specimen_processing_shipping_center_id] = "spsc_id"
-
+    @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.id
     @specimen_pickup = SpecimenPickup.new(@params)
     respond_to do |format|
       if @specimen_pickup.save

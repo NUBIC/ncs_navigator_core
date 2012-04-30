@@ -8,7 +8,7 @@ class SpecimenReceiptsController < ApplicationController
     @params = params[:specimen_receipt]
     @params[:psu_code] = @psu_code
     @params[:staff_id] = "Jane Dow"
-    @params[:specimen_processing_shipping_center_id] = "spsc_id"
+    @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.id
     @specimen_receipt = SpecimenReceipt.new(@params)
     respond_to do |format|
      if @specimen_receipt.save
