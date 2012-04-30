@@ -151,8 +151,8 @@ class Fieldwork < ActiveRecord::Base
 
       sp.merge
 
-      sp.save.tap do |result|
-        update_attribute(:merged, result)
+      sp.save.tap do |ok|
+        update_attributes(:merged => ok, :conflict_report => sp.conflicts.to_json)
       end
     ensure
       update_attribute(:merge_log, sio.string)
