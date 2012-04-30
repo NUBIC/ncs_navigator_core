@@ -151,6 +151,33 @@ module NcsNavigator::Core::Fieldwork
       response_groups.each { |id, state| merge_entity(state, 'ResponseGroup', id) }
     end
 
+    ##
+    # Saves the current state of all merged entities.
+    #
+    # For more complete error reporting, this method attempts to save all
+    # entities regardless of whether or not a previous entity or set of
+    # entities failed to save.  However, it will return true if and only if all
+    # entities were saved.
+    #
+    # When data dependencies exist, this can lead to spurious errors; however,
+    # that can be dealt with by just looking further up in the log.  There's no
+    # similar way to discover errors that aren't reported due to an early
+    # abort.
+    def save
+      ActiveRecord::Base.transaction do
+        [contacts, events, instruments, response_groups].map { |c| save_collection(c) }.all?.tap do |res|
+          unless res
+            logger.fatal { 'Errors raised during save; rolling back' }
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+    end
+
+    def conflicted?
+      !conflicts.empty?
+    end
+
     module_function
 
     S = Case::Struct.new(:o, :c, :p)
@@ -222,6 +249,29 @@ module NcsNavigator::Core::Fieldwork
       }
 
       conflicts.deep_merge!(conflict_report)
+    end
+
+    ##
+    # @private
+    # @return Boolean
+    def save_collection(c)
+      c.map do |public_id, state|
+        current = state[:current]
+
+        next true unless current
+
+        current.save.tap { |ok| log_errors_for(public_id, current, ok) }
+      end.all?
+    end
+
+    def log_errors_for(public_id, entity, ok)
+      return if ok
+
+      logger.fatal { "[#{entity.class} #{public_id}] #{entity.class} could not be saved" }
+
+      current.errors.to_a.each do |error|
+        logger.fatal { "[#{entity.class} #{public_id}] Validation error: #{error.inspect}" }
+      end
     end
   end
 end
