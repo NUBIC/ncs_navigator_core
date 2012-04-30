@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -14,37 +13,39 @@
 ActiveRecord::Schema.define(:version => 20120426034324) do
 
   create_table "addresses", :force => true do |t|
-    t.integer  "psu_code",                                 :null => false
-    t.string   "address_id",                :limit => 36,  :null => false
+    t.integer  "psu_code",                                              :null => false
+    t.string   "address_id",                             :limit => 36,  :null => false
     t.integer  "person_id"
     t.integer  "dwelling_unit_id"
-    t.integer  "address_rank_code",                        :null => false
+    t.integer  "address_rank_code",                                     :null => false
     t.string   "address_rank_other"
-    t.integer  "address_info_source_code",                 :null => false
+    t.integer  "address_info_source_code",                              :null => false
     t.string   "address_info_source_other"
-    t.integer  "address_info_mode_code",                   :null => false
+    t.integer  "address_info_mode_code",                                :null => false
     t.string   "address_info_mode_other"
     t.date     "address_info_date"
     t.date     "address_info_update"
-    t.string   "address_start_date",        :limit => 10
+    t.string   "address_start_date",                     :limit => 10
     t.date     "address_start_date_date"
-    t.string   "address_end_date",          :limit => 10
+    t.string   "address_end_date",                       :limit => 10
     t.date     "address_end_date_date"
-    t.integer  "address_type_code",                        :null => false
+    t.integer  "address_type_code",                                     :null => false
     t.string   "address_type_other"
-    t.integer  "address_description_code",                 :null => false
+    t.integer  "address_description_code",                              :null => false
     t.string   "address_description_other"
-    t.string   "address_one",               :limit => 100
-    t.string   "address_two",               :limit => 100
-    t.string   "unit",                      :limit => 10
-    t.string   "city",                      :limit => 50
-    t.integer  "state_code",                               :null => false
-    t.string   "zip",                       :limit => 5
-    t.string   "zip4",                      :limit => 4
+    t.string   "address_one",                            :limit => 100
+    t.string   "address_two",                            :limit => 100
+    t.string   "unit",                                   :limit => 10
+    t.string   "city",                                   :limit => 50
+    t.integer  "state_code",                                            :null => false
+    t.string   "zip",                                    :limit => 5
+    t.string   "zip4",                                   :limit => 4
     t.text     "address_comment"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "specimen_processing_shipping_center_id"
+    t.integer  "sample_receipt_shipping_center_id"
     t.integer  "response_set_id"
   end
 
@@ -204,6 +205,22 @@ ActiveRecord::Schema.define(:version => 20120426034324) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+  end
+
+  create_table "environmental_equipments", :force => true do |t|
+    t.integer  "psu_code",                                        :null => false
+    t.integer  "sample_receipt_shipping_center_id"
+    t.string   "equipment_id",                      :limit => 36, :null => false
+    t.integer  "equipment_type_code",                             :null => false
+    t.string   "equipment_type_other"
+    t.string   "serial_number",                     :limit => 50, :null => false
+    t.string   "government_asset_tag_number",       :limit => 36
+    t.string   "retired_date",                      :limit => 10
+    t.integer  "retired_reason_code",                             :null => false
+    t.string   "retired_reason_other"
+    t.string   "transaction_type",                  :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "events", :force => true do |t|
@@ -897,6 +914,172 @@ ActiveRecord::Schema.define(:version => 20120426034324) do
   end
 
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
+
+  create_table "sample_receipt_shipping_centers", :force => true do |t|
+    t.integer  "psu_code",                                        :null => false
+    t.string   "sample_receipt_shipping_center_id", :limit => 36, :null => false
+    t.string   "transaction_type",                  :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sample_receipt_stores", :force => true do |t|
+    t.integer  "psu_code",                                        :null => false
+    t.string   "sample_id",                         :limit => 36, :null => false
+    t.integer  "sample_receipt_shipping_center_id"
+    t.string   "staff_id",                          :limit => 36, :null => false
+    t.integer  "sample_condition_code",                           :null => false
+    t.string   "receipt_comment_other"
+    t.datetime "receipt_datetime",                                :null => false
+    t.integer  "cooler_temp_condition_code",                      :null => false
+    t.integer  "environmental_equipment_id"
+    t.datetime "placed_in_storage_datetime",                      :null => false
+    t.integer  "storage_compartment_area_code",                   :null => false
+    t.string   "storage_comment_other"
+    t.datetime "removed_from_storage_datetime"
+    t.integer  "temp_event_occurred_code",                        :null => false
+    t.integer  "temp_event_action_code",                          :null => false
+    t.string   "temp_event_action_other"
+    t.string   "transaction_type",                  :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sample_shippings", :force => true do |t|
+    t.integer  "psu_code",                                        :null => false
+    t.string   "sample_id",                         :limit => 36, :null => false
+    t.integer  "sample_receipt_shipping_center_id"
+    t.string   "staff_id",                          :limit => 36, :null => false
+    t.string   "shipper_id",                        :limit => 36, :null => false
+    t.integer  "shipper_destination_code",                        :null => false
+    t.string   "shipment_date",                     :limit => 10, :null => false
+    t.integer  "shipment_coolant_code",                           :null => false
+    t.string   "shipment_tracking_number",          :limit => 36, :null => false
+    t.string   "shipment_issues_other"
+    t.string   "staff_id_track",                    :limit => 36
+    t.integer  "sample_shipped_by_code",                          :null => false
+    t.string   "transaction_type",                  :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "samples", :force => true do |t|
+    t.string   "sample_id",     :limit => 36, :null => false
+    t.integer  "instrument_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimen_equipments", :force => true do |t|
+    t.integer  "psu_code",                                             :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.string   "equipment_id",                           :limit => 36, :null => false
+    t.integer  "equipment_type_code",                                  :null => false
+    t.string   "equipment_type_other"
+    t.string   "serial_number",                          :limit => 50, :null => false
+    t.string   "government_asset_tag_number",            :limit => 36
+    t.string   "retired_date",                           :limit => 10
+    t.integer  "retired_reason_code",                                  :null => false
+    t.string   "retired_reason_other"
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimen_pickups", :force => true do |t|
+    t.integer  "psu_code",                                                                           :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.integer  "event_id"
+    t.string   "staff_id",                               :limit => 50,                               :null => false
+    t.datetime "specimen_pickup_datetime",                                                           :null => false
+    t.integer  "specimen_pickup_comment_code",                                                       :null => false
+    t.string   "specimen_pickup_comment_other"
+    t.decimal  "specimen_transport_temperature",                       :precision => 6, :scale => 2
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimen_processing_shipping_centers", :force => true do |t|
+    t.integer  "psu_code",                                             :null => false
+    t.string   "specimen_processing_shipping_center_id", :limit => 36, :null => false
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimen_receipts", :force => true do |t|
+    t.integer  "psu_code",                                                                           :null => false
+    t.string   "specimen_id",                            :limit => 36,                               :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.string   "staff_id",                               :limit => 36,                               :null => false
+    t.integer  "receipt_comment_code",                                                               :null => false
+    t.string   "receipt_comment_other"
+    t.datetime "receipt_datetime",                                                                   :null => false
+    t.decimal  "cooler_temp",                                          :precision => 6, :scale => 2
+    t.integer  "monitor_status_code"
+    t.integer  "upper_trigger_code"
+    t.integer  "upper_trigger_level_code"
+    t.integer  "lower_trigger_cold_code"
+    t.integer  "lower_trigger_ambient_code"
+    t.string   "storage_container_id",                   :limit => 36,                               :null => false
+    t.integer  "centrifuge_comment_code"
+    t.string   "centrifuge_comment_other"
+    t.string   "centrifuge_starttime",                   :limit => 5
+    t.string   "centrifuge_endtime",                     :limit => 5
+    t.string   "centrifuge_staff_id",                    :limit => 36
+    t.integer  "specimen_equipment_id"
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimen_shippings", :force => true do |t|
+    t.integer  "psu_code",                                             :null => false
+    t.string   "storage_container_id",                   :limit => 36, :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.string   "staff_id",                               :limit => 36, :null => false
+    t.string   "shipper_id",                             :limit => 36, :null => false
+    t.string   "shipper_destination",                    :limit => 3,  :null => false
+    t.string   "shipment_date",                          :limit => 10, :null => false
+    t.integer  "shipment_temperature_code",                            :null => false
+    t.string   "shipment_tracking_number",               :limit => 36, :null => false
+    t.integer  "shipment_receipt_confirmed_code",                      :null => false
+    t.datetime "shipment_receipt_datetime"
+    t.integer  "shipment_issues_code",                                 :null => false
+    t.string   "shipment_issues_other"
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimen_storages", :force => true do |t|
+    t.integer  "psu_code",                                                                           :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.string   "storage_container_id",                   :limit => 36,                               :null => false
+    t.datetime "placed_in_storage_datetime"
+    t.string   "staff_id",                               :limit => 36,                               :null => false
+    t.integer  "specimen_equipment_id"
+    t.integer  "master_storage_unit_code",                                                           :null => false
+    t.string   "storage_comment",                                                                    :null => false
+    t.string   "storage_comment_other"
+    t.datetime "removed_from_storage_datetime"
+    t.string   "temp_event_starttime",                   :limit => 5
+    t.string   "temp_event_endtime",                     :limit => 5
+    t.decimal  "temp_event_low_temp",                                  :precision => 6, :scale => 2
+    t.decimal  "temp_event_high_temp",                                 :precision => 6, :scale => 2
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "specimens", :force => true do |t|
+    t.integer  "specimen_pickup_id"
+    t.integer  "instrument_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "specimen_id"
+  end
 
   create_table "survey_sections", :force => true do |t|
     t.integer  "survey_id"
