@@ -126,7 +126,8 @@ class Fieldwork < ActiveRecord::Base
   # The merge only proceeds if both JSON objects in original_data and
   # received_data conform to the fieldwork data schema.
   #
-  # Returns the value written to #merged.
+  # If the merge completed without conflicts and all data was saved, returns
+  # true; otherwise, returns false.
   def merge
     begin
       sio = StringIO.new
@@ -151,7 +152,7 @@ class Fieldwork < ActiveRecord::Base
 
       sp.merge
 
-      sp.save.tap do |ok|
+      (sp.save unless sp.conflicted?).tap do |ok|
         update_attributes(:merged => ok, :conflict_report => sp.conflicts.to_json)
       end
     ensure
