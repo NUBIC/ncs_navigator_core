@@ -28,10 +28,6 @@ class SpecimenPickup < ActiveRecord::Base
   has_many :specimens
   accepts_nested_attributes_for :specimens, :allow_destroy => true
   
-  # 
-  # ncs_coded_attribute :psu,                      'PSU_CL1'
-  # ncs_coded_attribute :specimen_pickup_comment,  'SPECIMEN_STATUS_CL5'
-
   validates_presence_of :psu_code
   validates_presence_of :staff_id
   validates_presence_of :specimen_pickup_datetime
