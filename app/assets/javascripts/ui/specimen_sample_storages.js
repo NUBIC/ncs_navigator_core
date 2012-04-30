@@ -44,4 +44,3 @@ function specimen_storage_dialog() {
 
 $('.specimen_storage_edit').live('click', function(){ $(this).closest('form').closest('div').load($(this).attr('href') + ' form'); return false;});
 });
-i
