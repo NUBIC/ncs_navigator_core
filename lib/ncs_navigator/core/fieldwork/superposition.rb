@@ -52,11 +52,11 @@ module NcsNavigator::Core::Fieldwork
   # ==================
   #
   # Once a Superposition has been built, you can mix in a merge algorithm
-  # to collapse the states of the superposition.
-  #
-  # @see Merge
+  # to collapse the states of the superposition.  The default algorithm is
+  # implemented in {Merge}.
   class Superposition
     include Adapters
+    include Merge
 
     attr_accessor :contacts
     attr_accessor :events

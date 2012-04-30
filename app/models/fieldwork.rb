@@ -142,10 +142,7 @@ class Fieldwork < ActiveRecord::Base
       end
 
       sp = Superposition.new
-      sp.extend(MergeTheirs)
-
       sp.logger = logger
-
       sp.set_original(JSON.parse(original_data))
       sp.set_proposed(JSON.parse(received_data))
       sp.resolve_current
