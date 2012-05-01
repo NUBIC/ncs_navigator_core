@@ -25,7 +25,8 @@ Event:
   disposition_category: event_disposition_category_code
   end_date: event_end_date
   end_time: event_end_time
-  incentive: event_incentive_type_code
+  event_id: event_id
+  incentive_type: event_incentive_type_code
   incentive_cash: event_incentive_cash
   repeat_key: event_repeat_key
   start_date: event_start_date
@@ -38,9 +39,11 @@ Instrument:
   data_problem: data_problem_code
   end_date: instrument_end_date
   end_time: instrument_end_time
+  instrument_id: instrument_id
   method_administered: instrument_method_code
   mode_administered: instrument_mode_code
   mode_administered_other: instrument_mode_other
+  repeat_key: instrument_repeat_key
   start_date: instrument_start_date
   start_time: instrument_start_time
   status: instrument_status_code
