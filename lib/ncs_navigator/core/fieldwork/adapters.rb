@@ -228,7 +228,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?
+    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -580,7 +580,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?
+    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -920,7 +920,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?
+    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1166,7 +1166,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?
+    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1266,7 +1266,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?
+    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
