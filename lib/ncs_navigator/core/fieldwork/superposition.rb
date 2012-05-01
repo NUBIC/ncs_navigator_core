@@ -131,7 +131,7 @@ module NcsNavigator::Core::Fieldwork
           add(state, :events, event, 'event_id') { |o| adapt_hash(:event, o) }
 
           event['instruments'].each do |instrument|
-            add(state, :instruments, instrument, 'instrument_id')
+            add(state, :instruments, instrument, 'instrument_id') { |o| adapt_hash(:instrument, o) }
             add(state, :response_sets, instrument['response_set'], 'uuid') { |o| adapt_hash(:response_set, o) }
 
             responses = instrument['response_set']['responses']

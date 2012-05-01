@@ -205,18 +205,20 @@ module NcsNavigator::Core::Fieldwork
       end
 
       {}.tap do |h|
-        p.to_hash.each do |k, v|
-          vo = o[k] if o
-          vc = c[k]
-          vp = p[k]
+        attrs_to_merge = c.class.accessible_attributes
+
+        attrs_to_merge.each do |attr|
+          vo = o[attr] if o
+          vc = c[attr]
+          vp = p[attr]
 
           if vo.nil?
-            add_conflict(entity, id, k, vo, vc, vp) if vc != vp
+            add_conflict(entity, id, attr, vo, vc, vp) if !vp.nil? && vc != vp
           else
             if vo != vc && vc != vp
-              add_conflict(entity, id, k, vo, vc, vp) if vo != vp
+              add_conflict(entity, id, attr, vo, vc, vp) if vo != vp
             else
-              h[k] = vp
+              h[attr] = vp
             end
           end
         end

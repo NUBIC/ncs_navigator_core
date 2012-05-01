@@ -7,7 +7,7 @@ require 'forwardable'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: f5fea0d8619500750c67c55d955a00b5c420c8d1
+# Schema revision: 2d48106152d4a0cd3f471350114e94ead71db9b9
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -378,6 +378,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{type}] = val
     end
 
+    def version
+      target[%q{version}]
+    end
+
+    def version=(val)
+      target[%q{version}] = val
+    end
+
     def who_contacted
       target[%q{who_contacted}]
     end
@@ -480,15 +488,15 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :end_time
 
-    def incentive
-      target.event_incentive_type_code_before_type_cast
+    def event_id
+      target.event_id_before_type_cast
     end
 
-    def incentive=(val)
-      target.event_incentive_type_code = val
+    def event_id=(val)
+      target.event_id = val
     end
 
-    attr_accessible :incentive
+    attr_accessible :event_id
 
     def incentive_cash
       target.event_incentive_cash_before_type_cast
@@ -499,6 +507,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     attr_accessible :incentive_cash
+
+    def incentive_type
+      target.event_incentive_type_code_before_type_cast
+    end
+
+    def incentive_type=(val)
+      target.event_incentive_type_code = val
+    end
+
+    attr_accessible :incentive_type
 
     def repeat_key
       target.event_repeat_key_before_type_cast
@@ -632,20 +650,20 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{event_id}] = val
     end
 
-    def incentive
-      target[%q{incentive}]
-    end
-
-    def incentive=(val)
-      target[%q{incentive}] = val
-    end
-
     def incentive_cash
       target[%q{incentive_cash}]
     end
 
     def incentive_cash=(val)
       target[%q{incentive_cash}] = val
+    end
+
+    def incentive_type
+      target[%q{incentive_type}]
+    end
+
+    def incentive_type=(val)
+      target[%q{incentive_type}] = val
     end
 
     def name
@@ -694,6 +712,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def type_other=(val)
       target[%q{type_other}] = val
+    end
+
+    def version
+      target[%q{version}]
+    end
+
+    def version=(val)
+      target[%q{version}] = val
     end
 
     def [](a)
@@ -772,6 +798,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :end_time
 
+    def instrument_id
+      target.instrument_id_before_type_cast
+    end
+
+    def instrument_id=(val)
+      target.instrument_id = val
+    end
+
+    attr_accessible :instrument_id
+
     def method_administered
       target.instrument_method_code_before_type_cast
     end
@@ -801,6 +837,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     attr_accessible :mode_administered_other
+
+    def repeat_key
+      target.instrument_repeat_key_before_type_cast
+    end
+
+    def repeat_key=(val)
+      target.instrument_repeat_key = val
+    end
+
+    attr_accessible :repeat_key
 
     def start_date
       target.instrument_start_date_before_type_cast
@@ -982,6 +1028,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def name=(val)
       target[%q{name}] = val
+    end
+
+    def repeat_key
+      target[%q{repeat_key}]
+    end
+
+    def repeat_key=(val)
+      target[%q{repeat_key}] = val
     end
 
     def response_set

@@ -192,6 +192,27 @@ shared_examples_for 'a resolver' do |entity, property|
     end
   end
 
+  describe 'if O = P = nil, C = X' do
+    before do
+      c.send(writer, x)
+
+      # At this point, P is not nil, but all of its values are blank,
+      # which is what we want for testing the resolver.
+    end
+
+    it "does not modify C##{property}" do
+      merge
+
+      set[:current].send(property).should == x
+    end
+
+    it 'does not signal a conflict' do
+      merge
+
+      conflicts.should be_empty
+    end
+  end
+
   describe 'if O = X, C = Y, P = Z' do
     before do
       o.send(writer, x)
