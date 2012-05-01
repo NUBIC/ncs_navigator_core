@@ -3,19 +3,25 @@
 require 'rack/test'
 
 # For API tests, it's nice to have more direct control over the HTTP request and
-# response.  Rack::Test is therefore used directly in those tests.
+# response.
+#
+# We obtain this control by creating delegators that interact directly with
+# Capybara's Rack::Test session.  This is a pretty gross hack, but it works.
+# (For now.)
 Before '@api' do
-  extend Rack::Test::Methods
+  extend Forwardable
 
-  class << self
-    def api?
-      true
-    end
+  raise "API tests must use the rack-test driver" if Capybara.current_driver != :rack_test
 
-    def app
-      NcsNavigatorCore::Application
-    end
+  def api?
+    true
   end
+
+  def browser
+    Capybara.current_session.driver.browser
+  end
+
+  def_delegators :browser, *Rack::Test::Methods::METHODS
 
   # All API services, by default, require the client to accept and send JSON.
   header 'Accept', 'application/json'
