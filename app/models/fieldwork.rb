@@ -177,17 +177,13 @@ class Fieldwork < ActiveRecord::Base
   # If either field is blank, then {} is validated in lieu of that field.
   # (At present, this will generate schema errors, but that's acceptable: the
   # lack of an object is arguably a violation.)
-  #
-  # This method expects the URI of the fieldwork schema to be present in
   def schema_violations
     validator = Validator.new
 
-    validator.with_referenced_schemata do
-      {
-        :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
-        :received_data => validator.fully_validate(JSON.parse(received_data || '{}'))
-      }
-    end
+    {
+      :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
+      :received_data => validator.fully_validate(JSON.parse(received_data || '{}'))
+    }
   end
 
   def serialize_report
