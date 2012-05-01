@@ -135,8 +135,14 @@ class Fieldwork < ActiveRecord::Base
       violations = schema_violations
 
       unless violations.values.all? { |v| v.empty? }
+        violations[:original_data].each do |violation|
+          logger.fatal { "[original] #{violation}" }
+        end
+        violations[:received_data].each do |violation|
+          logger.fatal { "[received] #{violation}" }
+        end
+
         logger.fatal { "Schema violations detected; aborting merge" }
-        logger.fatal { violations.inspect }
 
         return
       end
