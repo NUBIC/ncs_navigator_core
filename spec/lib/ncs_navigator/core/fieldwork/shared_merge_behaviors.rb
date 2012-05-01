@@ -29,6 +29,8 @@ shared_context 'merge' do
 end
 
 shared_examples_for 'an entity merge' do |entity|
+  let(:klass) { entity.constantize }
+
   describe "for #{entity} O, C, P" do
     include_context 'merge'
 
@@ -46,7 +48,7 @@ shared_examples_for 'an entity merge' do |entity|
 
     describe 'if O = P = nil and C exists' do
       let(:o) { nil }
-      let(:c) { Factory(entity.underscore.to_sym) }
+      let(:c) { adapt_model(klass.new) }
       let(:p) { nil }
 
       it 'does not modify C' do
@@ -69,7 +71,7 @@ shared_examples_for 'an entity merge' do |entity|
     end
 
     describe 'if O exists, C is nil, and P is new' do
-      let(:o) { adapt_model(Factory(entity.underscore.to_sym)) }
+      let(:o) { adapt_model(klass.new) }
       let(:c) { nil }
       let(:p) { adapt_hash(entity.underscore.to_sym, {}) }
 
@@ -83,8 +85,8 @@ shared_examples_for 'an entity merge' do |entity|
     end
 
     describe 'if O exists, C exists, and P is nil' do
-      let(:o) { adapt_model(Factory(entity.underscore.to_sym)) }
-      let(:c) { adapt_model(Factory(entity.underscore.to_sym)) }
+      let(:o) { adapt_model(klass.new) }
+      let(:c) { adapt_model(klass.new) }
       let(:p) { nil }
 
       it 'does not modify C' do
@@ -107,8 +109,6 @@ shared_examples_for 'a resolver' do |entity, property|
   let(:z) { values[2] }
 
   describe 'if O = nil, C = P = X' do
-    let(:o) { nil }
-
     before do
       c.send(writer, x)
       p.send(writer, x)
@@ -122,8 +122,6 @@ shared_examples_for 'a resolver' do |entity, property|
   end
 
   describe 'if O = nil, C = X, P = Y' do
-    let(:o) { nil }
-
     before do
       c.send(writer, x)
       p.send(writer, y)
@@ -212,6 +210,8 @@ shared_examples_for 'a resolver' do |entity, property|
 end
 
 shared_examples_for 'an attribute merge' do |entity, property|
+  let(:klass) { entity.constantize }
+
   describe "for #{entity} O, C, P and property #{property}" do
     include MergeValueGeneration
 
@@ -238,7 +238,7 @@ shared_examples_for 'an attribute merge' do |entity, property|
 
     describe 'if C exists and P is new' do
       let(:o) { adapt_hash(entity.underscore.to_sym, {}) }
-      let(:c) { adapt_model(Factory(entity.underscore.to_sym)) }
+      let(:c) { adapt_model(klass.new) }
       let(:p) { adapt_hash(entity.underscore.to_sym, {}) }
 
       it_should_behave_like 'a resolver', entity, property
