@@ -1,0 +1,61 @@
+---
+Contact:
+  comments: contact_comment
+  contact_date: contact_date
+  contact_id: contact_id
+  disposition: contact_disposition
+  distance_traveled: contact_distance
+  end_time: contact_end_time
+  interpreter: contact_interpret_code
+  interpreter_other: contact_interpret_other
+  language: contact_language_code
+  language_other: contact_language_other
+  location: contact_location_code
+  location_other: contact_location_other
+  private: contact_private_code
+  private_detail: contact_private_detail
+  start_time: contact_start_time
+  type: contact_type_code
+  who_contacted: who_contacted_code
+  who_contacted_other: who_contacted_other
+Event:
+  break_off: event_breakoff_code
+  comments: event_comment
+  disposition: event_disposition
+  disposition_category: event_disposition_category_code
+  end_date: event_end_date
+  end_time: event_end_time
+  incentive: event_incentive_type_code
+  incentive_cash: event_incentive_cash
+  repeat_key: event_repeat_key
+  start_date: event_start_date
+  start_time: event_start_time
+  type: event_type_code
+  type_other: event_type_other
+Instrument:
+  breakoff: instrument_breakoff_code
+  comments: instrument_comment
+  data_problem: data_problem_code
+  end_date: instrument_end_date
+  end_time: instrument_end_time
+  method_administered: instrument_method_code
+  mode_administered: instrument_mode_code
+  mode_administered_other: instrument_mode_other
+  start_date: instrument_start_date
+  start_time: instrument_start_time
+  status: instrument_status_code
+  supervisor_review: supervisor_review_code
+  type: instrument_type_code
+  type_other: instrument_type_other
+Response:
+  uuid:
+    reader: target.api_id
+  answer_id:
+    reader: target.answer.try(:api_id)
+    writer: target.answer = Answer.where(:api_id => val).first
+  question_id:
+    reader: target.question.try(:api_id)
+    writer: target.question = Question.where(:api_id => val).first
+  value:
+    reader: target.value
+    writer: target.value = val

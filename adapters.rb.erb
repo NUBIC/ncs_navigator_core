@@ -1,0 +1,117 @@
+require 'ncs_navigator/core'
+
+require 'forwardable'
+
+##
+# These adapters were bootstrapped from the fieldwork JSON schema.
+#
+# Schema revision: <%= rev %>
+module NcsNavigator::Core::Fieldwork::Adapters
+  def adapt_hash(type, o)
+    case type
+    <% classes.each do |k| %>when :<%= k.underscore %>; <%= k %>HashAdapter.new(o)
+    <% end %>
+    end
+  end
+
+  def adapt_model(m)
+    case m
+    <% classes.each do |k| %>when <%= k %>; <%= k %>ModelAdapter.new(m)
+    <% end %>
+    end
+  end
+
+  <% classes.each do |k| %>
+  class <%= k %>ModelAdapter < Struct.new(:target)
+    extend Forwardable
+    extend ActiveModel::Naming
+    include ActiveModel::MassAssignmentSecurity
+
+    <% attributes[k].each do |attr| %>
+    <% to = attribute_map[k] ? attribute_map[k][attr] : nil %>
+    <% if to %>
+    <% if to.is_a?(Hash) %>
+    <% if to['reader'] %>
+    def <%= attr %>
+      <%= to['reader'] %>
+    end
+    <% end %>
+    <% if to['writer'] %>
+    def <%= attr %>=(val)
+      <%= to['writer'] %>
+    end
+
+    attr_accessible :<%= attr %>
+    <% end %>
+    <% else %>
+    def <%= attr %>
+      target.<%= to %>_before_type_cast
+    end
+
+    def <%= attr %>=(val)
+      target.<%= to %> = val
+    end
+
+    attr_accessible :<%= attr %>
+    <% end %>
+    <% end %>
+    <% end %>
+
+    def [](a)
+      send(a)
+    end
+
+    def []=(a, v)
+      send("#{a}=", v)
+    end
+
+    def to_model
+      target
+    end
+
+    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?
+
+    def attributes=(target)
+      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
+    end
+
+    def ==(other)
+      to_model == other.to_model
+    end
+  end
+
+  class <%= k %>HashAdapter < Struct.new(:target)
+    include NcsNavigator::Core::Fieldwork::Adapters
+
+    <% attributes[k].each do |attr| %>
+    def <%= attr %>
+      target[%q{<%= attr %>}]
+    end
+
+    def <%= attr %>=(val)
+      target[%q{<%= attr %>}] = val
+    end
+    <% end %>
+
+    def [](a)
+      send(a)
+    end
+
+    def []=(a, v)
+      send("#{a}=", v)
+    end
+
+    def to_hash
+      target
+    end
+
+    def to_model
+      adapt_model(<%= k %>.new).tap { |m| m.attributes = target }
+    end
+
+    def ==(other)
+      to_hash == other.to_hash
+    end
+  end
+<% end %>
+end
