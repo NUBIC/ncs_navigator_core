@@ -158,7 +158,7 @@ module NcsNavigator::Core::Fieldwork
 
     describe '#to_model' do
       it 'returns a ResponseGroup containing model conversions' do
-        m1 = stub
+        m1 = stub(:question_id => r1.question_id, :uuid => r1.uuid)
         r1.stub!(:to_model => m1)
 
         subject << r1
@@ -178,13 +178,32 @@ module NcsNavigator::Core::Fieldwork
       end
 
       describe 'given another group of equal length and equal question ID' do
-        before do
-          g1 << r1
-          g2 << r1
+        describe 'and equal response IDs' do
+          let(:r1) { stub(:question_id => 'foo', :uuid => 'bar') }
+          let(:r2) { stub(:question_id => 'foo', :uuid => 'bar') }
+
+          before do
+            g1 << r1
+            g2 << r1
+          end
+
+          it 'returns true' do
+            g1.should =~ g2
+          end
         end
 
-        it 'returns true' do
-          g1.should =~ g2
+        describe 'and unequal response IDs' do
+          let(:r1) { stub(:question_id => 'foo', :uuid => 'bar') }
+          let(:r2) { stub(:question_id => 'foo', :uuid => 'qux') }
+
+          before do
+            g1 << r1
+            g2 << r2
+          end
+
+          it 'returns false' do
+            g1.should_not =~ g2
+          end
         end
       end
 
@@ -200,10 +219,12 @@ module NcsNavigator::Core::Fieldwork
       end
 
       describe 'given another group of unequal length and equal question ID' do
+        let(:r2) { stub(:question_id => 'foo', :uuid => 'baz') }
+
         before do
           g1 << r1
           g2 << r1
-          g2 << r1
+          g2 << r2
         end
 
         it 'returns false' do
