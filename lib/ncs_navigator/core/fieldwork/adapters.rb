@@ -7,7 +7,7 @@ require 'forwardable'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: d47b2ee9b71dd5e2002f0f19704648781433eb21
+# Schema revision: f5fea0d8619500750c67c55d955a00b5c420c8d1
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -1082,6 +1082,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target.question = Question.where(:api_id => val).first
     end
 
+    def uuid
+      target.api_id
+    end
+
     def [](a)
       send(a)
     end
@@ -1124,14 +1128,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{created_at}] = val
     end
 
-    def entity_id
-      target[%q{entity_id}]
-    end
-
-    def entity_id=(val)
-      target[%q{entity_id}] = val
-    end
-
     def question_id
       target[%q{question_id}]
     end
@@ -1146,6 +1142,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def updated_at=(val)
       target[%q{updated_at}] = val
+    end
+
+    def uuid
+      target[%q{uuid}]
+    end
+
+    def uuid=(val)
+      target[%q{uuid}] = val
     end
 
     def value
@@ -1224,20 +1228,20 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{created_at}] = val
     end
 
-    def entity_id
-      target[%q{entity_id}]
-    end
-
-    def entity_id=(val)
-      target[%q{entity_id}] = val
-    end
-
     def survey_id
       target[%q{survey_id}]
     end
 
     def survey_id=(val)
       target[%q{survey_id}] = val
+    end
+
+    def uuid
+      target[%q{uuid}]
+    end
+
+    def uuid=(val)
+      target[%q{uuid}] = val
     end
 
     def [](a)
