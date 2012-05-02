@@ -28,6 +28,41 @@ module NcsNavigator::Core::Fieldwork
       end
     end
 
+    describe '#answer_ids' do
+      before do
+        r1.stub!(:answer_id => 'answer-foo')
+
+        subject << r1
+      end
+
+      it 'returns the answer IDs of all responses' do
+        subject.answer_ids.should == { r1.uuid => 'answer-foo' }
+      end
+    end
+
+    describe '#answer_ids=' do
+      before do
+        subject << OpenStruct.new(:uuid => 'foo')
+      end
+
+      it 'assigns answer IDs to all matching responses' do
+        subject.answer_ids = {
+          'foo' => 'answer-foo'
+        }
+
+        subject.responses['foo'].answer_id.should == 'answer-foo'
+      end
+
+      it 'ignores unknown response UUIDs' do
+        subject.answer_ids = {
+          'bar' => 'answer-foo'
+        }
+
+        subject.responses['foo'].answer_id.should be_nil
+        subject.responses.should_not have_key('bar')
+      end
+    end
+
     describe '#values' do
       before do
         r1.stub!(:value => 'value-foo')

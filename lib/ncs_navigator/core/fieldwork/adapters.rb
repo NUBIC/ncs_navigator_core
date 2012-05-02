@@ -1074,6 +1074,8 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target.answer = Answer.where(:api_id => val).first
     end
 
+    attr_accessible :answer_id
+
     def question_id
       target.question.try(:api_id)
     end

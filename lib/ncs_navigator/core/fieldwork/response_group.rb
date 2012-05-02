@@ -22,6 +22,18 @@ module NcsNavigator::Core::Fieldwork
     def question_id
     end
 
+    def answer_ids
+      responses.inject({}) { |h, (uuid, r)| h.update(uuid => r.answer_id) }
+    end
+
+    def answer_ids=(values)
+      values.each do |k, answer_id|
+        if (resp = responses[k])
+          resp.answer_id = answer_id
+        end
+      end
+    end
+
     def values
       responses.inject({}) { |h, (uuid, r)| h.update(uuid => r.value) }
     end
