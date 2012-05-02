@@ -140,8 +140,11 @@ module NcsNavigator::Core::Fieldwork
   # @see https://code.bioinformatics.northwestern.edu/issues/wiki/ncs-navigator-core/Field_-%3E_Core_merge#Response-set
   module Merge
     attr_accessor :logger
+    attr_accessor :conflicts
 
     def merge
+      self.conflicts = {}
+
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
