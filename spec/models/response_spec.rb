@@ -68,6 +68,45 @@ describe Response do
     end
   end
 
+  describe '#value=' do
+    describe 'given a String' do
+      let(:val) { 'foo' }
+
+      describe 'if the string can be interpreted as a datetime' do
+        let(:val) { '4/19/2012 13:33' }
+
+        it 'sets #datetime_value' do
+          subject.value = val
+
+          subject.datetime_value.should == Chronic.parse(val)
+        end
+      end
+
+      it 'sets #string_value' do
+        subject.string_value.should == val
+      end
+    end
+
+    describe 'given an Integer' do
+      let(:val) { 10 }
+
+      it 'sets #integer_value' do
+        subject.value = val
+
+        subject.integer_value.should == val
+      end
+    end
+
+    describe 'given a Float' do
+      let(:val) { 3.14 }
+
+      it 'sets #float_value' do
+        subject.value = val
+        subject.float_value.should == val
+      end
+    end
+  end
+
   describe '#reportable_value' do
     let(:questions_dsl) {
       <<-DSL

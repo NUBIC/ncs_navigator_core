@@ -6,6 +6,7 @@ gem 'bcdatabase', '~> 1.0'
 gem 'aker', '~> 3.0'
 gem 'aker-rails'
 gem 'case'
+gem 'chronic'
 gem 'comma'
 gem 'compass'
 gem 'fastercsv', :platform => :ruby_18

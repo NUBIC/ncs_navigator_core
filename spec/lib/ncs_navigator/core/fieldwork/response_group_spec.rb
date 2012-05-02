@@ -4,14 +4,15 @@ module NcsNavigator::Core::Fieldwork
   describe ResponseGroup do
     subject { ResponseGroup.new }
 
-    let(:r1) { stub(:question_id => 'abcdef') }
-    let(:r2) { stub(:question_id => '123456') }
+    let(:r1) { stub(:question_id => 'abcdef', :uuid => 'foo') }
+    let(:r2) { stub(:question_id => '123456', :uuid => 'bar') }
 
     describe '#<<' do
       it 'adds a response to the group' do
         subject << r1
 
-        subject.responses.should == [r1]
+        subject.responses.keys.should == [r1.uuid]
+        subject.responses.values.should == [r1]
       end
     end
 
@@ -24,6 +25,41 @@ module NcsNavigator::Core::Fieldwork
 
       it 'returns nil if no responses are present' do
         subject.question_id.should be_nil
+      end
+    end
+
+    describe '#values' do
+      before do
+        r1.stub!(:value => 'value-foo')
+
+        subject << r1
+      end
+
+      it 'returns the values of all responses' do
+        subject.values.should == { r1.uuid => 'value-foo' }
+      end
+    end
+
+    describe '#values=' do
+      before do
+        subject << OpenStruct.new(:uuid => 'foo')
+      end
+
+      it 'assigns values to all matching responses' do
+        subject.values = {
+          'foo' => 'value-foo'
+        }
+
+        subject.responses['foo'].value.should == 'value-foo'
+      end
+
+      it 'ignores unknown response UUIDs' do
+        subject.values = {
+          'bar' => 'value-foo'
+        }
+
+        subject.responses['foo'].value.should be_nil
+        subject.responses.should_not have_key('bar')
       end
     end
 

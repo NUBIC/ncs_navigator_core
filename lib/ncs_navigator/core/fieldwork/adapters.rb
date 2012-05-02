@@ -1082,9 +1082,21 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target.question = Question.where(:api_id => val).first
     end
 
+    attr_accessible :question_id
+
     def uuid
       target.api_id
     end
+
+    def value
+      target.value
+    end
+
+    def value=(val)
+      target.value = val
+    end
+
+    attr_accessible :value
 
     def [](a)
       send(a)

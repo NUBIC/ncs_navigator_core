@@ -20,7 +20,18 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def question_id
-      responses.first.try(&:question_id)
+    end
+
+    def values
+      responses.inject({}) { |h, (uuid, r)| h.update(uuid => r.value) }
+    end
+
+    def values=(values)
+      values.each do |k, value|
+        if (resp = responses[k])
+          resp.value = value
+        end
+      end
     end
 
     def changed?
