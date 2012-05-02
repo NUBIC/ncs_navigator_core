@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-require 'ncs_navigator/core'
-
 require 'forwardable'
+require 'ncs_navigator/core'
 
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
@@ -11,10 +10,15 @@ require 'forwardable'
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
+
     when :contact; ContactHashAdapter.new(o)
+
     when :event; EventHashAdapter.new(o)
+
     when :instrument; InstrumentHashAdapter.new(o)
+
     when :response; ResponseHashAdapter.new(o)
+
     when :response_set; ResponseSetHashAdapter.new(o)
 
     end
@@ -22,10 +26,15 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
   def adapt_model(m)
     case m
+
     when Contact; ContactModelAdapter.new(m)
+
     when Event; EventModelAdapter.new(m)
+
     when Instrument; InstrumentModelAdapter.new(m)
+
     when Response; ResponseModelAdapter.new(m)
+
     when ResponseSet; ResponseSetModelAdapter.new(m)
 
     end

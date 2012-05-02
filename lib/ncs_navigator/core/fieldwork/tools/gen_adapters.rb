@@ -1,4 +1,10 @@
+#!/usr/bin/env ruby
+
 # Generates adapter classes from the fieldwork schema.
+#
+# Recommended invocation:
+#
+# ./gen_adapters.rb | git stripspace
 require 'active_support/inflector'
 require 'erb'
 require 'json'
@@ -8,7 +14,8 @@ def properties_for(schema)
   schema.reject { |k, v| v['items'] }.map(&:first).sort
 end
 
-schema_file = File.expand_path('../vendor/ncs_navigator_schema/fieldwork_schema.json', __FILE__)
+root = File.expand_path('../../../../../..', __FILE__)
+schema_file = File.expand_path('vendor/ncs_navigator_schema/fieldwork_schema.json', root)
 
 schema = JSON.parse(File.read(schema_file))
 rev = Dir.chdir(File.dirname(schema_file)) { `git show --format=oneline HEAD | head -n1 | cut -c1-40` }.chomp
@@ -18,7 +25,7 @@ rev = Dir.chdir(File.dirname(schema_file)) { `git show --format=oneline HEAD | h
 @person_properties = properties_for(schema['properties']['participants']['items']['properties']['persons']['items']['properties'])
 @instrument_properties = properties_for(schema['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties'])
 
-schema_file = File.expand_path('../vendor/ncs_navigator_schema/response_set_schema.json', __FILE__)
+schema_file = File.expand_path('vendor/ncs_navigator_schema/response_set_schema.json', root)
 schema = JSON.parse(File.read(schema_file))
 
 @response_set_properties = properties_for(schema['properties'])

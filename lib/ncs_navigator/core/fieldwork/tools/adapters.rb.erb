@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-require 'ncs_navigator/core'
-
 require 'forwardable'
+require 'ncs_navigator/core'
 
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
@@ -11,14 +10,16 @@ require 'forwardable'
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
-    <% classes.each do |k| %>when :<%= k.underscore %>; <%= k %>HashAdapter.new(o)
+    <% classes.each do |k| %>
+    when :<%= k.underscore %>; <%= k %>HashAdapter.new(o)
     <% end %>
     end
   end
 
   def adapt_model(m)
     case m
-    <% classes.each do |k| %>when <%= k %>; <%= k %>ModelAdapter.new(m)
+    <% classes.each do |k| %>
+    when <%= k %>; <%= k %>ModelAdapter.new(m)
     <% end %>
     end
   end
