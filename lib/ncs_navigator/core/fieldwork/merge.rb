@@ -204,6 +204,8 @@ module NcsNavigator::Core::Fieldwork
         return
       end
 
+      c.answer_ids = p.answer_ids
+      c.values = p.values
     end
 
     def add_conflict(entity, entity_id, key, o, c, p)

@@ -13,22 +13,8 @@ SCHEMA = JSON.parse(File.read(SCHEMA_FILE))
 module NcsNavigator::Core::Fieldwork
   describe Merge do
     subject do
-      Class.new do
+      Class.new(Superposition) do
         include Merge
-
-        attr_accessor :conflicts
-        attr_accessor :contacts
-        attr_accessor :events
-        attr_accessor :instruments
-        attr_accessor :response_groups
-
-        def initialize
-          self.conflicts = {}
-          self.contacts = {}
-          self.events = {}
-          self.instruments = {}
-          self.response_groups = {}
-        end
       end.new
     end
 
@@ -143,9 +129,6 @@ module NcsNavigator::Core::Fieldwork
         subject.merge
       end
 
-      shared_examples_for 'a response resolver' do
-      end
-
       describe 'if O = C = P = nil' do
         let(:o) { nil }
         let(:c) { nil }
@@ -234,32 +217,42 @@ module NcsNavigator::Core::Fieldwork
         let(:c) { rg1 }
         let(:p) { rg2 }
 
-        let!(:a) { Factory(:answer, :api_id => 'bar') }
+        let!(:a) { Factory(:answer, :api_id => 'bar', :response_class => 'string') }
         let!(:q) { Factory(:question, :api_id => question_id) }
 
-        let(:r1) { adapt_model(Response.new(:question_id => question_id)) }
-        let(:r2) { adapt_hash(:response, { :question_id => question_id, :answer_id => 'bar' }) }
+        let(:rc) { adapt_model(Response.new(:api_id => 'foo', :question => q)) }
+        let(:rp) { adapt_hash(:response, { 'uuid' => 'foo', 'question_id' => question_id, 'answer_id' => 'bar' }) }
 
         describe 'if C =~ P' do
           before do
-            c << r1
-            p << r2
+            c << rc
+            p << rp
+
+            c.should =~ p
           end
 
           describe 'for each response Rp, Rc' do
             it 'copies Rp#answer_id to Rc#answer_id' do
               merge
 
-              set[:current].responses.first.answer_id.should == a.api_id
+              set[:current].responses.values.first.answer_id.should == a.api_id
+            end
+
+            it 'copies Rp#value to Rc#value' do
+              rp.value = 'foo'
+
+              merge
+
+              set[:current].responses.values.first.value.should == 'foo'
             end
           end
         end
 
         describe 'if !(C =~ P)' do
           before do
-            c << stub(:question_id => question_id)
-            p << stub(:question_id => question_id)
-            p << stub(:question_id => question_id)
+            c << stub(:uuid => 'foo', :question_id => question_id)
+            p << stub(:uuid => 'foo', :question_id => question_id)
+            p << stub(:uuid => 'bar', :question_id => question_id)
           end
 
           it 'signals a conflict' do

@@ -78,8 +78,9 @@ module NcsNavigator::Core::Fieldwork
       self.instruments = {}
       self.participants = {}
       self.people = {}
-      self.responses = {}
+      self.response_groups = {}
       self.response_sets = {}
+      self.responses = {}
 
       self.logger = Logger.new(nil)
     end
