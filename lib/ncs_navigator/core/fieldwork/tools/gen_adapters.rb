@@ -6,12 +6,13 @@
 #
 # ./gen_adapters.rb | git stripspace
 require 'active_support/inflector'
+require 'active_support/core_ext/object'
 require 'erb'
 require 'json'
 require 'yaml'
 
 def properties_for(schema)
-  schema.reject { |k, v| v['items'] }.map(&:first).sort
+  schema.reject { |k, v| v['items'] }.sort_by(&:first)
 end
 
 root = File.expand_path('../../../../../..', __FILE__)
@@ -40,12 +41,20 @@ def attributes
   }
 end
 
-attribute_map = YAML.load(File.read('fieldwork_to_model.yml'))
+attribute_map = YAML.load(File.read(File.expand_path('../fieldwork_to_model.yml', __FILE__)))
 
 def classes
   attributes.keys.sort
 end
 
-template = ERB.new(File.read('adapters.rb.erb'), nil, '<>')
+def coercion_for(metadata)
+  if metadata['extends'].try(:[], '$ref') =~ /decimal_as_string/
+    'decimal'
+  elsif metadata['format'] == 'date'
+    'date'
+  end
+end
+
+template = ERB.new(File.read(File.expand_path('../adapters.rb.erb', __FILE__)), nil, '<>')
 
 puts template.result(binding)

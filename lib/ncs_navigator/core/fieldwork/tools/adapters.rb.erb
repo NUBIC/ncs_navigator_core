@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'bigdecimal'
+require 'date'
 require 'forwardable'
 require 'ncs_navigator/core'
 
@@ -24,13 +26,31 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
+  module ActiveRecordTypeCoercion
+    def date(x)
+      case x
+      when Date; x
+      when NilClass; x
+      else
+        begin
+          Date.parse(x)
+        rescue ArgumentError
+        end
+      end
+    end
+
+    def decimal(x)
+      BigDecimal.new(x) if x
+    end
+  end
+
   <% classes.each do |k| %>
   class <%= k %>ModelAdapter < Struct.new(:target)
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
-    <% attributes[k].each do |attr| %>
+    <% attributes[k].each do |attr, _| %>
     <% to = attribute_map[k] ? attribute_map[k][attr] : nil %>
     <% if to %>
     <% if to.is_a?(Hash) %>
@@ -48,7 +68,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     <% end %>
     <% else %>
     def <%= attr %>
-      target.<%= to %>_before_type_cast
+      target.<%= to %>
     end
 
     def <%= attr %>=(val)
@@ -85,10 +105,11 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
   class <%= k %>HashAdapter < Struct.new(:target)
     include NcsNavigator::Core::Fieldwork::Adapters
+    include ActiveRecordTypeCoercion
 
-    <% attributes[k].each do |attr| %>
+    <% attributes[k].each do |attr, metadata| %>
     def <%= attr %>
-      target[%q{<%= attr %>}]
+      <%= coercion_for(metadata) %>(target[%q{<%= attr %>}])
     end
 
     def <%= attr %>=(val)
