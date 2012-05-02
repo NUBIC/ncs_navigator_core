@@ -34,3 +34,4 @@ importer_passthrough/*.xml
 shared/importer_passthrough/*.xml
 *.sw?
 *.out
+.powenv
