@@ -72,12 +72,14 @@ describe Response do
     describe 'given a String' do
       let(:val) { 'foo' }
 
+      before do
+        subject.value = val
+      end
+
       describe 'if the string can be interpreted as a datetime' do
         let(:val) { '4/19/2012 13:33' }
 
         it 'sets #datetime_value' do
-          subject.value = val
-
           subject.datetime_value.should == Chronic.parse(val)
         end
       end

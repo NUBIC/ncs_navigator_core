@@ -53,10 +53,7 @@ class Response < ActiveRecord::Base
   def value=(val)
     case val
     when String
-      if Chronic.parse(val)
-        self.datetime_value = val
-      end
-
+      self.datetime_value = Chronic.parse(val)
       self.string_value = val
     when Integer
       self.integer_value = val
