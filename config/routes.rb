@@ -100,7 +100,7 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end    
   
-  match "/manifest", :to => "manifest#index"
+  match "/shipping", :to => "shipping#index"
   
   resources :specimen_processing_shipping_centers
   resources :sample_receipt_shipping_centers  
