@@ -49,4 +49,22 @@ class Response < ActiveRecord::Base
       fail "Unsupported response class in #reportable_value: #{answer.response_class}"
     end
   end
+
+  def value=(val)
+    case val
+    when String
+      self.datetime_value = Chronic.parse(val)
+      self.string_value = val
+    when Integer
+      self.integer_value = val
+    when Float
+      self.float_value = val
+    end
+  end
+
+  def value
+    a = answer
+
+    as(a.response_class.to_sym) unless a.response_class == 'answer'
+  end
 end

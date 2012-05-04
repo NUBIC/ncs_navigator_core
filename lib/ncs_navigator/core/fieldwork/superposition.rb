@@ -41,26 +41,31 @@ module NcsNavigator::Core::Fieldwork
   # * {Instrument}
   # * {Participant}
   # * {Person}
+  # * {Response}
   # * {ResponseSet}
+  #
+  # Furthermore, a Superposition can also group {Response}s by their (public)
+  # question ID.  See {#group_responses}.
   #
   #
   # Performing a merge
   # ==================
   #
   # Once a Superposition has been built, you can mix in a merge algorithm
-  # to collapse the states of the superposition.
-  #
-  # @see MergeTheirs
+  # to collapse the states of the superposition.  The default algorithm is
+  # implemented in {Merge}.
   class Superposition
     include Adapters
+    include Merge
 
     attr_accessor :contacts
     attr_accessor :events
     attr_accessor :instruments
     attr_accessor :participants
     attr_accessor :people
-    attr_accessor :responses
+    attr_accessor :response_groups
     attr_accessor :response_sets
+    attr_accessor :responses
 
     ##
     # By default, this logger throws messages to a bit bucket.  If you want log
@@ -73,8 +78,9 @@ module NcsNavigator::Core::Fieldwork
       self.instruments = {}
       self.participants = {}
       self.people = {}
-      self.responses = {}
+      self.response_groups = {}
       self.response_sets = {}
+      self.responses = {}
 
       self.logger = Logger.new(nil)
     end
@@ -94,7 +100,27 @@ module NcsNavigator::Core::Fieldwork
       set_current_state(:participants, Participant, 'p_id')
       set_current_state(:people, Person, 'person_id')
       set_current_state(:response_sets, ResponseSet, 'api_id')
-      set_current_state(:responses, Response, 'api_id')
+      set_current_state(:responses, Response, 'api_id') { |q| q.includes(:question, :answer) }
+    end
+
+    def group_responses
+      self.response_groups = {}.tap do |h|
+        responses.each do |_, states|
+          states.each do |state, response|
+            qid = response.question_id
+
+            unless h.has_key?(qid)
+              h[qid] = {}
+            end
+
+            unless h[qid].has_key?(state)
+              h[qid][state] = ResponseGroup.new
+            end
+
+            h[qid][state] << response
+          end
+        end
+      end
     end
 
     def set_state(state, data)
@@ -105,7 +131,7 @@ module NcsNavigator::Core::Fieldwork
           add(state, :events, event, 'event_id') { |o| adapt_hash(:event, o) }
 
           event['instruments'].each do |instrument|
-            add(state, :instruments, instrument, 'instrument_id')
+            add(state, :instruments, instrument, 'instrument_id') { |o| adapt_hash(:instrument, o) }
             add(state, :response_sets, instrument['response_set'], 'uuid') { |o| adapt_hash(:response_set, o) }
 
             responses = instrument['response_set']['responses']
@@ -133,9 +159,10 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def set_current_state(collection, entity, public_id)
-      entity.where(public_id => send(collection).keys.uniq).each do |e|
-        add(:current, collection, e, public_id) { |m| adapt_model(m) }
-      end
+      q = entity.where(public_id => send(collection).keys.uniq)
+      q = (yield q if block_given?) || q
+
+      q.each { |e| add(:current, collection, e, public_id) { |m| adapt_model(m) } }
     end
 
     def add(state, collection, object, key)

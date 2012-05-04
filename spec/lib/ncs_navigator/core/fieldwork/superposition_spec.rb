@@ -24,6 +24,7 @@ module NcsNavigator::Core::Fieldwork
     let(:instrument_id) { 'c41f14e0-356c-012f-c15d-58b035fb69ca' }
     let(:participant_id) { 'f7b1da00-34d2-012f-c14b-58b035fb69ca' }
     let(:person_id) { 'f76a39d0-34d2-012f-c14a-58b035fb69ca' }
+    let(:question_id) { '61387010-331b-012f-8a99-58b035fb69ca' }
     let(:response_id) { 'e8661d8d-7bde-4a4d-bb79-6d807f4d3bf3' }
     let(:response_set_id) { '266ad829-f5d8-4df0-b821-3d33bb95be08' }
 
@@ -215,6 +216,43 @@ module NcsNavigator::Core::Fieldwork
 
       it 'resolves responses' do
         subject.responses[response_id][:current].should == response
+      end
+    end
+
+    describe '#group_responses' do
+      let!(:q) { Factory(:question, :api_id => question_id) }
+      let!(:a) { Factory(:answer) }
+      let!(:response) { Factory(:response, :api_id => response_id, :question => q, :answer => a) }
+
+      let(:original) { subject.responses[response_id][:original] }
+      let(:current) { subject.responses[response_id][:current] }
+      let(:proposed) { subject.responses[response_id][:proposed] }
+
+      before do
+        load_original
+        load_proposed
+        subject.resolve_current
+
+        subject.group_responses
+
+        # A validity check on test inputs.
+        original.question_id.should == question_id
+        current.question_id.should == question_id
+        proposed.question_id.should == question_id
+      end
+
+      it 'groups responses by question ID' do
+        expected_original = subject.responses[response_id][:original]
+        expected_current = subject.responses[response_id][:current]
+        expected_proposed = subject.responses[response_id][:proposed]
+
+        subject.response_groups.should == {
+          question_id => {
+            :original => ResponseGroup.new([expected_original]),
+            :current => ResponseGroup.new([expected_current]),
+            :proposed => ResponseGroup.new([expected_proposed])
+          }
+        }
       end
     end
   end

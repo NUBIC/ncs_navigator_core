@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'bigdecimal'
+require 'date'
 require 'facets/random'
 require 'set'
 
@@ -14,12 +16,15 @@ module MergeValueGeneration
   def gen_values(property, count)
     type = properties[property]['type']
     format = properties[property]['format'] || ''
+    extends = properties[property]['extends'] || {}
 
     Set.new.tap do |gen|
       while gen.length < count
         gen << if type.include?('string')
-                 if format.include?('date')
-                   DATES.at_rand.to_s
+                 if extends['$ref'] =~ /decimal_as_string/
+                   BigDecimal.new((rand * 100).to_s)
+                 elsif format.include?('date')
+                   DATES.at_rand
                  else
                    String.random
                  end

@@ -131,59 +131,51 @@ module NcsNavigator::Core::Fieldwork
   # executes 7 if 6 is false.
   #
   #
-  # The response set merge algorithm
-  # ================================
+  # Responses are grouped by question
+  # =================================
   #
-  # Instead of attempting to merge response sets directly, we deal with
-  # response sets on a per-question basis.
-  #
-  #
-  # Nomenclature
-  # ------------
-  #
-  # * QR(K, O): the original state of the responses for question K
-  # * QR(K, C): the current state of the responses for question K
-  # * QR(K, P): the proposed state of the responses for question K
-  # * R: the merge result
-  #
-  #
-  # Entity states
-  # -------------
-  #
-  # A set of responses for question K may be in states ∅, QR1, QR2, or QR3,
-  # where ∅ means "empty set" and ∅ != QR1 != QR2 != QR3.
-  #
-  #
-  # Actions
-  # -------
-  #
-  # * QR1: use response set QR1
-  # * ∅: use empty set
-  # * conflict: signal a conflict
-  #
-  #   QR(K, O)    QR(K, C)    QR(K, P)    R
-  #   --------------------------------------------
-  #   ∅           ∅           ∅           ∅
-  #   ∅           ∅           QR1         QR1
-  #   ∅           QR1         ∅           QR1
-  #   ∅           QR1         QR1         QR1
-  #   ∅           QR1         QR2         conflict
-  #   QR1         ∅           ∅           ∅
-  #   QR1         ∅           QR1         conflict
-  #   QR2         ∅           QR3         conflict
-  #   QR1         QR1         ∅           ∅
-  #   QR1         QR1         QR1         QR1
-  #   QR2         QR2         QR3         conflict
-  #   QR1         QR2         QR3         conflict
+  # Responses are first grouped by question; those groups are then merged
+  # according to the above algorithm.
   #
   # @see https://code.bioinformatics.northwestern.edu/issues/wiki/ncs-navigator-core/Field_-%3E_Core_merge#Response-set
   module Merge
     attr_accessor :logger
+    attr_accessor :conflicts
 
     def merge
+      self.conflicts = {}
+
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
+      response_groups.each { |id, state| merge_entity(state, 'ResponseGroup', id) }
+    end
+
+    ##
+    # Saves the current state of all merged entities.
+    #
+    # For more complete error reporting, this method attempts to save all
+    # entities regardless of whether or not a previous entity or set of
+    # entities failed to save.  However, it will return true if and only if all
+    # entities were saved.
+    #
+    # When data dependencies exist, this can lead to spurious errors; however,
+    # that can be dealt with by just looking further up in the log.  There's no
+    # similar way to discover errors that aren't reported due to an early
+    # abort.
+    def save
+      ActiveRecord::Base.transaction do
+        [contacts, events, instruments, response_groups].map { |c| save_collection(c) }.all?.tap do |res|
+          unless res
+            logger.fatal { 'Errors raised during save; rolling back' }
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+    end
+
+    def conflicted?
+      !conflicts.empty?
     end
 
     module_function
@@ -208,25 +200,41 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def resolve(o, c, p, entity, id)
+      if [o, c, p].all? { |e| e.nil? || ResponseGroup === e }
+        return resolve_response_group(o, c, p, entity, id)
+      end
+
       {}.tap do |h|
-        p.to_hash.each do |k, v|
-          vo = o[k] if o
-          vc = c[k]
-          vp = p[k]
+        attrs_to_merge = c.class.accessible_attributes
+
+        attrs_to_merge.each do |attr|
+          vo = o[attr] if o
+          vc = c[attr]
+          vp = p[attr]
 
           if vo.nil?
-            add_conflict(entity, id, k, vo, vc, vp) if vc != vp
+            add_conflict(entity, id, attr, vo, vc, vp) if !vp.nil? && vc != vp
           else
             if vo != vc && vc != vp
-              add_conflict(entity, id, k, vo, vc, vp) if vo != vp
+              add_conflict(entity, id, attr, vo, vc, vp) if vo != vp
             else
-              h[k] = vp
+              h[attr] = vp
             end
           end
         end
 
         c.attributes = h
       end
+    end
+
+    def resolve_response_group(o, c, p, entity, id)
+      unless c =~ p
+        add_conflict(entity, id, :self, o, c, p)
+        return
+      end
+
+      c.answer_ids = p.answer_ids
+      c.values = p.values
     end
 
     def add_conflict(entity, entity_id, key, o, c, p)
@@ -243,6 +251,29 @@ module NcsNavigator::Core::Fieldwork
       }
 
       conflicts.deep_merge!(conflict_report)
+    end
+
+    ##
+    # @private
+    # @return Boolean
+    def save_collection(c)
+      c.map do |public_id, state|
+        current = state[:current]
+
+        next true unless current
+
+        current.save.tap { |ok| log_errors_for(public_id, current, ok) }
+      end.all?
+    end
+
+    def log_errors_for(public_id, entity, ok)
+      return if ok
+
+      logger.fatal { "[#{entity.class} #{public_id}] #{entity.class} could not be saved" }
+
+      current.errors.to_a.each do |error|
+        logger.fatal { "[#{entity.class} #{public_id}] Validation error: #{error.inspect}" }
+      end
     end
   end
 end

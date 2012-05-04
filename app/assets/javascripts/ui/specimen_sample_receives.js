@@ -64,7 +64,7 @@ $(function() {
          
     $('.specimen_sample_receive').live('click',
     function() {
-        specimen_receive_dialog($(this).attr('href') + ' form', 'Specimen Receive Form', $(this).attr('rel'));
+        specimen_receive_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
         return false;
     });
     

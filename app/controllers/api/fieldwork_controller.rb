@@ -27,7 +27,7 @@ class Api::FieldworkController < ApplicationController
       request.body.rewind
     end
 
-    NcsNavigator::Core::Jobs::MergeFieldwork.perform_async(fw.id)
+    NcsNavigator::Core::Fieldwork::MergeWorker.perform_async(fw.id)
     headers['Location'] = api_fieldwork_path(fw.id)
     render :nothing => true, :status => :accepted
   end

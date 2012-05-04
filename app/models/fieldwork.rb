@@ -126,7 +126,8 @@ class Fieldwork < ActiveRecord::Base
   # The merge only proceeds if both JSON objects in original_data and
   # received_data conform to the fieldwork data schema.
   #
-  # Returns the value written to #merged.
+  # If the merge completed without conflicts and all data was saved, returns
+  # true; otherwise, returns false.
   def merge
     begin
       sio = StringIO.new
@@ -134,25 +135,28 @@ class Fieldwork < ActiveRecord::Base
       violations = schema_violations
 
       unless violations.values.all? { |v| v.empty? }
+        violations[:original_data].each do |violation|
+          logger.fatal { "[original] #{violation}" }
+        end
+        violations[:received_data].each do |violation|
+          logger.fatal { "[received] #{violation}" }
+        end
+
         logger.fatal { "Schema violations detected; aborting merge" }
-        logger.fatal { violations.inspect }
 
         return
       end
 
       sp = Superposition.new
-      sp.extend(MergeTheirs)
-
       sp.logger = logger
-
       sp.set_original(JSON.parse(original_data))
       sp.set_proposed(JSON.parse(received_data))
       sp.resolve_current
 
       sp.merge
 
-      sp.save.tap do |result|
-        update_attribute(:merged, result)
+      (sp.save unless sp.conflicted?).tap do |ok|
+        update_attributes(:merged => ok, :conflict_report => sp.conflicts.to_json)
       end
     ensure
       update_attribute(:merge_log, sio.string)
@@ -179,17 +183,13 @@ class Fieldwork < ActiveRecord::Base
   # If either field is blank, then {} is validated in lieu of that field.
   # (At present, this will generate schema errors, but that's acceptable: the
   # lack of an object is arguably a violation.)
-  #
-  # This method expects the URI of the fieldwork schema to be present in
   def schema_violations
     validator = Validator.new
 
-    validator.with_referenced_schemata do
-      {
-        :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
-        :received_data => validator.fully_validate(JSON.parse(received_data || '{}'))
-      }
-    end
+    {
+      :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
+      :received_data => validator.fully_validate(JSON.parse(received_data || '{}'))
+    }
   end
 
   def serialize_report
