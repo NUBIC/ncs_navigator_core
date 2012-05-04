@@ -98,7 +98,8 @@ class SamplesController < ApplicationController
     @contact_phone                     = params[:contact_phone]
     #TODO - do we hardcore the carrier???     
     @carrier                           = params[:carrier]
-    @volume                            = params[:volume]  
+    @volume_amt = params[:volume_amt]
+    @volume_unit = params[:volume_unit]
     
     @shipping_temperature =  NcsCode.ncs_code_lookup(:sample_shipment_temperature_code)
     @shipment_temperature_id = params[:temp]
