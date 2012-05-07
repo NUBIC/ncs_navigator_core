@@ -258,7 +258,7 @@ module NcsNavigator::Core::Fieldwork
 
       logger.fatal { "[#{entity.class} #{public_id}] #{entity.class} could not be saved" }
 
-      current.errors.to_a.each do |error|
+      entity.errors.to_a.each do |error|
         logger.fatal { "[#{entity.class} #{public_id}] Validation error: #{error.inspect}" }
       end
     end
