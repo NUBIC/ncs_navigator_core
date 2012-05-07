@@ -257,7 +257,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
     def as_json(options = nil)
       {}.tap do |h|
         self.class.accessible_attributes.each do |k|
@@ -265,6 +264,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
         end
       end
     end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -617,7 +626,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
     def as_json(options = nil)
       {}.tap do |h|
         self.class.accessible_attributes.each do |k|
@@ -625,6 +633,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
         end
       end
     end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -965,7 +983,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
     def as_json(options = nil)
       {}.tap do |h|
         self.class.accessible_attributes.each do |k|
@@ -973,6 +990,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
         end
       end
     end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1219,7 +1246,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
     def as_json(options = nil)
       {}.tap do |h|
         self.class.accessible_attributes.each do |k|
@@ -1227,6 +1253,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
         end
       end
     end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1327,7 +1363,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
     def as_json(options = nil)
       {}.tap do |h|
         self.class.accessible_attributes.each do |k|
@@ -1335,6 +1370,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
         end
       end
     end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
