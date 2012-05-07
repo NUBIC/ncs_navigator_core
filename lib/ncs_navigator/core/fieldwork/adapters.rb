@@ -1178,7 +1178,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def answer_id=(val)
-      target.answer = Answer.where(:api_id => val).first
+      target.answer_id = Answer.where(:api_id => val).first.try(:id)
     end
 
     attr_accessible :answer_id
@@ -1188,7 +1188,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def question_id=(val)
-      target.question = Question.where(:api_id => val).first
+      target.question_id = Question.where(:api_id => val).first.try(:id)
     end
 
     attr_accessible :question_id
