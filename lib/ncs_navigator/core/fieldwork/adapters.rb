@@ -76,11 +76,11 @@ module NcsNavigator::Core::Fieldwork::Adapters
     attr_accessible :comments
 
     def contact_date
-      target.contact_date
+      target.contact_date_date
     end
 
     def contact_date=(val)
-      target.contact_date = val
+      target.contact_date_date = val
     end
 
     attr_accessible :contact_date

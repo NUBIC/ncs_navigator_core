@@ -1,7 +1,7 @@
 ---
 Contact:
   comments: contact_comment
-  contact_date: contact_date
+  contact_date: contact_date_date
   contact_id: contact_id
   disposition: contact_disposition
   distance_traveled: contact_distance
