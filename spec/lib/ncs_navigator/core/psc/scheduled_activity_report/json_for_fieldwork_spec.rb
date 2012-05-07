@@ -40,9 +40,25 @@ module NcsNavigator::Core::Psc
 
       it 'sets #/0/contact_date' do
         d = Date.new(2012, 1, 1)
-        c.contact_date = d
+        c.contact_date_date = d
 
         contacts[0]['contact_date'].should == d
+      end
+
+      it 'sets #/0/interpreter' do
+        contacts[0]['interpreter'].should == subject.rows[0].contact.contact_interpret_code
+      end
+
+      it 'sets #/0/language' do
+        contacts[0]['language'].should == subject.rows[0].contact.contact_language_code
+      end
+
+      it 'sets #/0/private' do
+        contacts[0]['private'].should == subject.rows[0].contact.contact_private_code
+      end
+
+      it 'sets #/0/who_contacted' do
+        contacts[0]['who_contacted'].should == subject.rows[0].contact.who_contacted_code
       end
 
       it 'sets #/0/version' do
@@ -146,10 +162,6 @@ module NcsNavigator::Core::Psc
       it 'sets #/0/events/0/instruments/0/name' do
         contacts[0]['events'][0]['instruments'][0]['name'].should ==
           s.title
-      end
-
-      it 'sets #/0/events/0/instruments/0/version' do
-        contacts[0]['events'][0]['instruments'][0]['version'].should == i.updated_at.utc
       end
 
       it 'sets #/0/events/0/instruments/0/response_set' do

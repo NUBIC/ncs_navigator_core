@@ -258,6 +258,13 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -611,6 +618,13 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -952,6 +966,13 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1199,6 +1220,13 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1300,6 +1328,13 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
