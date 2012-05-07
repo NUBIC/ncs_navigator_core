@@ -121,6 +121,18 @@ shared_examples_for 'a resolver' do |entity, property|
     end
   end
 
+  describe 'if O = C = nil, P = X' do
+    before do
+      p.send(writer, x)
+    end
+
+    it "sets C##{property} to X" do
+      merge
+
+      set[:current].send(property).should == x
+    end
+  end
+
   describe 'if O = nil, C = X, P = Y' do
     before do
       c.send(writer, x)
