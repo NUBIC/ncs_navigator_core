@@ -31,7 +31,7 @@ gem 'json-schema'
 
 gem 'ncs_mdes', '~> 0.5'
 gem 'formtastic', '1.2.4'
-gem 'surveyor', '~> 0.22'
+gem 'surveyor', '~> 0.22', :git => 'https://github.com/yipdw/surveyor.git', :branch => 'timestamps-for-json'
 gem 'psc'
 gem 'ncs_navigator_configuration'
 gem 'sidekiq'
