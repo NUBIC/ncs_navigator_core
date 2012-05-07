@@ -132,6 +132,8 @@ class Fieldwork < ActiveRecord::Base
     begin
       sio = StringIO.new
       logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
+      logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
+
       violations = schema_violations
 
       unless violations.values.all? { |v| v.empty? }

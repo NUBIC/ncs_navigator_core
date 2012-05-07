@@ -50,6 +50,10 @@ module NcsNavigatorCore
       NcsNavigator.configuration.core['with_specimens']
     end
 
+    def sync_log_level
+      NcsNavigator.configuration.core['sync_log_level']
+    end
+
     def with_specimens?
       with_specimens == "true"
     end
