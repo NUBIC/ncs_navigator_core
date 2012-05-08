@@ -40,7 +40,11 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def decimal(x)
-      BigDecimal.new(x) if x
+      case x
+      when BigDecimal; x
+      when NilClass; x
+      else BigDecimal.new(x)
+      end
     end
   end
 
