@@ -96,6 +96,8 @@ class InstrumentEventMap
     result
   end
 
+  # TODO: use coded version that is not core specific from ini file
+  #       recruitment_type_id
   def self.instruments
     results = []
     with_specimens = NcsNavigatorCore.with_specimens

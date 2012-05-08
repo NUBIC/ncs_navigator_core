@@ -29,8 +29,6 @@ shared_context 'merge' do
 end
 
 shared_examples_for 'an entity merge' do |entity|
-  let(:klass) { entity.constantize }
-
   describe "for #{entity} O, C, P" do
     include_context 'merge'
 
@@ -48,7 +46,7 @@ shared_examples_for 'an entity merge' do |entity|
 
     describe 'if O = P = nil and C exists' do
       let(:o) { nil }
-      let(:c) { adapt_model(klass.new) }
+      let(:c) { Factory(entity.underscore.to_sym) }
       let(:p) { nil }
 
       it 'does not modify C' do
@@ -71,7 +69,7 @@ shared_examples_for 'an entity merge' do |entity|
     end
 
     describe 'if O exists, C is nil, and P is new' do
-      let(:o) { adapt_model(klass.new) }
+      let(:o) { adapt_model(Factory(entity.underscore.to_sym)) }
       let(:c) { nil }
       let(:p) { adapt_hash(entity.underscore.to_sym, {}) }
 
@@ -85,8 +83,8 @@ shared_examples_for 'an entity merge' do |entity|
     end
 
     describe 'if O exists, C exists, and P is nil' do
-      let(:o) { adapt_model(klass.new) }
-      let(:c) { adapt_model(klass.new) }
+      let(:o) { adapt_model(Factory(entity.underscore.to_sym)) }
+      let(:c) { adapt_model(Factory(entity.underscore.to_sym)) }
       let(:p) { nil }
 
       it 'does not modify C' do
@@ -109,6 +107,8 @@ shared_examples_for 'a resolver' do |entity, property|
   let(:z) { values[2] }
 
   describe 'if O = nil, C = P = X' do
+    let(:o) { nil }
+
     before do
       c.send(writer, x)
       p.send(writer, x)
@@ -122,6 +122,8 @@ shared_examples_for 'a resolver' do |entity, property|
   end
 
   describe 'if O = nil, C = X, P = Y' do
+    let(:o) { nil }
+
     before do
       c.send(writer, x)
       p.send(writer, y)
@@ -192,27 +194,6 @@ shared_examples_for 'a resolver' do |entity, property|
     end
   end
 
-  describe 'if O = P = nil, C = X' do
-    before do
-      c.send(writer, x)
-
-      # At this point, P is not nil, but all of its values are blank,
-      # which is what we want for testing the resolver.
-    end
-
-    it "does not modify C##{property}" do
-      merge
-
-      set[:current].send(property).should == x
-    end
-
-    it 'does not signal a conflict' do
-      merge
-
-      conflicts.should be_empty
-    end
-  end
-
   describe 'if O = X, C = Y, P = Z' do
     before do
       o.send(writer, x)
@@ -231,8 +212,6 @@ shared_examples_for 'a resolver' do |entity, property|
 end
 
 shared_examples_for 'an attribute merge' do |entity, property|
-  let(:klass) { entity.constantize }
-
   describe "for #{entity} O, C, P and property #{property}" do
     include MergeValueGeneration
 
@@ -259,7 +238,7 @@ shared_examples_for 'an attribute merge' do |entity, property|
 
     describe 'if C exists and P is new' do
       let(:o) { adapt_hash(entity.underscore.to_sym, {}) }
-      let(:c) { adapt_model(klass.new) }
+      let(:c) { adapt_model(Factory(entity.underscore.to_sym)) }
       let(:p) { adapt_hash(entity.underscore.to_sym, {}) }
 
       it_should_behave_like 'a resolver', entity, property

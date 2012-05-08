@@ -30,11 +30,12 @@
     %p
       = f.label :ppg_details_ppg_first_code_eq, "PPG First"
       = f.select(:ppg_details_ppg_first_code_eq, NcsCode.ncs_code_lookup(:ppg_first_code), { :include_blank => "-- Select PPG First --" })
-    %p
-      = f.label :high_intensity_true, "High Intensity"
-      = f.check_box :high_intensity_true
-      = f.label :high_intensity_false, "Low Intensity"
-      = f.check_box :high_intensity_false
+    - if recruitment_strategy.two_tier_knowledgable?
+      %p
+        = f.label :high_intensity_true, "High Intensity"
+        = f.check_box :high_intensity_true
+        = f.label :high_intensity_false, "Low Intensity"
+        = f.check_box :high_intensity_false
     %p
       = f.submit "Search"
       = link_to "Export All Results", { :controller => "participants", :action => "index", :format => "csv", :q => params[:q] }, { :class => "export_link icon_link" }

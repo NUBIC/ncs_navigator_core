@@ -46,18 +46,16 @@ describe RecordOfContactProcessor do
     end
 
     describe 'processing contacts' do
-      
-      before do 
+
+      before do
         Contact.count.should == 0
         ContactLink.count.should == 0
       end
-      
-      it 'creates contact and contact link records' do
-        Contact.
-      end
-      
+
+      it 'creates contact and contact link records'
+
     end
-    
+
 
     describe 'processing events'
 

@@ -72,11 +72,13 @@ module NcsNavigatorCore
                        CSV
                      end
     end
+
   end
 end
 
 require 'patient_study_calendar'
 require 'reporting'
+require 'recruitment_strategy'
 
 require 'ncs_navigator/core'
 require 'ncs_navigator/mdes_ext'

@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   include Aker::Rails::SecuredController
   protect_from_forgery
 
-  helper_method :psc
+  helper_method :psc, :recruitment_strategy
 
   before_filter :set_system_defaults
 
@@ -22,6 +22,11 @@ class ApplicationController < ActionController::Base
 
     def psc
       @psc ||= PatientStudyCalendar.new(current_user)
+    end
+
+    def recruitment_strategy
+      @recruitment_strategy ||= RecruitmentStrategy.recruitment_type_strategy(
+                                  NcsNavigatorCore.recruitment_type_id)
     end
 
   private

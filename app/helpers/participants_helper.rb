@@ -28,4 +28,13 @@ module ParticipantsHelper
     consent_type_text.include?("collect") && NcsNavigatorCore.with_specimens == "false"
   end
 
+  def displayable_event_name(event, participant)
+    event_name = event.to_s
+    if recruitment_strategy.two_tier_knowledgable?
+      epoch = participant.high_intensity? ? PatientStudyCalendar::HIGH_INTENSITY : PatientStudyCalendar::LOW_INTENSITY
+      event_name = "#{epoch}: #{event.to_s}"
+    end
+    event_name
+  end
+
 end

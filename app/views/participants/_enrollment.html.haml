@@ -1,10 +1,11 @@
 - redirection = "#{request.path}?#{request.query_string}"
-.page_section
-  .arm
-    - if permit?(Role::FIELD_STAFF, Role::STAFF_SUPERVISOR)
-      %b
-        Switch Protocol Arm
-      - if @participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?
+- if recruitment_strategy.two_tier_knowledgable?
+  .page_section
+    .arm
+      - if permit?(Role::FIELD_STAFF, Role::STAFF_SUPERVISOR) &&
+        (@participant.eligible_for_high_intensity_invitation? || @participant.high_intensity?)
+        %b
+          Switch Protocol Arm
         .high_intensity_invitation
           = form_for(@participant, :url => update_arm_participant_path(@participant, :redirect_to => redirection)) do |f|
             = render "shared/full_error_messages", :object => f.object
