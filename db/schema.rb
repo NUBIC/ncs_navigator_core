@@ -44,9 +44,9 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
     t.integer  "specimen_processing_shipping_center_id"
     t.integer  "sample_receipt_shipping_center_id"
-    t.integer  "response_set_id"
   end
 
   create_table "answers", :force => true do |t|
@@ -294,6 +294,39 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
+  end
+
+  create_table "incidents", :force => true do |t|
+    t.integer  "psu_code",                                             :null => false
+    t.string   "incident_id",                            :limit => 36, :null => false
+    t.string   "incident_date",                          :limit => 10
+    t.string   "incident_time",                          :limit => 5
+    t.string   "incident_report_date",                   :limit => 10
+    t.string   "incident_report_time",                   :limit => 5
+    t.string   "incident_staff_reporter_id",             :limit => 36
+    t.string   "incident_staff_supervisor_id",           :limit => 36
+    t.integer  "contact_id"
+    t.integer  "incident_recipient_is_participant_id"
+    t.integer  "incident_recipient_is_dwelling_unit_id"
+    t.string   "incident_recipient_is_staff",            :limit => 36
+    t.integer  "incident_recipient_is_family_id"
+    t.integer  "incident_recipient_is_acquaintance_id"
+    t.integer  "incident_recipient_is_other"
+    t.integer  "incident_contact_person_id"
+    t.integer  "incident_type_code",                                   :null => false
+    t.string   "incident_type_other"
+    t.string   "incident_loss_computer_model",           :limit => 16
+    t.string   "incident_loss_computer_serial_number",   :limit => 32
+    t.string   "incident_loss_computer_decal",           :limit => 32
+    t.string   "incident_loss_removable_media",          :limit => 32
+    t.string   "incident_loss_paper",                    :limit => 32
+    t.string   "incident_loss_other"
+    t.text     "incident_description"
+    t.text     "incident_action"
+    t.integer  "incident_reported_code",                               :null => false
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "instruments", :force => true do |t|
@@ -887,7 +920,6 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
     t.string   "api_id"
   end
@@ -1075,11 +1107,11 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
   end
 
   create_table "specimens", :force => true do |t|
+    t.string   "specimen_id",        :limit => 36, :null => false
     t.integer  "specimen_pickup_id"
     t.integer  "instrument_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "specimen_id"
   end
 
   create_table "survey_sections", :force => true do |t|
