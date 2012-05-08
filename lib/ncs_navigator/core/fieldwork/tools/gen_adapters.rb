@@ -23,7 +23,6 @@ rev = Dir.chdir(File.dirname(schema_file)) { `git show --format=oneline HEAD | h
 
 @contact_properties = properties_for(schema['properties']['contacts']['items']['properties'])
 @event_properties = properties_for(schema['properties']['contacts']['items']['properties']['events']['items']['properties'])
-@person_properties = properties_for(schema['properties']['participants']['items']['properties']['persons']['items']['properties'])
 @instrument_properties = properties_for(schema['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties'])
 
 schema_file = File.expand_path('vendor/ncs_navigator_schema/response_set_schema.json', root)
@@ -37,7 +36,9 @@ def attributes
     'Event' => @event_properties,
     'Instrument' => @instrument_properties,
     'ResponseSet' => @response_set_properties,
-    'Response' => @response_properties
+    'Response' => @response_properties,
+    'Participant' => {},
+    'Person' => {}
   }
 end
 

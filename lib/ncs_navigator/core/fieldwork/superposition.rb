@@ -21,14 +21,18 @@ module NcsNavigator::Core::Fieldwork
   #
   #     {
   #       entity_id => {
-  #         :original => (a JSON object or nil),
-  #         :proposed => (a JSON object or nil),
-  #         :current => (an ActiveRecord model or nil)
+  #         :original => (adapter object or nil),
+  #         :proposed => (adapter object or nil),
+  #         :current => (adapter object or nil)
   #       }
   #     }
+  # 
+  # Nils may occur if i.e. the offline client returns newly instantiated or
+  # corrupted entities.
   #
-  # Nils may occur if i.e. the offline client returns newly
-  # instantiated or corrupted entities.
+  # The adapter classes can be found in
+  # {NcsNavigator::Core::Fieldwork::Adapters}, and the tools to generate those
+  # classes can be found in tools/.
   #
   #
   # Entities considered
@@ -55,7 +59,6 @@ module NcsNavigator::Core::Fieldwork
   # to collapse the states of the superposition.  The default algorithm is
   # implemented in {Merge}.
   class Superposition
-    include Adapters
     include Merge
 
     attr_accessor :contacts
@@ -93,14 +96,16 @@ module NcsNavigator::Core::Fieldwork
       set_state(:proposed, data)
     end
 
-    def resolve_current
-      set_current_state(:contacts, Contact, 'contact_id')
-      set_current_state(:events, Event, 'event_id')
-      set_current_state(:instruments, Instrument, 'instrument_id')
-      set_current_state(:participants, Participant, 'p_id')
-      set_current_state(:people, Person, 'person_id')
-      set_current_state(:response_sets, ResponseSet, 'api_id')
-      set_current_state(:responses, Response, 'api_id') { |q| q.includes(:question, :answer) }
+    def set_current
+      hierarchy(:current) do |h|
+        set_current_state(h, ::Contact, 'contact_id')
+        set_current_state(h, ::Event, 'event_id')
+        set_current_state(h, ::Instrument, 'instrument_id')
+        set_current_state(h, ::Participant, 'p_id')
+        set_current_state(h, ::Person, 'person_id')
+        set_current_state(h, ::Response, 'api_id')
+        set_current_state(h, ::ResponseSet, 'api_id')
+      end
     end
 
     def group_responses
@@ -124,56 +129,89 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def set_state(state, data)
-      data['contacts'].each do |contact|
-        add(state, :contacts, contact, 'contact_id') { |o| adapt_hash(:contact, o) }
+      hierarchy(state) do |h|
+        data['participants'].each { |p| add_participant(h, p) }
+        data['contacts'].each { |c| add_contact(h, c) }
+      end
+    end
 
-        contact['events'].each do |event|
-          add(state, :events, event, 'event_id') { |o| adapt_hash(:event, o) }
+    def set_current_state(h, entity, public_id, &block)
+      collection = entity.name.pluralize.underscore
 
-          event['instruments'].each do |instrument|
-            add(state, :instruments, instrument, 'instrument_id') { |o| adapt_hash(:instrument, o) }
-            add(state, :response_sets, instrument['response_set'], 'uuid') { |o| adapt_hash(:response_set, o) }
+      entity.where(public_id => send(collection).keys.uniq).each do |e|
+        h.add(entity.name, e, public_id, &block)
+      end
+    end
 
-            responses = instrument['response_set']['responses']
+    def add_participant(h, participant)
+      h.add(:participant, participant, 'p_id') do |h|
+        participant['persons'].each do |person|
+          h.add(:person, person, 'person_id')
+        end
+      end
+    end
 
-            # FYI: The responses key should always exist, but there's currently
-            # a bug in Surveyor that makes that not the case.
-            #
-            # See https://github.com/NUBIC/surveyor/issues/294.
-            if responses
-              responses.each do |response|
-                add(state, :responses, response, 'uuid') { |o| adapt_hash(:response, o) }
-              end
-            end
+    def add_contact(h, contact)
+      h.add(:contact, contact, 'contact_id') do |h|
+        contact['events'].each { |e| add_event(h, e) }
+      end
+    end
+
+    def add_event(h, event)
+      h.add(:event, event, 'event_id') do |h|
+        event['instruments'].each { |i| add_instrument(h, i) }
+      end
+    end
+
+    def add_instrument(h, instrument)
+      h.add(:instrument, instrument, 'instrument_id') do |h|
+        h.add(:response_set, instrument['response_set'], 'uuid') do |h|
+          # FYI: The responses key should always exist, but there's currently
+          # a bug in Surveyor that makes that not the case.
+          #
+          # See https://github.com/NUBIC/surveyor/issues/294.
+          responses = instrument['response_set']['responses']
+
+          if responses
+            responses.each { |r| h.add(:response, r, 'uuid') }
           end
         end
       end
+    end
 
-      data['participants'].each do |participant|
-        add(state, :participants, participant, 'p_id')
+    def hierarchy(state)
+      ctx = Context.new(state, self, {})
 
-        participant['persons'].each do |person|
-          add(state, :people, person, 'person_id') { |o| adapt_hash(:person, o) }
+      yield ctx
+    end
+
+    class Context < Struct.new(:state, :superposition, :ancestors)
+      include Adapters
+
+      def add(entity, object, key)
+        collection = entity.to_s.pluralize.underscore
+        c = superposition.send(collection)
+        kv = object[key]
+
+        unless c.has_key?(kv)
+          c[kv] = {}
+        end
+
+        adapter = case object
+                  when Hash; adapt_hash(entity, object)
+                  else adapt_model(object)
+                  end
+
+        c[kv][state] = adapter ? adapter : object
+
+        if adapter
+          adapter.ancestors = ancestors
+        end
+
+        if block_given?
+          yield self.class.new(state, superposition, ancestors.merge(entity => object))
         end
       end
-    end
-
-    def set_current_state(collection, entity, public_id)
-      q = entity.where(public_id => send(collection).keys.uniq)
-      q = (yield q if block_given?) || q
-
-      q.each { |e| add(:current, collection, e, public_id) { |m| adapt_model(m) } }
-    end
-
-    def add(state, collection, object, key)
-      c = send(collection)
-      k = object[key]
-
-      unless c.has_key?(k)
-        c[k] = {}
-      end
-
-      c[k][state] = (yield object if block_given?) || object
     end
   end
 end

@@ -62,3 +62,5 @@ Response:
   value:
     reader: target.value
     writer: target.value = val
+Participant: {}
+Person: {}

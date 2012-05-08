@@ -48,8 +48,24 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
+  class Adapter < Struct.new(:target, :ancestors)
+    def initialize(*args)
+      super
+
+      self.ancestors = {}
+    end
+
+    def [](a)
+      send(a)
+    end
+
+    def []=(a, v)
+      send("#{a}=", v)
+    end
+  end
+
   <% classes.each do |k| %>
-  class <%= k %>ModelAdapter < Struct.new(:target)
+  class <%= k %>ModelAdapter < Adapter
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
@@ -84,14 +100,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
     <% end %>
     <% end %>
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_model
       target
     end
@@ -123,7 +131,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class <%= k %>HashAdapter < Struct.new(:target)
+  class <%= k %>HashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
@@ -136,14 +144,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{<%= attr %>}] = val
     end
     <% end %>
-
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
 
     def to_hash
       target

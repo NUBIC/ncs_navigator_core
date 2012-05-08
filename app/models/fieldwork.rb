@@ -154,7 +154,7 @@ class Fieldwork < ActiveRecord::Base
       sp.logger = logger
       sp.set_original(JSON.parse(original_data))
       sp.set_proposed(JSON.parse(received_data))
-      sp.resolve_current
+      sp.set_current
 
       sp.merge
 

@@ -36,143 +36,123 @@ module NcsNavigator::Core::Fieldwork
       subject.set_proposed(proposed_json)
     end
 
+    def load_current
+      subject.set_current
+    end
+
+    def dereference(ptr, doc)
+      ptr.split('/')[1..-1].inject(doc) do |doc, cur|
+        if cur.to_i.to_s == cur
+          doc[cur.to_i]
+        else
+          doc[cur]
+        end
+      end
+    end
+
+    shared_examples_for 'an entity set' do |state, collection|
+      describe "#set_#{state}" do
+        before do
+          eval("load_#{state}")
+        end
+
+        let(:source) { eval("#{state}_json") }
+        let(:expected) { dereference(pointer, source) }
+        let(:entity_id) { eval("#{collection.singularize}_id") }
+
+        it "sets the #{state} state for #{collection}" do
+          subject.send(collection)[entity_id][state].should == expected
+        end
+
+        it "sets ancestry" do
+          dereferenced = Hash[*ancestry.map { |k, ptr| [k, dereference(ptr, source)] }.flatten]
+
+          subject.send(collection)[entity_id][state].ancestors.should == dereferenced
+        end
+      end
+    end
+
     describe 'for contacts' do
-      describe '#set_original' do
-        it 'sets the original state of all contacts' do
-          load_original
+      let(:ancestry) { {} }
+      let(:pointer) { '/contacts/0' }
 
-          subject.contacts[contact_id][:original].should == original_json['contacts'][0]
-        end
-      end
-
-      describe '#set_proposed' do
-        it 'sets the proposed state of all contacts' do
-          load_proposed
-
-          subject.contacts[contact_id][:proposed].should == proposed_json['contacts'][0]
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'contacts'
+      it_should_behave_like 'an entity set', :proposed, 'contacts'
     end
 
     describe 'for events' do
-      describe '#set_original' do
-        it 'sets the original state of all events' do
-          load_original
-
-          subject.events[event_id][:original].should == original_json['contacts'][0]['events'][0]
-        end
+      let(:ancestry) do
+        { :contact => '/contacts/0' }
       end
 
-      describe '#set_proposed' do
-        it 'sets the proposed state of all events' do
-          load_proposed
+      let(:pointer) { '/contacts/0/events/0' }
 
-          subject.events[event_id][:proposed].should == proposed_json['contacts'][0]['events'][0]
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'events'
+      it_should_behave_like 'an entity set', :proposed, 'events'
     end
 
     describe 'for instruments' do
-      describe '#set_original' do
-        it 'sets the original state of all instruments' do
-          load_original
-
-          subject.instruments[instrument_id][:original].should ==
-            original_json['contacts'][0]['events'][0]['instruments'][0]
-        end
+      let(:ancestry) do
+        { :contact => '/contacts/0',
+          :event => '/contacts/0/events/0'
+        }
       end
 
-      describe '#set_proposed' do
-        it 'sets the proposed state of all instruments' do
-          load_proposed
+      let(:pointer) { '/contacts/0/events/0/instruments/0' }
 
-          subject.instruments[instrument_id][:proposed].should ==
-            proposed_json['contacts'][0]['events'][0]['instruments'][0]
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'instruments'
+      it_should_behave_like 'an entity set', :proposed, 'instruments'
     end
 
     describe 'for participants' do
-      describe '#set_original' do
-        it 'sets the original state of all participants' do
-          load_original
+      let(:ancestry) { {} }
+      let(:pointer) { '/participants/0' }
 
-          subject.participants[participant_id][:original].should ==
-            original_json['participants'][0]
-        end
-      end
-
-      describe '#set_proposed' do
-        it 'sets the proposed state of all participants' do
-          load_proposed
-
-          subject.participants[participant_id][:proposed].should ==
-            proposed_json['participants'][0]
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'participants'
+      it_should_behave_like 'an entity set', :proposed, 'participants'
     end
 
     describe 'for people' do
-      describe '#set_original' do
-        it 'sets the original state of all people' do
-          load_original
-
-          subject.people[person_id][:original].should ==
-            original_json['participants'][0]['persons'][0]
-        end
+      let(:ancestry) do
+        { :participant => '/participants/0' }
       end
 
-      describe '#set_proposed' do
-        it 'sets the proposed state of all people' do
-          load_proposed
+      let(:pointer) { '/participants/0/persons/0' }
 
-          subject.people[person_id][:proposed].should ==
-            proposed_json['participants'][0]['persons'][0]
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'people'
+      it_should_behave_like 'an entity set', :proposed, 'people'
     end
 
     describe 'for response sets' do
-      describe '#set_original' do
-        it 'sets the original state of all response sets' do
-          load_original
-
-          subject.response_sets[response_set_id][:original].should ==
-            original_json['contacts'][0]['events'][0]['instruments'][0]['response_set']
-        end
+      let(:ancestry) do
+        { :contact => '/contacts/0',
+          :event => '/contacts/0/events/0',
+          :instrument => '/contacts/0/events/0/instruments/0'
+        }
       end
 
-      describe '#set_proposed' do
-        it 'sets the proposed state of all response sets' do
-          load_proposed
+      let(:pointer) { '/contacts/0/events/0/instruments/0/response_set' }
 
-          subject.response_sets[response_set_id][:proposed].should ==
-            proposed_json['contacts'][0]['events'][0]['instruments'][0]['response_set']
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'response_sets'
+      it_should_behave_like 'an entity set', :proposed, 'response_sets'
     end
 
     describe 'for responses' do
-      describe '#set_original' do
-        it 'sets the original state of all responses' do
-          load_original
-
-          subject.responses[response_id][:original].should ==
-            original_json['contacts'][0]['events'][0]['instruments'][0]['response_set']['responses'][0]
-        end
+      let(:ancestry) do
+        { :contact => '/contacts/0',
+          :event => '/contacts/0/events/0',
+          :instrument => '/contacts/0/events/0/instruments/0',
+          :response_set => '/contacts/0/events/0/instruments/0/response_set'
+        }
       end
 
-      describe '#set_proposed' do
-        it 'sets the proposed state of all responses' do
-          load_proposed
+      let(:pointer) { '/contacts/0/events/0/instruments/0/response_set/responses/0' }
 
-          subject.responses[response_id][:proposed].should ==
-            proposed_json['contacts'][0]['events'][0]['instruments'][0]['response_set']['responses'][0]
-        end
-      end
+      it_should_behave_like 'an entity set', :original, 'responses'
+      it_should_behave_like 'an entity set', :proposed, 'responses'
     end
 
-    describe '#resolve_current' do
+    describe '#set_current' do
       let!(:contact) { Factory(:contact, :contact_id => contact_id) }
       let!(:event) { Factory(:event, :event_id => event_id) }
       let!(:instrument) { Factory(:instrument, :instrument_id => instrument_id) }
@@ -186,8 +166,7 @@ module NcsNavigator::Core::Fieldwork
       before do
         load_original
         load_proposed
-
-        subject.resolve_current
+        load_current
       end
 
       it 'resolves contacts' do
@@ -231,7 +210,7 @@ module NcsNavigator::Core::Fieldwork
       before do
         load_original
         load_proposed
-        subject.resolve_current
+        load_current
 
         subject.group_responses
 

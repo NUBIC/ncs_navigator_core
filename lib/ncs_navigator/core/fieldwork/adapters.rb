@@ -19,6 +19,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     when :instrument; InstrumentHashAdapter.new(o)
 
+    when :participant; ParticipantHashAdapter.new(o)
+
+    when :person; PersonHashAdapter.new(o)
+
     when :response; ResponseHashAdapter.new(o)
 
     when :response_set; ResponseSetHashAdapter.new(o)
@@ -34,6 +38,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     when Event; EventModelAdapter.new(m)
 
     when Instrument; InstrumentModelAdapter.new(m)
+
+    when Participant; ParticipantModelAdapter.new(m)
+
+    when Person; PersonModelAdapter.new(m)
 
     when Response; ResponseModelAdapter.new(m)
 
@@ -64,7 +72,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ContactModelAdapter < Struct.new(:target)
+  class Adapter < Struct.new(:target, :ancestors)
+    def initialize(*args)
+      super
+
+      self.ancestors = {}
+    end
+
+    def [](a)
+      send(a)
+    end
+
+    def []=(a, v)
+      send("#{a}=", v)
+    end
+  end
+
+  class ContactModelAdapter < Adapter
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
@@ -249,14 +273,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :who_contacted_other
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_model
       target
     end
@@ -288,7 +304,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ContactHashAdapter < Struct.new(:target)
+  class ContactHashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
@@ -452,14 +468,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{who_contacted_other}] = val
     end
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_hash
       target
     end
@@ -473,7 +481,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class EventModelAdapter < Struct.new(:target)
+  class EventModelAdapter < Adapter
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
@@ -618,14 +626,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :type_other
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_model
       target
     end
@@ -657,7 +657,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class EventHashAdapter < Struct.new(:target)
+  class EventHashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
@@ -789,14 +789,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{version}] = val
     end
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_hash
       target
     end
@@ -810,7 +802,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class InstrumentModelAdapter < Struct.new(:target)
+  class InstrumentModelAdapter < Adapter
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
@@ -975,14 +967,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :type_other
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_model
       target
     end
@@ -1014,7 +998,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class InstrumentHashAdapter < Struct.new(:target)
+  class InstrumentHashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
@@ -1178,14 +1162,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{type_other}] = val
     end
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_hash
       target
     end
@@ -1199,7 +1175,113 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ResponseModelAdapter < Struct.new(:target)
+  class ParticipantModelAdapter < Adapter
+    extend Forwardable
+    extend ActiveModel::Naming
+    include ActiveModel::MassAssignmentSecurity
+
+    def to_model
+      target
+    end
+
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
+
+    def attributes=(target)
+      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
+    end
+
+    def ==(other)
+      to_model == other.to_model
+    end
+  end
+
+  class ParticipantHashAdapter < Adapter
+    include NcsNavigator::Core::Fieldwork::Adapters
+    include ActiveRecordTypeCoercion
+
+    def to_hash
+      target
+    end
+
+    def to_model
+      adapt_model(Participant.new).tap { |m| m.attributes = target }
+    end
+
+    def ==(other)
+      to_hash == other.to_hash
+    end
+  end
+
+  class PersonModelAdapter < Adapter
+    extend Forwardable
+    extend ActiveModel::Naming
+    include ActiveModel::MassAssignmentSecurity
+
+    def to_model
+      target
+    end
+
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
+
+    def attributes=(target)
+      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
+    end
+
+    def ==(other)
+      to_model == other.to_model
+    end
+  end
+
+  class PersonHashAdapter < Adapter
+    include NcsNavigator::Core::Fieldwork::Adapters
+    include ActiveRecordTypeCoercion
+
+    def to_hash
+      target
+    end
+
+    def to_model
+      adapt_model(Person.new).tap { |m| m.attributes = target }
+    end
+
+    def ==(other)
+      to_hash == other.to_hash
+    end
+  end
+
+  class ResponseModelAdapter < Adapter
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
@@ -1238,14 +1320,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :value
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_model
       target
     end
@@ -1277,7 +1351,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ResponseHashAdapter < Struct.new(:target)
+  class ResponseHashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
@@ -1329,14 +1403,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{value}] = val
     end
 
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
-
     def to_hash
       target
     end
@@ -1350,18 +1416,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ResponseSetModelAdapter < Struct.new(:target)
+  class ResponseSetModelAdapter < Adapter
     extend Forwardable
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
-
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
-    end
 
     def to_model
       target
@@ -1394,7 +1452,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ResponseSetHashAdapter < Struct.new(:target)
+  class ResponseSetHashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
@@ -1428,14 +1486,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def uuid=(val)
       target[%q{uuid}] = val
-    end
-
-    def [](a)
-      send(a)
-    end
-
-    def []=(a, v)
-      send("#{a}=", v)
     end
 
     def to_hash
