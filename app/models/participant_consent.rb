@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: participant_consents
 #
@@ -33,6 +31,8 @@
 #  created_at                      :datetime
 #  updated_at                      :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 # Tracks the history of Participants consents and withdrawals.
 class ParticipantConsent < ActiveRecord::Base

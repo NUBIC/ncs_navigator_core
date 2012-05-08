@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: person_races
 #
@@ -15,6 +13,8 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 # A Person may be of mixed race. This table records each race for a Person in a separate row.
 class PersonRace < ActiveRecord::Base

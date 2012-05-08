@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: participant_staff_relationships
 #
@@ -10,6 +8,8 @@
 #  staff_id       :string(255)
 #  primary        :boolean
 #
+
+# -*- coding: utf-8 -*-
 
 class ParticipantStaffRelationship < ActiveRecord::Base
 

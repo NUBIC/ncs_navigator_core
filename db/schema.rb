@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120430165935) do
+ActiveRecord::Schema.define(:version => 20120507183332) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                              :null => false
@@ -44,9 +44,9 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
     t.integer  "specimen_processing_shipping_center_id"
     t.integer  "sample_receipt_shipping_center_id"
-    t.integer  "response_set_id"
   end
 
   create_table "answers", :force => true do |t|
@@ -947,26 +947,37 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
   end
 
   create_table "sample_shippings", :force => true do |t|
-    t.integer  "psu_code",                                        :null => false
-    t.string   "sample_id",                         :limit => 36, :null => false
+    t.integer  "psu_code",                                                                      :null => false
+    t.string   "sample_id",                         :limit => 36,                               :null => false
     t.integer  "sample_receipt_shipping_center_id"
-    t.string   "staff_id",                          :limit => 36, :null => false
-    t.string   "shipper_id",                        :limit => 36, :null => false
-    t.integer  "shipper_destination_code",                        :null => false
-    t.string   "shipment_date",                     :limit => 10, :null => false
-    t.integer  "shipment_coolant_code",                           :null => false
-    t.string   "shipment_tracking_number",          :limit => 36, :null => false
+    t.string   "staff_id",                          :limit => 36,                               :null => false
+    t.string   "shipper_id",                        :limit => 36,                               :null => false
+    t.integer  "shipper_destination_code",                                                      :null => false
+    t.string   "shipment_date",                     :limit => 10,                               :null => false
+    t.integer  "shipment_coolant_code",                                                         :null => false
+    t.string   "shipment_tracking_number",          :limit => 36,                               :null => false
     t.string   "shipment_issues_other"
     t.string   "staff_id_track",                    :limit => 36
-    t.integer  "sample_shipped_by_code",                          :null => false
+    t.integer  "sample_shipped_by_code",                                                        :null => false
     t.string   "transaction_type",                  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "volume_amount",                                   :precision => 6, :scale => 2
+    t.string   "volume_unit",                       :limit => 36
   end
 
   create_table "samples", :force => true do |t|
     t.string   "sample_id",     :limit => 36, :null => false
     t.integer  "instrument_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ship_specimens", :force => true do |t|
+    t.integer  "specimen_id"
+    t.integer  "specimen_shipping_id"
+    t.decimal  "volume_amount",                      :precision => 6, :scale => 2
+    t.string   "volume_unit",          :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1075,11 +1086,11 @@ ActiveRecord::Schema.define(:version => 20120430165935) do
   end
 
   create_table "specimens", :force => true do |t|
+    t.string   "specimen_id",        :limit => 36, :null => false
     t.integer  "specimen_pickup_id"
     t.integer  "instrument_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "specimen_id"
   end
 
   create_table "survey_sections", :force => true do |t|

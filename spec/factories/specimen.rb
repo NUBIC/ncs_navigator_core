@@ -1,4 +1,10 @@
 FactoryGirl.define do
+  factory :ship_specimen do |shs|
+    shs.association :specimen, :factory => :specimen
+    shs.association :specimen_shipping, :factory => :specimen_shipping
+    shs.volume_amount                     0.75
+    shs.volume_unit                       "mL"
+  end
 
   factory :specimen_pickup do |sp|
     sp.psu_code                              20000030

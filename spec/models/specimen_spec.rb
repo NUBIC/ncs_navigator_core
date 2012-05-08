@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120420163434
+# Schema version: 20120507183332
 #
 # Table name: specimens
 #

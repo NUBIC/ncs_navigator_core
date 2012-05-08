@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: listing_units
 #
@@ -18,6 +16,8 @@
 #  ssu_id           :string(255)
 #  tsu_id           :string(255)
 #
+
+# -*- coding: utf-8 -*-
 
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file,
 # or some other data file of dwelling units that can be aligned with a PSU, an SSU and a TSU.

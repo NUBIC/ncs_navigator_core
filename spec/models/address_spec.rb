@@ -1,44 +1,46 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: addresses
 #
-#  id                        :integer         not null, primary key
-#  psu_code                  :integer         not null
-#  address_id                :string(36)      not null
-#  person_id                 :integer
-#  dwelling_unit_id          :integer
-#  address_rank_code         :integer         not null
-#  address_rank_other        :string(255)
-#  address_info_source_code  :integer         not null
-#  address_info_source_other :string(255)
-#  address_info_mode_code    :integer         not null
-#  address_info_mode_other   :string(255)
-#  address_info_date         :date
-#  address_info_update       :date
-#  address_start_date        :string(10)
-#  address_start_date_date   :date
-#  address_end_date          :string(10)
-#  address_end_date_date     :date
-#  address_type_code         :integer         not null
-#  address_type_other        :string(255)
-#  address_description_code  :integer         not null
-#  address_description_other :string(255)
-#  address_one               :string(100)
-#  address_two               :string(100)
-#  unit                      :string(10)
-#  city                      :string(50)
-#  state_code                :integer         not null
-#  zip                       :string(5)
-#  zip4                      :string(4)
-#  address_comment           :text
-#  transaction_type          :string(255)
-#  created_at                :datetime
-#  updated_at                :datetime
-#  response_set_id           :integer
+#  id                                     :integer         not null, primary key
+#  psu_code                               :integer         not null
+#  address_id                             :string(36)      not null
+#  person_id                              :integer
+#  dwelling_unit_id                       :integer
+#  address_rank_code                      :integer         not null
+#  address_rank_other                     :string(255)
+#  address_info_source_code               :integer         not null
+#  address_info_source_other              :string(255)
+#  address_info_mode_code                 :integer         not null
+#  address_info_mode_other                :string(255)
+#  address_info_date                      :date
+#  address_info_update                    :date
+#  address_start_date                     :string(10)
+#  address_start_date_date                :date
+#  address_end_date                       :string(10)
+#  address_end_date_date                  :date
+#  address_type_code                      :integer         not null
+#  address_type_other                     :string(255)
+#  address_description_code               :integer         not null
+#  address_description_other              :string(255)
+#  address_one                            :string(100)
+#  address_two                            :string(100)
+#  unit                                   :string(10)
+#  city                                   :string(50)
+#  state_code                             :integer         not null
+#  zip                                    :string(5)
+#  zip4                                   :string(4)
+#  address_comment                        :text
+#  transaction_type                       :string(255)
+#  created_at                             :datetime
+#  updated_at                             :datetime
+#  response_set_id                        :integer
+#  specimen_processing_shipping_center_id :integer
+#  sample_receipt_shipping_center_id      :integer
 #
+
+# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

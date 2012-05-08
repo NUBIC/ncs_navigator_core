@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: participant_authorization_forms
 #
@@ -19,6 +17,8 @@
 #  created_at          :datetime
 #  updated_at          :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 # Table for types of forms used to obtain authorizations from the Participant.
 class ParticipantAuthorizationForm < ActiveRecord::Base

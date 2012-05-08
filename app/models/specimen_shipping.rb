@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120420163434
+# Schema version: 20120507183332
 #
 # Table name: specimen_shippings
 #
@@ -32,11 +32,13 @@ class SpecimenShipping < ActiveRecord::Base
   ncs_coded_attribute :shipment_receipt_confirmed, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :shipment_issues,            'SHIPMENT_ISSUES_CL1'
 
+  has_many :ship_specimen
+
   validates_presence_of :storage_container_id
   validates_presence_of :staff_id 
   validates_presence_of :shipper_id
   validates_presence_of :shipper_destination
   validates_presence_of :shipment_date 
   validates_presence_of :shipment_tracking_number
-  validates_presence_of :shipment_temperature    
+  validates_presence_of :shipment_temperature
 end

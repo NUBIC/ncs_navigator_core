@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: participant_person_links
 #
@@ -18,6 +16,8 @@
 #  updated_at         :datetime
 #  response_set_id    :integer
 #
+
+# -*- coding: utf-8 -*-
 
 # The same Person can be a respondent or informant for many Participants.
 # One Participant can have many respondents or informants who provide
