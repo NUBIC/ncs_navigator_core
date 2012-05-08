@@ -9,8 +9,6 @@ require 'rack/test'
 # Capybara's Rack::Test session.  This is a pretty gross hack, but it works.
 # (For now.)
 Before '@api' do
-  extend Forwardable
-
   raise "API tests must use the rack-test driver" if Capybara.current_driver != :rack_test
 
   def api?
@@ -21,7 +19,11 @@ Before '@api' do
     Capybara.current_session.driver.browser
   end
 
-  def_delegators :browser, *Rack::Test::Methods::METHODS
+  class << self
+    extend Forwardable
+
+    def_delegators :browser, *Rack::Test::Methods::METHODS
+  end
 
   # All API services, by default, require the client to accept and send JSON.
   header 'Accept', 'application/json'
