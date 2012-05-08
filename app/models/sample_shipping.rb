@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120420163434
+# Schema version: 20120507183332
 #
 # Table name: sample_shippings
 #
@@ -19,6 +19,8 @@
 #  transaction_type                  :string(36)
 #  created_at                        :datetime
 #  updated_at                        :datetime
+#  volume_amount                     :decimal(6, 2)
+#  volume_unit                       :string(36)
 #
 
 class SampleShipping < ActiveRecord::Base

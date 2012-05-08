@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: contact_links
 #
@@ -18,6 +16,8 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 # Each Contact Link record associates a unique combination
 # of Staff Member, Person, Event, and/or Instrument that occurs during a Contact. 

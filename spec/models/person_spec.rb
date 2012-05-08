@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: people
 #
@@ -45,6 +43,8 @@
 #  being_processed                :boolean
 #  response_set_id                :integer
 #
+
+# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

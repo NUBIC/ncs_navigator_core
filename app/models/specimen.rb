@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120420163434
+# Schema version: 20120507183332
 #
 # Table name: specimens
 #
@@ -15,6 +15,6 @@ class Specimen < ActiveRecord::Base
   belongs_to :instrument
   belongs_to :specimen_pickup
   
-  # validates_presence_of :specimen_id
+  has_one :ship_specimen
   validates_presence_of :instrument_id
 end

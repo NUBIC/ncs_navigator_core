@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: household_units
 #
@@ -23,6 +21,8 @@
 #  updated_at                   :datetime
 #  being_processed              :boolean
 #
+
+# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

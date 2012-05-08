@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: responses
 #
@@ -24,6 +22,8 @@
 #  source_mdes_id    :string(36)
 #  api_id            :string(255)
 #
+
+# -*- coding: utf-8 -*-
 
 class Response < ActiveRecord::Base
   include Surveyor::Models::ResponseMethods
