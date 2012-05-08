@@ -78,16 +78,16 @@ group :development, :test, :ci do
 end
 
 group :test, :ci do
-  gem 'cucumber'
+  gem 'cucumber', '~> 1.1.9'
   gem 'cucumber-rails', :require => false
   # database_cleaner 0.6.7 doesn't work with DataMapper on PostgreSQL
   gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'shoulda'
   gem 'facets', :require => false
-  gem 'factory_girl'
+  gem 'factory_girl', '~> 2.6'
   gem 'simplecov', :require => false
   gem 'pickle'
-  gem 'vcr'
+  gem 'vcr', '~> 1.11'
   gem 'fakeweb'
   gem 'webmock', :require => false
 
