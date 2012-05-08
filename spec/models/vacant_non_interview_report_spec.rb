@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: vacant_non_interview_reports
 #
@@ -15,6 +13,8 @@
 #  created_at              :datetime
 #  updated_at              :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

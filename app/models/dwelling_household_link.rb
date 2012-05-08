@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: dwelling_household_links
 #
@@ -17,6 +15,8 @@
 #  created_at        :datetime
 #  updated_at        :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 # The definition of a household is really based on the individual person's definition of a family.
 # The common definition is residence at the same address; however, the composition of the household might be

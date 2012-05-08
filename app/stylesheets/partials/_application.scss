@@ -181,35 +181,3 @@ form {
   padding-bottom: 4em;
 }
 
-#popup_dialog p {
-  margin: 0 0 0;
-  display: inline;
-}
-
-#edit_specimen_receipt_form, #edit_sample_receipt_form {
-  margin-left: 2em;
-  font-size: 12px;
-  font-weight: normal;
-  
-  p {
-    margin: 0 0 0;
-    display: inline;
-    font-size: 12px;
-    font-weight: normal;
-  }
-}
-
-.spec_sample_receipt {
-  margin-left: 2em;
-  font-size: 12px;
-  font-weight: normal;
-}
-
-.sample_store_form_border {
-  border: 1px solid lightgray;
-  padding-left: 0.3em;
-}
-
-.print_manifest {
-  font-size: 1.1em;
-}

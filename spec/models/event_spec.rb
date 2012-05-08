@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: events
 #
@@ -28,6 +26,8 @@
 #  updated_at                         :datetime
 #  scheduled_study_segment_identifier :string(255)
 #
+
+# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

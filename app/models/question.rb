@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: questions
 #
@@ -27,6 +25,8 @@
 #  correct_answer_id      :integer
 #  api_id                 :string(255)
 #
+
+# -*- coding: utf-8 -*-
 
 class Question < ActiveRecord::Base
   include Surveyor::Models::QuestionMethods

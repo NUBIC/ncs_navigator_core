@@ -19,7 +19,9 @@
           %th
             Sample Type
           %th
-            Volume
+            Volume Amount
+          %th
+            Volume Unit
           %th
             Root ID
           %th
@@ -32,7 +34,9 @@
             %td
               = sample_type(srs.sample_id)
             %td
-              %input{:type=>"text", :class => 'volume', :name=>"volume[#{srs.sample_id}][]", :value=>""}              
+              %input{:type=>"text", :class => 'volume', :name=>"volume_amt[#{srs.sample_id}][]", :value=>""}
+            %td
+              %input{:type=>"text", :class => 'volume', :name=>"volume_unit[#{srs.sample_id}][]", :value=>""}
             %td
               = sample_root_id(srs.sample_id)
             %td
@@ -42,7 +46,7 @@
       - if @shipment_date_and_time.blank?
         %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>""}
       - else
-        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>@shipment_date_and_time}      
+        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>@shipment_date_and_time}
       %br
 
       Shipment ID:

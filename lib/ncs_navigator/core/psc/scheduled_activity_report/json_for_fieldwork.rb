@@ -5,50 +5,37 @@ require 'rabl'
 
 class NcsNavigator::Core::Psc::ScheduledActivityReport
   module JsonForFieldwork
+    include NcsNavigator::Core::Fieldwork::Adapters
+
     def contacts_as_json
       rows.select(&:contact).map do |r|
         c = r.contact
 
         instruments = [].tap do |a|
           if r.instrument
-            a << {
-              'instrument_id' => r.instrument.instrument_id,
+            a << adapt_model(r.instrument).as_json.merge({
               'instrument_template_id' => r.survey.api_id,
               'name' => r.survey.title,
-              'response_set' => JSON.parse(r.instrument.response_set.to_json),
-              'version' => r.instrument.updated_at.utc
-            }
+              'response_set' => JSON.parse(r.instrument.response_set.to_json)
+            })
           end
         end
 
         events = [].tap do |a|
           if r.event
-            a << {
-              'disposition' => r.event.event_disposition,
-              'disposition_category' => r.event.event_disposition_category_code,
-              'end_date' => r.event.event_end_date,
-              'end_time' => r.event.event_end_time,
-              'event_id' => r.event.event_id,
+            a << adapt_model(r.event).as_json.merge({
               'instruments' => instruments,
               'name' => r.event.event_type.to_s,
-              'start_date' => r.event.event_start_date,
-              'start_time' => r.event.event_start_time,
               'version' => r.event.updated_at.utc
-            }
+            })
           end
         end
 
-        {
-          'contact_date' => c.contact_date,
-          'contact_id' => c.contact_id,
-          'disposition' => c.contact_disposition,
-          'end_time' => c.contact_end_time,
+        adapt_model(c).as_json.merge({
           'events' => events,
           'person_id' => r.person.person_id,
-          'start_time' => c.contact_start_time,
-          'type' => c.contact_type_code,
           'version' => c.updated_at.utc
-        }
+        })
       end
     end
 

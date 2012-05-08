@@ -251,7 +251,14 @@ module NcsNavigator::Core::Fieldwork
         let!(:a) { Factory(:answer, :api_id => 'bar', :response_class => 'string') }
         let!(:q) { Factory(:question, :api_id => question_id) }
 
-        let(:rc) { adapt_model(Response.new(:api_id => 'foo', :question => q)) }
+        let(:r) do
+          Response.new.tap do |r|
+            r.question = q
+            r.api_id = 'foo'
+          end
+        end
+
+        let(:rc) { adapt_model(r) }
         let(:rp) { adapt_hash(:response, { 'uuid' => 'foo', 'question_id' => question_id, 'answer_id' => 'bar' }) }
 
         describe 'if C =~ P' do

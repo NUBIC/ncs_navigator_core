@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: telephones
 #
@@ -33,6 +31,8 @@
 #  updated_at              :datetime
 #  response_set_id         :integer
 #
+
+# -*- coding: utf-8 -*-
 
 # A Person, an Institution and a Provider will have at least one and sometimes many phone numbers.
 class Telephone < ActiveRecord::Base

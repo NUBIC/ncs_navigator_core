@@ -4,17 +4,17 @@ class Api::FieldworkController < ApplicationController
   respond_to :json
 
   def create
-    begin
-      fw = Fieldwork.from_psc(params, psc, current_staff_id).tap(&:save!)
+    unless %w(client_id end_date start_date).all? { |k| params.has_key?(k) }
+      render :nothing => true, :status => :bad_request and return
+    end
 
-      respond_to do |wants|
-        wants.json do
-          headers['Location'] = api_fieldwork_path(fw.id)
-          render :json => fw
-        end
+    fw = Fieldwork.from_psc(params, psc, current_staff_id).tap(&:save!)
+
+    respond_to do |wants|
+      wants.json do
+        headers['Location'] = api_fieldwork_path(fw.id)
+        render :json => fw
       end
-    rescue ActiveRecord::RecordInvalid
-      render :nothing => true, :status => :bad_request
     end
   end
 

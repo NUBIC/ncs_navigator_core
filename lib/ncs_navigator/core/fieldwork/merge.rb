@@ -104,6 +104,8 @@ module NcsNavigator::Core::Fieldwork
   #
   #   O     C     P     R
   #   --------------------------
+  #   nil   nil   X     X
+  #   nil   X     nil   X
   #   nil   X     X     X
   #   nil   X     Y     conflict
   #   X     X     X     X
@@ -111,24 +113,6 @@ module NcsNavigator::Core::Fieldwork
   #   X     Y     X     Y
   #   X     Y     Y     Y
   #   X     Y     Z     conflict
-  #
-  # As an aid to code understanding, we can translate this into a set of
-  # implications:
-  #
-  #   1. nil(O) ^ (C = P) => C,
-  #   2. nil(O) ^ (C != P) => conflict,
-  #   3. (O = C) ^ (C = P) => O (= P) => P,
-  #   4. (O = C) ^ (C != P) => P,
-  #   5. (O != C) ^ (C != P) ^ (O = P) => C,
-  #   6. (O != C) ^ (C != P) => conflict.
-  #
-  # Because 1 just sets the current value of an entity, it can be eliminated
-  # and replaced with an implementation of 2.  3 and 4 combine to
-  #
-  #   7. (O = C) => P
-  #
-  # 5, 6, 7 can be further reduced to an implementation that checks 6 and
-  # executes 7 if 6 is false.
   #
   #
   # Responses are grouped by question
@@ -180,6 +164,7 @@ module NcsNavigator::Core::Fieldwork
 
     module_function
 
+    N = Case::Not
     S = Case::Struct.new(:o, :c, :p)
 
     def merge_entity(state, entity, id)
@@ -188,13 +173,13 @@ module NcsNavigator::Core::Fieldwork
       p = state[:proposed]
 
       case S[o, c, p]
-      when S[nil, nil, Case::Not[nil]]
+      when S[nil, nil, N[nil]] then
         state[:current] = p.to_model
-      when S[nil, Case::Not[nil], Case::Not[nil]]
+      when S[nil, N[nil], N[nil]]
         resolve(o, c, p, entity, id)
-      when S[Case::Not[nil], nil, Case::Not[nil]]
+      when S[N[nil], nil, N[nil]]
         add_conflict(entity, id, :self, o, c, p)
-      when S[Case::Not[nil], Case::Not[nil], Case::Not[nil]]
+      when S[N[nil], N[nil], N[nil]]
         resolve(o, c, p, entity, id)
       end
     end
@@ -212,14 +197,16 @@ module NcsNavigator::Core::Fieldwork
           vc = c[attr]
           vp = p[attr]
 
-          if vo.nil?
-            add_conflict(entity, id, attr, vo, vc, vp) if !vp.nil? && vc != vp
-          else
-            if vo != vc && vc != vp
-              add_conflict(entity, id, attr, vo, vc, vp) if vo != vp
-            else
-              h[attr] = vp
-            end
+          case S[vo, vc, vp]
+          when S[nil, nil, vp];  h[attr] = vp
+          when S[nil, vc, nil];  h[attr] = vc
+          when S[nil, vc, vc];   h[attr] = vc
+          when S[nil, vc, vp];   add_conflict(entity, id, attr, vo, vc, vp)
+          when S[vo, vo, vo];    h[attr] = vo
+          when S[vo, vo, vp];    h[attr] = vp
+          when S[vo, vc, vo];    h[attr] = vc
+          when S[vo, vc, vc];    h[attr] = vc
+          when S[vo, vc, vp];    add_conflict(entity, id, attr, vo, vc, vp)
           end
         end
 
@@ -271,7 +258,7 @@ module NcsNavigator::Core::Fieldwork
 
       logger.fatal { "[#{entity.class} #{public_id}] #{entity.class} could not be saved" }
 
-      current.errors.to_a.each do |error|
+      entity.errors.to_a.each do |error|
         logger.fatal { "[#{entity.class} #{public_id}] Validation error: #{error.inspect}" }
       end
     end

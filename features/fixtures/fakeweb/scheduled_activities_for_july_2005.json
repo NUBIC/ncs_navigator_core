@@ -1,0 +1,37 @@
+{
+    "filters": {
+        "end_date": "2005-07-01",
+        "start_date": "2005-07-30",
+        "states": [
+            "Scheduled"
+        ]
+    },
+    "rows": [
+        {
+            "activity_name": "Pregnancy Visit 2",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "36420748-72f5-4dfb-afcc-8d7c6c189eaf",
+            "ideal_date": "2005-07-15",
+            "labels": [
+                "event:pregnancy_visit_2",
+                "instrument:pregnancy_survey_v1.0"
+            ],
+            "last_change_reason": "Initialized from template",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2005-07-15",
+            "scheduled_study_segment": {
+                "grid_id": "9754db98-1cad-42ed-b5bb-410efe6cfb7b",
+                "start_date": "2012-07-02",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "4c988762-84cd-4339-8e76-29fa76c604b4",
+                "name": "Bessie Smith",
+                "person_id": "registered_with_psc"
+            }
+        }
+    ]
+}

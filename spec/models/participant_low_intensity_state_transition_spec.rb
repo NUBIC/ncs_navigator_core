@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: participant_low_intensity_state_transitions
 #
@@ -12,6 +10,8 @@
 #  to             :string(255)
 #  created_at     :datetime
 #
+
+# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

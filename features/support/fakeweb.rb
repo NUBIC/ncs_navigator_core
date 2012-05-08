@@ -21,12 +21,13 @@ FakeWeb.register_uri(:get, /\/api\/v1\/studies\/(.*)\/template\/current.xml$/,
 FakeWeb.register_uri(:post, /\/api\/v1\/studies\/(.*)\/sites\/(.*)\/subject-assignments$/,
                     :body => "", :status => ["201", "Created"])
 
-FakeWeb.register_uri(:get, %r[/api/v1/reports/scheduled-activities\.json\?end-date=2012-03-01&start-date=2012-02-01&state=scheduled$],
-                     :body => "#{Rails.root}/features/fixtures/fakeweb/scheduled_activities_for_february.json",
-                     :status => ["200", "OK"],
-                     :content_type => "application/json")
-
-FakeWeb.register_uri(:get, %r[/api/v1/reports/scheduled-activities\.json(?!\?end-date=2012-03-01)],
-                     :body => "#{Rails.root}/features/fixtures/fakeweb/scheduled_activities.json",
-                     :status => ["200", "OK"],
-                     :content_type => "application/json")
+# PSC scheduled activity report
+[
+  %w(end-date=2012-03-01&start-date=2012-02-01&state=scheduled scheduled_activities_for_february.json),
+  %w(end-date=2005-07-30&start-date=2005-07-01&state=scheduled scheduled_activities_for_july_2005.json)
+].each do |qs, fn|
+  FakeWeb.register_uri(:get, %r[/api/v1/reports/scheduled-activities\.json\?#{qs}$],
+                       :body => File.expand_path("../../fixtures/fakeweb/#{fn}", __FILE__),
+                       :status => ['200', 'OK'],
+                       :content_type => 'application/json')
+end

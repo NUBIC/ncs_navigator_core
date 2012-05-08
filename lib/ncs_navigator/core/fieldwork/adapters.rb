@@ -56,7 +56,11 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def decimal(x)
-      BigDecimal.new(x) if x
+      case x
+      when BigDecimal; x
+      when NilClass; x
+      else BigDecimal.new(x)
+      end
     end
   end
 
@@ -76,11 +80,11 @@ module NcsNavigator::Core::Fieldwork::Adapters
     attr_accessible :comments
 
     def contact_date
-      target.contact_date
+      target.contact_date_date
     end
 
     def contact_date=(val)
-      target.contact_date = val
+      target.contact_date_date = val
     end
 
     attr_accessible :contact_date
@@ -257,7 +261,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -610,7 +630,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -951,7 +987,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1157,7 +1209,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def answer_id=(val)
-      target.answer = Answer.where(:api_id => val).first
+      target.answer_id = Answer.where(:api_id => val).first.try(:id)
     end
 
     attr_accessible :answer_id
@@ -1167,7 +1219,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def question_id=(val)
-      target.question = Question.where(:api_id => val).first
+      target.question_id = Question.where(:api_id => val).first.try(:id)
     end
 
     attr_accessible :question_id
@@ -1198,7 +1250,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
@@ -1299,7 +1367,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target
     end
 
-    def_delegators :to_model, :persisted?, :new_record?, :valid?, :destroyed?, :errors, :changed?, :save, :public_id
+    def as_json(options = nil)
+      {}.tap do |h|
+        self.class.accessible_attributes.each do |k|
+          h[k] = send(k)
+        end
+      end
+    end
+
+    def_delegators :to_model,
+      :changed?,
+      :destroyed?,
+      :errors,
+      :new_record?,
+      :persisted?,
+      :public_id,
+      :save,
+      :valid?
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }

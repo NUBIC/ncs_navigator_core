@@ -69,7 +69,9 @@
           %th
             Sample Type
           %th
-            Volume
+            Volume Amount
+          %th
+            Volume Unit
           %th
             Root ID
           %th
@@ -82,8 +84,12 @@
             %td
               = sample_type(srs.sample_id)
             %td
-              = @volume[srs.sample_id].first
-              = hidden_field_tag "volume[#{srs.sample_id}][]", @volume[srs.sample_id]             
+              = @volume_amt[srs.sample_id].first
+              = hidden_field_tag "volume_amt[#{srs.sample_id}][]", @volume_amt[srs.sample_id]
+            %td
+              = @volume_unit[srs.sample_id].first
+              = hidden_field_tag "volume_unit[#{srs.sample_id}][]", @volume_unit[srs.sample_id]
+
             %td
               = sample_root_id(srs.sample_id)
             %td

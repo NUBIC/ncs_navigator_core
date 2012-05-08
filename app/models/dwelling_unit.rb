@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120426034324
+# Schema version: 20120507183332
 #
 # Table name: dwelling_units
 #
@@ -23,6 +21,8 @@
 #  ssu_id             :string(255)
 #  tsu_id             :string(255)
 #
+
+# -*- coding: utf-8 -*-
 
 # DU is a specific street address within a sampling unit.
 # There is a one-to-one relationship between Listing and DU.

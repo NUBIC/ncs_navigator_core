@@ -115,7 +115,8 @@ class SpecimensController < ApplicationController
         @send_to_site_selected = txt if val.eql? @send_to_site_selected_id.to_s
       end
     end
-    @volume = params[:volume]  
+    @volume_amt = params[:volume_amt]
+    @volume_unit = params[:volume_unit]
   end
   
   def array_of_not_shipped_specs

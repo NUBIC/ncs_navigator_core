@@ -1,7 +1,7 @@
 ---
 Contact:
   comments: contact_comment
-  contact_date: contact_date
+  contact_date: contact_date_date
   contact_id: contact_id
   disposition: contact_disposition
   distance_traveled: contact_distance
@@ -55,10 +55,10 @@ Response:
     reader: target.api_id
   answer_id:
     reader: target.answer.try(:api_id)
-    writer: target.answer = Answer.where(:api_id => val).first
+    writer: target.answer_id = Answer.where(:api_id => val).first.try(:id)
   question_id:
     reader: target.question.try(:api_id)
-    writer: target.question = Question.where(:api_id => val).first
+    writer: target.question_id = Question.where(:api_id => val).first.try(:id)
   value:
     reader: target.value
     writer: target.value = val
