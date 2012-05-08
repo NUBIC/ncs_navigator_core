@@ -67,18 +67,19 @@
       or to
       %i
         Perform Next Event.
-    %p
-      %b
-        How do I move from a participant from Low to High Intensity?
-      %br
-      Users who are allowed to move a participant between arms will be shown a button on the Participant page
-      with the text "Invite [PARTICIPANT] to join High Intensity Arm". Clicking this button will cancel all
-      pending low intensity events for the participant and schedule the participant for the Low to High Conversion
-      event.
-      %br
-      Conversely, when a participant is in the High Intensity Arm, a button will appear with the text
-      "Move [PARTICIPANT] from High Intensity to Low Intensity". This action cancels all pending high intensity
-      events and schedules the participant for the next low intensity event for the participant.
+    - if recruitment_strategy.two_tier_knowledgable?
+      %p
+        %b
+          How do I move from a participant from Low to High Intensity?
+        %br
+        Users who are allowed to move a participant between arms will be shown a button on the Participant page
+        with the text "Invite [PARTICIPANT] to join High Intensity Arm". Clicking this button will cancel all
+        pending low intensity events for the participant and schedule the participant for the Low to High Conversion
+        event.
+        %br
+        Conversely, when a participant is in the High Intensity Arm, a button will appear with the text
+        "Move [PARTICIPANT] from High Intensity to Low Intensity". This action cancels all pending high intensity
+        events and schedules the participant for the next low intensity event for the participant.
 
   .instruments
     %h3
