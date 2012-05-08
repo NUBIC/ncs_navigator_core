@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # == Schema Information
 # Schema version: 20120507183332
 #
@@ -22,9 +24,6 @@
 #  source_mdes_id    :string(36)
 #  api_id            :string(255)
 #
-
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
 describe Response do
