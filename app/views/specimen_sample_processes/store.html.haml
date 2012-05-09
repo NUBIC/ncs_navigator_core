@@ -22,6 +22,6 @@
               %div{ :id => k}
                 = render :partial => "specimen_storages/specimen_storage", :locals => { :specimen_storage => s }
     - @sample_receipt_stores.each do |@sample_receipt_store|
-      %div{ :id => @sample_receipt_store.id, :class => "sample_store_form_border"}
+      %div{ :id => @sample_receipt_store.sample_id, :class => "sample_store_form_border"}
         = render :partial => "sample_receipt_stores/sample_store_edit", :locals => { :sample_receipt_store => @sample_receipt_store}
       %br  

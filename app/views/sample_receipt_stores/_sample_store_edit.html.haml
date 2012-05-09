@@ -7,7 +7,7 @@
       - sample_receipt_store.errors.full_messages.each do |msg|
         %li
           = msg
-= form_tag  sample_receipt_store, :class => "specimen_storage_form", :id => sample_receipt_store.id do
+= form_tag  sample_receipt_store, :class => "specimen_storage_form", :id => sample_receipt_store.sample_id do
   = label_tag "Sample Id:"
   = sample_receipt_store.sample_id
   %br

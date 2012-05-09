@@ -20,7 +20,7 @@ function specimen_storage_dialog() {
       if (response.sample_receipt_store) {
         var sample_id = response.sample_receipt_store.sample_id;
         var url = /sample_receipt_stores/ + response.sample_receipt_store.id + ' form';
-        $("#"+response.sample_receipt_store.id).load(url);
+        $("#"+response.sample_receipt_store.sample_id).load(url);
       }
     },
     error: function(xhr, ajaxOptions, thrownError) {
