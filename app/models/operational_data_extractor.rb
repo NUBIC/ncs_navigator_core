@@ -8,6 +8,11 @@ class OperationalDataExtractor
     [/_PregVisit/,      PregnancyVisitOperationalDataExtractor],
     [/_LIPregNotPreg/,  LowIntensityPregnancyVisitOperationalDataExtractor],
     [/_Birth/,          BirthOperationalDataExtractor],
+    [/_AdultBlood_/,    SpecimenOperationalDataExtractor],
+    [/_AdultUrine_/,    SpecimenOperationalDataExtractor],
+    [/_CordBlood_/,     SpecimenOperationalDataExtractor],
+    [/_TapWater/,       SampleOperationalDataExtractor],
+    [/_VacBagDust/,     SampleOperationalDataExtractor],
   ]
 
   class << self
