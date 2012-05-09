@@ -73,7 +73,10 @@ module NcsNavigator::Core::Fieldwork
     end
 
     describe 'for contacts' do
-      let(:ancestry) { {} }
+      let(:ancestry) do
+        { :person_id => '/contacts/0/person_id' }
+      end
+
       let(:pointer) { '/contacts/0' }
 
       it_should_behave_like 'an entity set', :original, 'contacts'

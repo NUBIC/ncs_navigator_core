@@ -152,8 +152,10 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def add_contact(h, contact)
-      h.add(:contact, contact, 'contact_id') do |h|
-        contact['events'].each { |e| add_event(h, e) }
+      h.hierarchy(:person_id => contact['person_id']) do |h|
+        h.add(:contact, contact, 'contact_id') do |h|
+          contact['events'].each { |e| add_event(h, e) }
+        end
       end
     end
 
@@ -211,6 +213,10 @@ module NcsNavigator::Core::Fieldwork
         if block_given?
           yield self.class.new(state, superposition, ancestors.merge(entity => object))
         end
+      end
+
+      def hierarchy(additional = {})
+        yield dup.tap { |d| d.ancestors = d.ancestors.merge(additional) }
       end
     end
   end
