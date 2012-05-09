@@ -1215,6 +1215,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
+    def p_id
+      (target[%q{p_id}])
+    end
+
+    def p_id=(val)
+      target[%q{p_id}] = val
+    end
+
     def to_hash
       target
     end
@@ -1267,6 +1275,86 @@ module NcsNavigator::Core::Fieldwork::Adapters
   class PersonHashAdapter < Adapter
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
+
+    def cell_phone
+      (target[%q{cell_phone}])
+    end
+
+    def cell_phone=(val)
+      target[%q{cell_phone}] = val
+    end
+
+    def city
+      (target[%q{city}])
+    end
+
+    def city=(val)
+      target[%q{city}] = val
+    end
+
+    def email
+      (target[%q{email}])
+    end
+
+    def email=(val)
+      target[%q{email}] = val
+    end
+
+    def home_phone
+      (target[%q{home_phone}])
+    end
+
+    def home_phone=(val)
+      target[%q{home_phone}] = val
+    end
+
+    def name
+      (target[%q{name}])
+    end
+
+    def name=(val)
+      target[%q{name}] = val
+    end
+
+    def person_id
+      (target[%q{person_id}])
+    end
+
+    def person_id=(val)
+      target[%q{person_id}] = val
+    end
+
+    def relationship_code
+      (target[%q{relationship_code}])
+    end
+
+    def relationship_code=(val)
+      target[%q{relationship_code}] = val
+    end
+
+    def state
+      (target[%q{state}])
+    end
+
+    def state=(val)
+      target[%q{state}] = val
+    end
+
+    def street
+      (target[%q{street}])
+    end
+
+    def street=(val)
+      target[%q{street}] = val
+    end
+
+    def zip_code
+      (target[%q{zip_code}])
+    end
+
+    def zip_code=(val)
+      target[%q{zip_code}] = val
+    end
 
     def to_hash
       target
