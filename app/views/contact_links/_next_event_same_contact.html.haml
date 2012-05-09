@@ -1,5 +1,5 @@
 .next_event_same_contact
   %h3
-    = "Continue onto #{@person.upcoming_events.to_sentence}"
+    = "Continue onto #{upcoming_events(@person)}"
   %p
-    = link_to "Continue onto #{@person.upcoming_events.to_sentence}", edit_person_contact_path(@person, @contact, :next_event => true), :class => "add_link icon_link"
+    = link_to "Continue onto #{upcoming_events(@person)}", edit_person_contact_path(@person, @contact, :next_event => true), :class => "add_link icon_link"
