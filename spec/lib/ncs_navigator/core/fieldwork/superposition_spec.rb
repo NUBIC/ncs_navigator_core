@@ -67,13 +67,16 @@ module NcsNavigator::Core::Fieldwork
         it "sets ancestry" do
           dereferenced = Hash[*ancestry.map { |k, ptr| [k, dereference(ptr, source)] }.flatten]
 
-          subject.send(collection)[entity_id][state].ancestors.should == dereferenced
+          subject.send(collection)[entity_id][state].ancestors.should include(dereferenced)
         end
       end
     end
 
     describe 'for contacts' do
-      let(:ancestry) { {} }
+      let(:ancestry) do
+        { :person_id => '/contacts/0/person_id' }
+      end
+
       let(:pointer) { '/contacts/0' }
 
       it_should_behave_like 'an entity set', :original, 'contacts'
@@ -125,10 +128,7 @@ module NcsNavigator::Core::Fieldwork
 
     describe 'for response sets' do
       let(:ancestry) do
-        { :contact => '/contacts/0',
-          :event => '/contacts/0/events/0',
-          :instrument => '/contacts/0/events/0/instruments/0'
-        }
+        { :instrument => '/contacts/0/events/0/instruments/0' }
       end
 
       let(:pointer) { '/contacts/0/events/0/instruments/0/response_set' }
@@ -139,11 +139,7 @@ module NcsNavigator::Core::Fieldwork
 
     describe 'for responses' do
       let(:ancestry) do
-        { :contact => '/contacts/0',
-          :event => '/contacts/0/events/0',
-          :instrument => '/contacts/0/events/0/instruments/0',
-          :response_set => '/contacts/0/events/0/instruments/0/response_set'
-        }
+        { :response_set => '/contacts/0/events/0/instruments/0/response_set' }
       end
 
       let(:pointer) { '/contacts/0/events/0/instruments/0/response_set/responses/0' }
