@@ -469,6 +469,7 @@ DEPENDENCIES
   jquery-rails
   json-schema
   launchy
+  mustache
   ncs_mdes (~> 0.5)
   ncs_mdes_warehouse (~> 0.4)
   ncs_navigator_authority

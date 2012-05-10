@@ -42,6 +42,8 @@ gem 'uuidtools'
 gem 'will_paginate'
 gem 'faraday'
 
+gem 'mustache'
+
 gem 'redis'
 
 group :development do
