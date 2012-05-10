@@ -32,7 +32,7 @@ class SpecimenShipping < ActiveRecord::Base
   ncs_coded_attribute :shipment_receipt_confirmed, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :shipment_issues,            'SHIPMENT_ISSUES_CL1'
 
-  has_many :ship_specimen
+  has_many :ship_specimens
 
   validates_presence_of :storage_container_id
   validates_presence_of :staff_id 

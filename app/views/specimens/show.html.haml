@@ -92,11 +92,11 @@
               %td
                 = sample_type(sr.specimen_id)
               %td
-                = @volume_amt[sr.specimen_id].first
-                = hidden_field_tag "volume_amt[#{sr.specimen_id}][]", @volume_amt[sr.specimen_id]
+                = @volume_amt[sr.specimen_id]
+                = hidden_field_tag "volume_amt[#{sr.specimen_id}]", @volume_amt[sr.specimen_id]
               %td
-                = @volume_unit[sr.specimen_id].first
-                = hidden_field_tag "volume_unit[#{sr.specimen_id}][]", @volume_unit[sr.specimen_id]
+                = @volume_unit[sr.specimen_id]
+                = hidden_field_tag "volume_unit[#{sr.specimen_id}]", @volume_unit[sr.specimen_id]
               %td
                 = sample_root_id(sr.specimen_id)
               %td
