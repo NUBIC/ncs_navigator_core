@@ -37,7 +37,7 @@ module ParticipantsHelper
     event_name
   end
 
-  def upcoming_events(person_or_participant)
+  def upcoming_events_for(person_or_participant)
     result = person_or_participant.upcoming_events.to_sentence
     result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?
     result
