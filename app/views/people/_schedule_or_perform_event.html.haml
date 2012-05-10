@@ -20,7 +20,7 @@
         %b
           Perform Next Event
         %p
-          = link_to "Initiate New Contact for #{participant.upcoming_events.to_sentence}", new_person_contact_path(person), :class => "add_link icon_link", :title => "Initiate Contact"
+          = link_to "Initiate New Contact for #{upcoming_events_for(participant)}", new_person_contact_path(person), :class => "add_link icon_link", :title => "Initiate Contact"
     - elsif rs = person.last_incomplete_response_set
       - if rs.survey.title =~ /_PregScreen_/
         .perform_next_event

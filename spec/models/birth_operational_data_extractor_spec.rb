@@ -15,8 +15,6 @@ describe BirthOperationalDataExtractor do
       @participant.person = @person
       Factory(:ppg_detail, :participant => @participant)
 
-      @instrument, @response_set = prepare_instrument(@person, create_pregnancy_visit_1_survey_with_contact_operational_data)
-
       @participant.participant_person_links.size.should == 1
     end
 

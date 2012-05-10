@@ -40,10 +40,14 @@ module NcsNavigator::Core::Warehouse
     describe '#each' do
       subject { InstrumentEnumerator.new(configuration) }
 
+      def stub_rs
+        stub('response set').tap { |s| s.stub!(:access_code); s.stub!(:id); s.stub!(:survey) }
+      end
+
       it 'converts every response set in turn' do
-        rs1 = mock(ResponseSet)
+        rs1 = stub_rs
         rs1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
-        rs2 = mock(ResponseSet)
+        rs2 = stub_rs
         rs2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
         [rs1, rs2].each do |m|
           m.stub(:responses).and_return([])

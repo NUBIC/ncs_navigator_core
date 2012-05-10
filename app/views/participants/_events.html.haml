@@ -12,7 +12,7 @@
         %td
           = link_to "Initiate Contact", new_person_contact_path(participant.person), :class => "add_link icon_link"
         %td
-          = participant.upcoming_events.to_sentence
+          = upcoming_events_for(participant)
 
   %div{ :id => "participant_schedule_#{participant.id}" }
     - if registered

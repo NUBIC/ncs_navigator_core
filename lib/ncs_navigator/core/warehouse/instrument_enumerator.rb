@@ -11,6 +11,8 @@ module NcsNavigator::Core::Warehouse
     extend Forwardable
     include Enumerable
 
+    def_delegators :@wh_config, :log, :shell
+
     def self.create_transformer(wh_config)
       NcsNavigator::Warehouse::Transformers::SubprocessTransformer.new(
         wh_config,
@@ -32,6 +34,8 @@ module NcsNavigator::Core::Warehouse
       ResponseSet.find_each do |rs|
         progress.increment_response_sets
         progress.increment_responses(rs.responses.size)
+        log.info "Transforming ResponseSet #{rs.access_code.inspect} (#{rs.id})"
+        log.info "  Survey is #{rs.survey.try(:title).inspect} (#{rs.survey.try(:id)})"
         rs.to_mdes_warehouse_records.each do |record|
           progress.increment_records
           yield record

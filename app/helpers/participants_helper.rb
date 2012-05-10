@@ -37,4 +37,20 @@ module ParticipantsHelper
     event_name
   end
 
+  def upcoming_events_for(person_or_participant)
+    result = person_or_participant.upcoming_events.to_sentence
+    result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?
+    result
+  end
+
+  def displayable_next_scheduled_event(event)
+    result = event.to_s
+    result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?
+    result
+  end
+
+  def remove_two_tier(txt)
+    txt.to_s.gsub("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '').gsub("#{PatientStudyCalendar::LOW_INTENSITY}: ", '')
+  end
+  private :remove_two_tier
 end

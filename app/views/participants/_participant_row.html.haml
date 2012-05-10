@@ -9,7 +9,7 @@
     - if registered
       %b
         Upcoming Events
-      = participant.upcoming_events.to_sentence
+      = upcoming_events_for(participant)
     - elsif participant.can_register?
       .psc_note
         Not yet registered with PSC.

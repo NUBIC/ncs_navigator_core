@@ -33,6 +33,6 @@
           %p
             = "- OR -"
           %p
-            = "Continue onto #{@person.upcoming_events.to_sentence}"
+            = "Continue onto #{upcoming_events_for(@person)}"
             %br
-            = f.submit "Continue", :confirm => "Are you sure you would like to continue to #{@person.upcoming_events.to_sentence}?"
+            = f.submit "Continue", :confirm => "Are you sure you would like to continue to #{upcoming_events_for(@person)}?"
