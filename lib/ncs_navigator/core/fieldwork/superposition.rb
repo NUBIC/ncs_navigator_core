@@ -211,7 +211,7 @@ module NcsNavigator::Core::Fieldwork
         end
 
         if block_given?
-          yield self.class.new(state, superposition, ancestors.merge(entity => object))
+          yield self.class.new(state, superposition, ancestors.merge(entity => c[kv][state]))
         end
       end
 
