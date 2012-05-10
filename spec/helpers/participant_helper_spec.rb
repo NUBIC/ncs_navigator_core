@@ -60,13 +60,14 @@ describe ParticipantsHelper do
         end
 
         it "returns upcoming_events.to_s for a lo I participant" do
-          helper.upcoming_events_for(lo_i_participant).should ==
-            lo_i_participant.upcoming_events.to_s.gsub!("#{PatientStudyCalendar::LOW_INTENSITY}: ", '')
+          expected = lo_i_participant.upcoming_events.to_s.gsub!("#{PatientStudyCalendar::LOW_INTENSITY}: ", '')
+          helper.upcoming_events_for(lo_i_participant).should include(expected)
+
         end
 
         it "returns upcoming_events.to_s for a hi I participant" do
-          helper.upcoming_events_for(hi_i_participant).should ==
-            hi_i_participant.upcoming_events.to_s.gsub!("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '')
+          expected = hi_i_participant.upcoming_events.to_s.gsub!("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '')
+          helper.upcoming_events_for(hi_i_participant).should include(expected)
         end
 
       end
@@ -78,11 +79,11 @@ describe ParticipantsHelper do
         end
 
         it "returns Lo I: + upcoming_events.to_s for a lo I participant" do
-          helper.upcoming_events_for(lo_i_participant).should == lo_i_participant.upcoming_events.to_s
+          helper.upcoming_events_for(lo_i_participant).should include(lo_i_participant.upcoming_events.to_s)
         end
 
         it "returns Hi I: + upcoming_events.to_s for a hi I participant" do
-          helper.upcoming_events_for(hi_i_participant).should == hi_i_participant.upcoming_events.to_s
+          helper.upcoming_events_for(hi_i_participant).should include(hi_i_participant.upcoming_events.to_s)
         end
 
       end

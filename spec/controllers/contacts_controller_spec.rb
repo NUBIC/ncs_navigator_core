@@ -84,7 +84,7 @@ describe ContactsController do
         it "creates a new contact link and event when continuing to next event" do
           @contact = Factory(:contact)
           contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => Factory(:event, :event_type => @preg_screen_event))
-          @person.upcoming_events.should == ["LO-Intensity: Pregnancy Screener"]
+          @person.upcoming_events.to_s.should include("Pregnancy Screener")
 
           @participant.register!
           @participant.assign_to_pregnancy_probability_group!
@@ -92,7 +92,7 @@ describe ContactsController do
 
           @person.participant.reload
           @person.contact_links.reload
-          @person.upcoming_events.should == ["LO-Intensity: PPG 1 and 2"]
+          @person.upcoming_events.to_s.should include("PPG 1 and 2")
           @person.contact_links.size.should == 1
           get :edit, :id => @contact.id, :person_id => @person.id, :next_event => true
           @person.contact_links.reload
@@ -115,7 +115,7 @@ describe ContactsController do
         Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
         Contact.stub(:new).and_return(mock_contact)
 
-        @person.upcoming_events.should == ["LO-Intensity: PPG 1 and 2"]
+        @person.upcoming_events.to_s.should include("PPG 1 and 2")
       end
 
       describe "GET new" do
