@@ -473,7 +473,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(Contact.new).tap { |m| m.attributes = target }
+      adapt_model(Contact.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
@@ -794,7 +797,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(Event.new).tap { |m| m.attributes = target }
+      adapt_model(Event.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
@@ -1167,7 +1173,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(Instrument.new).tap { |m| m.attributes = target }
+      adapt_model(Instrument.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
@@ -1228,7 +1237,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(Participant.new).tap { |m| m.attributes = target }
+      adapt_model(Participant.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
@@ -1361,7 +1373,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(Person.new).tap { |m| m.attributes = target }
+      adapt_model(Person.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
@@ -1496,7 +1511,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(Response.new).tap { |m| m.attributes = target }
+      adapt_model(Response.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
@@ -1581,7 +1599,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(ResponseSet.new).tap { |m| m.attributes = target }
+      adapt_model(ResponseSet.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)

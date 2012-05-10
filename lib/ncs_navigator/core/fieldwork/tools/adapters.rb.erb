@@ -150,7 +150,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def to_model
-      adapt_model(<%= k %>.new).tap { |m| m.attributes = target }
+      adapt_model(<%= k %>.new).tap do |m|
+        m.ancestors = ancestors
+        m.attributes = target
+      end
     end
 
     def ==(other)
