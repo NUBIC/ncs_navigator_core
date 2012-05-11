@@ -10,6 +10,10 @@ class SurveyorController < ApplicationController
     edit_instrument_contact_link_path(contact_link.id)
   end
 
+  def render_context
+    NcsNavigator::Core::Mustache::InstrumentContext.new(@response_set)
+  end
+
   private
 
     # TODO: ensure that the state transitions are based on the responses in the response set
