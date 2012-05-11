@@ -11,15 +11,73 @@ module NcsNavigator::Core::Mustache
   class InstrumentContext < ::Mustache
 
     attr_accessor :response_set
+    attr_accessor :current_user
 
-    def initialize(response_set)
+    def initialize(response_set = nil)
       @response_set = response_set
     end
 
     def response_for(data_export_identifier)
+      raise InvalidStateException, "No response set exists for this Instrument Context" unless @response_set
       Response.includes([:answer, :question, :response_set]).
                 where("response_sets.user_id = ? AND questions.data_export_identifier = ?",
                       @response_set.person.id, data_export_identifier).last.to_s
+    end
+
+    ### Current Logged in User ###
+
+    def current_user=(usr)
+      @current_user = usr
+    end
+
+    def current_user
+      @current_user
+    end
+
+    def interviewer_name
+      @current_user ? @current_user.full_name : "[INTERVIEWER NAME]"
+    end
+
+    ### Person taking survey ###
+
+    def p_full_name
+      @response_set.person.try(:full_name)
+    end
+
+    def p_dob
+      @response_set.person.try(:person_dob)
+    end
+
+    def p_phone_number
+      if person = @response_set.try(:person)
+        home_phone = person.primary_home_phone
+        cell_phone = person.primary_cell_phone
+        home_phone ? home_phone : cell_phone
+      end
+    end
+
+    ### Dates and times ###
+
+    def last_year
+      (Time.now.year - 1).to_s
+    end
+
+    def thirty_days_ago
+      30.days.ago.strftime("%m/%d/%Y")
+    end
+
+    ### Configuration Information ###
+
+    def local_study_affiliate
+      NcsNavigator.configuration.core["study_center_name"]
+    end
+
+    def toll_free_number
+      NcsNavigator.configuration.core["toll_free_number"]
+    end
+
+    def local_age_of_majority
+      NcsNavigator.configuration.core["local_age_of_majority"]
     end
 
     ### Birth Instruments ###
@@ -29,11 +87,23 @@ module NcsNavigator::Core::Mustache
     # BABY_NAME_LI_PREFIX = "BIRTH_VISIT_LI_BABY_NAME"
     # BIRTH_LI_PREFIX     = "BIRTH_VISIT_LI"
 
-    def birth_instrument_multiple_prefix
-      if /_Birth_INT_LI_/ =~ @response_set.survey.title
+    def multiple_birth_prefix
+      case @response_set.survey.title
+      when /_PregVisit1/
+        PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
+      when /_Birth_INT_LI_/
         BirthOperationalDataExtractor::BIRTH_LI_PREFIX
       else
         BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+      end
+    end
+
+    def multiple_identifier
+      case @response_set.survey.title
+      when /_PregVisit1/
+        "MULTIPLE_GESTATION"
+      else
+        "MULTIPLE"
       end
     end
 
@@ -48,8 +118,8 @@ module NcsNavigator::Core::Mustache
     ##
     # true if response to MULTIPLE is no or not yet responded
     def single_birth?
-      multiple = response_for("#{birth_instrument_multiple_prefix}.MULTIPLE")
-      multiple.blank? || multiple.downcase.eql?("no")
+      multiple = response_for("#{multiple_birth_prefix}.#{multiple_identifier}").to_s.downcase
+      multiple.blank? || (multiple.eql?("no") || multiple.eql?("singleton"))
     end
 
     def baby_sex_response
@@ -133,6 +203,25 @@ module NcsNavigator::Core::Mustache
     end
     private :baby_sex
 
+
+    ### Pregnancy Visits ###
+
+    def pregnancy_visit_prefix
+      if /_Birth_INT_LI_/ =~ @response_set.survey.title
+        BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+      else
+        BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+      end
+    end
+
+    def f_fname
+      father_full_name = response_for("#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME")
+      father_full_name.blank? ? "the father" : father_full_name.split(' ')[0]
+    end
+
+
   end
 
 end
+
+class InvalidStateException < StandardError; end

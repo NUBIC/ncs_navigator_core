@@ -14,6 +14,115 @@ module NcsNavigator::Core::Mustache
     let(:baby_sex)   { "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_SEX" }
     let(:multiple)   { "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MULTIPLE" }
 
+    let(:multiple_gestation) { "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
+
+    context "without a response set" do
+
+      let(:instrument_context) { InstrumentContext.new }
+
+      describe ".last_year" do
+        it "returns the last_year as a string" do
+          instrument_context.last_year.should == (Time.now.year - 1).to_s
+        end
+      end
+
+      describe ".thirty_days_ago" do
+        it "returns 30 days ago in format MM/DD/YYYY" do
+          instrument_context.thirty_days_ago.should == 30.days.ago.strftime("%m/%d/%Y")
+        end
+      end
+
+    end
+
+    context "configured information" do
+
+      let(:instrument_context) { InstrumentContext.new }
+      let(:sc_config) { NcsNavigator.configuration.core }
+
+      describe ".local_study_affiliate" do
+        it "returns the configured study center name" do
+          instrument_context.local_study_affiliate.should == sc_config["study_center_name"]
+        end
+      end
+
+      describe ".toll_free_number" do
+        it "returns the configured toll free number" do
+          instrument_context.toll_free_number.should == sc_config["toll_free_number"]
+        end
+      end
+
+      describe ".local_age_of_majority" do
+        it "returns the configured local_age_of_majority" do
+          instrument_context.local_age_of_majority.should == sc_config["local_age_of_majority"]
+        end
+      end
+
+    end
+
+    context "setting the current_user" do
+
+      let(:instrument_context) { InstrumentContext.new }
+      let(:usr) { usr = mock(Aker::User, :full_name => "Fred Sanford", :username => "fgs") }
+
+      describe ".current_user" do
+        it "sets the current_user" do
+          instrument_context.current_user = usr
+          instrument_context.current_user.should == usr
+        end
+      end
+
+      describe ".interviewer_name" do
+
+        it "returns the current_user.full_name if current_user is set" do
+          instrument_context.current_user = usr
+          instrument_context.interviewer_name.should == usr.full_name
+        end
+
+        it "returns '[INTERVIEWER NAME]' if current_user is not set" do
+          instrument_context.interviewer_name.should == "[INTERVIEWER NAME]"
+        end
+      end
+
+    end
+
+    context "obtaining information from the person taking the survey" do
+
+      describe ".p_phone_number" do
+
+        let(:home_phone) { "312-555-1234" }
+        let(:cell_phone) { "312-555-9999" }
+
+        it "returns nil if there is no person" do
+          InstrumentContext.new.p_phone_number.should be_nil
+        end
+
+        it "returns nil if the person has no primary home phone or cell phone" do
+          person = mock_model(Person, :primary_home_phone => nil, :primary_cell_phone => nil)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_phone_number.should be_nil
+        end
+
+        it "returns the primary home phone" do
+          person = mock_model(Person, :primary_home_phone => home_phone, :primary_cell_phone => nil)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_phone_number.should == home_phone
+        end
+
+        it "returns the primary cell phone" do
+          person = mock_model(Person, :primary_home_phone => nil, :primary_cell_phone => cell_phone)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_phone_number.should == cell_phone
+        end
+
+        it "prefers the primary home phone" do
+          person = mock_model(Person, :primary_home_phone => home_phone, :primary_cell_phone => cell_phone)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_phone_number.should == home_phone
+        end
+      end
+
+    end
+
     context "with a response set" do
       before(:each) do
         @person = Factory(:person)
@@ -37,7 +146,6 @@ module NcsNavigator::Core::Mustache
           instrument_context.response_for(baby_fname).should == 'Mary'
         end
       end
-
     end
 
     context "for a lo i birth instrument" do
@@ -49,10 +157,16 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".birth_instrument_multiple_prefix" do
+      describe ".multiple_birth_prefix" do
         it "returns BirthOperationalDataExtractor::BIRTH_LI_PREFIX" do
-          instrument_context.birth_instrument_multiple_prefix.should ==
+          instrument_context.multiple_birth_prefix.should ==
             BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+        end
+      end
+
+      describe ".multiple_identifier" do
+        it "returns MULTIPLE" do
+          instrument_context.multiple_identifier.should == "MULTIPLE"
         end
       end
 
@@ -74,10 +188,16 @@ module NcsNavigator::Core::Mustache
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
-      describe ".birth_instrument_multiple_prefix" do
+      describe ".multiple_birth_prefix" do
         it "returns BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX" do
-          instrument_context.birth_instrument_multiple_prefix.should ==
+          instrument_context.multiple_birth_prefix.should ==
             BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+        end
+      end
+
+      describe ".multiple_identifier" do
+        it "returns MULTIPLE" do
+          instrument_context.multiple_identifier.should == "MULTIPLE"
         end
       end
 
@@ -292,6 +412,90 @@ module NcsNavigator::Core::Mustache
 
     end
 
+    context "for a pregnancy visit one saq" do
+      before(:each) do
+        @person = Factory(:person)
+        @survey = create_pregnancy_visit_1_saq_with_father_data
+        @response_set, @instrument = prepare_instrument(@person, @survey)
+      end
+
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+
+      describe ".f_fname" do
+        it "returns the entered father's first name" do
+          take_survey(@survey, @response_set) do |a|
+            a.str "PREG_VISIT_1_SAQ_2.FATHER_NAME", 'Fred Sanford'
+          end
+          instrument_context.f_fname.should == "Fred"
+        end
+
+        it "returns 'the father' if no name entered" do
+          instrument_context.f_fname.should == "the father"
+        end
+
+      end
+
+
+    end
+
+    context "for a pregnancy visit one instrument" do
+      before(:each) do
+        @person = Factory(:person)
+        @survey = create_pregnancy_visit_1_survey_with_person_operational_data
+        @response_set, @instrument = prepare_instrument(@person, @survey)
+      end
+
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      describe ".multiple_birth_prefix" do
+        it "returns PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX" do
+          instrument_context.multiple_birth_prefix.should ==
+            PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
+        end
+      end
+
+      describe ".multiple_identifier" do
+        it "returns MULTIPLE_GESTATION" do
+          instrument_context.multiple_identifier.should == "MULTIPLE_GESTATION"
+        end
+      end
+
+      describe ".baby_babies" do
+        it "returns 'baby' if unknown if single or multiple gestation" do
+          instrument_context.baby_babies.should == 'baby'
+        end
+
+        it "returns 'baby' if singleton gestation" do
+          create_singleton_gestation
+          instrument_context.baby_babies.should == 'baby'
+        end
+
+        it "returns 'babies' if twin gestation" do
+          create_twin_gestation
+          instrument_context.baby_babies.should == 'babies'
+        end
+
+        it "returns 'babies' if triplet or higher gestation" do
+          create_triplet_gestation
+          instrument_context.baby_babies.should == 'babies'
+        end
+      end
+
+      describe ".p_full_name" do
+        it "returns the full name of the person taking the survey" do
+          instrument_context.p_full_name.should == @person.full_name
+        end
+      end
+
+      describe ".p_dob" do
+        it "returns the date of birth of the person taking the survey" do
+          instrument_context.p_dob.should == @person.person_dob
+        end
+      end
+
+    end
+
     def create_single_birth
       take_survey(@survey, @response_set) do |a|
         a.no multiple
@@ -301,6 +505,27 @@ module NcsNavigator::Core::Mustache
     def create_multiple_birth
       take_survey(@survey, @response_set) do |a|
         a.yes multiple
+      end
+    end
+
+    def create_singleton_gestation
+      @singleton = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 1)
+      take_survey(@survey, @response_set) do |a|
+        a.choice(multiple_gestation, @singleton)
+      end
+    end
+
+    def create_twin_gestation
+      @twin = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 2)
+      take_survey(@survey, @response_set) do |a|
+        a.choice(multiple_gestation, @twin)
+      end
+    end
+
+    def create_triplet_gestation
+      @triplet = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 3)
+      take_survey(@survey, @response_set) do |a|
+        a.choice(multiple_gestation, @triplet)
       end
     end
 

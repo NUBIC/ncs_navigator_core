@@ -11,7 +11,9 @@ class SurveyorController < ApplicationController
   end
 
   def render_context
-    NcsNavigator::Core::Mustache::InstrumentContext.new(@response_set)
+    ctxt = NcsNavigator::Core::Mustache::InstrumentContext.new(@response_set)
+    ctxt.current_user = current_user
+    ctxt
   end
 
   private

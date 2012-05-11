@@ -661,6 +661,12 @@ module TestSurveys
     a = Factory(:answer, :question_id => q.id, :text => "Ineligible - too young", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "Ineligible - too old", :response_class => "answer", :reference_identifier => "3")
 
+    # Multiple Gestation
+    q = Factory(:question, :reference_identifier => "MULTIPLE_GESTATION", :data_export_identifier => "PREG_VISIT_1_2.MULTIPLE_GESTATION", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Singleton", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "Twins", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Triplets or higher", :response_class => "answer", :reference_identifier => "3")
+
     survey
   end
 
@@ -784,6 +790,17 @@ module TestSurveys
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "PREG_VISIT_1_2.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
+
+    survey
+  end
+  
+  def create_pregnancy_visit_1_saq_with_father_data
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_SAQ_EHPBHI_P2_V2.0", :access_code => "ins-que-pregvisit1-saq-ehpbhi-p2-v2-0_test")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Father Name
+    q = Factory(:question, :reference_identifier => "FATHER_NAME", :data_export_identifier => "PREG_VISIT_1_SAQ_2.FATHER_NAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Father Name", :response_class => "string")
 
     survey
   end

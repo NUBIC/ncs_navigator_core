@@ -124,10 +124,10 @@ describe Contact do
 
       c.contact_links.reload
       c.instruments.reload
-      c.contact_links.should == [l1, l2, l3]
-      c.instruments.should == [i1, i2, i3]
-      c.instruments_with_surveys.should == [i1, i2]
-      c.instrument_survey_titles.should == [i1.survey.title, i2.survey.title]
+      [l1, l2, l3].each { |ins| c.contact_links.should.should include(ins) }
+      [i1, i2, i3].each { |ins| c.instruments.should include(ins) }
+      [i1, i2].each { |ins| c.instruments_with_surveys.should include(ins) }
+      [i1.survey.title, i2.survey.title].each { |t| c.instrument_survey_titles.should include(t) }
     end
 
     describe "setting the language and interpreter values" do
