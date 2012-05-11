@@ -21,7 +21,11 @@ gem 'foreman'
 gem 'foreigner'
 
 group :assets do
-  gem 'sass-rails', "~> 3.1.0"
+  # sass-rails 3.1.6 induces indefinite recursion during
+  # assets:precompile under capistrano.
+  # Related (but not exactly the same problem we saw):
+  #  https://github.com/rails/sass-rails/commit/0b435834bc37e26c016f2d29885ca3bfe08ae827
+  gem 'sass-rails', "~> 3.1.0", "!= 3.1.6"
   gem 'coffee-rails', "~> 3.1.0"
   gem 'uglifier'
 end

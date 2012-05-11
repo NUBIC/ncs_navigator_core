@@ -33,9 +33,9 @@ class SpecimensController < ApplicationController
     @shipment_issues               = NcsCode.for_list_name_and_local_code("SHIPMENT_ISSUES_CL1", "-7") # Not applicable
     @shipment_date                 = (@shipment_date_and_time != nil) ? @shipment_date_and_time.split.first : nil
 
-    @specimen_receipts.each do |sr|
+    @specimen_receipts_hash.each do |key, value|
       sh = SpecimenShipping.new(
-            :storage_container_id                   => sr.storage_container_id, 
+            :storage_container_id                   => key, 
             :staff_id                               => @staff_id, 
             :shipper_id                             => @shipper_id, 
             :shipper_destination                    => @send_to_site_selected_id.first, 
@@ -45,16 +45,23 @@ class SpecimensController < ApplicationController
             :specimen_processing_shipping_center_id => @specimen_processing_shipping_center_id, 
             :shipment_temperature_code              => @shipping_temperature_selected, 
             :shipment_receipt_confirmed             => @shipment_receipt_confirmed,
-            :shipment_issues                        => @shipment_issues)
-
+            :shipment_issues                        => @shipment_issues)      
+      value.each do |sr|
+        ship_specimen = sh.ship_specimens.build(      
+            :specimen_shipping  => sh,
+            :specimen_id        => Specimen.where(:specimen_id => sr.specimen_id).first.id, 
+            :volume_amount      => @volume_amt[sr.specimen_id],
+            :volume_unit        => @volume_unit[sr.specimen_id])
+      end
       array_of_spec_shipping_records << sh
-      SpecimenShipping.transaction do
-        array_of_spec_shipping_records.each do |sh|
-          unless sh.save
-            saved = false
-            problem = sh
-            raise ActiveRecord::Rollback             
-          end
+    end
+    
+    SpecimenShipping.transaction do
+      array_of_spec_shipping_records.each do |sh|
+        unless sh.save
+          saved = false
+          problem = sh
+          raise ActiveRecord::Rollback             
         end
       end
     end
@@ -69,6 +76,7 @@ class SpecimensController < ApplicationController
         end
       end      
     end
+
   end
   
   def send_email
@@ -123,8 +131,12 @@ class SpecimensController < ApplicationController
     SpecimenReceipt.all.select{ |sr| SpecimenShipping.where(:storage_container_id => sr.storage_container_id).blank? }
   end
   
-  def array_of_selected_specs(array_of_ids)
+  def array_of_selected_spec_receipts(array_of_ids)
     SpecimenReceipt.find(:all, :conditions => { :storage_container_id => array_of_ids})
+  end
+  
+  def array_of_selected_specs (array_of_spec_ids)
+    Specimen.find(:all, :conditions => { :specimen_id => array_of_spec_ids})
   end
   
   def hash_from_array(array_of_specs)
@@ -137,7 +149,7 @@ class SpecimensController < ApplicationController
   end
 
   def populate_specimen_receipts
-    @specimen_receipts = array_of_selected_specs(params[:storage_container_id])
+    @specimen_receipts = array_of_selected_spec_receipts(params[:storage_container_id])
     @specimen_receipts_hash = hash_from_array(@specimen_receipts)
   end
 end
