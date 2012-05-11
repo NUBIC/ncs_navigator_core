@@ -37,6 +37,32 @@ module NcsNavigator::Core::Mustache
           instrument_context.response_for(baby_fname).should == 'Mary'
         end
       end
+
+    end
+
+    context "for a lo i birth instrument" do
+      before(:each) do
+        @person = Factory(:person)
+        @survey = create_lo_i_birth_survey
+        @response_set, @instrument = prepare_instrument(@person, @survey)
+      end
+
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      describe ".birth_instrument_multiple_prefix" do
+        it "returns BirthOperationalDataExtractor::BIRTH_LI_PREFIX" do
+          instrument_context.birth_instrument_multiple_prefix.should ==
+            BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+        end
+      end
+
+      describe ".birth_baby_name_prefix" do
+        it "returns BirthOperationalDataExtractor::BABY_NAME_LI_PREFIX" do
+          instrument_context.birth_baby_name_prefix.should ==
+            BirthOperationalDataExtractor::BABY_NAME_LI_PREFIX
+        end
+      end
+
     end
 
     context "for a birth instrument" do
@@ -47,6 +73,20 @@ module NcsNavigator::Core::Mustache
       end
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      describe ".birth_instrument_multiple_prefix" do
+        it "returns BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX" do
+          instrument_context.birth_instrument_multiple_prefix.should ==
+            BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+        end
+      end
+
+      describe ".birth_baby_name_prefix" do
+        it "returns BirthOperationalDataExtractor::BABY_NAME_PREFIX" do
+          instrument_context.birth_baby_name_prefix.should ==
+            BirthOperationalDataExtractor::BABY_NAME_PREFIX
+        end
+      end
 
       describe ".b_fname" do
         it "returns the entered first name of the baby" do

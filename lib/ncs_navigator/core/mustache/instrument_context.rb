@@ -24,15 +24,36 @@ module NcsNavigator::Core::Mustache
 
     ### Birth Instruments ###
 
+    # BABY_NAME_PREFIX    = "BIRTH_VISIT_BABY_NAME_2"
+    # BIRTH_VISIT_PREFIX  = "BIRTH_VISIT_2"
+    # BABY_NAME_LI_PREFIX = "BIRTH_VISIT_LI_BABY_NAME"
+    # BIRTH_LI_PREFIX     = "BIRTH_VISIT_LI"
+
+    def birth_instrument_multiple_prefix
+      if /_Birth_INT_LI_/ =~ @response_set.survey.title
+        BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+      else
+        BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+      end
+    end
+
+    def birth_baby_name_prefix
+      if /_Birth_INT_LI_/ =~ @response_set.survey.title
+        BirthOperationalDataExtractor::BABY_NAME_LI_PREFIX
+      else
+        BirthOperationalDataExtractor::BABY_NAME_PREFIX
+      end
+    end
+
     ##
     # true if response to MULTIPLE is no or not yet responded
     def single_birth?
-      multiple = response_for("#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MULTIPLE")
+      multiple = response_for("#{birth_instrument_multiple_prefix}.MULTIPLE")
       multiple.blank? || multiple.downcase.eql?("no")
     end
 
     def baby_sex_response
-      response_for("#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_SEX").downcase
+      response_for("#{birth_baby_name_prefix}.BABY_SEX").downcase
     end
 
     ##
@@ -53,7 +74,7 @@ module NcsNavigator::Core::Mustache
 
     # {B_NAME/your baby}
     def b_fname
-      result = response_for("#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME")
+      result = response_for("#{birth_baby_name_prefix}.BABY_FNAME")
       result = 'your baby' if result.blank?
       result
     end

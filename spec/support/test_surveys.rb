@@ -878,8 +878,14 @@ module TestSurveys
     survey
   end
 
+  def create_lo_i_birth_survey
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_LI_P2_V1.0", :access_code => "ins-que-birth-int-li-p2-v2-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    survey
+  end
+
   def create_birth_survey_with_tracing_operational_data
-    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-birth-int-ehpbhil-p2-v2-0")
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHI_P2_V2.0", :access_code => "ins-que-birth-int-ehpbhi-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
     # First name
     q = Factory(:question, :reference_identifier => "R_FNAME", :data_export_identifier => "BIRTH_VISIT_2.R_FNAME", :survey_section_id => survey_section.id)
