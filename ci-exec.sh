@@ -42,4 +42,8 @@ set -e
 
 bundle _${BUNDLER_VERSION}_ install
 
-bundle _${BUNDLER_VERSION}_ exec rake ci:core --trace
+if [ -z $CI_TASKS ]; then
+  CI_TASKS = 'ci:core'
+fi
+
+bundle _${BUNDLER_VERSION}_ exec rake $CI_TASKS --trace
