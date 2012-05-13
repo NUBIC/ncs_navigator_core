@@ -38,7 +38,13 @@ end
     let(:participant) { Factory(:participant) }
     let(:event) { Factory(:event, :participant => participant) }
     let(:instrument) { Factory(:instrument, :event => event) }
-    let(:response_set) { ResponseSet.create(:survey => survey, :instrument => instrument) }
+    let(:response_set) {
+      ResponseSet.new.tap { |rs|
+        rs.survey = survey
+        rs.instrument = instrument
+        rs.save!
+      }
+    }
 
     let(:records) { response_set.to_mdes_warehouse_records }
 
