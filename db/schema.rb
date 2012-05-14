@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120507183332) do
+ActiveRecord::Schema.define(:version => 20120514174938) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                              :null => false
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20120507183332) do
     t.integer  "response_set_id"
     t.integer  "specimen_processing_shipping_center_id"
     t.integer  "sample_receipt_shipping_center_id"
+    t.integer  "provider_id"
   end
 
   create_table "answers", :force => true do |t|
@@ -647,6 +648,19 @@ ActiveRecord::Schema.define(:version => 20120507183332) do
     t.integer  "response_set_id"
   end
 
+  create_table "person_provider_links", :force => true do |t|
+    t.integer  "psu_code",                                   :null => false
+    t.string   "person_provider_id",           :limit => 36, :null => false
+    t.integer  "provider_id"
+    t.integer  "person_id"
+    t.integer  "is_active_code",                             :null => false
+    t.integer  "provider_intro_outcome_code",                :null => false
+    t.string   "provider_intro_outcome_other"
+    t.string   "transaction_type",             :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "person_races", :force => true do |t|
     t.integer  "psu_code",                       :null => false
     t.string   "person_race_id",   :limit => 36, :null => false
@@ -859,6 +873,38 @@ ActiveRecord::Schema.define(:version => 20120507183332) do
     t.datetime "time_stamp_11"
     t.datetime "time_stamp_12"
     t.datetime "time_stamp_13"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "provider_roles", :force => true do |t|
+    t.integer  "psu_code",                              :null => false
+    t.string   "provider_role_id",        :limit => 36, :null => false
+    t.integer  "provider_id"
+    t.integer  "provider_ncs_role_code",                :null => false
+    t.string   "provider_ncs_role_other"
+    t.string   "transaction_type",        :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "providers", :force => true do |t|
+    t.integer  "psu_code",                                 :null => false
+    t.string   "provider_id",                :limit => 36, :null => false
+    t.integer  "provider_type_code",                       :null => false
+    t.string   "provider_type_other"
+    t.integer  "provider_ncs_role_code",                   :null => false
+    t.string   "provider_ncs_role_other"
+    t.integer  "practice_info_code",                       :null => false
+    t.integer  "practice_patient_load_code",               :null => false
+    t.integer  "practice_size_code",                       :null => false
+    t.integer  "public_practice_code",                     :null => false
+    t.integer  "provider_info_source_code",                :null => false
+    t.string   "provider_info_source_other"
+    t.date     "provider_info_date"
+    t.date     "provider_info_update"
+    t.text     "provider_comment"
+    t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
