@@ -6,8 +6,8 @@ module NcsNavigator::Core::Fieldwork
 
     subject { ResponseGroup.new }
 
-    let(:r1) { adapt_model(Response.new('question_id' => 'abcdef', 'uuid' => 'foo')) }
-    let(:r2) { adapt_model(Response.new('question_id' => '123456', 'uuid' => 'bar')) }
+    let(:r1) { adapt_model(Response.new('question_id' => 'abcdef', 'api_id' => 'foo')) }
+    let(:r2) { adapt_model(Response.new('question_id' => '123456', 'api_id' => 'bar')) }
 
     describe '#save' do
       let!(:rs1) { Factory(:response_set, :api_id => 'rs_foo') }
