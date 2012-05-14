@@ -118,7 +118,7 @@ module NcsNavigator::Core::Fieldwork
         SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties']
       end
 
-      it_merges 'breakoff'
+      it_merges 'break_off'
       it_merges 'comments'
       it_merges 'data_problem'
       it_merges 'end_date'
