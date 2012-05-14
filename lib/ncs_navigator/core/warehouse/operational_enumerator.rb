@@ -276,7 +276,10 @@ module NcsNavigator::Core::Warehouse
         :address_one => :address_1,
         :address_two => :address_2
       },
-      :ignored_columns => %w(address_start_date_date address_end_date_date response_set_id)
+      :ignored_columns => %w(
+        address_start_date_date address_end_date_date
+        response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
+      )
     )
 
     produce_one_for_one(:emails, Email,
