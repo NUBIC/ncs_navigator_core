@@ -21,7 +21,7 @@ FactoryGirl.define do
 
   factory :sample_receipt_shipping_center do |srsc|
     srsc.psu_code                             20000030
-    srsc.sample_receipt_shipping_center_id    {"555"}
+    srsc.sample_receipt_shipping_center_id    {"srsc_id"}
     srsc.association :address, :factory => :address
     srsc.transaction_type                     nil
   end

@@ -50,7 +50,7 @@ FactoryGirl.define do
 
   factory :specimen_processing_shipping_center do |spsc|
     spsc.psu_code                            20000030
-    spsc.specimen_processing_shipping_center_id      {"234"}
+    spsc.specimen_processing_shipping_center_id      {"spsc_id"}
     spsc.association :address, :factory => :address
     spsc.transaction_type                    nil
   end

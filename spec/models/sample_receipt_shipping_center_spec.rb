@@ -27,15 +27,15 @@ describe SampleReceiptShippingCenter do
       srsc = Factory(:sample_receipt_shipping_center)
       srsc.public_id.should_not be_nil
       srsc.sample_receipt_shipping_center_id.should == srsc.sample_receipt_shipping_center_id
-      srsc.sample_receipt_shipping_center_id.to_s.should == "555"
+      srsc.sample_receipt_shipping_center_id.to_s.should == "srsc_id"
     end
 
-    it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      srsc = SampleReceiptShippingCenter.create(:sample_receipt_shipping_center_id => "spscId134")
+    it "saves an object for all required params" do
+      srsc = SampleReceiptShippingCenter.create(:sample_receipt_shipping_center_id => "spscId134", :psu_code => "20000030")
       srsc.save!
  
       obj = SampleReceiptShippingCenter.find(srsc.id)
-      obj.psu.local_code.should == -4      
+      obj.psu.local_code.should == 20000030
     end
   end  
 end

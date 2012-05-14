@@ -1,4 +1,10 @@
 class SpecimenProcessingShippingCentersController < ApplicationController
+  before_filter :define_spsc_id
+  
+  def define_spsc_id
+    @specimen_processing_shipping_center_id = NcsNavigatorCore.spsc_id
+  end
+  
   def index
     @specimen_processing_shipping_centers = SpecimenProcessingShippingCenter.find(:all)
 
@@ -7,14 +13,22 @@ class SpecimenProcessingShippingCentersController < ApplicationController
       format.json { render :json => @specimen_processing_shipping_centers}
     end
   end
-
+  
   def new
-    @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new
-    @specimen_processing_shipping_center.address = Address.new
-  end
+    @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.last
+    if @specimen_processing_shipping_center.blank?
+      @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new
+      @specimen_processing_shipping_center.address = Address.new
+    else
+      render :edit, :notice => 'Specimen Processing Shipping Center already exists'
+    end
+  end  
   
   def create
-    @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new(params[:specimen_processing_shipping_center])
+    @params = params[:specimen_processing_shipping_center]
+    @params[:psu_code] = @psu_code
+    @params[:specimen_processing_shipping_center_id] = @specimen_processing_shipping_center_id
+    @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new(@params)
     respond_to do |format|
      if @specimen_processing_shipping_center.save
         format.html { redirect_to(specimen_processing_shipping_centers_path, :notice => 'Specimen Processing Shipping Center was successfully created.') }

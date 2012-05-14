@@ -94,7 +94,7 @@ class SamplesController < ApplicationController
   def process_params
     @shipper_id                        = NcsNavigatorCore.shipper_id
     @psu_id                            = @psu_code
-    @sample_receipt_shipping_center_id = SampleReceiptShippingCenter.last.id
+    @sample_receipt_shipping_center_id = NcsNavigatorCore.srsc_id
     @shipment_date_and_time            = params[:shipment_date_and_time]
     @shipment_tracking_number          = params[:shipment_tracking_number]
     @contact_name                      = params[:contact_name]
