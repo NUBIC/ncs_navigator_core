@@ -155,6 +155,7 @@ class Fieldwork < ActiveRecord::Base
       sp.set_original(JSON.parse(original_data))
       sp.set_proposed(JSON.parse(received_data))
       sp.set_current
+      sp.group_responses
 
       sp.merge
 

@@ -2,15 +2,30 @@ require 'spec_helper'
 
 module NcsNavigator::Core::Fieldwork
   describe ResponseGroup do
+    include Adapters
+
     subject { ResponseGroup.new }
 
-    let(:r1) { stub(:question_id => 'abcdef', :uuid => 'foo') }
-    let(:r2) { stub(:question_id => '123456', :uuid => 'bar') }
+    let(:r1) { adapt_model(Response.new('question_id' => 'abcdef', 'uuid' => 'foo')) }
+    let(:r2) { adapt_model(Response.new('question_id' => '123456', 'uuid' => 'bar')) }
 
     describe '#save' do
+      let!(:rs1) { Factory(:response_set, :api_id => 'rs_foo') }
+      let!(:rs2) { Factory(:response_set, :api_id => 'rs_bar') }
+
       before do
         subject << r1
         subject << r2
+
+        r1.ancestors = { :response_set => stub(:uuid => 'rs_foo') }
+        r2.ancestors = { :response_set => stub(:uuid => 'rs_bar') }
+      end
+
+      it 'sets response set IDs on responses' do
+        subject.save
+
+        r1.response_set_id.should == rs1.id
+        r2.response_set_id.should == rs2.id
       end
 
       it 'saves each response' do

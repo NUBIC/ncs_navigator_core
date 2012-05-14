@@ -59,6 +59,9 @@ Response:
   question_id:
     reader: target.question.try(:api_id)
     writer: target.question_id = Question.where(:api_id => val).first.try(:id)
+  response_set_id:
+    reader: target.response_set_id
+    writer: target.response_set_id = val
   value:
     reader: target.value
     writer: target.value = val

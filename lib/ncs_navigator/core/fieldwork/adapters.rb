@@ -559,16 +559,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :event_id
 
-    def incentive_cash
-      target.event_incentive_cash
-    end
-
-    def incentive_cash=(val)
-      target.event_incentive_cash = val
-    end
-
-    attr_accessible :incentive_cash
-
     def incentive_type
       target.event_incentive_type_code
     end
@@ -578,6 +568,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     attr_accessible :incentive_type
+
+    def incentive_cash
+      target.event_incentive_cash
+    end
+
+    def incentive_cash=(val)
+      target.event_incentive_cash = val
+    end
+
+    attr_accessible :incentive_cash
 
     def repeat_key
       target.event_repeat_key
@@ -1389,6 +1389,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
+    def uuid
+      target.api_id
+    end
+
     def answer_id
       target.answer.try(:api_id)
     end
@@ -1409,9 +1413,15 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :question_id
 
-    def uuid
-      target.api_id
+    def response_set_id
+      target.response_set_id
     end
+
+    def response_set_id=(val)
+      target.response_set_id = val
+    end
+
+    attr_accessible :response_set_id
 
     def value
       target.value

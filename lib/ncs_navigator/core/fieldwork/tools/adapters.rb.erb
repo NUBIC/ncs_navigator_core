@@ -70,9 +70,8 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
-    <% attributes[k].each do |attr, _| %>
-    <% to = attribute_map[k] ? attribute_map[k][attr] : nil %>
-    <% if to %>
+    <% if attribute_map[k] %>
+    <% attribute_map[k].each do |attr, to| %>
     <% if to.is_a?(Hash) %>
     <% if to['reader'] %>
     def <%= attr %>
