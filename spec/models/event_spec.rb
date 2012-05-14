@@ -280,6 +280,63 @@ describe Event do
     end
   end
 
+  context "time format" do
+
+    let(:event) { Factory(:event) }
+
+    describe ".event_start_time=" do
+      it "creates an active record error if given a bad time" do
+        event.event_start_time = "66:66"
+        event.should be_invalid
+        event.errors.to_a.first.should == 'Event start time is invalid'
+      end
+
+      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
+        event.event_start_time = "23:77"
+        event.should be_invalid
+        event.errors.size.should == 1
+        event.errors.to_a.first.should == 'Event start time is invalid'
+      end
+
+      it "is valid if given a valid 24hr time" do
+        event.event_start_time = "23:56"
+        event.should_not be_invalid
+      end
+
+      it "is valid if blank" do
+        event.event_start_time = nil
+        event.should_not be_invalid
+      end
+    end
+
+    describe ".event_end_time=" do
+      it "creates an active record error if given a bad time" do
+        event.event_end_time = "66:66"
+        event.should be_invalid
+        event.errors.to_a.first.should == 'Event end time is invalid'
+      end
+
+      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
+        event.event_end_time = "23:77"
+        event.should be_invalid
+        event.errors.size.should == 1
+        event.errors.to_a.first.should == 'Event end time is invalid'
+      end
+
+      it "is valid if given a valid 24hr time" do
+        event.event_end_time = "23:56"
+        event.should_not be_invalid
+      end
+
+      it "is valid if blank" do
+        event.event_end_time = nil
+        event.should_not be_invalid
+      end
+    end
+
+  end
+
+
   context "auto-completing MDES data" do
 
     before(:each) do

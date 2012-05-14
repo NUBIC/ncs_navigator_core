@@ -52,6 +52,9 @@ describe Contact do
 
   it { should have_many(:contact_links) }
 
+  it { should validate_format_of(:contact_start_time).with('66:66').with_message(%q(contact_start_time is invalid ("66:66"))) }
+  it { should validate_format_of(:contact_end_time).with('66:66').with_message(%q(contact_end_time is invalid ("66:66"))) }
+
   it "knows when it is 'closed'" do
     c = Factory(:contact)
     c.should_not be_closed
@@ -83,6 +86,69 @@ describe Contact do
       obj.contact_private.local_code.should == -4
       obj.who_contacted.local_code.should == -4
     end
+  end
+
+  context "time format" do
+
+    let(:contact) { Factory(:contact) }
+
+    describe ".contact_start_time=" do
+
+      it "creates an active record error if given a string" do
+        contact.contact_start_time = "asdfasdf"
+        contact.should be_invalid
+        contact.errors.to_a.first.should == 'Contact start time is invalid'
+      end
+
+      it "creates an active record error if given a bad time" do
+        contact.contact_start_time = "66:66"
+        contact.should be_invalid
+        contact.errors.to_a.first.should == 'Contact start time is invalid'
+      end
+
+      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
+        contact.contact_start_time = "23:77"
+        contact.should be_invalid
+        contact.errors.size.should == 1
+        contact.errors.to_a.first.should == 'Contact start time is invalid'
+      end
+
+      it "is valid if given a valid 24hr time" do
+        contact.contact_start_time = "23:56"
+        contact.should_not be_invalid
+      end
+
+      it "is valid if blank" do
+        contact.contact_start_time = nil
+        contact.should_not be_invalid
+      end
+    end
+
+    describe ".contact_end_time=" do
+      it "creates an active record error if given a bad time" do
+        contact.contact_end_time = "66:66"
+        contact.should be_invalid
+        contact.errors.to_a.first.should == 'Contact end time is invalid'
+      end
+
+      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
+        contact.contact_end_time = "23:77"
+        contact.should be_invalid
+        contact.errors.size.should == 1
+        contact.errors.to_a.first.should == 'Contact end time is invalid'
+      end
+
+      it "is valid if given a valid 24hr time" do
+        contact.contact_end_time = "23:56"
+        contact.should_not be_invalid
+      end
+
+      it "is valid if blank" do
+        contact.contact_end_time = nil
+        contact.should_not be_invalid
+      end
+    end
+
   end
 
   context "contact links and instruments" do
