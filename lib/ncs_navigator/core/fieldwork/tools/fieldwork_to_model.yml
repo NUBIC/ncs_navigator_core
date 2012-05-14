@@ -34,7 +34,7 @@ Event:
   type: event_type_code
   type_other: event_type_other
 Instrument:
-  breakoff: instrument_breakoff_code
+  break_off: instrument_breakoff_code
   comments: instrument_comment
   data_problem: data_problem_code
   end_date: instrument_end_date

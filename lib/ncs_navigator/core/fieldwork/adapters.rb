@@ -8,7 +8,7 @@ require 'ncs_navigator/core'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: af5edcc2cd0147814070f51ad38d0a7eeb49bc14
+# Schema revision: 25c65d604156cde03f7653206606c54779b9255a
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -813,15 +813,15 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
-    def breakoff
+    def break_off
       target.instrument_breakoff_code
     end
 
-    def breakoff=(val)
+    def break_off=(val)
       target.instrument_breakoff_code = val
     end
 
-    attr_accessible :breakoff
+    attr_accessible :break_off
 
     def comments
       target.instrument_comment
@@ -1008,12 +1008,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
-    def breakoff
-      (target[%q{breakoff}])
+    def break_off
+      (target[%q{break_off}])
     end
 
-    def breakoff=(val)
-      target[%q{breakoff}] = val
+    def break_off=(val)
+      target[%q{break_off}] = val
     end
 
     def comments
