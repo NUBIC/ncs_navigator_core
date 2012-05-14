@@ -47,6 +47,9 @@ class Event < ActiveRecord::Base
   ncs_coded_attribute :event_breakoff,             'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :event_incentive_type,       'INCENTIVE_TYPE_CL1'
 
+  validates_format_of :event_start_time, :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+  validates_format_of :event_end_time,   :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+
   ##
   # A partial ordering of MDES event types. The ordering is such that,
   # if an event of type A and one of type B occur on the same day, A

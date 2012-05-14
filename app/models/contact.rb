@@ -55,6 +55,9 @@ class Contact < ActiveRecord::Base
   has_many :instruments, :through => :contact_links
   has_many :non_interview_reports
 
+  validates_format_of :contact_start_time, :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+  validates_format_of :contact_end_time,   :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+
   ##
   # An event is 'closed' or 'completed' if the disposition has been set.
   # @return [true, false]
