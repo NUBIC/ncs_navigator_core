@@ -9,7 +9,7 @@ NCS Navigator Core Setup and Configuration
     - rake db:migrate
 
   To populate the database with all the code lists from the MDES
-    - rake mdes:load_codes_from_schema
+    - rake mdes:load_codes_from_schema or rake db:seed
 
   To upload and create the surveys/instruments
     - rake setup:surveys
