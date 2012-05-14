@@ -43,8 +43,11 @@ module NcsNavigator::Core::Fieldwork
     # @private
     def with_referenced_schemas
       begin
-        JSON.parse(File.read("#{SCHEMA_ROOT}/refs.json")).each do |uri, fn|
-          full_path = "#{SCHEMA_ROOT}/#{fn}"
+        json = JSON.parse(File.read("#{SCHEMA_ROOT}/refs.json"))
+
+        json['refs'].each do |schema|
+          uri = schema['$ref']
+          full_path = "#{SCHEMA_ROOT}/#{schema['fn']}"
           schema = JSON::Schema.new(JSON.parse(File.read(full_path)), URI.parse(uri))
 
           JSON::Validator.add_schema(schema)
