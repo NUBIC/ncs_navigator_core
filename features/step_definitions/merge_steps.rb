@@ -11,13 +11,15 @@ end
 # We want direct Rack::Test access, but it's not really an API-only
 # integration test.
 Before '@merge' do
-  extend Forwardable
-
   def browser
     Capybara.current_session.driver.browser
   end
 
-  def_delegators :browser, *Rack::Test::Methods::METHODS
+  class << self
+    extend Forwardable
+
+    def_delegators :browser, *Rack::Test::Methods::METHODS
+  end
 end
 
 Given /^the participant$/ do |table|
