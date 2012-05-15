@@ -883,7 +883,7 @@ ActiveRecord::Schema.define(:version => 20120514231257) do
     t.integer  "provider_id"
     t.integer  "provider_ncs_role_code",                :null => false
     t.string   "provider_ncs_role_other"
-    t.string   "transaction_type"
+    t.string   "transaction_type",        :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
