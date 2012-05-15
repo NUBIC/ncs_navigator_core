@@ -1,6 +1,7 @@
 GIT
-  remote: git://github.com/bmabey/database_cleaner.git
-  revision: 205331686d4c42c36c3fbbb4194ac6362446d93a
+  remote: git://github.com/rsutphin/database_cleaner.git
+  revision: f451054745a36d361127ddd128c362df7f38547d
+  branch: dm-pg-single-trunc
   specs:
     database_cleaner (0.7.2)
 
