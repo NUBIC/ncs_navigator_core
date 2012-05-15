@@ -958,7 +958,7 @@ module NcsNavigator::Core::Warehouse
             should == %w(f_e2_i f_e5_i g_e1_i)
         end
 
-        describe 'PSC sync records' do
+        describe 'PSC sync records', :redis do
           let(:redis) { Rails.application.redis }
           let(:ns) { 'NcsNavigator::Core::Warehouse::OperationalImporter' }
 

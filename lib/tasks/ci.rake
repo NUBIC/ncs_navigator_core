@@ -42,7 +42,7 @@ begin
     desc "Run warehouse specs for CI"
     RSpec::Core::RakeTask.new(:spec_warehouse => [:setup, :spec_setup, 'ci:setup:rspecbase', 'db:test:prepare:warehouse']) do |t|
       t.pattern = "spec/**/*_spec.rb"
-      t.rspec_opts = "-t warehouse"
+      t.rspec_opts = "-t warehouse -t ~redis"
     end
 
     Cucumber::Rake::Task.new(
