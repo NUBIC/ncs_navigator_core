@@ -25,8 +25,11 @@ module NcsNavigator::Core::Warehouse
     end
 
     let(:bcdatabase_config) {
-      if Rails.env == 'ci'
+      case Rails.env
+      when 'ci'
         { :group => 'public_ci_postgresql9' }
+      when 'ci_warehouse'
+        { :group => 'public_ci_postgresql9', :name => 'ncs_navigator_core_wh' }
       else
         { :name => 'ncs_navigator_core_test' }
       end

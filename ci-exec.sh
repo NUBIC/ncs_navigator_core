@@ -1,6 +1,8 @@
 #!/bin/bash -xe
 
-export RAILS_ENV=ci
+if [ -z $RAILS_ENV ]; then
+    export RAILS_ENV=ci
+fi
 
 BUNDLER_VERSION=1.1.3
 GEMSET=ncs_navigator_core
