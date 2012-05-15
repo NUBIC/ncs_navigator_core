@@ -34,6 +34,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
+
 describe Contact do
   include SurveyCompletion
 
@@ -54,6 +56,15 @@ describe Contact do
 
   it { should validate_format_of(:contact_start_time).with('66:66').with_message(%q(contact_start_time is invalid ("66:66"))) }
   it { should validate_format_of(:contact_end_time).with('66:66').with_message(%q(contact_end_time is invalid ("66:66"))) }
+
+  it_should_behave_like 'an optimistically locked record' do
+    subject { Factory(:contact) }
+
+    def modify(winner, loser)
+      winner.contact_type_other = 'winner'
+      loser.contact_type_other = 'loser'
+    end
+  end
 
   it "knows when it is 'closed'" do
     c = Factory(:contact)

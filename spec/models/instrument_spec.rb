@@ -34,12 +34,23 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
+
 describe Instrument do
 
   before(:each) do
     @y = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
     @n = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
     @q = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', -4)
+  end
+
+  it_should_behave_like 'an optimistically locked record' do
+    subject { Factory(:instrument) }
+
+    def modify(winner, loser)
+      winner.instrument_comment = 'modified'
+      loser.instrument_comment = 'also modified'
+    end
   end
 
   it "creates a new instance given valid attributes" do

@@ -31,6 +31,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
+
 describe Event do
 
   it "should create a new instance given valid attributes" do
@@ -48,6 +50,15 @@ describe Event do
   it { should have_many(:contact_links) }
   it { should have_many(:contacts).through(:contact_links) }
   it { should have_many(:instruments).through(:contact_links) }
+
+  it_should_behave_like 'an optimistically locked record' do
+    subject { Factory(:event) }
+
+    def modify(winner, loser)
+      winner.event_type_other = 'winner'
+      loser.event_type_other = 'loser'
+    end
+  end
 
   describe '#closed?' do
     subject { Factory(:event) }
