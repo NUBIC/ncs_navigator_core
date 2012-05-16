@@ -4,6 +4,8 @@ require 'ncs_navigator/warehouse'
 
 module NcsNavigator::Core::Spec
   module WarehouseSetup
+    # This configuration is only used for tests for components that
+    # read from the warehouse.
     def wh_config
       @wh_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |config|
         config.log_file = Rails.root + 'log/wh-import_test.log'
@@ -28,10 +30,13 @@ module NcsNavigator::Core::Spec
 
     def bcdatabase_config
       @bcdatabase_config ||=
-        if Rails.env == 'ci'
-          { :group => :public_ci_postgresql9 }
+        case Rails.env
+        when 'ci'
+          { :group => 'public_ci_postgresql9' }
+        when 'ci_warehouse'
+          { :group => 'public_ci_postgresql9', :name => 'ncs_navigator_core_wh' }
         else
-          { :name => :ncs_navigator_core_test }
+          { :name => 'ncs_navigator_core_test' }
         end
     end
 

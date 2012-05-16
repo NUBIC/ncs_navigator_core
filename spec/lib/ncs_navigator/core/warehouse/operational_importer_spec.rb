@@ -109,11 +109,16 @@ module NcsNavigator::Core::Warehouse
         end
 
         describe 'when an entity association is changed' do
-          let!(:core_address) { Factory(:address, :person => core_person) }
-          let!(:mdes_address) { enumerator.to_a(:addresses).first.tap { |a| a.save } }
+          let!(:core_address) { Factory(:mdes_min_address, :person => core_person) }
+          let!(:mdes_address) { enumerator.to_a(:addresses).first.tap { |a| save_wh(a) } }
+
+          # Matches the ssu_ids used in the factories
+          let!(:ssu) { create_warehouse_record_with_defaults(MdesModule::Ssu, :ssu_id => '42') }
 
           before do
             second_person = Factory(:person, :last_name => 'MacMurray')
+            save_wh(enumerator.to_a(:people).find { |p| p.last_name == second_person.last_name })
+
             mdes_address.person_id = second_person.public_id
             save_wh(mdes_address)
 
@@ -157,16 +162,13 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'of a completely new record' do
-        let!(:core_person) { Factory(:person) }
+        let!(:core_person) { Factory(:person, :person_id => 'P47') }
 
         let!(:mdes_address) {
-          Factory(:address, :person => core_person, :address_one => '123 Anymain Dr.')
-          enumerator.to_a(:addresses).first.tap do |a|
-            a.save
-            # remove the corresponding core record
-            Address.destroy_all
-            Address.count.should == 0
-          end
+          core_address = Factory(:mdes_min_address,
+            :address_id => 'A7', :address_one => '123 Anymain Dr.',
+            :person => core_person)
+          create_warehouse_record_for_core_record(core_address)
         }
 
         before do
@@ -217,7 +219,7 @@ module NcsNavigator::Core::Warehouse
           before do
             # test setup
             auto_names.index(:people).should < auto_names.index(:participant_person_links)
-            importer.import(:people, :participant_person_links)
+            importer.import(:people, :participants, :participant_person_links)
           end
 
           it 'works' do
@@ -238,13 +240,7 @@ module NcsNavigator::Core::Warehouse
         let(:core_table) { core_model.table_name.to_sym }
 
         let!(:mdes_record) {
-          core_record # ensure created
-          enumerator.to_a(core_table).first.tap do |a|
-            save_wh(a)
-            # remove the corresponding core record
-            core_model.destroy_all
-            core_model.count.should == 0
-          end
+          create_warehouse_record_for_core_record(core_record)
         }
 
         it 'works' do
@@ -253,7 +249,10 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      describe 'of core model', :slow do
+      describe 'of core model' do
+        # Matches the ssu_ids used in the factories
+        let!(:ssu) { create_warehouse_record_with_defaults(MdesModule::Ssu, :ssu_id => '42') }
+
         # with no special data needs
         [
           ListingUnit, DwellingUnit, DwellingHouseholdLink, HouseholdUnit, HouseholdPersonLink,
@@ -363,6 +362,10 @@ module NcsNavigator::Core::Warehouse
           :p => participant, :ppg_status => '1', :ppg_status_date => '2011-06-04')
       }
 
+      let!(:staff) {
+        create_warehouse_record_with_defaults(MdesModule::Staff, :staff_id => 'SPI')
+      }
+
       let(:screener_date) { '2010-03-06' }
       let!(:screener_event) {
         create_warehouse_record_with_defaults(MdesModule::Event,
@@ -379,11 +382,11 @@ module NcsNavigator::Core::Warehouse
       }
       let!(:screener_lc_1) {
         create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '1',
-          :contact => screener_contact_1, :event => screener_event)
+          :contact => screener_contact_1, :event => screener_event, :staff => staff)
       }
       let!(:screener_lc_2) {
         create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '2',
-          :contact => screener_contact_2, :event => screener_event)
+          :contact => screener_contact_2, :event => screener_event, :staff => staff)
       }
 
       describe 'when the source history is correct' do
@@ -455,24 +458,61 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_warehouse_record_via_core(core_model, wh_id, wh_attributes={})
-      core_instances = []
-      core_instances << Factory(core_model.to_s.underscore, core_model.public_id_field => wh_id)
+      factory_name = [
+        "mdes_min_#{core_model.to_s.underscore}",
+        core_model.to_s.underscore
+      ].find { |candidate| FactoryGirl.factories.registered?(candidate) }
+
+      core_record = Factory(factory_name, core_model.public_id_field => wh_id)
+
+      create_warehouse_record_for_core_record(core_record, wh_attributes)
+    end
+
+    ##
+    # n.b.: this method relies on all core MDES-mapped records having
+    # distinct public IDs (i.e. even across types).
+    def create_warehouse_record_for_core_record(core_record, wh_attributes={})
+      core_records = [core_record]
 
       # event enumerator skips events w/o link contact
-      if (core_model == Event)
-        core_instances.unshift Factory(:contact_link, :event_id => core_instances.first.id)
+      surplus_ids = []
+      if (core_record.class == Event)
+        cl = Factory(:mdes_min_contact_link, :event_id => core_record.id)
+        core_records.unshift cl
+        surplus_ids << cl.public_id
       end
 
-      producer = OperationalEnumerator.record_producers.
-        find { |rp| rp.name == core_model.table_name.to_sym }
-      enumerator.each(producer.name) do |mdes_rec|
-        if mdes_rec.key.first == wh_id
-          mdes_rec.attributes = wh_attributes
-          save_wh(mdes_rec)
+      core_instances = related_core_records(core_records).to_a
+
+      # produce all related so that warehouse FKs are satisfied
+      producer_names = core_instances.collect { |ci| ci.class.table_name.to_sym }.uniq
+      producers = OperationalEnumerator.record_producers.
+        select { |rp| producer_names.include?(rp.name) }
+
+      # produce in a transaction so that FK order doesn't matter
+      producers.first.model.transaction do
+        enumerator.to_a(*producer_names).each do |mdes_rec|
+          mdes_key = mdes_rec.key.first
+          mdes_key_name = mdes_rec.class.key.first.name
+          existing_mdes_rec = mdes_rec.class.first(mdes_key_name => mdes_key)
+
+          if mdes_key == core_record.public_id
+            mdes_rec = existing_mdes_rec if existing_mdes_rec
+            mdes_rec.attributes = wh_attributes
+            save_wh(mdes_rec)
+          elsif surplus_ids.include?(mdes_key)
+            # skip
+          elsif core_instances.collect(&:public_id).include?(mdes_key)
+            unless existing_mdes_rec
+              save_wh(mdes_rec)
+            end
+          end
         end
       end
-      core_instances.each(&:destroy)
-      producer.model.first(producer.model.key.first.name => wh_id)
+      core_records.each(&:destroy)
+
+      prime_producer = producers.find { |rp| rp.name == core_record.class.table_name.to_sym }
+      prime_producer.model.first(prime_producer.model.key.first.name => core_record.public_id)
     end
 
     def code_for_event_type(event_type_name)
@@ -493,7 +533,32 @@ module NcsNavigator::Core::Warehouse
       code
     end
 
-    describe 'Event, LinkContact, and Instrument', :slow do
+    ##
+    # Finds all unique core records associated with any of the input
+    # records. This follows associations to the full depth of the graph.
+    def related_core_records(core_records, found=[])
+      core_records.each do |core_record|
+        found << core_record
+        core_record.class.reflect_on_all_associations.
+          reject { |a| a.class_name == 'NcsCode' }.
+          each do |association|
+
+          values = if association.collection?
+                     core_record.send(association.name)
+                   else
+                     [core_record.send(association.name)].compact
+                   end
+
+          values.each do |associated_value|
+            next unless associated_value.respond_to?(:public_id)
+            related_core_records([associated_value], found) unless found.include?(associated_value)
+          end
+        end
+      end
+      found
+    end
+
+    describe 'Event, LinkContact, and Instrument', :slow, :redis do
       before do
         Event.count.should == 0
       end
@@ -510,6 +575,12 @@ module NcsNavigator::Core::Warehouse
       }
       let(:ginger_pers) {
         create_warehouse_record_via_core(Person, 'ginger_pers')
+      }
+
+      let!(:fake_staff) {
+        # this matches the staff ID that the contact_link factory puts
+        # in its LCs.
+        create_warehouse_record_with_defaults(MdesModule::Staff, :staff_id => 'staff_public_id')
       }
 
       let!(:fred_p_pers_link) {

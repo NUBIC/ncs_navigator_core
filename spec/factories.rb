@@ -57,6 +57,16 @@ Factory.define :address do |addr|
   addr.state_code 23
 end
 
+Factory.define :mdes_min_address, :class => Address do |addr|
+  addr.psu_code          2000030
+  addr.address_rank_code 1
+  addr.address_info_source_code 1
+  addr.address_info_mode_code 1
+  addr.address_type_code 1
+  addr.address_description_code 1
+  addr.state_code 23
+end
+
 Factory.define :telephone do |phone|
   phone.association  :person,        :factory => :person
   phone.psu_code               2000030
@@ -98,6 +108,12 @@ Factory.define :contact_link do |cl|
   cl.staff_id "staff_public_id"
   # TODO: create the following
   # cl.association :provider
+end
+
+Factory.define :mdes_min_contact_link, :class => ContactLink do |cl|
+  cl.psu_code    2000030
+  cl.association :contact,    :factory => :contact
+  cl.staff_id    "staff_public_id"
 end
 
 Factory.define :event do |e|

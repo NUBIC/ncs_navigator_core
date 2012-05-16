@@ -1,6 +1,8 @@
 #!/bin/bash -xe
 
-export RAILS_ENV=ci
+if [ -z $RAILS_ENV ]; then
+    export RAILS_ENV=ci
+fi
 
 BUNDLER_VERSION=1.1.3
 GEMSET=ncs_navigator_core
@@ -42,4 +44,8 @@ set -e
 
 bundle _${BUNDLER_VERSION}_ install
 
-bundle _${BUNDLER_VERSION}_ exec rake ci:core --trace
+if [ -z $CI_TASKS ]; then
+    CI_TASKS='ci:core'
+fi
+
+bundle _${BUNDLER_VERSION}_ exec rake $CI_TASKS --trace

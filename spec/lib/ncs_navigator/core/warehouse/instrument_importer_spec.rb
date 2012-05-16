@@ -135,6 +135,12 @@ module NcsNavigator::Core::Warehouse
     let(:wh_instrument) {
       create_mdes_record(MdesModule::Instrument, core_instrument.public_id)
     }
+    let(:wh_du) {
+      create_mdes_record(MdesModule::DwellingUnit, 'DUx')
+    }
+    let(:wh_hh) {
+      create_mdes_record(MdesModule::HouseholdUnit, 'HHx')
+    }
 
     let(:possible_non_question_fields) {
       {
@@ -145,6 +151,8 @@ module NcsNavigator::Core::Warehouse
         :instrument => lambda { wh_instrument },
         :instrument_version => lambda { core_instrument.instrument_version },
         :instrument_repeat_key => lambda { core_instrument.instrument_repeat_key },
+        :du => lambda { wh_du },
+        :hh => lambda { wh_hh },
         :psu_id => lambda { '20000032' },
         :recruit_type => lambda { '3' }
       }
