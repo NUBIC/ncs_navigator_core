@@ -22,6 +22,7 @@ default_environment['PATH'] = '/opt/ruby-enterprise/bin:/usr/kerberos/bin:/usr/l
 set :bundle_without, [:development, :test, :ci, :osx_development]
 
 set :scm, "git"
+set :git_enable_submodules, true
 set :repository, bcconf["repo"]
 set :branch do
   # http://nathanhoad.net/deploy-from-a-git-tag-with-capistrano
