@@ -314,6 +314,11 @@ describe Event do
         event.should_not be_invalid
       end
 
+      it "is valid if given a valid 24hr time with trailing whitespace" do
+        event.event_start_time = "23:56   "
+        event.should_not be_invalid
+      end
+
       it "is valid if blank" do
         event.event_start_time = nil
         event.should_not be_invalid
@@ -336,6 +341,11 @@ describe Event do
 
       it "is valid if given a valid 24hr time" do
         event.event_end_time = "23:56"
+        event.should_not be_invalid
+      end
+
+      it "is valid if given a valid 24hr time with trailing whitespace" do
+        event.event_end_time = "23:56   "
         event.should_not be_invalid
       end
 

@@ -129,6 +129,11 @@ describe Contact do
         contact.should_not be_invalid
       end
 
+      it "is valid if given a valid 24hr time with trailing whitespace" do
+        contact.contact_start_time = "23:56   "
+        contact.should_not be_invalid
+      end
+
       it "is valid if blank" do
         contact.contact_start_time = nil
         contact.should_not be_invalid
@@ -151,6 +156,11 @@ describe Contact do
 
       it "is valid if given a valid 24hr time" do
         contact.contact_end_time = "23:56"
+        contact.should_not be_invalid
+      end
+
+      it "is valid if given a valid 24hr time with trailing whitespace" do
+        contact.contact_end_time = "23:56   "
         contact.should_not be_invalid
       end
 
