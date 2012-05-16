@@ -299,6 +299,39 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.boolean  "being_processed",                            :default => false
   end
 
+  create_table "incidents", :force => true do |t|
+    t.integer  "psu_code",                                             :null => false
+    t.string   "incident_id",                            :limit => 36, :null => false
+    t.string   "incident_date",                          :limit => 10
+    t.string   "incident_time",                          :limit => 5
+    t.string   "incident_report_date",                   :limit => 10
+    t.string   "incident_report_time",                   :limit => 5
+    t.string   "incident_staff_reporter_id",             :limit => 36
+    t.string   "incident_staff_supervisor_id",           :limit => 36
+    t.integer  "contact_id"
+    t.integer  "incident_recipient_is_participant_id"
+    t.integer  "incident_recipient_is_dwelling_unit_id"
+    t.string   "incident_recipient_is_staff",            :limit => 36
+    t.integer  "incident_recipient_is_family_id"
+    t.integer  "incident_recipient_is_acquaintance_id"
+    t.integer  "incident_recipient_is_other"
+    t.integer  "incident_contact_person_id"
+    t.integer  "incident_type_code",                                   :null => false
+    t.string   "incident_type_other"
+    t.string   "incident_loss_computer_model",           :limit => 16
+    t.string   "incident_loss_computer_serial_number",   :limit => 32
+    t.string   "incident_loss_computer_decal",           :limit => 32
+    t.string   "incident_loss_removable_media",          :limit => 32
+    t.string   "incident_loss_paper",                    :limit => 32
+    t.string   "incident_loss_other"
+    t.text     "incident_description"
+    t.text     "incident_action"
+    t.integer  "incident_reported_code",                               :null => false
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "instruments", :force => true do |t|
     t.integer  "psu_code",                                              :null => false
     t.string   "instrument_id",            :limit => 36,                :null => false
@@ -853,7 +886,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.integer  "provider_id"
     t.integer  "provider_ncs_role_code",                :null => false
     t.string   "provider_ncs_role_other"
-    t.string   "transaction_type"
+    t.string   "transaction_type",        :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end

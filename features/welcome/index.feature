@@ -8,7 +8,7 @@ Feature: Accessing the application
     Given an authenticated user
     When I go to the welcome index page
     Then I should see "NCS Navigator"
-    And I should see "No Scheduled Activities"
+    And I should see "No Scheduled Events"
 
   @javascript
   Scenario: Welcome index and the actions tab
