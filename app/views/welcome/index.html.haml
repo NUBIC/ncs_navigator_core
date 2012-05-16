@@ -3,13 +3,13 @@
 #tabs
   %ul
     %li
-      %a{ :href => "#scheduled_activities_tab"}
-        Scheduled Activities
+      %a{ :href => "#scheduled_events_tab"}
+        Scheduled Events
     %li
       %a{ :href => "#actions_tab"}
         Actions
 
-  #scheduled_activities_tab
+  #scheduled_events_tab
     - if !@events.blank?
       .front_page_section.page_section
         %h4
@@ -29,7 +29,7 @@
                   = e.event_type
     - else
       .front_page_section.page_section
-        No Scheduled Activities
+        No Scheduled Events
   #actions_tab
     .front_page_section.page_section
       .column-container
