@@ -279,6 +279,8 @@ class Participant < ActiveRecord::Base
 
     # TODO: update participant state for each survey
     #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
+
+    self.update_attribute(:being_followed, true) unless self.being_followed?
   end
 
   ##
