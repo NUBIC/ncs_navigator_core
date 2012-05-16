@@ -279,13 +279,6 @@ module NcsNavigator::Core::Mustache
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
     end
 
-    ### Father Instrument ###
-
-    def f_fname
-      "[FATHER'S FIRST NAME]"
-    end
-
-
   end
 
 end
