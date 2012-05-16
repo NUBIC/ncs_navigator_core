@@ -1,10 +1,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require_self
-//= require 'surveyor/jquery-ui'
-//= require 'surveyor/jquery-ui-timepicker-addon'
-//= require 'surveyor/jquery.surveyor'
-//= require 'surveyor/jquery.blockUI'
+//= require 'surveyor_all'
 //= require 'jquery.tooltip.min'
 //= require consent
 //= require nested_attributes
