@@ -530,6 +530,42 @@ end
       end
     end
 
+    describe 'with a response to a non-exported question' do
+      let(:questions_dsl) {
+        <<-DSL
+          q_extra_info "Some comments"
+          a_1 'comments', :string
+
+          q_annotated "Blood tube collection overall status",
+          :pick => :one,
+          :data_export_identifier=>"SPEC_BLOOD.COLLECTION_STATUS"
+          a_1 "Collected"
+          a_2 "Partially collected"
+          a_3 "Not collected"
+        DSL
+      }
+
+      let(:annotated_q)  { questions_map['annotated'] }
+      let(:extra_info_q) { questions_map['extra_info'] }
+
+      let(:record) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood' } }
+
+      before do
+        create_response_for(annotated_q) { |r|
+          r.answer = annotated_q.answers.detect { |a| a.reference_identifier == '2' }
+        }
+
+        create_response_for(extra_info_q) { |r|
+          r.answer = annotated_q.answers.first
+          r.string_value = 'foo'
+        }
+      end
+
+      it 'records the annotated question answer without error' do
+        record.collection_status.should == '2'
+      end
+    end
+
     describe 'coding in date and time fields' do
       it 'works for time-formatted questions'
       it 'works for date-formatted questions'

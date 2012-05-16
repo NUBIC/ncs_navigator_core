@@ -25,13 +25,15 @@ module NcsNavigator::Core::Warehouse
     def to_mdes_warehouse_records
       table_map = self.survey.mdes_table_map
       responses_by_table_ident = responses.includes(:question).inject({}) do |h, r|
-        table_ident = table_map.detect { |table_ident, table_contents|
+        table_ident = table_map.find { |table_ident, table_contents|
           table_contents[:variables].detect { |var_name, var_mapping|
             var_mapping[:questions] && var_mapping[:questions].include?(r.question)
           }
-        }.first
-        h[table_ident] ||= [[]]
-        wh_partition_response(r, h[table_ident])
+        }.try(:first)
+        if table_ident
+          h[table_ident] ||= [[]]
+          wh_partition_response(r, h[table_ident])
+        end
         h
       end
 
