@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120507183332
+# Schema version: 20120515181518
 #
 # Table name: contacts
 #
@@ -28,6 +28,7 @@
 #  transaction_type        :string(255)
 #  created_at              :datetime
 #  updated_at              :datetime
+#  lock_version            :integer         default(0)
 #
 
 # -*- coding: utf-8 -*-

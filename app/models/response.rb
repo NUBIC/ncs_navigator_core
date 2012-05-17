@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120507183332
+# Schema version: 20120515181518
 #
 # Table name: responses
 #
@@ -21,6 +21,7 @@
 #  source_mdes_table :string(100)
 #  source_mdes_id    :string(36)
 #  api_id            :string(255)
+#  lock_version      :integer         default(0)
 #
 
 # -*- coding: utf-8 -*-

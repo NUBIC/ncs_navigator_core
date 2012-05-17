@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120507183332
+# Schema version: 20120515181518
 #
 # Table name: instruments
 #
@@ -28,6 +28,7 @@
 #  updated_at               :datetime
 #  person_id                :integer
 #  survey_id                :integer
+#  lock_version             :integer         default(0)
 #
 
 # -*- coding: utf-8 -*-

@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120507183332
+# Schema version: 20120515181518
 #
 # Table name: sample_receipt_shipping_centers
 #
@@ -9,6 +9,7 @@
 #  transaction_type                  :string(36)
 #  created_at                        :datetime
 #  updated_at                        :datetime
+#  address_id                        :integer
 #
 
 require 'spec_helper'

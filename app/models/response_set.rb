@@ -1,19 +1,18 @@
 # == Schema Information
-# Schema version: 20120507183332
+# Schema version: 20120515181518
 #
 # Table name: response_sets
 #
-#  id                                        :integer         not null, primary key
-#  user_id                                   :integer
-#  survey_id                                 :integer
-#  access_code                               :string(255)
-#  started_at                                :datetime
-#  completed_at                              :datetime
-#  created_at                                :datetime
-#  updated_at                                :datetime
-#  processed_for_operational_data_extraction :boolean
-#  instrument_id                             :integer
-#  api_id                                    :string(255)
+#  id            :integer         not null, primary key
+#  user_id       :integer
+#  survey_id     :integer
+#  access_code   :string(255)
+#  started_at    :datetime
+#  completed_at  :datetime
+#  created_at    :datetime
+#  updated_at    :datetime
+#  instrument_id :integer
+#  api_id        :string(255)
 #
 
 # -*- coding: utf-8 -*-

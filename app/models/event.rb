@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120507183332
+# Schema version: 20120515181518
 #
 # Table name: events
 #
@@ -25,6 +25,7 @@
 #  created_at                         :datetime
 #  updated_at                         :datetime
 #  scheduled_study_segment_identifier :string(255)
+#  lock_version                       :integer         default(0)
 #
 
 # -*- coding: utf-8 -*-
