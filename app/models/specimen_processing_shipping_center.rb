@@ -12,22 +12,10 @@
 #
 
 class SpecimenProcessingShippingCenter < ActiveRecord::Base
-  has_one :address
+  belongs_to :address
   accepts_nested_attributes_for :address, :allow_destroy => true
   belongs_to :psu, :conditions => "list_name = 'PSU_CL1'", :foreign_key => "psu_code", :class_name => 'NcsCode', :primary_key => :local_code
   
-  before_save :set_spsc_id
-  
   validates_presence_of :psu_code
-  
-  def public_id
-    self.specimen_processing_shipping_center_id
-  end
-  
-  def set_spsc_id
-    if self.specimen_processing_shipping_center_id.blank?
-      self.specimen_processing_shipping_center_id = NcsNavigatorCore.spsc_id
-    end
-  end
-  
+  validates_presence_of :specimen_processing_shipping_center_id
 end

@@ -12,21 +12,10 @@
 #
 
 class SampleReceiptShippingCenter < ActiveRecord::Base
-  has_one :address
+  belongs_to :address
   accepts_nested_attributes_for :address, :allow_destroy => true
   belongs_to :psu, :conditions => "list_name = 'PSU_CL1'", :foreign_key => "psu_code", :class_name => 'NcsCode', :primary_key => :local_code
   
-  before_save :set_srsc_id
-  
-  validates_presence_of :psu_code  
-  
-  def public_id
-    self.sample_receipt_shipping_center_id
-  end
-  
-  def set_srsc_id
-    if self.sample_receipt_shipping_center_id.blank?
-      self.sample_receipt_shipping_center_id = NcsNavigatorCore.srsc_id
-    end
-  end  
+  validates_presence_of :psu_code
+  validates_presence_of :sample_receipt_shipping_center_id
 end

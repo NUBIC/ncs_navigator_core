@@ -12,7 +12,7 @@ class SpecimenPickupsController < ApplicationController
     @params[:psu_code] = @psu_code
     @params[:staff_id] = current_staff_id
     @params[:event_id] = "associated event"
-    @params[:specimen_processing_shipping_center_id] = NcsNavigatorCore.spsc_id
+    @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.specimen_processing_shipping_center_id
     @specimen_pickup = SpecimenPickup.new(@params)
     respond_to do |format|
       if @specimen_pickup.save

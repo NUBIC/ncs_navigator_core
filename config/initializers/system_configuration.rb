@@ -50,14 +50,6 @@ module NcsNavigatorCore
       NcsNavigator.configuration.core['shipper_id']
     end
 
-    def spsc_id
-      NcsNavigator.configuration.core['spsc_id']
-    end
-
-    def srsc_id
-      NcsNavigator.configuration.core['srsc_id']
-    end
-
     def with_specimens
       NcsNavigator.configuration.core['with_specimens']
     end

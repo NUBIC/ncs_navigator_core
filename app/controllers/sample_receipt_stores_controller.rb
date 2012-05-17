@@ -8,7 +8,7 @@ class SampleReceiptStoresController < ApplicationController
     @params = params[:sample_receipt_store]
     @params[:psu_code] = @psu_code
     @params[:staff_id] = current_staff_id
-    @params[:sample_receipt_shipping_center_id] = NcsNavigatorCore.srsc_id
+    @params[:sample_receipt_shipping_center_id] = SampleReceiptShippingCenter.last.sample_receipt_shipping_center_id
     @params[:placed_in_storage_datetime] = DateTime.now
     @sample_receipt_store = SampleReceiptStore.new(@params)
     respond_to do |format|

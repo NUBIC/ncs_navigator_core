@@ -97,7 +97,7 @@ class SpecimensController < ApplicationController
     
     @shipper_id                             = NcsNavigatorCore.shipper_id
     @psu_id                                 = @psu_code
-    @specimen_processing_shipping_center_id = NcsNavigatorCore.spsc_id
+    @specimen_processing_shipping_center_id = SpecimenProcessingShippingCenter.last.specimen_processing_shipping_center_id
     @staff_id                               = params[:contact_name]
     @shipper_dest                           = params[:shipper_dest]
     @shipment_date_and_time                 = params[:shipment_date_and_time]

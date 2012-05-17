@@ -48,8 +48,6 @@ class Address < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :address_id, :date_fields => [:address_start_date, :address_end_date]
 
-  belongs_to :specimen_processing_shipping_center
-  belongs_to :sample_receipt_shipping_center
   belongs_to :person
   belongs_to :dwelling_unit
   belongs_to :response_set

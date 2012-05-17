@@ -8,7 +8,7 @@ class SpecimenStoragesController < ApplicationController
     @params = params[:specimen_storage]
     @params[:psu_code] = @psu_code
     @params[:staff_id] = "Jane Dow"
-    @params[:specimen_processing_shipping_center_id] = NcsNavigatorCore.spsc_id
+    @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.specimen_processing_shipping_center_id
     @params = extract_date_time(@params)
     @specimen_storage = SpecimenStorage.new(@params)
     respond_to do |format|

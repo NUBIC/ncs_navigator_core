@@ -1,7 +1,6 @@
 .page_section
   = form_for(@sample_receipt_shipping_center) do |f| 
     = render "shared/custom_error_messages", :object => f.object
-
     .psu_code
       %b
         = "PSU:"
@@ -9,7 +8,7 @@
     .srsc_id
       %b
         = "Sample Receipt Shipping Center ID:"
-      = @sample_receipt_shipping_center_id
+      = f.text_field :sample_receipt_shipping_center_id
     .nested_attributes
       %h3
         Address
@@ -35,7 +34,7 @@
           = address_form.text_field :zip4
 
     %p
-      = f.submit "Submit", :disable_with => 'Submitting...'
+      = f.submit "Submit", :disable_with => 'Submitting...', :confirm => "Please verify the address and center's ID. If you need to make changes in the future, please contact the help desk."
 
 .links
   = link_to "All Sample Receipt Shipping Centers", sample_receipt_shipping_centers_path, :class => "list_link icon_link"

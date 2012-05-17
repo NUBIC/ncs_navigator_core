@@ -1,0 +1,45 @@
+.page_section
+  .psu_code
+    %b
+      = "PSU:"
+    = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
+  .srsc_id
+    %b
+      = "Sample Receipt Shipping Center ID:"
+    = @sample_receipt_shipping_center.sample_receipt_shipping_center_id
+  .nested_attributes
+    %h3
+      Address
+    %p
+      %b
+        = "Address One"
+      %br
+      = @sample_receipt_shipping_center.address.address_one
+
+    %p
+      %b    
+        = "Address Two"
+      %br
+      = @sample_receipt_shipping_center.address.address_two
+    %p
+      %b
+        = "City"
+      %br
+      = @sample_receipt_shipping_center.address.city
+
+    = NcsCode.for_list_name_and_local_code("State", @sample_receipt_shipping_center.address.state_code)
+
+    %p
+      %b
+        = "Zipcode"
+      %br
+      = @sample_receipt_shipping_center.address.zip
+
+    %p
+      %b
+        = "Zip+4"
+      %br
+      = @sample_receipt_shipping_center.address.zip4
+      
+  .links
+    = link_to "Back", sample_receipt_shipping_centers_path

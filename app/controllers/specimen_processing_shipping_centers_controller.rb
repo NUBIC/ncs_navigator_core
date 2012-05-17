@@ -1,12 +1,9 @@
 class SpecimenProcessingShippingCentersController < ApplicationController
-  before_filter :define_spsc_id
-  
-  def define_spsc_id
-    @specimen_processing_shipping_center_id = NcsNavigatorCore.spsc_id
-  end
-  
   def index
     @specimen_processing_shipping_centers = SpecimenProcessingShippingCenter.find(:all)
+    if not @specimen_processing_shipping_centers.blank?
+      flash[:notice] = 'If you need to make changes, please contact the help desk.'
+    end
 
     respond_to do |format|
       format.html
@@ -19,22 +16,27 @@ class SpecimenProcessingShippingCentersController < ApplicationController
     if @specimen_processing_shipping_center.blank?
       @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new
       @specimen_processing_shipping_center.address = Address.new
+      flash[:notice] = 'Please be aware you only can create the Specimen Processing Shipping Center once.'
     else
-      render :edit, :notice => 'Specimen Processing Shipping Center already exists'
+      redirect_to specimen_processing_shipping_center_path(@specimen_processing_shipping_center)
     end
-  end  
+  end
   
   def create
-    @params = params[:specimen_processing_shipping_center]
-    @params[:psu_code] = @psu_code
-    @params[:specimen_processing_shipping_center_id] = @specimen_processing_shipping_center_id
-    @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new(@params)
+    @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.new
+    @specimen_processing_shipping_center.psu_code = @psu_code
+    set_model_parameters
+    @specimen_processing_shipping_center.build_address(@address_params)
+    @specimen_processing_shipping_center.specimen_processing_shipping_center_id = @specimen_processing_shipping_center_id
     respond_to do |format|
-     if @specimen_processing_shipping_center.save
-        format.html { redirect_to(specimen_processing_shipping_centers_path, :notice => 'Specimen Processing Shipping Center was successfully created.') }
+      if @specimen_processing_shipping_center.save && @address.update_attributes(@address_params)
+        @specimen_processing_shipping_center.address = @address
+        @specimen_processing_shipping_center.save!
+        format.html { redirect_to(specimen_processing_shipping_centers_path) }
+        flash[:notice] = 'Specime Processing Shipping Center was successfully created.'
         format.json { render :json => @specimen_processing_shipping_center}
       else
-        format.html { render :action => "new"}
+        format.html { render :new}
         format.json { render :json => @specimen_processing_shipping_center.errors, :status => :unprocessable_entity }
       end
     end    
@@ -50,13 +52,22 @@ class SpecimenProcessingShippingCentersController < ApplicationController
   
   def update
     @specimen_processing_shipping_center = SpecimenProcessingShippingCenter.find(params[:id])
+    set_model_parameters
     respond_to do |format|
-      if @specimen_processing_shipping_center.update_attributes(params[:specimen_processing_shipping_center])
+      if @address.update_attributes(@address_params)
+        @specimen_processing_shipping_center.address = @address
+        @specimen_processing_shipping_center.save!
         format.html { redirect_to(specimen_processing_shipping_centers_path, :notice => 'Specimen Processing Shipping Center was successfully updated.') }
         format.json { head :ok }
       else
         format.json { render :json => @specimen_processing_shipping_center.errors, :status => :unprocessable_entity }
       end
     end
+  end
+  
+  def set_model_parameters
+    @specimen_processing_shipping_center_id = params[:specimen_processing_shipping_center][:specimen_processing_shipping_center_id]    
+    @address_params = params[:specimen_processing_shipping_center][:address_attributes]
+    @address = @specimen_processing_shipping_center.address.blank? ? Address.new : @specimen_processing_shipping_center.address
   end
 end
