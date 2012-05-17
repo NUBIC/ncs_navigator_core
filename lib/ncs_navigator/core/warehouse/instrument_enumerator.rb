@@ -36,9 +36,14 @@ module NcsNavigator::Core::Warehouse
         progress.increment_responses(rs.responses.size)
         log.info "Transforming ResponseSet #{rs.access_code.inspect} (#{rs.id})"
         log.info "  Survey is #{rs.survey.try(:title).inspect} (#{rs.survey.try(:id)})"
-        rs.to_mdes_warehouse_records.each do |record|
-          progress.increment_records
-          yield record
+        begin
+          rs.to_mdes_warehouse_records.each do |record|
+            progress.increment_records
+            yield record
+          end
+        rescue => e
+          yield NcsNavigator::Warehouse::TransformError.for_exception(e,
+            "Error enumerating response set #{rs.access_code.inspect} (#{rs.id}) for survey #{rs.survey.try(:title).inspect} (#{rs.survey.id}).")
         end
       end
       progress.complete
