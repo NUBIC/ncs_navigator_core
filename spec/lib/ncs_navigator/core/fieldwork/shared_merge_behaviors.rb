@@ -81,6 +81,12 @@ shared_examples_for 'an entity merge' do |entity|
           entity => { uuid => { :self => { :original => o, :current => c, :proposed => p } } }
         }
       end
+
+      it 'leaves C at nil' do
+        merge
+
+        set[:current].should be_nil
+      end
     end
 
     describe 'if O exists, C exists, and P is nil' do
@@ -144,6 +150,12 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
       conflicts.should == {
         entity => { uuid => { property => { :original => nil, :current => x, :proposed => y } } }
       }
+    end
+
+    it "does not modify C##{property}" do
+      merge
+
+      set[:current].send(property).should == x
     end
   end
 
@@ -237,6 +249,12 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
       conflicts.should == {
         entity => { uuid => { property => { :original => x, :current => y, :proposed => z } } }
       }
+    end
+
+    it "does not modify C##{property}" do
+      merge
+
+      set[:current].send(property).should == y
     end
   end
 end

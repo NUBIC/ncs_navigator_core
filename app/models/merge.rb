@@ -96,7 +96,7 @@ class Merge < ActiveRecord::Base
 
       sp.merge
 
-      ok = sp.save unless sp.conflicted?
+      ok = sp.save
 
       self.completed_at = Time.now
       self.conflict_report = sp.conflicts.to_json

@@ -288,9 +288,9 @@ module NcsNavigator::Core::Fieldwork
 
         describe 'if !(C =~ P)' do
           before do
-            c << stub(:uuid => 'foo', :question_id => question_id)
-            p << stub(:uuid => 'foo', :question_id => question_id)
-            p << stub(:uuid => 'bar', :question_id => question_id)
+            c << adapt_model(Factory.create(:response, :question => q, :answer => a))
+            p << adapt_hash(:response, {'uuid' => 'foo', 'question_id' => question_id })
+            p << adapt_hash(:response, {'uuid' => 'bar', 'question_id' => question_id })
           end
 
           it 'signals a conflict' do
@@ -299,6 +299,12 @@ module NcsNavigator::Core::Fieldwork
             conflicts.should == {
               entity => { question_id => { :self => { :original => o, :current => c, :proposed => p } } }
             }
+          end
+
+          it 'does not modify any response in C' do
+            merge
+
+            c.responses.values.any?(&:changed?).should be_false
           end
         end
       end
