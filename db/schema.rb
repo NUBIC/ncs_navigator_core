@@ -11,39 +11,42 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20120515181518) do
+
   create_table "addresses", :force => true do |t|
-    t.integer  "psu_code",                                 :null => false
-    t.string   "address_id",                :limit => 36,  :null => false
+    t.integer  "psu_code",                                              :null => false
+    t.string   "address_id",                             :limit => 36,  :null => false
     t.integer  "person_id"
     t.integer  "dwelling_unit_id"
-    t.integer  "address_rank_code",                        :null => false
+    t.integer  "address_rank_code",                                     :null => false
     t.string   "address_rank_other"
-    t.integer  "address_info_source_code",                 :null => false
+    t.integer  "address_info_source_code",                              :null => false
     t.string   "address_info_source_other"
-    t.integer  "address_info_mode_code",                   :null => false
+    t.integer  "address_info_mode_code",                                :null => false
     t.string   "address_info_mode_other"
     t.date     "address_info_date"
     t.date     "address_info_update"
-    t.string   "address_start_date",        :limit => 10
+    t.string   "address_start_date",                     :limit => 10
     t.date     "address_start_date_date"
-    t.string   "address_end_date",          :limit => 10
+    t.string   "address_end_date",                       :limit => 10
     t.date     "address_end_date_date"
-    t.integer  "address_type_code",                        :null => false
+    t.integer  "address_type_code",                                     :null => false
     t.string   "address_type_other"
-    t.integer  "address_description_code",                 :null => false
+    t.integer  "address_description_code",                              :null => false
     t.string   "address_description_other"
-    t.string   "address_one",               :limit => 100
-    t.string   "address_two",               :limit => 100
-    t.string   "unit",                      :limit => 10
-    t.string   "city",                      :limit => 50
-    t.integer  "state_code",                               :null => false
-    t.string   "zip",                       :limit => 5
-    t.string   "zip4",                      :limit => 4
+    t.string   "address_one",                            :limit => 100
+    t.string   "address_two",                            :limit => 100
+    t.string   "unit",                                   :limit => 10
+    t.string   "city",                                   :limit => 50
+    t.integer  "state_code",                                            :null => false
+    t.string   "zip",                                    :limit => 5
+    t.string   "zip4",                                   :limit => 4
     t.text     "address_comment"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+    t.integer  "specimen_processing_shipping_center_id"
+    t.integer  "sample_receipt_shipping_center_id"
     t.integer  "provider_id"
   end
 
@@ -294,39 +297,6 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
-  end
-
-  create_table "incidents", :force => true do |t|
-    t.integer  "psu_code",                                             :null => false
-    t.string   "incident_id",                            :limit => 36, :null => false
-    t.string   "incident_date",                          :limit => 10
-    t.string   "incident_time",                          :limit => 5
-    t.string   "incident_report_date",                   :limit => 10
-    t.string   "incident_report_time",                   :limit => 5
-    t.string   "incident_staff_reporter_id",             :limit => 36
-    t.string   "incident_staff_supervisor_id",           :limit => 36
-    t.integer  "contact_id"
-    t.integer  "incident_recipient_is_participant_id"
-    t.integer  "incident_recipient_is_dwelling_unit_id"
-    t.string   "incident_recipient_is_staff",            :limit => 36
-    t.integer  "incident_recipient_is_family_id"
-    t.integer  "incident_recipient_is_acquaintance_id"
-    t.integer  "incident_recipient_is_other"
-    t.integer  "incident_contact_person_id"
-    t.integer  "incident_type_code",                                   :null => false
-    t.string   "incident_type_other"
-    t.string   "incident_loss_computer_model",           :limit => 16
-    t.string   "incident_loss_computer_serial_number",   :limit => 32
-    t.string   "incident_loss_computer_decal",           :limit => 32
-    t.string   "incident_loss_removable_media",          :limit => 32
-    t.string   "incident_loss_paper",                    :limit => 32
-    t.string   "incident_loss_other"
-    t.text     "incident_description"
-    t.text     "incident_action"
-    t.integer  "incident_reported_code",                               :null => false
-    t.string   "transaction_type",                       :limit => 36
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "instruments", :force => true do |t|
@@ -883,7 +853,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.integer  "provider_id"
     t.integer  "provider_ncs_role_code",                :null => false
     t.string   "provider_ncs_role_other"
-    t.string   "transaction_type",        :limit => 36
+    t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1001,7 +971,6 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "transaction_type",                  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "address_id"
   end
 
   create_table "sample_receipt_stores", :force => true do |t|
@@ -1098,7 +1067,6 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "transaction_type",                       :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "address_id"
   end
 
   create_table "specimen_receipts", :force => true do |t|
@@ -1349,10 +1317,6 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
   add_foreign_key "response_sets", "people", :name => "response_sets_people_fk", :column => "user_id"
 
   add_foreign_key "responses", "response_sets", :name => "response_set_id_to_response_sets_fk"
-
-  add_foreign_key "sample_receipt_shipping_centers", "addresses", :name => "sample_receipt_shipping_centers_addresses_fk"
-
-  add_foreign_key "specimen_processing_shipping_centers", "addresses", :name => "specimen_processing_shipping_centers_addresses_fk"
 
   add_foreign_key "telephones", "people", :name => "telephones_people_fk"
 

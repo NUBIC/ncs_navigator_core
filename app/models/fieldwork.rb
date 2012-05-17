@@ -19,17 +19,15 @@
 
 # -*- coding: utf-8 -*-
 
-require 'logger'
 require 'ncs_navigator/core/psc'
 require 'patient_study_calendar'
-require 'stringio'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
   include NcsNavigator::Core::Fieldwork
   include NcsNavigator::Core::Psc
 
-  set_primary_key :fieldwork_id
+  has_many :merges, :inverse_of => :fieldwork
 
   before_create :set_default_id
   before_save :serialize_report
@@ -118,82 +116,16 @@ class Fieldwork < ActiveRecord::Base
     end
   end
 
-  ##
-  # Merges a fieldwork set with Core's datastore.  The log of the operation is
-  # written to #merge_log.  If the merge completes without conflicts, #merged
-  # will be set to true; otherwise, #merged will be false and the conflicts
-  # will be in the merge log.
-  #
-  # The merge only proceeds if both JSON objects in original_data and
-  # received_data conform to the fieldwork data schema.
-  #
-  # If the merge completed without conflicts and all data was saved, returns
-  # true; otherwise, returns false.
-  def merge
-    begin
-      sio = StringIO.new
-      logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
-      logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
-
-      violations = schema_violations
-
-      unless violations.values.all? { |v| v.empty? }
-        violations[:original_data].each do |violation|
-          logger.fatal { "[original] #{violation}" }
-        end
-        violations[:received_data].each do |violation|
-          logger.fatal { "[received] #{violation}" }
-        end
-
-        logger.fatal { "Schema violations detected; aborting merge" }
-
-        return
-      end
-
-      sp = Superposition.new
-      sp.logger = logger
-      sp.set_original(JSON.parse(original_data))
-      sp.set_proposed(JSON.parse(received_data))
-      sp.set_current
-      sp.group_responses
-
-      sp.merge
-
-      (sp.save unless sp.conflicted?).tap do |ok|
-        update_attributes(:merged => ok, :conflict_report => sp.conflicts.to_json)
-      end
-    ensure
-      update_attribute(:merge_log, sio.string)
-    end
-  end
-
   def set_default_id
     self.fieldwork_id ||= UUIDTools::UUID.random_create.to_s
   end
 
-  def as_json(options = nil)
-    JSON.parse(received_data || original_data)
+  def latest_proposed_data
+    merges.order(:created_at).last.try(:proposed_data)
   end
 
-  ##
-  # Returns the fieldwork schema violations, if any, in the #original_data
-  # and #received_data JSON objects.  The return value is as follows:
-  #
-  #     {
-  #       :original_data => [violations],
-  #       :received_data => [violations]
-  #     }
-  #
-  # If either field is blank, then {} is validated in lieu of that field.
-  # (At present, this will generate schema errors, but that's acceptable: the
-  # lack of an object is arguably a violation.)
-  def schema_violations
-    validator = Validator.new
-
-    {
-      :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),
-      :received_data => validator.fully_validate(JSON.parse(received_data || '{}'))
-    }
+  def as_json(options = nil)
+    JSON.parse(latest_proposed_data || original_data)
   end
 
   def serialize_report

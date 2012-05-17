@@ -62,6 +62,7 @@ NcsNavigatorCore::Application.routes.draw do
   namespace :api do
     scope '/v1' do
       resources :fieldwork, :only => [:create, :update, :show]
+      resources :merges
     end
   end
 
@@ -98,12 +99,12 @@ NcsNavigatorCore::Application.routes.draw do
       post :generate
       post :send_email
     end
-  end    
-  
+  end
+
   match "/shipping", :to => "shipping#index"
-  
+
   resources :specimen_processing_shipping_centers
-  resources :sample_receipt_shipping_centers  
+  resources :sample_receipt_shipping_centers
   resources :specimen_pickups, :only => [:new, :create, :show]
   resources :specimen_sample_processes do
     collection do

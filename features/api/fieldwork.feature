@@ -28,8 +28,12 @@ Feature: Fieldwork check-out and check-in
 
     Then the response status is 401
 
-  Scenario: GET /api/v1/fieldwork/:uuid returns what was previously PUT
+  Scenario: GET /api/v1/fieldwork/:uuid returns the latest PUT
     Given an authenticated user
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    """
+    {}
+    """
     And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
     """
     {
@@ -42,7 +46,7 @@ Feature: Fieldwork check-out and check-in
     }
     """
 
-    When I GET the referenced location
+    When I GET /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df
 
     Then the response status is 200
     And the response body matches
@@ -55,6 +59,21 @@ Feature: Fieldwork check-out and check-in
         ],
         "participants": []
     }
+    """
+
+  Scenario: PUT /api/v1/fieldwork/:uuid returns a URL to check the merge
+    Given an authenticated user
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    """
+    {}
+    """
+
+    When I GET the referenced location
+
+    Then the response status is 200
+    And the response body matches
+    """
+    { "status": "pending" }
     """
 
   Scenario: POST /api/v1/fieldwork requires authentication

@@ -11,11 +11,10 @@ module NcsNavigator::Core::Fieldwork
   class MergeWorker
     include Sidekiq::Worker
 
-    def perform(fieldwork_id)
+    def perform(merge_id)
       verify_database_connection
 
-      fw = Fieldwork.find(fieldwork_id)
-      fw.merge
+      ::Merge.find(merge_id).run
     end
 
     def verify_database_connection

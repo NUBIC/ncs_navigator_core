@@ -12,7 +12,7 @@ class Api::FieldworkController < ApplicationController
 
     respond_to do |wants|
       wants.json do
-        headers['Location'] = api_fieldwork_path(fw.id)
+        headers['Location'] = api_fieldwork_path(fw.fieldwork_id)
         render :json => fw
       end
     end
@@ -22,18 +22,18 @@ class Api::FieldworkController < ApplicationController
     fw = Fieldwork.for(params['id'])
 
     begin
-      fw.update_attribute(:received_data, request.body.read)
+      m = fw.merges.create!(:proposed_data => request.body.read)
     ensure
       request.body.rewind
     end
 
-    NcsNavigator::Core::Fieldwork::MergeWorker.perform_async(fw.id)
-    headers['Location'] = api_fieldwork_path(fw.id)
+    NcsNavigator::Core::Fieldwork::MergeWorker.perform_async(m.id)
+    headers['Location'] = api_merge_path(m.id)
     render :nothing => true, :status => :accepted
   end
 
   def show
-    fw = Fieldwork.find(params['id'])
+    fw = Fieldwork.find_by_fieldwork_id(params['id'])
 
     respond_with fw
   end

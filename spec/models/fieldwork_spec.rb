@@ -26,17 +26,20 @@ describe Fieldwork do
 
   subject { FactoryGirl.build(:fieldwork) }
 
+  it { should have_many(:merges) }
+
   describe '.for' do
     it 'retrieves a fieldwork set' do
+      subject.fieldwork_id = id
       subject.save!
 
-      Fieldwork.for(subject.id).should == subject
+      Fieldwork.for(id).should == subject
     end
 
     it "creates one if one doesn't exist" do
       fw = Fieldwork.for(id)
 
-      fw.id.should == id
+      fw.fieldwork_id.should == id
       fw.should_not be_new_record
     end
   end
@@ -81,10 +84,6 @@ describe Fieldwork do
   end
 
   describe '#fieldwork_id' do
-    it 'is the primary key' do
-      Fieldwork.primary_key.should == 'fieldwork_id'
-    end
-
     it 'is initially nil' do
       subject.fieldwork_id.should be_nil
     end
@@ -98,9 +97,7 @@ describe Fieldwork do
     it 'persists across updates' do
       subject.save!
       id = subject.fieldwork_id
-
-      subject.received_data = '{}'
-      subject.save
+      subject.touch
 
       subject.reload.fieldwork_id.should == id
     end
@@ -151,6 +148,23 @@ describe Fieldwork do
       subject.client_id = nil
 
       subject.should have(1).error_on(:client_id)
+    end
+  end
+
+  describe '#latest_proposed_data' do
+    before do
+      subject.save!
+    end
+
+    it 'returns #proposed_data on the latest associated Merge' do
+      m1 = subject.merges.create!(:proposed_data => '{"foo":null}', :created_at => Time.now + 10)
+      m2 = subject.merges.create!(:proposed_data => '{"bar":null}', :created_at => Time.now - 10)
+
+      subject.latest_proposed_data.should == '{"foo":null}'
+    end
+
+    it 'returns nil if there are no merges' do
+      subject.latest_proposed_data.should be_nil
     end
   end
 
@@ -228,79 +242,4 @@ describe Fieldwork do
     end
   end
 
-  describe '#schema_violations' do
-    ##
-    # The smallest possible valid fieldwork object.
-    let(:valid) do
-      { 'contacts' => [], 'participants' => [], 'instrument_templates' => [] }
-    end
-
-    let(:invalid) do
-      {
-        'contacts' => [
-          {}
-        ],
-        'participants' => []
-      }
-    end
-
-    describe 'if #original_data is free of fieldwork schema violations' do
-      before do
-        subject.original_data = valid.to_json
-      end
-
-      it 'returns an empty array for original_data' do
-        subject.schema_violations[:original_data].should == []
-      end
-    end
-
-    describe 'if #original_data has schema violations' do
-      before do
-        subject.original_data = invalid.to_json
-      end
-
-      it 'returns those violations' do
-        subject.schema_violations[:original_data].should_not be_empty
-      end
-    end
-
-    describe 'if #received_data is free of fieldwork schema violations' do
-      before do
-        subject.received_data = valid.to_json
-      end
-
-      it 'returns an empty array for received_data' do
-        subject.schema_violations[:received_data].should == []
-      end
-    end
-
-    describe 'if #received_data has schema violations' do
-      before do
-        subject.received_data = invalid.to_json
-      end
-
-      it 'returns those violations' do
-        subject.schema_violations[:received_data].should_not be_empty
-      end
-    end
-
-    describe 'if #original_data and #received_data is blank' do
-      before do
-        subject.original_data = nil
-        subject.received_data = nil
-      end
-
-      it 'does not raise an error' do
-        lambda { subject.schema_violations }.should_not raise_error
-      end
-    end
-  end
-
-  describe '#merge' do
-    it 'saves the merge log' do
-      subject.merge
-
-      subject.reload.merge_log.should_not be_empty
-    end
-  end
 end
