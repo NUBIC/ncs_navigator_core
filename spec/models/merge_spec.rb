@@ -17,9 +17,133 @@ describe Merge do
     let(:json) { JSON.parse(subject.to_json) }
 
     it 'includes its status' do
-      subject.status = 'pending'
+      subject.stub!(:status => 'pending')
 
       json['status'].should == 'pending'
+    end
+  end
+
+  describe '#status' do
+    describe 'if started_at is nil' do
+      before do
+        subject.started_at = nil
+      end
+
+      describe 'and completed_at is nil' do
+        before do
+          subject.completed_at = nil
+        end
+
+        it 'is "pending"' do
+          subject.status.should == 'pending'
+        end
+      end
+    end
+
+    describe 'if started_at is not nil' do
+      before do
+        subject.started_at = Time.now
+      end
+
+      describe 'and completed_at is nil' do
+        before do
+          subject.completed_at = nil
+        end
+
+        it 'is "working"' do
+          subject.status.should == 'working'
+        end
+
+        describe 'and the job has timed out' do
+          before do
+            subject.started_at -= Merge::TIMEOUT
+          end
+
+          it 'is "timeout"' do
+            subject.status.should == 'timeout'
+          end
+        end
+      end
+
+      describe 'and completed_at is not nil' do
+        before do
+          subject.completed_at = Time.now
+        end
+
+        describe 'and there are no conflicts' do
+          before do
+            subject.stub!(:conflicted? => false)
+          end
+
+          it 'is "merged"' do
+            subject.status.should == 'merged'
+          end
+        end
+
+        describe 'and there are conflicts' do
+          before do
+            subject.stub!(:conflicted? => true)
+          end
+
+          it 'is "conflict"' do
+            subject.status.should == 'conflict'
+          end
+        end
+      end
+
+      describe 'and crashed_at is nil' do
+        describe 'and the job has timed out' do
+          before do
+            subject.started_at -= Merge::TIMEOUT
+          end
+
+          it 'is "timeout"' do
+            subject.status.should == 'timeout'
+          end
+        end
+      end
+
+      describe 'and crashed_at is not nil' do
+        before do
+          subject.crashed_at = Time.now
+        end
+
+        it 'is "error"' do
+          subject.status.should == 'error'
+        end
+      end
+    end
+  end
+
+  describe '#conflicted?' do
+    describe 'if #conflict_report is nil' do
+      before do
+        subject.conflict_report = nil
+      end
+
+      it 'returns false' do
+        subject.should_not be_conflicted
+      end
+    end
+
+    describe 'if #conflict_report is {}' do
+      before do
+        subject.conflict_report = '{}'
+      end
+
+      it 'returns false' do
+        subject.should_not be_conflicted
+      end
+    end
+
+    describe 'if #conflict_report is non-empty' do
+      before do
+        subject.conflict_report = '{"Contact":{}}'
+      end
+
+      it 'returns true' do
+        subject.should be_conflicted
+      end
     end
   end
 

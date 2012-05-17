@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+require 'case'
 require 'logger'
 require 'ncs_navigator/core'
 require 'stringio'
@@ -13,17 +14,60 @@ class Merge < ActiveRecord::Base
 
   delegate :original_data, :to => :fieldwork
 
+  S = Case::Struct.new(:started_at, :completed_at, :crashed_at, :conflicted?, :timed_out?)
+  N = Case::Not
+
+  TIMEOUT = 5.minutes
+
   ##
-  # Merges a fieldwork set with Core's datastore.  The log of the operation is
-  # written to #merge_log.  If the merge completes without conflicts, #merged
-  # will be set to true; otherwise, #merged will be false and the conflicts
-  # will be in the merge log.
+  # Merges a fieldwork set with Core's datastore.  The log of the operation
+  # is written to #log.
   #
   # The merge only proceeds if both JSON objects in original_data and
   # received_data conform to the fieldwork data schema.
   #
-  # If the merge completed without conflicts and all data was saved, returns
-  # true; otherwise, returns false.
+  # If the merge completed and all affected entities were saved, returns true.
+  # Otherwise, returns false.
+  #
+  # NOTE: This means that this method may return  true _even if there are
+  # conflicts_, so you _cannot_ use the return value of this method to
+  # determine whether or not conflicts exist.  Use {#conflicted?} and
+  # {#conflict_report} instead.
+  #
+  #
+  # Merge timeout
+  # =============
+  #
+  # Merges are expected to complete within 5 minutes.  Merges that take
+  # longer than this will be allowed to complete; however, #status will
+  # report "timeout" until the merge completes, at which point the status
+  # will be updated.  (If, however, the merge process crashes due to an
+  # unrecoverable runtime error -- say, killed by the Linux OOM killer --
+  # then the status will be "timeout" until the merge is restarted.)
+  #
+  #
+  # Merge status updates
+  # ====================
+  #
+  # This method updates its record several times:
+  #
+  #     def run
+  #       begin
+  #         update_attribute(:started_at, Time.now)
+  #       rescue => e
+  #         update_attribute(:crashed_at, Time.now) rescue nil
+  #         raise e
+  #       ensure
+  #         self.conflict_report = conflict_report
+  #         self.completed_at = Time.now
+  #         self.log = the_merge_log
+  #         save(:validate => false)
+  #       end
+  #     end
+  #
+  # It is very possible that an exception will put the database connection
+  # into a state where commands will be ignored.  In this case, the error
+  # flag will not be set and the merge will timeout.
   def run
     begin
       sio = StringIO.new
@@ -63,8 +107,45 @@ class Merge < ActiveRecord::Base
     end
   end
 
+  ##
+  # Returns the status of the merge.  This method returns one of these
+  # strings:
+  #
+  # | Value    | Meaning                                                |
+  # | conflict | Merge completed with conflicts                         |
+  # | error    | Merge not completed due to fatal errors                |
+  # | merged   | Merge completed without conflicts                      |
+  # | pending  | Merge not started                                      |
+  # | timeout  | Merge not completed, but exceeded a timeout threshold; |
+  # |          | success unknown                                        |
+  # | working  | Merge in progress                                      |
+  #
+  # A "fatal error" is any error that causes a merge process to crash and can
+  # be caught by the Ruby runtime.  Such errors will be present in the merge
+  # log.
+  def status
+    case S[started_at, completed_at, crashed_at, conflicted?, timed_out?]
+    when S[nil,        nil,          nil,        Case::Any,   N[true]   ]; 'pending'
+    when S[N[nil],     nil,          nil,        Case::Any,   N[true]   ]; 'working'
+    when S[Case::Any,  nil,          Case::Any,  Case::Any,   true      ]; 'timeout'
+    when S[N[nil],     N[nil],       nil,        N[true],     Case::Any ]; 'merged'
+    when S[N[nil],     N[nil],       nil,        true,        Case::Any ]; 'conflict'
+    when S[N[nil],     nil,          N[nil],     Case::Any,   Case::Any ]; 'error'
+    end
+  end
+
+  def conflicted?
+    conflict_report && conflict_report != '{}'
+  end
+
+  ##
+  # @private
+  def timed_out?
+    (Time.now - started_at >= TIMEOUT) if started_at
+  end
+
   def as_json(options = nil)
-    { 'status' => 'pending' }
+    { 'status' => status }
   end
 
   ##

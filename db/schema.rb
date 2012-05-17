@@ -341,6 +341,18 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "tsu_id"
   end
 
+  create_table "merges", :force => true do |t|
+    t.integer  "fieldwork_id"
+    t.text     "conflict_report"
+    t.text     "log"
+    t.text     "proposed_data"
+    t.datetime "completed_at"
+    t.datetime "crashed_at"
+    t.datetime "started_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ncs_codes", :force => true do |t|
     t.string   "list_name"
     t.string   "display_text"
