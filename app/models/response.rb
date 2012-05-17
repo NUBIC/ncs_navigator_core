@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 # == Schema Information
 # Schema version: 20120515181518
 #
@@ -23,9 +25,6 @@
 #  api_id            :string(255)
 #  lock_version      :integer         default(0)
 #
-
-# -*- coding: utf-8 -*-
-
 class Response < ActiveRecord::Base
   include Surveyor::Models::ResponseMethods
 
