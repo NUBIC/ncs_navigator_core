@@ -77,7 +77,10 @@ class Merge < ActiveRecord::Base
     logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
     begin
-      update_attribute(:started_at, Time.now)
+      self.started_at = Time.now
+      self.crashed_at = nil
+      self.completed_at = nil
+      save(:validate => false)
 
       conformant = check_conformance(logger)
       if !conformant
