@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120514174938) do
+ActiveRecord::Schema.define(:version => 20120515181518) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                              :null => false
@@ -88,30 +88,31 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
   end
 
   create_table "contacts", :force => true do |t|
-    t.integer  "psu_code",                                                            :null => false
-    t.string   "contact_id",              :limit => 36,                               :null => false
+    t.integer  "psu_code",                                                                           :null => false
+    t.string   "contact_id",              :limit => 36,                                              :null => false
     t.integer  "contact_disposition"
-    t.integer  "contact_type_code",                                                   :null => false
+    t.integer  "contact_type_code",                                                                  :null => false
     t.string   "contact_type_other"
     t.string   "contact_date",            :limit => 10
     t.date     "contact_date_date"
     t.string   "contact_start_time"
     t.string   "contact_end_time"
-    t.integer  "contact_language_code",                                               :null => false
+    t.integer  "contact_language_code",                                                              :null => false
     t.string   "contact_language_other"
-    t.integer  "contact_interpret_code",                                              :null => false
+    t.integer  "contact_interpret_code",                                                             :null => false
     t.string   "contact_interpret_other"
-    t.integer  "contact_location_code",                                               :null => false
+    t.integer  "contact_location_code",                                                              :null => false
     t.string   "contact_location_other"
-    t.integer  "contact_private_code",                                                :null => false
+    t.integer  "contact_private_code",                                                               :null => false
     t.string   "contact_private_detail"
     t.decimal  "contact_distance",                      :precision => 6, :scale => 2
-    t.integer  "who_contacted_code",                                                  :null => false
+    t.integer  "who_contacted_code",                                                                 :null => false
     t.string   "who_contacted_other"
     t.text     "contact_comment"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version",                                                        :default => 0
   end
 
   create_table "dependencies", :force => true do |t|
@@ -225,20 +226,20 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
   end
 
   create_table "events", :force => true do |t|
-    t.integer  "psu_code",                                                                        :null => false
-    t.string   "event_id",                           :limit => 36,                                :null => false
+    t.integer  "psu_code",                                                                                       :null => false
+    t.string   "event_id",                           :limit => 36,                                               :null => false
     t.integer  "participant_id"
-    t.integer  "event_type_code",                                                                 :null => false
+    t.integer  "event_type_code",                                                                                :null => false
     t.string   "event_type_other"
     t.integer  "event_repeat_key"
     t.integer  "event_disposition"
-    t.integer  "event_disposition_category_code",                                                 :null => false
+    t.integer  "event_disposition_category_code",                                                                :null => false
     t.date     "event_start_date"
     t.string   "event_start_time"
     t.date     "event_end_date"
     t.string   "event_end_time"
-    t.integer  "event_breakoff_code",                                                             :null => false
-    t.integer  "event_incentive_type_code",                                                       :null => false
+    t.integer  "event_breakoff_code",                                                                            :null => false
+    t.integer  "event_incentive_type_code",                                                                      :null => false
     t.decimal  "event_incentive_cash",                             :precision => 12, :scale => 2
     t.string   "event_incentive_noncash"
     t.text     "event_comment"
@@ -246,6 +247,7 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "scheduled_study_segment_identifier"
+    t.integer  "lock_version",                                                                    :default => 0
   end
 
   create_table "fieldworks", :id => false, :force => true do |t|
@@ -331,30 +333,31 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
   end
 
   create_table "instruments", :force => true do |t|
-    t.integer  "psu_code",                               :null => false
-    t.string   "instrument_id",            :limit => 36, :null => false
+    t.integer  "psu_code",                                              :null => false
+    t.string   "instrument_id",            :limit => 36,                :null => false
     t.integer  "event_id"
-    t.integer  "instrument_type_code",                   :null => false
+    t.integer  "instrument_type_code",                                  :null => false
     t.string   "instrument_type_other"
-    t.string   "instrument_version",       :limit => 36, :null => false
+    t.string   "instrument_version",       :limit => 36,                :null => false
     t.integer  "instrument_repeat_key"
     t.date     "instrument_start_date"
     t.string   "instrument_start_time"
     t.date     "instrument_end_date"
     t.string   "instrument_end_time"
-    t.integer  "instrument_breakoff_code",               :null => false
-    t.integer  "instrument_status_code",                 :null => false
-    t.integer  "instrument_mode_code",                   :null => false
+    t.integer  "instrument_breakoff_code",                              :null => false
+    t.integer  "instrument_status_code",                                :null => false
+    t.integer  "instrument_mode_code",                                  :null => false
     t.string   "instrument_mode_other"
-    t.integer  "instrument_method_code",                 :null => false
-    t.integer  "supervisor_review_code",                 :null => false
-    t.integer  "data_problem_code",                      :null => false
+    t.integer  "instrument_method_code",                                :null => false
+    t.integer  "supervisor_review_code",                                :null => false
+    t.integer  "data_problem_code",                                     :null => false
     t.text     "instrument_comment"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "person_id"
     t.integer  "survey_id"
+    t.integer  "lock_version",                           :default => 0
   end
 
   create_table "listing_units", :force => true do |t|
@@ -973,7 +976,7 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
 
   create_table "responses", :force => true do |t|
-    t.integer  "response_set_id",                  :null => false
+    t.integer  "response_set_id",                                 :null => false
     t.integer  "question_id"
     t.integer  "answer_id"
     t.datetime "datetime_value"
@@ -990,6 +993,7 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
     t.string   "source_mdes_table", :limit => 100
     t.string   "source_mdes_id",    :limit => 36
     t.string   "api_id"
+    t.integer  "lock_version",                     :default => 0
   end
 
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
@@ -1201,9 +1205,10 @@ ActiveRecord::Schema.define(:version => 20120514174938) do
     t.datetime "updated_at"
     t.integer  "display_order"
     t.string   "api_id"
+    t.integer  "version",                :default => 0
   end
 
-  add_index "surveys", ["access_code"], :name => "surveys_ac_idx", :unique => true
+  add_index "surveys", ["access_code", "version"], :name => "surveys_access_code_version_idx", :unique => true
 
   create_table "telephones", :force => true do |t|
     t.integer  "psu_code",                              :null => false

@@ -66,11 +66,13 @@ module NcsNavigator::Core::Warehouse
       else
         log.info(
           "Creating new response set for #{access_code}")
-        response_set = ResponseSet.create!(
-          :access_code => access_code,
-          :instrument_id => core_instrument_id(record.instrument_id),
+        response_set = ResponseSet.new(
           :survey => survey
-        )
+        ).tap do |rs|
+          rs.instrument_id = core_instrument_id(record.instrument_id),
+          rs.access_code = access_code
+          rs.save!
+        end
       end
       update_response_set_for_record(survey, record, response_set)
     end

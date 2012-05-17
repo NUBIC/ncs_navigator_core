@@ -40,22 +40,59 @@ module NcsNavigator::Core::Warehouse
     describe '#each' do
       subject { InstrumentEnumerator.new(configuration) }
 
-      def stub_rs
-        stub('response set').tap { |s| s.stub!(:access_code); s.stub!(:id); s.stub!(:survey) }
-      end
+      let(:rs1) { ResponseSet.new.tap { |rs| rs.access_code = 'rs1' } }
+      let(:rs2) { ResponseSet.new.tap { |rs| rs.access_code = 'rs2' } }
 
       it 'converts every response set in turn' do
-        rs1 = stub_rs
         rs1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
-        rs2 = stub_rs
         rs2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
-        [rs1, rs2].each do |m|
-          m.stub(:responses).and_return([])
-        end
 
         ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
 
         subject.to_a.should == %w(A B C H4 H7)
+      end
+
+      describe 'when one response set throws an exception' do
+        before do
+          rs1.should_receive(:to_mdes_warehouse_records).and_raise(IndexError.new('No firsts'))
+          rs2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
+
+          rs1.survey = Survey.new(:title => 'SAQ4')
+
+          ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
+        end
+
+        it 'yields a transform error' do
+          subject.to_a.first.should be_a(NcsNavigator::Warehouse::TransformError)
+        end
+
+        describe 'error message' do
+          let(:message) { subject.to_a.first.message }
+
+          it 'includes the response set access code' do
+            message.should =~ /response set "rs1"/
+          end
+
+          it 'includes the survey title' do
+            message.should =~ /for survey "SAQ4"/
+          end
+
+          it 'includes the backtrace' do
+            message.should =~ /#{File.basename(__FILE__)}\:\s*\d+/
+          end
+
+          it 'includes the exception type' do
+            message.should =~ /IndexError/
+          end
+
+          it 'includes the exception message' do
+            message.should =~ /No firsts/
+          end
+        end
+
+        it 'enumerates subsequent response sets' do
+          subject.to_a[1, 2].should == %w(H4 H7)
+        end
       end
     end
   end

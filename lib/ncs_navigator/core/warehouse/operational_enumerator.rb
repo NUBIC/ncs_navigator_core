@@ -113,7 +113,7 @@ module NcsNavigator::Core::Warehouse
         :contact_language_other => :contact_lang_oth,
         :who_contacted_other => :who_contact_oth
       },
-      :ignored_columns => %w(contact_date_date contact_disposition)
+      :ignored_columns => %w(contact_date_date contact_disposition lock_version)
     )
 
     produce_one_for_one(:participant_consents, ParticipantConsent,
@@ -178,7 +178,7 @@ module NcsNavigator::Core::Warehouse
         :event_incentive_cash => :event_incent_cash,
         :event_incentive_noncash => :event_incent_noncash
       },
-      :ignored_columns => %w(event_disposition scheduled_study_segment_identifier)
+      :ignored_columns => %w(event_disposition scheduled_study_segment_identifier lock_version)
     )
 
     produce_one_for_one(:instruments, Instrument,
@@ -196,7 +196,7 @@ module NcsNavigator::Core::Warehouse
         :instrument_method_code => :ins_method,
         :supervisor_review_code => :sup_review
       },
-      :ignored_columns => %w(person_id survey_id)
+      :ignored_columns => %w(person_id survey_id lock_version)
     )
 
     produce_one_for_one(:contact_links, LinkContact,
@@ -276,7 +276,10 @@ module NcsNavigator::Core::Warehouse
         :address_one => :address_1,
         :address_two => :address_2
       },
-      :ignored_columns => %w(address_start_date_date address_end_date_date response_set_id)
+      :ignored_columns => %w(
+        address_start_date_date address_end_date_date
+        response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
+      )
     )
 
     produce_one_for_one(:emails, Email,

@@ -69,6 +69,9 @@ class ContactLinksController < ApplicationController
         }
         format.json { head :ok }
       else
+        @event        = @contact_link.event
+        @instrument   = @contact_link.instrument
+        @response_set = @instrument.response_set if @instrument
         format.html { render :action => "edit" }
         format.json { render :json => @contact_link.errors, :status => :unprocessable_entity }
       end

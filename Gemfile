@@ -35,7 +35,7 @@ gem 'json-schema'
 
 gem 'ncs_mdes', '~> 0.5'
 gem 'formtastic', '1.2.4'
-gem 'surveyor', '~> 0.22', :git => 'https://github.com/yipdw/surveyor.git', :branch => 'timestamps-for-json'
+gem 'surveyor', '~> 0.22', :git => 'https://github.com/NUBIC/surveyor.git'
 gem 'psc'
 gem 'ncs_navigator_configuration'
 gem 'sidekiq'
@@ -63,9 +63,9 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-#gem 'ncs_mdes_warehouse',
-#  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
-gem 'ncs_mdes_warehouse', '~> 0.4'
+gem 'ncs_mdes_warehouse',
+  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
+#gem 'ncs_mdes_warehouse', '~> 0.4'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
@@ -86,8 +86,9 @@ end
 group :test, :ci do
   gem 'cucumber', '~> 1.1.9'
   gem 'cucumber-rails', :require => false
-  # database_cleaner 0.6.7 doesn't work with DataMapper on PostgreSQL
-  gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
+  # See https://github.com/bmabey/database_cleaner/pull/119
+  gem 'database_cleaner',
+    :git => 'git://github.com/rsutphin/database_cleaner.git', :branch => 'dm-pg-single-trunc'
   gem 'shoulda'
   gem 'facets', :require => false
   gem 'factory_girl', '~> 2.6'

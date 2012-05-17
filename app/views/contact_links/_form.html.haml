@@ -1,6 +1,8 @@
 .page_section
   = form_for(@contact_link, :html => {:autocomplete => "off"}) do |f|
-    = render "shared/full_error_messages", :object => f.object
+    = render "shared/full_error_messages", :object => @contact_link
+    = render "shared/full_error_messages", :object => @contact_link.event if @contact_link.event
+    = render "shared/full_error_messages", :object => @contact_link.contact if @contact_link.contact
 
     = f.hidden_field :person_id
 

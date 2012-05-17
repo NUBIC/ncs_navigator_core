@@ -69,7 +69,7 @@ describe Survey do
     it 'finds all the most recent surveys' do
       # expected = all survey titles in #{Rails.root}/spec/fixtures/surveys directory
       expected = [
-        'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0 1',
+        'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0',
         'INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0'
       ]
       Survey.most_recent_for_each_title.

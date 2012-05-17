@@ -26,6 +26,8 @@
 #
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
+
 describe Response do
   describe 'import record fields' do
     subject { Response.new }
@@ -64,6 +66,18 @@ describe Response do
       it 'sets the source id' do
         subject.source_mdes_id.should == '00000-11111-66'
       end
+    end
+  end
+
+  it_should_behave_like 'an optimistically locked record' do
+    let(:a) { Factory(:answer) }
+    let(:q) { Factory(:question) }
+
+    subject { Factory(:response, :answer => a, :question => q) }
+
+    def modify(winner, loser)
+      winner.string_value = 'winner'
+      loser.string_value = 'loser'
     end
   end
 

@@ -66,6 +66,15 @@ module NcsNavigator::Core::Mustache
       30.days.ago.strftime("%m/%d/%Y")
     end
 
+    def day_and_date_of_past_interview
+      "[DAY AND DATE OF PAST INTERVIEW]"
+    end
+
+    def month_of_interview
+      "[MONTH OF INTERVIEW]"
+    end
+
+
     ### Configuration Information ###
 
     def local_study_affiliate
@@ -191,6 +200,7 @@ module NcsNavigator::Core::Mustache
     end
     private :baby_sex_possessive
 
+
     def baby_sex(gender)
       case gender
       when "male"
@@ -219,6 +229,55 @@ module NcsNavigator::Core::Mustache
       father_full_name.blank? ? "the father" : father_full_name.split(' ')[0]
     end
 
+    ### Post Natal ###
+
+    # TODO: Update the post natal methods with information that is obtained from previous instruments
+
+    def child_children
+      "[Child or Children]"
+    end
+
+    def c_full_name
+      "[CHILD'S FULL NAME]"
+    end
+
+    def c_fname
+      "[CHILD'S FIRST NAME]"
+    end
+
+    def c_dob
+      "[CHILD'S DATE OF BIRTH]"
+    end
+
+    def himself_herself
+      case baby_sex_response
+      when "male"
+        "himself"
+      when "female"
+        "herself"
+      else
+        "himself/herself"
+      end
+    end
+
+    def him_her
+      case baby_sex_response
+      when "male"
+        "him"
+      when "female"
+        "her"
+      else
+        "him/her"
+      end
+    end
+
+    def medicaid_name
+      "[STATE MEDICAID NAME]"
+    end
+
+    def schip_name
+      "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
+    end
 
   end
 

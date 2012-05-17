@@ -46,7 +46,7 @@ class WelcomeController < ApplicationController
       person.destroy
       error_msg = resp.blank? ? "Unable to start pregnancy screener instrument." : "#{resp.body}"
       flash[:warning] = error_msg
-      redirect_to :controller => "welcome", :action => "summary"
+      redirect_to :controller => "welcome", :action => "index"
     end
 
   end
