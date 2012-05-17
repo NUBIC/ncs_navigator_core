@@ -78,7 +78,7 @@ module NcsNavigator::Core::Warehouse
           end
 
           it 'includes the backtrace' do
-            message.should =~ /#{File.basename(__NAME__)}\:\s*\d+/
+            message.should =~ /#{File.basename(__FILE__)}\:\s*\d+/
           end
 
           it 'includes the exception type' do
