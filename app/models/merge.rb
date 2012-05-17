@@ -54,14 +54,17 @@ class Merge < ActiveRecord::Base
   #     def run
   #       begin
   #         update_attribute(:started_at, Time.now)
+  #
+  #         ...merge...
+  #
+  #         self.conflict_report = conflict_report
+  #         self.completed_at = Time.now
+  #         save(:validate => false)
   #       rescue => e
   #         update_attribute(:crashed_at, Time.now) rescue nil
   #         raise e
   #       ensure
-  #         self.conflict_report = conflict_report
-  #         self.completed_at = Time.now
-  #         self.log = the_merge_log
-  #         save(:validate => false)
+  #         update_attribute(:log, the_merge_log)
   #       end
   #     end
   #
@@ -69,23 +72,18 @@ class Merge < ActiveRecord::Base
   # into a state where commands will be ignored.  In this case, the error
   # flag will not be set and the merge will timeout.
   def run
+    sio = StringIO.new
+
     begin
-      sio = StringIO.new
+      update_attribute(:started_at, Time.now)
+
       logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
       logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
-      violations = schema_violations
-
-      unless violations.values.all? { |v| v.empty? }
-        violations[:original_data].each do |violation|
-          logger.fatal { "[original] #{violation}" }
-        end
-        violations[:proposed_data].each do |violation|
-          logger.fatal { "[proposed] #{violation}" }
-        end
-
+      conformant = check_conformance(logger)
+      if !conformant
         logger.fatal { "Schema violations detected; aborting merge" }
-
+        update_attribute(:crashed_at, Time.now)
         return
       end
 
@@ -98,10 +96,16 @@ class Merge < ActiveRecord::Base
 
       sp.merge
 
-      (sp.save unless sp.conflicted?).tap do
-        update_attributes(:done => true, :conflict_report => sp.conflicts.to_json)
-        save
-      end
+      ok = sp.save unless sp.conflicted?
+
+      self.completed_at = Time.now
+      self.conflict_report = sp.conflicts.to_json
+      save(:validate => false)
+
+      ok
+    rescue => e
+      update_attribute(:crashed_at, Time.now) rescue nil
+      raise e
     ensure
       update_attribute(:log, sio.string)
     end
@@ -136,6 +140,18 @@ class Merge < ActiveRecord::Base
 
   def conflicted?
     conflict_report && conflict_report != '{}'
+  end
+
+  ##
+  # @private
+  def check_conformance(logger)
+    vs = schema_violations
+    ok = vs.values.all? { |v| v.empty? }
+
+    ok.tap do
+      vs[:original_data].each { |v| logger.fatal "[original] #{v}" }
+      vs[:proposed_data].each { |v| logger.fatal "[proposed] #{v}" }
+    end
   end
 
   ##
