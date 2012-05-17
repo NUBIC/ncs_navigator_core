@@ -132,8 +132,8 @@ class Merge < ActiveRecord::Base
     when S[nil,        nil,          nil,        Case::Any,   N[true]   ]; 'pending'
     when S[N[nil],     nil,          nil,        Case::Any,   N[true]   ]; 'working'
     when S[Case::Any,  nil,          Case::Any,  Case::Any,   true      ]; 'timeout'
-    when S[N[nil],     N[nil],       nil,        N[true],     Case::Any ]; 'merged'
-    when S[N[nil],     N[nil],       nil,        true,        Case::Any ]; 'conflict'
+    when S[Case::Any,  N[nil],       nil,        N[true],     Case::Any ]; 'merged'
+    when S[Case::Any,  N[nil],       nil,        true,        Case::Any ]; 'conflict'
     when S[N[nil],     nil,          N[nil],     Case::Any,   Case::Any ]; 'error'
     end
   end

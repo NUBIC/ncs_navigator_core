@@ -65,32 +65,6 @@ describe Merge do
         end
       end
 
-      describe 'and completed_at is not nil' do
-        before do
-          subject.completed_at = Time.now
-        end
-
-        describe 'and there are no conflicts' do
-          before do
-            subject.stub!(:conflicted? => false)
-          end
-
-          it 'is "merged"' do
-            subject.status.should == 'merged'
-          end
-        end
-
-        describe 'and there are conflicts' do
-          before do
-            subject.stub!(:conflicted? => true)
-          end
-
-          it 'is "conflict"' do
-            subject.status.should == 'conflict'
-          end
-        end
-      end
-
       describe 'and crashed_at is nil' do
         describe 'and the job has timed out' do
           before do
@@ -110,6 +84,32 @@ describe Merge do
 
         it 'is "error"' do
           subject.status.should == 'error'
+        end
+      end
+    end
+
+    describe 'if completed_at is not nil' do
+      before do
+        subject.completed_at = Time.now
+      end
+
+      describe 'and there are no conflicts' do
+        before do
+          subject.stub!(:conflicted? => false)
+        end
+
+        it 'is "merged"' do
+          subject.status.should == 'merged'
+        end
+      end
+
+      describe 'and there are conflicts' do
+        before do
+          subject.stub!(:conflicted? => true)
+        end
+
+        it 'is "conflict"' do
+          subject.status.should == 'conflict'
         end
       end
     end
