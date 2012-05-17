@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,43 +11,41 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120515181518) do
+ActiveRecord::Schema.define(:version => 20120516235310) do
 
   create_table "addresses", :force => true do |t|
-    t.integer  "psu_code",                                              :null => false
-    t.string   "address_id",                             :limit => 36,  :null => false
+    t.integer  "psu_code",                                 :null => false
+    t.string   "address_id",                :limit => 36,  :null => false
     t.integer  "person_id"
     t.integer  "dwelling_unit_id"
-    t.integer  "address_rank_code",                                     :null => false
+    t.integer  "address_rank_code",                        :null => false
     t.string   "address_rank_other"
-    t.integer  "address_info_source_code",                              :null => false
+    t.integer  "address_info_source_code",                 :null => false
     t.string   "address_info_source_other"
-    t.integer  "address_info_mode_code",                                :null => false
+    t.integer  "address_info_mode_code",                   :null => false
     t.string   "address_info_mode_other"
     t.date     "address_info_date"
     t.date     "address_info_update"
-    t.string   "address_start_date",                     :limit => 10
+    t.string   "address_start_date",        :limit => 10
     t.date     "address_start_date_date"
-    t.string   "address_end_date",                       :limit => 10
+    t.string   "address_end_date",          :limit => 10
     t.date     "address_end_date_date"
-    t.integer  "address_type_code",                                     :null => false
+    t.integer  "address_type_code",                        :null => false
     t.string   "address_type_other"
-    t.integer  "address_description_code",                              :null => false
+    t.integer  "address_description_code",                 :null => false
     t.string   "address_description_other"
-    t.string   "address_one",                            :limit => 100
-    t.string   "address_two",                            :limit => 100
-    t.string   "unit",                                   :limit => 10
-    t.string   "city",                                   :limit => 50
-    t.integer  "state_code",                                            :null => false
-    t.string   "zip",                                    :limit => 5
-    t.string   "zip4",                                   :limit => 4
+    t.string   "address_one",               :limit => 100
+    t.string   "address_two",               :limit => 100
+    t.string   "unit",                      :limit => 10
+    t.string   "city",                      :limit => 50
+    t.integer  "state_code",                               :null => false
+    t.string   "zip",                       :limit => 5
+    t.string   "zip4",                      :limit => 4
     t.text     "address_comment"
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
-    t.integer  "specimen_processing_shipping_center_id"
-    t.integer  "sample_receipt_shipping_center_id"
     t.integer  "provider_id"
   end
 
@@ -250,9 +249,8 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.integer  "lock_version",                                                                    :default => 0
   end
 
-  create_table "fieldworks", :id => false, :force => true do |t|
-    t.string   "fieldwork_id",    :limit => 36
-    t.binary   "received_data"
+  create_table "fieldworks", :force => true do |t|
+    t.string   "fieldwork_id",   :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "client_id"
@@ -260,9 +258,6 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.date     "start_date"
     t.binary   "original_data"
     t.text     "generation_log"
-    t.text     "merge_log"
-    t.boolean  "merged",                        :default => false
-    t.text     "conflict_report"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -865,7 +860,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.integer  "provider_id"
     t.integer  "provider_ncs_role_code",                :null => false
     t.string   "provider_ncs_role_other"
-    t.string   "transaction_type"
+    t.string   "transaction_type",        :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -948,6 +943,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
     t.string   "api_id"
   end
@@ -983,6 +979,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "transaction_type",                  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "address_id"
   end
 
   create_table "sample_receipt_stores", :force => true do |t|
@@ -1079,6 +1076,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "transaction_type",                       :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "address_id"
   end
 
   create_table "specimen_receipts", :force => true do |t|
@@ -1291,6 +1289,8 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
   add_foreign_key "instruments", "people", :name => "instruments_people_fk"
   add_foreign_key "instruments", "surveys", :name => "instruments_surveys_fk"
 
+  add_foreign_key "merges", "fieldworks", :name => "merges_fieldworks_fk"
+
   add_foreign_key "participant_authorization_forms", "contacts", :name => "participant_authorization_forms_contacts_fk"
   add_foreign_key "participant_authorization_forms", "participants", :name => "participant_authorization_forms_participants_fk"
 
@@ -1329,6 +1329,10 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
   add_foreign_key "response_sets", "people", :name => "response_sets_people_fk", :column => "user_id"
 
   add_foreign_key "responses", "response_sets", :name => "response_set_id_to_response_sets_fk"
+
+  add_foreign_key "sample_receipt_shipping_centers", "addresses", :name => "sample_receipt_shipping_centers_addresses_fk"
+
+  add_foreign_key "specimen_processing_shipping_centers", "addresses", :name => "specimen_processing_shipping_centers_addresses_fk"
 
   add_foreign_key "telephones", "people", :name => "telephones_people_fk"
 
