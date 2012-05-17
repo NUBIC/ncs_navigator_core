@@ -73,16 +73,15 @@ class Merge < ActiveRecord::Base
   # flag will not be set and the merge will timeout.
   def run
     sio = StringIO.new
+    logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
+    logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
     begin
       update_attribute(:started_at, Time.now)
 
-      logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
-      logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
-
       conformant = check_conformance(logger)
       if !conformant
-        logger.fatal { "Schema violations detected; aborting merge" }
+        logger.fatal 'Schema violations detected; aborting merge'
         update_attribute(:crashed_at, Time.now)
         return
       end
@@ -104,7 +103,11 @@ class Merge < ActiveRecord::Base
 
       ok
     rescue => e
+      logger.fatal "#{e.class.name}: #{e.message}"
+      e.backtrace.each { |l| logger.fatal(l) }
+
       update_attribute(:crashed_at, Time.now) rescue nil
+
       raise e
     ensure
       update_attribute(:log, sio.string)
