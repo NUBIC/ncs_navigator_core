@@ -1,8 +1,7 @@
 Feature: Accessing the specimen_pickup page
   @javascript
   Scenario: Accessing a specimen pickup page of the application
-    Given valid ncs codes
-    And an authenticated user
+    Given an authenticated user
     When I go to the new specimen pickup form page
     Then I should see "Specimen Id:"
     And I should see "Specimen Pickup Date and Time:"
@@ -12,8 +11,7 @@ Feature: Accessing the specimen_pickup page
 
   @javascript
   Scenario: Entering valid specimen pickup form params
-    Given valid ncs codes
-    And an authenticated user
+    Given an authenticated user
     When I go to the new specimen pickup form page
     And I fill in "Specimen Pickup Date and Time:" with "2012-02-23 14:45:44"
     And I fill in "Specimen Id:" with "ABC1234DE"
@@ -26,8 +24,7 @@ Feature: Accessing the specimen_pickup page
 
   @javascript
   Scenario: Entering invalid specimen pickup form params
-    Given valid ncs codes
-    And an authenticated user
+    Given an authenticated user
     When I go to the new specimen pickup form page
     And I fill in "Specimen Id:" with "ABC1234DE"
     And I fill in "Specimen Pickup Comment:" with "my own comment"

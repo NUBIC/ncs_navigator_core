@@ -1,0 +1,14 @@
+- title "Edit Participant Visit Record"
+
+%h3
+  = "#{@participant_visit_record.rvis_person} :: #{@participant_visit_record.contact_link.event}"
+
+.page_section
+
+  = form_for(@participant_visit_record, :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/participant_visit_records/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

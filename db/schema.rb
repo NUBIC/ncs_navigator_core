@@ -10,7 +10,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120515181518) do
+ActiveRecord::Schema.define(:version => 20120518194913) do
+
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
     t.string   "address_id",                :limit => 36,  :null => false
@@ -553,6 +554,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "transaction_type",            :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "contact_link_id"
   end
 
   create_table "participant_visit_records", :force => true do |t|
@@ -578,6 +580,7 @@ ActiveRecord::Schema.define(:version => 20120515181518) do
     t.string   "transaction_type",          :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "contact_link_id"
   end
 
   create_table "participants", :force => true do |t|

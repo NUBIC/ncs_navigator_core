@@ -38,6 +38,7 @@ class ParticipantVisitRecord < ActiveRecord::Base
 
   belongs_to :participant
   belongs_to :contact
+  belongs_to :contact_link
   belongs_to :rvis_person, :class_name => "Person", :foreign_key => :rvis_person_id
 
   ncs_coded_attribute :psu,                  'PSU_CL1'

@@ -21,3 +21,20 @@ Given /^a pregnancy visit 1 survey exists$/ do
   f = "#{Rails.root}/spec/fixtures/surveys/INS_QUE_PregVisit1_INT_EHPBHI_P2_V20.rb"
   Surveyor::Parser.parse File.read(f)
 end
+
+Given /^a contact link record without an associated participant visit record$/ do
+  Factory(:contact_link)
+end
+
+Given /^a contact link record with an associated participant visit record$/ do
+  contact_link = Factory(:contact_link)
+  Factory(:participant_visit_record, :contact_link => contact_link)
+end
+
+
+When /^I follow today's date$/ do
+  steps %Q{
+    When I follow "#{Date.today.strftime('%d').to_i}"
+  }
+end
+
