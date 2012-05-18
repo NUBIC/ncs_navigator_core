@@ -14,7 +14,11 @@ module NcsNavigator::Core::Fieldwork
     def perform(merge_id)
       verify_database_connection
 
-      ::Merge.find(merge_id).run
+      begin
+        ::Merge.find(merge_id).run
+      rescue ActiveRecord::StaleObjectError
+        retry
+      end
     end
 
     def verify_database_connection
