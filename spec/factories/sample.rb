@@ -55,6 +55,22 @@ FactoryGirl.define do
     ss.sample_shipped_by_code           1
     ss.transaction_type                 nil
   end
+  
+  factory :sample_receipt_confirmation do |src|
+    src.psu_code                         20000030
+    src.sample_id                        {"SAMPLE123ID"}
+    src.association :sample_receipt_shipping_center, :factory => :sample_receipt_shipping_center
+    src.shipment_receipt_confirmed_code  1
+    src.shipper_id                       {"FEDEX"}
+    src.shipment_tracking_number         {"ABCDE234325"}
+    src.shipment_receipt_datetime        Date.today
+    src.shipment_condition_code          1
+    src.shipment_damaged_reason          nil
+    src.sample_receipt_temp              -2.1
+    src.sample_condition_code            1
+    src.shipment_received_by             "Jane Dow"
+    src.transaction_type                 nil
+  end  
 
   factory :sample do |sa|
     sa.sample_id                        {"SAMPLE123ID"}

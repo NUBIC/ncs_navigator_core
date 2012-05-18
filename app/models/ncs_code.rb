@@ -242,7 +242,6 @@ class NcsCode < ActiveRecord::Base
     :receipt_comment_code         => 'SPECIMEN_STATUS_CL3',
     :monitor_status_code          => 'TRIGGER_STATUS_CL1',
     :upper_trigger_code           => 'TRIGGER_STATUS_CL1',
-    :upper_trigger_lvl_code       => 'TRIGGER_STATUS_CL2', # THIS ONE SHOULD GO AWAY
     :upper_trigger_level_code     => 'TRIGGER_STATUS_CL2',
     :lower_trigger_cold_code      => 'TRIGGER_STATUS_CL1',
     :lower_trigger_ambient_code   => 'TRIGGER_STATUS_CL1',
@@ -256,7 +255,12 @@ class NcsCode < ActiveRecord::Base
     :cooler_temp_condition_code   => 'COOLER_TEMP_CL1',
     :storage_compartment_area_code => 'STORAGE_AREA_CL2',
     :temp_event_occurred_code     => 'CONFIRM_TYPE_CL20',
-    :temp_event_action_code       => 'SPECIMEN_STATUS_CL6'
+    :temp_event_action_code       => 'SPECIMEN_STATUS_CL6',
+    
+    ###sample_receipt_confirmation
+    :shipment_receipt_confirmed_code    =>     'CONFIRM_TYPE_CL21',
+    :shipment_condition_code            =>     'SHIPMENT_CONDITION_CL1',
+    :sample_condition_code              =>     'SPECIMEN_STATUS_CL7'
 
   }
 

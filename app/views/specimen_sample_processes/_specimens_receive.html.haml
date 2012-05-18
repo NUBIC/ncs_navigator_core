@@ -30,8 +30,8 @@
         %br
         
         Upper Trigger Level:
-        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:upper_trigger_lvl_code)
-        = select_tag(:upper_trigger_lvl_code, options_for_select(opts))
+        - opts = [["-- Select --", ""]] + NcsCode.ncs_code_lookup(:upper_trigger_level_code)
+        = select_tag(:upper_trigger_level_code, options_for_select(opts))
         %br
 
         Lower Trigger Cold:
