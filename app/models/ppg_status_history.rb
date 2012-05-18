@@ -34,7 +34,7 @@ class PpgStatusHistory < ActiveRecord::Base
   ncs_coded_attribute :ppg_info_source, 'INFORMATION_SOURCE_CL3'
   ncs_coded_attribute :ppg_info_mode,   'CONTACT_TYPE_CL1'
 
-  before_save :set_ppg_status_date
+  before_create :set_ppg_status_date
 
   scope :current_ppg_status, joins("inner join (select participant_id, max(updated_at) as updated_at from ppg_status_histories group by participant_id) as inner_ppg on inner_ppg.participant_id = ppg_status_histories.participant_id and inner_ppg.updated_at = ppg_status_histories.updated_at")
   scope :for_participant, lambda { |participant| where(:participant_id => participant.id) }
@@ -55,11 +55,10 @@ class PpgStatusHistory < ActiveRecord::Base
   private
 
     def set_ppg_status_date
-      if self.ppg_status_date.blank? && self.ppg_status_date_date.blank?
-        date = self.created_at.blank? ? Time.now : self.created_at
-        self.ppg_status_date_date = date
-        self.ppg_status_date = date.strftime(MdesRecord::DEFAULT_DATE_FORMAT)
-      end
+      today = Date.today
+
+      self.ppg_status_date ||= today.to_s
+      self.ppg_status_date_date ||= today
     end
 
 end
