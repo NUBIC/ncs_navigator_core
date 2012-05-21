@@ -144,7 +144,8 @@ module NcsNavigator::Core::Warehouse
         { :table => :people,
           :public_id => :person_id,
           :public_ref => :vis_person_who_consented_id }
-      ]
+      ],
+      :ignored_columns => %w(contact_link_id)
     )
 
     produce_one_for_one(:participant_visit_records, ParticipantRvis,
@@ -155,7 +156,8 @@ module NcsNavigator::Core::Warehouse
           :public_id => :person_id,
           :join_column => :rvis_person_id,
           :public_ref => :rvis_person }
-      ]
+      ],
+      :ignored_columns => %w(contact_link_id)
     )
 
     produce_one_for_one(:events, Event,
