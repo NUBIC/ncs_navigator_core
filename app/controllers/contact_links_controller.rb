@@ -91,6 +91,7 @@ class ContactLinksController < ApplicationController
     @contact_link = ContactLink.find(params[:id])
     @person       = @contact_link.person
     @instrument   = @contact_link.instrument
+    @event        = @contact_link.event
     @response_set = @instrument.response_set
     @survey       = @response_set.survey if @response_set
   end

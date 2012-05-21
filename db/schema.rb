@@ -248,9 +248,8 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
     t.integer  "lock_version",                                                                    :default => 0
   end
 
-  create_table "fieldworks", :id => false, :force => true do |t|
+  create_table "fieldworks", :force => true do |t|
     t.string   "fieldwork_id",    :limit => 36
-    t.binary   "received_data"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "client_id"
@@ -258,8 +257,9 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
     t.date     "start_date"
     t.binary   "original_data"
     t.text     "generation_log"
-    t.text     "merge_log"
+    t.binary   "received_data"
     t.boolean  "merged",                        :default => false
+    t.text     "merge_log"
     t.text     "conflict_report"
   end
 
@@ -370,6 +370,18 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
     t.boolean  "being_processed",                :default => false
     t.string   "ssu_id"
     t.string   "tsu_id"
+  end
+
+  create_table "merges", :force => true do |t|
+    t.integer  "fieldwork_id"
+    t.text     "conflict_report"
+    t.text     "log"
+    t.text     "proposed_data"
+    t.datetime "completed_at"
+    t.datetime "crashed_at"
+    t.datetime "started_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "ncs_codes", :force => true do |t|
@@ -998,6 +1010,24 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
 
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
 
+  create_table "sample_receipt_confirmations", :force => true do |t|
+    t.integer  "psu_code",                                                                      :null => false
+    t.integer  "sample_receipt_shipping_center_id"
+    t.integer  "shipment_receipt_confirmed_code",                                               :null => false
+    t.string   "shipper_id",                                                                    :null => false
+    t.string   "shipment_tracking_number",                                                      :null => false
+    t.datetime "shipment_receipt_datetime",                                                     :null => false
+    t.integer  "shipment_condition_code",                                                       :null => false
+    t.string   "shipment_damaged_reason"
+    t.string   "sample_id",                                                                     :null => false
+    t.decimal  "sample_receipt_temp",                             :precision => 6, :scale => 2, :null => false
+    t.integer  "sample_condition_code",                                                         :null => false
+    t.string   "shipment_received_by",                                                          :null => false
+    t.string   "transaction_type",                  :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sample_receipt_shipping_centers", :force => true do |t|
     t.integer  "psu_code",                                        :null => false
     t.string   "sample_receipt_shipping_center_id", :limit => 36, :null => false
@@ -1313,6 +1343,8 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
   add_foreign_key "instruments", "events", :name => "instruments_events_fk"
   add_foreign_key "instruments", "people", :name => "instruments_people_fk"
   add_foreign_key "instruments", "surveys", :name => "instruments_surveys_fk"
+
+  add_foreign_key "merges", "fieldworks", :name => "merges_fieldworks_fk"
 
   add_foreign_key "participant_authorization_forms", "contacts", :name => "participant_authorization_forms_contacts_fk"
   add_foreign_key "participant_authorization_forms", "participants", :name => "participant_authorization_forms_participants_fk"

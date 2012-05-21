@@ -9,11 +9,16 @@ class ParticipantVisitConsentsController < ApplicationController
   def new
     @contact_link = ContactLink.find(params[:contact_link_id])
     # TODO: raise exception if no ContactLink
-    @participant = @contact_link.event.participant
+    if params[:participant_id]
+      @participant = Participant.find(params[:participant_id])
+    else
+      @participant = @contact_link.event.participant
+    end
     # What to do if the participant does not exist ?
     @participant_visit_consent = ParticipantVisitConsent.new(:contact_link => @contact_link,
                                                              :contact => @contact_link.contact,
                                                              :vis_person_who_consented => @contact_link.person,
+                                                             :vis_consent_type_code => params[:vis_consent_type_code],
                                                              :participant => @participant)
     respond_to do |format|
       format.html # new.html.haml

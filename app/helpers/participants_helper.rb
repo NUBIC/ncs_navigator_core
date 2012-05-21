@@ -28,6 +28,14 @@ module ParticipantsHelper
     consent_type_text.include?("collect") && NcsNavigatorCore.with_specimens == "false"
   end
 
+  def determine_participant_visit_consent_path(visit_type_code, visit_type_text, participant, contact_link)
+    if visit_consent = ParticipantVisitConsent.where(:participant_id => participant.id, :contact_link_id => contact_link.id, :vis_consent_type_code => visit_type_code).first
+      link_to visit_type_text, edit_participant_visit_consent_path(visit_consent), :class => "edit_link icon_link"
+    else
+      link_to visit_type_text, new_participant_visit_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :vis_consent_type_code => visit_type_code), :class => "add_link icon_link"
+    end
+  end
+
   def displayable_event_name(event, participant)
     event_name = event.to_s
     if recruitment_strategy.two_tier_knowledgable?

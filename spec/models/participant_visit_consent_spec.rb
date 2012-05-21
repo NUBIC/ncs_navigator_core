@@ -44,6 +44,136 @@ describe ParticipantVisitConsent do
   it { should belong_to(:vis_language) }
   it { should belong_to(:vis_translate) }
 
+  context ".visit_types" do
+
+    it "returns an id, label list of potential visit types" do
+      vts = ParticipantVisitConsent.visit_types
+      vts.length.should == 6
+      vts.first.should == ["1", "Interviewer-Administered Questionnaire"]
+    end
+
+  end
+
+  context ".event_types_with_visit_information_sheets" do
+
+    it "returns the known event type code values for events where a VIS is presented" do
+      vis_events = ParticipantVisitConsent.event_types_with_visit_information_sheets
+      vis_events.size.should == 8
+      vis_events.should == ['11', '13', '15', '18', '19', '24', '27', '33']
+    end
+
+  end
+
+  context ".visit_information_sheet_presented?" do
+
+    describe "nil" do
+      it "simply returns false" do
+        ParticipantVisitConsent.visit_information_sheet_presented?(nil).should be_false
+      end
+
+    end
+
+    describe "Pregnancy Screener Event (29)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 29)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+    describe "Pregnancy Probability (7)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 7)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+    describe "Informed Consent (10)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 10)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+    describe "Pre-Pregnancy Event (11)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 11)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "Pregnancy Visit 1 Event (13)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 13)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "Pregnancy Visit 2 Event (15)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 15)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "Birth Event (18)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 18)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "Father Event (19)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 19)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "3 Month Event (23)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 23)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+    describe "6 Month Event (24)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 24)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "9 Month Event (26)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 26)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+    describe "12 Month Event (27)" do
+      it "is true" do
+        event = Factory(:event, :event_type_code => 27)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_true
+      end
+    end
+
+    describe "18 Month Event (30)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 30)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+    describe "24 Month Event (31)" do
+      it "is false" do
+        event = Factory(:event, :event_type_code => 31)
+        ParticipantVisitConsent.visit_information_sheet_presented?(event).should be_false
+      end
+    end
+
+
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
