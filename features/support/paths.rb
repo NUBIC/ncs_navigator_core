@@ -73,8 +73,14 @@ module NavigationHelpers
     when /^the edit_contact_link page$/
       edit_contact_link_path(ContactLink.last)
 
+    when /^the decision_page_contact_link page$/
+      decision_page_contact_link_path(ContactLink.last)
+
     when /^the edit_instrument_contact_link page$/
       edit_instrument_contact_link_path(ContactLink.last)
+
+    when /^the edit_participant_visit_record page$/
+      edit_participant_visit_record_path(ParticipantVisitRecord.last)
 
     when /^the select_instrument_contact_link page$/
       select_instrument_contact_link_path(ContactLink.last)

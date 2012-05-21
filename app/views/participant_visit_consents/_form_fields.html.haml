@@ -1,0 +1,28 @@
+
+= f.hidden_field :participant_id
+= f.hidden_field :contact_id
+= f.hidden_field :contact_link_id
+= f.hidden_field :vis_person_who_consented_id
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+= render "shared/ncs_code_select", { :f => f, :code => :vis_language_code, :label_text => "Language", :other => :vis_language_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :vis_consent_type_code, :label_text => "Type of Consent" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :vis_consent_response_code, :label_text => "Assented to specific activity identified in VIS" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :vis_who_consented_code, :label_text => "Role of person who provided consent" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :vis_translate_code, :label_text => "Translation method used for consent" }
+
+%p
+  = f.label :vis_comments, "Comment"
+  %br
+  = f.text_area :vis_comments
+
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#participant_visit_consent_vis_language_code","#participant_visit_consent_vis_language_other");
+  });

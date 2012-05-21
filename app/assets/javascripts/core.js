@@ -76,31 +76,33 @@ $(document).ready(function() {
   $('.mdes_documentation_link').click(function(event) {
     var definition = $(this).next('.mdes_definition').val();
     var title = $(this).next('.mdes_definition').attr('title');
-    $('<div id="dialog">' + definition + '</div>').appendTo('body');
-      event.preventDefault();
-      $("#dialog").dialog({
-        title: title,
-        width: 600,
-        modal: true,
-        close: function(event, ui) {
-          $("#dialog").remove();
-        }
-      });
+    $('<div id="dialog" class="modal_dialog">' + definition + '</div>').appendTo('body');
+    event.preventDefault();
+    $("#dialog").dialog({
+      title: title,
+      width: 600,
+      modal: true,
+      close: function(event, ui) {
+        $(".modal_dialog").remove();
+      }
+    });
   });
 
   $('.help_text_link').click(function(event) {
     var help_text = $(this).next('.help_text').val();
     var title = $(this).next('.help_text').attr('title');
-    $('<div id="dialog">' + help_text + '</div>').appendTo('body');
-      event.preventDefault();
-      $("#dialog").dialog({
-        title: title,
-        width: 600,
-        modal: true,
-        close: function(event, ui) {
-          $("#dialog").remove();
-        }
-      });
+    if ($("#dialog").length == 0) {
+      $('<div id="dialog" class="modal_dialog">' + help_text + '</div>').appendTo('body');
+    }
+    event.preventDefault();
+    $("#dialog").dialog({
+      title: title,
+      width: 600,
+      modal: true,
+      close: function(event, ui) {
+        $(".modal_dialog").remove();
+      }
+    });
   });
 
   $(".help_icon").tooltip();

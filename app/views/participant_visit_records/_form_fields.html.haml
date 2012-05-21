@@ -1,0 +1,45 @@
+
+= f.hidden_field :participant_id
+= f.hidden_field :contact_id
+= f.hidden_field :contact_link_id
+= f.hidden_field :rvis_person_id
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_language_code, :label_text => "Language", :other => :rvis_language_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_who_consented_code, :label_text => "Role of person who VIS was presented to" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_translate_code, :label_text => "Translation Method" }
+
+%p
+  = f.label :time_stamp_1, "Date/Time stamp 1"
+  %br
+  = f.text_field :time_stamp_1, :class => "datetime"
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_sections_code, :label_text => "Were all sections of the VIS presented?" }
+
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_during_interv_code, :label_text => "Was interview completed during the visit?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_during_bio_code, :label_text => "Were biospecimen samples completed during the visit?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_bio_cord_code, :label_text => "Was cord blood collected during the visit?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_during_env_code, :label_text => "Were environmental samples collected during the visit?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_during_thanks_code, :label_text => "Was the Thank You completed during the visit?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_after_saq_code, :label_text => "Was questionnaire for the study participant completed after the visit?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :rvis_reconsideration_code, :label_text => "Was the reconsideration script used?" }
+
+%p
+  = f.label :time_stamp_2, "Date/Time stamp 2"
+  %br
+  = f.text_field :time_stamp_2, :class => "datetime"
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#participant_visit_record_rvis_language_code","#participant_visit_record_rvis_language_other");
+  });

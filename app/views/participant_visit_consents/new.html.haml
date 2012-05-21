@@ -1,0 +1,14 @@
+- title "New Participant Visit Consent"
+
+%h3
+  = "#{@participant_visit_consent.vis_person_who_consented} :: #{@participant_visit_consent.contact_link.event}"
+
+.page_section
+
+  = form_for(@participant_visit_consent, :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/participant_visit_consents/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

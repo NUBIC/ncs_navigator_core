@@ -257,6 +257,10 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
     t.date     "start_date"
     t.binary   "original_data"
     t.text     "generation_log"
+    t.binary   "received_data"
+    t.boolean  "merged",                        :default => false
+    t.text     "merge_log"
+    t.text     "conflict_report"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true

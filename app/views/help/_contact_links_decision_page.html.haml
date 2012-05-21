@@ -1,0 +1,38 @@
+= render "/help/help_link"
+%textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "Post Instrument" }
+  %h3
+    Post Instrument Decision Page
+  %p
+    After administering an instrument, you will need to decide which action should take place next. The choices are presented
+    to you in order of which they should be completed.
+  %p
+    %b
+      Edit the Instrument record
+    %br
+    Here you will be able to re-access the instrument records for this contact. If necessary, you can edit information for
+    an instrument.
+  %p
+    %b
+      Administer another instrument
+    %br
+    Many events ask for more than one instrument to be administered. If the current event is of this type, then a list of
+    potential instruments will be shown in this section. Choose the instrument to administer here and continue interaction
+    with the participant.
+    %br
+    Also, in this section, participant consent records will be accessible. If a consent has not been obtained, you should
+    obtain an affirmative consent before continuing.
+  %p
+    %b
+      Enter information about the visit
+    %br
+    In addition to recording the visit contact, it is necessary to record details about the visit with the participant in the
+    Participant Record of Visit table (a.k.a. RVIS)
+    %br
+    If a Visit Information Sheet (VIS) was presented to the participant, it is required to record the unique consent given at
+    a specific component at a specific visit in the Participant Visit Consent table. There will potentially be several
+    Participant Visit Consent records entered for any one visit.
+  %p
+    %b
+      End interaction with the participant
+    %br
+    The contact and event records will need to be completed after interaction with a participant.

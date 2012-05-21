@@ -35,6 +35,9 @@ class ContactLink < ActiveRecord::Base
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
 
+  has_one :participant_visit_record, :class_name => "ParticipantVisitRecord", :foreign_key => "contact_link_id"
+  has_many :participant_visit_consents
+
   delegate :participant, :to => :event
 
   # Validating :contact_id instead of :contact prevents a reload of

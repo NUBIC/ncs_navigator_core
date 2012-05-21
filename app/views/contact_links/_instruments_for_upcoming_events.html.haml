@@ -6,6 +6,8 @@
 - if @contact_link.instrument.try(:instrument_type).to_s =~ /Screener/
   %h3
     = "#{@contact_link.event}"
+  %p
+    There is only one Instrument associated with the Pregnancy Screener Event
 - else
   %h3
     = "Instruments for #{@contact_link.event}"

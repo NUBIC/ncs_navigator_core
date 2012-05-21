@@ -1887,6 +1887,7 @@ input[type="submit"] {
 }
 
 /* line 139, ../../../stylesheets/partials/_links.scss */
+.help_link_icon, .help_link_icon:hover,
 .disposition_icon, .disposition_icon:hover,
 .help_icon, .help_icon:hover {
   padding: 2px 2px 2px 20px;

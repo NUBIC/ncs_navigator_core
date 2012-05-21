@@ -5,7 +5,7 @@ Feature: Creating a household unit
   I want to be able to create a household unit record
 
   Scenario: Creating a new household unit
-    And an authenticated user
+    Given an authenticated user
     When I am on the household units page
     Then I should see "Household Units"
     And I should see "No household units were found."
@@ -23,7 +23,7 @@ Feature: Creating a household unit
 
   @javascript
   Scenario: Associating a person with a household unit
-    And an authenticated user
+    Given an authenticated user
     And a person exists with first_name: "Bix", last_name: "Beiderbecke"
     When I am on the household units page
     Then I should see "Household Units"
@@ -48,8 +48,7 @@ Feature: Creating a household unit
     And I should see "Single Family Home"
 
     # Scenario: Creating a new household unit without selecting required attributes
-    #   Given valid ncs codes
-    #   When I am on the household units page
+    #   Given I am on the household units page
     #   Then I should see "Household Units"
     #   And I should see "No household units were found."
     #   And I should see "New Household Unit"
