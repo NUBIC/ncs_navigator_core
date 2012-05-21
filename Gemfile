@@ -8,7 +8,6 @@ gem 'aker-rails'
 gem 'case'
 gem 'chronic'
 gem 'comma'
-gem 'compass'
 gem 'fastercsv', :platform => :ruby_18
 gem 'haml', '~> 3.1'
 gem 'pg'
@@ -26,6 +25,8 @@ group :assets do
   # Related (but not exactly the same problem we saw):
   #  https://github.com/rails/sass-rails/commit/0b435834bc37e26c016f2d29885ca3bfe08ae827
   gem 'sass-rails', "~> 3.1.0", "!= 3.1.6"
+  gem 'compass-rails'
+  gem 'compass'
   gem 'coffee-rails', "~> 3.1.0"
   gem 'uglifier'
 end
