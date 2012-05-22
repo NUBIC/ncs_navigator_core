@@ -1,6 +1,6 @@
 class UpdateSurveyorVersion < ActiveRecord::Migration
   def self.up
-    rename_column :surveys, :version, :survey_version, :integer, :default => 0
+    rename_column :surveys, :version, :survey_version
     add_index(:surveys, [ :access_code, :survey_version], :name => 'surveys_access_code_version_idx', :unique => true)
   end
 
