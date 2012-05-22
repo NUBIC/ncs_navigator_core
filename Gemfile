@@ -35,7 +35,7 @@ gem 'jquery-rails'
 gem 'json-schema'
 
 gem 'ncs_mdes', '~> 0.5'
-gem 'formtastic', '1.2.4'
+gem 'formtastic'
 gem 'surveyor', '~> 0.22', :git => 'https://github.com/NUBIC/surveyor.git'
 gem 'psc'
 gem 'ncs_navigator_configuration'
