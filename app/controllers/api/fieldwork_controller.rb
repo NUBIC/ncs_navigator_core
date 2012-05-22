@@ -8,7 +8,7 @@ class Api::FieldworkController < ApplicationController
       render :nothing => true, :status => :bad_request and return
     end
 
-    fw = Fieldwork.from_psc(params, psc, current_staff_id).tap(&:save!)
+    fw = Fieldwork.from_psc(params, psc, current_staff_id, current_username).tap(&:save!)
 
     respond_to do |wants|
       wants.json do

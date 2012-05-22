@@ -98,14 +98,14 @@ class Fieldwork < ActiveRecord::Base
   # @param staff_id the name of the user running this process;
   #   should usually be the value of ApplicationController#current_staff_id
   # @return [Fieldwork]
-  def self.from_psc(params, psc, staff_id)
+  def self.from_psc(params, psc, staff_id, current_username)
     sd = params[:start_date]
     ed = params[:end_date]
     cid = params[:client_id]
 
     new(:start_date => sd, :end_date => ed, :client_id => cid).tap do |f|
       sio = StringIO.new
-      report = ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => PatientStudyCalendar::ACTIVITY_SCHEDULED)
+      report = ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => PatientStudyCalendar::ACTIVITY_SCHEDULED, :current_user => current_username)
       report.logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
 
       report.map_entities
