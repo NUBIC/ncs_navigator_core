@@ -300,7 +300,10 @@ module NcsNavigator::Core::Warehouse
 
           let(:core_model) { ParticipantVisitRecord }
           let(:visited) { Factory(:person, :first_name => 'Ginger') }
-          let(:core_record) { Factory(:participant_visit_record, :rvis_person => visited) }
+          let(:core_record) {
+            Factory(:participant_visit_record,
+              :rvis_person => visited, :contact_link => nil)
+          }
         end
 
         describe ParticipantVisitConsent do
@@ -309,7 +312,8 @@ module NcsNavigator::Core::Warehouse
           let(:core_model) { ParticipantVisitConsent }
           let(:consenter) { Factory(:person, :first_name => 'Ginger') }
           let(:core_record) {
-            Factory(:participant_visit_consent, :vis_person_who_consented => consenter)
+            Factory(:participant_visit_consent,
+              :vis_person_who_consented => consenter, :contact_link => nil)
           }
         end
 
