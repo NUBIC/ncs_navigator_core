@@ -18,7 +18,6 @@ module NcsNavigator::Core::Psc
 
     include JsonForFieldwork
     include Logging
-    include Merge
 
     ##
     # Associations (rooted at {Person}) to eager-load when mapping report rows

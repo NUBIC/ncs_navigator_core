@@ -23,8 +23,6 @@ module NcsNavigator::Core::Psc
 
     before do
       report.rows = [r1]
-
-      report.merge!
     end
 
     describe '#contacts_as_json' do
@@ -104,7 +102,7 @@ module NcsNavigator::Core::Psc
       end
 
       it 'sets #/0/events to [] if the row has no events' do
-        report.stub!(:events_for => [])
+        r1.event = nil
 
         contacts[0]['events'].should == []
       end
@@ -146,7 +144,7 @@ module NcsNavigator::Core::Psc
       end
 
       it 'sets #/0/events/0/instruments to [] if the row has no instruments' do
-        report.stub!(:instruments_for => [])
+        r1.instrument = nil
 
         contacts[0]['events'][0]['instruments'].should == []
       end

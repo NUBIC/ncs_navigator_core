@@ -1,47 +1,38 @@
 require 'ncs_navigator/core'
 
 class NcsNavigator::Core::Psc::ScheduledActivityReport
-  ##
-  # Deep-merges rows having the same public contact ID.
   module Merge
-    ##
-    # Replaces the contents of #rows with the merge result.  #merge! preserves
-    # row order.
-    def merge!
+    def merge
       merged = ActiveSupport::OrderedHash.new
 
-      @event_map = {}
-      @instrument_map = Hash.new([])
+      event_map = Hash.new([])
+      instrument_map = Hash.new([])
 
-      rows.each do |r|
-        id = r.contact.try(:public_id)
+      rows.select(&:contact).each do |r|
+        c = r.contact
 
-        @event_map[r.contact] ||= []
+        merged[c.public_id] ||= r
 
         if r.event
-          @event_map[r.contact] << r.event
+          e = r.event
+
+          unless event_map.has_key?(c.public_id)
+            event_map[c.public_id] = []
+          end
+
+          event_map[c.public_id] << e
 
           if r.instrument
-            unless @instrument_map.has_key?([r.contact, r.event])
-              @instrument_map[[r.contact, r.event]] = []
+            unless instrument_map.has_key?([c.public_id, e.public_id])
+              instrument_map[[c.public_id, e.public_id]] = []
             end
 
-            @instrument_map[[r.contact, r.event]] << r.instrument
+            instrument_map[[c.public_id, e.public_id]] << r.instrument
           end
         end
-
-        merged[id] ||= r
       end
 
-      self.rows = merged.values
-    end
-
-    def events_for(contact)
-      @event_map[contact]
-    end
-
-    def instruments_for(contact, event)
-      @instrument_map[[contact, event]]
+      [merged.values, event_map, instrument_map]
     end
   end
 end

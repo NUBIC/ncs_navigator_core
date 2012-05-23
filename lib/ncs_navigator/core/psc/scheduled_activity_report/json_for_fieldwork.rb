@@ -5,24 +5,27 @@ require 'rabl'
 
 class NcsNavigator::Core::Psc::ScheduledActivityReport
   module JsonForFieldwork
+    include Merge
     include NcsNavigator::Core::Fieldwork::Adapters
 
     def contacts_as_json
-      rows.select(&:contact).map do |r|
+      merged_rows, event_map, instrument_map = merge
+
+      merged_rows.map do |r|
         c = r.contact
 
         adapt_model(c).as_json.merge({
-          'events' => events_as_json(c, events_for(c)),
+          'events' => events_as_json(c, event_map[c.public_id], instrument_map),
           'person_id' => r.person.person_id,
           'version' => c.updated_at.utc
         })
       end
     end
 
-    def events_as_json(contact, events)
+    def events_as_json(contact, events, instrument_map)
       events.map do |e|
         adapt_model(e).as_json.merge({
-          'instruments' => instruments_as_json(instruments_for(contact, e)),
+          'instruments' => instruments_as_json(instrument_map[[contact.public_id, e.public_id]]),
           'name' => e.event_type.to_s,
           'version' => e.updated_at.utc
         })

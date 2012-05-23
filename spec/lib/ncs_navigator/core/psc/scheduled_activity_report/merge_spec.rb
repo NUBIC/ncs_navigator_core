@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ostruct'
 
 module NcsNavigator::Core::Psc
   describe ScheduledActivityReport do
@@ -12,57 +13,53 @@ module NcsNavigator::Core::Psc
       let(:i1) { Instrument.new(:instrument_id => 'i1') }
       let(:i2) { Instrument.new(:instrument_id => 'i2') }
 
-      let(:r1) { stub('r1').as_null_object }
-      let(:r2) { stub('r2').as_null_object }
-      let(:r3) { stub('r3').as_null_object }
-
-      def merge!
-        report.merge!
-      end
+      let(:r1) { OpenStruct.new }
+      let(:r2) { OpenStruct.new }
+      let(:r3) { OpenStruct.new }
 
       before do
         report.rows = [r1, r2, r3]
       end
 
       it 'merges contacts' do
-        r1.stub(:contact => c1)
-        r2.stub(:contact => c1)
-        r3.stub(:contact => c2)
+        r1.contact = c1
+        r2.contact = c1
+        r3.contact = c2
 
-        merge!
+        rows, _, _ = report.merge
 
-        report.rows.map(&:contact).should == [c1, c2]
+        rows.map(&:contact).should == [c1, c2]
       end
 
       it 'maps contacts to their events' do
-        r1.stub(:contact => c1, :event => e1)
-        r2.stub(:contact => c1, :event => e2)
-        r3.stub(:contact => c2, :event => nil)
+        r1.contact = c1; r1.event = e1
+        r2.contact = c1; r2.event = e2
+        r3.contact = c2; r3.event = nil
 
-        merge!
+        _, event_map, _ = report.merge
 
-        report.events_for(c1).should == [e1, e2]
-        report.events_for(c2).should == []
+        event_map[c1.public_id].should == [e1, e2]
+        event_map[c2.public_id].should == []
       end
 
       it 'maps (contact, event) to instruments' do
-        r1.stub(:contact => c1, :event => e1, :instrument => i1)
-        r2.stub(:contact => c1, :event => e2, :instrument => i2)
-        r3.stub(:contact => c2, :event => nil, :instrument => nil)
+        r1.contact = c1; r1.event = e1;  r1.instrument = i1
+        r2.contact = c1; r2.event = e2;  r2.instrument = i2
+        r3.contact = c2; r3.event = nil; r3.instrument = nil
 
-        merge!
+        _, _, instrument_map = report.merge
 
-        report.instruments_for(c1, e1).should == [i1]
-        report.instruments_for(c1, e2).should == [i2]
+        instrument_map[[c1.public_id, e1.public_id]].should == [i1]
+        instrument_map[[c1.public_id, e2.public_id]].should == [i2]
       end
 
       it 'maps nonexistent (contact, event) pairs to []' do
-        r3.stub(:contact => c2, :event => nil, :instrument => nil)
+        r3.contact = c2; r3.event = nil; r3.instrument = nil
 
-        merge!
+        _, _, instrument_map = report.merge
 
-        report.instruments_for(c2, e1).should == []
-        report.instruments_for(c2, e2).should == []
+        instrument_map[[c2.public_id, e1.public_id]].should == []
+        instrument_map[[c2.public_id, e2.public_id]].should == []
       end
     end
   end
