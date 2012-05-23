@@ -53,7 +53,7 @@ describe Fieldwork do
       }
     end
 
-    let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test') }
+    let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test', 'test') }
 
     before do
       NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
