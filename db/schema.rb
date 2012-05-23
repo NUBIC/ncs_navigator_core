@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120518194913) do
+ActiveRecord::Schema.define(:version => 20120522213558) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -249,7 +249,7 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
   end
 
   create_table "fieldworks", :force => true do |t|
-    t.string   "fieldwork_id",   :limit => 36
+    t.string   "fieldwork_id",    :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "client_id"
@@ -1237,10 +1237,10 @@ ActiveRecord::Schema.define(:version => 20120518194913) do
     t.datetime "updated_at"
     t.integer  "display_order"
     t.string   "api_id"
-    t.integer  "version",                :default => 0
+    t.integer  "survey_version",         :default => 0
   end
 
-  add_index "surveys", ["access_code", "version"], :name => "surveys_access_code_version_idx", :unique => true
+  add_index "surveys", ["access_code", "survey_version"], :name => "surveys_access_code_survey_version_idx", :unique => true
 
   create_table "telephones", :force => true do |t|
     t.integer  "psu_code",                              :null => false
