@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 module NcsNavigator::Core::Psc
-  describe ScheduledActivityReport::JsonForFieldwork do
-    subject { ScheduledActivityReport.new.extend(ScheduledActivityReport::JsonForFieldwork) }
-
+  describe ScheduledActivityReport do
     let(:c) { Factory(:contact) }
     let(:e) { Factory(:event) }
-    let(:i) { Factory(:instrument, :response_set => rs) }
+    let(:i) { Factory(:instrument, :response_set => rs, :survey => s) }
     let(:p) { Factory(:person) }
     let(:s) { Factory(:survey) }
     let(:rs) { Factory(:response_set) }
+
+    let(:report) { subject }
 
     let(:r1) do
       OpenStruct.new(:contact => c,
@@ -22,7 +22,9 @@ module NcsNavigator::Core::Psc
     end
 
     before do
-      subject.rows = [r1]
+      report.rows = [r1]
+
+      report.merge!
     end
 
     describe '#contacts_as_json' do
@@ -101,8 +103,8 @@ module NcsNavigator::Core::Psc
         contacts[0]['disposition'].should == subject.rows[0].contact.contact_disposition
       end
 
-      it 'sets #/0/events to [] if the row has no event' do
-        r1.event = nil
+      it 'sets #/0/events to [] if the row has no events' do
+        report.stub!(:events_for => [])
 
         contacts[0]['events'].should == []
       end
@@ -144,7 +146,7 @@ module NcsNavigator::Core::Psc
       end
 
       it 'sets #/0/events/0/instruments to [] if the row has no instruments' do
-        r1.instrument = nil
+        report.stub!(:instruments_for => [])
 
         contacts[0]['events'][0]['instruments'].should == []
       end

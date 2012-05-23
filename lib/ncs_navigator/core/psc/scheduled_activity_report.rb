@@ -9,6 +9,7 @@ module NcsNavigator::Core::Psc
   class ScheduledActivityReport
     autoload :JsonForFieldwork, 'ncs_navigator/core/psc/scheduled_activity_report/json_for_fieldwork'
     autoload :Logging,          'ncs_navigator/core/psc/scheduled_activity_report/logging'
+    autoload :Merge,            'ncs_navigator/core/psc/scheduled_activity_report/merge'
 
     include ActiveSupport::Callbacks
 
@@ -17,6 +18,7 @@ module NcsNavigator::Core::Psc
 
     include JsonForFieldwork
     include Logging
+    include Merge
 
     ##
     # Associations (rooted at {Person}) to eager-load when mapping report rows

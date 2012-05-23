@@ -11,30 +11,30 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
       rows.select(&:contact).map do |r|
         c = r.contact
 
-        instruments = [].tap do |a|
-          if r.instrument
-            a << adapt_model(r.instrument).as_json.merge({
-              'instrument_template_id' => r.survey.api_id,
-              'name' => r.survey.title,
-              'response_set' => JSON.parse(r.instrument.response_set.to_json)
-            })
-          end
-        end
-
-        events = [].tap do |a|
-          if r.event
-            a << adapt_model(r.event).as_json.merge({
-              'instruments' => instruments,
-              'name' => r.event.event_type.to_s,
-              'version' => r.event.updated_at.utc
-            })
-          end
-        end
-
         adapt_model(c).as_json.merge({
-          'events' => events,
+          'events' => events_as_json(c, events_for(c)),
           'person_id' => r.person.person_id,
           'version' => c.updated_at.utc
+        })
+      end
+    end
+
+    def events_as_json(contact, events)
+      events.map do |e|
+        adapt_model(e).as_json.merge({
+          'instruments' => instruments_as_json(instruments_for(contact, e)),
+          'name' => e.event_type.to_s,
+          'version' => e.updated_at.utc
+        })
+      end
+    end
+
+    def instruments_as_json(instruments)
+      instruments.map do |i|
+        adapt_model(i).as_json.merge({
+          'instrument_template_id' => i.survey.api_id,
+          'name' => i.survey.title,
+          'response_set' => JSON.parse(i.response_set.to_json)
         })
       end
     end

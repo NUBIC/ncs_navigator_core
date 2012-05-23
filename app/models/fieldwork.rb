@@ -109,6 +109,7 @@ class Fieldwork < ActiveRecord::Base
       report.logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
 
       report.map_entities
+      report.merge!
 
       f.generation_log = sio.string
       f.report = report
