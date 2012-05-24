@@ -2,14 +2,14 @@
 /*  @include column($blueprint-grid-columns - 2);*/
   @include column(22);
   @include append(1);
-  @include prepend(1);
+  @include prepend(0);
 /*  background-color: #FCFDFF;*/
   background: inherit !important;
 
   margin: 0;
 
   .surveyor_menu {
-    float: none;
+    float: right;
     ul {
       padding: 0;
       margin: 0;
@@ -17,8 +17,6 @@
       border-style: solid;
       border-width: 1px;
       border-color: #bcbcbc;
-      border-bottom-width: 0;
-      border-right-width: 0;
       background-color: #dcdcdc;
       color: #666666;
 
@@ -54,11 +52,19 @@
     }
   }
 
-  .previous_section, .next_section {
+  .previous_section,
+  .next_section {
     font-size: 0.8em;
     margin: -0.6em 0 0.5em -1em;
     padding: 0;
+  }
+
+  .previous_section {
     float: left;
+  }
+
+  .next_section {
+    float: right;
   }
 
   .survey_title {
