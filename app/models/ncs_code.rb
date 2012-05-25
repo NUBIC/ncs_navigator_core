@@ -256,7 +256,7 @@ class NcsCode < ActiveRecord::Base
     :storage_compartment_area_code => 'STORAGE_AREA_CL2',
     :temp_event_occurred_code     => 'CONFIRM_TYPE_CL20',
     :temp_event_action_code       => 'SPECIMEN_STATUS_CL6',
-    
+
     ###sample_receipt_confirmation
     :shipment_receipt_confirmed_code    =>     'CONFIRM_TYPE_CL21',
     :shipment_condition_code            =>     'SHIPMENT_CONDITION_CL1',
@@ -268,7 +268,21 @@ class NcsCode < ActiveRecord::Base
     list_name = attribute_lookup(attribute_name)
     where_clause = "list_name = ?"
     where_clause += " AND display_text <> 'Missing in Error'" unless show_missing_in_error
-    NcsCode.where(where_clause, list_name).map { |n| [n.display_text, n.local_code] }
+    list = NcsCode.where(where_clause, list_name).map { |n| [n.display_text, n.local_code] }
+
+    NcsCode.sort_list(list, list_name)
+  end
+
+  def self.sort_list(list, list_name)
+    positives = list.select{ |pos| pos[1] >= 0 }
+    negatives = list.select{ |neg| neg[1] < 0 }
+
+    sk = NcsCode.sort_key(list_name)
+    positives.sort { |a, b| a[sk] <=> b[sk] } + negatives.sort { |a, b| a[sk] <=> b[sk] }
+  end
+
+  def self.sort_key(list_name)
+    (list_name.to_s.include?('LANGUAGE') || list_name.to_s.include?('CONFIRM')) ? 1 : 0
   end
 
   def self.attribute_lookup(attribute_name)
