@@ -35,7 +35,6 @@ class ParticipantVisitConsent < ActiveRecord::Base
 
   belongs_to :participant
   belongs_to :contact
-  belongs_to :contact_link
   belongs_to :vis_person_who_consented,  :class_name => "Person", :foreign_key => :vis_person_who_consented_id
 
   ncs_coded_attribute :psu,                  'PSU_CL1'

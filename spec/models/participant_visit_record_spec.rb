@@ -42,7 +42,6 @@ describe ParticipantVisitRecord do
   it { should belong_to(:participant) }
   it { should belong_to(:rvis_person) }
   it { should belong_to(:contact) }
-  it { should belong_to(:contact_link) }
 
   it { should belong_to(:rvis_who_consented) }
 

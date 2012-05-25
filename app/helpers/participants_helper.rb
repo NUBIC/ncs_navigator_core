@@ -29,8 +29,8 @@ module ParticipantsHelper
   end
 
   def determine_participant_visit_consent_path(visit_type_code, visit_type_text, participant, contact_link)
-    if visit_consent = ParticipantVisitConsent.where(:participant_id => participant.id, :contact_link_id => contact_link.id, :vis_consent_type_code => visit_type_code).first
-      link_to visit_type_text, edit_participant_visit_consent_path(visit_consent), :class => "edit_link icon_link"
+    if visit_consent = ParticipantVisitConsent.where(:participant_id => participant.id, :contact_id => contact_link.contact_id, :vis_consent_type_code => visit_type_code).first
+      link_to visit_type_text, edit_participant_visit_consent_path(visit_consent, :contact_link_id => contact_link.id), :class => "edit_link icon_link"
     else
       link_to visit_type_text, new_participant_visit_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :vis_consent_type_code => visit_type_code), :class => "add_link icon_link"
     end

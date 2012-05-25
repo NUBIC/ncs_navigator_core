@@ -1,7 +1,8 @@
 
+= hidden_field_tag :contact_link_id, @contact_link.id
+
 = f.hidden_field :participant_id
 = f.hidden_field :contact_id
-= f.hidden_field :contact_link_id
 = f.hidden_field :rvis_person_id
 
 = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }

@@ -8,7 +8,7 @@ describe ParticipantVisitRecordsController do
 
     let(:contact) { Factory(:contact) }
     let(:contact_link) { Factory(:contact_link, :contact => contact) }
-    let(:participant_visit_record) { Factory(:participant_visit_record, :contact_link => contact_link) }
+    let(:participant_visit_record) { Factory(:participant_visit_record) }
 
     before(:each) do
       login(user_login)
@@ -18,11 +18,6 @@ describe ParticipantVisitRecordsController do
       it "assigns a new ParticipantVisitRecord as @participant_visit_record" do
         get :new, :contact_link_id => contact_link.id
         assigns(:participant_visit_record).should be_a_new(ParticipantVisitRecord)
-      end
-
-      it "associates the given contact_link with the @participant_visit_record" do
-        get :new, :contact_link_id => contact_link.id
-        assigns[:participant_visit_record].contact_link.should == contact_link
       end
 
       it "associates the given contact_link.contact with the @participant_visit_record" do
@@ -49,7 +44,7 @@ describe ParticipantVisitRecordsController do
     describe "GET edit" do
 
       it "assigns the requested participant_visit_record as @participant_visit_record" do
-        get :edit, :id => participant_visit_record.id
+        get :edit, :id => participant_visit_record.id, :contact_link_id => contact_link.id
         assigns(:participant_visit_record).should eq(participant_visit_record)
       end
 
@@ -60,7 +55,6 @@ describe ParticipantVisitRecordsController do
         :participant_id            => contact_link.event.participant_id,
         :rvis_person_id            => contact_link.person_id,
         :contact_id                => contact_link.contact_id,
-        :contact_link_id           => contact_link.id,
         :rvis_language_code        => 1,
         :rvis_who_consented_code   => 1,
         :rvis_translate_code       => 1,
@@ -80,18 +74,18 @@ describe ParticipantVisitRecordsController do
         describe "with html request" do
           it "creates a new ParticipantVisitRecord" do
             expect {
-              post :create, :participant_visit_record => valid_attributes
+              post :create, :participant_visit_record => valid_attributes, :contact_link_id => contact_link.id
             }.to change(ParticipantVisitRecord, :count).by(1)
           end
 
           it "assigns a newly created participant_visit_record as @participant_visit_record" do
-            post :create, :participant_visit_record => valid_attributes
+            post :create, :participant_visit_record => valid_attributes, :contact_link_id => contact_link.id
             assigns(:participant_visit_record).should be_a(ParticipantVisitRecord)
             assigns(:participant_visit_record).should be_persisted
           end
 
           it "redirects to the decision_page_contact_link page" do
-            post :create, :participant_visit_record => valid_attributes
+            post :create, :participant_visit_record => valid_attributes, :contact_link_id => contact_link.id
             response.should redirect_to(decision_page_contact_link_path(contact_link))
           end
         end
@@ -99,7 +93,7 @@ describe ParticipantVisitRecordsController do
         describe "with json request" do
           it "creates a new ParticipantVisitRecord" do
             expect {
-              post :create, :participant_visit_record => valid_attributes, :format => 'json'
+              post :create, :participant_visit_record => valid_attributes, :contact_link_id => contact_link.id, :format => 'json'
             }.to change(ParticipantVisitRecord, :count).by(1)
           end
         end
@@ -111,14 +105,14 @@ describe ParticipantVisitRecordsController do
           it "assigns a newly created but unsaved participant_visit_record as @participant_visit_record" do
             # Trigger the behavior that occurs when invalid params are submitted
             ParticipantVisitRecord.any_instance.stub(:save).and_return(false)
-            post :create, :participant_visit_record => {}
+            post :create, :participant_visit_record => {}, :contact_link_id => contact_link.id
             assigns(:participant_visit_record).should be_a_new(ParticipantVisitRecord)
           end
 
           it "re-renders the 'new' template" do
             # Trigger the behavior that occurs when invalid params are submitted
             ParticipantVisitRecord.any_instance.stub(:save).and_return(false)
-            post :create, :participant_visit_record => {}
+            post :create, :participant_visit_record => {}, :contact_link_id => contact_link.id
             response.should render_template("new")
           end
         end
@@ -130,23 +124,23 @@ describe ParticipantVisitRecordsController do
         describe "with html request" do
           it "updates the requested participant_visit_record" do
             ParticipantVisitRecord.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-            put :update, :id => participant_visit_record.id, :participant_visit_record => {'these' => 'params'}
+            put :update, :id => participant_visit_record.id, :participant_visit_record => {'these' => 'params'}, :contact_link_id => contact_link.id
           end
 
           it "assigns the requested participant_visit_record as @participant_visit_record" do
-            put :update, :id => participant_visit_record.id, :participant_visit_record => valid_attributes
+            put :update, :id => participant_visit_record.id, :participant_visit_record => valid_attributes, :contact_link_id => contact_link.id
             assigns(:participant_visit_record).should eq(participant_visit_record)
           end
 
           it "redirects to the decision_page_contact_link page" do
-            put :update, :id => participant_visit_record.id, :participant_visit_record => valid_attributes
+            put :update, :id => participant_visit_record.id, :participant_visit_record => valid_attributes, :contact_link_id => contact_link.id
             response.should redirect_to(decision_page_contact_link_path(contact_link))
           end
         end
 
         describe "with json request" do
           it "forms json with updated @participant_visit_record id" do
-            put :update, :id => participant_visit_record.id, :participant_visit_record => {}, :format => 'json'
+            put :update, :id => participant_visit_record.id, :participant_visit_record => {}, :contact_link_id => contact_link.id, :format => 'json'
             response.body.should eq participant_visit_record.to_json
           end
         end
@@ -156,20 +150,20 @@ describe ParticipantVisitRecordsController do
         describe "html request" do
           it "assigns the participant_visit_record as @participant_visit_record" do
             ParticipantVisitRecord.any_instance.stub(:save).and_return(false)
-            put :update, :id => participant_visit_record.id.to_s, :participant_visit_record => {}
+            put :update, :id => participant_visit_record.id.to_s, :participant_visit_record => {}, :contact_link_id => contact_link.id
             assigns(:participant_visit_record).should eq(participant_visit_record)
           end
 
           it "re-renders the 'edit' template" do
             ParticipantVisitRecord.any_instance.stub(:save).and_return(false)
-            put :update, :id => participant_visit_record.id.to_s, :participant_visit_record => {}
+            put :update, :id => participant_visit_record.id.to_s, :participant_visit_record => {}, :contact_link_id => contact_link.id
             response.should render_template("edit")
           end
         end
 
         describe "with json request" do
           it "forms json with updated participant_visit_record id" do
-            put :update, :id => participant_visit_record.id, :participant_visit_record => {}, :format => 'json'
+            put :update, :id => participant_visit_record.id, :participant_visit_record => {}, :contact_link_id => contact_link.id, :format => 'json'
             # json = { "project"  => ["can't be blank"]}
             # ActiveSupport::JSON.decode(response.body).should eq json
           end

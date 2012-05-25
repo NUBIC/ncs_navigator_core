@@ -8,7 +8,7 @@ describe ParticipantVisitConsentsController do
 
     let(:contact) { Factory(:contact) }
     let(:contact_link) { Factory(:contact_link, :contact => contact) }
-    let(:participant_visit_consent) { Factory(:participant_visit_consent, :contact_link => contact_link) }
+    let(:participant_visit_consent) { Factory(:participant_visit_consent) }
 
     before(:each) do
       login(user_login)
@@ -18,11 +18,6 @@ describe ParticipantVisitConsentsController do
       it "assigns a new ParticipantVisitConsent as @participant_visit_consent" do
         get :new, :contact_link_id => contact_link.id
         assigns(:participant_visit_consent).should be_a_new(ParticipantVisitConsent)
-      end
-
-      it "associates the given contact_link with the @participant_visit_consent" do
-        get :new, :contact_link_id => contact_link.id
-        assigns[:participant_visit_consent].contact_link.should == contact_link
       end
 
       it "associates the given contact_link.contact with the @participant_visit_consent" do
@@ -49,7 +44,7 @@ describe ParticipantVisitConsentsController do
     describe "GET edit" do
 
       it "assigns the requested participant_visit_consent as @participant_visit_consent" do
-        get :edit, :id => participant_visit_consent.id
+        get :edit, :id => participant_visit_consent.id, :contact_link_id => contact_link.id
         assigns(:participant_visit_consent).should eq(participant_visit_consent)
       end
 
@@ -60,7 +55,6 @@ describe ParticipantVisitConsentsController do
         :participant_id               => contact_link.event.participant_id,
         :vis_person_who_consented_id  => contact_link.person_id,
         :contact_id                   => contact_link.contact_id,
-        :contact_link_id              => contact_link.id,
         :vis_language_code            => 1,
         :vis_consent_type_code        => 1,
         :vis_consent_response_code    => 1,
@@ -75,18 +69,18 @@ describe ParticipantVisitConsentsController do
         describe "with html request" do
           it "creates a new ParticipantVisitConsent" do
             expect {
-              post :create, :participant_visit_consent => valid_attributes
+              post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
             }.to change(ParticipantVisitConsent, :count).by(1)
           end
 
           it "assigns a newly created participant_visit_consent as @participant_visit_consent" do
-            post :create, :participant_visit_consent => valid_attributes
+            post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
             assigns(:participant_visit_consent).should be_a(ParticipantVisitConsent)
             assigns(:participant_visit_consent).should be_persisted
           end
 
           it "redirects to the decision_page_contact_link page" do
-            post :create, :participant_visit_consent => valid_attributes
+            post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
             response.should redirect_to(decision_page_contact_link_path(contact_link))
           end
         end
@@ -94,7 +88,7 @@ describe ParticipantVisitConsentsController do
         describe "with json request" do
           it "creates a new ParticipantVisitConsent" do
             expect {
-              post :create, :participant_visit_consent => valid_attributes, :format => 'json'
+              post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id, :format => 'json'
             }.to change(ParticipantVisitConsent, :count).by(1)
           end
         end
@@ -106,14 +100,14 @@ describe ParticipantVisitConsentsController do
           it "assigns a newly created but unsaved participant_visit_consent as @participant_visit_consent" do
             # Trigger the behavior that occurs when invalid params are submitted
             ParticipantVisitConsent.any_instance.stub(:save).and_return(false)
-            post :create, :participant_visit_consent => {}
+            post :create, :participant_visit_consent => {}, :contact_link_id => contact_link.id
             assigns(:participant_visit_consent).should be_a_new(ParticipantVisitConsent)
           end
 
           it "re-renders the 'new' template" do
             # Trigger the behavior that occurs when invalid params are submitted
             ParticipantVisitConsent.any_instance.stub(:save).and_return(false)
-            post :create, :participant_visit_consent => {}
+            post :create, :participant_visit_consent => {}, :contact_link_id => contact_link.id
             response.should render_template("new")
           end
         end
@@ -125,23 +119,23 @@ describe ParticipantVisitConsentsController do
         describe "with html request" do
           it "updates the requested participant_visit_consent" do
             ParticipantVisitConsent.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-            put :update, :id => participant_visit_consent.id, :participant_visit_consent => {'these' => 'params'}
+            put :update, :id => participant_visit_consent.id, :participant_visit_consent => {'these' => 'params'}, :contact_link_id => contact_link.id
           end
 
           it "assigns the requested participant_visit_consent as @participant_visit_consent" do
-            put :update, :id => participant_visit_consent.id, :participant_visit_consent => valid_attributes
+            put :update, :id => participant_visit_consent.id, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
             assigns(:participant_visit_consent).should eq(participant_visit_consent)
           end
 
           it "redirects to the decision_page_contact_link page" do
-            put :update, :id => participant_visit_consent.id, :participant_visit_consent => valid_attributes
+            put :update, :id => participant_visit_consent.id, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
             response.should redirect_to(decision_page_contact_link_path(contact_link))
           end
         end
 
         describe "with json request" do
           it "forms json with updated @participant_visit_consent id" do
-            put :update, :id => participant_visit_consent.id, :participant_visit_consent => {}, :format => 'json'
+            put :update, :id => participant_visit_consent.id, :participant_visit_consent => {}, :contact_link_id => contact_link.id, :format => 'json'
             response.body.should eq participant_visit_consent.to_json
           end
         end
@@ -151,20 +145,20 @@ describe ParticipantVisitConsentsController do
         describe "html request" do
           it "assigns the participant_visit_consent as @participant_visit_consent" do
             ParticipantVisitConsent.any_instance.stub(:save).and_return(false)
-            put :update, :id => participant_visit_consent.id.to_s, :participant_visit_consent => {}
+            put :update, :id => participant_visit_consent.id.to_s, :participant_visit_consent => {}, :contact_link_id => contact_link.id
             assigns(:participant_visit_consent).should eq(participant_visit_consent)
           end
 
           it "re-renders the 'edit' template" do
             ParticipantVisitConsent.any_instance.stub(:save).and_return(false)
-            put :update, :id => participant_visit_consent.id.to_s, :participant_visit_consent => {}
+            put :update, :id => participant_visit_consent.id.to_s, :participant_visit_consent => {}, :contact_link_id => contact_link.id
             response.should render_template("edit")
           end
         end
 
         describe "with json request" do
           it "forms json with updated participant_visit_consent id" do
-            put :update, :id => participant_visit_consent.id, :participant_visit_consent => {}, :format => 'json'
+            put :update, :id => participant_visit_consent.id, :participant_visit_consent => {}, :contact_link_id => contact_link.id, :format => 'json'
             # json = { "project"  => ["can't be blank"]}
             # ActiveSupport::JSON.decode(response.body).should eq json
           end

@@ -22,13 +22,15 @@ Given /^a pregnancy visit 1 survey exists$/ do
   Surveyor::Parser.parse File.read(f)
 end
 
-Given /^a contact link record without an associated participant visit record$/ do
-  Factory(:contact_link)
+Given /^a contact record without an associated participant visit record$/ do
+  contact = Factory(:contact)
+  contact_link = Factory(:contact_link, :contact => contact)
 end
 
-Given /^a contact link record with an associated participant visit record$/ do
-  contact_link = Factory(:contact_link)
-  Factory(:participant_visit_record, :contact_link => contact_link)
+Given /^a contact record with an associated participant visit record$/ do
+  contact = Factory(:contact)
+  contact_link = Factory(:contact_link, :contact => contact)
+  Factory(:participant_visit_record, :contact => contact)
 end
 
 

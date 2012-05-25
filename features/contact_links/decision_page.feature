@@ -6,7 +6,7 @@ Feature: After completing an instrument for a contact
 
   Scenario: Creating a new participant visit record
   Given an authenticated user
-  And a contact link record without an associated participant visit record
+  And a contact record without an associated participant visit record
   When I am on the decision_page_contact_link page
   And I should see "Administer another Instrument for this Event"
   And I should see "Create Participant Record of Visit"
@@ -18,7 +18,7 @@ Feature: After completing an instrument for a contact
 
   Scenario: Updating a participant visit record
   Given an authenticated user
-  And a contact link record with an associated participant visit record
+  And a contact record with an associated participant visit record
   When I am on the decision_page_contact_link page
   And I should see "Update Participant Record of Visit"
   When I follow "Update Participant Record of Visit"

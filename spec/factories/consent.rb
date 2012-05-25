@@ -30,7 +30,6 @@ Factory.define :participant_visit_consent do |pc|
   pc.association :participant, :factory => :participant
   pc.association :contact, :factory => :contact
   pc.association :vis_person_who_consented, :factory => :person
-  pc.association :contact_link, :factory => :contact_link
 
   pc.psu_code                  2000030
   pc.vis_consent_type_code     1
@@ -68,7 +67,6 @@ Factory.define :participant_visit_record do |pc|
 
   pc.association :participant, :factory => :participant
   pc.association :contact, :factory => :contact
-  pc.association :contact_link, :factory => :contact_link
   pc.association :rvis_person, :factory => :person
 
   pc.psu_code                  2000030

@@ -35,7 +35,6 @@ describe ParticipantVisitConsent do
   it { should belong_to(:psu) }
   it { should belong_to(:participant) }
   it { should belong_to(:contact) }
-  it { should belong_to(:contact_link) }
   it { should belong_to(:vis_person_who_consented) }
 
   it { should belong_to(:vis_who_consented) }
