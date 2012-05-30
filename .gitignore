@@ -35,3 +35,4 @@ shared/importer_passthrough/*.xml
 *.sw?
 *.out
 .powenv
+.DS_Store
