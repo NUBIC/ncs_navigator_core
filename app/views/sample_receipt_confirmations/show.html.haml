@@ -1,0 +1,50 @@
+- title "New Sample Receipt Shipping Center"
+
+= form_for @sample_receipt_confirmation do |f|
+  %b
+    = "PSU: "
+  = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
+  %br
+  %b
+    ="Sample Receipt Shipping Center ID:"
+  = @sample_receipt_confirmation.sample_receipt_shipping_center_id
+  %br
+  %b
+    ="Shipper ID:"
+  = @sample_receipt_confirmation.shipper_id
+  %br
+  %b
+    ="Shipment Tracking Number:"
+  = @sample_receipt_confirmation.shipment_tracking_number
+  %br
+  %b
+    = "Shipment Receipt Date and Time: "
+  = @sample_receipt_confirmation.shipment_receipt_datetime
+  %br
+  %b
+    = "Shipment Receipt Confirmed Code:"
+  = NcsCode.for_attribute_name_and_local_code(:shipment_receipt_confirmed_code, @sample_receipt_confirmation.shipment_receipt_confirmed_code)    
+  %br
+  %b
+    = "Shipment Condition Code:"
+  = NcsCode.for_attribute_name_and_local_code(:shipment_condition_code, @sample_receipt_confirmation.shipment_condition_code)    
+  %br
+  %b
+    = "Shipment Damaged Reason:"
+  = @sample_receipt_confirmation.shipment_damaged_reason
+  %br
+  %b
+    = "Sample Receipt Temp:"
+  = @sample_receipt_confirmation.sample_receipt_temp
+  %br
+  %b
+    = "Sample Condition Code:"
+  = NcsCode.for_attribute_name_and_local_code(:sample_condition_code, @sample_receipt_confirmation.sample_condition_code)    
+  %br
+  %b
+    = "Shipment Received By:"
+  = @sample_receipt_confirmation.shipment_received_by
+
+  = f.hidden_field :sample_id
+  %p
+  = link_to 'Edit', edit_sample_receipt_confirmation_path(@sample_receipt_confirmation), :class => "edit_link icon_link edit_confirmation"

@@ -1,0 +1,46 @@
+.page_section
+  - if not @sample_shippings_not_received.blank?
+    %div{:id => 'shipped_not_confirmed_table', :class => 'shipped_not_confirmed_table'}
+      %table.records
+        %tr
+          %th
+            Tracking Number
+          %th
+            Number of Samples
+          %th
+            Shipment Date
+          %th
+            Configuration Controls
+        - @sample_shippings_not_received.each do |track_number, sample_shippings|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = track_number
+            %td
+              = sample_shippings.size
+            %td
+              = sample_shippings[0].shipment_date
+            %td
+              = link_to 'Confirm', {:controller => "sample_receipt_confirmations", :action => "index", :tracking_number => track_number }
+  - if not @sample_shippings_confirmed.blank?
+    %div{:id => 'shipped_and_confirmed_table', :class => 'shipped_and_confirmed_table'}
+      %table.records
+        %tr
+          %th
+            Tracking Number
+          %th
+            Number of Samples
+          %th
+            Shipment Date
+          %th
+            Configuration Controls
+        - @sample_shippings_confirmed.each do |track_number, sample_shippings|
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = track_number
+            %td
+              = sample_shippings.size
+            %td
+              = sample_shippings[0].shipment_date
+            %td
+              = "Confirmed"
+              = link_to 'Edit', {:controller => "sample_receipt_confirmations", :action => "index", :tracking_number => track_number }

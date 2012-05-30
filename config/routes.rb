@@ -121,6 +121,10 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
+  
+  resources :sample_shipping_confirmations
+  
+  resources :sample_receipt_confirmations 
 
   resources :sample_receipt_stores do
     member do
