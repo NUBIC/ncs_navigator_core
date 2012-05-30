@@ -177,6 +177,8 @@ module NcsNavigator::Core::Warehouse
 
       if target_bin
         target_bin << response
+      elsif bins.last.empty?
+        bins.last << response
       else
         bins << [response]
       end

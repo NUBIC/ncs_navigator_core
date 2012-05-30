@@ -315,40 +315,63 @@ end
         create_response_for(primary_question) { |r|
           r.answer = primary_question.answers.find_by_text("Yes") or fail
         }
-
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text("Kitchen") or fail
-        }
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text("Other") or fail
-        }
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text("Other bedroom") or fail
-        }
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text("Don't know") or fail
-        }
-        create_response_for(other) { |r|
-          r.answer = other.answers.find_by_response_class('string') or fail
-          r.string_value = 'Carriage house'
-        }
       end
 
-      it 'records the other answer in the same record as the other value' do
-        secondary.find { |rec| rec.renovate_room == '-5' }.
-          renovate_room_oth.should == 'Carriage house'
-      end
+      describe 'when multiple options are selected' do
+        before do
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text("Kitchen") or fail
+          }
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text("Other") or fail
+          }
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text("Other bedroom") or fail
+          }
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text("Don't know") or fail
+          }
+          create_response_for(other) { |r|
+            r.answer = other.answers.find_by_response_class('string') or fail
+            r.string_value = 'Carriage house'
+          }
+        end
 
-      it 'does not record the other answer in any of the other responses' do
-        secondary.reject { |rec| rec.renovate_room == '-5' }.each do |rec|
-          rec.renovate_room_oth.should be_nil
+        it 'records the other answer in the same record as the other value' do
+          secondary.find { |rec| rec.renovate_room == '-5' }.
+            renovate_room_oth.should == 'Carriage house'
+        end
+
+        it 'does not record the other answer in any of the other responses' do
+          secondary.reject { |rec| rec.renovate_room == '-5' }.each do |rec|
+            rec.renovate_room_oth.should be_nil
+          end
+        end
+
+        it 'records multiple coded values as separate records' do
+          secondary.collect(&:renovate_room).sort.should == %w(-2 -5 1 5)
         end
       end
 
-      it 'records multiple coded values as separate records' do
-        secondary.collect(&:renovate_room).sort.should == %w(-2 -5 1 5)
-      end
+      describe 'when only the other option is selected' do
+        before do
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text("Other") or fail
+          }
+          create_response_for(other) { |r|
+            r.answer = other.answers.find_by_response_class('string') or fail
+            r.string_value = 'Carriage house'
+          }
+        end
 
+        it 'produces only one record' do
+          secondary.collect(&:renovate_room).should == %w(-5)
+        end
+
+        it 'records the other answer in the same record as the other value' do
+          secondary.first.renovate_room_oth.should == 'Carriage house'
+        end
+      end
     end
 
     describe 'with a fixed value' do
