@@ -9,6 +9,7 @@ class ParticipantVisitConsentsController < ApplicationController
   def new
     @contact_link = ContactLink.find(params[:contact_link_id])
     # TODO: raise exception if no ContactLink
+    @contact = @contact_link.contact
     if params[:participant_id]
       @participant = Participant.find(params[:participant_id])
     else
@@ -17,7 +18,6 @@ class ParticipantVisitConsentsController < ApplicationController
     # What to do if the participant does not exist ?
     @participant_visit_consent = ParticipantVisitConsent.new(:contact => @contact_link.contact,
                                                              :vis_person_who_consented => @contact_link.person,
-                                                             :vis_consent_type_code => params[:vis_consent_type_code],
                                                              :participant => @participant)
     respond_to do |format|
       format.html # new.html.haml
@@ -30,7 +30,8 @@ class ParticipantVisitConsentsController < ApplicationController
   def edit
     @contact_link = ContactLink.find(params[:contact_link_id])
     # TODO: raise exception if no ContactLink
-    @participant_visit_consent = ParticipantVisitConsent.find(params[:id])
+    @contact = @contact_link.contact
+    @participant_visit_consent = @contact.participant_visit_consents.first
     respond_to do |format|
       format.html # edit.html.haml
       format.json  { render :json => @participant_visit_consent }
@@ -38,11 +39,16 @@ class ParticipantVisitConsentsController < ApplicationController
   end
 
   def create
-    @participant_visit_consent = ParticipantVisitConsent.new(params[:participant_visit_consent])
+    should_continue = true
+    params[:vis_consent_type_codes].each do |k, v|
+      @participant_visit_consent = ParticipantVisitConsent.new(:vis_consent_type_code => v)
+      should_continue = @participant_visit_consent.update_attributes(params[:participant_visit_consent])
+      break unless should_continue
+    end
 
     respond_to do |format|
-      if @participant_visit_consent.save
-        flash[:notice] = 'Participant Visit Consent was successfully created.'
+      if should_continue
+        flash[:notice] = 'Participant Visit Consents were successfully created.'
         format.html { redirect_to(decision_page_contact_link_path(params[:contact_link_id])) }
         format.json  { render :json => @participant_visit_consent }
       else
