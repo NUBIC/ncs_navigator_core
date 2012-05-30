@@ -43,7 +43,12 @@ describe ParticipantVisitConsentsController do
 
     describe "GET edit" do
 
-      it "assigns the requested participant_visit_consent as @participant_visit_consent" do
+      before do
+        participant_visit_consent.contact = contact
+        participant_visit_consent.save!
+      end
+
+      it "assigns the requested participant_visit_consent associated with the contact_link as @participant_visit_consent" do
         get :edit, :id => participant_visit_consent.id, :contact_link_id => contact_link.id
         assigns(:participant_visit_consent).should eq(participant_visit_consent)
       end
@@ -65,31 +70,33 @@ describe ParticipantVisitConsentsController do
     end
 
     describe "POST create" do
+      let(:vis_consent_type_codes) { NcsCode.ncs_code_lookup(:vis_consent_type_code).map{ |c| c[1] } }
+
       describe "with valid params" do
         describe "with html request" do
-          it "creates a new ParticipantVisitConsent" do
+          it "creates several new ParticipantVisitConsents" do
             expect {
-              post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
-            }.to change(ParticipantVisitConsent, :count).by(1)
+              post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id, :vis_consent_type_codes => vis_consent_type_codes
+            }.to change(ParticipantVisitConsent, :count).by(vis_consent_type_codes.size)
           end
 
           it "assigns a newly created participant_visit_consent as @participant_visit_consent" do
-            post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
+            post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id, :vis_consent_type_codes => vis_consent_type_codes
             assigns(:participant_visit_consent).should be_a(ParticipantVisitConsent)
             assigns(:participant_visit_consent).should be_persisted
           end
 
           it "redirects to the decision_page_contact_link page" do
-            post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id
+            post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id, :vis_consent_type_codes => vis_consent_type_codes
             response.should redirect_to(decision_page_contact_link_path(contact_link))
           end
         end
 
         describe "with json request" do
-          it "creates a new ParticipantVisitConsent" do
+          it "creates several new ParticipantVisitConsents" do
             expect {
-              post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id, :format => 'json'
-            }.to change(ParticipantVisitConsent, :count).by(1)
+              post :create, :participant_visit_consent => valid_attributes, :contact_link_id => contact_link.id, :format => 'json', :vis_consent_type_codes => vis_consent_type_codes
+            }.to change(ParticipantVisitConsent, :count).by(vis_consent_type_codes.size)
           end
         end
 
@@ -100,14 +107,14 @@ describe ParticipantVisitConsentsController do
           it "assigns a newly created but unsaved participant_visit_consent as @participant_visit_consent" do
             # Trigger the behavior that occurs when invalid params are submitted
             ParticipantVisitConsent.any_instance.stub(:save).and_return(false)
-            post :create, :participant_visit_consent => {}, :contact_link_id => contact_link.id
+            post :create, :participant_visit_consent => {}, :contact_link_id => contact_link.id, :vis_consent_type_codes => vis_consent_type_codes
             assigns(:participant_visit_consent).should be_a_new(ParticipantVisitConsent)
           end
 
           it "re-renders the 'new' template" do
             # Trigger the behavior that occurs when invalid params are submitted
             ParticipantVisitConsent.any_instance.stub(:save).and_return(false)
-            post :create, :participant_visit_consent => {}, :contact_link_id => contact_link.id
+            post :create, :participant_visit_consent => {}, :contact_link_id => contact_link.id, :vis_consent_type_codes => vis_consent_type_codes
             response.should render_template("new")
           end
         end
