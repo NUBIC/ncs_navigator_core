@@ -32,7 +32,6 @@ class SamplesController < ApplicationController
     
     @shipment_date = (@shipment_date_and_time != nil) ? @shipment_date_and_time.split.first : nil
     @sample_shipped_by = NcsCode.for_list_name_and_local_code("SAMPLES_SHIPPED_BY_CL1", "1")
-    
     @sample_receipt_stores.each do |srs|
       sh = SampleShipping.new(
         :sample_id                         => srs.sample_id, 
@@ -44,7 +43,7 @@ class SamplesController < ApplicationController
         :shipment_tracking_number          => @shipment_tracking_number, 
         :psu_code                          => @psu_code,
         :sample_shipped_by                 => @sample_shipped_by,
-        :sample_receipt_shipping_center_id => @sample_receipt_shipping_center_id, 
+        :sample_receipt_shipping_center_id => srs.sample_receipt_shipping_center_id, 
         :volume_amount                     => @volume_amt[srs.sample_id], 
         :volume_unit                       => @volume_unit[srs.sample_id])
 
@@ -75,7 +74,6 @@ class SamplesController < ApplicationController
   def send_email
     @sample_receipt_stores = array_of_selected_samples(params[:sample_id])
     populate_samples_size(@sample_receipt_stores)
-    
     generate_email = Emailer.manifest_email(params)
     generate_email.deliver
     respond_to do |format|      
