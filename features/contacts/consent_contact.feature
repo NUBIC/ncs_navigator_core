@@ -22,7 +22,7 @@ Feature: Obtaining participant consent
     And I should see "Low Intensity Consent"
     When I follow "Low Intensity Consent"
     Then I should be on the new participant consent page
-    And I should see "Consent Form Type"
+    And I should see "Consent Type"
     And I should not see the "participant_consent_consent_type_code" text field
     When I select "Yes" from "Consent Given"
     And I press "Submit"
@@ -47,7 +47,7 @@ Feature: Obtaining participant consent
     # And I should see "Consent to collect environmental samples"
     # And I should see "Consent to collect genetic material"
     # And I should see "Consent to collect birth samples"
-    And I should see "Consent for the child’s participation"
+    # And I should see "Consent for the child’s participation"
     When I follow "General consent"
     Then I should be on the new participant consent page
     When I select "Yes" from "Consent Given"
