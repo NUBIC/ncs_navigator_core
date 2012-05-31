@@ -46,6 +46,8 @@ class ParticipantConsent < ActiveRecord::Base
 
   has_many :participant_consent_samples
 
+  accepts_nested_attributes_for :participant_consent_samples, :allow_destroy => false
+
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :consent_type,               'CONSENT_TYPE_CL1'
   ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL1'

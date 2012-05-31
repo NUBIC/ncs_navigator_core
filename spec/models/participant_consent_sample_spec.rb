@@ -53,4 +53,32 @@ describe ParticipantConsentSample do
       obj.sample_consent_given.local_code.should == -4
     end
   end
+  
+  context "consent type code lists" do
+
+    it "knows all of the consent types" do
+      consent_types = ParticipantConsentSample.consent_types
+      consent_types.size.should == 3
+      consent_types[0].should == ["1", "Consent to collect environmental samples"]
+      consent_types[1].should == ["2", "Consent to collect biospecimens"]
+      consent_types[2].should == ["3", "Consent to collect genetic material"]
+    end
+
+    it "knows the environmental consent" do
+      ParticipantConsentSample.environmental_consent_type_code.should ==
+        NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL2", 1)
+    end
+
+    it "knows the biospecimen consent" do
+      ParticipantConsentSample.biospecimen_consent_type_code.should ==
+        NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL2", 2)
+    end
+
+    it "knows the genetic consent" do
+      ParticipantConsentSample.genetic_consent_type_code.should ==
+        NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL2", 3)
+    end
+
+  end
+  
 end
