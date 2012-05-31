@@ -44,6 +44,8 @@ class ParticipantConsent < ActiveRecord::Base
   belongs_to :person_who_consented,  :class_name => "Person", :foreign_key => :person_who_consented_id
   belongs_to :person_wthdrw_consent, :class_name => "Person", :foreign_key => :person_wthdrw_consent_id
 
+  has_many :participant_consent_samples
+
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :consent_type,               'CONSENT_TYPE_CL1'
   ncs_coded_attribute :consent_form_type,          'CONSENT_TYPE_CL1'
@@ -60,17 +62,48 @@ class ParticipantConsent < ActiveRecord::Base
 
   validates_length_of :consent_version, :maximum => 9
 
+  GENERAL          = 1
+  CHILD            = 6
+  LOW_INTENSITY    = 7
+  MISSING_IN_ERROR = -4
+
   def self.consent_types
     NcsNavigatorCore.mdes.types.find { |t| t.name == 'consent_type_cl1' }.
       code_list.collect { |cl| [cl.value, cl.label.to_s.strip] }
   end
 
   def self.low_intensity_consent_types
-    consent_types.select { |c| c[0] == "7" } # low intensity consent code
+    consent_types.select { |c| c[0] == "#{LOW_INTENSITY}" } # low intensity consent code
+  end
+
+  def self.child_consent_types
+    consent_types.select { |c| c[0] == "#{CHILD}" } # child participation consent code
   end
 
   def self.high_intensity_consent_types
-    consent_types.select { |c| c[0] != "7" && c[0] != "-4" } # high intensity consent codes
+    ParticipantConsent.general_consent_type_code
+    consent_types.select { |c| c[0] == "#{GENERAL}" } # high intensity consent codes
+  end
+
+  ##
+  # Returns the consent_type_code for the "General Consent" - 1
+  # @return [NcsCode]
+  def self.general_consent_type_code
+    NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", GENERAL)
+  end
+
+  ##
+  # Returns the consent_type_code for the "Low Intensity Consent" - 7
+  # @return [NcsCode]
+  def self.low_intensity_consent_type_code
+    NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", LOW_INTENSITY)
+  end
+
+  ##
+  # Returns the consent_type_code for the "Child Consent" - 6
+  # @return [NcsCode]
+  def self.child_consent_type_code
+    NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", CHILD)
   end
 
   ##
@@ -94,6 +127,14 @@ class ParticipantConsent < ActiveRecord::Base
   def withdraw!(withdraw_type_code = 2)
     self.withdraw
     self.save!
+  end
+
+  def phase_one?
+    consent_type_code && consent_type_code != -4
+  end
+
+  def phase_two?
+    !phase_one?
   end
 
 end
