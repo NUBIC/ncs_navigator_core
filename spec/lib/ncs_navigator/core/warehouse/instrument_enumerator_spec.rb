@@ -43,6 +43,12 @@ module NcsNavigator::Core::Warehouse
       let(:rs1) { ResponseSet.new.tap { |rs| rs.access_code = 'rs1' } }
       let(:rs2) { ResponseSet.new.tap { |rs| rs.access_code = 'rs2' } }
 
+      before do
+        [rs1, rs2].each do |rs|
+          rs.stub!(:enumerable_as_instrument?).and_return(true)
+        end
+      end
+
       it 'converts every response set in turn' do
         rs1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
         rs2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
@@ -50,6 +56,16 @@ module NcsNavigator::Core::Warehouse
         ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
 
         subject.to_a.should == %w(A B C H4 H7)
+      end
+
+      it 'skips response sets that are not candidates for enumeration' do
+        rs1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
+        rs2.should_receive(:enumerable_as_instrument?).and_return(false)
+        rs2.should_not_receive(:to_mdes_warehouse_records)
+
+        ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
+
+        subject.to_a.should == %w(A B C)
       end
 
       describe 'when one response set throws an exception' do

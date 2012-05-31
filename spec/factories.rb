@@ -125,6 +125,15 @@ Factory.define :event do |e|
   e.event_incentive_type_code        1
 end
 
+Factory.define :mdes_min_event, :class => Event do |e|
+  e.psu_code                         2000030
+  e.event_type_code                  1
+  e.event_disposition                40
+  e.event_disposition_category_code  1
+  e.event_breakoff_code              1
+  e.event_incentive_type_code        1
+end
+
 Factory.define :instrument do |ins|
 
   ins.association :event, :factory => :event

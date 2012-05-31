@@ -189,4 +189,35 @@ describe ResponseSet do
 
   end
 
+  describe '#enumerable_as_instrument?' do
+    let(:response_set) { Factory(:response_set, :instrument => instrument) }
+
+    let(:event) { Factory(:mdes_min_event) }
+    let(:instrument) { Factory(:instrument, :event => event) }
+
+    let(:result) { response_set.enumerable_as_instrument? }
+
+    it 'is true when all requirements are met' do
+      result.should be_true
+    end
+
+    it 'is false when there is no instrument associated' do
+      response_set.tap { |rs| rs.instrument = nil }.save!
+
+      result.should be_false
+    end
+
+    it 'is false when there is no event associated with the instrument' do
+      instrument.tap { |i| i.event = nil }.save!
+
+      result.should be_false
+    end
+
+    it 'is false when the associated event has no disposition' do
+      event.tap { |e| e.event_disposition = nil }.save!
+
+      result.should be_false
+    end
+  end
+
 end
