@@ -531,12 +531,18 @@ module NcsNavigator::Core::Warehouse
       let(:warehouse_model) { MdesModule::Instrument }
       let(:core_model) { Instrument }
 
-      let!(:instrument) { Factory(:instrument) }
+      let!(:instrument) { Factory(:instrument, :event => Factory(:mdes_min_event)) }
 
       include_examples 'one to one'
 
       it 'uses the public ID for event' do
         results.first.event_id.should == Event.first.event_id
+      end
+
+      it 'emits nothing when the associated event has no disposition' do
+        Event.first.tap { |e| e.event_disposition = nil }.save!
+
+        results.should == []
       end
 
       describe 'with manually mapped variables' do
@@ -563,7 +569,7 @@ module NcsNavigator::Core::Warehouse
       let(:warehouse_model) { MdesModule::Event }
       let(:core_model) { Event }
 
-      let!(:event) { Factory(:event) }
+      let!(:event) { Factory(:mdes_min_event, :participant => Factory(:participant)) }
 
       include_examples 'one to one'
 
@@ -591,6 +597,13 @@ module NcsNavigator::Core::Warehouse
 
       it 'emits nothing when there are no associated contact links' do
         ContactLink.destroy_all
+        results.should == []
+      end
+
+      it 'emits nothing when there is no disposition' do
+        event.event_disposition = nil
+        event.save!
+
         results.should == []
       end
 
@@ -664,7 +677,7 @@ module NcsNavigator::Core::Warehouse
       let(:warehouse_model) { MdesModule::LinkContact }
       let(:core_model) { ContactLink }
 
-      let!(:contact_link) { Factory(:contact_link) }
+      let!(:contact_link) { Factory(:contact_link, :event => Factory(:mdes_min_event)) }
 
       include_examples 'one to one'
 
@@ -690,6 +703,12 @@ module NcsNavigator::Core::Warehouse
 
       it 'uses the public ID for provider' do
         pending 'No Provider in core yet'
+      end
+
+      it 'emits nothing if the associated event has no disposition' do
+        contact_link.event.tap { |e| e.event_disposition = nil }.save!
+
+        results.should == []
       end
     end
 

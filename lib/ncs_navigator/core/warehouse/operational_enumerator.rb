@@ -170,6 +170,7 @@ module NcsNavigator::Core::Warehouse
             END) normalized_event_disposition}
       ],
       :where => %q{
+        t.event_disposition IS NOT NULL AND
         EXISTS(SELECT 'x' FROM contact_links cl WHERE cl.event_id=t.id)
       },
       :column_map => {
@@ -183,6 +184,9 @@ module NcsNavigator::Core::Warehouse
 
     produce_one_for_one(:instruments, Instrument,
       :public_ids => %w(events),
+      :where => %q{
+        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
+      },
       :column_map => {
         :instrument_start_date => :ins_date_start,
         :instrument_start_time => :ins_start_time,
@@ -205,7 +209,10 @@ module NcsNavigator::Core::Warehouse
         :events,
         :contacts,
         :instruments
-      ]
+      ],
+      :where => %q{
+        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
+      }
     )
 
     produce_one_for_one(:non_interview_reports, NonInterviewRpt,
