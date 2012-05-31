@@ -108,7 +108,7 @@ $(document).ready(function() {
   $(".help_icon").tooltip();
   $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
-  $("#tabs").tabs();
+  $("#tabs").tabs({ cookie: { expires: 1 } });
 
   $("#event_show_close_fields a").click(function() {
     $('#event_end_date_fields').toggle();

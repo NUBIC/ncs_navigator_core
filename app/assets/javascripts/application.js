@@ -3,6 +3,7 @@
 //= require_self
 //= require 'surveyor_all'
 //= require 'jquery.tooltip.min'
+//= require 'jquery.cookie'
 //= require consent
 //= require nested_attributes
 //= require core
