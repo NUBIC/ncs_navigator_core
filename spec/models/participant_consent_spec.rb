@@ -63,6 +63,8 @@ describe ParticipantConsent do
 
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 
+  it { should have_many(:participant_consent_samples) }
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
@@ -115,40 +117,123 @@ describe ParticipantConsent do
       participant.should_not be_consented
     end
 
-    it "knows if the participant has consented" do
-      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no, :consent_type => @low_intensity)
-      pc.participant.should be_consented
-      pc.participant.consented?(@low_intensity).should be_true
-      pc.participant.consented?(@general).should be_false
-      pc.participant.should_not be_withdrawn
+    context "phase one consent" do
+      it "knows if the participant has consented" do
+        pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
+                     :consent_type => @low_intensity, :consent_form_type_code => -4)
+        pc.participant.should be_consented
+        pc.participant.consented?(@low_intensity).should be_true
+        pc.participant.consented?(@general).should be_false
+        pc.participant.should_not be_withdrawn
+      end
+
+      it "knows if the participant has withdrawn consented" do
+        pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes,
+                     :consent_type => @low_intensity, :consent_form_type_code => -4)
+        pc.participant.should be_withdrawn
+        pc.participant.withdrawn?(@low_intensity).should be_true
+        pc.participant.withdrawn?(@general).should be_false
+      end
     end
 
-    it "knows if the participant has withdrawn consented" do
-      pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes, :consent_type => @low_intensity)
-      pc.participant.should be_withdrawn
-      pc.participant.withdrawn?(@low_intensity).should be_true
-      pc.participant.withdrawn?(@general).should be_false
+    context "phase two consent" do
+      it "knows if the participant has consented" do
+        pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @no,
+                     :consent_form_type => @low_intensity, :consent_type_code => -4)
+        pc.participant.should be_consented
+        pc.participant.consented?(@low_intensity).should be_true
+        pc.participant.consented?(@general).should be_false
+        pc.participant.should_not be_withdrawn
+      end
+
+      it "knows if the participant has withdrawn consented" do
+        pc = Factory(:participant_consent, :consent_given => @yes, :consent_withdraw => @yes,
+                     :consent_form_type => @low_intensity, :consent_type_code => -4)
+        pc.participant.should be_withdrawn
+        pc.participant.withdrawn?(@low_intensity).should be_true
+        pc.participant.withdrawn?(@general).should be_false
+      end
+    end
+  end
+
+  context "consent type code lists" do
+
+    it "knows all of the consent types" do
+      consent_types = ParticipantConsent.consent_types
+      consent_types.size.should == 8
+      consent_types[0].should == ["1", "General consent"]
+      consent_types[6].should == ["7", "Low Intensity Consent"]
+    end
+
+    it "knows all of the li consent types" do
+      lict = ParticipantConsent.low_intensity_consent_types
+      lict.size.should == 1
+      lict[0].should == ["7", "Low Intensity Consent"]
+    end
+
+    it "knows all of the hi consent types" do
+      hict = ParticipantConsent.high_intensity_consent_types
+      hict.size.should == 1
+      hict[0].should == ["1", "General consent"]
+    end
+
+    it "knows the general consent" do
+      ParticipantConsent.general_consent_type_code.should ==
+        NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 1)
+    end
+
+    it "knows the child consent" do
+      ParticipantConsent.child_consent_type_code.should ==
+        NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 6)
+    end
+
+    it "knows the low_intensity consent" do
+      ParticipantConsent.low_intensity_consent_type_code.should ==
+        NcsCode.for_list_name_and_local_code("CONSENT_TYPE_CL1", 7)
     end
 
   end
 
-  it "knows all of the consent types" do
-    consent_types = ParticipantConsent.consent_types
-    consent_types.size.should == 8
-    consent_types[0].should == ["1", "General consent"]
-    consent_types[6].should == ["7", "Low Intensity Consent"]
-  end
+  context "phase 1 versus phase 2 consents" do
 
-  it "knows all of the li consent types" do
-    lict = ParticipantConsent.low_intensity_consent_types
-    lict.size.should == 1
-    lict[0].should == ["7", "Low Intensity Consent"]
-  end
+    describe ".phase_one?" do
 
-  it "knows all of the hi consent types" do
-    hict = ParticipantConsent.high_intensity_consent_types
-    hict.size.should == 6
-    hict[0].should == ["1", "General consent"]
+      describe "should be phase 1" do
+        it "if there is a valid consent_type_code and no consent_form_type_code" do
+          participant_consent = Factory(:participant_consent, :consent_type_code => 1, :consent_form_type_code => -4)
+          participant_consent.should be_phase_one
+        end
+
+        it "if there is a valid consent_type_code and a consent_form_type_code" do
+          participant_consent = Factory(:participant_consent, :consent_type_code => 1, :consent_form_type_code => 1)
+          participant_consent.should be_phase_one
+        end
+      end
+
+      describe "should not be phase 1" do
+        it "if there is not a valid consent_type_code" do
+          participant_consent = Factory(:participant_consent, :consent_type_code => -4)
+          participant_consent.should_not be_phase_one
+        end
+      end
+    end
+
+    describe ".phase_two?" do
+      describe "should be phase 2" do
+        it "if there is a valid consent_form_type_code and no consent_type_code" do
+          participant_consent = Factory(:participant_consent, :consent_type_code => -4, :consent_form_type_code => 1)
+          participant_consent.should be_phase_two
+        end
+      end
+
+      describe "should not be phase 2" do
+        it "if there is a valid consent_type_code" do
+          participant_consent = Factory(:participant_consent, :consent_type_code => 1)
+          participant_consent.should_not be_phase_two
+        end
+      end
+
+    end
   end
 
 end

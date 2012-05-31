@@ -1,16 +1,7 @@
 - if @person.participant
-  - if @person.participant.low_intensity?
-    - ParticipantConsent.low_intensity_consent_types.each do |ct|
-      .consent_link
-        = determine_participant_consent_path(ct[0], ct[1], @person.participant, @contact_link)
-        - if @person.participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, ct[0]))
-          %span{ :class => "consented" }
-            Participant has consented.
-  - else
-    - ParticipantConsent.high_intensity_consent_types.each do |ct|
-      .consent_link
-        - consent_link = determine_participant_consent_path(ct[0], ct[1], @person.participant, @contact_link)
-        = consent_link
-        - if consent_link && @person.participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, ct[0]))
-          %span{ :class => "consented" }
-            Participant has consented.
+  - consent = @person.participant.low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
+  .consent_link
+    = determine_participant_consent_path(consent.local_code, consent.to_s, @person.participant, @contact_link)
+    - if @person.participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent.local_code))
+      %span{ :class => "consented" }
+        Participant has consented.

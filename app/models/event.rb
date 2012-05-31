@@ -323,7 +323,7 @@ class Event < ActiveRecord::Base
         Event.create_placeholder_record(participant, dt, NcsCode.find_event_by_lbl(lbl).local_code, study_segment_identifier)
       end
 
-      unless NcsNavigatorCore.with_specimens?
+      unless NcsNavigatorCore.expanded_phase_two?
         psc.cancel_collection_instruments(participant, study_segment_identifier, date, "Not configured to run expanded phase 2 instruments")
       end
     end

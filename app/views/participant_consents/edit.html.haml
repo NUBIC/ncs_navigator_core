@@ -1,4 +1,9 @@
+- title "Edit Participant Consent"
+
 %h3
   = @participant.person
 
-= render 'form'
+- if @participant_consent.phase_one?
+  = render 'phase_one_form'
+- else
+  = render 'phase_two_form'

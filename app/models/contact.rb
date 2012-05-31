@@ -56,6 +56,7 @@ class Contact < ActiveRecord::Base
   has_many :instruments, :through => :contact_links
   has_many :non_interview_reports
   has_one :participant_visit_record
+  has_many :participant_visit_consents
 
   validates_format_of :contact_start_time, :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
   validates_format_of :contact_end_time,   :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
@@ -123,6 +124,12 @@ class Contact < ActiveRecord::Base
   # @return [Array<String>] Instrument Survey titles
   def instrument_survey_titles
     instruments_with_surveys.collect {|i| i.survey.title}
+  end
+
+  ##
+  # @return [Boolean] true if the contact has a participant_visit_consent of given vis_consent_type_code
+  def has_participant_visit_consent?(vis_consent_type_code)
+    participant_visit_consents.where(:vis_consent_type_code => vis_consent_type_code).count > 0
   end
 
   ##

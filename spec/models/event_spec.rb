@@ -533,6 +533,7 @@ describe Event do
 
       it "cancels events for phase2 activities if configured to do so" do
         NcsNavigatorCore.with_specimens?.should be_false
+        NcsNavigatorCore.expanded_phase_two?.should be_false
 
         PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("f6abc107-a24e-4169-a260-d407fe816910")
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(

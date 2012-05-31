@@ -21,6 +21,7 @@ class PeopleController < ApplicationController
   def show
     @person = Person.find(params[:id])
     @participant = @person.participant
+    redirect_to participant_path(@participant) if @participant
   end
 
   # GET /people/new

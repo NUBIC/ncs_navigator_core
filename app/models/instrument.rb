@@ -53,6 +53,7 @@ class Instrument < ActiveRecord::Base
 
   belongs_to :person
   belongs_to :survey
+  has_one :contact_link, :inverse_of => :instrument
   has_one :response_set, :inverse_of => :instrument
 
   validates_presence_of :instrument_version

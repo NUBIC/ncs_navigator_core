@@ -36,9 +36,10 @@
 
   - if ParticipantVisitConsent.visit_information_sheet_presented?(@event)
     %p
-      - ParticipantVisitConsent.visit_types.each do |vt|
-        .consent_link
-          = determine_participant_visit_consent_path(vt[0], vt[1], @person.participant, @contact_link)
+      - if @contact_link.contact.participant_visit_consents.count > 0
+        = link_to "Update Participant Visit Consent Records", edit_participant_visit_consent_path(:contact_link_id => @contact_link.id), :class => "edit_link icon_link"
+      - else
+        = link_to "Create Participant Visit Consent Records", new_participant_visit_consent_path(:participant_id => @participant.id, :contact_link_id => @contact_link.id), :class => "add_link icon_link"
 
 .page_section
   %h3

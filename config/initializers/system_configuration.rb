@@ -62,6 +62,10 @@ module NcsNavigatorCore
       with_specimens == "true"
     end
 
+    def expanded_phase_two?
+      with_specimens?
+    end
+
     def sampling_units_file_path
       NcsNavigator.configuration.sampling_units_file.to_s
     end

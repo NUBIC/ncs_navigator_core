@@ -78,6 +78,7 @@ describe Instrument do
   it { should belong_to(:survey) }
 
   it { should have_one(:response_set) }
+  it { should have_one(:contact_link) }
 
   it { should validate_presence_of(:instrument_version) }
 

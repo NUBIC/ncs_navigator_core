@@ -92,6 +92,7 @@ class Participant < ActiveRecord::Base
   has_many :people, :through => :participant_person_links
   has_many :participant_staff_relationships
   has_many :participant_consents
+  has_many :participant_consent_samples
   has_many :events, :order => 'events.event_start_date'
 
   # validates_presence_of :person
@@ -564,17 +565,28 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def consented?(consent_type = nil)
     return false if participant_consents.empty?
-    if consent_type
-      consent_type_codes = [consent_type.local_code]
-    else
-      if low_intensity?
-        consent_type_codes = ParticipantConsent.low_intensity_consent_types.collect { |ct| ct[0] }
-      else
-        consent_type_codes = ParticipantConsent.high_intensity_consent_types.collect { |ct| ct[0] }
-      end
+    if consent_type.nil?
+      consent_type = low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
     end
-    consents = participant_consents.where("consent_type_code in (?)", consent_type_codes).all
-    consents.select { |c| c.consent_given.local_code == 1 }.size > 0 && !withdrawn?
+    consents = consents_for_type(consent_type)
+    consents.select { |c| c.consent_given_code == 1 }.size > 0 && !withdrawn?
+  end
+
+  def consents_for_type(consent_type)
+    participant_consents.where(
+      "consent_type_code = ? OR consent_form_type_code = ?",
+        consent_type.local_code, consent_type.local_code).all
+  end
+
+  def consent_for_type(consent_type)
+    current_consent = nil
+    cs = consents_for_type(consent_type)
+    if cs.size > 1
+      cs.each { |c| current_consent = c if c.phase_two? }
+    else
+      current_consent = cs.first
+    end
+    current_consent
   end
 
   ##
@@ -585,12 +597,8 @@ class Participant < ActiveRecord::Base
   # @return [Boolean]
   def withdrawn?(consent_type = nil)
     return false if participant_consents.empty?
-    if consent_type
-      consents = participant_consents.where(:consent_type_code => consent_type.local_code).all
-    else
-      consents = participant_consents
-    end
-    consents.select { |c| c.consent_withdraw.local_code == 1 }.size > 0
+    consents = consent_type.nil? ? participant_consents : consents_for_type(consent_type)
+    consents.select { |c| c.consent_withdraw_code == 1 }.size > 0
   end
 
   ##

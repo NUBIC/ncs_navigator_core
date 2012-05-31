@@ -15,25 +15,17 @@ module ParticipantsHelper
 
   def determine_participant_consent_path(consent_type_code, consent_type_text, participant, contact_link)
     return nil if should_hide_consent?(consent_type_text)
-    consent_type = consent_type_text.underscore.gsub(' ', '_')
-    if participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code))
-      consent = ParticipantConsent.where(:participant_id => participant.id).where(:consent_type_code => consent_type_code).first
-      link_to consent_type_text, edit_participant_consent_path(consent, :contact_link_id => contact_link.id, :consent_type => consent_type, :consent_type_code => consent_type_code), :class => "edit_link icon_link"
+    consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code)
+    if participant.consented?(consent_type)
+      consent = participant.consent_for_type(consent_type)
+      link_to consent_type_text, edit_participant_consent_path(consent, :contact_link_id => contact_link.id), :class => "edit_link icon_link"
     else
-      link_to consent_type_text, new_participant_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :consent_type => consent_type, :consent_type_code => consent_type_code), :class => "add_link icon_link"
+      link_to consent_type_text, new_participant_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :consent_type_code => consent_type_code), :class => "add_link icon_link"
     end
   end
 
   def should_hide_consent?(consent_type_text)
-    consent_type_text.include?("collect") && NcsNavigatorCore.with_specimens == "false"
-  end
-
-  def determine_participant_visit_consent_path(visit_type_code, visit_type_text, participant, contact_link)
-    if visit_consent = ParticipantVisitConsent.where(:participant_id => participant.id, :contact_id => contact_link.contact_id, :vis_consent_type_code => visit_type_code).first
-      link_to visit_type_text, edit_participant_visit_consent_path(visit_consent, :contact_link_id => contact_link.id), :class => "edit_link icon_link"
-    else
-      link_to visit_type_text, new_participant_visit_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :vis_consent_type_code => visit_type_code), :class => "add_link icon_link"
-    end
+    consent_type_text.include?("collect") && !NcsNavigatorCore.expanded_phase_two?
   end
 
   def displayable_event_name(event, participant)

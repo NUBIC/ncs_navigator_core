@@ -65,6 +65,7 @@ describe Participant do
   it { should have_many(:high_intensity_state_transition_audits) }
 
   it { should have_many(:participant_consents) }
+  it { should have_many(:participant_consent_samples) }
 
   # it { should validate_presence_of(:person) }
 
@@ -1092,18 +1093,20 @@ describe Participant do
       end
 
       it "withdraws the participant from the study" do
-        Factory(:participant_consent, :participant => participant)
+        Factory(:participant_consent, :participant => participant, :consent_form_type_code => 7, :consent_withdraw_code => -4)
 
         participant.participant_consents.should_not be_empty
         participant.participant_consents.each do |c|
           c.should be_consented
         end
+        participant.should be_consented
 
         participant.unenroll!(psc, "unenroll reason")
 
         participant.participant_consents.each do |c|
           c.should_not be_consented
         end
+        participant.should_not be_consented
 
       end
     end

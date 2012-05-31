@@ -14,8 +14,9 @@ class ParticipantConsentsController < ApplicationController
     @contact_link = ContactLink.find(params[:contact_link_id])
     @contact = @contact_link.contact
     @participant_consent = ParticipantConsent.new(:participant => @participant, :contact => @contact,
-      :consent_type_code => @consent_type_code.to_i, :consent_form_type_code => @consent_type_code.to_i,
-      :consent_date => Date.today)
+      :consent_form_type_code => @consent_type_code.to_i, :consent_date => Date.today)
+
+    build_participant_consent_samples
 
     respond_to do |format|
       format.html # new.html.erb
@@ -25,11 +26,14 @@ class ParticipantConsentsController < ApplicationController
 
   # GET /participant_consents/1/edit
   def edit
-    @consent_type_code = params[:consent_type_code]
     @participant_consent = ParticipantConsent.find(params[:id])
     @contact_link = ContactLink.find(params[:contact_link_id]) unless params[:contact_link_id].blank?
     @participant = @participant_consent.participant
     @contact = @participant_consent.contact
+
+    if @participant_consent.phase_two? && @participant_consent.participant_consent_samples.blank?
+      build_participant_consent_samples
+    end
   end
 
   # POST /participant_consents
@@ -79,6 +83,12 @@ class ParticipantConsentsController < ApplicationController
   end
 
   private
+
+    def build_participant_consent_samples
+      ParticipantConsentSample::SAMPLE_CONSENT_TYPE_CODES.each do |code|
+        @participant_consent.participant_consent_samples.build(:sample_consent_type_code => code, :participant => @participant)
+      end
+    end
 
     def mark_activity_occurred
       activities = psc.activities_for_event(@contact_link.event)
