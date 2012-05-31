@@ -32,6 +32,11 @@ module NcsNavigator::Core::Warehouse
     def each
       progress = ProgressTracker.new(@wh_config)
       ResponseSet.find_each do |rs|
+        unless rs.enumerable_as_instrument?
+          log.info "Skipping ResponseSet #{rs.access_code.inspect} (#{rs.id})."
+          next
+        end
+
         progress.increment_response_sets
         progress.increment_responses(rs.responses.size)
         log.info "Transforming ResponseSet #{rs.access_code.inspect} (#{rs.id})"
