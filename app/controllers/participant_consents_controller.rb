@@ -25,7 +25,6 @@ class ParticipantConsentsController < ApplicationController
 
   # GET /participant_consents/1/edit
   def edit
-    @consent_type_code = params[:consent_type_code]
     @participant_consent = ParticipantConsent.find(params[:id])
     @contact_link = ContactLink.find(params[:contact_link_id]) unless params[:contact_link_id].blank?
     @participant = @participant_consent.participant
