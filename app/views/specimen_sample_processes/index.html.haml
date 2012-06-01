@@ -1,34 +1,47 @@
 .page_section
-  %p
-    %b
-      = form_tag receive_specimen_sample_processes_path do
-        New Biological Specimens
-        %table.records
-          %tr
-            %th
-              Select
-            %th
-              Specimen ID
-          - @specimens.each do |sp|
-            %tr{ :class => cycle('even_record', 'odd_record') }
-              %td 
-                %input{:type=>"checkbox", :id => sp.specimen_id, :name=> "specimen_id[]", :value => sp.specimen_id, :checked=>false}
-              %td
-                = sp.specimen_id
-        %p
-        New Environmental Samples
-        %table.records
-          %tr
-            %th
-              Select
-            %th
-              Sample ID
-          - @samples.each do |s|
-            %tr{ :class => cycle('even_record', 'odd_record') }
-              %td 
-                %input{:type=>"checkbox", :id => s.sample_id, :name=> "sample_id[]", :value => s.sample_id, :checked=>false}
-              %td
-                = s.sample_id
-          %p        
-        = submit_tag "Receive"
-        = submit_tag "Report Problem"
+  - if SampleReceiptShippingCenter.all.blank? or SpecimenProcessingShippingCenter.all.blank?
+    = "Please configure your shipping center's address and ID before continuing."
+    - if SampleReceiptShippingCenter.all.blank?
+      %p
+        = link_to 'Set up Sample Receipt Shipping Center', new_sample_receipt_shipping_center_path, :class => "edit_link icon_link"
+    - if SpecimenProcessingShippingCenter.all.blank?
+      %p
+        = link_to 'Set up Specimen Processing Shipping Center', new_specimen_processing_shipping_center_path, :class => "edit_link icon_link"
+  - else
+    - if @specimens.blank? and @samples.blank?
+      = "There are no specimens or samples to process at the moment"
+    - else
+      %b
+        = form_tag receive_specimen_sample_processes_path do
+          - if not @specimens.blank?
+            New Biological Specimens
+            %table.records
+              %tr
+                %th
+                  Select
+                %th
+                  Specimen ID
+              - @specimens.each do |sp|
+                %tr{ :class => cycle('even_record', 'odd_record') }
+                  %td 
+                    %input{:type=>"checkbox", :id => sp.specimen_id, :name=> "specimen_id[]", :value => sp.specimen_id, :checked=>false}
+                  %td
+                    = sp.specimen_id
+            %p
+          - if not @samples.blank?
+            New Environmental Samples
+            %table.records
+              %tr
+                %th
+                  Select
+                %th
+                  Sample ID
+              - @samples.each do |s|
+                %tr{ :class => cycle('even_record', 'odd_record') }
+                  %td 
+                    %input{:type=>"checkbox", :id => s.sample_id, :name=> "sample_id[]", :value => s.sample_id, :checked=>false}
+                  %td
+                    = s.sample_id
+              %p        
+          = submit_tag "Receive"
+          = submit_tag "Report Problem"
