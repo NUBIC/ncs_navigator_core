@@ -11,6 +11,7 @@ module MdesRecord
     before_create :set_public_id
     before_validation :set_missing_in_error
     before_save :format_dates
+    before_save :set_psu_code
   end
 
   module ClassMethods
@@ -124,6 +125,13 @@ module MdesRecord
             end
           end
         end
+      end
+    end
+
+    def set_psu_code
+      if (NcsNavigatorCore && !NcsNavigatorCore.psu.blank? &&
+          self.attribute_names.include?('psu_code') && self.psu_code.blank?)
+        self.psu_code = NcsNavigatorCore.psu
       end
     end
 

@@ -81,6 +81,18 @@ class ActsAsMdesRecordTest < Test::Unit::TestCase
   def test_coded_attribute_list_name_retrievable
     Foo.ncs_coded_attributes[:psu].list_name == 'PSU_CL1'
   end
+
+  def test_psu_code_is_set_upon_create
+    foo = Foo.create
+    assert_equal(NcsNavigatorCore.psu.to_i, foo.psu_code)
+  end
+
+  def test_psu_code_is_updateable
+    foo = Foo.create
+    assert_equal(NcsNavigatorCore.psu.to_i, foo.psu_code)
+    foo.update_attribute(:psu_code, 12)
+    assert_equal(12, foo.psu_code)
+  end
 end
 
 
