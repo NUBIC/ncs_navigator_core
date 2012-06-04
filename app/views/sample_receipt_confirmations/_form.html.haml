@@ -1,6 +1,8 @@
 .page_section
   = form_for(sample_receipt_confirmation) do |f| 
     = render "shared/custom_error_messages", :object => f.object
+    = "Followed is required for selected sample " 
+    = sample_receipt_confirmation.sample_id
     .psu_code
       %b
         = "PSU:"
