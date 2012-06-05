@@ -3,7 +3,7 @@ class MoveMergeDataToMerges < ActiveRecord::Migration
     Fieldwork.find_in_batches(:include => :merges) do |batch|
       batch.each do |fw|
         if fw.merges.empty?
-          fw.merges.create!(:received_data => fw.received_data,
+          fw.merges.create!(:proposed_data => fw.received_data,
                             :log => fw.merge_log,
                             :completed_at => (fw.updated_at if fw.merged),
                             :conflict_report => fw.conflict_report)
