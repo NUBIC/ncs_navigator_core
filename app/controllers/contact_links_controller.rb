@@ -93,7 +93,7 @@ class ContactLinksController < ApplicationController
     @participant  = @person.participant if @person
     @instrument   = @contact_link.instrument
     @event        = @contact_link.event
-    @response_set = @instrument.response_set
+    @response_set = @instrument.response_set if @instrument
     @survey       = @response_set.survey if @response_set
     @event_activities = psc.activities_for_event(@event) if @event.participant && @event.participant.person
   end
