@@ -10,19 +10,20 @@
     Instrument -
     = @survey.title
 
-.page_section
-  %h3
-    Edit Instrument Records
-  %p
-    - @contact_link.contact.contact_links.each do |contact_link|
-      = link_to "Edit #{contact_link.instrument}", edit_instrument_contact_link_path(contact_link), :class => "edit_link icon_link"
+- unless @contact_link.contact.instruments.blank?
+  .page_section
+    %h3
+      Edit Instrument Records
+    %p
+      - @contact_link.contact.contact_links.each do |contact_link|
+        = link_to "Edit #{contact_link.instrument}", edit_instrument_contact_link_path(contact_link), :class => "edit_link icon_link"
 
 .page_section
   %h3
     Administer another Instrument for this Event
   .instructional_note
-    If there are other instruments associated with this event, you can choose to administer another instrument from
-    the list below.
+    If there are other instruments associated with this event,
+    you can choose to administer another instrument from the list below.
   = render 'instruments_for_upcoming_events' if @person
 
 .page_section
