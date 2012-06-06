@@ -341,6 +341,7 @@ class ParticipantsController < ApplicationController
   def update_psc
     @participant = Participant.find(params[:id])
     psc.update_subject(@participant)
+    flash[:notice] = "Participant information was sent to PSC."
     redirect_to participant_path(@participant)
   end
 
