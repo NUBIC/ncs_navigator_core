@@ -36,3 +36,4 @@ shared/importer_passthrough/*.xml
 *.out
 .powenv
 .DS_Store
+doc/contact_event_workflow.pdf
