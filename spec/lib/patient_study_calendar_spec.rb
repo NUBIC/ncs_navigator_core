@@ -338,8 +338,11 @@ describe PatientStudyCalendar do
         participant = Factory(:participant, :p_id => "allyg")
         participant.person = person
 
-        subject.activities_to_reschedule(participant, @preg_screen.to_s).should be_nil
-        subject.activities_to_reschedule(participant, @ppgfu_event.to_s).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
+        preg_screen_event = Factory(:event, :participant => participant, :event_type => @preg_screen)
+        ppgfu_event_event = Factory(:event, :participant => participant, :event_type => @ppgfu_event, :event_start_date => '2011-11-14')
+
+        subject.activities_to_reschedule(preg_screen_event).should be_nil
+        subject.activities_to_reschedule(ppgfu_event_event).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
       end
     end
 

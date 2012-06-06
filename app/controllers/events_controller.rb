@@ -53,7 +53,7 @@ class EventsController < ApplicationController
       reason = params[:reason]
       @date = params[:date]
 
-      psc.schedule_pending_event(@event.participant, @event.event_type.to_s, PatientStudyCalendar::ACTIVITY_SCHEDULED, @date, reason)
+      psc.schedule_pending_event(@event, PatientStudyCalendar::ACTIVITY_SCHEDULED, @date, reason)
 
       path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
 

@@ -313,16 +313,14 @@ class PatientStudyCalendar
   # whose segment matches the given event type
   # (from the MDES event code list - cf. #get_psc_segment_from_mdes_event_type)
   #
-  # @param [Participant]
-  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
+  # @param [Event]
   # @return [String or nil] - the scheduled activity identifier or nil
-  def activities_to_reschedule(participant, event_type)
+  def activities_to_reschedule(event)
     ids = []
-    event_name = PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type)
-    scheduled_activities(participant).each do |scheduled_activity|
-      if (PatientStudyCalendar.strip_epoch(scheduled_activity.study_segment).include?(event_name)) &&
-         (scheduled_activity.current_state == ACTIVITY_SCHEDULED)
-        ids << scheduled_activity.activity_id
+    scheduled_activities(event.participant).each do |sa|
+      if ((sa.current_state == ACTIVITY_SCHEDULED) &&
+          event.matches_activity(sa))
+        ids << sa.activity_id
       end
     end
     ids.blank? ? nil : ids
@@ -419,8 +417,10 @@ class PatientStudyCalendar
   # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
   # @param [Date]
   # @param [String] - reason
-  def schedule_pending_event(participant, event_type, value, date, reason = nil)
-    if activities = activities_to_reschedule(participant, event_type)
+  def schedule_pending_event(event, value, date, reason = nil)
+    participant = event.participant
+    event_type  = event.event_type
+    if activities = activities_to_reschedule(event)
       activities.each do |activity_identifier|
         update_activity_state(activity_identifier, participant, value, date, reason)
       end
