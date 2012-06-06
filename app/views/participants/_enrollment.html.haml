@@ -14,8 +14,8 @@
                 = f.submit switch_arm_message(@participant)
               - else
                 = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
-    .enrollment
-      - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+      .enrollment
         - if false
           %b
             Enrollment
@@ -47,3 +47,11 @@
                 = text_area_tag :enrollment_status_comment
               %p
                 = f.submit "Mark Participant as not being actively followed", :confirm => "Are you certain?"
+
+      .psc
+        %b
+          Reconcile with PSC
+        %div
+          = form_for(@participant, :url => update_psc_participant_path(@participant)) do |f|
+            %p
+              = f.submit "Reconcile with PSC", :confirm => "Are you certain?"

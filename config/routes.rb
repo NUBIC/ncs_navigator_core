@@ -34,6 +34,7 @@ NcsNavigatorCore::Application.routes.draw do
     member do
       get :versions
       get :edit_arm
+      put :update_psc
       put :update_arm
       put :register_with_psc
       put :schedule_next_event_with_psc
@@ -121,10 +122,10 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
-  
+
   resources :sample_shipping_confirmations
-  
-  resources :sample_receipt_confirmations 
+
+  resources :sample_receipt_confirmations
 
   resources :sample_receipt_stores do
     member do

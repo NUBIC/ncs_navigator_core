@@ -48,7 +48,7 @@ class ParticipantConsentsController < ApplicationController
         mark_activity_occurred
         update_enrollment_status
 
-        format.html { redirect_to edit_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
+        format.html { redirect_to decision_page_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class ParticipantConsentsController < ApplicationController
     @participant_consent = ParticipantConsent.find(params[:id])
     if params[:contact_link_id]
       @contact_link = ContactLink.find(params[:contact_link_id])
-      redirect_action = edit_contact_link_path(@contact_link)
+      redirect_action = decision_page_contact_link_path(@contact_link)
     else
       redirect_action = person_path(@participant_consent.participant.person)
     end

@@ -338,6 +338,12 @@ class ParticipantsController < ApplicationController
     end
   end
 
+  def update_psc
+    @participant = Participant.find(params[:id])
+    psc.update_subject(@participant)
+    redirect_to participant_path(@participant)
+  end
+
   private
 
     def mark_pending_event_activities_canceled(participant)
