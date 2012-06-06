@@ -26,10 +26,10 @@
   - unless f.object.new_record?
 
     = render "shared/ncs_code_select", { :f => f, :code => :contact_location_code, :label_text => "Location", :other => :contact_location_other }
-    = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Private", :help_text => "contacts/contact_private_tooltip" }
+    = render "shared/ncs_code_select", { :f => f, :code => :contact_private_code, :label_text => "Were there Privacy Issues?", :help_text => "contacts/contact_private_tooltip" }
 
     %p
-      = f.label :contact_private_detail, "Private Detail"
+      = f.label :contact_private_detail, "Privacy Issues Detail"
       %span{ :class => "help_icon" }
       = render "contacts/contact_private_detail_tooltip"
     %p
