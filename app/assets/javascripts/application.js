@@ -1,6 +1,6 @@
+//= require_self
 //= require jquery
 //= require jquery_ujs
-//= require_self
 //= require 'surveyor_all'
 //= require 'jquery.tooltip.min'
 //= require 'jquery.cookie'

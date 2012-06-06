@@ -111,12 +111,12 @@ $(document).ready(function() {
   $("#tabs").tabs({ cookie: { expires: 1 } });
 
   $("#event_show_close_fields a").click(function() {
-    $('#event_end_date_fields').toggle();
-    $('#event_show_close_fields').toggle();
+    $('#event_end_date_fields').show();
+    $('#event_show_close_fields').hide();
   });
 
   $("#event_end_date_fields a").click(function() {
-    $('#event_show_close_fields').toggle();
-    $('#event_end_date_fields').toggle();
+    $('#event_show_close_fields').show();
+    $('#event_end_date_fields').hide();
   });
 });
