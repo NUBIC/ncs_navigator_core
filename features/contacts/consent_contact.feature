@@ -27,7 +27,7 @@ Feature: Obtaining participant consent
     When I select "Yes" from "Consent Given"
     And I press "Submit"
     Then I should see "Participant consent was successfully created."
-    And I should be on the edit_contact_link page
+    And I should be on the decision_page_contact_link page
 
   Scenario: Obtaining high intensity consent
     And an authenticated user
@@ -53,4 +53,4 @@ Feature: Obtaining participant consent
     When I select "Yes" from "Consent Given"
     And I press "Submit"
     Then I should see "Participant consent was successfully created."
-    And I should be on the edit_contact_link page
+    And I should be on the decision_page_contact_link page

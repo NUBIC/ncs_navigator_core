@@ -16,7 +16,8 @@
       Edit Instrument Records
     %p
       - @contact_link.contact.contact_links.each do |contact_link|
-        = link_to "Edit #{contact_link.instrument}", edit_instrument_contact_link_path(contact_link), :class => "edit_link icon_link"
+        - if contact_link.instrument
+          = link_to "Edit #{contact_link.instrument}", edit_instrument_contact_link_path(contact_link), :class => "edit_link icon_link"
 
 .page_section
   %h3
