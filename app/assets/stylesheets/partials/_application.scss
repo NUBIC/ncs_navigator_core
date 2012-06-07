@@ -33,6 +33,13 @@ a {
   }
 }
 
+select[disabled=''],
+input[disabled=''],
+select[disabled='disabled'],
+input[disabled='disabled'] {
+  background-color: #ddd;
+}
+
 .page_section {
   border: 1px solid #ccc;
   margin: 0.5em;

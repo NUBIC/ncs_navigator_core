@@ -3,6 +3,7 @@
 - date ||= nil
 - help_text ||= nil
 - notify_marker ||= nil
+- html_attrs ||= {}
 %p
   = f.label code, label_text
   - if notify_marker
@@ -14,7 +15,7 @@
     = render help_text
   - f.object.send("#{code}=", default_value) if default_value
   %p{ :class => 'ncs_select' }
-    = f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" })
+    = f.select(code, NcsCode.ncs_code_lookup(code), { :include_blank => "-- Select #{label_text} --" }, html_attrs)
     - if other
       %p.other_field
         = f.label other, "#{label_text} (Other)"

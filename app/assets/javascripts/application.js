@@ -5,6 +5,7 @@
 //= require 'jquery.tooltip.min'
 //= require 'jquery.cookie'
 //= require consent
+//= require event
 //= require nested_attributes
 //= require core
 //= require_tree .
