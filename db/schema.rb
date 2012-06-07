@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120524212410) do
+ActiveRecord::Schema.define(:version => 20120607183314) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -249,7 +249,7 @@ ActiveRecord::Schema.define(:version => 20120524212410) do
   end
 
   create_table "fieldworks", :force => true do |t|
-    t.string   "fieldwork_id",   :limit => 36
+    t.string   "fieldwork_id",    :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "client_id"
@@ -257,6 +257,10 @@ ActiveRecord::Schema.define(:version => 20120524212410) do
     t.date     "start_date"
     t.binary   "original_data"
     t.text     "generation_log"
+    t.binary   "received_data"
+    t.boolean  "merged",                        :default => false
+    t.text     "merge_log"
+    t.text     "conflict_report"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -614,6 +618,36 @@ ActiveRecord::Schema.define(:version => 20120524212410) do
     t.string   "high_intensity_state"
     t.text     "enrollment_status_comment"
     t.boolean  "being_followed",                          :default => false
+  end
+
+  create_table "pbs_lists", :force => true do |t|
+    t.integer  "psu_code",                                                                   :null => false
+    t.string   "pbs_list_id",                    :limit => 36,                               :null => false
+    t.integer  "provider_id"
+    t.integer  "practice_num"
+    t.integer  "in_out_frame_code"
+    t.integer  "in_sample_code"
+    t.integer  "substitute_provider_id"
+    t.integer  "in_out_psu_code"
+    t.integer  "mos"
+    t.integer  "cert_flag_code"
+    t.string   "stratum"
+    t.integer  "sort_var1"
+    t.integer  "sort_var2"
+    t.integer  "sort_var3"
+    t.integer  "frame_order"
+    t.decimal  "selection_probability_location",               :precision => 7, :scale => 6
+    t.decimal  "sampling_interval_woman",                      :precision => 4, :scale => 2
+    t.decimal  "selection_probability_woman",                  :precision => 7, :scale => 6
+    t.decimal  "selection_probability_overall",                :precision => 7, :scale => 6
+    t.integer  "frame_completion_req_code",                                                  :null => false
+    t.integer  "pr_recruitment_status_code"
+    t.date     "pr_recruitment_start_date"
+    t.date     "pr_cooperation_date"
+    t.date     "pr_recruitment_end_date"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "people", :force => true do |t|
