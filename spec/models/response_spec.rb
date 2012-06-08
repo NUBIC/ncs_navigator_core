@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # == Schema Information
 # Schema version: 20120607203203
 #
@@ -23,9 +25,6 @@
 #  api_id            :string(255)
 #  lock_version      :integer         default(0)
 #
-
-# -*- coding: utf-8 -*-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
