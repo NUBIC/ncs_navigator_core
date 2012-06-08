@@ -12,6 +12,7 @@ FactoryGirl.define do
     prov.provider_info_date         Date.today
     prov.provider_info_update       Date.today
     prov.provider_comment           'provider comment'
+    prov.name_practice              'name of provider'
   end
 
   factory :provider_role do |pr|

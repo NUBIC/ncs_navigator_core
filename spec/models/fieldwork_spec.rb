@@ -1,10 +1,9 @@
 # == Schema Information
-# Schema version: 20120515181518
+# Schema version: 20120607203203
 #
 # Table name: fieldworks
 #
-#  fieldwork_id    :string(36)      primary key
-#  received_data   :binary
+#  fieldwork_id    :string(36)
 #  created_at      :datetime
 #  updated_at      :datetime
 #  client_id       :string(255)
@@ -12,8 +11,10 @@
 #  start_date      :date
 #  original_data   :binary
 #  generation_log  :text
-#  merge_log       :text
+#  id              :integer         not null, primary key
+#  received_data   :binary
 #  merged          :boolean
+#  merge_log       :text
 #  conflict_report :text
 #
 

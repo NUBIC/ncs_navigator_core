@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120515181518
+# Schema version: 20120607203203
 #
 # Table name: providers
 #
@@ -22,6 +22,11 @@
 #  transaction_type           :string(255)
 #  created_at                 :datetime
 #  updated_at                 :datetime
+#  name_practice              :string(100)
+#  list_subsampling_code      :integer
+#  proportion_weeks_sampled   :integer
+#  proportion_days_sampled    :integer
+#  sampling_notes             :string(1000)
 #
 
 class Provider < ActiveRecord::Base
@@ -39,4 +44,8 @@ class Provider < ActiveRecord::Base
   ncs_coded_attribute :list_subsampling,      'CONFIRM_TYPE_CL2'
 
   has_one :address
+
+  def to_s
+    self.name_practice.to_s
+  end
 end

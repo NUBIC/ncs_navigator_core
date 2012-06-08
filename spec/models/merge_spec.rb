@@ -1,3 +1,20 @@
+# == Schema Information
+# Schema version: 20120607203203
+#
+# Table name: merges
+#
+#  id              :integer         not null, primary key
+#  fieldwork_id    :integer
+#  conflict_report :text
+#  log             :text
+#  proposed_data   :text
+#  completed_at    :datetime
+#  crashed_at      :datetime
+#  started_at      :datetime
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 require 'spec_helper'
 
 describe Merge do
