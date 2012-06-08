@@ -50,6 +50,7 @@ class Address < ActiveRecord::Base
   belongs_to :person
   belongs_to :dwelling_unit
   belongs_to :response_set
+  belongs_to :provider
   ncs_coded_attribute :psu,                 'PSU_CL1'
   ncs_coded_attribute :address_rank,        'COMMUNICATION_RANK_CL1'
   ncs_coded_attribute :address_info_source, 'INFORMATION_SOURCE_CL1'

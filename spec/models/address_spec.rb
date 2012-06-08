@@ -65,6 +65,7 @@ describe Address do
   end
 
   it { should belong_to(:person) }
+  it { should belong_to(:provider) }
   it { should belong_to(:dwelling_unit) }
   it { should belong_to(:psu) }
   it { should belong_to(:address_rank) }

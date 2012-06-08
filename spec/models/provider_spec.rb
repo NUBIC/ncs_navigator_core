@@ -40,6 +40,9 @@ describe Provider do
   it { should belong_to(:practice_size) }
   it { should belong_to(:public_practice) }
   it { should belong_to(:provider_info_source) }
+  it { should belong_to(:list_subsampling) }
+
+  it { should have_one(:address) }
 
   context "as mdes record" do
 

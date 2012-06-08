@@ -36,4 +36,7 @@ class Provider < ActiveRecord::Base
   ncs_coded_attribute :practice_size,         'PRACTICE_SIZE_RANGE_CL1'
   ncs_coded_attribute :public_practice,       'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :provider_info_source,  'INFORMATION_SOURCE_CL2'
+  ncs_coded_attribute :list_subsampling,      'CONFIRM_TYPE_CL2'
+
+  has_one :address
 end

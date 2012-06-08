@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120607183314) do
+ActiveRecord::Schema.define(:version => 20120607203203) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -249,7 +249,7 @@ ActiveRecord::Schema.define(:version => 20120607183314) do
   end
 
   create_table "fieldworks", :force => true do |t|
-    t.string   "fieldwork_id",    :limit => 36
+    t.string   "fieldwork_id",   :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "client_id"
@@ -257,10 +257,6 @@ ActiveRecord::Schema.define(:version => 20120607183314) do
     t.date     "start_date"
     t.binary   "original_data"
     t.text     "generation_log"
-    t.binary   "received_data"
-    t.boolean  "merged",                        :default => false
-    t.text     "merge_log"
-    t.text     "conflict_report"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -932,17 +928,17 @@ ActiveRecord::Schema.define(:version => 20120607183314) do
   end
 
   create_table "providers", :force => true do |t|
-    t.integer  "psu_code",                                 :null => false
-    t.string   "provider_id",                :limit => 36, :null => false
-    t.integer  "provider_type_code",                       :null => false
+    t.integer  "psu_code",                                   :null => false
+    t.string   "provider_id",                :limit => 36,   :null => false
+    t.integer  "provider_type_code",                         :null => false
     t.string   "provider_type_other"
-    t.integer  "provider_ncs_role_code",                   :null => false
+    t.integer  "provider_ncs_role_code",                     :null => false
     t.string   "provider_ncs_role_other"
-    t.integer  "practice_info_code",                       :null => false
-    t.integer  "practice_patient_load_code",               :null => false
-    t.integer  "practice_size_code",                       :null => false
-    t.integer  "public_practice_code",                     :null => false
-    t.integer  "provider_info_source_code",                :null => false
+    t.integer  "practice_info_code",                         :null => false
+    t.integer  "practice_patient_load_code",                 :null => false
+    t.integer  "practice_size_code",                         :null => false
+    t.integer  "public_practice_code",                       :null => false
+    t.integer  "provider_info_source_code",                  :null => false
     t.string   "provider_info_source_other"
     t.date     "provider_info_date"
     t.date     "provider_info_update"
@@ -950,6 +946,11 @@ ActiveRecord::Schema.define(:version => 20120607183314) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name_practice",              :limit => 100
+    t.integer  "list_subsampling_code"
+    t.integer  "proportion_weeks_sampled"
+    t.integer  "proportion_days_sampled"
+    t.string   "sampling_notes",             :limit => 1000
   end
 
   create_table "question_groups", :force => true do |t|

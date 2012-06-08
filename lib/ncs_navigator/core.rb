@@ -9,5 +9,6 @@ module NcsNavigator
     autoload :Psc,                  'ncs_navigator/core/psc'
     autoload :Warehouse,            'ncs_navigator/core/warehouse'
     autoload :Mustache,             'ncs_navigator/core/mustache'
+    autoload :Pbs,                  'ncs_navigator/core/pbs'
   end
 end
