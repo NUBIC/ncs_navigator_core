@@ -1,7 +1,7 @@
 class PbsListImporter
 
   def self.import_data(pbs_list_file)
-    FasterCSV.parse(pbs_list_file, :headers => true, :header_converters => :symbol) do |row|
+    Rails.application.csv_impl.parse(pbs_list_file, :headers => true, :header_converters => :symbol) do |row|
       next if row.header_row?
 
       provider = find_or_create_provider(row)
