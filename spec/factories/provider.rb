@@ -38,7 +38,7 @@ FactoryGirl.define do
     pbsl.in_out_psu_code                nil
     pbsl.mos                            1
     pbsl.cert_flag_code                 nil
-    pbsl.stratum                        1
+    pbsl.stratum                        "1"
     pbsl.sort_var1                      1
     pbsl.sort_var2                      2
     pbsl.sort_var3                      3

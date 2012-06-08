@@ -49,6 +49,16 @@ describe Provider do
 
   it { should have_one(:address) }
 
+  describe ".to_s" do
+    it "returns the name_practice" do
+      Factory(:provider, :name_practice => "expected").to_s.should == "expected"
+    end
+
+    it "returns an empty string if there is no name_practice" do
+      Factory(:provider, :name_practice => nil).to_s.should == ""
+    end
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

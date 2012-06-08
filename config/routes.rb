@@ -64,6 +64,7 @@ NcsNavigatorCore::Application.routes.draw do
   resources :participant_consents
   resources :participant_visit_records
   resources :participant_visit_consents
+  resources :pbs_lists
 
   namespace :api do
     scope '/v1' do

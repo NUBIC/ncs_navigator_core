@@ -1,0 +1,13 @@
+- title "Edit PBS List"
+
+.mdes_table_definition
+  = render 'documentation/pbs_list'
+
+.page_section
+  = form_for(@pbs_list, :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/pbs_lists/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

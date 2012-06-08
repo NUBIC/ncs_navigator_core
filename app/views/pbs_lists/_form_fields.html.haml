@@ -1,0 +1,99 @@
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+%p
+  %b
+    Provider
+  %br
+  = f.object.provider.to_s
+  = f.hidden_field :provider_id
+
+- if f.object.substitute_provider
+  %p
+    %b
+      Substitute Provider
+    %br
+    = f.object.substitute_provider.to_s
+    = f.hidden_field :substitute_provider_id
+
+%p
+  = f.label :practice_num, "Provider Practice Number"
+  %br
+  = f.text_field :practice_num
+
+= render "shared/ncs_code_select", { :f => f, :code => :in_out_frame_code, :label_text => "In final sampling frame?" } # MDES 3.0
+
+= render "shared/ncs_code_select", { :f => f, :code => :in_sample_code, :label_text => "In original sample?" } # MDES 3.0
+
+= render "shared/ncs_code_select", { :f => f, :code => :in_out_psu_code, :label_text => "Located inside PSU?" } # MDES 3.0
+
+%p
+  = f.label :mos, "Measure of Size"
+  %br
+  = f.text_field :mos
+
+= render "shared/ncs_code_select", { :f => f, :code => :cert_flag_code, :label_text => "Is a certainty unit?" } # MDES 3.0
+
+%p
+  = f.label :stratum, "Stratum Identification Number"
+  %br
+  = f.text_field :stratum
+
+%p
+  = f.label :sort_var1, "Stratum Sort Variable 1"
+  %br
+  = f.text_field :sort_var1
+
+%p
+  = f.label :sort_var2, "Stratum Sort Variable 2"
+  %br
+  = f.text_field :sort_var2
+
+%p
+  = f.label :sort_var3, "Stratum Sort Variable 3"
+  %br
+  = f.text_field :sort_var3
+
+%p
+  = f.label :frame_order, "Frame Order"
+  %br
+  = f.text_field :frame_order
+
+%p
+  = f.label :selection_probability_location, "Selection Probability of Location"
+  %br
+  = f.text_field :selection_probability_location
+
+%p
+  = f.label :sampling_interval_woman, "Sampling Interval"
+  %br
+  = f.text_field :sampling_interval_woman
+
+%p
+  = f.label :selection_probability_woman, "Selection Probability of Women"
+  %br
+  = f.text_field :selection_probability_woman
+
+%p
+  = f.label :selection_probability_overall, "Overall Selection Probability"
+  %br
+  = f.text_field :selection_probability_overall
+
+= render "shared/ncs_code_select", { :f => f, :code => :frame_completion_req_code, :label_text => "Must complete PBS Frame SAQ?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :pr_recruitment_status_code, :label_text => "Provider Recruitment Status" } # MDES 3,0
+
+%p
+  = f.label :pr_recruitment_start_date, "Recruitment Start Date"
+  %br
+  = f.text_field :pr_recruitment_start_date, :class => "datepicker"
+
+%p
+  = f.label :pr_cooperation_date, "Provider Co-operation Date"
+  %br
+  = f.text_field :pr_cooperation_date, :class => "datepicker"
+
+%p
+  = f.label :pr_recruitment_end_date, "Recruitment End Date"
+  %br
+  = f.text_field :pr_recruitment_end_date, :class => "datepicker"
