@@ -17,7 +17,7 @@ class PbsListsController < ApplicationController
 
   def new
     @provider = Provider.find(params[:provider_id])
-    @pbs_list = PbsList.new(:provider => @provider)
+    @pbs_list = PbsList.new(:provider => @provider, :psu_code => @psu_code)
 
     respond_to do |format|
       format.html
@@ -63,7 +63,5 @@ class PbsListsController < ApplicationController
       end
     end
   end
-
-
 
 end
