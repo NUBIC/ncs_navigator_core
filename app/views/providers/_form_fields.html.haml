@@ -1,0 +1,72 @@
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+%p
+  = f.label :provider_id, "Provider ID"
+  %br
+  = f.object.new_record? ? "TBD" : f.object.provider_id
+
+%p
+  = f.label :name_practice, "Practice Name"
+  %br
+  = f.text_field :name_practice
+
+= render "shared/ncs_code_select", { :f => f, :code => :provider_type_code, :label_text => "Provider Type", :other => :provider_type_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :provider_ncs_role_code, :label_text => "Provider Role", :other => :provider_ncs_role_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :practice_info_code, :label_text => "Practice Information" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :practice_patient_load_code, :label_text => "Patient Load" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :practice_size_code, :label_text => "Practice Size" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :public_practice_code, :label_text => "Public Practice?" }
+
+= render "shared/ncs_code_select", { :f => f, :code => :provider_info_source_code, :label_text => "Source of Information", :other => :provider_info_source_other }
+
+%p
+  = f.label :provider_info_date, "Date of initial information"
+  %br
+  = f.text_field :provider_info_date, :class => 'datepicker'
+
+%p
+  = f.label :provider_info_update, "Practice Name"
+  %br
+  = f.text_field :provider_info_update
+
+= render "shared/ncs_code_select", { :f => f, :code => :list_subsampling_code, :label_text => "Will use subsampling list?" }
+
+%p
+  = f.label :proportion_weeks_sampled, "Nth week"
+  %span{ :class => "help_icon" }
+  = render "providers/proportion_weeks_sampled_tooltip"
+%p
+  = f.text_field :proportion_weeks_sampled
+
+%p
+  = f.label :proportion_days_sampled, "Number of days"
+  %span{ :class => "help_icon" }
+  = render "providers/proportion_days_sampled_tooltip"
+%p
+  = f.text_field :proportion_days_sampled
+
+%p
+  = f.label :sampling_notes, "Sampling Notes"
+  %span{ :class => "help_icon" }
+  = render "providers/sampling_notes_tooltip"
+%p
+  = f.text_area :sampling_notes
+
+%p
+  = f.label :provider_comment, "Comments on Provider"
+  %br
+  = f.text_area :provider_comment
+
+
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#provider_provider_type_code","#provider_provider_type_other");
+    wire_up_select_other("#provider_provider_ncs_role_code","#provider_provider_ncs_role_other");
+    wire_up_select_other("#provider_provider_info_source_code","#provider_provider_info_source_other");
+  });

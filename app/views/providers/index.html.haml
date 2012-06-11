@@ -1,0 +1,38 @@
+- title "Providers"
+
+.mdes_table_definition
+  = render 'documentation/provider'
+
+.page_section.search
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
+    %p
+      = f.label :name_practice, "Practice Name"
+      = f.text_field :name_practice
+    %p
+    = f.submit "Search"
+
+.page_section
+  - if @providers.empty?
+    #no_records
+      No Provider records were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @providers
+    %table.records
+      %tr
+        %th
+          = sort_link @q, "name_practice", "Practice Name"
+        %th{ :colspan => "1" }
+
+      - @providers.each do |provider|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = blank_safe(provider.name_practice)
+          %td
+            = link_to 'Edit', edit_provider_path(pbs), :class => "edit_link icon_link"
+
+  .links
+    = link_to 'Add New Provider record', new_provider_path, :class => "add_link icon_link"
+
+  = will_paginate @providers

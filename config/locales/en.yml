@@ -49,3 +49,10 @@ en:
         definition: "Source of Verified Vacancy Information or Other Knowledge of Vacancy"
       nir_no_access:
         definition: "Description of lack of building access"
+    provider:
+      proportion_weeks_sampled:
+        definition: "Listing /sampling is performed every nth week.  1 means listing/sampling is every week, 2 means every other week, etc."
+      proportion_days_sampled:
+        definition: "The number of days that listing/sampling will be conducted within each sampled week."
+      sampling_notes:
+        definition: "Description of any unusual sampling items that occur for the provider (Such as open 6 vs. 5 days a week)."
