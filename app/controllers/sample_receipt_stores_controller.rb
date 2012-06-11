@@ -1,6 +1,6 @@
 class SampleReceiptStoresController < ApplicationController
 
-   def new
+  def new
     @sample_receipt_store = SampleReceiptStore.new(:sample_id => params[:sample_id])
   end
   
@@ -9,7 +9,7 @@ class SampleReceiptStoresController < ApplicationController
     @params[:psu_code] = @psu_code
     @params[:staff_id] = current_staff_id
     @params[:sample_receipt_shipping_center_id] = SampleReceiptShippingCenter.last.id
-    @params[:placed_in_storage_datetime] = DateTime.now
+    # @params[:placed_in_storage_datetime] = DateTime.now
     @sample_receipt_store = SampleReceiptStore.new(@params)
     respond_to do |format|
       if @sample_receipt_store.save

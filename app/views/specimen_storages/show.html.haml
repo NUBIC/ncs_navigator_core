@@ -1,5 +1,9 @@
 = form_for @specimen_storage do |f|
   %div{ :id => @specimen_storage}
+  - if not f.object.staff_id.blank?
+    = "Staff Id:"
+    = f.object.staff_id
+    %br
     - if not f.object.placed_in_storage_datetime.blank?
       = "Placed in Storage Date and Time: "
       = f.object.placed_in_storage_datetime

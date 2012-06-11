@@ -25,3 +25,13 @@
   %br
   = f.label :temp_event_action_other, "Temp Event Action Other"
   = f.text_field :temp_event_action_other
+  %br
+  = f.label :placed_in_storage_datetime, "Placed in Storage Date and Time: "
+  = f.text_field :placed_in_storage_datetime, :class => "datetime"
+  %br
+  = render "shared/ncs_code_select", { :f => f, :code => :storage_compartment_area_code, :label_text => "Storage Compartment Area" }
+  %br
+  = f.label :storage_comment_other, "Storage Comment Other: "
+  = f.text_field :storage_comment_other
+  %br  
+  = f.submit "Receive", :disable_with => 'Submitting...', :class => 'sample_received'
