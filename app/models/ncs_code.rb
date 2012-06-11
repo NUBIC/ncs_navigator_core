@@ -247,20 +247,31 @@ class NcsCode < ActiveRecord::Base
     :lower_trigger_ambient_code   => 'TRIGGER_STATUS_CL1',
     :centrifuge_comment_code      => 'SPECIMEN_STATUS_CL4',
 
-    ###specimen_storage
+    ### specimen_storage
     :master_storage_unit_code     => 'STORAGE_AREA_CL1',
 
-    ###sample_receipt_store
+    ### sample_receipt_store
     :sample_condition_code        => 'SPECIMEN_STATUS_CL7',
     :cooler_temp_condition_code   => 'COOLER_TEMP_CL1',
     :storage_compartment_area_code => 'STORAGE_AREA_CL2',
     :temp_event_occurred_code     => 'CONFIRM_TYPE_CL20',
     :temp_event_action_code       => 'SPECIMEN_STATUS_CL6',
 
-    ###sample_receipt_confirmation
+    ### sample_receipt_confirmation
     :shipment_receipt_confirmed_code    =>     'CONFIRM_TYPE_CL21',
     :shipment_condition_code            =>     'SHIPMENT_CONDITION_CL1',
-    :sample_condition_code              =>     'SPECIMEN_STATUS_CL7'
+    :sample_condition_code              =>     'SPECIMEN_STATUS_CL7',
+
+    ### provider
+    # :psu_code                         => 'PSU_CL1',
+    :provider_type_code               => 'PROVIDER_TYPE_CL1',
+    :provider_ncs_role_code           => 'PROVIDER_STUDY_ROLE_CL1',
+    :practice_info_code               => 'PRACTICE_CHARACTERISTIC_CL1',
+    :practice_patient_load_code       => 'PRACTICE_LOAD_RANGE_CL1',
+    :practice_size_code               => 'PRACTICE_SIZE_RANGE_CL1',
+    :public_practice_code             => 'CONFIRM_TYPE_CL2',
+    :provider_info_source_code        => 'INFORMATION_SOURCE_CL2',
+    :list_subsampling_code            => 'CONFIRM_TYPE_CL2',
 
   }
 
