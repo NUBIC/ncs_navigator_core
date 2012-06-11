@@ -48,6 +48,10 @@ describe Provider do
   it { should belong_to(:list_subsampling) }
 
   it { should have_one(:address) }
+  it { should have_many(:person_provider_links) }
+  it { should have_many(:patients).through(:person_provider_links) }
+  it { should have_many(:personnel_provider_links) }
+  it { should have_many(:staff).through(:personnel_provider_links) }
 
   describe ".to_s" do
     it "returns the name_practice" do
@@ -82,6 +86,27 @@ describe Provider do
       obj.public_practice.local_code.should == -4
       obj.provider_info_source.local_code.should == -4
     end
+  end
+
+  context ".personnel_provider_links" do
+
+    describe ".primary_contact" do
+
+      it "returns the person associated with the primary contact personnel_provider_link" do
+        provider = Factory(:provider)
+        ppl = Factory(:personnel_provider_link, :primary_contact => true, :provider => provider)
+        provider.personnel_provider_links.reload
+        provider.primary_contact.should_not be_nil
+      end
+
+      it "returns nil if there is no primary contact" do
+        provider = Factory(:provider)
+        provider.personnel_provider_links.should be_empty
+        provider.primary_contact.should be_nil
+      end
+
+    end
+
   end
 
 end

@@ -44,8 +44,18 @@ class Provider < ActiveRecord::Base
   ncs_coded_attribute :list_subsampling,      'CONFIRM_TYPE_CL2'
 
   has_one :address
+  has_many :telephones
+  has_many :person_provider_links
+  has_many :patients, :class_name => "Person", :through => :person_provider_links
+  has_many :personnel_provider_links
+  has_many :staff, :class_name => "Person", :through => :personnel_provider_links
 
   def to_s
     self.name_practice.to_s
+  end
+
+  def primary_contact
+    pc = self.personnel_provider_links.where(:primary_contact => true).first
+    return pc.person unless pc.blank?
   end
 end

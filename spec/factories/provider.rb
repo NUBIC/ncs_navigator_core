@@ -28,6 +28,12 @@ FactoryGirl.define do
     ppl.provider_intro_outcome_code     1
   end
 
+  factory :personnel_provider_link do |ppl|
+    ppl.association :provider, :factory => :provider
+    ppl.association :person, :factory => :person
+    ppl.primary_contact :false
+  end
+
   factory :pbs_list do |pbsl|
     pbsl.psu_code                       2000030
     pbsl.association :provider, :factory => :provider

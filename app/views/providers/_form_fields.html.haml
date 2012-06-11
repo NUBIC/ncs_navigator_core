@@ -30,14 +30,14 @@
   = f.text_field :provider_info_date, :class => 'datepicker'
 
 %p
-  = f.label :provider_info_update, "Practice Name"
+  = f.label :provider_info_update, "Date information updated"
   %br
-  = f.text_field :provider_info_update
+  = f.text_field :provider_info_update, :class => 'datepicker'
 
 = render "shared/ncs_code_select", { :f => f, :code => :list_subsampling_code, :label_text => "Will use subsampling list?" }
 
 %p
-  = f.label :proportion_weeks_sampled, "Nth week"
+  = f.label :proportion_weeks_sampled, "Nth week sampling performed"
   %span{ :class => "help_icon" }
   = render "providers/proportion_weeks_sampled_tooltip"
 %p
