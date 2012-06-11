@@ -1,0 +1,68 @@
+.page_section
+  %div{:id =>"process_tabs", :class => "processing"}
+    %table.records
+      %tr
+        %th
+          RECEIVE
+        %th
+          STORE
+        %th
+          SHIP 
+        %th
+          CONFIRM
+      %tr
+        %td
+          %div{:id => "receiving"}
+            %ul
+              - @specimens.each do |sp|
+                %li
+                  %a{ :href => new_specimen_receipt_path(:specimen_id => sp.specimen_id), :class => "my_specimen_sample_receive", :id => sp.specimen_id}
+                    = sp.specimen_id  
+              - @samples.each do |s|
+                %li
+                  %a{ :href => new_sample_receipt_store_path(:sample_id => s.sample_id), :class => "my_specimen_sample_receive", :id => s.sample_id }
+                    = s.sample_id
+        %td
+          %div{:id => "storing"}
+            %ul
+              - @specimen_receipts_hash.each do |k, v|
+                %li
+                  %a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_sample_store", :id => k}
+                    = "Pressure bag:"
+                    = k
+                    - v.each do |val|
+                      %p{:class => "paragraph_shift"}
+                        = val
+        %td
+          %div{:id => "shipping"}
+            %ul
+              = "Samples:"
+              - @sample_receipt_stores.each do |srs|
+                %li
+                  %input{:type=>"checkbox", :id => srs.sample_id, :name=> "sample_id[]", :value => srs.sample_id, :checked=>false}
+                  %a{ :href => new_sample_receipt_store_path(:sample_id => srs.sample_id), :class => "my_sample_ship", :id => srs.sample_id }
+                    = srs.sample_id
+              = "Specimens:"
+              - @specimen_receipts_hash_not_shipped.each do |k, v|
+                %li
+                  %input{:type=>"checkbox", :id => k, :name=> "storage_container_id[]", :value => k, :checked=>false}
+                  %a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_ship", :id => k}
+                    = "Pressure bag:"
+                    = k
+                    %p{:class => "paragraph_shift"}
+                      - SpecimenReceipt.where(:storage_container_id => k).each do |val|
+                        = val.specimen_id
+              = submit_tag "Ship"
+              
+        %td
+          %div{:id => "confirm"}
+            - @specimens.each do |sp|
+              = sp.specimen_id
+              %br
+            - @samples.each do |s|
+              = s.sample_id
+              %br                            
+      %tr
+        %td{:colspan => '4'}
+          %div{:id => "displaying", :class => "display"}
+            = "DISPLAYING???"
