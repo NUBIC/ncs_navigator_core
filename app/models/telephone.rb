@@ -40,6 +40,8 @@ class Telephone < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :phone_id, :date_fields => [:phone_start_date, :phone_end_date]
 
   belongs_to :person
+  # belongs_to :institute
+  belongs_to :provider
   belongs_to :response_set
 
   ncs_coded_attribute :psu,               'PSU_CL1'
@@ -51,16 +53,25 @@ class Telephone < ActiveRecord::Base
   ncs_coded_attribute :cell_permission,   'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :text_permission,   'CONFIRM_TYPE_CL2'
 
+  HOME_PHONE_CODE = 1
+  WORK_PHONE_CODE = 2
+  CELL_PHONE_CODE = 3
+  FAX_PHONE_CODE  = 4
+
   def self.home_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 1).first
+    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => HOME_PHONE_CODE).first
   end
 
   def self.work_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 2).first
+    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => WORK_PHONE_CODE).first
   end
 
   def self.cell_phone_type
-    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => 3).first
+    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => CELL_PHONE_CODE).first
+  end
+
+  def self.fax_phone_type
+    NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => FAX_PHONE_CODE).first
   end
 
   def self.other_phone_type

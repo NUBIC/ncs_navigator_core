@@ -24,13 +24,16 @@
         %th
           = sort_link @q, "name_practice", "Practice Name"
         %th{ :colspan => "1" }
+        %th{ :colspan => "1" }
 
       - @providers.each do |provider|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
             = blank_safe(provider.name_practice)
           %td
-            = link_to 'Edit', edit_provider_path(pbs), :class => "edit_link icon_link"
+            = link_to 'Edit', edit_provider_path(provider), :class => "edit_link icon_link"
+          %td
+            = link_to 'Edit Contact Information', edit_contact_information_provider_path(provider), :class => "edit_link icon_link"
 
   .links
     = link_to 'Add New Provider record', new_provider_path, :class => "add_link icon_link"

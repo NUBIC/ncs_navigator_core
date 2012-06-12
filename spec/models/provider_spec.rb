@@ -97,6 +97,7 @@ describe Provider do
         ppl = Factory(:personnel_provider_link, :primary_contact => true, :provider => provider)
         provider.personnel_provider_links.reload
         provider.primary_contact.should_not be_nil
+        provider.primary_contact.should == ppl.person
       end
 
       it "returns nil if there is no primary contact" do
@@ -106,6 +107,47 @@ describe Provider do
       end
 
     end
+
+  end
+
+  context ".telephones" do
+
+    describe ".telephone" do
+
+      it "returns the associated telephone record with a phone type of work" do
+        provider = Factory(:provider)
+        phone    = Factory(:telephone, :provider => provider, :phone_type => Telephone.work_phone_type)
+        provider.telephones.reload
+        provider.telephones.should_not be_empty
+        provider.telephone.should == phone
+      end
+
+      it "returns nil if there is no work phone" do
+        provider = Factory(:provider)
+        provider.telephones.should be_empty
+        provider.telephone.should be_nil
+      end
+
+    end
+
+    describe ".fax" do
+
+      it "returns the associated telephone record with a phone type of fax" do
+        provider = Factory(:provider)
+        phone    = Factory(:telephone, :provider => provider, :phone_type => Telephone.fax_phone_type)
+        provider.telephones.reload
+        provider.telephones.should_not be_empty
+        provider.fax.should == phone
+      end
+
+      it "returns nil if there is no fax phone" do
+        provider = Factory(:provider)
+        provider.telephones.should be_empty
+        provider.telephone.should be_nil
+      end
+
+    end
+
 
   end
 

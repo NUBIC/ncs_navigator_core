@@ -48,7 +48,11 @@ class Provider < ActiveRecord::Base
   has_many :person_provider_links
   has_many :patients, :class_name => "Person", :through => :person_provider_links
   has_many :personnel_provider_links
-  has_many :staff, :class_name => "Person", :through => :personnel_provider_links
+  has_many :staff, :class_name => "Person", :through => :personnel_provider_links, :source => :person
+
+  accepts_nested_attributes_for :address, :allow_destroy => true
+  accepts_nested_attributes_for :telephones, :allow_destroy => true
+  accepts_nested_attributes_for :staff, :allow_destroy => true
 
   def to_s
     self.name_practice.to_s
@@ -57,5 +61,15 @@ class Provider < ActiveRecord::Base
   def primary_contact
     pc = self.personnel_provider_links.where(:primary_contact => true).first
     return pc.person unless pc.blank?
+  end
+
+  def telephone
+    phone = self.telephones.where(:phone_type_code => Telephone::WORK_PHONE_CODE).first
+    return phone unless phone.blank?
+  end
+
+  def fax
+    phone = self.telephones.where(:phone_type_code => Telephone::FAX_PHONE_CODE).first
+    return phone unless phone.blank?
   end
 end

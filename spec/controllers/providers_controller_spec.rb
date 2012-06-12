@@ -69,6 +69,53 @@ describe ProvidersController do
       end
     end
 
+    describe "GET edit_contact_information" do
+
+      let(:provider) { Factory(:provider, :name_practice => "provider") }
+
+      it "assigns the requested provider as @provider" do
+        get :edit_contact_information, :id => provider.id
+        assigns(:provider).should eq(provider)
+      end
+
+      it "builds an address for the provider if none exists" do
+        provider.address.should be_nil
+        get :edit_contact_information, :id => provider.id
+        assigns(:provider).address.should_not be_nil
+      end
+
+      it "builds a phone for the provider if none exists" do
+        provider.telephones.should be_blank
+        get :edit_contact_information, :id => provider.id
+        assigns(:provider).telephones.should_not be_blank
+        assigns(:provider).telephones.size.should == 2
+        assigns(:provider).telephones.collect {|t| t.phone_type_code}.should include Telephone::WORK_PHONE_CODE
+      end
+
+      it "builds a fax for the provider if none exists" do
+        provider.telephones.should be_blank
+        get :edit_contact_information, :id => provider.id
+        assigns(:provider).telephones.should_not be_blank
+        assigns(:provider).telephones.size.should == 2
+        assigns(:provider).telephones.collect {|t| t.phone_type_code}.should include Telephone::FAX_PHONE_CODE
+      end
+
+      it "builds a primary contact for the provider if none exists" do
+        provider.staff.should be_empty
+        get :edit_contact_information, :id => provider.id
+        assigns(:provider).staff.should_not be_empty
+      end
+
+      it "builds a primary contact information for the provider contact if none exists" do
+        provider.staff.should be_empty
+        get :edit_contact_information, :id => provider.id
+        assigns(:provider).staff.should_not be_empty
+        assigns(:provider).staff.first.emails.should_not be_empty
+        assigns(:provider).staff.first.telephones.should_not be_empty
+      end
+
+    end
+
 
     describe "POST create" do
       describe "with valid params" do

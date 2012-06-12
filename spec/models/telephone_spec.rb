@@ -43,6 +43,8 @@ describe Telephone do
   end
 
   it { should belong_to(:person) }
+  it { should belong_to(:provider) }
+  # it { should belong_to(:institute) }
   it { should belong_to(:psu) }
   it { should belong_to(:phone_info_source) }
   it { should belong_to(:phone_type) }

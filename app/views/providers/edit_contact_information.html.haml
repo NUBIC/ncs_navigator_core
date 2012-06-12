@@ -1,0 +1,89 @@
+- title "Edit Provider Contact Information"
+
+.mdes_table_definition
+  = render 'documentation/provider'
+
+.page_section
+  = form_for(@provider, :url => update_contact_information_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    - primary_contact = @provider.primary_contact
+    %fieldset
+      %legend
+        Primary Contact
+      = f.fields_for :staff do |staff_builder|
+        - next unless staff_builder.object.new_record? || (staff_builder.object == primary_contact)
+        = hidden_field_tag :save_primary_contact, true if staff_builder.object.new_record?
+        %p
+          = staff_builder.label :first_name, "First Name"
+          %br
+          = staff_builder.text_field :first_name
+
+        %p
+          = staff_builder.label :last_name, "Last Name"
+          %br
+          = staff_builder.text_field :last_name
+
+        = staff_builder.fields_for :telephones do |staff_phone_builder|
+          %p
+            = staff_phone_builder.label :phone_nbr, "#{staff_phone_builder.object.phone_type} Phone Number"
+            %br
+            = staff_phone_builder.hidden_field :phone_type_code
+            = staff_phone_builder.text_field :phone_nbr
+
+        = staff_builder.fields_for :emails do |staff_email_builder|
+          %p
+            = staff_email_builder.label :email, "Email"
+            %br
+            = staff_email_builder.text_field :email
+
+
+    %fieldset
+      %legend
+        Location Telephones
+      = f.fields_for :telephones do |telephone_builder|
+        %p
+          = telephone_builder.label :phone_nbr, telephone_builder.object.phone_type
+          %br
+          = telephone_builder.hidden_field :phone_type_code
+          = telephone_builder.text_field :phone_nbr
+
+    %fieldset
+      %legend
+        Location Address
+      = f.fields_for :address do |address_builder|
+
+        %p
+          = address_builder.label :address_one, "Address One"
+          %br
+          = address_builder.text_field :address_one
+
+        %p
+          = address_builder.label :address_two, "Address Two"
+          %br
+          = address_builder.text_field :address_two
+
+        %p
+          = address_builder.label :unit, "Unit"
+          %br
+          = address_builder.text_field :unit
+
+        %p
+          = address_builder.label :city, "City"
+          %br
+          = address_builder.text_field :city
+
+        = render "shared/ncs_code_select", { :f => address_builder, :code => :state_code, :label_text => "State" }
+
+        %p
+          = address_builder.label :zip, "Zipcode"
+          %br
+          = address_builder.text_field :zip
+
+        %p
+          = address_builder.label :zip4, "Zip+4"
+          %br
+          = address_builder.text_field :zip4
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

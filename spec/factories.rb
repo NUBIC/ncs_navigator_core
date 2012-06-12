@@ -69,6 +69,7 @@ end
 
 Factory.define :telephone do |phone|
   phone.association  :person,        :factory => :person
+  phone.association  :provider,      :factory => :provider
   phone.psu_code               2000030
   phone.phone_info_source_code 1
   phone.phone_type_code        1

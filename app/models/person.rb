@@ -89,6 +89,10 @@ class Person < ActiveRecord::Base
 
   validates_length_of :title, :maximum => 5, :allow_blank => true
 
+  accepts_nested_attributes_for :addresses, :allow_destroy => true
+  accepts_nested_attributes_for :telephones, :allow_destroy => true
+  accepts_nested_attributes_for :emails, :allow_destroy => true
+
   before_save do
     self.age = self.computed_age if self.age.blank?
   end

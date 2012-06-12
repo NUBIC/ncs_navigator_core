@@ -293,7 +293,10 @@ class NcsCode < ActiveRecord::Base
   end
 
   def self.sort_key(list_name)
-    (list_name.to_s.include?('LANGUAGE') || list_name.to_s.include?('CONFIRM')) ? 1 : 0
+    codelists_keep_default_order = ['LANGUAGE_' ,'CONFIRM_', 'RANGE_']
+    keep_default_order = false
+    codelists_keep_default_order.each { |cl| keep_default_order = true if list_name.to_s.include?(cl) }
+    keep_default_order ? 1 : 0
   end
 
   def self.attribute_lookup(attribute_name)

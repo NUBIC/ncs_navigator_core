@@ -64,7 +64,12 @@ NcsNavigatorCore::Application.routes.draw do
   resources :participant_consents
   resources :participant_visit_records
   resources :participant_visit_consents
-  resources :providers
+  resources :providers do
+    member do
+      get :edit_contact_information
+      put :update_contact_information
+    end
+  end
   resources :pbs_lists
 
   namespace :api do
