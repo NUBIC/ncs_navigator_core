@@ -46,7 +46,7 @@ class Provider < ActiveRecord::Base
   has_one :address
   has_many :telephones
   has_many :person_provider_links
-  has_many :patients, :class_name => "Person", :through => :person_provider_links
+  has_many :patients, :class_name => "Person", :through => :person_provider_links, :source => :person
   has_many :personnel_provider_links
   has_many :staff, :class_name => "Person", :through => :personnel_provider_links, :source => :person
 
