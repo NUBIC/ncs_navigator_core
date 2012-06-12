@@ -79,7 +79,7 @@ describe SampleReceiptStoresController do
       describe "with json request" do
         it "generates json with error list" do
           post :create, :sample_receipt_store => {}, :format => 'json'
-          json = { "receipt_datetime" => ["can't be blank"]}
+          json = { "placed_in_storage_datetime"=>["can't be blank"], "receipt_datetime"=>["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
       end      
@@ -97,7 +97,7 @@ describe SampleReceiptStoresController do
       describe "with json request" do
         it "forms json with updated @sample_receipt_store" do
           put :update, :id => @sample_receipt_store.id, :sample_receipt_store => {:receipt_datetime => nil}, :format => 'json'
-          json = { "receipt_datetime"  => ["can't be blank"]}
+          json = { "receipt_datetime"=>["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
       end      

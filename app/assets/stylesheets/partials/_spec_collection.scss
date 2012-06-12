@@ -3,6 +3,11 @@
   display: inline;
 }
 
+.display p {
+  margin: 0 0 0;
+  display: inline;
+}
+
 #edit_specimen_receipt_form, #edit_sample_receipt_form {
   margin-left: 2em;
   font-size: 12px;
@@ -67,4 +72,16 @@ input.volume {
     float: right; 
     width: 40em;
   }
+}
+
+.paragraph_shift {
+  margin-left: 0.5em;
+}
+
+.records td {
+  vertical-align: top;
+}
+
+.records ul {
+  list-style-type: none;
 }

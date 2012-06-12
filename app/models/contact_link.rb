@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
 # Schema version: 20120607203203
 #
@@ -34,9 +35,6 @@ class ContactLink < ActiveRecord::Base
   belongs_to :instrument, :inverse_of => :contact_link
   # belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
-
-  has_one :participant_visit_record, :class_name => "ParticipantVisitRecord", :foreign_key => "contact_link_id"
-  has_many :participant_visit_consents
 
   delegate :participant, :to => :event
 
