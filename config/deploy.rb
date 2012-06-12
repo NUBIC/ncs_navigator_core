@@ -81,7 +81,9 @@ namespace :deploy do
 
   desc "Fix permissions"
   task :permissions do
-    sudo "chmod -R g+w #{shared_path} #{current_path} #{release_path}"
+    unless ENV['NO_FIX_PERMISSIONS']
+      sudo "chmod -R g+w #{shared_path} #{current_path} #{release_path}"
+    end
   end
 
   desc 'Set up shared paths used by the importer'
