@@ -13,11 +13,11 @@ set :application, "ncs_navigator_core"
 
 # User
 set :use_sudo, false
+set :default_shell, "bash"
 ssh_options[:forward_agent] = true
 
 # Version control
 default_run_options[:pty]   = true # to get the passphrase prompt from git
-default_environment['PATH'] = '/opt/ruby-enterprise/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin'
 
 set :bundle_without, [:development, :test, :ci, :osx_development]
 
@@ -81,7 +81,9 @@ namespace :deploy do
 
   desc "Fix permissions"
   task :permissions do
-    sudo "chmod -R g+w #{shared_path} #{current_path} #{release_path}"
+    unless ENV['NO_FIX_PERMISSIONS']
+      sudo "chmod -R g+w #{shared_path} #{current_path} #{release_path}"
+    end
   end
 
   desc 'Set up shared paths used by the importer'
