@@ -261,7 +261,7 @@ module NcsNavigator::Core::Warehouse
           # participant authorization form requires a provider in the MDES
           # ParticipantAuthorizationForm,
           PpgStatusHistory,
-          Address, Email, Telephone,
+          Address, Email,
           NonInterviewReport, NoAccessNonInterviewReport, DwellingUnitTypeNonInterviewReport,
           RefusalNonInterviewReport, VacantNonInterviewReport
         ].each do |core_model|
@@ -270,6 +270,14 @@ module NcsNavigator::Core::Warehouse
 
             include_context 'basic model import test'
           end
+        end
+
+        # Temporarily separated because of provider ref in factory until providers are enumerated
+        describe Telephone do
+          include_context 'basic model import test'
+
+          let(:core_model) { Telephone }
+          let(:core_record) { Factory(:telephone, :provider => nil) }
         end
 
         describe PpgDetail do
