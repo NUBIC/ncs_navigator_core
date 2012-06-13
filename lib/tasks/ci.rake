@@ -11,7 +11,7 @@ begin
     task :core => [:spec_core, :cucumber]
 
     desc 'Run CI build for warehouse only'
-    task :warehouse => [:spec_warehouse]
+    task :warehouse => ['ci:redis:start_then_stop_at_exit', :spec_warehouse]
 
     task :setup => ['log:clear', :navigator_configuration, 'db:migrate']
 
@@ -42,7 +42,7 @@ begin
     desc "Run warehouse specs for CI"
     RSpec::Core::RakeTask.new(:spec_warehouse => [:setup, :spec_setup, 'ci:setup:rspecbase', 'db:test:prepare:warehouse']) do |t|
       t.pattern = "spec/**/*_spec.rb"
-      t.rspec_opts = "-t warehouse -t '~redis'"
+      t.rspec_opts = "-t warehouse"
     end
 
     Cucumber::Rake::Task.new(
