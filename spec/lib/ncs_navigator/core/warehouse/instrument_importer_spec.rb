@@ -192,7 +192,7 @@ module NcsNavigator::Core::Warehouse
 
       it 'is created for each primary instrument record with a survey' do
         create_mdes_record(MdesModule::TapWaterTwq, 'PV12', :twq_location => 1)
-        create_mdes_record(MdesModule::PregVisit22, 'PV21')
+        create_mdes_record(MdesModule::PregVisit_2_2, 'PV21')
 
         importer.import
 
@@ -200,7 +200,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'is not created for instrument records without corresponding surveys' do
-        create_mdes_record(MdesModule::PregVisit1, 'PV10')
+        create_mdes_record(MdesModule::PregVisit_1, 'PV10')
 
         importer.import
 
@@ -314,7 +314,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'is an integer value when the question demands it' do
-          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '3')
+          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '3')
           importer.import
 
           Response.first.integer_value.should == 3
@@ -347,14 +347,14 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'ignores -4 values if not present as an option' do
-          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '-4')
+          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '-4')
           importer.import
 
           Response.count.should == 0
         end
 
         it 'ignores -3 values if not present as an option' do
-          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '-3')
+          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '-3')
           importer.import
 
           Response.count.should == 0
@@ -363,7 +363,7 @@ module NcsNavigator::Core::Warehouse
 
       describe 'for a coded-or-literal variable' do
         it 'is an "answer" response when coded' do
-          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '-2')
+          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '-2')
           importer.import
 
           Response.first.answer.should ==
@@ -372,7 +372,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'is a the literal value when literal' do
-          create_mdes_record(MdesModule::PregVisit22, 'PV22', :hosp_nights => '3')
+          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '3')
           importer.import
 
           Response.first.integer_value.should == 3
@@ -387,7 +387,7 @@ module NcsNavigator::Core::Warehouse
         let(:q2) { Question.find_by_reference_identifier('birth_plan') }
 
         before do
-          create_mdes_record(MdesModule::PregVisit22, 'PV22', :birth_plan => '3')
+          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :birth_plan => '3')
           importer.import
         end
 
