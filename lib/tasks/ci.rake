@@ -55,23 +55,34 @@ begin
     namespace :redis do
       REDIS_DIR = File.expand_path('../../../tmp/redis-for-ci', __FILE__)
       REDIS_PIDFILE = File.join(REDIS_DIR, 'pid')
-      REDIS_SOCKET  = File.join(REDIS_DIR, 'sock')
       REDIS_LOGFILE = File.join(REDIS_DIR, 'log')
       REDIS_STARTUP_TIMEOUT = 15
+
+      def random_port
+        require 'socket'
+        while true
+          candidate = rand(63000) + 2000
+          begin
+            TCPSocket.new('127.0.0.1', candidate).close
+          rescue Errno::ECONNREFUSED
+            return candidate
+          end
+        end
+      end
 
       desc "Start Redis for CI"
       task :start => :fail_if_running do
         mkdir_p REDIS_DIR
         redis_server = ENV['REDIS_SERVER_BIN'] || 'redis-server'
         redis_config = File.join(REDIS_DIR, 'conf')
+        redis_port = random_port.to_s
+        ENV['CI_REDIS_PORT'] = redis_port
 
         File.open(redis_config, 'w') do |f|
           [
             "daemonize yes",
             "pidfile #{REDIS_PIDFILE}",
-            "port 0",
-            "unixsocket #{REDIS_SOCKET}",
-            "unixsocketperm 700",
+            "port #{redis_port}",
             "logfile #{REDIS_LOGFILE}"
           ].each do |line|
             f.puts line
@@ -87,7 +98,7 @@ begin
           if waited >= REDIS_STARTUP_TIMEOUT
             fail "Redis pidfile never showed up"
           else
-            $stderr.puts "Redis started after #{waited}s"
+            $stderr.puts "Redis started on #{redis_port} after #{waited}s"
           end
         else
           fail "Redis did not start"
