@@ -34,7 +34,23 @@ module NcsNavigator::Core::Warehouse
     end
 
     def create_warehouse_record_with_defaults(mdes_model, attributes={})
-      save_wh(mdes_model.new(all_missing_attributes(mdes_model).merge(attributes)))
+      all_attrs = all_missing_attributes(mdes_model).
+        merge(test_defaults_for(mdes_model)).
+        merge(attributes)
+
+      save_wh(mdes_model.new(all_attrs))
+    end
+
+    def test_defaults_for(mdes_model)
+      {
+        :staff_id => 'staff_public_id',
+        :relation => '1'
+      }.inject({}) do |d, (prop_name, default_value)|
+        if mdes_model.properties[prop_name] && mdes_model.properties[prop_name].required?
+          d[prop_name] = default_value
+        end
+        d
+      end
     end
 
     describe 'strategy selection' do
@@ -574,108 +590,125 @@ module NcsNavigator::Core::Warehouse
       end
 
       let(:fred_p) {
-        create_warehouse_record_via_core(Participant, 'fred_p', :enroll_status => '1')
+        create_warehouse_record_with_defaults(MdesModule::Participant,
+          :p_id => 'fred_p', :enroll_status => '1')
       }
       let(:ginger_p) {
-        create_warehouse_record_via_core(Participant, 'ginger_p', :enroll_status => '2')
+        create_warehouse_record_with_defaults(MdesModule::Participant,
+          :p_id => 'ginger_p', :enroll_status => '2')
       }
 
       let(:fred_pers) {
-        create_warehouse_record_via_core(Person, 'fred_pers')
+        create_warehouse_record_with_defaults(MdesModule::Person, :person_id => 'fred_pers')
       }
       let(:ginger_pers) {
-        create_warehouse_record_via_core(Person, 'ginger_pers')
+        create_warehouse_record_with_defaults(MdesModule::Person, :person_id => 'ginger_pers')
       }
 
       let!(:fake_staff) {
-        # this matches the staff ID that the contact_link factory puts
-        # in its LCs.
         create_warehouse_record_with_defaults(MdesModule::Staff, :staff_id => 'staff_public_id')
       }
 
       let!(:fred_p_pers_link) {
-        create_warehouse_record_via_core(ParticipantPersonLink, 'fred_p_pers_link',
+        create_warehouse_record_with_defaults(MdesModule::LinkPersonParticipant,
+          :person_pid_id => 'fred_p_pers_link',
           :p => fred_p,
           :person => fred_pers)
       }
       let!(:ginger_p_pers_link) {
-        create_warehouse_record_via_core(ParticipantPersonLink, 'ginger_p_pers_link',
+        create_warehouse_record_with_defaults(MdesModule::LinkPersonParticipant,
+          :person_pid_id => 'ginger_p_pers_link',
           :p => ginger_p,
           :person => ginger_pers)
       }
 
       let!(:f_consent) {
-        create_warehouse_record_via_core(ParticipantConsent, 'f_consent',
+        create_warehouse_record_with_defaults(MdesModule::ParticipantConsent,
+          :participant_consent_id => 'f_consent',
           :p => fred_p, :consent_given => '1', :consent_type => '7', :consent_form_type => '7')
       }
 
       let(:f_e2) {
-        create_warehouse_record_via_core(Event, 'f_e2',
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :event_id => 'f_e2',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Pregnancy Screener'),
           :event_start_date => '2010-09-03')
       }
       let!(:f_e2_i) {
-        create_warehouse_record_via_core(Instrument, 'f_e2_i',
+        create_warehouse_record_with_defaults(MdesModule::Instrument,
+          :instrument_id => 'f_e2_i',
           :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
           :ins_status => 1,
           :event => f_e2)
       }
       let(:f_e3) {
-        create_warehouse_record_via_core(Event, 'f_e3',
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :event_id => 'f_e3',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Informed Consent'),
           :event_start_date => '2010-09-03')
       }
       let(:f_e1) {
-        create_warehouse_record_via_core(Event, 'f_e1',
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :event_id => 'f_e1',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Low Intensity Data Collection'),
           :event_start_date => '9666-96-96')
       }
       let(:f_c1) {
-        create_warehouse_record_via_core(Contact, 'f_c1', :contact_date => '2010-09-03')
+        create_warehouse_record_with_defaults(MdesModule::Contact,
+          :contact_id => 'f_c1', :contact_date => '2010-09-03')
       }
       let!(:f_c1_e1) {
-        create_warehouse_record_via_core(ContactLink, 'f_c1_e1',
+        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          :contact_link_id => 'f_c1_e1',
           :contact => f_c1, :event => f_e1, :instrument => nil)
       }
       let!(:f_c1_e2) {
-        create_warehouse_record_via_core(ContactLink, 'f_c1_e2',
+        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          :contact_link_id => 'f_c1_e2',
           :contact => f_c1, :event => f_e2, :instrument => f_e2_i)
       }
       let!(:f_c1_e3) {
-        create_warehouse_record_via_core(ContactLink, 'f_c1_e3',
+        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          :contact_link_id => 'f_c1_e3',
           :contact => f_c1, :event => f_e3, :instrument => nil)
       }
       let(:f_c2) {
-        create_warehouse_record_via_core(Contact, 'f_c2', :contact_date => '2010-09-17')
+        create_warehouse_record_with_defaults(MdesModule::Contact,
+          :contact_id => 'f_c2', :contact_date => '2010-09-17')
       }
       let!(:f_c2_e3) {
-        create_warehouse_record_via_core(ContactLink, 'f_c2_e3',
+        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          :contact_link_id => 'f_c2_e3',
           :contact => f_c2, :event => f_e3, :instrument => nil)
       }
 
       let(:f_e4) {
-        create_warehouse_record_via_core(Event, 'f_e4',
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :event_id => 'f_e4',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Pregnancy Probability'),
           :event_start_date => '2011-03-09')
       }
       let(:f_c3) {
-        create_warehouse_record_via_core(Contact, 'f_c3', :contact_date => '2011-03-08')
+        create_warehouse_record_with_defaults(MdesModule::Contact,
+          :contact_id => 'f_c3', :contact_date => '2011-03-08')
       }
       let!(:f_c3_e4) {
-        create_warehouse_record_via_core(ContactLink, 'f_c3_e4',
+        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          :contact_link_id => 'f_c3_e4',
           :contact => f_c3, :event => f_e4, :instrument => nil)
       }
 
       let(:f_e5) {
-        create_warehouse_record_via_core(Event, 'f_e5',
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :event_id => 'f_e5',
           :participant => fred_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Low to High Conversion'),
@@ -683,7 +716,8 @@ module NcsNavigator::Core::Warehouse
           :event_end_date => '2011-04-04')
       }
       let(:f_e5_i) {
-        create_warehouse_record_via_core(Instrument, 'f_e5_i',
+        create_warehouse_record_with_defaults(MdesModule::Instrument,
+          :instrument_id => 'f_e5_i',
           :instrument_type => code_for_instrument_type(
             'Low Intensity Invitation to High-Intensity Conversion Interview'),
           :event => f_e5)
@@ -697,14 +731,16 @@ module NcsNavigator::Core::Warehouse
       }
 
       let!(:g_e1) {
-        create_warehouse_record_via_core(Event, 'g_e1',
+        create_warehouse_record_with_defaults(MdesModule::Event,
+          :event_id => 'g_e1',
           :participant => ginger_p,
           :event_disp => 4,
           :event_type => code_for_event_type('Pregnancy Screener'),
           :event_start_date => '2010-11-07')
       }
       let!(:g_e1_i) {
-        create_warehouse_record_via_core(Instrument, 'g_e1_i',
+        create_warehouse_record_with_defaults(MdesModule::Instrument,
+          :instrument_id => 'g_e1_i',
           :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
           :event => g_e1)
       }
@@ -745,10 +781,12 @@ module NcsNavigator::Core::Warehouse
 
       describe 'events without participants' do
         let(:g_c1) {
-          create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '2010-09-17')
+          create_warehouse_record_with_defaults(MdesModule::Contact,
+            :contact_id => 'g_c1', :contact_date => '2010-09-17')
         }
         let!(:g_c1_e1) {
-          create_warehouse_record_via_core(ContactLink, 'g_c1_e1',
+          create_warehouse_record_with_defaults(MdesModule::LinkContact,
+            :contact_link_id => 'g_c1_e1',
             :contact => g_c1, :event => g_e1, :instrument => g_e1_i)
         }
 
@@ -793,10 +831,12 @@ module NcsNavigator::Core::Warehouse
 
       describe 'unorderable contacts' do
         let(:g_c1) {
-          create_warehouse_record_via_core(Contact, 'g_c1', :contact_date => '9777-97-97')
+          create_warehouse_record_with_defaults(MdesModule::Contact,
+            :contact_id => 'g_c1', :contact_date => '9777-97-97')
         }
         let!(:g_c1_e1) {
-          create_warehouse_record_via_core(ContactLink, 'g_c1_e1', :contact => g_c1, :event => g_e1)
+          create_warehouse_record_with_defaults(MdesModule::LinkContact,
+            :contact_link_id => 'g_c1_e1', :contact => g_c1, :event => g_e1)
         }
 
         before do
@@ -870,7 +910,6 @@ module NcsNavigator::Core::Warehouse
               participant.should_not be_nil
               participant.participant_person_links.should_not be_empty
               participant.participant_person_links.first.person.should == person
-              participant.person.should_not be_nil
               participant.person.should == person
             end
 
@@ -925,7 +964,8 @@ module NcsNavigator::Core::Warehouse
 
           describe 'when transitioning into birth' do
             let!(:g_e3) {
-              create_warehouse_record_via_core(Event, 'g_e3',
+              create_warehouse_record_with_defaults(MdesModule::Event,
+                :event_id => 'g_e3',
                 :participant => ginger_p,
                 :event_disp => 4,
                 :event_type => code_for_event_type('Informed Consent'),
@@ -933,7 +973,8 @@ module NcsNavigator::Core::Warehouse
             }
 
             let!(:g_e8) {
-              create_warehouse_record_via_core(Event, 'g_e8',
+              create_warehouse_record_with_defaults(MdesModule::Event,
+                :event_id => 'g_e8',
                 :participant => ginger_p,
                 :event_disp => 4,
                 :event_type => code_for_event_type('Birth'),
