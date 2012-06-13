@@ -51,6 +51,75 @@ begin
       t.fork = true
       t.profile = 'ci'
     end
+
+    namespace :redis do
+      REDIS_DIR = File.expand_path('../../../tmp/redis-for-ci', __FILE__)
+      REDIS_PIDFILE = File.join(REDIS_DIR, 'pid')
+      REDIS_SOCKET  = File.join(REDIS_DIR, 'sock')
+      REDIS_LOGFILE = File.join(REDIS_DIR, 'log')
+      REDIS_STARTUP_TIMEOUT = 15
+
+      desc "Start Redis for CI"
+      task :start => :fail_if_running do
+        mkdir_p REDIS_DIR
+        redis_server = ENV['REDIS_SERVER_BIN'] || 'redis-server'
+        redis_config = File.join(REDIS_DIR, 'conf')
+
+        File.open(redis_config, 'w') do |f|
+          [
+            "daemonize yes",
+            "pidfile #{REDIS_PIDFILE}",
+            "port 0",
+            "unixsocket #{REDIS_SOCKET}",
+            "unixsocketperm 700",
+            "logfile #{REDIS_LOGFILE}"
+          ].each do |line|
+            f.puts line
+          end
+        end
+
+        if system(redis_server, redis_config)
+          waited = 0
+          until File.exist?(REDIS_PIDFILE) || waited >= REDIS_STARTUP_TIMEOUT
+            waited += 0.5
+            sleep 0.5
+          end
+          if waited >= REDIS_STARTUP_TIMEOUT
+            fail "Redis pidfile never showed up"
+          else
+            $stderr.puts "Redis started after #{waited}s"
+          end
+        else
+          fail "Redis did not start"
+        end
+      end
+
+      task :fail_if_running do
+        if File.exist?(REDIS_PIDFILE)
+          redis_pid = File.read(REDIS_PIDFILE).chomp
+          fail "Redis seems to be already running (pid=#{redis_pid}).
+If it's not, remove #{REDIS_PIDFILE} and try again."
+        end
+      end
+
+      desc "Start Redis for CI and ensure that it only runs for the duration of the rake run"
+      task :start_then_stop_at_exit => :start do
+        at_exit do
+          task('ci:redis:stop').invoke
+        end
+      end
+
+      desc "Stop Redis for CI"
+      task :stop do
+        fail "No Redis pidfile #{REDIS_PIDFILE}" unless File.exist?(REDIS_PIDFILE)
+
+        redis_pid = File.read(REDIS_PIDFILE).chomp
+        $stderr.puts "Terminating Redis pid=#{redis_pid}"
+        unless system('kill', redis_pid)
+          fail "Could not kill Redis process #{REDIS_PIDFILE}"
+        end
+      end
+    end
   end
 rescue LoadError => e
   desc 'CI dependencies missing'
