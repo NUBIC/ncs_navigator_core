@@ -12,14 +12,19 @@ shared_context :importer_spec_warehouse do
   end
 
   def all_missing_attributes(model)
-    coded_missing = model.properties.
-      select { |p| p.required? && p.options[:set] }.
-      inject({}) { |h, prop| h[prop.name] = '-4'; h }
+    model.properties.
+      select { |p| p.required? }.
+      inject({}) { |h, prop| h[prop.name] = missing_value_for_property(prop); h }.
+      merge(:psu_id => '20000030')
+  end
 
-    text_missing = model.properties.
-      select { |p| p.required? && !p.options[:set] }.
-      inject({}) { |h, prop| h[prop.name] = 'NA'; h }
-
-    coded_missing.merge(text_missing).merge(:psu_id => '20000030')
+  def missing_value_for_property(dm_prop)
+    if dm_prop.options[:set]
+      '-4'
+    elsif dm_prop.class < ::DataMapper::Property::Numeric
+      0
+    else
+      'NA'
+    end
   end
 end
