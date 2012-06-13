@@ -81,9 +81,9 @@ begin
         File.open(redis_config, 'w') do |f|
           [
             "daemonize yes",
-            "pidfile #{REDIS_PIDFILE}",
+            "pidfile \"#{REDIS_PIDFILE}\"",
             "port #{redis_port}",
-            "logfile #{REDIS_LOGFILE}"
+            "logfile \"#{REDIS_LOGFILE}\""
           ].each do |line|
             f.puts line
           end
