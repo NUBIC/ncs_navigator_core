@@ -70,7 +70,13 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_contact_information
     end
   end
-  resources :pbs_lists
+  resources :pbs_lists do
+    collection do
+      get :upload
+      post :upload
+      get :sample_upload_file
+    end
+  end
 
   namespace :api do
     scope '/v1' do
@@ -131,9 +137,9 @@ NcsNavigatorCore::Application.routes.draw do
   resources :specimen_receipts
 
   resources :sample_shipping_confirmations
-  
-  resources :sample_receipt_confirmations 
-  
+
+  resources :sample_receipt_confirmations
+
   resources :sample_processes
 
   resources :sample_receipt_stores do

@@ -1,0 +1,11 @@
+- title "Upload PBS List"
+
+.page_section
+  %p
+    Upload PBS List records from a .csv file
+    = link_to "Download Sample PBS List", { :controller => :pbs_lists, :action => :sample_upload_file }, { :class => "export_link icon_link" }
+
+  #pbs_list_upload
+    = form_tag(upload_pbs_lists_path, :multipart => true) do
+      = file_field_tag(:file)
+      = submit_tag("Upload")
