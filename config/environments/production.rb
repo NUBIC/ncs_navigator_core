@@ -76,6 +76,4 @@ NcsNavigatorCore::Application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = { :address => "ns.northwestern.edu", :port => 25, :domain => "northwestern.edu" }
 
-  config.redis_url = 'redis://ncsdb:6379/'
-
 end

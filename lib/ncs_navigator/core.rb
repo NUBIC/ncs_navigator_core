@@ -8,6 +8,7 @@ module NcsNavigator
     autoload :Mustache,             'ncs_navigator/core/mustache'
     autoload :Pbs,                  'ncs_navigator/core/pbs'
     autoload :Psc,                  'ncs_navigator/core/psc'
+    autoload :RedisConfiguration,   'ncs_navigator/core/redis_configuration'
     autoload :Warehouse,            'ncs_navigator/core/warehouse'
   end
 end

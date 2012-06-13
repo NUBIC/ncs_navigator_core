@@ -32,8 +32,6 @@ NcsNavigatorCore::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  config.redis_url = 'redis://localhost:6379/'
-
   config.aker do
     api_mode :cas_proxy
     authorities :cas, NcsNavigator::Authorization::Core::Authority.new
