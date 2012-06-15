@@ -22,13 +22,22 @@
     %table.records
       %tr
         %th
-          = sort_link @q, "provider_name_practice", "Practice Name"
+          PBS List ID
+        %th
+          Practice Name
+        %th
+          Provider ID
         %th{ :colspan => "2" }
 
       - @pbs_lists.each do |pbs|
+        - provider = pbs.provider
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
-            = blank_safe(pbs.provider.name_practice)
+            = pbs.pbs_list_id
+          %td
+            = blank_safe(provider.name_practice)
+          %td
+            = provider.provider_id
           %td
             = link_to 'Edit', edit_pbs_list_path(pbs), :class => "edit_link icon_link"
           %td

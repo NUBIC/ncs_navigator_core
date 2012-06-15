@@ -4,15 +4,12 @@ class PbsListImporter
     Rails.application.csv_impl.parse(pbs_list_file, :headers => true, :header_converters => :symbol) do |row|
       next if row.header_row?
 
-      provider = find_or_create_provider(row)
-      substitute_provider = Provider.where(:provider_id => row[:substitute_provider_id]).first
+      provider = Provider.find_or_create_by_provider_id_and_psu_code(row[:provider_id], row[:psu_id])
 
-      pbs_list = PbsList.new(:psu_code => row[:psu_id], :provider => provider, :substitute_provider => substitute_provider)
+      pbs_list = PbsList.new(:psu_code => row[:psu_id], :provider => provider, :pbs_list_id => row[:pbs_list_id])
 
       populate_pbs_list_attributes(pbs_list, row)
       populate_pbs_list_ncs_coded_attributes(pbs_list, row)
-
-      create_provider_address(provider, row)
 
       if pbs_list.valid?
         pbs_list.save!
@@ -31,34 +28,6 @@ class PbsListImporter
     log_path
   end
 
-  def self.find_or_create_provider(row)
-    provider = Provider.where(:provider_id => row[:provider_id]).first
-
-    if provider.nil?
-      provider = Provider.new(:name_practice => row[:name_practice], :provider_id => row[:provider_id])
-    else
-      provider.name_practice = row[:name_practice]
-    end
-
-    provider.save!
-    provider
-  end
-
-  def self.create_provider_address(provider, row)
-    address = Address.new(:provider => provider)
-    [
-      [:practice_address, :address_one],
-      [:practice_unit,    :unit],
-      [:practice_city,    :city],
-      [:practice_state,   :state_code],
-      [:practice_zip,     :zip],
-      [:practice_zip4,    :zip4]
-    ].each do |row_attr, model_attr|
-      address.send("#{model_attr}=", row[row_attr]) unless row[row_attr].blank?
-    end
-    address.save!
-  end
-
   def self.populate_pbs_list_attributes(pbs_list, row)
     [ :practice_num,
       :mos,
@@ -70,7 +39,11 @@ class PbsListImporter
       :selection_probability_location,
       :sampling_interval_woman,
       :selection_probability_woman,
-      :selection_probability_overall
+      :selection_probability_overall,
+      :pr_recruitment_status,
+      :pr_recruitment_start_date,
+      :pr_cooperation_date,
+      :pr_recruitment_end_date
     ].each do |attribute|
       pbs_list.send("#{attribute}=", row[attribute]) unless row[attribute].blank?
     end
