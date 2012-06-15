@@ -32,7 +32,7 @@
   padding-left: 0.3em;
 }
 
-.print_manifest {
+.print_manifest, .exit_shipping, .finish_shipping{
   font-size: 1.1em;
 }
 
@@ -84,4 +84,12 @@ input.volume {
 
 .records ul {
   list-style-type: none;
+}
+
+.my_flash_message {
+  padding: 0.25em 0;
+  text-align: center;
+  @include rounded-corners(.5em);
+  @include column($blueprint-grid-columns);
+  width: 100%;
 }

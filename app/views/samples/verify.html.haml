@@ -112,4 +112,6 @@
       = @total_number_of_samples
       = hidden_field_tag "total_number_of_samples", @total_number_of_samples
       %br  
-    = submit_tag "Generate Manifest"
+    -# = submit_tag "Generate Manifest"
+    = submit_tag "Generate Manifest", :class => "generate_manifest", :id => "generate_manifest"
+    %input{:type=>"button", :class => "exit_shipping", :value =>"Exit"}

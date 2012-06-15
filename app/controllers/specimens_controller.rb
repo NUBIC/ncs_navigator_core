@@ -21,6 +21,11 @@ class SpecimensController < ApplicationController
       render :action => "index"
     else
       populate_specimen_receipts
+      respond_to do |format|      
+        format.js do
+          render :layout => false
+        end
+      end
     end
   end
   
@@ -67,7 +72,16 @@ class SpecimensController < ApplicationController
       end
     end
 
-    respond_to do |format|      
+    respond_to do |format|
+      format.js do
+        if saved
+          flash[:notice] = 'Manifest Log was successfully created.'
+          render :action => "show", :layout => false
+        else
+          render :action => "verify", :locals => { :errors => problem.errors }, :layout => false
+        end
+      end
+      # TODO - below works for the old path -- remove during cleaning up
       format.html do
         if saved
           flash[:notice] = 'Manifest Log was successfully created.'
@@ -85,7 +99,12 @@ class SpecimensController < ApplicationController
             
     generate_email = Emailer.manifest_email(params)
     generate_email.deliver
-    respond_to do |format|      
+    respond_to do |format|
+      format.js do
+        flash[:notice] = 'Email has been created and sent.'
+        render :action => "show", :layout => false
+      end
+      # TODO - below works for the old path -- remove during cleaning up
       format.html do
         flash[:notice] = 'Email has been created and sent.'    
         render :action => "show"
