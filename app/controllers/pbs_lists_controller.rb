@@ -16,12 +16,18 @@ class PbsListsController < ApplicationController
   end
 
   def new
-    @provider = Provider.find(params[:provider_id])
-    @pbs_list = PbsList.new(:provider => @provider, :psu_code => @psu_code)
+    if params[:provider_id]
 
-    respond_to do |format|
-      format.html
-      format.json { render :json => @pbs_list }
+      @provider = Provider.find(params[:provider_id])
+      @pbs_list = PbsList.new(:provider => @provider, :psu_code => @psu_code)
+
+      respond_to do |format|
+        format.html
+        format.json { render :json => @pbs_list }
+      end
+    else
+      flash[:warning] = "Provider is required when creating a PBS List record."
+      redirect_to pbs_lists_path
     end
   end
 
@@ -62,6 +68,34 @@ class PbsListsController < ApplicationController
         format.json  { render :json => @pbs_list.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  def upload
+    if request.post?
+      if params[:file].blank?
+        flash.now[:warning] = "You must select a file to upload."
+        render :action => "upload"
+      else
+        PbsListImporter.import_data(params[:file].open)
+        flash[:notice] = "Data was successfully uploaded."
+        redirect_to pbs_lists_path
+      end
+    end
+  end
+
+  def sample_upload_file
+    send_file "#{Rails.root}/app/views/pbs_lists/sample_pbs_list_upload_file.csv", :type => 'text/csv'
+  end
+
+  def recruit_provider
+    @pbs_list = PbsList.find(params[:id])
+    event = @pbs_list.provider.provider_recruitment_event
+    if event.blank?
+      event = Event.create!(:event_type_code => 22,
+                           :event_start_date => Date.today,
+                           :event_start_time => Time.now.strftime('%H:%M'))
+    end
+    redirect_to staff_list_provider_path(@pbs_list.provider, :event_id => event.id)
   end
 
 end

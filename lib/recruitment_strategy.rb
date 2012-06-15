@@ -20,6 +20,10 @@ class RecruitmentStrategy
     false
   end
 
+  def self.pbs?
+    false
+  end
+
 end
 
 class TwoTier < RecruitmentStrategy
@@ -38,4 +42,7 @@ class OriginalVanguard < RecruitmentStrategy
 end
 
 class ProviderBasedSubsample < RecruitmentStrategy
+  def self.pbs?
+    true
+  end
 end

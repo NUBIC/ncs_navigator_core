@@ -273,6 +273,16 @@ class NcsCode < ActiveRecord::Base
     :provider_info_source_code        => 'INFORMATION_SOURCE_CL2',
     :list_subsampling_code            => 'CONFIRM_TYPE_CL2',
 
+    ### pbs_list
+    # :psu_code                         => 'PSU_CL1',
+    :in_out_frame_code                => 'INOUT_FRAME_CL1',                 # MDES 3.0
+    :in_sample_code                   => 'ORIGINAL_SUBSTITUTE_SAMPLE_CL1',  # MDES 3.0
+    :in_out_psu_code                  => 'INOUT_PSU_CL1',                   # MDES 3.0
+    :cert_flag_code                   => 'CERT_UNIT_CL1',                   # MDES 3.0
+    :frame_completion_req_code        => 'CONFIRM_TYPE_CL21',
+    :pr_recruitment_status_code       => 'RECRUIT_STATUS_CL1',              # MDES 3.0
+
+
   }
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
