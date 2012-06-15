@@ -116,7 +116,6 @@ describe ProvidersController do
 
     end
 
-
     describe "POST create" do
       describe "with valid params" do
         describe "with html request" do
@@ -221,6 +220,30 @@ describe ProvidersController do
       end
     end
 
+    describe "GET staff_list" do
+
+      describe "html request" do
+        let(:provider) { Factory(:provider) }
+        let(:event) { Factory(:event, :event_type_code => 22) }
+
+        describe "without event_id param" do
+          it "redirects the user to the pbs_lists page" do
+            put :staff_list, :id => provider.id
+            response.should redirect_to(pbs_lists_path)
+          end
+
+        end
+
+        describe "with valid parameters" do
+          it "assigns the requested provider as @provider and event as @event" do
+            get :staff_list, :id => provider.id, :event_id => event.id
+            assigns(:provider).should eq(provider)
+            assigns(:event).should eq(event)
+          end
+
+        end
+      end
+    end
 
   end
 

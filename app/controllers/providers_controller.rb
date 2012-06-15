@@ -108,4 +108,15 @@ class ProvidersController < ApplicationController
       end
     end
   end
+
+  def staff_list
+    if params[:event_id]
+      @provider = Provider.find(params[:id])
+      @event = Event.find(params[:event_id])
+    else
+      flash[:warning] = "Request requires an event."
+      redirect_to pbs_lists_path
+    end
+  end
+
 end

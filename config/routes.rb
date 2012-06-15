@@ -68,9 +68,13 @@ NcsNavigatorCore::Application.routes.draw do
     member do
       get :edit_contact_information
       put :update_contact_information
+      get :staff_list
     end
   end
   resources :pbs_lists do
+    member do
+      get :recruit_provider
+    end
     collection do
       get :upload
       post :upload

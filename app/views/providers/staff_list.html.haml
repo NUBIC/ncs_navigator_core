@@ -1,0 +1,22 @@
+- title "New Provider"
+
+.mdes_table_definition
+  = render 'documentation/provider'
+
+.page_section
+  - if @provider.staff.blank?
+    #no_records
+      This provider has no staff members.
+  - else
+    %table.records
+      %tr
+        %th
+          Staff Member
+        %th{ :colspan => "2" }
+
+      - @provider.staff.each do |staff_member|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = blank_safe(staff_member.full_name)
+          %td
+            = link_to "Start Contact for #{@event.event_type}", new_person_contact_path(staff_member, :event_id => @event.id), :class => "add_link icon_link", :title => "Start Contact"

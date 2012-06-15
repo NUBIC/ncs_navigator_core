@@ -53,6 +53,9 @@ describe Provider do
   it { should have_many(:personnel_provider_links) }
   it { should have_many(:staff).through(:personnel_provider_links) }
 
+  it { should have_many(:contact_links) }
+  it { should have_many(:events).through(:contact_links) }
+
   describe ".to_s" do
     it "returns the name_practice" do
       Factory(:provider, :name_practice => "expected").to_s.should == "expected"
@@ -148,6 +151,34 @@ describe Provider do
 
     end
 
+  end
+
+  context ".events" do
+
+    describe ".provider_recruitment_event" do
+
+      let(:provider) { Factory(:provider) }
+
+      describe "when provider recruitment event has not started" do
+        it "returns nil" do
+          provider.provider_recruitment_event.should be_nil
+        end
+      end
+
+      describe "when provider recruitment event has started" do
+
+        let(:event) { Factory(:event, :event_type_code => 22) }
+
+        before(:each) do
+          link  = Factory(:contact_link, :provider => provider, :event => event)
+        end
+
+        it "returns the event with that event type" do
+          provider.provider_recruitment_event.should == event
+        end
+      end
+
+    end
 
   end
 

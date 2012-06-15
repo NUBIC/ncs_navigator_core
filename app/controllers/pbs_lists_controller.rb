@@ -87,4 +87,15 @@ class PbsListsController < ApplicationController
     send_file "#{Rails.root}/app/views/pbs_lists/sample_pbs_list_upload_file.csv", :type => 'text/csv'
   end
 
+  def recruit_provider
+    @pbs_list = PbsList.find(params[:id])
+    event = @pbs_list.provider.provider_recruitment_event
+    if event.blank?
+      event = Event.create!(:event_type_code => 22,
+                           :event_start_date => Date.today,
+                           :event_start_time => Time.now.strftime('%H:%M'))
+    end
+    redirect_to staff_list_provider_path(@pbs_list.provider, :event_id => event.id)
+  end
+
 end

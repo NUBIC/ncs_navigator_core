@@ -167,5 +167,28 @@ describe PbsListsController do
     end
 
 
+    describe "GET recruit_provider" do
+
+      describe "when no provider recruitment event exists" do
+
+        it "creates a new Event with event type provider_recruitment" do
+          provider = Factory(:provider, :name_practice => "provider")
+          pbs_list = Factory(:pbs_list, :provider => provider)
+          expect {
+            get :recruit_provider, :id => pbs_list.id
+          }.to change(Event, :count).by(1)
+        end
+
+        it "redirects to provider_staff_list_path" do
+          provider = Factory(:provider, :name_practice => "provider")
+          pbs_list = Factory(:pbs_list, :provider => provider)
+          get :recruit_provider, :id => pbs_list.id
+          response.should redirect_to(staff_list_provider_path(provider, :event_id => Event.last))
+        end
+
+      end
+
+    end
+
   end
 end

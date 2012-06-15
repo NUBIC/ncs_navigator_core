@@ -50,6 +50,9 @@ class Provider < ActiveRecord::Base
   has_many :personnel_provider_links
   has_many :staff, :class_name => "Person", :through => :personnel_provider_links, :source => :person
 
+  has_many :contact_links, :order => "created_at DESC"
+  has_many :events, :through => :contact_links
+
   accepts_nested_attributes_for :address, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :staff, :allow_destroy => true
@@ -72,4 +75,9 @@ class Provider < ActiveRecord::Base
     phone = self.telephones.where(:phone_type_code => Telephone::FAX_PHONE_CODE).first
     return phone unless phone.blank?
   end
+
+  def provider_recruitment_event
+    self.events.where(:event_type_code => 22).last
+  end
+
 end

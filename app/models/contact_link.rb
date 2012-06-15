@@ -33,7 +33,7 @@ class ContactLink < ActiveRecord::Base
   belongs_to :person
   belongs_to :event
   belongs_to :instrument, :inverse_of => :contact_link
-  # belongs_to :provider
+  belongs_to :provider
   # belongs_to :staff       # references public_id of staff in ncs_staff_portal
 
   delegate :participant, :to => :event
@@ -43,7 +43,7 @@ class ContactLink < ActiveRecord::Base
   # alone. This provides a huge speedup in the importer; if validating
   # :contact is necessary, we should provide a scoped validation so it
   # can be excluded in the importer context.
-  validates_presence_of :contact_id
+  # validates_presence_of :contact_id
   validates_presence_of :staff_id
 
   accepts_nested_attributes_for :contact,    :allow_destroy => true
