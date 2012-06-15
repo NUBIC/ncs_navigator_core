@@ -14,6 +14,17 @@ shared_context :importer_spec_warehouse do
   def all_missing_attributes(model)
     model.properties.
       select { |p| p.required? }.
-      inject({}) { |h, prop| h[prop.name] = '-4'; h }.merge(:psu_id => '20000030')
+      inject({}) { |h, prop| h[prop.name] = missing_value_for_property(prop); h }.
+      merge(:psu_id => '20000030')
+  end
+
+  def missing_value_for_property(dm_prop)
+    if dm_prop.options[:set]
+      '-4'
+    elsif dm_prop.class < ::DataMapper::Property::Numeric
+      0
+    else
+      'NA'
+    end
   end
 end

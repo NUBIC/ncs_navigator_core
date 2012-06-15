@@ -72,7 +72,6 @@ module NcsNavigatorCore
                        CSV
                      end
     end
-
   end
 end
 
@@ -82,3 +81,5 @@ require 'recruitment_strategy'
 
 require 'ncs_navigator/core'
 require 'ncs_navigator/mdes_ext'
+
+require 'ncs_navigator/core/redis_configuration'

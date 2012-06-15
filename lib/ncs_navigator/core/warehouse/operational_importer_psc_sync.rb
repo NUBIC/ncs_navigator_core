@@ -80,7 +80,8 @@ module NcsNavigator::Core::Warehouse
         events_deferred events_unschedulable events_closed events_order
         postnatal
       ).each do |reset_key|
-        redis.del redis.keys(sync_key('p', '*', reset_key))
+        candidates = redis.keys(sync_key('p', '*', reset_key))
+        redis.del(*candidates) unless candidates.empty?
       end
 
       core_placeholder_event_ids =

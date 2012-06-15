@@ -4,8 +4,22 @@
 %>
 
 <%= bcdb.development :local_postgresql, :ncs_navigator_core %>
+<%= bcdb.redis_development :local_redis, :ncs_navigator_core %>
+
 <%= bcdb.test :local_postgresql, :ncs_navigator_core_test %>
+<%= bcdb.redis_test :local_redis, :ncs_navigator_core_test %>
+
+# redis for CI is set up in environment directly
 <%= bcdb.ci :public_ci_postgresql9, :ncs_navigator_core %>
+redis_ci:
+  port: <%= ENV['CI_REDIS_PORT'] %>
+
 <%= bcdb.ci_warehouse :public_ci_postgresql9, :ncs_navigator_core_wh %>
+redis_ci_warehouse:
+  port: <%= ENV['CI_REDIS_PORT'] %>
+
 <%= bcdb.staging :ncsdb_staging, :ncs_navigator_core %>
+<%= bcdb.redis_staging :ncsredis_staging, :ncs_navigator_core %>
+
 <%= bcdb.production :ncsdb_prod, :ncs_navigator_core %>
+<%= bcdb.redis_production :ncsredis_prod, :ncs_navigator_core %>
