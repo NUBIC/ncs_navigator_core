@@ -1,5 +1,145 @@
 $(function() {
 
+  $('.specimen_ship_checkbox').live('click',
+  function() {
+    var atLeastOneIsChecked = $('#ship_specimens :checkbox:checked').length > 0;
+    if (atLeastOneIsChecked) {
+      $('#ship_samples :checkbox').attr("disabled", true)
+      $('#ship_samples_btn').attr("disabled", true)
+      $('#ship_samples :checkbox:checked').each( function() {
+           this.checked = !this.checked;
+      });
+    } else {
+      $('#ship_samples :checkbox').attr("disabled", false);
+      $('#ship_samples_btn').attr("disabled", false)
+    }
+  })
+
+  $('.sample_ship_checkbox').live('click',
+  function() {
+    var atLeastOneIsChecked = $('#ship_samples :checkbox:checked').length > 0;
+    if (atLeastOneIsChecked) {
+      $('#ship_specimens :checkbox').attr("disabled", true)
+      $('#ship_specimens_btn').attr("disabled", true)
+      $('#ship_specimens :checkbox:checked').each( function() {
+           this.checked = !this.checked;
+      });
+    } else {
+      $('#ship_specimens :checkbox').attr("disabled", false);
+      $('#ship_specimens_btn').attr("disabled", false)      
+    }
+  })
+
+  $('.exit_shipping').live('click',
+  function() {
+    blockUnblockProcessingDiv(false)
+    $(':checkbox:checked').each( function() {
+      this.checked = !this.checked;
+    });
+    $(':submit').each( function() {
+      $(this).attr("disabled", false)
+    })
+    $('#displaying').children().each(function(){$(this).remove()})
+  })
+  
+  $('.finish_shipping').live('click',
+  function() {
+    blockUnblockProcessingDiv(false)
+    $(':submit').each( function() {
+      $(this).attr("disabled", false)
+    })
+    //TODO 
+    //Make sure the checkboxes disappear from the ship and link is added to confirm
+    $(':checkbox:checked').each( function() {
+      $(this).parent().remove()
+    });
+    $('#displaying').children().each(function(){$(this).remove()})
+    //todo double check the last line!
+    $('#shipping :checkbox').attr("disabled", false)
+  })
+
+  //kak submittit' bez dannih
+  // $(".display").load($(this).closest('form').attr('action') + ' form')
+
+  function blockUnblockProcessingDiv(flag) {
+    if (flag) {
+      $('#process_tabs').block({ message: "Please complete the shipping operation or click Done"})
+    } else {
+      $('#process_tabs').unblock()
+    }
+  }
+
+  $('#ship_specimens_btn').live('click',
+  function() {
+    blockUnblockProcessingDiv(true)
+    var form = $(this).closest('form');
+    var submitInput = $(this)
+    $.ajax({
+     type: $(form).attr('method'),
+     url: $(form).attr('action'),
+     data: $(form).serializeArray(),
+     dataType: 'script',
+
+     success: function(response) {
+       $(".display").html(response);
+     }
+    });
+    return false;
+  }); 
+
+  $('#ship_samples_btn').live('click',
+  function() {
+    blockUnblockProcessingDiv(true)
+    var form = $(this).closest('form');
+    var submitInput = $(this)
+    $.ajax({
+     type: $(form).attr('method'),
+     url: $(form).attr('action'),
+     data: $(form).serializeArray(),
+     dataType: 'script',
+
+     success: function(response) {
+       $(".display").html(response);
+     }
+    });
+    return false;
+  });
+  
+  $('#generate_manifest').live('click',
+  function() {
+    var form = $(this).closest('form');
+    var submitInput = $(this)
+    $.ajax({
+     type: $(form).attr('method'),
+     url: $(form).attr('action'),
+     data: $(form).serializeArray(),
+     dataType: 'script',
+    
+     success: function(response) {
+       $(".display").html(response);
+     }
+    });
+    return false;
+  });  
+  
+  $('#email_manifest').live('click',
+  function() {
+    var form = $(this).closest('form');
+    var submitInput = $(this)
+    $.ajax({
+     type: $(form).attr('method'),
+     url: $(form).attr('action'),
+     data: $(form).serializeArray(),
+     dataType: 'script',
+    
+     success: function(response) {
+       $(".display").html(response);
+     }
+    });
+    return false;
+  });  
+  
+
   $('.my_specimen_sample_receive').live('click',
   function() {
       sample_processes_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
@@ -8,8 +148,6 @@ $(function() {
   
   $('.my_specimen_sample_store').live('click',
   function() {
-      console.log("---- HREF --- ", $(this).attr('href'))
-      console.log("---- REL --- ", $(this).attr('rel'))      
       sample_processes_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
       return false;
   });
@@ -17,6 +155,7 @@ $(function() {
   $('.sample_received').live('click', sample_received_process);
 
   $('.spec_stored').live('click', my_specimen_storage_dialog);
+  
 
   function my_specimen_storage_dialog() {
     var form = $(this).closest('form'),
@@ -112,13 +251,12 @@ $(function() {
   
   function move_link_from_store_to_ship(storage_container_id) {
     var link = $("#" + storage_container_id)
+    var link_children = link.html()
     var linkParent = link.parent()
-    link.attr('href', '/shec_shipping')
-    link.attr('class', 'my_specimen_ship')
-    checkbox = "<input id="+storage_container_id + " type=checkbox value=" + storage_container_id + ">"
-    linkParent.remove(link)
+    checkbox = "<input id="+storage_container_id + " class=specimen_ship_checkbox name=storage_container_id[] type=checkbox value=" + storage_container_id + ">"
+    link.remove()
     linkParent.append(checkbox)
-    linkParent.append(link)
+    linkParent.append(link_children)
     $("#ship_specimens").first().append(linkParent);
   }
   
@@ -133,13 +271,14 @@ $(function() {
     }
   }
   
-  function add_specimen_link_to_ship(storage_container_id, specimen_id){
-    link_elt = "<li><input id="+storage_container_id + " class=specimen_ship_checkbox name=storage_container_id[] type=checkbox value=" + storage_container_id + "><a id="+storage_container_id+ " class=\"my_specimen_ship\" href=\"/specimen_storages/new?container_id="+storage_container_id+"\"> Pressure bag: " + storage_container_id+ "<p class=\"paragraph_shift\">"+specimen_id+"</p></a></li>"
-    $("#ship_specimens").first().append(link_elt);
-  }
+  // function add_specimen_link_to_ship(storage_container_id, specimen_id){
+  //   link_elt = "<li><input id="+storage_container_id + " class=specimen_ship_checkbox name=storage_container_id[] type=checkbox value=" + storage_container_id + "><a id="+storage_container_id+ " class=\"my_specimen_ship\" href=\"/specimen_storages/new?container_id="+storage_container_id+"\"> Pressure bag: " + storage_container_id+ "<p class=\"paragraph_shift\">"+specimen_id+"</p></a></li>"
+  //   $("#ship_specimens").first().append(link_elt);
+  // }
   
   function add_sample_link_to_ship(sample_id) {
-    link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + "><a id="+sample_id+ " class=\"my_sample_ship\" href=\"/sample_receipt_stores/new?sample_id="+sample_id+"\"> " + sample_id+ "</a></li>"
+    // link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + "><a id="+sample_id+ " class=\"my_sample_ship\" href=\"/sample_receipt_stores/new?sample_id="+sample_id+"\"> " + sample_id+ "</a></li>"
+    link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + ">"+ sample_id +"</li>"
     $("#ship_samples").first().append(link_elt);
   }
   

@@ -1,5 +1,9 @@
 = label_tag 'generate_spec_manifest', 'Manifest for Biological Specimens'
 .page_section
+  - flash.each do |message_type, message|
+    %div{ :class => "my_flash_message", :id => "flash_#{message_type}" }
+      = message
+
   = form_tag :action => 'send_email' do
     %div{:id => 'manifest_form', :class => 'manifest_form'}
       Ship Date and Time: 
@@ -102,4 +106,5 @@
               %td
                 = sample_extenstion(sr.specimen_id)      
     %input{:type=>"button", :class => "print_manifest", :value =>"Print Manifest", :onclick => "javascript:print()"}
-    = submit_tag "Email Manifest"   
+    = submit_tag "Email Manifest", :class => "email_manifest", :id => "email_manifest"
+    %input{:type=>"button", :class => "finish_shipping", :value =>"Exit"}

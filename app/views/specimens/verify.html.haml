@@ -117,5 +117,6 @@
     
       Total # Samples:
       = @specimen_receipts.size
-      %br  
-    = submit_tag "Generate Manifest"
+      %br
+    = submit_tag "Generate Manifest", :class => "generate_manifest", :id => "generate_manifest"
+    %input{:type=>"button", :class => "exit_shipping", :value =>"Exit"}
