@@ -46,7 +46,6 @@ describe ContactLink do
   it { should belong_to(:provider) }
 
   it { should validate_presence_of(:staff_id) }
-  it { should validate_presence_of(:contact_id) }
 
   context "as mdes record" do
 

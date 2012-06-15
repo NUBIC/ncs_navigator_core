@@ -227,14 +227,18 @@ describe ProvidersController do
         let(:event) { Factory(:event, :event_type_code => 22) }
 
         describe "without event_id param" do
-          it "redirects the user to the pbs_lists page" do
-            put :staff_list, :id => provider.id
-            response.should redirect_to(pbs_lists_path)
+          it "assigns the requested provider as @provider" do
+            get :staff_list, :id => provider.id
+            assigns(:provider).should eq(provider)
           end
 
+          it "does not assign @event" do
+            get :staff_list, :id => provider.id
+            assigns(:event).should be_nil
+          end
         end
 
-        describe "with valid parameters" do
+        describe "with event_id param" do
           it "assigns the requested provider as @provider and event as @event" do
             get :staff_list, :id => provider.id, :event_id => event.id
             assigns(:provider).should eq(provider)
