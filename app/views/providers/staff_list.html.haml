@@ -1,7 +1,12 @@
-- title "New Provider"
+- title "Staff List"
 
 .mdes_table_definition
   = render 'documentation/provider'
+
+%h3
+  = blank_safe(@provider.name_practice)
+  %span.normal
+    = link_to "Edit Contact Information", edit_contact_information_provider_path(@provider), :class => "edit_link icon_link"
 
 .page_section
   - if @provider.staff.blank?
@@ -11,12 +16,29 @@
     %table.records
       %tr
         %th
+          Primary Contact
+        %th
           Staff Member
+        %th
+          Phone
+        %th
+          Email
         %th{ :colspan => "2" }
 
+      - primary_contact = @provider.primary_contact
       - @provider.staff.each do |staff_member|
         %tr{ :class => cycle('even_record', 'odd_record') }
+          %td.primary_contact
+            = "X" if staff_member == primary_contact
           %td
-            = blank_safe(staff_member.full_name)
+            - txt = blank_safe(staff_member.full_name)
+            = link_to txt, edit_staff_provider_path(@provider, :person_id => staff_member.id, :event_id => @event.id), :class => "edit_link icon_link"
           %td
-            = link_to "Start Contact for #{@event.event_type}", new_person_contact_path(staff_member, :event_id => @event.id), :class => "add_link icon_link", :title => "Start Contact"
+            = staff_member.telephones.first.to_s
+          %td
+            = staff_member.emails.first.to_s
+          %td
+            - if @event
+              = link_to "Contact for #{@event.event_type}", new_person_contact_path(staff_member, :event_id => @event.id), :class => "add_link icon_link", :title => "Start Contact"
+  .links
+    = link_to 'New Staff Member', new_staff_provider_path(@provider, :event_id => @event), :class => "add_link icon_link"

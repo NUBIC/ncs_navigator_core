@@ -1,0 +1,29 @@
+= hidden_field_tag :id, @provider.id
+= hidden_field_tag :event_id, @event.id if @event
+= hidden_field_tag :person_id, @staff.id unless @staff.new_record?
+= hidden_field_tag :telephone_id, @telephone.id unless @telephone.new_record?
+= hidden_field_tag :email_id, @email.id unless @email.new_record?
+
+%p
+  = label_tag 'person[first_name]', "First Name"
+  %br
+  = text_field_tag 'person[first_name]', @staff.first_name
+
+%p
+  = label_tag 'person[last_name]', "Last Name"
+  %br
+  = text_field_tag 'person[last_name]', @staff.last_name
+
+%p
+  = label_tag 'telephone[phone_nbr]', "Phone Number"
+  %br
+  = text_field_tag 'telephone[phone_nbr]', @telephone.phone_nbr
+
+%p
+  = label_tag 'email[email]', "Email"
+  %br
+  = text_field_tag 'email[email]', @email.email
+
+%p
+  = check_box_tag 'primary_contact', '1', @link.primary_contact
+  = label_tag 'primary_contact', "Primary Contact?"

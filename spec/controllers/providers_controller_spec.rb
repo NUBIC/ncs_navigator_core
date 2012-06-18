@@ -27,7 +27,6 @@ describe ProvidersController do
         :proportion_weeks_sampled => 3,
         :proportion_days_sampled  => 3,
         :sampling_notes           => "sampling notes"
-
       }
     end
 
@@ -120,16 +119,12 @@ describe ProvidersController do
       describe "with valid params" do
         describe "with html request" do
           it "creates a new Provider" do
-
-            provider = Factory(:provider, :name_practice => "provider")
-
             expect {
               post :create, :provider => valid_attributes
             }.to change(Provider, :count).by(1)
           end
 
           it "assigns a newly created provider as @provider" do
-            provider = Factory(:provider, :name_practice => "provider")
             post :create, :provider => valid_attributes
             assigns(:provider).should be_a(Provider)
             assigns(:provider).should be_persisted
@@ -247,6 +242,86 @@ describe ProvidersController do
 
         end
       end
+    end
+
+    describe "GET new_staff" do
+      let(:provider) { Factory(:provider) }
+
+      it "assigns a new person as @staff" do
+        get :new_staff, :id => provider.id
+        assigns(:staff).should be_a_new(Person)
+      end
+
+      it "assigns the requested provider as @provider" do
+        get :new_staff, :id => provider.id
+        assigns(:provider).should eq(provider)
+      end
+    end
+
+    describe "POST create_staff" do
+      describe "with valid params" do
+        describe "with html request" do
+
+          let(:provider) { Factory(:provider, :name_practice => "provider") }
+
+          it "creates a new Person" do
+            expect {
+              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}
+            }.to change(Person, :count).by(1)
+          end
+
+          it "creates a new Telephone" do
+            expect {
+              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}, :telephone => { :phone_nbr => '3125551212' }
+            }.to change(Telephone, :count).by(1)
+          end
+
+          it "creates a new Email" do
+            expect {
+              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}, :email => { :email => 'az@dev.null' }
+            }.to change(Email, :count).by(1)
+          end
+
+
+          it "assigns a newly created person as @staff" do
+            post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}
+            assigns(:staff).should be_a(Person)
+            assigns(:staff).should be_persisted
+          end
+
+          it "redirects to the staff list provider page" do
+            post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}
+            response.should redirect_to(staff_list_provider_path(provider))
+          end
+        end
+
+      end
+
+      # describe "with invalid params" do
+      #   describe "with html request" do
+      #     it "assigns a newly created but unsaved provider as @provider" do
+      #       # Trigger the behavior that occurs when invalid params are submitted
+      #       Provider.any_instance.stub(:save).and_return(false)
+      #       post :create, :provider => {}
+      #       assigns(:provider).should be_a_new(Provider)
+      #     end
+      #
+      #     it "re-renders the 'new' template" do
+      #       # Trigger the behavior that occurs when invalid params are submitted
+      #       Provider.any_instance.stub(:save).and_return(false)
+      #       post :create, :provider => {}
+      #       response.should render_template("new")
+      #     end
+      #   end
+      #
+      # end
+
+    end
+
+    describe "GET edit_staff" do
+    end
+
+    describe "PUT update_staff" do
     end
 
   end

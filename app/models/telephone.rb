@@ -58,6 +58,10 @@ class Telephone < ActiveRecord::Base
   CELL_PHONE_CODE = 3
   FAX_PHONE_CODE  = 4
 
+  def to_s
+    self.phone_nbr
+  end
+
   def self.home_phone_type
     NcsCode.where(:list_name => "PHONE_TYPE_CL1").where(:local_code => HOME_PHONE_CODE).first
   end

@@ -32,16 +32,17 @@
       - @pbs_lists.each do |pbs|
         - provider = pbs.provider
         %tr{ :class => cycle('even_record', 'odd_record') }
+        %td{ :title => pbs.pbs_list_id }
+          = truncate(pbs.pbs_list_id, :length => 16)
           %td
-            = pbs.pbs_list_id
-          %td
-            = blank_safe(provider.name_practice)
-          %td
-            = provider.provider_id
+            - name = blank_safe(provider.name_practice)
+            = link_to name, edit_provider_path(provider)
+          %td{ :title => provider.provider_id }
+            = truncate(provider.provider_id, :length => 16)
           %td
             = link_to 'Edit', edit_pbs_list_path(pbs), :class => "edit_link icon_link"
           %td
-            Initiate Provider Recruitment Contact
+            = provider_recruitment_link(pbs) unless pbs.recruitment_ended?
   .links
     = link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"
 

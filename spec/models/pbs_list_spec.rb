@@ -80,4 +80,22 @@ describe PbsList do
     end
   end
 
+  context "provider recruitment" do
+
+    let(:pbs_list) { Factory(:pbs_list, :pr_recruitment_start_date => nil, :pr_cooperation_date => nil, :pr_recruitment_end_date => nil) }
+
+    it "knows if provider recruitment has started" do
+      pbs_list.should_not be_recruitment_started
+      pbs_list.pr_recruitment_start_date = Date.today
+      pbs_list.should be_recruitment_started
+    end
+
+    it "knows when provider recruitment has ended" do
+      pbs_list.should_not be_recruitment_ended
+      pbs_list.pr_recruitment_end_date = Date.today
+      pbs_list.should be_recruitment_ended
+    end
+
+  end
+
 end
