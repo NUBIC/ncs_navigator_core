@@ -105,7 +105,7 @@ group :test, :ci do
   gem 'rack-test'
 
   platform :ruby_19 do
-    gem 'test-unit', :require => 'test/unit'
+    gem 'test-unit', '= 2.4.8', :require => 'test/unit'
   end
 end
 
