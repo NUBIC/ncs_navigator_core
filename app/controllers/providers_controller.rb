@@ -114,6 +114,10 @@ class ProvidersController < ApplicationController
     @event = Event.find(params[:event_id]) if params[:event_id]
   end
 
+  def contact_log
+    @provider = Provider.find(params[:id])
+  end
+
   def new_staff
     @provider = Provider.find(params[:id])
     @event = Event.find(params[:event_id]) if params[:event_id]

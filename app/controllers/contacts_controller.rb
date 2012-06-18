@@ -81,6 +81,25 @@ class ContactsController < ApplicationController
     end
   end
 
+  def provider_recruitment
+    @event    = Event.find(params[:event_id])
+    @person   = Person.find(params[:person_id])
+    @provider = Provider.find(params[:provider_id])
+    if request.get?
+      @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
+    else
+      @contact = Contact.new(params[:contact])
+    end
+    if request.post?
+      if @contact.save
+        link = find_or_create_contact_link
+        redirect_to contact_log_provider_path(@provider)
+      else
+        render :action => "provider_recruitment"
+      end
+    end
+  end
+
   private
 
     # TODO: remove call to new_event_for_person
@@ -101,7 +120,12 @@ class ContactsController < ApplicationController
     def find_or_create_contact_link
       link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?", @contact, @person, @event).first
       if link.blank?
-        link = ContactLink.create(:contact => @contact, :person => @person, :event => @event, :staff_id => current_staff_id, :psu_code => NcsNavigatorCore.psu_code)
+        link = ContactLink.create(:contact => @contact,
+                                  :person => @person,
+                                  :event => @event,
+                                  :provider => @provider,
+                                  :staff_id => current_staff_id,
+                                  :psu_code => NcsNavigatorCore.psu_code)
       end
       link
     end

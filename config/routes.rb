@@ -74,6 +74,8 @@ NcsNavigatorCore::Application.routes.draw do
       post :create_staff
       get :edit_staff
       put :update_staff
+
+      get :contact_log
     end
   end
   resources :pbs_lists do
@@ -84,6 +86,12 @@ NcsNavigatorCore::Application.routes.draw do
       get :upload
       post :upload
       get :sample_upload_file
+    end
+  end
+  resources :contacts do
+    collection do
+      get :provider_recruitment
+      post :provider_recruitment
     end
   end
 

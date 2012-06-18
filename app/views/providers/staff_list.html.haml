@@ -39,6 +39,8 @@
             = staff_member.emails.first.to_s
           %td
             - if @event
-              = link_to "Contact for #{@event.event_type}", new_person_contact_path(staff_member, :event_id => @event.id), :class => "add_link icon_link", :title => "Start Contact"
+              = link_to "Contact for #{@event.event_type}", |
+                provider_recruitment_contacts_path(:person_id => staff_member.id, :event_id => @event.id, :provider_id => @provider.id), |
+                :class => "add_link icon_link", :title => "Start Contact"
   .links
     = link_to 'New Staff Member', new_staff_provider_path(@provider, :event_id => @event), :class => "add_link icon_link"
