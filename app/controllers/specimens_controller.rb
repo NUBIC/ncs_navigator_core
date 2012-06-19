@@ -8,7 +8,6 @@ class SpecimensController < ApplicationController
 
   def index
     @specimen_receipts = array_of_not_shipped_specs
-    puts("--2?-- #{@specimen_receipts.inspect}")
     @specimen_receipts_hash = hash_from_array(@specimen_receipts)
   end
   

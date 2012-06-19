@@ -14,4 +14,6 @@
   - @sample_receipt_confirmations_edit.each do |sample_receipt_confirmation_edit|
     %div{:id => "tabs_#{sample_receipt_confirmation_edit.sample_id}"}
       = render :partial => "sample_receipt_confirmations/form", :locals => { :sample_receipt_confirmation => sample_receipt_confirmation_edit }
-= link_to 'Back to shipping confirmations', {:controller => "sample_shipping_confirmations", :action => "index"}
+-#= link_to 'Back to shipping confirmations', {:controller => "sample_shipping_confirmations", :action => "index"}
+-#= link_to 'Finish', {:controller => "sample_shipping_confirmations", :action => "index"}
+%input{:type=>"button", :class => "finish_confirm", :value =>"Exit"}  
