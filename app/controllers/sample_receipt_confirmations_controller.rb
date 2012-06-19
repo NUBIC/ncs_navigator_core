@@ -2,6 +2,11 @@ class SampleReceiptConfirmationsController < ApplicationController
   
   def index
     array_of_samples_per_tracking_number(params[:tracking_number])
+    respond_to do |format|      
+       format.js do
+         render :layout => false
+       end
+     end
   end
   
   def array_of_samples_per_tracking_number(tracking_num)

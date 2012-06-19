@@ -72,6 +72,12 @@
               
           %td
             %div{:id => "confirm"}
+              - if not @sample_shippings_not_received.blank?
+                %div{:id => 'shipped_not_confirmed_table', :class => 'shipped_not_confirmed_table'}
+                  %b Samples:
+                  - @sample_shippings_not_received.each do |track_number, sample_shippings|
+                    %p{:class => "paragraph_shift"}
+                      = link_to track_number, {:controller => "sample_receipt_confirmations", :action => "index", :tracking_number => track_number}, :class => "confirm_link", :id => "confirm_link"
               -#
                 - @specimens.each do |sp|
                   = sp.specimen_id
@@ -82,4 +88,3 @@
         -#%tr
           -#%td{:colspan => '4'}
     %div{:id => "displaying", :class => "display records"}
-      = "DISPLAYING???"

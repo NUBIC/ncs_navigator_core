@@ -1,4 +1,8 @@
 $(function() {
+  addStyles()
+});
+
+function addStyles() {
   $(".sample_receipt_tabs").tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
   $(".sample_receipt_tabs li").removeClass('ui-corner-top').addClass('ui-corner-left');
   
@@ -42,6 +46,5 @@ $(function() {
       }
     });
     return false;
-  }
-  
-});
+  }  
+}

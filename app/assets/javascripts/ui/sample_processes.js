@@ -32,7 +32,7 @@ $(function() {
 
   $('.exit_shipping').live('click',
   function() {
-    blockUnblockProcessingDiv(false)
+    blockUnblockProcessingDiv(false, "")
     $(':checkbox:checked').each( function() {
       this.checked = !this.checked;
     });
@@ -44,7 +44,7 @@ $(function() {
   
   $('.finish_shipping').live('click',
   function() {
-    blockUnblockProcessingDiv(false)
+    blockUnblockProcessingDiv(false, "")
     $(':submit').each( function() {
       $(this).attr("disabled", false)
     })
@@ -56,14 +56,15 @@ $(function() {
     $('#displaying').children().each(function(){$(this).remove()})
     //todo double check the last line!
     $('#shipping :checkbox').attr("disabled", false)
+    location.reload();
   })
 
   //kak submittit' bez dannih
   // $(".display").load($(this).closest('form').attr('action') + ' form')
 
-  function blockUnblockProcessingDiv(flag) {
+  function blockUnblockProcessingDiv(flag, text) {
     if (flag) {
-      $('#process_tabs').block({ message: "Please complete the shipping operation or click Done"})
+      $('#process_tabs').block({ message: text})
     } else {
       $('#process_tabs').unblock()
     }
@@ -71,7 +72,7 @@ $(function() {
 
   $('#ship_specimens_btn').live('click',
   function() {
-    blockUnblockProcessingDiv(true)
+    blockUnblockProcessingDiv(true, "Please complete the shipping operation or click Exit when you are done")
     var form = $(this).closest('form');
     var submitInput = $(this)
     $.ajax({
@@ -89,7 +90,7 @@ $(function() {
 
   $('#ship_samples_btn').live('click',
   function() {
-    blockUnblockProcessingDiv(true)
+    blockUnblockProcessingDiv(true, "Please complete the shipping operation or click Exit when you are done")
     var form = $(this).closest('form');
     var submitInput = $(this)
     $.ajax({
@@ -104,6 +105,21 @@ $(function() {
     });
     return false;
   });
+  
+
+  $('.confirm_link').live('click',
+  function() {
+    blockUnblockProcessingDiv(true, "Please complete the confirmation operation or click Exit when you are done")
+    $(".display").load($(this).attr('href'), function(){addStyles()})
+
+    return false;
+  }); 
+
+  $('.finish_confirm').live('click',
+  function() {
+    blockUnblockProcessingDiv(false, "")
+    location.reload();
+  })
   
   $('#generate_manifest').live('click',
   function() {
@@ -142,13 +158,13 @@ $(function() {
 
   $('.my_specimen_sample_receive').live('click',
   function() {
-      sample_processes_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
+      sample_processes_dialog($(this).attr('href') + ' form');
       return false;
   });
   
   $('.my_specimen_sample_store').live('click',
   function() {
-      sample_processes_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
+      sample_processes_dialog($(this).attr('href') + ' form');
       return false;
   });
   
@@ -257,7 +273,7 @@ $(function() {
     link.remove()
     linkParent.append(checkbox)
     linkParent.append(link_children)
-    $("#ship_specimens").first().append(linkParent);
+    $("#ship_specimens form").first().append(linkParent);
   }
   
   function add_specimen_link_to_store(storage_container_id, specimen_id) {
@@ -279,11 +295,11 @@ $(function() {
   function add_sample_link_to_ship(sample_id) {
     // link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + "><a id="+sample_id+ " class=\"my_sample_ship\" href=\"/sample_receipt_stores/new?sample_id="+sample_id+"\"> " + sample_id+ "</a></li>"
     link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + ">"+ sample_id +"</li>"
-    $("#ship_samples").first().append(link_elt);
+    $("#ship_samples form").first().append(link_elt);
   }
   
   
-  var sample_processes_dialog = function(url, title, success_url) {
+  var sample_processes_dialog = function(url) {
     $(".display").load(url)
   }  
 });
