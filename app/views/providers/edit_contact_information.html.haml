@@ -3,9 +3,14 @@
 .mdes_table_definition
   = render 'documentation/provider'
 
+%h3
+  = blank_safe @provider.name_practice
+
 .page_section
   = form_for(@provider, :url => update_contact_information_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
+
+    = hidden_field_tag :event_id, @event.id if @event
 
     - primary_contact = @provider.primary_contact
     %fieldset

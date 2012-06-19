@@ -60,5 +60,16 @@ module NcsNavigator::Core::Pbs
 
     end
 
+    context "provider address" do
+      describe ".import_data" do
+        it "creates an Address record associated with the Provider" do
+          Address.count.should == 0
+          PbsListImporter.import_data(File.open("#{Rails.root}/spec/fixtures/data/pbs_list.csv"))
+          Address.count.should == 1
+          Provider.first.address.should_not be_blank
+        end
+      end
+    end
+
   end
 end

@@ -173,6 +173,20 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns true for all pre-participant events
+  # @return [Boolean]
+  def enumeration_event?
+    [1, 2, 3, 4, 5, 6, 9, 22, 29].include? event_type.to_i
+  end
+
+  ##
+  # Returns true for provider recruitment event
+  # @return [Boolean]
+  def provider_event?
+    event_type.to_i == 22
+  end
+
+  ##
   # Helper method to set the disposition to Out of Window
   def mark_out_of_window
     update_disposition 48

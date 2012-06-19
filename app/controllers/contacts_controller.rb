@@ -72,7 +72,7 @@ class ContactsController < ApplicationController
       if @contact.update_attributes(params[:contact])
         link = find_or_create_contact_link
 
-        format.html { redirect_to(select_instrument_contact_link_path(link), :notice => 'Contact was successfully updated.') }
+        format.html { redirect_to(post_update_redirect_path(link), :notice => 'Contact was successfully updated.') }
         format.json { render :json => @contact }
       else
         format.html { render :action => "new" }
@@ -80,6 +80,15 @@ class ContactsController < ApplicationController
       end
     end
   end
+
+  def post_update_redirect_path(link)
+    if link && link.provider
+      contact_log_provider_path(link.provider)
+    else
+      select_instrument_contact_link_path(link)
+    end
+  end
+  private :post_update_redirect_path
 
   def provider_recruitment
     @event    = Event.find(params[:event_id])

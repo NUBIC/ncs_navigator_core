@@ -3,14 +3,6 @@
 .mdes_table_definition
   = render 'documentation/pbs_list'
 
-.page_section.search
-  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
-    %p
-      = f.label :provider_name_practice, "Practice Name"
-      = f.text_field :provider_name_practice
-    %p
-    = f.submit "Search"
-
 .page_section
   - if @pbs_lists.empty?
     #no_records
@@ -22,28 +14,26 @@
     %table.records
       %tr
         %th
-          PBS List ID
-        %th
           Practice Name
         %th
-          Provider ID
-        %th{ :colspan => "2" }
+          Last Contact
+        %th{ :colspan => "1" }
 
       - @pbs_lists.each do |pbs|
         - provider = pbs.provider
         %tr{ :class => cycle('even_record', 'odd_record') }
-        %td{ :title => pbs.pbs_list_id }
-          = truncate(pbs.pbs_list_id, :length => 16)
           %td
             - name = blank_safe(provider.name_practice)
-            = link_to name, edit_provider_path(provider)
-          %td{ :title => provider.provider_id }
-            = truncate(provider.provider_id, :length => 16)
+            = link_to name, edit_provider_path(provider), :class => "edit_link icon_link"
           %td
-            = link_to 'Edit', edit_pbs_list_path(pbs), :class => "edit_link icon_link"
+            - unless provider.contacts.blank?
+              - txt = "#{provider.contacts.first.contact_date} #{provider.contacts.first.contact_start_time}"
+              = link_to txt, contact_log_provider_path(provider), :class => "list_link icon_link"
           %td
             = provider_recruitment_link(pbs) unless pbs.recruitment_ended?
   .links
     = link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"
+    %br
+    = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
 
   = will_paginate @pbs_lists

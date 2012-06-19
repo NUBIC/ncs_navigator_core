@@ -10,6 +10,33 @@
   %br
   = f.text_field :name_practice
 
+.nested_attributes
+  = f.fields_for :address do |address_form|
+    %p
+      = address_form.label :address_one, "Address One"
+      %br
+      = address_form.text_field :address_one
+    %p
+      = address_form.label :address_two, "Address Two"
+      %br
+      = address_form.text_field :address_two
+    %p
+      = address_form.label :unit, "Unit"
+      %br
+      = address_form.text_field :unit
+    %p
+      = address_form.label :city, "City"
+      %br
+      = address_form.text_field :city
+    = render "shared/ncs_state_select", { :f => address_form, :code => :state_code, :label_text => "State" }
+    %p
+      = address_form.label :zip, "Zip Code"
+      %br
+      = address_form.text_field :zip, :class => "zip"
+      &mdash;
+      = address_form.text_field :zip4, :class => "zip4"
+
+
 = render "shared/ncs_code_select", { :f => f, :code => :provider_type_code, :label_text => "Provider Type", :other => :provider_type_other }
 
 = render "shared/ncs_code_select", { :f => f, :code => :provider_ncs_role_code, :label_text => "Provider Role", :other => :provider_ncs_role_other }

@@ -52,6 +52,9 @@ class Provider < ActiveRecord::Base
 
   has_many :contact_links, :order => "created_at DESC"
   has_many :events, :through => :contact_links
+  has_many :contacts, :through => :contact_links
+
+  has_one :pbs_list
 
   accepts_nested_attributes_for :address, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true

@@ -55,6 +55,7 @@ describe Provider do
 
   it { should have_many(:contact_links) }
   it { should have_many(:events).through(:contact_links) }
+  it { should have_many(:contacts).through(:contact_links) }
 
   describe ".to_s" do
     it "returns the name_practice" do

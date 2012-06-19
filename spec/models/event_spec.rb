@@ -292,6 +292,39 @@ describe Event do
     end
   end
 
+  describe ".enumeration_event?" do
+
+    it "is true for provider base recruitment, screening, and enumeration events" do
+      [1, 2, 22, 3, 4, 5, 6, 9, 29].each do |code|
+        Factory(:event, :event_type_code => code).should be_enumeration_event
+      end
+    end
+
+    it "is false for participant focused events" do
+      [ 10, 33, 32, 7, 8, 11, 12,
+        13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24,
+        25, 26, 27, 28, 30, 31].each do |code|
+        Factory(:event, :event_type_code => code).should_not be_enumeration_event
+      end
+    end
+
+    it "is false for all negative event codes" do
+      [-5, -4].each do |code|
+        Factory(:event, :event_type_code => code).should_not be_enumeration_event
+      end
+    end
+
+  end
+
+  describe ".provider_event?"  do
+
+    it "is true for provider base recruitment" do
+      Factory(:event, :event_type_code => 22).should be_provider_event
+    end
+
+
+  end
+
   context "time format" do
 
     let(:event) { Factory(:event) }

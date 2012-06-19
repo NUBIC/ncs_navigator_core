@@ -49,6 +49,7 @@ input[type="submit"] {
   background: url(../../assets/edit.png) 0 2px no-repeat !important;
 }
 
+.import_link, .import_link:hover,
 .export_link, .export_link:hover {
   background: url(../../assets/page_white_excel.png) 0 2px no-repeat !important;
 }
@@ -148,6 +149,10 @@ input[type="submit"] {
   background: url(../../assets/external_link_icon.png) 0 2px no-repeat;
   background-position: right top;
   padding: 2px 20px 2px 0px !important;
+}
+
+.star_link, .star_link:hover {
+  background: url(../../assets/star.png) 0 2px no-repeat !important;
 }
 
 .help_link_icon, .help_link_icon:hover,

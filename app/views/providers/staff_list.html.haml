@@ -6,7 +6,7 @@
 %h3
   = blank_safe(@provider.name_practice)
   %span.normal
-    = link_to "Edit Contact Information", edit_contact_information_provider_path(@provider), :class => "edit_link icon_link"
+    = link_to "Edit Location Information", edit_contact_information_provider_path(@provider, :event_id => @event.id), :class => "edit_link icon_link"
 
 .page_section
   - if @provider.staff.blank?
@@ -29,7 +29,9 @@
       - @provider.staff.each do |staff_member|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td.primary_contact
-            = "X" if staff_member == primary_contact
+            - if staff_member == primary_contact
+              %span{ :class => "star_link icon_link" }
+                &nbsp;
           %td
             - txt = blank_safe(staff_member.full_name)
             = link_to txt, edit_staff_provider_path(@provider, :person_id => staff_member.id, :event_id => @event.id), :class => "edit_link icon_link"

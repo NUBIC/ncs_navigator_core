@@ -67,6 +67,7 @@ class ProvidersController < ApplicationController
 
   def edit_contact_information
     @provider = Provider.find(params[:id])
+    @event = Event.find(params[:event_id]) if params[:event_id]
     if @provider.address.blank?
       @provider.build_address(:psu_code => @psu_code)
     end
@@ -90,7 +91,7 @@ class ProvidersController < ApplicationController
 
   def update_contact_information
     @provider = Provider.find(params[:id])
-
+    @event = Event.find(params[:event_id]) if params[:event_id]
     respond_to do |format|
       if @provider.update_attributes(params[:provider])
 
@@ -100,7 +101,9 @@ class ProvidersController < ApplicationController
         end
 
         flash[:notice] = 'Provider contact information was successfully updated.'
-        format.html { redirect_to(edit_contact_information_provider_path(@provider)) }
+        path = @event.blank? ? edit_contact_information_provider_path(@provider) : staff_list_provider_path(@provider, :event_id => @event.id)
+
+        format.html { redirect_to(path) }
         format.json  { render :json => @provider }
       else
         format.html { render :action => "edit" }

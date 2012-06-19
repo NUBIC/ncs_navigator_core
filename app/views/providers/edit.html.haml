@@ -3,6 +3,11 @@
 .mdes_table_definition
   = render 'documentation/provider'
 
+%h3
+  = @provider.name_practice
+  %span.normal
+    = link_to 'Edit PBS List Record', edit_pbs_list_path(@provider.pbs_list), :class => "edit_link icon_link"
+
 .page_section
   = form_for(@provider, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object

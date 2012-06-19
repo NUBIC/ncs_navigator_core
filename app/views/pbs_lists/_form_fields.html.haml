@@ -5,7 +5,7 @@
   %b
     Provider
   %br
-  = f.object.provider.to_s
+  = link_to f.object.provider.to_s, edit_provider_path(f.object.provider), :class => "edit_link icon_link"
   = f.hidden_field :provider_id
 
 - if f.object.substitute_provider
