@@ -32,32 +32,26 @@ $(function() {
 
   $('.exit_shipping').live('click',
   function() {
-    blockUnblockProcessingDiv(false, "")
-    $(':checkbox:checked').each( function() {
-      this.checked = !this.checked;
-    });
-    $(':submit').each( function() {
-      $(this).attr("disabled", false)
-    })
-    $('#displaying').children().each(function(){$(this).remove()})
+    clearShipSelections();
   })
   
   $('.finish_shipping').live('click',
   function() {
+    clearShipSelections();
+    location.reload();
+  })
+  
+  function clearShipSelections() {
     blockUnblockProcessingDiv(false, "")
     $(':submit').each( function() {
       $(this).attr("disabled", false)
     })
-    //TODO 
-    //Make sure the checkboxes disappear from the ship and link is added to confirm
     $(':checkbox:checked').each( function() {
-      $(this).parent().remove()
+      this.checked = !this.checked;
     });
     $('#displaying').children().each(function(){$(this).remove()})
-    //todo double check the last line!
-    $('#shipping :checkbox').attr("disabled", false)
-    location.reload();
-  })
+    $(':checkbox').attr("disabled", false)
+  }
 
   //kak submittit' bez dannih
   // $(".display").load($(this).closest('form').attr('action') + ' form')
@@ -158,12 +152,14 @@ $(function() {
 
   $('.my_specimen_sample_receive').live('click',
   function() {
+      cleanCheckboxes()
       sample_processes_dialog($(this).attr('href') + ' form');
       return false;
   });
   
   $('.my_specimen_sample_store').live('click',
   function() {
+      cleanCheckboxes()
       sample_processes_dialog($(this).attr('href') + ' form');
       return false;
   });
@@ -171,7 +167,16 @@ $(function() {
   $('.sample_received').live('click', sample_received_process);
 
   $('.spec_stored').live('click', my_specimen_storage_dialog);
-  
+
+  function cleanCheckboxes() {
+    $(':checkbox:checked').each( function() {
+      this.checked = !this.checked;
+      $('#ship_samples_btn').attr("disabled", false)
+      $('#ship_specimens_btn').attr("disabled", false)
+    });
+    $('#ship_samples :checkbox').attr("disabled", false)
+    $('#ship_specimens :checkbox').attr("disabled", false)
+  }
 
   function my_specimen_storage_dialog() {
     var form = $(this).closest('form'),
