@@ -266,6 +266,12 @@ $(function() {
   }
   
   function move_link_from_store_to_ship(storage_container_id) {
+    if ($('#ship_specimens_btn').length == 0) {
+      title = "<b> Specimens: </b>"
+      submit_btn = "<input id='ship_specimens_btn' class='ship_specimens_btn' type='submit' value='Ship' name='commit'>"
+      $("#ship_specimens form").first().append(title)
+      $("#ship_specimens form").first().append(submit_btn)
+    }
     var link = $("#" + storage_container_id)
     var link_children = link.html()
     var linkParent = link.parent()
@@ -294,6 +300,13 @@ $(function() {
   
   function add_sample_link_to_ship(sample_id) {
     // link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + "><a id="+sample_id+ " class=\"my_sample_ship\" href=\"/sample_receipt_stores/new?sample_id="+sample_id+"\"> " + sample_id+ "</a></li>"
+    if ($('#ship_samples_btn').length == 0) {
+      title = "<b> Samples: </b>"
+      submit_btn = "<input id='ship_samples_btn' class='ship_samples_btn' type='submit' value='Ship' name='commit'>"
+      $("#ship_samples form").first().append(title)
+      $("#ship_samples form").first().append(submit_btn)
+    } 
+
     link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + ">"+ sample_id +"</li>"
     $("#ship_samples form").first().append(link_elt);
   }
