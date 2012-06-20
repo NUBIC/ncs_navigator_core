@@ -454,7 +454,7 @@ DEPENDENCIES
   ci_reporter
   coffee-rails (~> 3.1.0)
   comma
-  compass-rails (= 1.0.1)
+  compass-rails
   cucumber (~> 1.1.9)
   cucumber-rails
   database_cleaner!
