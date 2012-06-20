@@ -1,7 +1,1 @@
-@import "blueprint";
-
-//Recommended Blueprint configuration with scoping and semantic layout:
-body.bp {
-  @include blueprint-print(true);
-}
 @import "partials/print";
