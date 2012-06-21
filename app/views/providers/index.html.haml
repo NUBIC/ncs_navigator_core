@@ -28,8 +28,9 @@
 
       - @providers.each do |provider|
         %tr{ :class => cycle('even_record', 'odd_record') }
-          %td
-            = blank_safe(provider.name_practice)
+          - name = blank_safe(provider.name_practice)
+          %td{ :title => "#{name} - #{provider.address.to_s}" }
+            = name
           %td
             = link_to 'Edit', edit_provider_path(provider), :class => "edit_link icon_link"
           %td

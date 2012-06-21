@@ -43,6 +43,11 @@ module ApplicationHelper
     participant.person ? display_person(participant.person) : "#{participant.public_id}"
   end
 
+  def public_identifier_row(id)
+    id = id.to_s
+    (id.length < 16) ? content_tag(:td, id) : content_tag(:td, truncate(id, :length => 16), :title => id)
+  end
+  
   ##
   # Takes MDES formatted phone number (XXXYYYZZZZ)
   # and parses into area code, exchange, and line number
@@ -94,14 +99,14 @@ module ApplicationHelper
     else
       "TYPE UNKNOWN"
     end
-    
+
   end
-  
+
   def sample_root_id(value)
     dash = value.index("-")
     value[0, dash]
   end
-  
+
   def sample_extenstion(value)
     dash = value.index("-") + 1
     value[dash, value.length]

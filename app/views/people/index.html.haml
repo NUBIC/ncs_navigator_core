@@ -44,8 +44,7 @@
             = blank_safe(person.first_name)
           %td
             = blank_safe(person.last_name)
-          %td
-            = person.person_id
+          = public_identifier_row(person.person_id)
           %td
             = link_to 'View', person_path(person), :class => "show_link icon_link"
           %td
