@@ -3,7 +3,21 @@
 .mdes_table_definition
   = render 'documentation/pbs_list'
 
-.page_section
+.page_section.search
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
+    %p
+      = f.label :provider_name_practice_cont, "Practice Name"
+      = f.text_field :provider_name_practice_cont
+    %p
+      = f.label :in_sample_code_eq, "In Sample"
+      = f.select(:in_sample_code_eq, NcsCode.ncs_code_lookup(:in_sample_code).sort_by { |a| a[0] }, { :include_blank => "-- In Sample? --" })
+    %p
+      = f.label :in_out_frame_code_eq, "In Frame"
+      = f.select(:in_out_frame_code_eq, NcsCode.ncs_code_lookup(:in_out_frame_code).sort_by { |a| a[0] }, { :include_blank => "-- In Frame? --" })
+    = f.submit "Search"
+
+
+.page_section.pbs_list
   - if @pbs_lists.empty?
     #no_records
       No PBS List records were found.
@@ -14,7 +28,11 @@
     %table.records
       %tr
         %th
-          Practice Name
+          = sort_link @q, "provider_name_practice", "Practice Name"
+        %th
+          = sort_link @q, "in_sample_code", "In Sample?"
+        %th
+          = sort_link @q, "in_out_frame_code", "In Frame?"
         %th
           Last Contact
         %th{ :colspan => "1" }
@@ -22,9 +40,13 @@
       - @pbs_lists.each do |pbs|
         - provider = pbs.provider
         %tr{ :class => cycle('even_record', 'odd_record') }
-          %td
-            - name = blank_safe(provider.name_practice)
+          - name = blank_safe(provider.name_practice)
+          %td{ :title => "#{name} - #{provider.address.to_s}" }
             = link_to name, edit_provider_path(provider), :class => "edit_link icon_link"
+          %td
+            = pbs.in_sample
+          %td
+            = pbs.in_out_frame
           %td
             - unless provider.contacts.blank?
               - txt = "#{provider.contacts.first.contact_date} #{provider.contacts.first.contact_start_time}"
@@ -37,3 +59,5 @@
     = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
 
   = will_paginate @pbs_lists
+
+

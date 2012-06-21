@@ -8,7 +8,7 @@ class PbsListsController < ApplicationController
     params[:page] ||= 1
 
     @q = PbsList.search(params[:q])
-    result = @q.result(:distinct => true).order("pbs_list_id DESC")
+    result = @q.result.order("pbs_list_id DESC")
     @pbs_lists = result.paginate(:page => params[:page], :per_page => 20)
 
     respond_to do |format|

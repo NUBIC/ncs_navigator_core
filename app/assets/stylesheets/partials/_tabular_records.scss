@@ -76,3 +76,12 @@ div.records {
   border-bottom: 1px solid $BORDER_GRAY;
   padding: 0.5em;
 }
+
+.pbs_list {
+  table.records {
+    font-size: 0.8em;
+    a {
+      font-size: 1.25em;
+    }
+  }
+}
