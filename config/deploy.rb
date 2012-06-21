@@ -8,7 +8,7 @@ require 'bundler/capistrano'
 require 'bcdatabase'
 require 'ncs_navigator/configuration'
 
-bcconf = Bcdatabase.load[:ncs_deploy, :ncs_navigator_core] # Using the bcdatabase gem for server config
+bcconf = Bcdatabase.load["#{ENV['STUDY_CENTER']}_deploy", :ncs_navigator_core] # Using the bcdatabase gem for server config
 set :application, "ncs_navigator_core"
 
 # User
@@ -106,7 +106,7 @@ end
 # before 'deploy:migrate', 'db:backup'
 
 # after deploying, generate static pages, copy over uploads and results, cleanup old deploys, aggressively set permissions
-after 'deploy:update_code', 'deploy:permissions' #, 'deploy:cleanup'
+# after 'deploy:update_code'#, 'deploy:permissions' #, 'deploy:cleanup'
 
 # after deploying symlink , copy images to current image config location.
 after 'deploy:symlink', 'config:images', 'deploy:setup_import_directories'
