@@ -293,7 +293,7 @@ $(function() {
       text_elt = "<p class=\"paragraph_shift\">"+specimen_id+"</p>"
       a_with_id.append(text_elt)
     } else {
-      link_elt = "<li><a id="+storage_container_id+ " class=\"my_specimen_sample_store\" href=\"/specimen_storages/new?container_id="+storage_container_id+"\"> Pressure bag: " + storage_container_id+ "<p class=\"paragraph_shift\">"+specimen_id+"</p></a></li>"
+      link_elt = "<li><a id="+storage_container_id+ " class=\"my_specimen_sample_store\" href=\"/specimen_storages/new?container_id="+storage_container_id+"\"> Storage container ID: " + storage_container_id+ "<p class=\"paragraph_shift\">"+specimen_id+"</p></a></li>"
       $("#storing ul").first().append(link_elt);
     }
   }

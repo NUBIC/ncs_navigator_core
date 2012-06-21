@@ -37,7 +37,7 @@
                 - @specimen_receipts_hash.each do |k, v|
                   %li
                     %a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_sample_store", :id => k}
-                      = "Pressure bag:"
+                      = "Storage container ID:"
                       = k
                       - v.each do |val|
                         %p{:class => "paragraph_shift"}
@@ -65,7 +65,7 @@
                       %li
                         %input{:type=>"checkbox", :class => "specimen_ship_checkbox", :id => k, :name=> "storage_container_id[]", :value => k, :checked=>false}
                         -#%a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_ship", :id => k}
-                        = "Pressure bag:"
+                        = "Storage container ID:"
                         = k
                         - SpecimenReceipt.where(:storage_container_id => k).each do |val|
                           %p{:class => "paragraph_shift"}
