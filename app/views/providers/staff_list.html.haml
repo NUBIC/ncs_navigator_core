@@ -36,7 +36,7 @@
             - txt = blank_safe(staff_member.full_name)
             = link_to txt, edit_staff_provider_path(@provider, :person_id => staff_member.id, :event_id => @event.id), :class => "edit_link icon_link"
           %td
-            = staff_member.telephones.first.to_s
+            = phone_number_formatter(staff_member.telephones.first.to_s)
           %td
             = staff_member.emails.first.to_s
           %td
