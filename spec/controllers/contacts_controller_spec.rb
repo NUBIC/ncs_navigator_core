@@ -153,5 +153,93 @@ describe ContactsController do
 
     end
 
+    context "PBS provider recruitment event" do
+
+      before(:each) do
+        @event = Factory(:event, :event_type_code => 22)
+        @provider = Factory(:provider)
+      end
+
+      describe "GET provider_recruitment" do
+
+        it "assigns the requested person as @person" do
+          get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
+          assigns(:person).should eq(@person)
+        end
+
+        it "assigns the requested event as @event" do
+          get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
+          assigns(:event).should eq(@event)
+        end
+
+        it "assigns the requested provider as @provider" do
+          get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
+          assigns(:event).should eq(@event)
+        end
+
+        it "assigns a new contact as @contact" do
+          Contact.stub(:new).and_return(mock_contact)
+          get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
+          assigns[:contact].should equal(mock_contact)
+        end
+
+      end
+
+      describe "POST provider_recruitment" do
+
+        def contact_attrs
+          {
+            :contact_date => Date.today,
+            :contact_start_time => "11:22",
+            :contact_end_time => "11:27",
+          }
+        end
+
+        describe "with valid params" do
+          describe "with html request" do
+            it "creates a new Contact" do
+              expect {
+                post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              }.to change(Contact, :count).by(1)
+            end
+
+            it "assigns a newly created contact as @contact" do
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              assigns(:contact).should be_a(Contact)
+              assigns(:contact).should be_persisted
+            end
+
+            #it "redirects to the post_recruitment_contact provider page" do
+            it "redirects to the contact log provider page" do
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              response.should redirect_to(contact_log_provider_path(@provider))
+              # response.should redirect_to(post_recruitment_contact_provider_path(@provider))
+            end
+          end
+        end
+
+        describe "with invalid params" do
+          describe "with html request" do
+            it "assigns a newly created but unsaved contact as @contact" do
+              # Trigger the behavior that occurs when invalid params are submitted
+              Contact.any_instance.stub(:save).and_return(false)
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => {}
+              assigns(:contact).should be_a_new(Contact)
+            end
+
+            it "re-renders the 'provider_recruitment' template" do
+              # Trigger the behavior that occurs when invalid params are submitted
+              Contact.any_instance.stub(:save).and_return(false)
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => {}
+              response.should render_template("provider_recruitment")
+            end
+          end
+
+        end
+      end
+
+
+    end
+
   end
 end
