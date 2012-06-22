@@ -7,7 +7,24 @@
   = form_for(@provider, :url => process_recruited_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
-    TODO: Provider Logistics
+    .provider_logistics
+      - @providerLogisticsTemplate = generate_nested_attributes_template(f, :provider_logistics, 'providers/provider_logistics')
+      %table{ :class => 'records provider_logistics' }
+        %tbody.nested_records_provider_logistics
+          = f.fields_for :provider_logistics do |pl|
+            = render :partial => 'providers/provider_logistics', :locals => { :f => pl }
+        %tfoot
+          %tr.row
+            %td{ :colspan => '2' }
+              = link_to_add_fields "Add Provider Logistic", :provider_logistics
+
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
+
+
+:javascript
+  $(document).ready(function() {
+    providerLogisticsAttributesForm = new NCSCore.UI.ProviderLogisticAssociation({
+      providerLogisticTemplate: '#{@providerLogisticsTemplate}' });
+  });
