@@ -58,6 +58,8 @@ Spork.prefork do
 
   require 'shoulda'
 
+  require File.expand_path("../../lib/pbs_code_list_loader", __FILE__)
+
   # Requires supporting ruby files with custom matchers and macros, etc,
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
@@ -105,6 +107,9 @@ Spork.prefork do
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.clean_with(:truncation)
       NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
+
+      # TODO: remove the pbs code list load when MdesCodeListLoader handles MDES 3.0 codes
+      PbsCodeListLoader.load_codes
     end
 
     config.before(:each, :clean_with_truncation) do
