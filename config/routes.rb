@@ -76,6 +76,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_staff
 
       get :contact_log
+      get :post_recruitment_contact
     end
   end
   resources :pbs_lists do

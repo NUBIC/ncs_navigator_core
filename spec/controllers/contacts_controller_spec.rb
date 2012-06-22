@@ -209,11 +209,9 @@ describe ContactsController do
               assigns(:contact).should be_persisted
             end
 
-            #it "redirects to the post_recruitment_contact provider page" do
-            it "redirects to the contact log provider page" do
+            it "redirects to the post_recruitment_contact provider page" do
               post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
-              response.should redirect_to(contact_log_provider_path(@provider))
-              # response.should redirect_to(post_recruitment_contact_provider_path(@provider))
+              response.should redirect_to(post_recruitment_contact_provider_path(@provider))
             end
           end
         end
