@@ -56,9 +56,12 @@ class Provider < ActiveRecord::Base
 
   has_one :pbs_list
 
+  has_many :provider_logistics
+
   accepts_nested_attributes_for :address, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :staff, :allow_destroy => true
+  accepts_nested_attributes_for :provider_logistics, :allow_destroy => true
 
   def to_s
     self.name_practice.to_s

@@ -84,6 +84,17 @@
 %p
   = f.text_area :sampling_notes
 
+.provider_logistics
+  - @providerLogisticsTemplate = generate_nested_attributes_template(f, :provider_logistics, 'providers/provider_logistics')
+  %table{ :class => 'records provider_logistics' }
+    %tbody.nested_records_provider_logistics
+      = f.fields_for :provider_logistics do |pl|
+        = render :partial => 'providers/provider_logistics', :locals => { :f => pl }
+    %tfoot
+      %tr.row
+        %td{ :colspan => '2' }
+          = link_to_add_fields "Add Provider Logistic", :provider_logistics
+
 %p
   = f.label :provider_comment, "Comments on Provider"
   %br
@@ -96,4 +107,8 @@
     wire_up_select_other("#provider_provider_type_code","#provider_provider_type_other");
     wire_up_select_other("#provider_provider_ncs_role_code","#provider_provider_ncs_role_other");
     wire_up_select_other("#provider_provider_info_source_code","#provider_provider_info_source_other");
+
+    providerLogisticsAttributesForm = new NCSCore.UI.ProviderLogisticAssociation({
+      providerLogisticTemplate: '#{@providerLogisticsTemplate}' });
+
   });

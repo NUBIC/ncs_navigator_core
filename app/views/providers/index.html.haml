@@ -6,8 +6,8 @@
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     %p
-      = f.label :name_practice, "Practice Name"
-      = f.text_field :name_practice
+      = f.label :name_practice_cont, "Practice Name"
+      = f.text_field :name_practice_cont
     %p
     = f.submit "Search"
 
@@ -23,8 +23,7 @@
       %tr
         %th
           = sort_link @q, "name_practice", "Practice Name"
-        %th{ :colspan => "1" }
-        %th{ :colspan => "1" }
+        %th{ :colspan => "2" }
 
       - @providers.each do |provider|
         %tr{ :class => cycle('even_record', 'odd_record') }

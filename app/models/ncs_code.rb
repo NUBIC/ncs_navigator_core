@@ -282,6 +282,9 @@ class NcsCode < ActiveRecord::Base
     :frame_completion_req_code        => 'CONFIRM_TYPE_CL21',
     :pr_recruitment_status_code       => 'RECRUIT_STATUS_CL1',              # MDES 3.0
 
+    ### provider_logistics
+    # :psu_code                       => 'PSU_CL1',
+    :provider_logistics_code          => 'PROVIDER_LOGISTICS_CL1',
 
   }
 

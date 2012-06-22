@@ -63,4 +63,12 @@ FactoryGirl.define do
     pbsl.pr_recruitment_end_date        Date.today
   end
 
+  factory :provider_logistic do |pl|
+    pl.psu_code                 20000030
+    pl.association :provider,   :factory => :provider
+    pl.provider_logistics_code  1
+    pl.provider_logistics_other nil
+
+  end
+
 end

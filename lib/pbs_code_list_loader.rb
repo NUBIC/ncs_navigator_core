@@ -1,5 +1,5 @@
 class PbsCodeListLoader
-  
+
   def self.load_codes
     [
       ['INOUT_FRAME_CL1', 'Provider in final sampling frame', '1'],
@@ -23,9 +23,20 @@ class PbsCodeListLoader
       ['RECRUIT_STATUS_CL1', 'Out of Scope', '5'],
       ['RECRUIT_STATUS_CL1', 'Not applicable', '-7'],
       ['RECRUIT_STATUS_CL1', 'Missing in Error', '-4'],
+
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location required documentation that IRB review not necessary', '1'],
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location required IRB review of entire protocol', '2'],
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location had to clear project with larger organization', '3'],
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location required formal MOU', '4'],
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location required letter of agreement', '5'],
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location required subcontract/personal service agreement', '6'],
+      ['PROVIDER_LOGISTICS_CL1', 'None', '7'],
+      ['PROVIDER_LOGISTICS_CL1', 'Provider location required other logistical arrangements', '-5'],
+      ['PROVIDER_LOGISTICS_CL1', 'Missing in Error', '-4'],
+
     ].each do |list_name, text, code|
       NcsCode.find_or_create_by_list_name_and_display_text_and_local_code(list_name, text, code)
     end
   end
-  
+
 end

@@ -57,6 +57,8 @@ describe Provider do
   it { should have_many(:events).through(:contact_links) }
   it { should have_many(:contacts).through(:contact_links) }
 
+  it { should have_many(:provider_logistics) }
+
   describe ".to_s" do
     it "returns the name_practice" do
       Factory(:provider, :name_practice => "expected").to_s.should == "expected"

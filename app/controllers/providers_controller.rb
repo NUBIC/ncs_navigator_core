@@ -15,6 +15,10 @@ class ProvidersController < ApplicationController
     end
   end
 
+  def show
+    @provider = Provider.find(params[:id])
+  end
+
   def new
     @provider = Provider.new(:psu_code => @psu_code, :provider_info_date => Date.today)
     @provider.provider_info_update = Date.today
@@ -240,13 +244,25 @@ class ProvidersController < ApplicationController
 
   def recruited
     @provider = Provider.find(params[:id])
+    @provider.provider_logistics.build if @provider.provider_logistics.blank?
   end
 
   def process_recruited
     @provider = Provider.find(params[:id])
-    mark_pbs_list_as_having_recruited_provider(@provider.pbs_list)
-    flash[:notice] = "Provider #{@provider} has been successfully recruited."
-    redirect_to pbs_lists_path
+
+    respond_to do |format|
+      if @provider.update_attributes(params[:provider])
+
+        mark_pbs_list_as_having_recruited_provider(@provider.pbs_list)
+
+        flash[:notice] = "Provider #{@provider} has been successfully recruited."
+        format.html { redirect_to(pbs_lists_path) }
+        format.json  { render :json => @provider }
+      else
+        format.html { render :action => "recruited" }
+        format.json  { render :json => @provider.errors, :status => :unprocessable_entity }
+      end
+    end
   end
 
   def mark_pbs_list_as_having_recruited_provider(pbs_list)

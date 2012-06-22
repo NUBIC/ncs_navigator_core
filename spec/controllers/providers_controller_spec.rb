@@ -363,6 +363,10 @@ describe ProvidersController do
             provider.pbs_list.pr_cooperation_date.should == Date.today
           end
 
+          # {"id"=>"90", "provider"=>{"provider_logistics_attributes"=>
+          #                {"0"=>{"provider_logistics_other"=>"", "psu_code"=>"20000030", "provider_logistics_code"=>"-5"},
+          #                 "1340395795081"=>{"provider_logistics_other"=>"", "psu_code"=>"20000030", "provider_logistics_code"=>"3"}}}}
+
         end
       end
     end
