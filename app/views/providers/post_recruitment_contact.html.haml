@@ -1,0 +1,17 @@
+- title "Provider Recruitment Decision"
+
+%h3
+  = @provider
+
+.page_section
+  %ul
+    %li
+      Did the provider say yes to being involved with the National Children's Study?
+      %br
+      TODO: link to close provider recruitment event, update pbs list pr_recruitment_status_code
+    %li
+      Did the provider refuse?
+      %br
+      TODO: allow user to choose substitute provider
+    %li
+      = link_to "View Contact Log", contact_log_provider_path(@provider), :class => "list_link icon_link"

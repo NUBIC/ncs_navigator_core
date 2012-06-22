@@ -233,4 +233,9 @@ class ProvidersController < ApplicationController
       @link.save!
     end
   end
+
+  def post_recruitment_contact
+    @provider = Provider.find(params[:id])
+  end
+
 end

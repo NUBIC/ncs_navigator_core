@@ -95,14 +95,15 @@ class ContactsController < ApplicationController
     @person   = Person.find(params[:person_id])
     @provider = Provider.find(params[:provider_id])
     if request.get?
-      @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
+      @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :who_contacted_code => 8,
+                             :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
     else
       @contact = Contact.new(params[:contact])
     end
     if request.post?
       if @contact.save
         link = find_or_create_contact_link
-        redirect_to contact_log_provider_path(@provider)
+        redirect_to post_recruitment_contact_provider_path(@provider)
       else
         render :action => "provider_recruitment"
       end
