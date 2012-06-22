@@ -71,12 +71,11 @@ describe PbsList do
       obj = PbsList.first
       obj.frame_completion_req.local_code.should == -4
 
-      # TODO: MDES 3.0 code lists
-      obj.in_out_frame.should be_nil
-      obj.in_sample.should be_nil
-      obj.in_out_psu.should be_nil
-      obj.cert_flag.should be_nil
-      obj.pr_recruitment_status.should be_nil
+      obj.in_out_frame.local_code.should == -4
+      obj.in_sample.local_code.should == -4
+      obj.in_out_psu.local_code.should == -4
+      obj.cert_flag.local_code.should == -4
+      obj.pr_recruitment_status.local_code.should == -4
     end
   end
 
@@ -87,12 +86,14 @@ describe PbsList do
     it "knows if provider recruitment has started" do
       pbs_list.should_not be_recruitment_started
       pbs_list.pr_recruitment_start_date = Date.today
+      pbs_list.pr_recruitment_status_code = 3
       pbs_list.should be_recruitment_started
     end
 
     it "knows when provider recruitment has ended" do
       pbs_list.should_not be_recruitment_ended
       pbs_list.pr_recruitment_end_date = Date.today
+      pbs_list.pr_recruitment_status_code = 4
       pbs_list.should be_recruitment_ended
     end
 

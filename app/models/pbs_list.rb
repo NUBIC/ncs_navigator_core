@@ -60,13 +60,11 @@ class PbsList < ActiveRecord::Base
   # -4 (Missing in Error)
 
   def recruitment_started?
-    # TODO: use pr_recruitment_status
-    !self.pr_recruitment_start_date.blank?
+    !self.pr_recruitment_start_date.blank? && self.pr_recruitment_status_code == 3
   end
-  
+
   def recruitment_ended?
-    # TODO: use pr_recruitment_status
-    !self.pr_recruitment_end_date.blank?
+    !self.pr_recruitment_end_date.blank? && self.pr_recruitment_status_code == 4
   end
 
 end

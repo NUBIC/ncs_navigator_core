@@ -324,6 +324,50 @@ describe ProvidersController do
     describe "PUT update_staff" do
     end
 
+    describe "GET recruited" do
+
+      let(:provider) { Factory(:provider, :name_practice => "provider") }
+
+      it "assigns the requested provider as @provider" do
+        get :recruited, :id => provider.id
+        assigns(:provider).should eq(provider)
+      end
+
+    end
+
+    describe "PUT process_recruited" do
+
+      let(:provider) { Factory(:provider) }
+
+      describe "with valid params" do
+        describe "with html request" do
+
+          before(:each) do
+            Factory(:pbs_list, :provider => provider)
+          end
+
+          it "assigns the requested provider as @provider" do
+            put :process_recruited, :id => provider.id, :provider => {}
+            assigns(:provider).should eq(provider)
+          end
+
+          it "redirects to the pbs_lists index page" do
+            put :process_recruited, :id => provider.id, :provider => {}
+            response.should redirect_to(pbs_lists_path)
+          end
+
+          it "updates the provider pbs_list record" do
+            put :process_recruited, :id => provider.id, :provider => {}
+            provider.pbs_list.pr_recruitment_status_code.should == 4
+            provider.pbs_list.pr_recruitment_end_date.should == Date.today
+            provider.pbs_list.pr_cooperation_date.should == Date.today
+          end
+
+        end
+      end
+    end
+
+
   end
 
 end

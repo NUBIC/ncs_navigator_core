@@ -1,0 +1,13 @@
+- title "Provider Recruited"
+
+%h3
+  = @provider.name_practice
+
+.page_section
+  = form_for(@provider, :url => process_recruited_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    TODO: Provider Logistics
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

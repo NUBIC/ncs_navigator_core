@@ -6,9 +6,7 @@
 .page_section
   %ul
     %li
-      Did the provider say yes to being involved with the National Children's Study?
-      %br
-      TODO: link to close provider recruitment event, update pbs list pr_recruitment_status_code
+      = link_to "Is provider willing to participate?", recruited_provider_path(@provider), :class => "accepted_link icon_link"
     %li
       Did the provider refuse?
       %br
