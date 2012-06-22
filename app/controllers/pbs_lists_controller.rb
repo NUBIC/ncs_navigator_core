@@ -91,7 +91,9 @@ class PbsListsController < ApplicationController
 
   def recruit_provider
     @pbs_list = PbsList.find(params[:id])
-    @pbs_list.update_attribute(:pr_recruitment_start_date, Date.today) unless @pbs_list.recruitment_started?
+
+    mark_pbs_list_as_having_started_recruitment(@pbs_list)
+
     event = @pbs_list.provider.provider_recruitment_event
     if event.blank?
       event = Event.create!(:event_type_code => 22,
@@ -100,5 +102,14 @@ class PbsListsController < ApplicationController
     end
     redirect_to staff_list_provider_path(@pbs_list.provider, :event_id => event.id)
   end
+
+  def mark_pbs_list_as_having_started_recruitment(pbs_list)
+    attrs = {
+      :pr_recruitment_start_date => Date.today,
+      :pr_recruitment_status_code => 3
+    }
+    pbs_list.update_attributes(attrs) unless pbs_list.recruitment_started?
+  end
+  private :mark_pbs_list_as_having_started_recruitment
 
 end
