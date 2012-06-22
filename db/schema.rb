@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120612151123) do
+ActiveRecord::Schema.define(:version => 20120621211705) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -1169,6 +1169,24 @@ ActiveRecord::Schema.define(:version => 20120612151123) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "address_id"
+  end
+
+  create_table "specimen_receipt_confirmations", :force => true do |t|
+    t.integer  "psu_code",                                                                           :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.integer  "shipment_receipt_confirmed_code",                                                    :null => false
+    t.string   "shipper_id",                                                                         :null => false
+    t.string   "shipment_tracking_number",                                                           :null => false
+    t.datetime "shipment_receipt_datetime",                                                          :null => false
+    t.integer  "shipment_condition_code",                                                            :null => false
+    t.string   "shipment_damaged_reason"
+    t.string   "specimen_id",                                                                        :null => false
+    t.decimal  "specimen_receipt_temp",                                :precision => 6, :scale => 2, :null => false
+    t.string   "specimen_condition"
+    t.string   "shipment_received_by",                                                               :null => false
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "specimen_receipts", :force => true do |t|
