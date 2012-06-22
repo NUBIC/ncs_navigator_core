@@ -4,7 +4,7 @@
   = render 'documentation/contact'
 
 %h3
-  = @provider.name_practice
+  = @provider
   - if event = @provider.provider_recruitment_event
     %span.normal
       = link_to "Staff List", staff_list_provider_path(@provider, :event_id => event.id), :class => "list_link icon_link"

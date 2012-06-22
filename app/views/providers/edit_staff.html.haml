@@ -4,7 +4,7 @@
   = render 'documentation/provider'
 
 %h3
-  = @provider.name_practice
+  = @provider
 
 .page_section
   = form_for(@provider, :url => update_staff_provider_path(@provider), :html => {:autocomplete => "off", :method => 'put'}) do |f|

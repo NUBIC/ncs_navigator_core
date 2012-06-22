@@ -4,7 +4,7 @@
   = render 'documentation/provider'
 
 %h3
-  = blank_safe(@provider.name_practice)
+  = @provider
   %span.normal
     = link_to "Edit Location Information", edit_contact_information_provider_path(@provider, :event_id => @event.id), :class => "edit_link icon_link"
 

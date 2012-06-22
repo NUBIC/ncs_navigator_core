@@ -6,6 +6,8 @@
 %h3
   = @person
   = "::" unless @person.to_s.blank?
+  = @provider
+  = "::" unless @provider.to_s.blank?
   = @event.event_type.display_text
 
 .page_section
