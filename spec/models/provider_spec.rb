@@ -59,6 +59,9 @@ describe Provider do
 
   it { should have_many(:provider_logistics) }
 
+  it { should have_one(:pbs_list) }
+  it { should have_one(:substitute_pbs_list) }
+
   describe ".to_s" do
     it "returns the name_practice" do
       Factory(:provider, :name_practice => "expected").to_s.should == "expected"
@@ -179,6 +182,90 @@ describe Provider do
         it "returns the event with that event type" do
           provider.provider_recruitment_event.should == event
         end
+      end
+
+    end
+
+  end
+
+  context "pbs_list" do
+
+    let(:p1) { Factory(:provider, :name_practice => "1") }
+    let(:p2) { Factory(:provider, :name_practice => "2") }
+    let(:p3) { Factory(:provider, :name_practice => "3") }
+    let(:p4) { Factory(:provider, :name_practice => "4") }
+    let(:p5) { Factory(:provider, :name_practice => "5") }
+
+    before(:each) do
+      Factory(:pbs_list, :provider_id => p1.id, :in_sample_code => '1')
+      Factory(:pbs_list, :provider_id => p2.id, :in_sample_code => '2')
+      Factory(:pbs_list, :provider_id => p3.id, :in_sample_code => '1')
+      Factory(:pbs_list, :provider_id => p4.id, :in_sample_code => '2')
+      Factory(:pbs_list, :provider_id => p5.id, :in_sample_code => '1')
+    end
+
+    describe ".original_in_sample_providers" do
+
+      it "returns all providers whose pbs_list record in_sample value is 1 (original sample provider location)" do
+        original_providers = Provider.original_in_sample_providers
+        original_providers.size.should == 3
+        [p1, p3, p5].each { |provider| original_providers.should include provider }
+      end
+
+    end
+
+    describe ".substitute_in_sample_providers" do
+
+      it "returns all providers whose pbs_list record in_sample value is 2 (substitute sample provider location)" do
+        sub_providers = Provider.substitute_in_sample_providers
+        sub_providers.size.should == 2
+        [p2, p4].each { |provider| sub_providers.should include provider }
+      end
+
+    end
+
+    describe ".can_recruit?" do
+
+      let(:orig) { Factory(:provider, :name_practice => "1") }
+      let(:sub)  { Factory(:provider, :name_practice => "2") }
+
+      it "returns true for original provider" do
+        Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1')
+        orig.can_recruit?.should be_true
+      end
+
+      it "returns false for recruited original provider" do
+        Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
+                :pr_recruitment_end_date => Date.today, :pr_recruitment_status_code => 1)
+        orig.can_recruit?.should be_false
+      end
+
+      it "returns false for refused original provider" do
+        Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
+                :pr_recruitment_end_date => Date.today, :pr_recruitment_status_code => 2)
+        orig.can_recruit?.should be_false
+      end
+
+      it "returns false if started as substitute but not chosen as active sub" do
+        Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2')
+        sub.substitute_pbs_list.should be_nil
+        sub.substitute_provider?.should be_false
+        sub.can_recruit?.should be_false
+      end
+
+      it "returns true if chosen as active sub" do
+        sub_pl = Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2')
+        orig_pl = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1', :substitute_provider_id => sub.id)
+        sub.substitute_pbs_list.should == orig_pl
+        sub.can_recruit?.should be_true
+      end
+
+      it "returns false if recruited as active sub" do
+        sub_pl = Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2',
+                         :pr_recruitment_end_date => Date.today, :pr_recruitment_status_code => 1)
+        orig_pl = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1', :substitute_provider_id => sub.id)
+        sub.substitute_pbs_list.should == orig_pl
+        sub.can_recruit?.should be_false
       end
 
     end

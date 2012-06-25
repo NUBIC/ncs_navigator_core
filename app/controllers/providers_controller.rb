@@ -269,11 +269,38 @@ class ProvidersController < ApplicationController
     attrs = {
       :pr_cooperation_date => Date.today,
       :pr_recruitment_end_date => Date.today,
-      :pr_recruitment_status_code => 4
+      :pr_recruitment_status_code => 1
     }
     pbs_list.update_attributes(attrs) unless pbs_list.recruitment_ended?
   end
   private :mark_pbs_list_as_having_recruited_provider
 
+  def refused
+    @provider = Provider.find(params[:id])
+    @pbs_list = @provider.pbs_list
+
+    if @pbs_list && @pbs_list.has_substitute_provider?
+      flash[:warning] = "PBS List record already has #{@pbs_list.substitute_provider} marked as substitute."
+      redirect_to pbs_lists_path
+    end
+  end
+
+  def process_refused
+    @provider = Provider.find(params[:id])
+    @pbs_list = @provider.pbs_list
+
+    mark_pbs_list_refused(@pbs_list) if @pbs_list
+
+    flash[:notice] = "Provider marked as not willing to participate."
+    redirect_to(pbs_lists_path)
+  end
+
+  def mark_pbs_list_refused(pbs_list)
+    @pbs_list.substitute_provider = Provider.find(params[:substitute_provider_id]) if params[:substitute_provider_id]
+    @pbs_list.pr_recruitment_end_date = Date.today
+    @pbs_list.pr_recruitment_status_code = 2
+    @pbs_list.save!
+  end
+  private :mark_pbs_list_refused
 
 end

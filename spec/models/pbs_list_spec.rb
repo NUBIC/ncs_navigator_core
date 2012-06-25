@@ -44,12 +44,12 @@ describe PbsList do
   it { should belong_to(:psu) }
   it { should belong_to(:provider) }
   it { should belong_to(:substitute_provider) }
-  it { should belong_to(:in_out_frame) }            # MDES 3.0
-  it { should belong_to(:in_sample) }               # MDES 3.0
-  it { should belong_to(:in_out_psu) }              # MDES 3.0
-  it { should belong_to(:cert_flag) }               # MDES 3.0
+  it { should belong_to(:in_out_frame) }
+  it { should belong_to(:in_sample) }
+  it { should belong_to(:in_out_psu) }
+  it { should belong_to(:cert_flag) }
   it { should belong_to(:frame_completion_req) }
-  it { should belong_to(:pr_recruitment_status) }   # MDES 3.0
+  it { should belong_to(:pr_recruitment_status) }
 
   it { should validate_presence_of(:provider) }
 
@@ -93,8 +93,23 @@ describe PbsList do
     it "knows when provider recruitment has ended" do
       pbs_list.should_not be_recruitment_ended
       pbs_list.pr_recruitment_end_date = Date.today
-      pbs_list.pr_recruitment_status_code = 4
+      pbs_list.pr_recruitment_status_code = 1
       pbs_list.should be_recruitment_ended
+    end
+
+  end
+
+  describe ".has_substitute_provider?" do
+
+    it "returns true if the pbs_list record has an associated substitute_provider" do
+      provider = Factory(:provider, :name_practice => "provider")
+      sub = Factory(:provider, :name_practice => "substitute_provider")
+      Factory(:pbs_list, :provider => provider, :substitute_provider => sub).has_substitute_provider?.should be_true
+    end
+
+    it "returns false if the pbs_list record does not have an associated substitute_provider" do
+      provider = Factory(:provider, :name_practice => "provider")
+      Factory(:pbs_list, :provider => provider, :substitute_provider => nil).has_substitute_provider?.should be_false
     end
 
   end

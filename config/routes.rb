@@ -79,6 +79,8 @@ NcsNavigatorCore::Application.routes.draw do
       get :post_recruitment_contact
       get :recruited
       put :process_recruited
+      get :refused
+      put :process_refused
     end
   end
   resources :pbs_lists do

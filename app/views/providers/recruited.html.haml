@@ -4,6 +4,14 @@
   = @provider.name_practice
 
 .page_section
+
+  .instructional_note
+    Now that the provider has agreed to participate please update the Provider Logistics to indicate
+    the types of agreements and logistics that must be performed
+    prior to officially recruiting the provider. This will allow the PO to determine the time not only to get the
+    provider on board, but also the total time required to get a provider on board before
+    participant recruitment can commence.
+
   = form_for(@provider, :url => process_recruited_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 

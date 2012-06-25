@@ -64,7 +64,11 @@ class PbsList < ActiveRecord::Base
   end
 
   def recruitment_ended?
-    !self.pr_recruitment_end_date.blank? && self.pr_recruitment_status_code == 4
+    !self.pr_recruitment_end_date.blank? && ([1,2,5].include?(self.pr_recruitment_status_code))
+  end
+
+  def has_substitute_provider?
+    !self.substitute_provider_id.blank?
   end
 
 end

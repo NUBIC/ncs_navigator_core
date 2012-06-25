@@ -13,8 +13,8 @@
     %b
       Substitute Provider
     %br
-    = f.object.substitute_provider.to_s
-    = f.hidden_field :substitute_provider_id
+    - opts = PbsList.all.map{ |u| ["#{u.provider} #{u.provider.address}", u.id] }.sort_by { |e| e[0] }
+    = f.select :substitute_provider_id, options_for_select(opts, f.object.substitute_provider_id)
 
 %p
   = f.label :practice_num, "Provider Practice Number"

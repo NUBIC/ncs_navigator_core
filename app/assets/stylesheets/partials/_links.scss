@@ -141,6 +141,7 @@ input[type="submit"] {
   padding-right: 10px;
 }
 
+.refused_link, .refused_link:hover,
 .canceled_link, .canceled_link:hover {
   background: url(../../assets/cancel.png) 0 2px no-repeat !important;
   padding-right: 10px;

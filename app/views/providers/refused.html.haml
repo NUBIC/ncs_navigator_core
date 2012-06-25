@@ -1,0 +1,24 @@
+- title "Provider Refused"
+
+%h3
+  = @provider.name_practice
+
+.page_section
+
+  .instructional_note
+    Prior to officially closing out each provider, discussions should be held with Westat and Field Support.
+    %br
+    In the case of Provider Non-Response or in case a Primary Provider is Out of Scope,
+    a Substitute Provider will be assigned by Westat.
+
+  = form_for(@provider, :url => process_refused_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    %p
+      = label_tag :substitute_provider_id, "Substitute Provider"
+      %br
+      - subs = Provider.substitute_in_sample_providers.map{ |u| ["#{u} #{u.address}", u.id] }.sort_by { |e| e[0] }
+      = select_tag :substitute_provider_id, options_for_select([["-- Select Substitute Provider --", ""]] + subs)
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

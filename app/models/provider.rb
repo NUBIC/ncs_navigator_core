@@ -55,6 +55,7 @@ class Provider < ActiveRecord::Base
   has_many :contacts, :through => :contact_links
 
   has_one :pbs_list
+  has_one :substitute_pbs_list, :class_name => 'PbsList', :foreign_key => 'substitute_provider_id'
 
   has_many :provider_logistics
 
@@ -62,6 +63,13 @@ class Provider < ActiveRecord::Base
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :staff, :allow_destroy => true
   accepts_nested_attributes_for :provider_logistics, :allow_destroy => true
+
+  PROVIDER_RECRUIMENT_EVENT_TYPE_CODE = 22
+  ORIGINAL_IN_SAMPLE_CODE = 1
+  SUBSTITUTE_IN_SAMPLE_CODE = 2
+
+  scope :original_in_sample_providers, includes(:pbs_list).where("pbs_lists.in_sample_code = #{ORIGINAL_IN_SAMPLE_CODE}")
+  scope :substitute_in_sample_providers, includes(:pbs_list).where("pbs_lists.in_sample_code = #{SUBSTITUTE_IN_SAMPLE_CODE}")
 
   def to_s
     self.name_practice.to_s
@@ -83,7 +91,21 @@ class Provider < ActiveRecord::Base
   end
 
   def provider_recruitment_event
-    self.events.where(:event_type_code => 22).last
+    self.events.where(:event_type_code => PROVIDER_RECRUIMENT_EVENT_TYPE_CODE).last
+  end
+
+  def can_recruit?
+    if original_provider? || substitute_provider?
+      pbs_list.recruitment_ended? ? false : true
+    end
+  end
+
+  def original_provider?
+    self.pbs_list && self.pbs_list.in_sample_code == 1
+  end
+
+  def substitute_provider?
+    self.pbs_list && self.pbs_list.in_sample_code == 2 && self.substitute_pbs_list
   end
 
 end

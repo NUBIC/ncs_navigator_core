@@ -358,7 +358,7 @@ describe ProvidersController do
 
           it "updates the provider pbs_list record" do
             put :process_recruited, :id => provider.id, :provider => {}
-            provider.pbs_list.pr_recruitment_status_code.should == 4
+            provider.pbs_list.pr_recruitment_status_code.should == 1
             provider.pbs_list.pr_recruitment_end_date.should == Date.today
             provider.pbs_list.pr_cooperation_date.should == Date.today
           end
@@ -371,6 +371,54 @@ describe ProvidersController do
       end
     end
 
+    describe "GET refused" do
+
+      let(:provider) { Factory(:provider, :name_practice => "provider") }
+      let(:sub) { Factory(:provider, :name_practice => "substitute provider") }
+
+      it "assigns the requested provider as @provider" do
+        get :refused, :id => provider.id
+        assigns(:provider).should eq(provider)
+      end
+
+      it "assigns the requested provider.pbs_list as @pbs_list" do
+        pbs_list = Factory(:pbs_list, :provider => provider)
+        get :refused, :id => provider.id
+        assigns(:pbs_list).should eq(pbs_list)
+      end
+
+      it "redirects the user if the pbs_list already has a substitute provider" do
+        pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => sub)
+        get :refused, :id => provider.id
+        response.should redirect_to(pbs_lists_path)
+      end
+
+    end
+
+    describe "PUT process_refused" do
+
+      let(:provider) { Factory(:provider, :name_practice => "provider") }
+      let(:sub) { Factory(:provider, :name_practice => "substitute provider") }
+
+      it "sets the pr_recruitment_end_date on the provider.pbs_list record" do
+        pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => nil)
+        put :process_refused, :id => provider.id
+        provider.pbs_list.pr_recruitment_end_date.should == Date.today
+      end
+
+      it "sets the pr_recruitment_status to 2 (Not recruited) on the provider.pbs_list record" do
+        pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => nil)
+        put :process_refused, :id => provider.id
+        provider.pbs_list.pr_recruitment_status_code.should == 2
+      end
+
+      it "sets the substitute_provider to the selected substitute" do
+        pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => nil)
+        put :process_refused, :id => provider.id, :substitute_provider_id => sub.id
+        provider.pbs_list.substitute_provider.should == sub
+      end
+
+    end
 
   end
 
