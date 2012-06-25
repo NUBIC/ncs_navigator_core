@@ -1,8 +1,5 @@
 class SpecimenReceiptConfirmation < ActiveRecord::Base
-  include MdesRecord
-  acts_as_mdes_record :public_id_field => :sample_id
-
-  belongs_to :speciment_processing_shipping_center
+  belongs_to :specimen_processing_shipping_center
 
   # ncs_coded_attribute :specimen_condition,                'SPECIMEN_STATUS_CL7'
 
@@ -16,4 +13,6 @@ class SpecimenReceiptConfirmation < ActiveRecord::Base
   validates_presence_of :specimen_id
   validates_presence_of :shipment_received_by
   validates_presence_of :specimen_receipt_temp
+  validates_presence_of :shipment_receipt_confirmed
+  validates_presence_of :shipment_condition
 end

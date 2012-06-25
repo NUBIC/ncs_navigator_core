@@ -152,6 +152,8 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
+  
+  resources :specimen_receipt_confirmations
 
   resources :sample_shipping_confirmations
 

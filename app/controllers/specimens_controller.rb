@@ -47,7 +47,7 @@ class SpecimensController < ApplicationController
             :shipment_date                          => @shipment_date, 
             :shipment_tracking_number               => @shipment_tracking_number, 
             :psu_code                               => @psu_code, 
-            :specimen_processing_shipping_center_id => @specimen_processing_shipping_center_id, 
+            :specimen_processing_shipping_center_id => value[0].specimen_processing_shipping_center_id, 
             :shipment_temperature_code              => @shipping_temperature_selected, 
             :shipment_receipt_confirmed             => @shipment_receipt_confirmed,
             :shipment_issues                        => @shipment_issues)      

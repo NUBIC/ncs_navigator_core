@@ -1,7 +1,6 @@
 class SpecimenStoragesController < ApplicationController
 
   def new
-    puts("---- do I GET HERE? NEW #{params[:container_id].inspect}")
     @specimen_storage = SpecimenStorage.new(:storage_container_id => params[:container_id])
   end
   
