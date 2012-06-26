@@ -451,6 +451,11 @@ describe Person do
       it "should set the instrument_breakoff_code"
 
       it "should set the instrument_status_code"
+      
+      it "should set the instrument_repeat_key" do
+        response_set, instrument = prepare_instrument(@person, @survey)
+        instrument.instrument_repeat_key.should == 0
+      end
 
     end
 

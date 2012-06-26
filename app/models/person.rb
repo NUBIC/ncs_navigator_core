@@ -302,6 +302,7 @@ class Person < ActiveRecord::Base
     Instrument.new(:psu_code => NcsNavigatorCore.psu,
       :instrument_version => Instrument.determine_version(survey.title),
       :instrument_type => InstrumentEventMap.instrument_type(survey.title),
+      :instrument_repeat_key => instrument_repeat_key(survey),
       :person => self,
       :survey => survey)
   end
