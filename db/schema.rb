@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120626183145) do
+ActiveRecord::Schema.define(:version => 20120626221317) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(:version => 20120626183145) do
     t.text     "generation_log"
     t.string   "latest_merge_status"
     t.integer  "latest_merge_id"
+    t.string   "staff_id"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true

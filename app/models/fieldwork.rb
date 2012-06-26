@@ -59,11 +59,6 @@ class Fieldwork < ActiveRecord::Base
   attr_accessor :report
 
   ##
-  # An ephemeral attribute that, if set, names the user responsible for
-  # generating fieldwork data.
-  attr_accessor :staff_id
-
-  ##
   # Retrieves a fieldwork set by ID.  If no fieldwork set by that ID can be
   # found, initializes an empty set, saves it, and returns that set.
   #
@@ -72,9 +67,11 @@ class Fieldwork < ActiveRecord::Base
   # datasets from field clients even if they give us a fieldwork ID that we
   # know nothing about, but we also want to encode the idea that we _usually_
   # expect a date range and client ID.
-  def self.for(id)
+  def self.for(id, staff_id)
     find_or_initialize_by_fieldwork_id(id).tap do |r|
-      r.save!(:validate => false) if r.new_record?
+      r.staff_id = staff_id
+
+      r.save!(:validate => false)
     end
   end
 
