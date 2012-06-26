@@ -70,8 +70,6 @@
                         - SpecimenReceipt.where(:storage_container_id => k).each do |val|
                           %p{:class => "paragraph_shift"}
                             = val.specimen_id
-                    
-              
           %td
             %div{:id => "confirm"}
               - if not @sample_shippings_not_received.blank?
@@ -85,17 +83,5 @@
                   %b Specimens:
                   - @specimen_shippings_not_received.each do |specimen_shipping|
                     %p{:class => "paragraph_shift"}
-                    -#= specimen_shipping.inspect
-                    = link_to specimen_shipping.shipment_tracking_number, {:controller => "specimen_receipt_confirmations", :action => "index", :tracking_number => specimen_shipping.shipment_tracking_number}, :class => "confirm_link", :id => "confirm_link"
-
-              
-              -#
-                - @specimens.each do |sp|
-                  = sp.specimen_id
-                  %br
-                - @samples.each do |s|
-                  = s.sample_id
-                  %br                            
-        -#%tr
-          -#%td{:colspan => '4'}
+                      = link_to specimen_shipping.shipment_tracking_number, {:controller => "specimen_receipt_confirmations", :action => "index", :tracking_number => specimen_shipping.shipment_tracking_number}, :class => "confirm_link", :id => "confirm_link"
     %div{:id => "displaying", :class => "display records"}

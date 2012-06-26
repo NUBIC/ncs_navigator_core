@@ -7,7 +7,6 @@ class SpecimenStoragesController < ApplicationController
   def create
     @params = params[:specimen_storage]
     @params[:psu_code] = @psu_code
-    # @params[:staff_id] = "Jane Dow"
     @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.id
     @params = extract_date_time(@params)
     @specimen_storage = SpecimenStorage.new(@params)
