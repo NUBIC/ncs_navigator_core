@@ -71,4 +71,33 @@ FactoryGirl.define do
 
   end
 
+  factory :non_interview_provider do |nir|
+    nir.psu_code                      20000030
+    nir.association :contact,         :factory => :contact
+    nir.association :provider,        :factory => :provider
+    nir.nir_type_provider_code        1
+    nir.nir_type_provider_other       nil
+    nir.nir_closed_info_code          -4
+    nir.nir_closed_info_other         nil
+    nir.when_closure                  nil
+    nir.perm_closure_code             -4
+    nir.who_refused_code              -4
+    nir.who_refused_other             nil
+    nir.refuser_strength_code         -4
+    nir.ref_action_provider_code      -4
+    nir.who_confirm_noprenatal_code   -4
+    nir.who_confirm_noprenatal_other  nil
+    nir.nir_moved_info_code           -4
+    nir.nir_moved_info_other          nil
+    nir.when_moved                    nil
+    nir.perm_moved_code               -4
+    nir.nir_pbs_comment               nil
+  end
+
+  factory :non_interview_provider_refusal do |nipr|
+    nipr.psu_code                      20000030
+    nipr.association :non_interview_provider, :factory => :non_interview_provider
+    nipr.refusal_reason_pbs_code       1
+    nipr.refusal_reason_pbs_other      nil
+  end
 end

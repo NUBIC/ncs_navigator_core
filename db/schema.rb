@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622170014) do
+ActiveRecord::Schema.define(:version => 20120626141604) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -399,6 +399,44 @@ ActiveRecord::Schema.define(:version => 20120622170014) do
     t.integer  "nir_no_access_code",                    :null => false
     t.string   "nir_no_access_other"
     t.string   "transaction_type",        :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "non_interview_provider_refusals", :force => true do |t|
+    t.integer  "psu_code",                                :null => false
+    t.string   "nir_provider_refusal_id",   :limit => 36, :null => false
+    t.integer  "non_interview_provider_id"
+    t.integer  "refusal_reason_pbs_code",                 :null => false
+    t.string   "refusal_reason_pbs_other"
+    t.string   "transaction_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "non_interview_providers", :force => true do |t|
+    t.integer  "psu_code",                                   :null => false
+    t.string   "non_interview_provider_id",    :limit => 36, :null => false
+    t.integer  "contact_id"
+    t.integer  "provider_id"
+    t.integer  "nir_type_provider_code",                     :null => false
+    t.string   "nir_type_provider_other"
+    t.integer  "nir_closed_info_code",                       :null => false
+    t.string   "nir_closed_info_other"
+    t.date     "when_closure"
+    t.integer  "perm_closure_code",                          :null => false
+    t.integer  "who_refused_code",                           :null => false
+    t.string   "who_refused_other"
+    t.integer  "refuser_strength_code",                      :null => false
+    t.integer  "ref_action_provider_code",                   :null => false
+    t.integer  "who_confirm_noprenatal_code",                :null => false
+    t.string   "who_confirm_noprenatal_other"
+    t.integer  "nir_moved_info_code",                        :null => false
+    t.string   "nir_moved_info_other"
+    t.date     "when_moved"
+    t.integer  "perm_moved_code",                            :null => false
+    t.text     "nir_pbs_comment"
+    t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

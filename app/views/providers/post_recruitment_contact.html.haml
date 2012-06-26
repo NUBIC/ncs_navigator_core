@@ -8,6 +8,6 @@
     %li
       = link_to "Is provider willing to participate?", recruited_provider_path(@provider), :class => "accepted_link icon_link"
     %li
-      = link_to "Did the provider refuse to participate?", refused_provider_path(@provider), :class => "refused_link icon_link"
+      = link_to "Was the provider unavailable, were there issues, or did the provider refuse to participate?", refused_provider_path(@provider), :class => "refused_link icon_link"
     %li
       = link_to "View Contact Log", contact_log_provider_path(@provider), :class => "list_link icon_link"
