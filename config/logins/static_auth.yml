@@ -6,6 +6,8 @@ groups:
 users:
   test_user:
     password: test_user
+    identifiers:
+      staff_id: test_user
     portals:
       - NCSNavigator:
         - staff
