@@ -15,6 +15,6 @@
         %td.fieldwork_id
           = fw.fieldwork_id
         %td.status
-          = fw.latest_merge_status.humanize
+          = latest_merge_status(fw)
 
   = will_paginate @fieldworks

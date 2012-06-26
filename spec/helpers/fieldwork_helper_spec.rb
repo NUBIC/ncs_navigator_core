@@ -1,15 +1,23 @@
 require 'spec_helper'
 
-# Specs in this file have access to a helper object that includes
-# the FieldworkHelper. For example:
-#
-# describe FieldworkHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       helper.concat_strings("this","that").should == "this that"
-#     end
-#   end
-# end
 describe FieldworkHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#latest_merge_status' do
+    let(:fieldwork) { Factory(:fieldwork) }
+
+    it 'outputs a humanized Fieldwork#latest_merge_status' do
+      fieldwork.latest_merge_status = 'conflict'
+
+      helper.latest_merge_status(fieldwork).should == 'Conflict'
+    end
+
+    describe 'if Fieldwork#latest_merge_status is nil' do
+      before do
+        fieldwork.latest_merge_status = nil
+      end
+
+      it 'outputs "Unknown"' do
+        helper.latest_merge_status(fieldwork).should == 'Unknown'
+      end
+    end
+  end
 end
