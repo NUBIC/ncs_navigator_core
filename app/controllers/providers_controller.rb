@@ -240,6 +240,7 @@ class ProvidersController < ApplicationController
 
   def post_recruitment_contact
     @provider = Provider.find(params[:id])
+    @contact  = Contact.find(params[:contact_id])
   end
 
   def recruited

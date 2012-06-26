@@ -103,7 +103,7 @@ class ContactsController < ApplicationController
     if request.post?
       if @contact.save
         link = find_or_create_contact_link
-        redirect_to post_recruitment_contact_provider_path(@provider)
+        redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
       else
         render :action => "provider_recruitment"
       end

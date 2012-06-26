@@ -1,0 +1,18 @@
+- title "Edit Non-Interview Response Provider"
+
+.mdes_table_definition
+  = render 'documentation/non_interview_provider'
+
+%h3
+  Non-Interview Response Provider for
+  = @provider
+
+.page_section
+  = form_for([@provider, @non_interview_provider], :html => {:autocomplete => "off"}) do |f|
+    = hidden_field_tag :contact_id, @contact.id
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "non_interview_providers/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

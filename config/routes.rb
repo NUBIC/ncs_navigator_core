@@ -82,6 +82,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :refused
       put :process_refused
     end
+    resources :non_interview_providers, :except => [:destroy]
   end
   resources :pbs_lists do
     member do

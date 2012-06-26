@@ -1,0 +1,46 @@
+.column-container
+
+  = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_type_provider_code, :label_text => "Description of Non-Interview of Provider", :other => :nir_type_provider_other }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_closed_info_code, :label_text => "Source of Verified Location Closure", :other => :nir_closed_info_other }
+
+  %p
+    = f.label :when_closure, "When did the Provider location close?"
+    %br
+    = f.text_field :when_closure, :class => "datepicker"
+
+  = render "shared/ncs_code_select", { :f => f, :code => :perm_closure_code, :label_text => "Is the closure permanent?" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :label_text => "Person in the provider's office who refused participation", :other => :who_refused_other }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :label_text => "Strength/Intensity of Refusal" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :ref_action_provider_code, :label_text => "Recommended next steps for case" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :who_confirm_noprenatal_code, :label_text => "Person in the provider's office who stated provider practice does not include prenatal care.", :other => :who_confirm_noprenatal_other }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :nir_moved_info_code, :label_text => "Source of Verified Relocation Information", :other => :nir_moved_info_other }
+
+  %p
+    = f.label :when_moved, "When did the Provider relocate?"
+    %br
+    = f.text_field :when_moved, :class => "datepicker"
+
+  = render "shared/ncs_code_select", { :f => f, :code => :perm_moved_code, :label_text => "Is the relocation permanent?" }
+
+  %p
+    = f.label :nir_pbs_comment, "Comment"
+    %br
+    = f.text_area :nir_pbs_comment
+
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#non_interview_provider_nir_type_provider_code","#non_interview_provider_nir_type_provider_other");
+    wire_up_select_other("#non_interview_provider_nir_closed_info_code","#non_interview_provider_nir_closed_info_other");
+    wire_up_select_other("#non_interview_provider_who_refused_code","#non_interview_provider_who_refused_other");
+    wire_up_select_other("#non_interview_provider_who_confirm_noprenatal_code","#non_interview_provider_who_confirm_noprenatal_other");
+    wire_up_select_other("#non_interview_provider_nir_moved_info_code","#non_interview_provider_nir_moved_info_other");
+  });

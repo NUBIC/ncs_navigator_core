@@ -58,6 +58,7 @@ class Provider < ActiveRecord::Base
   has_one :substitute_pbs_list, :class_name => 'PbsList', :foreign_key => 'substitute_provider_id'
 
   has_many :provider_logistics
+  has_many :non_interview_providers
 
   accepts_nested_attributes_for :address, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true
@@ -101,11 +102,15 @@ class Provider < ActiveRecord::Base
   end
 
   def original_provider?
-    self.pbs_list && self.pbs_list.in_sample_code == 1
+    self.pbs_list.try(:in_sample_code) == 1
   end
 
   def substitute_provider?
-    self.pbs_list && self.pbs_list.in_sample_code == 2 && self.substitute_pbs_list
+    self.pbs_list.try(:in_sample_code) == 2 && self.substitute_pbs_list
+  end
+
+  def refused_to_participate?
+    self.pbs_list.try(:refused_to_participate?)
   end
 
 end
