@@ -94,6 +94,9 @@ module NavigationHelpers
     when /^the new participant consent page$/
       new_participant_consent_path
 
+    when /^the field client activity page$/
+      fieldwork_index_path
+
     # the following are examples using path_to_pickle
 
     when /^#{capture_model}(?:'s)? page$/                           # eg. the forum's page
