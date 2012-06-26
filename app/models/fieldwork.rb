@@ -79,7 +79,7 @@ class Fieldwork < ActiveRecord::Base
   # Shows all conflicting fieldwork records (as determined by latest merge
   # status) first, followed by all other fieldwork records.
   def self.for_report
-    order("(case latest_merge_status when 'conflict' then 1 else 0 end) desc, updated_at desc")
+    order("(CASE latest_merge_status WHEN 'conflict' THEN 1 ELSE 0 END) DESC, updated_at DESC")
   end
 
   ##
