@@ -40,6 +40,22 @@ describe Merge do
     end
   end
 
+  describe '#save' do
+    before do
+      subject.save
+
+      fw.reload
+    end
+
+    it 'copies its status to its fieldwork object' do
+      fw.latest_merge_status.should == subject.status
+    end
+
+    it 'copies its ID to its fieldwork object' do
+      fw.latest_merge_id.should == subject.id
+    end
+  end
+
   describe '#status' do
     describe 'if started_at is nil' do
       before do
