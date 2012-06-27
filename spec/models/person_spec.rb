@@ -410,8 +410,8 @@ describe Person do
         response_set1, instrument1 = prepare_instrument(@person, @survey)
         response_set0.save!
         response_set1.save!
-
-        @person.instrument_repeat_key(instrument1.survey).should == 1
+        
+        @person.reload.instrument_repeat_key(instrument1.survey).should == 1
       end
 
     end
