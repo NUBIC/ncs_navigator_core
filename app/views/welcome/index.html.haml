@@ -94,3 +94,10 @@
             %ul
               %li
                 = link_to "Pending Events", {:controller => "welcome", :action => "pending_events"}, :class => "list_link icon_link"
+          - if NcsNavigatorCore.expanded_phase_two?
+            %h4
+              Samples/Specimens
+            .samples_specimens
+              %ul
+                %li
+                  = link_to "Samples/Specimens", sample_processes_path, :class => "list_link icon_link"
