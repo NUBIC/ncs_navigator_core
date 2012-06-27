@@ -211,7 +211,7 @@ describe ContactsController do
 
             it "redirects to the post_recruitment_contact provider page" do
               post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
-              response.should redirect_to(post_recruitment_contact_provider_path(@provider))
+              response.should redirect_to(post_recruitment_contact_provider_path(@provider, :contact_id => assigns(:contact).id))
             end
           end
         end

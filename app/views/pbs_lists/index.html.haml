@@ -54,7 +54,6 @@
               = link_to txt, contact_log_provider_path(provider), :class => "list_link icon_link"
           %td
             = provider_recruitment_link(pbs) unless pbs.recruitment_ended?
-            = link_to 'Refused', refused_provider_path(pbs.provider), :class => 'refused_link icon_link' if pbs.refused_to_participate?
   .links
     = link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"
     %br

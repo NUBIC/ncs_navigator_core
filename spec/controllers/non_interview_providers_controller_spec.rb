@@ -65,7 +65,7 @@ describe NonInterviewProvidersController do
 
         it "redirects to the created non_interview_provider" do
           post :create, :non_interview_provider => valid_attributes, :contact_id => contact.id, :provider_id => provider.id
-          response.should redirect_to(edit_provider_path(provider.id))
+          response.should redirect_to(contact_log_provider_path(provider.id))
         end
       end
 
@@ -103,7 +103,7 @@ describe NonInterviewProvidersController do
         it "redirects to the non_interview_provider" do
           non_interview_provider = NonInterviewProvider.create! valid_attributes
           put :update, :id => non_interview_provider.id, :non_interview_provider => valid_attributes, :contact_id => contact.id, :provider_id => provider.id
-          response.should redirect_to(edit_provider_path(non_interview_provider.provider_id))
+          response.should redirect_to(contact_log_provider_path(non_interview_provider.provider_id))
         end
       end
 
