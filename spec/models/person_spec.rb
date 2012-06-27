@@ -410,8 +410,8 @@ describe Person do
         response_set1, instrument1 = prepare_instrument(@person, @survey)
         response_set0.save!
         response_set1.save!
-
-        @person.instrument_repeat_key(instrument1.survey).should == 1
+        
+        @person.reload.instrument_repeat_key(instrument1.survey).should == 1
       end
 
     end
@@ -451,6 +451,11 @@ describe Person do
       it "should set the instrument_breakoff_code"
 
       it "should set the instrument_status_code"
+      
+      it "should set the instrument_repeat_key" do
+        response_set, instrument = prepare_instrument(@person, @survey)
+        instrument.instrument_repeat_key.should == 0
+      end
 
     end
 

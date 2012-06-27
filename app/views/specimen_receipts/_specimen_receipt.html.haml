@@ -4,16 +4,20 @@
   = f.object.specimen_id
   = f.hidden_field :specimen_id
   %div{:class => "spec_sample_receipt"}
+    - if not f.object.storage_container_id.blank?
+      = "Storage Container ID: "
+      = f.object.storage_container_id
+      %br  
+    - if not f.object.receipt_datetime.blank?
+      = "Receipt Date and Time: "
+      = f.object.receipt_datetime  
+      %br
     = "Receipt Comment: " 
     = NcsCode.for_attribute_name_and_local_code(:receipt_comment_code, @specimen_receipt.receipt_comment_code)
     %br
     - if not f.object.receipt_comment_other.blank?
       = "Receipt comment other: "
       = f.object.receipt_comment_other
-      %br
-    - if not f.object.receipt_datetime.blank?
-      = "Receipt Date and Time: "
-      = f.object.receipt_datetime  
       %br
     - if not f.object.cooler_temp.blank?
       = "Cooler Temperature (in Celsius): "
@@ -34,16 +38,9 @@
     = "Lower Trigger Ambient: "
     = NcsCode.for_attribute_name_and_local_code(:lower_trigger_ambient_code, @specimen_receipt.lower_trigger_ambient_code)
     %br
-    - if not f.object.storage_container_id.blank?
-      = "Storage Container ID: "
-      = f.object.storage_container_id
-      %br
-    = "Lower Trigger Ambient: "
-    = NcsCode.for_attribute_name_and_local_code(:centrifuge_comment_code, @specimen_receipt.centrifuge_comment_code)
-    %br
-    - if not f.object.centrifuge_comment_other.blank?
-      = "Centrifuge Comment Other: "
-      = f.object.centrifuge_comment_other
+    - if not f.object.centrifuge_staff_id.blank?
+      = "Centrifuge Staff ID: "
+      = f.object.centrifuge_staff_id
       %br
     - if not f.object.centrifuge_starttime.blank?
       = "Centrifuge Start Time: "
@@ -53,10 +50,14 @@
       = "Centrifuge End Time: "
       = f.object.centrifuge_endtime
       %br
-    - if not f.object.centrifuge_staff_id.blank?
-      = "Centrifuge Staff ID: "
-      = f.object.centrifuge_staff_id
+    = "Centrifuge Comment: "
+    = NcsCode.for_attribute_name_and_local_code(:centrifuge_comment_code, @specimen_receipt.centrifuge_comment_code)
+    %br
+    - if not f.object.centrifuge_comment_other.blank?
+      = "Centrifuge Comment Other: "
+      = f.object.centrifuge_comment_other
       %br
+
     - if not f.object.specimen_equipment_id.blank?  
       = "Equipment ID: "
       = f.object.specimen_equipment_id

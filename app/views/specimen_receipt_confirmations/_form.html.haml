@@ -1,30 +1,30 @@
 .page_section
-  = form_for(sample_receipt_confirmation) do |f| 
+  = form_for(specimen_receipt_confirmation) do |f| 
     = render "shared/custom_error_messages", :object => f.object
-    = "Followed is required for selected sample " 
-    = sample_receipt_confirmation.sample_id
+    = "Followed is required for selected specimen " 
+    = specimen_receipt_confirmation.specimen_id
     .psu_code
       %b
         = "PSU:"
       = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
-
-    = f.label :sample_receipt_shipping_center_id, "Sample Receipt Shipping Center ID:"
-    = sample_receipt_confirmation.sample_receipt_shipping_center.sample_receipt_shipping_center_id
-    = f.hidden_field :sample_receipt_shipping_center_id
+    
+    = f.label :specimen_processing_shipping_center_id, "Specimen Processing Shipping Center ID:"
+    = specimen_receipt_confirmation.specimen_processing_shipping_center.specimen_processing_shipping_center_id
+    = f.hidden_field :specimen_processing_shipping_center_id
     
     %br
     = f.label :shipper_id, "Shipper ID:"
-    = sample_receipt_confirmation.shipper_id
+    = specimen_receipt_confirmation.shipper_id
     = f.hidden_field :shipper_id
-    
+  
     %br
     = f.label :shipment_tracking_number, "Shipment Tracking Number:"
-    = sample_receipt_confirmation.shipment_tracking_number
+    = specimen_receipt_confirmation.shipment_tracking_number
     = f.hidden_field :shipment_tracking_number
-    
+  
     %br
     = f.label :shipment_receipt_datetime, "Shipment Receipt Date and Time: "
-    = f.text_field :shipment_receipt_datetime, :class => "datetime", :id => "datetime_"+sample_receipt_confirmation.sample_id
+    = f.text_field :shipment_receipt_datetime, :class => "datetime", :id => "datetime_"+specimen_receipt_confirmation.specimen_id
     %br  
     = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :label_text => "Shipment Receipt Confirmed Code:" }  
     %br
@@ -32,17 +32,17 @@
     %br
     = f.label :shipment_damaged_reason, "Shipment Damaged Reason:"
     = f.text_field :shipment_damaged_reason
-    
+  
     %br
-    = f.label :sample_receipt_temp, "Sample Receipt Temp:"
-    = f.text_field :sample_receipt_temp
-    %br
-    = render "shared/ncs_code_select", { :f => f, :code => :sample_condition_code, :label_text => "Sample Condition Code:" }  
+    = f.label :specimen_receipt_temp, "Specimen Receipt Temp:"
+    = f.text_field :specimen_receipt_temp
+    -#%br
+    -#= render "shared/ncs_code_select", { :f => f, :code => :sample_condition_code, :label_text => "Sample Condition Code:" }  
 
     %br
     = f.label :shipment_received_by,"Shipment Received By:"
     = f.text_field :shipment_received_by
 
-    = f.hidden_field :sample_id
+    = f.hidden_field :specimen_id
     %br
     = f.submit "Submit", :disable_with => 'Submitting...', :class => 'submit_confirmation'

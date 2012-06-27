@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120626141604) do
+ActiveRecord::Schema.define(:version => 20120626221317) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -249,7 +250,7 @@ ActiveRecord::Schema.define(:version => 20120626141604) do
   end
 
   create_table "fieldworks", :force => true do |t|
-    t.string   "fieldwork_id",   :limit => 36
+    t.string   "fieldwork_id",        :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "client_id"
@@ -257,6 +258,9 @@ ActiveRecord::Schema.define(:version => 20120626141604) do
     t.date     "start_date"
     t.binary   "original_data"
     t.text     "generation_log"
+    t.string   "latest_merge_status"
+    t.integer  "latest_merge_id"
+    t.string   "staff_id"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -291,39 +295,6 @@ ActiveRecord::Schema.define(:version => 20120626141604) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
-  end
-
-  create_table "incidents", :force => true do |t|
-    t.integer  "psu_code",                                             :null => false
-    t.string   "incident_id",                            :limit => 36, :null => false
-    t.string   "incident_date",                          :limit => 10
-    t.string   "incident_time",                          :limit => 5
-    t.string   "incident_report_date",                   :limit => 10
-    t.string   "incident_report_time",                   :limit => 5
-    t.string   "incident_staff_reporter_id",             :limit => 36
-    t.string   "incident_staff_supervisor_id",           :limit => 36
-    t.integer  "contact_id"
-    t.integer  "incident_recipient_is_participant_id"
-    t.integer  "incident_recipient_is_dwelling_unit_id"
-    t.string   "incident_recipient_is_staff",            :limit => 36
-    t.integer  "incident_recipient_is_family_id"
-    t.integer  "incident_recipient_is_acquaintance_id"
-    t.integer  "incident_recipient_is_other"
-    t.integer  "incident_contact_person_id"
-    t.integer  "incident_type_code",                                   :null => false
-    t.string   "incident_type_other"
-    t.string   "incident_loss_computer_model",           :limit => 16
-    t.string   "incident_loss_computer_serial_number",   :limit => 32
-    t.string   "incident_loss_computer_decal",           :limit => 32
-    t.string   "incident_loss_removable_media",          :limit => 32
-    t.string   "incident_loss_paper",                    :limit => 32
-    t.string   "incident_loss_other"
-    t.text     "incident_description"
-    t.text     "incident_action"
-    t.integer  "incident_reported_code",                               :null => false
-    t.string   "transaction_type",                       :limit => 36
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "instruments", :force => true do |t|
@@ -1067,6 +1038,7 @@ ActiveRecord::Schema.define(:version => 20120626141604) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
     t.string   "api_id"
   end
@@ -1218,6 +1190,24 @@ ActiveRecord::Schema.define(:version => 20120626141604) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "address_id"
+  end
+
+  create_table "specimen_receipt_confirmations", :force => true do |t|
+    t.integer  "psu_code",                                                                           :null => false
+    t.integer  "specimen_processing_shipping_center_id"
+    t.integer  "shipment_receipt_confirmed_code",                                                    :null => false
+    t.string   "shipper_id",                                                                         :null => false
+    t.string   "shipment_tracking_number",                                                           :null => false
+    t.datetime "shipment_receipt_datetime",                                                          :null => false
+    t.integer  "shipment_condition_code",                                                            :null => false
+    t.string   "shipment_damaged_reason"
+    t.string   "specimen_id",                                                                        :null => false
+    t.decimal  "specimen_receipt_temp",                                :precision => 6, :scale => 2, :null => false
+    t.string   "specimen_condition"
+    t.string   "shipment_received_by",                                                               :null => false
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "specimen_receipts", :force => true do |t|

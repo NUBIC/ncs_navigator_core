@@ -19,7 +19,7 @@ class Api::FieldworkController < ApplicationController
   end
 
   def update
-    fw = Fieldwork.for(params['id'])
+    fw = Fieldwork.for(params['id'], current_staff_id)
 
     begin
       m = fw.merges.create!(:proposed_data => request.body.read)

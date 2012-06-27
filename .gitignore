@@ -28,6 +28,7 @@ surveys/
 surveys/*
 .sass-cache/
 .sass-cache/*
+mime-types/
 public/assets
 reports/*
 importer_passthrough/*.xml

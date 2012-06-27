@@ -24,8 +24,13 @@ function addStyles() {
       data: $(form).serializeArray(),
       dataType: 'json',
       success: function(response) {
-        var url = /sample_receipt_confirmations/ + response.sample_receipt_confirmation.id + ' form';
-        $(div).load(url)
+        if (response.specimen_receipt_confirmation) {
+          var url = /specimen_receipt_confirmations/ + response.specimen_receipt_confirmation.id + ' form';
+          $(div).load(url)
+        } else {
+          var url = /sample_receipt_confirmations/ + response.sample_receipt_confirmation.id + ' form';
+          $(div).load(url)
+        }
       },
       error: function(xhr, ajaxOptions, thrownError) {
         $(submitInput).removeAttr('disabled');

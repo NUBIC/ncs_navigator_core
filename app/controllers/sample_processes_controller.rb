@@ -13,6 +13,7 @@ class SampleProcessesController < ApplicationController
     @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
 
     @sample_shippings_not_received = hash_from_array_by_track_num(array_of_shipped_and_not_received_samples)
+    @specimen_shippings_not_received = array_of_shipped_and_not_received_specimens
   end
 
   def array_of_not_shipped_specs
@@ -72,11 +73,14 @@ class SampleProcessesController < ApplicationController
 
   def array_of_sample_receive_store()
     SampleReceiptStore.all.select{ |s| SampleShipping.where(:sample_id => s.sample_id).blank?}
-    # SampleReceiptStore.find(:all, :conditions => { :sample_id => arrayOfSamples})
   end
 
   def array_of_shipped_and_not_received_samples
-    here = SampleShipping.all.select{ |ss| SampleReceiptConfirmation.where(:sample_id => ss.sample_id).blank? }
+    SampleShipping.all.select{ |ss| SampleReceiptConfirmation.where(:sample_id => ss.sample_id).blank? }
+  end
+
+  def array_of_shipped_and_not_received_specimens
+    SpecimenShipping.all.select{ |ss| SpecimenReceipt.where(:storage_container_id => ss.storage_container_id).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.specimen_id).any?}.any? }
   end
 
   def hash_from_array_by_track_num(array_of_samples)

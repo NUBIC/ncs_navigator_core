@@ -1,0 +1,46 @@
+- title "New Specimen Receipt Confirmation"
+
+= form_for @specimen_receipt_confirmation do |f|
+  %b
+    = "PSU: "
+  = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)
+  %br
+  %b
+    ="Specimen Processing Shipping Center ID:"
+  = @specimen_receipt_confirmation.specimen_processing_shipping_center.specimen_processing_shipping_center_id
+  %br
+  %b
+    ="Shipper ID:"
+  = @specimen_receipt_confirmation.shipper_id
+  %br
+  %b
+    ="Shipment Tracking Number:"
+  = @specimen_receipt_confirmation.shipment_tracking_number
+  %br
+  %b
+    = "Shipment Receipt Date and Time: "
+  = @specimen_receipt_confirmation.shipment_receipt_datetime
+  %br
+  %b
+    = "Shipment Receipt Confirmed Code:"
+  = NcsCode.for_attribute_name_and_local_code(:shipment_receipt_confirmed_code, @specimen_receipt_confirmation.shipment_receipt_confirmed_code)    
+  %br
+  %b
+    = "Shipment Condition Code:"
+  = NcsCode.for_attribute_name_and_local_code(:shipment_condition_code, @specimen_receipt_confirmation.shipment_condition_code)    
+  %br
+  %b
+    = "Shipment Damaged Reason:"
+  = @specimen_receipt_confirmation.shipment_damaged_reason
+  %br
+  %b
+    = "Specimen Receipt Temp:"
+  = @specimen_receipt_confirmation.specimen_receipt_temp
+  %br
+  %b
+    = "Shipment Received By:"
+  = @specimen_receipt_confirmation.shipment_received_by
+
+  = f.hidden_field :specimen_id
+  %br
+  = link_to 'Edit', edit_specimen_receipt_confirmation_path(@specimen_receipt_confirmation), :class => "edit_link icon_link edit_confirmation"

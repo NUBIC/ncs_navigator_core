@@ -108,6 +108,8 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
 
+  resources :fieldwork, :only => [:index, :show]
+
   match "/faq", :to => "welcome#faq", :via => [:get]
   match "/reports", :to => "reports#index", :via => [:get]
   match "/reports/index", :to => "reports#index", :via => [:get]
@@ -158,6 +160,8 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
+  
+  resources :specimen_receipt_confirmations
 
   resources :sample_shipping_confirmations
 

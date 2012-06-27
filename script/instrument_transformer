@@ -29,15 +29,9 @@ NcsNavigator::Warehouse::DatabaseInitializer.new(config).set_up_repository(:work
   transformer.transform(ts)
 end
 
-def json_line(te)
-  %w(message record_id model_class).inject({}) { |o, k|
-    o[k] = te.send(k) if te.send(k); o
-  }.to_json.gsub(/\n/, ' ')
-end
-
 # Output to conform to SubprocessTransformer stdout protocol
 ts.transform_errors.each do |error|
-  line = json_line(error)
+  line = error.to_json
   puts line unless line.gsub(/[{}\s]/, '').empty?
 end
 puts ts.record_count
