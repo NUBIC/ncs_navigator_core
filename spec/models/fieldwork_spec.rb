@@ -30,18 +30,36 @@ describe Fieldwork do
   it { should have_many(:merges) }
 
   describe '.for' do
-    it 'retrieves a fieldwork set' do
-      subject.fieldwork_id = id
-      subject.save!
+    describe "if the given ID doesn't exist" do
+      it "creates one" do
+        fw = Fieldwork.for(id, 'test')
 
-      Fieldwork.for(id).should == subject
+        fw.fieldwork_id.should == id
+        fw.should_not be_new_record
+      end
+
+      it 'sets #staff_id' do
+        fw = Fieldwork.for(id, 'test')
+
+        Fieldwork.find(fw.id).staff_id.should == 'test'
+      end
     end
 
-    it "creates one if one doesn't exist" do
-      fw = Fieldwork.for(id)
+    describe "if the given ID exists" do
+      before do
+        subject.fieldwork_id = id
+        subject.save!
+      end
 
-      fw.fieldwork_id.should == id
-      fw.should_not be_new_record
+      it 'retrieves a fieldwork set' do
+        Fieldwork.for(id, 'test').should == subject
+      end
+
+      it 'sets #staff_id' do
+        fw = Fieldwork.for(id, 'test')
+
+        Fieldwork.find(fw.id).staff_id.should == 'test'
+      end
     end
   end
 
@@ -59,6 +77,10 @@ describe Fieldwork do
     before do
       NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
         :from_psc => NcsNavigator::Core::Psc::ScheduledActivityReport.new)
+    end
+
+    it 'sets #staff_id' do
+      fieldwork.staff_id.should == 'test'
     end
 
     it 'logs to #generation_log' do
