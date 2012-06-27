@@ -123,31 +123,6 @@ module NcsNavigator::Core::Psc
     end
 
     ##
-    # Invokes #save across all dirty entities in an all-or-nothing fashion.
-    # Requires the name of the user performing the save.
-    #
-    # If any entity could not be saved, returns false; otherwise, returns
-    # true.
-    def save_entities(staff_id)
-      ActiveRecord::Base.transaction do
-        contacts_ok = rows.select(&:contact).all? { |r| r.contact.save }
-
-        raise ActiveRecord::Rollback unless contacts_ok
-
-        instruments_ok = rows.select(&:instrument).all? do |r|
-          instr = r.instrument
-
-          instr.save and
-            instr.link_to(r.person, r.contact, r.event, staff_id).save
-        end
-
-        raise ActiveRecord::Rollback unless instruments_ok
-
-        contacts_ok && instruments_ok
-      end
-    end
-
-    ##
     # For each row, maps #subject/person_id to the {Person} having that person_id.
     # with the {Person} having that person_id.  If no such mapping can be
     # made, maps the person_id to nil.
