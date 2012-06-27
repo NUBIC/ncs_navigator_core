@@ -9,9 +9,11 @@ $(function() {
       $('#ship_samples :checkbox:checked').each( function() {
            this.checked = !this.checked;
       });
+      $('#ship_specimens_btn').attr("disabled", false)
     } else {
       $('#ship_samples :checkbox').attr("disabled", false);
-      $('#ship_samples_btn').attr("disabled", false)
+      $('#ship_samples_btn').attr("disabled", true)
+      $('#ship_specimens_btn').attr("disabled", true)
     }
   })
 
@@ -24,9 +26,11 @@ $(function() {
       $('#ship_specimens :checkbox:checked').each( function() {
            this.checked = !this.checked;
       });
+      $('#ship_samples_btn').attr("disabled", false)
     } else {
       $('#ship_specimens :checkbox').attr("disabled", false);
-      $('#ship_specimens_btn').attr("disabled", false)      
+      $('#ship_specimens_btn').attr("disabled", true)
+      $('#ship_samples_btn').attr("disabled", true)
     }
   })
 
@@ -44,7 +48,7 @@ $(function() {
   function clearShipSelections() {
     blockUnblockProcessingDiv(false, "")
     $(':submit').each( function() {
-      $(this).attr("disabled", false)
+      $(this).attr("disabled", true)
     })
     $(':checkbox:checked').each( function() {
       this.checked = !this.checked;
@@ -273,7 +277,7 @@ $(function() {
   function move_link_from_store_to_ship(storage_container_id) {
     if ($('#ship_specimens_btn').length == 0) {
       title = "<b> Specimens: </b>"
-      submit_btn = "<input id='ship_specimens_btn' class='ship_specimens_btn' type='submit' value='Ship' name='commit'>"
+      submit_btn = "<input id='ship_specimens_btn' class='ship_specimens_btn' type='submit' value='Ship' name='commit' disabled='disabled'>"
       $("#ship_specimens form").first().append(title)
       $("#ship_specimens form").first().append(submit_btn)
     }
@@ -307,7 +311,7 @@ $(function() {
     // link_elt = "<li><input id="+sample_id + " class=sample_ship_checkbox name=sample_id[] type=checkbox value=" + sample_id + "><a id="+sample_id+ " class=\"my_sample_ship\" href=\"/sample_receipt_stores/new?sample_id="+sample_id+"\"> " + sample_id+ "</a></li>"
     if ($('#ship_samples_btn').length == 0) {
       title = "<b> Samples: </b>"
-      submit_btn = "<input id='ship_samples_btn' class='ship_samples_btn' type='submit' value='Ship' name='commit'>"
+      submit_btn = "<input id='ship_samples_btn' class='ship_samples_btn' type='submit' value='Ship' name='commit' disabled='disabled'>"
       $("#ship_samples form").first().append(title)
       $("#ship_samples form").first().append(submit_btn)
     } 
