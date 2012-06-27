@@ -180,6 +180,14 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns the (zero-based) number of times the event
+  # participant has performed this event
+  # @return [Integer]
+  def determine_repeat_key
+    self.participant.events.where(:event_type_code => self.event_type_code).count - 1
+  end
+
+  ##
   # Returns true for provider recruitment event
   # @return [Boolean]
   def provider_event?

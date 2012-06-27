@@ -467,8 +467,6 @@ describe Event do
       end
 
     end
-    # = f.text_field :event_repeat_key
-    # = render "shared/disposition_code", { :f => f, :code => :event_disposition }
 
     describe "the breakoff code" do
 
@@ -683,6 +681,21 @@ describe Event do
         @event.matches_activity(Struct::ScheduledActivity.new("2011-12-25", lbl)).should be_false
       end
 
+    end
+
+  end
+
+  describe ".determine_repeat_key" do
+
+    let(:participant) { Factory(:participant) }
+
+    it "returns n-1 for the nth event of this type for the participant" do
+      [7, 11, 13, 18, 23, 32, 33].each do |event_type_code|
+        3.times do |n|
+          event = Factory(:event, :event_type_code => event_type_code, :participant => participant)
+          event.determine_repeat_key.should == n
+        end
+      end
     end
 
   end

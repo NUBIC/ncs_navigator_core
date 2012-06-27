@@ -33,7 +33,7 @@ class ContactLinksController < ApplicationController
     @contact.populate_post_survey_attributes(@instrument) if @instrument
 
     @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
-    @event.event_repeat_key = @event.contact_links.count - 1 # zero based
+    @event.event_repeat_key = @event.determine_repeat_key
 
     @event_activities = psc.activities_for_event(@event)
 
