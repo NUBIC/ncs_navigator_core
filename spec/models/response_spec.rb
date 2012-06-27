@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # == Schema Information
-# Schema version: 20120607203203
+# Schema version: 20120626221317
 #
 # Table name: responses
 #
@@ -25,8 +25,8 @@
 #  api_id            :string(255)
 #  lock_version      :integer         default(0)
 #
-require 'spec_helper'
 
+require 'spec_helper'
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
 
 describe Response do

@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+
 # == Schema Information
-# Schema version: 20120607203203
+# Schema version: 20120626221317
 #
 # Table name: surveys
 #
@@ -21,8 +23,6 @@
 #  api_id                 :string(255)
 #  survey_version         :integer         default(0)
 #
-
-# -*- coding: utf-8 -*-
 
 require 'spec_helper'
 

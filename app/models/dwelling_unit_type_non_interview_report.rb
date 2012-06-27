@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120607203203
+# Schema version: 20120626221317
 #
 # Table name: dwelling_unit_type_non_interview_reports
 #

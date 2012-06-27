@@ -1,5 +1,5 @@
 # == Schema Information
-# Schema version: 20120607203203
+# Schema version: 20120626221317
 #
 # Table name: telephones
 #
@@ -30,6 +30,8 @@
 #  created_at              :datetime
 #  updated_at              :datetime
 #  response_set_id         :integer
+#  provider_id             :integer
+#  institute_id            :integer
 #
 
 # -*- coding: utf-8 -*-

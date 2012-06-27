@@ -1,3 +1,16 @@
+# == Schema Information
+# Schema version: 20120626221317
+#
+# Table name: personnel_provider_links
+#
+#  id              :integer         not null, primary key
+#  provider_id     :integer
+#  person_id       :integer
+#  primary_contact :boolean
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 require 'spec_helper'
 
 describe PersonnelProviderLink do

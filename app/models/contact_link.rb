@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120607203203
+# Schema version: 20120626221317
 #
 # Table name: contact_links
 #
@@ -18,6 +17,7 @@
 #  updated_at       :datetime
 #
 
+# -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*-
 
 # Each Contact Link record associates a unique combination
