@@ -286,6 +286,17 @@ class NcsCode < ActiveRecord::Base
     # :psu_code                       => 'PSU_CL1',
     :provider_logistics_code          => 'PROVIDER_LOGISTICS_CL1',
 
+    ### non-interview provider
+    :nir_type_provider_code =>         'NON_INTERVIEW_CL1',
+    :nir_closed_info_code =>           'INFORMATION_SOURCE_CL8',
+    :perm_closure_code =>              'CONFIRM_TYPE_CL10',
+    :who_refused_code =>               'REFUSAL_PROVIDER_CL1',
+    :refuser_strength_code =>          'REFUSAL_INTENSITY_CL2',
+    :ref_action_provider_code =>       'REFUSAL_ACTION_CL1',
+    :who_confirm_noprenatal_code =>    'REFUSAL_PROVIDER_CL1',
+    :nir_moved_info_code =>            'INFORMATION_SOURCE_CL8',
+    :perm_moved_code =>                'CONFIRM_TYPE_CL10',
+
   }
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
