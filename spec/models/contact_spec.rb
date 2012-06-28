@@ -55,8 +55,14 @@ describe Contact do
 
   it { should have_many(:contact_links) }
 
-  it { should validate_format_of(:contact_start_time).with('66:66').with_message(%q(contact_start_time is invalid ("66:66"))) }
-  it { should validate_format_of(:contact_end_time).with('66:66').with_message(%q(contact_end_time is invalid ("66:66"))) }
+  it {
+    should validate_format_of(:contact_start_time).with('66:66').
+      with_message(%q(contact_start_time is invalid ("66:66")))
+  }
+  it {
+    should validate_format_of(:contact_end_time).with('66:66').
+      with_message(%q(contact_end_time is invalid ("66:66")))
+  }
 
   it_should_behave_like 'an optimistically locked record' do
     subject { Factory(:contact) }
@@ -198,7 +204,8 @@ describe Contact do
     it "knows all instruments associated with this contact" do
       c  = Factory(:contact)
       pers = Factory(:person)
-      rs, i1 = prepare_instrument(pers, create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
+      rs, i1 = prepare_instrument(
+        pers, create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
       l1 = Factory(:contact_link, :contact => c, :instrument => i1, :person => pers)
 
       c.contact_links.should == [l1]
@@ -245,14 +252,16 @@ describe Contact do
       describe "for a telephone contact" do
 
         before(:each) do
-          @contact = Factory(:contact, :contact_type => @telephone, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location_code => nil, :contact_private => nil, :who_contacted => nil)
+          @contact = Factory(:contact,
+            :contact_type => @telephone, :contact_language => nil, :contact_interpret => nil,
+            :contact_location_code => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
           response_set, instrument = prepare_instrument(@person, @survey)
 
-          link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
+          link = Factory(:contact_link,
+            :contact => @contact, :instrument => instrument, :person => @person)
 
           @contact.populate_post_survey_attributes(instrument)
           @contact.save!
@@ -289,8 +298,9 @@ describe Contact do
       describe "for a mail contact" do
 
         before(:each) do
-          @contact = Factory(:contact, :contact_type => @mail, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+          @contact = Factory(:contact,
+            :contact_type => @mail, :contact_language => nil, :contact_interpret => nil,
+            :contact_location => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the contact_location to NCS Site office" do
@@ -317,15 +327,16 @@ describe Contact do
       describe "for an in person contact" do
 
         before(:each) do
-          @contact = Factory(:contact, :contact_type => @in_person, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+          @contact = Factory(:contact,
+            :contact_type => @in_person, :contact_language => nil, :contact_interpret => nil,
+            :contact_location => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
-
           response_set, instrument = prepare_instrument(@person, @survey)
 
-          link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
+          link = Factory(:contact_link,
+            :contact => @contact, :instrument => instrument, :person => @person)
 
           @contact.populate_post_survey_attributes(instrument)
           @contact.save!
@@ -388,23 +399,34 @@ describe Contact do
   describe "#start" do
     before(:each) do
       @person = Factory(:person)
-      Factory(:contact_link, 
-        :contact => Contact.new(:contact_language_code => 1, :contact_language_other => 'aak', :contact_interpret_code => 3, :contact_interpret_other => 'red'),
+      Factory(:contact_link,
+        :contact => Contact.new(
+          :contact_language_code => 1,
+          :contact_language_other => 'aak',
+          :contact_interpret_code => 3,
+          :contact_interpret_other => 'red'),
         :person => @person)
-      Factory(:contact_link, 
-        :contact => Contact.new(:contact_language_code => 2, :contact_language_other => 'eek', :contact_interpret_code => 1, :contact_interpret_other => 'blue'), 
+      Factory(:contact_link,
+        :contact => Contact.new(
+          :contact_language_code => 2,
+          :contact_language_other => 'eek',
+          :contact_interpret_code => 1,
+          :contact_interpret_other => 'blue'),
         :person => @person)
-      Factory(:contact_link, 
-        :contact => Contact.new(:contact_language_code => 3, :contact_language_other => 'ook', :contact_interpret_code => 2, :contact_interpret_other => 'green'), 
+      Factory(:contact_link,
+        :contact => Contact.new(
+          :contact_language_code => 3,
+          :contact_language_other => 'ook',
+          :contact_interpret_code => 2,
+          :contact_interpret_other => 'green'),
         :person => @person)
-      
     end
-    
+
     it "defaults the language to the last contact with a language" do
       Contact.start(@person).contact_language_code.should == 3
       Contact.start(@person).contact_language_other.should == 'ook'
     end
-    
+
     it "it defaults interpreter to the last contact with an interpreter" do
       Contact.start(@person).contact_interpret_code.should == 2
       Contact.start(@person).contact_interpret_other.should == 'green'
