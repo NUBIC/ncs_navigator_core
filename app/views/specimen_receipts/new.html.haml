@@ -45,6 +45,10 @@
   = f.text_field :centrifuge_endtime, :class => "time"
   %br
   
+  = f.label :centrifuge_temp, "Centrifuge Temperature (in Celsius):"
+  = f.text_field :centrifuge_temp
+  %br  
+  
   = render "shared/ncs_code_select", { :f => f, :code => :centrifuge_comment_code, :label_text => "Centrifuge Comment" }
   %br
   

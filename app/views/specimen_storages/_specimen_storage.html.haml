@@ -28,6 +28,10 @@
   = render "shared/ncs_code_select", { :f => f, :code => :master_storage_unit_code, :label_text => "Master Storage Unit" }
   %br
   
+  = f.label :master_storage_unit_id, "Master Storage Unit Id:"
+  = f.text_field :master_storage_unit_id
+  %br
+    
   = f.label :storage_comment, "Storage Comment:"
   = f.text_field :storage_comment
   %br

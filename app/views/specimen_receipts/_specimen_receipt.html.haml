@@ -50,6 +50,10 @@
       = "Centrifuge End Time: "
       = f.object.centrifuge_endtime
       %br
+    - if not f.object.centrifuge_temp.blank?
+      = "Centrifuge Temperature (in Celsius): "
+      = f.object.centrifuge_temp  
+      %br      
     = "Centrifuge Comment: "
     = NcsCode.for_attribute_name_and_local_code(:centrifuge_comment_code, @specimen_receipt.centrifuge_comment_code)
     %br
