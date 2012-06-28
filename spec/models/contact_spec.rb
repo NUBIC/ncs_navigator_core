@@ -107,74 +107,20 @@ describe Contact do
   end
 
   context "time format" do
+    let(:record) { Factory(:contact) }
 
-    let(:contact) { Factory(:contact) }
+    describe '#contact_start_time' do
+      let(:time_attribute) { :contact_start_time }
+      let(:time_name) { 'Contact start time' }
 
-    describe ".contact_start_time=" do
-
-      it "creates an active record error if given a string" do
-        contact.contact_start_time = "asdfasdf"
-        contact.should be_invalid
-        contact.errors.to_a.first.should == 'Contact start time is invalid'
-      end
-
-      it "creates an active record error if given a bad time" do
-        contact.contact_start_time = "66:66"
-        contact.should be_invalid
-        contact.errors.to_a.first.should == 'Contact start time is invalid'
-      end
-
-      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
-        contact.contact_start_time = "23:77"
-        contact.should be_invalid
-        contact.errors.size.should == 1
-        contact.errors.to_a.first.should == 'Contact start time is invalid'
-      end
-
-      it "is valid if given a valid 24hr time" do
-        contact.contact_start_time = "23:56"
-        contact.should_not be_invalid
-      end
-
-      it "is valid if given a valid 24hr time with trailing whitespace" do
-        contact.contact_start_time = "23:56   "
-        contact.should_not be_invalid
-      end
-
-      it "is valid if blank" do
-        contact.contact_start_time = nil
-        contact.should_not be_invalid
-      end
+      it_behaves_like 'an MDES time'
     end
 
     describe ".contact_end_time=" do
-      it "creates an active record error if given a bad time" do
-        contact.contact_end_time = "66:66"
-        contact.should be_invalid
-        contact.errors.to_a.first.should == 'Contact end time is invalid'
-      end
+      let(:time_attribute) { :contact_end_time }
+      let(:time_name) { 'Contact end time' }
 
-      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
-        contact.contact_end_time = "23:77"
-        contact.should be_invalid
-        contact.errors.size.should == 1
-        contact.errors.to_a.first.should == 'Contact end time is invalid'
-      end
-
-      it "is valid if given a valid 24hr time" do
-        contact.contact_end_time = "23:56"
-        contact.should_not be_invalid
-      end
-
-      it "is valid if given a valid 24hr time with trailing whitespace" do
-        contact.contact_end_time = "23:56   "
-        contact.should_not be_invalid
-      end
-
-      it "is valid if blank" do
-        contact.contact_end_time = nil
-        contact.should_not be_invalid
-      end
+      it_behaves_like 'an MDES time'
     end
 
   end

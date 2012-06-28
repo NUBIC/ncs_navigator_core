@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
 # Schema version: 20120626221317
 #
@@ -48,8 +49,8 @@ class Event < ActiveRecord::Base
   ncs_coded_attribute :event_breakoff,             'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :event_incentive_type,       'INCENTIVE_TYPE_CL1'
 
-  validates_format_of :event_start_time, :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
-  validates_format_of :event_end_time,   :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+  validates_format_of :event_start_time, :with => mdes_time_pattern, :allow_blank => true
+  validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
   before_validation :strip_time_whitespace
 

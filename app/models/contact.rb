@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
 # Schema version: 20120626221317
 #
@@ -58,8 +59,8 @@ class Contact < ActiveRecord::Base
   has_one :participant_visit_record
   has_many :participant_visit_consents
 
-  validates_format_of :contact_start_time, :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
-  validates_format_of :contact_end_time,   :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+  validates_format_of :contact_start_time, :with => mdes_time_pattern, :allow_blank => true
+  validates_format_of :contact_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
   before_validation :strip_time_whitespace
 
