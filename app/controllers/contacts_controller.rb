@@ -9,7 +9,7 @@ class ContactsController < ApplicationController
   # GET /contacts/new.json
   def new
     @person  = Person.find(params[:person_id])
-    @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
+    @contact = Contact.start(@person, :psu_code => NcsNavigatorCore.psu_code, :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
 
     @event = event_for_person(false)
     @requires_consent = @person.participant && @person.participant.consented? == false && @event.event_type.display_text != "Pregnancy Screener"
@@ -24,7 +24,7 @@ class ContactsController < ApplicationController
   # POST /contacts.json
   def create
     @person  = Person.find(params[:person_id])
-    @contact = Contact.new(params[:contact])
+    @contact = Contact.start(@person, params[:contact])
 
     @event = event_for_person
 

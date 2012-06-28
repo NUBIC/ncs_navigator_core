@@ -63,6 +63,24 @@ class Contact < ActiveRecord::Base
 
   before_validation :strip_time_whitespace
 
+  ##
+  # Start a contact and prepopulate properties based on the person contacted
+  # @param [Person]
+  # @param [Hash]
+  def self.start(person, attrs={})
+    if person
+      language = person.contacts.detect(&:contact_language_code)
+      interpreter = person.contacts.detect(&:contact_interpret_code)
+    end
+    
+    Contact.new({
+      :contact_language_code => language.try(:contact_language_code),
+      :contact_language_other => language.try(:contact_language_other),
+      :contact_interpret_code => interpreter.try(:contact_interpret_code),
+      :contact_interpret_other => interpreter.try(:contact_interpret_other)
+    }.merge(attrs))
+  end
+  
   def strip_time_whitespace
     self.contact_start_time.strip! if self.contact_start_time
     self.contact_end_time.strip! if self.contact_end_time
@@ -78,19 +96,6 @@ class Contact < ActiveRecord::Base
   end
   alias completed? closed?
   alias complete? closed?
-
-  ##
-  # Given a person, determine the langugage and interpreter value used during the
-  # instruments taken.
-  # This method assumes that the contact took place in the same language/interpreter
-  # as the initial instrument taken
-  # @param [Person]
-  def set_language_and_interpreter_data(person)
-    if person
-      set_language(person)
-      set_interpreter(person)
-    end
-  end
 
   ##
   # Given an instrument, presumably after the instrument has been administered, set attributes on the
@@ -149,44 +154,5 @@ class Contact < ActiveRecord::Base
             where("contact_date = (#{inner_select}) and events.participant_id in (?)", participant_ids).all
   end
 
-  private
 
-    def set_language(person)
-      english_response = person.responses_for(PregnancyScreenerOperationalDataExtractor::ENGLISH).last
-
-      if english_response && english_response.to_s == "Yes"
-        self.contact_language = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', english_response.answer.reference_identifier)
-        return
-      end
-
-      language_response = person.responses_for(PregnancyScreenerOperationalDataExtractor::CONTACT_LANG).last
-      if language_response && language_response.answer.reference_identifier.to_i > 0
-        language_response_value = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', language_response.answer.reference_identifier)
-        self.contact_language = NcsCode.for_list_name_and_display_text('LANGUAGE_CL2', language_response_value.to_s)
-        return
-      end
-
-      other_language_response = person.responses_for(PregnancyScreenerOperationalDataExtractor::CONTACT_LANG_OTH).last
-      self.contact_language_other = other_language_response.to_s if other_language_response
-
-    end
-
-    def set_interpreter(person)
-      interpreter_response = person.responses_for(PregnancyScreenerOperationalDataExtractor::INTERPRET).last
-
-      if interpreter_response && interpreter_response.to_s == "No"
-        self.contact_interpret = NcsCode.for_list_name_and_local_code('TRANSLATION_METHOD_CL3', -3)
-        return
-      end
-
-      interpreter_response = person.responses_for(PregnancyScreenerOperationalDataExtractor::CONTACT_INTERPRET).last
-      if interpreter_response && interpreter_response.answer.reference_identifier.to_i > 0
-        self.contact_interpret = NcsCode.for_list_name_and_local_code('TRANSLATION_METHOD_CL3', interpreter_response.answer.reference_identifier)
-        return
-      end
-
-      other_interpreter_response = person.responses_for(PregnancyScreenerOperationalDataExtractor::CONTACT_INTERPRET_OTH).last
-      self.contact_interpret_other = other_interpreter_response.to_s if other_interpreter_response
-
-    end
 end

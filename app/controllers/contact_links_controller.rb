@@ -29,9 +29,6 @@ class ContactLinksController < ApplicationController
     @contact = @contact_link.contact
     @survey  = @response_set.survey if @response_set
 
-    @contact.set_language_and_interpreter_data(@person)
-    @contact.populate_post_survey_attributes(@instrument) if @instrument
-
     @event.populate_post_survey_attributes(@contact, @response_set) if @response_set
     @event.event_repeat_key = @event.contact_links.count - 1 # zero based
 
