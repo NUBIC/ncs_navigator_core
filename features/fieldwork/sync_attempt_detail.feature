@@ -7,7 +7,6 @@ Feature: Detail view of a sync attempt
   Background:
     Given an authenticated user
 
-  @wip
   Scenario: The detail view shows the conflict report
     Given the sync attempts
       | id  | status   |
