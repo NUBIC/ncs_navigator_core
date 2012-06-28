@@ -88,6 +88,7 @@ class SamplesController < ApplicationController
   def send_email
     @sample_receipt_stores = array_of_selected_samples(params[:sample_id])
     populate_samples_size(@sample_receipt_stores)
+    
     generate_email = Emailer.manifest_email(params)
     generate_email.deliver
     respond_to do |format| 
@@ -109,14 +110,13 @@ class SamplesController < ApplicationController
   end 
   
   def process_params
-    @shipper_id                        = NcsNavigatorCore.shipper_id
     @psu_id                            = @psu_code
     @sample_receipt_shipping_center_id = SampleReceiptShippingCenter.last.sample_receipt_shipping_center_id
+    @shipper_id                        = params[:shipper_id]
     @shipment_date_and_time            = params[:shipment_date_and_time]
     @shipment_tracking_number          = params[:shipment_tracking_number]
     @contact_name                      = params[:contact_name]
     @contact_phone                     = params[:contact_phone]
-    #TODO - do we hardcore the carrier???     
     @carrier                           = params[:carrier]
     @volume_amt = params[:volume_amt]
     @volume_unit = params[:volume_unit]

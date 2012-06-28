@@ -9,7 +9,7 @@ class Emailer < ActionMailer::Base
     
     to_name = "Nataliya Shurupova"
     to_email = "n-shurupova@northwestern.edu" 
-    @shipment_id = params[:shipment_id]
+    @shipper_id = params[:shipper_id]
     @psu_code = NcsCode.ncs_code_lookup(:psu_code).first
     @specimen_processing_shipping_center_id = params[:specimen_processing_shipping_center_id]
     @sample_receipt_shipping_center_id = params[:sample_receipt_shipping_center_id]

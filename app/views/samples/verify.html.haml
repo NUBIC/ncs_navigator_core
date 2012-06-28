@@ -54,8 +54,12 @@
       %br
 
       Shipment ID:
-      = @shipper_id
+      - if @shipper_id.blank?
+        %input{:type=>"text", :name=>"shipper_id", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"shipper_id", :value=>@shipper_id}
       %br
+
 
       PSU ID:
       = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)

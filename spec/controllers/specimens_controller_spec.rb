@@ -118,15 +118,4 @@ describe SpecimensController do
     ship_specimen_results.size.should == 3
        
   end  
-  
-  describe "setting parameters" do
-    
-    it "should set the shipper id" do
-      Factory(:specimen_processing_shipping_center)
-      NcsNavigatorCore.stub!(:shipper_id).and_return "shipper_id"
-      get :verify
-      assigns[:shipper_id].should == NcsNavigatorCore.shipper_id
-    end
-  end
-  
 end

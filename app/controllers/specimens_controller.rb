@@ -95,7 +95,6 @@ class SpecimensController < ApplicationController
   
   def send_email
     populate_specimen_receipts
-            
     generate_email = Emailer.manifest_email(params)
     generate_email.deliver
     respond_to do |format|
@@ -114,9 +113,9 @@ class SpecimensController < ApplicationController
   def process_params
     arrayOfStorageContainerIds = params[:storage_container_id]
     
-    @shipper_id                             = NcsNavigatorCore.shipper_id
     @psu_id                                 = @psu_code
     @specimen_processing_shipping_center_id = SpecimenProcessingShippingCenter.last.specimen_processing_shipping_center_id
+    @shipper_id                             = params[:shipper_id]
     @staff_id                               = params[:contact_name]
     @shipper_dest                           = params[:shipper_dest]
     @shipment_date_and_time                 = params[:shipment_date_and_time]
@@ -124,7 +123,6 @@ class SpecimensController < ApplicationController
     @shipment_tracking_number               = params[:shipment_tracking_number]
     @contact_name                           = params[:contact_name]
     @contact_phone                          = params[:contact_phone]
-    #TODO - do we hardcore the carrier??? 
     @carrier                                = params[:carrier]
     
     @shipment_temperature_id       = params[:temp]
