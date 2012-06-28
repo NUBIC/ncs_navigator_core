@@ -1,6 +1,6 @@
 module FieldworkHelper
   def latest_merge_status(fw)
-    fw.latest_merge_status ? fw.latest_merge_status.humanize : 'Unknown'
+    fw.latest_merge_status ? fw.latest_merge_status.humanize : 'Waiting for field client'
   end
 
   ##
