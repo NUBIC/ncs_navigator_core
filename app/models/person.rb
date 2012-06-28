@@ -73,6 +73,7 @@ class Person < ActiveRecord::Base
   # surveyor
   has_many :response_sets, :class_name => "ResponseSet", :foreign_key => "user_id"
   has_many :contact_links, :order => "created_at DESC"
+  has_many :contacts, :through => :contact_links, :order => "created_at DESC"
   has_many :instruments, :through => :contact_links
   has_many :events, :through => :contact_links
   has_many :addresses
@@ -292,7 +293,7 @@ class Person < ActiveRecord::Base
     return open_contact_links.first if open_contact_links.size == 1
     # TODO: what to do if there is more than one open contact?
   end
-
+  
   ##
   # Create a new Instrument for the Person associated with the given Survey.
   #

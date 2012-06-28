@@ -235,7 +235,7 @@ module NcsNavigator::Core::Psc
                         key = [r.event, r.scheduled_date]
 
                         unless new_cache.has_key?(key)
-                          new_cache[key] = Contact.new(:contact_date => r.scheduled_date)
+                          new_cache[key] = Contact.start(r.person, :contact_date => r.scheduled_date)
                         end
 
                         new_cache[key]
