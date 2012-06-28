@@ -3,6 +3,10 @@
   = f.object.specimen_id
   = f.hidden_field :specimen_id
   %br
+  
+  = f.label "Staff:"
+  = display_staff_info
+  %br
 
   = f.label :storage_container_id, "Storage Container ID:"
   = f.text_field :storage_container_id  

@@ -3,6 +3,11 @@
   = f.object.sample_id
   = f.hidden_field :sample_id  
   %br
+  
+  = f.label "Staff:"
+  = display_staff_info
+  
+  %br
   = render "shared/ncs_code_select", { :f => f, :code => :sample_condition_code, :label_text => "Sample Condition" }
   %br
   = f.label :receipt_comment_other, "Receipt comment other:"

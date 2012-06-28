@@ -6,6 +6,10 @@
 
   = form_tag :action => 'send_email' do
     %div{:id => 'manifest_form', :class => 'manifest_form'}
+      Staff:
+      = display_staff_info
+      %br
+      
       Ship Date and Time: 
       = @shipment_date_and_time
       = hidden_field_tag "shipment_date_and_time", @shipment_date_and_time

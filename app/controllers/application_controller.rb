@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   include Aker::Rails::SecuredController
   protect_from_forgery
 
-  helper_method :psc, :recruitment_strategy
+  helper_method :psc, :recruitment_strategy, :display_staff_info
 
   before_filter :set_system_defaults
 
@@ -41,6 +41,10 @@ class ApplicationController < ActionController::Base
 
     def current_staff_id
       current_user.identifiers[:staff_id] || 'unknown_staff_id'
+    end
+    
+    def display_staff_info
+      "#{current_user.full_name} (#{current_staff_id})"
     end
 
     # TODO: delete this method - events should be created as placeholder methods via Event.schedule_and_create_placeholder

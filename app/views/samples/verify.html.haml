@@ -42,6 +42,10 @@
             %td
               = sample_extenstion(srs.sample_id)            
     %div{:id => 'manifest_form', :class => 'manifest_form'}
+      Staff:
+      = display_staff_info
+      %br
+
       Ship Date and Time: 
       - if @shipment_date_and_time.blank?
         %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>""}

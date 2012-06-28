@@ -1,7 +1,7 @@
 class SpecimensController < ApplicationController
   before_filter :process_params, :except => [:index]
   after_filter :clear_flash
-
+  
   def clear_flash
     flash.discard
   end
@@ -41,7 +41,7 @@ class SpecimensController < ApplicationController
     @specimen_receipts_hash.each do |key, value|
       sh = SpecimenShipping.new(
             :storage_container_id                   => key, 
-            :staff_id                               => @staff_id, 
+            :staff_id                               => current_staff_id, 
             :shipper_id                             => @shipper_id, 
             :shipper_destination                    => @send_to_site_selected_id.first, 
             :shipment_date                          => @shipment_date, 

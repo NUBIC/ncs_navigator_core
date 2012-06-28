@@ -40,7 +40,7 @@ class SamplesController < ApplicationController
     @sample_receipt_stores.each do |srs|
       sh = SampleShipping.new(
         :sample_id                         => srs.sample_id, 
-        :staff_id                          => @contact_name, 
+        :staff_id                          => current_staff_id, 
         :shipper_id                        => @shipper_id, 
         :shipper_destination_code          => @send_to_site_selected, 
         :shipment_date                     => @shipment_date, 
