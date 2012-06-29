@@ -50,6 +50,10 @@
               %td
                 = sample_extenstion(sr.specimen_id)
     %div{:id => 'manifest_form', :class => 'manifest_form'}
+      Staff:
+      = display_staff_info
+      %br
+      
       Ship Date and Time: 
       - if @shipment_date_and_time.blank?
         %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>""}
@@ -58,7 +62,10 @@
       %br
 
       Shipment ID:
-      = @shipper_id
+      - if @shipper_id.blank?
+        %input{:type=>"text", :name=>"shipper_id", :value=>""}
+      - else
+        %input{:type=>"text", :name=>"shipper_id", :value=>@shipper_id}
       %br
 
       PSU ID:

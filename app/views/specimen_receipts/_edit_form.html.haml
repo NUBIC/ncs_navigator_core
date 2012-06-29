@@ -2,6 +2,10 @@
   = f.label :specimen_id, "Specimen ID:"
   = f.object.specimen_id
   = f.hidden_field :specimen_id
+
+  = f.label "Staff:"
+  = display_staff_info
+  
   %div{:id => "edit_specimen_receipt_form"}    
     %br
     = f.label :storage_container_id, "Storage Container ID:"
@@ -43,6 +47,10 @@
 
     = f.label :centrifuge_endtime, "Centrifuge End Time:"
     = f.text_field :centrifuge_endtime, :class => "time"
+    %br
+    
+    = f.label :centrifuge_temp, "Centrifuge Temperature (in Celsius):"
+    = f.text_field :centrifuge_temp
     %br
 
     = render "shared/ncs_code_select", { :f => f, :code => :centrifuge_comment_code, :label_text => "Centrifuge Comment" }

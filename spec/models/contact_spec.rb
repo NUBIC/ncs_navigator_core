@@ -55,8 +55,14 @@ describe Contact do
 
   it { should have_many(:contact_links) }
 
-  it { should validate_format_of(:contact_start_time).with('66:66').with_message(%q(contact_start_time is invalid ("66:66"))) }
-  it { should validate_format_of(:contact_end_time).with('66:66').with_message(%q(contact_end_time is invalid ("66:66"))) }
+  it {
+    should validate_format_of(:contact_start_time).with('66:66').
+      with_message(%q(contact_start_time is invalid ("66:66")))
+  }
+  it {
+    should validate_format_of(:contact_end_time).with('66:66').
+      with_message(%q(contact_end_time is invalid ("66:66")))
+  }
 
   it_should_behave_like 'an optimistically locked record' do
     subject { Factory(:contact) }
@@ -101,74 +107,20 @@ describe Contact do
   end
 
   context "time format" do
+    let(:record) { Factory(:contact) }
 
-    let(:contact) { Factory(:contact) }
+    describe '#contact_start_time' do
+      let(:time_attribute) { :contact_start_time }
+      let(:time_name) { 'Contact start time' }
 
-    describe ".contact_start_time=" do
-
-      it "creates an active record error if given a string" do
-        contact.contact_start_time = "asdfasdf"
-        contact.should be_invalid
-        contact.errors.to_a.first.should == 'Contact start time is invalid'
-      end
-
-      it "creates an active record error if given a bad time" do
-        contact.contact_start_time = "66:66"
-        contact.should be_invalid
-        contact.errors.to_a.first.should == 'Contact start time is invalid'
-      end
-
-      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
-        contact.contact_start_time = "23:77"
-        contact.should be_invalid
-        contact.errors.size.should == 1
-        contact.errors.to_a.first.should == 'Contact start time is invalid'
-      end
-
-      it "is valid if given a valid 24hr time" do
-        contact.contact_start_time = "23:56"
-        contact.should_not be_invalid
-      end
-
-      it "is valid if given a valid 24hr time with trailing whitespace" do
-        contact.contact_start_time = "23:56   "
-        contact.should_not be_invalid
-      end
-
-      it "is valid if blank" do
-        contact.contact_start_time = nil
-        contact.should_not be_invalid
-      end
+      it_behaves_like 'an MDES time'
     end
 
     describe ".contact_end_time=" do
-      it "creates an active record error if given a bad time" do
-        contact.contact_end_time = "66:66"
-        contact.should be_invalid
-        contact.errors.to_a.first.should == 'Contact end time is invalid'
-      end
+      let(:time_attribute) { :contact_end_time }
+      let(:time_name) { 'Contact end time' }
 
-      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
-        contact.contact_end_time = "23:77"
-        contact.should be_invalid
-        contact.errors.size.should == 1
-        contact.errors.to_a.first.should == 'Contact end time is invalid'
-      end
-
-      it "is valid if given a valid 24hr time" do
-        contact.contact_end_time = "23:56"
-        contact.should_not be_invalid
-      end
-
-      it "is valid if given a valid 24hr time with trailing whitespace" do
-        contact.contact_end_time = "23:56   "
-        contact.should_not be_invalid
-      end
-
-      it "is valid if blank" do
-        contact.contact_end_time = nil
-        contact.should_not be_invalid
-      end
+      it_behaves_like 'an MDES time'
     end
 
   end
@@ -198,7 +150,8 @@ describe Contact do
     it "knows all instruments associated with this contact" do
       c  = Factory(:contact)
       pers = Factory(:person)
-      rs, i1 = prepare_instrument(pers, create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
+      rs, i1 = prepare_instrument(
+        pers, create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
       l1 = Factory(:contact_link, :contact => c, :instrument => i1, :person => pers)
 
       c.contact_links.should == [l1]
@@ -216,202 +169,6 @@ describe Contact do
       [i1, i2, i3].each { |ins| c.instruments.should include(ins) }
       [i1, i2].each { |ins| c.instruments_with_surveys.should include(ins) }
       [i1.survey.title, i2.survey.title].each { |t| c.instrument_survey_titles.should include(t) }
-    end
-
-    describe "setting the language and interpreter values" do
-
-      before(:each) do
-
-        @survey = create_survey_with_language_and_interpreter_data
-        @person = Factory(:person)
-        @english = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 1)
-        @spanish     = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 2)
-        @spanish_cl5 = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 1)
-        @farsi       = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 17)
-        @farsi_cl5   = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 16)
-        @other       = NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', -5)
-
-        @legitimate_skip  = NcsCode.for_list_name_and_local_code('TRANSLATION_METHOD_CL3', -3)
-        @sign_interpreter = NcsCode.for_list_name_and_local_code('TRANSLATION_METHOD_CL3', 6)
-
-      end
-
-      it "sets the contact language to English if the instrument was taken in English" do
-
-        contact = Factory(:contact, :contact_language => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.yes "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 1
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_language.should == @english
-
-      end
-
-      it "sets the contact language to Spanish if the instrument was taken in Spanish" do
-        contact = Factory(:contact, :contact_language => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG", @spanish_cl5
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 1
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_language.should == @spanish
-
-      end
-
-      it "sets the contact language to Farsi if the instrument was taken in Farsi" do
-        contact = Factory(:contact, :contact_language => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.no "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
-          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG", @farsi_cl5
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 2
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_language.should == @farsi
-
-      end
-
-      it "sets the contact language to some other specified language if the instrument was taken in some other specified language" do
-        contact = Factory(:contact, :contact_language => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        language_value = "Ojibwa"
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.no "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
-          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG", @other
-          a.str "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_LANG_OTH", language_value
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 3
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_language.local_code.should == -4
-        contact.contact_language_other.should == language_value
-      end
-
-      it "sets the contact interpret to Legitimate Skip if no Interpreter was used" do
-
-        contact = Factory(:contact, :contact_interpret => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.no "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 1
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_interpret.should == @legitimate_skip
-
-      end
-
-      it "sets the contact interpret to the Interpreter that was used" do
-
-        contact = Factory(:contact, :contact_interpret => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.yes "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
-          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET", @sign_interpreter
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 2
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_interpret.should == @sign_interpreter
-
-      end
-
-      it "sets the contact interpret to the other interpreter method" do
-
-        contact = Factory(:contact, :contact_interpret => nil)
-        person  = Factory(:person)
-
-        response_set, instrument = prepare_instrument(person, @survey)
-
-        interpreter_value = "Other interpreter"
-
-        link = Factory(:contact_link, :contact => contact, :instrument => instrument, :person => person)
-
-        take_survey(@survey, response_set) do |a|
-          a.yes "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.INTERPRET"
-          a.choice "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET", @other
-          a.str "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH", interpreter_value
-        end
-
-        response_set.responses.reload
-        response_set.responses.size.should == 3
-
-        person = Person.find(person.id)
-
-        contact.set_language_and_interpreter_data(person)
-        contact.save!
-        contact.contact_interpret.local_code.should == -4
-        contact.contact_interpret_other.should == interpreter_value
-
-      end
-
     end
 
     describe "auto-completing MDES data" do
@@ -441,14 +198,16 @@ describe Contact do
       describe "for a telephone contact" do
 
         before(:each) do
-          @contact = Factory(:contact, :contact_type => @telephone, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location_code => nil, :contact_private => nil, :who_contacted => nil)
+          @contact = Factory(:contact,
+            :contact_type => @telephone, :contact_language => nil, :contact_interpret => nil,
+            :contact_location_code => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
           response_set, instrument = prepare_instrument(@person, @survey)
 
-          link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
+          link = Factory(:contact_link,
+            :contact => @contact, :instrument => instrument, :person => @person)
 
           @contact.populate_post_survey_attributes(instrument)
           @contact.save!
@@ -485,8 +244,9 @@ describe Contact do
       describe "for a mail contact" do
 
         before(:each) do
-          @contact = Factory(:contact, :contact_type => @mail, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+          @contact = Factory(:contact,
+            :contact_type => @mail, :contact_language => nil, :contact_interpret => nil,
+            :contact_location => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the contact_location to NCS Site office" do
@@ -513,15 +273,16 @@ describe Contact do
       describe "for an in person contact" do
 
         before(:each) do
-          @contact = Factory(:contact, :contact_type => @in_person, :contact_language => nil, :contact_interpret => nil,
-                                       :contact_location => nil, :contact_private => nil, :who_contacted => nil)
+          @contact = Factory(:contact,
+            :contact_type => @in_person, :contact_language => nil, :contact_interpret => nil,
+            :contact_location => nil, :contact_private => nil, :who_contacted => nil)
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
-
           response_set, instrument = prepare_instrument(@person, @survey)
 
-          link = Factory(:contact_link, :contact => @contact, :instrument => instrument, :person => @person)
+          link = Factory(:contact_link,
+            :contact => @contact, :instrument => instrument, :person => @person)
 
           @contact.populate_post_survey_attributes(instrument)
           @contact.save!
@@ -579,6 +340,43 @@ describe Contact do
     it "returns the last contact for a participant" do
     end
 
+  end
+
+  describe "#start" do
+    before(:each) do
+      @person = Factory(:person)
+      Factory(:contact_link,
+        :contact => Contact.new(
+          :contact_language_code => 1,
+          :contact_language_other => 'aak',
+          :contact_interpret_code => 3,
+          :contact_interpret_other => 'red'),
+        :person => @person)
+      Factory(:contact_link,
+        :contact => Contact.new(
+          :contact_language_code => 2,
+          :contact_language_other => 'eek',
+          :contact_interpret_code => 1,
+          :contact_interpret_other => 'blue'),
+        :person => @person)
+      Factory(:contact_link,
+        :contact => Contact.new(
+          :contact_language_code => 3,
+          :contact_language_other => 'ook',
+          :contact_interpret_code => 2,
+          :contact_interpret_other => 'green'),
+        :person => @person)
+    end
+
+    it "defaults the language to the last contact with a language" do
+      Contact.start(@person).contact_language_code.should == 3
+      Contact.start(@person).contact_language_other.should == 'ook'
+    end
+
+    it "it defaults interpreter to the last contact with an interpreter" do
+      Contact.start(@person).contact_interpret_code.should == 2
+      Contact.start(@person).contact_interpret_other.should == 'green'
+    end
   end
 
 end

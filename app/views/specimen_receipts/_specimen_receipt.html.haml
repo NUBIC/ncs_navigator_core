@@ -4,6 +4,9 @@
   = f.object.specimen_id
   = f.hidden_field :specimen_id
   %div{:class => "spec_sample_receipt"}
+    = "Staff:"
+    = display_staff_info
+    %br
     - if not f.object.storage_container_id.blank?
       = "Storage Container ID: "
       = f.object.storage_container_id
@@ -50,6 +53,10 @@
       = "Centrifuge End Time: "
       = f.object.centrifuge_endtime
       %br
+    - if not f.object.centrifuge_temp.blank?
+      = "Centrifuge Temperature (in Celsius): "
+      = f.object.centrifuge_temp  
+      %br      
     = "Centrifuge Comment: "
     = NcsCode.for_attribute_name_and_local_code(:centrifuge_comment_code, @specimen_receipt.centrifuge_comment_code)
     %br

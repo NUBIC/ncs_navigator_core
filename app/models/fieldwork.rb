@@ -124,8 +124,12 @@ class Fieldwork < ActiveRecord::Base
     self.fieldwork_id ||= UUIDTools::UUID.random_create.to_s
   end
 
+  def latest_merge
+    merges.order(:created_at).last
+  end
+
   def latest_proposed_data
-    merges.order(:created_at).last.try(:proposed_data)
+    latest_merge.try(:proposed_data)
   end
 
   def as_json(options = nil)

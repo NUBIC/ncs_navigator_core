@@ -9,7 +9,7 @@
           = msg
 
 = form_for @specimen_storage do |f|
-  = f.label :storage_container_id, "Pressure Bag:"
+  = f.label :storage_container_id, "Storage Container Id:"
   = @specimen_storage.storage_container_id
   = "contains the following:"
   - SpecimenReceipt.where(:storage_container_id => @specimen_storage.storage_container_id).each do |val|
@@ -17,8 +17,8 @@
   = f.hidden_field :storage_container_id
   %br
   
-  = f.label :staff_id, "Staff Id:"
-  = f.text_field :staff_id
+  = f.label "Staff:"
+  = display_staff_info
   %br
   
   = f.label :placed_in_storage_datetime, "Placed in Storage Date and Time:"
@@ -28,6 +28,10 @@
   = render "shared/ncs_code_select", { :f => f, :code => :master_storage_unit_code, :label_text => "Master Storage Unit" }
   %br
   
+  = f.label :master_storage_unit_id, "Master Storage Unit Id:"
+  = f.text_field :master_storage_unit_id
+  %br
+    
   = f.label :storage_comment, "Storage Comment:"
   = f.text_field :storage_comment
   %br
