@@ -50,7 +50,9 @@ class SpecimensController < ApplicationController
             :specimen_processing_shipping_center_id => value[0].specimen_processing_shipping_center_id, 
             :shipment_temperature_code              => @shipping_temperature_selected, 
             :shipment_receipt_confirmed             => @shipment_receipt_confirmed,
-            :shipment_issues                        => @shipment_issues)      
+            :shipment_issues                        => @shipment_issues,
+            :contact_name                           => @contact_name,
+            :contact_phone                          => @contact_phone)
       value.each do |sr|
         ship_specimen = sh.ship_specimens.build(      
             :specimen_shipping  => sh,

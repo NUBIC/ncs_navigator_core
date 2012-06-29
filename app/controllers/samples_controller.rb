@@ -50,7 +50,9 @@ class SamplesController < ApplicationController
         :sample_shipped_by                 => @sample_shipped_by,
         :sample_receipt_shipping_center_id => srs.sample_receipt_shipping_center_id, 
         :volume_amount                     => @volume_amt[srs.sample_id], 
-        :volume_unit                       => @volume_unit[srs.sample_id])
+        :volume_unit                       => @volume_unit[srs.sample_id],
+        :contact_name                      => @contact_name,
+        :contact_phone                     => @contact_phone)
 
       array_of_spec_shipping_records << sh
       SampleShipping.transaction do
