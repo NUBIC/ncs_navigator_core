@@ -83,6 +83,8 @@ require 'stringio'
 class Merge < ActiveRecord::Base
   belongs_to :fieldwork, :inverse_of => :merges
 
+  composed_of :conflict_report, :mapping => %w(conflict_report to_s), :allow_nil => true, :converter => lambda { |raw| ConflictReport.new(raw) }
+
   delegate :original_data, :to => :fieldwork
 
   S = Case::Struct.new(:started_at, :completed_at, :crashed_at, :conflicted?, :timed_out?)
@@ -216,7 +218,7 @@ class Merge < ActiveRecord::Base
   end
 
   def conflicted?
-    conflict_report && conflict_report != '{}'
+    !conflict_report.blank?
   end
 
   ##
