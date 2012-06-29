@@ -9,7 +9,7 @@
           = msg
 
 = form_for @specimen_storage do |f|
-  = f.label :storage_container_id, "Pressure Bag:"
+  = f.label :storage_container_id, "Storage Container Id:"
   = @specimen_storage.storage_container_id
   = "contains the following:"
   - SpecimenReceipt.where(:storage_container_id => @specimen_storage.storage_container_id).each do |val|
