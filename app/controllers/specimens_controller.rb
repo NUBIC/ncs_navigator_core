@@ -41,7 +41,7 @@ class SpecimensController < ApplicationController
     @specimen_receipts_hash.each do |key, value|
       sh = SpecimenShipping.new(
             :storage_container_id                   => key, 
-            :staff_id                               => current_staff_id, 
+            :staff_id                               => @staff_id, 
             :shipper_id                             => @shipper_id, 
             :shipper_destination                    => @send_to_site_selected_id.first, 
             :shipment_date                          => @shipment_date, 
@@ -116,7 +116,7 @@ class SpecimensController < ApplicationController
     @psu_id                                 = @psu_code
     @specimen_processing_shipping_center_id = SpecimenProcessingShippingCenter.last.specimen_processing_shipping_center_id
     @shipper_id                             = params[:shipper_id]
-    @staff_id                               = params[:contact_name]
+    @staff_id                               = current_staff_id
     @shipper_dest                           = params[:shipper_dest]
     @shipment_date_and_time                 = params[:shipment_date_and_time]
     @shipping_temperature                   = NcsCode.ncs_code_lookup(:spec_shipment_temperature_code)

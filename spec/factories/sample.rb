@@ -70,6 +70,7 @@ FactoryGirl.define do
     src.sample_condition_code            1
     src.shipment_received_by             "Jane Dow"
     src.transaction_type                 nil
+    src.staff_id                         "whateverstaffid"
   end  
 
   factory :sample do |sa|

@@ -27,6 +27,7 @@ class SampleReceiptConfirmationsController < ApplicationController
     @tracking_number = params[:tracking_number]
     @sample_receipt_confirmation = SampleReceiptConfirmation.new(params[:sample_receipt_confirmation])
     @sample_receipt_confirmation.psu_code = @psu_code
+    @sample_receipt_confirmation.staff_id = current_staff_id
 
     respond_to do |format|
       if @sample_receipt_confirmation.save
