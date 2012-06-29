@@ -27,12 +27,18 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
               instrument_map[[c.public_id, e.public_id]] = []
             end
 
-            instrument_map[[c.public_id, e.public_id]] << r.instrument
+            instrument_map[[c.public_id, e.public_id]] << Wrapper.new(r.instrument, r.activity_name)
           end
         end
       end
 
       [merged.values, event_map, instrument_map]
+    end
+    
+    class InstrumentWrapper < DelegateClass(...)
+      def activity_name
+        ...
+      end
     end
   end
 end

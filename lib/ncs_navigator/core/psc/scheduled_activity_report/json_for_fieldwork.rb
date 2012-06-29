@@ -9,7 +9,7 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
     include NcsNavigator::Core::Fieldwork::Adapters
 
     def contacts_as_json
-      merged_rows, event_map, instrument_map = merge
+      merged_rows, event_map, instrument_map, activity_name_map = merge
 
       merged_rows.map do |r|
         c = r.contact
@@ -34,9 +34,11 @@ class NcsNavigator::Core::Psc::ScheduledActivityReport
 
     def instruments_as_json(instruments)
       instruments.map do |i|
+        puts "i.name: #{i.name}"
+        puts "i.survey.api_id: #{i.survey.api_id}"
         adapt_model(i).as_json.merge({
           'instrument_template_id' => i.survey.api_id,
-          'name' => i.survey.title,
+          'name' => i.name,
           'response_set' => JSON.parse(i.response_set.to_json)
         })
       end
