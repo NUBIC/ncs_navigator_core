@@ -191,11 +191,9 @@ class ContactLinksController < ApplicationController
   	    when "Pregnancy Screener"
           @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
         when "Informed Consent"
-          if @event.try(:participant).low_intensity?
-            @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT
-          else
-            @disposition_group = DispositionMapper::GENERAL_STUDY_VISIT_EVENT
-          end
+          @disposition_group = disposition_group_for_study_arm(event)
+        when "Low Intensity Data Collection"
+          @disposition_group = disposition_group_for_study_arm(event)
         when "Low to High Conversion"
           contact = @contact_link.contact
           if contact && contact.contact_type
@@ -208,6 +206,11 @@ class ContactLinksController < ApplicationController
         end
       end
     end
+
+    def disposition_group_for_study_arm(event)
+      event.try(:participant).low_intensity? ? DispositionMapper::TELEPHONE_INTERVIEW_EVENT : DispositionMapper::GENERAL_STUDY_VISIT_EVENT
+    end
+    private :disposition_group_for_study_arm
 
     ##
     # Default logic for setting of disposition group
