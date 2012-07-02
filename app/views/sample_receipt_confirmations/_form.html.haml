@@ -3,6 +3,13 @@
     = render "shared/custom_error_messages", :object => f.object
     = "Followed is required for selected sample " 
     = sample_receipt_confirmation.sample_id
+    
+    %br
+    %b
+      = "Staff:"
+    = display_staff_info
+    %br
+        
     .psu_code
       %b
         = "PSU:"

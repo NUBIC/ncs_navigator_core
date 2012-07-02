@@ -46,7 +46,7 @@ describe SampleReceiptConfirmation do
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       src = SampleReceiptConfirmation.create(:sample_id => "sampleId", :sample_receipt_shipping_center_id => "srsc_1", 
                                             :shipper_id => "123", :shipment_receipt_datetime => "2012-01-29 22:01:30", :shipment_tracking_number => "67876f5WERSF98",
-                                            :shipment_received_by => "Jane Dow", :sample_receipt_temp => "-2.1")
+                                            :shipment_received_by => "Jane Dow", :sample_receipt_temp => "-2.1", :staff_id => "someidforstaff")
       src.save!
 
       obj = SampleReceiptConfirmation.find(src.id)

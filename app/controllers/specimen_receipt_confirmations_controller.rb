@@ -30,6 +30,7 @@ class SpecimenReceiptConfirmationsController < ApplicationController
     @tracking_number = params[:tracking_number]
     @specimen_receipt_confirmation = SpecimenReceiptConfirmation.new(params[:specimen_receipt_confirmation])
     @specimen_receipt_confirmation.psu_code = @psu_code
+    @specimen_receipt_confirmation.staff_id = current_staff_id
     respond_to do |format|
       if @specimen_receipt_confirmation.save
         format.html { redirect_to(specimen_receipt_confirmations_path(params[:tracking_number])) }

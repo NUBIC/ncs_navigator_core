@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120628161140) do
+ActiveRecord::Schema.define(:version => 20120629204215) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -1115,6 +1115,7 @@ ActiveRecord::Schema.define(:version => 20120628161140) do
     t.string   "transaction_type",                  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "staff_id",                                                                      :null => false
   end
 
   create_table "sample_receipt_shipping_centers", :force => true do |t|
@@ -1166,6 +1167,8 @@ ActiveRecord::Schema.define(:version => 20120628161140) do
     t.datetime "updated_at"
     t.decimal  "volume_amount",                                   :precision => 6, :scale => 2
     t.string   "volume_unit",                       :limit => 36
+    t.string   "contact_name"
+    t.string   "contact_phone",                     :limit => 30
   end
 
   create_table "samples", :force => true do |t|
@@ -1239,6 +1242,7 @@ ActiveRecord::Schema.define(:version => 20120628161140) do
     t.string   "transaction_type",                       :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "staff_id",                                                                           :null => false
   end
 
   create_table "specimen_receipts", :force => true do |t|
@@ -1285,6 +1289,8 @@ ActiveRecord::Schema.define(:version => 20120628161140) do
     t.string   "transaction_type",                       :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "contact_name"
+    t.string   "contact_phone",                          :limit => 30
   end
 
   create_table "specimen_storages", :force => true do |t|
