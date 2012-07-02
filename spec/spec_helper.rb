@@ -58,8 +58,6 @@ Spork.prefork do
 
   require 'shoulda'
 
-  require File.expand_path("../../lib/pbs_code_list_loader", __FILE__)
-
   # Requires supporting ruby files with custom matchers and macros, etc,
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
@@ -107,9 +105,6 @@ Spork.prefork do
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.clean_with(:truncation)
       NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
-
-      # TODO: remove the pbs code list load when MdesCodeListLoader handles MDES 3.0 codes
-      PbsCodeListLoader.load_codes
     end
 
     config.before(:each, :clean_with_truncation) do
@@ -180,6 +175,18 @@ Spork.prefork do
 
     let(:psc) { PatientStudyCalendar.new(@user) }
 
+  end
+
+  #NcsNavigator::Core::RecordOfContactImporter
+
+  def get_first_data_row_from_csv(csv)
+    return_value = nil
+    f = File.open("#{Rails.root}/spec/fixtures/data/#{csv}.csv")
+    Rails.application.csv_impl.parse(f, :headers => true, :header_converters => :symbol) do |row|
+      next if row.header_row?
+      return_value = row
+    end
+    return_value
   end
 
 end
