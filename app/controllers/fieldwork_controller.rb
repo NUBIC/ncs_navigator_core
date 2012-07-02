@@ -5,6 +5,6 @@ class FieldworkController < ApplicationController
 
   def show
     @fieldwork = Fieldwork.find_by_fieldwork_id(params[:id])
-    @conflicts = @fieldwork.latest_mege.try(:conflict_report)
+    @conflicts = @fieldwork.latest_merge.try(:conflict_report)
   end
 end
