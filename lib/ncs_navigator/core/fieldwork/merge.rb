@@ -127,7 +127,7 @@ module NcsNavigator::Core::Fieldwork
     attr_accessor :conflicts
 
     def merge
-      self.conflicts = {}
+      self.conflicts = ConflictReport.new
 
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
@@ -159,7 +159,7 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def conflicted?
-      !conflicts.empty?
+      !conflicts.blank?
     end
 
     module_function
@@ -178,7 +178,7 @@ module NcsNavigator::Core::Fieldwork
       when S[nil, N[nil], N[nil]]
         resolve(o, c, p, entity, id)
       when S[N[nil], nil, N[nil]]
-        add_conflict(entity, id, :self, o, c, p)
+        conflicts.add(entity, id, :self, o, c, p)
       when S[N[nil], N[nil], N[nil]]
         resolve(o, c, p, entity, id)
       end
@@ -201,12 +201,12 @@ module NcsNavigator::Core::Fieldwork
           when S[nil, nil, vp];  h[attr] = vp
           when S[nil, vc, nil];  h[attr] = vc
           when S[nil, vc, vc];   h[attr] = vc
-          when S[nil, vc, vp];   add_conflict(entity, id, attr, vo, vc, vp)
+          when S[nil, vc, vp];   conflicts.add(entity, id, attr, vo, vc, vp)
           when S[vo, vo, vo];    h[attr] = vo
           when S[vo, vo, vp];    h[attr] = vp
           when S[vo, vc, vo];    h[attr] = vc
           when S[vo, vc, vc];    h[attr] = vc
-          when S[vo, vc, vp];    add_conflict(entity, id, attr, vo, vc, vp)
+          when S[vo, vc, vp];    conflicts.add(entity, id, attr, vo, vc, vp)
           end
         end
 
@@ -216,28 +216,12 @@ module NcsNavigator::Core::Fieldwork
 
     def resolve_response_group(o, c, p, entity, id)
       unless c =~ p
-        add_conflict(entity, id, :self, o, c, p)
+        conflicts.add(entity, id, :self, o, c, p)
         return
       end
 
       c.answer_ids = p.answer_ids
       c.values = p.values
-    end
-
-    def add_conflict(entity, entity_id, key, o, c, p)
-      conflict_report = {
-        entity => {
-          entity_id => {
-            key => {
-              :original => o,
-              :current => c,
-              :proposed => p
-            }
-          }
-        }
-      }
-
-      conflicts.deep_merge!(conflict_report)
     end
 
     ##
