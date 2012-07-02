@@ -4,7 +4,7 @@
   %head
     %meta{ "http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
     %title
-      = show_title? ? "NCS Navigator :: " + yield(:title) : "NCS Navigator"
+      = show_title? ? "NCS Navigator Cases :: " + yield(:title) : "NCS Navigator Cases"
     %link{ :rel=>"icon", :type=>"image/gif", :href=>"/assets/favicon.gif"}
     = stylesheet_link_tag('application')
     = javascript_include_tag("application")
@@ -17,10 +17,10 @@
       #header
         = render 'partials/user_info', :current_user => current_user
         #app_name
-          = link_to "NCS Navigator", root_path
+          = link_to "NCS Navigator Cases", root_path
+          %br
           - if show_title?
             %span{ :id => "title_separator" }
-              = "::"
             = yield(:title)
       #main
         - flash.each do |message_type, message|
