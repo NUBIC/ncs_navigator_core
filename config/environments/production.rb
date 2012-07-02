@@ -69,9 +69,9 @@ NcsNavigatorCore::Application.configure do
   end
 
   config.middleware.use ExceptionNotifier,
-    :email_prefix => "[NCS Navigator Core] ",
-    :sender_address => %{"Paul Friedman" <p-friedman@northwestern.edu>},
-    :exception_recipients => %w{p-friedman@northwestern.edu r-sutphin@northwestern.edu}
+    :email_prefix => "[NCS Navigator Cases Staging] ",
+    :sender_address => NcsNavigator.configuration.core['mail_from'],
+    :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients']
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = { :address => "ns.northwestern.edu", :port => 25, :domain => "northwestern.edu" }
