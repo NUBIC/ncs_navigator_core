@@ -138,7 +138,8 @@ class ContactLinksController < ApplicationController
 
     def set_time_and_dates(include_instrument = false)
       contact = @contact_link.contact
-      contact.contact_end_time = Time.now.strftime("%H:%M")
+      contact.set_default_end_time
+
       set_event_time_and_date(contact)
       set_instrument_time_and_date(contact) if include_instrument
     end

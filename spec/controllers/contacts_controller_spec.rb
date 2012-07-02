@@ -63,7 +63,7 @@ describe ContactsController do
         before(:each) do
           params = {:participant => @participant, :event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code}
           Event.stub(:new).with(params).and_return(mock_event(params))
-          Contact.stub(:find).with("37").and_return(mock_contact)
+          Contact.stub(:find).with("37").and_return(mock_contact(:contact_end_time => nil, :contact_date => Date.today))
           ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
           mock_contact.should_receive(:contact_end_time=)
         end
@@ -77,7 +77,6 @@ describe ContactsController do
           get :edit, :id => "37", :person_id => @person.id
           assigns[:event].should equal(mock_event)
         end
-
       end
 
       describe "GET edit with next_event param" do
@@ -103,7 +102,29 @@ describe ContactsController do
 
       end
 
+      describe "GET edit - contact end time" do
+
+        before do
+          ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
+        end
+
+        it "sets the default end_time for the contact" do
+          contact = Factory(:contact, :contact_date_date => Date.today, :contact_end_time => nil)
+          get :edit, :id => contact.id, :person_id => @person.id
+          assigns[:contact].contact_end_time.should_not be_blank
+        end
+
+        it "does not set the end_time for a contact that happened in the past" do
+          contact = Factory(:contact, :contact_date_date => 2.days.ago.to_date, :contact_end_time => nil)
+          get :edit, :id => contact.id, :person_id => @person.id
+          assigns[:contact].contact_end_time.should be_blank
+        end
+      end
+
+
     end
+
+
 
     context "for a low_intensity_ppg2_participant" do
       before(:each) do
