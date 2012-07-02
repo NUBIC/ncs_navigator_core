@@ -18,9 +18,8 @@
         = render 'partials/user_info', :current_user => current_user
         #app_name
           = link_to "NCS Navigator Cases", root_path
-          %br
-          - if show_title?
-            %span{ :id => "title_separator" }
+        - if show_title?
+          #page_title
             = yield(:title)
       #main
         - flash.each do |message_type, message|
