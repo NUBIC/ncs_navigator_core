@@ -1,37 +1,4 @@
 
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: contacts
-#
-#  id                      :integer         not null, primary key
-#  psu_code                :integer         not null
-#  contact_id              :string(36)      not null
-#  contact_disposition     :integer
-#  contact_type_code       :integer         not null
-#  contact_type_other      :string(255)
-#  contact_date            :string(10)
-#  contact_date_date       :date
-#  contact_start_time      :string(255)
-#  contact_end_time        :string(255)
-#  contact_language_code   :integer         not null
-#  contact_language_other  :string(255)
-#  contact_interpret_code  :integer         not null
-#  contact_interpret_other :string(255)
-#  contact_location_code   :integer         not null
-#  contact_location_other  :string(255)
-#  contact_private_code    :integer         not null
-#  contact_private_detail  :string(255)
-#  contact_distance        :decimal(6, 2)
-#  who_contacted_code      :integer         not null
-#  who_contacted_other     :string(255)
-#  contact_comment         :text
-#  transaction_type        :string(255)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  lock_version            :integer         default(0)
-#
-
 
 
 # Staff makes Contact with a Person pursuant to a protocol – either one
@@ -166,3 +133,4 @@ class Contact < ActiveRecord::Base
 
 
 end
+

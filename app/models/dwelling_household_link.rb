@@ -1,21 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: dwelling_household_links
-#
-#  id                :integer         not null, primary key
-#  psu_code          :integer         not null
-#  hh_du_id          :string(36)      not null
-#  dwelling_unit_id  :integer         not null
-#  household_unit_id :integer         not null
-#  is_active_code    :integer         not null
-#  du_rank_code      :integer         not null
-#  du_rank_other     :string(255)
-#  transaction_type  :string(36)
-#  created_at        :datetime
-#  updated_at        :datetime
-#
-
 
 
 # The definition of a household is really based on the individual person's definition of a family.
@@ -45,3 +27,4 @@ class DwellingHouseholdLink < ActiveRecord::Base
   ncs_coded_attribute :du_rank,   'COMMUNICATION_RANK_CL1'
 
 end
+

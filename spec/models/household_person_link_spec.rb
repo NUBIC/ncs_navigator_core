@@ -1,21 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: household_person_links
-#
-#  id                :integer         not null, primary key
-#  psu_code          :integer         not null
-#  person_hh_id      :string(36)      not null
-#  person_id         :integer         not null
-#  household_unit_id :integer         not null
-#  is_active_code    :integer         not null
-#  hh_rank_code      :integer         not null
-#  hh_rank_other     :string(255)
-#  transaction_type  :string(36)
-#  created_at        :datetime
-#  updated_at        :datetime
-#
-
 
 
 require 'spec_helper'
@@ -56,3 +38,4 @@ describe HouseholdPersonLink do
   end
 
 end
+

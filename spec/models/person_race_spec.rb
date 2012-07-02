@@ -1,19 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: person_races
-#
-#  id               :integer         not null, primary key
-#  psu_code         :integer         not null
-#  person_race_id   :string(36)      not null
-#  person_id        :integer         not null
-#  race_code        :integer         not null
-#  race_other       :string(255)
-#  transaction_type :string(36)
-#  created_at       :datetime
-#  updated_at       :datetime
-#
-
 
 
 require 'spec_helper'
@@ -51,3 +35,4 @@ describe PersonRace do
   end
 
 end
+

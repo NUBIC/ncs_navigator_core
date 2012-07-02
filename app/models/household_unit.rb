@@ -1,27 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: household_units
-#
-#  id                           :integer         not null, primary key
-#  psu_code                     :integer         not null
-#  hh_status_code               :integer         not null
-#  hh_eligibility_code          :integer         not null
-#  hh_structure_code            :integer         not null
-#  hh_structure_other           :string(255)
-#  hh_comment                   :text
-#  number_of_age_eligible_women :integer
-#  number_of_pregnant_women     :integer
-#  number_of_pregnant_minors    :integer
-#  number_of_pregnant_adults    :integer
-#  number_of_pregnant_over49    :integer
-#  transaction_type             :string(36)
-#  hh_id                        :string(36)      not null
-#  created_at                   :datetime
-#  updated_at                   :datetime
-#  being_processed              :boolean
-#
-
 
 
 # The definition of a household is really based on the individual person's definition of a family.
@@ -58,3 +34,4 @@ class HouseholdUnit < ActiveRecord::Base
 
   accepts_nested_attributes_for :household_person_links, :allow_destroy => true
 end
+

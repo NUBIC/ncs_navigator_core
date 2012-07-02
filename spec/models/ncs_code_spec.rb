@@ -1,16 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: ncs_codes
-#
-#  id           :integer         not null, primary key
-#  list_name    :string(255)
-#  display_text :string(255)
-#  local_code   :integer
-#  created_at   :datetime
-#  updated_at   :datetime
-#
-
 
 
 require 'spec_helper'
@@ -60,3 +47,4 @@ describe NcsCode do
     end
   end
 end
+

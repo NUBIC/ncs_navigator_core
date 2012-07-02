@@ -1,35 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: participants
-#
-#  id                        :integer         not null, primary key
-#  psu_code                  :integer         not null
-#  p_id                      :string(36)      not null
-#  p_type_code               :integer         not null
-#  p_type_other              :string(255)
-#  status_info_source_code   :integer         not null
-#  status_info_source_other  :string(255)
-#  status_info_mode_code     :integer         not null
-#  status_info_mode_other    :string(255)
-#  status_info_date          :date
-#  enroll_status_code        :integer         not null
-#  enroll_date               :date
-#  pid_entry_code            :integer         not null
-#  pid_entry_other           :string(255)
-#  pid_age_eligibility_code  :integer         not null
-#  pid_comment               :text
-#  transaction_type          :string(36)
-#  created_at                :datetime
-#  updated_at                :datetime
-#  being_processed           :boolean
-#  high_intensity            :boolean
-#  low_intensity_state       :string(255)
-#  high_intensity_state      :string(255)
-#  enrollment_status_comment :text
-#  being_followed            :boolean
-#
-
 
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child.
@@ -1092,3 +1060,4 @@ class Participant < ActiveRecord::Base
       end
     end
 end
+

@@ -1,24 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: environmental_equipments
-#
-#  id                                :integer         not null, primary key
-#  psu_code                          :integer         not null
-#  sample_receipt_shipping_center_id :integer
-#  equipment_id                      :string(36)      not null
-#  equipment_type_code               :integer         not null
-#  equipment_type_other              :string(255)
-#  serial_number                     :string(50)      not null
-#  government_asset_tag_number       :string(36)
-#  retired_date                      :string(10)
-#  retired_reason_code               :integer         not null
-#  retired_reason_other              :string(255)
-#  transaction_type                  :string(36)
-#  created_at                        :datetime
-#  updated_at                        :datetime
-#
-
 require 'spec_helper'
 
 describe EnvironmentalEquipment do
@@ -51,3 +30,4 @@ describe EnvironmentalEquipment do
     end
   end    
 end
+

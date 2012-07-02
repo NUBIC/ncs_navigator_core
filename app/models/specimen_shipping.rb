@@ -1,27 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: specimen_shippings
-#
-#  id                                     :integer         not null, primary key
-#  psu_code                               :integer         not null
-#  storage_container_id                   :string(36)      not null
-#  specimen_processing_shipping_center_id :integer
-#  staff_id                               :string(36)      not null
-#  shipper_id                             :string(36)      not null
-#  shipper_destination                    :string(3)       not null
-#  shipment_date                          :string(10)      not null
-#  shipment_temperature_code              :integer         not null
-#  shipment_tracking_number               :string(36)      not null
-#  shipment_receipt_confirmed_code        :integer         not null
-#  shipment_receipt_datetime              :datetime
-#  shipment_issues_code                   :integer         not null
-#  shipment_issues_other                  :string(255)
-#  transaction_type                       :string(36)
-#  created_at                             :datetime
-#  updated_at                             :datetime
-#
-
 class SpecimenShipping < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :storage_container_id 
@@ -42,3 +18,4 @@ class SpecimenShipping < ActiveRecord::Base
   validates_presence_of :shipment_tracking_number
   validates_presence_of :shipment_temperature
 end
+

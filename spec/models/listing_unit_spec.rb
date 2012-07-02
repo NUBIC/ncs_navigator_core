@@ -1,22 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: listing_units
-#
-#  id               :integer         not null, primary key
-#  psu_code         :integer         not null
-#  list_id          :string(36)      not null
-#  list_line        :integer
-#  list_source_code :integer         not null
-#  list_comment     :text
-#  transaction_type :string(36)
-#  created_at       :datetime
-#  updated_at       :datetime
-#  being_processed  :boolean
-#  ssu_id           :string(255)
-#  tsu_id           :string(255)
-#
-
 
 
 require 'spec_helper'
@@ -83,3 +64,4 @@ describe ListingUnit do
   end
 
 end
+

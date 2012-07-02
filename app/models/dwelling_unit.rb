@@ -1,27 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: dwelling_units
-#
-#  id                 :integer         not null, primary key
-#  psu_code           :integer         not null
-#  duplicate_du_code  :integer         not null
-#  missed_du_code     :integer         not null
-#  du_type_code       :integer         not null
-#  du_type_other      :string(255)
-#  du_ineligible_code :integer         not null
-#  du_access_code     :integer         not null
-#  duid_comment       :text
-#  transaction_type   :string(36)
-#  du_id              :string(36)      not null
-#  listing_unit_id    :integer
-#  created_at         :datetime
-#  updated_at         :datetime
-#  being_processed    :boolean
-#  ssu_id             :string(255)
-#  tsu_id             :string(255)
-#
-
 
 
 # DU is a specific street address within a sampling unit.
@@ -86,3 +62,4 @@ class DwellingUnit < ActiveRecord::Base
     end
 
 end
+

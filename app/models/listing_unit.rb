@@ -1,22 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: listing_units
-#
-#  id               :integer         not null, primary key
-#  psu_code         :integer         not null
-#  list_id          :string(36)      not null
-#  list_line        :integer
-#  list_source_code :integer         not null
-#  list_comment     :text
-#  transaction_type :string(36)
-#  created_at       :datetime
-#  updated_at       :datetime
-#  being_processed  :boolean
-#  ssu_id           :string(255)
-#  tsu_id           :string(255)
-#
-
 
 
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file,
@@ -40,3 +21,4 @@ class ListingUnit < ActiveRecord::Base
   scope :next_to_process, without_dwelling.where("listing_units.being_processed IS FALSE").readonly(false)
 
 end
+

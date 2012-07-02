@@ -1,28 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: sample_shippings
-#
-#  id                                :integer         not null, primary key
-#  psu_code                          :integer         not null
-#  sample_id                         :string(36)      not null
-#  sample_receipt_shipping_center_id :integer
-#  staff_id                          :string(36)      not null
-#  shipper_id                        :string(36)      not null
-#  shipper_destination_code          :integer         not null
-#  shipment_date                     :string(10)      not null
-#  shipment_coolant_code             :integer         not null
-#  shipment_tracking_number          :string(36)      not null
-#  shipment_issues_other             :string(255)
-#  staff_id_track                    :string(36)
-#  sample_shipped_by_code            :integer         not null
-#  transaction_type                  :string(36)
-#  created_at                        :datetime
-#  updated_at                        :datetime
-#  volume_amount                     :decimal(6, 2)
-#  volume_unit                       :string(36)
-#
-
 require 'spec_helper'
 
 describe SampleShipping do
@@ -57,3 +32,4 @@ describe SampleShipping do
     end
   end    
 end
+

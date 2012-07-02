@@ -1,22 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: contact_links
-#
-#  id               :integer         not null, primary key
-#  psu_code         :integer         not null
-#  contact_link_id  :string(36)      not null
-#  contact_id       :integer         not null
-#  event_id         :integer
-#  instrument_id    :integer
-#  staff_id         :string(36)      not null
-#  person_id        :integer
-#  provider_id      :integer
-#  transaction_type :string(255)
-#  created_at       :datetime
-#  updated_at       :datetime
-#
-
 
 
 require 'spec_helper'
@@ -67,3 +48,4 @@ describe ContactLink do
   end
 
 end
+

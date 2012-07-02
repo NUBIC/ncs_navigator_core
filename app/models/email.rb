@@ -1,34 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: emails
-#
-#  id                      :integer         not null, primary key
-#  psu_code                :integer         not null
-#  email_id                :string(36)      not null
-#  person_id               :integer
-#  email                   :string(100)
-#  email_rank_code         :integer         not null
-#  email_rank_other        :string(255)
-#  email_info_source_code  :integer         not null
-#  email_info_source_other :string(255)
-#  email_info_date         :date
-#  email_info_update       :date
-#  email_type_code         :integer         not null
-#  email_type_other        :string(255)
-#  email_share_code        :integer         not null
-#  email_active_code       :integer         not null
-#  email_comment           :text
-#  email_start_date        :string(10)
-#  email_start_date_date   :date
-#  email_end_date          :string(10)
-#  email_end_date_date     :date
-#  transaction_type        :string(255)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  response_set_id         :integer
-#
-
 
 
 # A Person, an Institution and a Provider will have at least one and sometimes many Email addresses.
@@ -62,3 +31,4 @@ class Email < ActiveRecord::Base
   end
 
 end
+

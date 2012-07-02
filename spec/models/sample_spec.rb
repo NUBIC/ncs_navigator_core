@@ -1,15 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: samples
-#
-#  id            :integer         not null, primary key
-#  sample_id     :string(36)      not null
-#  instrument_id :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#
-
 require 'spec_helper'
 
 describe Sample do
@@ -20,3 +8,4 @@ describe Sample do
 
   it { should belong_to(:instrument) }
 end
+

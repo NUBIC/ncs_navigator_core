@@ -1,39 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: telephones
-#
-#  id                      :integer         not null, primary key
-#  psu_code                :integer         not null
-#  phone_id                :string(36)      not null
-#  person_id               :integer
-#  phone_info_source_code  :integer         not null
-#  phone_info_source_other :string(255)
-#  phone_info_date         :date
-#  phone_info_update       :date
-#  phone_nbr               :string(10)
-#  phone_ext               :string(5)
-#  phone_type_code         :integer         not null
-#  phone_type_other        :string(255)
-#  phone_rank_code         :integer         not null
-#  phone_rank_other        :string(255)
-#  phone_landline_code     :integer         not null
-#  phone_share_code        :integer         not null
-#  cell_permission_code    :integer         not null
-#  text_permission_code    :integer         not null
-#  phone_comment           :text
-#  phone_start_date        :string(10)
-#  phone_start_date_date   :date
-#  phone_end_date          :string(10)
-#  phone_end_date_date     :date
-#  transaction_type        :string(255)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  response_set_id         :integer
-#  provider_id             :integer
-#  institute_id            :integer
-#
-
 
 
 # A Person, an Institution and a Provider will have at least one and sometimes many phone numbers.
@@ -100,3 +64,4 @@ class Telephone < ActiveRecord::Base
   end
 
 end
+

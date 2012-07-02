@@ -1,22 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: participant_person_links
-#
-#  id                 :integer         not null, primary key
-#  psu_code           :integer         not null
-#  person_id          :integer         not null
-#  participant_id     :integer         not null
-#  relationship_code  :integer         not null
-#  relationship_other :string(255)
-#  is_active_code     :integer         not null
-#  transaction_type   :string(36)
-#  person_pid_id      :string(36)      not null
-#  created_at         :datetime
-#  updated_at         :datetime
-#  response_set_id    :integer
-#
-
 
 
 # The same Person can be a respondent or informant for many Participants.
@@ -54,3 +35,4 @@ class ParticipantPersonLink < ActiveRecord::Base
     is_active_code == 1
   end
 end
+

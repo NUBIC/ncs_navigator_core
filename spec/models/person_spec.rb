@@ -1,49 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: people
-#
-#  id                             :integer         not null, primary key
-#  psu_code                       :integer         not null
-#  person_id                      :string(36)      not null
-#  prefix_code                    :integer         not null
-#  first_name                     :string(30)
-#  last_name                      :string(30)
-#  middle_name                    :string(30)
-#  maiden_name                    :string(30)
-#  suffix_code                    :integer         not null
-#  title                          :string(5)
-#  sex_code                       :integer         not null
-#  age                            :integer
-#  age_range_code                 :integer         not null
-#  person_dob                     :string(10)
-#  person_dob_date                :date
-#  deceased_code                  :integer         not null
-#  ethnic_group_code              :integer         not null
-#  language_code                  :integer         not null
-#  language_other                 :string(255)
-#  marital_status_code            :integer         not null
-#  marital_status_other           :string(255)
-#  preferred_contact_method_code  :integer         not null
-#  preferred_contact_method_other :string(255)
-#  planned_move_code              :integer         not null
-#  move_info_code                 :integer         not null
-#  when_move_code                 :integer         not null
-#  date_move_date                 :date
-#  date_move                      :string(7)
-#  p_tracing_code                 :integer         not null
-#  p_info_source_code             :integer         not null
-#  p_info_source_other            :string(255)
-#  p_info_date                    :date
-#  p_info_update                  :date
-#  person_comment                 :text
-#  transaction_type               :string(36)
-#  created_at                     :datetime
-#  updated_at                     :datetime
-#  being_processed                :boolean
-#  response_set_id                :integer
-#
-
 
 
 require 'spec_helper'
@@ -565,3 +519,4 @@ describe Person do
     end
   end
 end
+

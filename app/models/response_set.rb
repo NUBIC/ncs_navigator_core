@@ -1,20 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: response_sets
-#
-#  id            :integer         not null, primary key
-#  user_id       :integer
-#  survey_id     :integer
-#  access_code   :string(255)
-#  started_at    :datetime
-#  completed_at  :datetime
-#  created_at    :datetime
-#  updated_at    :datetime
-#  instrument_id :integer
-#  api_id        :string(255)
-#
-
 
 
 class ResponseSet < ActiveRecord::Base
@@ -49,3 +32,4 @@ class ResponseSet < ActiveRecord::Base
     QUERY
   end
 end
+

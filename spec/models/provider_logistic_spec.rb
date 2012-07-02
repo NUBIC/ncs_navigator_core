@@ -1,19 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: provider_logistics
-#
-#  id                       :integer         not null, primary key
-#  psu_code                 :integer         not null
-#  provider_logistics_id    :string(36)      not null
-#  provider_id              :integer
-#  provider_logistics_code  :integer         not null
-#  provider_logistics_other :string(255)
-#  transaction_type         :string(255)
-#  created_at               :datetime
-#  updated_at               :datetime
-#
-
 require 'spec_helper'
 
 describe ProviderLogistic do

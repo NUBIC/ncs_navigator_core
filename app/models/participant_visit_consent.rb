@@ -1,26 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: participant_visit_consents
-#
-#  id                          :integer         not null, primary key
-#  psu_code                    :integer         not null
-#  pid_visit_consent_id        :string(36)      not null
-#  participant_id              :integer
-#  vis_consent_type_code       :integer         not null
-#  vis_consent_response_code   :integer         not null
-#  vis_language_code           :integer         not null
-#  vis_language_other          :string(255)
-#  vis_person_who_consented_id :integer
-#  vis_who_consented_code      :integer         not null
-#  vis_translate_code          :integer         not null
-#  vis_comments                :text
-#  contact_id                  :integer
-#  transaction_type            :string(36)
-#  created_at                  :datetime
-#  updated_at                  :datetime
-#
-
 
 
 # In addition to the single time consents we have participants review and give oral consent to specific
@@ -79,3 +56,4 @@ class ParticipantVisitConsent < ActiveRecord::Base
   end
 
 end
+

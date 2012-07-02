@@ -1,16 +1,3 @@
-# == Schema Information
-# Schema version: 20120626221317
-#
-# Table name: ncs_codes
-#
-#  id           :integer         not null, primary key
-#  list_name    :string(255)
-#  display_text :string(255)
-#  local_code   :integer
-#  created_at   :datetime
-#  updated_at   :datetime
-#
-
 
 
 class NcsCode < ActiveRecord::Base
@@ -379,3 +366,4 @@ class NcsCode < ActiveRecord::Base
       comparison_object.local_code == self.local_code)
   end
 end
+
