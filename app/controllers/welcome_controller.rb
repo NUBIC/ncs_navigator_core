@@ -32,6 +32,10 @@ class WelcomeController < ApplicationController
   def faq
   end
 
+  def raise_exception
+    raise Exception, "Forced exception raised via GET request"
+  end
+
   def start_pregnancy_screener_instrument
     person = Person.create(:psu_code => @psu_code)
     participant = Participant.create(:psu_code => @psu_code)
