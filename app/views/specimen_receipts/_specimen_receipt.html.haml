@@ -8,11 +8,13 @@
     = display_staff_info
     %br
     - if not f.object.storage_container_id.blank?
-      = "Storage Container ID: "
+      %span{ :class => "required" } *
+        = "Storage Container ID: "
       = f.object.storage_container_id
       %br  
     - if not f.object.receipt_datetime.blank?
-      = "Receipt Date and Time: "
+      %span{ :class => "required" } *
+        = "Receipt Date and Time: "
       = f.object.receipt_datetime  
       %br
     = "Receipt Comment: " 

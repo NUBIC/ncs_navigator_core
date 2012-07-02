@@ -56,16 +56,20 @@
       
       Ship Date and Time: 
       - if @shipment_date_and_time.blank?
-        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>""}
+        %input{:type=>"text", :class => "datetime important_field", :name=>"shipment_date_and_time", :value=>""}
+        %span{ :class => "required" } *
       - else
-        %input{:type=>"text", :class => "datetime", :name=>"shipment_date_and_time", :value=>@shipment_date_and_time}      
+        %input{:type=>"text", :class => "datetime important_field", :name=>"shipment_date_and_time", :value=>@shipment_date_and_time}      
+        %span{ :class => "required" } *
       %br
 
       Shipment ID:
       - if @shipper_id.blank?
-        %input{:type=>"text", :name=>"shipper_id", :value=>""}
+        %input{:type=>"text", :name=>"shipper_id", :class => "important_field", :value=>""}
+        %span{ :class => "required" } *
       - else
-        %input{:type=>"text", :name=>"shipper_id", :value=>@shipper_id}
+        %input{:type=>"text", :name=>"shipper_id", :class => "important_field", :value=>@shipper_id}
+        %span{ :class => "required" } *
       %br
 
       PSU ID:
@@ -92,23 +96,29 @@
 
       Sent to Site:
       - if @send_to_site_selected.blank?
-        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site))
+        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site), :class => "important_field")
+        %span{ :class => "required" } *
       - else
-        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site, @send_to_site_selected))
+        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site, @send_to_site_selected), :class => "important_field")
+        %span{ :class => "required" } *        
       %br
 
       Carrier:
       - if @carrier.blank?
-        %input{:type=>"text", :name=>"carrier", :value=>""}
+        %input{:type=>"text", :name=>"carrier", :class => "important_field", :value=>""}
+        %span{ :class => "required" } *
       - else
-        %input{:type=>"text", :name=>"carrier", :value=>@carrier}      
+        %input{:type=>"text", :name=>"carrier", :class => "important_field", :value=>@carrier}      
+        %span{ :class => "required" } * 
       %br
 
       Tracking Number:
       - if @shipment_tracking_number.blank?
-        %input{:type=>"text", :name=>"shipment_tracking_number", :value=>""}
+        %input{:type=>"text", :name=>"shipment_tracking_number", :class => "important_field", :value=>""}
+        %span{ :class => "required" } *
       - else
-        %input{:type=>"text", :name=>"shipment_tracking_number", :value=>@shipment_tracking_number}
+        %input{:type=>"text", :name=>"shipment_tracking_number", :class => "important_field", :value=>@shipment_tracking_number}
+        %span{ :class => "required" } *
       %br
     
       Shipping Temperature:

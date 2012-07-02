@@ -31,7 +31,9 @@
     
     %br
     = f.label :shipment_receipt_datetime, "Shipment Receipt Date and Time: "
-    = f.text_field :shipment_receipt_datetime, :class => "datetime", :id => "datetime_"+sample_receipt_confirmation.sample_id
+    = f.text_field :shipment_receipt_datetime, :class => "datetime important_field", :id => "datetime_"+sample_receipt_confirmation.sample_id
+    %span{ :class => "required" } *
+    
     %br  
     = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :label_text => "Shipment Receipt Confirmed Code:" }  
     %br
@@ -41,15 +43,17 @@
     = f.text_field :shipment_damaged_reason
     
     %br
-    = f.label :sample_receipt_temp, "Sample Receipt Temp:"
+    = f.label :sample_receipt_temp, "Sample Receipt Temp (in Celsius):", :class => "important_field"
     = f.text_field :sample_receipt_temp
+    %span{ :class => "required" } *
     %br
     = render "shared/ncs_code_select", { :f => f, :code => :sample_condition_code, :label_text => "Sample Condition Code:" }  
 
     %br
-    = f.label :shipment_received_by,"Shipment Received By:"
+    = f.label :shipment_received_by,"Shipment Received By:", :class => "important_field"
     = f.text_field :shipment_received_by
-
+    %span{ :class => "required" } *
+    
     = f.hidden_field :sample_id
     %br
     = f.submit "Submit", :disable_with => 'Submitting...', :class => 'submit_confirmation'
