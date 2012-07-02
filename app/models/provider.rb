@@ -1,4 +1,35 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: providers
+#
+#  created_at                 :datetime
+#  id                         :integer          not null, primary key
+#  list_subsampling_code      :integer
+#  name_practice              :string(100)
+#  practice_info_code         :integer          not null
+#  practice_patient_load_code :integer          not null
+#  practice_size_code         :integer          not null
+#  proportion_days_sampled    :integer
+#  proportion_weeks_sampled   :integer
+#  provider_comment           :text
+#  provider_id                :string(36)       not null
+#  provider_info_date         :date
+#  provider_info_source_code  :integer          not null
+#  provider_info_source_other :string(255)
+#  provider_info_update       :date
+#  provider_ncs_role_code     :integer          not null
+#  provider_ncs_role_other    :string(255)
+#  provider_type_code         :integer          not null
+#  provider_type_other        :string(255)
+#  psu_code                   :integer          not null
+#  public_practice_code       :integer          not null
+#  sampling_notes             :string(1000)
+#  transaction_type           :string(255)
+#  updated_at                 :datetime
+#
+
 class Provider < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :provider_id

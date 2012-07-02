@@ -1,4 +1,50 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: people
+#
+#  age                            :integer
+#  age_range_code                 :integer          not null
+#  being_processed                :boolean          default(FALSE)
+#  created_at                     :datetime
+#  date_move                      :string(7)
+#  date_move_date                 :date
+#  deceased_code                  :integer          not null
+#  ethnic_group_code              :integer          not null
+#  first_name                     :string(30)
+#  id                             :integer          not null, primary key
+#  language_code                  :integer          not null
+#  language_other                 :string(255)
+#  last_name                      :string(30)
+#  maiden_name                    :string(30)
+#  marital_status_code            :integer          not null
+#  marital_status_other           :string(255)
+#  middle_name                    :string(30)
+#  move_info_code                 :integer          not null
+#  p_info_date                    :date
+#  p_info_source_code             :integer          not null
+#  p_info_source_other            :string(255)
+#  p_info_update                  :date
+#  p_tracing_code                 :integer          not null
+#  person_comment                 :text
+#  person_dob                     :string(10)
+#  person_dob_date                :date
+#  person_id                      :string(36)       not null
+#  planned_move_code              :integer          not null
+#  preferred_contact_method_code  :integer          not null
+#  preferred_contact_method_other :string(255)
+#  prefix_code                    :integer          not null
+#  psu_code                       :integer          not null
+#  response_set_id                :integer
+#  sex_code                       :integer          not null
+#  suffix_code                    :integer          not null
+#  title                          :string(5)
+#  transaction_type               :string(36)
+#  updated_at                     :datetime
+#  when_move_code                 :integer          not null
+#
+
 
 
 # A Person is an individual who may provide information on a participant.

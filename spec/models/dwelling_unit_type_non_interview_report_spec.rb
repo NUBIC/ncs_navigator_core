@@ -1,4 +1,20 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: dwelling_unit_type_non_interview_reports
+#
+#  created_at                   :datetime
+#  id                           :integer          not null, primary key
+#  nir_dutype_id                :string(36)       not null
+#  nir_dwelling_unit_type_code  :integer          not null
+#  nir_dwelling_unit_type_other :string(255)
+#  non_interview_report_id      :integer
+#  psu_code                     :integer          not null
+#  transaction_type             :string(36)
+#  updated_at                   :datetime
+#
+
 
 
 require 'spec_helper'

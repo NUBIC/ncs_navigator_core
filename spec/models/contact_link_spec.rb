@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: contact_links
+#
+#  contact_id       :integer          not null
+#  contact_link_id  :string(36)       not null
+#  created_at       :datetime
+#  event_id         :integer
+#  id               :integer          not null, primary key
+#  instrument_id    :integer
+#  person_id        :integer
+#  provider_id      :integer
+#  psu_code         :integer          not null
+#  staff_id         :string(36)       not null
+#  transaction_type :string(255)
+#  updated_at       :datetime
+#
+
 
 
 require 'spec_helper'

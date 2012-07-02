@@ -1,4 +1,20 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: no_access_non_interview_reports
+#
+#  created_at              :datetime
+#  id                      :integer          not null, primary key
+#  nir_no_access_code      :integer          not null
+#  nir_no_access_id        :string(36)       not null
+#  nir_no_access_other     :string(255)
+#  non_interview_report_id :integer
+#  psu_code                :integer          not null
+#  transaction_type        :string(36)
+#  updated_at              :datetime
+#
+
 
 
 class NoAccessNonInterviewReport < ActiveRecord::Base

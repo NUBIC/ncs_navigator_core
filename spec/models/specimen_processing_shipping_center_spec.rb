@@ -1,4 +1,18 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: specimen_processing_shipping_centers
+#
+#  address_id                             :integer
+#  created_at                             :datetime
+#  id                                     :integer          not null, primary key
+#  psu_code                               :integer          not null
+#  specimen_processing_shipping_center_id :string(36)       not null
+#  transaction_type                       :string(36)
+#  updated_at                             :datetime
+#
+
 require 'spec_helper'
 
 describe SpecimenProcessingShippingCenter do

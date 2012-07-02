@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: merges
+#
+#  completed_at    :datetime
+#  conflict_report :text
+#  crashed_at      :datetime
+#  created_at      :datetime
+#  fieldwork_id    :integer
+#  id              :integer          not null, primary key
+#  log             :text
+#  proposed_data   :text
+#  started_at      :datetime
+#  updated_at      :datetime
+#
+
 require 'spec_helper'
 
 describe Merge do

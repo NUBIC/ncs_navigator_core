@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: fieldworks
+#
+#  client_id           :string(255)
+#  created_at          :datetime
+#  end_date            :date
+#  fieldwork_id        :string(36)
+#  generation_log      :text
+#  id                  :integer          not null, primary key
+#  latest_merge_id     :integer
+#  latest_merge_status :string(255)
+#  original_data       :binary
+#  staff_id            :string(255)
+#  start_date          :date
+#  updated_at          :datetime
+#
+
 
 
 require 'spec_helper'

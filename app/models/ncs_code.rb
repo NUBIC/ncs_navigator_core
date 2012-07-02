@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: ncs_codes
+#
+#  created_at   :datetime
+#  display_text :string(255)
+#  id           :integer          not null, primary key
+#  list_name    :string(255)
+#  local_code   :integer
+#  updated_at   :datetime
+#
+
 
 
 class NcsCode < ActiveRecord::Base

@@ -1,4 +1,24 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: participant_authorization_forms
+#
+#  auth_form_id        :string(36)       not null
+#  auth_form_type_code :integer          not null
+#  auth_status_code    :integer          not null
+#  auth_status_other   :string(255)
+#  auth_type_other     :string(255)
+#  contact_id          :integer
+#  created_at          :datetime
+#  id                  :integer          not null, primary key
+#  participant_id      :integer
+#  provider_id         :integer
+#  psu_code            :integer          not null
+#  transaction_type    :string(36)
+#  updated_at          :datetime
+#
+
 
 
 require 'spec_helper'

@@ -1,4 +1,24 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: ppg_details
+#
+#  created_at          :datetime
+#  due_date_2          :string(10)
+#  due_date_3          :string(10)
+#  id                  :integer          not null, primary key
+#  orig_due_date       :string(10)
+#  participant_id      :integer
+#  ppg_details_id      :string(36)       not null
+#  ppg_first_code      :integer          not null
+#  ppg_pid_status_code :integer          not null
+#  psu_code            :integer          not null
+#  response_set_id     :integer
+#  transaction_type    :string(36)
+#  updated_at          :datetime
+#
+
 
 
 require 'spec_helper'

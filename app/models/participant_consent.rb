@@ -1,4 +1,38 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: participant_consents
+#
+#  consent_comments                :text
+#  consent_date                    :date
+#  consent_expiration              :date
+#  consent_form_type_code          :integer          not null
+#  consent_given_code              :integer          not null
+#  consent_language_code           :integer          not null
+#  consent_language_other          :string(255)
+#  consent_translate_code          :integer          not null
+#  consent_type_code               :integer          not null
+#  consent_version                 :string(9)
+#  consent_withdraw_code           :integer          not null
+#  consent_withdraw_date           :date
+#  consent_withdraw_reason_code    :integer          not null
+#  consent_withdraw_type_code      :integer          not null
+#  contact_id                      :integer
+#  created_at                      :datetime
+#  id                              :integer          not null, primary key
+#  participant_consent_id          :string(36)       not null
+#  participant_id                  :integer
+#  person_who_consented_id         :integer
+#  person_wthdrw_consent_id        :integer
+#  psu_code                        :integer          not null
+#  reconsideration_script_use_code :integer          not null
+#  transaction_type                :string(36)
+#  updated_at                      :datetime
+#  who_consented_code              :integer          not null
+#  who_wthdrw_consent_code         :integer          not null
+#
+
 
 
 # Tracks the history of Participants consents and withdrawals.

@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: dwelling_household_links
+#
+#  created_at        :datetime
+#  du_rank_code      :integer          not null
+#  du_rank_other     :string(255)
+#  dwelling_unit_id  :integer          not null
+#  hh_du_id          :string(36)       not null
+#  household_unit_id :integer          not null
+#  id                :integer          not null, primary key
+#  is_active_code    :integer          not null
+#  psu_code          :integer          not null
+#  transaction_type  :string(36)
+#  updated_at        :datetime
+#
+
 
 
 # The definition of a household is really based on the individual person's definition of a family.

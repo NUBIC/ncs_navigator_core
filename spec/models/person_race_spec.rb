@@ -1,4 +1,20 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: person_races
+#
+#  created_at       :datetime
+#  id               :integer          not null, primary key
+#  person_id        :integer          not null
+#  person_race_id   :string(36)       not null
+#  psu_code         :integer          not null
+#  race_code        :integer          not null
+#  race_other       :string(255)
+#  transaction_type :string(36)
+#  updated_at       :datetime
+#
+
 
 
 require 'spec_helper'

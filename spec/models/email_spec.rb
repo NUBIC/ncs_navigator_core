@@ -1,4 +1,35 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: emails
+#
+#  created_at              :datetime
+#  email                   :string(100)
+#  email_active_code       :integer          not null
+#  email_comment           :text
+#  email_end_date          :string(10)
+#  email_end_date_date     :date
+#  email_id                :string(36)       not null
+#  email_info_date         :date
+#  email_info_source_code  :integer          not null
+#  email_info_source_other :string(255)
+#  email_info_update       :date
+#  email_rank_code         :integer          not null
+#  email_rank_other        :string(255)
+#  email_share_code        :integer          not null
+#  email_start_date        :string(10)
+#  email_start_date_date   :date
+#  email_type_code         :integer          not null
+#  email_type_other        :string(255)
+#  id                      :integer          not null, primary key
+#  person_id               :integer
+#  psu_code                :integer          not null
+#  response_set_id         :integer
+#  transaction_type        :string(255)
+#  updated_at              :datetime
+#
+
 
 
 require 'spec_helper'

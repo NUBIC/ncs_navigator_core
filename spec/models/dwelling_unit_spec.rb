@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: dwelling_units
+#
+#  being_processed    :boolean          default(FALSE)
+#  created_at         :datetime
+#  du_access_code     :integer          not null
+#  du_id              :string(36)       not null
+#  du_ineligible_code :integer          not null
+#  du_type_code       :integer          not null
+#  du_type_other      :string(255)
+#  duid_comment       :text
+#  duplicate_du_code  :integer          not null
+#  id                 :integer          not null, primary key
+#  listing_unit_id    :integer
+#  missed_du_code     :integer          not null
+#  psu_code           :integer          not null
+#  ssu_id             :string(255)
+#  transaction_type   :string(36)
+#  tsu_id             :string(255)
+#  updated_at         :datetime
+#
+
 
 
 require 'spec_helper'

@@ -1,4 +1,39 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: pbs_lists
+#
+#  cert_flag_code                 :integer
+#  created_at                     :datetime
+#  frame_completion_req_code      :integer          not null
+#  frame_order                    :integer
+#  id                             :integer          not null, primary key
+#  in_out_frame_code              :integer
+#  in_out_psu_code                :integer
+#  in_sample_code                 :integer
+#  mos                            :integer
+#  pbs_list_id                    :string(36)       not null
+#  pr_cooperation_date            :date
+#  pr_recruitment_end_date        :date
+#  pr_recruitment_start_date      :date
+#  pr_recruitment_status_code     :integer
+#  practice_num                   :integer
+#  provider_id                    :integer
+#  psu_code                       :integer          not null
+#  sampling_interval_woman        :decimal(4, 2)
+#  selection_probability_location :decimal(7, 6)
+#  selection_probability_overall  :decimal(7, 6)
+#  selection_probability_woman    :decimal(7, 6)
+#  sort_var1                      :integer
+#  sort_var2                      :integer
+#  sort_var3                      :integer
+#  stratum                        :string(255)
+#  substitute_provider_id         :integer
+#  transaction_type               :string(255)
+#  updated_at                     :datetime
+#
+
 class PbsList < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :pbs_list_id

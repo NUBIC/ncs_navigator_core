@@ -1,4 +1,36 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: participants
+#
+#  being_followed            :boolean          default(FALSE)
+#  being_processed           :boolean          default(FALSE)
+#  created_at                :datetime
+#  enroll_date               :date
+#  enroll_status_code        :integer          not null
+#  enrollment_status_comment :text
+#  high_intensity            :boolean          default(FALSE)
+#  high_intensity_state      :string(255)
+#  id                        :integer          not null, primary key
+#  low_intensity_state       :string(255)
+#  p_id                      :string(36)       not null
+#  p_type_code               :integer          not null
+#  p_type_other              :string(255)
+#  pid_age_eligibility_code  :integer          not null
+#  pid_comment               :text
+#  pid_entry_code            :integer          not null
+#  pid_entry_other           :string(255)
+#  psu_code                  :integer          not null
+#  status_info_date          :date
+#  status_info_mode_code     :integer          not null
+#  status_info_mode_other    :string(255)
+#  status_info_source_code   :integer          not null
+#  status_info_source_other  :string(255)
+#  transaction_type          :string(36)
+#  updated_at                :datetime
+#
+
 
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child.

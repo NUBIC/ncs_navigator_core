@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: household_units
+#
+#  being_processed              :boolean          default(FALSE)
+#  created_at                   :datetime
+#  hh_comment                   :text
+#  hh_eligibility_code          :integer          not null
+#  hh_id                        :string(36)       not null
+#  hh_status_code               :integer          not null
+#  hh_structure_code            :integer          not null
+#  hh_structure_other           :string(255)
+#  id                           :integer          not null, primary key
+#  number_of_age_eligible_women :integer
+#  number_of_pregnant_adults    :integer
+#  number_of_pregnant_minors    :integer
+#  number_of_pregnant_over49    :integer
+#  number_of_pregnant_women     :integer
+#  psu_code                     :integer          not null
+#  transaction_type             :string(36)
+#  updated_at                   :datetime
+#
+
 
 
 # The definition of a household is really based on the individual person's definition of a family.

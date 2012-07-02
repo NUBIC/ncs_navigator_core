@@ -1,4 +1,31 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: sample_receipt_stores
+#
+#  cooler_temp_condition_code        :integer          not null
+#  created_at                        :datetime
+#  environmental_equipment_id        :integer
+#  id                                :integer          not null, primary key
+#  placed_in_storage_datetime        :datetime         not null
+#  psu_code                          :integer          not null
+#  receipt_comment_other             :string(255)
+#  receipt_datetime                  :datetime         not null
+#  removed_from_storage_datetime     :datetime
+#  sample_condition_code             :integer          not null
+#  sample_id                         :string(36)       not null
+#  sample_receipt_shipping_center_id :integer
+#  staff_id                          :string(36)       not null
+#  storage_comment_other             :string(255)
+#  storage_compartment_area_code     :integer          not null
+#  temp_event_action_code            :integer          not null
+#  temp_event_action_other           :string(255)
+#  temp_event_occurred_code          :integer          not null
+#  transaction_type                  :string(36)
+#  updated_at                        :datetime
+#
+
 class SampleReceiptStore < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :sample_id

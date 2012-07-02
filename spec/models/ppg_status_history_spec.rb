@@ -1,4 +1,27 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: ppg_status_histories
+#
+#  created_at            :datetime
+#  id                    :integer          not null, primary key
+#  participant_id        :integer
+#  ppg_comment           :text
+#  ppg_history_id        :string(36)       not null
+#  ppg_info_mode_code    :integer          not null
+#  ppg_info_mode_other   :string(255)
+#  ppg_info_source_code  :integer          not null
+#  ppg_info_source_other :string(255)
+#  ppg_status_code       :integer          not null
+#  ppg_status_date       :string(10)
+#  ppg_status_date_date  :date
+#  psu_code              :integer          not null
+#  response_set_id       :integer
+#  transaction_type      :string(36)
+#  updated_at            :datetime
+#
+
 
 
 require 'spec_helper'

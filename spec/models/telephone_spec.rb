@@ -1,4 +1,40 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: telephones
+#
+#  cell_permission_code    :integer          not null
+#  created_at              :datetime
+#  id                      :integer          not null, primary key
+#  institute_id            :integer
+#  person_id               :integer
+#  phone_comment           :text
+#  phone_end_date          :string(10)
+#  phone_end_date_date     :date
+#  phone_ext               :string(5)
+#  phone_id                :string(36)       not null
+#  phone_info_date         :date
+#  phone_info_source_code  :integer          not null
+#  phone_info_source_other :string(255)
+#  phone_info_update       :date
+#  phone_landline_code     :integer          not null
+#  phone_nbr               :string(10)
+#  phone_rank_code         :integer          not null
+#  phone_rank_other        :string(255)
+#  phone_share_code        :integer          not null
+#  phone_start_date        :string(10)
+#  phone_start_date_date   :date
+#  phone_type_code         :integer          not null
+#  phone_type_other        :string(255)
+#  provider_id             :integer
+#  psu_code                :integer          not null
+#  response_set_id         :integer
+#  text_permission_code    :integer          not null
+#  transaction_type        :string(255)
+#  updated_at              :datetime
+#
+
 
 
 require 'spec_helper'

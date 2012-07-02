@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: participant_person_links
+#
+#  created_at         :datetime
+#  id                 :integer          not null, primary key
+#  is_active_code     :integer          not null
+#  participant_id     :integer          not null
+#  person_id          :integer          not null
+#  person_pid_id      :string(36)       not null
+#  psu_code           :integer          not null
+#  relationship_code  :integer          not null
+#  relationship_other :string(255)
+#  response_set_id    :integer
+#  transaction_type   :string(36)
+#  updated_at         :datetime
+#
+
 
 
 # The same Person can be a respondent or informant for many Participants.

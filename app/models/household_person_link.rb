@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: household_person_links
+#
+#  created_at        :datetime
+#  hh_rank_code      :integer          not null
+#  hh_rank_other     :string(255)
+#  household_unit_id :integer          not null
+#  id                :integer          not null, primary key
+#  is_active_code    :integer          not null
+#  person_hh_id      :string(36)       not null
+#  person_id         :integer          not null
+#  psu_code          :integer          not null
+#  transaction_type  :string(36)
+#  updated_at        :datetime
+#
+
 
 
 # Sometimes a person may split from a household and either enter a household

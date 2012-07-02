@@ -1,4 +1,36 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: specimen_receipts
+#
+#  centrifuge_comment_code                :integer
+#  centrifuge_comment_other               :string(255)
+#  centrifuge_endtime                     :string(5)
+#  centrifuge_staff_id                    :string(36)
+#  centrifuge_starttime                   :string(5)
+#  centrifuge_temp                        :decimal(6, 2)
+#  cooler_temp                            :decimal(6, 2)
+#  created_at                             :datetime
+#  id                                     :integer          not null, primary key
+#  lower_trigger_ambient_code             :integer
+#  lower_trigger_cold_code                :integer
+#  monitor_status_code                    :integer
+#  psu_code                               :integer          not null
+#  receipt_comment_code                   :integer          not null
+#  receipt_comment_other                  :string(255)
+#  receipt_datetime                       :datetime         not null
+#  specimen_equipment_id                  :integer
+#  specimen_id                            :string(36)       not null
+#  specimen_processing_shipping_center_id :integer
+#  staff_id                               :string(36)       not null
+#  storage_container_id                   :string(36)       not null
+#  transaction_type                       :string(36)
+#  updated_at                             :datetime
+#  upper_trigger_code                     :integer
+#  upper_trigger_level_code               :integer
+#
+
 class SpecimenReceipt < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :specimen_id

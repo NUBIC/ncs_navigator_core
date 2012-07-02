@@ -1,4 +1,27 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+# Schema version: 20120629204215
+#
+# Table name: participant_visit_consents
+#
+#  contact_id                  :integer
+#  created_at                  :datetime
+#  id                          :integer          not null, primary key
+#  participant_id              :integer
+#  pid_visit_consent_id        :string(36)       not null
+#  psu_code                    :integer          not null
+#  transaction_type            :string(36)
+#  updated_at                  :datetime
+#  vis_comments                :text
+#  vis_consent_response_code   :integer          not null
+#  vis_consent_type_code       :integer          not null
+#  vis_language_code           :integer          not null
+#  vis_language_other          :string(255)
+#  vis_person_who_consented_id :integer
+#  vis_translate_code          :integer          not null
+#  vis_who_consented_code      :integer          not null
+#
+
 
 
 # In addition to the single time consents we have participants review and give oral consent to specific
