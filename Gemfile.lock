@@ -65,6 +65,7 @@ GEM
     aker-rails (3.0.2)
       aker (~> 3.0)
       rails (~> 3.0, >= 3.0.4)
+    annotate (2.4.0)
     arel (2.2.3)
     bcdatabase (1.2.1)
       activesupport (>= 2.0)
@@ -446,6 +447,7 @@ DEPENDENCIES
   aker (~> 3.0)
   aker-cas_cli (~> 1.0)
   aker-rails
+  annotate
   bcdatabase (~> 1.0)
   capistrano
   capybara
