@@ -26,60 +26,6 @@ require 'stringio'
 # A Merge represents a merge of {Fieldwork} data into Core.  It stores the
 # proposed data and metadata such as the merge status, log, and conflict
 # report.
-#
-#
-# Conflict report
-# ===============
-#
-# The conflict report is a JSON object of the form
-#
-#     {
-#       entity_name: {
-#         entity1_public_id: {
-#           attr1: {
-#             "original": value,
-#             "current": value,
-#             "proposed": value
-#           },
-#           ...
-#         },
-#         ...
-#       },
-#       ...
-#     }
-#
-# An example:
-#
-#     {
-#         "Contact": {
-#             "af72e358-e856-4859-baf5-c61134ddfa4d": {
-#                 "disposition": {
-#                     "current": "0",
-#                     "original": "-4",
-#                     "proposed": "1"
-#                 }
-#             },
-#             "ba8aa819-6bc3-4244-8cc5-1ed9d6201966": {
-#                 "language": {
-#                     "current": "1",
-#                     "original": "-4",
-#                     "proposed": "2"
-#                 }
-#             }
-#         },
-#         "Event": {
-#             "44ee9403-4d88-4fd5-b998-2db8a611df67": {
-#                 "start_time": {
-#                     "current": "13:30",
-#                     "original": "",
-#                     "proposed": "14:30"
-#                 }
-#             }
-#         }
-#     }
-#
-# This object structure SHOULD be considered stable and MAY be used from other
-# objects.
 class Merge < ActiveRecord::Base
   belongs_to :fieldwork, :inverse_of => :merges
 
