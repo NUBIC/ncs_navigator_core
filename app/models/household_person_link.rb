@@ -16,7 +16,7 @@
 #  updated_at        :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Sometimes a person may split from a household and either enter a household
 # that has already been identified or, alternatively, create a new household.

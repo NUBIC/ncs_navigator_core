@@ -14,7 +14,7 @@
 #  updated_at              :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 class RefusalNonInterviewReport < ActiveRecord::Base
   include MdesRecord

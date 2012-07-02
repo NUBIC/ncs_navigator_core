@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 $:.unshift(ENV['JASMINE_GEM_PATH']) if ENV['JASMINE_GEM_PATH'] # for gem testing purposes
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreatePersonRaces < ActiveRecord::Migration
   def self.up

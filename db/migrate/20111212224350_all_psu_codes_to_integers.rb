@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AllPsuCodesToIntegers < ActiveRecord::Migration
   AFFECTED_TABLES = %w(

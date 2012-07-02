@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # == Schema Information
 # Schema version: 20120626221317
 #
@@ -32,7 +32,7 @@
 #  lock_version            :integer         default(0)
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Staff makes Contact with a Person pursuant to a protocol – either one
 # of the recruitment schemas or a Study assessment protocol.

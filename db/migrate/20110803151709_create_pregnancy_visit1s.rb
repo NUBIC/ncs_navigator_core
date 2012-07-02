@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreatePregnancyVisit1s < ActiveRecord::Migration
   def self.up

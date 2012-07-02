@@ -18,7 +18,7 @@
 #  response_set_id     :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Basic non-repeating Pregnancy Probability Group (PPG) status information
 # is stored here for each woman who completes a pregnancy screener.

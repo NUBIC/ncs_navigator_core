@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 require Rails.root + 'spec/warehouse_setup'

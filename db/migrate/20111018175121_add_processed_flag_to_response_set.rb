@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddProcessedFlagToResponseSet < ActiveRecord::Migration
   def up

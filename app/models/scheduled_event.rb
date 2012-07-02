@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class ScheduledEvent
   attr_accessor :date

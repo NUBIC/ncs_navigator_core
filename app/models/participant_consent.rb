@@ -32,7 +32,7 @@
 #  updated_at                      :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Tracks the history of Participants consents and withdrawals.
 class ParticipantConsent < ActiveRecord::Base

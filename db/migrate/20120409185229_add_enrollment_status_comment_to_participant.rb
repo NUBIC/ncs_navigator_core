@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddEnrollmentStatusCommentToParticipant < ActiveRecord::Migration
   def change

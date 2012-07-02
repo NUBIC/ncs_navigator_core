@@ -39,7 +39,7 @@
 #  provider_id               :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 # A Dwelling Unit will have exactly one Address.
 # A Person, an Institution and a Provider will have at least one and sometimes many Addresses.

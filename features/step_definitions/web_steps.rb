@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 # TL;DR: YOU SHOULD DELETE THIS FILE
 #

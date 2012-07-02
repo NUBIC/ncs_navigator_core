@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateRefusalNonInterviewReports < ActiveRecord::Migration
   def change

@@ -28,7 +28,7 @@
 #  updated_at                :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

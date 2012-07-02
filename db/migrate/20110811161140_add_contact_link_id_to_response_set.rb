@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddContactLinkIdToResponseSet < ActiveRecord::Migration
   def self.up

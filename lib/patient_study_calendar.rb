@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 require 'forwardable'
 require 'psc_error'

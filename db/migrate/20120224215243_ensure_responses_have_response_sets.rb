@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class EnsureResponsesHaveResponseSets < ActiveRecord::Migration
   def up

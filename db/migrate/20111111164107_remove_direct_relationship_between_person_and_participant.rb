@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class RemoveDirectRelationshipBetweenPersonAndParticipant < ActiveRecord::Migration
   def up

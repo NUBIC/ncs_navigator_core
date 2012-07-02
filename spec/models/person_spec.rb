@@ -44,7 +44,7 @@
 #  response_set_id                :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

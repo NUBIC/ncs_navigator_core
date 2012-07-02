@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddDisplayOrderToSurveys < ActiveRecord::Migration
   def self.up

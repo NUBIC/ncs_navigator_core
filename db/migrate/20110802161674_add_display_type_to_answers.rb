@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddDisplayTypeToAnswers < ActiveRecord::Migration
   def self.up

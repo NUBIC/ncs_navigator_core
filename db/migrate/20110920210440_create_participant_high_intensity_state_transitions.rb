@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateParticipantHighIntensityStateTransitions < ActiveRecord::Migration
   def change

@@ -24,7 +24,7 @@
 #  lock_version      :integer         default(0)
 #
 
-# -*- coding: utf-8 -*-
+
 #
 # == Schema Information
 # Schema version: 20120515181518

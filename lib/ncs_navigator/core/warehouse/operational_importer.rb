@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 require 'ncs_navigator/core/warehouse'
 # To preload the same version of the models used by OperationalEnumerator

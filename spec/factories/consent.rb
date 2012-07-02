@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 Factory.define :participant_consent do |pc|
 

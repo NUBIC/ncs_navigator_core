@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateValidationConditions < ActiveRecord::Migration
   def self.up

@@ -11,7 +11,7 @@
 #  updated_at   :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 class NcsCode < ActiveRecord::Base
 

@@ -28,7 +28,7 @@
 #  lock_version                       :integer         default(0)
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

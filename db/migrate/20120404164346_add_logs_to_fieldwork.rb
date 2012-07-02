@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddLogsToFieldwork < ActiveRecord::Migration
   def change

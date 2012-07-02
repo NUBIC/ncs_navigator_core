@@ -34,7 +34,7 @@
 #  institute_id            :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 # A Person, an Institution and a Provider will have at least one and sometimes many phone numbers.
 class Telephone < ActiveRecord::Base

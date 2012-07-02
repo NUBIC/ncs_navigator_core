@@ -30,7 +30,7 @@
 #  being_followed            :boolean
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

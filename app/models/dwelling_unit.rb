@@ -22,7 +22,7 @@
 #  tsu_id             :string(255)
 #
 
-# -*- coding: utf-8 -*-
+
 
 # DU is a specific street address within a sampling unit.
 # There is a one-to-one relationship between Listing and DU.

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class Api::MergesController < ApplicationController
   respond_to :json

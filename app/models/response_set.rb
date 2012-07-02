@@ -15,7 +15,7 @@
 #  api_id        :string(255)
 #
 
-# -*- coding: utf-8 -*-
+
 
 class ResponseSet < ActiveRecord::Base
   include Surveyor::Models::ResponseSetMethods

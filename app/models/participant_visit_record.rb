@@ -28,7 +28,7 @@
 #  updated_at                :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Contains details about visit with the participant
 # (e.g. Language spoken, Age of person that consented, etc.)

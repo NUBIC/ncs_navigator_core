@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class RemoveDwellingUnitConstraintOnAddress < ActiveRecord::Migration
   def up

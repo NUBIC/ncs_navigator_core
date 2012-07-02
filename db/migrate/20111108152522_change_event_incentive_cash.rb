@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class ChangeEventIncentiveCash < ActiveRecord::Migration
   def up

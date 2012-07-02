@@ -15,7 +15,7 @@
 #  updated_at      :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'case'
 require 'logger'

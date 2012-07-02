@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 Factory.define :non_interview_report do |nir|
 

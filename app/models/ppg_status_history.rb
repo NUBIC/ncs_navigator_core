@@ -21,7 +21,7 @@
 #  ppg_status_date_date  :date
 #
 
-# -*- coding: utf-8 -*-
+
 
 class PpgStatusHistory < ActiveRecord::Base
   include MdesRecord

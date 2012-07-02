@@ -21,7 +21,7 @@
 #  updated_at                  :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # In addition to the single time consents we have participants review and give oral consent to specific
 # data collection components that occur at a specific visit. These are presented on what is called the

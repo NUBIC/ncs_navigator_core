@@ -34,7 +34,7 @@
 #  institute_id            :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

@@ -17,7 +17,7 @@
 #  response_set_id    :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 # The same Person can be a respondent or informant for many Participants.
 # One Participant can have many respondents or informants who provide

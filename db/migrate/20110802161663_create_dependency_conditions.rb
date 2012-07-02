@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateDependencyConditions < ActiveRecord::Migration
   def self.up

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddCorrectAnswerIdToQuestions < ActiveRecord::Migration
   def self.up

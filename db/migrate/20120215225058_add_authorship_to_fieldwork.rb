@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddAuthorshipToFieldwork < ActiveRecord::Migration
   def up

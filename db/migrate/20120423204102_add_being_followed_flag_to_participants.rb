@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddBeingFollowedFlagToParticipants < ActiveRecord::Migration
   def self.up

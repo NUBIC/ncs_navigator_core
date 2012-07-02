@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddMergeStatusToFieldwork < ActiveRecord::Migration
   def change

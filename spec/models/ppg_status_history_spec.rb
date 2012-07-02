@@ -21,7 +21,7 @@
 #  ppg_status_date_date  :date
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

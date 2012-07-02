@@ -22,7 +22,7 @@
 #  survey_version         :integer         default(0)
 #
 
-# -*- coding: utf-8 -*-
+
 
 class Survey < ActiveRecord::Base
   include Surveyor::Models::SurveyMethods

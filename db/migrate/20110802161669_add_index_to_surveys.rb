@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddIndexToSurveys < ActiveRecord::Migration
   def self.up

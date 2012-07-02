@@ -17,7 +17,7 @@
 #  tsu_id           :string(255)
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file,
 # or some other data file of dwelling units that can be aligned with a PSU, an SSU and a TSU.

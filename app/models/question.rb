@@ -26,7 +26,7 @@
 #  api_id                 :string(255)
 #
 
-# -*- coding: utf-8 -*-
+
 
 class Question < ActiveRecord::Base
   include Surveyor::Models::QuestionMethods

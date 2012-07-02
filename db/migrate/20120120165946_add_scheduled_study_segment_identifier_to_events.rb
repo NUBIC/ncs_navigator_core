@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddScheduledStudySegmentIdentifierToEvents < ActiveRecord::Migration
   def change

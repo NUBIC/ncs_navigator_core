@@ -1,4 +1,4 @@
-# encoding: utf-8
+
 
 require 'ncs_navigator/core'
 

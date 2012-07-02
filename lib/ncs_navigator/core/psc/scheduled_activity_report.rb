@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 require 'logger'
 require 'ncs_navigator/core'

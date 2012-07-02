@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AssociatePersonAndSurveyWithInstrument < ActiveRecord::Migration
   def up

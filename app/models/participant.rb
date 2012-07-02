@@ -30,7 +30,7 @@
 #  being_followed            :boolean
 #
 
-# -*- coding: utf-8 -*-
+
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child.
 # S/he may have been administered a variety of questionnaires or assessments, including household enumeration,

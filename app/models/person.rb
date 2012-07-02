@@ -44,7 +44,7 @@
 #  response_set_id                :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 # A Person is an individual who may provide information on a participant.
 # All individuals contacted are Persons, including those who may also be Participants.

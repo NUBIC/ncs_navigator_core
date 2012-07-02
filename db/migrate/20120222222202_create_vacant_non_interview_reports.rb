@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateVacantNonInterviewReports < ActiveRecord::Migration
   def change

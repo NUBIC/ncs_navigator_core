@@ -18,7 +18,7 @@
 #  updated_at          :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # Table for types of forms used to obtain authorizations from the Participant.
 class ParticipantAuthorizationForm < ActiveRecord::Base

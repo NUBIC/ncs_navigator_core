@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateDwellingUnitTypeNonInterviewReports < ActiveRecord::Migration
   def change

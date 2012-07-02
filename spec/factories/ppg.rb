@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 Factory.define :ppg_detail do |ppg|
   ppg.association :participant,  :factory => :participant

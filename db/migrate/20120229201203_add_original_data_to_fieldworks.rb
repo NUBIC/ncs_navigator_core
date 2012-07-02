@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddOriginalDataToFieldworks < ActiveRecord::Migration
   def change

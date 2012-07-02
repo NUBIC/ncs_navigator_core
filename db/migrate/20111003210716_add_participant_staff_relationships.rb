@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddParticipantStaffRelationships < ActiveRecord::Migration
   def up

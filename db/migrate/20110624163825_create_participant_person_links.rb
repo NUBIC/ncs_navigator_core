@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateParticipantPersonLinks < ActiveRecord::Migration
   def self.up

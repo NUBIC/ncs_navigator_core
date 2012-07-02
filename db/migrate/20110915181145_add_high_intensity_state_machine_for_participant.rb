@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class AddHighIntensityStateMachineForParticipant < ActiveRecord::Migration
   def up

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateEvents < ActiveRecord::Migration
   def self.up

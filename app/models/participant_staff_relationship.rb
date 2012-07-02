@@ -9,7 +9,7 @@
 #  primary        :boolean
 #
 
-# -*- coding: utf-8 -*-
+
 
 class ParticipantStaffRelationship < ActiveRecord::Base
 

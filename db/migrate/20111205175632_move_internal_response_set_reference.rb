@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class MoveInternalResponseSetReference < ActiveRecord::Migration
   def up

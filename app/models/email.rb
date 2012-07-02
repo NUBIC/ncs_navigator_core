@@ -29,7 +29,7 @@
 #  response_set_id         :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 # A Person, an Institution and a Provider will have at least one and sometimes many Email addresses.
 class Email < ActiveRecord::Base

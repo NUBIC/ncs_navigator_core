@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 # == Schema Information
 # Schema version: 20120626221317

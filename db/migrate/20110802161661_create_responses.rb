@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateResponses < ActiveRecord::Migration
   def self.up

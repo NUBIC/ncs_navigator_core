@@ -17,7 +17,7 @@
 #  tsu_id           :string(255)
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 

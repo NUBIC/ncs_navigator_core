@@ -31,7 +31,7 @@
 #  lock_version             :integer         default(0)
 #
 
-# -*- coding: utf-8 -*-
+
 
 # An Instrument is a scheduled, partially executed or
 # completely executed questionnaire or paper form. An

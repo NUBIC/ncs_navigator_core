@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 class CreateParticipantConsents < ActiveRecord::Migration
   def self.up

@@ -48,7 +48,7 @@
 #  updated_at                     :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 class NonInterviewReport < ActiveRecord::Base
   include MdesRecord
