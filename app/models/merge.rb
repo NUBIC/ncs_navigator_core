@@ -29,7 +29,9 @@ require 'stringio'
 class Merge < ActiveRecord::Base
   belongs_to :fieldwork, :inverse_of => :merges
 
-  composed_of :conflict_report, :mapping => %w(conflict_report to_s), :allow_nil => true, :converter => lambda { |raw| ConflictReport.new(raw) }
+  composed_of :conflict_report, :mapping => %w(conflict_report to_s),
+                                :allow_nil => true,
+                                :converter => lambda { |raw| ConflictReport.new(raw) }
 
   delegate :original_data, :to => :fieldwork
 
