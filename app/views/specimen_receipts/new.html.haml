@@ -7,13 +7,15 @@
   = f.label "Staff:"
   = display_staff_info
   %br
-
-  = f.label :storage_container_id, "Storage Container ID:"
-  = f.text_field :storage_container_id  
+  
+  = "Storage Container ID:"
+  = f.text_field :storage_container_id, :class => "important_field"
+  %span{ :class => "required" } *
   %br
 
-  = f.label :receipt_datetime, "Receipt Date and Time: "
-  = f.text_field :receipt_datetime, :class => "datetime"
+  = "Receipt Date and Time: "
+  = f.text_field :receipt_datetime, :class => "datetime important_field"
+  %span{ :class => "required" } *
   %br
   
   = render "shared/ncs_code_select", { :f => f, :code => :receipt_comment_code, :label_text => "Receipt Comment" }
