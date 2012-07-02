@@ -22,7 +22,8 @@
   %br
   
   = f.label :placed_in_storage_datetime, "Placed in Storage Date and Time:"
-  = f.text_field :placed_in_storage_datetime, :class => "datetime"
+  = f.text_field :placed_in_storage_datetime, :class => "datetime important_field"
+  %span{ :class => "required" } *
   %br
   
   = render "shared/ncs_code_select", { :f => f, :code => :master_storage_unit_code, :label_text => "Master Storage Unit" }

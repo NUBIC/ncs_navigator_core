@@ -73,7 +73,7 @@ class Contact < ActiveRecord::Base
       language = person.contacts.detect(&:contact_language_code)
       interpreter = person.contacts.detect(&:contact_interpret_code)
     end
-    
+
     Contact.new({
       :contact_language_code => language.try(:contact_language_code),
       :contact_language_other => language.try(:contact_language_other),
@@ -81,7 +81,7 @@ class Contact < ActiveRecord::Base
       :contact_interpret_other => interpreter.try(:contact_interpret_other)
     }.merge(attrs))
   end
-  
+
   def strip_time_whitespace
     self.contact_start_time.strip! if self.contact_start_time
     self.contact_end_time.strip! if self.contact_end_time
@@ -136,6 +136,15 @@ class Contact < ActiveRecord::Base
   # @return [Boolean] true if the contact has a participant_visit_consent of given vis_consent_type_code
   def has_participant_visit_consent?(vis_consent_type_code)
     participant_visit_consents.where(:vis_consent_type_code => vis_consent_type_code).count > 0
+  end
+
+  ##
+  # Sets the time to now if the contact_end_time is empty
+  # and the date is today.
+  def set_default_end_time
+    if self.contact_end_time.blank? && self.contact_date_date == Date.today
+      self.contact_end_time = Time.now.strftime("%H:%M")
+    end
   end
 
   ##

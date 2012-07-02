@@ -46,6 +46,6 @@
             %td{ :colspan => 5 }
               = blank_safe(contact.contact_comment, 'No comment')
     .links
-      = link_to 'Assign Substitute Provider Due to Refusal to Participate', refused_provider_path(pbs.provider), :class => 'refused_link icon_link'
+      = link_to 'Assign Substitute Provider Due to Refusal to Participate', refused_provider_path(@provider), :class => 'refused_link icon_link'
       %br
       = link_to "PBS List", pbs_lists_path, :class => "list_link icon_link"

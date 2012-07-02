@@ -70,7 +70,7 @@ describe 'fieldwork/show' do
     end
 
     before do
-      assign(:conflicts, JSON.parse(conflict_report))
+      assign(:conflicts, ConflictReport.new(conflict_report))
 
       render
     end

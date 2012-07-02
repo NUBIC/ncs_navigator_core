@@ -12,21 +12,19 @@
       Current
     %th
       Proposed
-  - ordered_conflict_report(report).each do |entity_type, entities|
-    - entities.each do |public_id, attributes|
-      - row_class = cycle('even_record', 'odd_record')
-      %tr{:class => "#{row_class} conflict"}
-        %td.entity{:rowspan => attributes.length + 1}
-          = "#{entity_type} #{public_id}"
-
-      - attributes.each do |attribute, state|
-        %tr{%s(data-entity-type) => entity_type, %s(data-public-id) => public_id, :class => "#{row_class} conflict"}
-          - name = attribute.humanize
-          %td.attribute
-            = name
-          %td.current{%s(data-name) => name}
-            = state['current']
-          %td.original{%s(data-name) => name}
-            = state['original']
-          %td.proposed{%s(data-name) => name}
-            = state['proposed']
+  - report.each do |entity, attributes|
+    - row_class = "conflict #{cycle('even_record', 'odd_record')}"
+    %tr{:class => row_class}
+      %td.entity{:rowspan => attributes.length + 1}
+        = "#{entity.type} #{entity.public_id}"
+    - attributes.each do |attribute|
+      %tr{%s(data-entity-type) => entity.type, %s(data-public-id) => entity.public_id, :class => row_class}
+        - name = attribute.humanize
+        %td.attribute
+          = name
+        %td.current{%s(data-name) => name}
+          = attribute.current
+        %td.original{%s(data-name) => name}
+          = attribute.original
+        %td.proposed{%s(data-name) => name}
+          = attribute.proposed

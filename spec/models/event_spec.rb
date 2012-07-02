@@ -361,7 +361,7 @@ describe Event do
     before(:each) do
 
       @person = Factory(:person)
-      @participant = Factory(:participant)
+      @participant = Factory(:participant, :high_intensity => true)
       @participant.person = @person
       @ppg_fu = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7)
       @preg_screen = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
@@ -422,7 +422,7 @@ describe Event do
           :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(contact)
         event.save!
-        event.event_disposition_category.local_code.should == 6
+        event.event_disposition_category.local_code.should == 5
 
         # website
         contact = Factory(:contact, :contact_type => @website)

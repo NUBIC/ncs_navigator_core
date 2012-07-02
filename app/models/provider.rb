@@ -113,4 +113,8 @@ class Provider < ActiveRecord::Base
     self.pbs_list.try(:refused_to_participate?)
   end
 
+  def recruited?
+    !self.can_recruit? && !self.refused_to_participate?
+  end
+
 end

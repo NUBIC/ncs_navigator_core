@@ -568,7 +568,7 @@ describe Participant do
           birth_event_type = pending_events.first.event_type
           birth_event_type.to_s.should == "Birth"
 
-          participant.mark_event_out_of_window(psc)
+          participant.mark_event_out_of_window(psc, pending_events.first)
           pending_events = participant.pending_events
 
           pending_events.size.should == 6

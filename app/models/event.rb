@@ -291,6 +291,11 @@ class Event < ActiveRecord::Base
   end
 
   def set_event_disposition_category(contact)
+    if self.participant.try(:low_intensity?)
+      # Telephone Disposition Category Local Code = 5
+      self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 5)
+    end
+
     case event_type.to_s
     when /Pregnancy Screen/
       # Pregnancy Screener Disposition Category Local Code = 2
@@ -301,7 +306,6 @@ class Event < ActiveRecord::Base
     end
 
     if self.event_disposition_category.to_i <= 0
-
       case contact.contact_type.to_i
       when 1 # in person contact
         # General Study Visit Category Local Code = 3
@@ -309,10 +313,10 @@ class Event < ActiveRecord::Base
       when 2 # mail contact
         # Mail Disposition Category Local Code = 4
         self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 4)
-      when 3 # telephone contact
+      when 3, 5 # text or telephone contact
         # Telephone Disposition Category Local Code = 5
         self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 5)
-      when 5, 6 # text or website
+      when 6 # website
         # Website Disposition Category Local Code = 6
         self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 6)
       end

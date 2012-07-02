@@ -441,14 +441,14 @@ class Participant < ActiveRecord::Base
   # 2. Set the disposition for that event to 'Out if Window'
   # 3. Cancel scheduled activity in PSC with reason of 'Out of Window'
   # 4. If there are no remaining pending events, schedule and create placeholder for the next event
-  def mark_event_out_of_window(psc)
+  def mark_event_out_of_window(psc, event)
     resp = nil
-    if current_event = pending_events.first
-      current_event.mark_out_of_window
-      current_event.close!
-      current_event.cancel_activity(psc, "Missed Event - Out of Window")
-      set_state_for_event_type(current_event)
-      resp = Event.schedule_and_create_placeholder(psc, self)
+    if event
+      event.mark_out_of_window
+      event.close!
+      event.cancel_activity(psc, "Missed Event - Out of Window")
+      set_state_for_event_type(event)
+      resp = Event.schedule_and_create_placeholder(psc, self) if self.pending_events.blank?
     end
     resp
   end
