@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddConflictReportToFieldwork < ActiveRecord::Migration
   def change
     add_column :fieldworks, :conflict_report, :text

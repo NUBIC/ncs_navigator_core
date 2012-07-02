@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSpecimenEquipments < ActiveRecord::Migration
   def up
     create_table :specimen_equipments do |t|

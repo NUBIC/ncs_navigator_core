@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class NonInterviewProvider < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :non_interview_provider_id

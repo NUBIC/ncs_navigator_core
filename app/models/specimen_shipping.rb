@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenShipping < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :storage_container_id 

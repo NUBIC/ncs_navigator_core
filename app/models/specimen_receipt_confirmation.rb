@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenReceiptConfirmation < ActiveRecord::Base
   belongs_to :specimen_processing_shipping_center
 

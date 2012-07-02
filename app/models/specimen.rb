@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Specimen < ActiveRecord::Base
   belongs_to :instrument
   belongs_to :specimen_pickup

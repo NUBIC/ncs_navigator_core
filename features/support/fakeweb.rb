@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 FakeWeb.allow_net_connect = %r[^https?://(localhost|127.0.0.1)]

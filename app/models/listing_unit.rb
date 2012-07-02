@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # Dwelling Units may be identified during Listing and recorded on a Listing Grid, or obtained from a USPS delivery sequence file,

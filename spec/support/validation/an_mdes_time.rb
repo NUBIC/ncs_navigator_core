@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 shared_examples 'an MDES time' do
   let(:time_setter) { "#{time_attribute}=" }
 

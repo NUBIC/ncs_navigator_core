@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # An Instrument is a scheduled, partially executed or

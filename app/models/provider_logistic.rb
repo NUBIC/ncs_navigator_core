@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class ProviderLogistic < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :provider_logistics_id

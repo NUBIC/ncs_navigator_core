@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 Factory.define :listing_unit do |lu|

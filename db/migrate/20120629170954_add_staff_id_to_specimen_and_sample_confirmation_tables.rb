@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddStaffIdToSpecimenAndSampleConfirmationTables < ActiveRecord::Migration
   def up  
     add_column :sample_receipt_confirmations, :staff_id, :string, :limit => 36

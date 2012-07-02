@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # Tracks the history of Participants consents and withdrawals.

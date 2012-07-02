@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 survey "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0" do

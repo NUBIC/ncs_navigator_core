@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class RecruitmentStrategy
   def self.recruitment_type_strategy(code)
     case code

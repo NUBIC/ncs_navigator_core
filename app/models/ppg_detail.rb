@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # Basic non-repeating Pregnancy Probability Group (PPG) status information

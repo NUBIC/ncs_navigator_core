@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddContactInfoForSampleSpecimenShippingTables < ActiveRecord::Migration
   def up
     add_column :sample_shippings, :contact_name, :string

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child.

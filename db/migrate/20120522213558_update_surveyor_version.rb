@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class UpdateSurveyorVersion < ActiveRecord::Migration
   def self.up
     rename_column :surveys, :version, :survey_version

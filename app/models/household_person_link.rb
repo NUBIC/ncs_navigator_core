@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # Sometimes a person may split from a household and either enter a household

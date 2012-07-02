@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 When /^I confirm the dialog$/ do

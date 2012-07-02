@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Given /^valid sample receipts$/ do
   Factory(:sample_receipt_store, :sample_id => "SAMPLE_FIXTURES-UR01", :staff_id => "test", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
   Factory(:sample_receipt_store, :sample_id => "SAMPLE_FIXTURES-UR11", :staff_id => "test", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")

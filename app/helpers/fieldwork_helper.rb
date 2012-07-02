@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module FieldworkHelper
   STATE_KEYS = %w(current original proposed)
 

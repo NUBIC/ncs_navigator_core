@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SampleShipping < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :sample_id

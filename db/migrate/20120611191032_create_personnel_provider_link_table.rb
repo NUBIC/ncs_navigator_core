@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreatePersonnelProviderLinkTable < ActiveRecord::Migration
   def self.up
     create_table :personnel_provider_links do |t|

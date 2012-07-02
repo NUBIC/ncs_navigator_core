@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenProcessingShippingCentersController < ApplicationController
   def index
     @specimen_processing_shipping_centers = SpecimenProcessingShippingCenter.find(:all)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # A Person is an individual who may provide information on a participant.

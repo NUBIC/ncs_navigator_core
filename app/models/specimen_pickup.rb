@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenPickup < ActiveRecord::Base
   # include MdesRecord
 

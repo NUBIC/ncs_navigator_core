@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 Sidekiq.configure_client do |config|

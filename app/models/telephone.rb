@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # A Person, an Institution and a Provider will have at least one and sometimes many phone numbers.

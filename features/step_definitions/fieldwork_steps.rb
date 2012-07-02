@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Given /^the sync attempts$/ do |table|
   table.hashes.each do |sync|
     id = sync['id']

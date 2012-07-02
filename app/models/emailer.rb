@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Emailer < ActionMailer::Base
   default :from => "n-shurupova@northwestern.edu"
 

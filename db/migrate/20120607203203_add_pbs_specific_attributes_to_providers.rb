@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddPbsSpecificAttributesToProviders < ActiveRecord::Migration
   def change
     add_column :providers, :name_practice,            :string, :limit => 100

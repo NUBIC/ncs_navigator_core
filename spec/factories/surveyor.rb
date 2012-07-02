@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # http://github.com/thoughtbot/factory_girl/tree/master

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSpecimenPickups < ActiveRecord::Migration
   def up
     create_table :specimen_pickups do |t|

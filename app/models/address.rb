@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # A Dwelling Unit will have exactly one Address.

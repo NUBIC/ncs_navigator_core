@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 class CreateListingUnits < ActiveRecord::Migration

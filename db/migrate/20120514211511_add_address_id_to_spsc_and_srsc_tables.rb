@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddAddressIdToSpscAndSrscTables < ActiveRecord::Migration
   def up
     add_column :specimen_processing_shipping_centers, :address_id, :integer

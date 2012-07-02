@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSpecimens < ActiveRecord::Migration
   def up
     create_table :specimens do |s|

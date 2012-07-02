@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CacheLatestMergeStatusOnFieldwork < ActiveRecord::Migration
   def up
     add_column :fieldworks, :latest_merge_status, :string

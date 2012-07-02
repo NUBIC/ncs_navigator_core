@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # Contains details about visit with the participant

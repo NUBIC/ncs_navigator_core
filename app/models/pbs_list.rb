@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class PbsList < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :pbs_list_id

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # The definition of a household is really based on the individual person's definition of a family.

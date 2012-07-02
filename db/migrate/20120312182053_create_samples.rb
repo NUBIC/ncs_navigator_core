@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSamples < ActiveRecord::Migration
   def up
     create_table :samples do |s|

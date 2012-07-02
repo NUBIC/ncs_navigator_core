@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 class AddPpgStatusDateDateToPpgStatusHistory < ActiveRecord::Migration

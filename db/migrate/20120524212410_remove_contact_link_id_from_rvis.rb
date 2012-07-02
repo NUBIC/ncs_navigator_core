@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class RemoveContactLinkIdFromRvis < ActiveRecord::Migration
   def self.up
     remove_column :participant_visit_records, :contact_link_id

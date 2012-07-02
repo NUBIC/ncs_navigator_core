@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # A Person may be of mixed race. This table records each race for a Person in a separate row.

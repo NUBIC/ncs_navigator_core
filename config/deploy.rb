@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # developer machine will log in with username(netID) to server (either staging or production)

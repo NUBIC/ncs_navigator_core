@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # The MDES does not have an association for the staff and personnel
 # at the provider. This class provides that association.
 class PersonnelProviderLink < ActiveRecord::Base

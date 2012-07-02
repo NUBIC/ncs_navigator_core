@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 RSpec::Matchers.define :be_a_fieldwork_set do

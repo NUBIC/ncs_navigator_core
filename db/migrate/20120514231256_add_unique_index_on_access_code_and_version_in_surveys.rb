@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddUniqueIndexOnAccessCodeAndVersionInSurveys < ActiveRecord::Migration
   def self.up
     add_index(:surveys, [ :access_code, :version], :name => 'surveys_access_code_version_idx', :unique => true)

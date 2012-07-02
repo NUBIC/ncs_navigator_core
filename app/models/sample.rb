@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Sample < ActiveRecord::Base
   belongs_to :instrument
   

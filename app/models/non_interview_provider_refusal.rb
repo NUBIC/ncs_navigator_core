@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class NonInterviewProviderRefusal < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :nir_provider_refusal_id

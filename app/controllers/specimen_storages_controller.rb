@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenStoragesController < ApplicationController
   def new
     @specimen_storage = SpecimenStorage.new(:storage_container_id => params[:container_id])

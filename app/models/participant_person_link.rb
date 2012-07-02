@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # The same Person can be a respondent or informant for many Participants.

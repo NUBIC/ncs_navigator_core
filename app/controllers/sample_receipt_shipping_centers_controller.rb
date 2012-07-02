@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SampleReceiptShippingCentersController < ApplicationController
   def index
     @sample_receipt_shipping_centers = SampleReceiptShippingCenter.find(:all)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 FactoryGirl.define do
   factory :sample_receipt_store do |srs|
     srs.psu_code                              20000030

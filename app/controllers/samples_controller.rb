@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SamplesController < ApplicationController
   before_filter :process_params, :except => [:index]
   after_filter :clear_flash

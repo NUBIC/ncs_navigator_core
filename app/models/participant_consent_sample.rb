@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # Table for types of samples (e.g. Biospecimen, Genetic, etc.) that require Participant consent for collection.

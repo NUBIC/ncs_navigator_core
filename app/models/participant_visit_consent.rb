@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # In addition to the single time consents we have participants review and give oral consent to specific

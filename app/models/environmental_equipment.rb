@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class EnvironmentalEquipment < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :equipment_id

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 
 # DU is a specific street address within a sampling unit.
