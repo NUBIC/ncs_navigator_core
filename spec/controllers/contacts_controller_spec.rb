@@ -63,9 +63,8 @@ describe ContactsController do
         before(:each) do
           params = {:participant => @participant, :event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code}
           Event.stub(:new).with(params).and_return(mock_event(params))
-          Contact.stub(:find).with("37").and_return(mock_contact(:contact_end_time => nil, :contact_date => Date.today))
+          Contact.stub(:find).with("37").and_return(mock_contact(:set_default_end_time => nil))
           ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
-          mock_contact.should_receive(:contact_end_time=)
         end
 
         it "assigns the requested contact as @contact" do
