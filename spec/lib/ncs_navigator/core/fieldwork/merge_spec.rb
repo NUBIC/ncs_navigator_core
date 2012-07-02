@@ -18,36 +18,6 @@ module NcsNavigator::Core::Fieldwork
       end.new
     end
 
-    describe '#conflicted?' do
-      describe 'if the conflict report is empty' do
-        before do
-          subject.conflicts = {}
-        end
-
-        it 'returns false' do
-          subject.should_not be_conflicted
-        end
-      end
-
-      describe 'if the conflict report is not empty' do
-        before do
-          subject.conflicts = {
-            'Contact' => {
-              'foo' => {
-                :original => {},
-                :current => {},
-                :proposed => {}
-              }
-            }
-          }
-        end
-
-        it 'returns true' do
-          subject.should be_conflicted
-        end
-      end
-    end
-
     def self.it_merges(property)
       describe "##{property}" do
         it_behaves_like 'an attribute merge', entity, property do
@@ -205,7 +175,7 @@ module NcsNavigator::Core::Fieldwork
           merge
 
           conflicts.should == {
-            entity => { question_id => { :self => { :original => o, :current => c, :proposed => p } } }
+            entity => { question_id => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
           }
         end
       end
@@ -297,7 +267,7 @@ module NcsNavigator::Core::Fieldwork
             merge
 
             conflicts.should == {
-              entity => { question_id => { :self => { :original => o, :current => c, :proposed => p } } }
+              entity => { question_id => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
             }
           end
 

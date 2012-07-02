@@ -14,12 +14,20 @@ class ConflictReport
 
   def_delegator :@raw, :blank?
 
-  def initialize(json)
-    @raw = JSON.parse(json) if json
+  def initialize(json = nil)
+    @raw = (JSON.parse(json) if json) || {}
   end
 
   def to_s
     @raw.to_json
+  end
+
+  def to_hash
+    @raw.dup
+  end
+
+  def ==(other)
+    @raw == other.to_hash
   end
 
   def each
@@ -39,6 +47,20 @@ class ConflictReport
         yield e, as
       end
     end
+  end
+
+  def add(entity, entity_id, key, original, current, proposed)
+    @raw.deep_merge!({
+      entity => {
+        entity_id => {
+          key => {
+            'original' => original,
+            'current' => current,
+            'proposed' => proposed
+          }
+        }
+      }
+    })
   end
 
   # Redefining #to_s messes with #inspect.
