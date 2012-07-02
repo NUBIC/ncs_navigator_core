@@ -1,14 +1,13 @@
 class Emailer < ActionMailer::Base
-  default :from => "n-shurupova@northwestern.edu"
 
   def manifest_email(params)
     @recipients = "n-shurupova@northwestern.edu"
     #hardcoded stuff is name, emaill address from- and to-
     from_name = "Testing Manifest"
     from_email = "n-shurupova@northwestern.edu"
-    
+
     to_name = "Nataliya Shurupova"
-    to_email = "n-shurupova@northwestern.edu" 
+    to_email = "n-shurupova@northwestern.edu"
     @shipper_id = params[:shipper_id]
     @psu_code = NcsCode.ncs_code_lookup(:psu_code).first
     @specimen_processing_shipping_center_id = params[:specimen_processing_shipping_center_id]
@@ -34,7 +33,7 @@ class Emailer < ActionMailer::Base
     mail(:to => to_email, :subject => @subject, :from => @from) do |format|
       format.text
       format.html
-    end         
+    end
   end
 end
 
