@@ -1,15 +1,15 @@
-NCS Navigator Core
+NCS Navigator Cases (formerly known as NCS Navigator Core)
 ==================
 
-NCS Navigator Core (Core) manages participant activity and records
-interactions between Study Center personnel and participants.
+NCS Navigator Cases (formerly NCS Navigator Core) manages participant
+activity and records interactions between Study Center personnel and participants.
 It can be used as a way to administer instruments to a participant
 for any event in the participant cycle. Also it is used to
 synchronize data between the NCS Navigator Offline [field]][] application
 and the NCS Navigator Core application.
 
-Core extensively uses Patient Study Calendar [PSC][] to not only determine
-the participant schedule but also to inform Core of the structure of
+Cases extensively uses Patient Study Calendar [PSC][] to not only determine
+the participant schedule but also to inform Cases of the structure of
 the National Children's Study [NCS][].
 
 The data schema is based on the Master Data Element Specification (MDES)
@@ -53,7 +53,7 @@ Setup
 
 #### Database setup
 
-Core uses [bcdatabase][] to discover the database
+Cases uses [bcdatabase][] to discover the database
 configuration to use. Bcdatabase looks for a [YAML][] file with a
 particular structure under `/etc/nubic/db`.
 
@@ -76,7 +76,7 @@ Example:
 
 #### Authentication setup
 
-Core uses [Aker-Rails][] and [Aker][] for authentication.
+Cases uses [Aker-Rails][] and [Aker][] for authentication.
 
 [Aker-Rails]: https://github.com/NUBIC/aker-rails/
 [Aker]: http://rubydoc.info/github/NUBIC/aker/
@@ -96,7 +96,7 @@ Contents:
 Second, define a bootstrap user in
 `/etc/nubic/ncs/navigator.ini`. (See [NCS Staff Portal][] setup.)
 
-Finally, Core (and most of the applications in the NCS Navigator suite) use
+Finally, Cases (and most of the applications in the NCS Navigator suite) use
 the [ncs_navigator_authority][] gem for authentication, which requires a running
 instance of NCS Staff Portal [ncs_staff_portal][] setup with Staff having particular roles.
 
@@ -105,23 +105,23 @@ instance of NCS Staff Portal [ncs_staff_portal][] setup with Staff having partic
 
 #### Center-specific setup
 
-Core uses [ncs_navigator_configuration][] for shared
+Cases uses [ncs_navigator_configuration][] for shared
 configuration of the NCS Navigator suite applications. Most
 configuration properties are documented in its [sample
-configuration][ncsn_conf_sample]. Core looks for the
+configuration][ncsn_conf_sample]. Cases looks for the
 configuration in its default location, `/etc/nubic/ncs/navigator.ini`.
 
 [ncs_navigator_configuration]: https://github.com/NUBIC/ncs_navigator_configuration
 [ncsn_conf_sample]: http://rubydoc.info/gems/ncs_navigator_configuration/file/sample_configuration.ini
 
-To further customize Core for your center, add one or more of
+To further customize Cases for your center, add one or more of
 the following configuration elements to the `[Core]` section of
 the configuration file.
 
     # Configuration options which are used by or which describe NCS
-    # Navigator Core in this instance of the suite.
+    # Navigator Cases in this instance of the suite.
 
-    # The root URI for NCS Navigator Core.
+    # The root URI for NCS Navigator Cases.
     uri = "https://ncsnavigator.ncsstudycenter.org/"
 
     # The Name and Phone number of the Study Center
@@ -133,7 +133,7 @@ the configuration file.
 
 ### Deployment
 
-Core is deployed with [capistrano][cap] from a workstation. On
+Cases is deployed with [capistrano][cap] from a workstation. On
 the workstation, you need to create a configuration file
 `/etc/nubic/db/ncs_deploy.yml` to describe where it should be
 deployed to.
@@ -143,7 +143,7 @@ deployed to.
 Example:
 
     ncs_navigator_core:
-      # Repository for core. This will always be this value
+      # Repository for cases. This will always be this value
       # unless you wish to deploy your own fork.
       repo: "git://github.com/NUBIC/ncs_navigator_core.git"
       # path on the server where application will be deployed
@@ -184,7 +184,7 @@ deploys, you have to run rake task to copy images
 
 #### Deployment user
 
-As currently configured, Core will be deployed as the user you
+As currently configured, Cases will be deployed as the user you
 use to connect to the application server. The target directory must be
 writable by that user, and (by way of Passenger) the software will be
 executed with that users' permissions.
@@ -200,13 +200,13 @@ detailed discussion of this option.
 
 ### Initialization
 
-Core relies on many lists of data as determined by the MDES (see Code lists below).
+Cases relies on many lists of data as determined by the MDES (see Code lists below).
 It ships with [rake][] tasks which will populate these lists
 from outside sources.
 
 All the tasks should be executed from the application root on the
 server where the application is deployed. Each one will need to be run
-at least once for each environment in which Core is deployed.
+at least once for each environment in which Cases is deployed.
 
 RAILS_ENV needs to be set to the appropriate value (production, staging) when running
 the various setup rake tasks for production or staging environment.
@@ -224,12 +224,12 @@ Initialize the code lists from the MDES using [ncs_mdes][]:
 
 #### Instruments
 
-Core uses [surveyor][] to create the instruments used by the [NCS][]. These surveys
+Cases uses [surveyor][] to create the instruments used by the [NCS][]. These surveys
 are proprietary and not currently available to the public. They are packaged as a
 separate [ncs-instruments][] gem. Follow the instructions there to copy the instruments
 into a directory named surveys at the root of the deployed application.
 
-Once the instruments are in the surveys directory, Core is shipped with a [rake][] task
+Once the instruments are in the surveys directory, Cases is shipped with a [rake][] task
 that will parse the survey syntax and load the surveys into the database.
 
     $ bundle exec rake setup:surveys
