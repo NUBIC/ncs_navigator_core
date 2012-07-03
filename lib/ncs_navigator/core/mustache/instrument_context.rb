@@ -86,6 +86,10 @@ module NcsNavigator::Core::Mustache
       NcsNavigator.configuration.core["toll_free_number"]
     end
 
+    def local_age_of_minority
+      NcsNavigator.configuration.core["local_age_of_minority"]
+    end
+
     def local_age_of_majority
       NcsNavigator.configuration.core["local_age_of_majority"]
     end
