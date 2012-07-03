@@ -97,8 +97,11 @@ class InstrumentEventMap
     result
   end
 
-  # TODO: use coded version that is not core specific from ini file
-  #       recruitment_type_id
+  # 1  Enhanced Household Enumeration
+  # 2  Provider-Based
+  # 3  Two-Tier
+  # 4  Original VC
+  # 5  Provider Based Sampling
   def self.instruments
     results = []
     with_specimens = NcsNavigatorCore.with_specimens
@@ -106,12 +109,12 @@ class InstrumentEventMap
       filename = ie["filename"]
       next if filename.include?("_DCI_") && with_specimens == "false"
 
-      case NcsNavigatorCore.recruitment_type
-      when "HILI"
+      case NcsNavigatorCore.recruitment_type_id
+      when 3
         results << ie if filename.include?("HILI") || filename.include?("HI") || filename.include?("LI")
-      when "PB"
+      when 2
         results << ie if filename.include?("PB")
-      when "EH"
+      when 1
         results << ie if filename.include?("EH")
       end
     end
