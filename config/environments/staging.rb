@@ -69,9 +69,4 @@ NcsNavigatorCore::Application.configure do
     central '/etc/nubic/ncs/aker-staging.yml'
   end
 
-  config.middleware.use ExceptionNotifier,
-    :email_prefix => "[NCS Navigator Cases Staging] ",
-    :sender_address => NcsNavigator.configuration.core['mail_from'],
-    :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients'].split
-
 end
