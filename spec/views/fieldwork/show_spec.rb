@@ -38,14 +38,14 @@ describe 'fieldwork/show' do
         {
             "Contact": {
                 "af72e358": {
-                    "disposition": {
+                    "contact_disposition": {
                         "current": "0",
                         "original": "-4",
                         "proposed": "1"
                     }
                 },
                 "ba8aa819": {
-                    "language": {
+                    "contact_language_code": {
                         "current": "1",
                         "original": "-4",
                         "proposed": "2"
@@ -54,12 +54,12 @@ describe 'fieldwork/show' do
             },
             "Event": {
                 "44ee9403": {
-                    "end_time": {
+                    "event_end_time": {
                         "current": "14:45",
                         "original": "",
                         "proposed": "15:00"
                     },
-                    "start_time": {
+                    "event_start_time": {
                         "current": "13:30",
                         "original": "",
                         "proposed": "14:30"
@@ -83,31 +83,31 @@ describe 'fieldwork/show' do
     end
 
     it 'shows attribute names' do
-      rendered.should have_selector('.conflict[data-entity-type="Contact"][data-public-id="af72e358"] .attribute', :text => 'Disposition')
-      rendered.should have_selector('.conflict[data-entity-type="Contact"][data-public-id="ba8aa819"] .attribute', :text => 'Language')
-      rendered.should have_selector('.conflict[data-entity-type="Event"][data-public-id="44ee9403"] .attribute', :text => 'End time')
-      rendered.should have_selector('.conflict + .conflict[data-entity-type="Event"][data-public-id="44ee9403"] .attribute', :text => 'Start time')
+      rendered.should have_selector('.conflict[data-entity-type="Contact"][data-public-id="af72e358"] .attribute', :text => 'Contact disposition')
+      rendered.should have_selector('.conflict[data-entity-type="Contact"][data-public-id="ba8aa819"] .attribute', :text => 'Contact language code')
+      rendered.should have_selector('.conflict[data-entity-type="Event"][data-public-id="44ee9403"] .attribute', :text => 'Event end time')
+      rendered.should have_selector('.conflict + .conflict[data-entity-type="Event"][data-public-id="44ee9403"] .attribute', :text => 'Event start time')
     end
 
     it 'shows current values' do
-      rendered.should have_selector('.current[data-name="Disposition"]', :text => '0')
-      rendered.should have_selector('.current[data-name="Language"]', :text => '1')
-      rendered.should have_selector('.current[data-name="End time"]', :text => '14:45')
-      rendered.should have_selector('.current[data-name="Start time"]', :text => '13:30')
+      rendered.should have_selector('.current[data-name="Contact disposition"]', :text => '0')
+      rendered.should have_selector('.current[data-name="Contact language code"]', :text => '1')
+      rendered.should have_selector('.current[data-name="Event end time"]', :text => '14:45')
+      rendered.should have_selector('.current[data-name="Event start time"]', :text => '13:30')
     end
 
     it 'shows original values' do
-      rendered.should have_selector('.original[data-name="Disposition"]', :text => '-4')
-      rendered.should have_selector('.original[data-name="Language"]', :text => '-4')
-      rendered.should have_selector('.original[data-name="End time"]', :text => '')
-      rendered.should have_selector('.original[data-name="Start time"]', :text => '')
+      rendered.should have_selector('.original[data-name="Contact disposition"]', :text => '-4')
+      rendered.should have_selector('.original[data-name="Contact language code"]', :text => '-4')
+      rendered.should have_selector('.original[data-name="Event end time"]', :text => '')
+      rendered.should have_selector('.original[data-name="Event start time"]', :text => '')
     end
 
     it 'shows proposed values' do
-      rendered.should have_selector('.proposed[data-name="Disposition"]', :text => '1')
-      rendered.should have_selector('.proposed[data-name="Language"]', :text => '2')
-      rendered.should have_selector('.proposed[data-name="End time"]', :text => '15:00')
-      rendered.should have_selector('.proposed[data-name="Start time"]', :text => '14:30')
+      rendered.should have_selector('.proposed[data-name="Contact disposition"]', :text => '1')
+      rendered.should have_selector('.proposed[data-name="Contact language code"]', :text => '2')
+      rendered.should have_selector('.proposed[data-name="Event end time"]', :text => '15:00')
+      rendered.should have_selector('.proposed[data-name="Event start time"]', :text => '14:30')
     end
   end
 end

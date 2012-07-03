@@ -1,55 +1,55 @@
 ---
 Contact:
-  comments: contact_comment
-  contact_date: contact_date_date
+  contact_comment: contact_comment
+  contact_date_date: contact_date_date
   contact_id: contact_id
-  disposition: contact_disposition
-  distance_traveled: contact_distance
-  end_time: contact_end_time
-  interpreter: contact_interpret_code
-  interpreter_other: contact_interpret_other
-  language: contact_language_code
-  language_other: contact_language_other
-  location: contact_location_code
-  location_other: contact_location_other
-  private: contact_private_code
-  private_detail: contact_private_detail
-  start_time: contact_start_time
-  type: contact_type_code
-  who_contacted: who_contacted_code
+  contact_disposition: contact_disposition
+  contact_distance: contact_distance
+  contact_end_time: contact_end_time
+  contact_interpret_code: contact_interpret_code
+  contact_interpret_other: contact_interpret_other
+  contact_language_code: contact_language_code
+  contact_language_other: contact_language_other
+  contact_location_code: contact_location_code
+  contact_location_other: contact_location_other
+  contact_private_code: contact_private_code
+  contact_private_detail: contact_private_detail
+  contact_start_time: contact_start_time
+  contact_type_code: contact_type_code
+  who_contacted_code: who_contacted_code
   who_contacted_other: who_contacted_other
 Event:
-  break_off: event_breakoff_code
-  comments: event_comment
-  disposition: event_disposition
-  disposition_category: event_disposition_category_code
-  end_date: event_end_date
-  end_time: event_end_time
+  event_breakoff_code: event_breakoff_code
+  event_comment: event_comment
+  event_disposition: event_disposition
+  event_disposition_category_code: event_disposition_category_code
+  event_end_date: event_end_date
+  event_end_time: event_end_time
   event_id: event_id
-  incentive_type: event_incentive_type_code
-  incentive_cash: event_incentive_cash
-  repeat_key: event_repeat_key
-  start_date: event_start_date
-  start_time: event_start_time
-  type: event_type_code
-  type_other: event_type_other
+  event_incentive_type_code: event_incentive_type_code
+  event_incentive_cash: event_incentive_cash
+  event_repeat_key: event_repeat_key
+  event_start_date: event_start_date
+  event_start_time: event_start_time
+  event_type_code: event_type_code
+  event_type_other: event_type_other
 Instrument:
-  break_off: instrument_breakoff_code
-  comments: instrument_comment
-  data_problem: data_problem_code
-  end_date: instrument_end_date
-  end_time: instrument_end_time
+  instrument_breakoff_code: instrument_breakoff_code
+  instrument_comment: instrument_comment
+  data_problem_code: data_problem_code
+  instrument_end_date: instrument_end_date
+  instrument_end_time: instrument_end_time
   instrument_id: instrument_id
-  method_administered: instrument_method_code
-  mode_administered: instrument_mode_code
-  mode_administered_other: instrument_mode_other
-  repeat_key: instrument_repeat_key
-  start_date: instrument_start_date
-  start_time: instrument_start_time
-  status: instrument_status_code
-  supervisor_review: supervisor_review_code
-  type: instrument_type_code
-  type_other: instrument_type_other
+  instrument_method_code: instrument_method_code
+  instrument_mode_code: instrument_mode_code
+  instrument_mode_other: instrument_mode_other
+  instrument_repeat_key: instrument_repeat_key
+  instrument_start_date: instrument_start_date
+  instrument_start_time: instrument_start_time
+  instrument_status_code: instrument_status_code
+  supervisor_review_code: supervisor_review_code
+  instrument_type_code: instrument_type_code
+  instrument_type_other: instrument_type_other
 Response:
   uuid:
     reader: target.api_id

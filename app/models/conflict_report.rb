@@ -4,12 +4,6 @@ require 'forwardable'
 ##
 # A value object for {Merge#conflict_report}.
 #
-# This class provides an iterator that yields entities, attributes, and
-# superpositions in a predicatable order, easing presentation of the conflict report.
-#
-# This class also includes a module for resolving NCS coded attributes in
-# conflict reports.
-#
 #
 # Data structure
 # ==============
@@ -36,14 +30,14 @@ require 'forwardable'
 #     {
 #         "Contact": {
 #             "af72e358-e856-4859-baf5-c61134ddfa4d": {
-#                 "disposition": {
+#                 "contact_disposition": {
 #                     "current": "0",
 #                     "original": "-4",
 #                     "proposed": "1"
 #                 }
 #             },
 #             "ba8aa819-6bc3-4244-8cc5-1ed9d6201966": {
-#                 "language": {
+#                 "contact_language_code": {
 #                     "current": "1",
 #                     "original": "-4",
 #                     "proposed": "2"
@@ -52,7 +46,7 @@ require 'forwardable'
 #         },
 #         "Event": {
 #             "44ee9403-4d88-4fd5-b998-2db8a611df67": {
-#                 "start_time": {
+#                 "event_start_time": {
 #                     "current": "13:30",
 #                     "original": "",
 #                     "proposed": "14:30"

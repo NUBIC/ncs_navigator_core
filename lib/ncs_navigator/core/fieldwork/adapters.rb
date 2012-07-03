@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'bigdecimal'
 require 'date'
 require 'forwardable'
@@ -9,7 +8,7 @@ require 'ncs_navigator/core'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: 25c65d604156cde03f7653206606c54779b9255a
+# Schema revision: 82a598075f8368d3a80c6950484a5a08d465ae46
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -94,25 +93,25 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
-    def comments
+    def contact_comment
       target.contact_comment
     end
 
-    def comments=(val)
+    def contact_comment=(val)
       target.contact_comment = val
     end
 
-    attr_accessible :comments
+    attr_accessible :contact_comment
 
-    def contact_date
+    def contact_date_date
       target.contact_date_date
     end
 
-    def contact_date=(val)
+    def contact_date_date=(val)
       target.contact_date_date = val
     end
 
-    attr_accessible :contact_date
+    attr_accessible :contact_date_date
 
     def contact_id
       target.contact_id
@@ -124,145 +123,145 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :contact_id
 
-    def disposition
+    def contact_disposition
       target.contact_disposition
     end
 
-    def disposition=(val)
+    def contact_disposition=(val)
       target.contact_disposition = val
     end
 
-    attr_accessible :disposition
+    attr_accessible :contact_disposition
 
-    def distance_traveled
+    def contact_distance
       target.contact_distance
     end
 
-    def distance_traveled=(val)
+    def contact_distance=(val)
       target.contact_distance = val
     end
 
-    attr_accessible :distance_traveled
+    attr_accessible :contact_distance
 
-    def end_time
+    def contact_end_time
       target.contact_end_time
     end
 
-    def end_time=(val)
+    def contact_end_time=(val)
       target.contact_end_time = val
     end
 
-    attr_accessible :end_time
+    attr_accessible :contact_end_time
 
-    def interpreter
+    def contact_interpret_code
       target.contact_interpret_code
     end
 
-    def interpreter=(val)
+    def contact_interpret_code=(val)
       target.contact_interpret_code = val
     end
 
-    attr_accessible :interpreter
+    attr_accessible :contact_interpret_code
 
-    def interpreter_other
+    def contact_interpret_other
       target.contact_interpret_other
     end
 
-    def interpreter_other=(val)
+    def contact_interpret_other=(val)
       target.contact_interpret_other = val
     end
 
-    attr_accessible :interpreter_other
+    attr_accessible :contact_interpret_other
 
-    def language
+    def contact_language_code
       target.contact_language_code
     end
 
-    def language=(val)
+    def contact_language_code=(val)
       target.contact_language_code = val
     end
 
-    attr_accessible :language
+    attr_accessible :contact_language_code
 
-    def language_other
+    def contact_language_other
       target.contact_language_other
     end
 
-    def language_other=(val)
+    def contact_language_other=(val)
       target.contact_language_other = val
     end
 
-    attr_accessible :language_other
+    attr_accessible :contact_language_other
 
-    def location
+    def contact_location_code
       target.contact_location_code
     end
 
-    def location=(val)
+    def contact_location_code=(val)
       target.contact_location_code = val
     end
 
-    attr_accessible :location
+    attr_accessible :contact_location_code
 
-    def location_other
+    def contact_location_other
       target.contact_location_other
     end
 
-    def location_other=(val)
+    def contact_location_other=(val)
       target.contact_location_other = val
     end
 
-    attr_accessible :location_other
+    attr_accessible :contact_location_other
 
-    def private
+    def contact_private_code
       target.contact_private_code
     end
 
-    def private=(val)
+    def contact_private_code=(val)
       target.contact_private_code = val
     end
 
-    attr_accessible :private
+    attr_accessible :contact_private_code
 
-    def private_detail
+    def contact_private_detail
       target.contact_private_detail
     end
 
-    def private_detail=(val)
+    def contact_private_detail=(val)
       target.contact_private_detail = val
     end
 
-    attr_accessible :private_detail
+    attr_accessible :contact_private_detail
 
-    def start_time
+    def contact_start_time
       target.contact_start_time
     end
 
-    def start_time=(val)
+    def contact_start_time=(val)
       target.contact_start_time = val
     end
 
-    attr_accessible :start_time
+    attr_accessible :contact_start_time
 
-    def type
+    def contact_type_code
       target.contact_type_code
     end
 
-    def type=(val)
+    def contact_type_code=(val)
       target.contact_type_code = val
     end
 
-    attr_accessible :type
+    attr_accessible :contact_type_code
 
-    def who_contacted
+    def who_contacted_code
       target.who_contacted_code
     end
 
-    def who_contacted=(val)
+    def who_contacted_code=(val)
       target.who_contacted_code = val
     end
 
-    attr_accessible :who_contacted
+    attr_accessible :who_contacted_code
 
     def who_contacted_other
       target.who_contacted_other
@@ -309,20 +308,44 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
-    def comments
-      (target[%q{comments}])
+    def contact_comment
+      (target[%q{contact_comment}])
     end
 
-    def comments=(val)
-      target[%q{comments}] = val
+    def contact_comment=(val)
+      target[%q{contact_comment}] = val
     end
 
-    def contact_date
-      date(target[%q{contact_date}])
+    def contact_date_date
+      date(target[%q{contact_date_date}])
     end
 
-    def contact_date=(val)
-      target[%q{contact_date}] = val
+    def contact_date_date=(val)
+      target[%q{contact_date_date}] = val
+    end
+
+    def contact_disposition
+      (target[%q{contact_disposition}])
+    end
+
+    def contact_disposition=(val)
+      target[%q{contact_disposition}] = val
+    end
+
+    def contact_distance
+      decimal(target[%q{contact_distance}])
+    end
+
+    def contact_distance=(val)
+      target[%q{contact_distance}] = val
+    end
+
+    def contact_end_time
+      (target[%q{contact_end_time}])
+    end
+
+    def contact_end_time=(val)
+      target[%q{contact_end_time}] = val
     end
 
     def contact_id
@@ -333,76 +356,84 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{contact_id}] = val
     end
 
-    def disposition
-      (target[%q{disposition}])
+    def contact_interpret_code
+      (target[%q{contact_interpret_code}])
     end
 
-    def disposition=(val)
-      target[%q{disposition}] = val
+    def contact_interpret_code=(val)
+      target[%q{contact_interpret_code}] = val
     end
 
-    def distance_traveled
-      decimal(target[%q{distance_traveled}])
+    def contact_interpret_other
+      (target[%q{contact_interpret_other}])
     end
 
-    def distance_traveled=(val)
-      target[%q{distance_traveled}] = val
+    def contact_interpret_other=(val)
+      target[%q{contact_interpret_other}] = val
     end
 
-    def end_time
-      (target[%q{end_time}])
+    def contact_language_code
+      (target[%q{contact_language_code}])
     end
 
-    def end_time=(val)
-      target[%q{end_time}] = val
+    def contact_language_code=(val)
+      target[%q{contact_language_code}] = val
     end
 
-    def interpreter
-      (target[%q{interpreter}])
+    def contact_language_other
+      (target[%q{contact_language_other}])
     end
 
-    def interpreter=(val)
-      target[%q{interpreter}] = val
+    def contact_language_other=(val)
+      target[%q{contact_language_other}] = val
     end
 
-    def interpreter_other
-      (target[%q{interpreter_other}])
+    def contact_location_code
+      (target[%q{contact_location_code}])
     end
 
-    def interpreter_other=(val)
-      target[%q{interpreter_other}] = val
+    def contact_location_code=(val)
+      target[%q{contact_location_code}] = val
     end
 
-    def language
-      (target[%q{language}])
+    def contact_location_other
+      (target[%q{contact_location_other}])
     end
 
-    def language=(val)
-      target[%q{language}] = val
+    def contact_location_other=(val)
+      target[%q{contact_location_other}] = val
     end
 
-    def language_other
-      (target[%q{language_other}])
+    def contact_private_code
+      (target[%q{contact_private_code}])
     end
 
-    def language_other=(val)
-      target[%q{language_other}] = val
+    def contact_private_code=(val)
+      target[%q{contact_private_code}] = val
     end
 
-    def location
-      (target[%q{location}])
+    def contact_private_detail
+      (target[%q{contact_private_detail}])
     end
 
-    def location=(val)
-      target[%q{location}] = val
+    def contact_private_detail=(val)
+      target[%q{contact_private_detail}] = val
     end
 
-    def location_other
-      (target[%q{location_other}])
+    def contact_start_time
+      (target[%q{contact_start_time}])
     end
 
-    def location_other=(val)
-      target[%q{location_other}] = val
+    def contact_start_time=(val)
+      target[%q{contact_start_time}] = val
+    end
+
+    def contact_type_code
+      (target[%q{contact_type_code}])
+    end
+
+    def contact_type_code=(val)
+      target[%q{contact_type_code}] = val
     end
 
     def person_id
@@ -413,38 +444,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{person_id}] = val
     end
 
-    def private
-      (target[%q{private}])
-    end
-
-    def private=(val)
-      target[%q{private}] = val
-    end
-
-    def private_detail
-      (target[%q{private_detail}])
-    end
-
-    def private_detail=(val)
-      target[%q{private_detail}] = val
-    end
-
-    def start_time
-      (target[%q{start_time}])
-    end
-
-    def start_time=(val)
-      target[%q{start_time}] = val
-    end
-
-    def type
-      (target[%q{type}])
-    end
-
-    def type=(val)
-      target[%q{type}] = val
-    end
-
     def version
       (target[%q{version}])
     end
@@ -453,12 +452,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{version}] = val
     end
 
-    def who_contacted
-      (target[%q{who_contacted}])
+    def who_contacted_code
+      (target[%q{who_contacted_code}])
     end
 
-    def who_contacted=(val)
-      target[%q{who_contacted}] = val
+    def who_contacted_code=(val)
+      target[%q{who_contacted_code}] = val
     end
 
     def who_contacted_other
@@ -490,65 +489,65 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
-    def break_off
+    def event_breakoff_code
       target.event_breakoff_code
     end
 
-    def break_off=(val)
+    def event_breakoff_code=(val)
       target.event_breakoff_code = val
     end
 
-    attr_accessible :break_off
+    attr_accessible :event_breakoff_code
 
-    def comments
+    def event_comment
       target.event_comment
     end
 
-    def comments=(val)
+    def event_comment=(val)
       target.event_comment = val
     end
 
-    attr_accessible :comments
+    attr_accessible :event_comment
 
-    def disposition
+    def event_disposition
       target.event_disposition
     end
 
-    def disposition=(val)
+    def event_disposition=(val)
       target.event_disposition = val
     end
 
-    attr_accessible :disposition
+    attr_accessible :event_disposition
 
-    def disposition_category
+    def event_disposition_category_code
       target.event_disposition_category_code
     end
 
-    def disposition_category=(val)
+    def event_disposition_category_code=(val)
       target.event_disposition_category_code = val
     end
 
-    attr_accessible :disposition_category
+    attr_accessible :event_disposition_category_code
 
-    def end_date
+    def event_end_date
       target.event_end_date
     end
 
-    def end_date=(val)
+    def event_end_date=(val)
       target.event_end_date = val
     end
 
-    attr_accessible :end_date
+    attr_accessible :event_end_date
 
-    def end_time
+    def event_end_time
       target.event_end_time
     end
 
-    def end_time=(val)
+    def event_end_time=(val)
       target.event_end_time = val
     end
 
-    attr_accessible :end_time
+    attr_accessible :event_end_time
 
     def event_id
       target.event_id
@@ -560,75 +559,75 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :event_id
 
-    def incentive_type
+    def event_incentive_type_code
       target.event_incentive_type_code
     end
 
-    def incentive_type=(val)
+    def event_incentive_type_code=(val)
       target.event_incentive_type_code = val
     end
 
-    attr_accessible :incentive_type
+    attr_accessible :event_incentive_type_code
 
-    def incentive_cash
+    def event_incentive_cash
       target.event_incentive_cash
     end
 
-    def incentive_cash=(val)
+    def event_incentive_cash=(val)
       target.event_incentive_cash = val
     end
 
-    attr_accessible :incentive_cash
+    attr_accessible :event_incentive_cash
 
-    def repeat_key
+    def event_repeat_key
       target.event_repeat_key
     end
 
-    def repeat_key=(val)
+    def event_repeat_key=(val)
       target.event_repeat_key = val
     end
 
-    attr_accessible :repeat_key
+    attr_accessible :event_repeat_key
 
-    def start_date
+    def event_start_date
       target.event_start_date
     end
 
-    def start_date=(val)
+    def event_start_date=(val)
       target.event_start_date = val
     end
 
-    attr_accessible :start_date
+    attr_accessible :event_start_date
 
-    def start_time
+    def event_start_time
       target.event_start_time
     end
 
-    def start_time=(val)
+    def event_start_time=(val)
       target.event_start_time = val
     end
 
-    attr_accessible :start_time
+    attr_accessible :event_start_time
 
-    def type
+    def event_type_code
       target.event_type_code
     end
 
-    def type=(val)
+    def event_type_code=(val)
       target.event_type_code = val
     end
 
-    attr_accessible :type
+    attr_accessible :event_type_code
 
-    def type_other
+    def event_type_other
       target.event_type_other
     end
 
-    def type_other=(val)
+    def event_type_other=(val)
       target.event_type_other = val
     end
 
-    attr_accessible :type_other
+    attr_accessible :event_type_other
 
     def to_model
       target
@@ -665,52 +664,52 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
-    def break_off
-      (target[%q{break_off}])
+    def event_breakoff_code
+      (target[%q{event_breakoff_code}])
     end
 
-    def break_off=(val)
-      target[%q{break_off}] = val
+    def event_breakoff_code=(val)
+      target[%q{event_breakoff_code}] = val
     end
 
-    def comments
-      (target[%q{comments}])
+    def event_comment
+      (target[%q{event_comment}])
     end
 
-    def comments=(val)
-      target[%q{comments}] = val
+    def event_comment=(val)
+      target[%q{event_comment}] = val
     end
 
-    def disposition
-      (target[%q{disposition}])
+    def event_disposition
+      (target[%q{event_disposition}])
     end
 
-    def disposition=(val)
-      target[%q{disposition}] = val
+    def event_disposition=(val)
+      target[%q{event_disposition}] = val
     end
 
-    def disposition_category
-      (target[%q{disposition_category}])
+    def event_disposition_category_code
+      (target[%q{event_disposition_category_code}])
     end
 
-    def disposition_category=(val)
-      target[%q{disposition_category}] = val
+    def event_disposition_category_code=(val)
+      target[%q{event_disposition_category_code}] = val
     end
 
-    def end_date
-      date(target[%q{end_date}])
+    def event_end_date
+      date(target[%q{event_end_date}])
     end
 
-    def end_date=(val)
-      target[%q{end_date}] = val
+    def event_end_date=(val)
+      target[%q{event_end_date}] = val
     end
 
-    def end_time
-      (target[%q{end_time}])
+    def event_end_time
+      (target[%q{event_end_time}])
     end
 
-    def end_time=(val)
-      target[%q{end_time}] = val
+    def event_end_time=(val)
+      target[%q{event_end_time}] = val
     end
 
     def event_id
@@ -721,20 +720,60 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{event_id}] = val
     end
 
-    def incentive_cash
-      decimal(target[%q{incentive_cash}])
+    def event_incentive_cash
+      decimal(target[%q{event_incentive_cash}])
     end
 
-    def incentive_cash=(val)
-      target[%q{incentive_cash}] = val
+    def event_incentive_cash=(val)
+      target[%q{event_incentive_cash}] = val
     end
 
-    def incentive_type
-      (target[%q{incentive_type}])
+    def event_incentive_type_code
+      (target[%q{event_incentive_type_code}])
     end
 
-    def incentive_type=(val)
-      target[%q{incentive_type}] = val
+    def event_incentive_type_code=(val)
+      target[%q{event_incentive_type_code}] = val
+    end
+
+    def event_repeat_key
+      (target[%q{event_repeat_key}])
+    end
+
+    def event_repeat_key=(val)
+      target[%q{event_repeat_key}] = val
+    end
+
+    def event_start_date
+      date(target[%q{event_start_date}])
+    end
+
+    def event_start_date=(val)
+      target[%q{event_start_date}] = val
+    end
+
+    def event_start_time
+      (target[%q{event_start_time}])
+    end
+
+    def event_start_time=(val)
+      target[%q{event_start_time}] = val
+    end
+
+    def event_type_code
+      (target[%q{event_type_code}])
+    end
+
+    def event_type_code=(val)
+      target[%q{event_type_code}] = val
+    end
+
+    def event_type_other
+      (target[%q{event_type_other}])
+    end
+
+    def event_type_other=(val)
+      target[%q{event_type_other}] = val
     end
 
     def name
@@ -743,46 +782,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def name=(val)
       target[%q{name}] = val
-    end
-
-    def repeat_key
-      (target[%q{repeat_key}])
-    end
-
-    def repeat_key=(val)
-      target[%q{repeat_key}] = val
-    end
-
-    def start_date
-      date(target[%q{start_date}])
-    end
-
-    def start_date=(val)
-      target[%q{start_date}] = val
-    end
-
-    def start_time
-      (target[%q{start_time}])
-    end
-
-    def start_time=(val)
-      target[%q{start_time}] = val
-    end
-
-    def type
-      (target[%q{type}])
-    end
-
-    def type=(val)
-      target[%q{type}] = val
-    end
-
-    def type_other
-      (target[%q{type_other}])
-    end
-
-    def type_other=(val)
-      target[%q{type_other}] = val
     end
 
     def version
@@ -814,55 +813,55 @@ module NcsNavigator::Core::Fieldwork::Adapters
     extend ActiveModel::Naming
     include ActiveModel::MassAssignmentSecurity
 
-    def break_off
+    def instrument_breakoff_code
       target.instrument_breakoff_code
     end
 
-    def break_off=(val)
+    def instrument_breakoff_code=(val)
       target.instrument_breakoff_code = val
     end
 
-    attr_accessible :break_off
+    attr_accessible :instrument_breakoff_code
 
-    def comments
+    def instrument_comment
       target.instrument_comment
     end
 
-    def comments=(val)
+    def instrument_comment=(val)
       target.instrument_comment = val
     end
 
-    attr_accessible :comments
+    attr_accessible :instrument_comment
 
-    def data_problem
+    def data_problem_code
       target.data_problem_code
     end
 
-    def data_problem=(val)
+    def data_problem_code=(val)
       target.data_problem_code = val
     end
 
-    attr_accessible :data_problem
+    attr_accessible :data_problem_code
 
-    def end_date
+    def instrument_end_date
       target.instrument_end_date
     end
 
-    def end_date=(val)
+    def instrument_end_date=(val)
       target.instrument_end_date = val
     end
 
-    attr_accessible :end_date
+    attr_accessible :instrument_end_date
 
-    def end_time
+    def instrument_end_time
       target.instrument_end_time
     end
 
-    def end_time=(val)
+    def instrument_end_time=(val)
       target.instrument_end_time = val
     end
 
-    attr_accessible :end_time
+    attr_accessible :instrument_end_time
 
     def instrument_id
       target.instrument_id
@@ -874,105 +873,105 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :instrument_id
 
-    def method_administered
+    def instrument_method_code
       target.instrument_method_code
     end
 
-    def method_administered=(val)
+    def instrument_method_code=(val)
       target.instrument_method_code = val
     end
 
-    attr_accessible :method_administered
+    attr_accessible :instrument_method_code
 
-    def mode_administered
+    def instrument_mode_code
       target.instrument_mode_code
     end
 
-    def mode_administered=(val)
+    def instrument_mode_code=(val)
       target.instrument_mode_code = val
     end
 
-    attr_accessible :mode_administered
+    attr_accessible :instrument_mode_code
 
-    def mode_administered_other
+    def instrument_mode_other
       target.instrument_mode_other
     end
 
-    def mode_administered_other=(val)
+    def instrument_mode_other=(val)
       target.instrument_mode_other = val
     end
 
-    attr_accessible :mode_administered_other
+    attr_accessible :instrument_mode_other
 
-    def repeat_key
+    def instrument_repeat_key
       target.instrument_repeat_key
     end
 
-    def repeat_key=(val)
+    def instrument_repeat_key=(val)
       target.instrument_repeat_key = val
     end
 
-    attr_accessible :repeat_key
+    attr_accessible :instrument_repeat_key
 
-    def start_date
+    def instrument_start_date
       target.instrument_start_date
     end
 
-    def start_date=(val)
+    def instrument_start_date=(val)
       target.instrument_start_date = val
     end
 
-    attr_accessible :start_date
+    attr_accessible :instrument_start_date
 
-    def start_time
+    def instrument_start_time
       target.instrument_start_time
     end
 
-    def start_time=(val)
+    def instrument_start_time=(val)
       target.instrument_start_time = val
     end
 
-    attr_accessible :start_time
+    attr_accessible :instrument_start_time
 
-    def status
+    def instrument_status_code
       target.instrument_status_code
     end
 
-    def status=(val)
+    def instrument_status_code=(val)
       target.instrument_status_code = val
     end
 
-    attr_accessible :status
+    attr_accessible :instrument_status_code
 
-    def supervisor_review
+    def supervisor_review_code
       target.supervisor_review_code
     end
 
-    def supervisor_review=(val)
+    def supervisor_review_code=(val)
       target.supervisor_review_code = val
     end
 
-    attr_accessible :supervisor_review
+    attr_accessible :supervisor_review_code
 
-    def type
+    def instrument_type_code
       target.instrument_type_code
     end
 
-    def type=(val)
+    def instrument_type_code=(val)
       target.instrument_type_code = val
     end
 
-    attr_accessible :type
+    attr_accessible :instrument_type_code
 
-    def type_other
+    def instrument_type_other
       target.instrument_type_other
     end
 
-    def type_other=(val)
+    def instrument_type_other=(val)
       target.instrument_type_other = val
     end
 
-    attr_accessible :type_other
+    attr_accessible :instrument_type_other
 
     def to_model
       target
@@ -1009,44 +1008,44 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include NcsNavigator::Core::Fieldwork::Adapters
     include ActiveRecordTypeCoercion
 
-    def break_off
-      (target[%q{break_off}])
+    def data_problem_code
+      (target[%q{data_problem_code}])
     end
 
-    def break_off=(val)
-      target[%q{break_off}] = val
+    def data_problem_code=(val)
+      target[%q{data_problem_code}] = val
     end
 
-    def comments
-      (target[%q{comments}])
+    def instrument_breakoff_code
+      (target[%q{instrument_breakoff_code}])
     end
 
-    def comments=(val)
-      target[%q{comments}] = val
+    def instrument_breakoff_code=(val)
+      target[%q{instrument_breakoff_code}] = val
     end
 
-    def data_problem
-      (target[%q{data_problem}])
+    def instrument_comment
+      (target[%q{instrument_comment}])
     end
 
-    def data_problem=(val)
-      target[%q{data_problem}] = val
+    def instrument_comment=(val)
+      target[%q{instrument_comment}] = val
     end
 
-    def end_date
-      date(target[%q{end_date}])
+    def instrument_end_date
+      date(target[%q{instrument_end_date}])
     end
 
-    def end_date=(val)
-      target[%q{end_date}] = val
+    def instrument_end_date=(val)
+      target[%q{instrument_end_date}] = val
     end
 
-    def end_time
-      (target[%q{end_time}])
+    def instrument_end_time
+      (target[%q{instrument_end_time}])
     end
 
-    def end_time=(val)
-      target[%q{end_time}] = val
+    def instrument_end_time=(val)
+      target[%q{instrument_end_time}] = val
     end
 
     def instrument_id
@@ -1057,12 +1056,84 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{instrument_id}] = val
     end
 
+    def instrument_method_code
+      (target[%q{instrument_method_code}])
+    end
+
+    def instrument_method_code=(val)
+      target[%q{instrument_method_code}] = val
+    end
+
+    def instrument_mode_code
+      (target[%q{instrument_mode_code}])
+    end
+
+    def instrument_mode_code=(val)
+      target[%q{instrument_mode_code}] = val
+    end
+
+    def instrument_mode_other
+      (target[%q{instrument_mode_other}])
+    end
+
+    def instrument_mode_other=(val)
+      target[%q{instrument_mode_other}] = val
+    end
+
+    def instrument_repeat_key
+      (target[%q{instrument_repeat_key}])
+    end
+
+    def instrument_repeat_key=(val)
+      target[%q{instrument_repeat_key}] = val
+    end
+
+    def instrument_start_date
+      date(target[%q{instrument_start_date}])
+    end
+
+    def instrument_start_date=(val)
+      target[%q{instrument_start_date}] = val
+    end
+
+    def instrument_start_time
+      (target[%q{instrument_start_time}])
+    end
+
+    def instrument_start_time=(val)
+      target[%q{instrument_start_time}] = val
+    end
+
+    def instrument_status_code
+      (target[%q{instrument_status_code}])
+    end
+
+    def instrument_status_code=(val)
+      target[%q{instrument_status_code}] = val
+    end
+
     def instrument_template_id
       (target[%q{instrument_template_id}])
     end
 
     def instrument_template_id=(val)
       target[%q{instrument_template_id}] = val
+    end
+
+    def instrument_type_code
+      (target[%q{instrument_type_code}])
+    end
+
+    def instrument_type_code=(val)
+      target[%q{instrument_type_code}] = val
+    end
+
+    def instrument_type_other
+      (target[%q{instrument_type_other}])
+    end
+
+    def instrument_type_other=(val)
+      target[%q{instrument_type_other}] = val
     end
 
     def instrument_version
@@ -1073,44 +1144,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{instrument_version}] = val
     end
 
-    def method_administered
-      (target[%q{method_administered}])
-    end
-
-    def method_administered=(val)
-      target[%q{method_administered}] = val
-    end
-
-    def mode_administered
-      (target[%q{mode_administered}])
-    end
-
-    def mode_administered=(val)
-      target[%q{mode_administered}] = val
-    end
-
-    def mode_administered_other
-      (target[%q{mode_administered_other}])
-    end
-
-    def mode_administered_other=(val)
-      target[%q{mode_administered_other}] = val
-    end
-
     def name
       (target[%q{name}])
     end
 
     def name=(val)
       target[%q{name}] = val
-    end
-
-    def repeat_key
-      (target[%q{repeat_key}])
-    end
-
-    def repeat_key=(val)
-      target[%q{repeat_key}] = val
     end
 
     def response_set
@@ -1121,52 +1160,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
       target[%q{response_set}] = val
     end
 
-    def start_date
-      date(target[%q{start_date}])
+    def supervisor_review_code
+      (target[%q{supervisor_review_code}])
     end
 
-    def start_date=(val)
-      target[%q{start_date}] = val
-    end
-
-    def start_time
-      (target[%q{start_time}])
-    end
-
-    def start_time=(val)
-      target[%q{start_time}] = val
-    end
-
-    def status
-      (target[%q{status}])
-    end
-
-    def status=(val)
-      target[%q{status}] = val
-    end
-
-    def supervisor_review
-      (target[%q{supervisor_review}])
-    end
-
-    def supervisor_review=(val)
-      target[%q{supervisor_review}] = val
-    end
-
-    def type
-      (target[%q{type}])
-    end
-
-    def type=(val)
-      target[%q{type}] = val
-    end
-
-    def type_other
-      (target[%q{type_other}])
-    end
-
-    def type_other=(val)
-      target[%q{type_other}] = val
+    def supervisor_review_code=(val)
+      target[%q{supervisor_review_code}] = val
     end
 
     def to_hash
