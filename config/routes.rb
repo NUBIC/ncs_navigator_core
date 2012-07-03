@@ -124,6 +124,7 @@ NcsNavigatorCore::Application.routes.draw do
   match "/welcome/upcoming_activities", :to => "welcome#upcoming_activities"
   match "/welcome/overdue_activities", :to => "welcome#overdue_activities"
   match "/welcome/pending_events", :to => "welcome#pending_events"
+  match "/welcome/raise_exception", :to => "welcome#raise_exception"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
 
   root :to => "welcome#index"
@@ -161,7 +162,7 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
-  
+
   resources :specimen_receipt_confirmations
 
   resources :sample_shipping_confirmations

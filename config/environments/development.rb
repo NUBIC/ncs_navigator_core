@@ -2,6 +2,8 @@
 
 
 require 'ncs_navigator/authorization'
+require 'ncs_navigator/configuration'
+
 NcsNavigatorCore::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -33,11 +35,17 @@ NcsNavigatorCore::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  config.middleware.use ExceptionNotifier,
+    :email_prefix => "[NCS Navigator Cases Development] ",
+    :sender_address => NcsNavigator.configuration.core['mail_from'],
+    :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients']
+
   config.aker do
     api_mode :cas_proxy
     authorities :cas, NcsNavigator::Authorization::Core::Authority.new
     central '/etc/nubic/ncs/aker-local.yml'
   end
+
 end
 
 require 'openssl'
