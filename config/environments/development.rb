@@ -35,10 +35,12 @@ NcsNavigatorCore::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  config.middleware.use ExceptionNotifier,
-    :email_prefix => "[NCS Navigator Cases Development] ",
-    :sender_address => NcsNavigator.configuration.core['mail_from'],
-    :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients'].split
+  if NcsNavigator.configuration.core['email_exception_recipients']
+    config.middleware.use ExceptionNotifier,
+      :email_prefix => "[NCS Navigator Cases Development] ",
+      :sender_address => NcsNavigator.configuration.core['mail_from'],
+      :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients'].split
+  end
 
   config.aker do
     api_mode :cas_proxy
