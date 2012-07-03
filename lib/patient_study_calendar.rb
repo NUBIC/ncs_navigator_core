@@ -87,9 +87,8 @@ class PatientStudyCalendar
     "NCS Hi-Lo"
   end
 
-  # TODO: put in configuration
   def site_identifier
-    "GCSC"
+    NcsNavigator.configuration.study_center_id
   end
 
   # TODO: put in configuration
