@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <sites xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
-  <site site-name="Greater Chicago Study Center" assigned-identifier="GCSC"/>
+  <site site-name="Greater Chicago Study Center" assigned-identifier="20000029"/>
 </sites>

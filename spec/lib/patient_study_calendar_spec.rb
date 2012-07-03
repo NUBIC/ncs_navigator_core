@@ -53,10 +53,8 @@ describe PatientStudyCalendar do
     end
   end
 
-  it "gets the site identifier" do
-    VCR.use_cassette('psc/site_identifier') do
-      subject.site_identifier.should == "GCSC"
-    end
+  it "use the Study Center ID for the PSC site identifier" do
+    subject.site_identifier.should == "20000029"
   end
 
   it "gets the segments for the study" do
