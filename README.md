@@ -126,10 +126,19 @@ the configuration file.
 
     # The Name and Phone number of the Study Center
     study_center_name = "NCS Study Center"
-    study_center_phone_number = "866-555-1234"
+    study_center_phone_number = "123-555-1234"
+    toll_free_number = "800-555-1234"
 
     # Whether or not the Study Center collects specimens and samples
     with_specimens = "true"
+
+    # The identifier of the specimen/sample shipper
+    shipper_id = "shipper_id"
+
+    # The email addresses used in the application
+    mail_from = "ncs_navigator@greaterchicagoncs.org"
+    email_exception_recipients = "dev@greaterchicagoncs.org pm@greaterchicagoncs.org"
+
 
 ### Deployment
 
