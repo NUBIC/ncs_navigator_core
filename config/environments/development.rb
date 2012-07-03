@@ -38,7 +38,7 @@ NcsNavigatorCore::Application.configure do
   config.middleware.use ExceptionNotifier,
     :email_prefix => "[NCS Navigator Cases Development] ",
     :sender_address => NcsNavigator.configuration.core['mail_from'],
-    :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients']
+    :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients'].split
 
   config.aker do
     api_mode :cas_proxy
