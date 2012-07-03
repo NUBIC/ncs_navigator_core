@@ -74,6 +74,4 @@ NcsNavigatorCore::Application.configure do
     :sender_address => NcsNavigator.configuration.core['mail_from'],
     :exception_recipients => NcsNavigator.configuration.core['email_exception_recipients'].split
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { :address => "ns.northwestern.edu", :port => 25, :domain => "northwestern.edu" }
 end
