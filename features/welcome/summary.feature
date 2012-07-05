@@ -38,7 +38,7 @@ Feature: Accessing the application
     Then I should see "Pregnancy Visit 1"
     When I follow "Bessie Smith"
     Then I follow "Initiate Contact"
-    Then I should be on the new_person_contact page
-    And I should see "Bessie Smith"
+    # Then I should be on the new_person_contact page
+    Then I should see "Bessie Smith"
     And I should see "Pregnancy Visit 1"
     # And I should see "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
