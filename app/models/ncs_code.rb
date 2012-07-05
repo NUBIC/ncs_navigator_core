@@ -317,12 +317,15 @@ class NcsCode < ActiveRecord::Base
   end
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
+    query = for_attributes(attribute_name)
     list_name = attribute_lookup(attribute_name)
-    where_clause = "list_name = ?"
-    where_clause += " AND display_text <> 'Missing in Error'" unless show_missing_in_error
-    list = NcsCode.where(where_clause, list_name).map { |n| [n.display_text, n.local_code] }
 
-    NcsCode.sort_list(list, list_name)
+    unless show_missing_in_error
+      query.where(%q{display_text <> 'Missing in Error'})
+    end
+
+    list = query.map { |n| [n.display_text, n.local_code] }
+    sort_list(list, list_name)
   end
 
   def self.sort_list(list, list_name)
