@@ -2,14 +2,14 @@
 <% PID_FILE = File.join(PWD, 'tmp', 'pids', 'sidekiq.pid') %>
 
 <% 
-  ADDITIONAL = ''
-  if ENV['RVM']
-    ADDITIONAL = "export PATH=#{ENV['PATH']} && export GEM_HOME=#{ENV['GEM_HOME']} && export GEM_PATH=#{ENV['GEM_PATH']} && export HOME=#{ENV['HOME']} && "
-  end
+  env = %w(PATH HOME GEM_HOME_GEM_PATH).reject{ |e| ENV[e].blank? }.map{ |e| "export #{e}=#{ENV[e]}"}
+  cd = "cd #{PWD}"
+  sidekiq = "sidekiq -P #{PID_FILE}"
+  command = [env, cd, sidekiq].flatten.join(' && ')
 %>
 
 check process sidekiq
   with pidfile <%= PID_FILE %>
-  start program = "/bin/bash -c '<%= ADDITIONAL %> cd <%= PWD %> && sidekiq -P <%= PID_FILE %>'" with timeout 90 seconds
+  start program = "/bin/bash -c '<%= command %>'" with timeout 90 seconds
   stop program = "/bin/bash -c 'kill -s TERM `cat <%= PID_FILE %>`'" with timeout 90 seconds
   group ncs_navigator_core
