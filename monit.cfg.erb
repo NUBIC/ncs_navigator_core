@@ -2,7 +2,7 @@
 <% PID_FILE = File.join(PWD, 'tmp', 'pids', 'sidekiq.pid') %>
 
 <% 
-  env = %w(PATH HOME GEM_HOME_GEM_PATH).reject{ |e| ENV[e].blank? }.map{ |e| "export #{e}=#{ENV[e]}"}
+  env = %w(PATH GEM_HOME_GEM_PATH).reject{ |e| ENV[e].blank? }.map{ |e| "export #{e}=#{ENV[e]}"}
   cd = "cd #{PWD}"
   sidekiq = "sidekiq -P #{PID_FILE}"
   command = [env, cd, sidekiq].flatten.join(' && ')
