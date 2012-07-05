@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 require 'forwardable'
 
 ##
@@ -80,6 +81,8 @@ class ConflictReport
   end
 
   def each
+    return to_enum unless block_given?
+
     @raw.keys.sort.map do |type|
       entities = @raw[type]
 
@@ -96,6 +99,10 @@ class ConflictReport
         yield e, as
       end
     end
+  end
+
+  def to_enum
+    Enumerator.new(self)
   end
 
   def add(entity, entity_id, key, original, current, proposed)
@@ -122,6 +129,71 @@ class ConflictReport
   class Attribute < Struct.new(:name, :current, :original, :proposed)
     def humanize
       name.humanize
+    end
+  end
+
+  # FIXME: Enumerator doesn't exist in 1.8.x.  When (if?) we become 1.9-only,
+  # this needs to be removed.
+  E = if RUBY_VERSION =~ /1\.8/
+        Enumerable::Enumerator
+      else
+        ::Enumerator
+      end
+
+  ##
+  # Extends Ruby's standard Enumerator with NCS code resolution.
+  class Enumerator < E
+    def initialize(obj)
+      @obj = obj
+
+      super
+    end
+
+    ##
+    # Resolves NCS codes in the conflict report.
+    #
+    # NB: This method has to make a pass through the entire conflict report to
+    # figure out which NCS codes to resolve, so be aware that using it in an
+    # enumerator chain will cause at least two iterations through the report.
+    def with_resolved_ncs_codes(&block)
+      attributes = @obj.map { |_, as| as.map(&:name) }.flatten.uniq
+
+      @code_table = NcsCode.for_attributes(*attributes).table
+      @list_table = Hash[*attributes.map { |a| [a, NcsCode.attribute_lookup(a)] }.flatten]
+
+      block_given? ? each(&block) : self
+    end
+
+    def each
+      return self unless block_given?
+
+      resolving = ncs_codes_loaded?
+
+      super do |e, as|
+        as.map! { |attr| resolve_code(attr) } if resolving
+
+        yield e, as
+      end
+    end
+
+    def ncs_codes_loaded?
+      @code_table && @list_table
+    end
+
+    def resolve_code(attr)
+      code_list = @list_table[attr.name]
+
+      return attr unless code_list
+
+      %w(current original proposed).each do |state|
+        code = @code_table[code_list][attr.send(state).try(:to_i)]
+
+        if code
+          attr.send("#{state}=", code.to_s)
+        end
+      end
+
+      attr
     end
   end
 end

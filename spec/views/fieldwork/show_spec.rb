@@ -91,21 +91,21 @@ describe 'fieldwork/show' do
 
     it 'shows current values' do
       rendered.should have_selector('.current[data-name="Contact disposition"]', :text => '0')
-      rendered.should have_selector('.current[data-name="Contact language code"]', :text => '1')
+      rendered.should have_selector('.current[data-name="Contact language code"]', :text => 'English')
       rendered.should have_selector('.current[data-name="Event end time"]', :text => '14:45')
       rendered.should have_selector('.current[data-name="Event start time"]', :text => '13:30')
     end
 
     it 'shows original values' do
       rendered.should have_selector('.original[data-name="Contact disposition"]', :text => '-4')
-      rendered.should have_selector('.original[data-name="Contact language code"]', :text => '-4')
+      rendered.should have_selector('.original[data-name="Contact language code"]', :text => 'Missing in Error')
       rendered.should have_selector('.original[data-name="Event end time"]', :text => '')
       rendered.should have_selector('.original[data-name="Event start time"]', :text => '')
     end
 
     it 'shows proposed values' do
       rendered.should have_selector('.proposed[data-name="Contact disposition"]', :text => '1')
-      rendered.should have_selector('.proposed[data-name="Contact language code"]', :text => '2')
+      rendered.should have_selector('.proposed[data-name="Contact language code"]', :text => 'Spanish')
       rendered.should have_selector('.proposed[data-name="Event end time"]', :text => '15:00')
       rendered.should have_selector('.proposed[data-name="Event start time"]', :text => '14:30')
     end

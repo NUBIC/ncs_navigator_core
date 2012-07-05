@@ -12,7 +12,7 @@
       Current
     %th
       Proposed
-  - report.each do |entity, attributes|
+  - report.each.with_resolved_ncs_codes do |entity, attributes|
     - row_class = "conflict #{cycle('even_record', 'odd_record')}"
     %tr{:class => row_class}
       %td.entity{:rowspan => attributes.length + 1}
