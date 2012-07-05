@@ -11,13 +11,13 @@ module NcsNavigatorCore
   class << self
     def footer_left_logo_path
       if NcsNavigator.configuration.footer_logo_left
-        NcsNavigator.configuration.footer_logo_left.to_s.split("/").last
+        NcsNavigator.configuration.footer_logo_left.basename
       end
     end
 
     def footer_right_logo_path
       if NcsNavigator.configuration.footer_logo_right
-        NcsNavigator.configuration.footer_logo_right.to_s.split("/").last
+        NcsNavigator.configuration.footer_logo_right.basename
       end
     end
 
