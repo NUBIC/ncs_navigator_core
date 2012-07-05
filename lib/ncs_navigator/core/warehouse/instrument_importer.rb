@@ -62,15 +62,15 @@ module NcsNavigator::Core::Warehouse
       # definition changes
       response_set = survey.response_sets.find_by_access_code(access_code)
       if response_set
-        log.info(
-          "Updating existing response set for #{access_code}")
+        log.info("Updating existing response set for #{access_code}")
       else
-        log.info(
-          "Creating new response set for #{access_code}")
+        log.info("Creating new response set for #{access_code}")
+        rs_instrument_id = core_instrument_id(record.instrument_id)
+        log.debug("  Instrument: #{record.instrument_id.inspect} -> #{rs_instrument_id.inspect}")
         response_set = ResponseSet.new(
           :survey => survey
         ).tap do |rs|
-          rs.instrument_id = core_instrument_id(record.instrument_id),
+          rs.instrument_id = rs_instrument_id
           rs.access_code = access_code
           rs.save!
         end
