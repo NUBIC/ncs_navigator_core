@@ -484,6 +484,34 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
+    describe 'participant being-followedness' do
+      let(:src_participant) {
+        create_warehouse_record_with_defaults(MdesModule::Participant, :p_id => 'zed')
+      }
+
+      it 'is true when the participant is enrolled' do
+        src_participant.enroll_status = '1'
+        save_wh(src_participant)
+
+        importer.import(:participants)
+        Participant.count.should == 1
+
+        Participant.first.being_followed.should be_true
+      end
+
+      %w(2 -4).each do |not_enrolled_code|
+        it "is false when the participant's enrollment status is #{not_enrolled_code}" do
+          src_participant.enroll_status = not_enrolled_code
+          save_wh(src_participant)
+
+          importer.import(:participants)
+          Participant.count.should == 1
+
+          Participant.first.being_followed.should be_false
+        end
+      end
+    end
+
     def create_warehouse_record_via_core(core_model, wh_id, wh_attributes={})
       factory_name = [
         "mdes_min_#{core_model.to_s.underscore}",

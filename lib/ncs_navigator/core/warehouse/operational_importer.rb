@@ -53,6 +53,10 @@ module NcsNavigator::Core::Warehouse
           create_events_and_instruments_and_contact_links
         end
 
+        if tables.empty? || tables.include?(:participants)
+          set_participant_being_followed
+        end
+
         resolve_failed_associations
 
         @progress.complete
@@ -459,6 +463,11 @@ module NcsNavigator::Core::Warehouse
         )
         @progress.increment_creates
       end
+    end
+
+    def set_participant_being_followed
+      ActiveRecord::Base.connection.
+        execute("UPDATE participants SET being_followed=(enroll_status_code = 1)")
     end
 
     def find_producer(name)
