@@ -305,6 +305,10 @@ class NcsCode < ActiveRecord::Base
   # You can use either symbols or strings for the attributes.  Attributes that
   # do not correspond to an NCS code list will be ignored.
   #
+  # The returned object responds to #where, #each (and all other Enumerable
+  # methods), and contains some additional helpers for e.g. accessing a subset
+  # of returned NCS codes by list name.  See {NcsCodeCollection} for more
+  # details.
   #
   # Example
   # =======
@@ -313,18 +317,20 @@ class NcsCode < ActiveRecord::Base
   #
   #     # => [#<NcsCode ...>, ...]
   def self.for_attributes(*attrs)
-    where(:list_name => attrs.map { |c| attribute_lookup(c) }.compact)
+    query = where(:list_name => attrs.map { |c| attribute_lookup(c) }.compact)
+
+    NcsCodeCollection.new(query)
   end
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
-    query = for_attributes(attribute_name)
+    codes = for_attributes(attribute_name)
     list_name = attribute_lookup(attribute_name)
 
     unless show_missing_in_error
-      query.where(%q{display_text <> 'Missing in Error'})
+      codes.where(%q{display_text <> 'Missing in Error'})
     end
 
-    list = query.map { |n| [n.display_text, n.local_code] }
+    list = codes.map { |n| [n.display_text, n.local_code] }
     sort_list(list, list_name)
   end
 
