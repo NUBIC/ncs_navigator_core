@@ -35,14 +35,12 @@ end
 set :deploy_to, bcconf["deploy_to"]
 set :deploy_via, :remote_cache
 
-# Roles
 task :set_roles do
   role :app, app_server
   role :web, app_server
   role :db, app_server, :primary => true
 end
 
-# Demo environment
 desc "Deploy to demo"
 task :demo do
   set :app_server, bcconf["demo_app_server"]
@@ -50,7 +48,6 @@ task :demo do
   set_roles
 end
 
-# Staging environment
 desc "Deploy to staging"
 task :staging do
   set :app_server, bcconf["staging_app_server"]
@@ -59,7 +56,6 @@ task :staging do
   set_roles
 end
 
-# Production environment
 desc "Deploy to production"
 task :production do
   set :app_server, bcconf["production_app_server"]
@@ -68,7 +64,6 @@ task :production do
   set_roles
 end
 
-# Deploy start/stop/restart
 namespace :deploy do
   desc "Restarting passenger with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
@@ -103,16 +98,8 @@ namespace :deploy do
   end
 end
 
-# backup the database before migrating
-# before 'deploy:migrate', 'db:backup'
-
-# after deploying, generate static pages, copy over uploads and results, cleanup old deploys, aggressively set permissions
-# after 'deploy:update_code'#, 'deploy:permissions' #, 'deploy:cleanup'
-
-# after deploying symlink , copy images to current image config location.
 after 'deploy:symlink', 'config:images', 'deploy:setup_import_directories'
 
-# Database
 namespace :db do
   desc "Backup Database"
   task :backup,  :roles => :app do
