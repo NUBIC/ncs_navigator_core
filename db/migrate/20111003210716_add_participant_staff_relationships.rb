@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddParticipantStaffRelationships < ActiveRecord::Migration
   def up
     create_table :participant_staff_relationships do |t|

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreatePersonRaces < ActiveRecord::Migration
   def self.up
     create_table :person_races do |t|

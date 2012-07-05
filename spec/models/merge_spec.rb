@@ -1,17 +1,18 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: merges
 #
-#  id              :integer         not null, primary key
-#  fieldwork_id    :integer
+#  completed_at    :datetime
 #  conflict_report :text
+#  crashed_at      :datetime
+#  created_at      :datetime
+#  fieldwork_id    :integer
+#  id              :integer          not null, primary key
 #  log             :text
 #  proposed_data   :text
-#  completed_at    :datetime
-#  crashed_at      :datetime
 #  started_at      :datetime
-#  created_at      :datetime
 #  updated_at      :datetime
 #
 
@@ -248,3 +249,4 @@ describe Merge do
     end
   end
 end
+

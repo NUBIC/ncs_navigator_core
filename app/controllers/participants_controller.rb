@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class ParticipantsController < ApplicationController
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
@@ -259,12 +260,12 @@ class ParticipantsController < ApplicationController
 
   def process_mark_event_out_of_window
     @participant = Participant.find(params[:id])
-    current_event = @participant.pending_events.first
-    resp = @participant.mark_event_out_of_window(psc)
+    event = Event.find(params[:event_id])
+    resp = @participant.mark_event_out_of_window(psc, event)
     if resp && resp.success?
-      flash[:notice] = "#{current_event.to_s} for Participant was marked 'Out of Window'."
+      flash[:notice] = "#{event.to_s} for Participant was marked 'Out of Window'."
     else
-      flash[:warning] = "Could not scheduled next event after marking #{current_event.to_s} 'Out of Window'."
+      flash[:warning] = "Could not scheduled next event after marking #{event.to_s} 'Out of Window'."
     end
     redirect_to participant_path(@participant)
   end

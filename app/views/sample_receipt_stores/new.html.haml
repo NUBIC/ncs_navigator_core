@@ -3,6 +3,11 @@
   = f.object.sample_id
   = f.hidden_field :sample_id  
   %br
+  
+  = f.label "Staff:"
+  = display_staff_info
+  
+  %br
   = render "shared/ncs_code_select", { :f => f, :code => :sample_condition_code, :label_text => "Sample Condition" }
   %br
   = f.label :receipt_comment_other, "Receipt comment other:"
@@ -10,7 +15,8 @@
   %br
 
   = f.label :receipt_datetime, "Receipt Date and Time: "
-  = f.text_field :receipt_datetime, :class => "datetime"
+  = f.text_field :receipt_datetime, :class => "datetime important_field"
+  %span{ :class => "required" } *
   %br
 
   = render "shared/ncs_code_select", { :f => f, :code => :cooler_temp_condition_code, :label_text => "Cooler Temp Condition" }
@@ -27,7 +33,8 @@
   = f.text_field :temp_event_action_other
   %br
   = f.label :placed_in_storage_datetime, "Placed in Storage Date and Time: "
-  = f.text_field :placed_in_storage_datetime, :class => "datetime"
+  = f.text_field :placed_in_storage_datetime, :class => "datetime important_field"
+  %span{ :class => "required" } *
   %br
   = render "shared/ncs_code_select", { :f => f, :code => :storage_compartment_area_code, :label_text => "Storage Compartment Area" }
   %br

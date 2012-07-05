@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateDwellingHouseholdLinks < ActiveRecord::Migration
   def self.up
     create_table :dwelling_household_links do |t|

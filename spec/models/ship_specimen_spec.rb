@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: ship_specimens
 #
-#  id                   :integer         not null, primary key
+#  created_at           :datetime
+#  id                   :integer          not null, primary key
 #  specimen_id          :integer
 #  specimen_shipping_id :integer
+#  updated_at           :datetime
 #  volume_amount        :decimal(6, 2)
 #  volume_unit          :string(36)
-#  created_at           :datetime
-#  updated_at           :datetime
 #
 
 require 'spec_helper'
@@ -24,3 +25,4 @@ describe ShipSpecimen do
   it { should belong_to(:specimen) }
   it { should belong_to(:specimen_shipping) }
 end
+

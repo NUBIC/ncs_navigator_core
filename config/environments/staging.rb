@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'aker/authority/ncs_navigator_authority'
 
 NcsNavigatorCore::Application.configure do
@@ -68,11 +69,4 @@ NcsNavigatorCore::Application.configure do
     central '/etc/nubic/ncs/aker-staging.yml'
   end
 
-  config.middleware.use ExceptionNotifier,
-    :email_prefix => "[NCS Navigator Core] ",
-    :sender_address => %{"Paul Friedman" <p-friedman@northwestern.edu>},
-    :exception_recipients => %w{p-friedman@northwestern.edu r-sutphin@northwestern.edu}
-
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { :address => "ns.northwestern.edu", :port => 25, :domain => "northwestern.edu" }
 end

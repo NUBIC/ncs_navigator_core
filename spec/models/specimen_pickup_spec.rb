@@ -1,19 +1,20 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: specimen_pickups
 #
-#  id                                     :integer         not null, primary key
-#  psu_code                               :integer         not null
-#  specimen_processing_shipping_center_id :integer
-#  event_id                               :integer
-#  staff_id                               :string(50)      not null
-#  specimen_pickup_datetime               :datetime        not null
-#  specimen_pickup_comment_code           :integer         not null
-#  specimen_pickup_comment_other          :string(255)
-#  specimen_transport_temperature         :decimal(6, 2)
-#  transaction_type                       :string(36)
 #  created_at                             :datetime
+#  event_id                               :integer
+#  id                                     :integer          not null, primary key
+#  psu_code                               :integer          not null
+#  specimen_pickup_comment_code           :integer          not null
+#  specimen_pickup_comment_other          :string(255)
+#  specimen_pickup_datetime               :datetime         not null
+#  specimen_processing_shipping_center_id :integer
+#  specimen_transport_temperature         :decimal(6, 2)
+#  staff_id                               :string(50)       not null
+#  transaction_type                       :string(36)
 #  updated_at                             :datetime
 #
 
@@ -29,3 +30,4 @@ describe SpecimenPickup do
   it { should belong_to(:event) }
   it { should belong_to(:specimen_processing_shipping_center) } 
 end
+

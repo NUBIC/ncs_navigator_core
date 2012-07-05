@@ -1,17 +1,18 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: ncs_codes
 #
-#  id           :integer         not null, primary key
-#  list_name    :string(255)
-#  display_text :string(255)
-#  local_code   :integer
 #  created_at   :datetime
+#  display_text :string(255)
+#  id           :integer          not null, primary key
+#  list_name    :string(255)
+#  local_code   :integer
 #  updated_at   :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 class NcsCode < ActiveRecord::Base
 
@@ -297,22 +298,47 @@ class NcsCode < ActiveRecord::Base
     :nir_moved_info_code =>            'INFORMATION_SOURCE_CL8',
     :perm_moved_code =>                'CONFIRM_TYPE_CL10',
 
-  }
+  }.with_indifferent_access
+
+  ##
+  # Given a list of attributes, returns all NCS codes for those attributes.
+  # You can use either symbols or strings for the attributes.  Attributes that
+  # do not correspond to an NCS code list will be ignored.
+  #
+  # The returned object responds to #where, #each (and all other Enumerable
+  # methods), and contains some additional helpers for e.g. accessing a subset
+  # of returned NCS codes by list name.  See {NcsCodeCollection} for more
+  # details.
+  #
+  # Example
+  # =======
+  #
+  #     NcsCode.for_attributes('who_refused_code', 'perm_closure_code')
+  #
+  #     # => [#<NcsCode ...>, ...]
+  def self.for_attributes(*attrs)
+    query = where(:list_name => attrs.map { |c| attribute_lookup(c) }.compact)
+
+    NcsCodeCollection.new(query)
+  end
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
+    codes = for_attributes(attribute_name)
     list_name = attribute_lookup(attribute_name)
-    where_clause = "list_name = ?"
-    where_clause += " AND display_text <> 'Missing in Error'" unless show_missing_in_error
-    list = NcsCode.where(where_clause, list_name).map { |n| [n.display_text, n.local_code] }
 
-    NcsCode.sort_list(list, list_name)
+    unless show_missing_in_error
+      codes.where(%q{display_text <> 'Missing in Error'})
+    end
+
+    list = codes.map { |n| [n.display_text, n.local_code] }
+    sort_list(list, list_name)
   end
 
   def self.sort_list(list, list_name)
     positives = list.select{ |pos| pos[1] >= 0 }
     negatives = list.select{ |neg| neg[1] < 0 }
 
-    sk = NcsCode.sort_key(list_name)
+    sk = sort_key(list_name)
     positives.sort { |a, b| a[sk] <=> b[sk] } + negatives.sort { |a, b| a[sk] <=> b[sk] }
   end
 
@@ -328,15 +354,15 @@ class NcsCode < ActiveRecord::Base
   end
 
   def self.for_attribute_name_and_local_code(attribute_name, local_code)
-    NcsCode.for_list_name_and_local_code(NcsCode.attribute_lookup(attribute_name), local_code)
+    for_list_name_and_local_code(attribute_lookup(attribute_name), local_code)
   end
 
   def self.for_list_name_and_local_code(list_name, local_code)
-    NcsCode.where(:list_name => list_name).where(:local_code => local_code.to_i).first
+    where(:list_name => list_name, :local_code => local_code.to_i).first
   end
 
   def self.for_list_name_and_display_text(list_name, display_text)
-    NcsCode.where(:list_name => list_name).where(:display_text => display_text).first
+    where(:list_name => list_name, :display_text => display_text).first
   end
 
   def self.find_event_by_lbl(lbl)
@@ -351,13 +377,13 @@ class NcsCode < ActiveRecord::Base
       txt = txt.gsub(should_downcase, should_downcase.downcase) if lc_idx
     end
 
-    NcsCode.for_list_name_and_display_text('EVENT_TYPE_CL1', txt)
+    for_list_name_and_display_text('EVENT_TYPE_CL1', txt)
   end
 
   # Special case helper method to get EVENT_TYPE_CL1 for Low Intensity Data Collection
   # Used to determine if participant is eligible for conversion to High Intensity Arm
   def self.low_intensity_data_collection
-    NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
   end
 
   def to_s
@@ -379,3 +405,4 @@ class NcsCode < ActiveRecord::Base
       comparison_object.local_code == self.local_code)
   end
 end
+

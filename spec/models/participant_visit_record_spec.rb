@@ -1,34 +1,35 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: participant_visit_records
 #
-#  id                        :integer         not null, primary key
-#  psu_code                  :integer         not null
-#  rvis_id                   :string(36)      not null
+#  contact_id                :integer
+#  created_at                :datetime
+#  id                        :integer          not null, primary key
 #  participant_id            :integer
-#  rvis_language_code        :integer         not null
+#  psu_code                  :integer          not null
+#  rvis_after_saq_code       :integer          not null
+#  rvis_bio_cord_code        :integer          not null
+#  rvis_during_bio_code      :integer          not null
+#  rvis_during_env_code      :integer          not null
+#  rvis_during_interv_code   :integer          not null
+#  rvis_during_thanks_code   :integer          not null
+#  rvis_id                   :string(36)       not null
+#  rvis_language_code        :integer          not null
 #  rvis_language_other       :string(255)
 #  rvis_person_id            :integer
-#  rvis_who_consented_code   :integer         not null
-#  rvis_translate_code       :integer         not null
-#  contact_id                :integer
+#  rvis_reconsideration_code :integer          not null
+#  rvis_sections_code        :integer          not null
+#  rvis_translate_code       :integer          not null
+#  rvis_who_consented_code   :integer          not null
 #  time_stamp_1              :datetime
 #  time_stamp_2              :datetime
-#  rvis_sections_code        :integer         not null
-#  rvis_during_interv_code   :integer         not null
-#  rvis_during_bio_code      :integer         not null
-#  rvis_bio_cord_code        :integer         not null
-#  rvis_during_env_code      :integer         not null
-#  rvis_during_thanks_code   :integer         not null
-#  rvis_after_saq_code       :integer         not null
-#  rvis_reconsideration_code :integer         not null
 #  transaction_type          :string(36)
-#  created_at                :datetime
 #  updated_at                :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -88,3 +89,4 @@ describe ParticipantVisitRecord do
     end
   end
 end
+

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe FieldworkHelper do
@@ -15,8 +16,8 @@ describe FieldworkHelper do
         fieldwork.latest_merge_status = nil
       end
 
-      it 'outputs "Unknown"' do
-        helper.latest_merge_status(fieldwork).should == 'Unknown'
+      it 'outputs "Waiting for field client"' do
+        helper.latest_merge_status(fieldwork).should == 'Waiting for field client'
       end
     end
   end

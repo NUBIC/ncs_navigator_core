@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateFieldworks < ActiveRecord::Migration
   def change
     create_table :fieldworks, :id => false do |t|

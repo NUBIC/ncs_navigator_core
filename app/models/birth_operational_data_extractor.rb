@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class BirthOperationalDataExtractor
 
   BABY_NAME_PREFIX    = "BIRTH_VISIT_BABY_NAME_2"

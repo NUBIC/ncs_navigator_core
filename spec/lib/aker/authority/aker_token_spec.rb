@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'spec_helper'
 
 require 'aker/authority/aker_token'

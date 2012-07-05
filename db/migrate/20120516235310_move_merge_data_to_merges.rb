@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class MoveMergeDataToMerges < ActiveRecord::Migration
   def up
     Fieldwork.find_in_batches(:include => :merges) do |batch|

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'rack/test'
 
 # For API tests, it's nice to have more direct control over the HTTP request and

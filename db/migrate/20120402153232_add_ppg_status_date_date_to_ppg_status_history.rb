@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddPpgStatusDateDateToPpgStatusHistory < ActiveRecord::Migration
   def change
     add_column :ppg_status_histories, :ppg_status_date_date, :date

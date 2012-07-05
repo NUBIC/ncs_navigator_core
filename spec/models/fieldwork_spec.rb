@@ -1,23 +1,24 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: fieldworks
 #
-#  id                  :integer         not null, primary key
-#  fieldwork_id        :string(36)
-#  created_at          :datetime
-#  updated_at          :datetime
 #  client_id           :string(255)
+#  created_at          :datetime
 #  end_date            :date
-#  start_date          :date
-#  original_data       :binary
+#  fieldwork_id        :string(36)
 #  generation_log      :text
-#  latest_merge_status :string(255)
+#  id                  :integer          not null, primary key
 #  latest_merge_id     :integer
+#  latest_merge_status :string(255)
+#  original_data       :binary
 #  staff_id            :string(255)
+#  start_date          :date
+#  updated_at          :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -265,3 +266,4 @@ describe Fieldwork do
   end
 
 end
+

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 module ApplicationHelper
 
   def javascript(*files)
@@ -90,8 +91,12 @@ module ApplicationHelper
     value = sample_extenstion(value).downcase
     if value.include? "ur"
       "URINE"
-    elsif value.include? "rb"
+    elsif ( (value.include? "rb") || (value.include? "ad") || (value.include? "lv") || (value.include? "px"))
       "WHOLE BLOOD"
+    elsif ( (value.include? "ss") || (value.include? "rd"))
+      "SERUM"
+    elsif ( (value.include? "pp") || (value.include? "pn"))
+      "PLASMA"
     elsif value.include? "db"
       "DUST"
     elsif value.include? "w"

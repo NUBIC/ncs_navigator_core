@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'spec_helper'
 
 require File.expand_path('../merge_value_generation', __FILE__)
@@ -78,7 +79,7 @@ shared_examples_for 'an entity merge' do |entity|
         merge
 
         conflicts.should == {
-          entity => { uuid => { :self => { :original => o, :current => c, :proposed => p } } }
+          entity => { uuid => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
         }
       end
 
@@ -148,7 +149,7 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
       merge
 
       conflicts.should == {
-        entity => { uuid => { property => { :original => nil, :current => x, :proposed => y } } }
+        entity => { uuid => { property => { 'original' => nil, 'current' => x, 'proposed' => y } } }
       }
     end
 
@@ -232,7 +233,7 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
     it 'does not signal a conflict' do
       merge
 
-      conflicts.should be_empty
+      conflicts.should be_blank
     end
   end
 
@@ -247,7 +248,7 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
       merge
 
       conflicts.should == {
-        entity => { uuid => { property => { :original => x, :current => y, :proposed => z } } }
+        entity => { uuid => { property => { 'original' => x, 'current' => y, 'proposed' => z } } }
       }
     end
 

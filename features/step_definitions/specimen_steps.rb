@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Given /^valid specimen receipts$/ do
   Factory(:specimen_receipt, :specimen_id => "FIXTURES-UR01", :staff_id => "me", :storage_container_id => "FIXTURES001")
   Factory(:specimen_receipt, :specimen_id => "FIXTURES-UR11", :staff_id => "me", :storage_container_id => "FIXTURES001")

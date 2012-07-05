@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddHighIntensityStateMachineForParticipant < ActiveRecord::Migration
   def up
     rename_column :participants, :state, :low_intensity_state

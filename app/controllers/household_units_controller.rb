@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class HouseholdUnitsController < ApplicationController
 
   # GET /household_units

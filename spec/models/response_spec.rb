@@ -1,30 +1,31 @@
 # -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: responses
 #
-#  id                :integer         not null, primary key
-#  response_set_id   :integer         not null
-#  question_id       :integer
 #  answer_id         :integer
-#  datetime_value    :datetime
-#  integer_value     :integer
-#  float_value       :float
-#  unit              :string(255)
-#  text_value        :text
-#  string_value      :string(255)
-#  response_other    :string(255)
-#  response_group    :string(255)
-#  created_at        :datetime
-#  updated_at        :datetime
-#  survey_section_id :integer
-#  source_mdes_table :string(100)
-#  source_mdes_id    :string(36)
 #  api_id            :string(255)
-#  lock_version      :integer         default(0)
+#  created_at        :datetime
+#  datetime_value    :datetime
+#  float_value       :float
+#  id                :integer          not null, primary key
+#  integer_value     :integer
+#  lock_version      :integer          default(0)
+#  question_id       :integer
+#  response_group    :string(255)
+#  response_other    :string(255)
+#  response_set_id   :integer          not null
+#  source_mdes_id    :string(36)
+#  source_mdes_table :string(100)
+#  string_value      :string(255)
+#  survey_section_id :integer
+#  text_value        :text
+#  unit              :string(255)
+#  updated_at        :datetime
 #
+
+
 
 require 'spec_helper'
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
@@ -231,3 +232,4 @@ end
     end
   end
 end
+

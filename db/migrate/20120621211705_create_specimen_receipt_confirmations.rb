@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSpecimenReceiptConfirmations < ActiveRecord::Migration
   def up
     create_table :specimen_receipt_confirmations do |t|

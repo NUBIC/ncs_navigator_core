@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # SpecimenPickupsController
 class SpecimenPickupsController < ApplicationController
 

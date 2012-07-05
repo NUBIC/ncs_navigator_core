@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'forwardable'
 
 module NcsNavigator::Core::Warehouse

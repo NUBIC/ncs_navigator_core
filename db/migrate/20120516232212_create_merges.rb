@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateMerges < ActiveRecord::Migration
   def change
     create_table :merges do |t|

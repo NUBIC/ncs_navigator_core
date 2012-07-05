@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 class SpecimensController < ApplicationController
   before_filter :process_params, :except => [:index]
   after_filter :clear_flash
-
+  
   def clear_flash
     flash.discard
   end
@@ -50,7 +51,9 @@ class SpecimensController < ApplicationController
             :specimen_processing_shipping_center_id => value[0].specimen_processing_shipping_center_id, 
             :shipment_temperature_code              => @shipping_temperature_selected, 
             :shipment_receipt_confirmed             => @shipment_receipt_confirmed,
-            :shipment_issues                        => @shipment_issues)      
+            :shipment_issues                        => @shipment_issues,
+            :contact_name                           => @contact_name,
+            :contact_phone                          => @contact_phone)
       value.each do |sr|
         ship_specimen = sh.ship_specimens.build(      
             :specimen_shipping  => sh,
@@ -95,7 +98,6 @@ class SpecimensController < ApplicationController
   
   def send_email
     populate_specimen_receipts
-            
     generate_email = Emailer.manifest_email(params)
     generate_email.deliver
     respond_to do |format|
@@ -114,17 +116,16 @@ class SpecimensController < ApplicationController
   def process_params
     arrayOfStorageContainerIds = params[:storage_container_id]
     
-    @shipper_id                             = NcsNavigatorCore.shipper_id
     @psu_id                                 = @psu_code
     @specimen_processing_shipping_center_id = SpecimenProcessingShippingCenter.last.specimen_processing_shipping_center_id
-    @staff_id                               = params[:contact_name]
+    @shipper_id                             = params[:shipper_id]
+    @staff_id                               = current_staff_id
     @shipper_dest                           = params[:shipper_dest]
     @shipment_date_and_time                 = params[:shipment_date_and_time]
     @shipping_temperature                   = NcsCode.ncs_code_lookup(:spec_shipment_temperature_code)
     @shipment_tracking_number               = params[:shipment_tracking_number]
     @contact_name                           = params[:contact_name]
     @contact_phone                          = params[:contact_phone]
-    #TODO - do we hardcore the carrier??? 
     @carrier                                = params[:carrier]
     
     @shipment_temperature_id       = params[:temp]

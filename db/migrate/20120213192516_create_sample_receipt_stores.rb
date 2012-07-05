@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSampleReceiptStores < ActiveRecord::Migration
   def up
     create_table :sample_receipt_stores do |t|

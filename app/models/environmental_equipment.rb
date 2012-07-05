@@ -1,21 +1,22 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: environmental_equipments
 #
-#  id                                :integer         not null, primary key
-#  psu_code                          :integer         not null
-#  sample_receipt_shipping_center_id :integer
-#  equipment_id                      :string(36)      not null
-#  equipment_type_code               :integer         not null
-#  equipment_type_other              :string(255)
-#  serial_number                     :string(50)      not null
-#  government_asset_tag_number       :string(36)
-#  retired_date                      :string(10)
-#  retired_reason_code               :integer         not null
-#  retired_reason_other              :string(255)
-#  transaction_type                  :string(36)
 #  created_at                        :datetime
+#  equipment_id                      :string(36)       not null
+#  equipment_type_code               :integer          not null
+#  equipment_type_other              :string(255)
+#  government_asset_tag_number       :string(36)
+#  id                                :integer          not null, primary key
+#  psu_code                          :integer          not null
+#  retired_date                      :string(10)
+#  retired_reason_code               :integer          not null
+#  retired_reason_other              :string(255)
+#  sample_receipt_shipping_center_id :integer
+#  serial_number                     :string(50)       not null
+#  transaction_type                  :string(36)
 #  updated_at                        :datetime
 #
 
@@ -34,3 +35,4 @@ class EnvironmentalEquipment < ActiveRecord::Base
   validates_presence_of :serial_number
   validates_presence_of :retired_reason
 end
+

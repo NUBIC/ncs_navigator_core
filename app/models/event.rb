@@ -1,34 +1,36 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: events
 #
-#  id                                 :integer         not null, primary key
-#  psu_code                           :integer         not null
-#  event_id                           :string(36)      not null
-#  participant_id                     :integer
-#  event_type_code                    :integer         not null
-#  event_type_other                   :string(255)
-#  event_repeat_key                   :integer
+#  created_at                         :datetime
+#  event_breakoff_code                :integer          not null
+#  event_comment                      :text
 #  event_disposition                  :integer
-#  event_disposition_category_code    :integer         not null
-#  event_start_date                   :date
-#  event_start_time                   :string(255)
+#  event_disposition_category_code    :integer          not null
 #  event_end_date                     :date
 #  event_end_time                     :string(255)
-#  event_breakoff_code                :integer         not null
-#  event_incentive_type_code          :integer         not null
+#  event_id                           :string(36)       not null
 #  event_incentive_cash               :decimal(12, 2)
 #  event_incentive_noncash            :string(255)
-#  event_comment                      :text
-#  transaction_type                   :string(255)
-#  created_at                         :datetime
-#  updated_at                         :datetime
+#  event_incentive_type_code          :integer          not null
+#  event_repeat_key                   :integer
+#  event_start_date                   :date
+#  event_start_time                   :string(255)
+#  event_type_code                    :integer          not null
+#  event_type_other                   :string(255)
+#  id                                 :integer          not null, primary key
+#  lock_version                       :integer          default(0)
+#  participant_id                     :integer
+#  psu_code                           :integer          not null
 #  scheduled_study_segment_identifier :string(255)
-#  lock_version                       :integer         default(0)
+#  transaction_type                   :string(255)
+#  updated_at                         :datetime
 #
 
-# -*- coding: utf-8 -*-
+
+
 
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
@@ -48,8 +50,8 @@ class Event < ActiveRecord::Base
   ncs_coded_attribute :event_breakoff,             'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :event_incentive_type,       'INCENTIVE_TYPE_CL1'
 
-  validates_format_of :event_start_time, :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
-  validates_format_of :event_end_time,   :with => /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, :allow_blank => true
+  validates_format_of :event_start_time, :with => mdes_time_pattern, :allow_blank => true
+  validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
   before_validation :strip_time_whitespace
 
@@ -290,6 +292,11 @@ class Event < ActiveRecord::Base
   end
 
   def set_event_disposition_category(contact)
+    if self.participant.try(:low_intensity?)
+      # Telephone Disposition Category Local Code = 5
+      self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 5)
+    end
+
     case event_type.to_s
     when /Pregnancy Screen/
       # Pregnancy Screener Disposition Category Local Code = 2
@@ -300,7 +307,6 @@ class Event < ActiveRecord::Base
     end
 
     if self.event_disposition_category.to_i <= 0
-
       case contact.contact_type.to_i
       when 1 # in person contact
         # General Study Visit Category Local Code = 3
@@ -308,10 +314,10 @@ class Event < ActiveRecord::Base
       when 2 # mail contact
         # Mail Disposition Category Local Code = 4
         self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 4)
-      when 3 # telephone contact
+      when 3, 5 # text or telephone contact
         # Telephone Disposition Category Local Code = 5
         self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 5)
-      when 5, 6 # text or website
+      when 6 # website
         # Website Disposition Category Local Code = 6
         self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 6)
       end
@@ -396,3 +402,4 @@ class Event < ActiveRecord::Base
   end
 
 end
+

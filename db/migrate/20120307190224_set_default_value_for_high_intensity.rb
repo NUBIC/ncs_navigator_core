@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class SetDefaultValueForHighIntensity < ActiveRecord::Migration
   def up
     change_column :participants, :high_intensity, :boolean, :default => false

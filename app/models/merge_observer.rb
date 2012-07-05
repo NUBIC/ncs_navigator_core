@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ##
 # Updates latest merge statuses on fieldwork sets.  The cached status strings
 # are used to accelerate reporting.

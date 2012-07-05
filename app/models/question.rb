@@ -1,32 +1,33 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: questions
 #
-#  id                     :integer         not null, primary key
-#  survey_section_id      :integer
-#  question_group_id      :integer
-#  text                   :text
-#  short_text             :text
-#  help_text              :text
-#  pick                   :string(255)
-#  reference_identifier   :string(255)
-#  data_export_identifier :string(255)
-#  common_namespace       :string(255)
+#  api_id                 :string(255)
 #  common_identifier      :string(255)
-#  display_order          :integer
-#  display_type           :string(255)
-#  is_mandatory           :boolean
-#  display_width          :integer
+#  common_namespace       :string(255)
+#  correct_answer_id      :integer
+#  created_at             :datetime
 #  custom_class           :string(255)
 #  custom_renderer        :string(255)
-#  created_at             :datetime
+#  data_export_identifier :string(255)
+#  display_order          :integer
+#  display_type           :string(255)
+#  display_width          :integer
+#  help_text              :text
+#  id                     :integer          not null, primary key
+#  is_mandatory           :boolean
+#  pick                   :string(255)
+#  question_group_id      :integer
+#  reference_identifier   :string(255)
+#  short_text             :text
+#  survey_section_id      :integer
+#  text                   :text
 #  updated_at             :datetime
-#  correct_answer_id      :integer
-#  api_id                 :string(255)
 #
 
-# -*- coding: utf-8 -*-
+
 
 class Question < ActiveRecord::Base
   include Surveyor::Models::QuestionMethods
@@ -34,3 +35,4 @@ class Question < ActiveRecord::Base
   default_scope :order => "display_order ASC, id ASC"
 
 end
+

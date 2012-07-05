@@ -1,23 +1,24 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: fieldworks
 #
-#  id                  :integer         not null, primary key
-#  fieldwork_id        :string(36)
-#  created_at          :datetime
-#  updated_at          :datetime
 #  client_id           :string(255)
+#  created_at          :datetime
 #  end_date            :date
-#  start_date          :date
-#  original_data       :binary
+#  fieldwork_id        :string(36)
 #  generation_log      :text
-#  latest_merge_status :string(255)
+#  id                  :integer          not null, primary key
 #  latest_merge_id     :integer
+#  latest_merge_status :string(255)
+#  original_data       :binary
 #  staff_id            :string(255)
+#  start_date          :date
+#  updated_at          :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'ncs_navigator/core/psc'
 require 'patient_study_calendar'
@@ -124,8 +125,12 @@ class Fieldwork < ActiveRecord::Base
     self.fieldwork_id ||= UUIDTools::UUID.random_create.to_s
   end
 
+  def latest_merge
+    merges.order(:created_at).last
+  end
+
   def latest_proposed_data
-    merges.order(:created_at).last.try(:proposed_data)
+    latest_merge.try(:proposed_data)
   end
 
   def as_json(options = nil)
@@ -144,3 +149,4 @@ class Fieldwork < ActiveRecord::Base
     }.to_json
   end
 end
+

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Given /^valid specimen pickup configuration params$/ do
   Factory(:specimen_pickup)
 end

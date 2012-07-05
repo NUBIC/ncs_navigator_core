@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'ncs_navigator/core'
 
 class NcsNavigator::Core::Psc::ScheduledActivityReport

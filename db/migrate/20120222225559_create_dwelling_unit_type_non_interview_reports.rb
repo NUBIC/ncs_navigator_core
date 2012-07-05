@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateDwellingUnitTypeNonInterviewReports < ActiveRecord::Migration
   def change
     create_table :dwelling_unit_type_non_interview_reports do |t|

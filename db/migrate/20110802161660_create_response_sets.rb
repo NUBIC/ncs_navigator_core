@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateResponseSets < ActiveRecord::Migration
   def self.up
     create_table :response_sets do |t|

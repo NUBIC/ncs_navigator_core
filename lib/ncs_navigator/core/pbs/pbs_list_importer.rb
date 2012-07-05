@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class PbsListImporter
 
   def self.import_data(pbs_list_file)

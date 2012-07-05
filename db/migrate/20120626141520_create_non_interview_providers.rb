@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateNonInterviewProviders < ActiveRecord::Migration
   def change
     create_table :non_interview_providers do |t|

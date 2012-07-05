@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 require 'spec_helper'
 
 require 'ncs_navigator/core/warehouse/response_set_to_warehouse'

@@ -1,13 +1,14 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: specimens
 #
-#  id                 :integer         not null, primary key
-#  specimen_id        :string(36)      not null
-#  specimen_pickup_id :integer
-#  instrument_id      :integer
 #  created_at         :datetime
+#  id                 :integer          not null, primary key
+#  instrument_id      :integer
+#  specimen_id        :string(36)       not null
+#  specimen_pickup_id :integer
 #  updated_at         :datetime
 #
 
@@ -18,3 +19,4 @@ class Specimen < ActiveRecord::Base
   has_one :ship_specimen
   validates_presence_of :instrument_id
 end
+

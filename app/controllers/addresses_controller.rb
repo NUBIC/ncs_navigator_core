@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddressesController < ApplicationController
 
   def index

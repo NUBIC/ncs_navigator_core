@@ -1,28 +1,29 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: dwelling_units
 #
-#  id                 :integer         not null, primary key
-#  psu_code           :integer         not null
-#  duplicate_du_code  :integer         not null
-#  missed_du_code     :integer         not null
-#  du_type_code       :integer         not null
-#  du_type_other      :string(255)
-#  du_ineligible_code :integer         not null
-#  du_access_code     :integer         not null
-#  duid_comment       :text
-#  transaction_type   :string(36)
-#  du_id              :string(36)      not null
-#  listing_unit_id    :integer
+#  being_processed    :boolean          default(FALSE)
 #  created_at         :datetime
-#  updated_at         :datetime
-#  being_processed    :boolean
+#  du_access_code     :integer          not null
+#  du_id              :string(36)       not null
+#  du_ineligible_code :integer          not null
+#  du_type_code       :integer          not null
+#  du_type_other      :string(255)
+#  duid_comment       :text
+#  duplicate_du_code  :integer          not null
+#  id                 :integer          not null, primary key
+#  listing_unit_id    :integer
+#  missed_du_code     :integer          not null
+#  psu_code           :integer          not null
 #  ssu_id             :string(255)
+#  transaction_type   :string(36)
 #  tsu_id             :string(255)
+#  updated_at         :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # DU is a specific street address within a sampling unit.
 # There is a one-to-one relationship between Listing and DU.
@@ -86,3 +87,4 @@ class DwellingUnit < ActiveRecord::Base
     end
 
 end
+

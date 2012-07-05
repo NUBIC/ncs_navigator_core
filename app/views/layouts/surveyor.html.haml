@@ -4,7 +4,7 @@
   %head
     %meta{ "http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
     %title
-      = show_title? ? "NCS Navigator Core :: " + yield(:title) : "NCS Navigator Core"
+      = show_title? ? "NCS Navigator Cases :: " + yield(:title) : "NCS Navigator Cases"
     %link{ :rel=>"icon", :type=>"image/gif", :href=>"/assets/favicon.gif"}
     = stylesheet_link_tag('application')
     = javascript_include_tag("application")
@@ -17,7 +17,8 @@
         = render 'partials/user_info', :current_user => current_user
         #app_name
           = link_to "NCS Navigator", root_path
-          = " :: Administer Instrument"
+          #page_title
+          = "Administer Instrument"
         #title
           - if show_title?
             = yield(:title)

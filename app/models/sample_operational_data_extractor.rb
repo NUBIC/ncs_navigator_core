@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class SampleOperationalDataExtractor
 
   VACUUM_BAG_DUST_SAMPLE_MAP = {

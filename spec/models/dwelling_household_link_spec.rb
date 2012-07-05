@@ -1,22 +1,23 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: dwelling_household_links
 #
-#  id                :integer         not null, primary key
-#  psu_code          :integer         not null
-#  hh_du_id          :string(36)      not null
-#  dwelling_unit_id  :integer         not null
-#  household_unit_id :integer         not null
-#  is_active_code    :integer         not null
-#  du_rank_code      :integer         not null
-#  du_rank_other     :string(255)
-#  transaction_type  :string(36)
 #  created_at        :datetime
+#  du_rank_code      :integer          not null
+#  du_rank_other     :string(255)
+#  dwelling_unit_id  :integer          not null
+#  hh_du_id          :string(36)       not null
+#  household_unit_id :integer          not null
+#  id                :integer          not null, primary key
+#  is_active_code    :integer          not null
+#  psu_code          :integer          not null
+#  transaction_type  :string(36)
 #  updated_at        :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -54,3 +55,4 @@ describe DwellingHouseholdLink do
   end
 
 end
+

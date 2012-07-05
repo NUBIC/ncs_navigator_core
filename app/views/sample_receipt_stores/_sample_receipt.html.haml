@@ -1,8 +1,11 @@
 = form_for @sample_receipt_store do |f|
   = "Sample ID:"
   = f.object.sample_id
-  = f.hidden_field :sample_id  
+  = f.hidden_field :sample_id 
   %div{:class => "spec_sample_receipt"}
+    = "Staff:"
+    = display_staff_info
+    %br
     = "Sample Condition: " 
     = NcsCode.for_attribute_name_and_local_code(:sample_condition_code, @sample_receipt_store.sample_condition_code)
     %br
@@ -30,6 +33,17 @@
     - if not f.object.temp_event_action_other.blank?
       = "Temp Event Action Other: "
       = f.object.temp_event_action_other
+      %br
+    - if not f.object.placed_in_storage_datetime.blank?
+      = "Placed in Storage Date and Time: "
+      = f.object.placed_in_storage_datetime
+      %br
+    = "Storage Compartment Area: " 
+    = NcsCode.for_attribute_name_and_local_code(:storage_compartment_area_code, @sample_receipt_store.storage_compartment_area_code)
+    %br
+    - if not f.object.storage_comment_other.blank?
+      = "Storage Comment Other: "
+      = f.object.storage_comment_other
       %br
     -#= link_to 'Edit123', receive_edit_sample_receipt_store_path(@sample_receipt_store), :class => "edit_link icon_link sample_receipt_edit"
   -#= link_to 'Edit', edit_sample_receipt_store_path(@sample_receipt_store), :class => "edit_link icon_link sample_receipt_edit"

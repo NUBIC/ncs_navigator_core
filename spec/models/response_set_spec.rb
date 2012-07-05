@@ -1,21 +1,23 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: response_sets
 #
-#  id            :integer         not null, primary key
-#  user_id       :integer
-#  survey_id     :integer
-#  access_code   :string(255)
-#  started_at    :datetime
-#  completed_at  :datetime
-#  created_at    :datetime
-#  updated_at    :datetime
-#  instrument_id :integer
-#  api_id        :string(255)
+#  access_code                               :string(255)
+#  api_id                                    :string(255)
+#  completed_at                              :datetime
+#  created_at                                :datetime
+#  id                                        :integer          not null, primary key
+#  instrument_id                             :integer
+#  processed_for_operational_data_extraction :boolean
+#  started_at                                :datetime
+#  survey_id                                 :integer
+#  updated_at                                :datetime
+#  user_id                                   :integer
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -221,3 +223,4 @@ describe ResponseSet do
   end
 
 end
+

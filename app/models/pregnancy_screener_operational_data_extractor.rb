@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class PregnancyScreenerOperationalDataExtractor
 
   # TODO: extract contact information (language/interpreter used)

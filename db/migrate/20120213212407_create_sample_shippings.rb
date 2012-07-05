@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateSampleShippings < ActiveRecord::Migration
   def up
     create_table :sample_shippings do |t|

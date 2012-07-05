@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class NonInterviewReportsController < ApplicationController
 
   before_filter :set_contact_link_associations

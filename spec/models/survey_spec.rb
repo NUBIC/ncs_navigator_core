@@ -1,28 +1,29 @@
 # -*- coding: utf-8 -*-
-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: surveys
 #
-#  id                     :integer         not null, primary key
-#  title                  :string(255)
-#  description            :text
 #  access_code            :string(255)
-#  reference_identifier   :string(255)
-#  data_export_identifier :string(255)
-#  common_namespace       :string(255)
-#  common_identifier      :string(255)
 #  active_at              :datetime
-#  inactive_at            :datetime
+#  api_id                 :string(255)
+#  common_identifier      :string(255)
+#  common_namespace       :string(255)
+#  created_at             :datetime
 #  css_url                :string(255)
 #  custom_class           :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  data_export_identifier :string(255)
+#  description            :text
 #  display_order          :integer
-#  api_id                 :string(255)
-#  survey_version         :integer         default(0)
+#  id                     :integer          not null, primary key
+#  inactive_at            :datetime
+#  reference_identifier   :string(255)
+#  survey_version         :integer          default(0)
+#  title                  :string(255)
+#  updated_at             :datetime
 #
+
+
 
 require 'spec_helper'
 
@@ -83,3 +84,4 @@ describe Survey do
   end
 
 end
+

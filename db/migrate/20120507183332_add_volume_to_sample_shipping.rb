@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class AddVolumeToSampleShipping < ActiveRecord::Migration
   def up
     add_column :sample_shippings, :volume_amount, :decimal, :precision => 6, :scale => 2

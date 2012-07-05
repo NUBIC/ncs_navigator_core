@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddIndexToSurveys < ActiveRecord::Migration
   def self.up
     add_index(:surveys, :access_code, :name => 'surveys_ac_idx')

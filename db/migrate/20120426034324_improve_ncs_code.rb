@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class ImproveNcsCode < ActiveRecord::Migration
   def up
     remove_column :ncs_codes, :global_code

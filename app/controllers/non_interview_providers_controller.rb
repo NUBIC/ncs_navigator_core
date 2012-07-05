@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class NonInterviewProvidersController < ApplicationController
 
   # GET /providers/:provider_id/non_interview_providers/new

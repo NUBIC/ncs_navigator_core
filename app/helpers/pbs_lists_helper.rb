@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module PbsListsHelper
 
   def provider_recruitment_link(pbs)

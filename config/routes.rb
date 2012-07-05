@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 NcsNavigatorCore::Application.routes.draw do
   resources :dwelling_units do
     member do
@@ -160,7 +161,7 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
-  
+
   resources :specimen_receipt_confirmations
 
   resources :sample_shipping_confirmations

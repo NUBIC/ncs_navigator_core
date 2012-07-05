@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AssociatePersonAndSurveyWithInstrument < ActiveRecord::Migration
   def up
     add_column :instruments, :person_id, :integer

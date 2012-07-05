@@ -1,20 +1,21 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: person_races
 #
-#  id               :integer         not null, primary key
-#  psu_code         :integer         not null
-#  person_race_id   :string(36)      not null
-#  person_id        :integer         not null
-#  race_code        :integer         not null
+#  created_at       :datetime
+#  id               :integer          not null, primary key
+#  person_id        :integer          not null
+#  person_race_id   :string(36)       not null
+#  psu_code         :integer          not null
+#  race_code        :integer          not null
 #  race_other       :string(255)
 #  transaction_type :string(36)
-#  created_at       :datetime
 #  updated_at       :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # A Person may be of mixed race. This table records each race for a Person in a separate row.
 class PersonRace < ActiveRecord::Base
@@ -32,3 +33,4 @@ class PersonRace < ActiveRecord::Base
   # can be excluded in the importer context.
   validates_presence_of :person_id
 end
+

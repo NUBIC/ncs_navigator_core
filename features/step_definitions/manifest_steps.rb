@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Then /^I enter manifest parameters$/ do
   steps %Q{
     When I fill in "shipment_tracking_number" with "1234TRACK456NO"

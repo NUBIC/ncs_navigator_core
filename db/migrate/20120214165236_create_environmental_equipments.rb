@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateEnvironmentalEquipments < ActiveRecord::Migration
   def up
     create_table :environmental_equipments do |t|

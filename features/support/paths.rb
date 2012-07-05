@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 module NavigationHelpers
   # Maps a name to a path. Used by the
   #
@@ -96,6 +97,9 @@ module NavigationHelpers
 
     when /^the field client activity page$/
       fieldwork_index_path
+
+    when /^the sync attempt page for "([^"]*)"$/
+      fieldwork_path($1)
 
     # the following are examples using path_to_pickle
 

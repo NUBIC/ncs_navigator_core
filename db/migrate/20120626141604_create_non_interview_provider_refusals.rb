@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateNonInterviewProviderRefusals < ActiveRecord::Migration
   def change
     create_table :non_interview_provider_refusals do |t|

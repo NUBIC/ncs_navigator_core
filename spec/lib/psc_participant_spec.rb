@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -94,7 +95,7 @@ describe PscParticipant do
 
   describe '#register!' do
     let(:assignments_path) {
-      psc_url('studies', 'NCS%20Hi-Lo', 'sites', 'GCSC', 'subject-assignments')
+      psc_url('studies', 'NCS%20Hi-Lo', 'sites', '20000029', 'subject-assignments')
     }
 
     describe 'when already registered' do

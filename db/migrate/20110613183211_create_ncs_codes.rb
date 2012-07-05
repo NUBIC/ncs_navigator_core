@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateNcsCodes < ActiveRecord::Migration
   def self.up
     create_table :ncs_codes do |t|

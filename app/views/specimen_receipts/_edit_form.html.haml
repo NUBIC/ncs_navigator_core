@@ -2,6 +2,10 @@
   = f.label :specimen_id, "Specimen ID:"
   = f.object.specimen_id
   = f.hidden_field :specimen_id
+
+  = f.label "Staff:"
+  = display_staff_info
+  
   %div{:id => "edit_specimen_receipt_form"}    
     %br
     = f.label :storage_container_id, "Storage Container ID:"

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateListingUnits < ActiveRecord::Migration
   def self.up
     create_table :listing_units do |t|

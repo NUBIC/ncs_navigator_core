@@ -1,27 +1,28 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: participant_visit_consents
 #
-#  id                          :integer         not null, primary key
-#  psu_code                    :integer         not null
-#  pid_visit_consent_id        :string(36)      not null
+#  contact_id                  :integer
+#  created_at                  :datetime
+#  id                          :integer          not null, primary key
 #  participant_id              :integer
-#  vis_consent_type_code       :integer         not null
-#  vis_consent_response_code   :integer         not null
-#  vis_language_code           :integer         not null
+#  pid_visit_consent_id        :string(36)       not null
+#  psu_code                    :integer          not null
+#  transaction_type            :string(36)
+#  updated_at                  :datetime
+#  vis_comments                :text
+#  vis_consent_response_code   :integer          not null
+#  vis_consent_type_code       :integer          not null
+#  vis_language_code           :integer          not null
 #  vis_language_other          :string(255)
 #  vis_person_who_consented_id :integer
-#  vis_who_consented_code      :integer         not null
-#  vis_translate_code          :integer         not null
-#  vis_comments                :text
-#  contact_id                  :integer
-#  transaction_type            :string(36)
-#  created_at                  :datetime
-#  updated_at                  :datetime
+#  vis_translate_code          :integer          not null
+#  vis_who_consented_code      :integer          not null
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -199,3 +200,4 @@ describe ParticipantVisitConsent do
   end
 
 end
+

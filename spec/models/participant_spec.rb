@@ -1,36 +1,37 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: participants
 #
-#  id                        :integer         not null, primary key
-#  psu_code                  :integer         not null
-#  p_id                      :string(36)      not null
-#  p_type_code               :integer         not null
-#  p_type_other              :string(255)
-#  status_info_source_code   :integer         not null
-#  status_info_source_other  :string(255)
-#  status_info_mode_code     :integer         not null
-#  status_info_mode_other    :string(255)
-#  status_info_date          :date
-#  enroll_status_code        :integer         not null
-#  enroll_date               :date
-#  pid_entry_code            :integer         not null
-#  pid_entry_other           :string(255)
-#  pid_age_eligibility_code  :integer         not null
-#  pid_comment               :text
-#  transaction_type          :string(36)
+#  being_followed            :boolean          default(FALSE)
+#  being_processed           :boolean          default(FALSE)
 #  created_at                :datetime
-#  updated_at                :datetime
-#  being_processed           :boolean
-#  high_intensity            :boolean
-#  low_intensity_state       :string(255)
-#  high_intensity_state      :string(255)
+#  enroll_date               :date
+#  enroll_status_code        :integer          not null
 #  enrollment_status_comment :text
-#  being_followed            :boolean
+#  high_intensity            :boolean          default(FALSE)
+#  high_intensity_state      :string(255)
+#  id                        :integer          not null, primary key
+#  low_intensity_state       :string(255)
+#  p_id                      :string(36)       not null
+#  p_type_code               :integer          not null
+#  p_type_other              :string(255)
+#  pid_age_eligibility_code  :integer          not null
+#  pid_comment               :text
+#  pid_entry_code            :integer          not null
+#  pid_entry_other           :string(255)
+#  psu_code                  :integer          not null
+#  status_info_date          :date
+#  status_info_mode_code     :integer          not null
+#  status_info_mode_other    :string(255)
+#  status_info_source_code   :integer          not null
+#  status_info_source_other  :string(255)
+#  transaction_type          :string(36)
+#  updated_at                :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -568,7 +569,7 @@ describe Participant do
           birth_event_type = pending_events.first.event_type
           birth_event_type.to_s.should == "Birth"
 
-          participant.mark_event_out_of_window(psc)
+          participant.mark_event_out_of_window(psc, pending_events.first)
           pending_events = participant.pending_events
 
           pending_events.size.should == 6
@@ -1144,3 +1145,4 @@ describe Participant do
 
   end
 end
+

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class DwellingUnitsController < ApplicationController
 
   # GET /dwelling_units

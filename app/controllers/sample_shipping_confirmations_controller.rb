@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SampleShippingConfirmationsController < ApplicationController
   def index
     @sample_shippings_not_received = hash_from_array(array_of_shipped_and_not_received_samples)

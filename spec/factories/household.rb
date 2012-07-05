@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 Factory.define :listing_unit do |lu|
   lu.psu_code         2000030
   lu.list_line        1

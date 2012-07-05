@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe SpecimenStoragesController do
@@ -78,7 +79,7 @@ describe SpecimenStoragesController do
       describe "with json request" do
         it "generates json with error list" do
           post :create, :specimen_storage => {}, :format => 'json'
-          json = { "staff_id"=>["can't be blank"], "placed_in_storage_datetime"=>["can't be blank"], "storage_container_id"=>["can't be blank"]}
+          json = {"placed_in_storage_datetime"=>["can't be blank"], "storage_container_id"=>["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
       end      

@@ -1,24 +1,25 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: ppg_details
 #
-#  id                  :integer         not null, primary key
-#  psu_code            :integer         not null
-#  ppg_details_id      :string(36)      not null
-#  participant_id      :integer
-#  ppg_pid_status_code :integer         not null
-#  ppg_first_code      :integer         not null
-#  orig_due_date       :string(10)
+#  created_at          :datetime
 #  due_date_2          :string(10)
 #  due_date_3          :string(10)
-#  transaction_type    :string(36)
-#  created_at          :datetime
-#  updated_at          :datetime
+#  id                  :integer          not null, primary key
+#  orig_due_date       :string(10)
+#  participant_id      :integer
+#  ppg_details_id      :string(36)       not null
+#  ppg_first_code      :integer          not null
+#  ppg_pid_status_code :integer          not null
+#  psu_code            :integer          not null
 #  response_set_id     :integer
+#  transaction_type    :string(36)
+#  updated_at          :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -185,3 +186,4 @@ describe PpgDetail do
   end
 
 end
+

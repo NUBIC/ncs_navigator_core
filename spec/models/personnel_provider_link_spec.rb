@@ -1,13 +1,14 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: personnel_provider_links
 #
-#  id              :integer         not null, primary key
-#  provider_id     :integer
+#  created_at      :datetime
+#  id              :integer          not null, primary key
 #  person_id       :integer
 #  primary_contact :boolean
-#  created_at      :datetime
+#  provider_id     :integer
 #  updated_at      :datetime
 #
 
@@ -44,3 +45,4 @@ describe PersonnelProviderLink do
   end
 
 end
+

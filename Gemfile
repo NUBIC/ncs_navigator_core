@@ -70,6 +70,7 @@ gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
+  gem 'annotate', '~> 2.5.0.pre1'
   gem 'rspec-rails', '2.6.1'
 
   gem 'guard'

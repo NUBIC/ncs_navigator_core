@@ -53,7 +53,12 @@
               - txt = "#{provider.contacts.first.contact_date} #{provider.contacts.first.contact_start_time}"
               = link_to txt, contact_log_provider_path(provider), :class => "list_link icon_link"
           %td
-            = provider_recruitment_link(pbs) unless pbs.recruitment_ended?
+            - if pbs.recruitment_ended?
+              - if provider.recruited?
+                %span{ :class => "star_link icon_link"}
+                  Recruited
+            - else
+              = provider_recruitment_link(pbs)
   .links
     = link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"
     %br

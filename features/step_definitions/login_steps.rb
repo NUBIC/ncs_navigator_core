@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 Given /^I log out/ do
   steps %Q{
     Given I follow "logout"

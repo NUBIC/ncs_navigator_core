@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'rubygems'
 require 'spork'
 require 'database_cleaner'
@@ -180,6 +181,18 @@ Spork.prefork do
 
     let(:psc) { PatientStudyCalendar.new(@user) }
 
+  end
+
+  #NcsNavigator::Core::RecordOfContactImporter
+
+  def get_first_data_row_from_csv(csv)
+    return_value = nil
+    f = File.open("#{Rails.root}/spec/fixtures/data/#{csv}.csv")
+    Rails.application.csv_impl.parse(f, :headers => true, :header_converters => :symbol) do |row|
+      next if row.header_row?
+      return_value = row
+    end
+    return_value
   end
 
 end

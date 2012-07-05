@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddBeingFollowedFlagToParticipants < ActiveRecord::Migration
   def self.up
     add_column :participants, :being_followed, :boolean, :default => false

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+
 require 'ncs_navigator/authorization'
+require 'ncs_navigator/configuration'
+
 NcsNavigatorCore::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -37,6 +40,7 @@ NcsNavigatorCore::Application.configure do
     authorities :cas, NcsNavigator::Authorization::Core::Authority.new
     central '/etc/nubic/ncs/aker-local.yml'
   end
+
 end
 
 require 'openssl'

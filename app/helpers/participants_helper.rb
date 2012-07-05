@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 module ParticipantsHelper
   include ActionView::Helpers::UrlHelper
 

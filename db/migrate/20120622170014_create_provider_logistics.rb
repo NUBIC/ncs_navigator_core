@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class CreateProviderLogistics < ActiveRecord::Migration
   def change
     create_table :provider_logistics do |t|

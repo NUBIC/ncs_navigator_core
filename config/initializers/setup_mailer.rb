@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'ncs_navigator/configuration'
 require "#{Rails.root}/lib/development_mail_interceptor"
 

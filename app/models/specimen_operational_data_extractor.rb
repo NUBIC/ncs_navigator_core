@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class SpecimenOperationalDataExtractor
   ADULT_URINE_SPECIMEN_MAP = {
     "SPEC_URINE.SPECIMEN_ID" => "specimen_id",

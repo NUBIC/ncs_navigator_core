@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class AddContactLinkIdToResponseSet < ActiveRecord::Migration
   def self.up
     add_column :response_sets, :contact_link_id, :integer

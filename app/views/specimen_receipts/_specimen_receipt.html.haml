@@ -4,6 +4,9 @@
   = f.object.specimen_id
   = f.hidden_field :specimen_id
   %div{:class => "spec_sample_receipt"}
+    = "Staff:"
+    = display_staff_info
+    %br
     - if not f.object.storage_container_id.blank?
       = "Storage Container ID: "
       = f.object.storage_container_id

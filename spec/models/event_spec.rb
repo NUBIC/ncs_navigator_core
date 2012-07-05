@@ -1,34 +1,35 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: events
 #
-#  id                                 :integer         not null, primary key
-#  psu_code                           :integer         not null
-#  event_id                           :string(36)      not null
-#  participant_id                     :integer
-#  event_type_code                    :integer         not null
-#  event_type_other                   :string(255)
-#  event_repeat_key                   :integer
+#  created_at                         :datetime
+#  event_breakoff_code                :integer          not null
+#  event_comment                      :text
 #  event_disposition                  :integer
-#  event_disposition_category_code    :integer         not null
-#  event_start_date                   :date
-#  event_start_time                   :string(255)
+#  event_disposition_category_code    :integer          not null
 #  event_end_date                     :date
 #  event_end_time                     :string(255)
-#  event_breakoff_code                :integer         not null
-#  event_incentive_type_code          :integer         not null
+#  event_id                           :string(36)       not null
 #  event_incentive_cash               :decimal(12, 2)
 #  event_incentive_noncash            :string(255)
-#  event_comment                      :text
-#  transaction_type                   :string(255)
-#  created_at                         :datetime
-#  updated_at                         :datetime
+#  event_incentive_type_code          :integer          not null
+#  event_repeat_key                   :integer
+#  event_start_date                   :date
+#  event_start_time                   :string(255)
+#  event_type_code                    :integer          not null
+#  event_type_other                   :string(255)
+#  id                                 :integer          not null, primary key
+#  lock_version                       :integer          default(0)
+#  participant_id                     :integer
+#  psu_code                           :integer          not null
 #  scheduled_study_segment_identifier :string(255)
-#  lock_version                       :integer         default(0)
+#  transaction_type                   :string(255)
+#  updated_at                         :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -159,14 +160,16 @@ describe Event do
 
       it "knows if it is complete" do
         (540..545).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
 
       it "knows if it is not complete" do
         [510, 515, 546, 539].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
@@ -180,14 +183,16 @@ describe Event do
 
       it "knows if it is complete" do
         (560..565).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
 
       it "knows if it is not complete" do
         [510, 515, 566, 559].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
@@ -201,14 +206,16 @@ describe Event do
 
       it "knows if it is complete" do
         (560..562).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
 
       it "knows if it is not complete" do
         [510, 515, 563, 559].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
@@ -222,14 +229,16 @@ describe Event do
 
       it "knows if it is complete" do
         (550..556).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
+          event = Factory(:event, :event_disposition_category => @cat,
+            :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
 
       it "knows if it is not complete" do
         [510, 515, 549, 557].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
+          event = Factory(:event, :event_disposition_category => @cat,
+            :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
@@ -242,14 +251,16 @@ describe Event do
 
       it "knows if it is complete" do
         (590..595).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
+          event = Factory(:event, :event_disposition_category => @cat,
+            :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
 
       it "knows if it is not complete" do
         [510, 515, 589, 596].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
+          event = Factory(:event, :event_disposition_category => @cat,
+            :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
@@ -262,14 +273,16 @@ describe Event do
 
       it "knows if it is complete" do
         (540..546).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => complete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
         end
       end
 
       it "knows if it is not complete" do
         [510, 515, 539, 547].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat, :event_disposition => incomplete_code)
+          event = Factory(:event,
+            :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
         end
       end
@@ -326,69 +339,21 @@ describe Event do
   end
 
   context "time format" do
+    let(:record) { Factory(:event) }
 
-    let(:event) { Factory(:event) }
+    describe "#event_start_time" do
+      it_behaves_like 'an MDES time'
 
-    describe ".event_start_time=" do
-      it "creates an active record error if given a bad time" do
-        event.event_start_time = "66:66"
-        event.should be_invalid
-        event.errors.to_a.first.should == 'Event start time is invalid'
-      end
-
-      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
-        event.event_start_time = "23:77"
-        event.should be_invalid
-        event.errors.size.should == 1
-        event.errors.to_a.first.should == 'Event start time is invalid'
-      end
-
-      it "is valid if given a valid 24hr time" do
-        event.event_start_time = "23:56"
-        event.should_not be_invalid
-      end
-
-      it "is valid if given a valid 24hr time with trailing whitespace" do
-        event.event_start_time = "23:56   "
-        event.should_not be_invalid
-      end
-
-      it "is valid if blank" do
-        event.event_start_time = nil
-        event.should_not be_invalid
-      end
+      let(:time_attribute) { :event_start_time }
+      let(:time_name) { "Event start time" }
     end
 
-    describe ".event_end_time=" do
-      it "creates an active record error if given a bad time" do
-        event.event_end_time = "66:66"
-        event.should be_invalid
-        event.errors.to_a.first.should == 'Event end time is invalid'
-      end
+    describe "#event_end_time" do
+      it_behaves_like 'an MDES time'
 
-      it "creates an active record error if given a valid formatted time but not a valid 24hr time" do
-        event.event_end_time = "23:77"
-        event.should be_invalid
-        event.errors.size.should == 1
-        event.errors.to_a.first.should == 'Event end time is invalid'
-      end
-
-      it "is valid if given a valid 24hr time" do
-        event.event_end_time = "23:56"
-        event.should_not be_invalid
-      end
-
-      it "is valid if given a valid 24hr time with trailing whitespace" do
-        event.event_end_time = "23:56   "
-        event.should_not be_invalid
-      end
-
-      it "is valid if blank" do
-        event.event_end_time = nil
-        event.should_not be_invalid
-      end
+      let(:time_attribute) { :event_end_time }
+      let(:time_name) { "Event end time" }
     end
-
   end
 
 
@@ -397,7 +362,7 @@ describe Event do
     before(:each) do
 
       @person = Factory(:person)
-      @participant = Factory(:participant)
+      @participant = Factory(:participant, :high_intensity => true)
       @participant.person = @person
       @ppg_fu = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7)
       @preg_screen = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
@@ -417,12 +382,16 @@ describe Event do
     describe "the disposition category" do
 
       it "is first determined by the event type" do
-        event = Event.create(:participant => @participant, :event_type => @preg_screen, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @preg_screen,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes
         event.save!
         event.event_disposition_category.local_code.should == 2
 
-        event = Event.create(:participant => @participant, :event_type => @hh, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @hh,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes
         event.save!
         event.event_disposition_category.local_code.should == 1
@@ -431,35 +400,45 @@ describe Event do
       it "is next determined by the contact type" do
         # telephone
         contact = Factory(:contact, :contact_type => @telephone)
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @ppg_fu,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(contact)
         event.save!
         event.event_disposition_category.local_code.should == 5
 
         # mail
         contact = Factory(:contact, :contact_type => @mail)
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @ppg_fu,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(contact)
         event.save!
         event.event_disposition_category.local_code.should == 4
 
         # txt
         contact = Factory(:contact, :contact_type => @txtmsg)
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @ppg_fu,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(contact)
         event.save!
-        event.event_disposition_category.local_code.should == 6
+        event.event_disposition_category.local_code.should == 5
 
         # website
         contact = Factory(:contact, :contact_type => @website)
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @ppg_fu,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(contact)
         event.save!
         event.event_disposition_category.local_code.should == 6
 
         # in person
         contact = Factory(:contact, :contact_type => @in_person)
-        event = Event.create(:participant => @participant, :event_type => @ppg_fu, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @ppg_fu,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(contact)
         event.save!
         event.event_disposition_category.local_code.should == 3
@@ -473,7 +452,9 @@ describe Event do
       it "should set the breakoff code to no if the reponse set has questions answered" do
         response_set = Factory(:response_set)
         response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(true)
-        event = Event.create(:participant => @participant, :event_type => @preg_screen, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @preg_screen,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(nil, response_set)
         event.save!
         event.event_breakoff.should == @n
@@ -482,7 +463,9 @@ describe Event do
       it "should set the breakoff code to yes if the reponse set does not have questions answered in each section" do
         response_set = Factory(:response_set)
         response_set.stub!(:has_responses_in_each_section_with_questions?).and_return(false)
-        event = Event.create(:participant => @participant, :event_type => @preg_screen, :psu_code => NcsNavigatorCore.psu_code)
+        event = Event.create(
+          :participant => @participant, :event_type => @preg_screen,
+          :psu_code => NcsNavigatorCore.psu_code)
         event.populate_post_survey_attributes(nil, response_set)
         event.save!
         event.event_breakoff.should == @y
@@ -495,7 +478,11 @@ describe Event do
   context "when scheduling an event with PSC " do
     let(:scheduled_study_segment_identifier) { "a5fd83f9-e2ca-4481-8ce3-70406dfbcddc" }
     let(:event_type_code) { NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33) }
-    let(:person) {Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "placeholder_event_participant")}
+    let(:person) {
+      Factory(:person,
+        :first_name => "Jane", :last_name => "Doe",
+        :person_dob => '1980-02-14', :person_id => "placeholder_event_participant")
+    }
     let(:participant) { Factory(:participant, :p_id => "placeholder_event_participant") }
     let(:date) { "2012-02-06" }
     let(:xml) { %Q(<?xml version="1.0" encoding="UTF-8"?><scheduled-study-segment id="a5fd83f9-e2ca-4481-8ce3-70406dfbcddc"></scheduled-study-segment>) }
@@ -541,7 +528,8 @@ describe Event do
 
       it "creates events as for ppg followup activities" do
 
-        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
+        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).
+          and_return("a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
@@ -566,15 +554,18 @@ describe Event do
         NcsNavigatorCore.with_specimens?.should be_false
         NcsNavigatorCore.expanded_phase_two?.should be_false
 
-        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return("f6abc107-a24e-4169-a260-d407fe816910")
+        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).
+          and_return("f6abc107-a24e-4169-a260-d407fe816910")
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
         part = Factory(:high_intensity_pregnancy_one_participant)
-        part.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+        part.next_scheduled_event.event.
+          should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
 
-        phase2person = Factory(:person, :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
-                              :person_id => "placeholder_phase2_participant")
+        phase2person = Factory(:person,
+          :first_name => "Francesca", :last_name => "Zupicich", :person_dob => '1980-02-14',
+          :person_id => "placeholder_phase2_participant")
 
         VCR.use_cassette('psc/schedule_and_create_phase2_placeholder') do
 
@@ -606,7 +597,8 @@ describe Event do
       setup_schedule_and_create_child_placeholder
 
       it "creates events for birth/child activities" do
-        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).and_return(scheduled_study_segment_identifier)
+        PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).
+          and_return(scheduled_study_segment_identifier)
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
@@ -655,12 +647,15 @@ describe Event do
       let(:date) { "2012-02-29" }
 
       before(:each) do
-        @person = Factory(:person, :first_name => "Jane", :last_name => "Doe", :person_dob => '1980-02-14', :person_id => "janedoe_ppg2")
+        @person = Factory(:person,
+          :first_name => "Jane", :last_name => "Doe",
+          :person_dob => '1980-02-14', :person_id => "janedoe_ppg2")
         @participant = Factory(:participant, :p_id => "janedoe_ppg2")
         @participant.person = @person
         @participant.save!
 
-        @event = Factory(:event, :participant => @participant, :event_start_date => date, :event_end_date => nil, :event_type_code => event_type_code)
+        @event = Factory(:event, :participant => @participant,
+          :event_start_date => date, :event_end_date => nil, :event_type_code => event_type_code)
       end
 
       it "is true if event_type matches label and event_start_date matches ideal date" do
@@ -701,3 +696,4 @@ describe Event do
   end
 
 end
+

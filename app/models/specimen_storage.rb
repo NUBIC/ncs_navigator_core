@@ -1,25 +1,27 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: specimen_storages
 #
-#  id                                     :integer         not null, primary key
-#  psu_code                               :integer         not null
-#  specimen_processing_shipping_center_id :integer
-#  storage_container_id                   :string(36)      not null
-#  placed_in_storage_datetime             :datetime
-#  staff_id                               :string(36)      not null
-#  specimen_equipment_id                  :integer
-#  master_storage_unit_code               :integer         not null
-#  storage_comment                        :string(255)     not null
-#  storage_comment_other                  :string(255)
-#  removed_from_storage_datetime          :datetime
-#  temp_event_starttime                   :string(5)
-#  temp_event_endtime                     :string(5)
-#  temp_event_low_temp                    :decimal(6, 2)
-#  temp_event_high_temp                   :decimal(6, 2)
-#  transaction_type                       :string(36)
 #  created_at                             :datetime
+#  id                                     :integer          not null, primary key
+#  master_storage_unit_code               :integer          not null
+#  master_storage_unit_id                 :string(255)
+#  placed_in_storage_datetime             :datetime
+#  psu_code                               :integer          not null
+#  removed_from_storage_datetime          :datetime
+#  specimen_equipment_id                  :integer
+#  specimen_processing_shipping_center_id :integer
+#  staff_id                               :string(36)       not null
+#  storage_comment                        :string(255)      not null
+#  storage_comment_other                  :string(255)
+#  storage_container_id                   :string(36)       not null
+#  temp_event_endtime                     :string(5)
+#  temp_event_high_temp                   :decimal(6, 2)
+#  temp_event_low_temp                    :decimal(6, 2)
+#  temp_event_starttime                   :string(5)
+#  transaction_type                       :string(36)
 #  updated_at                             :datetime
 #
 
@@ -36,3 +38,4 @@ class SpecimenStorage < ActiveRecord::Base
   validates_presence_of :staff_id 
   ncs_coded_attribute :master_storage_unit,       'STORAGE_AREA_CL1'
 end
+

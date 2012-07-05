@@ -1,23 +1,24 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: participant_person_links
 #
-#  id                 :integer         not null, primary key
-#  psu_code           :integer         not null
-#  person_id          :integer         not null
-#  participant_id     :integer         not null
-#  relationship_code  :integer         not null
-#  relationship_other :string(255)
-#  is_active_code     :integer         not null
-#  transaction_type   :string(36)
-#  person_pid_id      :string(36)      not null
 #  created_at         :datetime
-#  updated_at         :datetime
+#  id                 :integer          not null, primary key
+#  is_active_code     :integer          not null
+#  participant_id     :integer          not null
+#  person_id          :integer          not null
+#  person_pid_id      :string(36)       not null
+#  psu_code           :integer          not null
+#  relationship_code  :integer          not null
+#  relationship_other :string(255)
 #  response_set_id    :integer
+#  transaction_type   :string(36)
+#  updated_at         :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 # The same Person can be a respondent or informant for many Participants.
 # One Participant can have many respondents or informants who provide
@@ -54,3 +55,4 @@ class ParticipantPersonLink < ActiveRecord::Base
     is_active_code == 1
   end
 end
+

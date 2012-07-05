@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 FactoryGirl.define do
   factory :sample_receipt_store do |srs|
     srs.psu_code                              20000030
@@ -70,6 +71,7 @@ FactoryGirl.define do
     src.sample_condition_code            1
     src.shipment_received_by             "Jane Dow"
     src.transaction_type                 nil
+    src.staff_id                         "whateverstaffid"
   end  
 
   factory :sample do |sa|

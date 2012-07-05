@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'spec_helper'
 
 require File.expand_path('../importer_warehouse_setup', __FILE__)

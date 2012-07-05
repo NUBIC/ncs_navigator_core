@@ -1,28 +1,29 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: household_units
 #
-#  id                           :integer         not null, primary key
-#  psu_code                     :integer         not null
-#  hh_status_code               :integer         not null
-#  hh_eligibility_code          :integer         not null
-#  hh_structure_code            :integer         not null
-#  hh_structure_other           :string(255)
-#  hh_comment                   :text
-#  number_of_age_eligible_women :integer
-#  number_of_pregnant_women     :integer
-#  number_of_pregnant_minors    :integer
-#  number_of_pregnant_adults    :integer
-#  number_of_pregnant_over49    :integer
-#  transaction_type             :string(36)
-#  hh_id                        :string(36)      not null
+#  being_processed              :boolean          default(FALSE)
 #  created_at                   :datetime
+#  hh_comment                   :text
+#  hh_eligibility_code          :integer          not null
+#  hh_id                        :string(36)       not null
+#  hh_status_code               :integer          not null
+#  hh_structure_code            :integer          not null
+#  hh_structure_other           :string(255)
+#  id                           :integer          not null, primary key
+#  number_of_age_eligible_women :integer
+#  number_of_pregnant_adults    :integer
+#  number_of_pregnant_minors    :integer
+#  number_of_pregnant_over49    :integer
+#  number_of_pregnant_women     :integer
+#  psu_code                     :integer          not null
+#  transaction_type             :string(36)
 #  updated_at                   :datetime
-#  being_processed              :boolean
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -63,3 +64,4 @@ describe HouseholdUnit do
   end
 
 end
+

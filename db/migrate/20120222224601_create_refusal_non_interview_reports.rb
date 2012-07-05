@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateRefusalNonInterviewReports < ActiveRecord::Migration
   def change
     create_table :refusal_non_interview_reports do |t|

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'ncs_navigator/mdes'
 require 'ncs_navigator/configuration'
 
@@ -29,6 +30,10 @@ module NcsNavigatorCore
       NcsNavigator.configuration.core['study_center_name']
     end
 
+    def study_center_short_name
+      NcsNavigator.configuration.study_center_short_name
+    end
+
     def study_center_phone_number
       NcsNavigator.configuration.core['study_center_phone_number']
     end
@@ -44,10 +49,6 @@ module NcsNavigatorCore
 
     def recruitment_type_id
       NcsNavigator.configuration.recruitment_type_id.to_i
-    end
-
-    def shipper_id
-      NcsNavigator.configuration.core['shipper_id']
     end
 
     def with_specimens
@@ -68,6 +69,10 @@ module NcsNavigatorCore
 
     def sampling_units_file_path
       NcsNavigator.configuration.sampling_units_file.to_s
+    end
+
+    def email_prefix
+      "[NCS Navigator Cases #{study_center_short_name} #{Rails.env.titlecase}] "
     end
 
     ##

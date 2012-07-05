@@ -1,32 +1,33 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: providers
 #
-#  id                         :integer         not null, primary key
-#  psu_code                   :integer         not null
-#  provider_id                :string(36)      not null
-#  provider_type_code         :integer         not null
-#  provider_type_other        :string(255)
-#  provider_ncs_role_code     :integer         not null
-#  provider_ncs_role_other    :string(255)
-#  practice_info_code         :integer         not null
-#  practice_patient_load_code :integer         not null
-#  practice_size_code         :integer         not null
-#  public_practice_code       :integer         not null
-#  provider_info_source_code  :integer         not null
-#  provider_info_source_other :string(255)
-#  provider_info_date         :date
-#  provider_info_update       :date
-#  provider_comment           :text
-#  transaction_type           :string(255)
 #  created_at                 :datetime
-#  updated_at                 :datetime
-#  name_practice              :string(100)
+#  id                         :integer          not null, primary key
 #  list_subsampling_code      :integer
-#  proportion_weeks_sampled   :integer
+#  name_practice              :string(100)
+#  practice_info_code         :integer          not null
+#  practice_patient_load_code :integer          not null
+#  practice_size_code         :integer          not null
 #  proportion_days_sampled    :integer
+#  proportion_weeks_sampled   :integer
+#  provider_comment           :text
+#  provider_id                :string(36)       not null
+#  provider_info_date         :date
+#  provider_info_source_code  :integer          not null
+#  provider_info_source_other :string(255)
+#  provider_info_update       :date
+#  provider_ncs_role_code     :integer          not null
+#  provider_ncs_role_other    :string(255)
+#  provider_type_code         :integer          not null
+#  provider_type_other        :string(255)
+#  psu_code                   :integer          not null
+#  public_practice_code       :integer          not null
 #  sampling_notes             :string(1000)
+#  transaction_type           :string(255)
+#  updated_at                 :datetime
 #
 
 require 'spec_helper'
@@ -275,3 +276,4 @@ describe Provider do
   end
 
 end
+

@@ -1,23 +1,25 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: sample_receipt_confirmations
 #
-#  id                                :integer         not null, primary key
-#  psu_code                          :integer         not null
-#  sample_receipt_shipping_center_id :integer
-#  shipment_receipt_confirmed_code   :integer         not null
-#  shipper_id                        :string(255)     not null
-#  shipment_tracking_number          :string(255)     not null
-#  shipment_receipt_datetime         :datetime        not null
-#  shipment_condition_code           :integer         not null
-#  shipment_damaged_reason           :string(255)
-#  sample_id                         :string(255)     not null
-#  sample_receipt_temp               :decimal(6, 2)   not null
-#  sample_condition_code             :integer         not null
-#  shipment_received_by              :string(255)     not null
-#  transaction_type                  :string(36)
 #  created_at                        :datetime
+#  id                                :integer          not null, primary key
+#  psu_code                          :integer          not null
+#  sample_condition_code             :integer          not null
+#  sample_id                         :string(255)      not null
+#  sample_receipt_shipping_center_id :integer
+#  sample_receipt_temp               :decimal(6, 2)    not null
+#  shipment_condition_code           :integer          not null
+#  shipment_damaged_reason           :string(255)
+#  shipment_receipt_confirmed_code   :integer          not null
+#  shipment_receipt_datetime         :datetime         not null
+#  shipment_received_by              :string(255)      not null
+#  shipment_tracking_number          :string(255)      not null
+#  shipper_id                        :string(255)      not null
+#  staff_id                          :string(255)      not null
+#  transaction_type                  :string(36)
 #  updated_at                        :datetime
 #
 
@@ -46,7 +48,7 @@ describe SampleReceiptConfirmation do
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
       src = SampleReceiptConfirmation.create(:sample_id => "sampleId", :sample_receipt_shipping_center_id => "srsc_1", 
                                             :shipper_id => "123", :shipment_receipt_datetime => "2012-01-29 22:01:30", :shipment_tracking_number => "67876f5WERSF98",
-                                            :shipment_received_by => "Jane Dow", :sample_receipt_temp => "-2.1")
+                                            :shipment_received_by => "Jane Dow", :sample_receipt_temp => "-2.1", :staff_id => "someidforstaff")
       src.save!
 
       obj = SampleReceiptConfirmation.find(src.id)
@@ -57,3 +59,4 @@ describe SampleReceiptConfirmation do
     end
   end
 end
+

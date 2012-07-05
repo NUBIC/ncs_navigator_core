@@ -1,23 +1,24 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: contact_links
 #
-#  id               :integer         not null, primary key
-#  psu_code         :integer         not null
-#  contact_link_id  :string(36)      not null
-#  contact_id       :integer         not null
+#  contact_id       :integer          not null
+#  contact_link_id  :string(36)       not null
+#  created_at       :datetime
 #  event_id         :integer
+#  id               :integer          not null, primary key
 #  instrument_id    :integer
-#  staff_id         :string(36)      not null
 #  person_id        :integer
 #  provider_id      :integer
+#  psu_code         :integer          not null
+#  staff_id         :string(36)       not null
 #  transaction_type :string(255)
-#  created_at       :datetime
 #  updated_at       :datetime
 #
 
-# -*- coding: utf-8 -*-
+
 
 require 'spec_helper'
 
@@ -67,3 +68,4 @@ describe ContactLink do
   end
 
 end
+

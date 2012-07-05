@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'ncs_navigator/core/mustache'
 require 'mustache'
 
@@ -83,6 +84,10 @@ module NcsNavigator::Core::Mustache
 
     def toll_free_number
       NcsNavigator.configuration.core["toll_free_number"]
+    end
+
+    def local_age_of_minority
+      NcsNavigator.configuration.core["local_age_of_minority"]
     end
 
     def local_age_of_majority

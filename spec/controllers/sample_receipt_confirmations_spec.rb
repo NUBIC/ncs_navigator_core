@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe SampleReceiptConfirmationsController do
@@ -5,8 +6,8 @@ describe SampleReceiptConfirmationsController do
     before(:each) do
       @sample_shipping1 = Factory(:sample_shipping, :sample_id => "sampleId1", :shipment_tracking_number => "123ABC")
       @sample_shipping2 = Factory(:sample_shipping, :sample_id => "sampleId2", :shipment_tracking_number => "567CDE")
-      @sample_receipt_confirmations_edit1 = Factory(:sample_receipt_confirmation, :shipment_tracking_number => "123ABC")
-      @sample_receipt_confirmations_edit2 = Factory(:sample_receipt_confirmation, :shipment_tracking_number => "876FGH")    
+      @sample_receipt_confirmations_edit1 = Factory(:sample_receipt_confirmation, :shipment_tracking_number => "123ABC", :staff_id => "someone special")
+      @sample_receipt_confirmations_edit2 = Factory(:sample_receipt_confirmation, :shipment_tracking_number => "876FGH", :staff_id => "someone special")    
       login(user_login)
     end
     
@@ -16,6 +17,7 @@ describe SampleReceiptConfirmationsController do
        :shipment_received_by =>"Jane Dow", 
        :sample_receipt_temp => "2.00", 
        :sample_receipt_shipping_center_id =>"GCSC", 
+       :staff_id => "someone special",
       }
     end
     

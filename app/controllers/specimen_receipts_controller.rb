@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenReceiptsController < ApplicationController
 
   def new
@@ -7,7 +8,7 @@ class SpecimenReceiptsController < ApplicationController
   def create
     @params = params[:specimen_receipt]
     @params[:psu_code] = @psu_code
-    @params[:staff_id] = "Jane Dow"
+    @params[:staff_id] = current_staff_id
     @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.id
     @specimen_receipt = SpecimenReceipt.new(@params)
     respond_to do |format|

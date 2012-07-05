@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 require 'ncs_navigator/configuration'
 
 class ContactsController < ApplicationController
@@ -45,7 +46,7 @@ class ContactsController < ApplicationController
   def edit
     @person  = Person.find(params[:person_id])
     @contact = Contact.find(params[:id])
-    @contact.contact_end_time = Time.now.strftime("%H:%M")
+    @contact.set_default_end_time
 
     if params[:next_event]
       if @person.participant.pending_events.count > 0

@@ -1,18 +1,19 @@
+# -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120626221317
+# Schema version: 20120629204215
 #
 # Table name: person_provider_links
 #
-#  id                           :integer         not null, primary key
-#  psu_code                     :integer         not null
-#  person_provider_id           :string(36)      not null
-#  provider_id                  :integer
-#  person_id                    :integer
-#  is_active_code               :integer         not null
-#  provider_intro_outcome_code  :integer         not null
-#  provider_intro_outcome_other :string(255)
-#  transaction_type             :string(36)
 #  created_at                   :datetime
+#  id                           :integer          not null, primary key
+#  is_active_code               :integer          not null
+#  person_id                    :integer
+#  person_provider_id           :string(36)       not null
+#  provider_id                  :integer
+#  provider_intro_outcome_code  :integer          not null
+#  provider_intro_outcome_other :string(255)
+#  psu_code                     :integer          not null
+#  transaction_type             :string(36)
 #  updated_at                   :datetime
 #
 
@@ -29,3 +30,4 @@ class PersonProviderLink < ActiveRecord::Base
   validates_presence_of :provider
   validates_presence_of :person
 end
+

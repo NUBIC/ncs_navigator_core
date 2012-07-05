@@ -38,6 +38,10 @@ module MdesRecord
       @ncs_coded_attributes ||= {}
     end
 
+    def mdes_time_pattern
+      @mdes_time_pattern ||= /^(9\d:\d\d)|(([01]\d|2[0-3]):[0-5]\d)$/
+    end
+
   end
 
   class NcsCodedAttribute

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class CreateContactLinks < ActiveRecord::Migration
   def self.up
     create_table :contact_links do |t|

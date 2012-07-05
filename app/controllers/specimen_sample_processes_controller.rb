@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class SpecimenSampleProcessesController < ApplicationController
 
   def index

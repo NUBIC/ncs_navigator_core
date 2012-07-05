@@ -18,36 +18,6 @@ module NcsNavigator::Core::Fieldwork
       end.new
     end
 
-    describe '#conflicted?' do
-      describe 'if the conflict report is empty' do
-        before do
-          subject.conflicts = {}
-        end
-
-        it 'returns false' do
-          subject.should_not be_conflicted
-        end
-      end
-
-      describe 'if the conflict report is not empty' do
-        before do
-          subject.conflicts = {
-            'Contact' => {
-              'foo' => {
-                :original => {},
-                :current => {},
-                :proposed => {}
-              }
-            }
-          }
-        end
-
-        it 'returns true' do
-          subject.should be_conflicted
-        end
-      end
-    end
-
     def self.it_merges(property)
       describe "##{property}" do
         it_behaves_like 'an attribute merge', entity, property do
@@ -75,21 +45,21 @@ module NcsNavigator::Core::Fieldwork
         SCHEMA['properties']['contacts']['items']['properties']
       end
 
-      it_merges 'contact_date'
-      it_merges 'disposition'
-      it_merges 'distance_traveled'
-      it_merges 'end_time'
-      it_merges 'interpreter'
-      it_merges 'interpreter_other'
-      it_merges 'language'
-      it_merges 'language_other'
-      it_merges 'location'
-      it_merges 'location_other'
-      it_merges 'private'
-      it_merges 'private_detail'
-      it_merges 'start_time'
-      it_merges 'type'
-      it_merges 'who_contacted'
+      it_merges 'contact_date_date'
+      it_merges 'contact_disposition'
+      it_merges 'contact_distance'
+      it_merges 'contact_end_time'
+      it_merges 'contact_interpret_code'
+      it_merges 'contact_interpret_other'
+      it_merges 'contact_language_code'
+      it_merges 'contact_language_other'
+      it_merges 'contact_location_code'
+      it_merges 'contact_location_other'
+      it_merges 'contact_private_code'
+      it_merges 'contact_private_detail'
+      it_merges 'contact_start_time'
+      it_merges 'contact_type_code'
+      it_merges 'who_contacted_code'
       it_merges 'who_contacted_other'
     end
 
@@ -98,19 +68,19 @@ module NcsNavigator::Core::Fieldwork
         SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']
       end
 
-      it_merges 'break_off'
-      it_merges 'comments'
-      it_merges 'disposition'
-      it_merges 'disposition_category'
-      it_merges 'end_date'
-      it_merges 'end_time'
-      it_merges 'incentive_type'
-      it_merges 'incentive_cash'
-      it_merges 'repeat_key'
-      it_merges 'start_date'
-      it_merges 'start_time'
-      it_merges 'type'
-      it_merges 'type_other'
+      it_merges 'event_breakoff_code'
+      it_merges 'event_comment'
+      it_merges 'event_disposition'
+      it_merges 'event_disposition_category_code'
+      it_merges 'event_end_date'
+      it_merges 'event_end_time'
+      it_merges 'event_incentive_type_code'
+      it_merges 'event_incentive_cash'
+      it_merges 'event_repeat_key'
+      it_merges 'event_start_date'
+      it_merges 'event_start_time'
+      it_merges 'event_type_code'
+      it_merges 'event_type_other'
     end
 
     when_merging 'Instrument' do
@@ -118,21 +88,21 @@ module NcsNavigator::Core::Fieldwork
         SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties']
       end
 
-      it_merges 'break_off'
-      it_merges 'comments'
-      it_merges 'data_problem'
-      it_merges 'end_date'
-      it_merges 'end_time'
-      it_merges 'method_administered'
-      it_merges 'mode_administered'
-      it_merges 'mode_administered_other'
-      it_merges 'repeat_key'
-      it_merges 'start_date'
-      it_merges 'start_time'
-      it_merges 'status'
-      it_merges 'supervisor_review'
-      it_merges 'type'
-      it_merges 'type_other'
+      it_merges 'instrument_breakoff_code'
+      it_merges 'instrument_comment'
+      it_merges 'data_problem_code'
+      it_merges 'instrument_end_date'
+      it_merges 'instrument_end_time'
+      it_merges 'instrument_method_code'
+      it_merges 'instrument_mode_code'
+      it_merges 'instrument_mode_other'
+      it_merges 'instrument_repeat_key'
+      it_merges 'instrument_start_date'
+      it_merges 'instrument_start_time'
+      it_merges 'instrument_status_code'
+      it_merges 'supervisor_review_code'
+      it_merges 'instrument_type_code'
+      it_merges 'instrument_type_other'
     end
 
     describe 'on ResponseGroups O, C, P' do
@@ -205,7 +175,7 @@ module NcsNavigator::Core::Fieldwork
           merge
 
           conflicts.should == {
-            entity => { question_id => { :self => { :original => o, :current => c, :proposed => p } } }
+            entity => { question_id => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
           }
         end
       end
@@ -297,7 +267,7 @@ module NcsNavigator::Core::Fieldwork
             merge
 
             conflicts.should == {
-              entity => { question_id => { :self => { :original => o, :current => c, :proposed => p } } }
+              entity => { question_id => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
             }
           end
 
