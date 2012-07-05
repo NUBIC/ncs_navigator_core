@@ -12,11 +12,20 @@
 #  updated_at   :datetime
 #
 
-
-
 require 'spec_helper'
 
 describe NcsCode do
+  describe '.for_attributes' do
+    it 'returns NCS codes for the given attributes' do
+      NcsCode.for_attributes(:perm_closure_code, :psu_code).map(&:id).sort.should ==
+        NcsCode.where(:list_name => ['CONFIRM_TYPE_CL10', 'PSU_CL1']).map(&:id).sort
+    end
+
+    it 'accepts strings for attribute names' do
+      NcsCode.for_attributes('perm_closure_code', 'psu_code').map(&:id).sort.should ==
+        NcsCode.where(:list_name => ['CONFIRM_TYPE_CL10', 'PSU_CL1']).map(&:id).sort
+    end
+  end
 
   it "should display attributes with user friendly method names (syntactic sugar)" do
     code = NcsCode.new(:display_text => 'foo', :local_code => 5)

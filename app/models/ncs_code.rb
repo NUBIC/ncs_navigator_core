@@ -298,7 +298,23 @@ class NcsCode < ActiveRecord::Base
     :nir_moved_info_code =>            'INFORMATION_SOURCE_CL8',
     :perm_moved_code =>                'CONFIRM_TYPE_CL10',
 
-  }
+  }.with_indifferent_access
+
+  ##
+  # Given a list of attributes, returns all NCS codes for those attributes.
+  # You can use either symbols or strings for the attributes.  Attributes that
+  # do not correspond to an NCS code list will be ignored.
+  #
+  #
+  # Example
+  # =======
+  #
+  #     NcsCode.for_attributes('who_refused_code', 'perm_closure_code')
+  #
+  #     # => [#<NcsCode ...>, ...]
+  def self.for_attributes(*attrs)
+    where(:list_name => attrs.map { |c| attribute_lookup(c) }.compact)
+  end
 
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
     list_name = attribute_lookup(attribute_name)
