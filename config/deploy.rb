@@ -98,7 +98,7 @@ namespace :deploy do
   end
 end
 
-after 'deploy:symlink', 'config:images', 'deploy:setup_import_directories'
+after 'deploy:finalize_update', 'config:images', 'deploy:setup_import_directories'
 
 namespace :db do
   desc "Backup Database"
