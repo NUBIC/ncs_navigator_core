@@ -7,6 +7,7 @@ module NcsNavigator::Core::Psc
   describe ScheduledActivityReport do
     let(:c) { Factory(:contact) }
     let(:e) { Factory(:event) }
+    let(:i) { Factory(:instrument, :response_set => rs, :survey => s) }
     let(:p) { Factory(:person) }
     let(:s) { Factory(:survey) }
     let(:rs) { Factory(:response_set) }
@@ -16,7 +17,6 @@ module NcsNavigator::Core::Psc
     let(:r1) do
       OpenStruct.new(:contact => c,
                      :event => e,
-                     :instrument => i,
                      :person => p,
                      :survey => s)
     end
