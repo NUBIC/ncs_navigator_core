@@ -96,9 +96,21 @@ namespace :deploy do
     ]
     run cmds.join(' && ')
   end
+
+  desc "Link to surveys if they've been deployed"
+  task :create_surveys_symlink do
+    shared_surveys  = File.join(shared_path,     'surveys')
+    release_surveys = File.join(current_release, 'surveys')
+    run %Q(if [ ! -e '#{release_surveys}' -a -e '#{shared_surveys}' ]; then
+             ln -s '#{shared_surveys}' '#{release_surveys}';
+           fi).gsub(/\s+/, ' ')
+  end
 end
 
-after 'deploy:finalize_update', 'config:images', 'deploy:setup_import_directories'
+after 'deploy:finalize_update',
+  'config:images',
+  'deploy:setup_import_directories',
+  'deploy:create_surveys_symlink'
 
 namespace :db do
   desc "Backup Database"
