@@ -17,6 +17,7 @@ module NcsNavigator::Core::Psc
     let(:r1) do
       OpenStruct.new(:contact => c,
                      :event => e,
+                     :instrument => i,
                      :person => p,
                      :survey => s)
     end
@@ -38,27 +39,27 @@ module NcsNavigator::Core::Psc
         contacts[0]['contact_id'].should == subject.rows[0].contact.contact_id
       end
 
-      it 'sets #/0/contact_date' do
+      it 'sets #/0/contact_date_date' do
         d = Date.new(2012, 1, 1)
         c.contact_date_date = d
 
-        contacts[0]['contact_date'].should == d
+        contacts[0]['contact_date_date'].should == d
       end
 
-      it 'sets #/0/interpreter' do
-        contacts[0]['interpreter'].should == subject.rows[0].contact.contact_interpret_code
+      it 'sets #/0/contact_interpret_code' do
+        contacts[0]['contact_interpret_code'].should == subject.rows[0].contact.contact_interpret_code
       end
 
-      it 'sets #/0/language' do
-        contacts[0]['language'].should == subject.rows[0].contact.contact_language_code
+      it 'sets #/0/contact_language_code' do
+        contacts[0]['contact_language_code'].should == subject.rows[0].contact.contact_language_code
       end
 
-      it 'sets #/0/private' do
-        contacts[0]['private'].should == subject.rows[0].contact.contact_private_code
+      it 'sets #/0/contact_private_code' do
+        contacts[0]['contact_private_code'].should == subject.rows[0].contact.contact_private_code
       end
 
-      it 'sets #/0/who_contacted' do
-        contacts[0]['who_contacted'].should == subject.rows[0].contact.who_contacted_code
+      it 'sets #/0/who_contacted_code' do
+        contacts[0]['who_contacted_code'].should == subject.rows[0].contact.who_contacted_code
       end
 
       it 'sets #/0/version' do
@@ -70,14 +71,14 @@ module NcsNavigator::Core::Psc
           c.contact_start_time = '12:00'
         end
 
-        it 'sets #/0/start_time' do
-          contacts[0]['start_time'].should == '12:00'
+        it 'sets #/0/contact_start_time' do
+          contacts[0]['contact_start_time'].should == '12:00'
         end
       end
 
       describe 'if contacts[0] has a blank start time' do
-        it 'sets #/0/start_time to nil' do
-          contacts[0]['start_time'].should be_nil
+        it 'sets #/0/contact_start_time to nil' do
+          contacts[0]['contact_start_time'].should be_nil
         end
       end
 
@@ -86,19 +87,19 @@ module NcsNavigator::Core::Psc
           c.contact_end_time = '12:00'
         end
 
-        it 'sets #/0/end_time' do
-          contacts[0]['end_time'].should == '12:00'
+        it 'sets #/0/contact_end_time' do
+          contacts[0]['contact_end_time'].should == '12:00'
         end
       end
 
       describe 'if contacts[0] has a blank end time' do
         it 'sets #/0/end_time to nil' do
-          contacts[0]['end_time'].should be_nil
+          contacts[0]['contact_end_time'].should be_nil
         end
       end
 
-      it 'sets #/0/disposition' do
-        contacts[0]['disposition'].should == subject.rows[0].contact.contact_disposition
+      it 'sets #/0/contact_disposition' do
+        contacts[0]['contact_disposition'].should == subject.rows[0].contact.contact_disposition
       end
 
       it 'sets #/0/events to [] if the row has no events' do
@@ -123,24 +124,24 @@ module NcsNavigator::Core::Psc
         contacts[0]['events'][0]['disposition'].should == e.event_disposition
       end
 
-      it 'sets #/0/events/0/disposition_category' do
-        contacts[0]['events'][0]['disposition_category'].should == e.event_disposition_category_code
+      it 'sets #/0/events/0/event_disposition_category_code' do
+        contacts[0]['events'][0]['event_disposition_category_code'].should == e.event_disposition_category_code
       end
 
-      it 'sets #/0/events/0/start_date' do
-        contacts[0]['events'][0]['start_date'].should == e.event_start_date
+      it 'sets #/0/events/0/event_start_date' do
+        contacts[0]['events'][0]['event_start_date'].should == e.event_start_date
       end
 
-      it 'sets #/0/events/0/start_time' do
-        contacts[0]['events'][0]['start_time'].should == e.event_start_time
+      it 'sets #/0/events/0/event_start_time' do
+        contacts[0]['events'][0]['event_start_time'].should == e.event_start_time
       end
 
-      it 'sets #/0/events/0/end_date' do
-        contacts[0]['events'][0]['end_date'].should == e.event_end_date
+      it 'sets #/0/events/0/event_end_date' do
+        contacts[0]['events'][0]['event_end_date'].should == e.event_end_date
       end
 
-      it 'sets #/0/events/0/end_time' do
-        contacts[0]['events'][0]['end_time'].should == e.event_end_time
+      it 'sets #/0/events/0/event_end_time' do
+        contacts[0]['events'][0]['event_end_time'].should == e.event_end_time
       end
 
       it 'sets #/0/events/0/instruments to [] if the row has no instruments' do
@@ -168,8 +169,8 @@ module NcsNavigator::Core::Psc
         contacts[0]['person_id'].should == p.person_id
       end
 
-      it 'sets #/0/type' do
-        contacts[0]['type'].should == c.contact_type_code
+      it 'sets #/0/contact_type_code' do
+        contacts[0]['contact_type_code'].should == c.contact_type_code
       end
     end
 
