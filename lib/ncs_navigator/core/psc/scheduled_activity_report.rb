@@ -300,10 +300,6 @@ module NcsNavigator::Core::Psc
       def person_id
         row['subject']['person_id']
       end
-      
-      def activity_name
-        row['activity_name']
-      end
     end
   end
 end

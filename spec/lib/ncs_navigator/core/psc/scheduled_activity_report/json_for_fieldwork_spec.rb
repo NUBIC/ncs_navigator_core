@@ -7,8 +7,6 @@ module NcsNavigator::Core::Psc
   describe ScheduledActivityReport do
     let(:c) { Factory(:contact) }
     let(:e) { Factory(:event) }
-    let(:an) { 'Pregnancy Probability Group Follow-Up SAQ' }
-    let(:i) { WrappedInstrument.new(Factory(:instrument, :response_set => rs, :survey => s), 'dsfa' ) }
     let(:p) { Factory(:person) }
     let(:s) { Factory(:survey) }
     let(:rs) { Factory(:response_set) }
@@ -159,11 +157,6 @@ module NcsNavigator::Core::Psc
       it 'sets #/0/events/0/instruments/0/instrument_template_id' do
         contacts[0]['events'][0]['instruments'][0]['instrument_template_id'].should ==
           s.api_id
-      end
-
-      it 'sets #/0/events/0/instruments/0/name' do
-        contacts[0]['events'][0]['instruments'][0]['name'].should ==
-          an
       end
 
       it 'sets #/0/events/0/instruments/0/response_set' do
