@@ -84,8 +84,8 @@ namespace :deploy do
 
   desc 'Set up shared paths used by the importer'
   task :setup_import_directories do
-    shared_import  = File.join(shared_path,  'importer_passthrough')
-    release_import = File.join(current_path, 'importer_passthrough')
+    shared_import  = File.join(shared_path,     'importer_passthrough')
+    release_import = File.join(current_release, 'importer_passthrough')
     cmds = [
       "mkdir -p '#{shared_import}'",
       # Only chmod if owned; this is the only case in which chmod is
@@ -103,7 +103,7 @@ after 'deploy:finalize_update', 'config:images', 'deploy:setup_import_directorie
 namespace :db do
   desc "Backup Database"
   task :backup,  :roles => :app do
-    run "cd #{current_path} && rake RAILS_ENV=#{rails_env} db:backup"
+    run "cd '#{current_release}' && rake RAILS_ENV=#{rails_env} db:backup"
   end
 end
 
@@ -111,7 +111,7 @@ namespace :config do
   desc "Copy configurable images to /public/assets/images folder"
   task :images,  :roles => :app do
     run [
-      "cd #{current_path}",
+      "cd '#{current_release}'",
       "#{rake} configuration:copy_image_files"
     ].join(' && ')
   end
