@@ -5,8 +5,6 @@ require 'rubygems'
 require 'spork'
 require 'database_cleaner'
 
-require 'ncs_navigator/configuration'
-
 require File.expand_path('../active_record_query_profiler', __FILE__)
 
 # --- Instructions ---
@@ -45,8 +43,8 @@ Spork.prefork do
   # need to restart spork for it take effect.
 
   # There are initializers that depend on this being set.
-  NcsNavigator.configuration =
-    NcsNavigator::Configuration.new(File.expand_path('../navigator.ini', __FILE__))
+  require File.expand_path('../support/suite_configuration', __FILE__)
+  NcsNavigator::Core::Spec.reset_navigator_ini
 
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
