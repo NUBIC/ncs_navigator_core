@@ -74,7 +74,26 @@ module NcsNavigatorCore
                        CSV
                      end
     end
+  end
 
+  # This is done here instead of in an initializer so that all
+  # initializers have access to the configuration methods.
+  class << self
+    # require needs to wait until Rails has set up the load path
+    require 'ncs_navigator/core'
+
+    extend Forwardable
+
+    # All of the configuration methods were moved to
+    # NcsNavigator::Core::Configuration. This module delegates to them
+    # as a shim, both for backwards compatibility and to make
+    # invocations shorter.
+    def_delegators :configuration,
+      *NcsNavigator::Core::Configuration.public_instance_methods(false);
+
+    def configuration
+      NcsNavigator::Core::Configuration.instance
+    end
   end
 end
 
