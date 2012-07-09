@@ -224,9 +224,8 @@ class Person < ActiveRecord::Base
     return if survey.nil?
 
     build_instrument(survey).tap do |instr|
-      instr.build_response_set(:survey => survey, :user_id => self.id)
-
-      prepopulate_response_set(instr.response_set, survey)
+      instr.response_sets.build(:survey => survey, :user_id => self.id)
+      instr.response_sets.each { |rs| prepopulate_response_set(rs, survey) }
     end
   end
 
