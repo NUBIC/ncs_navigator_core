@@ -5,6 +5,7 @@ module NcsNavigator
   module Core
     autoload :Configuration,            'ncs_navigator/core/configuration'
     autoload :Fieldwork,                'ncs_navigator/core/fieldwork'
+    autoload :Mdes,                     'ncs_navigator/core/mdes'
     autoload :MdesCodeListLoader,       'ncs_navigator/core/mdes_code_list_loader'
     autoload :MdesInstrumentSurvey,     'ncs_navigator/core/mdes_instrument_survey'
     autoload :Mustache,                 'ncs_navigator/core/mustache'
