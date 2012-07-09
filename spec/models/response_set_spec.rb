@@ -27,8 +27,8 @@ describe ResponseSet do
   it { should belong_to(:instrument) }
 
   describe '#instrument' do
-    it 'is the inverse of Instrument#response_set' do
-      ResponseSet.reflections[:instrument].options[:inverse_of].should == :response_set
+    it 'is the inverse of Instrument#response_sets' do
+      ResponseSet.reflections[:instrument].options[:inverse_of].should == :response_sets
     end
   end
 

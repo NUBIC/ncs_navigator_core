@@ -78,7 +78,7 @@ describe Instrument do
   it { should belong_to(:person) }
   it { should belong_to(:survey) }
 
-  it { should have_one(:response_set) }
+  it { should have_many(:response_sets) }
   it { should have_one(:contact_link) }
 
   it { should validate_presence_of(:instrument_version) }
@@ -138,9 +138,9 @@ describe Instrument do
     end
   end
 
-  describe '#response_set' do
+  describe '#response_sets' do
     it 'is the inverse of ResponseSet#instrument' do
-      Instrument.reflections[:response_set].options[:inverse_of].should == :instrument
+      Instrument.reflections[:response_sets].options[:inverse_of].should == :instrument
     end
   end
 

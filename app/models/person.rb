@@ -224,15 +224,23 @@ class Person < ActiveRecord::Base
     return if survey.nil?
 
     build_instrument(survey).tap do |instr|
-      instr.build_response_set(:survey => survey, :user_id => self.id)
+      instr.response_sets.build(:survey => survey, :user_id => self.id)
 
-      prepopulate_response_set(instr.response_set, survey)
+      instr.response_sets.each { |rs| prepopulate_response_set(rs, survey) }
     end
   end
 
   def prepopulate_response_set(response_set, survey)
     # TODO: determine way to know about initializing data for each survey
-    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_ppg_status", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
+    reference_identifiers = [ 
+      "prepopulated_name", 
+      "prepopulated_date_of_birth", 
+      "prepopulated_ppg_status", 
+      "prepopulated_local_sc", 
+      "prepopulated_sc_phone_number", 
+      "prepopulated_baby_name", 
+      "prepopulated_childs_birth_date"
+    ]
 
     response_type = "string_value"
 
@@ -268,7 +276,9 @@ class Person < ActiveRecord::Base
                   nil
                 end
 
-        response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
+        response_set.responses.build(:question => question, 
+                                     :answer => answer, 
+                                     response_type.to_sym => value)
       end
     end
     response_set

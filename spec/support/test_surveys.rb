@@ -9,7 +9,8 @@ module TestSurveys
     instr = p.start_instrument(s)
     instr.save!
 
-    [instr.response_set, instr]
+    # TODO: update this so that we handle more than one response set
+    [instr.response_sets.first, instr]
   end
 
   def create_test_survey_for_person
