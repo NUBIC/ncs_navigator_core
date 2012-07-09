@@ -53,6 +53,7 @@ Instrument:
 Response:
   uuid:
     reader: target.api_id
+    writer: target.api_id = val
   answer_id:
     reader: target.answer.try(:api_id)
     writer: target.answer_id = Answer.where(:api_id => val).first.try(:id)

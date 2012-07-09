@@ -8,7 +8,7 @@ require 'ncs_navigator/core'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: 82a598075f8368d3a80c6950484a5a08d465ae46
+# Schema revision: 3cf37bd44a2d2b109bbe9db7a81dbbad47cf9d7d
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -1392,6 +1392,12 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def uuid
       target.api_id
     end
+
+    def uuid=(val)
+      target.api_id = val
+    end
+
+    attr_accessible :uuid
 
     def answer_id
       target.answer.try(:api_id)
