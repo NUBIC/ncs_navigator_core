@@ -2,7 +2,7 @@
 Feature: Merging data from field clients
   In order to collect data in the field
   Field workers
-  need to be able to gather and sync data back to NCS Core.
+  need to be able to gather and sync data back to Cases.
 
   See features/fixtures/fieldwork.json for values used in this test.
 
