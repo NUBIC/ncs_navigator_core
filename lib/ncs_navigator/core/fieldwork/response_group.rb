@@ -80,6 +80,18 @@ module NcsNavigator::Core::Fieldwork
       end
     end
 
+    def ancestry
+      map_responses(&:ancestors)
+    end
+
+    def ancestry=(values)
+      values.each do |k, value|
+        if (resp = responses[k])
+          resp.ancestors = value
+        end
+      end
+    end
+
     def changed?
       responses.any? { |_, v| v.changed? }
     end

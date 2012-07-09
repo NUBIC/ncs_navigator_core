@@ -221,6 +221,7 @@ module NcsNavigator::Core::Fieldwork
         return
       end
 
+      c.ancestry = p.ancestry
       c.answer_ids = p.answer_ids
       c.values = p.values
     end
