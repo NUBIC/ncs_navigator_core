@@ -196,9 +196,9 @@ class ContactLinksController < ApplicationController
   	    when "Pregnancy Screener"
           @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
         when "Informed Consent"
-          @disposition_group = disposition_group_for_study_arm(event)
+          @disposition_group = disposition_group_for_study_arm(@event)
         when "Low Intensity Data Collection"
-          @disposition_group = disposition_group_for_study_arm(event)
+          @disposition_group = disposition_group_for_study_arm(@event)
         when "Low to High Conversion"
           contact = @contact_link.contact
           if contact && contact.contact_type
