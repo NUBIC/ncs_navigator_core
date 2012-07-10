@@ -5,7 +5,7 @@
 default_secret = 'cases' * 30
 secret_name = 'CORE_SECRET'
 
-if %w(development test ci).include?(Rails.env)
+if %w(development test ci ci_warehouse).include?(Rails.env)
   NcsNavigatorCore::Application.config.secret_token = ENV[secret_name] || default_secret
 else
   NcsNavigatorCore::Application.config.secret_token = ENV[secret_name] ||
