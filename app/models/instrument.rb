@@ -154,6 +154,11 @@ class Instrument < ActiveRecord::Base
     lbl.include? COLLECTION_LABEL_MARKER
   end
 
+  # FIXME: This is temporary until we fix all places that call Instrument.response_set
+  def response_set
+    response_sets.first
+  end
+
   private
 
     ##
