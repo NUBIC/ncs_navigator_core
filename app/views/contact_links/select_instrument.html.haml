@@ -16,3 +16,10 @@
     %br
     choose the 'Create Non-Interview Report' link to first fill out a report before completing the Contact record.
   = link_to "Create Non-Interview Report", new_non_interview_report_path(:contact_link_id => @contact_link.id), :class => "add_link icon_link"
+  %h3
+    Close Contact
+  .instructional_note
+    When you simply would like to complete data entry for the Contact record
+    %br
+    (e.g. calling Participant to schedule a time to meet)
+  = link_to "Close Contact", edit_contact_link_path(@contact_link), :class => "edit_link icon_link"
