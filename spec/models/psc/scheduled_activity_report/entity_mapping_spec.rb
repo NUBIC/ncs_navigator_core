@@ -84,11 +84,23 @@ class Psc::ScheduledActivityReport
     describe '#resolve_models' do
       let(:sio) { StringIO.new }
       let(:log) { sio.string }
+      let(:staff_id) { 'fa542082-c96f-4886-a6bc-cc9a546d787a' }
 
       before do
         report.logger = ::Logger.new(sio)
+        report.staff_id = staff_id
 
         report.process
+      end
+
+      describe 'with #staff_id blank' do
+        before do
+          report.staff_id = nil
+        end
+
+        it 'raises an error' do
+          lambda { report.resolve_models }.should raise_error
+        end
       end
 
       describe 'for people' do
@@ -202,6 +214,70 @@ class Psc::ScheduledActivityReport
             it 'is linked to the survey' do
               instrument.survey.should == s
             end
+          end
+        end
+      end
+
+      describe 'for contacts' do
+        let!(:p) { Factory(:person, :person_id => person_id) }
+
+        describe 'if there exists a contact for the scheduled date, person, and staff ID' do
+          let!(:c) { Factory(:contact, :contact_date => scheduled_date) }
+
+          before do
+            Factory(:contact_link, :contact => c, :person => p, :staff_id => staff_id)
+          end
+
+          it 'reuses that contact' do
+            report.resolve_models
+
+            report.contacts.models.should == Set.new([c])
+          end
+        end
+
+        describe 'if there does not exist a contact for the scheduled date, person, and staff ID' do
+          it 'starts a new contact' do
+            report.resolve_models
+
+            report.contacts.models.first.should_not be_nil
+          end
+
+          describe 'the started contact' do
+            let(:contact) { report.contacts.models.first }
+
+            before do
+              report.resolve_models
+            end
+
+            it 'is a new record' do
+              contact.should be_new_record
+            end
+          end
+        end
+      end
+
+      describe 'for contact links' do
+        describe 'for (staff ID, person, contact, event, instrument)' do
+          include_context 'one existing event'
+
+          let!(:i) { Factory(:instrument, :event => e) }
+          let!(:c) { Factory(:contact, :contact_date => scheduled_date) }
+
+          describe 'if a link already exists' do
+            let!(:cl) do
+              Factory(:contact_link, :staff_id => staff_id,
+                      :person => p, :event => e, :contact => c)
+            end
+
+            it 'reuses that link' do
+              report.resolve_models
+
+              report.contact_links.models.should == Set.new([cl])
+            end
+          end
+
+          describe 'if a link does not exist' do
+            it 'builds a link'
           end
         end
       end

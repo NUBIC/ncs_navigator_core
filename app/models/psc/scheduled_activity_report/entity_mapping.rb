@@ -10,9 +10,11 @@ class Psc::ScheduledActivityReport
     attr_reader :people
     attr_reader :surveys
 
+    attr_accessor :staff_id
+
     def process
-      @contacts = Collection.new(self)
-      @contact_links = Collection.new(self)
+      @contacts = ContactCollection.new(self)
+      @contact_links = ContactLinkCollection.new(self)
       @events = EventCollection.new(self)
       @instruments = InstrumentCollection.new(self)
       @people = PersonCollection.new(self)
@@ -32,13 +34,20 @@ class Psc::ScheduledActivityReport
     ##
     # Finds or builds model objects that correspond to the entities derived by
     # #process.
+    #
+    # Resolution and construction of contact links requires a staff ID, so
+    # #staff_id must be set before running resolve_models.
     def resolve_models
+      raise 'Model resolution requires #staff_id to be set' unless staff_id
+
       cache = Cache.new
 
       [ people,
+        contacts,
         events,
         surveys,
-        instruments
+        instruments,
+        contact_links
       ].each { |c| c.resolve_models(cache) }
     end
 
@@ -159,7 +168,8 @@ class Psc::ScheduledActivityReport
               ]
             }
           ]
-        }
+        },
+        :contact_links => :contact
       }
 
       def resolve_models(cache)
@@ -186,24 +196,60 @@ class Psc::ScheduledActivityReport
 
     class EventCollection < Collection
       def resolve_models(cache)
-        each { |e| resolve_model(e, cache) }
-      end
+        each do |event|
+          participant = cache.participant_for(event.person)
 
-      def resolve_model(event, cache)
-        participant = cache.participant_for(event.person)
+          next if !participant
 
-        if !participant
-          return
+          possible = participant.events
+          expected = OpenStruct.new(:labels => event.label, :ideal_date => event.ideal_date)
+          accepted = possible.detect { |event| event.matches_activity(expected) }
+
+          if accepted
+            event.model = accepted
+          else
+            logger.error %Q{Cannot map {label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
+          end
         end
+      end
+    end
 
-        possible = participant.events
-        expected = OpenStruct.new(:labels => event.label, :ideal_date => event.ideal_date)
-        accepted = possible.detect { |event| event.matches_activity(expected) }
+    class ContactCollection < Collection
+      def resolve_models(cache)
+        each do |contact|
+          p_model = contact.person.model
 
-        if accepted
-          event.model = accepted
-        else
-          logger.error %Q{Cannot map {label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
+          next if !p_model
+
+          date = Date.parse(contact.scheduled_date)
+
+          possible = p_model.contact_links.select { |cl| cl.staff_id == host.staff_id }.map(&:contact)
+          accepted = possible.detect { |c| c.contact_date_date == date }
+
+          contact.model = accepted || ::Contact.start(p_model, :contact_date => contact.scheduled_date)
+        end
+      end
+    end
+
+    class ContactLinkCollection < Collection
+      def resolve_models(cache)
+        each do |link|
+          p_model = link.person.model
+
+          next if !p_model
+
+          puts "links: #{p_model.contact_links.inspect}"
+          puts "criteria: #{host.staff_id} | #{p_model.id} | #{link.contact.model.id} | #{link.event.try(:model).try(:id)} | #{link.instrument.try(:model).try(:id)} |"
+
+          accepted = p_model.contact_links.detect do |cl|
+            cl.staff_id == host.staff_id &&
+              cl.person_id == p_model.id &&
+              cl.contact_id == link.contact.model.id &&
+              cl.event_id == link.event.try(:model).try(:id) &&
+              cl.instrument_id == link.instrument.try(:model).try(:id)
+          end
+
+          link.model = accepted
         end
       end
     end
