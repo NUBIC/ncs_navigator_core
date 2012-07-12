@@ -2,25 +2,29 @@ require 'set'
 
 class Psc::ScheduledActivityReport
   module EntityMapping
-    attr_accessor :contacts
-    attr_accessor :contact_links
-    attr_accessor :events
-    attr_accessor :instruments
-    attr_accessor :people
+    attr_reader :contacts
+    attr_reader :contact_links
+    attr_reader :events
+    attr_reader :instruments
+    attr_reader :people
+    attr_reader :surveys
 
     def process
-      self.contacts = Collection.new
-      self.contact_links = Collection.new
-      self.events = Collection.new
-      self.instruments = Collection.new
-      self.people = Collection.new
+      @contacts = Collection.new
+      @contact_links = Collection.new
+      @events = Collection.new
+      @instruments = Collection.new
+      @people = Collection.new
+      @surveys = Collection.new
 
       rows.each do |row|
         p = add_person(row)
         c = add_contact(row, p)
         e = add_event(row, c, p)
         i = add_instrument(row, e, p) if e
-        
+
+        add_survey(i) if i
+
         add_contact_link(p, c, e, i)
       end
     end
@@ -51,6 +55,10 @@ class Psc::ScheduledActivityReport
       il = row['labels'].detect { |r| r.starts_with?('instrument:') }
 
       instruments << Instrument.new(il, row['activity_name'], event, person) if il
+    end
+
+    def add_survey(instrument)
+      surveys << Survey.new(instrument)
     end
 
     ##
@@ -95,6 +103,12 @@ class Psc::ScheduledActivityReport
     end
 
     class Person < Struct.new(:person_id)
+    end
+
+    class Survey < Struct.new(:instrument)
+      def access_code
+        instrument.label.match(/^instrument:(.+)_v[\d\.]+/i)[1]
+      end
     end
   end
 end

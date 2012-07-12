@@ -57,6 +57,17 @@ class Psc::ScheduledActivityReport
         ])
       end
 
+      it 'finds surveys' do
+        person = EM::Person.new(person_id)
+        contact = EM::Contact.new(scheduled_date, person)
+        event = EM::Event.new(event_data_collection, ideal_date, contact, person)
+        instrument = EM::Instrument.new(instrument_pregnotpreg, activity_name, event, person)
+
+        report.surveys.should == Set.new([
+          EM::Survey.new(instrument)
+        ])
+      end
+
       # NOTE: This isn't actually testing for ContactLinks.  It, like the rest
       # of the examples, is testing for ContactLink precursors.
       it 'links a person, contact, event, and instrument' do
