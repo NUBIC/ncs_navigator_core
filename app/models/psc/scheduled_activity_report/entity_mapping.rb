@@ -102,12 +102,26 @@ class Psc::ScheduledActivityReport
       end
 
       ##
-      # Given two value objects v1 and v2 that are equal but not eq, selects
-      # the first of [v1, v2] added to the collection, and returns it for all
-      # subsequent << operations.
+      # Given two value objects v1 and v2 that are eql but not equal[0],
+      # selects the first of [v1, v2] added to the collection, and returns it
+      # for all subsequent << operations.
       #
       # We do this because mutating non-comparable state on value objects is
       # quite convenient when it comes to model resolution.
+      #
+      # [0]: See http://ruby-doc.org/core-1.9.3/Object.html#method-i-eql-3F.
+      #
+      # In short:
+      #
+      #     class S < Struct.new(:foo); end
+      #
+      #     a = S.new
+      #     b = S.new
+      #
+      #     a.object_id != b.object_id  # => true
+      #
+      #     a.eql?(b)   # => true
+      #     a.equal?(b) # => false
       def <<(item)
         if @set.has_key?(item)
           @set[item]
