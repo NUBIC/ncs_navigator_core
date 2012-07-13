@@ -13,12 +13,12 @@ class Psc::ScheduledActivityReport
     attr_accessor :staff_id
 
     def process
-      @contacts = ContactCollection.new(self)
-      @contact_links = ContactLinkCollection.new(self)
-      @events = EventCollection.new(self)
-      @instruments = InstrumentCollection.new(self)
-      @people = PersonCollection.new(self)
-      @surveys = SurveyCollection.new(self)
+      @contacts = Contacts.new(self)
+      @contact_links = ContactLinks.new(self)
+      @events = Events.new(self)
+      @instruments = Instruments.new(self)
+      @people = People.new(self)
+      @surveys = Surveys.new(self)
 
       rows.each do |row|
         p = add_person(row)
@@ -104,7 +104,7 @@ class Psc::ScheduledActivityReport
       contact_links << ContactLink.new(person, contact, event, instrument)
     end
 
-    class Collection
+    module Collection
       include Enumerable
 
       attr_reader :host
@@ -182,7 +182,9 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    class PersonCollection < Collection
+    class People
+      include Collection
+
       ASSOCIATIONS = [
         # ::Contact.start
         :contacts,
@@ -213,7 +215,9 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    class EventCollection < Collection
+    class Events
+      include Collection
+
       def resolve_models(cache)
         each do |event|
           participant = cache.participant_for(event.person)
@@ -233,7 +237,9 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    class ContactCollection < Collection
+    class Contacts
+      include Collection
+
       def resolve_models(cache)
         each do |contact|
           p_model = contact.person.model
@@ -250,7 +256,9 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    class ContactLinkCollection < Collection
+    class ContactLinks
+      include Collection
+
       def resolve_models(cache)
         each do |link|
           pm = link.person.model
@@ -274,8 +282,9 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    class SurveyCollection < Collection
-      # TODO: eliminate n-query behavior
+    class Surveys
+      include Collection
+
       def resolve_models(cache)
         each do |survey|
           survey.model = ::Survey.most_recent_for_access_code(survey.access_code)
@@ -287,7 +296,9 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    class InstrumentCollection < Collection
+    class Instruments
+      include Collection
+
       # TODO: eliminate n-query behavior
       def resolve_models(cache)
         each do |instrument|
