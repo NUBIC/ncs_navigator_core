@@ -260,24 +260,57 @@ class Psc::ScheduledActivityReport
         describe 'for (staff ID, person, contact, event, instrument)' do
           include_context 'one existing event'
 
-          let!(:i) { Factory(:instrument, :event => e) }
+          let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
           let!(:c) { Factory(:contact, :contact_date => scheduled_date) }
+          let!(:i) { Instrument.start(p, s, e).tap(&:save!) }
 
           describe 'if a link already exists' do
             let!(:cl) do
               Factory(:contact_link, :staff_id => staff_id,
-                      :person => p, :event => e, :contact => c)
+                      :person => p, :event => e, :contact => c, :instrument => i)
             end
 
             it 'reuses that link' do
               report.resolve_models
 
-              report.contact_links.models.should == Set.new([cl])
+              report.contact_links.models.should include(cl)
             end
           end
 
           describe 'if a link does not exist' do
-            it 'builds a link'
+            it 'builds links' do
+              report.resolve_models
+
+              report.contact_links.models.none?(&:nil?).should be_true
+            end
+
+            describe 'the built link' do
+              let(:links) { report.contact_links.models }
+
+              before do
+                report.resolve_models
+              end
+
+              it 'contains staff ID' do
+                links.all?(&:staff_id).should be_true
+              end
+
+              it 'can connect a contact, event, and person' do
+                ok = links.detect do |cl|
+                  %w(contact event person).all? { |a| cl.send(a) }
+                end
+
+                ok.should be_true
+              end
+
+              it 'can connect a contact, event, instrument, and person' do
+                ok = links.detect do |cl|
+                  %w(contact event instrument person).all? { |a| cl.send(a) }
+                end
+
+                ok.should be_true
+              end
+            end
           end
         end
       end

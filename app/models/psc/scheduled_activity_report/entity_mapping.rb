@@ -248,22 +248,23 @@ class Psc::ScheduledActivityReport
     class ContactLinkCollection < Collection
       def resolve_models(cache)
         each do |link|
-          p_model = link.person.model
+          pm = link.person.model
 
-          next if !p_model
+          next if !pm
 
-          puts "links: #{p_model.contact_links.inspect}"
-          puts "criteria: #{host.staff_id} | #{p_model.id} | #{link.contact.model.id} | #{link.event.try(:model).try(:id)} | #{link.instrument.try(:model).try(:id)} |"
+          cm = link.contact.model
+          em = link.event.try(:model)
+          im = link.instrument.try(:model)
 
-          accepted = p_model.contact_links.detect do |cl|
+          accepted = pm.contact_links.detect do |cl|
             cl.staff_id == host.staff_id &&
-              cl.person_id == p_model.id &&
-              cl.contact_id == link.contact.model.id &&
-              cl.event_id == link.event.try(:model).try(:id) &&
-              cl.instrument_id == link.instrument.try(:model).try(:id)
+              cl.person_id == pm.id &&
+              cl.contact_id == cm.id &&
+              cl.event_id == em.try(:id) &&
+              cl.instrument_id == im.try(&:id)
           end
 
-          link.model = accepted
+          link.model = accepted || ::ContactLink.new(:contact => cm, :event => em, :instrument => im, :person => pm, :staff_id => host.staff_id)
         end
       end
     end
