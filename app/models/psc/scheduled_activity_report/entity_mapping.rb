@@ -52,6 +52,19 @@ class Psc::ScheduledActivityReport
     end
 
     ##
+    # Saves all generated models in a transaction; rolls back the transaction
+    # if any save fails.
+    #
+    # Returns true if all models were saved, false otherwise.
+    def save_models
+      ActiveRecord::Base.transaction do
+        [contacts, instruments, contact_links].all?(&:save).tap do |ok|
+          raise ActiveRecord::Rollback unless ok
+        end
+      end
+    end
+
+    ##
     # @private
     def add_person(row)
       people << Person.new(row['subject']['person_id'])
@@ -146,6 +159,10 @@ class Psc::ScheduledActivityReport
       # Also for testing.
       def models
         Set.new(map(&:model))
+      end
+
+      def save
+        map(&:model).compact.all?(&:save)
       end
 
       def logger
