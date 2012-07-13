@@ -166,25 +166,13 @@ class Psc::ScheduledActivityReport
     end
 
     class PersonCollection < Collection
-      ASSOCIATIONS = {
-        :participant_person_links => {
-          :participant => [
-            {
-              :events => [
-                :instruments, :contacts
-              ],
-            },
-            {
-              :people => [
-                { :addresses => :state },
-                :telephones,
-                :emails
-              ]
-            }
-          ]
-        },
-        :contact_links => :contact
-      }
+      ASSOCIATIONS = [
+        # ::Contact.start
+        :contacts,
+
+        # Event resolution
+        { :participant_person_links => { :participant => { :events => :event_type } } }
+      ]
 
       def resolve_models(cache)
         ids = map(&:person_id)
@@ -283,6 +271,7 @@ class Psc::ScheduledActivityReport
     end
 
     class InstrumentCollection < Collection
+      # TODO: eliminate n-query behavior
       def resolve_models(cache)
         each do |instrument|
           args = [instrument.person, instrument.survey, instrument.event].map(&:model)
