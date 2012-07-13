@@ -186,13 +186,13 @@ class Psc::ScheduledActivityReport
 
           let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
 
-          it 'builds an instrument' do
+          it 'starts an instrument' do
             report.resolve_models
 
             report.instruments.models.first.should_not be_nil
           end
 
-          describe 'the built instrument' do
+          describe 'the started instrument' do
             let(:instrument) { report.instruments.models.first }
 
             before do
