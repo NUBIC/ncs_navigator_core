@@ -315,5 +315,52 @@ class Psc::ScheduledActivityReport
         end
       end
     end
+
+    describe '#save_models' do
+      let(:sio) { StringIO.new }
+      let(:log) { sio.string }
+      let(:staff_id) { 'fa542082-c96f-4886-a6bc-cc9a546d787a' }
+
+      describe 'on success' do
+        # Create prerequisites.
+        let!(:p) { Factory(:person, :person_id => person_id) }
+        let!(:pa) { Factory(:participant) }
+
+        # 10 => informed consent, 33 => low-intensity data collection.
+        let!(:et1) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 10) }
+        let!(:et2) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33) }
+        let!(:e1) { Factory(:event, :participant => pa, :event_start_date => ideal_date, :event_type => et1) }
+        let!(:e2) { Factory(:event, :participant => pa, :event_start_date => ideal_date, :event_type => et2) }
+        let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
+
+
+        before do
+          # Link up.
+          p.participant = pa
+          p.save!
+
+          report.logger = ::Logger.new(sio)
+          report.staff_id = staff_id
+          report.process
+          report.resolve_models
+
+          log.should be_empty
+
+          report.save_models
+        end
+
+        it 'saves generated contacts' do
+          report.contacts.models.none?(&:new_record?).should be_true
+        end
+
+        it 'saves generated instruments' do
+          report.instruments.models.none?(&:new_record?).should be_true
+        end
+
+        it 'saves generated contact links' do
+          report.contact_links.models.none?(&:new_record?).should be_true
+        end
+      end
+    end
   end
 end
