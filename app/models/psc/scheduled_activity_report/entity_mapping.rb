@@ -309,36 +309,28 @@ class Psc::ScheduledActivityReport
       end
     end
 
-    module HasModel
-      attr_accessor :model
-
-      def resolved?
-        model
-      end
-    end
-
     class Contact < Struct.new(:scheduled_date, :person)
-      include HasModel
+      attr_accessor :model
     end
 
     class ContactLink < Struct.new(:person, :contact, :event, :instrument)
-      include HasModel
+      attr_accessor :model
     end
 
     class Event < Struct.new(:label, :ideal_date, :contact, :person)
-      include HasModel
+      attr_accessor :model
     end
 
     class Instrument < Struct.new(:survey, :name, :event, :person)
-      include HasModel
+      attr_accessor :model
     end
 
     class Person < Struct.new(:person_id)
-      include HasModel
+      attr_accessor :model
     end
 
     class Survey < Struct.new(:instrument_label)
-      include HasModel
+      attr_accessor :model
 
       def access_code
         instrument_label.match(/^instrument:(.+)_v[\d\.]+/i)[1]
