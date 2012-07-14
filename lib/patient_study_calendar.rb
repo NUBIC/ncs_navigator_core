@@ -207,7 +207,7 @@ class PatientStudyCalendar
 
   ##
   # Gets information about all scheduled activities for a participant
-  # (cf. ScheduledActivity Struct).
+  # (cf. ScheduledActivity ).
   # Intended to find and re-schedule activities
   # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
@@ -219,11 +219,15 @@ class PatientStudyCalendar
     scheduled_activities = []
     activities.each do |activity|
       if states.nil? or states.include?(activity['current_state']['name'])
-        scheduled_activities << ScheduledActivity.new(
-          activity['study_segment'].to_s, activity['id'],
-          activity['current_state']['name'], activity['ideal_date'], activity['current_state']['date'],
-          activity['activity']['name'].to_s.strip, activity['activity']['type'],
-          activity['labels'])
+        scheduled_activities << ScheduledActivity.new({
+          :study_segment => activity['study_segment'].to_s,
+          :activity_id => activity['id'],
+          :current_state => activity['current_state']['name'],
+          :ideal_date => activity['ideal_date'],
+          :date => activity['current_state']['date'],
+          :activity_name => activity['activity']['name'].to_s.strip,
+          :activity_type => activity['activity']['type'],
+          :labels => activity['labels'] })
       end
     end
     scheduled_activities
@@ -232,7 +236,7 @@ class PatientStudyCalendar
 
   ##
   # Gets information about all activities for a participant
-  # (cf. ScheduledActivity Struct) that relate to the participant's currently
+  # (cf. ScheduledActivity ) that relate to the participant's currently
   # pending events.
   # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
@@ -248,7 +252,7 @@ class PatientStudyCalendar
 
   ##
   # Gets all activities for an event
-  # (cf. ScheduledActivity Struct)
+  # (cf. ScheduledActivity )
   # @param [Event]
   # @return [Array<ScheduledActivity>]
   def activities_for_event(event)
@@ -400,7 +404,8 @@ class PatientStudyCalendar
 
     result = true
     scheduled_activities(participant).each do |activity|
-      if (activity["date"] == next_scheduled_event_date.to_s) && (activity["study_segment"].include?(next_scheduled_event))
+      if (activity.date == next_scheduled_event_date.to_s) &&
+          (activity.study_segment.include?(next_scheduled_event))
         result = false
       end
     end
@@ -857,8 +862,6 @@ class PatientStudyCalendar
       status && status < 300
     end
   end
-
-  ScheduledActivity = Struct.new(:study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels)
 
   class ResponseError < StandardError
     attr_reader :status, :body

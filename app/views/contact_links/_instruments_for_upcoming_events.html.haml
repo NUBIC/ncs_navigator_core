@@ -30,7 +30,7 @@
   - else
     - if !@event_activities.blank?
       - @event_activities.each do |activity|
-        - no_consent = false if activity.include?("Consent")
+        - no_consent = false if activity.consent_activity?
         = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link
     - else
       = render "consent_or_empty", :contact_link => @contact_link

@@ -231,7 +231,15 @@ class Person < ActiveRecord::Base
 
   def prepopulate_response_set(response_set, survey)
     # TODO: determine way to know about initializing data for each survey
-    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth", "prepopulated_ppg_status", "prepopulated_local_sc", "prepopulated_sc_phone_number", "prepopulated_baby_name", "prepopulated_childs_birth_date"]
+    reference_identifiers = [
+      "prepopulated_name", 
+      "prepopulated_date_of_birth", 
+      "prepopulated_ppg_status", 
+      "prepopulated_local_sc", 
+      "prepopulated_sc_phone_number", 
+      "prepopulated_baby_name", 
+      "prepopulated_childs_birth_date"
+    ]
 
     response_type = "string_value"
 
