@@ -52,7 +52,6 @@ module Psc
       new.tap do |r|
         r.filters = data['filters']
         r.rows = data['rows']
-        r.process
       end
     end
 
