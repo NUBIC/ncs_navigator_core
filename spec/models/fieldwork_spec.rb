@@ -75,8 +75,7 @@ describe Fieldwork do
     let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test', 'test') }
 
     before do
-      NcsNavigator::Core::Psc::ScheduledActivityReport.stub!(
-        :from_psc => NcsNavigator::Core::Psc::ScheduledActivityReport.new)
+      Field::ScheduledActivityReport.stub!(:from_psc => Field::ScheduledActivityReport.new)
     end
 
     it 'sets #staff_id' do
@@ -193,24 +192,20 @@ describe Fieldwork do
 
   describe 'before save' do
     describe 'if #report is not nil' do
-      let(:report) { NcsNavigator::Core::Psc::ScheduledActivityReport.new }
+      let(:report) { Field::ScheduledActivityReport.new }
 
       before do
         subject.report = report
-
-        report.stub!(:contacts_as_json)
-        report.stub!(:participants_as_json)
-        report.stub!(:instrument_templates_as_json)
       end
 
       it "saves all report entities" do
-        report.should_receive(:save_entities)
+        report.should_receive(:save_models)
 
         subject.save
       end
 
       it "sets #original_data" do
-        report.stub!(:save_entities => true)
+        report.stub!(:save_models => true)
 
         subject.save
 
@@ -219,7 +214,7 @@ describe Fieldwork do
 
       describe 'if report entities cannot be saved' do
         it 'aborts the save' do
-          report.stub!(:save_entities => false)
+          report.stub!(:save_models => false)
 
           lambda { subject.save! }.should raise_error(ActiveRecord::RecordNotSaved)
         end
@@ -229,11 +224,7 @@ describe Fieldwork do
         let(:json) { JSON.parse(subject.original_data) }
 
         before do
-          report.stub!(:save_entities => true)
-
-          report.should_receive(:contacts_as_json).and_return([])
-          report.should_receive(:participants_as_json).and_return([])
-          report.should_receive(:instrument_templates_as_json).and_return([])
+          report.stub!(:save_models => true)
 
           subject.save
         end

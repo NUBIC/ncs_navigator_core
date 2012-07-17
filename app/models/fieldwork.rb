@@ -20,14 +20,10 @@
 
 
 
-require 'ncs_navigator/core/psc'
 require 'patient_study_calendar'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
-  include NcsNavigator::Core::Fieldwork
-  include NcsNavigator::Core::Psc
-
   has_many :merges, :inverse_of => :fieldwork
 
   before_create :set_default_id
@@ -110,10 +106,11 @@ class Fieldwork < ActiveRecord::Base
 
     new(:start_date => sd, :end_date => ed, :client_id => cid).tap do |f|
       sio = StringIO.new
-      report = ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => PatientStudyCalendar::ACTIVITY_SCHEDULED, :current_user => current_username)
+      report = Field::ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => PatientStudyCalendar::ACTIVITY_SCHEDULED, :current_user => current_username)
       report.logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
+      report.staff_id = staff_id
 
-      report.map_entities
+      report.process
 
       f.generation_log = sio.string
       f.report = report
@@ -140,13 +137,7 @@ class Fieldwork < ActiveRecord::Base
   def serialize_report
     return true unless report
 
-    report.extend(NcsNavigator::Core::Psc::ScheduledActivityReport::JsonForFieldwork)
-
-    report.save_entities(staff_id) and self.original_data = {
-      'contacts' => report.contacts_as_json,
-      'instrument_templates' => report.instrument_templates_as_json,
-      'participants' => report.participants_as_json
-    }.to_json
+    report.save_models and self.original_data = report.to_json
   end
 end
 
