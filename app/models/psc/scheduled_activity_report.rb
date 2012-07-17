@@ -58,17 +58,19 @@ module Psc
     def initialize
       self.rows = []
       self.logger = Rails.logger
-    end
 
-    ##
-    # Generates intermediate representations of Cases entities from the report.
-    def process
       @contact_links = Collection.new
       @contacts = Collection.new
       @events = Collection.new
       @instruments = Collection.new
       @people = Collection.new
       @surveys = Collection.new
+    end
+
+    ##
+    # Generates intermediate representations of Cases entities from the report.
+    def process
+      [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
 
       rows.each do |row|
         p = add_person(row)
@@ -168,6 +170,10 @@ module Psc
 
       def each
         @set.values.each { |v| yield v }
+      end
+
+      def clear
+        @set.clear
       end
 
       ##
