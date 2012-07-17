@@ -33,7 +33,7 @@ class Psc::ScheduledActivityReport
       cache = Cache.new
 
       resolve_people(cache)
-      resolve_events(cache)
+      resolve_events
       resolve_contacts
       resolve_surveys
       resolve_instruments
@@ -98,9 +98,9 @@ class Psc::ScheduledActivityReport
 
     ##
     # @private
-    def resolve_events(cache)
+    def resolve_events
       events.each do |event|
-        participant = cache.participant_for(event.person)
+        participant = event.person.participant_model
 
         next if !participant
 
@@ -134,15 +134,16 @@ class Psc::ScheduledActivityReport
       ids = people.map(&:person_id)
       found = index_people ::Person.where(:person_id => ids).includes(PERSON_EAGER_LOADING)
 
+      cache.add_people(found)
+
       people.each do |p|
         p.model = found[p.person_id]
+        p.participant_model = cache.participant_for(p)
 
         if !p.model
           logger.error "Cannot map {person ID = #{p.person_id}} to a person"
         end
       end
-
-      cache.add_people(found)
     end
 
     ##

@@ -211,6 +211,7 @@ module Psc
     # {Person} representation.
     class Person < Struct.new(:person_id)
       attr_accessor :model
+      attr_accessor :participant_model
     end
 
     ##
