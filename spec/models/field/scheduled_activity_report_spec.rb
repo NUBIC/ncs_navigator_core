@@ -35,6 +35,10 @@ module Field
               p.model = person
             end
           end
+
+          before do
+            report.people << person_ir
+          end
         end
 
         shared_context 'has a contact' do
@@ -194,6 +198,36 @@ module Field
           end
         end
 
+        shared_context 'has an instrument' do
+          include_context 'has an event'
+
+          let(:instruments) { json['contacts'][0]['events'][0]['instruments'] }
+          let(:instrument) { Factory(:instrument, :survey => survey, :response_set => response_set) }
+          let(:response_set) { Factory(:response_set) }
+          let(:survey) { Factory(:survey) }
+
+          let(:survey_ir) do
+            R::Survey.new.tap do |s|
+              s.model = survey
+            end
+          end
+
+          let(:instrument_ir) do
+            R::Instrument.new.tap do |i|
+              i.event = event_ir
+              i.person = person_ir
+              i.survey = survey_ir
+              i.name = 'An instrument'
+              i.model = instrument
+            end
+          end
+
+          before do
+            report.surveys << survey_ir
+            report.instruments << instrument_ir
+          end
+        end
+
         describe 'events.instruments' do
           include_context 'has an event'
 
@@ -204,30 +238,7 @@ module Field
           end
 
           describe 'if the report has an instrument for the event' do
-            let(:instruments) { json['contacts'][0]['events'][0]['instruments'] }
-            let(:instrument) { Factory(:instrument, :survey => survey) }
-            let(:response_set) { Factory(:response_set, :instrument => instrument) }
-            let(:survey) { Factory(:survey) }
-
-            let(:survey_ir) do
-              R::Survey.new.tap do |s|
-                s.model = survey
-              end
-            end
-
-            let(:instrument_ir) do
-              R::Instrument.new.tap do |i|
-                i.event = event_ir
-                i.person = person_ir
-                i.survey = survey_ir
-                i.name = 'An instrument'
-                i.model = instrument
-              end
-            end
-
-            before do
-              report.instruments << instrument_ir
-            end
+            include_context 'has an instrument'
 
             it 'sets #/0/instrument_id' do
               instruments[0]['instrument_id'].should == instrument.instrument_id
@@ -239,6 +250,104 @@ module Field
 
             it 'sets #/0/response_set' do
               instruments[0]['response_set'].should == JSON.parse(response_set.to_json)
+            end
+          end
+        end
+
+        describe 'instrument_templates' do
+          include_context 'has an instrument'
+
+          let(:templates) { json['instrument_templates'] }
+
+          it 'sets #/0/instrument_template_id' do
+            templates[0]['instrument_template_id'].should == survey.api_id
+          end
+
+          it 'sets #/0/version' do
+            templates[0]['version'].should == survey.updated_at.utc.as_json
+          end
+
+          it 'sets #/0/survey' do
+            templates[0]['survey'].should == JSON.parse(survey.to_json)
+          end
+        end
+
+        describe 'participants' do
+          include_context 'has a person'
+
+          let(:participants) { json['participants'] }
+          let(:participant) { Factory(:participant) }
+          let(:link) { participant.participant_person_links.build(:person => person, :relationship_code => 1) }
+
+          before do
+            link.save!
+            person_ir.participant_model = participant
+          end
+
+          shared_examples_for 'a participant data generator' do
+            it 'sets #/0/p_id' do
+              participants[0]['p_id'].should == participant.p_id
+            end
+
+            it 'sets #/0/version' do
+              participants[0]['version'].should == participant.updated_at.utc.as_json
+            end
+
+            it 'sets #/0/persons/0/name' do
+              participants[0]['persons'][0]['name'].should == person.name
+            end
+
+            it 'sets #/0/persons/0/person_id' do
+              participants[0]['persons'][0]['person_id'].should == person.person_id
+            end
+
+            it 'sets #/0/persons/0/relationship_code' do
+              participants[0]['persons'][0]['relationship_code'].should == link.relationship_code.to_i
+            end
+          end
+
+          describe 'with missing associated entities' do
+            it_should_behave_like 'a participant data generator'
+          end
+
+          describe 'with associated entities' do
+            let!(:cell) { Factory(:telephone, :phone_nbr => '123-456-7890', :person => person, :phone_rank_code => 1, :phone_type_code => Telephone.cell_phone_type.to_i) }
+            let!(:home) { Factory(:telephone, :phone_nbr => '987-654-3210', :person => person, :phone_rank_code => 1, :phone_type_code => Telephone.home_phone_type.to_i) }
+            let!(:email) { Factory(:email, :email => 'foo@example.com', :person => person, :email_rank_code => 1) }
+            let!(:address) { Factory(:address, :city => 'Anywhere', :zip => '12345', :zip4 => '6789', :person => person, :address_rank_code => 1) }
+
+            it_should_behave_like 'a participant data generator'
+
+            it 'sets #/0/persons/0/cell_phone' do
+              participants[0]['persons'][0]['cell_phone'].should == cell.phone_nbr
+            end
+
+            it 'sets #/0/persons/0/city' do
+              participants[0]['persons'][0]['city'].should == address.city
+            end
+
+            it 'sets #/0/persons/0/email' do
+              participants[0]['persons'][0]['email'].should == email.email
+            end
+
+            it 'sets #/0/persons/0/home_phone' do
+              participants[0]['persons'][0]['home_phone'].should == home.phone_nbr
+            end
+
+            it 'sets #/0/persons/0/state' do
+              participants[0]['persons'][0]['state'].should == address.state.display_text
+            end
+
+            it 'sets #/0/persons/0/street' do
+              participants[0]['persons'][0]['street'].should == [address.address_one, address.address_two].join("\n")
+            end
+
+            it 'sets #/0/persons/0/zip_code' do
+              participants[0]['persons'][0]['zip_code'].should == [address.zip, address.zip4].join('-')
+            end
+
+            it 'sets #/0/persons/0/version' do
+              participants[0]['persons'][0]['version'].should == person.updated_at.utc.as_json
             end
           end
         end
