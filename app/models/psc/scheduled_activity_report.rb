@@ -70,6 +70,8 @@ module Psc
     ##
     # Generates intermediate representations of Cases entities from the report.
     def process
+      logger.info 'Mapping started'
+
       [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
 
       rows.each do |row|
@@ -81,6 +83,8 @@ module Psc
 
         add_contact_link(p, c, e, i)
       end
+
+      logger.info 'Mapping complete'
     end
 
     ##
