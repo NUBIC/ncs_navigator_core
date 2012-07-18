@@ -148,6 +148,7 @@ Factory.define :instrument do |ins|
   ins.supervisor_review_code     1
   ins.data_problem_code          1
   ins.instrument_version "1.2"
+  ins.instrument_repeat_key      0
 
 end
 

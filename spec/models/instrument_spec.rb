@@ -82,6 +82,7 @@ describe Instrument do
   it { should have_one(:contact_link) }
 
   it { should validate_presence_of(:instrument_version) }
+  it { should validate_presence_of(:instrument_repeat_key) }
 
   describe '.start' do
     let(:event) { Factory(:event) }
@@ -155,7 +156,7 @@ describe Instrument do
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
 
-      ins = Instrument.new(:instrument_version => "0.1")
+      ins = Instrument.new(:instrument_version => "0.1", :instrument_repeat_key => 0)
       ins.event = Factory(:event)
       ins.save!
 
@@ -271,7 +272,7 @@ describe Instrument do
         }
 
         let(:new_instrument_attributes) {
-          { :instrument_version => '0.0', :event => Factory(:event) }
+          { :instrument_version => '0.0', :instrument_repeat_key => 0, :event => Factory(:event) }
         }
 
         let(:new_instrument) {

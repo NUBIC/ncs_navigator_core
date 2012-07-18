@@ -16,7 +16,7 @@
 #  instrument_method_code   :integer          not null
 #  instrument_mode_code     :integer          not null
 #  instrument_mode_other    :string(255)
-#  instrument_repeat_key    :integer
+#  instrument_repeat_key    :integer          not null, default(0)
 #  instrument_start_date    :date
 #  instrument_start_time    :string(255)
 #  instrument_status_code   :integer          not null
@@ -58,6 +58,7 @@ class Instrument < ActiveRecord::Base
   has_one :response_set, :inverse_of => :instrument
 
   validates_presence_of :instrument_version
+  validates_presence_of :instrument_repeat_key
 
   before_create :set_default_codes
 
@@ -169,6 +170,5 @@ class Instrument < ActiveRecord::Base
         end
       end
     end
-
 end
 
