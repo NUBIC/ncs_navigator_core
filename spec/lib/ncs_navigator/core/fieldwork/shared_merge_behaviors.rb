@@ -116,6 +116,7 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
 
   describe 'if O = nil, C = P = X' do
     before do
+      o.send(writer, nil)
       c.send(writer, x)
       p.send(writer, x)
     end
@@ -129,6 +130,8 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
 
   describe 'if O = C = nil, P = X' do
     before do
+      o.send(writer, nil)
+      c.send(writer, nil)
       p.send(writer, x)
     end
 
@@ -141,6 +144,7 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
 
   describe 'if O = nil, C = X, P = Y' do
     before do
+      o.send(writer, nil)
       c.send(writer, x)
       p.send(writer, y)
     end
@@ -218,10 +222,9 @@ shared_examples_for 'a resolver', :fieldwork_merge do |entity, property|
 
   describe 'if O = P = nil, C = X' do
     before do
+      o.send(writer, nil)
       c.send(writer, x)
-
-      # At this point, P is not nil, but all of its values are blank,
-      # which is what we want for testing the resolver.
+      p.send(writer, nil)
     end
 
     it "does not modify C##{property}" do
