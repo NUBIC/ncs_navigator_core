@@ -198,6 +198,8 @@ module NcsNavigator::Core::Fieldwork
           vc = c[attr]
           vp = p[attr]
 
+          logger.debug { "Resolving #{attr}, [vo, vc, vp] = #{[vo, vc, vp].inspect}" }
+
           case S[vo, vc, vp]
           when S[nil, nil, vp];  h[attr] = vp
           when S[nil, vc, nil];  h[attr] = vc
