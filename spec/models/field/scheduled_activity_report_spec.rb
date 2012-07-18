@@ -251,6 +251,12 @@ module Field
             it 'sets #/0/response_set' do
               instruments[0]['response_set'].should == JSON.parse(response_set.to_json)
             end
+
+            # This is a quick check against an error in Surveyor's JSON
+            # serialization code that keeps cropping up.
+            it 'sets #/0/response_set to a non-blank value' do
+              instruments[0]['response_set'].should_not be_blank
+            end
           end
         end
 
@@ -269,6 +275,11 @@ module Field
 
           it 'sets #/0/survey' do
             templates[0]['survey'].should == JSON.parse(survey.to_json)
+          end
+
+          # Same sort of check.
+          it 'sets #/0/survey to a non-blank value' do
+            templates[0]['survey'].should_not be_blank
           end
         end
 
