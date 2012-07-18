@@ -20,7 +20,7 @@ module Field
           json.should have_key('contacts')
         end
 
-        it 'has a "instrument_templates" key' do
+        it 'has an "instrument_templates" key' do
           json.should have_key('instrument_templates')
         end
         
