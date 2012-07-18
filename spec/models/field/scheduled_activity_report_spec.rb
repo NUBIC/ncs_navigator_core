@@ -248,6 +248,10 @@ module Field
               instruments[0]['instrument_template_id'].should == survey.api_id
             end
 
+            it "sets #/0/name to the instrument's activity name" do
+              instruments[0]['name'].should == instrument_ir.name
+            end
+
             it 'sets #/0/response_set' do
               instruments[0]['response_set'].should == JSON.parse(response_set.to_json)
             end

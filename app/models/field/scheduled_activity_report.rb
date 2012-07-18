@@ -56,7 +56,7 @@ module Field
         if mi && ms
           adapt_model(mi).as_json(options).merge({
             'instrument_template_id' => ms.api_id,
-            'name' => ms.title,
+            'name' => i.name,
             'response_set' => mi.response_set
           })
         end
