@@ -106,7 +106,7 @@ class Psc::ScheduledActivityReport
 
         possible = participant.events
         expected = OpenStruct.new(:labels => event.label, :ideal_date => event.ideal_date)
-        accepted = possible.detect { |event| event.matches_activity(expected) }
+        accepted = possible.detect { |e| e.matches_activity(expected) }
 
         if accepted
           event.model = accepted
