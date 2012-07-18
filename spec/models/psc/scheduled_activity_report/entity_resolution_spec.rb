@@ -272,8 +272,6 @@ class Psc::ScheduledActivityReport
           report.staff_id = staff_id
           report.process
 
-          log.should be_empty
-
           report.save_models
         end
 
