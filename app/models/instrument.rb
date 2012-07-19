@@ -113,6 +113,11 @@ class Instrument < ActiveRecord::Base
     instrument_type.to_s
   end
 
+  ##
+  # The Instrument is considered complete
+  # if there is an end_date, an end_time, and the instrument status is 'Complete'
+  #
+  # @return [Boolean]
   def complete?
     !instrument_end_date.blank? && !instrument_end_time.blank? && instrument_status.to_s == "Complete"
   end
@@ -157,6 +162,11 @@ class Instrument < ActiveRecord::Base
   # FIXME: This is temporary until we fix all places that call Instrument.response_set
   def response_set
     response_sets.first
+  end
+
+  # FIXME: This is temporary until we fix all places that call Instrument.response_set=
+  def response_set=(rs)
+    response_sets[0] = rs
   end
 
   private

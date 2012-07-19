@@ -12,7 +12,7 @@ describe ScheduledActivity do
       :activity_name => "Birth Interview",
       :activity_type => "Instrument",
       :person_id => "asdf",
-      :labels => "event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self"
+      :labels => "event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:ins_que_birth_int_ehpbhi_p2_v2.0"
     }
   end
 
@@ -42,7 +42,7 @@ describe ScheduledActivity do
 
     describe ".participant_type" do
       it "extracts participant_type from the label" do
-        scheduled_activity.participant_type.should == "self"
+        scheduled_activity.participant_type.should == "child"
       end
     end
 
@@ -54,14 +54,80 @@ describe ScheduledActivity do
 
     describe ".order" do
       it "extracts order from the label" do
-        scheduled_activity.order.should == "01_01"
+        scheduled_activity.order.should == "01_02"
       end
     end
 
     describe ".instrument" do
       it "extracts instrument from the label" do
-        scheduled_activity.instrument.should == "ins_que_birth_int_ehpbhi_p2_v2.0"
+        scheduled_activity.instrument.should == "ins_que_birth_int_ehpbhi_p2_v2.0_baby_name"
       end
+    end
+
+    describe ".references" do
+      it "extracts references from the label" do
+        scheduled_activity.references.should == "ins_que_birth_int_ehpbhi_p2_v2.0"
+      end
+    end
+
+  end
+
+  context "sorting" do
+
+    let(:sc1) { ScheduledActivity.new(:labels => "order:01_01") }
+    let(:sc2) { ScheduledActivity.new(:labels => "order:01_02") }
+
+    describe ".<=>" do
+
+      it "sorts by the order attribute" do
+        (sc1.<=> sc2).should == -1
+      end
+
+      it "sorts" do
+        [sc2, sc1].sort.should == [sc1, sc2]
+      end
+
+    end
+
+    context "with instruments" do
+
+      let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:A") }
+      let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:A.B") }
+
+      describe ".<=>" do
+
+        it "sorts by the order attribute then the instrument name" do
+          (sc11.<=> sc12).should == -1
+        end
+
+        it "sorts" do
+          [sc12, sc11].sort.should == [sc11, sc12]
+        end
+
+      end
+
+    end
+
+    context "with people" do
+
+      let(:p1)   { Factory(:participant, :p_id => "a") }
+      let(:p2)   { Factory(:participant, :p_id => "b") }
+
+      let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:X", :participant => p1) }
+      let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:X", :participant => p2) }
+
+      describe ".<=>" do
+
+        it "sorts by the order attribute, instrument name, then participant_id.p_id" do
+          (sc11.<=> sc12).should == -1
+        end
+
+        it "sorts" do
+          [sc12, sc11].sort.should == [sc11, sc12]
+        end
+
+      end
+
     end
 
   end

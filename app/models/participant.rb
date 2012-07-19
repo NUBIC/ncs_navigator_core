@@ -924,7 +924,9 @@ class Participant < ActiveRecord::Base
   private
 
     def relationships(code)
-      participant_person_links.select { |ppl| ppl.relationship.local_code == code }.collect { |ppl| ppl.person }
+      participant_person_links.
+        select  { |ppl| ppl.relationship.local_code == code }.
+        collect { |ppl| ppl.person }
     end
 
     def next_low_intensity_study_segment

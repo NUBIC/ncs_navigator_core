@@ -170,7 +170,7 @@ module NcsNavigator::Core::Psc
       describe '#map_instruments' do
         let!(:event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7) }
         let!(:event) { Factory(:event, :participant => participant, :event_start_date => Date.new(2012, 2, 16), :event_type => event_type) }
-        let!(:survey) { Factory(:survey, :title => 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1', :access_code => 'ins_que_ppgfollup_saq_ehpbhili_p2') }
+        let!(:survey) { Factory(:survey, :title => 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1', :access_code => Survey.to_normalized_string('ins_que_ppgfollup_saq_ehpbhili_p2')) }
         let!(:response_set) { Factory(:response_set, :instrument => instrument, :survey => survey, :person => person) }
         let!(:instrument) { Factory(:instrument, :survey => survey) }
 
