@@ -194,42 +194,5 @@ module NcsNavigator::Core::Fieldwork
         subject.responses[response_id][:current].should == response
       end
     end
-
-    describe '#group_responses' do
-      let!(:q) { Factory(:question, :api_id => question_id) }
-      let!(:a) { Factory(:answer) }
-      let!(:response) { Factory(:response, :api_id => response_id, :question => q, :answer => a) }
-
-      let(:original) { subject.responses[response_id][:original] }
-      let(:current) { subject.responses[response_id][:current] }
-      let(:proposed) { subject.responses[response_id][:proposed] }
-
-      before do
-        load_original
-        load_proposed
-        load_current
-
-        subject.group_responses
-
-        # A validity check on test inputs.
-        original.question_id.should == question_id
-        current.question_id.should == question_id
-        proposed.question_id.should == question_id
-      end
-
-      it 'groups responses by question ID' do
-        expected_original = subject.responses[response_id][:original]
-        expected_current = subject.responses[response_id][:current]
-        expected_proposed = subject.responses[response_id][:proposed]
-
-        subject.response_groups.should == {
-          question_id => {
-            :original => ResponseGroup.new([expected_original]),
-            :current => ResponseGroup.new([expected_current]),
-            :proposed => ResponseGroup.new([expected_proposed])
-          }
-        }
-      end
-    end
   end
 end

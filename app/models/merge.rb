@@ -116,7 +116,6 @@ class Merge < ActiveRecord::Base
       sp.set_original(JSON.parse(original_data))
       sp.set_proposed(JSON.parse(proposed_data))
       sp.set_current
-      sp.group_responses
 
       sp.merge
 

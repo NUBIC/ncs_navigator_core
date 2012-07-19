@@ -11,8 +11,7 @@ module NcsNavigator::Core::Fieldwork
   # fieldwork set sent to a field client, and a corresponding fieldwork set
   # received from a field client.
   #
-  # Currently, four entities are merged: {Contact}, {Event}, {Instrument},
-  # and {ResponseSet}.
+  # Currently, three entities are merged: {Contact}, {Event}, {Instrument}.
   #
   #
   # The contact and event merge algorithm
@@ -115,13 +114,6 @@ module NcsNavigator::Core::Fieldwork
   #   X     Y     Y     Y
   #   X     Y     Z     conflict
   #
-  #
-  # Responses are grouped by question
-  # =================================
-  #
-  # Responses are first grouped by question; those groups are then merged
-  # according to the above algorithm.
-  #
   # @see https://code.bioinformatics.northwestern.edu/issues/wiki/ncs-navigator-core/Field_-%3E_Core_merge#Response-set
   module Merge
     attr_accessor :logger
@@ -133,7 +125,6 @@ module NcsNavigator::Core::Fieldwork
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
-      response_groups.each { |id, state| merge_entity(state, 'ResponseGroup', id) }
     end
 
     ##
@@ -150,7 +141,7 @@ module NcsNavigator::Core::Fieldwork
     # abort.
     def save
       ActiveRecord::Base.transaction do
-        [contacts, events, instruments, response_groups].map { |c| save_collection(c) }.all?.tap do |res|
+        [contacts, events, instruments].map { |c| save_collection(c) }.all?.tap do |res|
           unless res
             logger.fatal { 'Errors raised during save; rolling back' }
             raise ActiveRecord::Rollback
@@ -186,10 +177,6 @@ module NcsNavigator::Core::Fieldwork
     end
 
     def resolve(o, c, p, entity, id)
-      if [o, c, p].all? { |e| e.nil? || ResponseGroup === e }
-        return resolve_response_group(o, c, p, entity, id)
-      end
-
       {}.tap do |h|
         attrs_to_merge = c.class.accessible_attributes
 
@@ -215,17 +202,6 @@ module NcsNavigator::Core::Fieldwork
 
         c.attributes = h
       end
-    end
-
-    def resolve_response_group(o, c, p, entity, id)
-      unless c =~ p
-        conflicts.add(entity, id, :self, o, c, p)
-        return
-      end
-
-      c.ancestry = p.ancestry
-      c.answer_ids = p.answer_ids
-      c.values = p.values
     end
 
     ##
