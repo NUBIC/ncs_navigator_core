@@ -45,9 +45,10 @@ module NcsNavigator::Core::Warehouse
     def test_defaults_for(mdes_model)
       {
         :staff_id => 'staff_public_id',
-        :relation => '1'
+        :relation => '1',
+        :instrument_repeat_key => '0'
       }.inject({}) do |d, (prop_name, default_value)|
-        if mdes_model.properties[prop_name] && mdes_model.properties[prop_name].required?
+        if mdes_model.properties[prop_name]
           d[prop_name] = default_value
         end
         d
