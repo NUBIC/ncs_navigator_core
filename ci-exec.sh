@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 if [ -z $RAILS_ENV ]; then
-    RAILS_ENV=ci
+    export RAILS_ENV=ci
 fi
 
 if [ -z $BUNDLER_VERSION ]; then
