@@ -85,54 +85,96 @@ describe Instrument do
 
   describe '.start' do
     let(:event) { Factory(:event) }
-    let(:person) { Factory(:person) }
-    let(:survey) { Factory(:survey, :title => 'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0') }
+    let(:person) { Factory(:person, :person_id => 'mother') }
+    let(:child) { Factory(:person, :person_id => 'child') }
+    let(:survey) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0') }
+    let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
     let(:inst) { Factory(:instrument, :survey => survey) }
 
-    describe 'if there is no response set for the (person, survey) pair' do
-      it 'returns the result of Person#start_instrument' do
-        person.should_receive(:start_instrument).with(survey).and_return(inst)
-
-        Instrument.start(person, survey, event).should == inst
-      end
-
-      it "sets the instrument's event to event" do
-        inst = Instrument.start(person, survey, event)
-
-        inst.event.should == event
-      end
-    end
-
-    describe 'if there is a response set for the (person, survey) pair' do
-      before do
-        Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
-      end
-
-      describe 'if the event is closed' do
-        before do
-          event.stub(:closed? => true)
-        end
-
+    context 'a survey with one part' do
+      describe 'if there is no response set for the (person, survey) pair' do
         it 'returns the result of Person#start_instrument' do
           person.should_receive(:start_instrument).with(survey).and_return(inst)
 
-          Instrument.start(person, survey, event).should == inst
+          Instrument.start(person, person, survey, nil, event).should == inst
         end
 
         it "sets the instrument's event to event" do
-          inst = Instrument.start(person, survey, event)
+          inst = Instrument.start(person, person, survey, nil, event)
 
           inst.event.should == event
         end
       end
 
-      describe 'if the event is not closed' do
+      describe 'if there is a response set for the (person, survey) pair' do
         before do
-          event.stub(:closed? => false)
+          Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
         end
 
-        it "returns the response set's instrument" do
-          Instrument.start(person, survey, event).should == inst
+        describe 'if the event is closed' do
+          before do
+            event.stub(:closed? => true)
+          end
+
+          it 'returns the result of Person#start_instrument' do
+            person.should_receive(:start_instrument).with(survey).and_return(inst)
+
+            Instrument.start(person, person, survey, nil, event).should == inst
+          end
+
+          it "sets the instrument's event to event" do
+            inst = Instrument.start(person, person, survey, nil, event)
+
+            inst.event.should == event
+          end
+        end
+
+        describe 'if the event is not closed' do
+          before do
+            event.stub(:closed? => false)
+          end
+
+          let(:i) { Instrument.start(person, person, survey, nil, event) }
+
+          it "returns the response set's instrument" do
+            i.should == inst
+          end
+
+          it "has one response set" do
+            i.response_sets.size.should == 1
+          end
+
+        end
+      end
+    end
+
+    context 'a survey with more than one part' do
+
+      context 'with an Instrument record created for the first part' do
+
+        let!(:instrument) do
+          i = Instrument.start(person, person, survey, nil, event)
+          i.save!
+          i
+        end
+
+        describe 'the second survey part' do
+          it 'returns the Instrument associated with the first part' do
+            Instrument.start(person, child, survey, survey_part, event).should == instrument
+          end
+
+          it 'creates a response set associated with the current_person sent (2nd parameter)' do
+            instrument.response_sets.size.should == 1
+            instrument.response_sets.first.person.should == person
+
+            i = Instrument.start(person, child, survey, survey_part, event)
+            i.should == instrument
+
+            i.response_sets.size.should == 2
+            i.response_sets.first.person.should == person
+            i.response_sets.last.person.should == child
+          end
+
         end
       end
     end

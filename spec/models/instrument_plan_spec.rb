@@ -96,9 +96,9 @@ describe InstrumentPlan do
       describe "for a mother with two children" do
         let(:mother) { Factory(:high_intensity_postnatal_participant) }
         let(:mp) { Factory(:person, :person_id => "mother") }
-        let(:child1) { Factory(:participant) }
+        let(:child1) { Factory(:participant, :p_id => "child1") }
         let(:cp1) { Factory(:person, :person_id => "child1") }
-        let(:child2) { Factory(:participant) }
+        let(:child2) { Factory(:participant, :p_id => "child2") }
         let(:cp2) { Factory(:person, :person_id => "child2") }
 
         before(:each) do

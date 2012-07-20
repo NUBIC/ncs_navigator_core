@@ -71,14 +71,14 @@ class Contact < ActiveRecord::Base
   # @param [Hash]
   def self.start(person, attrs={})
     if person
-      language = person.contacts.detect(&:contact_language_code)
+      language    = person.contacts.detect(&:contact_language_code)
       interpreter = person.contacts.detect(&:contact_interpret_code)
     end
 
     Contact.new({
-      :contact_language_code => language.try(:contact_language_code),
-      :contact_language_other => language.try(:contact_language_other),
-      :contact_interpret_code => interpreter.try(:contact_interpret_code),
+      :contact_language_code   => language.try(:contact_language_code),
+      :contact_language_other  => language.try(:contact_language_other),
+      :contact_interpret_code  => interpreter.try(:contact_interpret_code),
       :contact_interpret_other => interpreter.try(:contact_interpret_other)
     }.merge(attrs))
   end

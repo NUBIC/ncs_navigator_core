@@ -20,7 +20,10 @@ module NcsNavigator::Core::Psc
            "ideal_date"=>"2012-02-16",
            "labels"=>
             ["event:pregnancy_probability",
-             "instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"],
+             "instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+             "references:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+             "participant_type:self",
+             "order:01_01"],
            "last_change_reason"=>"Participant requested",
            "responsible_user"=>"pfr957",
            "scheduled_date"=>"2012-02-29",
@@ -68,6 +71,51 @@ module NcsNavigator::Core::Psc
       it "sets the report's rows" do
         @report.rows.should == psc_data['rows'].map { |r| ScheduledActivityReport::Row.new(r) }
       end
+
+      describe "row data" do
+
+        let(:row) do
+          psc_data['rows'].map { |r| ScheduledActivityReport::Row.new(r) }[0]
+        end
+
+        describe ".ideal_date" do
+          it 'is the scheduled activity ideal date' do
+            row.ideal_date.should == '2012-02-16'
+          end
+        end
+
+        describe ".event_label" do
+          it 'is the scheduled activity event label' do
+            row.event_label.should == 'event:pregnancy_probability'
+          end
+        end
+
+        describe ".instrument_label" do
+          it 'is the scheduled activity instrument label' do
+            row.instrument_label.should == 'instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1'
+          end
+        end
+
+        describe ".references_label" do
+          it 'is the scheduled activity references label' do
+            row.references_label.should == 'references:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1'
+          end
+        end
+
+        describe ".survey_access_code" do
+          it 'is the scheduled activity instrument label stripped of the identifier' do
+            row.survey_access_code.should == 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1'
+          end
+        end
+
+        describe ".references_survey_access_code" do
+          it 'is the scheduled activity references label stripped of the identifier' do
+            row.references_survey_access_code.should == 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1'
+          end
+        end
+
+      end
+
     end
 
     context 'entity mapping' do
@@ -168,9 +216,11 @@ module NcsNavigator::Core::Psc
       end
 
       describe '#map_instruments' do
+        let!(:survey_title) { 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1' }
+        let!(:access_code) { Survey.to_normalized_string(survey_title) }
         let!(:event_type) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 7) }
         let!(:event) { Factory(:event, :participant => participant, :event_start_date => Date.new(2012, 2, 16), :event_type => event_type) }
-        let!(:survey) { Factory(:survey, :title => 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1', :access_code => Survey.to_normalized_string('ins_que_ppgfollup_saq_ehpbhili_p2')) }
+        let!(:survey) { Factory(:survey, :title => survey_title, :access_code => access_code) }
         let!(:response_set) { Factory(:response_set, :instrument => instrument, :survey => survey, :person => person) }
         let!(:instrument) { Factory(:instrument, :survey => survey) }
 
@@ -377,11 +427,13 @@ module NcsNavigator::Core::Psc
       end
 
       describe '#save_entities' do
+        let(:survey_title) { 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1' }
+        let(:access_code) { Survey.to_normalized_string(survey_title) }
         let(:c) { Factory.build(:contact) }
         let(:e) { Factory(:event) }
-        let(:i) { Instrument.start(p, s, e) }
+        let(:i) { Instrument.start(p, p, s, s, e) }
         let(:p) { Factory(:person) }
-        let(:s) { Factory(:survey, :title => 'ins_que_ppgfollup_saq_ehpbhili_p2_v1.1', :access_code => 'ins_que_ppgfollup_saq_ehpbhili_p2') }
+        let(:s) { Factory(:survey, :title => survey_title, :access_code => access_code) }
 
         let(:r1) do
           OpenStruct.new(:contact => c,

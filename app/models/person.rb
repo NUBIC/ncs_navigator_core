@@ -218,12 +218,13 @@ class Person < ActiveRecord::Base
   # and pre-populates questions to which we have previous data.
   #
   # @param [Survey]
-  # @return [ResponseSet]
-  def start_instrument(survey)
+  # @return [Instrument]
+  def start_instrument(survey, instrument = nil)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
 
-    build_instrument(survey).tap do |instr|
+    instrument = build_instrument(survey) if instrument.nil?
+    instrument.tap do |instr|
       instr.response_sets.build(:survey => survey, :user_id => self.id)
       instr.response_sets.each { |rs| prepopulate_response_set(rs, survey) }
     end
@@ -232,12 +233,12 @@ class Person < ActiveRecord::Base
   def prepopulate_response_set(response_set, survey)
     # TODO: determine way to know about initializing data for each survey
     reference_identifiers = [
-      "prepopulated_name", 
-      "prepopulated_date_of_birth", 
-      "prepopulated_ppg_status", 
-      "prepopulated_local_sc", 
-      "prepopulated_sc_phone_number", 
-      "prepopulated_baby_name", 
+      "prepopulated_name",
+      "prepopulated_date_of_birth",
+      "prepopulated_ppg_status",
+      "prepopulated_local_sc",
+      "prepopulated_sc_phone_number",
+      "prepopulated_baby_name",
       "prepopulated_childs_birth_date"
     ]
 
@@ -301,7 +302,7 @@ class Person < ActiveRecord::Base
     return open_contact_links.first if open_contact_links.size == 1
     # TODO: what to do if there is more than one open contact?
   end
-  
+
   ##
   # Create a new Instrument for the Person associated with the given Survey.
   #

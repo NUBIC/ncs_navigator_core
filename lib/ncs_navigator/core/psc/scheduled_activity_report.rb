@@ -195,9 +195,10 @@ module NcsNavigator::Core::Psc
 
           targeted.each do |r|
             r.survey = survey_map[r.survey_access_code]
+            r.references_survey = survey_map[r.references_survey_access_code]
 
             if r.person && r.survey && r.event
-              r.instrument = Instrument.start(r.person, r.survey, r.event)
+              r.instrument = Instrument.start(r.person, r.person, r.survey, r.references_survey, r.event)
             end
           end
         end
@@ -258,6 +259,7 @@ module NcsNavigator::Core::Psc
       attr_accessor :instrument
       attr_accessor :person
       attr_accessor :survey
+      attr_accessor :references_survey
 
       attr_reader :row
 
@@ -289,12 +291,20 @@ module NcsNavigator::Core::Psc
         row['labels'].detect { |l| l =~ /^instrument:/ }
       end
 
+      def references_label
+        row['labels'].detect { |l| l =~ /^references:/ }
+      end
+
       def scheduled_date
         row['scheduled_date']
       end
 
       def survey_access_code
-        instrument_label.match(/instrument:(.+)_v[\d\.]+/i)[1]
+        instrument_label.match(/instrument:(.+)/i)[1]
+      end
+
+      def references_survey_access_code
+        references_label.match(/references:(.+)/i)[1]
       end
 
       def person_id
