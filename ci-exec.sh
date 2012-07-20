@@ -4,10 +4,7 @@ if [ -z $RAILS_ENV ]; then
     export RAILS_ENV=ci
 fi
 
-if [ -z $BUNDLER_VERSION ]; then
-    BUNDLER_VERSION=1.1.3
-fi
-
+BUNDLER_VERSION=1.1.4
 GEMSET=ncs_navigator_core
 
 if [ -z $CI_RUBY ]; then
