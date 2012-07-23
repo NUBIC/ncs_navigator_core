@@ -4,6 +4,8 @@
 require 'ncs_navigator/core'
 
 require 'case'
+require 'forwardable'
+require 'set'
 
 module NcsNavigator::Core::Fieldwork
   ##
@@ -125,6 +127,31 @@ module NcsNavigator::Core::Fieldwork
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
+      grouped_responses.each { |id, state| merge_entity(state, 'Question', id) }
+    end
+
+    def grouped_responses
+      res = {}
+
+      responses.each do |_, state|
+        state.each do |name, response|
+          res[response.question_id] ||= {}
+          res[response.question_id][name] ||= ResponseGroup.new
+          res[response.question_id][name] << response
+        end
+      end
+
+      res
+    end
+
+    class ResponseGroup
+      extend Forwardable
+
+      def_delegators :@responses, :<<, :==
+
+      def initialize
+        @responses = Set.new
+      end
     end
 
     ##

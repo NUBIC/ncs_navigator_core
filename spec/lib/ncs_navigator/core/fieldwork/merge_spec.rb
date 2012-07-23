@@ -104,5 +104,54 @@ module NcsNavigator::Core::Fieldwork
       it_merges 'instrument_type_code'
       it_merges 'instrument_type_other'
     end
+
+    describe '#grouped_responses' do
+      include NcsNavigator::Core::Fieldwork::Adapters
+
+      let(:q1) { Factory(:question) }
+      let(:q2) { Factory(:question) }
+
+      let(:hr1) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr1) { adapt_model(Response.new(:question => q1)) }
+      let(:hr1b) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr1b) { adapt_model(Response.new(:question => q1)) }
+      let(:hr2) { adapt_hash(:response, 'question_id' => q2.api_id) }
+      let(:mr2) { adapt_model(Response.new(:question => q2)) }
+
+      before do
+        subject.responses = {
+          'foo' => {
+            :current => hr1,
+            :original => mr1,
+            :proposed => hr1
+          },
+          'bar' => {
+            :current => hr1b,
+            :original => mr1b,
+            :proposed => hr1b
+          },
+          'baz' => {
+            :current => hr2,
+            :original => mr2,
+            :proposed => hr2
+          }
+        }
+      end
+
+      it 'groups responses by question ID' do
+        subject.grouped_responses.should == {
+          q1.api_id => {
+            :current => [hr1, hr1b],
+            :original => [mr1, mr1b],
+            :proposed => [hr1, hr1b]
+          },
+          q2.api_id => {
+            :current => [hr2],
+            :original => [mr2],
+            :proposed => [hr2]
+          }
+        }
+      end
+    end
   end
 end
