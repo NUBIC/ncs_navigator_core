@@ -169,10 +169,8 @@ class Instrument < ActiveRecord::Base
   # @param[String]
   # @return[String]
   def self.parse_label(lbl)
-    return nil if lbl.blank?
-    part = lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first.to_s
-    return nil if part.blank?
-    part.gsub(INSTRUMENT_LABEL_MARKER, "")
+    lbl = Instrument.instrument_label(lbl)
+    lbl.to_s.include?(':') ? lbl.split(':').last : lbl
   end
 
   def self.surveyor_access_code(lbl)
@@ -182,6 +180,17 @@ class Instrument < ActiveRecord::Base
 
   def self.collection?(lbl)
     lbl.include? COLLECTION_LABEL_MARKER
+  end
+
+  def self.mdes_version(lbl)
+    lbl = Instrument.instrument_label(lbl)
+    lbl = lbl.to_s.split(':')
+    lbl.size == 3 ? lbl[1] : nil
+  end
+
+  def self.instrument_label(lbl)
+    return nil if lbl.blank?
+    lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first
   end
 
   # FIXME: This is temporary until we fix all places that call Instrument.response_set

@@ -283,6 +283,77 @@ describe Instrument do
 
       describe "#collection?" do
         it "returns true if label denotes a collection activity" do
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
+          Instrument.collection?(lbl).should be_true
+        end
+
+        it "returns false if label does not denote a collection activity" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Instrument.collection?(lbl).should be_false
+        end
+      end
+
+    end
+
+
+    context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
+      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0' }
+
+      describe '#determine_version' do
+        it 'returns 1.0 for psc label' do
+          Instrument.determine_version(lbl).should == "1.0"
+        end
+
+        it 'returns 1.0 for surveyor access code' do
+          Instrument.determine_version(code).should == "1.0"
+        end
+
+        it 'returns 1.0 for survey title' do
+          Instrument.determine_version(title).should == "1.0"
+        end
+      end
+
+      describe "#mdes_version" do
+        it "returns mdes version from the instrument portion of the label" do
+          Instrument.mdes_version(lbl).should == "2.0"
+        end
+
+        it "returns nil if label is blank" do
+          Instrument.mdes_version("").should be_nil
+        end
+
+        it "returns nil if instrument portion is not included in label" do
+          Instrument.mdes_version("event:low_intensity_data_collection").should be_nil
+        end
+
+        it "returns nil if mdes version is not in the instrument portion is not included in label" do
+          Instrument.mdes_version("instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0").should be_nil
+        end
+
+      end
+
+      describe "#parse_label" do
+        it "returns the instrument portion of the label" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
+        end
+
+        it "returns nil if label is blank" do
+          lbl = ""
+          Instrument.parse_label(lbl).should be_nil
+        end
+
+        it "returns nil if instrument portion is not included in label" do
+          lbl = "event:low_intensity_data_collection"
+          Instrument.parse_label(lbl).should be_nil
+        end
+      end
+
+      describe "#collection?" do
+        it "returns true if label denotes a collection activity" do
           lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
           Instrument.collection?(lbl).should be_true
         end
@@ -294,6 +365,7 @@ describe Instrument do
       end
 
     end
+
   end
 
   describe 'default code values' do
