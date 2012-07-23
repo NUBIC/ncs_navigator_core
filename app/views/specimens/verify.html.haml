@@ -95,12 +95,7 @@
       %br
 
       Sent to Site:
-      - if @send_to_site_selected.blank?
-        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site), :class => "important_field")
-        %span{ :class => "required" } *
-      - else
-        = select_tag("dest[]", options_for_select([["-- Select Destination --", ""]] + @send_to_site, @send_to_site_selected), :class => "important_field")
-        %span{ :class => "required" } *        
+      = @send_to_site
       %br
 
       Carrier:
