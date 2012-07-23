@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core'
 
 require 'case'
 require 'forwardable'
 require 'set'
 
-module NcsNavigator::Core::Fieldwork
+module Field
   ##
   # Performs a 3-way merge across the current state of Core's datastore, a
   # fieldwork set sent to a field client, and a corresponding fieldwork set

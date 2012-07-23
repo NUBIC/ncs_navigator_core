@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core'
 
-module NcsNavigator::Core::Fieldwork
+module Field
   ##
   # A Superposition represents three states of the entities involved with a
   # {Fieldwork} set:
@@ -164,7 +163,7 @@ module NcsNavigator::Core::Fieldwork
     end
 
     class Context < Struct.new(:state, :superposition, :ancestors)
-      include Adapters
+      include NcsNavigator::Core::Fieldwork::Adapters
 
       def add(entity, object, key)
         collection = entity.to_s.pluralize.underscore

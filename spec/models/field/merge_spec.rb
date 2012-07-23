@@ -7,10 +7,10 @@ require 'json'
 
 require File.expand_path('../shared_merge_behaviors', __FILE__)
 
-SCHEMA_FILE = File.expand_path('../../../../../../vendor/ncs_navigator_schema/fieldwork_schema.json', __FILE__)
+SCHEMA_FILE = "#{Rails.root}/vendor/ncs_navigator_schema/fieldwork_schema.json"
 SCHEMA = JSON.parse(File.read(SCHEMA_FILE))
 
-module NcsNavigator::Core::Fieldwork
+module Field
   describe Merge do
     subject do
       Class.new(Superposition) do

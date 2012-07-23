@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 require 'set'
 
-module NcsNavigator::Core::Fieldwork
+module Field
   describe Superposition do
     subject { Superposition.new }
 
