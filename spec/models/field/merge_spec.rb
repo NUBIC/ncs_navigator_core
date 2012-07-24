@@ -105,7 +105,7 @@ module Field
       it_merges 'instrument_type_other'
     end
 
-    describe '#grouped_responses' do
+    describe '#build_question_response_sets' do
       include NcsNavigator::Core::Fieldwork::Adapters
 
       let(:q1) { Factory(:question) }
@@ -142,7 +142,9 @@ module Field
       QRS = Field::QuestionResponseSet
 
       it 'groups responses by question ID' do
-        subject.grouped_responses.should == {
+        subject.build_question_response_sets
+
+        subject.question_response_sets.should == {
           q1.api_id => {
             :current =>  QRS.new(hr1, hr1b),
             :original => QRS.new(mr1, mr1b),

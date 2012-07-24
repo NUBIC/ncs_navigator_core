@@ -97,17 +97,20 @@ module Field
   module Merge
     attr_accessor :logger
     attr_accessor :conflicts
+    attr_accessor :question_response_sets
 
     def merge
       self.conflicts = ConflictReport.new
 
+      build_question_response_sets
+
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
-      grouped_responses.each { |id, state| merge_entity(state, 'Question', id) }
+      question_response_sets.each { |id, state| merge_entity(state, 'QuestionResponseSet', id) }
     end
 
-    def grouped_responses
+    def build_question_response_sets
       res = {}
 
       responses.each do |_, state|
@@ -118,7 +121,7 @@ module Field
         end
       end
 
-      res
+      self.question_response_sets = res
     end
 
     ##
