@@ -17,9 +17,10 @@ describe BirthOperationalDataExtractor do
       Factory(:ppg_detail, :participant => @participant)
 
       @participant.participant_person_links.size.should == 1
+      @participant.save!
     end
 
-    it "creates a new person (Child) record and associates it with the particpant" do
+    it "creates a new person (Child) record and associates it with the participant" do
       survey = create_birth_survey_with_child_operational_data
       response_set, instrument = prepare_instrument(@person, survey)
 
@@ -44,7 +45,10 @@ describe BirthOperationalDataExtractor do
       child.last_name.should == "Williams"
       child.sex.should == @female
 
-      # child.mother.should == person - will not know until child is a participant
+      child.participant.should_not be_nil
+      child.participant.mother.should == person
+      child.participant.mother.participant.should == participant
+      person.participant.children.should include(child)
     end
 
   end
@@ -62,6 +66,7 @@ describe BirthOperationalDataExtractor do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
       @survey = create_birth_survey_with_tracing_operational_data
     end
 

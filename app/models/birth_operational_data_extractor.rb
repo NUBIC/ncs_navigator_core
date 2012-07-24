@@ -89,12 +89,10 @@ class BirthOperationalDataExtractor
       Rails.logger.info("~~~~ extract_data called")
 
       person = response_set.person
-      if person.participant.blank?
-        participant = Participant.create
-        participant.person = person
-      else
-        participant = person.participant
-      end
+      # TODO: The person taking the survey may not necessarily be the participant
+      #       cf. Bug #2292
+      #       fix this so that the participant is correctly set
+      participant = person.participant
 
       primary_rank = OperationalDataExtractor.primary_rank
 
@@ -123,10 +121,8 @@ class BirthOperationalDataExtractor
         if CHILD_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
 
-            child ||= Person.where(:response_set_id => response_set.id).where(CHILD_PERSON_MAP[data_export_identifier].to_sym => value).first
-
             if child.nil?
-              child = Person.new(:psu => person.psu, :response_set => response_set)
+              child = Person.new(:psu => person.psu)
               Rails.logger.info("~~~ created child #{child.inspect}")
             end
             child.send("#{CHILD_PERSON_MAP[data_export_identifier]}=", value)
@@ -193,6 +189,7 @@ class BirthOperationalDataExtractor
       if child
         child.save!
         ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
+        self.make_child_participant(child, person)
       end
 
       if email && !email.email.blank?
@@ -227,6 +224,15 @@ class BirthOperationalDataExtractor
       person.save!
 
     end
+
+    def make_child_participant(child, mother)
+      child_participant = Participant.create(:psu => child.psu)
+      child_participant.person = child
+      child_participant.save!
+      ParticipantPersonLink.create(:person_id => mother.id, :participant_id => child.id, :relationship_code => 2) # 2 = Mother, associating child with its mother
+    end
+
   end
+
 
 end
