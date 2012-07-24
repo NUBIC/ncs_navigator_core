@@ -110,13 +110,14 @@ module Field
 
       let(:q1) { Factory(:question) }
       let(:q2) { Factory(:question) }
+      let(:a) { Factory(:answer) }
 
       let(:hr1) { adapt_hash(:response, 'question_id' => q1.api_id) }
-      let(:mr1) { adapt_model(Response.new(:question => q1)) }
+      let(:mr1) { adapt_model(Response.new(:question => q1, :answer => a)) }
       let(:hr1b) { adapt_hash(:response, 'question_id' => q1.api_id) }
-      let(:mr1b) { adapt_model(Response.new(:question => q1)) }
+      let(:mr1b) { adapt_model(Response.new(:question => q1, :answer => a)) }
       let(:hr2) { adapt_hash(:response, 'question_id' => q2.api_id) }
-      let(:mr2) { adapt_model(Response.new(:question => q2)) }
+      let(:mr2) { adapt_model(Response.new(:question => q2, :answer => a)) }
 
       before do
         subject.responses = {
