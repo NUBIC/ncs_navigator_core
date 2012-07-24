@@ -51,6 +51,12 @@ module Field
     end
 
     ##
+    # A QuestionResponseSet is changed if any of its responses are changed.
+    def changed?
+      false
+    end
+
+    ##
     # Wraps Responses in a comparable value object.
     def wrap(r)
       Response.new(r.question_id, r.answer_id, r.response_group, r.value).tap do |rf|

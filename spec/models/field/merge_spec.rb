@@ -105,6 +105,103 @@ module Field
       it_merges 'instrument_type_other'
     end
 
+    describe 'when merging QuestionResponseSets' do
+      before do
+        test_set = {
+          uuid => { :original => o, :current => c, :proposed => p }
+        }
+
+        subject.question_response_sets = test_set
+      end
+
+      let(:conflicts) { subject.conflicts }
+      let(:set) { subject.question_response_sets.values.first }
+      let(:uuid) { 'foo' }
+
+      def new_nonempty_qrs(*responses)
+        Field::QuestionResponseSet.new(*responses)
+      end
+
+      def create_response_model
+        q = Factory(:question)
+        a = Factory(:answer)
+
+        Factory(:response, :question => q, :answer => a)
+      end
+
+      def merge
+        subject.merge
+      end
+
+      describe 'for sets O, C, P' do
+        include NcsNavigator::Core::Fieldwork::Adapters
+
+        describe 'if O = C = P = nil' do
+          let(:o) { nil }
+          let(:c) { nil }
+          let(:p) { nil }
+
+          it 'leaves C at nil' do
+            merge
+
+            set[:current].should be_nil
+          end
+        end
+
+        describe 'if O = P = nil and C exists' do
+          let(:o) { nil }
+          let(:c) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:p) { nil }
+
+          it 'does not modify C' do
+            merge
+
+            set[:current].should_not be_changed
+          end
+        end
+
+        describe 'if C = P = nil and O exists' do
+          let(:o) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:c) { nil }
+          let(:p) { nil }
+
+          it 'leaves C at nil' do
+            merge
+
+            set[:current].should be_nil
+          end
+        end
+
+        describe 'if O exists, C is nil, and P is new' do
+          let(:o) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:c) { nil }
+          let(:p) { new_nonempty_qrs(adapt_hash(:response, {})) }
+
+          it 'signals a conflict' do
+            merge
+
+            conflicts.should == {
+              'QuestionResponseSet' => { uuid => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
+            }
+          end
+
+          it 'leaves C at nil' do
+            set[:current].should be_nil
+          end
+        end
+
+        describe 'if O exists, C exists, and P is nil' do
+          let(:o) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:c) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:p) { nil }
+
+          it 'does not modify C' do
+            set[:current].should_not be_changed
+          end
+        end
+      end
+    end
+
     describe '#build_question_response_sets' do
       include NcsNavigator::Core::Fieldwork::Adapters
 
