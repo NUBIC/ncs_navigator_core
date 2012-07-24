@@ -101,8 +101,7 @@ module Field
 
     def merge
       self.conflicts = ConflictReport.new
-
-      build_question_response_sets
+      self.question_response_sets ||= {}
 
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
