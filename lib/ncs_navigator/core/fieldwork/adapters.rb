@@ -299,6 +299,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
+    def merge_atomically?
+      false
+    end
+
     def ==(other)
       to_model == other.to_model
     end
@@ -655,6 +659,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
+    def merge_atomically?
+      false
+    end
+
     def ==(other)
       to_model == other.to_model
     end
@@ -999,6 +1007,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
+    def merge_atomically?
+      false
+    end
+
     def ==(other)
       to_model == other.to_model
     end
@@ -1215,6 +1227,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
+    def merge_atomically?
+      false
+    end
+
     def ==(other)
       to_model == other.to_model
     end
@@ -1277,6 +1293,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
+    end
+
+    def merge_atomically?
+      false
     end
 
     def ==(other)
@@ -1475,6 +1495,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
+    def merge_atomically?
+      false
+    end
+
     def ==(other)
       to_model == other.to_model
     end
@@ -1585,6 +1609,10 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def attributes=(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
+    end
+
+    def merge_atomically?
+      false
     end
 
     def ==(other)

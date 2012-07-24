@@ -45,6 +45,12 @@ module Field
     end
 
     ##
+    # ResponseGroups must be merged all-or-nothing.
+    def merge_atomically?
+      true
+    end
+
+    ##
     # Wraps Responses in a comparable value object.
     def wrap(r)
       Response.new(r.question_id, r.answer_id, r.response_group, r.value).tap do |rf|
