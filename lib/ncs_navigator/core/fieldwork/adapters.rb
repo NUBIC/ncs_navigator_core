@@ -8,7 +8,7 @@ require 'ncs_navigator/core'
 ##
 # These adapters were bootstrapped from the fieldwork JSON schema.
 #
-# Schema revision: 3cf37bd44a2d2b109bbe9db7a81dbbad47cf9d7d
+# Schema revision: 3a646300298ff48e1ac390283e3a6a6283893d47
 module NcsNavigator::Core::Fieldwork::Adapters
   def adapt_hash(type, o)
     case type
@@ -1419,6 +1419,16 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     attr_accessible :question_id
 
+    def response_group
+      target.response_group
+    end
+
+    def response_group=(val)
+      target.response_group = val
+    end
+
+    attr_accessible :response_group
+
     def response_set_id
       target.response_set_id
     end
@@ -1496,6 +1506,14 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def question_id=(val)
       target[%q{question_id}] = val
+    end
+
+    def response_group
+      (target[%q{response_group}])
+    end
+
+    def response_group=(val)
+      target[%q{response_group}] = val
     end
 
     def updated_at
