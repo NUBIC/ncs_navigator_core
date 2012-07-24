@@ -167,30 +167,52 @@ module Field
     end
 
     def resolve(o, c, p, entity, id)
-      {}.tap do |h|
-        attrs_to_merge = c.class.accessible_attributes
+      if c.merge_atomically?
+        raise 'Atomic merge not yet implemented'
+      else
+        resolve_nonatomic(o, c, p, entity, id)
+      end
+    end
 
-        attrs_to_merge.each do |attr|
-          vo = o[attr] if o
-          vc = c[attr]
-          vp = p[attr]
+    ##
+    # @private
+    def resolve_nonatomic(o, c, p, entity, id)
+      patch = {}
 
-          logger.debug { "Resolving #{attr}, [vo, vc, vp] = #{[vo, vc, vp].inspect}" }
+      attrs_to_merge = c.class.accessible_attributes
 
-          case S[vo, vc, vp]
-          when S[nil, nil, vp];  h[attr] = vp
-          when S[nil, vc, nil];  h[attr] = vc
-          when S[nil, vc, vc];   h[attr] = vc
-          when S[nil, vc, vp];   conflicts.add(entity, id, attr, vo, vc, vp)
-          when S[vo, vo, vo];    h[attr] = vo
-          when S[vo, vo, vp];    h[attr] = vp
-          when S[vo, vc, vo];    h[attr] = vc
-          when S[vo, vc, vc];    h[attr] = vc
-          when S[vo, vc, vp];    conflicts.add(entity, id, attr, vo, vc, vp)
-          end
+      attrs_to_merge.each do |attr|
+        vo = o[attr] if o
+        vc = c[attr]
+        vp = p[attr]
+
+        logger.debug { "Resolving #{attr}, [vo, vc, vp] = #{[vo, vc, vp].inspect}" }
+
+        result = collapse(vo, vc, vp)
+
+        if result == :conflict
+          conflicts.add(entity, id, attr, vo, vc, vp)
+        else
+          patch[attr] = result
         end
+      end
 
-        c.patch(h)
+      c.patch(patch)
+    end
+
+    ##
+    # @private
+    def collapse(o, c, p)
+      case S[o, c, p]
+      when S[nil, nil, p]; p
+      when S[nil, c, nil]; c
+      when S[nil, c, c];   c
+      when S[nil, c, p];   :conflict
+      when S[o, o, o];     o
+      when S[o, o, p];     p
+      when S[o, c, o];     c
+      when S[o, c, c];     c
+      when S[o, c, p];     :conflict
       end
     end
 
