@@ -190,15 +190,11 @@ module Field
       c = state[:current]
       p = state[:proposed]
 
-      case S[o, c, p]
-      when S[nil, nil, N[nil]] then
-        state[:current] = p.to_model
-      when S[nil, N[nil], N[nil]]
-        resolve(o, c, p, entity, id)
-      when S[N[nil], nil, N[nil]]
-        conflicts.add(entity, id, :self, o, c, p)
-      when S[N[nil], N[nil], N[nil]]
-        resolve(o, c, p, entity, id)
+      case [o.blank?, c.blank?, p.blank?]
+      when [true,     true,     false]; state[:current] = p.to_model
+      when [true,     false,    false]; resolve(o, c, p, entity, id)
+      when [false,    true,     false]; conflicts.add(entity, id, :self, o, c, p)
+      when [false,    false,    false]; resolve(o, c, p, entity, id)
       end
     end
 
