@@ -12,110 +12,88 @@ module Field
   # fieldwork set sent to a field client, and a corresponding fieldwork set
   # received from a field client.
   #
-  # Currently, three entities are merged: {Contact}, {Event}, {Instrument}.
+  # Currently, four entities are merged: {Contact}, {Event}, {Instrument}, and
+  # {Response} via {QuestionResponseSet}.
   #
   #
-  # The contact and event merge algorithm
-  # =====================================
+  # Overview
+  # ========
   #
-  # Nomenclature
-  # ------------
+  # There are three states for each entity:
   #
-  # * E(O): the entity as it existed when the fieldwork set was generated,
-  #         i.e. the original state of an entity
-  # * E(C): the entity as it exists at merge time
-  # * E(P): the entity as proposed by a field client
-  # * A: the merge action
+  # Original: the state of the entity at fieldwork set checkout
+  # Current: the state of the entity at merge start
+  # Proposed: the state of the entity from Field
   #
+  # Any of the three states may also be blank; to the merge algorithm, this
+  # means "the entity does not exist in the given state".
   #
-  # Entity states
-  # -------------
-  #
-  # * nil: the entity doesn't exist
-  # * new: the entity is unpersisted in one or more processes
-  # * exist: the entity has been persisted
-  #
-  # It is impossible for E(P) to ever be in state "exist": by definition,
-  # E(P) is the proposed state, and therefore has not been persisted.
+  # Merge, then, is a process of determining a new current state.
   #
   #
-  # Actions
-  # -------
+  # Atomic vs. non-atomic merge
+  # ===========================
   #
-  # * none: do nothing
-  # * new: create a new contact
-  # * conflict: signal a conflict
-  # * resolve: resolve the changes, signaling a conflict if unsuccessful
+  # Contacts, Events, and Instruments can all be merged non-atomically, which
+  # means that we can commit changes even in the presence of conflicts.  (Also,
+  # we can retry the merge on those entities and progress towards a fully
+  # merged state.)
   #
-  #     E(O)    E(C)    E(P)    A
-  #     ------------------------------------
-  #     nil     nil     nil     none
-  #     nil     nil     new     new
-  #     nil     new     nil     none [1]
-  #     nil     new     new     conflict [2]
-  #     nil     exist   nil     none
-  #     nil     exist   new     resolve
-  #     exist   nil     nil     none
-  #     exist   nil     new     conflict
-  #     exist   new     new     conflict [2]
-  #     exist   exist   nil     none
-  #     exist   exist   new     resolve
+  # QuestionResponseSets, on the other hand, must be merged atomically: if
+  # there exist conflicts on any attribute on any Response, none of the
+  # Responses in the group can be merged.
+  #
+  # The difference, then, is one of merge granularity.  It makes sense to merge
+  # individual attributes on operational data; however, because responses in
+  # surveys can be related to each other in ways that are difficult to merge,
+  # we take a conservative all-or-nothing approach.
+  #
+  # (Just to be clear, this has nothing to do with database transactions; all
+  # merge commits occur in the scope of a single transaction.)
   #
   #
-  # [1]: This can occur if another merge is running concurrently: merge A
-  # (the merge of concern) won't see the results of merge B, so it won't do
-  # anything about the newly created entity.
+  # Resolution algorithm
+  # ====================
   #
-  # [2]: This also can occur with concurrent merges; however, in this case,
-  # an ActiveRecord::StaleObjectError will be raised by one of the merges.
-  # When this occurs, the failing merge will be restarted.
+  # First, we check only whether entities are blank.  If original and current
+  # are blank, we can just accept proposed as-is.
+  #
+  # original#blank?   current#blank?    proposed#blank?   Result
+  # --------------------------------------------------------------
+  # true              true              true              blank
+  # true              true              false             proposed
+  # true              false             true              conflict
+  # true              false             false             resolve
+  # false             true              true              blank
+  # false             true              false             conflict
+  # false             false             true              current
+  # false             false             false             resolve
+  #
+  # Where the action is "resolve", we look at the entity or attributes
+  # (depending on atomicity) and apply the following decision table, where X,
+  # Y, and Z represent non-blank values:
+  #
+  # original    current   proposed    result
+  # ------------------------------------------
+  # blank       blank     X           X
+  # blank       X         blank       X
+  # blank       X         X           X
+  # blank       X         Y           conflict
+  # X           X         X           X
+  # X           X         Y           Y
+  # X           Y         X           Y
+  # X           Y         Y           Y
+  # X           Y         Z           conflict
   #
   #
-  # Attribute merge
-  # ===============
+  # Concurrency considerations
+  # ==========================
   #
-  # This algorithm is used on a per-attribute basis in the resolve phase of the
-  # entity merge algorithm.
+  # While it is possible to concurrently run multiple merges on the same subset
+  # of entities, only one merge can win an update race.
   #
-  #
-  # Nomenclature
-  # ------------
-  #
-  # * O: the original state of the attribute
-  # * C: the current state of the attribute
-  # * P: the proposed state of the attribute
-  # * A: the merge action
-  #
-  #
-  # Entity states
-  # -------------
-  #
-  # An attribute may have one of the states X, Y, or Z, where
-  #
-  #     X != Y != Z != nil
-  #
-  # .
-  #
-  # Actions
-  # -------
-  #
-  # * X: use value X
-  # * Y: use value Y
-  # * conflict: signal a conflict
-  #
-  #   O     C     P     R
-  #   --------------------------
-  #   nil   nil   X     X
-  #   nil   X     nil   X
-  #   nil   X     X     X
-  #   nil   X     Y     conflict
-  #   X     X     X     X
-  #   X     X     Y     Y
-  #   X     Y     X     Y
-  #   X     Y     Y     Y
-  #   X     Y     Z     conflict
-  #
-  # @see https://code.bioinformatics.northwestern.edu/issues/wiki/ncs-navigator-core/Field_-%3E_Core_merge#Response-set
+  # All entities involved in the merge use ActiveRecord's optimistic locking
+  # mechanism, and Merge#save will re-raise ActiveRecord::StaleObjectError.
   module Merge
     attr_accessor :logger
     attr_accessor :conflicts
