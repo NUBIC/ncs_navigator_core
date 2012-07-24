@@ -139,19 +139,19 @@ module Field
         }
       end
 
-      RG = Field::ResponseGroup
+      QRS = Field::QuestionResponseSet
 
       it 'groups responses by question ID' do
         subject.grouped_responses.should == {
           q1.api_id => {
-            :current =>  RG.new(hr1, hr1b),
-            :original => RG.new(mr1, mr1b),
-            :proposed => RG.new(hr1, hr1b)
+            :current =>  QRS.new(hr1, hr1b),
+            :original => QRS.new(mr1, mr1b),
+            :proposed => QRS.new(hr1, hr1b)
           },
           q2.api_id => {
-            :current =>  RG.new(hr2),
-            :original => RG.new(mr2),
-            :proposed => RG.new(hr2)
+            :current =>  QRS.new(hr2),
+            :original => QRS.new(mr2),
+            :proposed => QRS.new(hr2)
           }
         }
       end

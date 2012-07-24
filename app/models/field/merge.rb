@@ -113,7 +113,7 @@ module Field
       responses.each do |_, state|
         state.each do |name, response|
           res[response.question_id] ||= {}
-          res[response.question_id][name] ||= ResponseGroup.new
+          res[response.question_id][name] ||= QuestionResponseSet.new
           res[response.question_id][name] << response
         end
       end

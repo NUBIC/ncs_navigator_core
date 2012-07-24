@@ -4,16 +4,16 @@ require 'set'
 module Field
   ##
   # This defines an equivalence class (by question ID) on Surveyor's {Response}
-  # object.  It also provides code to compare two ResponseGroups for answer
-  # equality and answer-and-value equality.
+  # object.  It also provides code to compare two QuestionResponseSets for
+  # answer equality and answer-and-value equality.
   #
-  # ResponseGroup objects are designed to permit merging survey data with
+  # QuestionResponseSet objects are designed to permit merging survey data with
   # {Merge}.
   #
-  # The first response added to a ResponseGroup determines the question ID for
-  # the ResponseGroup.  Attempts to add responses having different question IDs
-  # will raise an error.
-  class ResponseGroup
+  # The first response added to a QuestionResponseSet determines the question
+  # ID for the QuestionResponseSet.  Attempts to add responses having different
+  # question IDs will raise an error.
+  class QuestionResponseSet
     extend Forwardable
 
     attr_reader :responses
@@ -34,7 +34,7 @@ module Field
       end
 
       if @question_id != response.question_id
-        raise "Cannot add a response with question ID #{response.question_id} to a ResponseGroup with question ID #{@question_id}"
+        raise "Cannot add a response with question ID #{response.question_id} to a #{self.class.name} with question ID #{@question_id}"
       end
 
       responses << wrap(response)
@@ -45,7 +45,7 @@ module Field
     end
 
     ##
-    # ResponseGroups must be merged all-or-nothing.
+    # QuestionResponseSets must be merged all-or-nothing.
     def merge_atomically?
       true
     end

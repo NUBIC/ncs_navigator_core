@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module Field
-  describe ResponseGroup do
-    let(:group) { ResponseGroup.new }
+  describe QuestionResponseSet do
+    let(:group) { QuestionResponseSet.new }
     let(:r1) { stub(:question_id => 'foo').as_null_object }
     let(:r2) { stub(:question_id => 'bar').as_null_object }
 
@@ -23,13 +23,13 @@ module Field
     end
 
     describe '#blank?' do
-      describe 'if a ResponseGroup has no responses' do
+      describe 'if a QuestionResponseSet has no responses' do
         it 'returns true' do
           group.should be_blank
         end
       end
 
-      describe 'if a ResponseGroup has a response' do
+      describe 'if a QuestionResponseSet has a response' do
         before do
           group << stub.as_null_object
         end
@@ -41,8 +41,8 @@ module Field
     end
 
     describe '#==' do
-      let(:g1) { ResponseGroup.new }
-      let(:g2) { ResponseGroup.new }
+      let(:g1) { QuestionResponseSet.new }
+      let(:g2) { QuestionResponseSet.new }
 
       describe 'if g1 and g2 do not address the same question ID' do
         before do
@@ -88,8 +88,8 @@ module Field
     end
 
     describe '#replace' do
-      let(:g1) { ResponseGroup.new }
-      let(:g2) { ResponseGroup.new }
+      let(:g1) { QuestionResponseSet.new }
+      let(:g2) { QuestionResponseSet.new }
     end
   end
 end
