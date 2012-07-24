@@ -190,7 +190,7 @@ module Field
           end
         end
 
-        c.attributes = h
+        c.patch(h)
       end
     end
 

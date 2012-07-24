@@ -295,7 +295,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -479,7 +479,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(Contact.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
@@ -655,7 +655,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -807,7 +807,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(Event.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
@@ -1003,7 +1003,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -1187,7 +1187,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(Instrument.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
@@ -1223,7 +1223,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -1255,7 +1255,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(Participant.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
@@ -1291,7 +1291,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -1395,7 +1395,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(Person.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
@@ -1491,7 +1491,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -1571,7 +1571,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(Response.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
@@ -1607,7 +1607,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :save,
       :valid?
 
-    def attributes=(target)
+    def patch(target)
       sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
     end
 
@@ -1663,7 +1663,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     def to_model
       adapt_model(ResponseSet.new).tap do |m|
         m.ancestors = ancestors
-        m.attributes = target
+        m.patch(target)
       end
     end
 
