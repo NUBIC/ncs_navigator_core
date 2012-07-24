@@ -143,16 +143,6 @@ module Field
       res
     end
 
-    class ResponseGroup
-      extend Forwardable
-
-      def_delegators :@responses, :<<, :==
-
-      def initialize
-        @responses = Set.new
-      end
-    end
-
     ##
     # Saves the current state of all merged entities.
     #
