@@ -2,9 +2,17 @@ require 'spec_helper'
 
 module Field
   describe QuestionResponseSet do
+    include NcsNavigator::Core::Fieldwork::Adapters
+
     let(:group) { QuestionResponseSet.new }
-    let(:r1) { stub(:question_id => 'foo').as_null_object }
-    let(:r2) { stub(:question_id => 'bar').as_null_object }
+    let(:q1) { Factory(:question) }
+    let(:q2) { Factory(:question) }
+    let(:a1) { Factory(:answer) }
+    let(:a2) { Factory(:answer) }
+    let(:a3) { Factory(:answer) }
+    let(:r1) { adapt_model(Factory(:response, :question => q1, :answer => a1)) }
+    let(:r1b) { adapt_model(Factory(:response, :question => q1, :answer => a3)) }
+    let(:r2) { adapt_model(Factory(:response, :question => q2, :answer => a2)) }
 
     describe '#<<' do
       it 'adds responses to the group' do
@@ -18,6 +26,30 @@ module Field
           group << r1
 
           lambda { group << r2 }.should raise_error
+        end
+      end
+    end
+
+    describe '#changed?' do
+      it 'is initially false' do
+        group.should_not be_changed
+      end
+
+      describe 'with an initial set' do
+        it 'is false' do
+          group = QuestionResponseSet.new(r1)
+
+          group.should_not be_changed
+        end
+      end
+
+      describe 'after adding a response' do
+        before do
+          group << r1
+        end
+
+        it 'is true' do
+          group.should be_changed
         end
       end
     end

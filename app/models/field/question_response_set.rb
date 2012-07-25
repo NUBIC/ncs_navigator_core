@@ -17,6 +17,7 @@ module Field
     extend Forwardable
 
     attr_reader :responses
+    attr_reader :changed
 
     def_delegators :responses, :blank?, :length
 
@@ -24,6 +25,8 @@ module Field
       @responses = Set.new
 
       rs.each { |r| self << r }
+
+      @changed = false
     end
 
     ##
@@ -38,6 +41,7 @@ module Field
       end
 
       responses << wrap(response)
+      @changed = true
     end
 
     def ==(other)
@@ -51,9 +55,10 @@ module Field
     end
 
     ##
-    # A QuestionResponseSet is changed if any of its responses are changed.
+    # QuestionResponseSets are changed when responses are added to them via #<<
+    # or #replace.  Their change state is reset on successful save.
     def changed?
-      false
+      changed
     end
 
     ##
