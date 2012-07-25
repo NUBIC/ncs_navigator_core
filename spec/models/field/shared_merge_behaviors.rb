@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 require File.expand_path('../merge_value_generation', __FILE__)
@@ -79,8 +78,8 @@ shared_examples_for 'an entity merge' do |entity|
         merge
 
         # Non-persisted models use object equality for == (see
-        # ActiveRecord::Base#==), so we settle for less.
-        set[:current].to_model.should be_instance_of(klass)
+        # ActiveRecord::Base#==), so we settle for a (much) weaker check.
+        set[:current].should respond_to(:save)
       end
     end
 

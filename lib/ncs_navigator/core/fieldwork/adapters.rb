@@ -274,7 +274,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     attr_accessible :who_contacted_other
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -285,8 +285,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -306,7 +307,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
@@ -636,7 +637,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     attr_accessible :event_type_other
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -647,8 +648,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -668,7 +670,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
@@ -986,7 +988,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     attr_accessible :instrument_type_other
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -997,8 +999,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -1018,7 +1021,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
@@ -1208,7 +1211,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include ActiveModel::MassAssignmentSecurity
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -1219,8 +1222,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -1240,7 +1244,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
@@ -1278,7 +1282,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include ActiveModel::MassAssignmentSecurity
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -1289,8 +1293,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -1310,7 +1315,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
@@ -1480,7 +1485,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     attr_accessible :value
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -1491,8 +1496,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -1512,7 +1518,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
@@ -1598,7 +1604,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     include ActiveModel::MassAssignmentSecurity
 
     def to_model
-      target
+      self
     end
 
     def as_json(options = nil)
@@ -1609,8 +1615,9 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
-    def_delegators :to_model,
+    def_delegators :target,
       :changed?,
+      :destroy,
       :destroyed?,
       :errors,
       :mark_for_destruction,
@@ -1630,7 +1637,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      to_model == other.to_model
+      target == other
     end
   end
 
