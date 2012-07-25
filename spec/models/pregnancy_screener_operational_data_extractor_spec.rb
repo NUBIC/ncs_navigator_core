@@ -30,7 +30,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     # PERSON_LANG           Person.language_code              LANGUAGE_CL2
     # PERSON_LANG_OTH       Person.language_other
     it "extracts person operational data from the survey responses" do
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
       take_survey(@survey, response_set) do |a|
@@ -70,7 +70,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
       it "handles YYYY-MM-DD" do
         entered_dob = "1981-01-11"
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
         take_survey(@survey, response_set) do |a|
@@ -91,7 +91,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
       it "handles MM/DD/YYYY" do
         entered_dob = "01/11/1981"
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
         take_survey(@survey, response_set) do |a|
@@ -127,9 +127,10 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     person = Factory(:person)
     person.addresses.size.should == 0
-
+    
+    participant = Factory(:participant)
     survey = create_pregnancy_screener_survey_with_address_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -163,8 +164,9 @@ describe PregnancyScreenerOperationalDataExtractor do
     person = Factory(:person)
     person.addresses.size.should == 0
 
+    participant = Factory(:participant)
     survey = create_pregnancy_screener_survey_with_mail_address_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -203,11 +205,12 @@ describe PregnancyScreenerOperationalDataExtractor do
       @person = Factory(:person)
       @person.telephones.size.should == 0
 
+      @participant = Factory(:participant)
       @survey = create_pregnancy_screener_survey_with_telephone_operational_data
     end
 
     it "extracts telephone operational data" do
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
       take_survey(@survey, response_set) do |a|
@@ -239,7 +242,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     describe "handling various telephone formats" do
 
       it "handles xxx.xxx.xxxx" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
         take_survey(@survey, response_set) do |a|
@@ -261,7 +264,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       end
 
       it "handles (xxx) xxx-xxxx" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
         take_survey(@survey, response_set) do |a|
@@ -283,7 +286,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       end
 
       it "handles (xxx) xxxxxxx" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
         take_survey(@survey, response_set) do |a|
@@ -305,7 +308,7 @@ describe PregnancyScreenerOperationalDataExtractor do
       end
 
       it "handles xxx-xxx-xxxx" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         response_set.save!
 
         take_survey(@survey, response_set) do |a|
@@ -337,8 +340,9 @@ describe PregnancyScreenerOperationalDataExtractor do
     person = Factory(:person)
     person.emails.size.should == 0
 
+    participant = Factory(:participant)
     survey = create_pregnancy_screener_survey_with_email_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -382,7 +386,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     p_type = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 3)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -416,7 +420,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     p_type = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 2)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -447,7 +451,7 @@ describe PregnancyScreenerOperationalDataExtractor do
     ppg5 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 5)
 
     survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -484,7 +488,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
       @survey = create_pregnancy_screener_survey_to_determine_due_date
 
-      @response_set, @instrument = prepare_instrument(@person, @survey)
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       @response_set.save!
     end
 

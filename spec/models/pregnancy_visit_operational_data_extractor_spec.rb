@@ -18,7 +18,7 @@ describe PregnancyVisitOperationalDataExtractor do
     ppl = Factory(:participant_person_link, :participant => participant, :person => person)
 
     survey = create_pregnancy_visit_1_survey_with_person_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -67,7 +67,7 @@ describe PregnancyVisitOperationalDataExtractor do
       @ppr_neighbor = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 13)
 
       @survey = create_pregnancy_visit_1_survey_with_contact_operational_data
-      @response_set, @instrument = prepare_instrument(@person, @survey)
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       @response_set.save!
       @participant.participant_person_links.size.should == 1
     end
@@ -77,7 +77,7 @@ describe PregnancyVisitOperationalDataExtractor do
 
       survey = create_pregnancy_visit_1_saq_survey_with_father_operational_data
       survey_section = survey.sections.first
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
       response_set.save!
 
       take_survey(survey, response_set) do |a|
@@ -239,13 +239,13 @@ describe PregnancyVisitOperationalDataExtractor do
     cell = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3)
 
     person = Factory(:person)
-
+    participant = Factory(:participant)
     Factory(:telephone, :person => person)
 
     person.telephones.size.should == 1
 
     survey = create_pregnancy_visit_1_survey_with_telephone_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|
@@ -276,9 +276,10 @@ describe PregnancyVisitOperationalDataExtractor do
     person = Factory(:person)
     person.telephones.size.should == 0
 
+    participant = Factory(:participant)
     survey = create_pregnancy_visit_1_survey_with_email_operational_data
     survey_section = survey.sections.first
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
     response_set.responses.size.should == 0
 
@@ -304,8 +305,9 @@ describe PregnancyVisitOperationalDataExtractor do
     person = Factory(:person)
     person.addresses.size.should == 0
 
+    participant = Factory(:participant)
     survey = create_pregnancy_visit_survey_with_birth_address_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
 
     take_survey(survey, response_set) do |a|

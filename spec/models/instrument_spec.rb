@@ -86,7 +86,8 @@ describe Instrument do
   describe '.start' do
     let(:event) { Factory(:event) }
     let(:person) { Factory(:person, :person_id => 'mother') }
-    let(:child) { Factory(:person, :person_id => 'child') }
+    let(:mother) { Factory(:participant, :p_id => 'mother') }
+    let(:child) { Factory(:participant, :p_id => 'child') }
     let(:survey) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0') }
     let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
     let(:inst) { Factory(:instrument, :survey => survey) }
@@ -94,13 +95,13 @@ describe Instrument do
     context 'a survey with one part' do
       describe 'if there is no response set for the (person, survey) pair' do
         it 'returns the result of Person#start_instrument' do
-          person.should_receive(:start_instrument).with(survey).and_return(inst)
+          person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
 
-          Instrument.start(person, person, survey, nil, event).should == inst
+          Instrument.start(person, mother, nil, survey, event).should == inst
         end
 
         it "sets the instrument's event to event" do
-          inst = Instrument.start(person, person, survey, nil, event)
+          inst = Instrument.start(person, mother, nil, survey, event)
 
           inst.event.should == event
         end
@@ -117,13 +118,13 @@ describe Instrument do
           end
 
           it 'returns the result of Person#start_instrument' do
-            person.should_receive(:start_instrument).with(survey).and_return(inst)
+            person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
 
-            Instrument.start(person, person, survey, nil, event).should == inst
+            Instrument.start(person, mother, nil, survey, event).should == inst
           end
 
           it "sets the instrument's event to event" do
-            inst = Instrument.start(person, person, survey, nil, event)
+            inst = Instrument.start(person, mother, nil, survey, event)
 
             inst.event.should == event
           end
@@ -134,7 +135,7 @@ describe Instrument do
             event.stub(:closed? => false)
           end
 
-          let(:i) { Instrument.start(person, person, survey, nil, event) }
+          let(:i) { Instrument.start(person, mother, nil, survey, event) }
 
           it "returns the response set's instrument" do
             i.should == inst
@@ -153,7 +154,7 @@ describe Instrument do
       context 'with an Instrument record created for the first part' do
 
         let!(:instrument) do
-          i = Instrument.start(person, person, survey, nil, event)
+          i = Instrument.start(person, mother, nil, survey, event)
           i.save!
           i
         end
@@ -163,16 +164,19 @@ describe Instrument do
             Instrument.start(person, child, survey, survey_part, event).should == instrument
           end
 
-          it 'creates a response set associated with the current_person sent (2nd parameter)' do
+          it 'creates a response set about the participant sent (2nd parameter)' do
             instrument.response_sets.size.should == 1
             instrument.response_sets.first.person.should == person
+            instrument.response_sets.first.participant.should == mother
 
             i = Instrument.start(person, child, survey, survey_part, event)
             i.should == instrument
 
             i.response_sets.size.should == 2
             i.response_sets.first.person.should == person
-            i.response_sets.last.person.should == child
+            i.response_sets.first.participant.should == mother
+            i.response_sets.last.person.should == person
+            i.response_sets.last.participant.should == child
           end
 
         end

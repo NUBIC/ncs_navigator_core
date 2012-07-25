@@ -68,35 +68,37 @@ class Instrument < ActiveRecord::Base
   # Finds or builds a record to indicate that a person has begun taking a
   # survey on an event.
   #
-  # @param [Person] - instrument_person
-  #                 - the person associated with the first of multi-part sequence or singleton survey (i.e. Instrument record)
-  # @param [Person] - current_person
-  #                 - the person associated with current part of the multi-part survey or singleton (i.e. ResponseSet record)
+  # @param [Person] - person
+  #                 - the person taking the survey
+  # @param [Participant] - participant
+  #                 - the participant who the survey is about
   # @param [Survey] - instrument_survey
   #                 - the one associated with the first of multi-part sequence or singleton survey
+  #                 - i.e. the references label
   # @param [Survey] - current_survey
   #                 - the one part of the multi-part survey or singleton
+  #                 - i.e. the instrument label
   # @param [Event]  - the event associated with the Instrument
-  def self.start(instrument_person, current_person, instrument_survey, current_survey, event)
+  def self.start(person, participant, instrument_survey, current_survey, event)
 
-    if instrument_person == current_person && (current_survey.blank? || instrument_survey == current_survey)
-      Instrument.start_initial_instrument(instrument_person, instrument_survey, event)
+    if (instrument_survey.blank? || instrument_survey == current_survey)
+      Instrument.start_initial_instrument(person, participant, current_survey, event)
     else
-      ins = Instrument.where(:person_id => instrument_person.id,
+      ins = Instrument.where(:person_id => person.id,
                              :survey_id => instrument_survey.id,
                              :event_id => event.id).order("created_at DESC").first
-      current_person.start_instrument(current_survey, ins)
+      person.start_instrument(current_survey, participant, ins)
       ins
     end
   end
 
   ##
   # This is the entry point for creating a new Instrument record for the person, survey, and event
-  def self.start_initial_instrument(person, survey, event)
+  def self.start_initial_instrument(person, participant, survey, event)
     rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
 
     if !rs || event.closed?
-      person.start_instrument(survey)
+      person.start_instrument(survey, participant)
     else
       rs.instrument
     end.tap { |i| i.event = event }

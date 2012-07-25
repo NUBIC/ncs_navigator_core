@@ -70,6 +70,14 @@ describe Participant do
 
   # it { should validate_presence_of(:person) }
 
+  it { should have_many(:response_sets) }
+
+  describe '#response_sets' do
+    it 'is the inverse of Instrument#response_set' do
+      Participant.reflections[:response_sets].options[:inverse_of].should == :participant
+    end
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
@@ -884,7 +892,7 @@ describe Participant do
 
       participant.started_survey(survey).should be_false
 
-      rs, ins = prepare_instrument(participant, survey)
+      rs, ins = prepare_instrument(person, participant, survey)
       rs.save!
       participant.started_survey(survey).should be_true
 

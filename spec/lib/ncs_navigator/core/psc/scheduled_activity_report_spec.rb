@@ -431,8 +431,9 @@ module NcsNavigator::Core::Psc
         let(:access_code) { Survey.to_normalized_string(survey_title) }
         let(:c) { Factory.build(:contact) }
         let(:e) { Factory(:event) }
-        let(:i) { Instrument.start(p, p, s, s, e) }
+        let(:i) { Instrument.start(p, pa, s, s, e) }
         let(:p) { Factory(:person) }
+        let(:pa){ Factory(:participant) }
         let(:s) { Factory(:survey, :title => survey_title, :access_code => access_code) }
 
         let(:r1) do

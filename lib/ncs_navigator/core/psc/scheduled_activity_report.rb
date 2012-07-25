@@ -198,7 +198,7 @@ module NcsNavigator::Core::Psc
             r.references_survey = survey_map[r.references_survey_access_code]
 
             if r.person && r.survey && r.event
-              r.instrument = Instrument.start(r.person, r.person, r.survey, r.references_survey, r.event)
+              r.instrument = Instrument.start(r.person, r.participant, r.references_survey, r.survey, r.event)
             end
           end
         end

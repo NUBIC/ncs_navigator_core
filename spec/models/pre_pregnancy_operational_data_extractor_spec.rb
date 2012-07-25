@@ -15,11 +15,11 @@ describe PrePregnancyOperationalDataExtractor do
 
     person = Factory(:person, :age => nil)
     participant = Factory(:participant)
-    ppl = Factory(:participant_person_link,
-      :participant => participant, :person => person, :relationship_code => 1)
+    participant.person = person
+    participant.save!
 
     survey = create_pre_pregnancy_survey_with_person_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
     response_set.responses.size.should == 0
 
@@ -51,10 +51,11 @@ describe PrePregnancyOperationalDataExtractor do
     cell = NcsCode.for_list_name_and_local_code("PHONE_TYPE_CL1", 3)
 
     person = Factory(:person)
+    participant = Factory(:participant)
     person.telephones.size.should == 0
 
     survey = create_pre_pregnancy_survey_with_telephone_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
     response_set.responses.size.should == 0
 
@@ -81,12 +82,13 @@ describe PrePregnancyOperationalDataExtractor do
 
   it "extracts email operational data from the survey responses" do
     person = Factory(:person)
+    participant = Factory(:participant)
     person.telephones.size.should == 0
 
     email = Factory(:email, :email => "asdf@asdf.asdf", :person => person)
 
     survey = create_pre_pregnancy_survey_with_email_operational_data
-    response_set, instrument = prepare_instrument(person, survey)
+    response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
     response_set.responses.size.should == 0
 
@@ -131,7 +133,7 @@ describe PrePregnancyOperationalDataExtractor do
       @ppr_neighbor = NcsCode.for_list_name_and_local_code("PERSON_PARTCPNT_RELTNSHP_CL1", 13)
 
       @survey = create_pre_pregnancy_survey_with_contact_operational_data
-      @response_set, @instrument = prepare_instrument(@person, @survey)
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
       @response_set.save!
       @response_set.responses.size.should == 0
       @participant.participant_person_links.size.should == 1

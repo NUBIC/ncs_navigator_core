@@ -21,7 +21,7 @@ describe BirthOperationalDataExtractor do
 
     it "creates a new person (Child) record and associates it with the particpant" do
       survey = create_birth_survey_with_child_operational_data
-      response_set, instrument = prepare_instrument(@person, survey)
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
@@ -66,7 +66,7 @@ describe BirthOperationalDataExtractor do
     end
 
     it "extracts person operational data from the survey responses" do
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
       take_survey(@survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
@@ -89,7 +89,7 @@ describe BirthOperationalDataExtractor do
 
       @person.addresses.size.should == 0
 
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
       take_survey(@survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
@@ -114,7 +114,7 @@ describe BirthOperationalDataExtractor do
     end
 
     it "extracts telephone operational data" do
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
       @person.telephones.size.should == 0
 
       take_survey(@survey, response_set) do |a|
@@ -149,7 +149,7 @@ describe BirthOperationalDataExtractor do
 
       email = Factory(:email, :email => "asdf@asdf.asdf", :person => @person)
 
-      response_set, instrument = prepare_instrument(@person, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
       take_survey(@survey, response_set) do |a|
         a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'

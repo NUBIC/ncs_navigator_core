@@ -76,17 +76,20 @@ class PeopleController < ApplicationController
   # GET /people/1/start_instrument
   def start_instrument
     person = Person.find(params[:id])
-    survey = Survey.most_recent_for_access_code(params[:survey_access_code])
-    cl = person.contact_links.includes(:event, :contact).find(params[:contact_link_id])
+    participant = Participant.find(params[:participant_id])
+    instrument_survey = Survey.most_recent_for_access_code(params[:references_survey_access_code])
+    current_survey = Survey.most_recent_for_access_code(params[:survey_access_code])
+
+    cl = instrument_person.contact_links.includes(:event, :contact).find(params[:contact_link_id])
     event = cl.event
 
-    instrument = Instrument.start(person, survey, event)
+    instrument = Instrument.start(person, participant, instrument_survey, current_survey, event)
     instrument.save!
 
     link = instrument.link_to(person, cl.contact, event, current_staff_id)
     link.save!
 
-    rs_access_code = instrument.response_set.access_code
+    rs_access_code = instrument.response_sets.where(:survey_id => current_survey.id).last.try(:access_code)
 
     redirect_to(edit_my_survey_path(:survey_code => params[:survey_access_code], :response_set_code => rs_access_code))
   end
