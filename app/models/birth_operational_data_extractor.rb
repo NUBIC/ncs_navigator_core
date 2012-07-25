@@ -234,5 +234,4 @@ class BirthOperationalDataExtractor
 
   end
 
-
 end
