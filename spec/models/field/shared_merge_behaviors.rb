@@ -70,6 +70,20 @@ shared_examples_for 'an entity merge' do |entity|
       end
     end
 
+    describe 'if O = C = nil and P is new' do
+      let(:o) { nil }
+      let(:c) { nil }
+      let(:p) { adapt_hash(entity.underscore.to_sym, {}) }
+
+      it 'copies P to C' do
+        merge
+
+        # Non-persisted models use object equality for == (see
+        # ActiveRecord::Base#==), so we settle for less.
+        set[:current].to_model.should be_instance_of(klass)
+      end
+    end
+
     describe 'if O exists, C is nil, and P is new' do
       let(:o) { adapt_model(klass.new) }
       let(:c) { nil }
