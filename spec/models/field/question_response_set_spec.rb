@@ -30,6 +30,48 @@ module Field
       end
     end
 
+    describe '#patch' do
+      before do
+        group << r1
+
+        group.patch(QuestionResponseSet.new(r1b))
+      end
+
+      it 'marks all its existing responses for destruction' do
+        r1.should be_marked_for_destruction
+      end
+
+      it 'adds responses from another set' do
+        group.length.should == 2
+      end
+    end
+
+    describe '#to_model' do
+      it 'returns itself' do
+        group.to_model.should == group
+      end
+    end
+
+    describe '#save' do
+      it 'saves responses' do
+        r1.should_receive(:save).and_return(true)
+
+        group << r1
+
+        group.save
+      end
+
+      it 'destroys responses marked for destruction' do
+        r1.mark_for_destruction
+
+        group << r1
+
+        group.save
+
+        r1.should be_destroyed
+      end
+    end
+
     describe '#changed?' do
       it 'is initially false' do
         group.should_not be_changed
@@ -50,6 +92,42 @@ module Field
 
         it 'is true' do
           group.should be_changed
+        end
+      end
+
+      describe 'after #patch' do
+        before do
+          group.patch(QuestionResponseSet.new(r1b))
+        end
+
+        it 'is true' do
+          group.should be_changed
+        end
+
+        describe 'and successful save' do
+          before do
+            r1.stub!(:save => true)
+
+            group << r1
+            group.save
+          end
+
+          it 'is false' do
+            group.should_not be_changed
+          end
+        end
+
+        describe 'and unsuccessful save' do
+          before do
+            r1.stub!(:save => false)
+
+            group << r1
+            group.save
+          end
+
+          it 'is true' do
+            group.should be_changed
+          end
         end
       end
     end

@@ -148,6 +148,18 @@ module Field
           end
         end
 
+        describe 'if O = C = nil and P is new' do
+          let(:o) { nil }
+          let(:c) { nil }
+          let(:p) { new_nonempty_qrs(adapt_hash(:response, {})) }
+
+          it 'copies P to C' do
+            merge
+
+            set[:current].should == p.to_model
+          end
+        end
+
         describe 'if O = P = nil and C exists' do
           let(:o) { nil }
           let(:c) { new_nonempty_qrs(adapt_model(create_response_model)) }
