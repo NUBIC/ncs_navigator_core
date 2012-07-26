@@ -73,10 +73,8 @@ module Field
       ActiveRecord::Base.transaction do
         resolve_models
 
-        ok = responses.all? do |r|
-          model = r.response_model
-
-          model.marked_for_destruction? ? model.destroy : model.save
+        ok = all? do |r|
+          r.marked_for_destruction? ? r.destroy : r.save
         end
 
         if ok
@@ -106,7 +104,7 @@ module Field
     end
 
     def resolve_models
-      responses.each(&:resolve_model)
+      each(&:resolve_model)
     end
 
     ##
@@ -133,7 +131,7 @@ module Field
       attr_accessor :wrapped_response
       attr_accessor :response_model
 
-      def_delegators :response_model, :mark_for_destruction
+      def_delegators :response_model, :mark_for_destruction, :marked_for_destruction?, :save, :destroy
 
       def resolve_model
         self.response_model = wrapped_response.to_model
