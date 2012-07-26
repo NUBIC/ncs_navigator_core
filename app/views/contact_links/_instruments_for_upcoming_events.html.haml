@@ -1,16 +1,16 @@
 - initial_instrument_for_contact ||= nil
 
 %p.hide
-  = @contact_link.event
+  = @event
 
 - if @contact_link.instrument.try(:instrument_type).to_s =~ /Screener/
   %h3
-    = "#{@contact_link.event}"
+    = "#{@event}"
   %p
     There is only one Instrument associated with the Pregnancy Screener Event
 - else
   %h3
-    = "Instruments for #{@contact_link.event}"
+    = "Instruments for #{@event}"
 
   - if initial_instrument_for_contact
     .instructional_note
@@ -20,7 +20,7 @@
 
   - no_consent = true
 
-  - if @contact_link.event.to_s.include?("Consent")
+  - if @event.to_s.include?("Consent")
     - no_consent = false
 
   - if @person.participant.blank?
@@ -28,10 +28,10 @@
       = blank_safe(@person.to_s)
       is not a participant. No instruments exist for non participants.
   - else
-    - if !@event_activities.blank?
-      - @event_activities.each do |activity|
-        - no_consent = false if activity.consent_activity?
-        = render "instrument_for_activity", :activity => activity, :person => @person, :contact_link => @contact_link
+    - if !@activities_for_event.blank?
+      - @activities_for_event.each do |sa|
+        - next unless sa.scheduled?
+        = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
     - else
       = render "consent_or_empty", :contact_link => @contact_link
 

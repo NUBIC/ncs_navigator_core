@@ -82,18 +82,20 @@ class ContactLinksController < ApplicationController
     @person       = @contact_link.person
     @participant  = @person.participant if @person
     @event        = @contact_link.event
-    @event_activities = psc.activities_for_event(@event)
+
+    @activities_for_event = psc.build_activity_plan(@participant).activities_for_event(@event.to_s) if @participant && @event
   end
 
   def decision_page
     @contact_link = ContactLink.find(params[:id])
     @person       = @contact_link.person
-    @participant  = @person.participant if @person
     @instrument   = @contact_link.instrument
     @event        = @contact_link.event
+    @participant  = @event.participant if @event
     @response_set = @instrument.response_set if @instrument
     @survey       = @response_set.survey if @response_set
-    @event_activities = psc.activities_for_event(@event) if @event.participant && @event.participant.person
+
+    @activities_for_event = psc.build_activity_plan(@participant).activities_for_event(@event.to_s) if @participant && @event
   end
 
   ##
