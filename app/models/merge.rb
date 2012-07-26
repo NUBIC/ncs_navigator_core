@@ -111,12 +111,13 @@ class Merge < ActiveRecord::Base
         return
       end
 
-      sp = NcsNavigator::Core::Fieldwork::Superposition.new
+      sp = Field::Superposition.new
       sp.logger = logger
       sp.set_original(JSON.parse(original_data))
       sp.set_proposed(JSON.parse(proposed_data))
       sp.set_current
 
+      sp.build_question_response_sets
       sp.merge
 
       ok = sp.save
