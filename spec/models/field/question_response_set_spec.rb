@@ -44,6 +44,16 @@ module Field
       it 'adds responses from another set' do
         group.length.should == 2
       end
+
+      describe 'on itself' do
+        it 'does not change the group' do
+          group = QuestionResponseSet.new(r1)
+
+          group.patch(group)
+
+          group.should_not be_changed
+        end
+      end
     end
 
     describe '#to_model' do

@@ -15,11 +15,12 @@ module Field
   # question IDs will raise an error.
   class QuestionResponseSet
     extend Forwardable
+    include Enumerable
 
     attr_reader :responses
     attr_reader :changed
 
-    def_delegators :responses, :blank?, :length
+    def_delegators :responses, :blank?, :length, :each
 
     def initialize(*rs)
       @responses = Set.new
@@ -40,19 +41,30 @@ module Field
         raise "Cannot add a response with question ID #{response.question_id} to a #{self.class.name} with question ID #{@question_id}"
       end
 
+      old_length = responses.length
       responses << wrap(response)
-      @changed = true
+      @changed = responses.length != old_length
     end
 
     ##
     # Marks all existing responses for destruction and inserts new responses
     # from another QuestionResponseSet.
     def patch(other)
+      old = responses.dup
+      new = Set.new
+
+      other.each do |r|
+        new << r unless old.include?(r)
+      end
+
+      return if new.empty?
+
       resolve_models
 
-      responses.each { |r| r.response_model.mark_for_destruction }
-
-      other.responses.each { |r| self << r }
+      responses.clear
+      old.each { |r| r.mark_for_destruction }
+      new.each { |r| self << r }
+      old.each { |r| self << r }
     end
 
     ##
@@ -120,6 +132,8 @@ module Field
 
       attr_accessor :wrapped_response
       attr_accessor :response_model
+
+      def_delegators :response_model, :mark_for_destruction
 
       def resolve_model
         self.response_model = wrapped_response.to_model
