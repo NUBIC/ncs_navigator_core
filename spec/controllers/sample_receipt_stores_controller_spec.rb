@@ -23,7 +23,7 @@ describe SampleReceiptStoresController do
     
     describe "GET edit" do
       it "assigns the requested sample_receipt_store as @sample_receipt_store" do
-        get :edit, :id => @sample_receipt_store.id.to_s
+        get :edit, :id => @sample_receipt_store.sample_id.to_s
         assigns(:sample_receipt_store).should eq(@sample_receipt_store)
       end
     end    
