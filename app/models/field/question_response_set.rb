@@ -88,7 +88,7 @@ module Field
     end
 
     def ==(other)
-      responses == other.responses
+      other.respond_to?(:responses) && responses == other.responses
     end
 
     ##
