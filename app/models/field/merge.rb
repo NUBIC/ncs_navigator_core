@@ -137,7 +137,7 @@ module Field
     # abort.
     def save
       ActiveRecord::Base.transaction do
-        [contacts, events, instruments].map { |c| save_collection(c) }.all?.tap do |res|
+        [contacts, events, instruments, question_response_sets].map { |c| save_collection(c) }.all?.tap do |res|
           unless res
             logger.fatal { 'Errors raised during save; rolling back' }
             raise ActiveRecord::Rollback
@@ -170,9 +170,17 @@ module Field
 
     def resolve(o, c, p, entity, id)
       if c.merge_atomically?
-        raise 'Atomic merge not yet implemented'
+        resolve_atomic(o, c, p, entity, id)
       else
         resolve_nonatomic(o, c, p, entity, id)
+      end
+    end
+
+    ##
+    # @private
+    def resolve_atomic(o, c, p, entity, id)
+      collapse_with_conflict_tracking(o, c, p, entity, id, :self) do |state|
+        c.patch(state)
       end
     end
 
@@ -190,16 +198,24 @@ module Field
 
         logger.debug { "Resolving #{attr}, [vo, vc, vp] = #{[vo, vc, vp].inspect}" }
 
-        result = collapse(vo, vc, vp)
-
-        if result == :conflict
-          conflicts.add(entity, id, attr, vo, vc, vp)
-        else
-          patch[attr] = result
+        collapse_with_conflict_tracking(vo, vc, vp, entity, id, attr) do |state|
+          patch[attr] = state
         end
       end
 
       c.patch(patch)
+    end
+
+    ##
+    # @private
+    def collapse_with_conflict_tracking(o, c, p, entity, id, attr)
+      result = collapse(o, c, p)
+
+      if result == :conflict
+        conflicts.add(entity, id, attr, o, c, p)
+      else
+        yield result
+      end
     end
 
     ##

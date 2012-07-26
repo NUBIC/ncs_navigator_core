@@ -117,15 +117,16 @@ module Field
       let(:conflicts) { subject.conflicts }
       let(:set) { subject.question_response_sets.values.first }
       let(:uuid) { 'foo' }
+      let(:q) { Factory(:question) }
+      let(:a) { Factory(:answer) }
+      let(:a2) { Factory(:answer) }
+      let(:a3) { Factory(:answer) }
 
-      def new_nonempty_qrs(*responses)
+      def new_qrs(*responses)
         Field::QuestionResponseSet.new(*responses)
       end
 
       def create_response_model
-        q = Factory(:question)
-        a = Factory(:answer)
-
         Factory(:response, :question => q, :answer => a)
       end
 
@@ -151,7 +152,7 @@ module Field
         describe 'if O = C = nil and P is new' do
           let(:o) { nil }
           let(:c) { nil }
-          let(:p) { new_nonempty_qrs(adapt_hash(:response, {})) }
+          let(:p) { new_qrs(adapt_hash(:response, {})) }
 
           it 'copies P to C' do
             merge
@@ -162,7 +163,7 @@ module Field
 
         describe 'if O = P = nil and C exists' do
           let(:o) { nil }
-          let(:c) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:c) { new_qrs(adapt_model(create_response_model)) }
           let(:p) { nil }
 
           it 'does not modify C' do
@@ -173,7 +174,7 @@ module Field
         end
 
         describe 'if C = P = nil and O exists' do
-          let(:o) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:o) { new_qrs(adapt_model(create_response_model)) }
           let(:c) { nil }
           let(:p) { nil }
 
@@ -185,9 +186,9 @@ module Field
         end
 
         describe 'if O exists, C is nil, and P is new' do
-          let(:o) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:o) { new_qrs(adapt_model(create_response_model)) }
           let(:c) { nil }
-          let(:p) { new_nonempty_qrs(adapt_hash(:response, {})) }
+          let(:p) { new_qrs(adapt_hash(:response, {})) }
 
           it 'signals a conflict' do
             merge
@@ -203,12 +204,90 @@ module Field
         end
 
         describe 'if O exists, C exists, and P is nil' do
-          let(:o) { new_nonempty_qrs(adapt_model(create_response_model)) }
-          let(:c) { new_nonempty_qrs(adapt_model(create_response_model)) }
+          let(:o) { new_qrs(adapt_model(create_response_model)) }
+          let(:c) { new_qrs(adapt_model(create_response_model)) }
           let(:p) { nil }
 
           it 'does not modify C' do
+            merge
+
             set[:current].should_not be_changed
+          end
+        end
+
+        describe 'if O = nil, C = P' do
+          let(:o) { nil }
+          let(:c) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:p) { new_qrs(adapt_hash(:response, { 'question_id' => q.api_id, 'answer_id' => a.api_id })) }
+
+          it 'does not modify C' do
+            merge
+
+            set[:current].should_not be_changed
+          end
+        end
+
+        describe 'if O = nil, C != P' do
+          let(:o) { nil }
+          let(:c) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:p) { new_qrs(adapt_hash(:response, { })) }
+
+          it 'signals a conflict' do
+            merge
+
+            conflicts.should == {
+              'QuestionResponseSet' => { uuid => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
+            }
+          end
+        end
+
+        describe 'if O = C != P' do
+          let(:o) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:c) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:p) { new_qrs(adapt_hash(:response, { 'question_id' => q.api_id, 'value' => 'foo' })) }
+
+          it 'patches C with P' do
+            merge
+
+            set[:current].should be_changed
+          end
+        end
+
+        describe 'if O = P, C != P' do
+          let(:o) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:c) { new_qrs(adapt_model(Response.new(:question => q, :answer => a2))) }
+          let(:p) { new_qrs(adapt_hash(:response, { 'question_id' => q.api_id, 'answer_id' => a.api_id })) }
+
+          it 'does not modify C' do
+            merge
+
+            set[:current].should_not be_changed
+          end
+        end
+
+        describe 'if O != C, C = P' do
+          let(:o) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:c) { new_qrs(adapt_model(Response.new(:question => q, :answer => a2))) }
+          let(:p) { new_qrs(adapt_hash(:response, { 'question_id' => q.api_id, 'answer_id' => a2.api_id })) }
+
+          it 'does not modify C' do
+            merge
+
+            set[:current].should_not be_changed
+          end
+        end
+
+        describe 'if O != C != P' do
+          let(:o) { new_qrs(adapt_model(Response.new(:question => q, :answer => a))) }
+          let(:c) { new_qrs(adapt_model(Response.new(:question => q, :answer => a2))) }
+          let(:p) { new_qrs(adapt_hash(:response, { 'question_id' => q.api_id, 'answer_id' => a3.api_id })) }
+
+          it 'signals a conflict' do
+            merge
+
+            conflicts.should == {
+              'QuestionResponseSet' => { uuid => { :self => { 'original' => o, 'current' => c, 'proposed' => p } } }
+            }
           end
         end
       end
