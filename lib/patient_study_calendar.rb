@@ -263,6 +263,12 @@ class PatientStudyCalendar
     result
   end
 
+
+  def build_activity_plan(participant)
+    InstrumentPlan.new(schedules(participant))
+  end
+
+
   ##
   # Gets information about all activities for a participant
   # (cf. ScheduledActivity Struct) that match the given
