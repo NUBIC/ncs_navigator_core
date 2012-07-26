@@ -69,7 +69,7 @@ class InstrumentPlan
     @scheduled_activities.each do |sa|
       if participant = Person.where(:person_id => sa.person_id).first.try(:participant)
         case sa.participant_type
-        when 'self'
+        when 'mother'
           sa.participant = participant
         when 'child'
           children = participant.children
@@ -118,7 +118,8 @@ class InstrumentPlan
   # @param [String] - the event
   # @return [Array<ScheduledActivity>]
   def activities_for_event(event = nil)
-   event.nil? ? @scheduled_activities : @scheduled_activities.select{ |sa| sa.event == event }
+    event = event.downcase.gsub(" ", "_") if event
+    event.nil? ? @scheduled_activities : @scheduled_activities.select{ |sa| sa.event == event }
   end
 
   ##
