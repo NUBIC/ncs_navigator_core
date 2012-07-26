@@ -14,8 +14,8 @@ class ScheduledActivity
   # and set as attributes on self
   def parse_labels
     @labels.split.each do |lbl|
-      k, v = lbl.split(':')
-      self.send("#{k}=", v)
+      vals = lbl.split(':')
+      self.send("#{vals.first}=", vals.last)
     end
   end
   private :parse_labels
@@ -82,6 +82,12 @@ class ScheduledActivity
   # @return Person
   def person
     Person.where(:person_id => @person_id).first
+  end
+
+  ##
+  # True if current_state == scheduled
+  def scheduled?
+    @current_state == PatientStudyCalendar::ACTIVITY_SCHEDULED
   end
 
   ##
