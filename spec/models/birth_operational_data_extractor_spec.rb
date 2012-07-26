@@ -10,6 +10,7 @@ describe BirthOperationalDataExtractor do
     before(:each) do
       @male   = NcsCode.for_list_name_and_local_code("GENDER_CL1", 1)
       @female = NcsCode.for_list_name_and_local_code("GENDER_CL1", 2)
+      @child_type = NcsCode.for_list_name_and_local_code("PARTICIPANT_TYPE_CL1", 6)
 
       @person = Factory(:person)
       @participant = Factory(:participant)
@@ -48,6 +49,7 @@ describe BirthOperationalDataExtractor do
       child.participant.should_not be_nil
       child.participant.mother.should == person
       child.participant.mother.participant.should == participant
+      child.participant.p_type.should == @child_type
       person.participant.children.should include(child)
     end
 
