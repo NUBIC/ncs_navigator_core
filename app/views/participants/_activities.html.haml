@@ -6,18 +6,17 @@
   = render "/people/schedule_or_perform_event", :participant => @participant, :person => @person
 
   .schedule
-    - if @scheduled_activities && !@participant.pending_events.blank?
+    - if @participant_activity_plan && !@participant.pending_events.blank?
       %b
         Activities for Pending Events
       .activities
-        - @scheduled_activities.each do |a|
-          - @participant.pending_events.each do |e|
-            - if e.matches_activity(a)
-              .activity
-                %span{ :class => "scheduled_date" }
-                  = a.date
-                %span{ :title => a.current_state, :class => "#{a.current_state}_link" }
-                  &nbsp;
-                = link_to a.activity_name, psc_assignment_path(@participant.person.public_id), :class => "icon_link external_link"
+        - @participant.pending_events.each do |e|
+          - @participant_activity_plan.activities_for_event(e.to_s).each do |a|
+            .activity
+              %span{ :class => "scheduled_date" }
+                = a.date
+              %span{ :title => a.current_state, :class => "#{a.current_state}_link" }
+                &nbsp;
+              = link_to a.activity_name, psc_assignment_path(@participant.person.public_id), :class => "icon_link external_link"
     - else
       Subject does not have a schedule matching pending events
