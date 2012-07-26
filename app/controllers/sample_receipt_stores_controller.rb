@@ -29,27 +29,22 @@ class SampleReceiptStoresController < ApplicationController
   end
   
   def edit
-    @receive = params[:receive]
-    @sample_receipt_store = SampleReceiptStore.find(params[:id])
+    @sample_receipt_store = SampleReceiptStore.find_by_sample_id(params[:id])
   end
-  
-  def extract_date_time(params)
-    @datetime = @params[:placed_in_storage_datetime]
-    if @datetime.is_a?(Hash)
-      @datetime = @datetime.values.first
-    end
-    params[:placed_in_storage_datetime] = @datetime
-    return params
-  end
-  
-  def receive_edit
-    @sample_receipt_store = SampleReceiptStore.find(params[:id])
-  end
+  # 
+  # def extract_date_time(params)
+  #   @datetime = @params[:placed_in_storage_datetime]
+  #   if @datetime.is_a?(Hash)
+  #     @datetime = @datetime.values.first
+  #   end
+  #   params[:placed_in_storage_datetime] = @datetime
+  #   return params
+  # end
   
   def update
     @sample_receipt_store = SampleReceiptStore.find(params[:id])
     @params = params[:sample_receipt_store]
-    @params = extract_date_time(@params)
+    # @params = extract_date_time(@params)
     if (@params[:placed_in_storage_datetime].blank?)
       @params[:placed_in_storage_datetime] = DateTime.now
     end

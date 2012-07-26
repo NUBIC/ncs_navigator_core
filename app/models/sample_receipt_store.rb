@@ -29,7 +29,7 @@
 class SampleReceiptStore < ActiveRecord::Base
   include MdesRecord
   acts_as_mdes_record :public_id_field => :sample_id
-
+  belongs_to :sample, :primary_key => :sample_id
   belongs_to :sample_receipt_shipping_center
   belongs_to :environmental_equipment  
   ncs_coded_attribute :psu,                       'PSU_CL1'

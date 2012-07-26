@@ -1,0 +1,26 @@
+.page_section
+  - if SampleReceiptShippingCenter.all.blank? or SpecimenProcessingShippingCenter.all.blank?
+    = "Please configure your shipping center's address and ID before continuing."
+    - if SampleReceiptShippingCenter.all.blank?
+      %p
+        = link_to 'Set up Sample Receipt Shipping Center', new_sample_receipt_shipping_center_path, :class => "edit_link icon_link"
+    - if SpecimenProcessingShippingCenter.all.blank?
+      %p
+        = link_to 'Set up Specimen Processing Shipping Center', new_specimen_processing_shipping_center_path, :class => "edit_link icon_link"
+  - else
+    %div{:id =>"search", :class => "editing"}
+      = form_tag search_by_id_edit_sample_processes_path do
+        Search by Id:
+        %input{:type=>"text", :class => "id_field", :name=> "search_id[]"}
+        = submit_tag "Search", :class => "id_btn", :id => "id_btn"
+      %br
+      Search by Date:
+      %br
+      From:
+      %input{:type=>"text", :class => "date start_date", :id => "start_date"}
+      To:
+      %input{:type=>"text", :class => "date end_date", :id => "end_date"}
+      = submit_tag "Search", :class => "date_btn", :id => "date_btn"
+    %br
+    %div{:id =>"process_tabs", :class => "processing"}
+    %div{:id => "displaying", :class => "display records"}
