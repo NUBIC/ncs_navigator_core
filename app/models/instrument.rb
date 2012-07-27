@@ -68,6 +68,8 @@ class Instrument < ActiveRecord::Base
   # Finds or builds a record to indicate that a person has begun taking a
   # survey on an event.
   #
+  # cf. Person.start_instrument
+  #
   # @param [Person] - person
   #                 - the person taking the survey
   # @param [Participant] - participant
@@ -94,6 +96,9 @@ class Instrument < ActiveRecord::Base
 
   ##
   # This is the entry point for creating a new Instrument record for the person, survey, and event
+  #
+  # cf. Person.start_instrument
+  #
   def self.start_initial_instrument(person, participant, survey, event)
     rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
 
@@ -163,7 +168,7 @@ class Instrument < ActiveRecord::Base
   def self.determine_version(lbl)
     lbl = Instrument.surveyor_access_code(lbl)
     ind = lbl.to_s.rindex("-v")
-    lbl[ind + 2, lbl.length].sub("-", ".")
+    lbl[ind + 2, 3].sub("-", ".")
   end
 
   ##

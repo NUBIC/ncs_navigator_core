@@ -299,6 +299,15 @@ describe Instrument do
 
     end
 
+    context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' do
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' }
+
+      describe '#determine_version' do
+        it 'returns 1.0 for psc label' do
+          Instrument.determine_version(lbl).should == "1.0"
+        end
+      end
+    end
 
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
