@@ -196,7 +196,7 @@ module Field
         vc = c[attr]
         vp = p[attr]
 
-        logger.debug { "Resolving #{attr}, [vo, vc, vp] = #{[vo, vc, vp].inspect}" }
+        logger.debug { "Resolving #{attr}: [o, c, p] = #{[vo, vc, vp].inspect}" }
 
         collapse_with_conflict_tracking(vo, vc, vp, entity, id, attr) do |state|
           patch[attr] = state
@@ -212,8 +212,10 @@ module Field
       result = collapse(o, c, p)
 
       if result == :conflict
+        logger.debug { "Detected conflict: [o, c, p] = #{[o, c, p].inspect}" }
         conflicts.add(entity, id, attr, o, c, p)
       else
+        logger.debug { "Collapsed [o, c, p] = #{[o, c, p].inspect} to #{result.inspect}" }
         yield result
       end
     end
