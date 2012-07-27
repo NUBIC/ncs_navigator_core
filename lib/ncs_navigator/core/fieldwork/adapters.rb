@@ -158,7 +158,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     def ==(other)
-      target == other.target
+      target == other
     end
 
     def set(attr, value)
