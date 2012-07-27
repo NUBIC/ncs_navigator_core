@@ -6,7 +6,7 @@ namespace :monit do
     end
 
     def template
-      File.read(File.expand_path('../../../monit.cfg.erb', __FILE__))
+      File.read(File.expand_path('../monit.cfg.erb', __FILE__))
     end
 
     def context
