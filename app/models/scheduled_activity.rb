@@ -31,6 +31,7 @@ class ScheduledActivity
     self.instance_variable_names.each do |v|
       key = v.sub('@','')
       result = self.send("#{key}") == other.send("#{key}")
+      break unless result
     end
     result
   end
@@ -57,6 +58,13 @@ class ScheduledActivity
   # @return [Boolean]
   def consent_activity?
     @activity_type.to_s.include? "Consent"
+  end
+
+  ##
+  # Returns the survey title that this scheduled activity is a part of.
+  # @return String
+  def survey_root
+    @references.blank? ? @instrument : @references
   end
 
   ##

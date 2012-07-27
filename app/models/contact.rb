@@ -130,7 +130,9 @@ class Contact < ActiveRecord::Base
   ##
   # @return [Array<String>] Instrument Survey titles
   def instrument_survey_titles
-    instruments_with_surveys.collect {|i| i.survey.title}
+    # TODO: update Contact object to use this:
+    instruments.collect{|i| i.response_sets}.flatten.compact.collect{|rs| rs.survey.title}.uniq
+    # instruments_with_surveys.collect {|i| i.survey.title}
   end
 
   ##

@@ -69,7 +69,7 @@ class InstrumentEventMap
     filename = get_known_filename(filename)
 
     result = nil
-    instruments.each do |ie|
+    self.instruments.each do |ie|
       if ie["filename"] == filename
         result = NcsCode.where(:list_name => 'INSTRUMENT_TYPE_CL1').where(:display_text => ie["name"]).first
         break

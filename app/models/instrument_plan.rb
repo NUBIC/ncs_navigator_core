@@ -18,8 +18,8 @@ class InstrumentPlan
   # @param [Hash]
   def parse_schedule(schedule)
     activities(schedule).each do |activity|
-      @scheduled_activities << ScheduledActivity.new(
-        scheduled_activity_attrs_from_activity(activity))
+      sa  = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
+      @scheduled_activities << sa if sa.scheduled?
     end
   end
 
@@ -124,14 +124,22 @@ class InstrumentPlan
 
   ##
   # Returns the next instrument for the event based on the
-  # given current instrument
+  # given current instrument (survey title).
+  #
+  # Note that this method assumes only one occurrance of an survey part
   #
   # @param [String] - the event context
   # @param [String] - the current_instrument or nil
   # @return [String] - the instrument following the given current_instrument
-  def next_instrument(event, current_instrument = nil)
+  def next_survey(event, current_instrument = nil)
     ins = self.instruments(event)
-    current_instrument.blank? ? ins.first : ins[ins.index(current_instrument) + 1]
+    current_instrument = current_instrument.to_s.downcase
+    if current_instrument.blank?
+      ins.first
+    else
+      ins_index = ins.index(current_instrument)
+      ins_index.blank? ? nil : ins[ins_index + 1]
+    end
   end
 
   ##
@@ -141,7 +149,7 @@ class InstrumentPlan
   # @param [String] - the survey title
   # @return Instrument record or nil
   def instrument_record_for(survey_title)
-    sa  = scheduled_activity_for_instrument(survey_title)
+    sa  = scheduled_activity_for_survey(survey_title)
     per = sa.person
 
     title = sa.references.blank? ? survey_title : sa.references
@@ -149,9 +157,43 @@ class InstrumentPlan
 
     if per && sur
       Instrument.where("person_id = ? AND survey_id = ? AND
-                        (instrument_end_date IS NULL AND instrument_end_time IS NULL AND instrument_status_code <> 4)",
+                        (instrument_end_date IS NULL AND
+                         instrument_end_time IS NULL AND
+                         instrument_status_code <> 4)",
                         per.id, sur.id).first
     end
+  end
+
+  ##
+  # Given a response_set, determine if this is the final
+  # part of a multi-part survey.
+  # This should be true if next_survey is false and there
+  # are an equal number of response_sets for the instrument
+  # as there are survey parts.
+  #
+  # @return Boolean
+  def final_survey_part?(response_set)
+    event = response_set.instrument.try(:event).to_s
+    current_survey_title = response_set.survey.try(:title).to_s.downcase
+    ni = next_survey(event, current_survey_title)
+    if ni && ni != current_survey_title
+      false
+    else
+      survey_parts(current_survey_title).size == response_set.instrument.response_sets.size
+    end
+  end
+
+  ##
+  # Finds the scheduled activity for the given title and matches it to
+  # other scheduled activities (the other survey parts) associated to the found
+  # scheduled activity.
+  #
+  # @param String - survey_title
+  # @return [Array<ScheduledActivities>]
+  def survey_parts(survey_title)
+    a = scheduled_activity_for_survey(survey_title)
+    scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
+                                       sa.references == a.survey_root }
   end
 
   ##
@@ -160,7 +202,8 @@ class InstrumentPlan
   #
   # @param [String] - survey title
   # @return [ScheduledActivity]
-  def scheduled_activity_for_instrument(survey_title)
+  def scheduled_activity_for_survey(survey_title)
+    survey_title = survey_title.to_s.downcase
     @scheduled_activities.select { |sa| sa.instrument == survey_title }.first
   end
 
