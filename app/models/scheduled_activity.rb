@@ -91,6 +91,12 @@ class ScheduledActivity
   end
 
   ##
+  # True if current_state == canceled
+  def canceled?
+    @current_state == PatientStudyCalendar::ACTIVITY_CANCELED
+  end
+
+  ##
   # Return a copy of this ScheduledActivity
   #
   # @return ScheduledActivity
