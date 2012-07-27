@@ -34,7 +34,7 @@ gem 'jquery-rails'
 gem 'json-schema'
 
 gem 'ncs_mdes', '~> 0.5'
-gem 'surveyor', :git => 'https://github.com/NUBIC/surveyor.git', :ref => '9a40a92912d845ac112e1334147e57e842b6ba74'
+gem 'surveyor', :git => 'https://github.com/NUBIC/surveyor.git', :ref => 'd372e65a15d712a9fcad0046f0fa756e4b42940f'
 gem 'psc'
 gem 'ncs_navigator_configuration'
 gem 'sidekiq'
