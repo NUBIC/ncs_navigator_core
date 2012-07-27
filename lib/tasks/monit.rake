@@ -2,24 +2,19 @@ namespace :monit do
   namespace :config do
     desc 'Generate the monit configuration for Core'
     task :generate do
-      require 'erb'
-      File.open(generated_config_path, 'w') do |f|
-        out = ERB.new(File.read(template_path)).result(context.instance_eval { binding })
-        f.write(out)
-      end
+      File.open(generated_config_path, 'w') { |f| f.write(ERB.new(template).result(binding)) }
     end
 
-    def template_path
-      File.join(ENV['PWD'], 'monit.cfg.erb')
+    def template
+      File.read(File.expand_path('../../../monit.cfg.erb', __FILE__))
     end
 
     def context
-      OpenStruct.new(
-        { :rails_env => (ENV['RAILS_ENV'].blank? ? Rails.env : ENV['RAILS_ENV']), :pwd => ENV['PWD']})
+      OpenStruct.new({ :pwd => File.expand_path('../../..', __FILE__) })
     end
 
     def generated_config_path
-      File.join(ENV['PWD'], 'monit.cfg')
+      File.expand_path('../../../monit.cfg', __FILE__)
     end
   end
 end

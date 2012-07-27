@@ -1,7 +1,7 @@
 <% PID_FILE = File.join(pwd, 'tmp', 'pids', 'sidekiq.pid') %>
 
 <% 
-  env = [] << "RAILS_ENV=#{rails_env}" unless rails_env.blank?
+  ( env = [] ) << "RAILS_ENV=#{Rails.env}"
   cd = "cd #{pwd}"
   sidekiq = "bundle exec sidekiq -P #{PID_FILE}"
   command = [env, cd, sidekiq].flatten.join(' && ')
