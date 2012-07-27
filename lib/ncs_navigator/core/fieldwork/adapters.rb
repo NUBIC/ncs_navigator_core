@@ -5,78 +5,64 @@ require 'date'
 require 'forwardable'
 require 'ncs_navigator/core'
 
-##
-# These adapters were bootstrapped from the fieldwork JSON schema.
+# These adapters provide a uniform interface over Cases' model objects and
+# hashes from Field's datasets.
 #
-# Schema revision: 3a646300298ff48e1ac390283e3a6a6283893d47
+# The hash adapters also provide mechanisms for constructing models from
+# hashes; see #to_model for more information.
+#
+# These adapters MUST be kept in sync with the fieldwork JSON schema.
 module NcsNavigator::Core::Fieldwork::Adapters
-  def adapt_hash(type, o)
-    case type
-
-    when :contact; ContactHashAdapter.new(o)
-
-    when :event; EventHashAdapter.new(o)
-
-    when :instrument; InstrumentHashAdapter.new(o)
-
-    when :participant; ParticipantHashAdapter.new(o)
-
-    when :person; PersonHashAdapter.new(o)
-
-    when :response; ResponseHashAdapter.new(o)
-
-    when :response_set; ResponseSetHashAdapter.new(o)
-
-    end
-  end
-
-  def adapt_model(m)
-    case m
-
-    when Contact; ContactModelAdapter.new(m)
-
-    when Event; EventModelAdapter.new(m)
-
-    when Instrument; InstrumentModelAdapter.new(m)
-
-    when Participant; ParticipantModelAdapter.new(m)
-
-    when Person; PersonModelAdapter.new(m)
-
-    when Response; ResponseModelAdapter.new(m)
-
-    when ResponseSet; ResponseSetModelAdapter.new(m)
-
-    end
-  end
-
-  module ActiveRecordTypeCoercion
-    def date(x)
-      case x
-      when Date; x
-      when NilClass; x
-      else
-        begin
-          Date.parse(x)
-        rescue ArgumentError
-        end
-      end
-    end
-
-    def decimal(x)
-      case x
-      when BigDecimal; x
-      when NilClass; x
-      else BigDecimal.new(x)
-      end
-    end
-  end
-
+  ##
+  # Base class for all adapters.
+  #
+  # The adapter target is the adapted object; in this case, an ActiveRecord
+  # model or hash.
+  #
+  # This class also defines [] and []= operators, which is useful to be able to
+  # treat property access on models similarly to hashes.  (The merge code uses
+  # this pretty heavily.)
   class Adapter < Struct.new(:target, :ancestors)
+    include ActiveModel::MassAssignmentSecurity
+
+    ##
+    # Builds attribute accessors.
+    #
+    # The accessors defined by this method require that the adapter define the
+    # following methods:
+    #
+    # * #set(attr, value)
+    # * #get(attr)
+    #
+    # {HashBehavior} and {ModelBehavior} do this.
+    def self.attr_accessors(attrs)
+      attrs.each do |attr|
+        to, from = case attr
+                   when String; [attr, attr]
+                   when Hash; attr.to_a.first
+                   else raise "Invalid attribute spec #{attr.inspect}"
+                   end
+
+        define_method(to) { get(from) }
+        define_method("#{to}=") { |v| set(from, v) }
+        attr_accessible to
+      end
+    end
+
+    def self.transform(attr, with)
+      old = instance_method(attr)
+      trans = instance_method(with)
+
+      define_method(attr) do
+        value = old.bind(self).call
+        trans.bind(self).call(value)
+      end
+    end
+
     def initialize(*args)
       super
 
-      self.ancestors = {}
+      self.ancestors ||= {}
     end
 
     def [](a)
@@ -88,195 +74,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ContactModelAdapter < Adapter
+  ##
+  # To avoid tedious unboxing code, we want to treat model adapters as
+  # ActiveRecord objects.  This module lets us do so by implementing relevant
+  # parts of the ActiveModel / ActiveRecord APIs.
+  #
+  # This module also includes code to build a whitelist of mergeable attributes.
+  module ModelBehavior
     extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
 
-    def contact_comment
-      target.contact_comment
+    def self.included(base)
+      base.extend ActiveModel::Naming
     end
 
-    def contact_comment=(val)
-      target.contact_comment = val
-    end
-
-    attr_accessible :contact_comment
-
-    def contact_date_date
-      target.contact_date_date
-    end
-
-    def contact_date_date=(val)
-      target.contact_date_date = val
-    end
-
-    attr_accessible :contact_date_date
-
-    def contact_id
-      target.contact_id
-    end
-
-    def contact_id=(val)
-      target.contact_id = val
-    end
-
-    attr_accessible :contact_id
-
-    def contact_disposition
-      target.contact_disposition
-    end
-
-    def contact_disposition=(val)
-      target.contact_disposition = val
-    end
-
-    attr_accessible :contact_disposition
-
-    def contact_distance
-      target.contact_distance
-    end
-
-    def contact_distance=(val)
-      target.contact_distance = val
-    end
-
-    attr_accessible :contact_distance
-
-    def contact_end_time
-      target.contact_end_time
-    end
-
-    def contact_end_time=(val)
-      target.contact_end_time = val
-    end
-
-    attr_accessible :contact_end_time
-
-    def contact_interpret_code
-      target.contact_interpret_code
-    end
-
-    def contact_interpret_code=(val)
-      target.contact_interpret_code = val
-    end
-
-    attr_accessible :contact_interpret_code
-
-    def contact_interpret_other
-      target.contact_interpret_other
-    end
-
-    def contact_interpret_other=(val)
-      target.contact_interpret_other = val
-    end
-
-    attr_accessible :contact_interpret_other
-
-    def contact_language_code
-      target.contact_language_code
-    end
-
-    def contact_language_code=(val)
-      target.contact_language_code = val
-    end
-
-    attr_accessible :contact_language_code
-
-    def contact_language_other
-      target.contact_language_other
-    end
-
-    def contact_language_other=(val)
-      target.contact_language_other = val
-    end
-
-    attr_accessible :contact_language_other
-
-    def contact_location_code
-      target.contact_location_code
-    end
-
-    def contact_location_code=(val)
-      target.contact_location_code = val
-    end
-
-    attr_accessible :contact_location_code
-
-    def contact_location_other
-      target.contact_location_other
-    end
-
-    def contact_location_other=(val)
-      target.contact_location_other = val
-    end
-
-    attr_accessible :contact_location_other
-
-    def contact_private_code
-      target.contact_private_code
-    end
-
-    def contact_private_code=(val)
-      target.contact_private_code = val
-    end
-
-    attr_accessible :contact_private_code
-
-    def contact_private_detail
-      target.contact_private_detail
-    end
-
-    def contact_private_detail=(val)
-      target.contact_private_detail = val
-    end
-
-    attr_accessible :contact_private_detail
-
-    def contact_start_time
-      target.contact_start_time
-    end
-
-    def contact_start_time=(val)
-      target.contact_start_time = val
-    end
-
-    attr_accessible :contact_start_time
-
-    def contact_type_code
-      target.contact_type_code
-    end
-
-    def contact_type_code=(val)
-      target.contact_type_code = val
-    end
-
-    attr_accessible :contact_type_code
-
-    def who_contacted_code
-      target.who_contacted_code
-    end
-
-    def who_contacted_code=(val)
-      target.who_contacted_code = val
-    end
-
-    attr_accessible :who_contacted_code
-
-    def who_contacted_other
-      target.who_contacted_other
-    end
-
-    def who_contacted_other=(val)
-      target.who_contacted_other = val
-    end
-
-    attr_accessible :who_contacted_other
-
-    def to_model
-      self
-    end
-
+    ##
+    # Used when generating a fieldwork set.
+    #
+    # @see Field::ScheduledActivityReport
     def as_json(options = nil)
       {}.tap do |h|
         self.class.accessible_attributes.each do |k|
@@ -285,6 +99,37 @@ module NcsNavigator::Core::Fieldwork::Adapters
       end
     end
 
+    def set(attr, value)
+      target.send("#{attr}=", value)
+    end
+
+    def get(attr)
+      target.send(attr)
+    end
+
+    ##
+    # Applies changes to the wrapped model.
+    def patch(attributes)
+      sanitize_for_mass_assignment(attributes).each { |k, v| self[k] = v }
+    end
+
+    ##
+    # Models can be merged on an attribute-by-attribute basis.
+    def merge_atomically?
+      false
+    end
+
+    def to_model
+      self
+    end
+
+    ##
+    # Useful for testing.
+    def ==(other)
+      target == other
+    end
+
+    # These methods are used in various field classes.
     def_delegators :target,
       :changed?,
       :destroy,
@@ -297,1142 +142,223 @@ module NcsNavigator::Core::Fieldwork::Adapters
       :public_id,
       :save,
       :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
-    end
   end
 
-  class ContactHashAdapter < Adapter
+  ##
+  # Type coercions to make an attribute from a hash or an ActiveRecord model
+  # be appropriate for an ActiveRecord model.
+  module HashBehavior
     include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
-
-    def contact_comment
-      (target[%q{contact_comment}])
-    end
-
-    def contact_comment=(val)
-      target[%q{contact_comment}] = val
-    end
-
-    def contact_date_date
-      date(target[%q{contact_date_date}])
-    end
-
-    def contact_date_date=(val)
-      target[%q{contact_date_date}] = val
-    end
-
-    def contact_disposition
-      (target[%q{contact_disposition}])
-    end
-
-    def contact_disposition=(val)
-      target[%q{contact_disposition}] = val
-    end
-
-    def contact_distance
-      decimal(target[%q{contact_distance}])
-    end
-
-    def contact_distance=(val)
-      target[%q{contact_distance}] = val
-    end
-
-    def contact_end_time
-      (target[%q{contact_end_time}])
-    end
-
-    def contact_end_time=(val)
-      target[%q{contact_end_time}] = val
-    end
-
-    def contact_id
-      (target[%q{contact_id}])
-    end
-
-    def contact_id=(val)
-      target[%q{contact_id}] = val
-    end
-
-    def contact_interpret_code
-      (target[%q{contact_interpret_code}])
-    end
-
-    def contact_interpret_code=(val)
-      target[%q{contact_interpret_code}] = val
-    end
-
-    def contact_interpret_other
-      (target[%q{contact_interpret_other}])
-    end
-
-    def contact_interpret_other=(val)
-      target[%q{contact_interpret_other}] = val
-    end
-
-    def contact_language_code
-      (target[%q{contact_language_code}])
-    end
-
-    def contact_language_code=(val)
-      target[%q{contact_language_code}] = val
-    end
-
-    def contact_language_other
-      (target[%q{contact_language_other}])
-    end
-
-    def contact_language_other=(val)
-      target[%q{contact_language_other}] = val
-    end
-
-    def contact_location_code
-      (target[%q{contact_location_code}])
-    end
-
-    def contact_location_code=(val)
-      target[%q{contact_location_code}] = val
-    end
-
-    def contact_location_other
-      (target[%q{contact_location_other}])
-    end
-
-    def contact_location_other=(val)
-      target[%q{contact_location_other}] = val
-    end
-
-    def contact_private_code
-      (target[%q{contact_private_code}])
-    end
-
-    def contact_private_code=(val)
-      target[%q{contact_private_code}] = val
-    end
-
-    def contact_private_detail
-      (target[%q{contact_private_detail}])
-    end
-
-    def contact_private_detail=(val)
-      target[%q{contact_private_detail}] = val
-    end
-
-    def contact_start_time
-      (target[%q{contact_start_time}])
-    end
-
-    def contact_start_time=(val)
-      target[%q{contact_start_time}] = val
-    end
-
-    def contact_type_code
-      (target[%q{contact_type_code}])
-    end
-
-    def contact_type_code=(val)
-      target[%q{contact_type_code}] = val
-    end
-
-    def person_id
-      (target[%q{person_id}])
-    end
-
-    def person_id=(val)
-      target[%q{person_id}] = val
-    end
-
-    def version
-      (target[%q{version}])
-    end
-
-    def version=(val)
-      target[%q{version}] = val
-    end
-
-    def who_contacted_code
-      (target[%q{who_contacted_code}])
-    end
-
-    def who_contacted_code=(val)
-      target[%q{who_contacted_code}] = val
-    end
-
-    def who_contacted_other
-      (target[%q{who_contacted_other}])
-    end
-
-    def who_contacted_other=(val)
-      target[%q{who_contacted_other}] = val
-    end
-
-    def to_hash
-      target
-    end
 
     def to_model
-      adapt_model(Contact.new).tap do |m|
+      adapt_model(model_class.new).tap do |m|
         m.ancestors = ancestors
         m.patch(target)
       end
     end
 
     def ==(other)
-      to_hash == other.to_hash
-    end
-  end
-
-  class EventModelAdapter < Adapter
-    extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
-
-    def event_breakoff_code
-      target.event_breakoff_code
+      target == other.target
     end
 
-    def event_breakoff_code=(val)
-      target.event_breakoff_code = val
+    def set(attr, value)
+      target[attr] = value
     end
 
-    attr_accessible :event_breakoff_code
-
-    def event_comment
-      target.event_comment
+    def get(attr)
+      target[attr]
     end
 
-    def event_comment=(val)
-      target.event_comment = val
-    end
-
-    attr_accessible :event_comment
-
-    def event_disposition
-      target.event_disposition
-    end
-
-    def event_disposition=(val)
-      target.event_disposition = val
-    end
-
-    attr_accessible :event_disposition
-
-    def event_disposition_category_code
-      target.event_disposition_category_code
-    end
-
-    def event_disposition_category_code=(val)
-      target.event_disposition_category_code = val
-    end
-
-    attr_accessible :event_disposition_category_code
-
-    def event_end_date
-      target.event_end_date
-    end
-
-    def event_end_date=(val)
-      target.event_end_date = val
-    end
-
-    attr_accessible :event_end_date
-
-    def event_end_time
-      target.event_end_time
-    end
-
-    def event_end_time=(val)
-      target.event_end_time = val
-    end
-
-    attr_accessible :event_end_time
-
-    def event_id
-      target.event_id
-    end
-
-    def event_id=(val)
-      target.event_id = val
-    end
-
-    attr_accessible :event_id
-
-    def event_incentive_type_code
-      target.event_incentive_type_code
-    end
-
-    def event_incentive_type_code=(val)
-      target.event_incentive_type_code = val
-    end
-
-    attr_accessible :event_incentive_type_code
-
-    def event_incentive_cash
-      target.event_incentive_cash
-    end
-
-    def event_incentive_cash=(val)
-      target.event_incentive_cash = val
-    end
-
-    attr_accessible :event_incentive_cash
-
-    def event_repeat_key
-      target.event_repeat_key
-    end
-
-    def event_repeat_key=(val)
-      target.event_repeat_key = val
-    end
-
-    attr_accessible :event_repeat_key
-
-    def event_start_date
-      target.event_start_date
-    end
-
-    def event_start_date=(val)
-      target.event_start_date = val
-    end
-
-    attr_accessible :event_start_date
-
-    def event_start_time
-      target.event_start_time
-    end
-
-    def event_start_time=(val)
-      target.event_start_time = val
-    end
-
-    attr_accessible :event_start_time
-
-    def event_type_code
-      target.event_type_code
-    end
-
-    def event_type_code=(val)
-      target.event_type_code = val
-    end
-
-    attr_accessible :event_type_code
-
-    def event_type_other
-      target.event_type_other
-    end
-
-    def event_type_other=(val)
-      target.event_type_other = val
-    end
-
-    attr_accessible :event_type_other
-
-    def to_model
-      self
-    end
-
-    def as_json(options = nil)
-      {}.tap do |h|
-        self.class.accessible_attributes.each do |k|
-          h[k] = send(k)
+    def to_date(x)
+      case x
+      when Date; x
+      when NilClass; x
+      else
+        begin
+          Date.parse(x)
+        rescue ArgumentError
         end
       end
     end
 
-    def_delegators :target,
-      :changed?,
-      :destroy,
-      :destroyed?,
-      :errors,
-      :mark_for_destruction,
-      :marked_for_destruction?,
-      :new_record?,
-      :persisted?,
-      :public_id,
-      :save,
-      :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
-    end
-  end
-
-  class EventHashAdapter < Adapter
-    include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
-
-    def event_breakoff_code
-      (target[%q{event_breakoff_code}])
-    end
-
-    def event_breakoff_code=(val)
-      target[%q{event_breakoff_code}] = val
-    end
-
-    def event_comment
-      (target[%q{event_comment}])
-    end
-
-    def event_comment=(val)
-      target[%q{event_comment}] = val
-    end
-
-    def event_disposition
-      (target[%q{event_disposition}])
-    end
-
-    def event_disposition=(val)
-      target[%q{event_disposition}] = val
-    end
-
-    def event_disposition_category_code
-      (target[%q{event_disposition_category_code}])
-    end
-
-    def event_disposition_category_code=(val)
-      target[%q{event_disposition_category_code}] = val
-    end
-
-    def event_end_date
-      date(target[%q{event_end_date}])
-    end
-
-    def event_end_date=(val)
-      target[%q{event_end_date}] = val
-    end
-
-    def event_end_time
-      (target[%q{event_end_time}])
-    end
-
-    def event_end_time=(val)
-      target[%q{event_end_time}] = val
-    end
-
-    def event_id
-      (target[%q{event_id}])
-    end
-
-    def event_id=(val)
-      target[%q{event_id}] = val
-    end
-
-    def event_incentive_cash
-      decimal(target[%q{event_incentive_cash}])
-    end
-
-    def event_incentive_cash=(val)
-      target[%q{event_incentive_cash}] = val
-    end
-
-    def event_incentive_type_code
-      (target[%q{event_incentive_type_code}])
-    end
-
-    def event_incentive_type_code=(val)
-      target[%q{event_incentive_type_code}] = val
-    end
-
-    def event_repeat_key
-      (target[%q{event_repeat_key}])
-    end
-
-    def event_repeat_key=(val)
-      target[%q{event_repeat_key}] = val
-    end
-
-    def event_start_date
-      date(target[%q{event_start_date}])
-    end
-
-    def event_start_date=(val)
-      target[%q{event_start_date}] = val
-    end
-
-    def event_start_time
-      (target[%q{event_start_time}])
-    end
-
-    def event_start_time=(val)
-      target[%q{event_start_time}] = val
-    end
-
-    def event_type_code
-      (target[%q{event_type_code}])
-    end
-
-    def event_type_code=(val)
-      target[%q{event_type_code}] = val
-    end
-
-    def event_type_other
-      (target[%q{event_type_other}])
-    end
-
-    def event_type_other=(val)
-      target[%q{event_type_other}] = val
-    end
-
-    def name
-      (target[%q{name}])
-    end
-
-    def name=(val)
-      target[%q{name}] = val
-    end
-
-    def version
-      (target[%q{version}])
-    end
-
-    def version=(val)
-      target[%q{version}] = val
-    end
-
-    def to_hash
-      target
-    end
-
-    def to_model
-      adapt_model(Event.new).tap do |m|
-        m.ancestors = ancestors
-        m.patch(target)
+    def to_bigdecimal(x)
+      case x
+      when BigDecimal; x
+      when NilClass; x
+      else BigDecimal.new(x)
       end
     end
+  end
 
-    def ==(other)
-      to_hash == other.to_hash
+  class ContactAdapter < Adapter
+    attr_accessors %w(
+      contact_comment
+      contact_date_date
+      contact_id
+      contact_disposition
+      contact_distance
+      contact_end_time
+      contact_interpret_code
+      contact_interpret_other
+      contact_language_code
+      contact_language_other
+      contact_location_code
+      contact_location_other
+      contact_private_code
+      contact_private_detail
+      contact_start_time
+      contact_type_code
+      who_contacted_code
+      who_contacted_other
+    )
+  end
+
+  class ContactModelAdapter < ContactAdapter
+    include ModelBehavior
+  end
+
+  class ContactHashAdapter < ContactAdapter
+    include HashBehavior
+
+    transform :contact_date_date, :to_date
+    transform :contact_distance, :to_bigdecimal
+
+    def model_class
+      ::Contact
     end
   end
 
-  class InstrumentModelAdapter < Adapter
-    extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
+  class EventAdapter < Adapter
+    attr_accessors %w(
+      event_breakoff_code
+      event_comment
+      event_disposition
+      event_disposition_category_code
+      event_end_date
+      event_end_time
+      event_id
+      event_incentive_type_code
+      event_incentive_cash
+      event_repeat_key
+      event_start_date
+      event_start_time
+      event_type_code
+      event_type_other
+      event_type_code
+      event_type_other
+    )
+  end
 
-    def instrument_breakoff_code
-      target.instrument_breakoff_code
-    end
+  class EventModelAdapter < EventAdapter
+    include ModelBehavior
+  end
 
-    def instrument_breakoff_code=(val)
-      target.instrument_breakoff_code = val
-    end
+  class EventHashAdapter < EventAdapter
+    include HashBehavior
 
-    attr_accessible :instrument_breakoff_code
+    transform :event_end_date, :to_date
+    transform :event_incentive_cash, :to_bigdecimal
+    transform :event_start_date, :to_date
 
-    def instrument_comment
-      target.instrument_comment
-    end
-
-    def instrument_comment=(val)
-      target.instrument_comment = val
-    end
-
-    attr_accessible :instrument_comment
-
-    def data_problem_code
-      target.data_problem_code
-    end
-
-    def data_problem_code=(val)
-      target.data_problem_code = val
-    end
-
-    attr_accessible :data_problem_code
-
-    def instrument_end_date
-      target.instrument_end_date
-    end
-
-    def instrument_end_date=(val)
-      target.instrument_end_date = val
-    end
-
-    attr_accessible :instrument_end_date
-
-    def instrument_end_time
-      target.instrument_end_time
-    end
-
-    def instrument_end_time=(val)
-      target.instrument_end_time = val
-    end
-
-    attr_accessible :instrument_end_time
-
-    def instrument_id
-      target.instrument_id
-    end
-
-    def instrument_id=(val)
-      target.instrument_id = val
-    end
-
-    attr_accessible :instrument_id
-
-    def instrument_method_code
-      target.instrument_method_code
-    end
-
-    def instrument_method_code=(val)
-      target.instrument_method_code = val
-    end
-
-    attr_accessible :instrument_method_code
-
-    def instrument_mode_code
-      target.instrument_mode_code
-    end
-
-    def instrument_mode_code=(val)
-      target.instrument_mode_code = val
-    end
-
-    attr_accessible :instrument_mode_code
-
-    def instrument_mode_other
-      target.instrument_mode_other
-    end
-
-    def instrument_mode_other=(val)
-      target.instrument_mode_other = val
-    end
-
-    attr_accessible :instrument_mode_other
-
-    def instrument_repeat_key
-      target.instrument_repeat_key
-    end
-
-    def instrument_repeat_key=(val)
-      target.instrument_repeat_key = val
-    end
-
-    attr_accessible :instrument_repeat_key
-
-    def instrument_start_date
-      target.instrument_start_date
-    end
-
-    def instrument_start_date=(val)
-      target.instrument_start_date = val
-    end
-
-    attr_accessible :instrument_start_date
-
-    def instrument_start_time
-      target.instrument_start_time
-    end
-
-    def instrument_start_time=(val)
-      target.instrument_start_time = val
-    end
-
-    attr_accessible :instrument_start_time
-
-    def instrument_status_code
-      target.instrument_status_code
-    end
-
-    def instrument_status_code=(val)
-      target.instrument_status_code = val
-    end
-
-    attr_accessible :instrument_status_code
-
-    def supervisor_review_code
-      target.supervisor_review_code
-    end
-
-    def supervisor_review_code=(val)
-      target.supervisor_review_code = val
-    end
-
-    attr_accessible :supervisor_review_code
-
-    def instrument_type_code
-      target.instrument_type_code
-    end
-
-    def instrument_type_code=(val)
-      target.instrument_type_code = val
-    end
-
-    attr_accessible :instrument_type_code
-
-    def instrument_type_other
-      target.instrument_type_other
-    end
-
-    def instrument_type_other=(val)
-      target.instrument_type_other = val
-    end
-
-    attr_accessible :instrument_type_other
-
-    def to_model
-      self
-    end
-
-    def as_json(options = nil)
-      {}.tap do |h|
-        self.class.accessible_attributes.each do |k|
-          h[k] = send(k)
-        end
-      end
-    end
-
-    def_delegators :target,
-      :changed?,
-      :destroy,
-      :destroyed?,
-      :errors,
-      :mark_for_destruction,
-      :marked_for_destruction?,
-      :new_record?,
-      :persisted?,
-      :public_id,
-      :save,
-      :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
+    def model_class
+      ::Event
     end
   end
 
-  class InstrumentHashAdapter < Adapter
-    include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
+  class InstrumentAdapter < Adapter
+    attr_accessors %w(
+      data_problem_code
+      instrument_breakoff_code
+      instrument_comment
+      instrument_end_date
+      instrument_end_time
+      instrument_id
+      instrument_method_code
+      instrument_mode_code
+      instrument_mode_other
+      instrument_repeat_key
+      instrument_start_date
+      instrument_start_time
+      instrument_status_code
+      instrument_type_code
+      instrument_type_other
+      supervisor_review_code
+    )
+  end
 
-    def data_problem_code
-      (target[%q{data_problem_code}])
-    end
+  class InstrumentModelAdapter < InstrumentAdapter
+    include ModelBehavior
+  end
 
-    def data_problem_code=(val)
-      target[%q{data_problem_code}] = val
-    end
+  class InstrumentHashAdapter < InstrumentAdapter
+    include HashBehavior
 
-    def instrument_breakoff_code
-      (target[%q{instrument_breakoff_code}])
-    end
+    transform :instrument_end_date, :to_date
+    transform :instrument_start_date, :to_date
 
-    def instrument_breakoff_code=(val)
-      target[%q{instrument_breakoff_code}] = val
-    end
-
-    def instrument_comment
-      (target[%q{instrument_comment}])
-    end
-
-    def instrument_comment=(val)
-      target[%q{instrument_comment}] = val
-    end
-
-    def instrument_end_date
-      date(target[%q{instrument_end_date}])
-    end
-
-    def instrument_end_date=(val)
-      target[%q{instrument_end_date}] = val
-    end
-
-    def instrument_end_time
-      (target[%q{instrument_end_time}])
-    end
-
-    def instrument_end_time=(val)
-      target[%q{instrument_end_time}] = val
-    end
-
-    def instrument_id
-      (target[%q{instrument_id}])
-    end
-
-    def instrument_id=(val)
-      target[%q{instrument_id}] = val
-    end
-
-    def instrument_method_code
-      (target[%q{instrument_method_code}])
-    end
-
-    def instrument_method_code=(val)
-      target[%q{instrument_method_code}] = val
-    end
-
-    def instrument_mode_code
-      (target[%q{instrument_mode_code}])
-    end
-
-    def instrument_mode_code=(val)
-      target[%q{instrument_mode_code}] = val
-    end
-
-    def instrument_mode_other
-      (target[%q{instrument_mode_other}])
-    end
-
-    def instrument_mode_other=(val)
-      target[%q{instrument_mode_other}] = val
-    end
-
-    def instrument_repeat_key
-      (target[%q{instrument_repeat_key}])
-    end
-
-    def instrument_repeat_key=(val)
-      target[%q{instrument_repeat_key}] = val
-    end
-
-    def instrument_start_date
-      date(target[%q{instrument_start_date}])
-    end
-
-    def instrument_start_date=(val)
-      target[%q{instrument_start_date}] = val
-    end
-
-    def instrument_start_time
-      (target[%q{instrument_start_time}])
-    end
-
-    def instrument_start_time=(val)
-      target[%q{instrument_start_time}] = val
-    end
-
-    def instrument_status_code
-      (target[%q{instrument_status_code}])
-    end
-
-    def instrument_status_code=(val)
-      target[%q{instrument_status_code}] = val
-    end
-
-    def instrument_template_id
-      (target[%q{instrument_template_id}])
-    end
-
-    def instrument_template_id=(val)
-      target[%q{instrument_template_id}] = val
-    end
-
-    def instrument_type_code
-      (target[%q{instrument_type_code}])
-    end
-
-    def instrument_type_code=(val)
-      target[%q{instrument_type_code}] = val
-    end
-
-    def instrument_type_other
-      (target[%q{instrument_type_other}])
-    end
-
-    def instrument_type_other=(val)
-      target[%q{instrument_type_other}] = val
-    end
-
-    def instrument_version
-      (target[%q{instrument_version}])
-    end
-
-    def instrument_version=(val)
-      target[%q{instrument_version}] = val
-    end
-
-    def name
-      (target[%q{name}])
-    end
-
-    def name=(val)
-      target[%q{name}] = val
-    end
-
-    def response_set
-      (target[%q{response_set}])
-    end
-
-    def response_set=(val)
-      target[%q{response_set}] = val
-    end
-
-    def supervisor_review_code
-      (target[%q{supervisor_review_code}])
-    end
-
-    def supervisor_review_code=(val)
-      target[%q{supervisor_review_code}] = val
-    end
-
-    def to_hash
-      target
-    end
-
-    def to_model
-      adapt_model(Instrument.new).tap do |m|
-        m.ancestors = ancestors
-        m.patch(target)
-      end
-    end
-
-    def ==(other)
-      to_hash == other.to_hash
+    def model_class
+      ::Instrument
     end
   end
 
+  ##
+  # At present, this is just for completeness.  It doesn't participate in the
+  # merge process.
   class ParticipantModelAdapter < Adapter
-    extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
-
-    def to_model
-      self
-    end
-
-    def as_json(options = nil)
-      {}.tap do |h|
-        self.class.accessible_attributes.each do |k|
-          h[k] = send(k)
-        end
-      end
-    end
-
-    def_delegators :target,
-      :changed?,
-      :destroy,
-      :destroyed?,
-      :errors,
-      :mark_for_destruction,
-      :marked_for_destruction?,
-      :new_record?,
-      :persisted?,
-      :public_id,
-      :save,
-      :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
-    end
+    include ModelBehavior
   end
 
   class ParticipantHashAdapter < Adapter
-    include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
+    include HashBehavior
 
-    def p_id
-      (target[%q{p_id}])
-    end
+    attr_accessors %w(
+      p_id
+    )
 
-    def p_id=(val)
-      target[%q{p_id}] = val
-    end
-
-    def to_hash
-      target
-    end
-
-    def to_model
-      adapt_model(Participant.new).tap do |m|
-        m.ancestors = ancestors
-        m.patch(target)
-      end
-    end
-
-    def ==(other)
-      to_hash == other.to_hash
+    def model_class
+      ::Participant
     end
   end
 
+  ##
+  # At present, this is just for completeness.  It doesn't participate in the
+  # merge process.
   class PersonModelAdapter < Adapter
-    extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
-
-    def to_model
-      self
-    end
-
-    def as_json(options = nil)
-      {}.tap do |h|
-        self.class.accessible_attributes.each do |k|
-          h[k] = send(k)
-        end
-      end
-    end
-
-    def_delegators :target,
-      :changed?,
-      :destroy,
-      :destroyed?,
-      :errors,
-      :mark_for_destruction,
-      :marked_for_destruction?,
-      :new_record?,
-      :persisted?,
-      :public_id,
-      :save,
-      :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
-    end
+    include ModelBehavior
   end
 
   class PersonHashAdapter < Adapter
-    include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
+    include HashBehavior
 
-    def cell_phone
-      (target[%q{cell_phone}])
-    end
+    attr_accessors %w(
+      cell_phone
+      city
+      email
+      home_phone
+      name
+      person_id
+      relationship_code
+      state
+      street
+      zip_code
+    )
 
-    def cell_phone=(val)
-      target[%q{cell_phone}] = val
-    end
-
-    def city
-      (target[%q{city}])
-    end
-
-    def city=(val)
-      target[%q{city}] = val
-    end
-
-    def email
-      (target[%q{email}])
-    end
-
-    def email=(val)
-      target[%q{email}] = val
-    end
-
-    def home_phone
-      (target[%q{home_phone}])
-    end
-
-    def home_phone=(val)
-      target[%q{home_phone}] = val
-    end
-
-    def name
-      (target[%q{name}])
-    end
-
-    def name=(val)
-      target[%q{name}] = val
-    end
-
-    def person_id
-      (target[%q{person_id}])
-    end
-
-    def person_id=(val)
-      target[%q{person_id}] = val
-    end
-
-    def relationship_code
-      (target[%q{relationship_code}])
-    end
-
-    def relationship_code=(val)
-      target[%q{relationship_code}] = val
-    end
-
-    def state
-      (target[%q{state}])
-    end
-
-    def state=(val)
-      target[%q{state}] = val
-    end
-
-    def street
-      (target[%q{street}])
-    end
-
-    def street=(val)
-      target[%q{street}] = val
-    end
-
-    def zip_code
-      (target[%q{zip_code}])
-    end
-
-    def zip_code=(val)
-      target[%q{zip_code}] = val
-    end
-
-    def to_hash
-      target
-    end
-
-    def to_model
-      adapt_model(Person.new).tap do |m|
-        m.ancestors = ancestors
-        m.patch(target)
-      end
-    end
-
-    def ==(other)
-      to_hash == other.to_hash
+    def model_class
+      ::Person
     end
   end
 
+  ##
+  # Wraps response entities from Surveyor and Surveyor iOS.
   class ResponseModelAdapter < Adapter
-    extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
+    include ModelBehavior
 
-    def uuid
-      target.api_id
-    end
-
-    def uuid=(val)
-      target.api_id = val
-    end
-
-    attr_accessible :uuid
+    attr_accessors [
+      { 'uuid' => 'api_id' },
+      'response_group',
+      'response_set_id',
+      'value'
+    ]
 
     def answer_id
       target.answer.try(:api_id)
@@ -1453,243 +379,76 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
 
     attr_accessible :question_id
-
-    def response_group
-      target.response_group
-    end
-
-    def response_group=(val)
-      target.response_group = val
-    end
-
-    attr_accessible :response_group
-
-    def response_set_id
-      target.response_set_id
-    end
-
-    def response_set_id=(val)
-      target.response_set_id = val
-    end
-
-    attr_accessible :response_set_id
-
-    def value
-      target.value
-    end
-
-    def value=(val)
-      target.value = val
-    end
-
-    attr_accessible :value
-
-    def to_model
-      self
-    end
-
-    def as_json(options = nil)
-      {}.tap do |h|
-        self.class.accessible_attributes.each do |k|
-          h[k] = send(k)
-        end
-      end
-    end
-
-    def_delegators :target,
-      :changed?,
-      :destroy,
-      :destroyed?,
-      :errors,
-      :mark_for_destruction,
-      :marked_for_destruction?,
-      :new_record?,
-      :persisted?,
-      :public_id,
-      :save,
-      :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
-    end
   end
 
   class ResponseHashAdapter < Adapter
-    include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
+    include HashBehavior
 
-    def answer_id
-      (target[%q{answer_id}])
-    end
+    attr_accessors %w(
+      answer_id
+      created_at
+      question_id
+      response_group
+      updated_at
+      uuid
+      value
+    )
 
-    def answer_id=(val)
-      target[%q{answer_id}] = val
-    end
-
-    def created_at
-      (target[%q{created_at}])
-    end
-
-    def created_at=(val)
-      target[%q{created_at}] = val
-    end
-
-    def question_id
-      (target[%q{question_id}])
-    end
-
-    def question_id=(val)
-      target[%q{question_id}] = val
-    end
-
-    def response_group
-      (target[%q{response_group}])
-    end
-
-    def response_group=(val)
-      target[%q{response_group}] = val
-    end
-
-    def updated_at
-      (target[%q{updated_at}])
-    end
-
-    def updated_at=(val)
-      target[%q{updated_at}] = val
-    end
-
-    def uuid
-      (target[%q{uuid}])
-    end
-
-    def uuid=(val)
-      target[%q{uuid}] = val
-    end
-
-    def value
-      (target[%q{value}])
-    end
-
-    def value=(val)
-      target[%q{value}] = val
-    end
-
-    def to_hash
-      target
-    end
-
+    ##
+    # Fills in Response#response_set_id.
     def to_model
-      adapt_model(Response.new).tap do |m|
-        m.ancestors = ancestors
-        m.patch(target)
+      super.tap do |m|
+        m.response_set_id = ResponseSet.where(:api_id => ancestors[:response_set].uuid).first.try(:id)
       end
     end
 
-    def ==(other)
-      to_hash == other.to_hash
+    def model_class
+      ::Response
     end
   end
 
   class ResponseSetModelAdapter < Adapter
-    extend Forwardable
-    extend ActiveModel::Naming
-    include ActiveModel::MassAssignmentSecurity
-
-    def to_model
-      self
-    end
-
-    def as_json(options = nil)
-      {}.tap do |h|
-        self.class.accessible_attributes.each do |k|
-          h[k] = send(k)
-        end
-      end
-    end
-
-    def_delegators :target,
-      :changed?,
-      :destroy,
-      :destroyed?,
-      :errors,
-      :mark_for_destruction,
-      :marked_for_destruction?,
-      :new_record?,
-      :persisted?,
-      :public_id,
-      :save,
-      :valid?
-
-    def patch(target)
-      sanitize_for_mass_assignment(target).each { |k, v| send("#{k}=", v) }
-    end
-
-    def merge_atomically?
-      false
-    end
-
-    def ==(other)
-      target == other
-    end
+    include ModelBehavior
   end
 
   class ResponseSetHashAdapter < Adapter
-    include NcsNavigator::Core::Fieldwork::Adapters
-    include ActiveRecordTypeCoercion
+    include HashBehavior
 
-    def completed_at
-      (target[%q{completed_at}])
+    attr_accessors %w(
+      completed_at
+      created_at
+      survey_id
+      uuid
+    )
+
+    def model_class
+      ::ResponseSet
     end
+  end
 
-    def completed_at=(val)
-      target[%q{completed_at}] = val
+  # Model adaptation methods.
+
+  def adapt_hash(type, h)
+    case type
+    when :contact; ContactHashAdapter.new(h)
+    when :event; EventHashAdapter.new(h)
+    when :instrument; InstrumentHashAdapter.new(h)
+    when :participant; ParticipantHashAdapter.new(h)
+    when :person; PersonHashAdapter.new(h)
+    when :response; ResponseHashAdapter.new(h)
+    when :response_set; ResponseSetHashAdapter.new(h)
     end
+  end
 
-    def created_at
-      (target[%q{created_at}])
-    end
-
-    def created_at=(val)
-      target[%q{created_at}] = val
-    end
-
-    def survey_id
-      (target[%q{survey_id}])
-    end
-
-    def survey_id=(val)
-      target[%q{survey_id}] = val
-    end
-
-    def uuid
-      (target[%q{uuid}])
-    end
-
-    def uuid=(val)
-      target[%q{uuid}] = val
-    end
-
-    def to_hash
-      target
-    end
-
-    def to_model
-      adapt_model(ResponseSet.new).tap do |m|
-        m.ancestors = ancestors
-        m.patch(target)
-      end
-    end
-
-    def ==(other)
-      to_hash == other.to_hash
+  def adapt_model(m)
+    case m
+    when Contact; ContactModelAdapter.new(m)
+    when Event; EventModelAdapter.new(m)
+    when Instrument; InstrumentModelAdapter.new(m)
+    when Participant; ParticipantModelAdapter.new(m)
+    when Person; PersonModelAdapter.new(m)
+    when Response; ResponseModelAdapter.new(m)
+    when ResponseSet; ResponseSetModelAdapter.new(m)
     end
   end
 end
