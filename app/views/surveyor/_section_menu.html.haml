@@ -1,0 +1,16 @@
+.surveyor_menu
+  = t('surveyor.sections')
+  %ul
+    - @activities_for_event.each do |a|
+      - next if a.canceled?
+      - if a.instrument == @survey.title.downcase
+        %li{:class => "current_survey"}
+          = a.activity_name
+        - @sections.each do |s|
+          - cls = s == @section ? "current_survey_section active" : "current_survey_section"
+          %li{:class => cls}
+            = menu_button_for(s)
+      - else
+        %li{:class => "not_current_survey"}
+          = a.activity_name
+
