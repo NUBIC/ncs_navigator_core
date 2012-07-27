@@ -19,11 +19,13 @@ module Field
 
     attr_reader :responses
     attr_reader :changed
+    attr_reader :errors
 
     def_delegators :responses, :blank?, :length, :each
 
     def initialize(*rs)
       @responses = Set.new
+      @errors = ActiveModel::Errors.new(self)
 
       rs.each { |r| self << r }
 
@@ -80,10 +82,17 @@ module Field
         if ok
           @changed = false
         else
+          collect_errors
           raise ActiveRecord::Rollback
         end
 
         ok
+      end
+    end
+
+    def collect_errors
+      each do |r|
+        errors.add(r.question_id, r.errors.to_a)
       end
     end
 
@@ -131,7 +140,7 @@ module Field
       attr_accessor :wrapped_response
       attr_accessor :response_model
 
-      def_delegators :response_model, :mark_for_destruction, :marked_for_destruction?, :save, :destroy
+      def_delegators :response_model, :mark_for_destruction, :marked_for_destruction?, :save, :destroy, :errors
 
       def resolve_model
         self.response_model = wrapped_response.to_model
