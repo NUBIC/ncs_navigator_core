@@ -41,4 +41,8 @@
   = f.label :storage_comment_other, "Storage Comment Other: "
   = f.text_field :storage_comment_other
   %br  
-  = f.submit "Receive", :disable_with => 'Submitting...', :class => 'sample_received'  
+
+  - text = method == :new ? "Receive" : "Update"
+  - clazz = method == :new ? "sample_received" : "update_sample_received"
+  
+  = f.submit text, :disable_with => 'Submitting...', :class => clazz
