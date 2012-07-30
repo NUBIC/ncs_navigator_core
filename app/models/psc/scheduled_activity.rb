@@ -111,11 +111,41 @@ module Psc
     ##
     # Constructs an instance of this class from a scheduled activity report row.
     def self.from_report(row)
+      new.tap do |a|
+        a.activity_date = row['scheduled_date']
+        a.activity_id = row['grid_id']
+        a.activity_name = row['activity_name']
+        a.activity_type = row['activity_type']
+        a.current_state = row['activity_status']
+        a.ideal_date = row['ideal_date']
+        a.labels = row['labels']
+        a.person_id = row['subject']['person_id'] if row['subject']
+      end
     end
 
     ##
     # Constucts an instance of this class from a row in a participant schedule.
     def self.from_schedule(row)
+      new.tap do |a|
+        if row['activity']
+          a.activity_name = row['activity']['name']
+          a.activity_type = row['activity']['type']
+        end
+
+        if row['current_state']
+          a.activity_date = row['current_state']['date']
+          a.current_state = row['current_state']['name']
+        end
+
+        if row['assignment']
+          a.person_id = row['assignment']['id']
+        end
+
+        a.activity_id = row['id']
+        a.ideal_date = row['ideal_date']
+        a.labels = row['labels']
+        a.study_segment = row['study_segment']
+      end
     end
 
     ##
