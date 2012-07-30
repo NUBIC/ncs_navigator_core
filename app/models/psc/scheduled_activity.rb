@@ -148,6 +148,21 @@ module Psc
       end
     end
 
+    def initialize(*args)
+      super
+
+      @processed_labels ||= []
+    end
+
+    def labels=(v)
+      super
+
+      @processed_labels = case v
+                          when String then v.split(' ')
+                          else v
+                          end
+    end
+
     ##
     # True if the activity state is "scheduled", false otherwise.
     def scheduled?
@@ -159,32 +174,21 @@ module Psc
     end
 
     ##
-    # The event label for the activity.  If the activity has no such label,
-    # returns nil.
-    def event
+    # Label readers.
+    %w(collection event instrument order participant_type references).each do |prefix|
+      str = <<-END
+        def #{prefix}_label
+          label_with "#{prefix}:"
+        end
+      END
+
+      class_eval str, __FILE__, __LINE__
     end
 
     ##
-    # The instrument label for the activity.  If the activity has no such
-    # label, returns nil.
-    def instrument
-    end
-
-    ##
-    # As above, but for the references label.
-    def referenced_instrument
-    end
-
-    def order
-    end
-
-    def participant_type
-    end
-
-    def mode
-    end
-
-    def collection
+    # @private
+    def label_with(prefix)
+      @processed_labels.detect { |l| l.start_with?(prefix) }
     end
   end
 end
