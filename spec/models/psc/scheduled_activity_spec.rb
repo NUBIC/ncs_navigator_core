@@ -105,7 +105,7 @@ module Psc
       end
     end
 
-    shared_examples_for 'label derivation' do
+    shared_examples_for 'a label reader' do
       let(:blank_sa) { ScheduledActivity.new }
 
       def self.it_reads_label(prefix, expected)
@@ -131,13 +131,13 @@ module Psc
     describe 'with a report row' do
       let(:sa) { ScheduledActivity.from_report(report_row) }
 
-      it_should_behave_like 'label derivation'
+      it_should_behave_like 'a label reader'
     end
 
     describe 'with a schedule row' do
       let(:sa) { ScheduledActivity.from_schedule(schedule_row) }
 
-      it_should_behave_like 'label derivation'
+      it_should_behave_like 'a label reader'
     end
   end
 end
