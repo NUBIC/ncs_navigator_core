@@ -75,11 +75,13 @@ module Psc
       [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
 
       rows.each do |row|
-        p = add_person(row)
-        c = add_contact(row, p)
-        e = add_event(row, c, p)
-        s = add_survey(row)
-        i = add_instrument(row, s, e, p) if s && e
+        activity = ScheduledActivity.from_report(row)
+
+        p = add_person(activity)
+        c = add_contact(activity, p)
+        e = add_event(activity, c, p)
+        s = add_survey(activity)
+        i = add_instrument(activity, s, e, p) if s && e
 
         add_contact_link(p, c, e, i)
       end
@@ -95,34 +97,34 @@ module Psc
 
     ##
     # @private
-    def add_contact(row, person)
-      contacts << Contact.new(row['scheduled_date'], person)
+    def add_contact(activity, person)
+      contacts << Contact.new(activity.activity_date, person)
     end
 
     ##
     # @private
-    def add_event(row, contact, person)
-      el = row['labels'].detect { |r| r.starts_with?('event:') }
+    def add_event(activity, contact, person)
+      el = activity.event_label
 
-      events << Event.new(el, row['ideal_date'], contact, person) if el
+      events << Event.new(el, activity.ideal_date, contact, person) if el
     end
 
     ##
     # @private
-    def add_instrument(row, survey, event, person)
-      instruments << Instrument.new(survey, row['activity_name'], event, person)
+    def add_instrument(activity, survey, event, person)
+      instruments << Instrument.new(survey, activity.activity_name, event, person)
     end
 
     ##
     # @private
-    def add_person(row)
-      people << Person.new(row['subject']['person_id'])
+    def add_person(activity)
+      people << Person.new(activity.person_id)
     end
 
     ##
     # @private
-    def add_survey(row)
-      il = row['labels'].detect { |r| r.starts_with?('instrument:') }
+    def add_survey(activity)
+      il = activity.instrument_label
 
       surveys << Survey.new(il) if il
     end
