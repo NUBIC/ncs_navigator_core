@@ -449,7 +449,7 @@ class Participant < ActiveRecord::Base
       event.mark_out_of_window
       event.close!
       event.cancel_activity(psc, "Missed Event - Out of Window")
-      set_state_for_event_type(event)
+      set_state_for_event_type(event) if event.event_type_code != 32
       resp = Event.schedule_and_create_placeholder(psc, self) if self.pending_events.blank?
     end
     resp
