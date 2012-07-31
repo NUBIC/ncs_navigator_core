@@ -99,8 +99,7 @@ class ContactLinksController < ApplicationController
 
     @activity_plan        = psc.build_activity_plan(@participant)
     @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
-    @current_activity     = @activity_plan.scheduled_activity_for_survey(
-                              @activity_plan.next_survey(@event.to_s, @survey.title))
+    @current_activity     = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
   end
 
   ##
