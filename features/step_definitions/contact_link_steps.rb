@@ -24,14 +24,28 @@ Given /^a pregnancy visit 1 survey exists$/ do
 end
 
 Given /^a contact record without an associated participant visit record$/ do
+  participant = Factory(:participant)
+  person = Factory(:person)
+  participant.person = person
+  participant.save!
+
+  event = Factory(:event, :participant => participant)
+
   contact = Factory(:contact)
-  contact_link = Factory(:contact_link, :contact => contact)
+  contact_link = Factory(:contact_link, :contact => contact, :person => person, :event => event)
 end
 
 Given /^a contact record with an associated participant visit record$/ do
+  participant = Factory(:participant)
+  person = Factory(:person)
+  participant.person = person
+  participant.save!
+
+  event = Factory(:event, :participant => participant)
+
   contact = Factory(:contact)
-  contact_link = Factory(:contact_link, :contact => contact)
-  Factory(:participant_visit_record, :contact => contact)
+  contact_link = Factory(:contact_link, :contact => contact, :person => person, :event => event)
+  Factory(:participant_visit_record, :contact => contact, :participant => participant)
 end
 
 

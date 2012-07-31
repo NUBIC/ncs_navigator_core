@@ -9,7 +9,7 @@
     "properties":[]
   },
   "assignments":[{
-    "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+    "id":"registered_with_psc",
     "name":"NCS Hi-Lo",
     "privileges":["visible","update-schedule","calendar-manager","set-calendar-manager"],
     "notifications":[],"populations":[],
@@ -45,10 +45,10 @@
             "type":"Biospecimen"
           },
           "assignment":{
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "name":"NCS Hi-Lo",
             "subject_coordinator":{"username":"pfr957"},
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "privileges":["update"]},
             "subject":"Bessie Smith",
             "labels":"event:pregnancy_visit_1",
@@ -74,10 +74,10 @@
               "type":"Biospecimen"
             },
             "assignment":{
-              "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+              "id":"registered_with_psc",
               "name":"NCS Hi-Lo",
               "subject_coordinator":{"username":"pfr957"},
-              "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+              "id":"registered_with_psc",
               "privileges":["update"]},
               "subject":"Bessie Smith",
               "labels":"event:pregnancy_visit_1",
@@ -103,10 +103,10 @@
                 "type":"Consent"
               },
               "assignment":{
-                "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                "id":"registered_with_psc",
                 "name":"NCS Hi-Lo",
                 "subject_coordinator":{"username":"pfr957"},
-                "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                "id":"registered_with_psc",
                 "privileges":["update"]},
                 "subject":"Bessie Smith",
                 "labels":"event:pregnancy_visit_1",
@@ -132,10 +132,10 @@
                   "type":"Environment"
                 },
                 "assignment":{
-                  "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                  "id":"registered_with_psc",
                   "name":"NCS Hi-Lo",
                   "subject_coordinator":{"username":"pfr957"},
-                  "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                  "id":"registered_with_psc",
                   "privileges":["update"]},
                   "subject":"Bessie Smith",
                   "labels":"event:pregnancy_visit_1",
@@ -160,10 +160,10 @@
                       "type":"Environment"
                     },
                     "assignment":{
-                      "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                      "id":"registered_with_psc",
                       "name":"NCS Hi-Lo",
                       "subject_coordinator":{"username":"pfr957"},
-                      "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                      "id":"registered_with_psc",
                       "privileges":["update"]},
                       "subject":"Bessie Smith",
                       "labels":"event:pregnancy_visit_1",
@@ -189,10 +189,10 @@
                         "type":"Environment"
                       },
                       "assignment":{
-                        "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                        "id":"registered_with_psc",
                         "name":"NCS Hi-Lo",
                         "subject_coordinator":{"username":"pfr957"},
-                        "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                        "id":"registered_with_psc",
                         "privileges":["update"]},
                         "subject":"Bessie Smith",
                         "labels":"event:pregnancy_visit_1",
@@ -218,10 +218,10 @@
                           "type":"Information Sheet"
                         },
                         "assignment":{
-                          "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                          "id":"registered_with_psc",
                           "name":"NCS Hi-Lo",
                           "subject_coordinator":{"username":"pfr957"},
-                          "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                          "id":"registered_with_psc",
                           "privileges":["update"]},
                           "subject":"Bessie Smith",
                           "condition":"if this is only visit before birth of baby",
@@ -248,10 +248,10 @@
                             "type":"Information Sheet"
                           },
                           "assignment":{
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "name":"NCS Hi-Lo",
                             "subject_coordinator":{"username":"pfr957"},
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
                             "labels":"event:pregnancy_visit_1",
@@ -265,10 +265,10 @@
                           "current_state":{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"},
                           "activity":{"name":"Low Intensity Invitation to High-Intensity Conversion Interview","type":"Instrument"},
                           "assignment":{
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "name":"NCS Hi-Lo",
                             "subject_coordinator":{"username":"pfr957"},
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
                             "labels":"event:low_to_high_conversion",
@@ -282,10 +282,10 @@
                           "current_state":{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"},
                           "activity":{"name":"Pregnancy Health Care Log","type":"Instrument"},
                           "assignment":{
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "name":"NCS Hi-Lo",
                             "subject_coordinator":{"username":"pfr957"},
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
                             "labels":"event:pregnancy_visit_1",
@@ -300,10 +300,10 @@
                           "current_state":{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"},
                           "activity":{"name":"Pregnancy Screener Interview","type":"Instrument"},
                           "assignment":{
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "name":"NCS Hi-Lo",
                             "subject_coordinator":{"username":"pfr957"},
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
                             "labels":"event:pregnancy_screener",
@@ -318,10 +318,10 @@
                           "current_state":{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"},
                           "activity":{"name":"Pregnancy Visit 1 Interview","type":"Instrument"},
                           "assignment":{
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "name":"NCS Hi-Lo",
                             "subject_coordinator":{"username":"pfr957"},
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
                             "labels":"event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0",
@@ -336,10 +336,10 @@
                           "current_state":{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"},
                           "activity":{"name":"Pregnancy Visit 1 SAQ","type":"Instrument"},
                           "assignment":{
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "name":"NCS Hi-Lo",
                             "subject_coordinator":{"username":"pfr957"},
-                            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+                            "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
                             "labels":"event:pregnancy_visit_1",
@@ -365,10 +365,10 @@
             "type":"Consent"
           },
           "assignment":{
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "name":"NCS Hi-Lo",
             "subject_coordinator":{"username":"pfr957"},
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "privileges":["update"]},
             "subject":"Bessie Smith",
             "labels":"event:low_intensity_data_collection",
@@ -383,10 +383,10 @@
             "current_state":{"name":"scheduled","date":"2012-05-09","reason":"Initialized from template"},
             "activity":{"name":"Low-Intensity Interview","type":"Instrument"},
             "assignment":{
-              "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+              "id":"registered_with_psc",
               "name":"NCS Hi-Lo",
               "subject_coordinator":{"username":"pfr957"},
-              "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+              "id":"registered_with_psc",
               "privileges":["update"]},
               "subject":"Bessie Smith",
               "labels":"event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0",
@@ -399,10 +399,10 @@
           "id":"eb42c87b-167e-4117-9a3c-8e0d8d20c7ab",
           "name":"LO-Intensity: Pregnancy Screener",
           "assignment":{
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "name":"NCS Hi-Lo",
             "subject_coordinator":{"username":"pfr957"},
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "privileges":["update"]},
             "subject":"Bessie Smith",
             "range":{"start_date":"2011-11-09","stop_date":"2011-11-09"},
@@ -413,10 +413,10 @@
             "id":"d10fb92d-a18d-4687-bd84-f92a287762d7",
             "name":"LO-Intensity: PPG 1 and 2 ",
             "assignment":{
-              "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+              "id":"registered_with_psc",
               "name":"NCS Hi-Lo",
               "subject_coordinator":{"username":"pfr957"},
-              "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+              "id":"registered_with_psc",
               "privileges":["update"]},
               "subject":"Bessie Smith",
               "range":{"start_date":"2012-05-09","stop_date":"2012-05-09"},
@@ -426,9 +426,9 @@
           },{
             "id":"81980519-d53e-4d7d-8d5a-25861896ad9d",
             "name":"LO-Intensity: Low to High Conversion",
-            "assignment":{"id":"a85709d0-ed2c-012e-59ee-58b035fb69ca","name":"NCS Hi-Lo",
+            "assignment":{"id":"registered_with_psc","name":"NCS Hi-Lo",
             "subject_coordinator":{"username":"pfr957"},
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "privileges":["update"]},
             "subject":"Bessie Smith",
             "range":{"start_date":"2011-11-09","stop_date":"2011-11-09"},
@@ -438,9 +438,9 @@
           },{
             "id":"5edbce4c-a23b-44c2-a2f7-16f35201eb80",
             "name":"HI-Intensity: Pregnancy Visit 1",
-            "assignment":{"id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "assignment":{"id":"registered_with_psc",
             "name":"NCS Hi-Lo","subject_coordinator":{"username":"pfr957"},
-            "id":"a85709d0-ed2c-012e-59ee-58b035fb69ca",
+            "id":"registered_with_psc",
             "privileges":["update"]},
             "subject":"Smith Smith",
             "range":{"start_date":"2011-11-09","stop_date":"2011-11-09"},

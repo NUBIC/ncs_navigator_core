@@ -25,7 +25,8 @@ Given /^the following pregnant participants:$/ do |table|
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "pregnancy_one")
-    participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+    participant.person = person
+    participant.save!
 
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
     participant.register!
@@ -40,7 +41,8 @@ Given /^the following registered unconsented trying participants:$/ do |table|
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => false)
-    participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+    participant.person = person
+    participant.save!
 
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
     participant.register!
@@ -55,7 +57,8 @@ Given /^the following registered unconsented high intensity trying participants:
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => true)
-    participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+    participant.person = person
+    participant.save!
 
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
     participant.register!
@@ -71,7 +74,8 @@ Given /^the following unregistered pregnant participants:$/ do |table|
 
     person = Factory(:person, hash)
     participant = Factory(:participant)
-    participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+    participant.person = person
+    participant.save!
 
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
   end

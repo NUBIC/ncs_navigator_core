@@ -263,7 +263,12 @@ class PatientStudyCalendar
     result
   end
 
-
+  ##
+  # Creates a new InstrumentPlan from the
+  # schedule for the given Participant.
+  #
+  # @param [Participant]
+  # @return [InstrumentPlan]
   def build_activity_plan(participant)
     InstrumentPlan.new(schedules(participant))
   end
