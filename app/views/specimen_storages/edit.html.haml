@@ -1,3 +1,1 @@
-%div{ :id => @specimen_storage}
-  = render :partial => "specimen_storages/specimen_storage", :locals => { :specimen_storage => @specimen_storage }
-  
+= render "specimen_storages/specimen_storage", :specimen_storage => @specimen_storage, :method => :edit  

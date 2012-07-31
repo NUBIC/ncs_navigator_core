@@ -8,12 +8,12 @@
   = display_staff_info
   %br
   
-  = "Storage Container ID:"
+  = f.label "Storage Container ID:"
   = f.text_field :storage_container_id, :class => "important_field"
   %span{ :class => "required" } *
   %br
 
-  = "Receipt Date and Time: "
+  = f.label "Receipt Date and Time: "
   = f.text_field :receipt_datetime, :class => "datetime important_field"
   %span{ :class => "required" } *
   %br

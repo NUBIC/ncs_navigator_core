@@ -22,7 +22,7 @@ describe SpecimenStoragesController do
     
     describe "GET edit" do
       it "assigns the requested specimen_storage as @specimen_storage" do
-        get :edit, :id => @specimen_storage.id.to_s
+        get :edit, :id => @specimen_storage.storage_container_id.to_s
         assigns(:specimen_storage).should eq(@specimen_storage)
       end
     end    
