@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core'
 
-module NcsNavigator::Core::Fieldwork
+module Field
   ##
   # A Superposition represents three states of the entities involved with a
   # {Fieldwork} set:
@@ -49,9 +48,6 @@ module NcsNavigator::Core::Fieldwork
   # * {Response}
   # * {ResponseSet}
   #
-  # Furthermore, a Superposition can also group {Response}s by their (public)
-  # question ID.  See {#group_responses}.
-  #
   #
   # Performing a merge
   # ==================
@@ -67,7 +63,6 @@ module NcsNavigator::Core::Fieldwork
     attr_accessor :instruments
     attr_accessor :participants
     attr_accessor :people
-    attr_accessor :response_groups
     attr_accessor :response_sets
     attr_accessor :responses
 
@@ -82,7 +77,6 @@ module NcsNavigator::Core::Fieldwork
       self.instruments = {}
       self.participants = {}
       self.people = {}
-      self.response_groups = {}
       self.response_sets = {}
       self.responses = {}
 
@@ -106,26 +100,6 @@ module NcsNavigator::Core::Fieldwork
         set_current_state(h, ::Person, 'person_id')
         set_current_state(h, ::Response, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
-      end
-    end
-
-    def group_responses
-      self.response_groups = {}.tap do |h|
-        responses.each do |_, states|
-          states.each do |state, response|
-            qid = response.question_id
-
-            unless h.has_key?(qid)
-              h[qid] = {}
-            end
-
-            unless h[qid].has_key?(state)
-              h[qid][state] = ResponseGroup.new
-            end
-
-            h[qid][state] << response
-          end
-        end
       end
     end
 
@@ -189,7 +163,7 @@ module NcsNavigator::Core::Fieldwork
     end
 
     class Context < Struct.new(:state, :superposition, :ancestors)
-      include Adapters
+      include NcsNavigator::Core::Fieldwork::Adapters
 
       def add(entity, object, key)
         collection = entity.to_s.pluralize.underscore

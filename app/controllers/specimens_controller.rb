@@ -44,7 +44,7 @@ class SpecimensController < ApplicationController
             :storage_container_id                   => key, 
             :staff_id                               => @staff_id, 
             :shipper_id                             => @shipper_id, 
-            :shipper_destination                    => @send_to_site_selected_id.first, 
+            :shipper_destination                    => @send_to_site_selected_id, 
             :shipment_date                          => @shipment_date, 
             :shipment_tracking_number               => @shipment_tracking_number, 
             :psu_code                               => @psu_code, 
@@ -134,15 +134,10 @@ class SpecimensController < ApplicationController
     end
     @shipping_temperature_selected = params[:shipping_temperature_selected] || NcsCode.for_list_name_and_local_code("SHIPMENT_TEMPERATURE_CL1", @shipment_temperature_id)
 
-    @send_to_site             = ShipperDestination::LOCATIONS
-    @send_to_site_selected_id = params[:dest]
-    @send_to_site_selected    = params[:send_to_site_selected]
+    ncs_location = ShipperDestination::SPECIMEN_LOCATIONS.first
+    @send_to_site = ncs_location.first
 
-    if not @send_to_site_id.blank?
-      @send_to_site.each do |txt, val| 
-        @send_to_site_selected = txt if val.eql? @send_to_site_selected_id.to_s
-      end
-    end
+    @send_to_site_selected_id = ncs_location.last
     @volume_amt = params[:volume_amt]
     @volume_unit = params[:volume_unit]
   end

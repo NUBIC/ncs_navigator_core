@@ -1,5 +1,0 @@
-This is a set of scripts and data to generate adapter definitions from schema
-data.  (See adapters.rb in the parent directory.)
-
-They're a bit of a mess.  In the future they should probably be cleaned up and
-transplanted into a Rake task of some sort.

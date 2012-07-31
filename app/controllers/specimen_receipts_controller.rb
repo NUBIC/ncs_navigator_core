@@ -27,7 +27,7 @@ class SpecimenReceiptsController < ApplicationController
   end
 
   def edit
-    @specimen_receipt = SpecimenReceipt.find(params[:id])
+    @specimen_receipt = SpecimenReceipt.find_by_specimen_id(params[:id])
   end
 
   def update

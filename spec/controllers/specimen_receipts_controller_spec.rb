@@ -23,7 +23,7 @@ describe SpecimenReceiptsController do
     
     describe "GET edit" do
       it "assigns the requested specimen_receipt as @specimen_receipt" do
-        get :edit, :id => @specimen_receipt.id.to_s
+        get :edit, :id => @specimen_receipt.specimen_id.to_s
         assigns(:specimen_receipt).should eq(@specimen_receipt)
       end
     end    

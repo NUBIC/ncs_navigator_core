@@ -1,4 +1,1 @@
-- if @receive
-  = render "sample_receipt_stores/sample_receipt_edit", :sample_receipt_store => @sample_receipt_store
-- else
-  = render "sample_receipt_stores/sample_store_edit", :sample_receipt_store => @sample_receipt_store
+= render "sample_receipt_stores/sample_receipt_store", :sample_receipt_store => @sample_receipt_store, :method => :edit
