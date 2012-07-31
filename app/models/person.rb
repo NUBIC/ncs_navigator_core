@@ -239,17 +239,22 @@ class Person < ActiveRecord::Base
   def prepopulate_response_set(response_set, survey)
     # TODO: determine way to know about initializing data for each survey
 
-    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth",
-                             "prepopulated_ppg_status", "prepopulated_local_sc",
-                             "prepopulated_sc_phone_number", "prepopulated_baby_name",
-                             "prepopulated_childs_birth_date", "question_target",
-                             "pre_populated_release_answer_from_part_one",
-                             "pre_populated_mult_child_answer_from_part_one_for_6MM",
-                             "pre_populated_mult_child_answer_from_part_one_for_12MM",
-                             "pre_populated_mult_child_answer_from_part_one_for_18MM",
-                             "pre_populated_mult_child_answer_from_part_one_for_24MM",
-                             "pre_populated_child_qnum_answer_from_mother_detail_for_18MM",
-                             "pre_populated_child_qnum_answer_from_mother_detail_for_24MM"]
+    reference_identifiers = [
+      "prepopulated_name",
+      "prepopulated_date_of_birth",
+      "prepopulated_ppg_status",
+      "prepopulated_local_sc",
+      "prepopulated_sc_phone_number",
+      "prepopulated_baby_name",
+      "prepopulated_childs_birth_date",
+      "pre_populated_release_answer_from_part_one",
+      "pre_populated_mult_child_answer_from_part_one_for_6MM",
+      "pre_populated_mult_child_answer_from_part_one_for_12MM",
+      "pre_populated_mult_child_answer_from_part_one_for_18MM",
+      "pre_populated_mult_child_answer_from_part_one_for_24MM",
+      "pre_populated_child_qnum_answer_from_mother_detail_for_18MM",
+      "pre_populated_child_qnum_answer_from_mother_detail_for_24MM"
+    ]
 
     response_type = "string_value"
 

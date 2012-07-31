@@ -14,9 +14,11 @@ describe "Straddled dependencies" do
     @current_rs = Factory(:response_set, :survey => @current_survey, :person => @person)
 
     @question_preceding_rs =  Factory(:question, :survey_section => @preceding_section,
-                                      :data_export_identifier => "question_source", :reference_identifier => "question_source" )
+                                      :data_export_identifier => "SIX_MTH_MOTHER.MULT_CHILD",
+                                      :reference_identifier => "MULT_CHILD" )
     @question_current_rs = Factory(:question, :survey_section => @current_section,
-                                   :data_export_identifier => "question_target", :reference_identifier => "question_target")
+                                   :data_export_identifier => "pre_populated_mult_child_answer_from_part_one_for_6MM",
+                                   :reference_identifier => "pre_populated_mult_child_answer_from_part_one_for_6MM")
 
     @answer_preceding_rs =  Factory(:answer, :text => "whatchamacallit", :question => @question_preceding_rs)
     @answer_current_rs =  Factory(:answer, :question => @question_current_rs)
