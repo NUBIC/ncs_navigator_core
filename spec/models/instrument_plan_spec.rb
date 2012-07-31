@@ -49,13 +49,13 @@ describe InstrumentPlan do
 
       end
 
-      describe ".survey_parts" do
+      describe ".scheduled_activities_for_survey" do
 
         let(:plan) { InstrumentPlan.new(participant_plan) }
 
         it "returns all scheduled_activity parts for a given survey" do
 
-          parts = plan.survey_parts('ins_que_birth_int_ehpbhi_p2_v2.0_baby_name')
+          parts = plan.scheduled_activities_for_survey('ins_que_birth_int_ehpbhi_p2_v2.0_baby_name')
           parts.size.should == 2
           parts.first.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           parts.last.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
@@ -114,8 +114,6 @@ describe InstrumentPlan do
           let!(:response_set1) { Factory(:response_set, :survey => survey1, :instrument => instrument,
                                                        :person => mp, :participant => mother) }
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
-          let!(:response_set2) { Factory(:response_set, :survey => survey2, :instrument => instrument,
-                                                       :person => mp, :participant => child) }
 
           it "returns false if there is a next instrument" do
             plan.final_survey_part?(response_set1).should be_false
@@ -124,7 +122,53 @@ describe InstrumentPlan do
           it "returns true if there is no next instrument and
               there are as many response_sets as there are scheduled_activities
               for the survey" do
-            plan.final_survey_part?(response_set2).should be_true
+            rs2 = Factory(:response_set, :survey => survey2, :instrument => instrument,
+                                         :person => mp, :participant => child)
+            instrument.response_sets.reload
+            plan.final_survey_part?(rs2).should be_true
+          end
+
+        end
+
+        describe ".current_scheduled_activity" do
+
+          let(:birth_event) { NcsCode.find_event_by_lbl('birth') }
+          let(:event) { Factory(:event, :event_type => birth_event) }
+          let(:instrument) { Factory(:instrument, :event => event) }
+          let(:survey1) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0') }
+          let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
+
+          it "returns the first scheduled_activity if the response_set is null" do
+            csa = plan.current_scheduled_activity('6m')
+            csa.survey_title.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
+          end
+
+          it "returns the first scheduled_activity that does not have a
+              response_set associated with an instrument in the instrument_plan" do
+            csa = plan.current_scheduled_activity('birth')
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
+
+            rs = Factory(:response_set, :survey => survey1, :instrument => instrument,
+                                        :person => mp, :participant => mother)
+
+
+            instrument.response_sets.size.should == 1
+            plan.current_survey_title('birth', rs).should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+
+            csa = plan.current_scheduled_activity('birth', rs)
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+
+            rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
+                                        :person => mp, :participant => child)
+
+            instrument.response_sets.reload
+            instrument.response_sets.size.should == 2
+
+            plan.current_survey_title('birth', rs).should be_nil
+
+            csa = plan.current_scheduled_activity('birth', rs)
+            csa.instrument.should be_nil
+            csa.activity_name.should == "Birth Visit Information Sheet"
           end
 
         end
@@ -203,8 +247,62 @@ describe InstrumentPlan do
               for the survey" do
             rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                         :person => mp, :participant => child2)
-
+            instrument.response_sets.reload
             plan.final_survey_part?(rs).should be_true
+          end
+
+        end
+
+        describe ".current_scheduled_activity" do
+
+          let(:birth_event) { NcsCode.find_event_by_lbl('birth') }
+          let(:event) { Factory(:event, :event_type => birth_event) }
+          let(:instrument) { Factory(:instrument, :event => event) }
+          let(:survey1) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0') }
+          let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
+
+          it "returns the first scheduled_activity if the response_set is null" do
+            csa = plan.current_scheduled_activity('6m')
+            csa.survey_title.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
+          end
+
+          it "returns the first scheduled_activity that does not have a
+              response_set associated with an instrument in the instrument_plan" do
+
+            plan.activities_for_event('birth').size.should == 4
+
+            csa = plan.current_scheduled_activity('birth')
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
+
+            rs = Factory(:response_set, :survey => survey1, :instrument => instrument,
+                                        :person => mp, :participant => mother)
+            plan.current_survey_title('birth', rs).should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+
+            instrument.response_sets.size.should == 1
+
+            csa = plan.current_scheduled_activity('birth', rs)
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+
+            rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
+                                        :person => mp, :participant => child1)
+            plan.current_survey_title('birth', rs).should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+            instrument.response_sets.reload
+            instrument.response_sets.size.should == 2
+
+            csa = plan.current_scheduled_activity('birth', rs)
+            csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+
+            rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
+                                        :person => mp, :participant => child2)
+
+            # FIXME: current_survey_title should handle multiple occurrances of a survey part
+            # plan.current_survey_title('birth', rs).should be_nil
+            instrument.response_sets.reload
+            instrument.response_sets.size.should == 3
+
+            csa = plan.current_scheduled_activity('birth', rs)
+            csa.instrument.should be_nil
+            csa.activity_name.should == "Birth Visit Information Sheet"
           end
 
         end
@@ -228,13 +326,16 @@ describe InstrumentPlan do
 
     let(:plan) { InstrumentPlan.new(participant_plan) }
 
-    describe ".next_survey" do
-      it "returns the first instrument if no current instrument given" do
-        plan.next_survey('6m').should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
+    describe ".current_survey_title" do
+      it "returns the first instrument if no response_set given" do
+        plan.current_survey_title('6m').should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
       end
 
       it "returns the next instrument after the current instrument" do
-        plan.next_survey('6m', 'ins_que_6mmother_int_ehpbhi_p2_v1.1').should == 'ins_que_6minfantfeed_saq_ehpbhi_p2_v20'
+        instrument = Factory(:instrument)
+        survey     = Factory(:survey, :title => 'ins_que_6mmother_int_ehpbhi_p2_v1.1')
+        rs         = Factory(:response_set, :survey => survey, :instrument => instrument)
+        plan.current_survey_title('6m', rs).should == 'ins_que_6minfantfeed_saq_ehpbhi_p2_v20'
       end
 
       context "with multiple children" do
@@ -243,46 +344,6 @@ describe InstrumentPlan do
 
         it "returns the next child instrument after the current child instruments having been taken"
 
-      end
-
-    end
-
-    describe ".instrument_record_for" do
-
-      let(:birth_survey)     { 'ins_que_birth_int_ehpbhi_p2_v2.0' }
-      let(:baby_name_survey) { 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name' }
-
-      it "returns nil if the Instrument record for this activity does not exist" do
-        plan.next_survey('birth').should == birth_survey
-        plan.instrument_record_for(birth_survey).should be_nil
-      end
-
-      it "finds the existing Instrument record for this participant activity" do
-        sur = Factory(:survey, :title => birth_survey, :access_code => Survey.to_normalized_string(birth_survey))
-        per = Factory(:person, :person_id => plan.scheduled_activity_for_survey(sur.title).person_id)
-        ins = Factory(:instrument, :survey => sur, :person => per)
-
-        plan.instrument_record_for(birth_survey).should == ins
-      end
-
-      it "returns nil if the previous Instrument record has been completed" do
-        sur = Factory(:survey, :title => birth_survey, :access_code => Survey.to_normalized_string(birth_survey))
-        per = Factory(:person, :person_id => plan.scheduled_activity_for_survey(sur.title).person_id)
-        ins = Factory(:instrument, :survey => sur, :person => per, :instrument_end_date => Date.today, :instrument_end_time => "11:11", :instrument_status_code => 4) # Complete
-
-        ins.should be_complete
-        plan.instrument_record_for(birth_survey).should be_nil
-      end
-
-      it "finds the existing Instrument record for the subsequent survey portion of the participant activity that references another survey (assuming a multi-part survey)" do
-
-        sur = Factory(:survey, :title => birth_survey, :access_code => Survey.to_normalized_string(birth_survey))
-        per = Factory(:person, :person_id => plan.scheduled_activity_for_survey(sur.title).person_id)
-        ins = Factory(:instrument, :survey => sur, :person => per)
-
-        sur2 = Factory(:survey, :title => baby_name_survey, :access_code => Survey.to_normalized_string(baby_name_survey))
-
-        plan.instrument_record_for(baby_name_survey).should == ins
       end
 
     end
@@ -321,21 +382,21 @@ describe InstrumentPlan do
         it "knows the participant associated with the appropriate instrument" do
           activities = plan.activities_for_event('birth')
 
-          activities[0].instrument.should be_nil
-          activities[0].activity_name.should == "Birth Visit Information Sheet"
-          activities[0].participant.should == mother
-
-          mother_activity = activities[1]
+          mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           mother_activity.participant.should == mother
 
-          child_activity1 = activities[2]
+          child_activity1 = activities[1]
           child_activity1.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
           child_activity1.participant.should == child
 
-          child_activity2 = activities[3]
+          child_activity2 = activities[2]
           child_activity2.instrument.should == 'ins_bio_cordblood_dci_ehpbhi_p2_v1.0'
           child_activity2.participant.should == child
+
+          activities[3].instrument.should be_nil
+          activities[3].activity_name.should == "Birth Visit Information Sheet"
+          activities[3].participant.should == mother
         end
 
       end
@@ -372,29 +433,29 @@ describe InstrumentPlan do
         it "knows the participant associated with the appropriate instrument" do
           activities = plan.activities_for_event('birth')
 
-          activities[0].instrument.should be_nil
-          activities[0].activity_name.should == "Birth Visit Information Sheet"
-          activities[0].participant.should == mother
-
-          mother_activity = activities[1]
+          mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
           mother_activity.participant.should == mother
 
-          child1_activity1 = activities[2]
+          child1_activity1 = activities[1]
           child1_activity1.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
           child1_activity1.participant.should == child1
 
-          child2_activity1 = activities[3]
+          child2_activity1 = activities[2]
           child2_activity1.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
           child2_activity1.participant.should == child2
 
-          child1_activity2 = activities[4]
+          child1_activity2 = activities[3]
           child1_activity2.instrument.should == 'ins_bio_cordblood_dci_ehpbhi_p2_v1.0'
           child1_activity2.participant.should == child1
 
-          child2_activity2 = activities[5]
+          child2_activity2 = activities[4]
           child2_activity2.instrument.should == 'ins_bio_cordblood_dci_ehpbhi_p2_v1.0'
           child2_activity2.participant.should == child2
+
+          activities[5].instrument.should be_nil
+          activities[5].activity_name.should == "Birth Visit Information Sheet"
+          activities[5].participant.should == mother
         end
 
       end

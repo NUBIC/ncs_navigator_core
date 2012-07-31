@@ -109,7 +109,9 @@ class InstrumentPlan
   #
   # @return [Array<String>]
   def instruments(event = nil)
-    activities_for_event(event).sort_by{ |a| [a.ideal_date, a.order.to_s] }.map(&:instrument).compact
+    activities_for_event(event).sort_by do |a|
+      [a.ideal_date, a.order.to_s]
+    end.map(&:instrument).compact
   end
 
   ##
@@ -123,65 +125,85 @@ class InstrumentPlan
   end
 
   ##
-  # Returns the next instrument for the event based on the
-  # given current instrument (survey title).
-  #
-  # Note that this method assumes only one occurrance of an survey part
-  #
-  # @param [String] - the event context
-  # @param [String] - the current_instrument or nil
-  # @return [String] - the instrument following the given current_instrument
-  def next_survey(event, current_instrument = nil)
-    ins = self.instruments(event)
-    current_instrument = current_instrument.to_s.downcase
-    if current_instrument.blank?
-      ins.first
-    else
-      ins_index = ins.index(current_instrument)
-      ins_index.blank? ? nil : ins[ins_index + 1]
-    end
-  end
-
-  ##
-  # Returns the Instrument record for this survey_title and
-  # person
-  #
-  # @param [String] - the survey title
-  # @return Instrument record or nil
-  def instrument_record_for(survey_title)
-    sa  = scheduled_activity_for_survey(survey_title)
-    per = sa.person
-
-    title = sa.references.blank? ? survey_title : sa.references
-    sur = Survey.most_recent_for_title(title)
-
-    if per && sur
-      Instrument.where("person_id = ? AND survey_id = ? AND
-                        (instrument_end_date IS NULL AND
-                         instrument_end_time IS NULL AND
-                         instrument_status_code <> 4)",
-                        per.id, sur.id).first
-    end
-  end
-
-  ##
   # Given a response_set, determine if this is the final
   # part of a multi-part survey.
-  # This should be true if next_survey is false and there
-  # are an equal number of response_sets for the instrument
-  # as there are survey parts.
+  # This should be true if there are as many response_sets
+  # for this survey as there are scheduled survey parts.
   #
   # @return Boolean
   def final_survey_part?(response_set)
-    event = response_set.instrument.try(:event).to_s
-    current_survey_title = response_set.survey.try(:title).to_s.downcase
-    ni = next_survey(event, current_survey_title)
-    if ni && ni != current_survey_title
-      false
-    else
-      survey_parts(current_survey_title).size == response_set.instrument.response_sets.size
-    end
+    scheduled_activities_for_survey(response_set.survey.title).size ==
+      response_set.instrument.response_sets.size
   end
+
+  ##
+  # Returns the next survey_title for the event based on the
+  # given response_set.
+  #
+  # @param [String] - the event context
+  # @param [ResponseSet]
+  # @return [String] - the instrument following the given current_instrument
+  def current_survey_title(event, response_set = nil)
+    current_scheduled_activity(event, response_set).instrument
+  end
+
+  ##
+  # Given an event and a response set, return the current scheduled activity that
+  # should be acted upon. The current activity would be the next scheduled activity
+  # for the event that has not been touched.
+  #
+  # @param String - event name
+  # @param ResponseSet
+  # @return ScheduledActivity
+  def current_scheduled_activity(event, response_set = nil)
+    remaining_activities(event, response_set).first
+  end
+
+  def remaining_activities(event, response_set)
+    sas = activities_for_event(event)
+    if response_set.blank?
+      return sas
+    else
+
+      already_touched_survey_titles = get_already_touched_survey_titles(response_set)
+      sas_hsh = keyed_scheduled_activities(sas)
+
+      # determine if a scheduled activity survey has occurred
+      # and remove it from the list of scheduled activities
+      # this convoluted approach is used in order to handle
+      # multiple births
+      already_touched_survey_titles.each do |t|
+        val = sas_hsh[t]
+        val.delete_at(0) if val
+        sas_hsh[t] = val
+      end
+
+      sas_hsh.values.flatten.sort
+    end
+
+  end
+  private :remaining_activities
+
+  ##
+  # The given scheduled activities keyed by subject title
+  # @param Array<ScheduledActivity>
+  # @return Hash[<String>,<Array>]
+  def keyed_scheduled_activities(sas)
+    result = {}
+    sas.each do |sa|
+      result[sa.survey_title] ||= []
+      result[sa.survey_title] << sa
+    end
+    result
+  end
+
+  ##
+  # All the survey titles for the response_set.instrument
+  # @return [Array<String>]
+  def get_already_touched_survey_titles(response_set)
+    response_set.instrument.response_sets.collect { |rs| rs.survey.title }
+  end
+  private :get_already_touched_survey_titles
 
   ##
   # Finds the scheduled activity for the given title and matches it to
@@ -190,10 +212,10 @@ class InstrumentPlan
   #
   # @param String - survey_title
   # @return [Array<ScheduledActivities>]
-  def survey_parts(survey_title)
+  def scheduled_activities_for_survey(survey_title)
     a = scheduled_activity_for_survey(survey_title)
     scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
-                                       sa.references == a.survey_root }
+                                       sa.references == a.survey_root }.sort
   end
 
   ##
