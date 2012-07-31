@@ -200,6 +200,7 @@ class Person < ActiveRecord::Base
 
   ##
   # Based on the current state, pregnancy probability group, and
+  #
   # the intensity group (hi/lo) determine the next event
   # cf. Participant.upcoming_events
   # @return [String]
@@ -237,15 +238,18 @@ class Person < ActiveRecord::Base
 
   def prepopulate_response_set(response_set, survey)
     # TODO: determine way to know about initializing data for each survey
-    reference_identifiers = [
-      "prepopulated_name",
-      "prepopulated_date_of_birth",
-      "prepopulated_ppg_status",
-      "prepopulated_local_sc",
-      "prepopulated_sc_phone_number",
-      "prepopulated_baby_name",
-      "prepopulated_childs_birth_date"
-    ]
+
+    reference_identifiers = ["prepopulated_name", "prepopulated_date_of_birth",
+                             "prepopulated_ppg_status", "prepopulated_local_sc",
+                             "prepopulated_sc_phone_number", "prepopulated_baby_name",
+                             "prepopulated_childs_birth_date", "question_target",
+                             "pre_populated_release_answer_from_part_one",
+                             "pre_populated_mult_child_answer_from_part_one_for_6MM",
+                             "pre_populated_mult_child_answer_from_part_one_for_12MM",
+                             "pre_populated_mult_child_answer_from_part_one_for_18MM",
+                             "pre_populated_mult_child_answer_from_part_one_for_24MM",
+                             "pre_populated_child_qnum_answer_from_mother_detail_for_18MM",
+                             "pre_populated_child_qnum_answer_from_mother_detail_for_24MM"]
 
     response_type = "string_value"
 
@@ -276,11 +280,42 @@ class Person < ActiveRecord::Base
                 when "prepopulated_sc_phone_number"
                   response_type = "string_value"
                   NcsNavigatorCore.study_center_phone_number
+                when "question_target"
+                  response_type = "string_value"
+                  resp = responses_for('question_source').first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_release_answer_from_part_one"
+                  response_type = "string_value"
+                  resp = responses_for("BIRTH_VISIT_LI.RELEASE").first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_mult_child_answer_from_part_one_for_6MM"
+                  response_type = "string_value"
+                  resp = responses_for('SIX_MTH_MOTHER.MULT_CHILD').first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_mult_child_answer_from_part_one_for_12MM"
+                  response_type = "string_value"
+                  resp = responses_for("TWELVE_MTH_MOTHER.MULT_CHILD").first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_mult_child_answer_from_part_one_for_18MM"
+                  response_type = "string_value"
+                  resp = responses_for("EIGHTEEN_MTH_MOTHER.MULT_CHILD").first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_mult_child_answer_from_part_one_for_24MM"
+                  response_type = "string_value"
+                  resp = responses_for("TWENTY_FOUR_MTH_MOTHER.MULT_CHILD").first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_child_qnum_answer_from_mother_detail_for_18MM"
+                  response_type = "integer_value"
+                  resp = responses_for("EIGHTEEN_MTH_MOTHER_DETAIL.CHILD_QNUM").first
+                  resp.send(response_type.to_sym)
+                when "pre_populated_child_qnum_answer_from_mother_detail_for_24MM"
+                  response_type = "integer_value"
+                  resp = responses_for("TWENTY_FOUR_MTH_MOTHER_DETAIL.CHILD_QNUM").first
+                  resp.send(response_type.to_sym)
                 else
                   # TODO: handle other prepopulated fields
                   nil
                 end
-
         response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
       end
     end
