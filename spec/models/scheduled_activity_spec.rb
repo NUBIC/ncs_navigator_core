@@ -74,8 +74,9 @@ describe ScheduledActivity do
 
   context "sorting" do
 
-    let(:sc1) { ScheduledActivity.new(:labels => "order:01_01") }
-    let(:sc2) { ScheduledActivity.new(:labels => "order:01_02") }
+    let(:sc1) { ScheduledActivity.new(:labels => "event:a order:01_01") }
+    let(:sc2) { ScheduledActivity.new(:labels => "event:a order:01_02") }
+    let(:sc3) { ScheduledActivity.new(:labels => "event:a") }
 
     describe ".<=>" do
 
@@ -85,6 +86,10 @@ describe ScheduledActivity do
 
       it "sorts" do
         [sc2, sc1].sort.should == [sc1, sc2]
+      end
+
+      it "places items without an explicit order at the end" do
+        [sc3, sc2, sc1].sort.should == [sc1, sc2, sc3]
       end
 
     end

@@ -117,4 +117,17 @@ class ScheduledActivity
     result
   end
 
+  ##
+  # Ensure that those items without an explicit order
+  # set in the label are placed at the end
+  def order
+    @order || "99_99"
+  end
+
+  ##
+  # Alias for the instrument attribute
+  def survey_title
+    instrument
+  end
+
 end
