@@ -1,3 +1,5 @@
+require 'patient_study_calendar'
+
 module Psc
   ##
   # Attributes for the ScheduledActivity struct.
@@ -164,13 +166,15 @@ module Psc
     end
 
     ##
-    # True if the activity state is "scheduled", false otherwise.
+    # True if the activity is scheduled, false otherwise.
     def scheduled?
+      current_state.to_s.downcase == PatientStudyCalendar::ACTIVITY_SCHEDULED
     end
 
     ##
-    # True if the activity state is "canceled", false otherwise.
+    # True if the activity is canceled, false otherwise.
     def canceled?
+      current_state.to_s.downcase == PatientStudyCalendar::ACTIVITY_CANCELED
     end
 
     ##
