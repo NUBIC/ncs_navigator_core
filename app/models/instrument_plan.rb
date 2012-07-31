@@ -178,7 +178,7 @@ class InstrumentPlan
         sas_hsh[t] = val
       end
 
-      sas_hsh.values.flatten.sort
+      sas_hsh.values.flatten.compact.sort
     end
 
   end
