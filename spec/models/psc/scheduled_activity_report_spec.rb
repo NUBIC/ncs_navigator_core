@@ -29,10 +29,6 @@ module Psc
       it "sets the report's filters" do
         @report.filters.should == data['filters']
       end
-
-      it "sets the report's rows" do
-        @report.rows.should == data['rows']
-      end
     end
 
     describe '#process' do

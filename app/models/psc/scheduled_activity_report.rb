@@ -7,18 +7,6 @@ module Psc
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
     ##
-    # Filters used in generating the report.
-    #
-    # @return Hash
-    attr_accessor :filters
-
-    ##
-    # Rows of the report.
-    #
-    # @return Array
-    attr_accessor :rows
-
-    ##
     # Logger.  Defaults to Rails.logger.
     attr_accessor :logger
 
@@ -31,6 +19,16 @@ module Psc
     attr_reader :instruments
     attr_reader :people
     attr_reader :surveys
+
+    ##
+    # Filters used in generating the report.
+    #
+    # @return Hash
+    attr_reader :filters
+
+    ##
+    # The backing ScheduledActivityCollection.
+    attr_reader :activities
 
     ##
     # Builds a ScheduledActivityReport from PSC data.
@@ -49,15 +47,16 @@ module Psc
     ##
     # Builds a ScheduledActivityReport from parsed JSON data.
     def self.from_json(data)
-      new.tap do |r|
-        r.filters = data['filters']
-        r.rows = data['rows']
-      end
+      coll = ScheduledActivityCollection.from_report(data)
+
+      new(coll, data['filters'])
     end
 
-    def initialize
-      self.rows = []
+    def initialize(coll = ScheduledActivityCollection.new, filters = {})
       self.logger = Rails.logger
+
+      @filters = filters
+      @activities = coll
 
       @contact_links = Collection.new
       @contacts = Collection.new
@@ -74,9 +73,7 @@ module Psc
 
       [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
 
-      rows.each do |row|
-        activity = ScheduledActivity.from_report(row)
-
+      activities.each do |activity|
         p = add_person(activity)
         c = add_contact(activity, p)
         e = add_event(activity, c, p)
