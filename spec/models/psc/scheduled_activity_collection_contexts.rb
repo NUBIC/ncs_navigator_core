@@ -7,3 +7,11 @@ shared_context 'from report' do
     JSON.parse(f)
   end
 end
+
+shared_context 'from schedule' do
+  let(:source) do
+    f = File.read(File.expand_path('../participant_schedule.json', __FILE__))
+
+    JSON.parse(f)
+  end
+end
