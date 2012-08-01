@@ -274,30 +274,26 @@ class Person < ActiveRecord::Base
                 when "prepopulated_sc_phone_number"
                   response_type = "string_value"
                   NcsNavigatorCore.study_center_phone_number
-                when "question_target"
-                  response_type = "string_value"
-                  resp = responses_for('question_source').first
-                  resp.send(response_type.to_sym)
                 when "pre_populated_release_answer_from_part_one"
-                  response_type = "string_value"
+                  response_type = "answer"
                   resp = responses_for("BIRTH_VISIT_LI.RELEASE").first
-                  resp.send(response_type.to_sym)
+                  answer = question.answers.select { |a| a.reference_identifier == resp.answer.reference_identifier }.first
                 when "pre_populated_mult_child_answer_from_part_one_for_6MM"
-                  response_type = "string_value"
+                  response_type = "answer"
                   resp = responses_for('SIX_MTH_MOTHER.MULT_CHILD').first
-                  resp.send(response_type.to_sym)
+                  answer = question.answers.select { |a| a.reference_identifier == resp.answer.reference_identifier }.first
                 when "pre_populated_mult_child_answer_from_part_one_for_12MM"
-                  response_type = "string_value"
+                  response_type = "answer"
                   resp = responses_for("TWELVE_MTH_MOTHER.MULT_CHILD").first
-                  resp.send(response_type.to_sym)
+                  answer = question.answers.select { |a| a.reference_identifier == resp.reference_identifier }.first
                 when "pre_populated_mult_child_answer_from_part_one_for_18MM"
-                  response_type = "string_value"
+                  response_type = "answer"
                   resp = responses_for("EIGHTEEN_MTH_MOTHER.MULT_CHILD").first
-                  resp.send(response_type.to_sym)
+                  answer = question.answers.select { |a| a.reference_identifier == resp.reference_identifier }.first
                 when "pre_populated_mult_child_answer_from_part_one_for_24MM"
-                  response_type = "string_value"
+                  response_type = "answer"
                   resp = responses_for("TWENTY_FOUR_MTH_MOTHER.MULT_CHILD").first
-                  resp.send(response_type.to_sym)
+                  answer = question.answers.select { |a| a.reference_identifier == resp.reference_identifier }.first
                 when "pre_populated_child_qnum_answer_from_mother_detail_for_18MM"
                   response_type = "integer_value"
                   resp = responses_for("EIGHTEEN_MTH_MOTHER_DETAIL.CHILD_QNUM").first
@@ -310,7 +306,11 @@ class Person < ActiveRecord::Base
                   # TODO: handle other prepopulated fields
                   nil
                 end
-        response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
+        if response_type == "answer"
+          response_set.responses.build(:question => question, :answer => answer)
+        else
+          response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
+        end
       end
     end
     response_set
