@@ -337,7 +337,7 @@ ActiveRecord::Schema.define(:version => 20120725164017) do
     t.integer  "instrument_type_code",                                  :null => false
     t.string   "instrument_type_other"
     t.string   "instrument_version",       :limit => 36,                :null => false
-    t.integer  "instrument_repeat_key"
+    t.integer  "instrument_repeat_key",                  :default => 0, :null => false
     t.date     "instrument_start_date"
     t.string   "instrument_start_time"
     t.date     "instrument_end_date"
