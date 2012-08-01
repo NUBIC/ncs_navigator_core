@@ -28,8 +28,9 @@ module Psc
   # queries.
   class ScheduledActivityCollection
     extend Forwardable
+    include Enumerable
 
-    def_delegators :@arr, :length
+    def_delegators :@arr, :length, :each
 
     ##
     # Instantiates a collection from a scheduled activity report.
