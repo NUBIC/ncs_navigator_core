@@ -161,8 +161,9 @@ class InstrumentPlan
 
   def remaining_activities(event, response_set)
     sas = activities_for_event(event)
+    result = []
     if response_set.blank?
-      return sas
+      result = sas
     else
 
       already_touched_survey_titles = get_already_touched_survey_titles(response_set)
@@ -178,9 +179,9 @@ class InstrumentPlan
         sas_hsh[t] = val
       end
 
-      sas_hsh.values.flatten.compact.sort
+      result = sas_hsh.values.flatten.compact.sort
     end
-
+    result
   end
   private :remaining_activities
 
@@ -201,7 +202,7 @@ class InstrumentPlan
   # All the survey titles for the response_set.instrument
   # @return [Array<String>]
   def get_already_touched_survey_titles(response_set)
-    response_set.instrument.response_sets.collect { |rs| rs.survey.title }
+    response_set.instrument.response_sets.collect { |rs| rs.survey.title.downcase }
   end
   private :get_already_touched_survey_titles
 
