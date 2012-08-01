@@ -7,7 +7,7 @@ module Psc
   # ScheduledActivityCollection may be initialized with:
   #
   # * nothing (.new)
-  # * a PSC participant schedule report (.from_schedule)
+  # * a PSC participant schedule (.from_schedule)
   # * a PSC scheduled activity report (.from_report)
   #
   # Sorting
