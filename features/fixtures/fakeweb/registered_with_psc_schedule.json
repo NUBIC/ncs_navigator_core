@@ -27,7 +27,8 @@
       "natural_key":"2011-09-16~Rev1",
       "applied":true,
       "href":"http://localhost:8080/psc/api/v1/studies/NCS+Hi-Lo/template/amendments/2011-09-16%7ERev1"
-    }]}],
+    }]
+  }],
     "days":{
       "2011-11-09":{
         "hidden_activities":"false",
@@ -324,7 +325,7 @@
                             "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
-                            "labels":"event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0",
+                            "labels":"event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 order:01_01",
                             "formatted_plan_day":"Day 1",
                             "state_history":[{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"}]
                         },{
