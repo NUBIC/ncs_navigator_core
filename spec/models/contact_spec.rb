@@ -151,14 +151,16 @@ describe Contact do
     it "knows all instruments associated with this contact" do
       c  = Factory(:contact)
       pers = Factory(:person)
-      rs, i1 = prepare_instrument(
-        pers, create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
+      part = Factory(:participant)
+      rs, i1 = prepare_instrument(pers, part,
+          create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data)
       l1 = Factory(:contact_link, :contact => c, :instrument => i1, :person => pers)
 
       c.contact_links.should == [l1]
       c.instruments.should == [i1]
 
-      rs, i2 = prepare_instrument(pers, create_pre_pregnancy_survey_with_email_operational_data)
+      rs, i2 = prepare_instrument(pers, part,
+          create_pre_pregnancy_survey_with_email_operational_data)
       l2 = Factory(:contact_link, :contact => c, :instrument => i2, :person => pers)
 
       i3 = Factory(:instrument)
@@ -188,6 +190,7 @@ describe Contact do
 
         @survey = create_survey_with_language_and_interpreter_data
         @person = Factory(:person)
+        @participant = Factory(:participant)
         @english = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 1)
         @spanish = NcsCode.for_list_name_and_local_code('LANGUAGE_CL2', 2)
                    NcsCode.for_list_name_and_local_code('LANGUAGE_CL5', 1)
@@ -205,7 +208,7 @@ describe Contact do
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
-          response_set, instrument = prepare_instrument(@person, @survey)
+          response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
           link = Factory(:contact_link,
             :contact => @contact, :instrument => instrument, :person => @person)
@@ -280,7 +283,7 @@ describe Contact do
         end
 
         it "sets the who_contacted to the NCS Participant if there was an instrument taken" do
-          response_set, instrument = prepare_instrument(@person, @survey)
+          response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
           link = Factory(:contact_link,
             :contact => @contact, :instrument => instrument, :person => @person)

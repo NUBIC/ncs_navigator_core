@@ -10,6 +10,7 @@ class Psc::ScheduledActivityReport
     let(:report) { ::Psc::ScheduledActivityReport.from_json(data) }
 
     before do
+      pending
       report.extend(EntityResolution)
     end
 

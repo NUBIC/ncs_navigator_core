@@ -242,16 +242,20 @@ module NcsNavigator::Core::Mustache
       "[Child or Children]"
     end
 
+    def about_person
+      @response_set.participant.try(:person)
+    end
+
     def c_full_name
-      "[CHILD'S FULL NAME]"
+      about_person.blank? ? "[CHILD'S FULL NAME]" : about_person.full_name
     end
 
     def c_fname
-      "[CHILD'S FIRST NAME]"
+      about_person.blank? ? "[CHILD'S FIRST NAME]" : about_person.first_name
     end
 
     def c_dob
-      "[CHILD'S DATE OF BIRTH]"
+      about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
     end
 
     def himself_herself

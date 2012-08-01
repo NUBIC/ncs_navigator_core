@@ -13,10 +13,8 @@ describe "Straddled dependencies" do
     @preceding_rs = Factory(:response_set, :survey => @preceding_survey, :person => @person)
     @current_rs = Factory(:response_set, :survey => @current_survey, :person => @person)
 
-    @question_preceding_rs =  Factory(:question, :survey_section => @preceding_section,
-                                      :data_export_identifier => "BIRTH_VISIT_LI.RELEASE", :reference_identifier => "BIRTH_VISIT_LI.RELEASE" )
-    @question_current_rs = Factory(:question, :survey_section => @current_section,
-                                   :data_export_identifier => "pre_populated_release_answer_from_part_one", :reference_identifier => "pre_populated_release_answer_from_part_one")
+    @question_preceding_rs =  Factory(:question, :survey_section => @preceding_section, :data_export_identifier => "BIRTH_VISIT_LI.RELEASE", :reference_identifier => "BIRTH_VISIT_LI.RELEASE" )
+    @question_current_rs = Factory(:question, :survey_section => @current_section, :data_export_identifier => "pre_populated_release_answer_from_part_one", :reference_identifier => "pre_populated_release_answer_from_part_one")
 
     @answer_preceding_rs =  Factory(:answer, :text => "whatchamacallit", :question => @question_preceding_rs, :reference_identifier => "1")
     @answer_preceding_rs2 =  Factory(:answer, :text => "twix", :question => @question_preceding_rs, :reference_identifier => "2")

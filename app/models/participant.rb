@@ -64,6 +64,7 @@ class Participant < ActiveRecord::Base
   has_many :participant_consents
   has_many :participant_consent_samples
   has_many :events, :order => 'events.event_start_date'
+  has_many :response_sets, :inverse_of => :participant
 
   # validates_presence_of :person
 
@@ -448,7 +449,7 @@ class Participant < ActiveRecord::Base
       event.mark_out_of_window
       event.close!
       event.cancel_activity(psc, "Missed Event - Out of Window")
-      set_state_for_event_type(event)
+      set_state_for_event_type(event) if event.event_type_code != 32
       resp = Event.schedule_and_create_placeholder(psc, self) if self.pending_events.blank?
     end
     resp
@@ -924,7 +925,9 @@ class Participant < ActiveRecord::Base
   private
 
     def relationships(code)
-      participant_person_links.select { |ppl| ppl.relationship.local_code == code }.collect { |ppl| ppl.person }
+      participant_person_links.
+        select  { |ppl| ppl.relationship.local_code == code }.
+        collect { |ppl| ppl.person }
     end
 
     def next_low_intensity_study_segment

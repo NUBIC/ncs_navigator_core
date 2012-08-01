@@ -42,9 +42,10 @@ class ParticipantsController < ApplicationController
   def show
     @participant = Participant.find(params[:id])
     @person = @participant.person
-    @scheduled_activities = psc.scheduled_activities(@participant).sort_by{ |a| a.date }
+    @participant_activity_plan = psc.build_activity_plan(@participant)
+
     @scheduled_activities_grouped_by_date = {}
-    @scheduled_activities.each do |a|
+    @participant_activity_plan.scheduled_activities.each do |a|
       date = a.date
       if @scheduled_activities_grouped_by_date.has_key?(date)
         @scheduled_activities_grouped_by_date[date] << a

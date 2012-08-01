@@ -26,7 +26,7 @@ class SpecimenStoragesController < ApplicationController
   end
   
   def edit
-    @specimen_storage = SpecimenStorage.find(params[:id])
+    @specimen_storage = SpecimenStorage.find_by_storage_container_id(params[:id])
   end
   
   def update
@@ -40,5 +40,4 @@ class SpecimenStoragesController < ApplicationController
       end
     end
   end
-  
 end

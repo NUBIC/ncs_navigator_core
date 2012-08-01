@@ -82,18 +82,24 @@ class ContactLinksController < ApplicationController
     @person       = @contact_link.person
     @participant  = @person.participant if @person
     @event        = @contact_link.event
-    @event_activities = psc.activities_for_event(@event)
+
+    @activity_plan        = psc.build_activity_plan(@participant)
+    @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
+    @current_activity     = @activities_for_event.first
   end
 
   def decision_page
     @contact_link = ContactLink.find(params[:id])
     @person       = @contact_link.person
-    @participant  = @person.participant if @person
     @instrument   = @contact_link.instrument
     @event        = @contact_link.event
+    @participant  = @event.participant if @event
     @response_set = @instrument.response_set if @instrument
     @survey       = @response_set.survey if @response_set
-    @event_activities = psc.activities_for_event(@event) if @event.participant && @event.participant.person
+
+    @activity_plan        = psc.build_activity_plan(@participant)
+    @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
+    @current_activity     = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
   end
 
   ##
@@ -190,9 +196,9 @@ class ContactLinksController < ApplicationController
   	    when "Pregnancy Screener"
           @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
         when "Informed Consent"
-          @disposition_group = disposition_group_for_study_arm(event)
+          @disposition_group = disposition_group_for_study_arm(@event)
         when "Low Intensity Data Collection"
-          @disposition_group = disposition_group_for_study_arm(event)
+          @disposition_group = disposition_group_for_study_arm(@event)
         when "Low to High Conversion"
           contact = @contact_link.contact
           if contact && contact.contact_type
@@ -229,6 +235,7 @@ class ContactLinksController < ApplicationController
 
       activity = nil
       activities.each do |a|
+
         activity = a if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
       end
 

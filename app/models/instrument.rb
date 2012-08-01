@@ -55,7 +55,7 @@ class Instrument < ActiveRecord::Base
   belongs_to :person
   belongs_to :survey
   has_one :contact_link, :inverse_of => :instrument
-  has_one :response_set, :inverse_of => :instrument
+  has_many :response_sets, :inverse_of => :instrument
 
   validates_presence_of :instrument_version
   validates_presence_of :instrument_repeat_key
@@ -68,11 +68,43 @@ class Instrument < ActiveRecord::Base
   ##
   # Finds or builds a record to indicate that a person has begun taking a
   # survey on an event.
-  def self.start(person, survey, event)
+  #
+  # cf. Person.start_instrument
+  #
+  # @param [Person] - person
+  #                 - the person taking the survey
+  # @param [Participant] - participant
+  #                 - the participant who the survey is about
+  # @param [Survey] - instrument_survey
+  #                 - the one associated with the first of multi-part sequence or singleton survey
+  #                 - i.e. the references label
+  # @param [Survey] - current_survey
+  #                 - the one part of the multi-part survey or singleton
+  #                 - i.e. the instrument label
+  # @param [Event]  - the event associated with the Instrument
+  def self.start(person, participant, instrument_survey, current_survey, event)
+
+    if (instrument_survey.blank? || instrument_survey == current_survey)
+      Instrument.start_initial_instrument(person, participant, current_survey, event)
+    else
+      ins = Instrument.where(:person_id => person.id,
+                             :survey_id => instrument_survey.id,
+                             :event_id => event.id).order("created_at DESC").first
+      person.start_instrument(current_survey, participant, ins)
+      ins
+    end
+  end
+
+  ##
+  # This is the entry point for creating a new Instrument record for the person, survey, and event
+  #
+  # cf. Person.start_instrument
+  #
+  def self.start_initial_instrument(person, participant, survey, event)
     rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
 
     if !rs || event.closed?
-      person.start_instrument(survey)
+      person.start_instrument(survey, participant)
     else
       rs.instrument
     end.tap { |i| i.event = event }
@@ -114,6 +146,11 @@ class Instrument < ActiveRecord::Base
     instrument_type.to_s
   end
 
+  ##
+  # The Instrument is considered complete
+  # if there is an end_date, an end_time, and the instrument status is 'Complete'
+  #
+  # @return [Boolean]
   def complete?
     !instrument_end_date.blank? && !instrument_end_time.blank? && instrument_status.to_s == "Complete"
   end
@@ -132,7 +169,7 @@ class Instrument < ActiveRecord::Base
   def self.determine_version(lbl)
     lbl = Instrument.surveyor_access_code(lbl)
     ind = lbl.to_s.rindex("-v")
-    lbl[ind + 2, lbl.length].sub("-", ".")
+    lbl[ind + 2, 3].sub("-", ".")
   end
 
   ##
@@ -140,10 +177,8 @@ class Instrument < ActiveRecord::Base
   # @param[String]
   # @return[String]
   def self.parse_label(lbl)
-    return nil if lbl.blank?
-    part = lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first.to_s
-    return nil if part.blank?
-    part.gsub(INSTRUMENT_LABEL_MARKER, "")
+    lbl = Instrument.instrument_label(lbl)
+    lbl.to_s.include?(':') ? lbl.split(':').last : lbl
   end
 
   def self.surveyor_access_code(lbl)
@@ -153,6 +188,27 @@ class Instrument < ActiveRecord::Base
 
   def self.collection?(lbl)
     lbl.include? COLLECTION_LABEL_MARKER
+  end
+
+  def self.mdes_version(lbl)
+    lbl = Instrument.instrument_label(lbl)
+    lbl = lbl.to_s.split(':')
+    lbl.size == 3 ? lbl[1] : nil
+  end
+
+  def self.instrument_label(lbl)
+    return nil if lbl.blank?
+    lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first
+  end
+
+  # FIXME: This is temporary until we fix all places that call Instrument.response_set
+  def response_set
+    response_sets.first
+  end
+
+  # FIXME: This is temporary until we fix all places that call Instrument.response_set=
+  def response_set=(rs)
+    response_sets[0] = rs
   end
 
   private

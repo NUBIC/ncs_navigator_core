@@ -7,8 +7,13 @@
 
     = hidden_field_tag :surveyor_javascript_enabled, false
 
-    = render 'partials/section_menu' # unless @sections.size < 3
-    .survey_title= @survey.title
+    = render '/surveyor/section_menu' # unless @sections.size < 3
+
+    .survey_header
+      = "#{@event.to_s} Instrument for #{@response_set.participant.person.to_s}"
+      .instrument
+        = @activities_for_event.select{ |a| a.instrument == @survey.title.downcase }.first.try(:activity_name)
+
     = render 'partials/dependents' unless @dependents.empty?
     - if false #@response_set.no_responses_for_section?(@section) # cache if response_set has no responses for current section
       = cache("section_#{@section.id}"){ render "/partials/section", :f => f }

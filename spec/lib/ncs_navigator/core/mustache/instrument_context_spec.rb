@@ -126,9 +126,7 @@ module NcsNavigator::Core::Mustache
 
     context "with a response set" do
       before(:each) do
-        @person = Factory(:person)
-        @survey = create_birth_survey_with_child_operational_data
-        @response_set, @instrument = prepare_instrument(@person, @survey)
+        setup_survey_instrument(create_birth_survey_with_child_operational_data)
       end
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
@@ -151,9 +149,7 @@ module NcsNavigator::Core::Mustache
 
     context "for a lo i birth instrument" do
       before(:each) do
-        @person = Factory(:person)
-        @survey = create_lo_i_birth_survey
-        @response_set, @instrument = prepare_instrument(@person, @survey)
+        setup_survey_instrument(create_lo_i_birth_survey)
       end
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
@@ -182,9 +178,7 @@ module NcsNavigator::Core::Mustache
 
     context "for a birth instrument" do
       before(:each) do
-        @person = Factory(:person)
-        @survey = create_birth_survey_with_child_operational_data
-        @response_set, @instrument = prepare_instrument(@person, @survey)
+        setup_survey_instrument(create_birth_survey_with_child_operational_data)
       end
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
@@ -415,9 +409,7 @@ module NcsNavigator::Core::Mustache
 
     context "for a pregnancy visit one saq" do
       before(:each) do
-        @person = Factory(:person)
-        @survey = create_pregnancy_visit_1_saq_with_father_data
-        @response_set, @instrument = prepare_instrument(@person, @survey)
+        setup_survey_instrument(create_pregnancy_visit_1_saq_with_father_data)
       end
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
@@ -442,9 +434,7 @@ module NcsNavigator::Core::Mustache
 
     context "for a pregnancy visit one instrument" do
       before(:each) do
-        @person = Factory(:person)
-        @survey = create_pregnancy_visit_1_survey_with_person_operational_data
-        @response_set, @instrument = prepare_instrument(@person, @survey)
+        setup_survey_instrument(create_pregnancy_visit_1_survey_with_person_operational_data)
       end
 
       let(:instrument_context) { InstrumentContext.new(@response_set) }
@@ -549,5 +539,15 @@ module NcsNavigator::Core::Mustache
         a.str baby_fname, first_name
       end
     end
+
+    def setup_survey_instrument(survey)
+      @survey = survey
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+    end
+
   end
 end

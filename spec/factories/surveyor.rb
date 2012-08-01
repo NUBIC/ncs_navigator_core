@@ -109,6 +109,7 @@ Factory.define :response_set do |r|
   r.access_code     {Surveyor::Common.make_tiny_code}
   r.started_at      {Time.now}
   r.completed_at    {}
+  r.participant     {}
 end
 
 Factory.define :response do |r|

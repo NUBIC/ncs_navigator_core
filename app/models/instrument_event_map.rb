@@ -13,23 +13,6 @@ class InstrumentEventMap
     end
   end
 
-  ##
-  # For a given survey title (i.e. instrument filename), return the instrument name
-  #
-  # @param [String] - filename for the instrument whose name matches the activity
-  # @return [String] - the name of the instrument (e.g. Pregnancy Probability Group Follow-Up Interview)
-  def self.name_of_instrument(instrument_filename)
-    InstrumentEventMap.instrument_map_value_for_filename(instrument_filename, "name")
-  end
-
-  ##
-  # Get the current version number for this Instrument from the Instrumnnt and Event Map
-  # @param [String]
-  # @return [String]
-  def self.version(instrument_filename)
-    InstrumentEventMap.instrument_map_value_for_filename(instrument_filename, "version_number")
-  end
-
   def self.instrument_map_value_for_filename(instrument_filename, value)
     result = nil
     instruments.each do |ie|
@@ -82,19 +65,29 @@ class InstrumentEventMap
   # @param [String]
   # @return [NcsCode]
   def self.instrument_type(filename)
-    if filename.index(' ').to_i > 0
-      sub = filename[filename.index(' '), filename.length]
-      filename = filename.gsub(sub, '')
-    end
+
+    filename = get_known_filename(filename)
 
     result = nil
-    instruments.each do |ie|
+    self.instruments.each do |ie|
       if ie["filename"] == filename
         result = NcsCode.where(:list_name => 'INSTRUMENT_TYPE_CL1').where(:display_text => ie["name"]).first
         break
       end
     end
     result
+  end
+
+  ##
+  # Get the part of the filename that is known to our instrument event map
+  def self.get_known_filename(filename)
+    if match = /(.)+_([Vv]\d.\d)/.match(filename)
+      filename = match[0]
+    elsif filename.index(' ').to_i > 0
+      sub = filename[filename.index(' '), filename.length]
+      filename = filename.gsub(sub, '')
+    end
+    filename
   end
 
   # 1  Enhanced Household Enumeration

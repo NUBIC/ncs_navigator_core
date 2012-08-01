@@ -1,5 +1,12 @@
 = form_for @specimen_storage do |f|
   %div{ :id => @specimen_storage}
+    = "Storage Container Id:"
+    = @specimen_storage.storage_container_id
+    = "contains the following:"
+    - @specimen_storage.specimen_receipts.each do |val|
+      = val.specimen_id
+    = f.hidden_field :storage_container_id
+    %br
     = "Staff:"
     = display_staff_info
     %br
@@ -12,7 +19,8 @@
     %br
     - if not f.object.master_storage_unit_id.blank?
       = "Master Storage Unit Id:"
-      = f.object.master_storage_unit_id    
+      = f.object.master_storage_unit_id
+      %br
     - if not f.object.storage_comment.blank?
       = "Storage Comment: "
       = f.object.storage_comment
@@ -37,4 +45,4 @@
       = "Temperature event - High Temperature"
       = f.object.temp_event_high_temp
     %br
-    -#= link_to 'Edit', edit_specimen_storage_path(@specimen_storage), :class => "edit_link icon_link specimen_storage_edit"
+  = link_to 'Edit', edit_specimen_storage_path(:id => @specimen_storage.storage_container_id), :class => "edit_link icon_link specimen_storage_edit"

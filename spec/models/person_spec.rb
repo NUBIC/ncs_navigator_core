@@ -324,9 +324,9 @@ describe Person do
       InstrumentEventMap.stub!(:version).and_return("1.0")
       InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
       @pers = Factory(:person)
+      @part = Factory(:participant)
       @survey = create_test_survey_for_person
-      @rs, @instrument = prepare_instrument(@pers, @survey)
-
+      @rs, @instrument = prepare_instrument(@pers, @part, @survey)
     end
 
     it "knows the last incomplete response set" do
@@ -363,10 +363,11 @@ describe Person do
 
     it "should get responses by data_export_identifier" do
       person = Factory(:person)
+      participant = Factory(:participant)
 
       survey = create_pregnancy_screener_survey_with_cell_phone_permissions
       survey_section = survey.sections.first
-      response_set, instrument = prepare_instrument(person, survey)
+      response_set, instrument = prepare_instrument(person, participant, survey)
 
       survey_section.questions.each do |q|
         case q.data_export_identifier
@@ -398,20 +399,21 @@ describe Person do
         InstrumentEventMap.stub!(:version).and_return("1.0")
         InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
         @person = Factory(:person)
+        @participant = Factory(:participant)
         @survey = create_test_survey_for_person
       end
 
       it "returns 0 for the instrument_repeat_key if this is the first time taking the instrument" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         @person.instrument_repeat_key(instrument.survey).should == 0
       end
 
       it "returns 1 for the instrument_repeat_key if this is the second time taking the instrument" do
-        response_set0, instrument0 = prepare_instrument(@person, @survey)
-        response_set1, instrument1 = prepare_instrument(@person, @survey)
+        response_set0, instrument0 = prepare_instrument(@person, @participant, @survey)
+        response_set1, instrument1 = prepare_instrument(@person, @participant, @survey)
         response_set0.save!
         response_set1.save!
-        
+
         @person.reload.instrument_repeat_key(instrument1.survey).should == 1
       end
 
@@ -424,37 +426,37 @@ describe Person do
         InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
         @person = Factory(:person)
         @survey = create_test_survey_for_person
-
+        @participant = Factory(:participant)
       end
 
       it "should set the supervisor_review_code" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         instrument.supervisor_review.should == @n
       end
 
       it "should set the data_problem_code" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         instrument.data_problem.should == @n
       end
 
       it "should set the instrument_mode_code" do
         telephone_computer_administered = NcsCode.for_list_name_and_local_code('INSTRUMENT_ADMIN_MODE_CL1', 2)
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         instrument.instrument_mode.should == telephone_computer_administered
       end
 
       it "should set the instrument_method_code" do
         interviewer_administered = NcsCode.for_list_name_and_local_code('INSTRUMENT_ADMIN_METHOD_CL1', 2)
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         instrument.instrument_method.should == interviewer_administered
       end
 
       it "should set the instrument_breakoff_code"
 
       it "should set the instrument_status_code"
-      
+
       it "should set the instrument_repeat_key" do
-        response_set, instrument = prepare_instrument(@person, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
         instrument.instrument_repeat_key.should == 0
       end
 

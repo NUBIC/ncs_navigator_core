@@ -8,14 +8,16 @@ class EditSampleProcessesController < ApplicationController
     
     @samples = SampleReceiptStore.where(:sample_id => search_id)
 
-    @specimen_receipts_ids = SpecimenReceipt.where(:storage_container_id => search_id)
-    @specimen_receipts_hash = hash_of_specs_by_container_id(@specimen_receipts_ids)
+    @specimen_storage_ids = SpecimenStorage.where(:storage_container_id => search_id)
+    @specimen_receipts_hash = hash_of_specs_by_container_id(@specimen_storage_ids)
+
     @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
     @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
     @sample_receipt_stores_not_shipped = SampleReceiptStore.where(:sample_id => search_id)
+    
     @specimen_receipts_not_shipped = SpecimenStorage.where(:storage_container_id => search_id)
     @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
-    @smth = SampleShipping.where("sample_id = ? or shipment_tracking_number =?", search_id, search_id)
+
     @sample_shippings_not_received = hash_from_array_by_track_num(SampleShipping.where("sample_id = ? or shipment_tracking_number =?", search_id, search_id))
     @specimen_shippings_not_received = SpecimenShipping.where(:storage_container_id => search_id)
     respond_to do |format|      
@@ -66,11 +68,13 @@ class EditSampleProcessesController < ApplicationController
   #   SpecimenReceipt.all.select{ |s| SpecimenStorage.where(:storage_container_id => s.storage_container_id).blank?}
   # end
   # 
-  def hash_of_specs_by_container_id(arrayOfSpecs)
+  def hash_of_specs_by_container_id(specimen_storage)
     spec_hash = {}
-    arrayOfSpecs.each do |s|
-      spec_hash[s.storage_container_id] ||= []
-      spec_hash[s.storage_container_id] << s.specimen_id
+    specimen_storage.each do |s|
+      s.specimen_receipts.each do |sr|
+        spec_hash[sr.storage_container_id] ||= []
+        spec_hash[sr.storage_container_id] << sr.specimen_id
+      end
     end
     return spec_hash
   end

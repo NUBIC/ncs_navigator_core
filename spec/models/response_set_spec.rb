@@ -25,10 +25,17 @@ describe ResponseSet do
 
   it { should belong_to(:person) }
   it { should belong_to(:instrument) }
+  it { should belong_to(:participant) }
 
   describe '#instrument' do
     it 'is the inverse of Instrument#response_set' do
-      ResponseSet.reflections[:instrument].options[:inverse_of].should == :response_set
+      ResponseSet.reflections[:instrument].options[:inverse_of].should == :response_sets
+    end
+  end
+
+  describe '#participant' do
+    it 'is the inverse of Instrument#response_set' do
+      ResponseSet.reflections[:participant].options[:inverse_of].should == :response_sets
     end
   end
 
@@ -59,7 +66,7 @@ describe ResponseSet do
         ResponseSet.where(:user_id => person.id).should be_empty
         instrument_type = NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1)
 
-        rs, ins = prepare_instrument(person, pv1survey)
+        rs, ins = prepare_instrument(person, participant, pv1survey)
         rs.save!
         rs = ResponseSet.where(:user_id => person.id).first
         rs.should_not be_nil
@@ -79,12 +86,13 @@ describe ResponseSet do
     end
 
     let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
 
     describe "a survey that has no responses" do
 
       it "knows that the response set does not have responses in each section" do
         survey_section = @survey.sections.first
-        response_set, instrument = prepare_instrument(person, @survey)
+        response_set, instrument = prepare_instrument(person, participant, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
@@ -97,7 +105,7 @@ describe ResponseSet do
     describe "a survey that has a few responses but not in all sections" do
 
       it "knows that the response set does not have responses in each section" do
-        response_set, instrument = prepare_instrument(person, @survey)
+        response_set, instrument = prepare_instrument(person, participant, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
@@ -123,7 +131,7 @@ describe ResponseSet do
 
       it "knows that the response set does not have responses in the last section with questions" do
 
-        response_set, instrument = prepare_instrument(person, @survey)
+        response_set, instrument = prepare_instrument(person, participant, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 
@@ -157,7 +165,7 @@ describe ResponseSet do
     describe "a survey that has at least one response in all sections" do
 
       it "knows that the response set does have responses in each section" do
-        response_set, instrument = prepare_instrument(person, @survey)
+        response_set, instrument = prepare_instrument(person, participant, @survey)
         response_set.save!
         response_set.responses.size.should == 0
 

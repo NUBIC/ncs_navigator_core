@@ -28,7 +28,7 @@
           - if not @specimen_receipts_hash.blank?
             - @specimen_receipts_hash.each do |k, v|
               %li
-                %a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_sample_store", :id => k}
+                %a{ :href => edit_specimen_storage_path(:id => k), :class => "my_specimen_sample_store", :id => k}
                   = "Storage container ID:"
                   = k
                   - v.each do |val|

@@ -172,7 +172,9 @@ $(function() {
   
   $('.update_sample_received').live('click', sample_update_process);
 
-  $('.spec_stored').live('click', my_specimen_storage_dialog);
+  $('.spec_stored').live('click', {edit:false}, new_update_specimen_storage);
+
+  $('.update_spec_stored').live('click', {edit:true}, new_update_specimen_storage)
 
   function cleanCheckboxes() {
     $(':checkbox:checked').each( function() {
@@ -184,7 +186,8 @@ $(function() {
     $('#ship_specimens :checkbox').attr("disabled", false)
   }
 
-  function my_specimen_storage_dialog() {
+  function new_update_specimen_storage(event) {
+    var edit = event.data.edit
     var form = $(this).closest('form'),
         div = $(form).closest('div');
     var submitInput = $(this)
@@ -201,7 +204,10 @@ $(function() {
         var storage_container_id = response.specimen_storage.storage_container_id;
         var url = /specimen_storages/ + response.specimen_storage.id + ' form';
         $(div).load(url);
-        move_link_from_store_to_ship(response.specimen_storage.storage_container_id)
+        if (!edit) {
+          // only needed when the reference is new
+          move_link_from_store_to_ship(response.specimen_storage.storage_container_id)
+        }
       },
       error: function(xhr, ajaxOptions, thrownError) {
         $(submitInput).removeAttr('disabled');
