@@ -9,11 +9,12 @@ describe SpecimenOperationalDataExtractor do
   describe ".extract_data" do
 
     let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
 
     context "the adult urine collection instrument" do
       it "creates a sample from the instrument response" do
         survey = create_adult_urine_survey_with_specimen_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         expected = 'AA1234567-UR01'
 
         take_survey(survey, response_set) do |a|
@@ -41,7 +42,7 @@ describe SpecimenOperationalDataExtractor do
     context "the adult blood collection instrument" do
       it "creates up to 6 specimens from the instrument response" do
         survey = create_adult_blood_survey_with_specimen_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         specimen_ids = [
           "AA123456-SS10",
           "AA123456-RD10",
@@ -77,7 +78,7 @@ describe SpecimenOperationalDataExtractor do
 
       it "creates only the number of specimens as there are related responses" do
         survey = create_adult_blood_survey_with_specimen_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         specimen_ids = [
           "AA123456-SS10",
         ]
@@ -106,7 +107,7 @@ describe SpecimenOperationalDataExtractor do
     context "the cord blood collection instrument" do
       it "creates up to 3 specimens from the instrument response" do
         survey = create_cord_blood_survey_with_specimen_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         specimen_ids = [
           "AA123456-CL01",
           "AA123456-CS01",
@@ -136,7 +137,7 @@ describe SpecimenOperationalDataExtractor do
 
       it "creates only the number of specimens as there are related responses" do
         survey = create_cord_blood_survey_with_specimen_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         specimen_ids = [
           "AA123456-CB01",
         ]

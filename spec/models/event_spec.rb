@@ -660,20 +660,17 @@ describe Event do
 
       it "is true if event_type matches label and event_start_date matches ideal date" do
         lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
-        Struct.new("ScheduledActivity", :ideal_date, :labels)
-        @event.matches_activity(Struct::ScheduledActivity.new(date, lbl)).should be_true
+        @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_true
       end
 
       it "is false if event_type does not match label" do
         lbl = "event:not_the_event instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
-        Struct.new("ScheduledActivity", :ideal_date, :labels)
-        @event.matches_activity(Struct::ScheduledActivity.new(date, lbl)).should be_false
+        @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_false
       end
 
       it "is false if event_start_date does not match ideal date" do
         lbl = "event:low_intensity_data_collection"
-        Struct.new("ScheduledActivity", :ideal_date, :labels)
-        @event.matches_activity(Struct::ScheduledActivity.new("2011-12-25", lbl)).should be_false
+        @event.matches_activity(ScheduledActivity.new(:ideal_date => "2011-12-25", :labels => lbl)).should be_false
       end
 
     end

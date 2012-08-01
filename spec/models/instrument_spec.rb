@@ -78,7 +78,7 @@ describe Instrument do
   it { should belong_to(:person) }
   it { should belong_to(:survey) }
 
-  it { should have_one(:response_set) }
+  it { should have_many(:response_sets) }
   it { should have_one(:contact_link) }
 
   it { should validate_presence_of(:instrument_version) }
@@ -86,54 +86,100 @@ describe Instrument do
 
   describe '.start' do
     let(:event) { Factory(:event) }
-    let(:person) { Factory(:person) }
-    let(:survey) { Factory(:survey, :title => 'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0') }
+    let(:person) { Factory(:person, :person_id => 'mother') }
+    let(:mother) { Factory(:participant, :p_id => 'mother') }
+    let(:child) { Factory(:participant, :p_id => 'child') }
+    let(:survey) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0') }
+    let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
     let(:inst) { Factory(:instrument, :survey => survey) }
 
-    describe 'if there is no response set for the (person, survey) pair' do
-      it 'returns the result of Person#start_instrument' do
-        person.should_receive(:start_instrument).with(survey).and_return(inst)
-
-        Instrument.start(person, survey, event).should == inst
-      end
-
-      it "sets the instrument's event to event" do
-        inst = Instrument.start(person, survey, event)
-
-        inst.event.should == event
-      end
-    end
-
-    describe 'if there is a response set for the (person, survey) pair' do
-      before do
-        Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
-      end
-
-      describe 'if the event is closed' do
-        before do
-          event.stub(:closed? => true)
-        end
-
+    context 'a survey with one part' do
+      describe 'if there is no response set for the (person, survey) pair' do
         it 'returns the result of Person#start_instrument' do
-          person.should_receive(:start_instrument).with(survey).and_return(inst)
+          person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
 
-          Instrument.start(person, survey, event).should == inst
+          Instrument.start(person, mother, nil, survey, event).should == inst
         end
 
         it "sets the instrument's event to event" do
-          inst = Instrument.start(person, survey, event)
+          inst = Instrument.start(person, mother, nil, survey, event)
 
           inst.event.should == event
         end
       end
 
-      describe 'if the event is not closed' do
+      describe 'if there is a response set for the (person, survey) pair' do
         before do
-          event.stub(:closed? => false)
+          Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
         end
 
-        it "returns the response set's instrument" do
-          Instrument.start(person, survey, event).should == inst
+        describe 'if the event is closed' do
+          before do
+            event.stub(:closed? => true)
+          end
+
+          it 'returns the result of Person#start_instrument' do
+            person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
+
+            Instrument.start(person, mother, nil, survey, event).should == inst
+          end
+
+          it "sets the instrument's event to event" do
+            inst = Instrument.start(person, mother, nil, survey, event)
+
+            inst.event.should == event
+          end
+        end
+
+        describe 'if the event is not closed' do
+          before do
+            event.stub(:closed? => false)
+          end
+
+          let(:i) { Instrument.start(person, mother, nil, survey, event) }
+
+          it "returns the response set's instrument" do
+            i.should == inst
+          end
+
+          it "has one response set" do
+            i.response_sets.size.should == 1
+          end
+
+        end
+      end
+    end
+
+    context 'a survey with more than one part' do
+
+      context 'with an Instrument record created for the first part' do
+
+        let!(:instrument) do
+          i = Instrument.start(person, mother, nil, survey, event)
+          i.save!
+          i
+        end
+
+        describe 'the second survey part' do
+          it 'returns the Instrument associated with the first part' do
+            Instrument.start(person, child, survey, survey_part, event).should == instrument
+          end
+
+          it 'creates a response set about the participant sent (2nd parameter)' do
+            instrument.response_sets.size.should == 1
+            instrument.response_sets.first.person.should == person
+            instrument.response_sets.first.participant.should == mother
+
+            i = Instrument.start(person, child, survey, survey_part, event)
+            i.should == instrument
+
+            i.response_sets.size.should == 2
+            i.response_sets.first.person.should == person
+            i.response_sets.first.participant.should == mother
+            i.response_sets.last.person.should == person
+            i.response_sets.last.participant.should == child
+          end
+
         end
       end
     end
@@ -141,7 +187,7 @@ describe Instrument do
 
   describe '#response_set' do
     it 'is the inverse of ResponseSet#instrument' do
-      Instrument.reflections[:response_set].options[:inverse_of].should == :instrument
+      Instrument.reflections[:response_sets].options[:inverse_of].should == :instrument
     end
   end
 
@@ -242,6 +288,86 @@ describe Instrument do
 
       describe "#collection?" do
         it "returns true if label denotes a collection activity" do
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
+          Instrument.collection?(lbl).should be_true
+        end
+
+        it "returns false if label does not denote a collection activity" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Instrument.collection?(lbl).should be_false
+        end
+      end
+
+    end
+
+    context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' do
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' }
+
+      describe '#determine_version' do
+        it 'returns 1.0 for psc label' do
+          Instrument.determine_version(lbl).should == "1.0"
+        end
+      end
+    end
+
+    context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
+      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0' }
+
+      describe '#determine_version' do
+        it 'returns 1.0 for psc label' do
+          Instrument.determine_version(lbl).should == "1.0"
+        end
+
+        it 'returns 1.0 for surveyor access code' do
+          Instrument.determine_version(code).should == "1.0"
+        end
+
+        it 'returns 1.0 for survey title' do
+          Instrument.determine_version(title).should == "1.0"
+        end
+      end
+
+      describe "#mdes_version" do
+        it "returns mdes version from the instrument portion of the label" do
+          Instrument.mdes_version(lbl).should == "2.0"
+        end
+
+        it "returns nil if label is blank" do
+          Instrument.mdes_version("").should be_nil
+        end
+
+        it "returns nil if instrument portion is not included in label" do
+          Instrument.mdes_version("event:low_intensity_data_collection").should be_nil
+        end
+
+        it "returns nil if mdes version is not in the instrument portion is not included in label" do
+          Instrument.mdes_version("instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0").should be_nil
+        end
+
+      end
+
+      describe "#parse_label" do
+        it "returns the instrument portion of the label" do
+          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
+        end
+
+        it "returns nil if label is blank" do
+          lbl = ""
+          Instrument.parse_label(lbl).should be_nil
+        end
+
+        it "returns nil if instrument portion is not included in label" do
+          lbl = "event:low_intensity_data_collection"
+          Instrument.parse_label(lbl).should be_nil
+        end
+      end
+
+      describe "#collection?" do
+        it "returns true if label denotes a collection activity" do
           lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
           Instrument.collection?(lbl).should be_true
         end
@@ -253,6 +379,7 @@ describe Instrument do
       end
 
     end
+
   end
 
   describe 'default code values' do

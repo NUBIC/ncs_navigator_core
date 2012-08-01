@@ -108,6 +108,12 @@ FactoryGirl.define do
       high_intensity_state  "pregnancy_two"
     end
 
+    trait :child do
+      high_intensity        true
+      low_intensity_state   "moved_to_high_intensity_arm"
+      high_intensity_state  "parenthood"
+    end
+
     ## Low Intensity Participants
 
     factory :low_intensity_ppg1_participant, :traits => [:in_ppg1, :in_pregnancy_probability_group]
@@ -127,6 +133,7 @@ FactoryGirl.define do
     factory :high_intensity_ppg6_participant, :traits => [:in_high_intensity_arm, :in_ppg6]
 
     factory :high_intensity_pregnancy_one_participant, :traits => [:in_high_intensity_arm, :in_ppg1, :pregnancy_one]
+    factory :high_intensity_postnatal_participant,     :traits => [:in_high_intensity_arm, :in_ppg4, :child]
   end
 
 end

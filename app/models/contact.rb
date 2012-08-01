@@ -71,14 +71,14 @@ class Contact < ActiveRecord::Base
   # @param [Hash]
   def self.start(person, attrs={})
     if person
-      language = person.contacts.detect(&:contact_language_code)
+      language    = person.contacts.detect(&:contact_language_code)
       interpreter = person.contacts.detect(&:contact_interpret_code)
     end
 
     Contact.new({
-      :contact_language_code => language.try(:contact_language_code),
-      :contact_language_other => language.try(:contact_language_other),
-      :contact_interpret_code => interpreter.try(:contact_interpret_code),
+      :contact_language_code   => language.try(:contact_language_code),
+      :contact_language_other  => language.try(:contact_language_other),
+      :contact_interpret_code  => interpreter.try(:contact_interpret_code),
       :contact_interpret_other => interpreter.try(:contact_interpret_other)
     }.merge(attrs))
   end
@@ -130,7 +130,9 @@ class Contact < ActiveRecord::Base
   ##
   # @return [Array<String>] Instrument Survey titles
   def instrument_survey_titles
-    instruments_with_surveys.collect {|i| i.survey.title}
+    # TODO: update Contact object to use this:
+    instruments.collect{|i| i.response_sets}.flatten.compact.collect{|rs| rs.survey.title}.uniq
+    # instruments_with_surveys.collect {|i| i.survey.title}
   end
 
   ##

@@ -33,7 +33,7 @@
   .pending_events
     %b
       New Contact for Pending Event
-    - participant.pending_events.each do |event|
-      .pending_event
-        = link_to "Create Contact for #{displayable_event_name(event, participant)}", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "Initiate Contact"
-        = link_to "Reschedule", reschedule_event_path(event), :class => "reschedule_link icon_link"
+    - event = participant.pending_events.first
+    .pending_event
+      = link_to "Create Contact for #{displayable_event_name(event, participant)}", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "Initiate Contact"
+      = link_to "Reschedule", reschedule_event_path(event), :class => "reschedule_link icon_link"

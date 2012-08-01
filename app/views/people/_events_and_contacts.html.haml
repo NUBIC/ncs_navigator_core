@@ -6,14 +6,14 @@
           = "No events exists for #{blank_safe(participant.person.to_s)} at this time."
       - else
         %b
-          Event History
+          Contact History
         - participant.events.sort_by{ |e| e.event_start_date.to_s }.reverse.each do |event|
           - event_name = displayable_event_name(event, participant)
           - person = participant.person
           .event
             .header
               %span.new_contact_for_previous_event
-                = link_to "New Contact", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "New Contact for #{event_name}"
+                = link_to "New Contact", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "New Contact for #{event_name}" if event.closed?
               %span.type
                 = link_to event_name, edit_event_path(event), :class => "edit_link icon_link"
               %span.dates

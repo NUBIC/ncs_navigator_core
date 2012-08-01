@@ -9,11 +9,12 @@ describe SampleOperationalDataExtractor do
   describe ".extract_data" do
 
     let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
 
     context "the vacuum bag dust collection instrument" do
       it "creates a sample from the instrument response" do
         survey = create_vacuum_bag_dust_survey_with_sample_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         expected = 'EC2345671 – DB01'
 
         take_survey(survey, response_set) do |a|
@@ -41,7 +42,7 @@ describe SampleOperationalDataExtractor do
     context "the tap water pharm collection instrument" do
       it "creates up to 3 samples from the instrument response" do
         survey = create_tap_water_survey_with_sample_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         sample_ids = [
           'EC2224441 – WQ01',
           'EC2224442 – WQ02',
@@ -71,7 +72,7 @@ describe SampleOperationalDataExtractor do
 
       it "creates only the number of samples as there are related responses" do
         survey = create_tap_water_survey_with_sample_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         sample_ids = [
           'EC2224441 – WQ01',
         ]
@@ -101,11 +102,11 @@ describe SampleOperationalDataExtractor do
       end
 
     end
-    
+
     context "the tap water pest collection instrument" do
       it "creates up to 3 samples from the instrument response" do
         survey = create_tap_water_pest_survey_with_sample_operational_data
-        response_set, instrument = prepare_instrument(person, survey)
+        response_set, instrument = prepare_instrument(person, participant, survey)
         sample_ids = [
           'EC2224441 – WQ01',
           'EC2224442 – WQ02',

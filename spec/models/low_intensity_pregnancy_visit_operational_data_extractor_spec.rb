@@ -23,7 +23,7 @@ describe LowIntensityPregnancyVisitOperationalDataExtractor do
       @ppg5 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 5)
 
       @survey = create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
-      @response_set, @instrument = prepare_instrument(@person, @survey)
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
       @participant.ppg_status.local_code.should == 2
     end
