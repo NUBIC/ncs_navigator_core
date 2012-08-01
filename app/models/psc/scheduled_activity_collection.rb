@@ -25,5 +25,12 @@ module Psc
   # methods, as they are far more efficient than performing individual database
   # queries.
   class ScheduledActivityCollection
+    ##
+    # Instantiates a collection from a scheduled activity report.
+    #
+    # @see PatientStudyCalendar#scheduled_activities_report
+    def self.from_report(report)
+      new
+    end
   end
 end
