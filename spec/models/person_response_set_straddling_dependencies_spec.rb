@@ -23,7 +23,7 @@ describe "Straddled dependencies" do
     @answer_preceding_rs =  Factory(:answer, :text => "whatchamacallit", :question => @question_preceding_rs)
     @answer_current_rs =  Factory(:answer, :question => @question_current_rs)
 
-    Factory(:response, :response_set_id => @preceding_rs, :string_value => "whatchamacallit", :answer => @answer_preceding_rs, :question => @question_preceding_rs, :survey_section_id => @preceding_section )
+    Factory(:response, :response_set => @preceding_rs, :string_value => "whatchamacallit", :answer => @answer_preceding_rs, :question => @question_preceding_rs, :survey_section_id => @preceding_section )
   end
 
   it "a response set prepopulates appropriate values based on a former response set" do
