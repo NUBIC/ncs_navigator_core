@@ -1,7 +1,7 @@
 .page_section
   .psc_registration
     %b
-      Scheduled Activities
+      Participant Schedule
 
   - if psc.is_registered?(@participant)
     = render "/participants/schedule", :participant => @participant
