@@ -232,7 +232,7 @@ module Psc
       attr_accessor :model
 
       def access_code
-        instrument_label.match(/^instrument:(.+)_v[\d\.]+/i)[1]
+        instrument_label.match(/^[^:]+:(.+)$/i)[1]
       end
     end
   end
