@@ -78,7 +78,8 @@ module Psc
         c = add_contact(activity, p)
         e = add_event(activity, c, p)
         s = add_survey(activity)
-        i = add_instrument(activity, s, e, p) if s && e
+        r = add_referenced_survey(activity)
+        i = add_instrument(activity, s, r, e, p) if (s || r) && e
 
         add_contact_link(p, c, e, i)
       end
@@ -108,8 +109,8 @@ module Psc
 
     ##
     # @private
-    def add_instrument(activity, survey, event, person)
-      instruments << Instrument.new(survey, activity.activity_name, event, person)
+    def add_instrument(activity, survey, referenced_survey, event, person)
+      instruments << Instrument.new(survey, referenced_survey, activity.activity_name, event, person)
     end
 
     ##
@@ -120,10 +121,12 @@ module Psc
 
     ##
     # @private
-    def add_survey(activity)
-      il = activity.instrument_label
+    def add_survey(activity, label = activity.instrument_label)
+      surveys << Survey.new(label) if label
+    end
 
-      surveys << Survey.new(il) if il
+    def add_referenced_survey(activity)
+      add_survey(activity, activity.references_label)
     end
 
     # Intermediate representatations start here.
@@ -212,7 +215,7 @@ module Psc
 
     ##
     # {Instrument} representation.
-    class Instrument < Struct.new(:survey, :name, :event, :person)
+    class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
       attr_accessor :model
     end
 
