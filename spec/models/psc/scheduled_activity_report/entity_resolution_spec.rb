@@ -10,7 +10,6 @@ class Psc::ScheduledActivityReport
     let(:report) { ::Psc::ScheduledActivityReport.from_json(data) }
 
     before do
-      pending
       report.extend(EntityResolution)
     end
 
@@ -193,7 +192,7 @@ class Psc::ScheduledActivityReport
 
           let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
           let!(:c) { Factory(:contact, :contact_date => scheduled_date) }
-          let!(:i) { ::Instrument.start(p, s, e).tap(&:save!) }
+          let!(:i) { ::Instrument.start(p, pa, nil, s, e).tap(&:save!) }
 
           describe 'if a link already exists' do
             let!(:cl) do
