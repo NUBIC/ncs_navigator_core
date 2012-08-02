@@ -51,7 +51,7 @@ class Psc::ScheduledActivityReport
 
       describe 'for surveys' do
         it 'finds surveys in Cases' do
-          s = Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2')
+          s = Factory(:survey, :access_code => 'ins-que-lipregnotpreg-int-li-p2-v2-0')
 
           report.process
 
@@ -61,7 +61,7 @@ class Psc::ScheduledActivityReport
         it 'logs an error if a survey cannot be found' do
           report.process
 
-          log.should =~ /cannot map \{access code = ins_que_lipregnotpreg_int_li_p2\} to a survey/i
+          log.should =~ /cannot map \{access code = ins_que_lipregnotpreg_int_li_p2_v2\.0\} to a survey/i
         end
       end
 
@@ -114,7 +114,7 @@ class Psc::ScheduledActivityReport
         describe 'if the instrument has a person, survey, and event' do
           include_context 'one existing event'
 
-          let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
+          let!(:s) { Factory(:survey, :access_code => 'ins-que-lipregnotpreg-int-li-p2-v2-0', :title => instrument_pregnotpreg) }
 
           it 'starts an instrument' do
             report.process
@@ -190,7 +190,7 @@ class Psc::ScheduledActivityReport
         describe 'for (staff ID, person, contact, event, instrument)' do
           include_context 'one existing event'
 
-          let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
+          let!(:s) { Factory(:survey, :access_code => 'ins-que-lipregnotpreg-int-li-p2-v2-0', :title => instrument_pregnotpreg) }
           let!(:c) { Factory(:contact, :contact_date => scheduled_date) }
           let!(:i) { ::Instrument.start(p, pa, nil, s, e).tap(&:save!) }
 
@@ -261,7 +261,7 @@ class Psc::ScheduledActivityReport
         let!(:et2) { NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33) }
         let!(:e1) { Factory(:event, :participant => pa, :event_start_date => ideal_date, :event_type => et1) }
         let!(:e2) { Factory(:event, :participant => pa, :event_start_date => ideal_date, :event_type => et2) }
-        let!(:s) { Factory(:survey, :access_code => 'ins_que_lipregnotpreg_int_li_p2', :title => instrument_pregnotpreg) }
+        let!(:s) { Factory(:survey, :access_code => 'ins-que-lipregnotpreg-int-li-p2-v2-0', :title => instrument_pregnotpreg) }
 
         before do
           # Link up.
