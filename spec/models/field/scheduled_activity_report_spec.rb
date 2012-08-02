@@ -202,8 +202,8 @@ module Field
           include_context 'has an event'
 
           let(:instruments) { json['contacts'][0]['events'][0]['instruments'] }
-          let(:instrument) { Factory(:instrument, :survey => survey, :response_set => response_set) }
-          let(:response_set) { Factory(:response_set) }
+          let(:instrument) { Factory(:instrument, :survey => survey, :response_sets => response_sets) }
+          let(:response_sets) { [Factory(:response_set)] }
           let(:survey) { Factory(:survey) }
 
           let(:survey_ir) do
@@ -252,14 +252,14 @@ module Field
               instruments[0]['name'].should == instrument_ir.name
             end
 
-            it 'sets #/0/response_set' do
-              instruments[0]['response_set'].should == JSON.parse(response_set.to_json)
+            it 'sets #/0/response_sets' do
+              instruments[0]['response_sets'].should == JSON.parse(response_sets.to_json)
             end
 
             # This is a quick check against an error in Surveyor's JSON
             # serialization code that keeps cropping up.
-            it 'sets #/0/response_set to a non-blank value' do
-              instruments[0]['response_set'].should_not be_blank
+            it 'sets #/0/response_sets/0 to a non-blank value' do
+              instruments[0]['response_sets'][0].should_not be_blank
             end
           end
         end

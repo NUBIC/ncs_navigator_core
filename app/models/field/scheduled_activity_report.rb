@@ -57,7 +57,7 @@ module Field
           adapt_model(mi).as_json(options).merge({
             'instrument_template_id' => ms.api_id,
             'name' => i.name,
-            'response_set' => mi.response_set
+            'response_sets' => mi.response_sets
           })
         end
       end.compact
