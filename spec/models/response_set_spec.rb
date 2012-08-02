@@ -39,6 +39,30 @@ describe ResponseSet do
     end
   end
 
+  describe '#to_json' do
+    let(:s) { Factory(:survey) }
+    let(:rs) { ResponseSet.new(:api_id => 'foo', :survey => s) }
+    let(:pa) { Factory(:participant) }
+
+    let(:json) { JSON.parse(rs.to_json) }
+
+    describe 'with a participant' do
+      before do
+        rs.participant = pa
+      end
+
+      it "returns the participant's public ID" do
+        json['p_id'].should == pa.public_id
+      end
+    end
+
+    describe 'without a participant' do
+      it "returns null for the participant's public ID" do
+        json['p_id'].should be_nil
+      end
+    end
+  end
+
   context "with instruments" do
     describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
 
