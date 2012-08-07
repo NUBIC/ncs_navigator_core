@@ -9,7 +9,7 @@ module Psc
   # a split pane while reading these examples.
   describe ScheduledActivityCollection do
     describe '.from_report' do
-      include_context 'from report'
+      include_context 'collection from report'
 
       let(:report) { ScheduledActivityCollection.from_report(source) }
 
@@ -19,7 +19,7 @@ module Psc
     end
 
     describe '.from_schedule' do
-      include_context 'from schedule'
+      include_context 'collection from schedule'
 
       let(:report) { ScheduledActivityCollection.from_schedule(source) }
 
