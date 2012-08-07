@@ -131,7 +131,7 @@ module Field
         { :instrument => '/contacts/0/events/0/instruments/0' }
       end
 
-      let(:pointer) { '/contacts/0/events/0/instruments/0/response_set' }
+      let(:pointer) { '/contacts/0/events/0/instruments/0/response_sets/0' }
 
       it_should_behave_like 'an entity set', :original, 'response_sets'
       it_should_behave_like 'an entity set', :proposed, 'response_sets'
@@ -139,10 +139,10 @@ module Field
 
     describe 'for responses' do
       let(:ancestry) do
-        { :response_set => '/contacts/0/events/0/instruments/0/response_set' }
+        { :response_set => '/contacts/0/events/0/instruments/0/response_sets/0' }
       end
 
-      let(:pointer) { '/contacts/0/events/0/instruments/0/response_set/responses/0' }
+      let(:pointer) { '/contacts/0/events/0/instruments/0/response_sets/0/responses/0' }
 
       it_should_behave_like 'an entity set', :original, 'responses'
       it_should_behave_like 'an entity set', :proposed, 'responses'

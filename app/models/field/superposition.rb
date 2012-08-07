@@ -142,16 +142,20 @@ module Field
 
     def add_instrument(h, instrument)
       h.add(:instrument, instrument, 'instrument_id') do |h|
-        h.add(:response_set, instrument['response_set'], 'uuid') do |h|
-          # FYI: The responses key should always exist, but there's currently
-          # a bug in Surveyor that makes that not the case.
-          #
-          # See https://github.com/NUBIC/surveyor/issues/294.
-          responses = instrument['response_set']['responses']
+        instrument['response_sets'].each { |rs| add_response_set(h, rs) }
+      end
+    end
 
-          if responses
-            responses.each { |r| h.add(:response, r, 'uuid') }
-          end
+    def add_response_set(h, response_set)
+      h.add(:response_set, response_set, 'uuid') do |h|
+        # FYI: The responses key should always exist, but there's currently
+        # a bug in Surveyor that makes that not the case.
+        #
+        # See https://github.com/NUBIC/surveyor/issues/294.
+        responses = response_set['responses']
+
+        if responses
+          responses.each { |r| h.add(:response, r, 'uuid') }
         end
       end
     end
