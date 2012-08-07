@@ -1,4 +1,4 @@
-@merge @wip
+@merge
 Feature: Merging data from field clients
   In order to collect data in the field
   Field workers
