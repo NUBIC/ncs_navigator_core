@@ -26,7 +26,7 @@ module Field
   #         :current => (adapter object or nil)
   #       }
   #     }
-  # 
+  #
   # Nils may occur if i.e. the offline client returns newly instantiated or
   # corrupted entities.
   #
