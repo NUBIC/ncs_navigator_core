@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -1235,11 +1234,11 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.integer  "specimen_processing_shipping_center_id"
     t.integer  "shipment_receipt_confirmed_code",                                                    :null => false
     t.string   "shipper_id",                                                                         :null => false
-    t.string   "shipment_tracking_number",                                                           :null => false
+    t.integer  "shipment_tracking_number_id",                                                        :null => false
     t.datetime "shipment_receipt_datetime",                                                          :null => false
     t.integer  "shipment_condition_code",                                                            :null => false
     t.string   "shipment_damaged_reason"
-    t.string   "specimen_id",                                                                        :null => false
+    t.integer  "specimen_id",                                                                        :null => false
     t.decimal  "specimen_receipt_temp",                                :precision => 6, :scale => 2, :null => false
     t.string   "specimen_condition"
     t.string   "shipment_received_by",                                                               :null => false
@@ -1251,7 +1250,7 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
 
   create_table "specimen_receipts", :force => true do |t|
     t.integer  "psu_code",                                                                           :null => false
-    t.string   "specimen_id",                            :limit => 36,                               :null => false
+    t.integer  "specimen_id",                                                                        :null => false
     t.integer  "specimen_processing_shipping_center_id"
     t.string   "staff_id",                               :limit => 36,                               :null => false
     t.integer  "receipt_comment_code",                                                               :null => false
@@ -1263,7 +1262,7 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.integer  "upper_trigger_level_code"
     t.integer  "lower_trigger_cold_code"
     t.integer  "lower_trigger_ambient_code"
-    t.string   "storage_container_id",                   :limit => 36,                               :null => false
+    t.integer  "storage_container_id",                                                               :null => false
     t.integer  "centrifuge_comment_code"
     t.string   "centrifuge_comment_other"
     t.string   "centrifuge_starttime",                   :limit => 5
@@ -1278,7 +1277,6 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
 
   create_table "specimen_shippings", :force => true do |t|
     t.integer  "psu_code",                                             :null => false
-    t.string   "storage_container_id",                   :limit => 36, :null => false
     t.integer  "specimen_processing_shipping_center_id"
     t.string   "staff_id",                               :limit => 36, :null => false
     t.string   "shipper_id",                             :limit => 36, :null => false
@@ -1297,10 +1295,17 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.string   "contact_phone",                          :limit => 30
   end
 
+  create_table "specimen_storage_containers", :force => true do |t|
+    t.string   "storage_container_id", :limit => 36, :null => false
+    t.integer  "specimen_shipping_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "specimen_storages", :force => true do |t|
     t.integer  "psu_code",                                                                           :null => false
     t.integer  "specimen_processing_shipping_center_id"
-    t.string   "storage_container_id",                   :limit => 36,                               :null => false
+    t.integer  "storage_container_id",                                                               :null => false
     t.datetime "placed_in_storage_datetime"
     t.string   "staff_id",                               :limit => 36,                               :null => false
     t.integer  "specimen_equipment_id"
@@ -1511,6 +1516,16 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
   add_foreign_key "sample_receipt_shipping_centers", "addresses", :name => "sample_receipt_shipping_centers_addresses_fk"
 
   add_foreign_key "specimen_processing_shipping_centers", "addresses", :name => "specimen_processing_shipping_centers_addresses_fk"
+
+  add_foreign_key "specimen_receipt_confirmations", "specimen_shippings", :name => "specimen_receipt_confirmations_specimen_shippings_fk", :column => "shipment_tracking_number_id"
+  add_foreign_key "specimen_receipt_confirmations", "specimens", :name => "specimen_receipt_confirmations_specimens_fk"
+
+  add_foreign_key "specimen_receipts", "specimen_storage_containers", :name => "specimen_receipts_specimen_storage_containers_fk", :column => "storage_container_id"
+  add_foreign_key "specimen_receipts", "specimens", :name => "specimen_receipts_specimens_fk"
+
+  add_foreign_key "specimen_storage_containers", "specimen_shippings", :name => "specimen_storage_containers_specimen_shippings_fk"
+
+  add_foreign_key "specimen_storages", "specimen_storage_containers", :name => "specimen_storages_specimen_storage_containers_fk", :column => "storage_container_id"
 
   add_foreign_key "telephones", "people", :name => "telephones_people_fk"
 
