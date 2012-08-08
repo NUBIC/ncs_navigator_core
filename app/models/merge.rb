@@ -16,8 +16,6 @@
 #  updated_at      :datetime
 #
 
-
-
 require 'case'
 require 'logger'
 require 'ncs_navigator/core'
@@ -213,4 +211,3 @@ class Merge < ActiveRecord::Base
     }
   end
 end
-

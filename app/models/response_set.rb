@@ -42,6 +42,10 @@ class ResponseSet < ActiveRecord::Base
     result
   end
 
+  def as_json(options = nil)
+    super.merge('p_id' => participant.try(:public_id))
+  end
+
   def enumerable_as_instrument?
     return false unless instrument_id
 

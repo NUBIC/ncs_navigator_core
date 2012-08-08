@@ -7,18 +7,6 @@ module Psc
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
     ##
-    # Filters used in generating the report.
-    #
-    # @return Hash
-    attr_accessor :filters
-
-    ##
-    # Rows of the report.
-    #
-    # @return Array
-    attr_accessor :rows
-
-    ##
     # Logger.  Defaults to Rails.logger.
     attr_accessor :logger
 
@@ -31,6 +19,16 @@ module Psc
     attr_reader :instruments
     attr_reader :people
     attr_reader :surveys
+
+    ##
+    # Filters used in generating the report.
+    #
+    # @return Hash
+    attr_reader :filters
+
+    ##
+    # The backing ScheduledActivityCollection.
+    attr_reader :activities
 
     ##
     # Builds a ScheduledActivityReport from PSC data.
@@ -49,15 +47,16 @@ module Psc
     ##
     # Builds a ScheduledActivityReport from parsed JSON data.
     def self.from_json(data)
-      new.tap do |r|
-        r.filters = data['filters']
-        r.rows = data['rows']
-      end
+      coll = ScheduledActivityCollection.from_report(data)
+
+      new(coll, data['filters'])
     end
 
-    def initialize
-      self.rows = []
+    def initialize(coll = ScheduledActivityCollection.new, filters = {})
       self.logger = Rails.logger
+
+      @filters = filters
+      @activities = coll
 
       @contact_links = Collection.new
       @contacts = Collection.new
@@ -74,12 +73,13 @@ module Psc
 
       [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
 
-      rows.each do |row|
-        p = add_person(row)
-        c = add_contact(row, p)
-        e = add_event(row, c, p)
-        s = add_survey(row)
-        i = add_instrument(row, s, e, p) if s && e
+      activities.each do |activity|
+        p = add_person(activity)
+        c = add_contact(activity, p)
+        e = add_event(activity, c, p)
+        s = add_survey(activity)
+        r = add_referenced_survey(activity)
+        i = add_instrument(activity, s, r, e, p) if (s || r) && e
 
         add_contact_link(p, c, e, i)
       end
@@ -95,36 +95,38 @@ module Psc
 
     ##
     # @private
-    def add_contact(row, person)
-      contacts << Contact.new(row['scheduled_date'], person)
+    def add_contact(activity, person)
+      contacts << Contact.new(activity.activity_date, person)
     end
 
     ##
     # @private
-    def add_event(row, contact, person)
-      el = row['labels'].detect { |r| r.starts_with?('event:') }
+    def add_event(activity, contact, person)
+      el = activity.event_label
 
-      events << Event.new(el, row['ideal_date'], contact, person) if el
+      events << Event.new(el, activity.ideal_date, contact, person) if el
     end
 
     ##
     # @private
-    def add_instrument(row, survey, event, person)
-      instruments << Instrument.new(survey, row['activity_name'], event, person)
+    def add_instrument(activity, survey, referenced_survey, event, person)
+      instruments << Instrument.new(survey, referenced_survey, activity.activity_name, event, person)
     end
 
     ##
     # @private
-    def add_person(row)
-      people << Person.new(row['subject']['person_id'])
+    def add_person(activity)
+      people << Person.new(activity.person_id)
     end
 
     ##
     # @private
-    def add_survey(row)
-      il = row['labels'].detect { |r| r.starts_with?('instrument:') }
+    def add_survey(activity, label = activity.instrument_label)
+      surveys << Survey.new(label) if label
+    end
 
-      surveys << Survey.new(il) if il
+    def add_referenced_survey(activity)
+      add_survey(activity, activity.references_label)
     end
 
     # Intermediate representatations start here.
@@ -213,7 +215,7 @@ module Psc
 
     ##
     # {Instrument} representation.
-    class Instrument < Struct.new(:survey, :name, :event, :person)
+    class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
       attr_accessor :model
     end
 
@@ -230,7 +232,7 @@ module Psc
       attr_accessor :model
 
       def access_code
-        instrument_label.match(/^instrument:(.+)_v[\d\.]+/i)[1]
+        instrument_label.match(/^[^:]+:(.+)$/i)[1]
       end
     end
   end

@@ -122,9 +122,15 @@ class Psc::ScheduledActivityReport
     # @private
     def resolve_instruments
       instruments.each do |instrument|
-        args = [instrument.person, instrument.survey, instrument.event].map(&:model)
+        pm  = instrument.person.model
+        pam = instrument.person.participant_model
+        sm  = instrument.survey.model
+        rm  = instrument.referenced_survey.try(:model)
+        em  = instrument.event.model
 
-        instrument.model = ::Instrument.start(*args) if args.all?
+        if pm && pam && (sm || rm) && em
+          instrument.model = ::Instrument.start(pm, pam, rm, sm, em)
+        end
       end
     end
 

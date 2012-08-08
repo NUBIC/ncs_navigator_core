@@ -1,0 +1,105 @@
+{
+    "days": {
+        "2011-01-01": {
+            "activities": [
+                {
+                    "activity": {
+                        "name": "Birth Interview",
+                        "type": "Instrument"
+                    },
+                    "assignment": {
+                        "id": "mother"
+                    },
+                    "current_state": {
+                        "name": "scheduled"
+                    },
+                    "id": "1",
+                    "ideal_date": "2011-01-01",
+                    "labels": "event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self"
+                },
+                {
+                    "activity": {
+                        "name": "Birth Interview Baby",
+                        "type": "Instrument"
+                    },
+                    "assignment": {
+                        "id": "mother"
+                    },
+                    "current_state": {
+                        "name": "scheduled"
+                    },
+                    "id": "2",
+                    "ideal_date": "2011-01-01",
+                    "labels": "event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:ins_que_birth_int_ehpbhi_p2_v2.0"
+                },
+                {
+                    "activity": {
+                        "name": "Birth Visit Information Sheet"
+                    },
+                    "assignment": {
+                        "id": "mother"
+                    },
+                    "current_state": {
+                        "name": "scheduled"
+                    },
+                    "id": "3",
+                    "ideal_date": "2011-01-01",
+                    "labels": "event:birth"
+                }
+            ]
+        },
+        "2011-04-01": {
+            "activities": [
+                {
+                    "activity": {
+                        "name": "3-Month Mother Phone Interview",
+                        "type": "Instrument"
+                    },
+                    "assignment": {
+                        "id": "mother"
+                    },
+                    "current_state": {
+                        "name": "scheduled"
+                    },
+                    "id": "4",
+                    "ideal_date": "2011-04-01",
+                    "labels": "event:3m instrument:ins_que_3mmother_int_ehpbhi_p2_v1.1"
+                }
+            ]
+        },
+        "2011-07-01": {
+            "activities": [
+                {
+                    "activity": {
+                        "name": "6-Month Mother Interview",
+                        "type": "Instrument"
+                    },
+                    "assignment": {
+                        "id": "mother"
+                    },
+                    "current_state": {
+                        "name": "scheduled"
+                    },
+                    "id": "5",
+                    "ideal_date": "2011-07-01",
+                    "labels": "event:6m instrument:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self"
+                },
+                {
+                    "activity": {
+                        "name": "6-Month Infant Feed SAQ",
+                        "type": "Instrument"
+                    },
+                    "assignment": {
+                        "id": "mother"
+                    },
+                    "current_state": {
+                        "name": "scheduled"
+                    },
+                    "id": "5",
+                    "ideal_date": "2011-07-01",
+                    "labels": "event:6m instrument:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child"
+                }
+            ]
+        }
+    }
+}
