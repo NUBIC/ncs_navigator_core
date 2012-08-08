@@ -13,7 +13,6 @@ describe PostNatalOperationalDataExtractor do
       @child_participant = Factory(:participant)
       @child_participant.person = @child_person
       @link = Factory(:participant_person_link, :participant => @child_participant, :person => @child_person )
-      #@responses_set = Factory(:response_set, :person => @person, :participant => @child_participant)
       @survey = create_six_month_mother_int_mother_detail_survey_with_operational_data
     end
 
