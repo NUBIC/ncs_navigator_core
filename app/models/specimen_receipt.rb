@@ -37,7 +37,9 @@ class SpecimenReceipt < ActiveRecord::Base
   
   belongs_to :specimen_processing_shipping_center
   belongs_to :specimen_equipment
-  belongs_to :specimen, :primary_key => :specimen_id
+  belongs_to :specimen
+  belongs_to :specimen_storage_container
+  
   ncs_coded_attribute :psu,                   'PSU_CL1'
   ncs_coded_attribute :receipt_comment,       'SPECIMEN_STATUS_CL3'
   ncs_coded_attribute :monitor_status,        'TRIGGER_STATUS_CL1'
