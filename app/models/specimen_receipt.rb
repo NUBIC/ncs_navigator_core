@@ -38,6 +38,7 @@ class SpecimenReceipt < ActiveRecord::Base
   belongs_to :specimen_processing_shipping_center
   belongs_to :specimen_equipment
   belongs_to :specimen
+  
   belongs_to :specimen_storage_container
   
   ncs_coded_attribute :psu,                   'PSU_CL1'
@@ -51,7 +52,7 @@ class SpecimenReceipt < ActiveRecord::Base
   
   validates_presence_of :staff_id
   validates_presence_of :specimen_processing_shipping_center_id
-  validates_presence_of :storage_container_id
+  # validates_presence_of :storage_container_id
   validates_presence_of :receipt_datetime  
 end
 

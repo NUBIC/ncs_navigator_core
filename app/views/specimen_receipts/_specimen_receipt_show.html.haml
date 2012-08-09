@@ -1,71 +1,72 @@
-= form_for @specimen_receipt do |f|
-  = render "shared/full_error_messages", :object => f.object
-  = "Specimen ID:"
-  = f.object.specimen_id
-  = f.hidden_field :specimen_id
-  %div{:class => "spec_sample_receipt"}
-    = "Staff:"
-    = display_staff_info
-    %br
-    - if not f.object.storage_container_id.blank?
-      = "Storage Container ID: "
-      = f.object.storage_container_id
-      %br  
-    - if not f.object.receipt_datetime.blank?
-      = "Receipt Date and Time: "
-      = f.object.receipt_datetime  
+= form_for @specimen_storage_container, :url => edit_specimen_receipt_path(:id => @specimen_storage_container), :method => "GET" do |s|
+  = s.fields_for :specimen_receipt do |f|
+    = render "shared/full_error_messages", :object => f.object
+    = "Specimen ID:"
+    = f.object.specimen.specimen_id
+    
+    %div{:class => "spec_sample_receipt"}
+      = "Staff:"
+      = display_staff_info
       %br
-    = "Receipt Comment: " 
-    = NcsCode.for_attribute_name_and_local_code(:receipt_comment_code, @specimen_receipt.receipt_comment_code)
-    %br
-    - if not f.object.receipt_comment_other.blank?
-      = "Receipt comment other: "
-      = f.object.receipt_comment_other
+      - if not s.object.storage_container_id.blank?
+        = "Storage Container ID: "
+        = s.object.storage_container_id
+        %br  
+      - if not f.object.receipt_datetime.blank?
+        = "Receipt Date and Time: "
+        = f.object.receipt_datetime  
+        %br
+      = "Receipt Comment: " 
+      = NcsCode.for_attribute_name_and_local_code(:receipt_comment_code, f.object.receipt_comment_code)
       %br
-    - if not f.object.cooler_temp.blank?
-      = "Cooler Temperature (in Celsius): "
-      = f.object.cooler_temp  
+      - if not f.object.receipt_comment_other.blank?
+        = "Receipt comment other: "
+        = f.object.receipt_comment_other
+        %br
+      - if not f.object.cooler_temp.blank?
+        = "Cooler Temperature (in Celsius): "
+        = f.object.cooler_temp  
+        %br
+      = "Monitor Status: "
+      = NcsCode.for_attribute_name_and_local_code(:monitor_status_code, f.object.monitor_status_code)
       %br
-    = "Monitor Status: "
-    = NcsCode.for_attribute_name_and_local_code(:monitor_status_code, @specimen_receipt.monitor_status_code)
-    %br
-    = "Upper Trigger: "
-    = NcsCode.for_attribute_name_and_local_code(:upper_trigger_code, @specimen_receipt.upper_trigger_code)
-    %br
-    = "Upper Trigger Level: "
-    = NcsCode.for_attribute_name_and_local_code(:upper_trigger_level_code, @specimen_receipt.upper_trigger_level_code)
-    %br
-    = "Lower Trigger Cold: "
-    = NcsCode.for_attribute_name_and_local_code(:lower_trigger_cold_code, @specimen_receipt.lower_trigger_cold_code)
-    %br
-    = "Lower Trigger Ambient: "
-    = NcsCode.for_attribute_name_and_local_code(:lower_trigger_ambient_code, @specimen_receipt.lower_trigger_ambient_code)
-    %br
-    - if not f.object.centrifuge_staff_id.blank?
-      = "Centrifuge Staff ID: "
-      = f.object.centrifuge_staff_id
+      = "Upper Trigger: "
+      = NcsCode.for_attribute_name_and_local_code(:upper_trigger_code, f.object.upper_trigger_code)
       %br
-    - if not f.object.centrifuge_starttime.blank?
-      = "Centrifuge Start Time: "
-      = f.object.centrifuge_starttime
+      = "Upper Trigger Level: "
+      = NcsCode.for_attribute_name_and_local_code(:upper_trigger_level_code, f.object.upper_trigger_level_code)
       %br
-    - if not f.object.centrifuge_endtime.blank?
-      = "Centrifuge End Time: "
-      = f.object.centrifuge_endtime
+      = "Lower Trigger Cold: "
+      = NcsCode.for_attribute_name_and_local_code(:lower_trigger_cold_code, f.object.lower_trigger_cold_code)
       %br
-    - if not f.object.centrifuge_temp.blank?
-      = "Centrifuge Temperature (in Celsius): "
-      = f.object.centrifuge_temp  
-      %br      
-    = "Centrifuge Comment: "
-    = NcsCode.for_attribute_name_and_local_code(:centrifuge_comment_code, @specimen_receipt.centrifuge_comment_code)
-    %br
-    - if not f.object.centrifuge_comment_other.blank?
-      = "Centrifuge Comment Other: "
-      = f.object.centrifuge_comment_other
+      = "Lower Trigger Ambient: "
+      = NcsCode.for_attribute_name_and_local_code(:lower_trigger_ambient_code, f.object.lower_trigger_ambient_code)
       %br
+      - if not f.object.centrifuge_staff_id.blank?
+        = "Centrifuge Staff ID: "
+        = f.object.centrifuge_staff_id
+        %br
+      - if not f.object.centrifuge_starttime.blank?
+        = "Centrifuge Start Time: "
+        = f.object.centrifuge_starttime
+        %br
+      - if not f.object.centrifuge_endtime.blank?
+        = "Centrifuge End Time: "
+        = f.object.centrifuge_endtime
+        %br
+      - if not f.object.centrifuge_temp.blank?
+        = "Centrifuge Temperature (in Celsius): "
+        = f.object.centrifuge_temp  
+        %br      
+      = "Centrifuge Comment: "
+      = NcsCode.for_attribute_name_and_local_code(:centrifuge_comment_code, f.object.centrifuge_comment_code)
+      %br
+      - if not f.object.centrifuge_comment_other.blank?
+        = "Centrifuge Comment Other: "
+        = f.object.centrifuge_comment_other
+        %br
 
-    - if not f.object.specimen_equipment_id.blank?  
-      = "Equipment ID: "
-      = f.object.specimen_equipment_id
-  = link_to 'Edit', edit_specimen_receipt_path(:id => @specimen_receipt.specimen_id), :class => "edit_link icon_link specimen_receipt_edit"      
+      - if not f.object.specimen_equipment_id.blank?  
+        = "Equipment ID: "
+        = f.object.specimen_equipment_id
+  = link_to 'Edit', edit_specimen_receipt_path(:id => @specimen_storage_container), :class => "edit_link icon_link specimen_receipt_edit"      

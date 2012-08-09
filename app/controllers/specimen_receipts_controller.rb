@@ -2,41 +2,40 @@
 class SpecimenReceiptsController < ApplicationController
 
   def new
-    @specimen_receipt = SpecimenReceipt.new(:specimen_id => params[:specimen_id])
+    @specimen = Specimen.where(:specimen_id => params[:specimen_id]).first
+    @specimen_storage_container = SpecimenStorageContainer.new
+    @specimen_receipt = @specimen_storage_container.build_specimen_receipt(:specimen => @specimen)
   end
 
   def create
-    @params = params[:specimen_receipt]
-    @params[:psu_code] = @psu_code
-    @params[:staff_id] = current_staff_id
-    @params[:specimen_processing_shipping_center_id] = SpecimenProcessingShippingCenter.last.id
-    @specimen_receipt = SpecimenReceipt.new(@params)
+    params[:specimen_storage_container][:specimen_receipt_attributes].merge!(:psu_code => @psu_code, :staff_id => current_staff_id, :specimen_processing_shipping_center_id => SpecimenProcessingShippingCenter.last.id)
+    @specimen_storage_container = SpecimenStorageContainer.new(params[:specimen_storage_container])
     respond_to do |format|
-     if @specimen_receipt.save
-        format.html { redirect_to(receive_specimen_sample_processes_path(@specimen_receipt), :notice => 'Specimen Form was successfully created.') }
-        format.json { render :json => @specimen_receipt}
+      if @specimen_storage_container.save
+        @specimen = @specimen_storage_container.specimen_receipt.specimen
+        format.json { render :json => @specimen_storage_container, :include => {:specimen_receipt, {:include => :specimen}}}
       else
-        format.html { render :action => "new"}
-        format.json { render :json => @specimen_receipt.errors, :status => :unprocessable_entity }
+        format.json { render :json => @specimen_storage_container.errors, :status => :unprocessable_entity }
       end
     end
   end
 
   def show
-    @specimen_receipt = SpecimenReceipt.find(params[:id])
+    @specimen_storage_container = SpecimenStorageContainer.find(params[:id])
   end
 
   def edit
-    @specimen_receipt = SpecimenReceipt.find_by_specimen_id(params[:id])
+    @specimen_storage_container = SpecimenStorageContainer.find(params[:id])
   end
 
   def update
-    @specimen_receipt = SpecimenReceipt.find(params[:id])
+    @specimen_storage_container = SpecimenStorageContainer.find(params[:id])
     respond_to do |format|
-      if @specimen_receipt.update_attributes(params[:specimen_receipt])
-        format.json { render :json => @specimen_receipt}
+      if @specimen_storage_container.update_attributes(params[:specimen_storage_container])
+        @specimen = @specimen_storage_container.specimen_receipt.specimen
+        format.json { render :json => @specimen_storage_container, :include => {:specimen_receipt, {:include => :specimen}}}
       else
-        format.json { render :json => @specimen_receipt.errors, :status => :unprocessable_entity }
+        format.json { render :json => @specimen_storage_container.errors, :status => :unprocessable_entity }
       end
     end
   end

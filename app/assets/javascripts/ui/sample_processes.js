@@ -238,13 +238,16 @@ $(function() {
       dataType: 'json',
       success: function(response) {
         if (response.sample_receipt_store) {
-          var sample_id = response.sample_receipt_store.sample_id;
           var url = /sample_receipt_stores/ + response.sample_receipt_store.id + '?receive=true form';
           $(div).load(url);
         }
+        // TODO = after verifying all == delete         if (response.specimen_receipt) {
         if (response.specimen_receipt) {
-          var specimen_id = response.specimen_receipt.specimen_id;
           var url = /specimen_receipts/ + response.specimen_receipt.id + ' form';
+          $(div).load(url);
+        }
+        if (response.specimen_storage_container) {
+          var url = /specimen_receipts/ + response.specimen_storage_container.id + ' form';
           $(div).load(url);
         }
       },
@@ -280,15 +283,21 @@ $(function() {
       data: $(form).serializeArray(),
       dataType: 'json',
       success: function(response) {
+        // TODO = after verifying all == delete         if (response.specimen_receipt) {
         if (response.specimen_receipt) {
-          var specimen_id = response.specimen_receipt.specimen_id;
           var url = /specimen_receipts/ + response.specimen_receipt.id + ' form';
           $(div).load(url);
           remove_link_from_receive_store(response.specimen_receipt.specimen_id)
           add_specimen_link_to_store(response.specimen_receipt.storage_container_id, response.specimen_receipt.specimen_id)
         } 
+        if (response.specimen_storage_container) {
+          var url = /specimen_receipts/ + response.specimen_storage_container.id + ' form';
+          $(div).load(url);
+          remove_link_from_receive_store(response.specimen_storage_container.specimen_receipt.specimen.specimen_id)
+          add_specimen_link_to_store(response.specimen_storage_container.storage_container_id, response.specimen_storage_container.specimen_receipt.specimen.specimen_id)
+        } 
+        
         if (response.sample_receipt_store) {
-          var sample_id = response.sample_receipt_store.sample_id;
           var url = /sample_receipt_stores/ + response.sample_receipt_store.id + '?receive=true form';
           $(div).load(url);
           remove_link_from_receive_store(response.sample_receipt_store.sample_id)

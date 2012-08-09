@@ -1262,7 +1262,7 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.integer  "upper_trigger_level_code"
     t.integer  "lower_trigger_cold_code"
     t.integer  "lower_trigger_ambient_code"
-    t.integer  "storage_container_id",                                                               :null => false
+    t.integer  "specimen_storage_container_id",                                                      :null => false
     t.integer  "centrifuge_comment_code"
     t.string   "centrifuge_comment_other"
     t.string   "centrifuge_starttime",                   :limit => 5
@@ -1305,7 +1305,7 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
   create_table "specimen_storages", :force => true do |t|
     t.integer  "psu_code",                                                                           :null => false
     t.integer  "specimen_processing_shipping_center_id"
-    t.integer  "storage_container_id",                                                               :null => false
+    t.integer  "specimen_storage_container_id",                                                      :null => false
     t.datetime "placed_in_storage_datetime"
     t.string   "staff_id",                               :limit => 36,                               :null => false
     t.integer  "specimen_equipment_id"
@@ -1520,12 +1520,12 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
   add_foreign_key "specimen_receipt_confirmations", "specimen_shippings", :name => "specimen_receipt_confirmations_specimen_shippings_fk", :column => "shipment_tracking_number_id"
   add_foreign_key "specimen_receipt_confirmations", "specimens", :name => "specimen_receipt_confirmations_specimens_fk"
 
-  add_foreign_key "specimen_receipts", "specimen_storage_containers", :name => "specimen_receipts_specimen_storage_containers_fk", :column => "storage_container_id"
+  add_foreign_key "specimen_receipts", "specimen_storage_containers", :name => "specimen_receipts_specimen_storage_containers_fk"
   add_foreign_key "specimen_receipts", "specimens", :name => "specimen_receipts_specimens_fk"
 
   add_foreign_key "specimen_storage_containers", "specimen_shippings", :name => "specimen_storage_containers_specimen_shippings_fk"
 
-  add_foreign_key "specimen_storages", "specimen_storage_containers", :name => "specimen_storages_specimen_storage_containers_fk", :column => "storage_container_id"
+  add_foreign_key "specimen_storages", "specimen_storage_containers", :name => "specimen_storages_specimen_storage_containers_fk"
 
   add_foreign_key "telephones", "people", :name => "telephones_people_fk"
 
