@@ -7,10 +7,10 @@ GIT
 
 GIT
   remote: https://github.com/NUBIC/surveyor.git
-  revision: d372e65a15d712a9fcad0046f0fa756e4b42940f
-  ref: d372e65a15d712a9fcad0046f0fa756e4b42940f
+  revision: 304262f09296e6a885a2290b057d1062d509f7f2
+  ref: master
   specs:
-    surveyor (0.22.0)
+    surveyor (0.23.0.pre)
       fastercsv (~> 1.5.4)
       formtastic (~> 2.1.0)
       haml (~> 3.1.3)
