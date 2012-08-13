@@ -6,13 +6,11 @@
       - if a.instrument == @survey.title.downcase
         %li{:class => "current_survey"}
           = a.activity_name
-        - @sections.each do |s|
-          - cls = s == @section ? "current_survey_section active" : "current_survey_section"
-          %li{:class => cls}
-            = menu_button_for(s)
-      - elsif a.references == @survey.title.downcase
+        - if a.participant == @response_set.participant
+          - @sections.each do |s|
+            - cls = s == @section ? "current_survey_section active" : "current_survey_section"
+            %li{:class => cls}
+              = menu_button_for(s)
+      - else
         %li{:class => "not_current_survey"}
           = a.activity_name
-      - else
-        / # NOOP - not a part of this survey - just another activity for the event
-
