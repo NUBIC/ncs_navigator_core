@@ -10,7 +10,9 @@
           - cls = s == @section ? "current_survey_section active" : "current_survey_section"
           %li{:class => cls}
             = menu_button_for(s)
-      - else
+      - elsif a.references == @survey.title.downcase
         %li{:class => "not_current_survey"}
           = a.activity_name
+      - else
+        / # NOOP - not a part of this survey - just another activity for the event
 
