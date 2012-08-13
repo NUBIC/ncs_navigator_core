@@ -20,7 +20,10 @@
     - else # no cache
       = render "/partials/section", :f => f
     .previous_section= previous_section
-    .next_section= next_section
+    .next_section
+      = next_section
+      %br
+      = submit_tag(t('surveyor.breakoff').html_safe, :name => "breakoff") unless @sections.last == @section
   %br
 
 :javascript
