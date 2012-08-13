@@ -4,3 +4,8 @@
 #surveyor {
   font-family: "Century Gothic";
 }
+
+fieldset.choices {
+  line-height: 1em;
+  padding: 0;
+}
