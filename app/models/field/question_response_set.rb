@@ -48,6 +48,10 @@ module Field
       @changed = responses.length != old_length
     end
 
+    def public_id
+      @question_id
+    end
+
     ##
     # Marks all existing responses for destruction and inserts new responses
     # from another QuestionResponseSet.

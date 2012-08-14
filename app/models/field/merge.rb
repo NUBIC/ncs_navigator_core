@@ -151,13 +151,34 @@ module Field
     # that can be dealt with by just looking further up in the log.  There's no
     # similar way to discover errors that aren't reported due to an early
     # abort.
+    #
+    # If save succeeds, this method returns the merged model objects in a map
+    # of the form
+    #
+    #     { :contacts => [#<Contact ...>, ...],
+    #       :events => [#<Event ...>, ...],
+    #       :instruments => [#<Instrument ...>, ...],
+    #       :question_response_sets => [#<QuestionResponseSet ...>, ...]
+    #     }
+    #
+    # If save fails, returns nil.
     def save
+      map = {
+        :contacts => current_for(contacts),
+        :events => current_for(events),
+        :instruments => current_for(instruments),
+        :question_response_sets => current_for(question_response_sets)
+      }
+
       ActiveRecord::Base.transaction do
-        [contacts, events, instruments, question_response_sets].map { |c| save_collection(c) }.all?.tap do |res|
-          unless res
-            logger.fatal { 'Errors raised during save; rolling back' }
-            raise ActiveRecord::Rollback
-          end
+        ok = map.values.all? { |c| save_collection(c) }
+
+        if ok
+          logger.info { 'Merge saved' }
+          map
+        else
+          logger.fatal { 'Errors raised during save; rolling back' }
+          raise ActiveRecord::Rollback
         end
       end
     end
@@ -255,18 +276,24 @@ module Field
     ##
     # @private
     # @return Boolean
-    def save_collection(c)
-      c.map do |public_id, state|
-        current = state[:current]
+    def save_collection(coll)
+      coll.all? do |entity|
+        next true unless entity
 
-        next true unless current
-
-        current.save.tap { |ok| log_errors_for(public_id, current, ok) }
-      end.all?
+        entity.save.tap { |ok| log_errors_for(entity, ok) }
+      end
     end
 
-    def log_errors_for(public_id, entity, ok)
+    ##
+    # @private
+    def current_for(c)
+      c.map { |public_id, state| state[:current] }
+    end
+
+    def log_errors_for(entity, ok)
       return if ok
+
+      public_id = entity.respond_to?(:public_id) ? entity.public_id : '(unknown)'
 
       logger.fatal { "[#{entity.class} #{public_id}] #{entity.class} could not be saved" }
 

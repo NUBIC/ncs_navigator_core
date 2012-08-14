@@ -30,6 +30,14 @@ module Field
       end
     end
 
+    describe '#public_id' do
+      it "is the API ID of the first response's question" do
+        group << r1
+
+        group.public_id.should == r1.question_id
+      end
+    end
+
     describe '#patch' do
       before do
         group << r1
