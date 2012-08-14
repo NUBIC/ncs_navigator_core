@@ -52,7 +52,7 @@ class SpecimenReceipt < ActiveRecord::Base
   
   validates_presence_of :staff_id
   validates_presence_of :specimen_processing_shipping_center_id
-  # validates_presence_of :storage_container_id
+  # validates_presence_of :specimen_storage_container_id
   validates_presence_of :receipt_datetime  
 end
 

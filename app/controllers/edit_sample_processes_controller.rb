@@ -29,8 +29,8 @@ class EditSampleProcessesController < ApplicationController
   end
   
   def get_specimen_receipts(search_id)
-    spec_receipts_from_container = SpecimenReceipt.all.select{ |ss| SpecimenStorageContainer.where(:specimen_storage_container_id => search_id)}
-    spec_receipts_from_specimen = SpecimenReceipt.all.select{ |ss| Specimen.where(:specimen_id => search_id)}    
+    spec_receipts_from_container = SpecimenReceipt.joins(:specimen_storage_container).where("specimen_storage_containers.storage_container_id = ?", search_id)
+    spec_receipts_from_specimen = SpecimenReceipt.joins(:specimen).where("specimens.specimen_id = ?", search_id)
     spec_receipts_from_specimen.each do |s|
       if not spec_receipts_from_container.include? s
         spec_receipts_from_container << s

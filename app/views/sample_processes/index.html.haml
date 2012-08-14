@@ -36,12 +36,12 @@
               %ul
                 - @specimen_receipts_hash.each do |k, v|
                   %li
-                    %a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_sample_store", :id => k}
+                    %a{ :href => new_specimen_storage_path(:container_id => k.id), :class => "my_specimen_sample_store", :id => k.id}
                       = "Storage container ID:"
-                      = k
+                      = k.storage_container_id
                       - v.each do |val|
                         %p{:class => "paragraph_shift"}
-                          = val
+                          = val.specimen_id
           %td
             %div{:id => "shipping"}
               %ul

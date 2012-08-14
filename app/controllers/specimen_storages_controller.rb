@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 class SpecimenStoragesController < ApplicationController
   def new
-    @specimen_storage = SpecimenStorage.new(:storage_container_id => params[:container_id])
+    @specimen_storage_container = SpecimenStorageContainer.where(:id => params[:container_id]).first
+    # @specimen_receipt = @specimen_storage_container.build_specimen_receipt(:specimen => @specimen)
+    
+    # @specimen_storage = SpecimenStorage.new(:storage_container_id => params[:container_id])
+    @specimen_storage = @specimen_storage_container.build_specimen_storage()
   end
   
   def create

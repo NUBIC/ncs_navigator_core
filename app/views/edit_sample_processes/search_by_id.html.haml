@@ -15,7 +15,7 @@
           - if not @specimens.blank?
             - @specimens.each do |sp|
               %li
-                %a{ :href => edit_specimen_receipt_path(:id => sp.specimen_storage_container), :class => "my_specimen_sample_receive", :id => sp.specimen_id}
+                %a{ :href => edit_specimen_receipt_path(:id => sp.id), :class => "my_specimen_sample_receive", :id => sp.specimen_id}
                   = sp.specimen.specimen_id  
           - if not @samples.blank?
             - @samples.each do |s|

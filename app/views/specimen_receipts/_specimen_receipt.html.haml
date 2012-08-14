@@ -5,7 +5,8 @@
   - url = specimen_receipts_path
   - form_method = "POST"
 = form_for @specimen_storage_container, :url => url, :method => form_method do |s|
-  = s.fields_for :specimen_receipt do |f|
+  
+  = s.fields_for :specimen_receipts do |f|
     = f.label :specimen_id, "Specimen ID:"
     = f.object.specimen.specimen_id
     = f.hidden_field :specimen_id

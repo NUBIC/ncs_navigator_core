@@ -6,7 +6,7 @@ class SampleProcessesController < ApplicationController
     @samples = array_of_not_stored_samples
 
     @specimen_receipts_ids = array_of_selected_specs
-    @specimen_receipts_hash = hash_of_specs_by_container_id(@specimen_receipts_ids)
+    @specimen_receipts_hash = hash_of_spec_storages_by_container_id(@specimen_receipts_ids)
     @sample_receipt_stores = array_of_sample_receive_store
     @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
     @sample_receipt_stores_not_shipped = array_of_not_shipped_samples
@@ -22,7 +22,7 @@ class SampleProcessesController < ApplicationController
   end
 
   def array_of_not_stored_specimens
-    Specimen.all.select{ |s| SpecimenReceipt.where(:specimen_id => s.specimen_id).blank?}
+    Specimen.all.select{ |s| SpecimenReceipt.where(:specimen_id => s.id).blank?}
   end
 
   def array_of_not_stored_samples
@@ -43,14 +43,24 @@ class SampleProcessesController < ApplicationController
   def array_of_selected_specs()
     # SpecimenReceipt.find(:all, :conditions => { :specimen_id => arrayOfParams})
     # SpecimenReceipt.all
-    SpecimenReceipt.all.select{ |s| SpecimenStorage.where(:storage_container_id => s.storage_container_id).blank?}
+    SpecimenReceipt.all.select{ |s| SpecimenStorage.where(:specimen_storage_container_id => s.specimen_storage_container_id).blank?}
   end
 
   def hash_of_specs_by_container_id(arrayOfSpecs)
     spec_hash = {}
     arrayOfSpecs.each do |s|
-      spec_hash[s.storage_container_id] ||= []
-      spec_hash[s.storage_container_id] << s.specimen_id
+      spec_hash[s.specimen_storage_container_id] ||= []
+      spec_hash[s.specimen_storage_container_id] << s.specimen_id
+    end
+    return spec_hash
+  end
+  def hash_of_spec_storages_by_container_id(arrayOfSpecStorages)
+    spec_hash = {}
+    arrayOfSpecStorages.each do |s|
+      storage_container_id = SpecimenStorageContainer.where(:id => s.specimen_storage_container_id).first
+      specimen = Specimen.where(:id => s.specimen_id).first
+      spec_hash[storage_container_id] ||= []
+      spec_hash[storage_container_id] << specimen
     end
     return spec_hash
   end
@@ -67,7 +77,7 @@ class SampleProcessesController < ApplicationController
   def array_of_empty_spec_storages(arrayOfKeys)
     specimen_storages = []
     arrayOfKeys.each do |s|
-      specimen_storages.push(SpecimenStorage.new(:storage_container_id => s))
+      specimen_storages.push(SpecimenStorage.new(:specimen_storage_container_id => s))
     end
     return specimen_storages
   end
@@ -81,7 +91,7 @@ class SampleProcessesController < ApplicationController
   end
 
   def array_of_shipped_and_not_received_specimens
-    SpecimenShipping.all.select{ |ss| SpecimenReceipt.where(:storage_container_id => ss.storage_container_id).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.specimen_id).any?}.any? }
+    SpecimenShipping.all.select{ |ss| SpecimenReceipt.where(:specimen_storage_container_id => ss.specimen_storage_container_id).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.specimen_id).any?}.any? }
   end
 
   def hash_from_array_by_track_num(array_of_samples)
