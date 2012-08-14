@@ -4,7 +4,7 @@
 class WelcomeController < ApplicationController
 
   def index
-    if scheduled_activities = get_upcoming_activities
+    if scheduled_activities = get_upcoming_activities(:current_user => current_user.username)
       @events = join_scheduled_events_by_date(parse_scheduled_activities(scheduled_activities))
     end
   end
@@ -54,12 +54,12 @@ class WelcomeController < ApplicationController
 
   private
 
-    def get_upcoming_activities
+    def get_upcoming_activities(options = {})
       @start_date = 1.day.ago.to_date.to_s
       @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
-      criteria = { :current_user => current_username,
-                   :start_date => @start_date,
-                   :end_date => @end_date }
+      criteria = { :start_date => @start_date, :end_date => @end_date }
+      criteria.merge(options) if options
+
       psc.scheduled_activities_report(criteria)
     end
 

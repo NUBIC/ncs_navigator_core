@@ -23,8 +23,9 @@
           %th Date
           %th Person
           %th PPG Status
+          %th Staff
           %th Activity
-        - rows.each do |row|
+        - rows.sort_by{ |r| r['scheduled_date'] }.each do |row|
           - if row['subject']
             - person = Person.find_by_person_id(row['subject']['person_id'])
             - if person
@@ -40,6 +41,8 @@
                       = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
                   - else
                     n/a
+                %td
+                  = row['responsible_user']
                 %td
                   = row['activity_name']
 
