@@ -1,13 +1,11 @@
 = form_for @specimen_storage do |f|
   = render "shared/full_error_messages", :object => f.object
-  = f.label :storage_container_id, "Storage Container Id:"
-  = @specimen_storage.specimen_storage_container_id
+  = f.label :storage_container_id, "Storage Container ID:"
+  = @specimen_storage.specimen_storage_container.storage_container_id
   = "contains the following:"
-  - @specimen_storage.specimen_storage_container.specimen_receipt.each do |val|
-    = val.inspect
-  -#- @specimen_storage.specimen_receipts.each do |val|
-    -#= val.specimen_id
-  -#= f.hidden_field :storage_container_id
+  - @specimen_storage.specimen_storage_container.specimen_receipts.each do |val|
+    = val.specimen.specimen_id
+  = f.hidden_field :specimen_storage_container_id
   %br
   
   = f.label "Staff:"

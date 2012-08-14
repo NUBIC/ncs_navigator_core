@@ -8,10 +8,9 @@ class EditSampleProcessesController < ApplicationController
     @specimens = get_specimen_receipts(search_id)
     @samples = SampleReceiptStore.where(:sample_id => search_id)
 
+    @specimen_storages = SpecimenStorage.joins(:specimen_storage_container).where("specimen_storage_containers.storage_container_id = ?", search_id)
+    
     # TODO = uncomment once fixed
-    # @specimen_storage_ids = SpecimenStorage.where(:storage_container_id => search_id)
-    # @specimen_receipts_hash = hash_of_specs_by_container_id(@specimen_storage_ids)
-    # 
     # @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
     # @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
     # @sample_receipt_stores_not_shipped = SampleReceiptStore.where(:sample_id => search_id)

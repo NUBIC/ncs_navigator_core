@@ -201,12 +201,11 @@ $(function() {
         $(submitInput).removeAttr('disabled');
         $(submitInput).val('Submit')
         
-        var storage_container_id = response.specimen_storage.storage_container_id;
         var url = /specimen_storages/ + response.specimen_storage.id + ' form';
         $(div).load(url);
         if (!edit) {
           // only needed when the reference is new
-          move_link_from_store_to_ship(response.specimen_storage.storage_container_id)
+          move_link_from_store_to_ship(response.specimen_storage.specimen_storage_container_id)
         }
       },
       error: function(xhr, ajaxOptions, thrownError) {
