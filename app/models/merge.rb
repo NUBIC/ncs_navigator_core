@@ -97,18 +97,22 @@ class Merge < ActiveRecord::Base
     logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
     begin
+      # Reset timestamps.
       self.started_at = Time.now
       self.crashed_at = nil
       self.completed_at = nil
+      self.synced_at = nil
       save(:validate => false)
 
+      # Check fieldwork schema conformance.
       conformant = check_conformance(logger)
+
       if !conformant
-        logger.fatal 'Schema violations detected; aborting merge'
         update_attribute(:crashed_at, Time.now)
-        return
+        return false
       end
 
+      # Do the merge.
       merged_models = do_merge
       return false unless merged_models
 
@@ -116,9 +120,11 @@ class Merge < ActiveRecord::Base
       self.conflict_report = sp.conflicts.to_json
       save(:validate => false)
 
+      # Sync PSC.
       synced = do_psc_sync(merged_models)
       return false unless synced
 
+      # We're done.
       update_attribute(:synced_at, Time.now)
     rescue => e
       logger.fatal "#{e.class.name}: #{e.message}"
@@ -187,10 +193,14 @@ class Merge < ActiveRecord::Base
     vs = schema_violations
     ok = vs.values.all? { |v| v.empty? }
 
-    ok.tap do
+    if !ok
       vs[:original_data].each { |v| logger.fatal "[original] #{v}" }
       vs[:proposed_data].each { |v| logger.fatal "[proposed] #{v}" }
+
+      logger.fatal 'Schema violations detected; aborting merge'
     end
+
+    ok
   end
 
   ##
