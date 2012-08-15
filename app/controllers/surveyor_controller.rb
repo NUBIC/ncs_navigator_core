@@ -57,7 +57,6 @@ class SurveyorController < ApplicationController
   def surveyor_finish(breakoff = false)
     set_activity_plan_for_participant
 
-    OperationalDataExtractor.process(@response_set)
     contact_link = @response_set.instrument.contact_link
 
     if @activity_plan.final_survey_part?(@response_set) || breakoff
