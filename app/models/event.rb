@@ -218,21 +218,20 @@ class Event < ActiveRecord::Base
   # Marks the activity associated with this event as canceled in PSC
   # @param[PatientStudyCalendar]
   # @param[String] - reason for cancellation (optional)
-  def cancel_activity(psc, reason = nil)
-    activity = nil
+  def cancel_activities(psc, reason = nil)
     psc.activities_for_event(self).each do |a|
-      activity = a if self.matches_activity(a)
-    end
-    if activity
-      psc.update_activity_state(activity.activity_id, participant,
-                                PatientStudyCalendar::ACTIVITY_CANCELED, Date.today, reason)
+      if self.matches_activity(a)
+        psc.update_activity_state(a.activity_id, participant,
+                          PatientStudyCalendar::ACTIVITY_CANCELED,
+                          a.date, reason)
+      end
     end
   end
 
   ##
   # Cancels the activity in PSC and then either closes (and updates disposition) or deletes the event
   def cancel_and_close_or_delete!(psc, reason = nil)
-    self.cancel_activity(psc, reason)
+    self.cancel_activities(psc, reason)
     if self.can_delete?
       self.destroy
     else

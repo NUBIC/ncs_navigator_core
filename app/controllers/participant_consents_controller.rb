@@ -91,17 +91,18 @@ class ParticipantConsentsController < ApplicationController
       end
     end
 
+    ##
+    # Updates activities associated with this event
+    # whose event is labeled 'informed_consent'
+    # in PSC as 'occurred'
     def mark_activity_occurred
-      activities = psc.activities_for_event(@contact_link.event)
-
-	    activity = nil
-	    activities.each do |a|
-	      activity = a if Event.parse_label(a.labels) == "informed_consent"
+	    psc.activities_for_event(@contact_link.event).each do |a|
+        if a.consent_activity?
+	        psc.update_activity_state(activity.activity_id,
+                                    @contact_link.person.participant,
+                                    PatientStudyCalendar::ACTIVITY_OCCURRED)
+        end
       end
-
-	    if activity
-	      psc.update_activity_state(activity.activity_id, @contact_link.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
-	    end
     end
 
     ##

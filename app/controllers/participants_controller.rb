@@ -351,7 +351,7 @@ class ParticipantsController < ApplicationController
 
     def mark_pending_event_activities_canceled(participant)
       participant.pending_events.each do |e|
-        e.cancel_activity(psc)
+        e.cancel_activities(psc)
       end
     end
 
