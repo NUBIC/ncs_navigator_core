@@ -109,22 +109,17 @@ class Merge < ActiveRecord::Base
         return
       end
 
-      sp = Field::Superposition.new
-      sp.logger = logger
-      sp.set_original(JSON.parse(original_data))
-      sp.set_proposed(JSON.parse(proposed_data))
-      sp.set_current
-
-      sp.build_question_response_sets
-      sp.merge
-
-      ok = sp.save
+      merged_models = do_merge
+      return false unless merged_models
 
       self.completed_at = Time.now
       self.conflict_report = sp.conflicts.to_json
       save(:validate => false)
 
-      ok
+      synced = do_psc_sync(merged_models)
+      return false unless synced
+
+      update_attribute(:synced_at, Time.now)
     rescue => e
       logger.fatal "#{e.class.name}: #{e.message}"
       e.backtrace.each { |l| logger.fatal(l) }
@@ -172,6 +167,22 @@ class Merge < ActiveRecord::Base
 
   ##
   # @private
+  # @return merged models
+  def do_merge
+    sp = Field::Superposition.new
+    sp.logger = logger
+    sp.set_original(JSON.parse(original_data))
+    sp.set_proposed(JSON.parse(proposed_data))
+    sp.set_current
+
+    sp.build_question_response_sets
+    sp.merge
+
+    sp.save
+  end
+
+  ##
+  # @private
   def check_conformance(logger)
     vs = schema_violations
     ok = vs.values.all? { |v| v.empty? }
@@ -180,6 +191,12 @@ class Merge < ActiveRecord::Base
       vs[:original_data].each { |v| logger.fatal "[original] #{v}" }
       vs[:proposed_data].each { |v| logger.fatal "[proposed] #{v}" }
     end
+  end
+
+  ##
+  # @private
+  def do_psc_sync(models)
+    false
   end
 
   ##
