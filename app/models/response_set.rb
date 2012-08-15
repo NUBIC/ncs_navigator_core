@@ -25,6 +25,12 @@ class ResponseSet < ActiveRecord::Base
   belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
 
+  after_save :extract_operational_data
+
+  def extract_operational_data
+    OperationalDataExtractor.process(self) if complete?
+  end
+
   def has_responses_in_each_section_with_questions?
     result = false
     survey.sections_with_questions.each do |section|

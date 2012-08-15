@@ -6,11 +6,11 @@
       - if a.instrument == @survey.title.downcase
         %li{:class => "current_survey"}
           = a.activity_name
-        - @sections.each do |s|
-          - cls = s == @section ? "current_survey_section active" : "current_survey_section"
-          %li{:class => cls}
-            = menu_button_for(s)
+        - if a.participant == @response_set.participant
+          - @sections.each do |s|
+            - cls = s == @section ? "current_survey_section active" : "current_survey_section"
+            %li{:class => cls}
+              = menu_button_for(s)
       - else
         %li{:class => "not_current_survey"}
           = a.activity_name
-
