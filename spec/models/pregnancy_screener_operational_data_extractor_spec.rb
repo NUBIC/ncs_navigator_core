@@ -127,7 +127,7 @@ describe PregnancyScreenerOperationalDataExtractor do
 
     person = Factory(:person)
     person.addresses.size.should == 0
-    
+
     participant = Factory(:participant)
     survey = create_pregnancy_screener_survey_with_address_operational_data
     response_set, instrument = prepare_instrument(person, participant, survey)

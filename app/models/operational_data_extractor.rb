@@ -14,6 +14,12 @@ class OperationalDataExtractor
     [/_CordBlood_/,     SpecimenOperationalDataExtractor],
     [/_TapWater/,       SampleOperationalDataExtractor],
     [/_VacBagDust/,     SampleOperationalDataExtractor],
+    [/_3MMother/,       PostNatalOperationalDataExtractor],
+    [/_6MMother/,       PostNatalOperationalDataExtractor],
+    [/_9MMother/,       PostNatalOperationalDataExtractor],
+    [/_12MMother/,      PostNatalOperationalDataExtractor],
+    [/_18MMother/,      PostNatalOperationalDataExtractor],
+    [/_24MMother/,      PostNatalOperationalDataExtractor],
   ]
 
   class << self
