@@ -3,17 +3,11 @@
 
 class SampleOperationalDataExtractor
 
-  VACUUM_BAG_DUST_SAMPLE_MAP = {
+  SAMPLE_MAP = {
     "VACUUM_BAG.SAMPLE_ID" => "sample_id",
-  }
-
-  TAP_WATER_PHARM_SAMPLE_MAP = {
     "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID" => "sample_id",
     "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID" => "sample_id",
     "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID" => "sample_id",
-  }
-
-  TAP_WATER_PEST_SAMPLE_MAP = {
     "TAP_WATER_TWQ_SAMPLE[sample_number=1].SAMPLE_ID" => "sample_id",
     "TAP_WATER_TWQ_SAMPLE[sample_number=2].SAMPLE_ID" => "sample_id",
     "TAP_WATER_TWQ_SAMPLE[sample_number=3].SAMPLE_ID" => "sample_id",
@@ -30,16 +24,19 @@ class SampleOperationalDataExtractor
         value = OperationalDataExtractor.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
-        if VACUUM_BAG_DUST_SAMPLE_MAP.has_key?(data_export_identifier)
-          Sample.create!(:sample_id => value, :instrument => instrument) unless value.blank?
-        end
-
-        if TAP_WATER_PHARM_SAMPLE_MAP.has_key?(data_export_identifier)
-          Sample.create!(:sample_id => value, :instrument => instrument) unless value.blank?
-        end
-
-        if TAP_WATER_PEST_SAMPLE_MAP.has_key?(data_export_identifier)
-          Sample.create!(:sample_id => value, :instrument => instrument) unless value.blank?
+        if SAMPLE_MAP.has_key?(data_export_identifier)
+          unless value.blank?
+            sample = Sample.where(:response_set_id => response_set.id,
+                                  :instrument_id => instrument.id,
+                                  :data_export_identifier => data_export_identifier).first
+            if sample.blank?
+              sample = Sample.new(:response_set => response_set,
+                                  :instrument => instrument,
+                                  :data_export_identifier => data_export_identifier)
+            end
+            sample.sample_id = value
+            sample.save!
+          end
         end
 
       end

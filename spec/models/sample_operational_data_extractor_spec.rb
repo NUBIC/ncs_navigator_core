@@ -70,6 +70,62 @@ describe SampleOperationalDataExtractor do
 
       end
 
+      it "updates existing records instead of creating new ones" do
+        survey = create_tap_water_survey_with_sample_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        sample_ids = [
+          'EC2224441 – WQ01',
+          'EC2224442 – WQ02',
+          # 'EC2224443 – WQ03',
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+          a.str "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
+          # a.str "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 2
+
+        SampleOperationalDataExtractor.extract_data(response_set)
+
+        samples = Sample.where(:instrument_id => instrument.id).all
+        samples.should_not be_blank
+        samples.size.should == 2
+
+        sample_ids.each do |sample_id|
+          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+        end
+
+        sample_ids = [
+          'EC8989898 – WQ01',
+          'EC8989898 – WQ02',
+          'EC8989898 – WQ03',
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
+          a.str "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
+          a.str "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 5
+
+        SampleOperationalDataExtractor.extract_data(response_set)
+
+        samples = Sample.where(:instrument_id => instrument.id).all
+        samples.should_not be_blank
+        samples.size.should == 3
+
+        sample_ids.each do |sample_id|
+          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+        end
+
+
+      end
+
       it "creates only the number of samples as there are related responses" do
         survey = create_tap_water_survey_with_sample_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)

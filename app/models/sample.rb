@@ -13,9 +13,10 @@
 
 class Sample < ActiveRecord::Base
   belongs_to :instrument
+  belongs_to :response_set
   has_one :sample_receipt_store
   validates_presence_of :sample_id
   validates_presence_of :instrument_id
-  
+
 end
 

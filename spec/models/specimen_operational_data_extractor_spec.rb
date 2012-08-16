@@ -102,6 +102,74 @@ describe SpecimenOperationalDataExtractor do
 
       end
 
+      it "updates existing records instead of creating new ones" do
+        survey = create_adult_blood_survey_with_specimen_operational_data
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        specimen_ids = [
+          "AA123456-SS10",
+          "AA123456-RD10",
+          "AA123456-PP10",
+          "AA123456-LV10",
+          # "AA123456-PN10",
+          # "AA123456-AD10",
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", specimen_ids[0]
+          a.str "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
+          a.str "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
+          a.str "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
+          # a.str "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", specimen_ids[4]
+          # a.str "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", specimen_ids[5]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 4
+
+        SpecimenOperationalDataExtractor.extract_data(response_set)
+
+        specimens = Specimen.where(:instrument_id => instrument.id).all
+        specimens.should_not be_blank
+        specimens.size.should == 4
+
+        specimen_ids.each do |specimen_id|
+          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+        end
+
+        update_specimen_ids = [
+          "AA999999-SS10",
+          "AA999999-RD10",
+          "AA999999-PP10",
+          "AA999999-LV10",
+          "AA999999-PN10",
+          "AA999999-AD10",
+        ]
+
+        take_survey(survey, response_set) do |a|
+          a.str "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID", update_specimen_ids[0]
+          a.str "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", update_specimen_ids[1]
+          a.str "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", update_specimen_ids[2]
+          a.str "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", update_specimen_ids[3]
+          a.str "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", update_specimen_ids[4]
+          a.str "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", update_specimen_ids[5]
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 10
+
+        SpecimenOperationalDataExtractor.extract_data(response_set)
+
+        specimens = Specimen.where(:instrument_id => instrument.id).all
+        specimens.should_not be_blank
+        specimens.size.should == 6
+
+        update_specimen_ids.each do |specimen_id|
+          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+        end
+
+
+      end
+
     end
 
     context "the cord blood collection instrument" do

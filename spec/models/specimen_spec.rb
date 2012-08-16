@@ -19,8 +19,11 @@ describe Specimen do
     specimen = Factory(:specimen)
     specimen.should_not be_nil
   end
-  
+
   it { should belong_to(:specimen_pickup) }
-  it { should belong_to(:instrument) }  
+  it { should belong_to(:instrument) }
+
+  it { should belong_to(:response_set) }
+  it { should respond_to(:data_export_identifier) }
 end
 
