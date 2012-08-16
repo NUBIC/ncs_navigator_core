@@ -870,6 +870,3 @@ class PatientStudyCalendar
     end
   end
 end
-
-# class ScheduledActivity <
-# end
