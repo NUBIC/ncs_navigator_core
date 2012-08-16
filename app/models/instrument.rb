@@ -139,11 +139,79 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # Given a {PscParticipant}, returns the participant's scheduled activities
+  # that match this instrument.  If no activities match, returns [].
+  #
+  # The PscParticipant passed here MUST reference the same Participant as this
+  # instrument's event.
+  #
+  # This method will load the following associations:
+  #
+  # * event.participant
+  # * survey
+  #
+  # You SHOULD eager load these associations when checking activity IDs across
+  # multiple instruments.
+  #
+  #
+  # Match criteria
+  # ==============
+  #
+  # Let:
+  #
+  # * SAC(I) be the access code for the survey on instrument I, and
+  # * L(A) the set of labels on activity A.
+  #
+  # SAC(I) can be computed as Survey.to_normalized_string(self.survey.title)
+  #
+  # 1. If SAC(I) matches a references label in L(A), add A as an activity for I.
+  # 2. If SAC(I) matches an instrument label in L(A) and L(A) has no references
+  #    labels, add A as an activity for I.
+  #
+  # Instruments form a tree one level deep.  In the below diagram, each I is an
+  # instrument, and a, b, and c are activities.
+  #
+  #           Ia
+  #          _|_
+  #         |   |
+  #         Ib  Ic
+  #
+  # This situation can be set up if b and c have references labels pointing to
+  # the instrument implied by a.  Under the above model, completing Ia will
+  # close activities a, b, and c; however, completing just Ib or Ic will not
+  # result in any changes to PSC schedules.
+  def sa_activity_ids(psc_participant)
+    if psc_participant.participant.id != participant.try(:id)
+      raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.try(:id)})"
+    end
+
+    activities = psc_participant.scheduled_activities
+    survey_code = survey.access_code
+
+    activities.select do |id, sa|
+      instr = sa.instrument_label
+      ref = sa.references_label
+
+      code = if instr && !ref
+               Survey.to_normalized_string(instr)
+             elsif ref
+               Survey.to_normalized_string(ref)
+             end
+
+      survey_code == code
+    end.map { |id, sa| id }
+  end
+
+  ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]
   def to_s
     instrument_type.to_s
+  end
+
+  def participant
+    event.try(:participant)
   end
 
   ##
