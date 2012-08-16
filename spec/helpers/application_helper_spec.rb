@@ -28,4 +28,17 @@ describe ApplicationHelper do
     end
   end
 
+  context "limiting continue" do
+    describe ".continuable?" do
+
+      before(:each) do
+        @continuable_event = "Pregnancy Screener"
+      end
+
+      it "returns true if string is the title of a continuable event" do
+        helper.continuable?(@continuable_event).should == true
+      end
+    end
+  end
+
 end
