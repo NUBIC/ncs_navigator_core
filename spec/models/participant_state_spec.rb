@@ -311,6 +311,14 @@ describe Participant do
           participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
+
+        it "should not move within the high intensity state machine arm" do
+          participant.should be_low_intensity
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 8).first)
+          participant.set_state_for_event_type(event)
+          participant.should_not be_following_high_intensity
+        end
+
       end
 
       describe "given Informed Consent" do

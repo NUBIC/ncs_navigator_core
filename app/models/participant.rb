@@ -851,7 +851,7 @@ class Participant < ActiveRecord::Base
     when 7, 8
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
-      follow! if can_follow?
+      follow! if can_follow? && high_intensity?
       impregnate_low! if can_impregnate_low? && known_to_be_pregnant?(event.import_sort_date)
     when 33
       # Lo I Quex
