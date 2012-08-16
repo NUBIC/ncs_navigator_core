@@ -7,6 +7,7 @@ class AddProcessedFlagToResponseSet < ActiveRecord::Migration
   end
 
   def down
-    remove_column :response_sets, :processed_for_operational_data_extraction
+    # Removed from a later migration - AddResponseSetToOperationalData
+    # remove_column :response_sets, :processed_for_operational_data_extraction
   end
 end
