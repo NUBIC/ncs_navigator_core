@@ -43,6 +43,8 @@ class WelcomeController < ApplicationController
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)
     else
+      ppl = participant.participant_person_links.where(:relationship_code => 1).first
+      ppl.destroy if ppl
       participant.destroy
       person.destroy
       error_msg = resp.blank? ? "Unable to start pregnancy screener instrument." : "#{resp.body}"
