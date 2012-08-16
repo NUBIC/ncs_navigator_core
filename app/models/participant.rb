@@ -250,9 +250,20 @@ class Participant < ActiveRecord::Base
       process_high_intensity_consent!
     end
 
-    if known_to_be_pregnant? && can_impregnate_low?
-      if low_intensity? && following_low_intensity? && !due_date_is_greater_than_follow_up_interval
+    if /_PPGFollUp_/ =~ survey_title
+      follow! if can_follow?
+    end
+
+    if known_to_be_pregnant?
+
+      if low_intensity? &&
+         can_impregnate_low? &&
+         !due_date_is_greater_than_follow_up_interval
         impregnate_low!
+      end
+
+      if high_intensity? && can_impregnate?
+        impregnate!
       end
     end
 

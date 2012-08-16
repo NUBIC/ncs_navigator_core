@@ -169,7 +169,9 @@ describe Participant do
 
   context "after consenting to the high intensity arm" do
 
-    let(:participant) { Factory(:participant, :low_intensity_state => 'moved_to_high_intensity_arm', :high_intensity_state => 'converted_high_intensity') }
+    let(:participant) { Factory(:participant,
+                                :low_intensity_state => 'moved_to_high_intensity_arm',
+                                :high_intensity_state => 'converted_high_intensity') }
 
     describe "a ppg 1 (pregnant) participant" do
       it "is the in the pregnancy_one state" do
@@ -195,6 +197,48 @@ describe Participant do
         participant.should be_converted_high_intensity
         participant.process_high_intensity_consent!
         participant.should be_following_high_intensity
+      end
+    end
+
+  end
+
+  context "after completing the PPG Follow-Up" do
+
+    context "for a non-pregnant participant" do
+      let(:participant) { Factory(:participant,
+                                  :low_intensity_state => 'moved_to_high_intensity_arm',
+                                  :high_intensity_state => 'converted_high_intensity') }
+      let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
+      let(:response_set) { Factory(:response_set, :survey => survey,
+                                   :person => participant.person, :participant => participant) }
+
+      describe "a high intensity participant" do
+        it "moves to the high intensity follow state" do
+          participant.should be_converted_high_intensity
+          participant.update_state_after_survey(response_set, psc)
+          participant.should be_following_high_intensity
+        end
+      end
+    end
+
+    context "for a pregnant participant" do
+      let(:participant) { Factory(:participant,
+                                  :high_intensity => true,
+                                  :low_intensity_state => 'moved_to_high_intensity_arm',
+                                  :high_intensity_state => 'converted_high_intensity') }
+      let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
+      let(:response_set) { Factory(:response_set, :survey => survey,
+                                   :person => participant.person, :participant => participant) }
+
+      describe "a high intensity participant" do
+        it "moves to the high intensity pregnancy_one state" do
+          Factory(:ppg_detail, :participant => participant, :ppg_first => status1,
+                  :orig_due_date => 4.months.from_now.strftime("%m/%d/%Y"))
+
+          participant.should be_converted_high_intensity
+          participant.update_state_after_survey(response_set, psc)
+          participant.should be_pregnancy_one
+        end
       end
     end
 
