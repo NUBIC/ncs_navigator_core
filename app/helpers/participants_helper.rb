@@ -29,15 +29,6 @@ module ParticipantsHelper
     consent_type_text.include?("collect") && !NcsNavigatorCore.expanded_phase_two?
   end
 
-  def displayable_event_name(event, participant)
-    event_name = event.to_s
-    if recruitment_strategy.two_tier_knowledgable?
-      epoch = participant.high_intensity? ? PatientStudyCalendar::HIGH_INTENSITY : PatientStudyCalendar::LOW_INTENSITY
-      event_name = "#{epoch}: #{event.to_s}"
-    end
-    event_name
-  end
-
   def upcoming_events_for(person_or_participant)
     result = person_or_participant.upcoming_events.to_sentence
     result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?

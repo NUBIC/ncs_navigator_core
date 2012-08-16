@@ -20,5 +20,9 @@ describe Sample do
   end
 
   it { should belong_to(:instrument) }
+
+  it { should belong_to(:response_set) }
+  it { should respond_to(:data_export_identifier) }
+
 end
 

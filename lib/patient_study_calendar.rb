@@ -446,20 +446,6 @@ class PatientStudyCalendar
   end
 
   ##
-  # Updates the state of the scheduled activity in PSC.
-  #
-  # @param [String] - activity_name
-  # @param [Participant]
-  # @param [String] - one of the valid enumerable state attributes for an activity in PSC
-  # @param [Date] (optional)
-  # @param [String] (optional) - reason for change
-  def update_activity_state_by_name(activity_name, participant, value, date = nil, reason = nil)
-    if scheduled_activity_identifier = get_scheduled_activity_identifier(participant, activity_name)
-      update_activity_state(scheduled_activity_identifier, participant, value, date, reason)
-    end
-  end
-
-  ##
   # Returns the PSC activity identifier for the first participant scheduled activity
   # matching the given activity_name
   # @param [Participant]
@@ -884,6 +870,3 @@ class PatientStudyCalendar
     end
   end
 end
-
-# class ScheduledActivity <
-# end

@@ -235,7 +235,6 @@ class ContactLinksController < ApplicationController
 
       activity = nil
       activities.each do |a|
-
         activity = a if @contact_link.instrument.survey.access_code == Instrument.surveyor_access_code(a.labels)
       end
 

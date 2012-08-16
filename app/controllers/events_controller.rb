@@ -73,17 +73,17 @@ class EventsController < ApplicationController
 
   private
 
+    ##
+    # Updates activities associated with this event
+    # in PSC as 'occurred'
     def mark_activity_occurred
-      activities = psc.activities_for_event(@event)
-
-	    activity = nil
-	    activities.each do |a|
-	      activity = a if @event.matches_activity(a)
+	    psc.activities_for_event(@event).each do |a|
+	      if @event.matches_activity(a)
+          psc.update_activity_state(activity.activity_id,
+                                    @event.participant,
+                                    PatientStudyCalendar::ACTIVITY_OCCURRED)
+        end
       end
-
-	    if activity
-	      psc.update_activity_state(activity.activity_id, @event.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
-	    end
     end
 
     ##
