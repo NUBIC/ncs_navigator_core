@@ -692,5 +692,44 @@ describe Event do
 
   end
 
-end
+  describe '#sa_activity_ids' do
+    let(:event) { Factory(:event) }
 
+    describe "if the given PscParticipant does not match this event's participant" do
+      let(:psc_participant) { stub(:participant => Participant.new) }
+
+      it 'raises an error' do
+        lambda { event.sa_activity_ids(psc_participant) }.should raise_error
+      end
+    end
+
+    # See PscParticipant#scheduled_events for format reference.
+    let(:implied_events) do
+      [
+        { :event_type_label => 'pregnancy_visit_1',
+          :start_date => '2012-01-01',
+          :scheduled_activities => ['foo', 'bar']
+        },
+        { :event_type_label => 'pregnancy_visit_1',
+          :start_date => '2012-01-01',
+          :scheduled_activities => ['baz']
+        },
+        { :event_type_label => 'birth',
+          :start_date => '2012-01-01',
+          :scheduled_activities => ['qux']
+        }
+      ]
+    end
+
+    let(:psc_participant) { stub(:participant => event.participant) }
+
+    it 'returns IDs of activities whose label and ideal date match' do
+      # Pregnancy Visit 1.
+      event.event_type = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 13)
+      event.event_start_date = '2012-01-01'
+      psc_participant.stub!(:scheduled_events).and_return(implied_events)
+
+      event.sa_activity_ids(psc_participant).should == ['foo', 'bar', 'baz']
+    end
+  end
+end

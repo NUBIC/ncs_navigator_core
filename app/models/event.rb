@@ -280,14 +280,44 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Given a {PscParticipant}, returns the participant's scheduled activities
+  # that match this event.  If no activities match, returns [].
+  #
+  # A PscParticipant, just like an Event, is associated with a {Participant}.
+  # The PscParticipant passed here MUST reference the same Participant as this
+  # Event.
+  #
+  # This method will load the {#participant} association.  If you're planning
+  # on calling this method across multiple Events, you SHOULD eager-load
+  # participants.
+  def sa_activity_ids(psc_participant)
+    if psc_participant.participant.id != participant.id
+      raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.id})"
+    end
+
+    all_events = psc_participant.scheduled_events
+
+    all_events.map do |e|
+      if implied_by?(e[:event_type_label], e[:start_date])
+        e[:scheduled_activities]
+      end
+    end.compact.flatten
+  end
+
+  ##
   # Checks that the event label and ideal date from PSC
   # matches the event_type and event_start_date
   # @param[ScheduledActivity]
   # @return[boolean]
   def matches_activity(scheduled_activity)
+    label = Event.parse_label(scheduled_activity.labels)
+    implied_by?(label, scheduled_activity.ideal_date)
+  end
+
+  def implied_by?(label, date)
     et = event_type.to_s.downcase.gsub("  ", " ").gsub(" ", "_")
-    lbl = Event.parse_label(scheduled_activity.labels)
-    lbl == et && scheduled_activity.ideal_date == event_start_date.to_s
+
+    et == label && event_start_date.to_s == date
   end
 
   def set_event_disposition_category(contact)
