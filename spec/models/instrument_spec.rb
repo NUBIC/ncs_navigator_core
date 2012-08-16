@@ -31,8 +31,6 @@
 #  updated_at               :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)

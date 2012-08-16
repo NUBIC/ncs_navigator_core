@@ -31,8 +31,6 @@
 #  updated_at               :datetime
 #
 
-
-
 # An Instrument is a scheduled, partially executed or
 # completely executed questionnaire or paper form. An
 # Instrument can also be an Electronic Health Record or
@@ -305,4 +303,3 @@ class Instrument < ActiveRecord::Base
       end
     end
 end
-

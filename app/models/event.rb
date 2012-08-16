@@ -29,9 +29,6 @@
 #  updated_at                         :datetime
 #
 
-
-
-
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
@@ -284,8 +281,8 @@ class Event < ActiveRecord::Base
   # that match this event.  If no activities match, returns [].
   #
   # A PscParticipant, just like an Event, is associated with a {Participant}.
-  # The PscParticipant passed here MUST reference the same Participant as this
-  # Event.
+  # The PscParticipant passed here MUST reference the same participant as this
+  # event.
   #
   # This method will load the {#participant} association.  If you're planning
   # on calling this method across multiple Events, you SHOULD eager-load
@@ -431,4 +428,3 @@ class Event < ActiveRecord::Base
   end
 
 end
-

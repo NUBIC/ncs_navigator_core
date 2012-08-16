@@ -29,8 +29,6 @@
 #  updated_at                         :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
@@ -335,7 +333,6 @@ describe Event do
       Factory(:event, :event_type_code => 22).should be_provider_event
     end
 
-
   end
 
   context "time format" do
@@ -355,7 +352,6 @@ describe Event do
       let(:time_name) { "Event end time" }
     end
   end
-
 
   context "auto-completing MDES data" do
 
