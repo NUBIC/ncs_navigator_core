@@ -86,7 +86,7 @@ describe Participant do
         end
 
         describe "participant has given birth" do
-          it "schedules the LO-Intensity Postnatal segement 6.months after the birth event" do
+          it "schedules the LO-Intensity Postnatal segment 6.months after the birth event" do
             participant.should be_in_pregnancy_probability_group
             participant.should be_known_to_be_pregnant
             participant.impregnate_low!
