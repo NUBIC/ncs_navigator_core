@@ -105,13 +105,13 @@ class Psc::ScheduledActivityReport
         next if !participant
 
         possible = participant.events
-        expected = OpenStruct.new(:labels => event.label, :ideal_date => event.ideal_date)
+        expected = OpenStruct.new(:labels => "event:#{event.label}", :ideal_date => event.ideal_date)
         accepted = possible.detect { |e| e.matches_activity(expected) }
 
         if accepted
           event.model = accepted
         else
-          logger.error %Q{Cannot map {label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
+          logger.error %Q{Cannot map {event label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
         end
       end
     end

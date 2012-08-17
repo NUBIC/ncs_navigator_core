@@ -195,7 +195,9 @@ module Psc
     ##
     # @private
     def label_with(prefix)
-      @processed_labels.detect { |l| l.start_with?(prefix) }
+      label = @processed_labels.detect { |l| l.start_with?(prefix) }
+
+      label.match(/^[^:]+:(.+)$/)[1] if label
     end
   end
 end
