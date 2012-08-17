@@ -231,9 +231,7 @@ module Psc
     class Survey < Struct.new(:instrument_label)
       attr_accessor :model
 
-      def access_code
-        instrument_label.match(/^[^:]+:(.+)$/i)[1]
-      end
+      alias_method :access_code, :instrument_label
     end
   end
 end

@@ -68,12 +68,12 @@ module Psc
         end
       end
 
-      it_reads_label 'collection',        'collection:biological'
-      it_reads_label 'event',             'event:birth'
-      it_reads_label 'instrument',        'instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
-      it_reads_label 'order',             'order:01_02'
-      it_reads_label 'participant_type',  'participant_type:child'
-      it_reads_label 'references',        'references:ins_que_birth_int_ehpbhi_p2_v2.0'
+      it_reads_label 'collection',        'biological'
+      it_reads_label 'event',             'birth'
+      it_reads_label 'instrument',        'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+      it_reads_label 'order',             '01_02'
+      it_reads_label 'participant_type',  'child'
+      it_reads_label 'references',        'ins_que_birth_int_ehpbhi_p2_v2.0'
     end
 
     shared_examples_for 'an activity state reader' do
@@ -118,6 +118,24 @@ module Psc
 
       it_should_behave_like 'a label reader'
       it_should_behave_like 'an activity state reader'
+    end
+
+    let(:sa) { ScheduledActivity.new }
+
+    describe '#name' do
+      it 'returns #activity_name' do
+        sa.activity_name = 'foo'
+
+        sa.name.should == 'foo'
+      end
+    end
+
+    describe '#id' do
+      it 'returns #activity_id' do
+        sa.activity_id = 'foo'
+
+        sa.id.should == 'foo'
+      end
     end
   end
 end
