@@ -95,12 +95,7 @@ class PregnancyScreenerOperationalDataExtractor
 
     def extract_data(response_set)
       person = response_set.person
-      if person.participant.blank?
-        participant = Participant.create
-        participant.person = person
-      else
-        participant = person.participant
-      end
+      participant = response_set.participant
 
       primary_rank = OperationalDataExtractor.primary_rank
 

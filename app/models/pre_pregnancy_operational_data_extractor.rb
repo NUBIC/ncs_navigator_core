@@ -74,13 +74,7 @@ class PrePregnancyOperationalDataExtractor
 
     def extract_data(response_set)
       person = response_set.person
-      if person.participant.blank?
-        participant = Participant.create
-        participant.person = person
-        participant.save!
-      else
-        participant = person.participant
-      end
+      participant = response_set.participant
 
       cell_phone           = nil
       email                = nil

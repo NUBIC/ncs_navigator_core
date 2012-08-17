@@ -87,10 +87,7 @@ class BirthOperationalDataExtractor
     def extract_data(response_set)
 
       person = response_set.person
-      # TODO: The person taking the survey may not necessarily be the participant
-      #       cf. Bug #2292
-      #       fix this so that the participant is correctly set
-      participant = person.participant
+      participant = response_set.participant
 
       primary_rank = OperationalDataExtractor.primary_rank
 
