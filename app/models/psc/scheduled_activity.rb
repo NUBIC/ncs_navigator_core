@@ -110,6 +110,9 @@ module Psc
   #
   # TODO
   class ScheduledActivity < Struct.new(*SCHEDULED_ACTIVITY_ATTRS)
+    alias_method :name, :activity_name
+    alias_method :id, :activity_id
+
     ##
     # Constructs an instance of this class from a scheduled activity report row.
     def self.from_report(row)
@@ -153,16 +156,17 @@ module Psc
     def initialize(*args)
       super
 
-      @processed_labels ||= []
+      @label_list ||= []
     end
 
     def labels=(v)
       super
 
-      @processed_labels = case v
-                          when String then v.split(' ')
-                          else v
-                          end
+      @label_list = case v
+                    when String then v.split(' ')
+                    when NilClass then []
+                    else v
+                    end
     end
 
     ##
@@ -192,7 +196,9 @@ module Psc
     ##
     # @private
     def label_with(prefix)
-      @processed_labels.detect { |l| l.start_with?(prefix) }
+      label = @label_list.detect { |l| l.start_with?(prefix) }
+
+      label.match(/^[^:]+:(.+)$/)[1] if label
     end
   end
 end
