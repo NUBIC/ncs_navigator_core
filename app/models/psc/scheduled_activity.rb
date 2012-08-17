@@ -156,16 +156,17 @@ module Psc
     def initialize(*args)
       super
 
-      @processed_labels ||= []
+      @label_list ||= []
     end
 
     def labels=(v)
       super
 
-      @processed_labels = case v
-                          when String then v.split(' ')
-                          else v
-                          end
+      @label_list = case v
+                    when String then v.split(' ')
+                    when NilClass then []
+                    else v
+                    end
     end
 
     ##
@@ -195,7 +196,7 @@ module Psc
     ##
     # @private
     def label_with(prefix)
-      label = @processed_labels.detect { |l| l.start_with?(prefix) }
+      label = @label_list.detect { |l| l.start_with?(prefix) }
 
       label.match(/^[^:]+:(.+)$/)[1] if label
     end
