@@ -166,14 +166,17 @@ class PscParticipant
   # Transforms PSC's date-oriented schedule representation into an
   # hash of scheduled activities indexed by ID.
   #
+  # @return [Hash<String, Psc::ScheduledActivity>]
   # @return [Hash<String, Hash<String, Object>]
   def scheduled_activities(validity=:sa_content)
     # TODO: how to memoize with proper cache invalidation?
     days = schedule(validity)['days']
     return {} unless days
     days.inject({}) do |index, (day, day_value)|
-      day_value['activities'].each do |sa|
-        index[sa['id']] = sa
+      day_value['activities'].each do |row|
+        sa = Psc::ScheduledActivity.from_schedule(row)
+
+        index[sa.id] = sa
       end
       index
     end
@@ -200,7 +203,7 @@ class PscParticipant
       next index unless event
       key = [event, sa['ideal_date']]
 
-      (index[key] ||= []) << sa['id']
+      (index[key] ||= []) << sa.id
       index
     end
 

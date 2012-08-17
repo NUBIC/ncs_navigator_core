@@ -110,6 +110,9 @@ module Psc
   #
   # TODO
   class ScheduledActivity < Struct.new(*SCHEDULED_ACTIVITY_ATTRS)
+    alias_method :name, :activity_name
+    alias_method :id, :activity_id
+
     ##
     # Constructs an instance of this class from a scheduled activity report row.
     def self.from_report(row)
