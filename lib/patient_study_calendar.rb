@@ -480,7 +480,6 @@ class PatientStudyCalendar
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
         update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
-        :wa
       end
     end
   end
