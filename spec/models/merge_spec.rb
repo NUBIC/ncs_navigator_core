@@ -4,7 +4,7 @@
 #
 # Table name: merges
 #
-#  completed_at    :datetime
+#  merged_at       :datetime
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
@@ -63,9 +63,9 @@ describe Merge do
         subject.started_at = nil
       end
 
-      describe 'and completed_at is nil' do
+      describe 'and merged_at is nil' do
         before do
-          subject.completed_at = nil
+          subject.merged_at = nil
         end
 
         it 'is "pending"' do
@@ -79,9 +79,9 @@ describe Merge do
         subject.started_at = Time.now
       end
 
-      describe 'and completed_at is nil' do
+      describe 'and merged_at is nil' do
         before do
-          subject.completed_at = nil
+          subject.merged_at = nil
         end
 
         it 'is "working"' do
@@ -122,9 +122,9 @@ describe Merge do
       end
     end
 
-    describe 'if completed_at is not nil' do
+    describe 'if merged_at is not nil' do
       before do
-        subject.completed_at = Time.now
+        subject.merged_at = Time.now
       end
 
       describe 'and there are no conflicts' do
@@ -154,9 +154,9 @@ describe Merge do
       end
     end
 
-    describe 'if completed_at is not nil' do
+    describe 'if merged_at is not nil' do
       before do
-        subject.completed_at = Time.now
+        subject.merged_at = Time.now
       end
 
       describe 'and there are no conflicts' do

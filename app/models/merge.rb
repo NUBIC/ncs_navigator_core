@@ -4,7 +4,7 @@
 #
 # Table name: merges
 #
-#  completed_at    :datetime
+#  merged_at       :datetime
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
@@ -34,7 +34,7 @@ class Merge < ActiveRecord::Base
 
   delegate :original_data, :to => :fieldwork
 
-  S = Case::Struct.new(:started_at, :completed_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
+  S = Case::Struct.new(:started_at, :merged_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
   N = Case::Not
 
   TIMEOUT = 5.minutes
@@ -78,7 +78,7 @@ class Merge < ActiveRecord::Base
   #         ...merge...
   #
   #         self.conflict_report = conflict_report
-  #         self.completed_at = Time.now
+  #         self.merged_at = Time.now
   #         save(:validate => false)
   #       rescue => e
   #         update_attribute(:crashed_at, Time.now) rescue nil
@@ -98,9 +98,9 @@ class Merge < ActiveRecord::Base
 
     begin
       # Reset timestamps.
-      self.started_at = Time.now
       self.crashed_at = nil
-      self.completed_at = nil
+      self.merged_at = nil
+      self.started_at = Time.now
       self.synced_at = nil
       save(:validate => false)
 
@@ -120,7 +120,7 @@ class Merge < ActiveRecord::Base
         return false
       end
 
-      self.completed_at = Time.now
+      self.merged_at = Time.now
       self.conflict_report = sp.conflicts.to_json
       save(:validate => false)
 
@@ -164,14 +164,14 @@ class Merge < ActiveRecord::Base
   # be caught by the Ruby runtime.  Such errors will be present in the merge
   # log.
   def status
-    case S[started_at, completed_at, crashed_at, synced_at,  conflicted?, timed_out?]
-    when S[nil,        nil,          nil,        Case::Any,  Case::Any,   N[true]   ]; 'pending'
-    when S[N[nil],     nil,          nil,        Case::Any,  Case::Any,   N[true]   ]; 'working'
-    when S[Case::Any,  nil,          Case::Any,  Case::Any,  Case::Any,   true      ]; 'timeout'
-    when S[Case::Any,  N[nil],       nil,        nil,        N[true],     Case::Any ]; 'syncing'
-    when S[Case::Any,  N[nil],       nil,        N[nil],     N[true],     Case::Any ]; 'merged'
-    when S[Case::Any,  N[nil],       nil,        Case::Any,  true,        Case::Any ]; 'conflict'
-    when S[N[nil],     nil,          N[nil],     Case::Any,  Case::Any,   Case::Any ]; 'error'
+    case S[started_at, merged_at, crashed_at, synced_at,  conflicted?, timed_out?]
+    when S[nil,        nil,       nil,        Case::Any,  Case::Any,   N[true]   ]; 'pending'
+    when S[N[nil],     nil,       nil,        Case::Any,  Case::Any,   N[true]   ]; 'working'
+    when S[Case::Any,  nil,       Case::Any,  Case::Any,  Case::Any,   true      ]; 'timeout'
+    when S[Case::Any,  N[nil],    nil,        nil,        N[true],     Case::Any ]; 'syncing'
+    when S[Case::Any,  N[nil],    nil,        N[nil],     N[true],     Case::Any ]; 'merged'
+    when S[Case::Any,  N[nil],    nil,        Case::Any,  true,        Case::Any ]; 'conflict'
+    when S[N[nil],     nil,       N[nil],     Case::Any,  Case::Any,   Case::Any ]; 'error'
     end
   end
 
