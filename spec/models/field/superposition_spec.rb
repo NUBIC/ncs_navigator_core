@@ -148,7 +148,7 @@ module Field
       it_should_behave_like 'an entity set', :proposed, 'responses'
     end
 
-    describe '#set_current' do
+    shared_context 'current data' do
       let!(:contact) { Factory(:contact, :contact_id => contact_id) }
       let!(:event) { Factory(:event, :event_id => event_id) }
       let!(:instrument) { Factory(:instrument, :instrument_id => instrument_id) }
@@ -164,6 +164,10 @@ module Field
         load_proposed
         load_current
       end
+    end
+
+    describe '#set_current' do
+      include_context 'current data'
 
       it 'resolves contacts' do
         subject.contacts[contact_id][:current].should == contact
@@ -191,6 +195,30 @@ module Field
 
       it 'resolves responses' do
         subject.responses[response_id][:current].should == response
+      end
+    end
+
+    describe '#current_events' do
+      include_context 'current data'
+
+      it 'returns events in the current set' do
+        subject.current_events.should == [event]
+      end
+    end
+
+    describe '#current_instruments' do
+      include_context 'current data'
+
+      it 'returns instruments in the current set' do
+        subject.current_instruments.should == [instrument]
+      end
+    end
+
+    describe '#current_participants' do
+      include_context 'current data'
+
+      it 'returns participants in the current set' do
+        subject.current_participants.should == [participant]
       end
     end
   end

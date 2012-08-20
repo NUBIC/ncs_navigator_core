@@ -103,6 +103,18 @@ module Field
       end
     end
 
+    def current_events
+      events.map { |_, state| state[:current].target }
+    end
+
+    def current_instruments
+      instruments.map { |_, state| state[:current].target }
+    end
+
+    def current_participants
+      participants.map { |_, state| state[:current].target }
+    end
+
     def set_state(state, data)
       hierarchy(state) do |h|
         data['participants'].each { |p| add_participant(h, p) }
