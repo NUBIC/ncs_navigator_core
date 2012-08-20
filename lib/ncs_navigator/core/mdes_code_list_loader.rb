@@ -35,7 +35,7 @@ module NcsNavigator::Core
         }
       }.flatten.sort_by { |list_entry| [list_entry['list_name'], list_entry['local_code']] }
 
-      File.open(FILENAME.to_s, 'w') do |w|
+      File.open(FILENAME.to_s, 'w:utf-8') do |w|
         w.write(yml.to_yaml)
       end
     end
