@@ -320,14 +320,14 @@ describe PatientStudyCalendar do
         sss.study_segment.should == "LO-Intensity: PPG Follow-Up"
         sss.activity_name.should == "Pregnancy Probability Group Follow-Up Interview"
         sss.activity_id.should == "fb6249e5-2bf6-40cc-81e9-dc30e2012410"
-        sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+        sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
 
         sss = subject_schedule_status.last
         sss.date.should == "2011-11-14"
         sss.study_segment.should == "LO-Intensity: PPG Follow-Up"
         sss.activity_name.should == "Pregnancy Probability Group Follow-Up SAQ"
         sss.activity_id.should == "bfb76131-58cd-4db5-b0df-17b82fd2de17"
-        sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+        sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
       end
     end
 
@@ -502,7 +502,7 @@ describe PatientStudyCalendar do
             sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
-            sss.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+            sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
           end
 
         end

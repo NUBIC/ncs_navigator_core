@@ -222,7 +222,7 @@ class Event < ActiveRecord::Base
     psc.activities_for_event(self).each do |a|
       if self.matches_activity(a)
         psc.update_activity_state(a.activity_id, participant,
-                          PatientStudyCalendar::ACTIVITY_CANCELED,
+                          Psc::ScheduledActivity::CANCELED,
                           a.date, reason)
       end
     end

@@ -54,7 +54,7 @@ class EventsController < ApplicationController
       reason = params[:reason]
       @date = params[:date]
 
-      psc.schedule_pending_event(@event, PatientStudyCalendar::ACTIVITY_SCHEDULED, @date, reason)
+      psc.schedule_pending_event(@event, Psc::ScheduledActivity::SCHEDULED, @date, reason)
 
       path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
 
@@ -81,7 +81,7 @@ class EventsController < ApplicationController
 	      if @event.matches_activity(a)
           psc.update_activity_state(activity.activity_id,
                                     @event.participant,
-                                    PatientStudyCalendar::ACTIVITY_OCCURRED)
+                                    Psc::ScheduledActivity::OCCURRED)
         end
       end
     end

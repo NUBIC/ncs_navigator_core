@@ -39,10 +39,6 @@ class PatientStudyCalendar
 
   CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"
 
-  ACTIVITY_OCCURRED  = 'occurred'
-  ACTIVITY_CANCELED  = 'canceled'
-  ACTIVITY_SCHEDULED = 'scheduled'
-
   CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
 
   INFORMED_CONSENT = "Informed Consent"
@@ -212,7 +208,7 @@ class PatientStudyCalendar
   # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
   def scheduled_activities(participant)
-    build_scheduled_activities(participant_activities(schedules(participant)), [ACTIVITY_SCHEDULED])
+    build_scheduled_activities(participant_activities(schedules(participant)), [Psc::ScheduledActivity::SCHEDULED])
   end
 
   def build_scheduled_activities(activities, states = nil)
@@ -333,7 +329,7 @@ class PatientStudyCalendar
   def activities_to_reschedule(event)
     ids = []
     scheduled_activities(event.participant).each do |sa|
-      if ((sa.current_state == ACTIVITY_SCHEDULED) &&
+      if ((sa.current_state == Psc::ScheduledActivity::SCHEDULED) &&
           event.matches_activity(sa))
         ids << sa.activity_id
       end
@@ -359,7 +355,7 @@ class PatientStudyCalendar
   private :participant_activities
 
   def scheduled_activities_report(options = {})
-    filters = {:state => PatientStudyCalendar::ACTIVITY_SCHEDULED, :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
+    filters = {:state => Psc::ScheduledActivity::SCHEDULED, :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
     filters = filters.merge(options)
 
     path = "reports/scheduled-activities.json?"
@@ -483,7 +479,8 @@ class PatientStudyCalendar
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
-        update_activity_state(a.activity_id, participant, PatientStudyCalendar::ACTIVITY_CANCELED, date, reason)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+        :wa
       end
     end
   end
