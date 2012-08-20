@@ -113,16 +113,24 @@ class Merge < ActiveRecord::Base
       end
 
       # Do the merge.
-      merged_models = do_merge
-      return false unless merged_models
+      superposition = do_merge
+
+      if !superposition
+        update_attribute(:crashed_at, Time.now)
+        return false
+      end
 
       self.completed_at = Time.now
       self.conflict_report = sp.conflicts.to_json
       save(:validate => false)
 
       # Sync PSC.
-      synced = do_psc_sync(merged_models)
-      return false unless synced
+      synced = do_psc_sync(superposition)
+
+      if !synced
+        update_attribute(:crashed_at, Time.now)
+        return false
+      end
 
       # We're done.
       update_attribute(:synced_at, Time.now)
@@ -173,7 +181,7 @@ class Merge < ActiveRecord::Base
 
   ##
   # @private
-  # @return merged models
+  # @return [Field::Superposition, nil]
   def do_merge
     sp = Field::Superposition.new
     sp.logger = logger
@@ -184,7 +192,9 @@ class Merge < ActiveRecord::Base
     sp.build_question_response_sets
     sp.merge
 
-    sp.save
+    ok = sp.save
+
+    sp if ok
   end
 
   ##
@@ -205,8 +215,7 @@ class Merge < ActiveRecord::Base
 
   ##
   # @private
-  def do_psc_sync(models)
-    false
+  def do_psc_sync(superposition)
   end
 
   ##
