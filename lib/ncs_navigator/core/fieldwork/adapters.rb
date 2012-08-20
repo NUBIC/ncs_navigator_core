@@ -123,12 +123,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
       self
     end
 
-    ##
-    # Useful for testing.
-    def ==(other)
-      target == other
-    end
-
     # These methods are used in various field classes.
     def_delegators :target,
       :changed?,
