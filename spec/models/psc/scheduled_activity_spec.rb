@@ -77,6 +77,62 @@ module Psc
     end
 
     shared_examples_for 'an activity state reader' do
+      describe '#open?' do
+        it 'returns true for scheduled activities' do
+          sa.should be_open
+        end
+
+        it 'returns true for conditional activities' do
+          sa.current_state = ScheduledActivity::CONDITIONAL
+
+          sa.should be_open
+        end
+
+        it 'returns false if the state is blank' do
+          sa.current_state = nil
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for canceled activities' do
+          sa.current_state = ScheduledActivity::CANCELED
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for missed activities' do
+          sa.current_state = ScheduledActivity::MISSED
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for occurred activities' do
+          sa.current_state = ScheduledActivity::OCCURRED
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for activities marked N/A' do
+          sa.current_state = ScheduledActivity::NA
+
+          sa.should_not be_open
+        end
+      end
+
+      describe '#closed?' do
+        it 'returns !#open?' do
+          sa.stub!(:open? => false)
+
+          sa.should be_closed
+        end
+
+        it 'returns false if the state is blank' do
+          sa.current_state = nil
+
+          sa.should_not be_closed
+        end
+      end
+
       describe '#scheduled?' do
         it 'returns true for scheduled activities' do
           sa.should be_scheduled
