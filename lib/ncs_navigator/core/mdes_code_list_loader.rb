@@ -73,7 +73,7 @@ module NcsNavigator::Core
 
         partitioned[:delete].each do |entry|
           do_update(
-            %Q(DELETE FROM ncs_codes WHERE local_code=%s AND list_name='%s'),
+            %Q(DELETE FROM ncs_codes WHERE local_code=? AND list_name=?),
             %w(local_code list_name).collect { |k| entry[k] })
         end
       end
