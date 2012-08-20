@@ -1,33 +1,33 @@
 - title "Overdue Activities"
 
-- if @scheduled_activities
-  .front_page_section.page_section
-    - rows = @scheduled_activities['rows']
-    - if rows.blank?
-      %h4
-        No Overdue Scheduled Activities
-    - else
-      %table.records
-        %tr
-          %th Date
-          %th Person
-          %th PPG Status
-          %th Activity
-        - rows.each do |row|
-          - if row['subject']
-            - person = Person.find_by_person_id(row['subject']['person_id'])
-            - if person
-              %tr{ :class => cycle('even_record', 'odd_record') }
-                %td
-                  = row['scheduled_date']
-                %td
-                  - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
-                  = link_to row['subject']['name'], path, :class => "show_link icon_link"
-                %td
-                  - if person.participant
-                    %span{ :title => person.participant.ppg_status.to_s }
-                      = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
-                  - else
-                    n/a
-                %td
-                  = row['activity_name']
+.front_page_section.page_section
+  - if @scheduled_activities.length > 0
+    %table.records
+      %tr
+        %th Date
+        %th Person
+        %th PPG Status
+        %th Activity
+      - @scheduled_activities.each do |sa|
+        - if person = Person.find_by_person_id(sa.person_id)
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = sa.activity_date
+            %td
+              - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
+              = link_to person.to_s, path, :class => "show_link icon_link"
+            %td
+              - if person.participant
+                %span{ :title => person.participant.ppg_status.to_s }
+                  = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
+              - else
+                n/a
+            %td
+              = sa.name
+    .export
+      = link_to "Export Results to CSV",
+        {:controller => "welcome", :action => "overdue_activities", :export => true},
+        {:class => "export_link icon_link", :confirm => 'Are you in a secure environment in which you are allowed to download data?'}
+  - else
+    %h4
+      No Overdue Scheduled Activities

@@ -16,4 +16,4 @@
         %br
         = text_field_tag 'end_date', @end_date, :class => 'datepicker'
       %p
-        = submit_tag 'Generate Report'
+        = submit_tag 'Generate Report', :confirm => 'Are you in a secure environment in which you are allowed to download data?'

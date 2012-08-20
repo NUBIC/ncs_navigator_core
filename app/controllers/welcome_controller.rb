@@ -4,19 +4,34 @@
 class WelcomeController < ApplicationController
 
   def index
-    if scheduled_activities = get_upcoming_activities(:current_user => current_user.username)
+    if scheduled_activities = get_scheduled_activities_report(:current_user => current_user.username)
       @events = join_scheduled_events_by_date(parse_scheduled_activities(scheduled_activities))
     end
   end
 
   def upcoming_activities
-    @scheduled_activities = get_upcoming_activities
+    @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
+        get_scheduled_activities_report).sort_by{ |sa| sa.activity_date }
+    if params[:export]
+      csv_data = to_csv(@scheduled_activities)
+      outfile = "scheduled_activities_" + Time.now.strftime("%m-%d-%Y") + ".csv"
+      send_data csv_data,
+        :type => 'text/csv; charset=iso-8859-1; header=present',
+        :disposition => "attachment; filename=#{outfile}"
+    end
   end
 
   def overdue_activities
-    criteria = { :current_user => current_username,
-                 :end_date => 1.day.ago.to_date.to_s }
-    @scheduled_activities = psc.scheduled_activities_report(criteria)
+    criteria = { :end_date => 1.day.ago.to_date.to_s }
+    @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
+        psc.scheduled_activities_report(criteria)).sort_by{ |sa| sa.activity_date }
+    if params[:export]
+      csv_data = to_csv(@scheduled_activities)
+      outfile = "overdue_activities_" + Time.now.strftime("%m-%d-%Y") + ".csv"
+      send_data csv_data,
+        :type => 'text/csv; charset=iso-8859-1; header=present',
+        :disposition => "attachment; filename=#{outfile}"
+    end
   end
 
   def summary
@@ -56,7 +71,7 @@ class WelcomeController < ApplicationController
 
   private
 
-    def get_upcoming_activities(options = {})
+    def get_scheduled_activities_report(options = {})
       @start_date = 1.day.ago.to_date.to_s
       @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
       criteria = { :start_date => @start_date, :end_date => @end_date }
@@ -92,6 +107,28 @@ class WelcomeController < ApplicationController
         end
       end
       result
+    end
+
+    def to_csv(scheduled_activities)
+      Rails.application.csv_impl.generate do |csv|
+        csv << [
+          "Date",
+          "Person",
+          "PPG Status",
+          "Activity"]
+        scheduled_activities.each do |sa|
+          person = Person.find_by_person_id(sa.person_id)
+          if person
+            ppg = person.participant.ppg_status.blank? ? "n/a" : "PPG #{person.participant.ppg_status.local_code}"
+            csv << [
+              sa.activity_date,
+              person.to_s,
+              ppg,
+              sa.name
+            ]
+          end
+        end
+      end
     end
 
     ScheduledEvent = Struct.new(:date, :person, :event_type)
