@@ -178,7 +178,7 @@ class Instrument < ActiveRecord::Base
   # the instrument implied by a.  Under the above model, completing Ia will
   # close activities a, b, and c; however, completing just Ib or Ic will not
   # result in any changes to PSC schedules.
-  def sa_activity_ids(psc_participant)
+  def scheduled_activities(psc_participant)
     if psc_participant.participant.id != participant.try(:id)
       raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.try(:id)})"
     end
@@ -197,7 +197,7 @@ class Instrument < ActiveRecord::Base
              end
 
       survey_code == code
-    end.map { |id, sa| id }
+    end.map { |id, sa| sa }
   end
 
   ##

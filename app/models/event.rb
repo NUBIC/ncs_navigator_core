@@ -287,18 +287,14 @@ class Event < ActiveRecord::Base
   # This method will load the {#participant} association.  If you're planning
   # on calling this method across multiple Events, you SHOULD eager-load
   # participants.
-  def sa_activity_ids(psc_participant)
+  def scheduled_activities(psc_participant)
     if psc_participant.participant.id != participant.id
       raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.id})"
     end
 
-    all_events = psc_participant.scheduled_events
+    all_activities = psc_participant.scheduled_activities
 
-    all_events.map do |e|
-      if implied_by?(e[:event_type_label], e[:start_date])
-        e[:scheduled_activities]
-      end
-    end.compact.flatten
+    all_activities.select { |sa| implied_by?(sa.event_label, sa.ideal_date) }
   end
 
   ##

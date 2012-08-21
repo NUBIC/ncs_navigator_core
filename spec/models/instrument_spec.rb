@@ -516,57 +516,67 @@ describe Instrument do
     end
   end
 
-  describe '#sa_activity_ids' do
+  describe '#scheduled_activities' do
     let(:instrument) { Factory(:instrument, :survey => s) }
     let(:p) { instrument.event.participant }
     let(:s) { Factory(:survey, :access_code => 'ins-que-birth-int-ehpbhi-p2-v2-0') }
     let(:psc_participant) { stub(:participant => p, :scheduled_activities => activities) }
-    let(:sa) do
+    let(:schedule) do
       Psc::ScheduledActivity.from_schedule({
         'labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0'
       })
     end
 
     let(:activities) do
-      { 'foo' => sa }
+      { 'foo' => schedule }
+    end
+
+    def sa(attrs)
+      Psc::ScheduledActivity.new.tap do |sa|
+        attrs.each { |k, v| sa.send("#{k}=", v) }
+      end
     end
 
     describe "if the given PscParticipant does not match this instruments's participant" do
       let(:psc_participant) { stub(:participant => Participant.new) }
 
       it 'raises an error' do
-        lambda { instrument.sa_activity_ids(psc_participant) }.should raise_error
+        lambda { instrument.scheduled_activities(psc_participant) }.should raise_error
       end
     end
 
     describe "if the instrument's survey matches a references label" do
-      it 'returns that activity ID' do
-        instrument.sa_activity_ids(psc_participant).should == ['foo']
+      it 'returns that activity' do
+        instrument.scheduled_activities(psc_participant).should == [
+          sa('labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0')
+        ]
       end
     end
 
     describe "if the instrument's survey matches an instrument label" do
       describe 'and the activity has no references labels' do
-        let(:sa) do
+        let(:schedule) do
           Psc::ScheduledActivity.from_schedule({
             'labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0'
           })
         end
 
-        it 'returns that activity ID' do
-          instrument.sa_activity_ids(psc_participant).should == ['foo']
+        it 'returns that activity' do
+          instrument.scheduled_activities(psc_participant).should == [
+            sa('labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0')
+          ]
         end
       end
 
       describe 'and the activity has references labels' do
-        let(:sa) do
+        let(:schedule) do
           Psc::ScheduledActivity.from_schedule({
             'labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0 references:something_else'
           })
         end
 
-        it 'does not return the activity ID' do
-          instrument.sa_activity_ids(psc_participant).should == []
+        it 'does not return the activity' do
+          instrument.scheduled_activities(psc_participant).should == []
         end
       end
     end
