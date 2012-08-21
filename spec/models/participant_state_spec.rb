@@ -177,7 +177,7 @@ describe Participant do
       it "is the in the pregnancy_one state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1)
         participant.should be_converted_high_intensity
-        participant.process_high_intensity_consent!
+        participant.process_high_intensity_conversion!
         participant.should be_pregnancy_one
       end
     end
@@ -186,7 +186,7 @@ describe Participant do
       it "is the in the pre_pregnancy state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
         participant.should be_converted_high_intensity
-        participant.process_high_intensity_consent!
+        participant.process_high_intensity_conversion!
         participant.should be_pre_pregnancy
       end
     end
@@ -195,7 +195,7 @@ describe Participant do
       it "is the in the following_high_intensity state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status4)
         participant.should be_converted_high_intensity
-        participant.process_high_intensity_consent!
+        participant.process_high_intensity_conversion!
         participant.should be_following_high_intensity
       end
     end
