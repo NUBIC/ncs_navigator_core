@@ -531,12 +531,6 @@ describe Instrument do
       { 'foo' => schedule }
     end
 
-    def sa(attrs)
-      Psc::ScheduledActivity.new.tap do |sa|
-        attrs.each { |k, v| sa.send("#{k}=", v) }
-      end
-    end
-
     describe "if the given PscParticipant does not match this instruments's participant" do
       let(:psc_participant) { stub(:participant => Participant.new) }
 

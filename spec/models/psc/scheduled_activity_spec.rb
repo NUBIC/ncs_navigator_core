@@ -267,6 +267,14 @@ module Psc
 
     let(:sa) { ScheduledActivity.new }
 
+    describe '.new' do
+      it 'accepts keyword arguments' do
+        sa = ScheduledActivity.new(:activity_id => 'foo')
+
+        sa.activity_id.should == 'foo'
+      end
+    end
+
     describe '#name' do
       it 'returns #activity_name' do
         sa.activity_name = 'foo'

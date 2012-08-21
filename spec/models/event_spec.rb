@@ -699,12 +699,6 @@ describe Event do
       end
     end
 
-    def sa(attrs)
-      Psc::ScheduledActivity.new.tap do |sa|
-        attrs.each { |k, v| sa.send("#{k}=", v) }
-      end
-    end
-
     # See PscParticipant#scheduled_activities.
     let(:schedule) do
       [
