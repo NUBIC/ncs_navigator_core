@@ -1,4 +1,31 @@
 GIT
+  remote: git://github.com/NUBIC/ncs_mdes_warehouse.git
+  revision: 001d5c2359c5eb0d78017b41f865f1a510ef9cb6
+  specs:
+    ncs_mdes_warehouse (0.7.3.pre)
+      actionmailer (~> 3.0)
+      activesupport (~> 3.0, < 3.2.4)
+      bcdatabase (~> 1.1)
+      builder (>= 2.1.2)
+      childprocess (~> 0.2.3)
+      dm-aggregates (~> 1.2.0)
+      dm-constraints (~> 1.2.0)
+      dm-core (~> 1.2.0)
+      dm-migrations (~> 1.2.0)
+      dm-postgres-adapter (~> 1.2.0)
+      dm-transactions (~> 1.2.0)
+      dm-types (~> 1.2.0)
+      dm-validations (~> 1.2.0)
+      i18n (~> 0.4)
+      json (~> 1.6)
+      ncs_mdes (~> 0.7)
+      ncs_navigator_configuration (~> 0.2)
+      nokogiri (~> 1.5.0)
+      rubyzip (~> 0.9.4)
+      thor (~> 0.14.6)
+      treetop
+
+GIT
   remote: git://github.com/rsutphin/database_cleaner.git
   revision: f451054745a36d361127ddd128c362df7f38547d
   branch: dm-pg-single-trunc
@@ -254,28 +281,6 @@ GEM
     mustache (0.99.4)
     ncs_mdes (0.7.0)
       nokogiri (~> 1.4)
-    ncs_mdes_warehouse (0.7.2)
-      actionmailer (~> 3.0)
-      activesupport (~> 3.0, < 3.2.4)
-      bcdatabase (~> 1.1)
-      builder (>= 2.1.2)
-      childprocess (~> 0.2.3)
-      dm-aggregates (~> 1.2.0)
-      dm-constraints (~> 1.2.0)
-      dm-core (~> 1.2.0)
-      dm-migrations (~> 1.2.0)
-      dm-postgres-adapter (~> 1.2.0)
-      dm-transactions (~> 1.2.0)
-      dm-types (~> 1.2.0)
-      dm-validations (~> 1.2.0)
-      i18n (~> 0.4)
-      json (~> 1.6)
-      ncs_mdes (~> 0.7)
-      ncs_navigator_configuration (~> 0.2)
-      nokogiri (~> 1.5.0)
-      rubyzip (~> 0.9.4)
-      thor (~> 0.14.6)
-      treetop
     ncs_navigator_authority (0.0.2)
       aker (~> 3.0)
       faraday (~> 0.7.5)
@@ -483,7 +488,7 @@ DEPENDENCIES
   launchy
   mustache
   ncs_mdes (~> 0.5)
-  ncs_mdes_warehouse (~> 0.7, >= 0.7.2)
+  ncs_mdes_warehouse!
   ncs_navigator_authority
   ncs_navigator_configuration
   paper_trail (~> 2)
