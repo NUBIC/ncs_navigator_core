@@ -113,6 +113,15 @@ module Psc
     alias_method :name, :activity_name
     alias_method :id, :activity_id
 
+    # Activity states.
+
+    CANCELED    = 'canceled'
+    CONDITIONAL = 'conditional'
+    MISSED      = 'missed'
+    NA          = 'na'
+    OCCURRED    = 'occurred'
+    SCHEDULED   = 'scheduled'
+
     ##
     # Constructs an instance of this class from a scheduled activity report row.
     def self.from_report(row)
@@ -170,15 +179,29 @@ module Psc
     end
 
     ##
+    # True if the activity's state is SCHEDULED or CONDITIONAL, false
+    # otherwise.
+    def open?
+      [SCHEDULED, CONDITIONAL].include?(downcased_state)
+    end
+
+    ##
+    # True if the activity is not open and the activity state is not blank,
+    # false otherwise.
+    def closed?
+      !open? && !current_state.blank?
+    end
+
+    ##
     # True if the activity is scheduled, false otherwise.
     def scheduled?
-      current_state.to_s.downcase == PatientStudyCalendar::ACTIVITY_SCHEDULED
+      downcased_state == SCHEDULED
     end
 
     ##
     # True if the activity is canceled, false otherwise.
     def canceled?
-      current_state.to_s.downcase == PatientStudyCalendar::ACTIVITY_CANCELED
+      downcased_state == CANCELED
     end
 
     ##
@@ -199,6 +222,12 @@ module Psc
       label = @label_list.detect { |l| l.start_with?(prefix) }
 
       label.match(/^[^:]+:(.+)$/)[1] if label
+    end
+
+    ##
+    # @private
+    def downcased_state
+      current_state.to_s.downcase
     end
   end
 end

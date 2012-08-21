@@ -15,14 +15,14 @@ module Psc
         {
           :start_date => '2012-02-01',
           :end_date => '2012-03-01',
-          :state => PatientStudyCalendar::ACTIVITY_SCHEDULED
+          :state => Psc::ScheduledActivity::SCHEDULED
         }
       end
 
       before do
         psc.should_receive(:scheduled_activities_report).
           with(:start_date => '2012-02-01', :end_date => '2012-03-01', :state =>
-               PatientStudyCalendar::ACTIVITY_SCHEDULED).and_return(data)
+               Psc::ScheduledActivity::SCHEDULED).and_return(data)
 
         @report = ScheduledActivityReport.from_psc(psc, filters)
       end
