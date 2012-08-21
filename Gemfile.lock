@@ -254,7 +254,7 @@ GEM
     mustache (0.99.4)
     ncs_mdes (0.7.0)
       nokogiri (~> 1.4)
-    ncs_mdes_warehouse (0.7.1)
+    ncs_mdes_warehouse (0.7.2)
       actionmailer (~> 3.0)
       activesupport (~> 3.0, < 3.2.4)
       bcdatabase (~> 1.1)
@@ -483,7 +483,7 @@ DEPENDENCIES
   launchy
   mustache
   ncs_mdes (~> 0.5)
-  ncs_mdes_warehouse (~> 0.7, >= 0.7.1)
+  ncs_mdes_warehouse (~> 0.7, >= 0.7.2)
   ncs_navigator_authority
   ncs_navigator_configuration
   paper_trail (~> 2)
