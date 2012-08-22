@@ -7,8 +7,6 @@ require File.expand_path('../importer_warehouse_setup', __FILE__)
 
 module NcsNavigator::Core::Warehouse
   describe InstrumentImporter, :clean_with_truncation, :slow, :warehouse do
-    MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
-
     include_context :importer_spec_warehouse
 
     let!(:twq_survey) {
@@ -129,18 +127,18 @@ module NcsNavigator::Core::Warehouse
     let(:core_event) { Factory(:event) }
     let(:core_instrument) { Factory(:instrument) }
 
-    let(:wh_participant) { create_mdes_record(MdesModule::Participant, 'FR3D') }
+    let(:wh_participant) { create_mdes_record(wh_config.model(:Participant), 'FR3D') }
     let(:wh_event) {
-      create_mdes_record(MdesModule::Event, core_event.public_id, :event_start_date => '2010-10-01')
+      create_mdes_record(wh_config.model(:Event), core_event.public_id, :event_start_date => '2010-10-01')
     }
     let(:wh_instrument) {
-      create_mdes_record(MdesModule::Instrument, core_instrument.public_id)
+      create_mdes_record(wh_config.model(:Instrument), core_instrument.public_id)
     }
     let(:wh_du) {
-      create_mdes_record(MdesModule::DwellingUnit, 'DUx')
+      create_mdes_record(wh_config.model(:DwellingUnit), 'DUx')
     }
     let(:wh_hh) {
-      create_mdes_record(MdesModule::HouseholdUnit, 'HHx')
+      create_mdes_record(wh_config.model(:HouseholdUnit), 'HHx')
     }
 
     let(:possible_non_question_fields) {
@@ -188,12 +186,12 @@ module NcsNavigator::Core::Warehouse
     # TODO: the passive naming here is weird
     describe 'a ResponseSet' do
       let!(:twq_rec) {
-        create_mdes_record(MdesModule::TapWaterTwq, 'PV11', :twq_location => 1)
+        create_mdes_record(wh_config.model(:TapWaterTwq), 'PV11', :twq_location => 1)
       }
 
       it 'is created for each primary instrument record with a survey' do
-        create_mdes_record(MdesModule::TapWaterTwq, 'PV12', :twq_location => 1)
-        create_mdes_record(MdesModule::PregVisit_2_2, 'PV21')
+        create_mdes_record(wh_config.model(:TapWaterTwq), 'PV12', :twq_location => 1)
+        create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV21')
 
         importer.import
 
@@ -201,7 +199,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'is not created for instrument records without corresponding surveys' do
-        create_mdes_record(MdesModule::PregVisit_1, 'PV10')
+        create_mdes_record(wh_config.model(:PregVisit_1), 'PV10')
 
         importer.import
 
@@ -220,7 +218,7 @@ module NcsNavigator::Core::Warehouse
           start = Time.now
           1.upto(2793) do |i|
             create_mdes_record(
-              MdesModule::TapWaterTwq, i.to_s,
+              wh_config.model(:TapWaterTwq), i.to_s,
               {:twq_location => '-5', :twq_location_oth => "Location #{i}"},
               false)
             print "\r[before] %.3f created per sec / #{i} total" % [i.to_f / (Time.now - start)]
@@ -276,7 +274,7 @@ module NcsNavigator::Core::Warehouse
     describe 'a Response' do
       describe 'for the primary model' do
         let!(:twq_rec) {
-          create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1',
+          create_mdes_record(wh_config.model(:TapWaterTwq), 'TWQ1',
             :twq_location => '-5', :twq_location_oth => 'ceramic fountain')
         }
 
@@ -302,7 +300,7 @@ module NcsNavigator::Core::Warehouse
 
       describe 'typed responses' do
         it 'is a string value when the question demands it' do
-          create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1',
+          create_mdes_record(wh_config.model(:TapWaterTwq), 'TWQ1',
             :twq_location => '-5',
             :twq_location_oth => 'ceramic fountain')
           importer.import
@@ -315,7 +313,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'is an integer value when the question demands it' do
-          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '3')
+          create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV22', :hosp_nights => '3')
           importer.import
 
           Response.first.integer_value.should == 3
@@ -325,7 +323,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'is a datetime value when the question demands it' do
-          create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1',
+          create_mdes_record(wh_config.model(:TapWaterTwq), 'TWQ1',
             :twq_location => '1',
             :time_stamp_1 => '2012-11-12T05:06:07')
           importer.import
@@ -338,7 +336,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'ignores unparseable datetime values' do
-          create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1',
+          create_mdes_record(wh_config.model(:TapWaterTwq), 'TWQ1',
             :twq_location => '1',
             :time_stamp_1 => '9333-93-93T93:93:93')
           importer.import
@@ -348,14 +346,14 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'ignores -4 values if not present as an option' do
-          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '-4')
+          create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV22', :hosp_nights => '-4')
           importer.import
 
           Response.count.should == 0
         end
 
         it 'ignores -3 values if not present as an option' do
-          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '-3')
+          create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV22', :hosp_nights => '-3')
           importer.import
 
           Response.count.should == 0
@@ -364,7 +362,7 @@ module NcsNavigator::Core::Warehouse
 
       describe 'for a coded-or-literal variable' do
         it 'is an "answer" response when coded' do
-          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '-2')
+          create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV22', :hosp_nights => '-2')
           importer.import
 
           Response.first.answer.should ==
@@ -373,7 +371,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'is a the literal value when literal' do
-          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :hosp_nights => '3')
+          create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV22', :hosp_nights => '3')
           importer.import
 
           Response.first.integer_value.should == 3
@@ -388,7 +386,7 @@ module NcsNavigator::Core::Warehouse
         let(:q2) { Question.find_by_reference_identifier('birth_plan') }
 
         before do
-          create_mdes_record(MdesModule::PregVisit_2_2, 'PV22', :birth_plan => '3')
+          create_mdes_record(wh_config.model(:PregVisit_2_2), 'PV22', :birth_plan => '3')
           importer.import
         end
 
@@ -414,10 +412,10 @@ module NcsNavigator::Core::Warehouse
         let(:responses) { Response.where(:question_id => question.id) }
 
         before do
-          primary = create_mdes_record(MdesModule::TapWaterTwq, 'TWQ1', :twq_location => '1')
-          create_mdes_record(MdesModule::TapWaterTwqSubsamples, 'AK', :twq_subsamples => '3',
+          primary = create_mdes_record(wh_config.model(:TapWaterTwq), 'TWQ1', :twq_location => '1')
+          create_mdes_record(wh_config.model(:TapWaterTwqSubsamples), 'AK', :twq_subsamples => '3',
             :tap_water_twq => primary)
-          create_mdes_record(MdesModule::TapWaterTwqSubsamples, 'EH', :twq_subsamples => '4',
+          create_mdes_record(wh_config.model(:TapWaterTwqSubsamples), 'EH', :twq_subsamples => '4',
             :tap_water_twq => primary)
           importer.import
         end
@@ -447,12 +445,12 @@ module NcsNavigator::Core::Warehouse
         let(:other_responses) { response_set.responses.where(:question_id => other_question.id) }
 
         before do
-          primary = create_mdes_record(MdesModule::PrePreg, 'PP1', :decorate => '1')
-          create_mdes_record(MdesModule::PrePregPdecorateRoom, 'PP1-2', :decorate_room => '2',
+          primary = create_mdes_record(wh_config.model(:PrePreg), 'PP1', :decorate => '1')
+          create_mdes_record(wh_config.model(:PrePregPdecorateRoom), 'PP1-2', :decorate_room => '2',
             :pp => primary)
-          create_mdes_record(MdesModule::PrePregPdecorateRoom, 'PP1-oth', :decorate_room => '-5',
+          create_mdes_record(wh_config.model(:PrePregPdecorateRoom), 'PP1-oth', :decorate_room => '-5',
             :decorate_room_oth => 'Garage', :pp => primary)
-          create_mdes_record(MdesModule::PrePregPdecorateRoom, 'PP1-4', :decorate_room => '4',
+          create_mdes_record(wh_config.model(:PrePregPdecorateRoom), 'PP1-4', :decorate_room => '4',
             :pp => primary)
         end
 
@@ -466,7 +464,7 @@ module NcsNavigator::Core::Warehouse
 
         describe 'when the other value is filled in on the wrong records' do
           before do
-            MdesModule::PrePregPdecorateRoom.
+            wh_config.model(:PrePregPdecorateRoom).
               find('PP1-2').tap { |rec| rec.decorate_room_oth = 'Helipad' }.save
           end
 

@@ -7,8 +7,6 @@ require 'ncs_navigator/core/warehouse'
 
 module NcsNavigator::Core::Warehouse
   describe OperationalEnumerator, :clean_with_truncation, :slow, :warehouse do
-    MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
-
     let(:wh_config) {
       NcsNavigator::Warehouse::Configuration.new.tap do |config|
         config.log_file = File.join(Rails.root, 'log/wh.log')
@@ -72,7 +70,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for ListingUnit' do
       let(:producer_names) { [:listing_units] }
-      let(:warehouse_model) { MdesModule::ListingUnit }
+      let(:warehouse_model) { wh_config.model(:ListingUnit) }
 
       before do
         Factory(:listing_unit)
@@ -83,7 +81,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for DwellingUnit' do
       let(:producer_names) { [:dwelling_units] }
-      let(:warehouse_model) { MdesModule::DwellingUnit }
+      let(:warehouse_model) { wh_config.model(:DwellingUnit) }
 
       before do
         Factory(:dwelling_unit)
@@ -98,7 +96,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for DwellingHouseholdLink' do
       let(:producer_names) { [:dwelling_household_links] }
-      let(:warehouse_model) { MdesModule::LinkHouseholdDwelling }
+      let(:warehouse_model) { wh_config.model(:LinkHouseholdDwelling) }
 
       before do
         Factory(:dwelling_household_link)
@@ -117,7 +115,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for HouseholdUnit' do
       let(:producer_names) { [:household_units] }
-      let(:warehouse_model) { MdesModule::HouseholdUnit }
+      let(:warehouse_model) { wh_config.model(:HouseholdUnit) }
       let(:core_model) { HouseholdUnit }
 
       before do
@@ -142,7 +140,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for HouseholdPersonLink' do
       let(:producer_names) { [:household_person_links] }
-      let(:warehouse_model) { MdesModule::LinkPersonHousehold }
+      let(:warehouse_model) { wh_config.model(:LinkPersonHousehold) }
 
       before do
         Factory(:household_person_link)
@@ -278,7 +276,7 @@ module NcsNavigator::Core::Warehouse
       let(:some_guy) { Factory(:person) }
 
       it 'generates one consent per source record' do
-        results.collect(&:class).should == [MdesModule::ParticipantConsent]
+        results.collect(&:class).should == [wh_config.model(:ParticipantConsent)]
       end
 
       it "uses the participant's public ID" do
@@ -308,7 +306,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'generates one per source record' do
-        results.collect(&:class).should == [MdesModule::ParticipantConsentSample]
+        results.collect(&:class).should == [wh_config.model(:ParticipantConsentSample)]
       end
 
       it "uses the participant's public ID" do
@@ -329,7 +327,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'generates one per source record' do
-        results.collect(&:class).should == [MdesModule::ParticipantAuth]
+        results.collect(&:class).should == [wh_config.model(:ParticipantAuth)]
       end
 
       it 'uses the public ID for participant' do
@@ -355,7 +353,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'generates one per source record' do
-        results.collect(&:class).should == [MdesModule::ParticipantVisConsent]
+        results.collect(&:class).should == [wh_config.model(:ParticipantVisConsent)]
       end
 
       it 'uses the public ID for the participant' do
@@ -380,7 +378,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       it 'generates one per source record' do
-        results.collect(&:class).should == [MdesModule::ParticipantRvis]
+        results.collect(&:class).should == [wh_config.model(:ParticipantRvis)]
       end
 
       it 'uses the public ID for the participant' do
@@ -398,7 +396,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for PpgDetail' do
       let(:producer_names) { [:ppg_details] }
-      let(:warehouse_model) { MdesModule::PpgDetails }
+      let(:warehouse_model) { wh_config.model(:PpgDetails) }
 
       let!(:ppg_detail) { Factory(:ppg_detail) }
 
@@ -411,7 +409,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for PpgStatusHistory' do
       let(:producer_names) { [:ppg_status_histories] }
-      let(:warehouse_model) { MdesModule::PpgStatusHistory }
+      let(:warehouse_model) { wh_config.model(:PpgStatusHistory) }
 
       let!(:ppg_status_history) { Factory(:ppg_status_history) }
 
@@ -424,7 +422,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for Address' do
       let(:producer_names) { [:addresses] }
-      let(:warehouse_model) { MdesModule::Address }
+      let(:warehouse_model) { wh_config.model(:Address) }
       let(:core_model) { Address }
       let!(:address) { Factory(:address) }
 
@@ -469,7 +467,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for Email' do
       let(:producer_names) { [:emails] }
-      let(:warehouse_model) { MdesModule::Email }
+      let(:warehouse_model) { wh_config.model(:Email) }
       let!(:email) { Factory(:email) }
 
       include_examples 'one to one'
@@ -499,7 +497,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for Telephone' do
       let(:producer_names) { [:telephones] }
-      let(:warehouse_model) { MdesModule::Telephone }
+      let(:warehouse_model) { wh_config.model(:Telephone) }
       let!(:telephone) { Factory(:telephone) }
 
       include_examples 'one to one'
@@ -529,7 +527,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for Instrument' do
       let(:producer_names) { [:instruments] }
-      let(:warehouse_model) { MdesModule::Instrument }
+      let(:warehouse_model) { wh_config.model(:Instrument) }
       let(:core_model) { Instrument }
 
       let!(:instrument) { Factory(:instrument, :event => Factory(:mdes_min_event)) }
@@ -567,7 +565,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for Event' do
       let(:producer_names) { [:events] }
-      let(:warehouse_model) { MdesModule::Event }
+      let(:warehouse_model) { wh_config.model(:Event) }
       let(:core_model) { Event }
 
       let!(:event) { Factory(:mdes_min_event, :participant => Factory(:participant)) }
@@ -653,7 +651,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for Contact' do
       let(:producer_names) { [:contacts] }
-      let(:warehouse_model) { MdesModule::Contact }
+      let(:warehouse_model) { wh_config.model(:Contact) }
       let(:core_model) { Contact }
 
       let!(:contact) { Factory(:contact) }
@@ -675,7 +673,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for ContactLink' do
       let(:producer_names) { [:contact_links] }
-      let(:warehouse_model) { MdesModule::LinkContact }
+      let(:warehouse_model) { wh_config.model(:LinkContact) }
       let(:core_model) { ContactLink }
 
       let!(:contact_link) { Factory(:contact_link, :event => Factory(:mdes_min_event)) }
@@ -715,7 +713,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for NonInterviewReport' do
       let(:producer_names) { [:non_interview_reports] }
-      let(:warehouse_model) { MdesModule::NonInterviewRpt }
+      let(:warehouse_model) { wh_config.model(:NonInterviewRpt) }
       let(:core_model) { NonInterviewReport }
 
       let!(:non_interview_report) { Factory(:non_interview_report) }
@@ -759,7 +757,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for DwellingUnitTypeNonInterviewReport' do
       let(:producer_names) { [:dwelling_unit_type_non_interview_reports] }
-      let(:warehouse_model) { MdesModule::NonInterviewRptDutype }
+      let(:warehouse_model) { wh_config.model(:NonInterviewRptDutype) }
       let(:core_model) { DwellingUnitTypeNonInterviewReport }
 
       let!(:non_interview_report) { Factory(:dwelling_unit_type_non_interview_report) }
@@ -782,7 +780,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for NoAccessNonInterviewReport' do
       let(:producer_names) { [:no_access_non_interview_reports] }
-      let(:warehouse_model) { MdesModule::NonInterviewRptNoaccess }
+      let(:warehouse_model) { wh_config.model(:NonInterviewRptNoaccess) }
       let(:core_model) { NoAccessNonInterviewReport }
 
       let!(:non_interview_report) { Factory(:no_access_non_interview_report) }
@@ -809,7 +807,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for RefusalNonInterviewReport' do
       let(:producer_names) { [:refusal_non_interview_reports] }
-      let(:warehouse_model) { MdesModule::NonInterviewRptRefusal }
+      let(:warehouse_model) { wh_config.model(:NonInterviewRptRefusal) }
       let(:core_model) { RefusalNonInterviewReport }
 
       let!(:non_interview_report) { Factory(:refusal_non_interview_report) }
@@ -823,7 +821,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'for VacantNonInterviewReport' do
       let(:producer_names) { [:vacant_non_interview_reports] }
-      let(:warehouse_model) { MdesModule::NonInterviewRptVacant }
+      let(:warehouse_model) { wh_config.model(:NonInterviewRptVacant) }
       let(:core_model) { VacantNonInterviewReport }
 
       let!(:non_interview_report) { Factory(:vacant_non_interview_report) }
@@ -854,7 +852,7 @@ module NcsNavigator::Core::Warehouse
       let(:column_map) { producer.column_map(Participant.attribute_names) }
 
       it 'includes the MDES model' do
-        producer.model.should == MdesModule::Participant
+        producer.model.should == wh_config.model(:Participant)
       end
 
       it 'includes a column map' do

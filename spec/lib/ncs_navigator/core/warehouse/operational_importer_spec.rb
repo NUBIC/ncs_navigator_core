@@ -9,8 +9,6 @@ require File.expand_path('../importer_warehouse_setup', __FILE__)
 
 module NcsNavigator::Core::Warehouse
   describe OperationalImporter, :clean_with_truncation, :warehouse do
-    MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
-
     include_context :importer_spec_warehouse
 
     let(:importer) {
@@ -61,10 +59,11 @@ module NcsNavigator::Core::Warehouse
       end
 
       [
-        MdesModule::LinkContact, MdesModule::Event, MdesModule::Instrument
+        :LinkContact, :Event, :Instrument
       ].each do |manual|
         it "handles #{manual} manually" do
-          OperationalImporter.automatic_producers.collect(&:model).should_not include(manual)
+          OperationalImporter.automatic_producers.collect(&:model).
+            should_not include(wh_config.model(manual))
         end
       end
     end
@@ -131,7 +130,7 @@ module NcsNavigator::Core::Warehouse
           let!(:mdes_address) { enumerator.to_a(:addresses).first.tap { |a| save_wh(a) } }
 
           # Matches the ssu_ids used in the factories
-          let!(:ssu) { create_warehouse_record_with_defaults(MdesModule::Ssu, :ssu_id => '42') }
+          let!(:ssu) { create_warehouse_record_with_defaults(wh_config.model(:Ssu), :ssu_id => '42') }
 
           before do
             second_person = Factory(:person, :last_name => 'MacMurray')
@@ -269,7 +268,7 @@ module NcsNavigator::Core::Warehouse
 
       describe 'of core model' do
         # Matches the ssu_ids used in the factories
-        let!(:ssu) { create_warehouse_record_with_defaults(MdesModule::Ssu, :ssu_id => '42') }
+        let!(:ssu) { create_warehouse_record_with_defaults(wh_config.model(:Ssu), :ssu_id => '42') }
 
         # with no special data needs
         [
@@ -376,50 +375,50 @@ module NcsNavigator::Core::Warehouse
 
     describe 'correcting PPG status history' do
       let(:participant) {
-        create_warehouse_record_with_defaults(MdesModule::Participant, :p_id => 'elf')
+        create_warehouse_record_with_defaults(wh_config.model(:Participant), :p_id => 'elf')
       }
 
       let(:ppg_first) { '2' }
       let!(:ppg_details) {
-        create_warehouse_record_with_defaults(MdesModule::PpgDetails,
+        create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
           :ppg_first => ppg_first, :p => participant)
       }
 
       let!(:ppg_status_history_current) {
-        create_warehouse_record_with_defaults(MdesModule::PpgStatusHistory,
+        create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
           :p => participant, :ppg_status => '1', :ppg_status_date => '2011-06-04')
       }
 
       let!(:staff) {
-        create_warehouse_record_with_defaults(MdesModule::Staff, :staff_id => 'SPI')
+        create_warehouse_record_with_defaults(wh_config.model(:Staff), :staff_id => 'SPI')
       }
 
       let(:screener_date) { '2010-03-06' }
       let!(:screener_event) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :participant => participant, :event_type => 29,
           :event_start_date => '2010-03-04', :event_end_date => screener_date)
       }
       let(:screener_contact_1) {
-        create_warehouse_record_with_defaults(MdesModule::Contact, :contact_id => '1',
+        create_warehouse_record_with_defaults(wh_config.model(:Contact), :contact_id => '1',
           :contact_type => '2', :contact_date => '2010-03-05')
       }
       let(:screener_contact_2) {
-        create_warehouse_record_with_defaults(MdesModule::Contact, :contact_id => '2',
+        create_warehouse_record_with_defaults(wh_config.model(:Contact), :contact_id => '2',
           :contact_type => '3', :contact_date => '2010-03-06')
       }
       let!(:screener_lc_1) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '1',
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact), :contact_link_id => '1',
           :contact => screener_contact_1, :event => screener_event, :staff => staff)
       }
       let!(:screener_lc_2) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact, :contact_link_id => '2',
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact), :contact_link_id => '2',
           :contact => screener_contact_2, :event => screener_event, :staff => staff)
       }
 
       describe 'when the source history is correct' do
         it 'leaves the history alone' do
-          create_warehouse_record_with_defaults(MdesModule::PpgStatusHistory,
+          create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
             :ppg_history_id => 'existing',
             :p => participant, :ppg_status => ppg_first, :ppg_status_date => screener_date)
 
@@ -472,7 +471,7 @@ module NcsNavigator::Core::Warehouse
 
         before do
           ppg_status_history_current.destroy
-          MdesModule::PpgStatusHistory.count.should == 0
+          wh_config.model(:PpgStatusHistory).count.should == 0
 
           importer.import(:participants, :ppg_status_histories)
         end
@@ -487,7 +486,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'participant being-followedness' do
       let(:src_participant) {
-        create_warehouse_record_with_defaults(MdesModule::Participant, :p_id => 'zed')
+        create_warehouse_record_with_defaults(wh_config.model(:Participant), :p_id => 'zed')
       }
 
       it 'is true when the participant is enrolled' do
@@ -620,46 +619,46 @@ module NcsNavigator::Core::Warehouse
       end
 
       let(:fred_p) {
-        create_warehouse_record_with_defaults(MdesModule::Participant,
+        create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'fred_p', :enroll_status => '1')
       }
       let(:ginger_p) {
-        create_warehouse_record_with_defaults(MdesModule::Participant,
+        create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'ginger_p', :enroll_status => '2')
       }
 
       let(:fred_pers) {
-        create_warehouse_record_with_defaults(MdesModule::Person, :person_id => 'fred_pers')
+        create_warehouse_record_with_defaults(wh_config.model(:Person), :person_id => 'fred_pers')
       }
       let(:ginger_pers) {
-        create_warehouse_record_with_defaults(MdesModule::Person, :person_id => 'ginger_pers')
+        create_warehouse_record_with_defaults(wh_config.model(:Person), :person_id => 'ginger_pers')
       }
 
       let!(:fake_staff) {
-        create_warehouse_record_with_defaults(MdesModule::Staff, :staff_id => 'staff_public_id')
+        create_warehouse_record_with_defaults(wh_config.model(:Staff), :staff_id => 'staff_public_id')
       }
 
       let!(:fred_p_pers_link) {
-        create_warehouse_record_with_defaults(MdesModule::LinkPersonParticipant,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkPersonParticipant),
           :person_pid_id => 'fred_p_pers_link',
           :p => fred_p,
           :person => fred_pers)
       }
       let!(:ginger_p_pers_link) {
-        create_warehouse_record_with_defaults(MdesModule::LinkPersonParticipant,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkPersonParticipant),
           :person_pid_id => 'ginger_p_pers_link',
           :p => ginger_p,
           :person => ginger_pers)
       }
 
       let!(:f_consent) {
-        create_warehouse_record_with_defaults(MdesModule::ParticipantConsent,
+        create_warehouse_record_with_defaults(wh_config.model(:ParticipantConsent),
           :participant_consent_id => 'f_consent',
           :p => fred_p, :consent_given => '1', :consent_type => '7', :consent_form_type => '7')
       }
 
       let(:f_e2) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'f_e2',
           :participant => fred_p,
           :event_disp => 4,
@@ -667,14 +666,14 @@ module NcsNavigator::Core::Warehouse
           :event_start_date => '2010-09-03')
       }
       let!(:f_e2_i) {
-        create_warehouse_record_with_defaults(MdesModule::Instrument,
+        create_warehouse_record_with_defaults(wh_config.model(:Instrument),
           :instrument_id => 'f_e2_i',
           :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
           :ins_status => 1,
           :event => f_e2)
       }
       let(:f_e3) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'f_e3',
           :participant => fred_p,
           :event_disp => 4,
@@ -682,7 +681,7 @@ module NcsNavigator::Core::Warehouse
           :event_start_date => '2010-09-03')
       }
       let(:f_e1) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'f_e1',
           :participant => fred_p,
           :event_disp => 4,
@@ -690,36 +689,36 @@ module NcsNavigator::Core::Warehouse
           :event_start_date => '9666-96-96')
       }
       let(:f_c1) {
-        create_warehouse_record_with_defaults(MdesModule::Contact,
+        create_warehouse_record_with_defaults(wh_config.model(:Contact),
           :contact_id => 'f_c1', :contact_date => '2010-09-03')
       }
       let!(:f_c1_e1) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
           :contact_link_id => 'f_c1_e1',
           :contact => f_c1, :event => f_e1, :instrument => nil)
       }
       let!(:f_c1_e2) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
           :contact_link_id => 'f_c1_e2',
           :contact => f_c1, :event => f_e2, :instrument => f_e2_i)
       }
       let!(:f_c1_e3) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
           :contact_link_id => 'f_c1_e3',
           :contact => f_c1, :event => f_e3, :instrument => nil)
       }
       let(:f_c2) {
-        create_warehouse_record_with_defaults(MdesModule::Contact,
+        create_warehouse_record_with_defaults(wh_config.model(:Contact),
           :contact_id => 'f_c2', :contact_date => '2010-09-17')
       }
       let!(:f_c2_e3) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
           :contact_link_id => 'f_c2_e3',
           :contact => f_c2, :event => f_e3, :instrument => nil)
       }
 
       let(:f_e4) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'f_e4',
           :participant => fred_p,
           :event_disp => 4,
@@ -727,17 +726,17 @@ module NcsNavigator::Core::Warehouse
           :event_start_date => '2011-03-09')
       }
       let(:f_c3) {
-        create_warehouse_record_with_defaults(MdesModule::Contact,
+        create_warehouse_record_with_defaults(wh_config.model(:Contact),
           :contact_id => 'f_c3', :contact_date => '2011-03-08')
       }
       let!(:f_c3_e4) {
-        create_warehouse_record_with_defaults(MdesModule::LinkContact,
+        create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
           :contact_link_id => 'f_c3_e4',
           :contact => f_c3, :event => f_e4, :instrument => nil)
       }
 
       let(:f_e5) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'f_e5',
           :participant => fred_p,
           :event_disp => 4,
@@ -746,14 +745,14 @@ module NcsNavigator::Core::Warehouse
           :event_end_date => '2011-04-04')
       }
       let(:f_e5_i) {
-        create_warehouse_record_with_defaults(MdesModule::Instrument,
+        create_warehouse_record_with_defaults(wh_config.model(:Instrument),
           :instrument_id => 'f_e5_i',
           :instrument_type => code_for_instrument_type(
             'Low Intensity Invitation to High-Intensity Conversion Interview'),
           :event => f_e5)
       }
       let!(:f_e5_i_script) {
-        create_warehouse_record_with_defaults(MdesModule::LowHighScript,
+        create_warehouse_record_with_defaults(wh_config.model(:LowHighScript),
           :instrument => f_e5_i, :instrument_type => code_for_instrument_type(
             'Low Intensity Invitation to High-Intensity Conversion Interview'),
           :event => f_e5, :event_type => code_for_event_type('Low to High Conversion'),
@@ -761,7 +760,7 @@ module NcsNavigator::Core::Warehouse
       }
 
       let!(:g_e1) {
-        create_warehouse_record_with_defaults(MdesModule::Event,
+        create_warehouse_record_with_defaults(wh_config.model(:Event),
           :event_id => 'g_e1',
           :participant => ginger_p,
           :event_disp => 4,
@@ -769,7 +768,7 @@ module NcsNavigator::Core::Warehouse
           :event_start_date => '2010-11-07')
       }
       let!(:g_e1_i) {
-        create_warehouse_record_with_defaults(MdesModule::Instrument,
+        create_warehouse_record_with_defaults(wh_config.model(:Instrument),
           :instrument_id => 'g_e1_i',
           :instrument_type => code_for_instrument_type('Pregnancy Screener Interview (HI,LI)'),
           :event => g_e1)
@@ -811,11 +810,11 @@ module NcsNavigator::Core::Warehouse
 
       describe 'events without participants' do
         let(:g_c1) {
-          create_warehouse_record_with_defaults(MdesModule::Contact,
+          create_warehouse_record_with_defaults(wh_config.model(:Contact),
             :contact_id => 'g_c1', :contact_date => '2010-09-17')
         }
         let!(:g_c1_e1) {
-          create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
             :contact_link_id => 'g_c1_e1',
             :contact => g_c1, :event => g_e1, :instrument => g_e1_i)
         }
@@ -861,11 +860,11 @@ module NcsNavigator::Core::Warehouse
 
       describe 'unorderable contacts' do
         let(:g_c1) {
-          create_warehouse_record_with_defaults(MdesModule::Contact,
+          create_warehouse_record_with_defaults(wh_config.model(:Contact),
             :contact_id => 'g_c1', :contact_date => '9777-97-97')
         }
         let!(:g_c1_e1) {
-          create_warehouse_record_with_defaults(MdesModule::LinkContact,
+          create_warehouse_record_with_defaults(wh_config.model(:LinkContact),
             :contact_link_id => 'g_c1_e1', :contact => g_c1, :event => g_e1)
         }
 
@@ -994,7 +993,7 @@ module NcsNavigator::Core::Warehouse
 
           describe 'when transitioning into birth' do
             let!(:g_e3) {
-              create_warehouse_record_with_defaults(MdesModule::Event,
+              create_warehouse_record_with_defaults(wh_config.model(:Event),
                 :event_id => 'g_e3',
                 :participant => ginger_p,
                 :event_disp => 4,
@@ -1003,7 +1002,7 @@ module NcsNavigator::Core::Warehouse
             }
 
             let!(:g_e8) {
-              create_warehouse_record_with_defaults(MdesModule::Event,
+              create_warehouse_record_with_defaults(wh_config.model(:Event),
                 :event_id => 'g_e8',
                 :participant => ginger_p,
                 :event_disp => 4,
@@ -1030,12 +1029,12 @@ module NcsNavigator::Core::Warehouse
         it 'saves the contact_links' do
           do_import
           ContactLink.all.collect(&:contact_link_id).sort.should ==
-            MdesModule::LinkContact.all.collect(&:contact_link_id).sort
+            wh_config.model(:LinkContact).all.collect(&:contact_link_id).sort
         end
 
         it 'saves the instruments' do
           do_import
-          MdesModule::Instrument.all.collect(&:instrument_id).sort.
+          wh_config.model(:Instrument).all.collect(&:instrument_id).sort.
             should == %w(f_e2_i f_e5_i g_e1_i)
         end
 
