@@ -17,7 +17,6 @@ class SpecimenReceiptsController < ApplicationController
       @specimen_storage_container = SpecimenStorageContainer.new(:storage_container_id => params[:specimen_storage_container][:storage_container_id])
     end
 
-    puts params[:specimen_storage_container][:specimen_receipts_attributes]["0"].inspect
     @specimen_receipt = @specimen_storage_container.specimen_receipts.build(params[:specimen_storage_container][:specimen_receipts_attributes]["0"])
     respond_to do |format|
       if @specimen_storage_container.save

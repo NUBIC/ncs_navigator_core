@@ -2,23 +2,26 @@
 class SampleProcessesController < ApplicationController
 
   def index
+    #RECEIVE
     @specimens = array_of_not_stored_specimens
     @samples = array_of_not_stored_samples
-
+    #STORE
     @specimen_receipts_ids = array_of_selected_specs
     @specimen_receipts_hash = hash_of_spec_storages_by_container_id(@specimen_receipts_ids)
     @sample_receipt_stores = array_of_sample_receive_store
+    
     @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
     @sample_receipt_stores_not_shipped = array_of_not_shipped_samples
-    @specimen_receipts_not_shipped = array_of_not_shipped_specs
-    @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
+    #SHIP
+    @not_shipped_spec_storages = array_of_not_shipped_spec_storages
+    # @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
 
     @sample_shippings_not_received = hash_from_array_by_track_num(array_of_shipped_and_not_received_samples)
     @specimen_shippings_not_received = array_of_shipped_and_not_received_specimens
   end
 
-  def array_of_not_shipped_specs
-    SpecimenStorage.all.select{ |sr| SpecimenShipping.where(:storage_container_id => sr.storage_container_id).blank? }
+  def array_of_not_shipped_spec_storages
+    SpecimenStorage.joins(:specimen_storage_container).where("specimen_storage_containers.specimen_shipping_id is NULL")
   end
 
   def array_of_not_stored_specimens
@@ -41,8 +44,6 @@ class SampleProcessesController < ApplicationController
   end
 
   def array_of_selected_specs()
-    # SpecimenReceipt.find(:all, :conditions => { :specimen_id => arrayOfParams})
-    # SpecimenReceipt.all
     SpecimenReceipt.all.select{ |s| SpecimenStorage.where(:specimen_storage_container_id => s.specimen_storage_container_id).blank?}
   end
 
@@ -91,7 +92,8 @@ class SampleProcessesController < ApplicationController
   end
 
   def array_of_shipped_and_not_received_specimens
-    SpecimenShipping.all.select{ |ss| SpecimenReceipt.where(:specimen_storage_container_id => ss.specimen_storage_container_id).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.specimen_id).any?}.any? }
+    SpecimenShipping.all.select{ |ss| SpecimenReceiptConfirmation.where(:shipment_tracking_number_id => ss.id).blank?}
+    # SpecimenShipping.all.select{ |ss| SpecimenReceipt.where(:specimen_storage_container_id => ss.specimen_storage_container_id).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.specimen_id).any?}.any? }
   end
 
   def hash_from_array_by_track_num(array_of_samples)

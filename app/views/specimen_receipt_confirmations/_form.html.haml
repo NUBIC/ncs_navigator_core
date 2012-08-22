@@ -1,5 +1,6 @@
 .page_section
   = form_for(specimen_receipt_confirmation) do |f| 
+    = f.object.inspect  
     = render "shared/custom_error_messages", :object => f.object
     = "Followed is required for selected specimen " 
     = specimen_receipt_confirmation.specimen_id
@@ -18,17 +19,17 @@
     = f.label :specimen_processing_shipping_center_id, "Specimen Processing Shipping Center ID:"
     = specimen_receipt_confirmation.specimen_processing_shipping_center.specimen_processing_shipping_center_id
     = f.hidden_field :specimen_processing_shipping_center_id
-    
+  
     %br
     = f.label :shipper_id, "Shipper ID:"
     = specimen_receipt_confirmation.shipper_id
     = f.hidden_field :shipper_id
   
     %br
-    = f.label :shipment_tracking_number, "Shipment Tracking Number:"
-    = specimen_receipt_confirmation.shipment_tracking_number
-    = f.hidden_field :shipment_tracking_number
-  
+    = f.label :shipment_tracking_number_id, "Shipment Tracking Number:"
+    = specimen_receipt_confirmation.shipment_tracking_number_id
+    = f.hidden_field :shipment_tracking_number_id
+  -#
     %br
     = f.label :shipment_receipt_datetime, "Shipment Receipt Date and Time: "
     = f.text_field :shipment_receipt_datetime, :class => "datetime important_field", :id => "datetime_"+specimen_receipt_confirmation.specimen_id

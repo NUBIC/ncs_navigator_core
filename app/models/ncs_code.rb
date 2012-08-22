@@ -227,7 +227,7 @@ class NcsCode < ActiveRecord::Base
     :refusal_reason_code            => 'REFUSAL_REASON_CL1',
 
     ### spec_shipping
-    :spec_shipment_temperature_code  => 'SHIPMENT_TEMPERATURE_CL1',
+    :shipment_temperature_code  => 'SHIPMENT_TEMPERATURE_CL1',
     :shipment_receipt_confirmed_code => 'CONFIRM_TYPE_CL2',
     :shipment_issues_code            => 'SHIPMENT_ISSUES_CL1',
 

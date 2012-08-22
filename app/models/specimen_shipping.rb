@@ -27,18 +27,22 @@
 
 class SpecimenShipping < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
-  acts_as_mdes_record :public_id_field => :shipment_tracking_number_id 
+  acts_as_mdes_record :public_id_field => :shipment_tracking_number
 
   belongs_to :specimen_processing_shipping_center
-  has_many :specimen_storage_container
+  has_many :specimen_storage_containers
   has_many :ship_specimens
+  
+  accepts_nested_attributes_for :ship_specimens, :allow_destroy => true
+  
+  # has_many :specimen_receipts, :primary_key => :storage_container_id, :foreign_key => :storage_container_id
 
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :shipment_temperature,       'SHIPMENT_TEMPERATURE_CL1'
   ncs_coded_attribute :shipment_receipt_confirmed, 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :shipment_issues,            'SHIPMENT_ISSUES_CL1'
 
-  validates_presence_of :storage_container_id
+  # validates_presence_of :storage_container_id
   validates_presence_of :staff_id 
   validates_presence_of :shipper_id
   validates_presence_of :shipper_destination

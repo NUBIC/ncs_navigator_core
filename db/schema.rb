@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -1170,6 +1171,8 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.string   "volume_unit",                       :limit => 36
     t.string   "contact_name"
     t.string   "contact_phone",                     :limit => 30
+    t.string   "carrier"
+    t.string   "shipment_time",                     :limit => 5
   end
 
   create_table "samples", :force => true do |t|
@@ -1293,6 +1296,8 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.datetime "updated_at"
     t.string   "contact_name"
     t.string   "contact_phone",                          :limit => 30
+    t.string   "carrier"
+    t.string   "shipment_time",                          :limit => 5
   end
 
   create_table "specimen_storage_containers", :force => true do |t|
