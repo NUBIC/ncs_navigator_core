@@ -42,6 +42,11 @@ module MdesRecord
       @mdes_time_pattern ||= /^(9\d:\d\d)|(([01]\d|2[0-3]):[0-5]\d)$/
     end
 
+    def with_codes(*attrs)
+      as = attrs.blank? ? ncs_coded_attributes.keys : attrs
+
+      includes(as)
+    end
   end
 
   class NcsCodedAttribute

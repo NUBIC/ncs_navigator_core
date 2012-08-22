@@ -5,6 +5,7 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table :foos, :force => true do |t|
     t.string :name
     t.string :uuid
+    t.integer :event_type_code
     t.integer :psu_code
   end
 

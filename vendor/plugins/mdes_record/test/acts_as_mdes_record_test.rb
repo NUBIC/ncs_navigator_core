@@ -82,6 +82,22 @@ class ActsAsMdesRecordTest < Test::Unit::TestCase
     Foo.ncs_coded_attributes[:psu].list_name == 'PSU_CL1'
   end
 
+  def test_model_responds_to_with_codes
+    assert Foo.respond_to?(:with_codes)
+  end
+
+  def test_with_codes_eager_loads_codes
+    Foo.create
+
+    assert Foo.with_codes.first.association(:event_type).loaded?
+  end
+
+  def test_with_codes_supports_selective_loading
+    Foo.create
+
+    assert !Foo.with_codes(:psu).first.association(:event_type).loaded?
+  end
+
   def test_psu_code_is_set_upon_create
     foo = Foo.create
     assert_equal(NcsNavigatorCore.psu.to_i, foo.psu_code)
@@ -101,6 +117,7 @@ class Foo < ActiveRecord::Base
   acts_as_mdes_record
 
   ncs_coded_attribute :psu, 'PSU_CL1'
+  ncs_coded_attribute :event_type, 'EVENT_TYPE_CL1'
 end
 
 class Bar < ActiveRecord::Base
