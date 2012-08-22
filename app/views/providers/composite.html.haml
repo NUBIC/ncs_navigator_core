@@ -1,0 +1,52 @@
+
+- title "composite"
+
+.mdes_table_definition
+  = render 'documentation/contact'
+
+%h3
+  = @provider
+  - if event = @provider.provider_recruitment_event
+    %span.normal
+      = link_to "Staff List", staff_list_provider_path(@provider, :event_id => event.id), :class => "list_link icon_link"
+
+.page_section
+  - if @provider.contact_links.empty?
+    #no_records
+      No Contact records were found.
+  - else
+    %table.records
+      %tr
+        %th
+          Edit
+        %th
+          Who
+        %th
+          How
+        %th
+          When
+        %th
+          Outcome
+      - @provider.contact_links.each do |link|
+        - contact = link.contact
+        - cls = cycle('even_record', 'odd_record')
+        %tr{ :class => cls }
+          %td
+            = link_to "Edit", edit_person_contact_path(link.person, contact), :class => "edit_link icon_link"
+          %td
+            = blank_safe(link.person)
+          %td
+            = contact.contact_type
+          %td
+            = contact.contact_date
+          %td
+            - disp =  DispositionMapper.disposition_text_for_event(link.event.event_disposition_category, contact.contact_disposition)
+            = disp.blank? ? contact.contact_disposition : disp
+        - unless contact.contact_comment.blank?
+          %tr{ :class => "comment_#{cls} #{cls}"  }
+            %td{ :colspan => 5 }
+              = blank_safe(contact.contact_comment, 'No comment')
+    .links
+      = link_to 'Assign Substitute Provider Due to Refusal to Participate', refused_provider_path(@provider), :class => 'refused_link icon_link'
+      %br
+      = link_to "PBS List", pbs_lists_path, :class => "list_link icon_link"

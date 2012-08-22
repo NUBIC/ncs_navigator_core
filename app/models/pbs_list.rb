@@ -60,6 +60,8 @@ class PbsList < ActiveRecord::Base
   # -7 (Not Applicable)
   # -4 (Missing in Error)
 
+  SEARCH_LOCATIONS = ["Original location", "Substitute location"]
+
   def recruitment_started?
     !self.pr_recruitment_start_date.blank? && self.pr_recruitment_status_code == 3
   end

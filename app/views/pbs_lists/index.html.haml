@@ -6,14 +6,20 @@
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     %p
-      = f.label :provider_name_practice_cont, "Practice Name"
+      = f.label :provider_name_practice_cont, "Provider Name"
       = f.text_field :provider_name_practice_cont
     %p
-      = f.label :in_sample_code_eq, "In Sample"
-      = f.select(:in_sample_code_eq, NcsCode.ncs_code_lookup(:in_sample_code).sort_by { |a| a[0] }, { :include_blank => "-- In Sample? --" })
-    %p
-      = f.label :in_out_frame_code_eq, "In Frame"
-      = f.select(:in_out_frame_code_eq, NcsCode.ncs_code_lookup(:in_out_frame_code).sort_by { |a| a[0] }, { :include_blank => "-- In Frame? --" })
+      = check_box_tag 'q[in_sample_code_eq[]]', 'Original location', :checked => true
+      Original location
+      = check_box_tag 'q[in_out_frame_code_eq[]]', 'Substitute location', :checked => true
+      Substitute location
+
+    -#%p
+    -#  = f.label :in_sample_code_eq, "In Sample"
+    -#  = f.select(:in_sample_code_eq, NcsCode.ncs_code_lookup(:in_sample_code).sort_by { |a| a[0] }, { :include_blank => "-- In Sample? --" })
+    -#%p
+    -#  = f.label :in_out_frame_code_eq, "In Frame"
+    -#  = f.select(:in_out_frame_code_eq, NcsCode.ncs_code_lookup(:in_out_frame_code).sort_by { |a| a[0] }, { :include_blank => "-- In Frame? --" })
     = f.submit "Search"
 
 
@@ -28,30 +34,26 @@
     %table.records
       %tr
         %th
-          = sort_link @q, "provider_name_practice", "Practice Name"
-        %th
-          = sort_link @q, "in_sample_code", "In Sample?"
-        %th
-          = sort_link @q, "in_out_frame_code", "In Frame?"
+          = sort_link @q, "provider_name_practice", "Provider Name"
         %th
           Last Contact
         %th
-          Provider Recruitment
+          Status
 
       - @pbs_lists.each do |pbs|
         - provider = pbs.provider
         %tr{ :class => cycle('even_record', 'odd_record') }
           - name = blank_safe(provider.name_practice)
           %td{ :title => "#{name} - #{provider.address.to_s}" }
-            = link_to name, edit_provider_path(provider), :class => "edit_link icon_link"
-          %td
-            = pbs.in_sample
-          %td
-            = pbs.in_out_frame
+            = link_to name, pbs_list_path(pbs), :class => "edit_link icon_link"
+          -#%td
+          -#  = pbs.in_sample
+          -#%td
+          -#  = pbs.in_out_frame
           %td
             - unless provider.contacts.blank?
               - txt = "#{provider.contacts.first.contact_date} #{provider.contacts.first.contact_start_time}"
-              = link_to txt, contact_log_provider_path(provider), :class => "list_link icon_link"
+              = link_to txt, pbs_list_path(pbs), :class => "list_link icon_link"
           %td
             - if pbs.recruitment_ended?
               - if provider.recruited?
