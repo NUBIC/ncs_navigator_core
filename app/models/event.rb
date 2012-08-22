@@ -199,10 +199,18 @@ class Event < ActiveRecord::Base
     update_disposition 48
   end
 
+  def out_of_window?
+    event_disposition == 48
+  end
+
   ##
   # Helper method to set the disposition to Not Worked
   def mark_not_worked
     update_disposition 34
+  end
+
+  def not_worked?
+    event_disposition == 34
   end
 
   # TODO: determine better way to get disposition out of NcsNavigatorCore.mdes.disposition_codes
@@ -295,6 +303,35 @@ class Event < ActiveRecord::Base
     all_activities = psc_participant.scheduled_activities
 
     all_activities.select { |sa| implied_by?(sa.event_label, sa.ideal_date) }
+  end
+
+  ##
+  # The desired state for the scheduled activities backing this Event.  This
+  # SHOULD be one of the values defined on Psc::ScheduledActivity.
+  #
+  # Here's how events and their backing activities match up:
+  #
+  # | Event state | Disposition   | Desired activity state |
+  # | Closed      | Out of window | Canceled               |
+  # | Closed      | Not worked    | Canceled               |
+  # | Closed      | (otherwise)   | Occurred               |
+  # | Open        | (any)         | Scheduled              |
+  #
+  # Note: this method's behavior is independent of whether or not the Event is
+  # actually backed by anything in PSC.  This method is intended to be used by
+  # code that establishes those associations, i.e. {Field::PscSync}.
+  def desired_sa_state
+    sa = Psc::ScheduledActivity
+
+    if closed?
+      if out_of_window? || not_worked?
+        sa::CANCELED
+      else
+        sa::OCCURRED
+      end
+    else
+      sa::SCHEDULED
+    end
   end
 
   ##

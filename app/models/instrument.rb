@@ -201,6 +201,29 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # The desired state for the scheduled activities backing this Instrument.
+  # This SHOULD be one of the values defined on Psc::ScheduledActivity.
+  #
+  # Here's how instruments and their backing activities match up:
+  #
+  # | Instrument status | Desired activity state |
+  # | Complete          | Occurred               |
+  # | Missing in Error  | Scheduled              |
+  # | Not started       | Scheduled              |
+  # | Partial           | Scheduled              |
+  # | Refused           | Canceled               |
+  def desired_sa_state
+    sa = Psc::ScheduledActivity
+
+    case instrument_status.to_s
+    when 'Complete' then sa::OCCURRED
+    when 'Missing in Error', 'Not started', 'Partial' then sa::SCHEDULED
+    when 'Refused' then sa::CANCELED
+    else raise "Cannot map #{instrument_status.to_s.inspect} to a scheduled activity state"
+    end
+  end
+
+  ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]

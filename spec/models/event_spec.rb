@@ -722,4 +722,47 @@ describe Event do
       ]
     end
   end
+
+  describe '#desired_sa_state' do
+    let(:event) { Event.new }
+    let(:desired_sa_state) { event.desired_sa_state }
+
+    SA = Psc::ScheduledActivity
+
+    describe 'if the event is closed' do
+      before do
+        event.stub!(:closed? => true)
+      end
+
+      it 'returns OCCURRED' do
+        desired_sa_state.should == SA::OCCURRED
+      end
+
+      describe 'and the disposition is "out of window"' do
+        before do
+          event.mark_out_of_window
+        end
+
+        it 'returns CANCELED' do
+          desired_sa_state.should == SA::CANCELED
+        end
+      end
+
+      describe 'and the disposition is "not worked"' do
+        before do
+          event.mark_not_worked
+        end
+
+        it 'returns CANCELED' do
+          desired_sa_state.should == SA::CANCELED
+        end
+      end
+    end
+
+    describe 'if the event is open' do
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+  end
 end

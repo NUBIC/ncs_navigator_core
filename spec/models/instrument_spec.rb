@@ -575,4 +575,79 @@ describe Instrument do
       end
     end
   end
+
+  describe '#desired_sa_state' do
+    let(:instrument) { Instrument.new }
+    let(:desired_sa_state) { instrument.desired_sa_state }
+
+    [
+      'Complete',
+      'Missing in Error',
+      'Not started',
+      'Partial',
+      'Refused'
+    ].each do |status|
+      let(status.downcase.gsub(' ', '_')) do
+        NcsCode.for_list_name_and_display_text('INSTRUMENT_STATUS_CL1', status)
+      end
+    end
+
+    SA = Psc::ScheduledActivity
+
+    describe 'if instrument status is nil' do
+      it 'raises an error' do
+        lambda { desired_sa_state }.should raise_error
+      end
+    end
+
+    describe 'if instrument status is Complete' do
+      before do
+        instrument.instrument_status = complete
+      end
+
+      it 'returns OCCURRED' do
+        desired_sa_state.should == SA::OCCURRED
+      end
+    end
+
+    describe 'if instrument status is Missing in Error' do
+      before do
+        instrument.instrument_status = missing_in_error
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Not started' do
+      before do
+        instrument.instrument_status = not_started
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Partial' do
+      before do
+        instrument.instrument_status = partial
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Refused' do
+      before do
+        instrument.instrument_status = refused
+      end
+
+      it 'returns CANCELED' do
+        desired_sa_state.should == SA::CANCELED
+      end
+    end
+  end
 end
