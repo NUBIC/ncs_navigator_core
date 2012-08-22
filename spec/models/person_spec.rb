@@ -103,6 +103,7 @@ describe Person do
   it { should have_many(:addresses) }
   it { should have_many(:telephones) }
   it { should have_many(:emails) }
+  it { should have_many(:races) }
 
   context "as mdes record" do
 

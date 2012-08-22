@@ -47,11 +47,11 @@ shared_context 'report with child instruments' do
   end
 
   let(:activity_name) { 'Birth Interview' }
-  let(:event_birth) { 'event:birth' }
+  let(:event_birth) { 'birth' }
   let(:event_labels) { [event_birth] }
   let(:ideal_date) { '2012-07-06' }
-  let(:instrument_baby_name) { 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name' }
-  let(:instrument_birth) { 'references:ins_que_birth_int_ehpbhi_p2_v2.0' }
+  let(:instrument_baby_name) { 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name' }
+  let(:instrument_birth) { 'ins_que_birth_int_ehpbhi_p2_v2.0' }
   let(:person_id) { '2f85c94e-edbb-4cbe-b9ab-5f12c033323f' }
   let(:scheduled_date) { '2012-07-10' }
   let(:survey_labels) { [instrument_birth, instrument_baby_name] }

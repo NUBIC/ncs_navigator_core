@@ -1,48 +1,44 @@
 - title "Upcoming Activities"
 
-- if @scheduled_activities
-  .front_page_section.page_section
-    = form_tag("upcoming_activities", :method => "get") do
-      = label_tag :start_date, "From:"
-      = text_field_tag :start_date, @start_date, :disabled => true, :class => "datepicker"
+.front_page_section.page_section
+  = form_tag("upcoming_activities", :method => "get") do
+    = label_tag :start_date, "From:"
+    = text_field_tag :start_date, @start_date, :disabled => true, :class => "datepicker"
 
-      = label_tag :end_date, "To:"
-      = text_field_tag :end_date, @end_date, :class => "datepicker"
-      = submit_tag "Search"
+    = label_tag :end_date, "To:"
+    = text_field_tag :end_date, @end_date, :class => "datepicker"
+    = submit_tag "Search"
+    - if @scheduled_activities.length > 0
+      = link_to "Export Results to CSV",
+        {:controller => "welcome", :action => "upcoming_activities", :start_date => @start_date, :end_date => @end_date, :export => true},
+        {:class => "export_link icon_link", :confirm => 'Are you in a secure environment in which you are allowed to download data?'}
 
-    - rows = @scheduled_activities['rows']
-    - if rows.blank?
-      %h4
-        No Scheduled Activities
-        = " from #{@start_date} to #{@end_date}"
-    - else
-      %h4
-        = "From #{@start_date} to #{@end_date}"
-      %table.records
-        %tr
-          %th Date
-          %th Person
-          %th PPG Status
-          %th Staff
-          %th Activity
-        - rows.sort_by{ |r| r['scheduled_date'] }.each do |row|
-          - if row['subject']
-            - person = Person.find_by_person_id(row['subject']['person_id'])
-            - if person
-              %tr{ :class => cycle('even_record', 'odd_record') }
-                %td
-                  = row['scheduled_date']
-                %td
-                  - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
-                  = link_to row['subject']['name'], path, :class => "show_link icon_link"
-                %td
-                  - if person.participant
-                    %span{ :title => person.participant.ppg_status.to_s }
-                      = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
-                  - else
-                    n/a
-                %td
-                  = row['responsible_user']
-                %td
-                  = row['activity_name']
-
+  - if @scheduled_activities.length > 0
+    %h4
+      = "From #{@start_date} to #{@end_date}"
+    %table.records
+      %tr
+        %th Date
+        %th Person
+        %th PPG Status
+        %th Activity
+      - @scheduled_activities.each do |sa|
+        - if person = Person.find_by_person_id(sa.person_id)
+          %tr{ :class => cycle('even_record', 'odd_record') }
+            %td
+              = sa.activity_date
+            %td
+              - path = person.participant.nil? ? person_path(person) : participant_path(person.participant)
+              = link_to person.to_s, path, :class => "show_link icon_link"
+            %td
+              - if person.participant
+                %span{ :title => person.participant.ppg_status.to_s }
+                  = "PPG #{person.participant.ppg_status.local_code}" unless person.participant.ppg_status.blank?
+              - else
+                n/a
+            %td
+              = sa.name
+  - else
+    %h4
+      No Scheduled Activities
+      = " from #{@start_date} to #{@end_date}"

@@ -90,8 +90,8 @@ class Psc::ScheduledActivityReport
         it 'logs an error if an event cannot be found' do
           report.process
 
-          log.should =~ /cannot map \{label = event:low_intensity_data_collection, ideal date = #{ideal_date}, participant = #{pa.p_id}\} to an event/i
-          log.should =~ /cannot map \{label = event:informed_consent, ideal date = #{ideal_date}, participant = #{pa.p_id}\} to an event/i
+          log.should =~ /cannot map \{event label = low_intensity_data_collection, ideal date = #{ideal_date}, participant = #{pa.p_id}\} to an event/i
+          log.should =~ /cannot map \{event label = informed_consent, ideal date = #{ideal_date}, participant = #{pa.p_id}\} to an event/i
         end
       end
 

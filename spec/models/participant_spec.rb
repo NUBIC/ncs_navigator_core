@@ -78,6 +78,31 @@ describe Participant do
     end
   end
 
+  context "in the pbs protocol" do
+    before do
+      NcsNavigatorCore.stub(:recruitment_type_id).and_return(5)
+    end
+
+    it "creates a participant in the high_intensity arm" do
+      pr = Participant.create
+      pr.should be_high_intensity
+      pr.low_intensity_state.should == "started_in_high_intensity_arm"
+      pr.should be_converted_high_intensity
+    end
+
+    it "starts a pregnant participant at PV1" do
+      pr = Factory(:low_intensity_ppg1_participant)
+      pr.should be_high_intensity
+      pr.low_intensity_state.should == "started_in_high_intensity_arm"
+
+      pr.should be_pregnancy_one
+      pr.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1]
+      pr.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+      pr.next_scheduled_event.date.should == Date.today
+    end
+
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

@@ -86,11 +86,14 @@ class SurveyorController < ApplicationController
   # Piggy-back on the render_context callback from SurveyorControllerMethods
   # to ensure that we have the response_set object for this
   def set_activity_plan_for_participant
-    @participant          = @response_set.person.participant
+    @participant          = @response_set.participant
     @instrument           = @response_set.instrument
     @event                = @instrument.event
-    @activity_plan        = psc.build_activity_plan(@participant)
-    @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+    @activities_for_event = []
+    if @participant
+      @activity_plan        = psc.build_activity_plan(@participant)
+      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+    end
   end
 
   ##
@@ -106,7 +109,7 @@ class SurveyorController < ApplicationController
     # TODO: ensure that the state transitions are based on the responses in the response set
     #       and that the disposition of the instrument was completed
     def update_participant_based_on_survey(response_set)
-      participant = Participant.find(response_set.person.participant.id) if response_set.person.participant
+      participant = response_set.participant
       if participant
         participant.update_state_after_survey(response_set, psc)
       end

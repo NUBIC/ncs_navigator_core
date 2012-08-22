@@ -82,12 +82,28 @@ class Participant < ActiveRecord::Base
 
   delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
+  after_create :set_initial_state_for_recruitment_strategy
+
   def after_initialize
     self.class.importer_mode_on = false;
   end
 
   ##
+  # Only Hi/Lo strategy uses the low_intensity_state machine.
+  # If the recruitment_strategy is not Hi/Lo (two_tier_knowledgable)
+  # then set the participant firmly in the high_intensity_state machine.
+  def set_initial_state_for_recruitment_strategy
+    recruitment_strategy = RecruitmentStrategy.recruitment_type_strategy(NcsNavigatorCore.recruitment_type_id)
+    unless recruitment_strategy.two_tier_knowledgable?
+      self.high_intensity = true
+      self.start_in_high_intensity_arm!
+      self.high_intensity_conversion!
+    end
+  end
+
+  ##
   # State Machine used to manage relationship with Patient Study Calendar
+  # for the Low Intensity protocol
   state_machine :low_intensity_state, :initial => :pending do
     store_audit_trail
     before_transition :log_state_change
@@ -98,11 +114,6 @@ class Participant < ActiveRecord::Base
     event :register do
       transition :pending => :registered
     end
-
-    # TODO: determine if this is necessary
-    # state :in_pregnancy_probability_group do
-    #   validates_presence_of :ppg_status
-    # end
 
     event :assign_to_pregnancy_probability_group do
       transition :registered => :in_pregnancy_probability_group
@@ -132,16 +143,23 @@ class Participant < ActiveRecord::Base
       transition [:in_pregnancy_probability_group, :pregnant_low, :following_low_intensity, :consented_low_intensity] => :moved_to_high_intensity_arm
     end
 
+    event :start_in_high_intensity_arm do
+      transition [:pending, :in_pregnancy_probability_group] => :started_in_high_intensity_arm
+    end
+
     event :move_back_to_low_intensity do
       transition [:moved_to_high_intensity_arm] => :following_low_intensity
     end
 
   end
 
+  ##
+  # State Machine used to manage relationship with Patient Study Calendar
+  # for the High Intensity, Enhanced Household, and Provider Based protocols
   state_machine :high_intensity_state, :initial => :in_high_intensity_arm do
     store_audit_trail
     before_transition :log_state_change
-    after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_consent!
+    after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_conversion!
     after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
     after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
 
@@ -185,9 +203,6 @@ class Participant < ActiveRecord::Base
       transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :parenthood
     end
 
-    # event :three_months_after_birth do
-    #   transition :birth => :three_month
-    # end
   end
 
   ##
@@ -247,12 +262,23 @@ class Participant < ActiveRecord::Base
     if /_LIHIConversion_/ =~ survey_title
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
       high_intensity_conversion!
-      process_high_intensity_consent!
+      process_high_intensity_conversion!
     end
 
-    if known_to_be_pregnant? && can_impregnate_low?
-      if low_intensity? && following_low_intensity? && !due_date_is_greater_than_follow_up_interval
+    if /_PPGFollUp_/ =~ survey_title
+      follow! if can_follow?
+    end
+
+    if known_to_be_pregnant?
+
+      if low_intensity? &&
+         can_impregnate_low? &&
+         !due_date_is_greater_than_follow_up_interval
         impregnate_low!
+      end
+
+      if high_intensity? && can_impregnate?
+        impregnate!
       end
     end
 
@@ -291,7 +317,7 @@ class Participant < ActiveRecord::Base
   # After a participant has consented to the high intensity arm
   # this method determines the next state for the participant based
   # on the ppg status
-  def process_high_intensity_consent!
+  def process_high_intensity_conversion!
     return unless converted_high_intensity?
     return if ppg_status.blank?
 
@@ -851,7 +877,7 @@ class Participant < ActiveRecord::Base
     when 7, 8
       # Pregnancy Probability
       follow_low_intensity! if can_follow_low_intensity?
-      follow! if can_follow?
+      follow! if can_follow? && high_intensity?
       impregnate_low! if can_impregnate_low? && known_to_be_pregnant?(event.import_sort_date)
     when 33
       # Lo I Quex

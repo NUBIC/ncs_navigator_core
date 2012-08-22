@@ -169,13 +169,15 @@ describe Participant do
 
   context "after consenting to the high intensity arm" do
 
-    let(:participant) { Factory(:participant, :low_intensity_state => 'moved_to_high_intensity_arm', :high_intensity_state => 'converted_high_intensity') }
+    let(:participant) { Factory(:participant,
+                                :low_intensity_state => 'moved_to_high_intensity_arm',
+                                :high_intensity_state => 'converted_high_intensity') }
 
     describe "a ppg 1 (pregnant) participant" do
       it "is the in the pregnancy_one state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1)
         participant.should be_converted_high_intensity
-        participant.process_high_intensity_consent!
+        participant.process_high_intensity_conversion!
         participant.should be_pregnancy_one
       end
     end
@@ -184,7 +186,7 @@ describe Participant do
       it "is the in the pre_pregnancy state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status2)
         participant.should be_converted_high_intensity
-        participant.process_high_intensity_consent!
+        participant.process_high_intensity_conversion!
         participant.should be_pre_pregnancy
       end
     end
@@ -193,8 +195,50 @@ describe Participant do
       it "is the in the following_high_intensity state" do
         Factory(:ppg_detail, :participant => participant, :ppg_first => status4)
         participant.should be_converted_high_intensity
-        participant.process_high_intensity_consent!
+        participant.process_high_intensity_conversion!
         participant.should be_following_high_intensity
+      end
+    end
+
+  end
+
+  context "after completing the PPG Follow-Up" do
+
+    context "for a non-pregnant participant" do
+      let(:participant) { Factory(:participant,
+                                  :low_intensity_state => 'moved_to_high_intensity_arm',
+                                  :high_intensity_state => 'converted_high_intensity') }
+      let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
+      let(:response_set) { Factory(:response_set, :survey => survey,
+                                   :person => participant.person, :participant => participant) }
+
+      describe "a high intensity participant" do
+        it "moves to the high intensity follow state" do
+          participant.should be_converted_high_intensity
+          participant.update_state_after_survey(response_set, psc)
+          participant.should be_following_high_intensity
+        end
+      end
+    end
+
+    context "for a pregnant participant" do
+      let(:participant) { Factory(:participant,
+                                  :high_intensity => true,
+                                  :low_intensity_state => 'moved_to_high_intensity_arm',
+                                  :high_intensity_state => 'converted_high_intensity') }
+      let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
+      let(:response_set) { Factory(:response_set, :survey => survey,
+                                   :person => participant.person, :participant => participant) }
+
+      describe "a high intensity participant" do
+        it "moves to the high intensity pregnancy_one state" do
+          Factory(:ppg_detail, :participant => participant, :ppg_first => status1,
+                  :orig_due_date => 4.months.from_now.strftime("%m/%d/%Y"))
+
+          participant.should be_converted_high_intensity
+          participant.update_state_after_survey(response_set, psc)
+          participant.should be_pregnancy_one
+        end
       end
     end
 
@@ -311,6 +355,14 @@ describe Participant do
           participant.set_state_for_event_type(event)
           participant.should be_following_low_intensity
         end
+
+        it "should not move within the high intensity state machine arm" do
+          participant.should be_low_intensity
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 8).first)
+          participant.set_state_for_event_type(event)
+          participant.should_not be_following_high_intensity
+        end
+
       end
 
       describe "given Informed Consent" do

@@ -43,7 +43,7 @@
     = render 'people/events_and_contacts'
 
   #instruments_tab
-    = render 'people/survey_responses'
+    = render 'participants/instruments'
 
   #contact_information_tab
     = render 'people/contact_info'
@@ -60,5 +60,7 @@
   #participant_status_history_tab
     = render 'participants/details'
     = render 'participants/ppg_statuses'
-    = render 'participants/participant_state_transitions'
-    = render 'participants/enrollment'
+    - if permit?(Role::SYSTEM_ADMINISTRATOR)
+      = render 'participants/participant_state_transitions'
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+      = render 'participants/enrollment'

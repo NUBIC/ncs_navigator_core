@@ -68,15 +68,71 @@ module Psc
         end
       end
 
-      it_reads_label 'collection',        'collection:biological'
-      it_reads_label 'event',             'event:birth'
-      it_reads_label 'instrument',        'instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
-      it_reads_label 'order',             'order:01_02'
-      it_reads_label 'participant_type',  'participant_type:child'
-      it_reads_label 'references',        'references:ins_que_birth_int_ehpbhi_p2_v2.0'
+      it_reads_label 'collection',        'biological'
+      it_reads_label 'event',             'birth'
+      it_reads_label 'instrument',        'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+      it_reads_label 'order',             '01_02'
+      it_reads_label 'participant_type',  'child'
+      it_reads_label 'references',        'ins_que_birth_int_ehpbhi_p2_v2.0'
     end
 
     shared_examples_for 'an activity state reader' do
+      describe '#open?' do
+        it 'returns true for scheduled activities' do
+          sa.should be_open
+        end
+
+        it 'returns true for conditional activities' do
+          sa.current_state = ScheduledActivity::CONDITIONAL
+
+          sa.should be_open
+        end
+
+        it 'returns false if the state is blank' do
+          sa.current_state = nil
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for canceled activities' do
+          sa.current_state = ScheduledActivity::CANCELED
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for missed activities' do
+          sa.current_state = ScheduledActivity::MISSED
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for occurred activities' do
+          sa.current_state = ScheduledActivity::OCCURRED
+
+          sa.should_not be_open
+        end
+
+        it 'returns false for activities marked N/A' do
+          sa.current_state = ScheduledActivity::NA
+
+          sa.should_not be_open
+        end
+      end
+
+      describe '#closed?' do
+        it 'returns !#open?' do
+          sa.stub!(:open? => false)
+
+          sa.should be_closed
+        end
+
+        it 'returns false if the state is blank' do
+          sa.current_state = nil
+
+          sa.should_not be_closed
+        end
+      end
+
       describe '#scheduled?' do
         it 'returns true for scheduled activities' do
           sa.should be_scheduled
@@ -118,6 +174,24 @@ module Psc
 
       it_should_behave_like 'a label reader'
       it_should_behave_like 'an activity state reader'
+    end
+
+    let(:sa) { ScheduledActivity.new }
+
+    describe '#name' do
+      it 'returns #activity_name' do
+        sa.activity_name = 'foo'
+
+        sa.name.should == 'foo'
+      end
+    end
+
+    describe '#id' do
+      it 'returns #activity_id' do
+        sa.activity_id = 'foo'
+
+        sa.id.should == 'foo'
+      end
     end
   end
 end

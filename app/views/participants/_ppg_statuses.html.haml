@@ -24,6 +24,6 @@
             = ppg.ppg_status
           %td
             = ppg.ppg_status_date
-  - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+  - if permit?(Role::SYSTEM_ADMINISTRATOR)
     %p
       = link_to "Update PPG Status", edit_ppg_status_participant_path(@participant), :class => "fix_link icon_link"

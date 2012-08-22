@@ -374,7 +374,7 @@ describe PscParticipant do
     end
 
     it 'can retrieve an arbitrary activity' do
-      subject.scheduled_activities['352']['activity']['name'].should == 'Bar'
+      subject.scheduled_activities['352'].name.should == 'Bar'
     end
 
     it 'is empty if the schedule is empty' do

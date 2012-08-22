@@ -95,12 +95,7 @@ class PregnancyScreenerOperationalDataExtractor
 
     def extract_data(response_set)
       person = response_set.person
-      if person.participant.blank?
-        participant = Participant.create
-        participant.person = person
-      else
-        participant = person.participant
-      end
+      participant = response_set.participant
 
       primary_rank = OperationalDataExtractor.primary_rank
 
@@ -196,7 +191,7 @@ class PregnancyScreenerOperationalDataExtractor
 
           ppg_detail ||= PpgDetail.where(:response_set_id => response_set.id).first
           if ppg_detail.nil?
-            ppg_detail = PpgDetail.new(:participant => person.participant, :psu => person.psu, :response_set => response_set)
+            ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu, :response_set => response_set)
           end
 
           case data_export_identifier

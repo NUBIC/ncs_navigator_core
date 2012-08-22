@@ -1,0 +1,28 @@
+.page_section
+  - if @person.instruments.blank?
+    .survey
+      No instrument records exist at this time.
+  - else
+    %table.records
+      %tr
+        %th
+          Instrument Record
+        %th
+          Responses
+      - @person.instruments.uniq.each do |instrument|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = link_to "#{instrument.event}", edit_instrument_contact_link_path(instrument.contact_link), :class => "edit_link icon_link"
+          %td
+            - instrument.response_sets.each do |rs|
+              .response_set
+                = link_to "#{rs.survey.title}",
+                  view_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code),
+                  :class => "show_link icon_link"
+                = "(#{rs.participant.person})" if rs.participant
+
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+      %p
+        = link_to "Search for Responses by Data Export Identifier",
+          responses_for_person_path(@person),
+          :class => "search_link icon_link"

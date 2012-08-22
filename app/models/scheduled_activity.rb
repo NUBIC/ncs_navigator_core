@@ -95,13 +95,13 @@ class ScheduledActivity
   ##
   # True if current_state == scheduled
   def scheduled?
-    @current_state == PatientStudyCalendar::ACTIVITY_SCHEDULED
+    @current_state == Psc::ScheduledActivity::SCHEDULED
   end
 
   ##
   # True if current_state == canceled
   def canceled?
-    @current_state == PatientStudyCalendar::ACTIVITY_CANCELED
+    @current_state == Psc::ScheduledActivity::CANCELED
   end
 
   ##

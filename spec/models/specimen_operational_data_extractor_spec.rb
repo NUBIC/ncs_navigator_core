@@ -66,9 +66,7 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).all
-        specimens.should_not be_blank
-        specimens.size.should == 6
+        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 6
 
         specimen_ids.each do |specimen_id|
           Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
@@ -92,9 +90,7 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).all
-        specimens.should_not be_blank
-        specimens.size.should == 1
+        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 1
 
         specimen_ids.each do |specimen_id|
           Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
@@ -110,8 +106,6 @@ describe SpecimenOperationalDataExtractor do
           "AA123456-RD10",
           "AA123456-PP10",
           "AA123456-LV10",
-          # "AA123456-PN10",
-          # "AA123456-AD10",
         ]
 
         take_survey(survey, response_set) do |a|
@@ -119,8 +113,6 @@ describe SpecimenOperationalDataExtractor do
           a.str "SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID", specimen_ids[1]
           a.str "SPEC_BLOOD_TUBE[tube_type=3].SPECIMEN_ID", specimen_ids[2]
           a.str "SPEC_BLOOD_TUBE[tube_type=4].SPECIMEN_ID", specimen_ids[3]
-          # a.str "SPEC_BLOOD_TUBE[tube_type=5].SPECIMEN_ID", specimen_ids[4]
-          # a.str "SPEC_BLOOD_TUBE[tube_type=6].SPECIMEN_ID", specimen_ids[5]
         end
 
         response_set.responses.reload
@@ -128,9 +120,7 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).all
-        specimens.should_not be_blank
-        specimens.size.should == 4
+        Specimen.where(:instrument_id => instrument.id).count.should == 4
 
         specimen_ids.each do |specimen_id|
           Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
@@ -159,9 +149,7 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).all
-        specimens.should_not be_blank
-        specimens.size.should == 6
+        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 6
 
         update_specimen_ids.each do |specimen_id|
           Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
@@ -193,9 +181,7 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).all
-        specimens.should_not be_blank
-        specimens.size.should == 3
+        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 3
 
         specimen_ids.each do |specimen_id|
           Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
@@ -219,9 +205,7 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).all
-        specimens.should_not be_blank
-        specimens.size.should == 1
+        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 1
 
         specimen_ids.each do |specimen_id|
           Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil

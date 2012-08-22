@@ -106,7 +106,7 @@ class Fieldwork < ActiveRecord::Base
 
     new(:start_date => sd, :end_date => ed, :client_id => cid).tap do |f|
       sio = StringIO.new
-      report = Field::ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => PatientStudyCalendar::ACTIVITY_SCHEDULED, :current_user => current_username)
+      report = Field::ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => Psc::ScheduledActivity::SCHEDULED, :current_user => current_username)
       report.logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
       report.staff_id = staff_id
 

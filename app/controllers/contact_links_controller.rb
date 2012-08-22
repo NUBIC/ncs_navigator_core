@@ -239,7 +239,7 @@ class ContactLinksController < ApplicationController
       end
 
       if activity
-        psc.update_activity_state(activity.activity_id, @contact_link.person.participant, PatientStudyCalendar::ACTIVITY_OCCURRED)
+        psc.update_activity_state(activity.activity_id, @contact_link.person.participant, Psc::ScheduledActivity::OCCURRED)
       end
     end
 

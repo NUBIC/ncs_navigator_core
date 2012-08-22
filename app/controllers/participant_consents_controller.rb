@@ -100,7 +100,7 @@ class ParticipantConsentsController < ApplicationController
         if a.consent_activity?
 	        psc.update_activity_state(activity.activity_id,
                                     @contact_link.person.participant,
-                                    PatientStudyCalendar::ACTIVITY_OCCURRED)
+                                    Psc::ScheduledActivity::OCCURRED)
         end
       end
     end

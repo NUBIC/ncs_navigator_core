@@ -80,6 +80,7 @@ class Person < ActiveRecord::Base
   has_many :addresses
   has_many :telephones
   has_many :emails
+  has_many :races, :class_name => "PersonRace", :foreign_key => "person_id"
 
   has_many :household_person_links
   has_many :household_units, :through => :household_person_links

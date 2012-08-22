@@ -60,9 +60,7 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).all
-        samples.should_not be_blank
-        samples.size.should == 3
+        samples = Sample.where(:instrument_id => instrument.id).count.should == 3
 
         sample_ids.each do |sample_id|
           Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
@@ -76,13 +74,11 @@ describe SampleOperationalDataExtractor do
         sample_ids = [
           'EC2224441 – WQ01',
           'EC2224442 – WQ02',
-          # 'EC2224443 – WQ03',
         ]
 
         take_survey(survey, response_set) do |a|
           a.str "TAP_WATER_TWF_SAMPLE[sample_number=1].SAMPLE_ID", sample_ids[0]
           a.str "TAP_WATER_TWF_SAMPLE[sample_number=2].SAMPLE_ID", sample_ids[1]
-          # a.str "TAP_WATER_TWF_SAMPLE[sample_number=3].SAMPLE_ID", sample_ids[2]
         end
 
         response_set.responses.reload
@@ -90,9 +86,7 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).all
-        samples.should_not be_blank
-        samples.size.should == 2
+        samples = Sample.where(:instrument_id => instrument.id).count.should == 2
 
         sample_ids.each do |sample_id|
           Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
@@ -115,9 +109,7 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).all
-        samples.should_not be_blank
-        samples.size.should == 3
+        samples = Sample.where(:instrument_id => instrument.id).count.should == 3
 
         sample_ids.each do |sample_id|
           Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
@@ -142,9 +134,7 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).all
-        samples.should_not be_blank
-        samples.size.should == 1
+        samples = Sample.where(:instrument_id => instrument.id).count.should == 1
 
         sample_ids.each do |sample_id|
           Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
@@ -180,9 +170,7 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).all
-        samples.should_not be_blank
-        samples.size.should == 3
+        samples = Sample.where(:instrument_id => instrument.id).count.should == 3
 
         sample_ids.each do |sample_id|
           Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil

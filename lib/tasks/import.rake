@@ -137,7 +137,7 @@ namespace :import do
 
     events.each do |event|
       reason = "Import task: Rescheduling pending event [#{event.event_id}] #{event.event_type} to #{date}."
-      psc.schedule_pending_event(event, PatientStudyCalendar::ACTIVITY_SCHEDULED, date, reason)
+      psc.schedule_pending_event(event, Psc::ScheduledActivity::SCHEDULED, date, reason)
     end
   end
 end

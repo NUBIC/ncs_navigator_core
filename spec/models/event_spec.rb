@@ -580,7 +580,7 @@ describe Event do
           subject_schedule.each do |s|
             s.study_segment.should == "HI-Intensity: Pregnancy Visit 1"
             s.ideal_date.should == "2012-08-09"
-            s.current_state.should == PatientStudyCalendar::ACTIVITY_SCHEDULED
+            s.current_state.should == Psc::ScheduledActivity::SCHEDULED
           end
 
         end
