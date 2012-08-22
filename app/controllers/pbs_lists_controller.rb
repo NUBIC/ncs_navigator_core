@@ -43,6 +43,17 @@ class PbsListsController < ApplicationController
     end
   end
 
+  def show
+    @pbs_list = PbsList.find(params[:id])
+    @provider = @pbs_list.provider
+    @staff = []
+    PersonnelProviderLink.where(:provider_id => @provider).all.each { |ppl| @staff << ppl.person }
+    respond_to do |format|
+      format.html
+      format.json { render :json => @pbs_list }
+    end
+  end
+
   def create
     @pbs_list = PbsList.new(params[:pbs_list])
 
