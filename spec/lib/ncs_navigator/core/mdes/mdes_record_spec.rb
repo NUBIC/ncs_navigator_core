@@ -175,7 +175,6 @@ module NcsNavigator::Core::Mdes
       let!(:record) { Foo.create }
 
       it "is set to the center's first PSU on create" do
-        pending '#2395'
         record.psu_code.should == 20000030 # test config PSU
       end
 
