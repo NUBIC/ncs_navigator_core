@@ -650,4 +650,28 @@ describe Instrument do
       end
     end
   end
+
+  describe '#sa_end_date' do
+    let(:instrument) { Instrument.new }
+
+    it 'is #instrument_end_date in YYYY-MM-DD format' do
+      instrument.instrument_end_date = '2012-01-01'
+
+      instrument.sa_end_date.should == '2012-01-01'
+    end
+
+    it 'is nil if #instrument_end_date is nil' do
+      instrument.instrument_end_date = nil
+
+      instrument.sa_end_date.should be_nil
+    end
+  end
+
+  describe '#sa_state_change_reason' do
+    let(:instrument) { Instrument.new }
+
+    it 'is "Synchronized from Cases"' do
+      instrument.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
 end

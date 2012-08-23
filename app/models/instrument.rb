@@ -224,6 +224,22 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # The end date for this instrument's scheduled activities.  Returns a string
+  # in YYYY-MM-DD format or nil if no end date is set.
+  #
+  # @return [String, nil]
+  def sa_end_date
+    instrument_end_date.try(:strftime, '%Y-%m-%d')
+  end
+
+  ##
+  # When the scheduled activity states for this instrument are synced, the
+  # string from this method is supplied as the reason.
+  def sa_state_change_reason
+    'Synchronized from Cases'
+  end
+
+  ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]

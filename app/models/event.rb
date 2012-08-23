@@ -335,6 +335,22 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # The end date for this event's scheduled activities.  Returns a string in
+  # YYYY-MM-DD format or nil if no end date is set.
+  #
+  # @return [String, nil]
+  def sa_end_date
+    event_end_date.try(:strftime, '%Y-%m-%d')
+  end
+
+  ##
+  # When the scheduled activity states for this event are synced, the string
+  # from this method is supplied as the reason.
+  def sa_state_change_reason
+    'Synchronized from Cases'
+  end
+
+  ##
   # Checks that the event label and ideal date from PSC
   # matches the event_type and event_start_date
   # @param[ScheduledActivity]

@@ -765,4 +765,28 @@ describe Event do
       end
     end
   end
+
+  describe '#sa_end_date' do
+    let(:event) { Event.new }
+
+    it 'is #event_end_date in YYYY-MM-DD format' do
+      event.event_end_date = '2012-01-01'
+
+      event.sa_end_date.should == '2012-01-01'
+    end
+
+    it 'is nil if #event_end_date is nil' do
+      event.event_end_date = nil
+
+      event.sa_end_date.should be_nil
+    end
+  end
+
+  describe '#sa_state_change_reason' do
+    let(:event) { Event.new }
+
+    it 'is "Synchronized from Cases"' do
+      event.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
 end
