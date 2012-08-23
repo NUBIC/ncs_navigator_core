@@ -39,7 +39,7 @@
 
 # A Person, an Institution and a Provider will have at least one and sometimes many phone numbers.
 class Telephone < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :phone_id, :date_fields => [:phone_start_date, :phone_end_date]
 
   belongs_to :person

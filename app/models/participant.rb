@@ -40,7 +40,7 @@
 class Participant < ActiveRecord::Base
   class << self; attr_accessor :importer_mode_on; end
 
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
 
   acts_as_mdes_record :public_id_field => :p_id
 

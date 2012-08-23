@@ -36,7 +36,7 @@
 #  * New association with household
 #
 class DwellingUnit < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :du_id
 
   has_many :dwelling_household_links

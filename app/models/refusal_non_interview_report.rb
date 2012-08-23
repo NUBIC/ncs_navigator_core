@@ -18,7 +18,7 @@
 
 
 class RefusalNonInterviewReport < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :nir_refusal_id
 
   belongs_to :non_interview_report

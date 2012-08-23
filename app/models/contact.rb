@@ -40,7 +40,7 @@
 # The scope of a Contact may include one or more Events, one or more
 # Instruments in an Event and one or more Specimens that some Instruments collect.
 class Contact < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :contact_id, :date_fields => [:contact_date]
 
   TELEPHONE_CONTACT_CODE = 3

@@ -52,7 +52,7 @@
 
 
 class NonInterviewReport < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :nir_id, :date_fields => [:date_available, :date_moved]
 
   belongs_to :contact

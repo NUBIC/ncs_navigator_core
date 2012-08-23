@@ -23,7 +23,7 @@
 
 # Table for types of forms used to obtain authorizations from the Participant.
 class ParticipantAuthorizationForm < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :auth_form_id
 
   belongs_to :participant

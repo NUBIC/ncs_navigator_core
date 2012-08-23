@@ -27,7 +27,7 @@
 #
 
 class SampleShipping < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :sample_id
 
   belongs_to :sample_receipt_shipping_center

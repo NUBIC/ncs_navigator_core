@@ -35,7 +35,7 @@
 #
 
 class PbsList < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :pbs_list_id
 
   belongs_to :provider

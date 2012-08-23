@@ -19,7 +19,7 @@
 #
 
 class SpecimenPickup < ActiveRecord::Base
-  # include MdesRecord
+  # include NcsNavigator::Core::Mdes::MdesRecord
 
   belongs_to :specimen_processing_shipping_center
   belongs_to :event

@@ -43,7 +43,7 @@
 # Once a household is identified it continues to be associated with the participant(s) and people related to them.
 #
 class HouseholdUnit < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :hh_id
 
   ncs_coded_attribute :psu,            'PSU_CL1'
