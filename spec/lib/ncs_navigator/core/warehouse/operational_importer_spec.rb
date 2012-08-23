@@ -454,6 +454,10 @@ module NcsNavigator::Core::Warehouse
           first_history_entry.ppg_comment.should ==
             'Missing history entry inferred from ppg_details.ppg_first during import into NCS Navigator.'
         end
+
+        it 'has the PSU ID set' do
+          first_history_entry.psu_code.should == 20000030
+        end
       end
 
       describe 'when the source history is missing the initial status' do
