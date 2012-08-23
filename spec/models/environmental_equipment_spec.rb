@@ -46,7 +46,6 @@ describe EnvironmentalEquipment do
       ee.save!
  
       obj = EnvironmentalEquipment.find(ee.id)
-      obj.psu.local_code.should == -4      
       obj.equipment_type.local_code.should == -4
       obj.retired_reason.local_code.should == -4
     end

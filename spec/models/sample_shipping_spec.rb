@@ -53,7 +53,6 @@ describe SampleShipping do
       ss.save!
  
       obj = SampleShipping.find(ss.id)
-      obj.psu.local_code.should == -4      
       obj.shipper_destination.local_code.should == -4
       obj.shipment_coolant.local_code.should == -4
       obj.sample_shipped_by.local_code.should == -4
