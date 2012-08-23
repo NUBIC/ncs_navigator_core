@@ -33,6 +33,8 @@ class SpecimenShipping < ActiveRecord::Base
   has_many :specimen_storage_containers
   has_many :ship_specimens
   
+  has_many :specimen_receipt_confirmations
+  
   accepts_nested_attributes_for :ship_specimens, :allow_destroy => true
   
   # has_many :specimen_receipts, :primary_key => :storage_container_id, :foreign_key => :storage_container_id

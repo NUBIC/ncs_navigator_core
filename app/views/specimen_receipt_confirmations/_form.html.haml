@@ -1,9 +1,8 @@
 .page_section
   = form_for(specimen_receipt_confirmation) do |f| 
-    = f.object.inspect  
     = render "shared/custom_error_messages", :object => f.object
     = "Followed is required for selected specimen " 
-    = specimen_receipt_confirmation.specimen_id
+    = specimen_receipt_confirmation.specimen.specimen_id
     
     %br
     %b
@@ -25,26 +24,31 @@
     = specimen_receipt_confirmation.shipper_id
     = f.hidden_field :shipper_id
   
+    -#TODO - verify about getting this part working without extra object passing in
     %br
-    = f.label :shipment_tracking_number_id, "Shipment Tracking Number:"
-    = specimen_receipt_confirmation.shipment_tracking_number_id
-    = f.hidden_field :shipment_tracking_number_id
-  -#
+    = f.label :specimen_shipping_id, "Shipment Tracking Number:"
+    -# = @specimen_shipping.shipment_tracking_number
+    = f.object.specimen_shipping.shipment_tracking_number
+    = f.hidden_field :specimen_shipping_id
+
     %br
     = f.label :shipment_receipt_datetime, "Shipment Receipt Date and Time: "
-    = f.text_field :shipment_receipt_datetime, :class => "datetime important_field", :id => "datetime_"+specimen_receipt_confirmation.specimen_id
+    = f.text_field :shipment_receipt_datetime, :class => "datetime important_field", :id => "datetime_"+specimen_receipt_confirmation.specimen.specimen_id
     %span{ :class => "required" } *    
     %br  
+
     = render "shared/ncs_code_select", { :f => f, :code => :shipment_receipt_confirmed_code, :label_text => "Shipment Receipt Confirmed Code:", :html_attrs => { :class => "important_field" }}  
     %span{ :class => "required" } *    
     %br
+
     = render "shared/ncs_code_select", { :f => f, :code => :shipment_condition_code, :label_text => "Shipment Condition Code:", :html_attrs => { :class => "important_field" }} 
     %span{ :class => "required" } *    
     %br
+
     = f.label :shipment_damaged_reason, "Shipment Damaged Reason:"
     = f.text_field :shipment_damaged_reason
-  
     %br
+  
     = f.label :specimen_receipt_temp, "Specimen Receipt Temp (in Celsius):"
     = f.text_field :specimen_receipt_temp, :class => "important_field"
     %span{ :class => "required" } *

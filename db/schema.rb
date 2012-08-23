@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120816143426) do
+ActiveRecord::Schema.define(:version => 20120822153536) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -1237,7 +1236,7 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
     t.integer  "specimen_processing_shipping_center_id"
     t.integer  "shipment_receipt_confirmed_code",                                                    :null => false
     t.string   "shipper_id",                                                                         :null => false
-    t.integer  "shipment_tracking_number_id",                                                        :null => false
+    t.integer  "specimen_shipping_id",                                                               :null => false
     t.datetime "shipment_receipt_datetime",                                                          :null => false
     t.integer  "shipment_condition_code",                                                            :null => false
     t.string   "shipment_damaged_reason"
@@ -1522,7 +1521,7 @@ ActiveRecord::Schema.define(:version => 20120816143426) do
 
   add_foreign_key "specimen_processing_shipping_centers", "addresses", :name => "specimen_processing_shipping_centers_addresses_fk"
 
-  add_foreign_key "specimen_receipt_confirmations", "specimen_shippings", :name => "specimen_receipt_confirmations_specimen_shippings_fk", :column => "shipment_tracking_number_id"
+  add_foreign_key "specimen_receipt_confirmations", "specimen_shippings", :name => "specimen_receipt_confirmations_specimen_shippings_fk"
   add_foreign_key "specimen_receipt_confirmations", "specimens", :name => "specimen_receipt_confirmations_specimens_fk"
 
   add_foreign_key "specimen_receipts", "specimen_storage_containers", :name => "specimen_receipts_specimen_storage_containers_fk"

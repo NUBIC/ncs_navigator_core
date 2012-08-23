@@ -90,10 +90,15 @@ class SampleProcessesController < ApplicationController
   def array_of_shipped_and_not_received_samples
     SampleShipping.all.select{ |ss| SampleReceiptConfirmation.where(:sample_id => ss.sample_id).blank? }
   end
-
+  
+  # Array of specimen_shippings where some or all of the specimens are not confirmed.
   def array_of_shipped_and_not_received_specimens
-    SpecimenShipping.all.select{ |ss| SpecimenReceiptConfirmation.where(:shipment_tracking_number_id => ss.id).blank?}
-    # SpecimenShipping.all.select{ |ss| SpecimenReceipt.where(:specimen_storage_container_id => ss.specimen_storage_container_id).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.specimen_id).any?}.any? }
+    specimens_not_confirmed = Specimen.joins(:specimen_receipt => [ {:specimen_storage_container => :specimen_shipping}]).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.id).any?}
+    array_of_spec_shipping_ids = ActiveRecord::Base.connection.select_all("SELECT DISTINCT specimen_shipping_id FROM specimen_storage_containers ssc 
+      INNER JOIN specimen_receipts r ON ssc.id = r.specimen_storage_container_id INNER JOIN specimens s ON r.specimen_id = s.id WHERE s.id IN (#{specimens_not_confirmed.collect(&:to_param).map{|a| "'#{a}'"}.join(',')})")
+    specimen_shipping_ids = array_of_spec_shipping_ids.map{|z| z["specimen_shipping_id"]}
+    spec_shippings = SpecimenShipping.where(:id => specimen_shipping_ids)
+    return spec_shippings
   end
 
   def hash_from_array_by_track_num(array_of_samples)

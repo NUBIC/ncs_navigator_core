@@ -119,6 +119,44 @@ $(function() {
     location.reload();
   })
   
+  $('#sample_generate_manifest').live('click',
+  function() {
+    var form = $(this).closest('form');
+    var div = $(form).closest('div');
+    var submitInput = $(this)
+    $.ajax({
+     type: $(form).attr('method'),
+     url: $(form).attr('action'),
+     data: $(form).serializeArray(),
+     dataType: 'script',
+    
+     success: function(response) {
+       // TODO - was there before. might want to keep it?
+       $(".display").html(response);
+  
+       // var url = /specimen_shippings/ + response.specimen_shipping.id + ' form'
+       // $(div).load(url);       
+       
+     },
+     error: function(xhr, ajaxOptions, thrownError) {
+       $(submitInput).removeAttr('disabled');
+       $(submitInput).val('Submit')
+       var errors = $.parseJSON(xhr.responseText);
+         errorText = "<h2>There were errors with the submission:</h2><ul>";
+         for (error in errors) {
+             errorText += "<li>" + error + ': ' + errors[error] + "</li> ";
+         }
+         errorText += "</ul>";
+         if (!$('#errorExplanation').length) {
+             $(form).prepend('<div id="errorExplanation" class="errorExplanation"/>')
+         };
+         $('#errorExplanation').html(errorText);
+       }
+    });
+    return false;
+  });  
+  
+  
   $('#generate_manifest').live('click',
   function() {
     var form = $(this).closest('form');

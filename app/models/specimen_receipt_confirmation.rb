@@ -25,6 +25,9 @@
 
 class SpecimenReceiptConfirmation < ActiveRecord::Base
   belongs_to :specimen_processing_shipping_center
+  belongs_to :specimen
+  
+  belongs_to :specimen_shipping
 
   # ncs_coded_attribute :specimen_condition,                'SPECIMEN_STATUS_CL7'
 
@@ -33,7 +36,7 @@ class SpecimenReceiptConfirmation < ActiveRecord::Base
   belongs_to :shipment_condition, :conditions => "list_name = 'SHIPMENT_CONDITION_CL1'", :foreign_key => "shipment_condition_code", :class_name => 'NcsCode', :primary_key => :local_code  
   
   validates_presence_of :shipper_id
-  validates_presence_of :shipment_tracking_number
+  # validates_presence_of :shipment_tracking_number
   validates_presence_of :shipment_receipt_datetime
   validates_presence_of :specimen_id
   validates_presence_of :shipment_received_by

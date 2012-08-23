@@ -19,5 +19,6 @@ class Specimen < ActiveRecord::Base
   has_one :specimen_receipt
   has_one :ship_specimen
   validates_presence_of :instrument_id
+  has_one :specimen_receipt_confirmation
 end
 
