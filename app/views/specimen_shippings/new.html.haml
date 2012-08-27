@@ -53,7 +53,7 @@
     %br
   
     = f.label "Ship Date:"
-    = f.text_field :shipment_date, :class => "datetime important_field"
+    = f.text_field :shipment_date, :class => "date important_field"
     %span{ :class => "required" } *
     %br
 
@@ -108,5 +108,5 @@
     %br
 
   = submit_tag "Generate Manifest", :class => "generate_manifest", :id => "generate_manifest"
-  %input{:type=>"button", :class => "exit_shipping", :value =>"Exit"}
+  %input{:type=>"button", :class => "exit_and_no_refresh", :value =>"Exit"}
 

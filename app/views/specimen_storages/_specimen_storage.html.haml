@@ -51,5 +51,8 @@
   
   - text = method == :new ? "Store" : "Update"
   - clazz = method == :new ? "spec_stored" : "update_spec_stored"
+  - exit_clazz = method == :new ? "exit_and_no_refresh" : "exit_and_refresh"
 
   = f.submit text, :disable_with => 'Submitting...', :class => clazz
+  - unless @in_edit_mode
+    %input{:type=>"button", :class => exit_clazz, :value =>"Exit"}

@@ -76,5 +76,7 @@
 
   - text = method == :new ? "Receive" : "Update"
   - clazz = method == :new ? "sample_received" : "update_sample_received"
+  - exit_clazz = method == :new ? "exit_and_no_refresh" : "exit_and_refresh"
 
   = s.submit text, :disable_with => 'Submitting...', :class => clazz
+  %input{:type=>"button", :class => exit_clazz, :value =>"Exit"}

@@ -7,7 +7,6 @@ $(function() {
      type: $(form).attr('method'),
      url: $(form).attr('action'),
      data: $(form).serializeArray(),
-     dataType: 'script',
     
      success: function(response) {
        $("#process_tabs").children().each(function(){$(this).remove()})

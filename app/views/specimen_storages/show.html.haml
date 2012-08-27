@@ -45,4 +45,6 @@
       = "Temperature event - High Temperature"
       = f.object.temp_event_high_temp
     %br
-  = link_to 'Edit', edit_specimen_storage_path(:id => @specimen_storage), :class => "edit_link icon_link specimen_storage_edit"
+  = link_to 'Edit', edit_specimen_storage_path(:id => @specimen_storage, :in_edit_mode => @in_edit_mode), :class => "edit_link icon_link specimen_storage_edit"
+  - unless @in_edit_mode
+    %input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}  

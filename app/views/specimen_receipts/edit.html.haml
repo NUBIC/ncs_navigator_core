@@ -66,4 +66,8 @@
   = f.text_field :specimen_equipment_id
   %br
   
+  = hidden_field_tag :in_edit_mode, @in_edit_mode
+  
   = f.submit "Update", :disable_with => 'Submitting...', :class => "update_sample_received"
+  - unless @in_edit_mode
+    %input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}

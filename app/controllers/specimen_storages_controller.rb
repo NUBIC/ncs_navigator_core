@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 class SpecimenStoragesController < ApplicationController
+  before_filter do
+    @in_edit_mode = params[:in_edit_mode] == 'true'
+  end
+  
   def new
     @specimen_storage_container = SpecimenStorageContainer.where(:id => params[:container_id]).first
     @specimen_storage = @specimen_storage_container.build_specimen_storage()

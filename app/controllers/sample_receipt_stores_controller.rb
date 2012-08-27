@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 class SampleReceiptStoresController < ApplicationController
+  before_filter do
+    @in_edit_mode = params[:in_edit_mode] == 'true'
+  end
 
   def new
     @sample_receipt_store = SampleReceiptStore.new(:sample_id => params[:sample_id])
