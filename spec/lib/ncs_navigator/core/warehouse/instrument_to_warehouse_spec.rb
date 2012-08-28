@@ -14,595 +14,592 @@ module NcsNavigator::Core::Warehouse
       NcsNavigator::Warehouse::Configuration.new
     }
 
-    let(:questions_dsl) {
-      <<-DSL
-      q_health "Would you say your health in general is...",
-        :pick=>:one,
-        :data_export_identifier=>"PRE_PREG.HEALTH"
-        a_1 "Excellent"
-        a_2 "Very good,"
-        a_3 "Good,"
-        a_4 "Fair, or"
-        a_5 "Poor?"
-        a_neg_1 "Refused"
-        a_neg_2 "Don't know"
-      DSL
-    }
-    let(:survey) {
-      load_survey_string(<<-SURVEY)
-survey "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1" do
-  section "Interview introduction" do
-    #{questions_dsl}
-  end
-end
-      SURVEY
-    }
-    let(:questions) { survey.sections_with_questions.collect(&:questions).flatten }
-    let(:questions_map) { questions.inject({}) { |h, q| h[q.reference_identifier] = q; h } }
-
-    let(:event_participant) { Factory(:participant) }
-    let(:event) { Factory(:mdes_min_event, :participant => event_participant) }
+    let(:mother_participant) { Factory(:participant) }
+    let(:event) { Factory(:mdes_min_event, :participant => mother_participant) }
     let(:instrument) { Factory(:instrument, :event => event) }
-    let(:rs_participant) { Factory(:participant) }
-    let(:response_set) {
-      ResponseSet.new.tap { |rs|
-        rs.survey = survey
-        rs.instrument = instrument
-        rs.participant = rs_participant
-        rs.save!
-      }
-    }
 
     let(:records) { instrument.to_mdes_warehouse_records(wh_config) }
-
-    def create_response_for(question)
-      response_set.responses.build(:question => question).tap { |r|
-        yield r
-        r.save!
-      }
-    end
 
     before do
       Survey.mdes_reset!
     end
 
-    context 'external references' do
-      let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pre_preg' } }
-      let(:question) { questions_map['health'] }
-      let!(:response) {
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text('Excellent')
-        }
-      }
-
-      it "has a primary key based on the response set access code" do
-        response_set.access_code.should_not be_nil # test setup
-        primary.key.first.should include(response_set.access_code)
-      end
-
-      it 'uses the imported ID as the PK if the responses were imported' do
-        response.source_mdes_table = 'pre_preg'
-        response.source_mdes_id = 'Eleventy-two'
-        response.save!
-
-        primary.key.first.should == 'Eleventy-two'
-      end
-
-      it 'uses the public ID for the associated event' do
-        primary.event_id.should == event.public_id
-      end
-
-      it 'uses the event type from the associated event' do
-        event.event_type_code.should_not be_nil # test setup
-        primary.event_type.should == event.event_type_code.to_s
-      end
-
-      it 'uses the event repeat from the associated event' do
-        event.update_attribute(:event_repeat_key, 3)
-        primary.event_repeat_key.should == '3'
-      end
-
-      it 'uses the public ID for the associated instrument' do
-        primary.instrument_id.should == instrument.public_id
-      end
-
-      it 'uses the instrument repeat from the associated instrument' do
-        instrument.update_attribute(:instrument_repeat_key, 2)
-        primary.instrument_repeat_key.should == '2'
-      end
-
-      it 'uses the instrument version from the associated instrument' do
-        instrument.instrument_version.should_not be_nil # test setup
-        primary.instrument_version.should == instrument.instrument_version
-      end
-
-      it 'uses the instrument type from the associated instrument' do
-        instrument.instrument_type.should_not be_nil # test setup
-        primary.instrument_type.should == instrument.instrument_type_code.to_s
-      end
-
-      it 'uses the public ID for the participant associated with the response set' do
-        primary.p_id.should == rs_participant.public_id
-      end
-
-      it 'uses the public ID for the dwelling unit' do
-        pending 'Is this necessary? Documentation scarce.'
-      end
-
-      it 'uses the public ID for the household unit' do
-        pending 'Needs a different instrument'
-      end
-    end
-
-    describe 'with a purely coded question' do
-      let(:question) { questions_map['health'] }
-
-      it 'sets a positive code correctly' do
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text('Poor?')
-        }
-
-        records.first.health.should == '5'
-      end
-
-      it 'sets a negative code correctly' do
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text('Refused')
-        }
-
-        records.first.health.should == '-1'
-      end
-    end
-
-    describe 'with a code-or-text question' do
-      let(:question) { questions_map['r_fname'] }
-
+    describe 'for a single-survey instrument' do
       let(:questions_dsl) {
         <<-DSL
-          q_r_fname "First name",
+        q_health "Would you say your health in general is...",
           :pick=>:one,
-          :data_export_identifier=>"PRE_PREG.R_FNAME"
-          a :string
+          :data_export_identifier=>"PRE_PREG.HEALTH"
+          a_1 "Excellent"
+          a_2 "Very good,"
+          a_3 "Good,"
+          a_4 "Fair, or"
+          a_5 "Poor?"
           a_neg_1 "Refused"
           a_neg_2 "Don't know"
         DSL
       }
+      let(:survey) {
+        load_survey_questions_string(questions_dsl)
+      }
+      let(:questions) { survey.sections_with_questions.collect(&:questions).flatten }
+      let(:questions_map) { questions.inject({}) { |h, q| h[q.reference_identifier] = q; h } }
 
-      it 'uses the text if set' do
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_response_class('string')
-          r.string_value = 'Linda'
+      let(:rs_participant) { Factory(:participant) }
+      let(:response_set) {
+        ResponseSet.new.tap { |rs|
+          rs.survey = survey
+          rs.instrument = instrument
+          rs.participant = rs_participant
+          rs.save!
         }
-
-        records.first.r_fname.should == 'Linda'
-      end
-
-      it 'uses the coded value if set' do
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text("Don't know")
-        }
-
-        records.first.r_fname.should == '-2'
-      end
-    end
-
-    describe 'with a multivalued question' do
-      let(:questions_dsl) {
-        <<-DSL
-          q_PERSON_DOB "What is your date of birth?",
-          :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob
-          is required to determine eligibility. If response was determined to be invalid, ask question again and probe for
-          valid response. Verify if calculated age is less than local age of majority.",
-          :pick => :one,
-          :data_export_identifier=>"FATHER_PV1.PERSON_DOB"
-          a "Date", :string, :custom_class => "date"
-          a_neg_1 "Refused"
-          a_neg_2 "Don't know"
-
-          q_EDUC "What is the highest degree or level of school that you have completed?",
-          :help_text => "Show response options on card to participant. Select all that apply.",
-          :pick => :any,
-          :data_export_identifier=>"FATHER_PV1_EDUC.EDUC"
-          a_1 "Less than a high school diploma or GED"
-          a_2 "High school diploma or GED"
-          a_3 "Some college but no degree"
-          a_4 "Associate degree"
-          a_5 "Bachelor’s degree (e.g., BA, BS)"
-          a_6 "Post graduate degree (e.g., Masters or Doctoral)"
-          a_neg_1 "Refused"
-          a_neg_2 "Don't know"
-        DSL
       }
 
-      let(:primary_question) { questions_map['PERSON_DOB'] }
-      let(:question) { questions_map['EDUC'] }
-
-      let(:primary) { records.detect { |r| r.class.mdes_table_name == 'father_pv1' } }
-      let(:secondary) { records.select { |r| r.class.mdes_table_name == 'father_pv1_educ' } }
-
-      before do
-        create_response_for(question) { |r|
-          r.answer = question.answers.find_by_text("High school diploma or GED") or fail
-        }
-        create_response_for(question) { |r|
-          r.answer = question.answers.
-            find_by_text("Post graduate degree (e.g., Masters or Doctoral)") or fail
-        }
-        create_response_for(primary_question) { |r|
-          r.answer = primary_question.answers.find_by_response_class('string')
-          r.string_value = '1967-04-07'
-        }
-      end
-
-      it 'yields the primary record first' do
-        records.collect { |r| r.class.mdes_table_name }.
-          should == %w(father_pv1 father_pv1_educ father_pv1_educ)
-      end
-
-      it 'produces one record per answered question' do
-        secondary.size.should == 2
-      end
-
-      it 'codes the multiple records correctly' do
-        secondary.collect(&:educ).sort.should == %w(2 6)
-      end
-
-      it 'associates the subrecords with the parent ID' do
-        primary.key.should_not be_nil
-        secondary.collect(&:father_id).uniq.should == [primary.key.first]
-      end
-
-      it 'associates the subrecords with the parent instance' do
-        primary.key.should_not be_nil
-        secondary.collect(&:father).uniq.should == [primary]
-      end
-
-      it 'gives each subrecord a unique ID' do
-        secondary.collect(&:father_educ_id).uniq.size.should == 2
-      end
-
-      it 'reuses the imported IDs if the responses were imported' do
-        Response.find_all_by_question_id(question).each_with_index do |r, i|
-          r.source_mdes_table = 'father_pv1_educ'
-          r.source_mdes_id = i.to_s * 4
+      def create_response_for(question)
+        response_set.responses.build(:question => question).tap { |r|
+          yield r
           r.save!
+        }
+      end
+
+      context 'external references' do
+        let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pre_preg' } }
+        let(:question) { questions_map['health'] }
+        let!(:response) {
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text('Excellent')
+          }
+        }
+
+        it "has a primary key based on the response set access code" do
+          response_set.access_code.should_not be_nil # test setup
+          primary.key.first.should include(response_set.access_code)
         end
 
-        secondary.collect(&:father_educ_id).sort.should == %w(0000 1111)
+        it 'uses the imported ID as the PK if the responses were imported' do
+          response.source_mdes_table = 'pre_preg'
+          response.source_mdes_id = 'Eleventy-two'
+          response.save!
+
+          primary.key.first.should == 'Eleventy-two'
+        end
+
+        it 'uses the public ID for the associated event' do
+          primary.event_id.should == event.public_id
+        end
+
+        it 'uses the event type from the associated event' do
+          event.event_type_code.should_not be_nil # test setup
+          primary.event_type.should == event.event_type_code.to_s
+        end
+
+        it 'uses the event repeat from the associated event' do
+          event.update_attribute(:event_repeat_key, 3)
+          primary.event_repeat_key.should == '3'
+        end
+
+        it 'uses the public ID for the associated instrument' do
+          primary.instrument_id.should == instrument.public_id
+        end
+
+        it 'uses the instrument repeat from the associated instrument' do
+          instrument.update_attribute(:instrument_repeat_key, 2)
+          primary.instrument_repeat_key.should == '2'
+        end
+
+        it 'uses the instrument version from the associated instrument' do
+          instrument.instrument_version.should_not be_nil # test setup
+          primary.instrument_version.should == instrument.instrument_version
+        end
+
+        it 'uses the instrument type from the associated instrument' do
+          instrument.instrument_type.should_not be_nil # test setup
+          primary.instrument_type.should == instrument.instrument_type_code.to_s
+        end
+
+        it 'uses the public ID for the participant associated with the response set' do
+          primary.p_id.should == rs_participant.public_id
+        end
+
+        it 'uses the public ID for the dwelling unit' do
+          pending 'Is this necessary? Documentation scarce.'
+        end
+
+        it 'uses the public ID for the household unit' do
+          pending 'Needs a different instrument'
+        end
       end
-    end
 
-    describe 'with a multivalued question with an "other" option' do
-      let(:questions_dsl) {
-        <<-DSL
-          q_RENOVATE "In the last 6 months, have any additions been built onto your home to make it bigger or renovations or other
-          construction been done in your home? Include only major projects. Do not count smaller projects, such as painting, wallpapering,
-          carpeting or re-finishing floors.",
-          :pick => :one,
-          :data_export_identifier=>"TWELVE_MTH_MOTHER.RENOVATE"
-          a_1 "Yes"
-          a_2 "No"
-          a_neg_1 "Refused"
-          a_neg_2 "Don't know"
+      describe 'with a purely coded question' do
+        let(:question) { questions_map['health'] }
 
-          q_RENOVATE_ROOM "Which rooms were renovated?",
-          :help_text => "Probe: Any others? Select all that apply.",
-          :pick => :any,
-          :data_export_identifier=>"TWELVE_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM"
-          a_1 "Kitchen"
-          a_2 "Living room"
-          a_3 "Hall/landing"
-          a_4 "{C_FNAME}’s bedroom"
-          a_5 "Other bedroom"
-          a_6 "Bathroom/toilet"
-          a_7 "Basement"
-          a_neg_5 "Other"
-          a_neg_1 "Refused"
-          a_neg_2 "Don't know"
+        it 'sets a positive code correctly' do
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text('Poor?')
+          }
 
-          q_RENOVATE_ROOM_OTH "Other room",
-          :pick => :one,
-          :data_export_identifier=>"TWELVE_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM_OTH"
-          a "Specify", :string
-          a_neg_1 "Refused"
-          a_neg_2 "Don't know"
-        DSL
-      }
+          records.first.health.should == '5'
+        end
 
-      let(:primary_question) { questions_map['RENOVATE'] }
-      let(:question) { questions_map['RENOVATE_ROOM'] }
-      let(:other) { questions_map['RENOVATE_ROOM_OTH'] }
+        it 'sets a negative code correctly' do
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text('Refused')
+          }
 
-      let(:primary) { records.detect { |r| r.class.mdes_table_name == 'twelve_mth_mother' } }
-      let(:secondary) {
-        records.select { |r| r.class.mdes_table_name == 'twelve_mth_mother_renovate_room' }
-      }
+          records.first.health.should == '-1'
+        end
+      end
 
-      before do
-        create_response_for(primary_question) { |r|
-          r.answer = primary_question.answers.find_by_text("Yes") or fail
+      describe 'with a code-or-text question' do
+        let(:question) { questions_map['r_fname'] }
+
+        let(:questions_dsl) {
+          <<-DSL
+            q_r_fname "First name",
+            :pick=>:one,
+            :data_export_identifier=>"PRE_PREG.R_FNAME"
+            a :string
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+          DSL
         }
+
+        it 'uses the text if set' do
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_response_class('string')
+            r.string_value = 'Linda'
+          }
+
+          records.first.r_fname.should == 'Linda'
+        end
+
+        it 'uses the coded value if set' do
+          create_response_for(question) { |r|
+            r.answer = question.answers.find_by_text("Don't know")
+          }
+
+          records.first.r_fname.should == '-2'
+        end
       end
 
-      describe 'when multiple options are selected' do
+      describe 'with a multivalued question' do
+        let(:questions_dsl) {
+          <<-DSL
+            q_PERSON_DOB "What is your date of birth?",
+            :help_text => "If participant refuses to provide information, re-state confidentiality protections and that dob
+            is required to determine eligibility. If response was determined to be invalid, ask question again and probe for
+            valid response. Verify if calculated age is less than local age of majority.",
+            :pick => :one,
+            :data_export_identifier=>"FATHER_PV1.PERSON_DOB"
+            a "Date", :string, :custom_class => "date"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_EDUC "What is the highest degree or level of school that you have completed?",
+            :help_text => "Show response options on card to participant. Select all that apply.",
+            :pick => :any,
+            :data_export_identifier=>"FATHER_PV1_EDUC.EDUC"
+            a_1 "Less than a high school diploma or GED"
+            a_2 "High school diploma or GED"
+            a_3 "Some college but no degree"
+            a_4 "Associate degree"
+            a_5 "Bachelor’s degree (e.g., BA, BS)"
+            a_6 "Post graduate degree (e.g., Masters or Doctoral)"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+          DSL
+        }
+
+        let(:primary_question) { questions_map['PERSON_DOB'] }
+        let(:question) { questions_map['EDUC'] }
+
+        let(:primary) { records.detect { |r| r.class.mdes_table_name == 'father_pv1' } }
+        let(:secondary) { records.select { |r| r.class.mdes_table_name == 'father_pv1_educ' } }
+
         before do
           create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text("Kitchen") or fail
+            r.answer = question.answers.find_by_text("High school diploma or GED") or fail
           }
           create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text("Other") or fail
+            r.answer = question.answers.
+              find_by_text("Post graduate degree (e.g., Masters or Doctoral)") or fail
           }
-          create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text("Other bedroom") or fail
-          }
-          create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text("Don't know") or fail
-          }
-          create_response_for(other) { |r|
-            r.answer = other.answers.find_by_response_class('string') or fail
-            r.string_value = 'Carriage house'
+          create_response_for(primary_question) { |r|
+            r.answer = primary_question.answers.find_by_response_class('string')
+            r.string_value = '1967-04-07'
           }
         end
 
-        it 'records the other answer in the same record as the other value' do
-          secondary.find { |rec| rec.renovate_room == '-5' }.
-            renovate_room_oth.should == 'Carriage house'
+        it 'yields the primary record first' do
+          records.collect { |r| r.class.mdes_table_name }.
+            should == %w(father_pv1 father_pv1_educ father_pv1_educ)
         end
 
-        it 'does not record the other answer in any of the other responses' do
-          secondary.reject { |rec| rec.renovate_room == '-5' }.each do |rec|
-            rec.renovate_room_oth.should be_nil
+        it 'produces one record per answered question' do
+          secondary.size.should == 2
+        end
+
+        it 'codes the multiple records correctly' do
+          secondary.collect(&:educ).sort.should == %w(2 6)
+        end
+
+        it 'associates the subrecords with the parent ID' do
+          primary.key.should_not be_nil
+          secondary.collect(&:father_id).uniq.should == [primary.key.first]
+        end
+
+        it 'associates the subrecords with the parent instance' do
+          primary.key.should_not be_nil
+          secondary.collect(&:father).uniq.should == [primary]
+        end
+
+        it 'gives each subrecord a unique ID' do
+          secondary.collect(&:father_educ_id).uniq.size.should == 2
+        end
+
+        it 'reuses the imported IDs if the responses were imported' do
+          Response.find_all_by_question_id(question).each_with_index do |r, i|
+            r.source_mdes_table = 'father_pv1_educ'
+            r.source_mdes_id = i.to_s * 4
+            r.save!
+          end
+
+          secondary.collect(&:father_educ_id).sort.should == %w(0000 1111)
+        end
+      end
+
+      describe 'with a multivalued question with an "other" option' do
+        let(:questions_dsl) {
+          <<-DSL
+            q_RENOVATE "In the last 6 months, have any additions been built onto your home to make it bigger or renovations or other
+            construction been done in your home? Include only major projects. Do not count smaller projects, such as painting, wallpapering,
+            carpeting or re-finishing floors.",
+            :pick => :one,
+            :data_export_identifier=>"TWELVE_MTH_MOTHER.RENOVATE"
+            a_1 "Yes"
+            a_2 "No"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_RENOVATE_ROOM "Which rooms were renovated?",
+            :help_text => "Probe: Any others? Select all that apply.",
+            :pick => :any,
+            :data_export_identifier=>"TWELVE_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM"
+            a_1 "Kitchen"
+            a_2 "Living room"
+            a_3 "Hall/landing"
+            a_4 "{C_FNAME}’s bedroom"
+            a_5 "Other bedroom"
+            a_6 "Bathroom/toilet"
+            a_7 "Basement"
+            a_neg_5 "Other"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_RENOVATE_ROOM_OTH "Other room",
+            :pick => :one,
+            :data_export_identifier=>"TWELVE_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM_OTH"
+            a "Specify", :string
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+          DSL
+        }
+
+        let(:primary_question) { questions_map['RENOVATE'] }
+        let(:question) { questions_map['RENOVATE_ROOM'] }
+        let(:other) { questions_map['RENOVATE_ROOM_OTH'] }
+
+        let(:primary) { records.detect { |r| r.class.mdes_table_name == 'twelve_mth_mother' } }
+        let(:secondary) {
+          records.select { |r| r.class.mdes_table_name == 'twelve_mth_mother_renovate_room' }
+        }
+
+        before do
+          create_response_for(primary_question) { |r|
+            r.answer = primary_question.answers.find_by_text("Yes") or fail
+          }
+        end
+
+        describe 'when multiple options are selected' do
+          before do
+            create_response_for(question) { |r|
+              r.answer = question.answers.find_by_text("Kitchen") or fail
+            }
+            create_response_for(question) { |r|
+              r.answer = question.answers.find_by_text("Other") or fail
+            }
+            create_response_for(question) { |r|
+              r.answer = question.answers.find_by_text("Other bedroom") or fail
+            }
+            create_response_for(question) { |r|
+              r.answer = question.answers.find_by_text("Don't know") or fail
+            }
+            create_response_for(other) { |r|
+              r.answer = other.answers.find_by_response_class('string') or fail
+              r.string_value = 'Carriage house'
+            }
+          end
+
+          it 'records the other answer in the same record as the other value' do
+            secondary.find { |rec| rec.renovate_room == '-5' }.
+              renovate_room_oth.should == 'Carriage house'
+          end
+
+          it 'does not record the other answer in any of the other responses' do
+            secondary.reject { |rec| rec.renovate_room == '-5' }.each do |rec|
+              rec.renovate_room_oth.should be_nil
+            end
+          end
+
+          it 'records multiple coded values as separate records' do
+            secondary.collect(&:renovate_room).sort.should == %w(-2 -5 1 5)
           end
         end
 
-        it 'records multiple coded values as separate records' do
-          secondary.collect(&:renovate_room).sort.should == %w(-2 -5 1 5)
+        describe 'when only the other option is selected' do
+          before do
+            create_response_for(question) { |r|
+              r.answer = question.answers.find_by_text("Other") or fail
+            }
+            create_response_for(other) { |r|
+              r.answer = other.answers.find_by_response_class('string') or fail
+              r.string_value = 'Carriage house'
+            }
+          end
+
+          it 'produces only one record' do
+            secondary.collect(&:renovate_room).should == %w(-5)
+          end
+
+          it 'records the other answer in the same record as the other value' do
+            secondary.first.renovate_room_oth.should == 'Carriage house'
+          end
         end
       end
 
-      describe 'when only the other option is selected' do
+      describe 'with a fixed value' do
+        let(:questions_dsl) {
+          <<-DSL
+            q_COLLECTION_STATUS "Blood tube collection overall status",
+            :pick => :one,
+            :data_export_identifier=>"SPEC_BLOOD.COLLECTION_STATUS"
+            a_1 "Collected"
+            a_2 "Partially collected"
+            a_3 "Not collected"
+
+            q_TUBE_STATUS_TUBE_TYPE_2_VISIT_1 "Blood tube collection status",
+            :pick => :one,
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=2].TUBE_STATUS"
+            a_1 "Full draw"
+            a_2 "Short draw"
+            a_3 "No draw"
+
+            q_TUBE_STATUS_TUBE_TYPE_3_VISIT_1 "Blood tube collection status",
+            :pick => :one,
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_STATUS"
+            a_1 "Full draw"
+            a_2 "Short draw"
+            a_3 "No draw"
+
+            q_TUBE_COMMENTS_OTH_TUBE_TYPE_3_VISIT_1 "Blood tube collection other comments",
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_COMMENTS_OTH"
+            a_1 "Specify", :string
+          DSL
+        }
+
+        let(:tubes) { records.select { |rec| rec.class.mdes_table_name == 'spec_blood_tube' } }
+
         before do
-          create_response_for(question) { |r|
-            r.answer = question.answers.find_by_text("Other") or fail
+          create_response_for(questions_map['TUBE_STATUS_TUBE_TYPE_2_VISIT_1']) { |r|
+            r.answer = r.question.answers.find_by_text("Full draw") or fail
           }
-          create_response_for(other) { |r|
-            r.answer = other.answers.find_by_response_class('string') or fail
-            r.string_value = 'Carriage house'
+          create_response_for(questions_map['TUBE_STATUS_TUBE_TYPE_3_VISIT_1']) { |r|
+            r.answer = r.question.answers.find_by_text("No draw") or fail
+          }
+          create_response_for(questions_map['TUBE_COMMENTS_OTH_TUBE_TYPE_3_VISIT_1']) { |r|
+            r.answer = r.question.answers.find_by_response_class("string") or fail
+            r.string_value = 'Scarring'
           }
         end
 
-        it 'produces only one record' do
-          secondary.collect(&:renovate_room).should == %w(-5)
+        it 'includes the fixed value in separate emitted records' do
+          tubes.collect(&:tube_type).sort.should == %w(2 3)
         end
 
-        it 'records the other answer in the same record as the other value' do
-          secondary.first.renovate_room_oth.should == 'Carriage house'
+        it 'consolidates responses with the same fixed values into the same record' do
+          tubes.collect { |t| [t.tube_status, t.tube_comments_oth] }.
+            sort_by { |ts, tc| ts }.should == [ ['1', nil], ['3', 'Scarring'] ]
+        end
+
+        it 'works with tertiary tables' do
+          pending '#1653'
         end
       end
-    end
 
-    describe 'with a fixed value' do
-      let(:questions_dsl) {
-        <<-DSL
-          q_COLLECTION_STATUS "Blood tube collection overall status",
-          :pick => :one,
-          :data_export_identifier=>"SPEC_BLOOD.COLLECTION_STATUS"
-          a_1 "Collected"
-          a_2 "Partially collected"
-          a_3 "Not collected"
+      describe 'with a repeated subsection' do
+        it 'works' do
+          pending '#1656'
+        end
 
-          q_TUBE_STATUS_TUBE_TYPE_2_VISIT_1 "Blood tube collection status",
-          :pick => :one,
-          :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=2].TUBE_STATUS"
-          a_1 "Full draw"
-          a_2 "Short draw"
-          a_3 "No draw"
-
-          q_TUBE_STATUS_TUBE_TYPE_3_VISIT_1 "Blood tube collection status",
-          :pick => :one,
-          :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_STATUS"
-          a_1 "Full draw"
-          a_2 "Short draw"
-          a_3 "No draw"
-
-          q_TUBE_COMMENTS_OTH_TUBE_TYPE_3_VISIT_1 "Blood tube collection other comments",
-          :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_COMMENTS_OTH"
-          a_1 "Specify", :string
-        DSL
-      }
-
-      let(:tubes) { records.select { |rec| rec.class.mdes_table_name == 'spec_blood_tube' } }
-
-      before do
-        create_response_for(questions_map['TUBE_STATUS_TUBE_TYPE_2_VISIT_1']) { |r|
-          r.answer = r.question.answers.find_by_text("Full draw") or fail
-        }
-        create_response_for(questions_map['TUBE_STATUS_TUBE_TYPE_3_VISIT_1']) { |r|
-          r.answer = r.question.answers.find_by_text("No draw") or fail
-        }
-        create_response_for(questions_map['TUBE_COMMENTS_OTH_TUBE_TYPE_3_VISIT_1']) { |r|
-          r.answer = r.question.answers.find_by_response_class("string") or fail
-          r.string_value = 'Scarring'
-        }
+        it 'works with tertiary associations' do
+          pending '#1653'
+        end
       end
 
-      it 'includes the fixed value in separate emitted records' do
-        tubes.collect(&:tube_type).sort.should == %w(2 3)
-      end
+      describe 'with skippable questions' do
+        let(:questions_dsl) {
+          <<-DSL
+            q_OUT_TALK "Is there a better time when we could talk?",
+            :pick => :one,
+            :data_export_identifier=>"LOW_HIGH_SCRIPT.OUT_TALK"
+            a_1 "Yes"
+            a_2 "No"
+            a_neg_1 "Refused"
+            a_neg_2 "Don’t know"
 
-      it 'consolidates responses with the same fixed values into the same record' do
-        tubes.collect { |t| [t.tube_status, t.tube_comments_oth] }.
-          sort_by { |ts, tc| ts }.should == [ ['1', nil], ['3', 'Scarring'] ]
-      end
+            group "Call setup" do
+              dependency :rule => "A"
+              condition_A :q_OUT_TALK, "==", :a_1
 
-      it 'works with tertiary tables' do
-        pending '#1653'
-      end
-    end
+              q_R_BEST_TTC_1 "What would be a better time for you?",
+              :help_text => "Enter in hour and minute values",
+              :pick => :one,
+              :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_1"
+              a_time "Time", :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
 
-    describe 'with a repeated subsection' do
-      it 'works' do
-        pending '#1656'
-      end
+              q_DAY_WEEK_2 "What would be a good day to reach her?",
+              :help_text => "Enter in day(s) of week",
+              :pick => :one,
+              :data_export_identifier=>"LOW_HIGH_SCRIPT.DAY_WEEK_2"
+              a_days_of_week "Day(s) of the week", :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
 
-      it 'works with tertiary associations' do
-        pending '#1653'
-      end
-    end
+              q_R_BEST_TTC_2 "Select AM or PM",
+              :pick => :one,
+              :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_2"
+              a_am "AM"
+              a_pm "PM"
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
 
-    describe 'with skippable questions' do
-      let(:questions_dsl) {
-        <<-DSL
-          q_OUT_TALK "Is there a better time when we could talk?",
-          :pick => :one,
-          :data_export_identifier=>"LOW_HIGH_SCRIPT.OUT_TALK"
-          a_1 "Yes"
-          a_2 "No"
-          a_neg_1 "Refused"
-          a_neg_2 "Don’t know"
+              q_R_BEST_TTC_3 "Additional info",
+              :pick => :one,
+              :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_3"
+              a_am "After time reported"
+              a_pm "Before time reported"
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
 
-          group "Call setup" do
+              q_R_BEST_TTC4 "Thank you. I will try again later.",
+              :help_text => "End call and code case status."
+            end
+
+            q_FOLLOWUP_1 "Thank you for taking the time to answer these questions today. However, at this time, we are only
+            making visits to women who are pregnant or who are trying to get pregnant. Based on what I thought I heard you say,
+            I understand that you are not pregnant or trying to get pregnant at this time. Is this correct?",
+            :help_text => "You may say [I’m sorry to hear you’ve lost your baby – I know this can be a hard time.]
+            if social cues indicate it is appropriate.",
+            :pick => :one,
+            :data_export_identifier=>"LOW_HIGH_SCRIPT.FOLLOWUP_1"
+            a_1 "Yes (not pregnant, not trying)"
+            a_2 "No (SP is trying)"
+            a_3 "No (SP is pregnant)"
+            a_neg_1 "Refused"
+            a_neg_2 "Don’t know"
+            # non-MDES dep for testing
             dependency :rule => "A"
             condition_A :q_OUT_TALK, "==", :a_1
+          DSL
+        }
 
-            q_R_BEST_TTC_1 "What would be a better time for you?",
-            :help_text => "Enter in hour and minute values",
-            :pick => :one,
-            :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_1"
-            a_time "Time", :string
-            a_neg_1 "Refused"
-            a_neg_2 "Don't know"
+        let(:out_talk) { questions_map['OUT_TALK'] }
 
-            q_DAY_WEEK_2 "What would be a good day to reach her?",
-            :help_text => "Enter in day(s) of week",
-            :pick => :one,
-            :data_export_identifier=>"LOW_HIGH_SCRIPT.DAY_WEEK_2"
-            a_days_of_week "Day(s) of the week", :string
-            a_neg_1 "Refused"
-            a_neg_2 "Don't know"
+        let(:record) { records.find { |rec| rec.class.mdes_table_name == 'low_high_script' } }
 
-            q_R_BEST_TTC_2 "Select AM or PM",
-            :pick => :one,
-            :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_2"
-            a_am "AM"
-            a_pm "PM"
-            a_neg_1 "Refused"
-            a_neg_2 "Don't know"
-
-            q_R_BEST_TTC_3 "Additional info",
-            :pick => :one,
-            :data_export_identifier=>"LOW_HIGH_SCRIPT.R_BEST_TTC_3"
-            a_am "After time reported"
-            a_pm "Before time reported"
-            a_neg_1 "Refused"
-            a_neg_2 "Don't know"
-
-            q_R_BEST_TTC4 "Thank you. I will try again later.",
-            :help_text => "End call and code case status."
+        context 'when legitimately skipped' do
+          before do
+            create_response_for(out_talk) { |r|
+              r.answer = out_talk.answers.detect { |a| a.reference_identifier == '2' }
+            }
           end
 
-          q_FOLLOWUP_1 "Thank you for taking the time to answer these questions today. However, at this time, we are only
-          making visits to women who are pregnant or who are trying to get pregnant. Based on what I thought I heard you say,
-          I understand that you are not pregnant or trying to get pregnant at this time. Is this correct?",
-          :help_text => "You may say [I’m sorry to hear you’ve lost your baby – I know this can be a hard time.]
-          if social cues indicate it is appropriate.",
-          :pick => :one,
-          :data_export_identifier=>"LOW_HIGH_SCRIPT.FOLLOWUP_1"
-          a_1 "Yes (not pregnant, not trying)"
-          a_2 "No (SP is trying)"
-          a_3 "No (SP is pregnant)"
-          a_neg_1 "Refused"
-          a_neg_2 "Don’t know"
-          # non-MDES dep for testing
-          dependency :rule => "A"
-          condition_A :q_OUT_TALK, "==", :a_1
-        DSL
-      }
+          it 'sets no value for a non-required field' do
+            record.day_week_2.should be_nil
+          end
 
-      let(:out_talk) { questions_map['OUT_TALK'] }
+          it 'sets the legitimate skip code for a required field' do
+            record.r_best_ttc_2.should == '-3'
+          end
 
-      let(:record) { records.find { |rec| rec.class.mdes_table_name == 'low_high_script' } }
+          it 'sets the missing code if the skip code is not allowed' do
+            record.followup_1.should == '-4'
+          end
+        end
 
-      context 'when legitimately skipped' do
+        context 'when missed' do
+          before do
+            create_response_for(out_talk) { |r|
+              r.answer = out_talk.answers.detect { |a| a.reference_identifier == '1' }
+            }
+          end
+
+          it 'sets no value for a non-required field' do
+            record.day_week_2.should be_nil
+          end
+
+          it 'sets the missing code for a required field' do
+            record.r_best_ttc_2.should == '-4'
+          end
+        end
+      end
+
+      describe 'with a response to a non-exported question' do
+        let(:questions_dsl) {
+          <<-DSL
+            q_extra_info "Some comments"
+            a_1 'comments', :string
+
+            q_annotated "Blood tube collection overall status",
+            :pick => :one,
+            :data_export_identifier=>"SPEC_BLOOD.COLLECTION_STATUS"
+            a_1 "Collected"
+            a_2 "Partially collected"
+            a_3 "Not collected"
+          DSL
+        }
+
+        let(:annotated_q)  { questions_map['annotated'] }
+        let(:extra_info_q) { questions_map['extra_info'] }
+
+        let(:record) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood' } }
+
         before do
-          create_response_for(out_talk) { |r|
-            r.answer = out_talk.answers.detect { |a| a.reference_identifier == '2' }
+          create_response_for(annotated_q) { |r|
+            r.answer = annotated_q.answers.detect { |a| a.reference_identifier == '2' }
+          }
+
+          create_response_for(extra_info_q) { |r|
+            r.answer = annotated_q.answers.first
+            r.string_value = 'foo'
           }
         end
 
-        it 'sets no value for a non-required field' do
-          record.day_week_2.should be_nil
-        end
-
-        it 'sets the legitimate skip code for a required field' do
-          record.r_best_ttc_2.should == '-3'
-        end
-
-        it 'sets the missing code if the skip code is not allowed' do
-          record.followup_1.should == '-4'
+        it 'records the annotated question answer without error' do
+          record.collection_status.should == '2'
         end
       end
 
-      context 'when missed' do
-        before do
-          create_response_for(out_talk) { |r|
-            r.answer = out_talk.answers.detect { |a| a.reference_identifier == '1' }
-          }
-        end
-
-        it 'sets no value for a non-required field' do
-          record.day_week_2.should be_nil
-        end
-
-        it 'sets the missing code for a required field' do
-          record.r_best_ttc_2.should == '-4'
-        end
+      describe 'coding in date and time fields' do
+        it 'works for time-formatted questions'
+        it 'works for date-formatted questions'
+        it 'works for timestamp-formatted questions'
       end
     end
 
-    describe 'with a response to a non-exported question' do
-      let(:questions_dsl) {
-        <<-DSL
-          q_extra_info "Some comments"
-          a_1 'comments', :string
-
-          q_annotated "Blood tube collection overall status",
-          :pick => :one,
-          :data_export_identifier=>"SPEC_BLOOD.COLLECTION_STATUS"
-          a_1 "Collected"
-          a_2 "Partially collected"
-          a_3 "Not collected"
-        DSL
-      }
-
-      let(:annotated_q)  { questions_map['annotated'] }
-      let(:extra_info_q) { questions_map['extra_info'] }
-
-      let(:record) { records.find { |rec| rec.class.mdes_table_name == 'spec_blood' } }
-
-      before do
-        create_response_for(annotated_q) { |r|
-          r.answer = annotated_q.answers.detect { |a| a.reference_identifier == '2' }
-        }
-
-        create_response_for(extra_info_q) { |r|
-          r.answer = annotated_q.answers.first
-          r.string_value = 'foo'
-        }
-      end
-
-      it 'records the annotated question answer without error' do
-        record.collection_status.should == '2'
-      end
-    end
-
-    describe 'coding in date and time fields' do
-      it 'works for time-formatted questions'
-      it 'works for date-formatted questions'
-      it 'works for timestamp-formatted questions'
-    end
-
-    describe 'with multiple response sets' do
+    describe 'for a multiple-survey instrument' do
       it 'associates dependent warehouse records across response sets'
       it 'collates separate responses to the same survey'
 
