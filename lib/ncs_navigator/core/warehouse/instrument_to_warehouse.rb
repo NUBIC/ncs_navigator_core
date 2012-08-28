@@ -9,26 +9,35 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/models/two_point_zero'
 
 module NcsNavigator::Core::Warehouse
-  module ResponseSetToWarehouse
+  module InstrumentToWarehouse
     ## TODO: centralize MDES version selection
+    require 'ncs_navigator/warehouse/models/two_point_zero'
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     STATIC_RECORD_FIELD_MAPPING = {
-      :event_id => 'instrument.event.public_id',
-      :event_type => 'instrument.event.event_type_code',
-      :event_repeat_key => 'instrument.event.event_repeat_key',
-      :instrument_id => 'instrument.public_id',
-      :instrument_version => 'instrument.instrument_version',
-      :instrument_repeat_key => 'instrument.instrument_repeat_key',
-      :instrument_type => 'instrument.instrument_type_code',
-      :p_id => 'instrument.event.participant.public_id'
+      :event_id => 'event.public_id',
+      :event_type => 'event.event_type_code',
+      :event_repeat_key => 'event.event_repeat_key',
+      :instrument_id => 'public_id',
+      :instrument_version => 'instrument_version',
+      :instrument_repeat_key => 'instrument_repeat_key',
+      :instrument_type => 'instrument_type_code',
+      :p_id => 'first_response_set.participant.public_id'
     }
+
+    # temp
+    extend Forwardable
+    def_delegators :first_response_set, :responses, :unanswered_dependencies, :is_unanswered?, :access_code
+
+    def first_response_set
+      response_sets.first
+    end
 
     ##
     # Produces one or more MDES Warehouse model instances from the
     # responses in this response set.
     def to_mdes_warehouse_records
-      table_map = self.survey.mdes_table_map
+      table_map = first_response_set.survey.mdes_table_map
       responses_by_table_ident = responses.includes(:question).inject({}) do |h, r|
         table_ident = table_map.find { |table_ident, table_contents|
           table_contents[:variables].detect { |var_name, var_mapping|
@@ -72,7 +81,7 @@ module NcsNavigator::Core::Warehouse
             responses.select { |r| r.source_mdes_table == table }.
               collect { |r| r.source_mdes_id }.compact.first
 
-          unanswered_for_table = survey.sections_with_questions.collect(&:questions).flatten.
+          unanswered_for_table = first_response_set.survey.sections_with_questions.collect(&:questions).flatten.
             select { |q| is_unanswered?(q) && variable_for_question_in_table(table_map[ti], q) }.
             inject({'-4' => [], '-3' => []}) { |map, q|
               if missing_questions.include?(q)
@@ -198,7 +207,7 @@ module NcsNavigator::Core::Warehouse
     # @see MdesInstrumentSurvey#mdes_other_pairs
     def corresponding_same_table_other_for_coded(response)
       if response.answer.reference_identifier == 'neg_5'
-        other_q = survey.mdes_other_pairs.
+        other_q = first_response_set.survey.mdes_other_pairs.
           find { |pair| pair[:coded] == response.question }.try(:[], :other)
         if other_q
           responses.find_by_question_id(other_q.id)
@@ -209,7 +218,7 @@ module NcsNavigator::Core::Warehouse
     ##
     # Performs the converse of {#corresponding_same_table_other_for_coded}.
     def corresponding_same_table_coded_for_other(response)
-      coded_q = survey.mdes_other_pairs.
+      coded_q = first_response_set.survey.mdes_other_pairs.
         find { |pair| pair[:other] == response.question }.try(:[], :coded)
       if coded_q
         responses.find_all_by_question_id(coded_q.id).
@@ -233,4 +242,4 @@ module NcsNavigator::Core::Warehouse
   end
 end
 
-::ResponseSet.send(:include, NcsNavigator::Core::Warehouse::ResponseSetToWarehouse)
+::Instrument.send(:include, NcsNavigator::Core::Warehouse::InstrumentToWarehouse)

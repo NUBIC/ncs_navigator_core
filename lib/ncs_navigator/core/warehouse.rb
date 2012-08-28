@@ -15,6 +15,6 @@ module NcsNavigator::Core::Warehouse
   autoload :UnusedOperationalPassthrough, 'ncs_navigator/core/warehouse/unused_operational_passthrough'
   autoload :UnusedPassthrough,            'ncs_navigator/core/warehouse/unused_passthrough'
 
-  # ResponseSetToWarehouse is not autoloaded because it needs to be
+  # InstrumentToWarehouse is not autoloaded because it needs to be
   # explicitly required.
 end

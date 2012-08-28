@@ -211,6 +211,16 @@ class Instrument < ActiveRecord::Base
     response_sets[0] = rs
   end
 
+  def enumerable_to_warehouse?
+    return false unless event_id
+
+    self.class.connection.select_value(<<-QUERY).to_i > 0
+      SELECT COUNT(*)
+      FROM events e
+      WHERE e.id=#{event_id} AND e.event_disposition IS NOT NULL
+    QUERY
+  end
+
   private
 
     ##

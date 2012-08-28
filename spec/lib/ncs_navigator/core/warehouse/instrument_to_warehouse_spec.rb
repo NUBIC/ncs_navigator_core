@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-require 'ncs_navigator/core/warehouse/response_set_to_warehouse'
+require 'ncs_navigator/core/warehouse/instrument_to_warehouse'
 
 module NcsNavigator::Core::Warehouse
-  describe ResponseSetToWarehouse, :warehouse do
-    it 'is mixed into ResponseSet' do
-      ::ResponseSet.ancestors.should include(ResponseSetToWarehouse)
+  describe InstrumentToWarehouse, :warehouse do
+    it 'is mixed into Instrument' do
+      ::Instrument.ancestors.should include(InstrumentToWarehouse)
     end
 
     let(:questions_dsl) {
@@ -36,18 +36,20 @@ end
     let(:questions) { survey.sections_with_questions.collect(&:questions).flatten }
     let(:questions_map) { questions.inject({}) { |h, q| h[q.reference_identifier] = q; h } }
 
-    let(:participant) { Factory(:participant) }
-    let(:event) { Factory(:event, :participant => participant) }
+    let(:event_participant) { Factory(:participant) }
+    let(:event) { Factory(:mdes_min_event, :participant => event_participant) }
     let(:instrument) { Factory(:instrument, :event => event) }
+    let(:rs_participant) { Factory(:participant) }
     let(:response_set) {
       ResponseSet.new.tap { |rs|
         rs.survey = survey
         rs.instrument = instrument
+        rs.participant = rs_participant
         rs.save!
       }
     }
 
-    let(:records) { response_set.to_mdes_warehouse_records }
+    let(:records) { instrument.to_mdes_warehouse_records }
 
     def create_response_for(question)
       response_set.responses.build(:question => question).tap { |r|
@@ -115,8 +117,8 @@ end
         primary.instrument_type.should == instrument.instrument_type_code.to_s
       end
 
-      it 'uses the public ID for the associated participant' do
-        primary.p_id.should == participant.public_id
+      it 'uses the public ID for the participant associated with the response set' do
+        primary.p_id.should == rs_participant.public_id
       end
 
       it 'uses the public ID for the dwelling unit' do
@@ -594,6 +596,15 @@ end
       it 'works for time-formatted questions'
       it 'works for date-formatted questions'
       it 'works for timestamp-formatted questions'
+    end
+
+    describe 'with multiple response sets' do
+      it 'associates dependent warehouse records across response sets'
+      it 'collates separate responses to the same survey'
+
+      describe 'with a multivalued question' do
+        it 'associates to the appropriate parent record'
+      end
     end
   end
 end
