@@ -10,6 +10,10 @@ module NcsNavigator::Core::Warehouse
       ::Instrument.ancestors.should include(InstrumentToWarehouse)
     end
 
+    let(:wh_config) {
+      NcsNavigator::Warehouse::Configuration.new
+    }
+
     let(:questions_dsl) {
       <<-DSL
       q_health "Would you say your health in general is...",
@@ -49,7 +53,7 @@ end
       }
     }
 
-    let(:records) { instrument.to_mdes_warehouse_records }
+    let(:records) { instrument.to_mdes_warehouse_records(wh_config) }
 
     def create_response_for(question)
       response_set.responses.build(:question => question).tap { |r|

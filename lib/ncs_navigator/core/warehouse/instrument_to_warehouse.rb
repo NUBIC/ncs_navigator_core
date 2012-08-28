@@ -4,16 +4,8 @@
 require 'ncs_navigator/core'
 require 'ncs_navigator/warehouse'
 
-## TODO: This exists only to satisfy the MdesModule definition below, and
-# should be removed once the TwoPointZero hard reference is gone.
-require 'ncs_navigator/warehouse/models/two_point_zero'
-
 module NcsNavigator::Core::Warehouse
   module InstrumentToWarehouse
-    ## TODO: centralize MDES version selection
-    require 'ncs_navigator/warehouse/models/two_point_zero'
-    MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
-
     STATIC_RECORD_FIELD_MAPPING = {
       :event_id => 'event.public_id',
       :event_type => 'event.event_type_code',
@@ -36,7 +28,7 @@ module NcsNavigator::Core::Warehouse
     ##
     # Produces one or more MDES Warehouse model instances from the
     # responses in this response set.
-    def to_mdes_warehouse_records
+    def to_mdes_warehouse_records(wh_config)
       table_map = first_response_set.survey.mdes_table_map
       responses_by_table_ident = responses.includes(:question).inject({}) do |h, r|
         table_ident = table_map.find { |table_ident, table_contents|
@@ -94,7 +86,7 @@ module NcsNavigator::Core::Warehouse
               map
             }
 
-          wh_create_base_record(table, imported_id, table_ct, fixed_map).tap do |record|
+          wh_create_base_record(wh_config, table, imported_id, table_ct, fixed_map).tap do |record|
             responses.each do |r|
               variable_name = table_map[ti][:variables].detect { |var_name, var_mapping|
                 var_mapping[:questions] && var_mapping[:questions].include?(r.question)
@@ -125,8 +117,8 @@ module NcsNavigator::Core::Warehouse
 
     private
 
-    def wh_create_base_record(table_name, imported_id, serial, fixed_values)
-      model = MdesModule.mdes_order.detect { |m| m.mdes_table_name == table_name }
+    def wh_create_base_record(wh_config, table_name, imported_id, serial, fixed_values)
+      model = wh_config.model(table_name)
       model.new.tap do |record|
         id = imported_id ? imported_id : "#{access_code}.#{serial}"
         record.send("#{model.key.first.name}=", id)

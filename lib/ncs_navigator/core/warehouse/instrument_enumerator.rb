@@ -43,7 +43,7 @@ module NcsNavigator::Core::Warehouse
         progress.increment_responses(ins.response_sets.inject(0) { |sum, rs| sum + rs.responses.count })
         log.info "Transforming ResponseSets for Instrument #{ins.instrument_id.inspect} (#{ins.id})"
         begin
-          ins.to_mdes_warehouse_records.each do |record|
+          ins.to_mdes_warehouse_records(@wh_config).each do |record|
             progress.increment_records
             yield record
           end
