@@ -44,7 +44,7 @@ class EditSampleProcessesController < ApplicationController
   
   def get_specimen_storages(spec_receipts, search_id)
     spec_storages_from_container = SpecimenStorage.joins(:specimen_storage_container).where("specimen_storage_containers.storage_container_id = ?", search_id)
-    spec_storages_from_receipts = spec_receipts.map{|sr| sr.specimen_storage_container.specimen_storage}
+    spec_storages_from_receipts = spec_receipts.select{|sr| sr.specimen_storage_container.specimen_storage}.map{|ss| ss.specimen_storage_container.specimen_storage}
     spec_storages_from_container | spec_storages_from_receipts
   end
   

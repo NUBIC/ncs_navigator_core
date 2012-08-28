@@ -27,7 +27,7 @@ FactoryGirl.define do
 
   factory :specimen_receipt do |sr|
     sr.psu_code                              20000030
-    sr.specimen_id                           {"10001"}
+    sr.association :specimen, :factory => :specimen
     sr.association :specimen_processing_shipping_center, :factory => :specimen_processing_shipping_center
     sr.staff_id                              {"staff123"}
     sr.receipt_comment_code                  1
@@ -39,7 +39,7 @@ FactoryGirl.define do
     sr.upper_trigger_level_code              1
     sr.lower_trigger_cold_code               1
     sr.lower_trigger_ambient_code            1
-    sr.storage_container_id                  {"ABC123"}
+    sr.association :specimen_storage_container, :factory => :specimen_storage_container
     sr.centrifuge_comment_code               1
     sr.centrifuge_comment_other              nil
     sr.centrifuge_starttime                  nil
@@ -72,7 +72,6 @@ FactoryGirl.define do
 
   factory :specimen_shipping do |ss|
     ss.psu_code                             20000030
-    ss.storage_container_id                 {"A123B"}
     ss.association :specimen_processing_shipping_center, :factory => :specimen_processing_shipping_center
     ss.staff_id                             {"newStaff123"}
     ss.shipper_id                           {"FEDEX"}
@@ -89,7 +88,7 @@ FactoryGirl.define do
 
   factory :specimen_storage do |ss|
     ss.psu_code                             20000030
-    ss.storage_container_id                 {"ABC123DEF"}
+    ss.association :specimen_storage_container, :factory => :specimen_storage_container
     ss.association :specimen_processing_shipping_center, :factory => :specimen_processing_shipping_center
     ss.staff_id                             {"great personel"}
     ss.placed_in_storage_datetime           Date.today
@@ -103,5 +102,10 @@ FactoryGirl.define do
     ss.temp_event_low_temp                  nil
     ss.temp_event_high_temp                 nil
     ss.transaction_type                     nil
+  end
+  
+  factory :specimen_storage_container do |ssc|
+    ssc.storage_container_id                {"ABC123"}
+    ssc.specimen_shipping_id                nil
   end
 end
