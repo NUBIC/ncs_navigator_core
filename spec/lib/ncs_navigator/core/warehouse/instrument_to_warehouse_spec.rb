@@ -14,7 +14,7 @@ module NcsNavigator::Core::Warehouse
       NcsNavigator::Warehouse::Configuration.new
     }
 
-    let(:mother_participant) { Factory(:participant) }
+    let(:mother_participant) { Factory(:participant, :p_id => 'MP') }
     let(:event) { Factory(:mdes_min_event, :participant => mother_participant) }
     let(:instrument) { Factory(:instrument, :event => event) }
 
@@ -600,11 +600,249 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'for a multiple-survey instrument' do
+      let(:child_participant_1) { Factory(:participant, :p_id => 'CP1') }
+      let(:child_participant_2) { Factory(:participant, :p_id => 'CP2') }
+
+      let(:mother_survey_part_one) {
+        load_survey_questions_string(<<-QUESTIONS)
+          q_CHILD_NUM "How many children in this household are eligible for the 3-month call today?",
+          :data_export_identifier=>"THREE_MTH_MOTHER.CHILD_NUM"
+          a_number "Number of children", :integer
+        QUESTIONS
+      }
+
+      let(:mother_survey_part_two) {
+        load_survey_questions_string(<<-QUESTIONS)
+          q_ETHNICITY "Do you consider yourself to be Hispanic, or Latina?", :pick => :one,
+          :data_export_identifier=>"THREE_MTH_MOTHER.ETHNICITY"
+          a_1 "Yes"
+          a_2 "No"
+          a_neg_1 "Refused"
+          a_neg_2 "Don't know"
+
+          q_RACE "What race do you consider yourself to be? You may select one or more.", :pick => :any,
+          :data_export_identifier=>"THREE_MTH_MOTHER_RACE.RACE"
+          a_1 "White,"
+          a_2 "Black or African American,"
+          a_3 "American Indian or Alaska Native"
+          a_4 "Asian, or"
+          a_5 "Native Hawaiian or Other Pacific Islander"
+          a_6 "Multi Racial"
+          a_neg_5 "Some other race?"
+          a_neg_1 "Refused"
+          a_neg_2 "Don't know"
+        QUESTIONS
+      }
+
+      let(:child_survey_detail) {
+        load_survey_questions_string(<<-QUESTIONS)
+          q_CHILD_QNUM "Which number child is this questionnaire for?",
+          :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_DETAIL.CHILD_QNUM"
+          a "Number", :integer
+        QUESTIONS
+      }
+
+      let(:child_survey_habits) {
+        load_survey_questions_string(<<-QUESTIONS)
+          q_SLEEP_PLACE_2 "What does {{c_fname}} sleep in at night?", :pick => :one,
+          :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SLEEP_PLACE_2"
+          a_1 "A bassinette,"
+          a_2 "A crib,"
+          a_3 "A co-sleeper,"
+          a_4 "In the bed or other place with you, or"
+          a_neg_5 "In something else?"
+          a_neg_1 "Refused"
+          a_neg_2 "Don't know"
+
+          q_SLEEP_PLACE_2_OTH "Other sleeping arrangement", :pick => :one,
+          :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.SLEEP_PLACE_2_OTH"
+          a "Specify", :string
+          a_neg_1 "Refused"
+          a_neg_2 "Don't know"
+        QUESTIONS
+      }
+
+      let(:surveys) { [mother_survey_part_one, mother_survey_part_two, child_survey_detail, child_survey_habits] }
+      let(:questions) {
+        surveys.collect { |survey| survey.sections_with_questions.collect(&:questions) }.flatten
+      }
+      let(:questions_map) { questions.inject({}) { |h, q| h[q.reference_identifier] = q; h } }
+
+      def create_response_set(survey, participant)
+        ResponseSet.new.tap { |rs|
+          rs.survey = survey
+          rs.participant_id = participant.id
+          rs.instrument_id = instrument.id
+          rs.save!
+        }
+      end
+
+      let(:m_one_response_set) {
+        create_response_set(mother_survey_part_one, mother_participant)
+      }
+
+      let(:m_two_response_set) {
+        create_response_set(mother_survey_part_two, mother_participant)
+      }
+
+      let(:c1_detail_response_set) {
+        create_response_set(child_survey_detail, child_participant_1)
+      }
+
+      let(:c1_habits_response_set) {
+        create_response_set(child_survey_habits, child_participant_1)
+      }
+
+      let(:c2_detail_response_set) {
+        create_response_set(child_survey_detail, child_participant_2)
+      }
+
+      let(:c2_habits_response_set) {
+        create_response_set(child_survey_habits, child_participant_2)
+      }
+
+      def create_response_for(question, response_set)
+        response_set.responses.build(:question => question).tap { |r|
+          yield r
+          r.save!
+        }
+      end
+
+      describe 'external references' do
+        let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'three_mth_mother' } }
+        let(:question) { questions_map['CHILD_NUM'] }
+        let!(:response) {
+          create_response_for(question, m_one_response_set) { |r|
+            r.answer = question.answers.first
+            r.integer_value = 2
+          }
+        }
+
+        before do
+          # ensure all response sets exist
+          m_one_response_set; m_two_response_set
+          c1_detail_response_set; c1_habits_response_set
+          c2_detail_response_set; c2_habits_response_set
+        end
+
+        it "has a primary key based on the first response set's access code" do
+          m_one_response_set.access_code.should_not be_nil # test setup
+          primary.key.first.should include(m_one_response_set.access_code)
+        end
+
+        it 'uses the imported ID as the PK if the responses were imported' do
+          response.source_mdes_table = 'three_mth_mother'
+          response.source_mdes_id = 'Eleventy-two'
+          response.save!
+
+          primary.key.first.should == 'Eleventy-two'
+        end
+
+        it 'uses the public ID for the associated event' do
+          primary.event_id.should == event.public_id
+        end
+
+        it 'uses the event type from the associated event' do
+          event.event_type_code.should_not be_nil # test setup
+          primary.event_type.should == event.event_type_code.to_s
+        end
+
+        it 'uses the event repeat from the associated event' do
+          event.update_attribute(:event_repeat_key, 3)
+          primary.event_repeat_key.should == '3'
+        end
+
+        it 'uses the public ID for the associated instrument' do
+          primary.instrument_id.should == instrument.public_id
+        end
+
+        it 'uses the instrument repeat from the associated instrument' do
+          instrument.update_attribute(:instrument_repeat_key, 2)
+          primary.instrument_repeat_key.should == 2
+        end
+
+        it 'uses the instrument version from the associated instrument' do
+          instrument.instrument_version.should_not be_nil # test setup
+          primary.instrument_version.should == instrument.instrument_version
+        end
+
+        it 'uses the instrument type from the associated instrument' do
+          instrument.instrument_type.should_not be_nil # test setup
+          primary.instrument_type.should == instrument.instrument_type_code.to_s
+        end
+      end
+
+      describe 'for a table that is split across surveys' do
+        let!(:m_one_response) {
+          create_response_for(questions_map['CHILD_NUM'], m_one_response_set) do |r|
+            r.answer = r.question.answers.first
+            r.integer_value = 2
+          end
+        }
+
+        let!(:m_two_response) {
+          create_response_for(questions_map['ETHNICITY'], m_two_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Refused')
+          end
+        }
+
+        let(:primaries) { records.select { |rec| rec.class.mdes_table_name == 'three_mth_mother' } }
+        let(:primary) { primaries.first }
+
+        describe 'when the response sets are for the same participant' do
+          it 'consolidates all values' do
+            primaries.size.should == 1
+          end
+
+          it 'incorporates the value from the first survey' do
+            primary.child_num.should == '2'
+          end
+
+          it 'incorporates the values from the second survey' do
+            primary.ethnicity.should == '-1'
+          end
+
+          it 'sets the participant for the record from the response set' do
+            primary.p_id.should == mother_participant.p_id
+          end
+        end
+
+        describe 'when the response sets are for different participants' do
+          let(:another_mother) { Factory(:participant, :p_id => 'AMP') }
+
+          before do
+            m_two_response_set.participant = another_mother
+            m_two_response_set.save!
+          end
+
+          it 'does not consolidate values' do
+            primaries.size.should == 2
+          end
+
+          it 'sets the participant for the first record correctly' do
+            rec = primaries.detect { |rec| rec.child_num == '2' }
+            rec.p_id.should == mother_participant.p_id
+          end
+
+          it 'sets the participant for the second record correctly' do
+            rec = primaries.detect { |rec| rec.ethnicity == '-1' }
+            rec.p_id.should == another_mother.p_id
+          end
+        end
+      end
+
+      describe 'for multiple response sets for the same survey' do
+        it 'creates separate root records'
+        it 'associates secondary records with the appropriate root'
+      end
+
+      describe 'for multiple participants'
+
       it 'associates dependent warehouse records across response sets'
       it 'collates separate responses to the same survey'
 
       describe 'with a multivalued question' do
-        it 'associates to the appropriate parent record'
+        it 'associates to the appropriate primary record'
       end
     end
   end
