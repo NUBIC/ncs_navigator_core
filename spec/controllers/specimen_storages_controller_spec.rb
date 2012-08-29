@@ -11,7 +11,7 @@ describe SpecimenStoragesController do
 
 
     def valid_attributes
-      {:specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>"08/28/2012 09:58", :storage_comment => "something"}}
+      {:specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>Time.now, :storage_comment => "something"}}
     end
 
     # TODO - doesn't work in the group of tests, works in the speck itself
@@ -57,7 +57,7 @@ describe SpecimenStoragesController do
          
         describe "forms json" do 
           it "with newly created @specimen_storage id" do
-            post :create, :specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>"08/28/2012 09:58", :storage_comment => "something"}, :format => 'json'
+            post :create, :specimen_storage=>{:specimen_storage_container_id=>@specimen_storage_container.id, :placed_in_storage_datetime=>Time.now, :storage_comment => "something"}, :format => 'json'
             specimen_storage = SpecimenStorage.last
             response.body.should eq specimen_storage.to_json
           end
