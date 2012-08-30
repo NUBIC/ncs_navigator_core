@@ -105,6 +105,16 @@ namespace :deploy do
              ln -s '#{shared_surveys}' '#{release_surveys}';
            fi).gsub(/\s+/, ' ')
   end
+
+  desc 'Block access to the application'
+  task :block do
+    run "cd #{current_path} && #{rake} maintenance:block"
+  end
+
+  desc 'Restore access to the application'
+  task :unblock do
+    run "cd #{current_path} && #{rake} maintenance:unblock"
+  end
 end
 
 after 'deploy:finalize_update',
