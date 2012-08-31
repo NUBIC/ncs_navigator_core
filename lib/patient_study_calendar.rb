@@ -266,7 +266,7 @@ class PatientStudyCalendar
   # @param [Participant]
   # @return [InstrumentPlan]
   def build_activity_plan(participant)
-    InstrumentPlan.new(schedules(participant))
+    InstrumentPlan.from_schedule(schedules(participant))
   end
 
 
