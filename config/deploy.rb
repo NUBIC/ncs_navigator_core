@@ -105,6 +105,16 @@ namespace :deploy do
              ln -s '#{shared_surveys}' '#{release_surveys}';
            fi).gsub(/\s+/, ' ')
   end
+
+  desc 'Block access to the application'
+  task :block do
+    run "cd #{current_path} && #{rake} maintenance:block"
+  end
+
+  desc 'Restore access to the application'
+  task :unblock do
+    run "cd #{current_path} && #{rake} maintenance:unblock"
+  end
 end
 
 after 'deploy:finalize_update',
@@ -114,17 +124,35 @@ after 'deploy:finalize_update',
 
 namespace :db do
   desc "Backup Database"
-  task :backup,  :roles => :app do
+  task :backup, :roles => :app do
     run "cd '#{current_release}' && rake RAILS_ENV=#{rails_env} db:backup"
   end
 end
 
 namespace :config do
   desc "Copy configurable images to /public/assets/images folder"
-  task :images,  :roles => :app do
+  task :images, :roles => :app do
     run [
       "cd '#{current_release}'",
       "#{rake} configuration:copy_image_files"
     ].join(' && ')
   end
+
+  desc "Run rake db:seed"
+  task :seed_database, :roles => :app do
+    run [
+      "cd '#{current_release}'",
+      "#{rake} db:seed",
+      "#{rake} pbs:codes"
+    ].join(' && ')
+  end
+
+  desc "Run rake setup:surveys"
+  task :parse_surveys, :roles => :app do
+    run [
+      "cd '#{current_release}'",
+      "#{rake} setup:surveys"
+    ].join(' && ')
+  end
+
 end

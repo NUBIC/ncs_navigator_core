@@ -98,7 +98,7 @@ class ParticipantConsentsController < ApplicationController
     def mark_activity_occurred
 	    psc.activities_for_event(@contact_link.event).each do |a|
         if a.consent_activity?
-	        psc.update_activity_state(activity.activity_id,
+	        psc.update_activity_state(a.activity_id,
                                     @contact_link.person.participant,
                                     Psc::ScheduledActivity::OCCURRED)
         end
