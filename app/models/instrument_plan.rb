@@ -2,11 +2,19 @@ class InstrumentPlan
 
   attr_accessor :scheduled_activities
 
+  def self.from_schedule(schedule = nil)
+    raise "No parameter supplied to build plan" if schedule.blank?
+
+    new.tap { |p| p.populate_from_schedule(schedule) }
+  end
+
   ##
   # Creates a new instance of the InstrumentPlan
-  def initialize(schedule)
-    raise "No parameter supplied to build plan" if schedule.blank?
-    @scheduled_activities = []
+  def initialize(activities = [])
+    @scheduled_activities = activities
+  end
+
+  def populate_from_schedule(schedule)
     parse_schedule(schedule)
     associate_scheduled_activity_with_participant
   end
