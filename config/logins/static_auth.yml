@@ -3,6 +3,7 @@ groups:
   NCSNavigator:
   - staff
   - supervisor
+  - User Administrator
 users:
   test_user:
     password: test_user
@@ -14,3 +15,13 @@ users:
     last_name: Usr
     email: t-usr@dev.null
     first_name: T.
+  admin_user:
+    password: admin_user
+    identifiers:
+      staff_id: admin_user
+    portals:
+      - NCSNavigator:
+        - User Administrator
+    last_name: Usr
+    email: admin-usr@dev.null
+    first_name: Admin
