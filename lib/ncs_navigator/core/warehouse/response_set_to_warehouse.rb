@@ -4,6 +4,10 @@
 require 'ncs_navigator/core'
 require 'ncs_navigator/warehouse'
 
+## TODO: This exists only to satisfy the MdesModule definition below, and
+# should be removed once the TwoPointZero hard reference is gone.
+require 'ncs_navigator/warehouse/models/two_point_zero'
+
 module NcsNavigator::Core::Warehouse
   module ResponseSetToWarehouse
     ## TODO: centralize MDES version selection
