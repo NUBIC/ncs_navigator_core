@@ -2,21 +2,21 @@ require 'spec_helper'
 
 describe InstrumentPlan do
 
-  describe ".new" do
+  describe ".from_schedule" do
 
     it "raises an exception if no parameter is sent to constructor" do
-      lambda { InstrumentPlan.new }.should raise_error
+      lambda { InstrumentPlan.from_schedule }.should raise_error
     end
 
     it "accepts a hash as a parameter" do
-      InstrumentPlan.new(participant_plan).should_not be_nil
+      InstrumentPlan.from_schedule(participant_plan).should_not be_nil
     end
 
     describe "building the plan" do
 
       describe ".events" do
         it "orders the events" do
-          plan = InstrumentPlan.new(participant_plan)
+          plan = InstrumentPlan.from_schedule(participant_plan)
           plan.events.size.should  == 3
           plan.events.first.should == 'birth'
           plan.events.last.should  == '6m'
@@ -25,7 +25,7 @@ describe InstrumentPlan do
 
       describe ".instruments" do
 
-        let(:plan) { InstrumentPlan.new(participant_plan) }
+        let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
 
         it "knows all of the instruments for the participant" do
           plan.instruments.size.should == 5
@@ -51,7 +51,7 @@ describe InstrumentPlan do
 
       describe ".scheduled_activities_for_survey" do
 
-        let(:plan) { InstrumentPlan.new(participant_plan) }
+        let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
 
         it "returns all scheduled_activity parts for a given survey" do
 
@@ -67,7 +67,7 @@ describe InstrumentPlan do
 
   context "for a Participant" do
 
-    describe ".new" do
+    describe ".from_schedule" do
 
       describe "for a mother with one child" do
 
@@ -84,7 +84,7 @@ describe InstrumentPlan do
           Factory(:participant_person_link, :participant => mother, :person => cp, :relationship_code => 8)
         end
 
-        let(:plan) { InstrumentPlan.new(participant_plan) }
+        let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
 
         it "knows all the instruments for the mother and child" do
           plan.instruments('6m').size.should == 2
@@ -194,7 +194,7 @@ describe InstrumentPlan do
           Factory(:participant_person_link, :participant => mother, :person => cp2, :relationship_code => 8)
         end
 
-        let(:plan) { InstrumentPlan.new(participant_plan) }
+        let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
 
         it "knows all the instruments for the mother and child" do
           plan.instruments('6m').size.should == 3
@@ -324,7 +324,7 @@ describe InstrumentPlan do
 
   context "moving through the plan" do
 
-    let(:plan) { InstrumentPlan.new(participant_plan) }
+    let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
 
     describe ".current_survey_title" do
       it "returns the first instrument if no response_set given" do
@@ -369,7 +369,7 @@ describe InstrumentPlan do
           Factory(:participant_person_link, :participant => mother, :person => cp, :relationship_code => 8)
         end
 
-        let(:plan) { InstrumentPlan.new(participant_plan_xp2) }
+        let(:plan) { InstrumentPlan.from_schedule(participant_plan_xp2) }
 
         it "knows all the instruments for the mother and child" do
           plan.instruments('birth').size.should == 3
@@ -420,7 +420,7 @@ describe InstrumentPlan do
           Factory(:participant_person_link, :participant => mother, :person => cp2, :relationship_code => 8)
         end
 
-        let(:plan) { InstrumentPlan.new(participant_plan_xp2) }
+        let(:plan) { InstrumentPlan.from_schedule(participant_plan_xp2) }
 
         it "knows all the instruments for the mother and child" do
           plan.instruments('birth').size.should == 5
