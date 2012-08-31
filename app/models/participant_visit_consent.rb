@@ -31,7 +31,7 @@
 # isolate out consent or dissent for each activity. Each row of the Participant Visit Consent table is
 # a unique consent given at a specific component at a specific visit
 class ParticipantVisitConsent < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :pid_visit_consent_id
 
   belongs_to :participant

@@ -21,7 +21,7 @@
 #
 
 class SpecimenEquipment < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :equipment_id
 
   belongs_to :specimen_processing_shipping_center

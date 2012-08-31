@@ -52,7 +52,6 @@ describe SampleReceiptConfirmation do
       src.save!
 
       obj = SampleReceiptConfirmation.find(src.id)
-      obj.psu.local_code.should == -4      
       obj.shipment_receipt_confirmed.local_code.should == -4
       obj.shipment_condition.local_code.should == -4
       obj.sample_condition.local_code.should == -4

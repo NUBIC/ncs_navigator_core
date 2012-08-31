@@ -39,7 +39,7 @@
 # Instrument can also be an Electronic Health Record or
 # a Personal Health Record.
 class Instrument < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :instrument_id
 
   belongs_to :event

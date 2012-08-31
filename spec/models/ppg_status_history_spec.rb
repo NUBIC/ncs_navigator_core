@@ -41,9 +41,10 @@ describe PpgStatusHistory do
 
   describe ".set_ppg_status_date" do
 
+    # TODO: remove use of Time.now in spec. #2374.
     it "sets the ppg_status_date to created_at if not set" do
       ppg = Factory(:ppg_status_history, :ppg_status_date => nil)
-      ppg.ppg_status_date.should == Time.now.strftime(MdesRecord::DEFAULT_DATE_FORMAT)
+      ppg.ppg_status_date.should == Time.now.strftime(NcsNavigator::Core::Mdes::MdesRecord::DEFAULT_DATE_FORMAT)
     end
 
     it "does not update the ppg_status_date if already set" do

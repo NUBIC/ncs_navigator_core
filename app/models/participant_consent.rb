@@ -37,7 +37,7 @@
 
 # Tracks the history of Participants consents and withdrawals.
 class ParticipantConsent < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :participant_consent_id
 
   belongs_to :participant

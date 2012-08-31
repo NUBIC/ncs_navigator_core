@@ -25,7 +25,7 @@
 # of Staff Member, Person, Event, and/or Instrument that occurs during a Contact. 
 # There should be at least 1 contact link record for every contact.
 class ContactLink < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :contact_link_id
 
   ncs_coded_attribute :psu, 'PSU_CL1'

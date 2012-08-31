@@ -3,15 +3,15 @@
     - @specimen_receipt_confirmations_new.each do |specimen_receipt_confirmation_new|
       %li
         %a{:href => "#tabs_#{specimen_receipt_confirmation_new.specimen_id}"}
-          = specimen_receipt_confirmation_new.specimen_id
+          = specimen_receipt_confirmation_new.specimen.specimen_id
     - @specimen_receipt_confirmations_edit.each do |specimen_receipt_confirmation_edit|
       %li
         %a{:href => "#tabs_#{specimen_receipt_confirmation_edit.specimen_id}"}
-          = specimen_receipt_confirmation_edit.specimen_id
+          = specimen_receipt_confirmation_edit.specimen.specimen_id
   - @specimen_receipt_confirmations_new.each do |specimen_receipt_confirmation_new|
     %div{:id => "tabs_#{specimen_receipt_confirmation_new.specimen_id}"}
       = render :partial => "specimen_receipt_confirmations/form", :locals => { :specimen_receipt_confirmation => specimen_receipt_confirmation_new }
   - @specimen_receipt_confirmations_edit.each do |specimen_receipt_confirmation_edit|
     %div{:id => "tabs_#{specimen_receipt_confirmation_edit.specimen_id}"}
       = render :partial => "specimen_receipt_confirmations/form", :locals => { :specimen_receipt_confirmation => specimen_receipt_confirmation_edit }
-%input{:type=>"button", :class => "finish_confirm", :value =>"Exit"}
+%input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}

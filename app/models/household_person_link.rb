@@ -29,7 +29,7 @@
 # both links would be active. The links, however, are distinguishable by other
 # information maintained on the linking record.
 class HouseholdPersonLink < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :person_hh_id
 
   belongs_to :person

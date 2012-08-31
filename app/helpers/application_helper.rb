@@ -118,7 +118,11 @@ module ApplicationHelper
   end
 
   def continuable?(event)
-    continuable_events = [ PatientStudyCalendar::PREGNANCY_SCREENER, PatientStudyCalendar::BIRTH_VISIT_INTERVIEW, PatientStudyCalendar::HI_LO_CONVERSION ]
+    continuable_events = [ PatientStudyCalendar::PREGNANCY_SCREENER,
+                           PatientStudyCalendar::BIRTH_VISIT_INTERVIEW,
+                           PatientStudyCalendar::HI_LO_CONVERSION,
+                           PatientStudyCalendar::INFORMED_CONSENT ]
+
     continuable_events.include?(event.to_s)
   end
 

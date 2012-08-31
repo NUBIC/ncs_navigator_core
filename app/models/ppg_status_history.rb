@@ -25,7 +25,7 @@
 
 
 class PpgStatusHistory < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :ppg_history_id, :date_fields => [:ppg_status_date]
 
   belongs_to :participant

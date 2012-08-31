@@ -32,7 +32,7 @@
 #
 
 class NonInterviewProvider < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :non_interview_provider_id
 
   belongs_to :contact

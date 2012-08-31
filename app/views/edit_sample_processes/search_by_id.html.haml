@@ -15,25 +15,25 @@
           - if not @specimens.blank?
             - @specimens.each do |sp|
               %li
-                %a{ :href => edit_specimen_receipt_path(:id => sp.specimen_id), :class => "my_specimen_sample_receive", :id => sp.specimen_id}
-                  = sp.specimen_id  
+                %a{ :href => edit_specimen_receipt_path(:id => sp.id, :in_edit_mode => true), :class => "edit_specimen_sample_receive", :id => sp.specimen_id}
+                  = sp.specimen.specimen_id  
           - if not @samples.blank?
             - @samples.each do |s|
               %li
-                %a{ :href => edit_sample_receipt_store_path(:id => s.sample_id), :class => "my_specimen_sample_receive", :id => s.sample_id }
+                %a{ :href => edit_sample_receipt_store_path(:id => s.sample_id, :in_edit_mode => true), :class => "edit_specimen_sample_receive", :id => s.sample_id }
                   = s.sample_id
     %td
       %div{:id => "storing"}
         %ul
-          - if not @specimen_receipts_hash.blank?
-            - @specimen_receipts_hash.each do |k, v|
+          - if not @specimen_storages.blank?
+            - @specimen_storages.each do |sr|
               %li
-                %a{ :href => edit_specimen_storage_path(:id => k), :class => "my_specimen_sample_store", :id => k}
-                  = "Storage container ID:"
-                  = k
-                  - v.each do |val|
+                %a{ :href => edit_specimen_storage_path(:id => sr, :in_edit_mode => true), :class => "edit_specimen_sample_store", :id => sr}
+                  = "Storage Container ID:"
+                  = sr.specimen_storage_container.storage_container_id
+                  - sr.specimen_storage_container.specimen_receipts.each do |val|
                     %p{:class => "paragraph_shift"}
-                      = val
+                      = val.specimen.specimen_id
     %td
       %div{:id => "shipping"}
         %ul

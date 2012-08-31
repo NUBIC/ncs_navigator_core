@@ -40,6 +40,7 @@ describe SpecimenReceipt do
   end
 
   it { should belong_to(:specimen_processing_shipping_center) }
+  it { should belong_to(:specimen_storage_container) }
   it { should belong_to(:specimen_equipment) }
   it { should belong_to(:psu) }
   it { should belong_to(:receipt_comment) }
@@ -55,7 +56,6 @@ describe SpecimenReceipt do
       sr = Factory(:specimen_receipt)
       sr.public_id.should_not be_nil
       sr.specimen_id.should == sr.public_id
-      sr.specimen_id.to_s.should == "10001"
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do

@@ -34,7 +34,7 @@
 # Contains details about visit with the participant
 # (e.g. Language spoken, Age of person that consented, etc.)
 class ParticipantVisitRecord < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :rvis_id
 
   belongs_to :participant

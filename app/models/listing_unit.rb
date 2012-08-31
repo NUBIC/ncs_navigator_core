@@ -29,7 +29,7 @@
 # Records will be added to this table but will NOT be edited.
 #
 class ListingUnit < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :list_id
 
   ncs_coded_attribute :psu,         'PSU_CL1'

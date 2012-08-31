@@ -51,7 +51,7 @@
 # All individuals contacted are Persons, including those who may also be Participants.
 require 'ncs_navigator/configuration'
 class Person < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :person_id, :date_fields => [:date_move, :person_dob]
 
   ncs_coded_attribute :psu,                      'PSU_CL1'

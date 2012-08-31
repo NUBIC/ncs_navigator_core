@@ -19,7 +19,7 @@
 
 # A Person may be of mixed race. This table records each race for a Person in a separate row.
 class PersonRace < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :person_race_id
 
   belongs_to :person

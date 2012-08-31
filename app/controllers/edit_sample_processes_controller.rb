@@ -1,31 +1,53 @@
 class EditSampleProcessesController < ApplicationController
-  def index
+  before_filter :in_edit_mode
+  
+  def in_edit_mode
+    @edit = true
   end
   
+  def index
+  end
+
+  
   def search_by_id
-    search_id = params[:search_id]
-    @specimens = SpecimenReceipt.where(:specimen_id => search_id)
-    
+    search_id = params[:search_id].first.strip
+
+    @specimens = get_specimen_receipts(search_id)
     @samples = SampleReceiptStore.where(:sample_id => search_id)
 
-    @specimen_storage_ids = SpecimenStorage.where(:storage_container_id => search_id)
-    @specimen_receipts_hash = hash_of_specs_by_container_id(@specimen_storage_ids)
-
-    @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
-    @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
-    @sample_receipt_stores_not_shipped = SampleReceiptStore.where(:sample_id => search_id)
+    @specimen_storages = get_specimen_storages(@specimens, search_id)
     
-    @specimen_receipts_not_shipped = SpecimenStorage.where(:storage_container_id => search_id)
-    @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
+    
+    # TODO = uncomment once fixed
+    @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
 
-    @sample_shippings_not_received = hash_from_array_by_track_num(SampleShipping.where("sample_id = ? or shipment_tracking_number =?", search_id, search_id))
-    @specimen_shippings_not_received = SpecimenShipping.where(:storage_container_id => search_id)
+    # @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
+    @sample_receipt_stores_not_shipped = SampleReceiptStore.where(:sample_id => search_id)
+    # 
+    # @specimen_receipts_not_shipped = SpecimenStorage.where(:storage_container_id => search_id)
+    # @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
+    # 
+    # @sample_shippings_not_received = hash_from_array_by_track_num(SampleShipping.where("sample_id = ? or shipment_tracking_number =?", search_id, search_id))
+    # @specimen_shippings_not_received = SpecimenShipping.where(:storage_container_id => search_id)
     respond_to do |format|      
-       format.js do
+       format.html do
          render :layout => false
        end
      end
   end
+  
+  def get_specimen_receipts(search_id)
+    spec_receipts_from_container = SpecimenReceipt.joins(:specimen_storage_container).where("specimen_storage_containers.storage_container_id = ?", search_id)
+    spec_receipts_from_specimen = SpecimenReceipt.joins(:specimen).where("specimens.specimen_id = ?", search_id)
+    spec_receipts_from_container | spec_receipts_from_specimen
+  end
+  
+  def get_specimen_storages(spec_receipts, search_id)
+    spec_storages_from_container = SpecimenStorage.joins(:specimen_storage_container).where("specimen_storage_containers.storage_container_id = ?", search_id)
+    spec_storages_from_receipts = spec_receipts.select{|sr| sr.specimen_storage_container.specimen_storage}.map{|ss| ss.specimen_storage_container.specimen_storage}
+    spec_storages_from_container | spec_storages_from_receipts
+  end
+  
   
   def search_by_date
   end

@@ -20,7 +20,7 @@
 
 # Table for types of samples (e.g. Biospecimen, Genetic, etc.) that require Participant consent for collection.
 class ParticipantConsentSample < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :participant_consent_sample_id
 
   belongs_to :participant

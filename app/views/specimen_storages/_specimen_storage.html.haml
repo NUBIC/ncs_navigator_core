@@ -1,11 +1,11 @@
 = form_for @specimen_storage do |f|
   = render "shared/full_error_messages", :object => f.object
-  = f.label :storage_container_id, "Storage Container Id:"
-  = @specimen_storage.storage_container_id
+  = f.label :storage_container_id, "Storage Container ID:"
+  = @specimen_storage.specimen_storage_container.storage_container_id
   = "contains the following:"
-  - @specimen_storage.specimen_receipts.each do |val|
-    = val.specimen_id
-  = f.hidden_field :storage_container_id
+  - @specimen_storage.specimen_storage_container.specimen_receipts.each do |val|
+    = val.specimen.specimen_id
+  = f.hidden_field :specimen_storage_container_id
   %br
   
   = f.label "Staff:"
@@ -51,5 +51,8 @@
   
   - text = method == :new ? "Store" : "Update"
   - clazz = method == :new ? "spec_stored" : "update_spec_stored"
+  - exit_clazz = method == :new ? "exit_and_no_refresh" : "exit_and_refresh"
 
   = f.submit text, :disable_with => 'Submitting...', :class => clazz
+  - unless @in_edit_mode
+    %input{:type=>"button", :class => exit_clazz, :value =>"Exit"}

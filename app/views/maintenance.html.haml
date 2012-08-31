@@ -1,0 +1,37 @@
+!!! 5
+
+-# This is not a usual application view. It's rendered by `rake maintenance:html`
+-# into public/maintentance.html
+
+- maintenance_window ||= if ENV['MAINTENANCE_WINDOW'] && ENV['MAINTENANCE_WINDOW'].size > 0
+  - ENV['MAINTENANCE_WINDOW']
+
+%html
+  %head
+    %title NCS Navigator is down for maintenance
+    %style{ :type => 'text/css' }
+      :sass
+        body
+          font-family: Helvetica, sans-serif
+          background: #CCD3E8
+        #message
+          margin: 3em auto
+          padding: 2em
+          width: 40em
+          background: #eee
+          border-radius: 0.5em
+          border: 2px solid #406CD5
+        h1
+          padding-top: 0
+          margin-top: 0
+  %body
+    #message
+      %h1 NCS Navigator is down for maintenance
+      %p
+        - if maintenance_window
+          The expected downtime is
+          = "#{maintenance_window}."
+        - else
+          It will be back soon.
+      %p
+        If you have any questions, please contact the NCS Navigator help desk.

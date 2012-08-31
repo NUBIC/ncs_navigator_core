@@ -13,18 +13,10 @@ class SpecimensController < ApplicationController
   end
   
   def verify
-    array_of_storage_container_ids = params[:storage_container_id]
-    if (array_of_storage_container_ids.nil?)
-      flash[:notice] = 'Please select specimen to ship'
-      @specimen_receipts = array_of_not_shipped_specs
-      @specimen_receipts_hash = hash_from_array(@specimen_receipts)      
-      render :action => "index"
-    else
-      populate_specimen_receipts
-      respond_to do |format|      
-        format.js do
-          render :layout => false
-        end
+    @array_of_storage_container_ids = params[:specimen_storage]
+    respond_to do |format|      
+      format.js do
+        render :layout => false
       end
     end
   end

@@ -176,7 +176,13 @@ NcsNavigatorCore::Application.routes.draw do
       post :search_by_date
     end
   end
-
+  
+  resources :specimen_shippings do
+    collection do
+      post :send_email
+    end
+  end
+  
   resources :sample_receipt_stores do
     member do
       post :update

@@ -35,7 +35,7 @@
 # It may be "updated during conversations with participants, from secondary data sources, or from other types of contacts."
 #
 class DwellingHouseholdLink < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :hh_du_id
 
   belongs_to :dwelling_unit

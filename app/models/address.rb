@@ -45,7 +45,7 @@
 # A Dwelling Unit will have exactly one Address.
 # A Person, an Institution and a Provider will have at least one and sometimes many Addresses.
 class Address < ActiveRecord::Base
-  include MdesRecord
+  include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :address_id, :date_fields => [:address_start_date, :address_end_date]
 
   belongs_to :person
