@@ -43,7 +43,7 @@ describe SurveyorController do
         }
       }
 
-      plan = InstrumentPlan.new(schedule)
+      plan = InstrumentPlan.from_schedule(schedule)
       PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(plan)
 
       @response_set.participant = participant

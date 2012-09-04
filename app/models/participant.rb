@@ -270,7 +270,6 @@ class Participant < ActiveRecord::Base
     end
 
     if known_to_be_pregnant?
-
       if low_intensity? &&
          can_impregnate_low? &&
          !due_date_is_greater_than_follow_up_interval

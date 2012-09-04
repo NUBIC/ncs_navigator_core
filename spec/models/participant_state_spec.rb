@@ -106,7 +106,6 @@ describe Participant do
     describe "in ppg 1 (pregnant)" do
 
       it "should be following low intensity if the due_date > 6 mos" do
-
         due_date = 8.months.from_now
 
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime('%Y-%m-%d'))
@@ -120,10 +119,11 @@ describe Participant do
       it "should be pregnant if the due_date < 6 mos" do
         due_date = 4.months.from_now
 
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime("%m/%d/%Y"))
+        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime("%Y-%m-%d"))
 
         participant.should be_in_pregnancy_probability_group
         participant.update_state_after_survey(response_set, psc)
+
         participant.should be_pregnant_low
 
       end
