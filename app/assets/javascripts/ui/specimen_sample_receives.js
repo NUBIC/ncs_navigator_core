@@ -1,38 +1,24 @@
 $(function() {
-  $(".datetime").live('mouseover',
-    function() {
-      $(this).datetimepicker({});
-  });
-    
-  $('.time').live('mouseover',
-    function() {
-      $(this).timepicker({})
-  })
-    
-  $('.date').live('mouseover',
-    function() {
-      $(this).datepicker({})
-  })
-         
+
   $('.specimen_sample_receive').live('click',
     function() {
         specimen_receive_dialog($(this).attr('href') + ' form', 'Biological Specimens / Environmental Samples Receiving Form', $(this).attr('rel'));
         return false;
   });
-    
-  $(".sample_receipt_edit").live('click', 
+
+  $(".sample_receipt_edit").live('click',
     function(){
       $(this).closest('div').load($(this).attr('href') + ' form');
       return false;
   })
-    
+
   $('.specimen_receipt_edit').live('click', function(){
-      $(this).closest('div').load($(this).attr('href') + ' form'); 
+      $(this).closest('div').load($(this).attr('href') + ' form');
       return false;
   });
-    
+
   $('.sample_receipt_store_update_receive').live('click', specimen_sample_receive_process);
-    
+
   $('form.specimen_receipt_form input[type="submit"]').live('click', specimen_sample_receive_process);
 
   function specimen_sample_receive_process() {
@@ -49,7 +35,7 @@ $(function() {
           var specimen_id = response.specimen_receipt.specimen_id;
           var url = /specimen_receipts/ + response.specimen_receipt.id + ' form';
           $("#"+specimen_id).load(url);
-        } 
+        }
         if (response.sample_receipt_store) {
           var sample_id = response.sample_receipt_store.sample_id;
           var url = /sample_receipt_stores/ + response.sample_receipt_store.id + ' form';

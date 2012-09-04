@@ -50,28 +50,42 @@ function stop_default_action(e) {
 }
 
 $(document).ready(function() {
-  $("input[type='text'].datetime").datetimepicker({
-  	showSecond: true,
-  	showMillisec: false,
-  	timeFormat: 'hh:mm:ss',
-  	dateFormat: 'yy-mm-dd',
-  	changeMonth: true,
-  	changeYear: true,
-  	yearRange: '1920:2020'
-  });
-  $("input[type='text'].date").datepicker( {
-  	dateFormat: 'yy-mm-dd',
-  	changeMonth: true,
-  	changeYear: true,
-  	yearRange: '1920:2020'
-  } );
-  $("input[type='text'].datepicker").datepicker( {
-  	dateFormat: 'yy-mm-dd',
-  	changeMonth: true,
-  	changeYear: true,
-  	yearRange: '1920:2020'
-  } );
-  $("input[type='text'].time").timepicker({});
+
+  $("input[type='text'].datetime").live('focus',
+    function() {
+      $(this).datetimepicker( {
+      	showSecond: true,
+      	showMillisec: false,
+      	timeFormat: 'hh:mm:ss',
+      	dateFormat: 'yy-mm-dd',
+      	changeMonth: true,
+      	changeYear: true,
+      	yearRange: '1920:2020'
+      } )
+    }
+  );
+  $("input[type='text'].date").live('focus',
+    function() {
+      $(this).datepicker( {
+      	dateFormat: 'yy-mm-dd',
+      	changeMonth: true,
+      	changeYear: true,
+      	yearRange: '1920:2020'
+      } )
+    }
+  );
+  $("input[type='text'].datepicker").live('focus',
+    function() {
+      $(this).datepicker( {
+      	dateFormat: 'yy-mm-dd',
+      	changeMonth: true,
+      	changeYear: true,
+      	yearRange: '1920:2020'
+      } )
+    }
+  );
+  $("input[type='text'].time").live('focus',
+    function() { $(this).timepicker({}) });
 
   $('.mdes_documentation_link').click(function(event) {
     var definition = $(this).next('.mdes_definition').val();
@@ -109,5 +123,5 @@ $(document).ready(function() {
   $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
   $("#tabs").tabs({ cookie: { expires: 1 } });
-  
+
 });
