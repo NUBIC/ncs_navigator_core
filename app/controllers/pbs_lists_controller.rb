@@ -28,9 +28,9 @@ class PbsListsController < ApplicationController
         format.html
         format.json { render :json => @pbs_list }
       end
-    else
-      flash[:warning] = "Provider is required when creating a PBS List record."
-      redirect_to pbs_lists_path
+    #else
+      #flash[:warning] = "Provider is required when creating a PBS List record."
+      #redirect_to pbs_lists_path 
     end
   end
 

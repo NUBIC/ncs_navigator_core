@@ -62,7 +62,7 @@
             - else
               = provider_recruitment_link(pbs)
   .links
-    = link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"
+    -#= link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"  {no option to enter the provider name here in PBS list, should be in Provider path}
     %br
     = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
 
