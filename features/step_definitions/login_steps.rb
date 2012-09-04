@@ -28,7 +28,8 @@ Given /^an authenticated user$/ do
   }
 end
 
-# Temporarily changing specimen setting
+# Changing "with_specimen" value in config file. Around block ensures it is
+#   returned to its original value after the scenario
 Around do |scenario, block|
 
   config = NcsNavigatorCore.configuration
@@ -45,8 +46,6 @@ Given /^an authenticated user with a role of "([^"]*)"$/ do |role|
 
   config = NcsNavigatorCore.configuration
   config.suite_configuration.core["with_specimens"] = 'true'
-  p "config with specimens is #{config.suite_configuration.core["with_specimens"]}"
-  p "config.with_specimens? => #{config.with_specimens?}"
 
   auth = Aker.configuration.authorities.detect { |auth| auth.class == Aker::Authorities::Static }
 
