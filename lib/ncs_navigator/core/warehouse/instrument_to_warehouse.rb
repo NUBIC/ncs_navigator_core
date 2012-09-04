@@ -244,7 +244,11 @@ module NcsNavigator::Core::Warehouse
             end
           end
           fixed_values.each do |record_attribute, value|
-            record.send("#{record_attribute}=", value)
+            # fixed values may be used for segmentation only (e.g., with tertiary tables)
+            setter = "#{record_attribute}="
+            if record.respond_to?(setter)
+              record.send(setter, value)
+            end
           end
           if record.respond_to?(:p_id=)
             record.p_id = participant.p_id

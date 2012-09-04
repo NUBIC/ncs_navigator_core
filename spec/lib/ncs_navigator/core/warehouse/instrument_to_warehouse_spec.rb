@@ -20,6 +20,10 @@ module NcsNavigator::Core::Warehouse
 
     let(:records) { instrument.to_mdes_warehouse_records(wh_config) }
 
+    def records_for(mdes_table_name)
+      records.select { |rec| rec.class.mdes_table_name == mdes_table_name.downcase }
+    end
+
     before do
       Survey.mdes_reset!
     end
@@ -430,19 +434,132 @@ module NcsNavigator::Core::Warehouse
           tubes.collect { |t| [t.tube_status, t.tube_comments_oth] }.
             sort_by { |ts, tc| ts }.should == [ ['1', nil], ['3', 'Scarring'] ]
         end
-
-        it 'works with tertiary tables' do
-          pending '#1653'
-        end
       end
 
-      describe 'with a repeated subsection' do
-        it 'works' do
-          pending '#1656'
+      describe 'with fixed values and a tertiary table' do
+        let(:questions_dsl) {
+          <<-DSL
+            q_COLLECTION_STATUS "Blood tube collection overall status",
+            :pick => :one,
+            :data_export_identifier=>"SPEC_BLOOD.COLLECTION_STATUS"
+            a_1 "Collected"
+            a_2 "Partially collected"
+            a_3 "Not collected"
+
+            q_SPECIMEN_ID_TUBE_TYPE_1_VISIT_1 "Tube barcode",
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID"
+            a "AA|-SS10", :string
+
+            q_TUBE_COMMENTS_TUBE_TYPE_1_VISIT_1 "Blood tube collection comments",
+            :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply",
+            :pick => :any,
+            :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=1].TUBE_COMMENTS"
+            a_1 "Equipment failure"
+            a_2 "Fainting"
+            a_3 "Light-headedness"
+            a_4 "Hematoma"
+            a_5 "Bruising"
+            a_6 "Vein collapsed during procedure"
+            a_7 "No suitable vein"
+            a_neg_5 "Other"
+            a_neg_1 "Refused"
+            a_neg_2 "Don’t know"
+
+            q_TUBE_COMMENTS_OTH_TUBE_TYPE_1_VISIT_1 "Blood tube collection other comments",
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=1].TUBE_COMMENTS_OTH"
+            a_1 "Specify", :string
+
+            q_SPECIMEN_ID_TUBE_TYPE_2_VISIT_1 "Tube barcode",
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=2].SPECIMEN_ID"
+            a "AA|-RD10", :string
+
+            q_TUBE_COMMENTS_TUBE_TYPE_2_VISIT_1 "Blood tube collection comments",
+            :help_text => "Enter reasons tube_type was not collected or draw was short. Select all that apply",
+            :pick => :any,
+            :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=2].TUBE_COMMENTS"
+            a_1 "Equipment failure"
+            a_2 "Fainting"
+            a_3 "Light-headedness"
+            a_4 "Hematoma"
+            a_5 "Bruising"
+            a_6 "Vein collapsed during procedure"
+            a_7 "No suitable vein"
+            a_neg_5 "Other"
+            a_neg_1 "Refused"
+            a_neg_2 "Don’t know"
+
+            q_TUBE_COMMENTS_OTH_TUBE_TYPE_2_VISIT_1 "Blood tube collection other comments",
+            :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=2].TUBE_COMMENTS_OTH"
+            a_1 "Specify", :string
+            dependency :rule=>"A"
+          DSL
+        }
+
+        let(:blood_record)         { records_for('spec_blood').first }
+        let(:tube_records)         { records_for('spec_blood_tube') }
+        let(:tube_comment_records) { records_for('spec_blood_tube_comments') }
+
+        before do
+          create_response_for(questions_map['COLLECTION_STATUS']) do |r|
+            r.answer = r.question.answers.find_by_text("Partially collected") or fail
+          end
+
+          create_response_for(questions_map['SPECIMEN_ID_TUBE_TYPE_1_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_response_class("string") or fail
+            r.string_value = '42-1'
+          end
+          create_response_for(questions_map['TUBE_COMMENTS_TUBE_TYPE_1_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_text("Fainting") or fail
+            r.response_group = 1
+          end
+          create_response_for(questions_map['TUBE_COMMENTS_TUBE_TYPE_1_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_text("Other") or fail
+            r.response_group = 2
+          end
+          create_response_for(questions_map['TUBE_COMMENTS_OTH_TUBE_TYPE_1_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_response_class("string") or fail
+            r.string_value = 'Bindlery'
+          end
+
+          create_response_for(questions_map['SPECIMEN_ID_TUBE_TYPE_2_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_response_class("string") or fail
+            r.string_value = '42-2'
+          end
+          create_response_for(questions_map['TUBE_COMMENTS_TUBE_TYPE_2_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_text("Bruising") or fail
+            r.response_group = 1
+          end
+          create_response_for(questions_map['TUBE_COMMENTS_TUBE_TYPE_2_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_text("Refused") or fail
+            r.response_group = 2
+          end
+          create_response_for(questions_map['TUBE_COMMENTS_OTH_TUBE_TYPE_2_VISIT_1']) do |r|
+            r.answer = r.question.answers.find_by_response_class("string") or fail
+            r.string_value = 'Scarring'
+          end
         end
 
-        it 'works with tertiary associations' do
+        it 'collates secondary responses with the same fixed value' do
+          tube_records.collect { |rec| [rec.specimen_id, rec.tube_comments_oth] }.sort.should == [
+            ['42-1', 'Bindlery'],
+            ['42-2', 'Scarring']
+          ]
+        end
+
+        it 'associates the secondary records with the primary record' do
+          tube_records.collect(&:spec_blood_id).uniq.should == [blood_record.spec_blood_id]
+        end
+
+        it 'associates the tertiary records with the appropriate secondary records' do
           pending '#1653'
+          tube_ids_by_type_id = tube_records.inject({}) { |map, rec| map[rec.tube_type] = rec; map }
+
+          tube_comment_records.inject({}) { |map, ter_rec|
+            ((map[ter_rec.spec_blood_tube_id] ||= []) << ter_rec.tube_comments).sort!; map
+          }.should == {
+            tube_ids_by_type_id['1'].key.first => %w(2 -5),
+            tube_ids_by_type_id['2'].key.first => %w(5 -1)
+          }
         end
       end
 
