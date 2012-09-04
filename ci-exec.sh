@@ -4,12 +4,15 @@ if [ -z $RAILS_ENV ]; then
     export RAILS_ENV=ci
 fi
 
-BUNDLER_VERSION=1.1.4
 GEMSET=ncs_navigator_core
 
 if [ -z $CI_RUBY ]; then
     echo "CI_RUBY must be set"
     exit 1
+fi
+
+if [ -z $BUNDLER_VERSION ]; then
+    export BUNDLER_VERSION=1.1.4
 fi
 
 set +xe
