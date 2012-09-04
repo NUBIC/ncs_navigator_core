@@ -227,14 +227,14 @@ class NcsCode < ActiveRecord::Base
     :refusal_reason_code            => 'REFUSAL_REASON_CL1',
 
     ### spec_shipping
-    :shipment_temperature_code  => 'SHIPMENT_TEMPERATURE_CL1',
+    :shipment_temperature_code       => 'SHIPMENT_TEMPERATURE_CL1',
     :shipment_receipt_confirmed_code => 'CONFIRM_TYPE_CL2',
     :shipment_issues_code            => 'SHIPMENT_ISSUES_CL1',
 
     ### sample_shipping
-    :sample_shipment_temperature_code  => 'SHIPMENT_TEMPERATURE_CL2',
-    :sample_shipper_destination_code   => 'SHIPPER_DESTINATION_CL1',
-    :sample_shipped_by_code            => 'SAMPLES_SHIPPED_BY_CL1',
+    :shipment_coolant_code          => 'SHIPMENT_TEMPERATURE_CL2',
+    :shipper_destination_code       => 'SHIPPER_DESTINATION_CL1',
+    :sample_shipped_by_code         => 'SAMPLES_SHIPPED_BY_CL1',
 
     ### spec_pickup_form
     :spec_pickup_comment_code       => 'SPECIMEN_STATUS_CL5',

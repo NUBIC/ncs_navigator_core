@@ -28,9 +28,14 @@
 
 class SampleShipping < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
-  acts_as_mdes_record :public_id_field => :sample_id
+  acts_as_mdes_record :public_id_field => :shipment_tracking_number
+  
+  has_many :samples
+  accepts_nested_attributes_for :samples
 
   belongs_to :sample_receipt_shipping_center
+  has_many :sample_receipt_confirmations
+  
   ncs_coded_attribute :psu,                         'PSU_CL1'
   ncs_coded_attribute :shipper_destination,         'SHIPPER_DESTINATION_CL1'
   ncs_coded_attribute :shipment_coolant,            'SHIPMENT_TEMPERATURE_CL2'

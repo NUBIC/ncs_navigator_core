@@ -3,11 +3,11 @@
     - @sample_receipt_confirmations_new.each do |sample_receipt_confirmation_new|
       %li
         %a{:href => "#tabs_#{sample_receipt_confirmation_new.sample_id}"}
-          = sample_receipt_confirmation_new.sample_id
+          = sample_receipt_confirmation_new.sample.sample_id
     - @sample_receipt_confirmations_edit.each do |sample_receipt_confirmation_edit|
       %li
         %a{:href => "#tabs_#{sample_receipt_confirmation_edit.sample_id}"}
-          = sample_receipt_confirmation_edit.sample_id
+          = sample_receipt_confirmation_edit.sample.sample_id
   - @sample_receipt_confirmations_new.each do |sample_receipt_confirmation_new|
     %div{:id => "tabs_#{sample_receipt_confirmation_new.sample_id}"}
       = render :partial => "sample_receipt_confirmations/form", :locals => { :sample_receipt_confirmation => sample_receipt_confirmation_new }
