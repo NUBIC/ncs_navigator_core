@@ -22,4 +22,12 @@ module NcsNavigator::Mdes
         end
     end
   end
+
+  class Specification
+    def disposition_for(category_code, interim_code)
+      disposition_codes.detect do |dc|
+        dc.category_code == category_code && dc.interim_code.to_i == interim_code
+      end
+    end
+  end
 end

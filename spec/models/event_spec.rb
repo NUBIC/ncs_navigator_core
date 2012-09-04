@@ -727,6 +727,14 @@ describe Event do
     let(:event) { Event.new }
     let(:desired_sa_state) { event.desired_sa_state }
 
+    let(:successful_dc) do
+      NcsNavigatorCore.mdes.disposition_codes.detect(&:success?)
+    end
+
+    let(:unsuccessful_dc) do
+      NcsNavigatorCore.mdes.disposition_codes.detect { |dc| !dc.success? }
+    end
+
     SA = Psc::ScheduledActivity
 
     describe 'if the event is closed' do
@@ -734,23 +742,19 @@ describe Event do
         event.stub!(:closed? => true)
       end
 
-      it 'returns OCCURRED' do
-        desired_sa_state.should == SA::OCCURRED
-      end
-
-      describe 'and the disposition is "out of window"' do
+      describe 'and the disposition is successful' do
         before do
-          event.mark_out_of_window
+          event.disposition_code = successful_dc
         end
 
-        it 'returns CANCELED' do
-          desired_sa_state.should == SA::CANCELED
+        it 'returns OCCURRED' do
+          desired_sa_state.should == SA::OCCURRED
         end
       end
 
-      describe 'and the disposition is "not worked"' do
+      describe 'and the disposition is unsuccessful' do
         before do
-          event.mark_not_worked
+          event.disposition_code = unsuccessful_dc
         end
 
         it 'returns CANCELED' do

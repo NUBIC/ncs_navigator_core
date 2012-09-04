@@ -41,6 +41,11 @@ class Event < ActiveRecord::Base
   has_many :instruments, :through => :contact_links
   has_many :contacts, :through => :contact_links
 
+  composed_of :disposition_code,
+    :class_name => 'NcsNavigator::Mdes::DispositionCode',
+    :mapping => [%w(event_disposition_category_code category_code), %w(event_disposition interim_code)],
+    :constructor => lambda { |cc, ic| NcsNavigatorCore.mdes.disposition_for(cc, ic) }
+
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :event_type,                 'EVENT_TYPE_CL1'
   ncs_coded_attribute :event_disposition_category, 'EVENT_DSPSTN_CAT_CL1'
@@ -312,9 +317,8 @@ class Event < ActiveRecord::Base
   # Here's how events and their backing activities match up:
   #
   # | Event state | Disposition   | Desired activity state |
-  # | Closed      | Out of window | Canceled               |
-  # | Closed      | Not worked    | Canceled               |
-  # | Closed      | (otherwise)   | Occurred               |
+  # | Closed      | Unsuccessful  | Canceled               |
+  # | Closed      | Successful    | Occurred               |
   # | Open        | (any)         | Scheduled              |
   #
   # Note: this method's behavior is independent of whether or not the Event is
@@ -324,10 +328,10 @@ class Event < ActiveRecord::Base
     sa = Psc::ScheduledActivity
 
     if closed?
-      if out_of_window? || not_worked?
-        sa::CANCELED
-      else
+      if disposition_code.success?
         sa::OCCURRED
+      else
+        sa::CANCELED
       end
     else
       sa::SCHEDULED
