@@ -80,7 +80,12 @@ module NcsNavigator::Core
     # @return [NcsNavigator::Mdes::Specification] the specification
     #   for the MDES version that Core currently corresponds to.
     def mdes
-      @mdes ||= NcsNavigator::Mdes('2.0')
+      @mdes ||= NcsNavigator::Mdes(mdes_version)
+    end
+
+    def mdes_version
+      version = suite_configuration.core['mdes_version']
+      version || '2.0'
     end
   end
 end
