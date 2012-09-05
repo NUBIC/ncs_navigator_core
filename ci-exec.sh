@@ -11,9 +11,9 @@ if [ -z $CI_RUBY ]; then
     exit 1
 fi
 
-if [ -z $BUNDLER_VERSION ]; then
-    export BUNDLER_VERSION=1.2.0
-fi
+# Feel free to bump this as new versions of bundler that work with this CI
+# script are released.
+export BUNDLER_VERSION=1.2.0
 
 set +xe
 echo "Initializing RVM"
