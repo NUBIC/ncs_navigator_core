@@ -27,3 +27,9 @@ Given /^an authenticated user$/ do
     Given I log in as "test_user"
   }
 end
+
+Given /^an authenticated admin user$/ do
+  steps %Q{
+    Given I log in as "admin_user"
+  }
+end
