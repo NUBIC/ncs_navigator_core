@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: specimen_receipts
 #
@@ -21,10 +20,10 @@
 #  receipt_comment_other                  :string(255)
 #  receipt_datetime                       :datetime         not null
 #  specimen_equipment_id                  :integer
-#  specimen_id                            :string(36)       not null
+#  specimen_id                            :integer          not null
 #  specimen_processing_shipping_center_id :integer
+#  specimen_storage_container_id          :integer          not null
 #  staff_id                               :string(36)       not null
-#  storage_container_id                   :string(36)       not null
 #  transaction_type                       :string(36)
 #  updated_at                             :datetime
 #  upper_trigger_code                     :integer

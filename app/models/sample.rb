@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: samples
 #
-#  created_at    :datetime
-#  id            :integer          not null, primary key
-#  instrument_id :integer
-#  sample_id     :string(36)       not null
-#  updated_at    :datetime
+#  created_at             :datetime
+#  data_export_identifier :string(255)
+#  id                     :integer          not null, primary key
+#  instrument_id          :integer
+#  response_set_id        :integer
+#  sample_id              :string(36)       not null
+#  sample_shipping_id     :integer
+#  updated_at             :datetime
+#  volume_amount          :decimal(6, 2)
+#  volume_unit            :string(36)
 #
 
 class Sample < ActiveRecord::Base

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: sample_receipt_stores
 #
@@ -14,7 +13,7 @@
 #  receipt_datetime                  :datetime         not null
 #  removed_from_storage_datetime     :datetime
 #  sample_condition_code             :integer          not null
-#  sample_id                         :string(36)       not null
+#  sample_id                         :integer          not null
 #  sample_receipt_shipping_center_id :integer
 #  staff_id                          :string(36)       not null
 #  storage_comment_other             :string(255)
