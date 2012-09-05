@@ -494,5 +494,28 @@ describe Instrument do
       end
     end
   end
+
+  describe '#enumerable_to_warehouse?' do
+    let(:event) { Factory(:mdes_min_event) }
+    let(:instrument) { Factory(:instrument, :event => event) }
+
+    let(:result) { instrument.enumerable_to_warehouse? }
+
+    it 'is true when all requirements are met' do
+      result.should be_true
+    end
+
+    it 'is false when there is no event associated with the instrument' do
+      instrument.tap { |i| i.event = nil }.save!
+
+      result.should be_false
+    end
+
+    it 'is false when the associated event has no disposition' do
+      event.tap { |e| e.event_disposition = nil }.save!
+
+      result.should be_false
+    end
+  end
 end
 

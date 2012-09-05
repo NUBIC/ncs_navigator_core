@@ -12,7 +12,7 @@ if [ -z $CI_RUBY ]; then
 fi
 
 if [ -z $BUNDLER_VERSION ]; then
-    export BUNDLER_VERSION=1.1.4
+    export BUNDLER_VERSION=1.2.0
 fi
 
 set +xe

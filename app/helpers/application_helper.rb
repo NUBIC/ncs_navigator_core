@@ -26,6 +26,10 @@ module ApplicationHelper
     "Release Version #{version}"
   end
 
+  def mdes_version_is_after?(version = 3.0)
+    NcsNavigatorCore.mdes.version.to_f >= version
+  end
+
   # text helpers
 
   def blank_safe(str, default = "___")
@@ -81,7 +85,6 @@ module ApplicationHelper
   end
 
   # Dispositions
-
 
   def grouped_disposition_codes(group = nil, selected_key = nil)
     grouped_options_for_select(DispositionMapper.get_grouped_options(group), selected_key, "-- Select Disposition --")

@@ -8,13 +8,14 @@ class PbsListsController < ApplicationController
   def index
     params[:page] ||= 1
 
+    params[:q] ||= Hash.new
+    params[:q]['s'] ||= "provider_name_practice asc"
     @q = PbsList.search(params[:q])
-    result = @q.result.order("pbs_list_id DESC")
-    @pbs_lists = result.paginate(:page => params[:page], :per_page => 20)
+    @pbs_lists = @q.result.paginate(:page => params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html
-      format.json { render :json => result.all }
+      format.json { render :json => @q.result.all }
     end
   end
 

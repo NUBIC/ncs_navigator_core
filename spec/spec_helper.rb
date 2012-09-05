@@ -141,6 +141,16 @@ Spork.prefork do
     Surveyor::Parser.new.parse(s)
   end
 
+  def load_survey_questions_string(questions_dsl)
+    load_survey_string <<-SURVEY
+      survey "Test Survey" do
+        section "A" do
+          #{questions_dsl}
+        end
+      end
+    SURVEY
+  end
+
   def with_versioning
     was_enabled = PaperTrail.enabled?
     PaperTrail.enabled = true

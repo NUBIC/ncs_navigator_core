@@ -41,42 +41,40 @@ module NcsNavigator::Core::Warehouse
     describe '#each' do
       subject { InstrumentEnumerator.new(configuration) }
 
-      let(:rs1) { ResponseSet.new.tap { |rs| rs.access_code = 'rs1' } }
-      let(:rs2) { ResponseSet.new.tap { |rs| rs.access_code = 'rs2' } }
+      let(:ins1) { Instrument.new(:instrument_id => 'ins1') }
+      let(:ins2) { Instrument.new(:instrument_id => 'ins2') }
 
       before do
-        [rs1, rs2].each do |rs|
-          rs.stub!(:enumerable_as_instrument?).and_return(true)
+        [ins1, ins2].each do |ins|
+          ins.stub!(:enumerable_to_warehouse?).and_return(true)
         end
       end
 
       it 'converts every response set in turn' do
-        rs1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
-        rs2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
+        ins1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
+        ins2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
 
-        ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
+        Instrument.should_receive(:find_each).and_yield(ins1).and_yield(ins2)
 
         subject.to_a.should == %w(A B C H4 H7)
       end
 
       it 'skips response sets that are not candidates for enumeration' do
-        rs1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
-        rs2.should_receive(:enumerable_as_instrument?).and_return(false)
-        rs2.should_not_receive(:to_mdes_warehouse_records)
+        ins1.should_receive(:to_mdes_warehouse_records).and_return(%w(A B C))
+        ins2.should_receive(:enumerable_to_warehouse?).and_return(false)
+        ins2.should_not_receive(:to_mdes_warehouse_records)
 
-        ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
+        Instrument.should_receive(:find_each).and_yield(ins1).and_yield(ins2)
 
         subject.to_a.should == %w(A B C)
       end
 
       describe 'when one response set throws an exception' do
         before do
-          rs1.should_receive(:to_mdes_warehouse_records).and_raise(IndexError.new('No firsts'))
-          rs2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
+          ins1.should_receive(:to_mdes_warehouse_records).and_raise(IndexError.new('No firsts'))
+          ins2.should_receive(:to_mdes_warehouse_records).and_return(%w(H4 H7))
 
-          rs1.survey = Survey.new(:title => 'SAQ4')
-
-          ResponseSet.should_receive(:find_each).and_yield(rs1).and_yield(rs2)
+          Instrument.should_receive(:find_each).and_yield(ins1).and_yield(ins2)
         end
 
         it 'yields a transform error' do
@@ -86,12 +84,8 @@ module NcsNavigator::Core::Warehouse
         describe 'error message' do
           let(:message) { subject.to_a.first.message }
 
-          it 'includes the response set access code' do
-            message.should =~ /response set "rs1"/
-          end
-
-          it 'includes the survey title' do
-            message.should =~ /for survey "SAQ4"/
+          it 'includes the instrument ID' do
+            message.should =~ /instrument "ins1"/
           end
 
           it 'includes the backtrace' do

@@ -8,7 +8,7 @@ describe DispositionMapper do
   it "gets all the disposition options grouped by event" do
     grouped_options = DispositionMapper.get_grouped_options
 
-    grouped_options.keys.sort.should == DispositionMapper::EVENTS
+    grouped_options.keys.each {|k| DispositionMapper::EVENTS.should include(k) }
   end
 
   it "returns only the disposition options for the given event" do
@@ -25,6 +25,8 @@ describe DispositionMapper do
       [4, DispositionMapper::MAILED_BACK_SAQ_EVENT],
       [5, DispositionMapper::TELEPHONE_INTERVIEW_EVENT],
       [6, DispositionMapper::INTERNET_SURVEY_EVENT],
+      [7, DispositionMapper::PROVIDER_RECRUITMENT_EVENT],
+      [8, DispositionMapper::PBS_ELIGIBILITY_EVENT],
       [0, DispositionMapper::GENERAL_STUDY_VISIT_EVENT]
     ].each do |code, expected|
       DispositionMapper.for_event_disposition_category_code(code).should == expected

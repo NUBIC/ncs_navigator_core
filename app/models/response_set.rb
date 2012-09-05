@@ -51,15 +51,5 @@ class ResponseSet < ActiveRecord::Base
   def as_json(options = nil)
     super.merge('p_id' => participant.try(:public_id))
   end
-
-  def enumerable_as_instrument?
-    return false unless instrument_id
-
-    self.class.connection.select_value(<<-QUERY).to_i > 0
-     SELECT COUNT(*)
-     FROM instruments i INNER JOIN events e ON i.event_id=e.id
-     WHERE i.id=#{instrument_id} AND e.event_disposition IS NOT NULL
-    QUERY
-  end
 end
 

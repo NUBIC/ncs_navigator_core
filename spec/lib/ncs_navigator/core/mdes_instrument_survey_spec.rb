@@ -312,6 +312,106 @@ INSTR
             { 'pre_preg' => subject, 'spec_blood_tube' => subject }
         end
       end
+
+      describe '.merge_mdes_table_maps' do
+        let(:survey_one) {
+          load_survey_questions_string <<-RUBY
+            q_r_fname "First name",
+              :pick=>:one,
+              :data_export_identifier=>"PRE_PREG.R_FNAME"
+              a :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+
+            q_TUBE_STATUS_TUBE_TYPE_1_VISIT_1 "Blood tube collection status",
+              :pick => :one,
+              :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=1].TUBE_STATUS"
+              a_1 "Full draw"
+              a_2 "Short draw"
+              a_3 "No draw"
+          RUBY
+        }
+
+        let(:survey_two) {
+          load_survey_questions_string <<-RUBY
+            q_r_fname "Real first name",
+              :pick=>:one,
+              :data_export_identifier=>"PRE_PREG.R_FNAME"
+              a :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+
+            q_r_fname "Last name",
+              :pick=>:one,
+              :data_export_identifier=>"PRE_PREG.R_LNAME"
+              a :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+
+            q_TUBE_STATUS_TUBE_TYPE_3_VISIT_1 "Blood tube collection status",
+              :pick => :one,
+              :data_export_identifier=>"SPEC_BLOOD_TUBE[tube_type=3].TUBE_STATUS"
+              a_1 "Full draw"
+              a_2 "Short draw"
+              a_3 "No draw"
+
+            q_room_mold "In which rooms have you seen the mold or mildew?",
+              :help_text => "Probe for any other responses: Any other rooms? Select all that apply",
+              :pick=>:any,
+              :data_export_identifier=>"PRE_PREG_ROOM_MOLD.ROOM_MOLD"
+              a_1 "Kitchen"
+              a_2 "Living room"
+              a_3 "Hall/landing"
+              a_4 "Participant's bedroom"
+              a_5 "Other bedroom"
+              a_6 "Bathroom/toilet"
+              a_7 "Basement"
+              a_neg_5 "Other"
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+          RUBY
+        }
+
+        let(:survey_three) {
+          load_survey_questions_string <<-RUBY
+            q_enter_room_mold_oth "Other rooms where mold or mildew was seen", :pick=>:one,
+              :data_export_identifier=>"PRE_PREG_ROOM_MOLD.ROOM_MOLD_OTH"
+              a_1 "Specify", :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+          RUBY
+        }
+
+        let(:merged) { Survey.merge_mdes_table_maps([survey_one, survey_two, survey_three]) }
+
+        it 'merges the table lists' do
+          merged.collect { |ti, tc| tc[:table] }.sort.uniq.should == %w(pre_preg pre_preg_room_mold spec_blood_tube)
+        end
+
+        it 'merges variable lists for the same table in different surveys' do
+          merged['pre_preg'][:variables].keys.sort.should == %w(r_fname r_lname)
+        end
+
+        it 'contains all the variables from all the surveys' do
+          merged.values.collect { |tc| tc[:variables].keys }.flatten.sort.uniq.should ==
+            %w(r_fname r_lname room_mold room_mold_oth tube_status tube_type)
+        end
+
+        it 'does not merge variable lists for the same table with different fixed values' do
+          merged.keys.sort.should == %w(pre_preg pre_preg_room_mold spec_blood_tube[tube_type=1] spec_blood_tube[tube_type=3])
+        end
+
+        it 'merges question lists for the same variable in different surveys' do
+          merged['pre_preg'][:variables]['r_fname'][:questions].collect(&:text).sort.should == [
+            "First name",
+            "Real first name"
+          ]
+        end
+
+        it 'does not affect the cached single-survey maps' do
+          survey_one.mdes_table_map['pre_preg'][:variables]['r_fname'][:questions].size.should == 1
+        end
+      end
     end
   end
 end

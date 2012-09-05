@@ -9,13 +9,18 @@ class DispositionMapper
   MAILED_BACK_SAQ_EVENT       = "Mailed Back SAQ Event"         #4
   PREGNANCY_SCREENER_EVENT    = "Pregnancy Screener Event"      #1
   TELEPHONE_INTERVIEW_EVENT   = "Telephone Interview Event"     #5
+  PROVIDER_RECRUITMENT_EVENT  = "Provider Recruitment"          #7
+  PBS_ELIGIBILITY_EVENT       = "PBS Eligibility Screening"     #8
+
   EVENTS =  [
               GENERAL_STUDY_VISIT_EVENT,
               HOUSEHOLD_ENUMERATION_EVENT,
               INTERNET_SURVEY_EVENT,
               MAILED_BACK_SAQ_EVENT,
               PREGNANCY_SCREENER_EVENT,
-              TELEPHONE_INTERVIEW_EVENT
+              TELEPHONE_INTERVIEW_EVENT,
+              PROVIDER_RECRUITMENT_EVENT,
+              PBS_ELIGIBILITY_EVENT
             ]
 
   class << self
@@ -77,6 +82,10 @@ class DispositionMapper
         TELEPHONE_INTERVIEW_EVENT
       when 6
         INTERNET_SURVEY_EVENT
+      when 7
+        PROVIDER_RECRUITMENT_EVENT
+      when 8
+        PBS_ELIGIBILITY_EVENT
       else
         GENERAL_STUDY_VISIT_EVENT
       end
@@ -88,9 +97,10 @@ class DispositionMapper
     def disposition_text_for_event(category, code)
       return code if category.blank? || category.local_code.to_i < 0
       key = get_key_from_event_disposition_category(category)
-      opts = get_grouped_options[key]
-      match = opts.select { |k,v| v == code }.first
-      match[0] if match
+      if opts = get_grouped_options[key]
+        match = opts.select { |k,v| v == code }.first
+        match[0] if match
+      end
     end
 
     def get_key_from_event_disposition_category(category)
