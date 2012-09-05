@@ -22,11 +22,13 @@ module NcsNavigator::Core::Warehouse
     def to_mdes_warehouse_records(wh_config)
       table_serials = Hash.new(0)
 
-      records = response_bins.collect do |response_bin|
+      records = response_bins.collect { |response_bin|
         serial = (table_serials[response_bin.table_name] += 1)
 
-        response_bin.create_record(self, wh_config, serial)
-      end.flatten.tap { |records| wh_resolve_internal_references(records) }
+        [response_bin.create_record(self, wh_config, serial), response_bin]
+      }.tap { |pairs|
+        wh_resolve_internal_references(pairs)
+      }.collect { |rec, bin| rec }
     end
 
     ##
@@ -137,18 +139,41 @@ module NcsNavigator::Core::Warehouse
     end
 
     ##
-    # Attempts to resolve any references in the given list of records
-    # with the other records in the list. If more than one could be
-    # used, the first match is used. TODO: this will not work
-    # correctly for tertiary associations (#1653).
-    def wh_resolve_internal_references(records)
-      records.each do |rec|
+    # Attempts to resolve any record references in the given list of pairs of
+    # [record, response_bin] the other records in the list. If more than one
+    # could be used, the first match is used. TODO: this will not work correctly
+    # for tertiary associations (#1653).
+    def wh_resolve_internal_references(record_bin_pairs)
+      record_bin_pairs.each do |rec, bin|
         rec.class.relationships.each do |rel|
-          parent = records.detect { |cand| cand.class == rel.parent_model }
+          parent_pairs = record_bin_pairs.select { |cand, _| cand.class == rel.parent_model }
+          parent = wh_select_best_match(bin, parent_pairs)
           rec.send("#{rel.name}=", parent) if parent
         end
       end
     end
+    private :wh_resolve_internal_references
+
+    def wh_select_best_match(response_bin, candidate_pairs)
+      if candidate_pairs.size == 1
+        return candidate_pairs.first.first
+      end
+
+      without_other_participants = candidate_pairs.select { |cand_rec, cand_bin|
+        response_bin.participant.p_id == cand_bin.participant.p_id
+      }
+
+      return without_other_participants.first.first if without_other_participants.size == 1
+
+      without_other_fixed = candidate_pairs.select { |cand_rec, cand_bin|
+        response_bin.fixed_values == cand_bin.fixed_values
+      }
+
+      return without_other_fixed.first.first if without_other_fixed.size == 1
+
+      candidate_pairs.first.first unless candidate_pairs.empty?
+    end
+    private :wh_select_best_match
 
     ##
     # @private
@@ -239,6 +264,13 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
+      def fixed_values
+        table_content[:variables].inject({}) { |h, (var_name, var_mapping)|
+          h[var_name] = var_mapping[:fixed_value] if var_mapping[:fixed_value]
+          h
+        }
+      end
+
       def create_base_record(instrument, wh_config, serial)
         model = wh_config.model(table_name)
         model.new.tap do |record|
@@ -314,14 +346,6 @@ module NcsNavigator::Core::Warehouse
         end
       end
       private :select_possible_missing_codes
-
-      def fixed_values
-        table_content[:variables].inject({}) { |h, (var_name, var_mapping)|
-          h[var_name] = var_mapping[:fixed_value] if var_mapping[:fixed_value]
-          h
-        }
-      end
-      private :fixed_values
 
       def table_name
         table_content[:table]

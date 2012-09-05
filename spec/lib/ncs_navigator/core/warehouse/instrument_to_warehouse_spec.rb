@@ -561,14 +561,13 @@ module NcsNavigator::Core::Warehouse
         end
 
         it 'associates the tertiary records with the appropriate secondary records' do
-          pending '#1653'
           tube_ids_by_type_id = tube_records.inject({}) { |map, rec| map[rec.tube_type] = rec; map }
 
           tube_comment_records.inject({}) { |map, ter_rec|
             ((map[ter_rec.spec_blood_tube_id] ||= []) << ter_rec.tube_comments).sort!; map
           }.should == {
-            tube_ids_by_type_id['1'].key.first => %w(2 -5),
-            tube_ids_by_type_id['2'].key.first => %w(5 -1)
+            tube_ids_by_type_id['1'].key.first => %w(-5 2),
+            tube_ids_by_type_id['2'].key.first => %w(-1 5)
           }
         end
       end
@@ -786,6 +785,16 @@ module NcsNavigator::Core::Warehouse
           a "Specify", :string
           a_neg_1 "Refused"
           a_neg_2 "Don't know"
+
+          q_C_HEALTH "Since {{c_fname}} was born, would you say {{his_her}} health has been poor, fair, good, excellent?",
+          :pick => :one,
+          :data_export_identifier=>"THREE_MTH_MOTHER_CHILD_HABITS.C_HEALTH"
+          a_1 "Poor"
+          a_2 "Fair"
+          a_3 "Good"
+          a_4 "Excellent"
+          a_neg_1 "Refused"
+          a_neg_2 "Don't know"
         QUESTIONS
       }
 
@@ -952,17 +961,208 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'for multiple response sets for the same survey' do
-        it 'creates separate root records'
-        it 'associates secondary records with the appropriate root'
+        let!(:mother_num) {
+          create_response_for(questions_map['CHILD_NUM'], m_one_response_set) do |r|
+            r.answer = r.question.answers.first
+            r.integer_value = 2
+          end
+        }
+
+        let!(:c1_qnum) {
+          create_response_for(questions_map['CHILD_QNUM'], c1_detail_response_set) do |r|
+            r.answer = r.question.answers.first
+            r.integer_value = 1
+          end
+        }
+
+        let!(:c1_sleep_place) {
+          create_response_for(questions_map['SLEEP_PLACE_2'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('A crib,')
+          end
+        }
+
+        let!(:c1_health) {
+          create_response_for(questions_map['C_HEALTH'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Good')
+          end
+        }
+
+        let!(:c2_qnum) {
+          create_response_for(questions_map['CHILD_QNUM'], c2_detail_response_set) do |r|
+            r.answer = r.question.answers.first
+            r.integer_value = 2
+          end
+        }
+
+        let!(:c2_sleep_place) {
+          create_response_for(questions_map['SLEEP_PLACE_2'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('In something else?')
+          end
+        }
+
+        let!(:c2_sleep_place_oth) {
+          create_response_for(questions_map['SLEEP_PLACE_2_OTH'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.first
+            r.string_value = 'In the closet'
+          end
+        }
+
+        let!(:c2_health) {
+          create_response_for(questions_map['C_HEALTH'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Poor')
+          end
+        }
+
+        let(:child_detail_records) {
+          records.select { |rec| rec.class.mdes_table_name == 'three_mth_mother_child_detail'}
+        }
+
+        let(:child_habits_records) {
+          records.select { |rec| rec.class.mdes_table_name == 'three_mth_mother_child_habits'}
+        }
+
+        let(:mother_record) { records.detect { |rec| rec.class.mdes_table_name == 'three_mth_mother' }}
+
+        it 'creates separate records for each response set' do
+          child_detail_records.size.should == 2
+        end
+
+        it 'gives each child record a unique ID' do
+          child_detail_records.collect { |rec| rec.key.first }.uniq.size.should == 2
+        end
+
+        it 'associates the child records with the appropriate participants' do
+          child_detail_records.inject({}) { |h, rec| h[rec.child_qnum] = rec.p_id; h }.should ==
+            { '1' => child_participant_1.p_id, '2' => child_participant_2.p_id }
+        end
+
+        it 'associates the records to the parent' do
+          mother_record.key.first.should_not be_nil
+
+          child_detail_records.collect { |rec| rec.three_mth_id }.uniq.should == [ mother_record.key.first ]
+        end
+
+        it 'collates responses to the same survey' do
+          child_habits_records.inject({}) { |h, rec|
+            h[rec.p_id] = [rec.sleep_place_2, rec.sleep_place_2_oth, rec.c_health]; h
+          }.should == {
+            child_participant_1.p_id => [ '2', nil,             '3'],
+            child_participant_2.p_id => ['-5', 'In the closet', '1']
+          }
+        end
       end
 
-      describe 'for multiple participants'
-
-      it 'associates dependent warehouse records across response sets'
-      it 'collates separate responses to the same survey'
-
       describe 'with a multivalued question' do
-        it 'associates to the appropriate primary record'
+        let(:mother_survey_part_one) {
+          load_survey_questions_string(<<-QUESTIONS)
+            q_CHILD_NUM "How many children of this mother are eligible for the 18 month visit today?",
+            :help_text => "Enter number value",
+            :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CHILD_NUM"
+            a :integer
+          QUESTIONS
+        }
+
+        let(:child_survey_habits) {
+          load_survey_questions_string(<<-QUESTIONS)
+            q_TV_FREQ_HRS "Over the past 30 days, on average, how many hours per day did {{c_fname}} sit and
+            watch TV and/or DVDs? Would you say...",
+            :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_HABITS.TV_FREQ_HRS",
+            :pick => :one
+            a_1 "Less than 1 hour,"
+            a_2 "2 hours"
+            a_3 "3 hours,"
+            a_4 "4 hours,"
+            a_5 "5 hours or more, or"
+            a_6 "None, {{c_fname}} does not watch TV or DVDs"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+
+            q_COND "During the past 3 months, has {{c_fname}} had any of the following conditions...",
+            :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_COND.COND",
+            :pick => :any
+            a_1 "Infections"
+            a_2 "Wheezing"
+            a_3 "Diarrhea"
+            a_neg_1 "Refused"
+            a_neg_2 "Don't know"
+          QUESTIONS
+        }
+
+        let!(:mother_num) {
+          create_response_for(questions_map['CHILD_NUM'], m_one_response_set) do |r|
+            r.answer = r.question.answers.first
+            r.integer_value = 2
+          end
+        }
+
+        let!(:c1_qnum) {
+          create_response_for(questions_map['TV_FREQ_HRS'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('2 hours')
+          end
+        }
+
+        let!(:c1_cond_1) {
+          create_response_for(questions_map['COND'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Infections')
+            r.response_group = 1
+          end
+        }
+
+        let!(:c1_cond_2) {
+          create_response_for(questions_map['COND'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Wheezing')
+            r.response_group = 2
+          end
+        }
+
+        let!(:c2_qnum) {
+          create_response_for(questions_map['TV_FREQ_HRS'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Refused')
+          end
+        }
+
+        let!(:c2_cond_1) {
+          create_response_for(questions_map['COND'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Refused')
+          end
+        }
+
+        let!(:c2_cond_2) {
+          create_response_for(questions_map['COND'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text("Don't know")
+          end
+        }
+
+        let(:mother_record) { records.detect { |rec| rec.class.mdes_table_name == 'eighteen_mth_mother' }}
+
+        let(:child_habits_records) {
+          records.select { |rec| rec.class.mdes_table_name == 'eighteen_mth_mother_habits'}
+        }
+
+        let(:child_cond_records) {
+          records.select { |rec| rec.class.mdes_table_name == 'eighteen_mth_mother_cond'}
+        }
+
+        let(:child_habits_records_by_p) {
+          child_habits_records.inject({}) { |map, rec| map[rec.p_id] = rec; map }
+        }
+
+        it 'creates the expected tertiary records' do
+          child_cond_records.collect(&:cond).sort.should == %w(-1 -2 1 2) # lex sort
+        end
+
+        it 'gives the tertiary records unique IDs' do
+          child_cond_records.collect { |rec| rec.key.first }.uniq.size.should == 4
+        end
+
+        it 'associates the tertiary records with the correct secondary records' do
+          child_cond_records.inject({}) { |h, cond_rec|
+            ((h[cond_rec.eighteen_mth_habits_id] ||= []) << cond_rec.cond).sort!; h
+          }.should == {
+            child_habits_records_by_p[child_participant_1.p_id].key.first => %w(1 2),
+            child_habits_records_by_p[child_participant_2.p_id].key.first => %w(-1 -2),
+          }
+        end
       end
 
       describe 'with a repeater' do
