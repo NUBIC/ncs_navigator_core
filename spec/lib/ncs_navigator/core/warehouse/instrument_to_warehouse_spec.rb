@@ -24,6 +24,23 @@ module NcsNavigator::Core::Warehouse
       records.select { |rec| rec.class.mdes_table_name == mdes_table_name.downcase }
     end
 
+    def create_response_for(question, response_set=response_set)
+      response_set.responses.build(:question => question).tap { |r|
+        yield r
+
+        unless r.answer
+          if r.string_value
+            r.answer = r.question.answers.find_by_response_class('string')
+          elsif r.integer_value
+            r.answer = r.question.answers.find_by_response_class('integer')
+          end
+        end
+
+        fail 'Answer is nil' unless r.answer
+        r.save!
+      }
+    end
+
     before do
       Survey.mdes_reset!
     end
@@ -58,13 +75,6 @@ module NcsNavigator::Core::Warehouse
           rs.save!
         }
       }
-
-      def create_response_for(question)
-        response_set.responses.build(:question => question).tap { |r|
-          yield r
-          r.save!
-        }
-      end
 
       context 'external references' do
         let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pre_preg' } }
@@ -818,13 +828,6 @@ module NcsNavigator::Core::Warehouse
         create_response_set(child_survey_habits, child_participant_2)
       }
 
-      def create_response_for(question, response_set)
-        response_set.responses.build(:question => question).tap { |r|
-          yield r
-          r.save!
-        }
-      end
-
       describe 'external references' do
         let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'three_mth_mother' } }
         let(:question) { questions_map['CHILD_NUM'] }
@@ -960,6 +963,114 @@ module NcsNavigator::Core::Warehouse
 
       describe 'with a multivalued question' do
         it 'associates to the appropriate primary record'
+      end
+
+      describe 'with a repeater' do
+        let(:mother_survey_part_one) {
+          load_survey_questions_string(<<-QUESTIONS)
+            q_CHILD_NUM "How many children of this mother are eligible for the 18 month visit today?",
+            :help_text => "Enter number value",
+            :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.CHILD_NUM"
+            a :integer
+          QUESTIONS
+        }
+
+        # N.b.: while this repeater is in a child survey, it is actually
+        # directly associated to the primary (i.e., mother) record. None of
+        # the existing repeaters are actually tertiary tables.
+        let(:child_survey_habits) {
+          load_survey_questions_string(<<-QUESTIONS)
+            repeater "Information on non-prescription medicines:" do
+              q_OTCMED "What is the name of the drug?",
+              :pick => :one,
+              :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTCMED"
+              a :string
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+
+              q_OTC_ADMIN "How is the {OTCMED} taken?",
+              :pick => :one,
+              :data_export_identifier=>"EIGHTEEN_MTH_MOTHER_OTC.OTC_ADMIN"
+              a_1 "By mouth,"
+              a_2 "Inhaled either by mouth or nose,"
+              a_3 "Injected,"
+              a_4 "Applied to the skin, such as a patch or creams, or"
+              a_5 "Some other way?"
+              a_neg_1 "Refused"
+              a_neg_2 "Don't know"
+            end
+          QUESTIONS
+        }
+
+        before do
+          create_response_for(questions_map['CHILD_NUM'], m_one_response_set) do |r|
+            r.integer_value = 2
+          end
+
+          # Child 1
+          # deliberately created out of order
+          create_response_for(questions_map['OTCMED'], c1_habits_response_set) do |r|
+            r.string_value = 'Tylenol'
+            r.response_group = 2
+          end
+          create_response_for(questions_map['OTCMED'], c1_habits_response_set) do |r|
+            r.string_value = 'Insulin'
+            r.response_group = 1
+          end
+          create_response_for(questions_map['OTC_ADMIN'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Injected,')
+            r.response_group = 1
+          end
+          create_response_for(questions_map['OTC_ADMIN'], c1_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('By mouth,')
+            r.response_group = 2
+          end
+
+          # Child 2
+          create_response_for(questions_map['OTCMED'], c2_habits_response_set) do |r|
+            r.string_value = 'Advil'
+            r.response_group = 1
+          end
+          create_response_for(questions_map['OTCMED'], c2_habits_response_set) do |r|
+            r.string_value = 'Soap'
+            r.response_group = 2
+          end
+          create_response_for(questions_map['OTC_ADMIN'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('Inhaled either by mouth or nose,')
+            r.response_group = 2
+          end
+          create_response_for(questions_map['OTC_ADMIN'], c2_habits_response_set) do |r|
+            r.answer = r.question.answers.find_by_text('By mouth,')
+            r.response_group = 1
+          end
+        end
+
+        let(:mother_record) { records.detect { |rec| rec.class.mdes_table_name == 'eighteen_mth_mother' }}
+
+        let(:child_otc_records) {
+          records.select { |rec| rec.class.mdes_table_name == 'eighteen_mth_mother_otc'}
+        }
+
+        let(:child_otc_records_by_p) {
+          child_habits_records.inject({}) { |map, rec| map[rec.p_id] = rec; map }
+        }
+
+        it 'gives the records unique IDs' do
+          child_otc_records.collect { |rec| rec.key.first }.uniq.size.should == 4
+        end
+
+        it 'collates grouped response values' do
+          child_otc_records.collect { |otc| [otc.otcmed, otc.otc_admin] }.sort.should == [
+            ["Advil",   "1"],
+            ["Insulin", "3"],
+            ["Soap",    "2"],
+            ["Tylenol", "1"]
+          ]
+        end
+
+        it 'associates the records with the correct root record' do
+          child_otc_records.collect(&:eighteen_mth_mother_id).uniq.should == [mother_record.key.first]
+        end
       end
     end
   end

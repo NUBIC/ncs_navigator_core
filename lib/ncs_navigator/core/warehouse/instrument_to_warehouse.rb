@@ -93,12 +93,7 @@ module NcsNavigator::Core::Warehouse
         if should_be_in_same_bin_as
           bins.find { |bin| bin.detect { |r| r == should_be_in_same_bin_as } }
         else
-          bins.reject { |bin|
-            # bins are per-participant
-            bin.participant.p_id != response.response_set.participant.p_id ||
-            # and must have only one response per question
-            bin.detect { |r| r.question == response.question }
-          }.first
+          bins.find { |bin| bin.will_accept?(response) }
         end
 
       if target_bin
@@ -107,8 +102,9 @@ module NcsNavigator::Core::Warehouse
         bins.last << response
       else
         bins << ResponseBin.new(
-          response.response_set.participant, table_ident,
-          mdes_table_map[table_ident], [response])
+          response.response_set.participant,
+          table_ident, mdes_table_map[table_ident],
+          response.response_group, [response])
       end
     end
 
@@ -166,13 +162,23 @@ module NcsNavigator::Core::Warehouse
       def_delegators :responses, :each, :empty?
 
       # not a struct because structs can't mix in enumerable usefully
-      attr_reader :participant, :table_identifier, :table_content, :responses
+      attr_reader :participant, :table_identifier, :table_content, :response_group, :responses
 
-      def initialize(participant, table_ident, table_content, responses=[])
+      def initialize(participant, table_ident, table_content, response_group, responses=[])
         @participant = participant
         @table_identifier = table_ident
         @table_content = table_content
+        @response_group = response_group
         @responses = responses
+      end
+
+      def will_accept?(response)
+        # bins are per-repeat
+        self.response_group == response.response_group &&
+        # bins are per-participant
+        self.participant.p_id == response.response_set.participant.p_id &&
+        # and must have only one response per question
+        self.none? { |r| r.question == response.question }
       end
 
       def <<(response)
