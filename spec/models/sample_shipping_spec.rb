@@ -44,12 +44,14 @@ describe SampleShipping do
     it "sets the public_id to a uuid" do
       ss = Factory(:sample_shipping)
       ss.public_id.should_not be_nil
-      ss.sample_id.should == ss.public_id
-      ss.sample_id.to_s.should == "SAMPLE123ID"
+      ss.shipment_tracking_number.should == ss.public_id
+      ss.shipment_tracking_number.to_s.should == "ABCDE234325"
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      ss = SampleShipping.create(:sample_id => "sampleId", :staff_id => "me", :shipper_id => "123", :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98")
+      @sample = Factory(:sample)
+      ss = SampleShipping.create(:staff_id => "me", :shipper_id => "123", 
+      :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98")
       ss.save!
  
       obj = SampleShipping.find(ss.id)

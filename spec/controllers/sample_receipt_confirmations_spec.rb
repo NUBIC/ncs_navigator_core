@@ -4,26 +4,26 @@ require 'spec_helper'
 describe SampleReceiptConfirmationsController do
   context "with an authenticated user" do
     before(:each) do
-      @sample_shipping1 = Factory(:sample_shipping, :sample_id => "sampleId1", :shipment_tracking_number => "123ABC")
-      @sample_shipping2 = Factory(:sample_shipping, :sample_id => "sampleId2", :shipment_tracking_number => "567CDE")
-      @sample_receipt_confirmations_edit1 = Factory(:sample_receipt_confirmation, :shipment_tracking_number => "123ABC", :staff_id => "someone special")
-      @sample_receipt_confirmations_edit2 = Factory(:sample_receipt_confirmation, :shipment_tracking_number => "876FGH", :staff_id => "someone special")    
+      @sample = Factory(:sample)
+      @sample_shipping1 = Factory(:sample_shipping, :shipment_tracking_number => "123ABC")
+      @sample_shipping2 = Factory(:sample_shipping, :shipment_tracking_number => "567CDE")
+      @sample_receipt_confirmations_edit1 = Factory(:sample_receipt_confirmation, :sample_shipping_id => @sample_shipping1.id, :staff_id => "someone special")
+      @sample_receipt_confirmations_edit2 = Factory(:sample_receipt_confirmation, :sample_shipping_id => @sample_shipping2.id, :staff_id => "someone special")    
       login(user_login)
     end
     
     def valid_attributes
-      {:shipment_receipt_datetime => @sample_receipt_confirmations_edit2.shipment_receipt_datetime, :shipment_tracking_number =>"567CDE", 
+      {:shipment_receipt_datetime => @sample_receipt_confirmations_edit2.shipment_receipt_datetime, :sample_shipping_id => @sample_shipping2.id, 
        :shipper_id => "shipper_id", :sample_id => @sample_receipt_confirmations_edit2.sample_id, 
        :shipment_received_by =>"Jane Dow", 
        :sample_receipt_temp => "2.00", 
        :sample_receipt_shipping_center_id =>"GCSC", 
-       :staff_id => "someone special",
+       :staff_id => "someone special"
       }
     end
     
     def invalid_attributes
-      {:shipment_tracking_number =>"567CDE", 
-       :shipper_id => "shipper_id", :sample_id => @sample_receipt_confirmations_edit2.sample_id, 
+      {:shipper_id => "shipper_id", :sample_id => @sample_receipt_confirmations_edit2.sample_id, 
        :sample_receipt_shipping_center_id =>"GCSC", 
       }
     end
@@ -79,7 +79,7 @@ describe SampleReceiptConfirmationsController do
       describe "with json request" do
         it "generates json with error list" do
           post :create, :sample_receipt_confirmation => invalid_attributes, :format => 'json'
-          json = { "shipment_receipt_datetime" => ["can't be blank"], "sample_receipt_temp"=> ["can't be blank"], "shipment_received_by" =>["can't be blank"]}
+          json = { "sample_shipping_id"=>["can't be blank"], "shipment_receipt_datetime" => ["can't be blank"], "sample_receipt_temp"=> ["can't be blank"], "shipment_received_by" =>["can't be blank"]}
           ActiveSupport::JSON.decode(response.body).should eq json
         end
       end      

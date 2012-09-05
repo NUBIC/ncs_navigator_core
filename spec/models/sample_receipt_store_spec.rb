@@ -48,11 +48,13 @@ describe SampleReceiptStore do
       srs = Factory(:sample_receipt_store)
       srs.public_id.should_not be_nil
       srs.sample_id.should == srs.public_id
-      srs.sample_id.to_s.should == "1234567"
+      srs.sample.sample_id.to_s.should == "SAMPLE123ID"
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      srs = SampleReceiptStore.create(:sample_id => "sampleId", :staff_id => "me", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
+      @sample = Factory(:sample)
+      srs = SampleReceiptStore.create(:sample_id => @sample.id, :staff_id => "me", 
+          :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
       srs.save!
  
       obj = SampleReceiptStore.find(srs.id)

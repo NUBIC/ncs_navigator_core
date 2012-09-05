@@ -42,13 +42,17 @@ describe SampleReceiptConfirmation do
       src = Factory(:sample_receipt_confirmation)
       src.public_id.should_not be_nil
       src.sample_id.should == src.public_id
-      src.sample_id.to_s.should == "SAMPLE123ID"
+      src.sample.sample_id.to_s.should == "SAMPLE123ID"
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      src = SampleReceiptConfirmation.create(:sample_id => "sampleId", :sample_receipt_shipping_center_id => "srsc_1", 
-                                            :shipper_id => "123", :shipment_receipt_datetime => "2012-01-29 22:01:30", :shipment_tracking_number => "67876f5WERSF98",
-                                            :shipment_received_by => "Jane Dow", :sample_receipt_temp => "-2.1", :staff_id => "someidforstaff")
+      @sample_shipping = Factory(:sample_shipping)
+      @sample = Factory(:sample)
+      src = SampleReceiptConfirmation.create(:sample_id => @sample.id, :sample_receipt_shipping_center_id => "srsc_1", 
+                                            :shipper_id => @sample_shipping.shipper_id, :sample_shipping_id => @sample_shipping.id,
+                                            :shipment_received_by => "Jane Dow", :sample_receipt_temp => "-2.1", :staff_id => "someidforstaff", 
+                                            :shipment_receipt_datetime => Time.now)
+      
       src.save!
 
       obj = SampleReceiptConfirmation.find(src.id)
