@@ -21,7 +21,7 @@
             - @samples.each do |s|
               %li
                 %a{ :href => edit_sample_receipt_store_path(:id => s.sample_id, :in_edit_mode => true), :class => "edit_specimen_sample_receive", :id => s.sample_id }
-                  = s.sample_id
+                  = s.sample.sample_id
     %td
       %div{:id => "storing"}
         %ul
