@@ -22,6 +22,12 @@ Given /^I log in as "([^"]*)"$/ do |username|
   end
 end
 
+Given /^an authenticated user$/ do
+  steps %Q{
+    Given I log in as "test_user"
+  }
+end
+
 Given /^an authenticated admin user$/ do
   steps %Q{
     Given I log in as "admin_user"
