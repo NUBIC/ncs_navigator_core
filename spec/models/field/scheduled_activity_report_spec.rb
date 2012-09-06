@@ -23,7 +23,7 @@ module Field
         it 'has an "instrument_templates" key' do
           json.should have_key('instrument_templates')
         end
-        
+
         it 'has a "participants" key' do
           json.should have_key('participants')
         end
@@ -49,7 +49,7 @@ module Field
           let(:contact_ir) do
             R::Contact.new.tap do |c|
               c.person = person_ir
-              c.model = contact 
+              c.model = contact
             end
           end
 
@@ -244,9 +244,7 @@ module Field
               instruments[0]['instrument_id'].should == instrument.instrument_id
             end
 
-            it 'sets #/0/instrument_template_id to survey.api_id' do
-              instruments[0]['instrument_template_id'].should == survey.api_id
-            end
+            it "sets #/0/instrument_plan_id"
 
             it "sets #/0/name to the instrument's activity name" do
               instruments[0]['name'].should == instrument_ir.name
@@ -262,6 +260,16 @@ module Field
               instruments[0]['response_sets'][0].should_not be_blank
             end
           end
+        end
+
+        describe 'instrument_plans' do
+          include_context 'has an instrument'
+
+          let(:plans) { json['instrument_plans'] }
+
+          it 'sets #/0/instrument_plan_id'
+
+          it 'sets #/0/instrument_templates'
         end
 
         describe 'instrument_templates' do

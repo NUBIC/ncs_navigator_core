@@ -17,6 +17,7 @@ module Psc
     attr_reader :contacts
     attr_reader :events
     attr_reader :instruments
+    attr_reader :instrument_plans
     attr_reader :people
     attr_reader :surveys
 
@@ -63,7 +64,8 @@ module Psc
       @events = Collection.new
       @instruments = Collection.new
       @people = Collection.new
-      @surveys = Collection.new
+
+      @instrument_plans = {}
     end
 
     ##
@@ -71,20 +73,23 @@ module Psc
     def process
       logger.info 'Mapping started'
 
-      [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
+      [contact_links, contacts, events, instruments, instrument_plans, people].each(&:clear)
 
       activities.each do |activity|
-        p = add_person(activity)
-        c = add_contact(activity, p)
-        e = add_event(activity, c, p)
-        s = add_survey(activity)
-        r = add_referenced_survey(activity)
+        activity.derive_implied_entities
 
-        i = if operational_record_implied?(e, s, r)
-              add_instrument(activity, s, r, e, p)
-            end
+        people << activity.person
+        contacts << activity.contact
+        events << activity.event
+        contact_links << activity.contact_link
+      end
 
-        add_contact_link(p, c, e, i)
+      plans = InstrumentPlanCollection.for(activities)
+
+      plans.each do |plan|
+        instruments << plan.root
+
+        add_plan(plan)
       end
 
       logger.info 'Mapping complete'
@@ -92,56 +97,11 @@ module Psc
 
     ##
     # @private
-    def operational_record_implied?(event, survey, referenced_survey)
-      event && survey && referenced_survey.nil?
+    def add_plan(plan)
+      instrument_plans[plan.root] = plan.activities.map do |a|
+        { :template => a.survey, :participant_type => a.participant_type_label }
+      end
     end
-
-    ##
-    # @private
-    def add_contact_link(person, contact, event, instrument)
-      contact_links << ContactLink.new(person, contact, event, instrument)
-    end
-
-    ##
-    # @private
-    def add_contact(activity, person)
-      contacts << Contact.new(activity.activity_date, person)
-    end
-
-    ##
-    # @private
-    def add_event(activity, contact, person)
-      el = activity.event_label
-
-      events << Event.new(el, activity.ideal_date, contact, person) if el
-    end
-
-    ##
-    # @private
-    def add_instrument(activity, survey, referenced_survey, event, person)
-      instruments << Instrument.new(survey, referenced_survey, activity.activity_name, event, person)
-    end
-
-    ##
-    # @private
-    def add_person(activity)
-      people << Person.new(activity.person_id)
-    end
-
-    ##
-    # @private
-    def add_survey(activity, label = activity.instrument_label)
-      surveys << Survey.new(label) if label
-    end
-
-    def add_referenced_survey(activity)
-      add_survey(activity, activity.references_label)
-    end
-
-    # Intermediate representatations start here.
-    #
-    # These are used to map entities in the scheduled activity report to Cases'
-    # entities.
 
     ##
     # A collection of IRs.
@@ -202,45 +162,6 @@ module Psc
       def models
         Set.new(map(&:model))
       end
-    end
-
-    ##
-    # {ContactLink} representation.
-    class ContactLink < Struct.new(:person, :contact, :event, :instrument)
-      attr_accessor :model
-    end
-
-    ##
-    # Representation of a {Contact} from an SA report.
-    class Contact < Struct.new(:scheduled_date, :person)
-      attr_accessor :model
-    end
-
-    ##
-    # {Event} representation.
-    class Event < Struct.new(:label, :ideal_date, :contact, :person)
-      attr_accessor :model
-    end
-
-    ##
-    # {Instrument} representation.
-    class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
-      attr_accessor :model
-    end
-
-    ##
-    # {Person} representation.
-    class Person < Struct.new(:person_id)
-      attr_accessor :model
-      attr_accessor :participant_model
-    end
-
-    ##
-    # {Survey} representation.
-    class Survey < Struct.new(:instrument_label)
-      attr_accessor :model
-
-      alias_method :access_code, :instrument_label
     end
   end
 end

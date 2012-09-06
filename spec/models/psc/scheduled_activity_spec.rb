@@ -3,6 +3,8 @@ require 'spec_helper'
 require File.expand_path('../scheduled_activity_contexts', __FILE__)
 
 module Psc
+  I = ScheduledActivity::Implications
+
   ##
   # These tests rely quite heavily on values present in the test fixtures.  It
   # is RECOMMENDED that you keep scheduled_activity_contexts open in a split
@@ -162,11 +164,99 @@ module Psc
       end
     end
 
+    shared_examples_for 'an entity deriver' do
+      it 'derives a person' do
+        sa.derive_implied_entities
+
+        sa.person.should == I::Person.new(sa.person_id)
+      end
+
+      it 'derives a contact' do
+        sa.derive_implied_entities
+
+        sa.contact.should == I::Contact.new(sa.activity_date, sa.person)
+      end
+
+      it 'derives an event' do
+        sa.derive_implied_entities
+
+        sa.event.should == I::Event.new(sa.event_label,
+                                        sa.ideal_date,
+                                        sa.contact,
+                                        sa.person)
+      end
+
+      describe 'if the activity does not have a references label' do
+        before do
+          sa.labels = 'event:foo instrument:baz'
+
+          sa.derive_implied_entities
+        end
+
+        it 'derives an instrument' do
+          sa.instrument.should == I::Instrument.new(sa.survey,
+                                                    sa.referenced_survey,
+                                                    sa.activity_name,
+                                                    sa.participant_type_label,
+                                                    sa.order_label,
+                                                    sa.event,
+                                                    sa.person)
+
+        end
+      end
+
+      describe 'if the activity does not have an event label' do
+        before do
+          sa.labels = 'instrument:foo'
+
+          sa.derive_implied_entities
+        end
+
+        it 'does not derive an instrument' do
+          sa.instrument.should be_nil
+        end
+      end
+
+      describe 'if the activity has a references label' do
+        before do
+          sa.labels = 'event:foo references:bar instrument:baz'
+
+          sa.derive_implied_entities
+        end
+
+        it 'does not derive an instrument' do
+          sa.instrument.should be_nil
+        end
+      end
+
+      it 'derives a survey' do
+        sa.derive_implied_entities
+
+        sa.survey.should == I::Survey.new(sa.instrument_label)
+      end
+
+      it 'derives a referenced survey' do
+        sa.derive_implied_entities
+
+        sa.referenced_survey.should == I::Survey.new(sa.references_label)
+      end
+
+      it 'derives a contact link' do
+        sa.derive_implied_entities
+
+        sa.contact_link.should == I::ContactLink.new(sa.person,
+                                                     sa.contact,
+                                                     sa.event,
+                                                     sa.instrument)
+      end
+    end
+
     describe 'with a report row' do
       include_context 'from report'
 
       it_should_behave_like 'a label reader'
       it_should_behave_like 'an activity state reader'
+      it_should_behave_like 'an entity deriver'
     end
 
     describe 'with a schedule row' do
@@ -174,6 +264,7 @@ module Psc
 
       it_should_behave_like 'a label reader'
       it_should_behave_like 'an activity state reader'
+      it_should_behave_like 'an entity deriver'
     end
 
     let(:sa) { ScheduledActivity.new }

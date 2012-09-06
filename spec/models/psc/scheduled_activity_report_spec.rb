@@ -5,7 +5,7 @@ require File.expand_path('../report_without_child_instruments', __FILE__)
 require File.expand_path('../report_with_child_instruments', __FILE__)
 
 module Psc
-  R = ScheduledActivityReport
+  I = ScheduledActivity::Implications
 
   shared_examples_for 'a PSC report wrapper' do
     describe '.from_psc' do
@@ -35,10 +35,10 @@ module Psc
 
   shared_examples_for 'an event mapper' do
     it 'finds events' do
-      person = R::Person.new(person_id)
-      contact = R::Contact.new(scheduled_date, person)
+      person = I::Person.new(person_id)
+      contact = I::Contact.new(scheduled_date, person)
 
-      events = event_labels.map { |el| R::Event.new(el, ideal_date, contact, person) }
+      events = event_labels.map { |el| I::Event.new(el, ideal_date, contact, person) }
 
       report.events.should == Set.new(events)
     end
@@ -46,23 +46,15 @@ module Psc
 
   shared_examples_for 'a person mapper' do
     it 'finds people' do
-      report.people.should == Set.new([R::Person.new(person_id)])
+      report.people.should == Set.new([I::Person.new(person_id)])
     end
   end
 
   shared_examples_for 'a contact mapper' do
     it 'finds contacts' do
-      person = R::Person.new(person_id)
+      person = I::Person.new(person_id)
 
-      report.contacts.should == Set.new([R::Contact.new(scheduled_date, person)])
-    end
-  end
-
-  shared_examples_for 'a survey mapper' do
-    it 'finds surveys' do
-      surveys = survey_labels.map { |sl| R::Survey.new(sl) }
-
-      report.surveys.should == Set.new(surveys)
+      report.contacts.should == Set.new([I::Contact.new(scheduled_date, person)])
     end
   end
 
@@ -79,30 +71,43 @@ module Psc
       it_should_behave_like 'a PSC report wrapper'
       it_should_behave_like 'a contact mapper'
       it_should_behave_like 'a person mapper'
-      it_should_behave_like 'a survey mapper'
       it_should_behave_like 'an event mapper'
 
       it 'finds instruments' do
-        person = R::Person.new(person_id)
-        contact = R::Contact.new(scheduled_date, person)
-        event = R::Event.new(event_data_collection, ideal_date, contact, person)
-        survey = R::Survey.new(instrument_pregnotpreg)
+        person = I::Person.new(person_id)
+        contact = I::Contact.new(scheduled_date, person)
+        event = I::Event.new(event_data_collection, ideal_date, contact, person)
+        survey = I::Survey.new(instrument_pregnotpreg)
 
         report.instruments.should == Set.new([
-          R::Instrument.new(survey, nil, activity_name, event, person)
+          I::Instrument.new(survey, nil, activity_name, nil, nil, event, person)
         ])
       end
 
       it 'links a person, contact, event, and instrument' do
-        person = R::Person.new(person_id)
-        contact = R::Contact.new(scheduled_date, person)
-        event = R::Event.new(event_data_collection, ideal_date, contact, person)
-        survey = R::Survey.new(instrument_pregnotpreg)
-        instrument = R::Instrument.new(survey, nil, activity_name, event, person)
+        person = I::Person.new(person_id)
+        contact = I::Contact.new(scheduled_date, person)
+        event = I::Event.new(event_data_collection, ideal_date, contact, person)
+        survey = I::Survey.new(instrument_pregnotpreg)
+        instrument = I::Instrument.new(survey, nil, activity_name, nil, nil, event, person)
 
         report.contact_links.should == Set.new([
-          R::ContactLink.new(person, contact, event, instrument)
+          I::ContactLink.new(person, contact, event, instrument)
         ])
+      end
+
+      it 'produces one plan per instrument' do
+        person = I::Person.new(person_id)
+        contact = I::Contact.new(scheduled_date, person)
+        event = I::Event.new(event_data_collection, ideal_date, contact, person)
+        survey = I::Survey.new(instrument_pregnotpreg)
+        instrument = I::Instrument.new(survey, nil, activity_name, nil, nil, event, person)
+
+        report.instrument_plans.should == {
+          instrument => [
+            { :template => survey, :participant_type => nil }
+          ]
+        }
       end
     end
 
@@ -118,18 +123,33 @@ module Psc
       it_should_behave_like 'a PSC report wrapper'
       it_should_behave_like 'a contact mapper'
       it_should_behave_like 'a person mapper'
-      it_should_behave_like 'a survey mapper'
       it_should_behave_like 'an event mapper'
 
       it 'finds root instruments' do
-        person = R::Person.new(person_id)
-        contact = R::Contact.new(scheduled_date, person)
-        event = R::Event.new(event_birth, ideal_date, contact, person)
-        survey = R::Survey.new(instrument_birth)
+        person = I::Person.new(person_id)
+        contact = I::Contact.new(scheduled_date, person)
+        event = I::Event.new(event_birth, ideal_date, contact, person)
+        survey = I::Survey.new(instrument_birth)
 
         report.instruments.should == Set.new([
-          R::Instrument.new(survey, nil, activity_name, event, person)
+          I::Instrument.new(survey, nil, activity_name, 'mother', nil, event, person)
         ])
+      end
+
+      it 'produces one plan for each root instrument' do
+        person = I::Person.new(person_id)
+        contact = I::Contact.new(scheduled_date, person)
+        event = I::Event.new(event_birth, ideal_date, contact, person)
+        root_survey = I::Survey.new(instrument_birth)
+        child_survey = I::Survey.new(instrument_baby_name)
+        root_instrument = I::Instrument.new(root_survey, nil, activity_name, 'mother', nil, event, person)
+
+        report.instrument_plans.should == {
+          root_instrument => [
+            { :template => root_survey, :participant_type => 'mother' },
+            { :template => child_survey, :participant_type => 'child' }
+          ]
+        }
       end
     end
   end

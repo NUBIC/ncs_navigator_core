@@ -29,6 +29,7 @@ module Psc
   # * constructors for those two situations
   # * helpers for extracting information from activity labels
   # * normalization of data structures (i.e. all labels are presented as lists)
+  # * derivation of implied operational data entities
   # * structural equality via Struct
   #
   # While you MAY use ScheduledActivity in the same way that you would use any
@@ -109,6 +110,27 @@ module Psc
   # ----
   #
   # TODO
+  #
+  #
+  # On derived entities
+  # ===================
+  #
+  # Each activity implies a number of entities in Cases.  They are:
+  #
+  # * {Contact}
+  # * {Event}
+  # * {Instrument}
+  # * {Person}
+  # * {Survey}, main
+  # * {Survey}, referenced
+  #
+  # Invoking {#derive_implied_entities} will write implied entity stubs to
+  # contact, event, ..., survey, and referenced_survey.
+  #
+  # Many activities may imply the same entity; each activity for a given
+  # subject, for example, will imply the same person.  You should de-duplicate
+  # these implied entities before inserting them into Cases.
+  # {Psc::ScheduledActivityReport} is one way to accomplish that.
   class ScheduledActivity < Struct.new(*SCHEDULED_ACTIVITY_ATTRS)
     alias_method :name, :activity_name
     alias_method :id, :activity_id
@@ -121,6 +143,14 @@ module Psc
     NA          = 'na'
     OCCURRED    = 'occurred'
     SCHEDULED   = 'scheduled'
+
+    attr_reader :contact
+    attr_reader :contact_link
+    attr_reader :event
+    attr_reader :instrument
+    attr_reader :person
+    attr_reader :survey
+    attr_reader :referenced_survey
 
     ##
     # Constructs an instance of this class from a scheduled activity report row.
@@ -166,6 +196,28 @@ module Psc
       super
 
       @label_list ||= []
+    end
+
+    def derive_implied_entities
+      im = Implications
+
+      @person = im::Person.new(person_id)
+      @contact = im::Contact.new(activity_date, person)
+      @event = im::Event.new(event_label, ideal_date, contact, person) if event_label
+      @survey = im::Survey.new(instrument_label) if instrument_label
+      @referenced_survey = im::Survey.new(references_label) if references_label
+
+      if event && survey && !referenced_survey
+        @instrument = im::Instrument.new(survey,
+                                         referenced_survey,
+                                         activity_name,
+                                         participant_type_label,
+                                         order_label,
+                                         event,
+                                         person)
+      end
+
+      @contact_link = im::ContactLink.new(person, contact, event, instrument)
     end
 
     def labels=(v)
@@ -228,6 +280,47 @@ module Psc
     # @private
     def downcased_state
       current_state.to_s.downcase
+    end
+
+    module Implications
+      ##
+      # {ContactLink} representation.
+      class ContactLink < Struct.new(:person, :contact, :event, :instrument)
+        attr_accessor :model
+      end
+
+      ##
+      # Representation of a {Contact} from an SA report.
+      class Contact < Struct.new(:scheduled_date, :person)
+        attr_accessor :model
+      end
+
+      ##
+      # {Event} representation.
+      class Event < Struct.new(:label, :ideal_date, :contact, :person)
+        attr_accessor :model
+      end
+
+      ##
+      # {Instrument} representation.
+      class Instrument < Struct.new(:survey, :referenced_survey, :name, :participant_type, :order, :event, :person)
+        attr_accessor :model
+      end
+
+      ##
+      # {Person} representation.
+      class Person < Struct.new(:person_id)
+        attr_accessor :model
+        attr_accessor :participant_model
+      end
+
+      ##
+      # {Survey} representation.
+      class Survey < Struct.new(:instrument_label)
+        attr_accessor :model
+
+        alias_method :access_code, :instrument_label
+      end
     end
   end
 end
