@@ -219,3 +219,7 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+Then /^I should get a forbidden response$/ do
+  page.status_code.should == 403
+end

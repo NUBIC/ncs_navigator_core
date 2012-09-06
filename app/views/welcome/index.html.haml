@@ -60,27 +60,28 @@
               %li
                 = link_to "Field Activity Report", fieldwork_index_path, :class => "report_link icon_link"
         .column-2
-          %h4
-            Searching
-          .model_search
-            %ul
-              %li
-                = link_to "People", people_path, :class => "search_link icon_link"
-              %li
-                = link_to "Participants", participants_path, :class => "search_link icon_link"
-              %li
-                = link_to "Providers", providers_path, :class => "search_link icon_link"
-              %li
-                = link_to "Contacts", contact_links_path, :class => "search_link icon_link"
-              %li
-                = link_to "Events", events_path, :class => "search_link icon_link"
-              %li
-                = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
-              %li
-                = link_to "Household Units", household_units_path, :class => "list_link icon_link"
-              - if recruitment_strategy.pbs?
+          - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+            %h4
+              Searching
+            .model_search
+              %ul
                 %li
-                  = link_to "PBS List", pbs_lists_path, :class => "list_link icon_link"
+                  = link_to "People", people_path, :class => "search_link icon_link"
+                %li
+                  = link_to "Participants", participants_path, :class => "search_link icon_link"
+                %li
+                  = link_to "Providers", providers_path, :class => "search_link icon_link"
+                %li
+                  = link_to "Contacts", contact_links_path, :class => "search_link icon_link"
+                %li
+                  = link_to "Events", events_path, :class => "search_link icon_link"
+                %li
+                  = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
+                %li
+                  = link_to "Household Units", household_units_path, :class => "list_link icon_link"
+                - if recruitment_strategy.pbs?
+                  %li
+                    = link_to "PBS List", pbs_lists_path, :class => "list_link icon_link"
         .column-3
           - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
             %h4
@@ -97,7 +98,7 @@
             %ul
               %li
                 = link_to "Pending Events", {:controller => "welcome", :action => "pending_events"}, :class => "list_link icon_link"
-          - if NcsNavigatorCore.expanded_phase_two?
+          - if NcsNavigatorCore.with_specimens? && permit?(Role::SPECIMEN_PROCESSOR)
             %h4
               Samples/Specimens
             .samples_specimens

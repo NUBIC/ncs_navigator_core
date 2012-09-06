@@ -3,6 +3,8 @@
 
 class PeopleController < ApplicationController
 
+  permit Role::SYSTEM_ADMINISTRATOR
+
   # GET /people
   # GET /people.json
   def index
