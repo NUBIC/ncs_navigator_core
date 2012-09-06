@@ -68,6 +68,10 @@ Spork.prefork do
       Aker.authority.valid_credentials?(:user, 'test_user', 'test_user')
     end
 
+    def admin_login
+      Aker.authority.valid_credentials?(:user, 'admin_user', 'admin_user')
+    end
+
     def login(as)
       controller.request.env['aker.check'] = Aker::Rack::Facade.new(Aker.configuration, as)
     end

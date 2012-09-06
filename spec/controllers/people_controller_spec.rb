@@ -5,9 +5,9 @@ require 'spec_helper'
 
 describe PeopleController do
 
-  context "with an authenticated user" do
+  context "with an authenticated, authorized user" do
     before(:each) do
-      login(user_login)
+      login(admin_login) # authorized user
       @person1 = Factory(:person, :first_name => "Jane",  :last_name => "Doe")
       @person2 = Factory(:person, :first_name => "Alice", :last_name => "Doe")
       @person3 = Factory(:person, :first_name => "Annie", :last_name => "Hall")
@@ -84,4 +84,24 @@ describe PeopleController do
     end
 
   end
+
+  context "with an authenticated yet unauthorized user"  do
+    before(:each) do
+      login(user_login) # unauthorized user
+      @person1 = Factory(:person, :first_name => "Jane",  :last_name => "Doe")
+    end
+
+    describe "GET index" do
+      before(:each) do
+        Person.count.should == 1
+      end
+
+      describe "unauthorized attempt to access" do
+        it "gives a forbidden status code for attempted at unauthorized access" do
+          expect { get :index }.should raise_exception("uncaught throw :warden")
+        end
+      end
+    end
+  end
+
 end
