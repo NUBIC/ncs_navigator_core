@@ -3,7 +3,7 @@
 
 class PeopleController < ApplicationController
 
-  permit Role::SYSTEM_ADMINISTRATOR
+  permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR
 
   # GET /people
   # GET /people.json
