@@ -23,6 +23,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :start_instrument
       get :responses_for
       put :responses_for
+      get :provider_staff_member
     end
     resources :contacts, :except => [:index]
     resources :telephones, :except => [:index, :destroy]
@@ -169,20 +170,20 @@ NcsNavigatorCore::Application.routes.draw do
   resources :sample_receipt_confirmations
 
   resources :sample_processes
-  
+
   resources :edit_sample_processes do
     collection do
       post :search_by_id
       post :search_by_date
     end
   end
-  
+
   resources :specimen_shippings do
     collection do
       post :send_email
     end
   end
-  
+
   resources :sample_receipt_stores do
     member do
       post :update

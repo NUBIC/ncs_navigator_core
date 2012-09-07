@@ -1,0 +1,31 @@
+#contact_history
+  %span{ :id => "contact_history_header" }
+    Contact History
+
+- if @provider.contact_links.empty?
+  #contact_log
+    No contacts exist for this provider.
+- else
+  #contact_log
+    %table{ :id => 'staff_contact_line_items' }
+      %tr
+        %th{:id => "staff_table_header_left_end"}
+          Date
+        %th{:id => "staff_table_header_middle"}
+          Staff Member
+        %th{:id => "staff_table_header_middle"}
+          Method of Contact
+        %th{:id => "staff_table_header_right_end"}
+          Status
+      - @provider.contact_links.each do |link|
+        - contact = link.contact
+        - cls = cycle('even_record', 'odd_record')
+        %tr{ :class => cls }
+          %td
+            = link_to "#{contact.contact_date}", edit_person_contact_path(link.person, contact), :class => "edit_link icon_link"
+          %td
+            = link.person.full_name
+          %td
+            = contact.contact_type
+          %td
+            = contact.contact_disposition

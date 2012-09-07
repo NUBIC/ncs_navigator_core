@@ -87,6 +87,10 @@ label.important_field {
   color: maroon;
 }
 
+label.error {
+  font-weight: normal;
+}
+
 select.important_field,
 input.important_field {
   border: 2px solid maroon;
@@ -199,18 +203,7 @@ form {
   padding-bottom: 4em;
 }
 
-#practice_name {
-  font-size: 24px;
-  font-style: bold;
-  margin-bottom: 10px;
-  margin-right: 20px;
-}
-
-#provider_info {
-  width: 100%;
-}
-
-#blue_button {
+.blue_button {
 	-webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
 	-moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
 	box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
@@ -232,86 +225,24 @@ form {
   }
 }
 
-#address {
-  font-size: 14px;
-  margin-bottom: 30px;
-}
-
-#staff_info {
-  width: 100%;
-  padding-top: 20px;
-  padding-right: 10px;
-  font-size: 1.1em;
-  font-weight: 600;
-}
-
-#staff_line_items {
-  font-size: 1em;
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-
-  td {
-  }
-}
-
-#ribbon_table_data {
-  width: 5%;
-}
-
-#phone_table_data {
-  width: 10%;
-}
-
-#green_button {
-	-webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	-moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	background-color:#66FF66;
-	border:1px solid #339933;
-	font-family:'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
-	font-size: 0.9em;
-	font-weight: 700;
-	padding: 2px;
-	height: .8em;
-	color:#fff;
-	border-radius:5px;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
+.green_button {
+  -webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
+  -moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
+  box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
+  background-color:#66FF66;
+  border:1px solid #339933;
+  font-family:'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
+  font-size: 0.9em;
+  font-weight: 700;
+  padding: 2px;
+  height: .8em;
+  color:#fff;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
 
   a {
     color: #339933;
     text-decoration: none;
   }
-
 }
-#staff_table_header_left_end
-{
-	background-color:#d3d3d3;
-	border-radius:5px 0px 0px 5px;
-	-moz-border-radius:5px 0px 0px 5px;
-	-webkit-border-radius:5px 0px 0px 5px;
-}
-
-#staff_table_header_middle
-{
-	background-color:#d3d3d3;
-}
-
-#staff_table_header_right_end
-{
-	background-color:#d3d3d3;
-	border-radius:0px 5px 5px 0px;
-	-moz-border-radius:0px 5px 5px 0px;
-	-webkit-border-radius:0px 5px 5px 0px;
-}
-
-#contact_history {
-    margin-top: 2em;
-    margin-bottom: .5em;
-  #contact_history_header {
-    font-size: 1.1em;
-    font-weight: 600;
-  }
-}
-

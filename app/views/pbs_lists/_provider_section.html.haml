@@ -1,0 +1,221 @@
+
+#provider_info
+  %span{ :id => "practice_name" }
+    = @provider.name_practice
+
+  %span{ :class => "blue_button" }
+    = link_to 'Edit Provider Info', edit_provider_path(@provider),
+        { :title => "Edit Information for #{@provider}" }
+
+  #address
+    = @provider.address.address_one + "."
+    %br
+    = @provider.address.city + ","
+    = @provider.address.state.to_s
+    = @provider.address.zip + "-"
+    = @provider.address.zip4
+
+  %a{ :class => "toggle_link", :id => "provider_details_show" }
+    More ...
+
+  #provider_details.hide
+    %a{ :class => "toggle_link", :id => "provider_details_hide" }
+      Less ...
+
+    .column-container
+      .column-1
+        %p
+          %span{ :class => "column_header" }
+            Provider Information
+        %p
+          %span{ :class => "label" }
+            Provider Type
+          %span{ :class => "value" }
+            = @provider.provider_type
+            = @provider.provider_type_other unless @provider.provider_type_other.blank?
+        %p
+          %span{ :class => "label" }
+            Provider Role
+          %span{ :class => "value" }
+            = @provider.provider_ncs_role
+            = @provider.provider_ncs_role_other unless @provider.provider_ncs_role_other.blank?
+        %p
+          %span{ :class => "label" }
+            Practice Information
+          %span{ :class => "value" }
+            = @provider.practice_info
+        %p
+          %span{ :class => "label" }
+            Patient Load
+          %span{ :class => "value" }
+            = @provider.practice_patient_load
+        %p
+          %span{ :class => "label" }
+            Practice Size
+          %span{ :class => "value" }
+            = @provider.practice_size
+        %p
+          %span{ :class => "label" }
+            Public Practice?
+          %span{ :class => "value" }
+            = @provider.public_practice
+        %p
+          %span{ :class => "label" }
+            Source of Information
+          %span{ :class => "value" }
+            = @provider.provider_info_source
+            = @provider.provider_info_source_other unless @provider.provider_info_source_other.blank?
+        %p
+          %span{ :class => "label" }
+            Date of initial information
+          %span{ :class => "value" }
+            = blank_safe @provider.provider_info_date
+        %p
+          %span{ :class => "label" }
+            Date information updated
+          %span{ :class => "value" }
+            = blank_safe @provider.provider_info_update
+        %p
+          %span{ :class => "label" }
+            Will use subsampling list?
+          %span{ :class => "value" }
+            = @provider.list_subsampling
+        %p
+          %span{ :class => "label" }
+            Nth week sampling performed
+          %span{ :class => "value" }
+            = blank_safe @provider.proportion_weeks_sampled
+        %p
+          %span{ :class => "label" }
+            Number of days
+          %span{ :class => "value" }
+            = blank_safe @provider.proportion_days_sampled
+        %p
+          %span{ :class => "label" }
+            Sampling Notes
+          %span{ :class => "value" }
+            = blank_safe @provider.sampling_notes
+        %p
+          %span{ :class => "label" }
+            Comments on Provider
+          %span{ :class => "value" }
+            = blank_safe @provider.provider_comment
+        - unless @provider.provider_logistics.blank?
+          %span{ :class => "label" }
+            Provider Logistics
+          %p
+          - @provider.provider_logistics.each do |pl|
+            %span{ :class => "value" }
+              = pl.provider_logistics
+              = pl.provider_logistics_other unless pl.provider_logistics_other.blank?
+              %br
+      .column-2
+        %p
+          %span{ :class => "column_header" }
+            PBS List Information
+        %p
+          %span{ :class => "label" }
+            Provider Practice Number
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.practice_num
+        %p
+          %span{ :class => "label" }
+            In final sampling frame?
+          %span{ :class => "value" }
+            = @pbs_list.in_out_frame
+        %p
+          %span{ :class => "label" }
+            In original sample?
+          %span{ :class => "value" }
+            = @pbs_list.in_sample
+        %p
+          %span{ :class => "label" }
+            Located inside PSU?
+          %span{ :class => "value" }
+            = @pbs_list.in_out_psu
+        %p
+          %span{ :class => "label" }
+            Measure of Size
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.mos
+        %p
+          %span{ :class => "label" }
+            Is a certainty unit?
+          %span{ :class => "value" }
+            = @pbs_list.cert_flag
+        %p
+          %span{ :class => "label" }
+            Stratum Identification Number
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.stratum
+        %p
+          %span{ :class => "label" }
+            Stratum Sort Variable 1
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.sort_var1
+        %p
+          %span{ :class => "label" }
+            Stratum Sort Variable 2
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.sort_var2
+        %p
+          %span{ :class => "label" }
+            Stratum Sort Variable 3
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.sort_var3
+        %p
+          %span{ :class => "label" }
+            Frame Order
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.frame_order
+        %p
+          %span{ :class => "label" }
+            Selection Probability of Location
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.selection_probability_location
+        %p
+          %span{ :class => "label" }
+            Sampling Interval
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.sampling_interval_woman
+        %p
+          %span{ :class => "label" }
+            Selection Probability of Women
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.selection_probability_woman
+        %p
+          %span{ :class => "label" }
+            Overall Selection Probability
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.selection_probability_overall
+        %p
+          %span{ :class => "label" }
+            Must complete PBS Frame SAQ?
+          %span{ :class => "value" }
+            = @pbs_list.frame_completion_req
+        %p
+          %span{ :class => "label" }
+            Provider Recruitment Status
+          %span{ :class => "value" }
+            = @pbs_list.pr_recruitment_status
+        %p
+          %span{ :class => "label" }
+            Recruitment Start Date
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.pr_recruitment_start_date
+        %p
+          %span{ :class => "label" }
+            Provider Co-operation Date
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.pr_cooperation_date
+        %p
+          %span{ :class => "label" }
+            Recruitment End Date
+          %span{ :class => "value" }
+            = blank_safe @pbs_list.pr_recruitment_end_date
+        - unless @pbs_list.substitute_provider.blank?
+          %p
+            %span{ :class => "label" }
+              Substitute Provider
+            %span{ :class => "value" }
+              = @pbs_list.substitute_provider

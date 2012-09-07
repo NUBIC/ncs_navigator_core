@@ -34,6 +34,7 @@
             = staff_phone_builder.label :phone_nbr, "#{staff_phone_builder.object.phone_type} Phone Number"
             %br
             = staff_phone_builder.hidden_field :phone_type_code
+            = staff_phone_builder.hidden_field :phone_rank_code
             = staff_phone_builder.text_field :phone_nbr
 
         = staff_builder.fields_for :emails do |staff_email_builder|
@@ -41,6 +42,7 @@
             = staff_email_builder.label :email, "Email"
             %br
             = staff_email_builder.text_field :email
+            = staff_email_builder.hidden_field :email_rank_code
 
 
     %fieldset
@@ -51,6 +53,7 @@
           = telephone_builder.label :phone_nbr, telephone_builder.object.phone_type
           %br
           = telephone_builder.hidden_field :phone_type_code
+          = telephone_builder.hidden_field :phone_rank_code
           = telephone_builder.text_field :phone_nbr
 
     %fieldset

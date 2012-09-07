@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core/pbs/pbs_list_importer'
 
 class PbsListsController < ApplicationController

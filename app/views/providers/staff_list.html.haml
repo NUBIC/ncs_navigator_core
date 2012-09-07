@@ -6,7 +6,8 @@
 %h3
   = @provider
   %span.normal
-    = link_to "Edit Location Information", edit_contact_information_provider_path(@provider, :event_id => @event.id), :class => "edit_link icon_link"
+    - ecip_path = @event.nil? ? edit_contact_information_provider_path(@provider) : edit_contact_information_provider_path(@provider, :event_id => @event.id)
+    = link_to "Edit Location Information", ecip_path, :class => "edit_link icon_link"
 
 .page_section
   - if @provider.staff.blank?
@@ -34,7 +35,8 @@
                 &nbsp;
           %td
             - txt = blank_safe(staff_member.full_name)
-            = link_to txt, edit_staff_provider_path(@provider, :person_id => staff_member.id, :event_id => @event.id), :class => "edit_link icon_link"
+            - esp_path = @event.nil? ? edit_staff_provider_path(@provider, :person_id => staff_member.id) : edit_staff_provider_path(@provider, :person_id => staff_member.id, :event_id => @event.id)
+            = link_to txt, esp_path, :class => "edit_link icon_link"
           %td
             = phone_number_formatter(staff_member.telephones.first.to_s)
           %td

@@ -1,68 +1,17 @@
 - title "Provider Information"
 
-#provider_info
-  %span{ :id => "practice_name" }
-    = @provider.name_practice
+= render "/pbs_lists/provider_section"
 
-  %span{ :id => "blue_button" }
-    = link_to 'Edit Provider Info', provider_path(@provider)
+= render "/pbs_lists/staff_section"
 
-#address
-  = @provider.address.address_one + "."
-  %br
-  = @provider.address.city + ","
-  = @provider.address.state.to_s
-  = @provider.address.zip + "-"
-  = @provider.address.zip4
+= render "/pbs_lists/contacts_section"
 
-%span{ :id => "staff_info" }
-  Staff
-%span{ :id => "blue_button" }
-  = link_to 'Edit Staff', provider_path(@provider)
-%table{ :id => "staff_line_items" }
-  - @staff.each  do |member|
-    %tr{ :class => cycle('even_record', 'odd_record') }
-      %td{ :id => "ribbon_table_data" }
-        - if PersonnelProviderLink.where(:person_id => member).first.primary_contact
-          = image_tag('first-prize-ribbon-30x38.png', :size => '30x38')
-      %td
-        = member.first_name  + " " + member.last_name
-      %td{ :id => "phone_table_data" }
-        = phone_number_formatter(member.telephones.first.to_s)
-      %td
-        = member.emails.first.to_s
-%span{ :id => "green_button" }
-  = link_to 'Add Staff Member', provider_path(@provider)
+- if @provider.can_recruit?
+  %p
+    %span{ :class => "green_button" }
+      = provider_recruitment_link(@pbs_list)
 
-#contact_history
-  %span{ :id => "contact_history_header" }
-    Contact History
-  %span{ :id => "blue_button" }
-    = link_to 'Edit Contacts', provider_path(@provider)
-
-%table{ :id => 'staff_contact_line_items' }
-  %tr
-    %th{:id => "staff_table_header_left_end"}
-      Date
-    %th{:id => "staff_table_header_middle"}
-      Staff Member
-    %th{:id => "staff_table_header_middle"}
-      Method of Contact
-    %th{:id => "staff_table_header_right_end"}
-      Status
-  - @staff.each do |member|
-    - member.contact_links.each do |cl|
-      %tr
-        %td
-          = cl.contact.contact_date
-        %td
-          = member.first_name + " " + member.last_name
-        %td
-          = cl.contact.contact_type
-        %td
-          = cl.contact.contact_disposition
-
-%span{ :id => "green_button" }
-  = link_to 'Start Contact', provider_path(@provider)
-
-
+:javascript
+  $(function () {
+    var pbsListUI = new NCSCore.UI.PbsList();
+  });

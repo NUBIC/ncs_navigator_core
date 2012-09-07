@@ -4,8 +4,11 @@
 //= require 'surveyor_all'
 //= require 'jquery.tooltip.min'
 //= require 'jquery.cookie'
+//= require 'jquery.validate'
+//= require 'additional-methods'
+//= require core
+//= require pbs_lists
 //= require consent
 //= require event
 //= require nested_attributes
-//= require core
 //= require_tree .

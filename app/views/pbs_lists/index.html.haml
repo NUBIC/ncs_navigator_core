@@ -48,12 +48,10 @@
               - txt = "#{contact.contact_date} #{contact.contact_start_time}"
               = link_to txt, path, { :class => "icon_link" }
           %td
-            - if pbs.recruitment_ended?
-              - if provider.recruited?
-                %span{ :class => "star_link icon_link"}
-                  Recruited
-            - else
-              = link_to pbs.pr_recruitment_status, path, { :class => "icon_link" }
+            - # cf. RECRUIT_STATUS_CL1 - show only values with helpful information
+            - if [1,2,3].include? pbs.pr_recruitment_status_code.to_i
+              - cls = pbs.pr_recruitment_status_code.to_i == 1 ? "star_link icon_link" : "icon_link"
+              = link_to pbs.pr_recruitment_status, path, { :class => cls }
           %td
             - unless provider.contacts.blank?
               = DispositionMapper.disposition_text_for_event(provider.provider_recruitment_event.event_type, contact.contact_disposition)

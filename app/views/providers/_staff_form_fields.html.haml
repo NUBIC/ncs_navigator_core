@@ -15,15 +15,13 @@
   = text_field_tag 'person[last_name]', @staff.last_name
 
 %p
-  = label_tag 'telephone[phone_nbr]', "Phone Number"
+  = label_tag 'telephone_number', "Phone Number"
   %br
-  = text_field_tag 'telephone[phone_nbr]', @telephone.phone_nbr
-
+  = text_field_tag 'telephone_number', @telephone.phone_nbr, { :type => "phoneUS" }
 %p
-  = label_tag 'email[email]', "Email"
+  = label_tag 'email', "Email"
   %br
-  = text_field_tag 'email[email]', @email.email
-
+  = text_field_tag 'email', @email.email, { :type => "email" }
 %p
   = check_box_tag 'primary_contact', '1', @link.primary_contact
   = label_tag 'primary_contact', "Primary Contact?"

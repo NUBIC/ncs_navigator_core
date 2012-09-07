@@ -1,0 +1,12 @@
+#staff_section
+  %span{ :id => "staff_info" }
+    Staff
+  %div{ :id => "staff_line_items" }
+    - @staff.each do |member|
+      = render '/people/provider_staff_member', :member => member
+    -# placeholder for new staff members
+    #new_staff
+
+  %span{ :class => "green_button" }
+    = link_to 'Add Staff Member', new_staff_provider_path(@provider),
+        {:title => "Add New Staff Member for #{@provider.to_s}", :class => "edit_staff_modal_form_link"}
