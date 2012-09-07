@@ -64,6 +64,7 @@ module Psc
       @events = Collection.new
       @instruments = Collection.new
       @people = Collection.new
+      @surveys = Collection.new
 
       @instrument_plans = {}
     end
@@ -73,7 +74,7 @@ module Psc
     def process
       logger.info 'Mapping started'
 
-      [contact_links, contacts, events, instruments, instrument_plans, people].each(&:clear)
+      [contact_links, contacts, events, instruments, instrument_plans, people, surveys].each(&:clear)
 
       activities.each do |activity|
         activity.derive_implied_entities
@@ -90,6 +91,8 @@ module Psc
         instruments << plan.root
 
         add_plan(plan)
+
+        plan.surveys.each { |s| surveys << s }
       end
 
       logger.info 'Mapping complete'

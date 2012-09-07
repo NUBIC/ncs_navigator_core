@@ -19,5 +19,9 @@ module Psc
     def order
       activities.sort_by! { |a| a.order_label.to_s }
     end
+
+    def surveys
+      activities.map { |a| [a.survey, a.referenced_survey] }.flatten.compact
+    end
   end
 end
