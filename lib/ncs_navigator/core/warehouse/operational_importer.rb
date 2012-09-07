@@ -453,15 +453,19 @@ module NcsNavigator::Core::Warehouse
         SQL
         result = ::DataMapper.repository.adapter.select(query).first
 
-        PpgStatusHistory.create(
-          :participant_id => Participant.find_by_p_id(ppg_details.p_id).id,
-          :ppg_status_code => ppg_details.ppg_first,
-          :ppg_status_date => result.contact_date,
-          :ppg_info_source_code => 1,
-          :ppg_info_mode_code => result.contact_type,
-          :ppg_comment => 'Missing history entry inferred from ppg_details.ppg_first during import into NCS Navigator.'
-        )
-        @progress.increment_creates
+        if result
+          PpgStatusHistory.create(
+            :participant_id => Participant.find_by_p_id(ppg_details.p_id).id,
+            :ppg_status_code => ppg_details.ppg_first,
+            :ppg_status_date => result.contact_date,
+            :ppg_info_source_code => 1,
+            :ppg_info_mode_code => result.contact_type,
+            :ppg_comment => 'Missing history entry inferred from ppg_details.ppg_first during import into NCS Navigator.'
+          )
+          @progress.increment_creates
+        else
+          log.warn("Participant #{ppg_details.p_id} is missing an initial status history record. The necessary information to infer the initial status history record is also not present.")
+        end
       end
     end
 
