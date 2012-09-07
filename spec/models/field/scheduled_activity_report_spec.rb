@@ -5,8 +5,6 @@ module Field
     let(:report) { Field::ScheduledActivityReport.new }
 
     describe '#to_json' do
-      R = Field::ScheduledActivityReport
-
       let(:json) { JSON.parse(report.to_json) }
 
       before do
@@ -30,14 +28,11 @@ module Field
 
         shared_context 'has a person' do
           let(:person) { Factory(:person) }
-          let(:person_ir) do
-            R::Person.new.tap do |p|
-              p.model = person
-            end
-          end
+          let(:person_ir) { stub }
 
           before do
             report.people << person_ir
+            report.resolutions[person_ir] = person
           end
         end
 
@@ -46,15 +41,11 @@ module Field
 
           let(:contacts) { json['contacts'] }
           let(:contact) { Factory(:contact) }
-          let(:contact_ir) do
-            R::Contact.new.tap do |c|
-              c.person = person_ir
-              c.model = contact
-            end
-          end
+          let(:contact_ir) { stub(:person => person_ir) }
 
           before do
             report.contacts << contact_ir
+            report.resolutions[contact_ir] = contact
           end
         end
 
@@ -135,16 +126,11 @@ module Field
 
           let(:events) { json['contacts'][0]['events'] }
           let(:event) { Factory(:event) }
-          let(:event_ir) do
-            R::Event.new.tap do |e|
-              e.model = event
-              e.contact = contact_ir
-              e.person = person_ir
-            end
-          end
+          let(:event_ir) { stub(:contact => contact_ir, :person => person_ir) }
 
           before do
             report.events << event_ir
+            report.resolutions[event_ir] = event
           end
         end
 
@@ -206,25 +192,17 @@ module Field
           let(:response_sets) { [Factory(:response_set)] }
           let(:survey) { Factory(:survey) }
 
-          let(:survey_ir) do
-            R::Survey.new.tap do |s|
-              s.model = survey
-            end
-          end
+          let(:survey_ir) { stub }
 
           let(:instrument_ir) do
-            R::Instrument.new.tap do |i|
-              i.event = event_ir
-              i.person = person_ir
-              i.survey = survey_ir
-              i.name = 'An instrument'
-              i.model = instrument
-            end
+            stub(:event => event_ir, :person => person_ir, :survey => survey_ir, :name => 'An instrument')
           end
 
           before do
             report.surveys << survey_ir
             report.instruments << instrument_ir
+            report.resolutions[survey_ir] = survey
+            report.resolutions[instrument_ir] = instrument
           end
         end
 
@@ -304,7 +282,8 @@ module Field
 
           before do
             link.save!
-            person_ir.participant_model = participant
+
+            person.stub!(:participant => participant)
           end
 
           shared_examples_for 'a participant data generator' do

@@ -17,8 +17,8 @@ module Field
     # @private
     def contacts_as_json(options)
       contacts.map do |c|
-        mc = c.model
-        mp = c.person.model
+        mc = m c
+        mp = m c.person
 
         if mc && mp
           adapt_model(mc).as_json(options).merge({
@@ -34,13 +34,13 @@ module Field
     # @private
     def events_as_json(contact, person, options)
       events.select { |e| e.contact == contact && e.person == person }.map do |e|
-        m = e.model
+        me = m e
 
-        if m
-          adapt_model(m).as_json(options).merge({
-            'name' => m.event_type.to_s,
+        if me
+          adapt_model(me).as_json(options).merge({
+            'name' => me.event_type.to_s,
             'instruments' => instruments_as_json(e, person, options),
-            'version' => m.updated_at.utc
+            'version' => me.updated_at.utc
           })
         end
       end.compact
@@ -50,8 +50,8 @@ module Field
     # @private
     def instruments_as_json(event, person, options)
       instruments.select { |i| i.event == event && i.person == person }.map do |i|
-        mi = i.model
-        ms = i.survey.model
+        mi = m i
+        ms = m i.survey
 
         if mi && ms
           adapt_model(mi).as_json(options).merge({
@@ -67,13 +67,13 @@ module Field
     # @private
     def instrument_templates_as_json(options)
       surveys.map do |s|
-        m = s.model
+        ms = m s
 
-        if m
+        if ms
           {
-            'instrument_template_id' => m.api_id,
-            'survey' => m,
-            'version' => m.updated_at.utc
+            'instrument_template_id' => ms.api_id,
+            'survey' => ms,
+            'version' => ms.updated_at.utc
           }
         end
       end.compact
@@ -85,14 +85,15 @@ module Field
       participants = {}
 
       people.each do |p|
-        participant = p.participant_model
+        pm = m p
+        participant = pm.try(:participant)
 
-        next unless participant && p.model
+        next unless participant && pm
 
         if participants.has_key?(participant)
-          participants[participant] << p.model
+          participants[participant] << pm
         else
-          participants[participant] = [p.model]
+          participants[participant] = [pm]
         end
       end
 

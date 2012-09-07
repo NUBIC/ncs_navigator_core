@@ -59,12 +59,12 @@ module Psc
       @filters = filters
       @activities = coll
 
-      @contact_links = Collection.new
-      @contacts = Collection.new
-      @events = Collection.new
-      @instruments = Collection.new
-      @people = Collection.new
-      @surveys = Collection.new
+      @contact_links = Set.new
+      @contacts = Set.new
+      @events = Set.new
+      @instruments = Set.new
+      @people = Set.new
+      @surveys = Set.new
 
       @instrument_plans = {}
     end
@@ -103,67 +103,6 @@ module Psc
     def add_plan(plan)
       instrument_plans[plan.root] = plan.activities.map do |a|
         { :template => a.survey, :participant_type => a.participant_type_label }
-      end
-    end
-
-    ##
-    # A collection of IRs.
-    class Collection
-      include Enumerable
-
-      def initialize
-        @set = {}
-      end
-
-      ##
-      # Given two value objects v1 and v2 that are eql but not equal[0],
-      # selects the first of [v1, v2] added to the collection, and returns it
-      # for all subsequent << operations.
-      #
-      # We do this because mutating non-comparable state on value objects is
-      # quite convenient when it comes to model resolution.
-      #
-      # [0]: See http://ruby-doc.org/core-1.9.3/Object.html#method-i-eql-3F.
-      #
-      # In short:
-      #
-      #     class S < Struct.new(:foo); end
-      #
-      #     a = S.new
-      #     b = S.new
-      #
-      #     a.object_id != b.object_id  # => true
-      #
-      #     a.eql?(b)   # => true
-      #     a.equal?(b) # => false
-      def <<(item)
-        if @set.has_key?(item)
-          @set[item]
-        else
-          @set[item] = item
-        end
-
-        @set[item]
-      end
-
-      def each
-        @set.values.each { |v| yield v }
-      end
-
-      def clear
-        @set.clear
-      end
-
-      ##
-      # For testing.
-      def ==(other)
-        Set.new(@set.values) == Set.new(other)
-      end
-
-      ##
-      # For testing.
-      def models
-        Set.new(map(&:model))
       end
     end
   end

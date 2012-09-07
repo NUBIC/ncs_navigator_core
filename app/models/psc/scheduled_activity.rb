@@ -286,39 +286,31 @@ module Psc
       ##
       # {ContactLink} representation.
       class ContactLink < Struct.new(:person, :contact, :event, :instrument)
-        attr_accessor :model
       end
 
       ##
       # Representation of a {Contact} from an SA report.
       class Contact < Struct.new(:scheduled_date, :person)
-        attr_accessor :model
       end
 
       ##
       # {Event} representation.
       class Event < Struct.new(:label, :ideal_date, :contact, :person)
-        attr_accessor :model
       end
 
       ##
       # {Instrument} representation.
       class Instrument < Struct.new(:survey, :referenced_survey, :name, :participant_type, :order, :event, :person)
-        attr_accessor :model
       end
 
       ##
       # {Person} representation.
       class Person < Struct.new(:person_id)
-        attr_accessor :model
-        attr_accessor :participant_model
       end
 
       ##
       # {Survey} representation.
       class Survey < Struct.new(:instrument_label)
-        attr_accessor :model
-
         alias_method :access_code, :instrument_label
       end
     end
