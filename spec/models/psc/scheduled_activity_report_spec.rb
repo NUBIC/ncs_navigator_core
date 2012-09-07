@@ -5,8 +5,6 @@ require File.expand_path('../report_without_child_instruments', __FILE__)
 require File.expand_path('../report_with_child_instruments', __FILE__)
 
 module Psc
-  I = ScheduledActivity::Implications
-
   shared_examples_for 'a PSC report wrapper' do
     describe '.from_psc' do
       let(:psc) { mock }
@@ -59,6 +57,8 @@ module Psc
   end
 
   describe ScheduledActivityReport do
+    I = ScheduledActivity::Implications
+
     describe 'without child instruments' do
       let(:report) { ::Psc::ScheduledActivityReport.from_json(data) }
 

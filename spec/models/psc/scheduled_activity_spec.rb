@@ -3,13 +3,13 @@ require 'spec_helper'
 require File.expand_path('../scheduled_activity_contexts', __FILE__)
 
 module Psc
-  I = ScheduledActivity::Implications
-
   ##
   # These tests rely quite heavily on values present in the test fixtures.  It
   # is RECOMMENDED that you keep scheduled_activity_contexts open in a split
   # pane while reading these examples.
   describe ScheduledActivity do
+    I = ScheduledActivity::Implications
+
     let(:empty_sa) { ScheduledActivity.new }
 
     def self.it_maps(mapping)
