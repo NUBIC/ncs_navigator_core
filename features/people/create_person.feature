@@ -5,7 +5,7 @@ Feature: Creating a person record
   I want to be able to create a person record
 
   Scenario: Creating a new person
-    Given an authenticated user
+    Given an authenticated admin user
     When I am on the people page
     Then I should see "People"
     And I should see "No people were found."
