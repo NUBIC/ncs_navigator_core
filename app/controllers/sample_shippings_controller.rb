@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 class SampleShippingsController < ApplicationController
+  before_filter do
+    @in_edit_mode = params[:in_edit_mode] == 'true'
+    flash.discard
+  end
+  
   def new
     @sample_receipt_stores = SampleReceiptStore.find_all_by_id(params[:sample_storage])
     @samples = []
@@ -35,6 +40,7 @@ class SampleShippingsController < ApplicationController
   
   def show
     @sample_shipping = SampleShipping.find(params[:id])
+    @in_edit_mode = params[:in_edit_mode] == 'true'
   end
 
   def edit
@@ -42,7 +48,7 @@ class SampleShippingsController < ApplicationController
   end
 
   def send_email
-    @sample_shipping = SampleShipping.find(params[:sample_shipping][:id])    
+    @sample_shipping = SampleShipping.find(params[:sample_shipping][:id])
     generate_email = Emailer.manifest_email(extract_params(@sample_shipping))
     generate_email.deliver
     respond_to do |format|

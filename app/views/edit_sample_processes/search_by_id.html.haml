@@ -38,15 +38,14 @@
       %div{:id => "shipping"}
         %ul
           %div{:id => "ship_samples"}
-            = form_tag verify_samples_path do
-              - if not @sample_receipt_stores.blank?
-                %b Samples:
-                = submit_tag "Ship", :class => "ship_samples_btn", :id => "ship_samples_btn", :disabled => true
-                - @sample_receipt_stores.each do |srs|
-                  %li
-                    %input{:type=>"checkbox", :class => "sample_ship_checkbox", :id => srs.sample_id, :name=> "sample_id[]", :value => srs.sample_id, :checked=>false}
-                    = srs.sample_id
-
+            - if not @sample_shippings.blank?
+              - @sample_shippings.each do |ss, samples|
+                %a{ :href => edit_sample_shipping_path(:id => ss, :in_edit_mode => true), :class => "edit_specimen_sample_store", :id => ss}
+                  = "Samples:"
+                  = ss.shipment_tracking_number
+                  - samples.each do |val|
+                    %p{:class => "paragraph_shift"}
+                      = val.sample_id
           %div{:id => "ship_specimens"}
             = form_tag verify_specimens_path do
               - if not @specimen_receipts_hash_not_shipped.blank?
