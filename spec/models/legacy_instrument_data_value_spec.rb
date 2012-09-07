@@ -112,7 +112,7 @@ describe LegacyInstrumentDataValue do
     describe '#answer_text' do
       it 'is the text for the answer when there is one' do
         value.update_attribute(:value, '-1')
-        value.answer_text.should == 'Yes'
+        value.answer_text.should == 'Refused'
       end
 
       it 'is nil otherwise' do
