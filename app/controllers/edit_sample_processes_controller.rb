@@ -23,14 +23,14 @@ class EditSampleProcessesController < ApplicationController
     @specimen_storages = get_specimen_storages(@specimens, search_id)
     
     @sample_shippings = get_sample_shippings(search_id)
+
+    @sample_receipt_confirmation = SampleReceiptConfirmation.joins(:sample).where("samples.sample_id = ?", search_id).first
     # TODO = uncomment once fixed
     # @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
 
     # 
     # @specimen_receipts_not_shipped = SpecimenStorage.where(:storage_container_id => search_id)
     # @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
-    # 
-    # @sample_shippings_not_received = hash_from_array_by_track_num(SampleShipping.where("sample_id = ? or shipment_tracking_number =?", search_id, search_id))
     # @specimen_shippings_not_received = SpecimenShipping.where(:storage_container_id => search_id)
     respond_to do |format|      
        format.html do
@@ -60,6 +60,7 @@ class EditSampleProcessesController < ApplicationController
     end
     return sample_shippings_hash
   end
+  
   
   
   def search_by_date
