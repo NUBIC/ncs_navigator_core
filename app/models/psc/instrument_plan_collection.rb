@@ -64,9 +64,9 @@ module Psc
         plans[activity.survey] = InstrumentPlan.new(root, [activity])
       end
 
-      children.each do |activity|
+      children.select(&:referenced_survey).each do |activity|
         unless plans.has_key?(activity.referenced_survey)
-          raise "Activity #{activity} references unknown survey #{activity.referenced_survey}"
+          raise "Activity #{activity.activity_id} references unknown survey #{activity.referenced_survey.inspect}"
         end
 
         plans[activity.referenced_survey].activities << activity
