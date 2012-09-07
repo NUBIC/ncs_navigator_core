@@ -12,17 +12,12 @@ describe SpecimenReceiptsController do
 
 
     def valid_attributes
-      # {:specimen_storage_container => {:specimen_receipts_attributes => { :specimen_id => "1", :receipt_datetime =>"2012-03-05 15:36:19", :specimen_storage_container_id => "12", :specimen_processing_shipping_center_id => "123ABC", 
-      #   :staff_id => "someone special"}}}
       {:specimen_receipts_attributes=>{"0"=>{:receipt_datetime=>Time.now, :specimen_id=>@specimen.id, }}, :storage_container_id=>"abc"}
     end
 
     describe "GET new" do
       it "assigns a new specimen_receipt as @specimen_receipt" do
-        get :new
-        @specimen = Specimen.where(:specimen_id => "1").first
-        @specimen_storage_container = SpecimenStorageContainer.new
-        @specimen_receipt = @specimen_storage_container.specimen_receipts.build(:specimen => @specimen)        
+        get :new, :specimen_id => @specimen.specimen_id
         assigns(:specimen_receipt).should be_a_new(SpecimenReceipt)
       end
     end
@@ -38,7 +33,6 @@ describe SpecimenReceiptsController do
       describe "with valid params" do
         it "creates a new specimen receipt object" do
           post :create, :specimen_storage_container => valid_attributes
-          puts assigns(:specimen_receipt).errors.inspect
           expect {
             post :create, :specimen_storage_container => valid_attributes
           }.to change(SpecimenReceipt, :count).by(1)

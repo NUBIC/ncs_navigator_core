@@ -5,6 +5,8 @@ class PeopleController < ApplicationController
 
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
+  permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR, :only => [:index]
+
   # GET /people
   # GET /people.json
   def index

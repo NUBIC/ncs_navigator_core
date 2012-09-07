@@ -5,7 +5,7 @@ Feature: Accessing the application
   I want to view them when I access the application
 
   Scenario: Accessing a new instance of the application
-    And an authenticated user
+    Given an authenticated admin user
     When I go to the welcome summary page
     Then I should see "NCS Navigator"
     And I should see "Participants"
@@ -24,7 +24,8 @@ Feature: Accessing the application
 
   @javascript
   Scenario: Accessing an instance of the application with participants
-    And an authenticated user
+    Given an authenticated admin user
+    And I am using Two-Tier recruitment
     And the following pregnant participants:
       | first_name | last_name |
       | Judy       | Garland   |

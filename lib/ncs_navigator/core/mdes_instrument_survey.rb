@@ -32,6 +32,41 @@ module NcsNavigator::Core
         end
       end
 
+      ##
+      # Provides a consolidated view over all the {#mdes_table_map}s for the
+      # given list of surveys. The consolidated version has the same structure
+      # as the single-survey version.
+      #
+      # @param [Array<Survey>]
+      def merge_mdes_table_maps(surveys)
+        surveys.inject({}) do |merged, survey|
+          survey.mdes_table_map.each do |ti, tc|
+            if merged[ti]
+              merged[ti] = merge_mdes_table_map_contents(merged[ti], tc)
+            else
+              merged[ti] = tc.deep_dup
+            end
+          end
+
+          merged
+        end
+      end
+
+      def merge_mdes_table_map_contents(tc1, tc2)
+        # most tc attributes are determined wholly by the table identifier,
+        # so we can take either one.
+        merged = tc1.deep_dup
+        tc2[:variables].each do |var_name, var_value|
+          if merged[:variables][var_name]
+            merged[:variables][var_name][:questions] += var_value[:questions]
+          else
+            merged[:variables][var_name] = var_value.deep_dup
+          end
+        end
+        merged
+      end
+      protected :merge_mdes_table_map_contents
+
       def mdes_reset!
         @mdes_primary_instrument_tables = nil
         @mdes_surveys_by_mdes_table = nil
@@ -70,6 +105,7 @@ module NcsNavigator::Core
         ]
       }.find { |table_name, var_name| var_name }
     end
+    protected :mdes_mapping_for_question
 
     def update_mdes_table_map(map, q, table_identifier, variable_name)
       map[table_identifier] ||= {}

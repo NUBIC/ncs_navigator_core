@@ -70,6 +70,10 @@ Spork.prefork do
       Aker.authority.valid_credentials?(:user, 'test_user', 'test_user')
     end
 
+    def admin_login
+      Aker.authority.valid_credentials?(:user, 'admin_user', 'admin_user')
+    end
+
     def login(as)
       controller.request.env['aker.check'] = Aker::Rack::Facade.new(Aker.configuration, as)
     end
@@ -141,6 +145,16 @@ Spork.prefork do
 
   def load_survey_string(s)
     Surveyor::Parser.new.parse(s)
+  end
+
+  def load_survey_questions_string(questions_dsl)
+    load_survey_string <<-SURVEY
+      survey "Test Survey" do
+        section "A" do
+          #{questions_dsl}
+        end
+      end
+    SURVEY
   end
 
   def with_versioning

@@ -2,7 +2,7 @@
   = form_for(sample_receipt_confirmation) do |f| 
     = render "shared/custom_error_messages", :object => f.object
     = "Followed is required for selected sample " 
-    = sample_receipt_confirmation.sample_id
+    = sample_receipt_confirmation.sample.sample_id
     
     %br
     %b
@@ -25,13 +25,13 @@
     = f.hidden_field :shipper_id
     
     %br
-    = f.label :shipment_tracking_number, "Shipment Tracking Number:"
-    = sample_receipt_confirmation.shipment_tracking_number
-    = f.hidden_field :shipment_tracking_number
+    = f.label :sample_shipping_id, "Shipment Tracking Number:"
+    = f.object.sample_shipping.shipment_tracking_number
+    = f.hidden_field :sample_shipping_id
     
     %br
     = f.label :shipment_receipt_datetime, "Shipment Receipt Date and Time: "
-    = f.text_field :shipment_receipt_datetime, :class => "datetime important_field", :id => "datetime_"+sample_receipt_confirmation.sample_id
+    = f.text_field :shipment_receipt_datetime, :class => "datetime important_field", :id => "datetime_"+sample_receipt_confirmation.sample.sample_id
     %span{ :class => "required" } *
     
     %br  

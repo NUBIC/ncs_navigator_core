@@ -13,13 +13,14 @@ class EditSampleProcessesController < ApplicationController
     search_id = params[:search_id].first.strip
 
     @specimens = get_specimen_receipts(search_id)
-    @samples = SampleReceiptStore.where(:sample_id => search_id)
+    # @samples = SampleReceiptStore.where(:sample_id => search_id)
+    @samples = SampleReceiptStore.joins(:sample).where("samples.sample_id = ?", search_id)
 
     @specimen_storages = get_specimen_storages(@specimens, search_id)
     
     
     # TODO = uncomment once fixed
-    @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
+    # @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
 
     # @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
     @sample_receipt_stores_not_shipped = SampleReceiptStore.where(:sample_id => search_id)

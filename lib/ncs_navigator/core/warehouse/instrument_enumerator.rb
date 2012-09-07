@@ -6,7 +6,7 @@ require 'forwardable'
 
 module NcsNavigator::Core::Warehouse
   ##
-  # Incrementally builds and yields MDES records for every ResponseSet
+  # Incrementally builds and yields MDES records for every Instrument
   # in the system.
   class InstrumentEnumerator
     extend Forwardable
@@ -26,30 +26,30 @@ module NcsNavigator::Core::Warehouse
     def initialize(wh_config)
       # This is deferred to here so that .create_transformer can be
       # called from the warehouse configuration
-      require 'ncs_navigator/core/warehouse/response_set_to_warehouse'
+      require 'ncs_navigator/core/warehouse/instrument_to_warehouse'
       @wh_config = wh_config
     end
 
     def each
       progress = ProgressTracker.new(@wh_config)
-      ResponseSet.find_each do |rs|
-        unless rs.enumerable_as_instrument?
-          log.info "Skipping ResponseSet #{rs.access_code.inspect} (#{rs.id})."
+      Instrument.find_each do |ins|
+        unless ins.enumerable_to_warehouse?
+          log.info "Skipping ResponseSets for Instrument #{ins.instrument_id.inspect} (#{ins.id})."
           next
         end
 
-        progress.increment_response_sets
-        progress.increment_responses(rs.responses.size)
-        log.info "Transforming ResponseSet #{rs.access_code.inspect} (#{rs.id})"
-        log.info "  Survey is #{rs.survey.try(:title).inspect} (#{rs.survey.try(:id)})"
+        progress.increment_instruments
+        progress.increment_response_sets(ins.response_sets.size)
+        progress.increment_responses(ins.response_sets.inject(0) { |sum, rs| sum + rs.responses.count })
+        log.info "Transforming ResponseSets for Instrument #{ins.instrument_id.inspect} (#{ins.id})"
         begin
-          rs.to_mdes_warehouse_records.each do |record|
+          ins.to_mdes_warehouse_records(@wh_config).each do |record|
             progress.increment_records
             yield record
           end
         rescue => e
           yield NcsNavigator::Warehouse::TransformError.for_exception(e,
-            "Error enumerating response set #{rs.access_code.inspect} (#{rs.id}) for survey #{rs.survey.try(:title).inspect} (#{rs.survey.id}).")
+            "Error enumerating response sets for instrument #{ins.instrument_id.inspect} (#{ins.id}).")
         end
       end
       progress.complete
@@ -63,6 +63,7 @@ module NcsNavigator::Core::Warehouse
 
       def initialize(wh_config)
         @wh_config = wh_config
+        @instrument_count = 0
         @response_set_count = 0
         @response_count = 0
         @record_count = 0
@@ -75,8 +76,13 @@ module NcsNavigator::Core::Warehouse
         say_progress
       end
 
-      def increment_response_sets
-        @response_set_count += 1
+      def increment_instruments
+        @instrument_count += 1
+        say_progress
+      end
+
+      def increment_response_sets(rs_ct)
+        @response_set_count += rs_ct
         say_progress
       end
 
@@ -87,14 +93,14 @@ module NcsNavigator::Core::Warehouse
 
       def say_progress
         shell.clear_line_then_say(
-          "Transforming surveys. %3d set(s), %3d resp => %3d record(s). %.1f/s." % [
-            @response_set_count, @response_count, @record_count, rate
+          "Transforming surveys. %3d instrument(s), %3d set(s), %3d resp => %3d record(s). %.1f/s." % [
+            @instrument_count, @response_set_count, @response_count, @record_count, rate
           ])
       end
 
       def complete
-        msg = "Transformed %d set(s), %d resp into %d record(s) in %ds (%.1f/s)." % [
-          @response_set_count, @response_count, @record_count, elapsed, rate
+        msg = "Transformed %3d instrument(s), %d set(s), %d resp into %d record(s) in %ds (%.1f/s)." % [
+          @instrument_count, @response_set_count, @response_count, @record_count, elapsed, rate
         ]
         log.info msg
         shell.clear_line_then_say msg + "\n"

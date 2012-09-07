@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: specimen_shippings
 #
+#  carrier                                :string(255)
 #  contact_name                           :string(255)
 #  contact_phone                          :string(30)
 #  created_at                             :datetime
@@ -15,12 +15,12 @@
 #  shipment_receipt_confirmed_code        :integer          not null
 #  shipment_receipt_datetime              :datetime
 #  shipment_temperature_code              :integer          not null
+#  shipment_time                          :string(5)
 #  shipment_tracking_number               :string(36)       not null
 #  shipper_destination                    :string(3)        not null
 #  shipper_id                             :string(36)       not null
 #  specimen_processing_shipping_center_id :integer
 #  staff_id                               :string(36)       not null
-#  storage_container_id                   :string(36)       not null
 #  transaction_type                       :string(36)
 #  updated_at                             :datetime
 #

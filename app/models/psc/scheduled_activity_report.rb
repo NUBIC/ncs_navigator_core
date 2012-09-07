@@ -79,12 +79,21 @@ module Psc
         e = add_event(activity, c, p)
         s = add_survey(activity)
         r = add_referenced_survey(activity)
-        i = add_instrument(activity, s, r, e, p) if (s || r) && e
+
+        i = if operational_record_implied?(e, s, r)
+              add_instrument(activity, s, r, e, p)
+            end
 
         add_contact_link(p, c, e, i)
       end
 
       logger.info 'Mapping complete'
+    end
+
+    ##
+    # @private
+    def operational_record_implied?(event, survey, referenced_survey)
+      event && survey && referenced_survey.nil?
     end
 
     ##

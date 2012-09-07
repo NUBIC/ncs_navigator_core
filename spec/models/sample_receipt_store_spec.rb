@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: sample_receipt_stores
 #
@@ -14,7 +13,7 @@
 #  receipt_datetime                  :datetime         not null
 #  removed_from_storage_datetime     :datetime
 #  sample_condition_code             :integer          not null
-#  sample_id                         :string(36)       not null
+#  sample_id                         :integer          not null
 #  sample_receipt_shipping_center_id :integer
 #  staff_id                          :string(36)       not null
 #  storage_comment_other             :string(255)
@@ -48,11 +47,13 @@ describe SampleReceiptStore do
       srs = Factory(:sample_receipt_store)
       srs.public_id.should_not be_nil
       srs.sample_id.should == srs.public_id
-      srs.sample_id.to_s.should == "1234567"
+      srs.sample.sample_id.to_s.should == "SAMPLE123ID"
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      srs = SampleReceiptStore.create(:sample_id => "sampleId", :staff_id => "me", :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
+      @sample = Factory(:sample)
+      srs = SampleReceiptStore.create(:sample_id => @sample.id, :staff_id => "me", 
+          :placed_in_storage_datetime => "2012-01-29 22:01:30", :receipt_datetime => "2012-01-30 22:01:30")
       srs.save!
  
       obj = SampleReceiptStore.find(srs.id)

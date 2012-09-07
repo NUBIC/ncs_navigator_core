@@ -489,29 +489,89 @@ module NcsNavigator::Core::Warehouse
     end
 
     describe 'participant being-followedness' do
-      let(:src_participant) {
+      let!(:src_participant) {
         create_warehouse_record_with_defaults(wh_config.model(:Participant), :p_id => 'zed')
       }
 
-      it 'is true when the participant is enrolled' do
-        src_participant.enroll_status = '1'
-        save_wh(src_participant)
+      let!(:ppg_details) {
+        create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
+          :ppg_first => '2', :p => src_participant)
+      }
 
-        importer.import(:participants)
+      let!(:ppg_status_history_current) {
+        create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
+          :p => src_participant, :ppg_status => '2', :ppg_status_date => '2011-06-04')
+      }
+
+      let(:ppg_pregnant) { '1' }
+
+      def should_be_followed
+        importer.import(:participants, :ppg_details, :ppg_status_histories)
         Participant.count.should == 1
-
         Participant.first.being_followed.should be_true
+      end
+
+      def should_not_be_followed
+        importer.import(:participants, :ppg_details, :ppg_status_histories)
+        Participant.count.should == 1
+        Participant.first.being_followed.should be_false
+      end
+
+      describe 'when the participant is enrolled' do
+        before do
+          src_participant.enroll_status = '1'
+          save_wh(src_participant)
+        end
+
+        it 'is true when she was pregnant when originally contacted' do
+          ppg_details.ppg_first = ppg_pregnant
+          save_wh(ppg_details)
+
+          should_be_followed
+        end
+
+        it 'is true when she has a pregnancy in her status history' do
+          create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
+            :ppg_history_id => 'Older',  :p => src_participant,
+            :ppg_status => ppg_pregnant, :ppg_status_date => '2010-01-05')
+
+          should_be_followed
+        end
+
+        it 'is true when she is currently pregnant' do
+          ppg_status_history_current.ppg_status = ppg_pregnant
+          save_wh(ppg_status_history_current)
+
+          should_be_followed
+        end
+
+        it 'is false when she was not originally pregnant and has no pregnancies in her history' do
+          should_not_be_followed
+        end
+
+        it 'is false when she was not originally pregnant and has no status history' do
+          ppg_status_history_current.destroy
+
+          should_not_be_followed
+        end
+
+        it 'is false when she has no PPG details and no status history' do
+          ppg_status_history_current.destroy
+          ppg_details.destroy
+
+          should_not_be_followed
+        end
       end
 
       %w(2 -4).each do |not_enrolled_code|
         it "is false when the participant's enrollment status is #{not_enrolled_code}" do
+          ppg_details.ppg_first = '1'
+          save_wh(ppg_details)
+
           src_participant.enroll_status = not_enrolled_code
           save_wh(src_participant)
 
-          importer.import(:participants)
-          Participant.count.should == 1
-
-          Participant.first.being_followed.should be_false
+          should_not_be_followed
         end
       end
     end

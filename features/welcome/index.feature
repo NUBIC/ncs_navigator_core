@@ -18,11 +18,21 @@ Feature: Accessing the application
     When I follow "Actions"
     Then I should see "Searching"
     And I should see "Participants"
-    And I should see "Activities"
-    And I should see "Upcoming Activities"
-    And I should see "Overdue Activities"
+    And I should not see "Upcoming Activities"
     And I should see "Pending Events"
     And I should see "Reports"
     And I should see "Case Status Report"
     And I should see "Upcoming Birth Report"
     And I should see "Consented Participants"
+
+
+@javascript
+  Scenario: Welcome index and the actions tab for an administrator
+    Given an authenticated admin user
+    When I go to the welcome index page
+    Then I should see "NCS Navigator"
+    When I follow "Actions"
+    Then I should see "Searching"
+    And I should see "Activities"
+    And I should see "Upcoming Activities"
+    And I should see "Overdue Activities"

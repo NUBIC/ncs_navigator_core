@@ -94,10 +94,11 @@ class Participant < ActiveRecord::Base
   # then set the participant firmly in the high_intensity_state machine.
   def set_initial_state_for_recruitment_strategy
     recruitment_strategy = RecruitmentStrategy.recruitment_type_strategy(NcsNavigatorCore.recruitment_type_id)
+
     unless recruitment_strategy.two_tier_knowledgable?
       self.high_intensity = true
       self.start_in_high_intensity_arm!
-      self.high_intensity_conversion!
+      self.high_intensity_conversion! if can_high_intensity_conversion?
     end
   end
 

@@ -184,6 +184,12 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
 
+  resources :sample_shippings do
+    collection do
+      post :send_email
+    end
+  end
+
   resources :sample_receipt_stores do
     member do
       post :update

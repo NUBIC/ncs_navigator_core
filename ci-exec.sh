@@ -4,13 +4,18 @@ if [ -z $RAILS_ENV ]; then
     export RAILS_ENV=ci
 fi
 
-BUNDLER_VERSION=1.2.0
-GEMSET=ncs_navigator_core
+if [ -z $GEMSET ]; then
+    GEMSET=ncs_navigator_core
+fi
 
 if [ -z $CI_RUBY ]; then
     echo "CI_RUBY must be set"
     exit 1
 fi
+
+# Feel free to bump this as new versions of bundler that work with this CI
+# script are released.
+export BUNDLER_VERSION=1.2.0
 
 set +xe
 echo "Initializing RVM"

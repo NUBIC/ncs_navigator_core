@@ -5,7 +5,7 @@ Feature: Creating a household unit
   I want to be able to create a household unit record
 
   Scenario: Creating a new household unit
-    Given an authenticated user
+    Given an authenticated admin user
     When I am on the household units page
     Then I should see "Household Units"
     And I should see "No household units were found."
@@ -23,13 +23,14 @@ Feature: Creating a household unit
 
   @javascript
   Scenario: Associating a person with a household unit
-    Given an authenticated user
+    Given an authenticated admin user
     And a person exists with first_name: "Bix", last_name: "Beiderbecke"
     When I am on the household units page
     Then I should see "Household Units"
     And I should see "No household units were found."
     And I should see "New Household Unit"
     When I follow "New Household Unit"
+    And I wait 1 second
     Then I should be on the new household unit page
     And I should see "New Household Unit"
     When I select "Yes" from "Status"

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+
 class SampleProcessesController < ApplicationController
+  before_filter :clear_flash
   after_filter :clear_flash
-  
+
+  permit Role::SPECIMEN_PROCESSOR, Role::SYSTEM_ADMINISTRATOR, :only => :index
+
   def clear_flash
     flash.discard
   end
-  
+
   def index
     #RECEIVE
     @specimens = array_of_not_stored_specimens
@@ -13,11 +17,10 @@ class SampleProcessesController < ApplicationController
     #STORE
     @specimen_receipts_ids = array_of_selected_specs
     @specimen_receipts_hash = hash_of_spec_storages_by_container_id(@specimen_receipts_ids)
-    
+
     @sample_receipt_stores = array_of_sample_receive_store
-    
+
     @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
-    @sample_receipt_stores_not_shipped = array_of_not_shipped_samples
     #SHIP
     @not_shipped_spec_storages = array_of_not_shipped_spec_storages
     @sample_shippings_not_received = hash_from_array_by_track_num(array_of_shipped_and_not_received_samples)
@@ -29,37 +32,37 @@ class SampleProcessesController < ApplicationController
   end
 
   def array_of_not_stored_samples
-    Sample.all.select{ |s| SampleReceiptStore.where(:sample_id => s.sample_id).blank?}
+    Sample.all.select{ |s| SampleReceiptStore.where(:sample_id => s.id).blank?}
   end
-  
+
   def array_of_selected_specs()
     SpecimenReceipt.all.select{ |s| SpecimenStorage.where(:specimen_storage_container_id => s.specimen_storage_container_id).blank?}
-  end  
-  
-  def array_of_sample_receive_store()
-    SampleReceiptStore.all.select{ |s| SampleShipping.where(:sample_id => s.sample_id).blank?}
   end
-  
+
+  def array_of_sample_receive_store()
+    SampleReceiptStore.joins(:sample).where("samples.sample_shipping_id is NULL")
+  end
+
   def array_of_empty_spec_storages(arrayOfKeys)
     specimen_storages = []
     arrayOfKeys.each do |s|
       specimen_storages.push(SpecimenStorage.new(:specimen_storage_container_id => s))
     end
     return specimen_storages
-  end  
-  
+  end
+
   def array_of_not_shipped_samples
     SampleReceiptStore.all.select{ |sr| SampleShipping.where(:sample_id => sr.sample_id).blank?}
-  end  
-  
+  end
+
   def array_of_not_shipped_spec_storages
     SpecimenStorage.joins(:specimen_storage_container).where("specimen_storage_containers.specimen_shipping_id is NULL")
   end
-  
+
   def array_of_shipped_and_not_received_samples
-    SampleShipping.all.select{ |ss| SampleReceiptConfirmation.where(:sample_id => ss.sample_id).blank? }
+    samples_not_confirmed = Sample.joins(:sample_shipping).all.reject{|s| SampleReceiptConfirmation.where(:sample_id => s.id).any?}
   end
-  
+
   # Array of specimen_shippings where some or all of the specimens are not confirmed.
   def array_of_shipped_and_not_received_specimens
     specimens_not_confirmed = Specimen.joins(:specimen_receipt => [ {:specimen_storage_container => :specimen_shipping}]).all.reject{ |sr| SpecimenReceiptConfirmation.where(:specimen_id => sr.id).any?}
@@ -70,17 +73,17 @@ class SampleProcessesController < ApplicationController
       spec_shippings = SpecimenShipping.where(:id => specimen_shipping_ids)
     end
     return spec_shippings
-  end  
-  
+  end
+
   def hash_from_array_by_track_num(array_of_samples)
     spec_hash = {}
     array_of_samples.each do |s|
-      spec_hash[s.shipment_tracking_number] ||= []
-      spec_hash[s.shipment_tracking_number] << s
+      spec_hash[s.sample_shipping.shipment_tracking_number] ||= []
+      spec_hash[s.sample_shipping.shipment_tracking_number] << s
     end
     return spec_hash
-  end 
-  
+  end
+
   def hash_of_spec_storages_by_container_id(arrayOfSpecStorages)
     spec_hash = {}
     arrayOfSpecStorages.each do |s|
@@ -90,5 +93,5 @@ class SampleProcessesController < ApplicationController
       spec_hash[storage_container_id] << specimen
     end
     return spec_hash
-  end   
+  end
 end

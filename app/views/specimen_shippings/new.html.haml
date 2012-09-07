@@ -25,7 +25,6 @@
           - @specimen_ids_per_specimen_storage << sr.specimen_id
 
         = f.fields_for :ship_specimens do |s|
-          - s.object.inspect
           - if @specimen_ids_per_specimen_storage.include? s.object.specimen_id
             %tr{ :class => cycle_var }
               - if @index == 0                  

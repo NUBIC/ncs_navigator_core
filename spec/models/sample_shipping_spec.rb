@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: sample_shippings
 #
+#  carrier                           :string(255)
 #  contact_name                      :string(255)
 #  contact_phone                     :string(30)
 #  created_at                        :datetime
 #  id                                :integer          not null, primary key
 #  psu_code                          :integer          not null
-#  sample_id                         :string(36)       not null
 #  sample_receipt_shipping_center_id :integer
 #  sample_shipped_by_code            :integer          not null
 #  shipment_coolant_code             :integer          not null
 #  shipment_date                     :string(10)       not null
 #  shipment_issues_other             :string(255)
+#  shipment_time                     :string(5)
 #  shipment_tracking_number          :string(36)       not null
 #  shipper_destination_code          :integer          not null
 #  shipper_id                        :string(36)       not null
@@ -22,8 +22,6 @@
 #  staff_id_track                    :string(36)
 #  transaction_type                  :string(36)
 #  updated_at                        :datetime
-#  volume_amount                     :decimal(6, 2)
-#  volume_unit                       :string(36)
 #
 
 require 'spec_helper'
@@ -44,12 +42,14 @@ describe SampleShipping do
     it "sets the public_id to a uuid" do
       ss = Factory(:sample_shipping)
       ss.public_id.should_not be_nil
-      ss.sample_id.should == ss.public_id
-      ss.sample_id.to_s.should == "SAMPLE123ID"
+      ss.shipment_tracking_number.should == ss.public_id
+      ss.shipment_tracking_number.to_s.should == "ABCDE234325"
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-      ss = SampleShipping.create(:sample_id => "sampleId", :staff_id => "me", :shipper_id => "123", :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98")
+      @sample = Factory(:sample)
+      ss = SampleShipping.create(:staff_id => "me", :shipper_id => "123", 
+      :shipment_date => "02-21-2012", :shipment_tracking_number => "67876f5WERSF98")
       ss.save!
  
       obj = SampleShipping.find(ss.id)

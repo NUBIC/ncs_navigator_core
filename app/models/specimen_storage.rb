@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: specimen_storages
 #
@@ -13,10 +12,10 @@
 #  removed_from_storage_datetime          :datetime
 #  specimen_equipment_id                  :integer
 #  specimen_processing_shipping_center_id :integer
+#  specimen_storage_container_id          :integer          not null
 #  staff_id                               :string(36)       not null
 #  storage_comment                        :string(255)      not null
 #  storage_comment_other                  :string(255)
-#  storage_container_id                   :string(36)       not null
 #  temp_event_endtime                     :string(5)
 #  temp_event_high_temp                   :decimal(6, 2)
 #  temp_event_low_temp                    :decimal(6, 2)
