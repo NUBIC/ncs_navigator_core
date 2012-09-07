@@ -471,7 +471,17 @@ module NcsNavigator::Core::Warehouse
 
     def set_participant_being_followed
       ActiveRecord::Base.connection.
-        execute("UPDATE participants SET being_followed=(enroll_status_code = 1)")
+        execute(<<-SQL)
+          UPDATE participants p
+          SET being_followed=(
+            enroll_status_code=1
+            AND (
+              EXISTS (SELECT 'x' FROM ppg_details d WHERE d.participant_id=p.id AND d.ppg_first_code=1)
+              OR
+              EXISTS (SELECT 'x' FROM ppg_status_histories h WHERE h.participant_id=p.id AND h.ppg_status_code=1)
+            )
+          )
+        SQL
     end
 
     def find_producer(name)
