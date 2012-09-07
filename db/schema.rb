@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120829191821) do
+ActiveRecord::Schema.define(:version => 20120905184324) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -324,6 +324,29 @@ ActiveRecord::Schema.define(:version => 20120829191821) do
     t.integer  "survey_id"
     t.integer  "lock_version",                           :default => 0
   end
+
+  create_table "legacy_instrument_data_records", :force => true do |t|
+    t.integer  "instrument_id",                   :null => false
+    t.integer  "parent_record_id"
+    t.string   "mdes_version",     :limit => 16,  :null => false
+    t.string   "mdes_table_name",  :limit => 100, :null => false
+    t.string   "public_id",        :limit => 36,  :null => false
+    t.integer  "psu_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "legacy_instrument_data_records", ["instrument_id"], :name => "idx_legacy_instrument_data_record_instrument"
+
+  create_table "legacy_instrument_data_values", :force => true do |t|
+    t.integer  "legacy_instrument_data_record_id",               :null => false
+    t.string   "mdes_variable_name",               :limit => 50, :null => false
+    t.text     "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "legacy_instrument_data_values", ["legacy_instrument_data_record_id"], :name => "idx_legacy_instrument_data_value_record"
 
   create_table "listing_units", :force => true do |t|
     t.integer  "psu_code",                                          :null => false
@@ -1444,6 +1467,11 @@ ActiveRecord::Schema.define(:version => 20120829191821) do
   add_foreign_key "instruments", "events", :name => "instruments_events_fk"
   add_foreign_key "instruments", "people", :name => "instruments_people_fk"
   add_foreign_key "instruments", "surveys", :name => "instruments_surveys_fk"
+
+  add_foreign_key "legacy_instrument_data_records", "instruments", :name => "fk_legacy_instrument_data_record_instrument"
+  add_foreign_key "legacy_instrument_data_records", "legacy_instrument_data_records", :name => "fk_legacy_instrument_data_record_parent_record", :column => "parent_record_id"
+
+  add_foreign_key "legacy_instrument_data_values", "legacy_instrument_data_records", :name => "fk_legacy_instrument_data_value_record"
 
   add_foreign_key "merges", "fieldworks", :name => "merges_fieldworks_fk"
 

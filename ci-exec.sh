@@ -4,7 +4,9 @@ if [ -z $RAILS_ENV ]; then
     export RAILS_ENV=ci
 fi
 
-GEMSET=ncs_navigator_core
+if [ -z $GEMSET ]; then
+    GEMSET=ncs_navigator_core
+fi
 
 if [ -z $CI_RUBY ]; then
     echo "CI_RUBY must be set"

@@ -55,6 +55,7 @@ class Instrument < ActiveRecord::Base
   belongs_to :survey
   has_one :contact_link, :inverse_of => :instrument
   has_many :response_sets, :inverse_of => :instrument, :order => 'created_at ASC'
+  has_many :legacy_instrument_data_records, :inverse_of => :instrument
 
   validates_presence_of :instrument_version
   validates_presence_of :instrument_repeat_key
