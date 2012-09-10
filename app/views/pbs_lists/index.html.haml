@@ -38,7 +38,7 @@
       - @pbs_lists.each do |pbs|
         - provider = pbs.provider
         - path = pbs_list_path(pbs)
-        - contact = provider.contacts.first
+        - contact = provider.contacts.last
         %tr{ :class => cycle('even_record', 'odd_record') }
           - name = blank_safe(provider.name_practice)
           %td{ :title => "#{name} - #{provider.address.to_s}" }
