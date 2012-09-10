@@ -92,6 +92,7 @@ class ContactsController < ApplicationController
   private :post_update_redirect_path
 
   def provider_recruitment
+    @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
     @event    = Event.find(params[:event_id])
     @person   = Person.find(params[:person_id])
     @provider = Provider.find(params[:provider_id])
