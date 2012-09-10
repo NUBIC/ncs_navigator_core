@@ -62,12 +62,10 @@
                         = val.specimen_id
     %td
       %div{:id => "confirm"}
-        - if not @sample_shippings_not_received.blank?
+        - if not @sample_receipt_confirmation.blank?
           %div{:id => 'shipped_not_confirmed_table', :class => 'shipped_not_confirmed_table'}
-            %b Samples:
-            - @sample_shippings_not_received.each do |track_number, sample_shippings|
-              %p{:class => "paragraph_shift"}
-                = link_to track_number, {:controller => "sample_receipt_confirmations", :action => "index", :tracking_number => track_number}, :class => "confirm_link", :id => "confirm_link"
+            %a{ :href => edit_sample_receipt_confirmation_path(:id => @sample_receipt_confirmation.id, :in_edit_mode => true), :class => "edit_specimen_sample_store", :id => @sample_receipt_confirmation.id}
+              = @sample_receipt_confirmation.sample.sample_id
         - if not @specimen_shippings_not_received.blank?
           %div{:id => 'shipped_not_confirmed_specs_table', :class => 'shipped_not_confirmed_specs_table'}
             %b Specimens:
