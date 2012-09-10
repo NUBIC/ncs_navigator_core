@@ -36,9 +36,9 @@ NcsNavigatorCore::Application.configure do
   config.assets.debug = true
 
   config.aker do
-    ui_mode :form
-    api_mode :http_basic
-    authorities Aker::Authorities::Static.from_file(File.expand_path('../../logins/static_auth.yml', __FILE__))
+    api_mode :cas_proxy
+    authorities :cas, NcsNavigator::Authorization::Core::Authority.new
+    central '/etc/nubic/ncs/aker-local.yml'
   end
 end
 
