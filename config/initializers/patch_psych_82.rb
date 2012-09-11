@@ -1,6 +1,5 @@
 require 'psych'
 require 'psych/scalar_scanner'
-puts "Loading #{__FILE__}"
 
 # This monkey patch addresses https://github.com/tenderlove/psych/issues/82
 # until there's a released version with a fix.
