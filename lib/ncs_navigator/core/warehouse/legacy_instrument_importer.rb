@@ -13,6 +13,7 @@ module NcsNavigator::Core::Warehouse
     def initialize(wh_config)
       @wh_config = wh_config
       @progress = ProgressTracker.new(wh_config)
+      @cache = DependentRecordCache.new
     end
 
     def primary_instrument_tables
@@ -47,6 +48,7 @@ module NcsNavigator::Core::Warehouse
         end
         offset += BLOCK_SIZE
       end
+      @cache.clear
     end
     private :create_or_update_instrument_data_for_primary_model
 
@@ -91,7 +93,8 @@ module NcsNavigator::Core::Warehouse
       @wh_config.models_module.mdes_order.collect { |model|
         [model, model.relationships.find { |rel| rel.parent_model == wh_record.class }]
       }.select { |model, rel| rel }.collect { |child_model, rel|
-        child_model.all(rel.child_key.first.name => wh_record.key.first)
+        @progress.show_loading_message
+        @cache.find_children(child_model, rel.child_key.first.name, wh_record)
       }.flatten.each do |child_record|
         create_or_update_instrument_data_for_instrument_record(child_record, core_instrument, legacy_record)
       end
@@ -123,6 +126,45 @@ module NcsNavigator::Core::Warehouse
       end
     end
     private :create_or_update_instrument_values_for_instrument_record
+
+    # @private
+    class DependentRecordCache
+      def initialize
+        @record_cache = {}
+      end
+
+      def find_children(child_model, parent_key_in_child, parent_instance)
+        unless cache_built?(child_model)
+          build_cache(child_model, parent_key_in_child)
+        end
+
+        cached_values(child_model, parent_instance) || []
+      end
+
+      def clear
+        @record_cache = {}
+      end
+
+      private
+
+      def cache_built?(child_model)
+        @record_cache.has_key?(child_model)
+      end
+
+      def build_cache(child_model, parent_key_in_child)
+        @record_cache[child_model] = child_model.all.inject({}) do |map, child|
+          (map[child[parent_key_in_child]] ||= []) << child; map
+        end
+      end
+
+      def cached_values(child_model, parent_instance)
+        @record_cache[child_model][parent_instance.key.first]
+      end
+
+      def cache_for(model)
+        @cache[model] ||= {}
+      end
+    end
 
     # @private
     class ProgressTracker
