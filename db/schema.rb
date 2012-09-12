@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120905184324) do
+ActiveRecord::Schema.define(:version => 20120912192132) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.datetime "updated_at"
     t.integer  "response_set_id"
     t.integer  "provider_id"
+    t.integer  "institute_id"
   end
 
   create_table "answers", :force => true do |t|
@@ -297,35 +298,25 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.boolean  "being_processed",                            :default => false
   end
 
-  create_table "incidents", :force => true do |t|
-    t.integer  "psu_code",                                             :null => false
-    t.string   "incident_id",                            :limit => 36, :null => false
-    t.string   "incident_date",                          :limit => 10
-    t.string   "incident_time",                          :limit => 5
-    t.string   "incident_report_date",                   :limit => 10
-    t.string   "incident_report_time",                   :limit => 5
-    t.string   "incident_staff_reporter_id",             :limit => 36
-    t.string   "incident_staff_supervisor_id",           :limit => 36
-    t.integer  "contact_id"
-    t.integer  "incident_recipient_is_participant_id"
-    t.integer  "incident_recipient_is_dwelling_unit_id"
-    t.string   "incident_recipient_is_staff",            :limit => 36
-    t.integer  "incident_recipient_is_family_id"
-    t.integer  "incident_recipient_is_acquaintance_id"
-    t.integer  "incident_recipient_is_other"
-    t.integer  "incident_contact_person_id"
-    t.integer  "incident_type_code",                                   :null => false
-    t.string   "incident_type_other"
-    t.string   "incident_loss_computer_model",           :limit => 16
-    t.string   "incident_loss_computer_serial_number",   :limit => 32
-    t.string   "incident_loss_computer_decal",           :limit => 32
-    t.string   "incident_loss_removable_media",          :limit => 32
-    t.string   "incident_loss_paper",                    :limit => 32
-    t.string   "incident_loss_other"
-    t.text     "incident_description"
-    t.text     "incident_action"
-    t.integer  "incident_reported_code",                               :null => false
-    t.string   "transaction_type",                       :limit => 36
+  create_table "institutions", :force => true do |t|
+    t.string   "psu_code",                    :limit => 36, :null => false
+    t.string   "institute_id",                              :null => false
+    t.integer  "institute_type_code",                       :null => false
+    t.string   "institute_type_other"
+    t.string   "institute_name"
+    t.integer  "institute_relation_code",                   :null => false
+    t.string   "institute_relation_other"
+    t.integer  "institute_owner_code",                      :null => false
+    t.string   "institute_owner_other"
+    t.integer  "institute_size"
+    t.integer  "institute_unit_code",                       :null => false
+    t.string   "institute_unit_other"
+    t.integer  "institute_info_source_code",                :null => false
+    t.string   "institute_info_source_other"
+    t.date     "institute_info_date"
+    t.date     "institute_info_update"
+    t.text     "institute_comment"
+    t.string   "transaction_type",            :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1035,6 +1026,7 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.integer  "proportion_weeks_sampled"
     t.integer  "proportion_days_sampled"
     t.string   "sampling_notes",             :limit => 1000
+    t.integer  "institution_id"
   end
 
   create_table "question_groups", :force => true do |t|
@@ -1094,6 +1086,7 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
