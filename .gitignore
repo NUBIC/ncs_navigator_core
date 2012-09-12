@@ -37,6 +37,7 @@ shared/importer_passthrough/*.xml
 *.sw?
 *.out
 .powenv
+.powrc
 .DS_Store
 doc/contact_event_workflow.pdf
 .powenv_1.8.7
