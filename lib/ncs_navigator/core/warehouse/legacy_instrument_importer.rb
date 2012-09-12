@@ -6,7 +6,12 @@ module NcsNavigator::Core::Warehouse
   class LegacyInstrumentImporter
     extend Forwardable
 
-    BLOCK_SIZE = 2500
+    ##
+    # @private
+    # Beware of larger block sizes. This controls only the block size for
+    # loading the primary instrument records. See issue #2432 for further
+    # discussion.
+    BLOCK_SIZE = 100
 
     def_delegators :@wh_config, :log
 
@@ -155,6 +160,7 @@ module NcsNavigator::Core::Warehouse
 
       def clear
         @record_cache = {}
+        GC.start
       end
 
       private
