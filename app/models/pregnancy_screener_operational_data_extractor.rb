@@ -85,6 +85,7 @@ class PregnancyScreenerOperationalDataExtractor
   }
 
   DUE_DATE_DETERMINER_MAP = {
+    "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "ORIG_DUE_DATE",
     "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
     "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
     "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
@@ -220,7 +221,7 @@ class PregnancyScreenerOperationalDataExtractor
         end
       end
 
-      if ppg_detail && !ppg_detail.ppg_first.blank?
+      if ppg_detail && !ppg_detail.ppg_first_code.blank?
         OperationalDataExtractor.set_participant_type(participant, ppg_detail.ppg_first_code)
         ppg_detail.save!
       end
