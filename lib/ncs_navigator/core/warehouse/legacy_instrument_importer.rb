@@ -12,8 +12,8 @@ module NcsNavigator::Core::Warehouse
 
     def initialize(wh_config)
       @wh_config = wh_config
-      @progress = ProgressTracker.new(wh_config)
-      @cache = DependentRecordCache.new
+      @progress = ProgressTracker.new(wh_config, false)
+      @cache = DependentRecordCache.new(log)
     end
 
     def primary_instrument_tables
@@ -129,8 +129,9 @@ module NcsNavigator::Core::Warehouse
 
     # @private
     class DependentRecordCache
-      def initialize
+      def initialize(log)
         @record_cache = {}
+        @log = log
       end
 
       def find_children(child_model, parent_key_in_child, parent_instance)
@@ -152,6 +153,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       def build_cache(child_model, parent_key_in_child)
+        @log.info("Caching #{child_model.count} source child records from #{child_model.mdes_table_name}")
         @record_cache[child_model] = child_model.all.inject({}) do |map, child|
           (map[child[parent_key_in_child]] ||= []) << child; map
         end
@@ -172,13 +174,18 @@ module NcsNavigator::Core::Warehouse
 
       def_delegators :@wh_config, :shell
 
-      def initialize(wh_config)
+      def initialize(wh_config, profile_memory=false)
         @wh_config = wh_config
         @instrument_count = 0
         @record_count = 0
         @value_count = 0
         @instr_table_len = wh_config.mdes.transmission_tables.
           select { |t| t.instrument_table? }.collect { |t| t.name.size }.max
+
+        if profile_memory
+          @mem_log = File.open(Rails.root + "log/#{File.basename __FILE__}-memprof.log", 'w')
+          @mem_log.sync
+        end
       end
 
       def loading(from_model)
@@ -216,6 +223,17 @@ module NcsNavigator::Core::Warehouse
       end
 
       def show_status_message
+        if @mem_log && @value_count % 499 == 0
+          shell.clear_line_then_say("Profiling after #{@value_count} values")
+          @mem_log.puts "\n\nAfter #{@value_count} values; at #{@current_model.try(:mdes_table_name).inspect}"
+          @mem_log.puts ObjectSpace.count_objects.inspect
+          counts = Hash.new(0)
+          ObjectSpace.each_object { |o| counts[o.class] += 1 }
+          counts.sort_by { |clz, ct| -ct }.each do |cls, ct|
+            @mem_log.puts "%65s | %9d" % [cls, ct]
+          end
+        end
+
         shell.clear_line_then_say(
           "<- instrument data from %#{@instr_table_len}s | %d recs / %d values (%.1f/sec)" % [
             @current_model.try(:mdes_table_name),
