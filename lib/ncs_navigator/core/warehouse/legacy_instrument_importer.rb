@@ -42,8 +42,19 @@ module NcsNavigator::Core::Warehouse
       while offset < count
         @progress.loading(model)
         LegacyInstrumentDataRecord.transaction do
-          model.all(:limit => BLOCK_SIZE, :offset => offset).each do |instance|
-            create_or_update_instrument_data_for_primary_record(instance)
+          LegacyInstrumentDataRecord.connection.execute("SET LOCAL synchronous_commit TO OFF")
+
+          ::DataMapper.repository(:mdes_warehouse_reporting) do |repo|
+            # redefine identity map as a no-op so it doesn't cache
+            # anything. TODO: provide a patch to DataMapper that makes
+            # something like this an option.
+            def repo.identity_map(model); {}; end
+
+            model.transaction do
+              model.all(:limit => BLOCK_SIZE, :offset => offset).each do |instance|
+                create_or_update_instrument_data_for_primary_record(instance)
+              end
+            end
           end
         end
         offset += BLOCK_SIZE
