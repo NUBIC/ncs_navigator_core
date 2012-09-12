@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-
+# encoding: UTF-8
 class AddSectionIdToResponses < ActiveRecord::Migration
   def self.up
     add_column :responses, :survey_section_id, :integer
