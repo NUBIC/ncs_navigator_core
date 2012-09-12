@@ -65,16 +65,19 @@ class PbsListImporter
   end
 
   def self.create_provider_address(provider, row)
-    address = Address.new(:provider => provider)
+    address = Address.new(:provider => provider, :address_rank_code => 1)
     [
-      [:practice_address, :address_one],
-      [:practice_unit,    :unit],
-      [:practice_city,    :city],
-      [:practice_state,   :state_code],
-      [:practice_zip,     :zip],
-      [:practice_zip4,    :zip4]
-    ].each do |row_attr, model_attr|
-      address.send("#{model_attr}=", row[row_attr]) unless row[row_attr].blank?
+      [:practice_address, :address_one, 100],
+      [:practice_unit,    :unit,        10],
+      [:practice_city,    :city,        50],
+      [:practice_state,   :state_code,  nil],
+      [:practice_zip,     :zip,         5],
+      [:practice_zip4,    :zip4,        4]
+    ].each do |row_attr, model_attr, max_len|
+      val = row[row_attr].to_s
+      val = val[0, max_len] if max_len && val.length > max_len
+      Rails.logger.info("~~~ #{val}, #{model_attr}, #{max_len}, #{val.length}")
+      address.send("#{model_attr}=", val) unless val.blank?
     end
     address.save!
   end
