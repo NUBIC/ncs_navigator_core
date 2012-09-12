@@ -41,3 +41,4 @@ shared/importer_passthrough/*.xml
 doc/contact_event_workflow.pdf
 .powenv_1.8.7
 public/maintenance.html
+.powrc
