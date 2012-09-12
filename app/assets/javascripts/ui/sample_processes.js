@@ -95,7 +95,7 @@ $(function() {
      type: $(form).attr('method'),
      url: $(form).attr('action'),
      data: $(form).serializeArray(),
-     dataType: 'script',
+     // dataType: 'script',
 
      success: function(response) {
        $(".display").html(response);
@@ -166,13 +166,17 @@ $(function() {
      type: $(form).attr('method'),
      url: $(form).attr('action'),
      data: $(form).serializeArray(),
-     // dataType: 'script',
-    
      success: function(response) {
+       var in_edit_mode = $('#in_edit_mode').val()
        // TODO - was there before. might want to keep it?
        // $(".display").html(response);
-  
-       var url = /specimen_shippings/ + response.specimen_shipping.id + ' form'
+       var url; 
+       if (response.specimen_shipping) {
+         url = /specimen_shippings/ + response.specimen_shipping.id + '?in_edit_mode=' + in_edit_mode + ' form'
+       }
+       if (response.sample_shipping) {
+         url = /sample_shippings/ + response.sample_shipping.id + '?in_edit_mode=' + in_edit_mode + ' form'
+       }
        $(div).load(url);       
        
      },
@@ -203,7 +207,6 @@ $(function() {
      type: $(form).attr('method'),
      url: $(form).attr('action'),
      data: $(form).serializeArray(),
-     // dataType: 'script',
     
      success: function(response) {
        $(div).html(response);

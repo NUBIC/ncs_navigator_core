@@ -5,21 +5,18 @@ class SampleReceiptStoresController < ApplicationController
   end
 
   def new
-    @sample_receipt_store = SampleReceiptStore.new(:sample_id => params[:sample_id])
+    @sample = Sample.where(:sample_id => params[:sample_id]).first
+    @sample_receipt_store = @sample.build_sample_receipt_store()    
   end
   
   def create
-    @params = params[:sample_receipt_store]
-    @params[:psu_code] = @psu_code
-    @params[:staff_id] = current_staff_id
-    @params[:sample_receipt_shipping_center_id] = SampleReceiptShippingCenter.last.id
+    @params = params[:sample_receipt_store].merge!(:psu_code => @psu_code, :staff_id => current_staff_id, 
+    :sample_receipt_shipping_center_id => SampleReceiptShippingCenter.last.id)
     @sample_receipt_store = SampleReceiptStore.new(@params)
     respond_to do |format|
       if @sample_receipt_store.save
-        format.html { redirect_to(receive_specimen_sample_processes_path(@sample_receipt_store), :notice => 'Specimen Form was successfully created.') }
         format.json { render :json =>@sample_receipt_store}
       else
-        format.html { render :action => "new"}
         format.json { render :json => @sample_receipt_store.errors, :status => :unprocessable_entity }
       end
     end    

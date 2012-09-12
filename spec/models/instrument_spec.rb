@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: instruments
 #
@@ -16,7 +15,7 @@
 #  instrument_method_code   :integer          not null
 #  instrument_mode_code     :integer          not null
 #  instrument_mode_other    :string(255)
-#  instrument_repeat_key    :integer
+#  instrument_repeat_key    :integer          default(0), not null
 #  instrument_start_date    :date
 #  instrument_start_time    :string(255)
 #  instrument_status_code   :integer          not null
@@ -79,6 +78,7 @@ describe Instrument do
   it { should belong_to(:survey) }
 
   it { should have_many(:response_sets) }
+  it { should have_many(:legacy_instrument_data_records) }
   it { should have_one(:contact_link) }
 
   it { should validate_presence_of(:instrument_version) }

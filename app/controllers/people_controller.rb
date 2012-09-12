@@ -3,6 +3,10 @@
 
 class PeopleController < ApplicationController
 
+  layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
+
+  permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR, :only => [:index]
+
   # GET /people
   # GET /people.json
   def index
@@ -23,6 +27,12 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
     @participant = @person.participant
     redirect_to participant_path(@participant) if @participant
+  end
+
+  # GET /people/1/provider_staff_member
+  def provider_staff_member
+    @member = Person.find(params[:id])
+    @provider = Provider.find(params[:provider_id])
   end
 
   # GET /people/new

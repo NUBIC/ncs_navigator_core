@@ -10,3 +10,108 @@ ul.recruitment {
     margin-top: 0.5em;
   }
 }
+
+#provider_info {
+  margin-bottom: 2em;
+}
+
+#provider_details {
+  span.column_header {
+    font-size: 1.1em;
+    text-decoration: underline;
+  }
+  span.label {
+    font-weight: bold;
+  }
+  span.value {
+    display: block;
+    padding-left: 1em;
+  }
+}
+
+#staff_section {
+  .staff_data {
+    display: inline-block;
+  }
+  .ribbon {
+    width: 2em;
+  }
+  .name {
+    width: 20em;
+  }
+  .phone_data {
+    width: 10em;
+  }
+  .email {
+    width: 10em;
+  }
+}
+
+
+#practice_name {
+  font-size: 24px;
+  font-style: bold;
+  margin-bottom: 10px;
+  margin-right: 20px;
+}
+
+#provider_info {
+  width: 100%;
+}
+
+#staff_info {
+  width: 100%;
+  padding-top: 20px;
+  padding-right: 10px;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+#staff_line_items {
+  font-size: 1em;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  td {
+  }
+}
+
+#ribbon_table_data {
+  width: 5%;
+}
+
+#phone_table_data {
+  width: 10%;
+}
+
+#staff_table_header_left_end
+{
+  background-color:#d3d3d3;
+  border-radius:5px 0px 0px 5px;
+  -moz-border-radius:5px 0px 0px 5px;
+  -webkit-border-radius:5px 0px 0px 5px;
+}
+
+#staff_table_header_middle
+{
+  background-color:#d3d3d3;
+}
+
+#staff_table_header_right_end
+{
+  background-color:#d3d3d3;
+  border-radius:0px 5px 5px 0px;
+  -moz-border-radius:0px 5px 5px 0px;
+  -webkit-border-radius:0px 5px 5px 0px;
+}
+
+#contact_history {
+  margin-top: 2em;
+  margin-bottom: .5em;
+
+  #contact_history_header {
+    font-size: 1.1em;
+    font-weight: 600;
+  }
+}

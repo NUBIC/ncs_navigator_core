@@ -12,13 +12,14 @@ class SampleReceiptConfirmationsController < ApplicationController
   
   def array_of_samples_per_tracking_number(tracking_num)
     # have to only include the ones by trac_num and where sample_ids are not in sample_receipt_confirm
-    @sample_shippings = SampleShipping.where(:shipment_tracking_number => tracking_num).all.select{ |ss| SampleReceiptConfirmation.where(:sample_id => ss.sample_id).blank? }
-    @sample_receipt_confirmations_edit = SampleReceiptConfirmation.where(:shipment_tracking_number => tracking_num)
+    @sample_shipping = SampleShipping.where(:shipment_tracking_number => tracking_num).first
+    @samples = @sample_shipping.samples.select{ |s| s.sample_receipt_confirmation.blank?}
+    @sample_receipt_confirmations_edit = SampleReceiptConfirmation.where(:sample_shipping_id => @sample_shipping.id)
     @sample_receipt_confirmations_new = []
-    @sample_shippings.each do |ss|
-      @sample_receipt_confirmation = SampleReceiptConfirmation.new(:sample_receipt_shipping_center_id => ss.sample_receipt_shipping_center_id,
-                                                                :sample_id => ss.sample_id, :shipper_id => ss.shipper_id, 
-                                                                :shipment_tracking_number => ss.shipment_tracking_number)
+    @samples.each do |s|
+      @sample_receipt_confirmation = SampleReceiptConfirmation.new(:sample_receipt_shipping_center_id => @sample_shipping.sample_receipt_shipping_center_id,
+                                                                :sample_id => s.id, :shipper_id => @sample_shipping.shipper_id,
+                                                                :sample_shipping_id => @sample_shipping.id)
       @sample_receipt_confirmations_new << @sample_receipt_confirmation
     end
     [@sample_receipt_confirmations_edit,@sample_receipt_confirmations_new]

@@ -1,0 +1,10 @@
+%div{ :id => "staff_#{member.id}", :class => "staff_member" }
+  %span{ :class => "staff_data ribbon" }
+    - if PersonnelProviderLink.where(:person_id => member).first.primary_contact
+      = image_tag('first-prize-ribbon-30x38.png', :size => '20x24')
+  %span{ :class => "staff_data name"}
+    = member.first_name  + " " + member.last_name
+  %span{ :class => "staff_data phone_data" }
+    = phone_number_formatter(member.primary_home_phone.to_s)
+  %span{ :class => "staff_data email"}
+    = member.primary_email.to_s

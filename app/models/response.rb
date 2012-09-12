@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: responses
 #
@@ -23,6 +22,8 @@
 #  text_value        :text
 #  unit              :string(255)
 #  updated_at        :datetime
+#
+
 class Response < ActiveRecord::Base
   include Surveyor::Models::ResponseMethods
 

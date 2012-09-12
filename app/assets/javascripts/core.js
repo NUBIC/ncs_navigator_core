@@ -49,6 +49,8 @@ function stop_default_action(e) {
   }
 }
 
+jQuery.fn.exists = function(){return jQuery(this).length>0;}
+
 $(document).ready(function() {
 
   $("input[type='text'].datetime").live('focus',

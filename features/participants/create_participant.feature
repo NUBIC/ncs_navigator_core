@@ -5,7 +5,7 @@ Feature: Creating a participant record
   I want to select a Person and make them a Participant
 
   Scenario: Creating a new participant without a reference to a person
-    Given an authenticated user
+    Given an authenticated admin user
     When I go to the new participant page
     Then I should be on the people page
     And I should see "Cannot create a Participant without a reference to a Person"
@@ -24,7 +24,7 @@ Feature: Creating a participant record
   #   And I should be on the participants page
 
   Scenario: Attempting to create a new participant from a person who is already a participant
-    Given an authenticated user
+    Given an authenticated admin user
     And a participant exists with a person
     When I go to the new participant page for that participant
     Then I should be on the edit participant page

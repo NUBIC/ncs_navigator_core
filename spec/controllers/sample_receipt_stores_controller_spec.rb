@@ -5,18 +5,20 @@ describe SampleReceiptStoresController do
   context "with an authenticated user" do
     before(:each) do
       login(user_login)
+      @sample = Factory(:sample)
       @sample_receipt_store = Factory(:sample_receipt_store)
     end
 
 
     def valid_attributes
-      { :sample_id => "BE567-UR55", :sample_receipt_shipping_center_id => "123ABC", :staff_id => "someone special", :receipt_datetime =>"2012-03-05 15:36:19", 
-        :placed_in_storage_datetime =>"2012-03-08 15:36:19"}
+      { :sample_id => @sample.id, :sample_receipt_shipping_center_id => "123ABC", 
+        :staff_id => "someone special", :receipt_datetime =>Time.now, 
+        :placed_in_storage_datetime =>Time.now}
     end
 
     describe "GET new" do
       it "assigns a new sample_receipt_store as @sample_receipt_store" do
-        get :new
+        get :new, :sample_id => @sample.sample_id
         assigns(:sample_receipt_store).should be_a_new(SampleReceiptStore)
       end
     end
@@ -67,13 +69,6 @@ describe SampleReceiptStoresController do
             SampleReceiptStore.any_instance.stub(:save).and_return(false)
             post :create, :sample_receipt_store => {}
             assigns(:sample_receipt_store).should be_a_new(SampleReceiptStore)
-          end
-
-          it "re-renders the 'new' template" do
-            # Trigger the behavior that occurs when invalid params are submitted
-            SpecimenReceipt.any_instance.stub(:save).and_return(false)
-            post :create, :sample_receipt_store => {}
-            response.should render_template("new")
           end
         end
       end

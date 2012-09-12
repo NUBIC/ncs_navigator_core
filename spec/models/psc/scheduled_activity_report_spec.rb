@@ -121,15 +121,14 @@ module Psc
       it_should_behave_like 'a survey mapper'
       it_should_behave_like 'an event mapper'
 
-      it 'finds instruments' do
+      it 'finds root instruments' do
         person = R::Person.new(person_id)
         contact = R::Contact.new(scheduled_date, person)
         event = R::Event.new(event_birth, ideal_date, contact, person)
-        referenced_survey = R::Survey.new(instrument_birth)
-        survey = R::Survey.new(instrument_baby_name)
+        survey = R::Survey.new(instrument_birth)
 
         report.instruments.should == Set.new([
-          R::Instrument.new(survey, referenced_survey, activity_name, event, person)
+          R::Instrument.new(survey, nil, activity_name, event, person)
         ])
       end
     end

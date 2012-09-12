@@ -273,13 +273,13 @@ describe ProvidersController do
 
           it "creates a new Telephone" do
             expect {
-              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}, :telephone => { :phone_nbr => '3125551212' }
+              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}, :telephone_number => '3125551212'
             }.to change(Telephone, :count).by(1)
           end
 
           it "creates a new Email" do
             expect {
-              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}, :email => { :email => 'az@dev.null' }
+              post :create_staff, :id => provider.id, :person => {:first_name => "A", :last_name => "Z"}, :email => 'az@dev.null'
             }.to change(Email, :count).by(1)
           end
 

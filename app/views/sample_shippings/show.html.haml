@@ -1,0 +1,101 @@
+= form_for @sample_shipping, :url => send_email_sample_shippings_path, :method => "post" do |f|
+  - flash.each do |message_type, message|
+    %div{ :class => "my_flash_message", :id => "flash_#{message_type}" }
+      = message
+  = render "shared/full_error_messages", :object => f.object
+  %div{:id => 'manifest_form', :class => 'manifest_form'}
+    = f.hidden_field :id
+    
+    = "Staff:"
+    = display_staff_info
+    %br
+    = "Ship Date:"
+    = f.object.shipment_date
+    %br 
+    
+    = "Ship Time:"
+    = f.object.shipment_time
+    %br
+    
+    = "Shipment ID:"
+    = f.object.shipper_id
+    %br
+    
+    = "PSU ID:" 
+    = NcsCode.for_list_name_and_local_code("PSU_CL1", @psu_code)      
+    %br
+    
+    = "Site Code:"
+    = f.object.sample_receipt_shipping_center.sample_receipt_shipping_center_id
+    %br
+    
+    = "Contact Name:"
+    = f.object.contact_name
+    %br
+    
+    = "Contact Phone:"
+    = f.object.contact_phone
+    %br
+    
+    = "Sent to Site:"
+    -#= @send_to_site
+    = NcsCode.for_attribute_name_and_local_code(:shipper_destination_code, f.object.shipper_destination_code)
+    %br
+    
+    = "Carrier:"
+    = f.object.carrier
+    %br
+    
+    = "Tracking Number:"
+    = f.object.shipment_tracking_number
+    %br
+    
+    = "Shipping Temperature:"
+    = NcsCode.for_attribute_name_and_local_code(:shipment_coolant_code, f.object.shipment_coolant_code)    
+    %br
+
+    = "Total # Containers:"
+    = f.object.samples.size
+    %br
+    
+    = "Total # Samples:"
+    = f.object.samples.size
+    %br
+
+  %div{:id => 'sample_table', :class => 'sample_table'}
+    %table.records
+      %tr
+        %th
+          Specimen ID
+        %th
+          Specimen Type
+        %th
+          Volume Amount
+        %th
+          Volume Unit
+        %th
+          Root ID
+        %th
+          Extension
+
+      - cycle_var = cycle('even_record', 'odd_record')
+      = f.fields_for :samples do |s|
+        %tr{ :class => cycle_var }
+          %td
+            = s.object.sample_id
+          %td
+            = sample_type(s.object.sample_id)
+          %td
+            = s.object.volume_amount
+          %td
+            = s.object.volume_unit
+          %td
+            = sample_root_id(s.object.sample_id)
+          %td
+            = sample_extenstion(s.object.sample_id)
+  = hidden_field_tag :in_edit_mode, @in_edit_mode            
+      
+  %input{:type=>"button", :class => "print_manifest", :value =>"Print Manifest", :onclick => "javascript:print()"}
+  = f.submit "Email", :disable_with => 'Submitting...', :class => "email_manifest", :id => "email_manifest"
+  - unless @in_edit_mode
+    %input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}

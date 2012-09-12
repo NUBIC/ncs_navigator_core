@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'simplecov'
+SimpleCov.start 'rails'
 
 require 'rubygems'
 require 'spork'
@@ -66,6 +68,10 @@ Spork.prefork do
   module TestLogins
     def user_login
       Aker.authority.valid_credentials?(:user, 'test_user', 'test_user')
+    end
+
+    def admin_login
+      Aker.authority.valid_credentials?(:user, 'admin_user', 'admin_user')
     end
 
     def login(as)

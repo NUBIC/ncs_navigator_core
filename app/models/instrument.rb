@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: instruments
 #
@@ -16,7 +15,7 @@
 #  instrument_method_code   :integer          not null
 #  instrument_mode_code     :integer          not null
 #  instrument_mode_other    :string(255)
-#  instrument_repeat_key    :integer          not null, default(0)
+#  instrument_repeat_key    :integer          default(0), not null
 #  instrument_start_date    :date
 #  instrument_start_time    :string(255)
 #  instrument_status_code   :integer          not null
@@ -56,6 +55,7 @@ class Instrument < ActiveRecord::Base
   belongs_to :survey
   has_one :contact_link, :inverse_of => :instrument
   has_many :response_sets, :inverse_of => :instrument, :order => 'created_at ASC'
+  has_many :legacy_instrument_data_records, :inverse_of => :instrument
 
   validates_presence_of :instrument_version
   validates_presence_of :instrument_repeat_key

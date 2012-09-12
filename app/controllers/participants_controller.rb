@@ -4,6 +4,10 @@
 class ParticipantsController < ApplicationController
   layout proc { |controller| controller.request.xhr? ? nil : 'application'  }
 
+  permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR ,
+         :only => [:edit_ppg_status, :update_ppg_status, :enroll, :unenroll, :remove_from_active_followup, :current_workflow]
+
+
   ##
   # List all of the Participants in the application, paginated
   #
@@ -230,27 +234,18 @@ class ParticipantsController < ApplicationController
 
   def edit_ppg_status
     @participant = Participant.find(params[:id])
-    if !permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
-      flash[:warning] = "Only supervisors can edit the participant ppg status in this manner."
-      redirect_to participant_path(@participant)
-    end
   end
 
   def update_ppg_status
     @participant = Participant.find(params[:id])
-    if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
-      respond_to do |format|
-        if @participant.update_attributes(params[:participant])
-          format.html { redirect_to(participant_path(@participant), :notice => 'Participant PPG Status was successfully updated.') }
-          format.json { render :json => @participant }
-        else
-          format.html { render :action => "edit_ppg_status" }
-          format.json { render :json => @participant.errors }
-        end
+    respond_to do |format|
+      if @participant.update_attributes(params[:participant])
+        format.html { redirect_to(participant_path(@participant), :notice => 'Participant PPG Status was successfully updated.') }
+        format.json { render :json => @participant }
+      else
+        format.html { render :action => "edit_ppg_status" }
+        format.json { render :json => @participant.errors }
       end
-    else
-      flash[:warning] = "Only supervisors can update the participant ppg status in this manner."
-      redirect_to participant_path(@participant)
     end
   end
 
@@ -273,41 +268,32 @@ class ParticipantsController < ApplicationController
 
   def enroll
     @participant = Participant.find(params[:id])
-    if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
-      @participant.enroll!
-      url = participant_path(@participant)
-      url = params[:redirect_to] unless params[:redirect_to].blank?
-      redirect_to(url, :notice => "Participant was successfully enrolled into the study.")
-    else
-      flash[:warning] = "Only supervisors can enroll participants."
-      redirect_to(participant_path(@participant))
-    end
+    @participant.enroll!
+
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    redirect_to(url, :notice => "Participant was successfully enrolled into the study.")
   end
 
   def unenroll
     @participant = Participant.find(params[:id])
-    if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
-      @participant.unenroll!(psc, params[:enrollment_status_comment])
-      url = participant_path(@participant)
-      url = params[:redirect_to] unless params[:redirect_to].blank?
-      redirect_to(url, :notice => "Participant was successfully un-enrolled from the study.")
-    else
-      flash[:warning] = "Only supervisors can un-enroll participants in this manner."
-      redirect_to(participant_path(@participant))
-    end
+    @participant.unenroll!(psc, params[:enrollment_status_comment])
+
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    redirect_to(url, :notice => "Participant was successfully un-enrolled from the study.")
   end
 
   def remove_from_active_followup
     @participant = Participant.find(params[:id])
-    if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
-      @participant.unenroll!(psc, params[:enrollment_status_comment])
-      url = participant_path(@participant)
-      url = params[:redirect_to] unless params[:redirect_to].blank?
-      redirect_to(url, :notice => "Participant is no longer being actively followed in the study.")
-    else
-      flash[:warning] = "Only supervisors can remove participants from active follow-up."
-      redirect_to(participant_path(@participant))
-    end
+    @participant.unenroll!(psc, params[:enrollment_status_comment])
+
+    url = participant_path(@participant)
+    url = params[:redirect_to] unless params[:redirect_to].blank?
+
+    redirect_to(url, :notice => "Participant is no longer being actively followed in the study.")
   end
 
   ##
@@ -316,7 +302,6 @@ class ParticipantsController < ApplicationController
   def correct_workflow
     @low_intensity_states = [["registered", "Registered"], ["in_pregnancy_probability_group", "In Pregnancy Probii"]]
     @participant = Participant.find(params[:id])
-    redirect_to participant_path(@participant) unless permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
   end
 
   ##

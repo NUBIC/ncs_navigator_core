@@ -152,6 +152,21 @@ Factory.define :instrument do |ins|
 
 end
 
+Factory.define :legacy_instrument_data_record do |rec|
+  rec.association :instrument, :factory => :instrument
+  rec.mdes_version    '2.0'
+  rec.mdes_table_name 'birth_visit'
+  rec.public_id       'IMP-42'
+end
+
+Factory.define :legacy_instrument_data_value do |val|
+  val.association :legacy_instrument_data_record,
+    :factory => :legacy_instrument_data_record
+
+  val.mdes_variable_name 'child_dob'
+  val.value              '2007-09-09'
+end
+
 Factory.define :fieldwork do |f|
   f.start_date  { Date.today }
   f.end_date    { Date.today + 7 }

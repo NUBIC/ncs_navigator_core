@@ -40,7 +40,6 @@ NcsNavigatorCore::Application.configure do
     authorities :cas, NcsNavigator::Authorization::Core::Authority.new
     central '/etc/nubic/ncs/aker-local.yml'
   end
-
 end
 
 require 'openssl'

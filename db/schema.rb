@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120822153536) do
+ActiveRecord::Schema.define(:version => 20120905184324) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -297,6 +297,39 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
     t.boolean  "being_processed",                            :default => false
   end
 
+  create_table "incidents", :force => true do |t|
+    t.integer  "psu_code",                                             :null => false
+    t.string   "incident_id",                            :limit => 36, :null => false
+    t.string   "incident_date",                          :limit => 10
+    t.string   "incident_time",                          :limit => 5
+    t.string   "incident_report_date",                   :limit => 10
+    t.string   "incident_report_time",                   :limit => 5
+    t.string   "incident_staff_reporter_id",             :limit => 36
+    t.string   "incident_staff_supervisor_id",           :limit => 36
+    t.integer  "contact_id"
+    t.integer  "incident_recipient_is_participant_id"
+    t.integer  "incident_recipient_is_dwelling_unit_id"
+    t.string   "incident_recipient_is_staff",            :limit => 36
+    t.integer  "incident_recipient_is_family_id"
+    t.integer  "incident_recipient_is_acquaintance_id"
+    t.integer  "incident_recipient_is_other"
+    t.integer  "incident_contact_person_id"
+    t.integer  "incident_type_code",                                   :null => false
+    t.string   "incident_type_other"
+    t.string   "incident_loss_computer_model",           :limit => 16
+    t.string   "incident_loss_computer_serial_number",   :limit => 32
+    t.string   "incident_loss_computer_decal",           :limit => 32
+    t.string   "incident_loss_removable_media",          :limit => 32
+    t.string   "incident_loss_paper",                    :limit => 32
+    t.string   "incident_loss_other"
+    t.text     "incident_description"
+    t.text     "incident_action"
+    t.integer  "incident_reported_code",                               :null => false
+    t.string   "transaction_type",                       :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "instruments", :force => true do |t|
     t.integer  "psu_code",                                              :null => false
     t.string   "instrument_id",            :limit => 36,                :null => false
@@ -324,6 +357,29 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
     t.integer  "survey_id"
     t.integer  "lock_version",                           :default => 0
   end
+
+  create_table "legacy_instrument_data_records", :force => true do |t|
+    t.integer  "instrument_id",                   :null => false
+    t.integer  "parent_record_id"
+    t.string   "mdes_version",     :limit => 16,  :null => false
+    t.string   "mdes_table_name",  :limit => 100, :null => false
+    t.string   "public_id",        :limit => 36,  :null => false
+    t.integer  "psu_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "legacy_instrument_data_records", ["instrument_id"], :name => "idx_legacy_instrument_data_record_instrument"
+
+  create_table "legacy_instrument_data_values", :force => true do |t|
+    t.integer  "legacy_instrument_data_record_id",               :null => false
+    t.string   "mdes_variable_name",               :limit => 50, :null => false
+    t.text     "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "legacy_instrument_data_values", ["legacy_instrument_data_record_id"], :name => "idx_legacy_instrument_data_value_record"
 
   create_table "listing_units", :force => true do |t|
     t.integer  "psu_code",                                          :null => false
@@ -1038,7 +1094,6 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "processed_for_operational_data_extraction"
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
@@ -1074,11 +1129,11 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
     t.integer  "sample_receipt_shipping_center_id"
     t.integer  "shipment_receipt_confirmed_code",                                               :null => false
     t.string   "shipper_id",                                                                    :null => false
-    t.string   "shipment_tracking_number",                                                      :null => false
+    t.integer  "sample_shipping_id",                                                            :null => false
     t.datetime "shipment_receipt_datetime",                                                     :null => false
     t.integer  "shipment_condition_code",                                                       :null => false
     t.string   "shipment_damaged_reason"
-    t.string   "sample_id",                                                                     :null => false
+    t.integer  "sample_id",                                                                     :null => false
     t.decimal  "sample_receipt_temp",                             :precision => 6, :scale => 2, :null => false
     t.integer  "sample_condition_code",                                                         :null => false
     t.string   "shipment_received_by",                                                          :null => false
@@ -1099,7 +1154,7 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
 
   create_table "sample_receipt_stores", :force => true do |t|
     t.integer  "psu_code",                                        :null => false
-    t.string   "sample_id",                         :limit => 36, :null => false
+    t.integer  "sample_id",                                       :null => false
     t.integer  "sample_receipt_shipping_center_id"
     t.string   "staff_id",                          :limit => 36, :null => false
     t.integer  "sample_condition_code",                           :null => false
@@ -1120,23 +1175,20 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
   end
 
   create_table "sample_shippings", :force => true do |t|
-    t.integer  "psu_code",                                                                      :null => false
-    t.string   "sample_id",                         :limit => 36,                               :null => false
+    t.integer  "psu_code",                                        :null => false
     t.integer  "sample_receipt_shipping_center_id"
-    t.string   "staff_id",                          :limit => 36,                               :null => false
-    t.string   "shipper_id",                        :limit => 36,                               :null => false
-    t.integer  "shipper_destination_code",                                                      :null => false
-    t.string   "shipment_date",                     :limit => 10,                               :null => false
-    t.integer  "shipment_coolant_code",                                                         :null => false
-    t.string   "shipment_tracking_number",          :limit => 36,                               :null => false
+    t.string   "staff_id",                          :limit => 36, :null => false
+    t.string   "shipper_id",                        :limit => 36, :null => false
+    t.integer  "shipper_destination_code",                        :null => false
+    t.string   "shipment_date",                     :limit => 10, :null => false
+    t.integer  "shipment_coolant_code",                           :null => false
+    t.string   "shipment_tracking_number",          :limit => 36, :null => false
     t.string   "shipment_issues_other"
     t.string   "staff_id_track",                    :limit => 36
-    t.integer  "sample_shipped_by_code",                                                        :null => false
+    t.integer  "sample_shipped_by_code",                          :null => false
     t.string   "transaction_type",                  :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "volume_amount",                                   :precision => 6, :scale => 2
-    t.string   "volume_unit",                       :limit => 36
     t.string   "contact_name"
     t.string   "contact_phone",                     :limit => 30
     t.string   "carrier"
@@ -1144,12 +1196,15 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
   end
 
   create_table "samples", :force => true do |t|
-    t.string   "sample_id",              :limit => 36, :null => false
+    t.string   "sample_id",              :limit => 36,                               :null => false
     t.integer  "instrument_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
     t.string   "data_export_identifier"
+    t.integer  "sample_shipping_id"
+    t.decimal  "volume_amount",                        :precision => 6, :scale => 2
+    t.string   "volume_unit",            :limit => 36
   end
 
   create_table "ship_specimens", :force => true do |t|
@@ -1445,6 +1500,11 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
   add_foreign_key "instruments", "people", :name => "instruments_people_fk"
   add_foreign_key "instruments", "surveys", :name => "instruments_surveys_fk"
 
+  add_foreign_key "legacy_instrument_data_records", "instruments", :name => "fk_legacy_instrument_data_record_instrument"
+  add_foreign_key "legacy_instrument_data_records", "legacy_instrument_data_records", :name => "fk_legacy_instrument_data_record_parent_record", :column => "parent_record_id"
+
+  add_foreign_key "legacy_instrument_data_values", "legacy_instrument_data_records", :name => "fk_legacy_instrument_data_value_record"
+
   add_foreign_key "merges", "fieldworks", :name => "merges_fieldworks_fk"
 
   add_foreign_key "participant_authorization_forms", "contacts", :name => "participant_authorization_forms_contacts_fk"
@@ -1486,7 +1546,14 @@ ActiveRecord::Schema.define(:version => 20120822153536) do
 
   add_foreign_key "responses", "response_sets", :name => "response_set_id_to_response_sets_fk"
 
+  add_foreign_key "sample_receipt_confirmations", "sample_shippings", :name => "sample_receipt_confirmations_sample_shippings_fk"
+  add_foreign_key "sample_receipt_confirmations", "samples", :name => "sample_receipt_confirmations_samples_fk"
+
   add_foreign_key "sample_receipt_shipping_centers", "addresses", :name => "sample_receipt_shipping_centers_addresses_fk"
+
+  add_foreign_key "sample_receipt_stores", "samples", :name => "sample_receipt_stores_samples_fk"
+
+  add_foreign_key "samples", "sample_shippings", :name => "samples_sample_shippings_fk"
 
   add_foreign_key "specimen_processing_shipping_centers", "addresses", :name => "specimen_processing_shipping_centers_addresses_fk"
 

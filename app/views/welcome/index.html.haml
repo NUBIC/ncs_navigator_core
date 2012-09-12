@@ -97,7 +97,7 @@
             %ul
               %li
                 = link_to "Pending Events", {:controller => "welcome", :action => "pending_events"}, :class => "list_link icon_link"
-          - if NcsNavigatorCore.expanded_phase_two?
+          - if NcsNavigatorCore.with_specimens? && permit?(Role::SPECIMEN_PROCESSOR)
             %h4
               Samples/Specimens
             .samples_specimens

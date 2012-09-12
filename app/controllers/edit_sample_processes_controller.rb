@@ -1,6 +1,11 @@
 class EditSampleProcessesController < ApplicationController
-  before_filter :in_edit_mode
+  before_filter [:in_edit_mode, :clear_flash]
+  after_filter :clear_flash
   
+  def clear_flash
+    flash.discard
+  end
+    
   def in_edit_mode
     @edit = true
   end
@@ -13,21 +18,19 @@ class EditSampleProcessesController < ApplicationController
     search_id = params[:search_id].first.strip
 
     @specimens = get_specimen_receipts(search_id)
-    @samples = SampleReceiptStore.where(:sample_id => search_id)
+    @samples = SampleReceiptStore.joins(:sample).where("samples.sample_id = ?", search_id)
 
     @specimen_storages = get_specimen_storages(@specimens, search_id)
     
-    
-    # TODO = uncomment once fixed
-    @sample_receipt_stores = SampleReceiptStore.where(:sample_id => search_id)
+    @sample_shippings = get_sample_shippings(search_id)
 
+    @sample_receipt_confirmation = SampleReceiptConfirmation.joins(:sample).where("samples.sample_id = ?", search_id).first
+    # TODO = uncomment once fixed
     # @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
-    @sample_receipt_stores_not_shipped = SampleReceiptStore.where(:sample_id => search_id)
+
     # 
     # @specimen_receipts_not_shipped = SpecimenStorage.where(:storage_container_id => search_id)
     # @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
-    # 
-    # @sample_shippings_not_received = hash_from_array_by_track_num(SampleShipping.where("sample_id = ? or shipment_tracking_number =?", search_id, search_id))
     # @specimen_shippings_not_received = SpecimenShipping.where(:storage_container_id => search_id)
     respond_to do |format|      
        format.html do
@@ -47,6 +50,17 @@ class EditSampleProcessesController < ApplicationController
     spec_storages_from_receipts = spec_receipts.select{|sr| sr.specimen_storage_container.specimen_storage}.map{|ss| ss.specimen_storage_container.specimen_storage}
     spec_storages_from_container | spec_storages_from_receipts
   end
+  
+  def get_sample_shippings(search_id)
+    sample_shippings = SampleShipping.find :all, :joins => [:samples], :conditions => ["samples.sample_id = ? or shipment_tracking_number = ?", search_id, search_id]
+    sample_shippings_hash = {}
+    sample_shippings.each do |ss|
+      sample_shippings_hash[ss] ||= []
+      sample_shippings_hash[ss] = ss.samples
+    end
+    return sample_shippings_hash
+  end
+  
   
   
   def search_by_date

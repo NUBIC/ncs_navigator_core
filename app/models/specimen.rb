@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: specimens
 #
-#  created_at         :datetime
-#  id                 :integer          not null, primary key
-#  instrument_id      :integer
-#  specimen_id        :string(36)       not null
-#  specimen_pickup_id :integer
-#  updated_at         :datetime
+#  created_at             :datetime
+#  data_export_identifier :string(255)
+#  id                     :integer          not null, primary key
+#  instrument_id          :integer
+#  response_set_id        :integer
+#  specimen_id            :string(36)       not null
+#  specimen_pickup_id     :integer
+#  updated_at             :datetime
 #
 
 class Specimen < ActiveRecord::Base

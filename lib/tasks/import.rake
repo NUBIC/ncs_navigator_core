@@ -44,7 +44,7 @@ namespace :import do
   task :all => [
     :psc_setup,
     :operational, :operational_psc, :unused_operational,
-    :instruments, :unused_instruments
+    :instruments
   ]
 
   desc 'Import operational data'
@@ -94,16 +94,8 @@ namespace :import do
   task :instruments => [:warehouse_setup, :environment] do
     require 'ncs_navigator/core'
 
-    importer = NcsNavigator::Core::Warehouse::InstrumentImporter.new(import_wh_config)
+    importer = NcsNavigator::Core::Warehouse::LegacyInstrumentImporter.new(import_wh_config)
     importer.import
-  end
-
-  desc 'Pass unused instrument data through to an XML file'
-  task :unused_instruments => [:warehouse_setup, :environment] do
-    require 'ncs_navigator/core'
-
-    pass = NcsNavigator::Core::Warehouse::UnusedInstrumentPassthrough.new(import_wh_config)
-    pass.import
   end
 
   desc 'Pass unused operational data through to an XML file'

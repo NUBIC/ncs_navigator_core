@@ -2,7 +2,7 @@
 FactoryGirl.define do
   factory :sample_receipt_store do |srs|
     srs.psu_code                              20000030
-    srs.sample_id                             {"1234567"}
+    srs.association :sample, :factory => :sample
     srs.association :sample_receipt_shipping_center, :factory => :sample_receipt_shipping_center
     srs.staff_id                              {"staff1234"}
     srs.sample_condition_code                 1
@@ -43,7 +43,6 @@ FactoryGirl.define do
 
   factory :sample_shipping do |ss|
     ss.psu_code                         20000030
-    ss.sample_id                        {"SAMPLE123ID"}
     ss.association :sample_receipt_shipping_center, :factory => :sample_receipt_shipping_center
     ss.staff_id                         {"newStaff123"}
     ss.shipper_id                       {"FEDEX"}
@@ -59,11 +58,11 @@ FactoryGirl.define do
   
   factory :sample_receipt_confirmation do |src|
     src.psu_code                         20000030
-    src.sample_id                        {"SAMPLE123ID"}
+    src.association :sample, :factory => :sample
     src.association :sample_receipt_shipping_center, :factory => :sample_receipt_shipping_center
     src.shipment_receipt_confirmed_code  1
     src.shipper_id                       {"FEDEX"}
-    src.shipment_tracking_number         {"ABCDE234325"}
+    src.association :sample_shipping, :factory => :sample_shipping
     src.shipment_receipt_datetime        Date.today
     src.shipment_condition_code          1
     src.shipment_damaged_reason          nil
@@ -77,5 +76,8 @@ FactoryGirl.define do
   factory :sample do |sa|
     sa.sample_id                        {"SAMPLE123ID"}
     sa.association :instrument,  :factory => :instrument
+    sa.association :sample_shipping, :factory => :sample_shipping
+    sa.volume_amount                    nil
+    sa.volume_unit                      nil
   end
 end

@@ -7,10 +7,12 @@
   = @provider
 
 .page_section
-  = form_for(@provider, :url => update_staff_provider_path(@provider), :html => {:autocomplete => "off", :method => 'put'}) do |f|
+  = form_for(@provider, :url => update_staff_provider_path(@provider),
+             :html => {:id => "modal_edit_form", :autocomplete => "off", :method => 'put'}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "/providers/staff_form_fields", :f => f
 
-    %p
-      = f.submit "Submit", :disable_with => 'Submitting...'
+    - unless request.xhr?
+      %p
+        = f.submit "Submit", :disable_with => 'Submitting...'

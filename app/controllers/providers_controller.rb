@@ -77,15 +77,21 @@ class ProvidersController < ApplicationController
       @provider.build_address(:psu_code => @psu_code)
     end
     if @provider.telephone.blank?
-      @provider.telephones.build(:psu_code => @psu_code, :phone_type => Telephone.work_phone_type)
+      @provider.telephones.build(:psu_code => @psu_code,
+                                 :phone_type => Telephone.work_phone_type,
+                                 :phone_rank_code => 1)
     end
     if @provider.fax.blank?
-      @provider.telephones.build(:psu_code => @psu_code, :phone_type => Telephone.fax_phone_type)
+      @provider.telephones.build(:psu_code => @psu_code,
+                                 :phone_type => Telephone.fax_phone_type,
+                                 :phone_rank_code => 1)
     end
     if @provider.primary_contact.blank?
       staff = @provider.staff.build(:psu_code => @psu_code)
-      staff.emails.build(:psu_code => @psu_code)
-      staff.telephones.build(:psu_code => @psu_code, :phone_type => Telephone.work_phone_type)
+      staff.emails.build(:psu_code => @psu_code, :email_rank_code => 1)
+      staff.telephones.build(:psu_code => @psu_code,
+                             :phone_type => Telephone.work_phone_type,
+                             :phone_rank_code => 1)
     end
 
     respond_to do |format|
@@ -152,6 +158,7 @@ class ProvidersController < ApplicationController
 
         flash[:notice] = 'Provider Staff was successfully created.'
         format.html { redirect_to(post_staff_redirect_path) }
+        format.json { render :json => { :id => @staff.id, :provider_id => @provider.id, :errors => [] }, :status => :ok }
       else
         format.html { render :action => "new_staff" }
       end
@@ -166,6 +173,9 @@ class ProvidersController < ApplicationController
       @link = PersonnelProviderLink.find_by_person_id_and_provider_id(@staff.id, @provider.id)
       @telephone = @staff.telephones.first
       @email = @staff.emails.first
+
+      @telephone = Telephone.new(:person => @staff) if @telephone.blank?
+      @email = Email.new(:person => @staff) if @email.blank?
     else
       flash[:warning] = 'Person identifier required.'
       redirect_to staff_list_provider_path(@provider)
@@ -190,6 +200,7 @@ class ProvidersController < ApplicationController
 
         flash[:notice] = 'Provider Staff was successfully created.'
         format.html { redirect_to(post_staff_redirect_path) }
+        format.json { render :json => { :id => @staff.id, :provider_id => @provider.id, :errors => [] }, :status => :ok }
       else
         format.html { render :action => "new_staff" }
       end
@@ -206,12 +217,15 @@ class ProvidersController < ApplicationController
   end
 
   def process_staff_phone
-    unless params[:telephone].blank?
+    if !params[:telephone_number].blank?
       if params[:telephone_id]
         @telephone = Telephone.find(params[:telephone_id])
-        @telephone.phone_nbr = params[:telephone][:phone_nbr]
+        @telephone.phone_nbr = params[:telephone_number]
+        @telephone.phone_rank_code = 1 if @telephone.phone_rank_code.to_i <= 0
+        @telephone.phone_type_code = Telephone.work_phone_type.to_i if @telephone.phone_type_code.to_i <= 0
       else
-        @telephone = Telephone.new(:person => @staff, :phone_nbr => params[:telephone][:phone_nbr])
+        @telephone = Telephone.new(:person => @staff, :phone_nbr => params[:telephone_number],
+                                   :phone_rank_code => 1, :phone_type_code => Telephone.work_phone_type.to_i)
       end
     end
     @telephone
@@ -219,12 +233,13 @@ class ProvidersController < ApplicationController
   private :process_staff_phone
 
   def process_staff_email
-    unless params[:email].blank?
+    if !params[:email].blank?
       if params[:email_id]
         @email = Email.find(params[:email_id])
-        @email.email = params[:email][:email]
+        @email.email = params[:email]
+        @email.email_rank_code = 1 if @email.email_rank_code.to_i <= 0
       else
-        @email = Email.new(:person => @staff, :email => params[:email][:email])
+        @email = Email.new(:person => @staff, :email => params[:email], :email_rank_code => 1)
       end
     end
     @email

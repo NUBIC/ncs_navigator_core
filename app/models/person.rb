@@ -430,13 +430,24 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Returns the primary cell phone number for this person, or nil if no such
+  # Returns the primary home phone number for this person, or nil if no such
   # phone record exists.
   def primary_home_phone
     home_code = Telephone.home_phone_type.to_i
 
     primary_contacts(telephones, :phone_rank_code) do |ts|
       ts.detect { |t| t.phone_type_code == home_code }
+    end
+  end
+
+  ##
+  # Returns the primary work phone number for this person, or nil if no such
+  # phone record exists.
+  def primary_work_phone
+    work_code = Telephone.work_phone_type.to_i
+
+    primary_contacts(telephones, :phone_rank_code) do |ts|
+      ts.detect { |t| t.phone_type_code == work_code }
     end
   end
 

@@ -5,7 +5,7 @@ Feature: Editing a person
   I want to be able to select and edit a person record
 
   Scenario: Editing a new person
-    Given an authenticated user
+    Given an authenticated admin user
     And a person exists
     Then a person should exist
     When I am on the people page
