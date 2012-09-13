@@ -86,7 +86,11 @@ $(document).ready(function() {
       } )
     }
   );
+
   $("input[type='text'].time").live('focus',
+    function() { $(this).timepicker({}) });
+
+  $("input[type='text'].timepicker").live('focus',
     function() { $(this).timepicker({}) });
 
   $('.mdes_documentation_link').click(function(event) {
@@ -125,5 +129,7 @@ $(document).ready(function() {
   $(".disposition_icon").tooltip({ position: "bottom left"});
   $(".notification_icon").tooltip();
   $("#tabs").tabs({ cookie: { expires: 1 } });
+
+  $("#new_contact").validate();
 
 });
