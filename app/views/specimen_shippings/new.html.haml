@@ -27,7 +27,7 @@
         = f.fields_for :ship_specimens do |s|
           - if @specimen_ids_per_specimen_storage.include? s.object.specimen_id
             %tr{ :class => cycle_var }
-              - if @index == 0                  
+              - if @index == 0
                 %td{:rowspan=>ss.specimen_storage_container.specimen_receipts.size}
                   = ss.specimen_storage_container.storage_container_id
                   = hidden_field_tag "specimen_storage_container_id[]", ss.specimen_storage_container.storage_container_id
@@ -50,14 +50,14 @@
     = f.label "Staff:"
     = display_staff_info
     %br
-  
+
     = f.label "Ship Date:"
     = f.text_field :shipment_date, :class => "date important_field"
     %span{ :class => "required" } *
     %br
 
     = f.label "Ship Time:"
-    = f.text_field :shipment_time, :class => "time"
+    = f.text_field :shipment_time, :class => "timepicker"
     %br
 
 
@@ -73,11 +73,11 @@
     = f.label "Site Code:"
     = f.object.specimen_processing_shipping_center.specimen_processing_shipping_center_id
     %br
-    
+
     = f.label "Contact Name:"
     = f.text_field :contact_name
     %br
-    
+
     = f.label "Contact Phone:"
     = f.text_field :contact_phone
     %br
@@ -101,7 +101,7 @@
     = f.label "Total # Containers:"
     = @specimen_storages.size
     %br
-    
+
     = f.label "Total # Specimens:"
     = f.object.ship_specimens.size
     %br

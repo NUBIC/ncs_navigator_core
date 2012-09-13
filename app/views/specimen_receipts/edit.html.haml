@@ -8,11 +8,11 @@
   = f.label "Staff:"
   = display_staff_info
   %br
-  
+
   = f.label :specimen_storage_container_id, "Storage Container ID:"
   = @specimen_storage_container.storage_container_id
-  %br    
-  
+  %br
+
   = f.label "Receipt Date and Time: "
   = f.text_field :receipt_datetime, :class => "datetime important_field"
   %span{ :class => "required" } *
@@ -44,30 +44,30 @@
   %br
 
   = f.label :centrifuge_starttime, "Centrifuge Start Time:"
-  = f.text_field :centrifuge_starttime, :class => "time"
+  = f.text_field :centrifuge_starttime, :class => "timepicker"
   %br
 
   = f.label :centrifuge_endtime, "Centrifuge End Time:"
-  = f.text_field :centrifuge_endtime, :class => "time"
+  = f.text_field :centrifuge_endtime, :class => "timepicker"
   %br
 
   = f.label :centrifuge_temp, "Centrifuge Temperature (in Celsius):"
   = f.text_field :centrifuge_temp
-  %br  
+  %br
 
   = render "shared/ncs_code_select", { :f => f, :code => :centrifuge_comment_code, :label_text => "Centrifuge Comment" }
   %br
 
   = f.label :centrifuge_comment_other, "Centrifuge Comment Other:"
-  = f.text_field :centrifuge_comment_other  
+  = f.text_field :centrifuge_comment_other
   %br
 
   = f.label :specimen_equipment_id, "Equipment ID:"
   = f.text_field :specimen_equipment_id
   %br
-  
+
   = hidden_field_tag :in_edit_mode, @in_edit_mode
-  
+
   = f.submit "Update", :disable_with => 'Submitting...', :class => "update_sample_received"
   - unless @in_edit_mode
     %input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}

@@ -22,7 +22,7 @@
     %p
       = f.label :instrument_start_time, "Instrument Start Time"
       %br
-      = f.text_field :instrument_start_time, :class => "time"
+      = f.text_field :instrument_start_time, :class => "timepicker"
 
     %p
       = f.label :instrument_end_date, "Instrument End Date"
@@ -32,7 +32,7 @@
     %p
       = f.label :instrument_end_time, "Instrument End Time"
       %br
-      = f.text_field :instrument_end_time, :class => "time"
+      = f.text_field :instrument_end_time, :class => "timepicker"
 
   .column-2
     = render "shared/ncs_code_select", { :f => f, :code => :instrument_status_code, :label_text => "Instrument Status", :notify_marker => true }

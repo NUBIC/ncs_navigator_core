@@ -31,7 +31,7 @@
   %p
     = f.label :event_start_time, "Event Start Time"
     %br
-    = f.text_field :event_start_time, :class => "time"
+    = f.text_field :event_start_time, :class => "timepicker"
 
   %p
     %a{ :href => "javascript:void(0);", :class => "toggle_enable_link icon_link", :id => "enable_event_date_attributes" }
@@ -48,7 +48,7 @@
   %p
     = f.label :event_end_time, "Event End Time"
     %br
-    = f.text_field :event_end_time, :class => "time", :disabled => true
+    = f.text_field :event_end_time, :class => "timepicker", :disabled => true
 
   = render "shared/ncs_code_select", { :f => f, :code => :event_incentive_type_code, :label_text => "Incentive Type", :help_text => "events/event_incentive_type_tooltip" }
 
