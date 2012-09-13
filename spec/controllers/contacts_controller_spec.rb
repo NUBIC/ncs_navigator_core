@@ -183,11 +183,6 @@ describe ContactsController do
 
       describe "GET provider_recruitment" do
 
-        it "assigns the requested person as @person" do
-          get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
-          assigns(:person).should eq(@person)
-        end
-
         it "assigns the requested event as @event" do
           get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
           assigns(:event).should eq(@event)

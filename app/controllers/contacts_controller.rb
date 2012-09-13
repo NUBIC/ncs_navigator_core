@@ -94,16 +94,25 @@ class ContactsController < ApplicationController
   def provider_recruitment
     @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
     @event    = Event.find(params[:event_id])
-    @person   = Person.find(params[:person_id])
     @provider = Provider.find(params[:provider_id])
     if request.get?
-      @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code, :who_contacted_code => 8,
-                             :contact_date_date => Date.today, :contact_start_time => Time.now.strftime("%H:%M"))
+      # set defaults on contact
+      @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code,
+                             :who_contacted_code => 8,    # provider
+                             :contact_location_code => 3, # provider office
+                             :contact_date_date => Date.today,
+                             :contact_start_time => Time.now.strftime("%H:%M"))
     else
       @contact = Contact.new(params[:contact])
     end
     if request.post?
+
+      # determine person contacted from select list
+      @person = Person.find(params[:person_id])
+
       if @contact.save
+        # set the event disposition to that of the contact
+        @event.update_attribute(:event_disposition, @contact.contact_disposition)
         link = find_or_create_contact_link
         redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
       else
@@ -130,7 +139,8 @@ class ContactsController < ApplicationController
     end
 
     def find_or_create_contact_link
-      link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?", @contact, @person, @event).first
+      link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?",
+                                @contact, @person, @event).first
       if link.blank?
         link = ContactLink.create(:contact => @contact,
                                   :person => @person,
