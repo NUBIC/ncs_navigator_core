@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/configuration'
 
 class ContactsController < ApplicationController
@@ -59,6 +58,7 @@ class ContactsController < ApplicationController
     else
       @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact.id, @person.id).first
       @event = @contact_link.event
+      set_disposition_group
     end
   end
 
@@ -76,6 +76,7 @@ class ContactsController < ApplicationController
         format.html { redirect_to(post_update_redirect_path(link), :notice => 'Contact was successfully updated.') }
         format.json { render :json => @contact }
       else
+        set_disposition_group
         format.html { render :action => "new" }
         format.json { render :json => @contact.errors }
       end
@@ -106,17 +107,21 @@ class ContactsController < ApplicationController
       @contact = Contact.new(params[:contact])
     end
     if request.post?
-
-      # determine person contacted from select list
-      @person = Person.find(params[:person_id])
-
-      if @contact.save
-        # set the event disposition to that of the contact
-        @event.update_attribute(:event_disposition, @contact.contact_disposition)
-        link = find_or_create_contact_link
-        redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
-      else
+      if params[:person_id].blank?
+        flash[:warning] = "Contact requires the person who was contacted."
         render :action => "provider_recruitment"
+      else
+        # determine person contacted from select list
+        @person = Person.find(params[:person_id])
+
+        if @contact.save
+          # set the event disposition to that of the contact
+          @event.update_attribute(:event_disposition, @contact.contact_disposition)
+          link = find_or_create_contact_link
+          redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
+        else
+          render :action => "provider_recruitment"
+        end
       end
     end
   end
@@ -150,6 +155,17 @@ class ContactsController < ApplicationController
                                   :psu_code => NcsNavigatorCore.psu_code)
       end
       link
+    end
+
+        ##
+    # Determine the disposition group to be used from the contact type or instrument taken
+    def set_disposition_group
+      @disposition_group = nil
+      if @event
+        set_disposition_group_for_event
+      else
+        set_disposition_group_for_contact_link
+      end
     end
 
 end
