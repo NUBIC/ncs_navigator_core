@@ -78,31 +78,35 @@
           Root ID
         %th
           Extension
+      - f.object.specimen_storage_containers.each do |ssc|
+        - cycle_var = cycle('even_record', 'odd_record')
+        - @index = 0
+        - @specimen_ids_per_specimen_storage = []
+        - ssc.specimen_receipts.each do |sr|
+          - @specimen_ids_per_specimen_storage << sr.specimen_id
 
-      - cycle_var = cycle('even_record', 'odd_record')
-      - @index = 0
-      - @array_of_specimen_storage_container_ids = []
-      = f.fields_for :ship_specimens do |s|
-        %tr{ :class => cycle_var }
-          - @storage_cont_id = s.object.specimen.specimen_receipt.specimen_storage_container
-          - if not @array_of_specimen_storage_container_ids.include? @storage_cont_id
-            - @size_per_row = @storage_cont_id.specimen_receipts.size
-            %td{:rowspan=>@size_per_row}
-              = @storage_cont_id.storage_container_id
-              - @array_of_specimen_storage_container_ids << @storage_cont_id
-          %td
-            = s.object.specimen.specimen_id
-          %td
-            = sample_type(s.object.specimen.specimen_id)
-          %td
-            = s.object.volume_amount
-          %td
-            = s.object.volume_unit
-          %td
-            = sample_root_id(s.object.specimen.specimen_id)
-          %td
-            = sample_extenstion(s.object.specimen.specimen_id)
-      
+        = f.fields_for :ship_specimens, f.object.ship_specimens.where('specimen_id in (?)', @specimen_ids_per_specimen_storage) do |s|
+          %tr{ :class => cycle_var }
+            - if @index == 0                  
+              %td{:rowspan=>ssc.specimen_receipts.size}
+                = ssc.storage_container_id
+                = hidden_field_tag "specimen_storage_container_id[]", ssc.storage_container_id
+            %td
+              = s.object.specimen.specimen_id
+            %td
+              = sample_type(s.object.specimen.specimen_id)
+            %td
+              = s.object.volume_amount
+            %td
+              = s.object.volume_unit
+            %td
+              = sample_root_id(s.object.specimen.specimen_id)
+            %td
+              = sample_extenstion(s.object.specimen.specimen_id)
+            - @index = @index+1
+  = hidden_field_tag :in_edit_mode, @in_edit_mode            
+              
   %input{:type=>"button", :class => "print_manifest", :value =>"Print Manifest", :onclick => "javascript:print()"}
   = f.submit "Email", :disable_with => 'Submitting...', :class => "email_manifest", :id => "email_manifest"
-  %input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}  
+  - unless @in_edit_mode  
+    %input{:type=>"button", :class => "exit_and_refresh", :value =>"Exit"}  

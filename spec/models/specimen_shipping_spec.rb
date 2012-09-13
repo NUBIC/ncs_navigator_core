@@ -43,9 +43,47 @@ describe SpecimenShipping do
     it "sets the public_id to a uuid" do
       ss = Factory(:specimen_shipping, :shipper_id => "FEDEX")
       ss.public_id.should_not be_nil
-      # ss.storage_container_id.should == ss.public_id
       ss.shipper_id.to_s.should == "FEDEX"
     end
-  end  
+  end
+  
+  it "should return one result based on the tracking number" do
+    specimen1 = Factory(:specimen, :specimen_id => "AAA")
+    specimen2 = Factory(:specimen, :specimen_id => "BBB")
+    specimen_shipping = Factory(:specimen_shipping, :shipment_tracking_number => "ABC123")
+    specimen_storage_container = Factory(:specimen_storage_container, :storage_container_id => "123", :specimen_shipping_id => specimen_shipping.id)
+    specimen_receipt1 = Factory(:specimen_receipt, :specimen_id => specimen1.id, :specimen_storage_container_id => specimen_storage_container.id)
+    specimen_receipt2 = Factory(:specimen_receipt, :specimen_id => specimen2.id, :specimen_storage_container_id => specimen_storage_container.id)
+    
+    puts SpecimenShipping.all.inspect
+    ss = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container("ABC123")
+    ss.size.should == 1
+  end
+
+  it "should return one result based on the specimen_id" do
+    specimen1 = Factory(:specimen, :specimen_id => "AAA")
+    specimen2 = Factory(:specimen, :specimen_id => "BBB")
+    specimen_shipping = Factory(:specimen_shipping, :shipment_tracking_number => "ABC123")
+    specimen_storage_container = Factory(:specimen_storage_container, :storage_container_id => "123", :specimen_shipping_id => specimen_shipping.id)
+    specimen_receipt1 = Factory(:specimen_receipt, :specimen_id => specimen1.id, :specimen_storage_container_id => specimen_storage_container.id)
+    specimen_receipt2 = Factory(:specimen_receipt, :specimen_id => specimen2.id, :specimen_storage_container_id => specimen_storage_container.id)
+    
+    puts SpecimenShipping.all.inspect
+    ss = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container("AAA")
+    ss.size.should == 1
+  end
+
+  it "should return one result based on the specimen_storage_container_id" do
+    specimen1 = Factory(:specimen, :specimen_id => "AAA")
+    specimen2 = Factory(:specimen, :specimen_id => "BBB")
+    specimen_shipping = Factory(:specimen_shipping, :shipment_tracking_number => "ABC123")
+    specimen_storage_container = Factory(:specimen_storage_container, :storage_container_id => "123", :specimen_shipping_id => specimen_shipping.id)
+    specimen_receipt1 = Factory(:specimen_receipt, :specimen_id => specimen1.id, :specimen_storage_container_id => specimen_storage_container.id)
+    specimen_receipt2 = Factory(:specimen_receipt, :specimen_id => specimen2.id, :specimen_storage_container_id => specimen_storage_container.id)
+    
+    puts SpecimenShipping.all.inspect
+    ss = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container("123")
+    ss.size.should == 1
+  end
 end
 

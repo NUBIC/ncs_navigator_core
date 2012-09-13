@@ -25,10 +25,11 @@ class EditSampleProcessesController < ApplicationController
     @sample_shippings = get_sample_shippings(search_id)
 
     @sample_receipt_confirmation = SampleReceiptConfirmation.joins(:sample).where("samples.sample_id = ?", search_id).first
+
+    @specimen_shippings = get_specimen_shippings(search_id)
+    
     # TODO = uncomment once fixed
     # @specimen_storages = array_of_empty_spec_storages(@specimen_receipts_hash.keys)
-
-    # 
     # @specimen_receipts_not_shipped = SpecimenStorage.where(:storage_container_id => search_id)
     # @specimen_receipts_hash_not_shipped = hash_from_array(@specimen_receipts_not_shipped)
     # @specimen_shippings_not_received = SpecimenShipping.where(:storage_container_id => search_id)
@@ -59,6 +60,11 @@ class EditSampleProcessesController < ApplicationController
       sample_shippings_hash[ss] = ss.samples
     end
     return sample_shippings_hash
+  end
+  
+  def get_specimen_shippings(search_id)                                                       
+    array_of_specimen_shipping_ids = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container(search_id)
+    SpecimenShipping.includes(:specimen_storage_containers => {:specimen_receipts => :specimen}).where("specimen_shippings.id" => array_of_specimen_shipping_ids)
   end
   
   
