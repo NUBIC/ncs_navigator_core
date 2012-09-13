@@ -4,6 +4,11 @@ table.pbs_list {
   }
 }
 
-.staff_member_radio_person_id {
+.staff_member_radio_person {
   margin-bottom: 5px;
+}
+
+.staff_member_radio_person_name {
+  display: inline-block;
+  width: 12em;
 }

@@ -19,6 +19,7 @@ NCSCore.UI.PbsList = function (config) {
     } else {
       $('div#new_staff').html('<p>Creating new record ...' + img + '</p>');
       $.get(url, null, function (response) {
+        $('.instructional_note').hide();
         $('#staff_line_items').append(response);
         $('div#new_staff').html('');
       });

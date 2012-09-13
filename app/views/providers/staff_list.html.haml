@@ -5,9 +5,6 @@
 
 %h3
   = @provider
-  %span.normal
-    - ecip_path = @event.nil? ? edit_contact_information_provider_path(@provider) : edit_contact_information_provider_path(@provider, :event_id => @event.id)
-    = link_to "Edit Location Information", ecip_path, :class => "edit_link icon_link"
 
 .page_section
   - if @provider.staff.blank?
@@ -34,17 +31,17 @@
               %span{ :class => "star_link icon_link" }
                 &nbsp;
           %td
-            - txt = blank_safe(staff_member.full_name)
-            - esp_path = @event.nil? ? edit_staff_provider_path(@provider, :person_id => staff_member.id) : edit_staff_provider_path(@provider, :person_id => staff_member.id, :event_id => @event.id)
-            = link_to txt, esp_path, :class => "edit_link icon_link"
+            = blank_safe(staff_member.full_name)
           %td
             = phone_number_formatter(staff_member.telephones.first.to_s)
           %td
             = staff_member.emails.first.to_s
           %td
-            - if @event
-              = link_to "Contact for #{@event.event_type}", |
-                provider_recruitment_contacts_path(:person_id => staff_member.id, :event_id => @event.id, :provider_id => @provider.id), |
-                :class => "add_link icon_link", :title => "Start Contact"
+            = link_to "Edit Staff Contact Info", edit_staff_provider_path(@provider, :person_id => staff_member.id),
+                :class => "edit_link icon_link"
+          %td
+            = link_to "Edit Person Record", edit_person_path(staff_member),
+                :class => "edit_link icon_link"
+
   .links
     = link_to 'New Staff Member', new_staff_provider_path(@provider, :event_id => @event), :class => "add_link icon_link"
