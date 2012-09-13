@@ -7,7 +7,7 @@
 = render "/pbs_lists/contacts_section"
 
 - if @provider.can_recruit?
-  %p
+  .recruit_button
     %span{ :class => "green_button" }
       = provider_recruitment_link(@pbs_list)
 

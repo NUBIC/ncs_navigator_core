@@ -44,14 +44,6 @@ describe PbsListsController do
 
     end
 
-    describe "GET new" do
-      it "assigns a new pbs_list as @pbs_list" do
-        provider = Factory(:provider, :name_practice => "provider")
-        get :new, :provider_id => provider.id
-        assigns(:pbs_list).should be_a_new(PbsList)
-      end
-    end
-
     describe "GET edit" do
 
       let(:provider) { Factory(:provider, :name_practice => "provider") }
@@ -60,62 +52,6 @@ describe PbsListsController do
       it "assigns the requested pbs_list as @pbs_list" do
         get :edit, :id => pbs_list.id
         assigns(:pbs_list).should eq(pbs_list)
-      end
-    end
-
-    describe "POST create" do
-      describe "with valid params" do
-        describe "with html request" do
-          it "creates a new PbsList" do
-
-            provider = Factory(:provider, :name_practice => "provider")
-
-            expect {
-              post :create, :pbs_list => valid_attributes
-            }.to change(PbsList, :count).by(1)
-          end
-
-          it "assigns a newly created pbs_list as @pbs_list" do
-            provider = Factory(:provider, :name_practice => "provider")
-            post :create, :pbs_list => valid_attributes
-            assigns(:pbs_list).should be_a(PbsList)
-            assigns(:pbs_list).should be_persisted
-          end
-
-          it "redirects to the edit pbs_list form" do
-            provider = Factory(:provider, :name_practice => "provider")
-            post :create, :pbs_list => valid_attributes
-            response.should redirect_to(edit_pbs_list_path(PbsList.last))
-          end
-        end
-
-        describe "with json request" do
-          it "creates a new PbsList" do
-            provider = Factory(:provider, :name_practice => "provider")
-            expect {
-              post :create, :pbs_list => valid_attributes, :format => 'json'
-            }.to change(PbsList, :count).by(1)
-          end
-        end
-      end
-
-      describe "with invalid params" do
-        describe "with html request" do
-          it "assigns a newly created but unsaved pbs_list as @pbs_list" do
-            # Trigger the behavior that occurs when invalid params are submitted
-            PbsList.any_instance.stub(:save).and_return(false)
-            post :create, :pbs_list => {}
-            assigns(:pbs_list).should be_a_new(PbsList)
-          end
-
-          it "re-renders the 'new' template" do
-            # Trigger the behavior that occurs when invalid params are submitted
-            PbsList.any_instance.stub(:save).and_return(false)
-            post :create, :pbs_list => {}
-            response.should render_template("new")
-          end
-        end
-
       end
     end
 
@@ -199,7 +135,8 @@ describe PbsListsController do
 
         it "redirects to provider_staff_list_path" do
           get :recruit_provider, :id => pbs_list.id
-          response.should redirect_to(staff_list_provider_path(provider, :event_id => Event.last))
+          response.should redirect_to(
+            provider_recruitment_contacts_path(:provider_id => provider, :event_id => Event.last))
         end
 
       end
