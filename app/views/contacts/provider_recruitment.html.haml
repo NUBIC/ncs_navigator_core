@@ -35,14 +35,19 @@
 
       .person_contacted
         Who did you contact?
-        %ul.provider_staff
-          - @provider.staff.each do |staff_member|
-            %li
-              = radio_button_tag 'person_id', staff_member.id, false, { :class => 'required' }
-              = staff_member.to_s
-        %span{ :class => "green_button" }
-          = link_to 'Add Staff Member', new_staff_provider_path(@provider),
-              {:title => "Add New Staff Member for #{@provider.to_s}", :class => "edit_staff_modal_form_link"}
+        - if @provider.staff.blank?
+          .instructional_note
+            Click on 'Add Staff Member' to create a Person contacted for this Provider
+        - else
+          %div{ :id => "staff_line_items" }
+            - @provider.staff.each do |member|
+              = render '/people/provider_staff_member_radio_button', :member => member
+            -# placeholder for new staff members
+            #new_staff
+
+          %span{ :class => "green_button" }
+            = link_to 'Add Staff Member', new_staff_provider_path(@provider),
+                {:title => "Add New Staff Member for #{@provider.to_s}", :class => "edit_staff_modal_form_link"}
 
       = render "shared/ncs_code_select", { :f => f,
                                            :label_text => 'How did you contact them?',
@@ -60,4 +65,7 @@
 :javascript
   $(document).ready(function() {
     wire_up_select_other("#contact_contact_type_code","#contact_contact_type_other");
+
+    var pbsListUI = new NCSCore.UI.PbsList({ successPath: 'provider_staff_member_radio_button' });
   });
+

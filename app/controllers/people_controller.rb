@@ -35,6 +35,12 @@ class PeopleController < ApplicationController
     @provider = Provider.find(params[:provider_id])
   end
 
+  # GET /people/1/provider_staff_member_radio_button
+  def provider_staff_member_radio_button
+    @member = Person.find(params[:id])
+    @provider = Provider.find(params[:provider_id])
+  end
+
   # GET /people/new
   # GET /people/new.json
   def new

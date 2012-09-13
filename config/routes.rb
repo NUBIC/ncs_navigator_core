@@ -23,6 +23,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :responses_for
       put :responses_for
       get :provider_staff_member
+      get :provider_staff_member_radio_button
     end
     resources :contacts, :except => [:index]
     resources :telephones, :except => [:index, :destroy]

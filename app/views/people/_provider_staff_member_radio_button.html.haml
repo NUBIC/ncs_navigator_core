@@ -1,0 +1,3 @@
+%div{ :id => "staff_#{member.id}" , :class => "staff_member_radio_person_id" }
+  = radio_button_tag 'person_id', member.id, false, { :class => 'required' }
+  = member.to_s
