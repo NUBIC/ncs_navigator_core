@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120905184324) do
+ActiveRecord::Schema.define(:version => 20120912192132) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.datetime "updated_at"
     t.integer  "response_set_id"
     t.integer  "provider_id"
+    t.integer  "institute_id"
   end
 
   create_table "answers", :force => true do |t|
@@ -295,6 +296,29 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
+  end
+
+  create_table "institutions", :force => true do |t|
+    t.string   "psu_code",                    :limit => 36, :null => false
+    t.string   "institute_id",                              :null => false
+    t.integer  "institute_type_code",                       :null => false
+    t.string   "institute_type_other"
+    t.string   "institute_name"
+    t.integer  "institute_relation_code",                   :null => false
+    t.string   "institute_relation_other"
+    t.integer  "institute_owner_code",                      :null => false
+    t.string   "institute_owner_other"
+    t.integer  "institute_size"
+    t.integer  "institute_unit_code",                       :null => false
+    t.string   "institute_unit_other"
+    t.integer  "institute_info_source_code",                :null => false
+    t.string   "institute_info_source_other"
+    t.date     "institute_info_date"
+    t.date     "institute_info_update"
+    t.text     "institute_comment"
+    t.string   "transaction_type",            :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "instruments", :force => true do |t|
@@ -1002,6 +1026,7 @@ ActiveRecord::Schema.define(:version => 20120905184324) do
     t.integer  "proportion_weeks_sampled"
     t.integer  "proportion_days_sampled"
     t.string   "sampling_notes",             :limit => 1000
+    t.integer  "institution_id"
   end
 
   create_table "question_groups", :force => true do |t|

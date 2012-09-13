@@ -263,6 +263,14 @@ class NcsCode < ActiveRecord::Base
     :shipment_condition_code            =>     'SHIPMENT_CONDITION_CL1',
     :sample_condition_code              =>     'SPECIMEN_STATUS_CL7',
 
+    ### institution
+    # :psu_code                         => 'PSU_CL1',
+    :institute_type_code                => 'ORGANIZATION_TYPE_CL1',
+    :institute_relation_code            => 'PERSON_ORGNZTN_FUNCTION_CL1',
+    :institute_owner_code               => 'ORGANIZATION_OWNERSHIP_CL1',
+    :institute_unit_code                => 'ORGANIZATION_SIZE_UNIT_CL1',
+    :institute_info_source_code         => 'INFORMATION_SOURCE_CL2',
+
     ### provider
     # :psu_code                         => 'PSU_CL1',
     :provider_type_code               => 'PROVIDER_TYPE_CL1',

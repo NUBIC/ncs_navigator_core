@@ -1,0 +1,13 @@
+- title "Edit Institution"
+
+.mdes_table_definition
+  = render 'documentation/institution'
+
+.page_section
+  = form_for(@institution, :html => {:autocomplete => "off"}) do |f|
+    = render "shared/custom_error_messages", :object => f.object
+
+    = render "/institutions/form_fields", :f => f
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

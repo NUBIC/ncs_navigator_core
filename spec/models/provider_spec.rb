@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: providers
 #
 #  created_at                 :datetime
 #  id                         :integer          not null, primary key
+#  institution_id             :integer
 #  list_subsampling_code      :integer
 #  name_practice              :string(100)
 #  practice_info_code         :integer          not null
@@ -47,6 +47,7 @@ describe Provider do
   it { should belong_to(:public_practice) }
   it { should belong_to(:provider_info_source) }
   it { should belong_to(:list_subsampling) }
+  it { should belong_to(:institution) }
 
   it { should have_one(:address) }
   it { should have_many(:person_provider_links) }

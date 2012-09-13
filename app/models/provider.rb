@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: providers
 #
 #  created_at                 :datetime
 #  id                         :integer          not null, primary key
+#  institution_id             :integer
 #  list_subsampling_code      :integer
 #  name_practice              :string(100)
 #  practice_info_code         :integer          not null
@@ -60,6 +60,8 @@ class Provider < ActiveRecord::Base
 
   has_many :provider_logistics
   has_many :non_interview_providers
+
+  belongs_to :institution
 
   accepts_nested_attributes_for :address, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true

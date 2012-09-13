@@ -1,0 +1,36 @@
+- title "Institutions"
+
+.mdes_table_definition
+  = render 'documentation/institution'
+
+.page_section.search
+  = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
+    = f.label :institute_name_cont
+    = f.text_field :institute_name_cont
+    %br
+    = f.submit "Search"
+
+.page_section
+  - if @institutions.empty?
+    #no_records
+      No institutions were found.
+  - else
+    .records_header
+      .page_entries_info
+        = raw page_entries_info @institutions
+    %table.records
+      %tr
+        %th
+          = sort_link @q, "institute_name"
+        %th
+
+      - @institutions.each do |i|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = blank_safe(i.institute_name)
+          %td
+            = link_to 'Edit', edit_institution_path(i), :class => "edit_link icon_link"
+  .links
+    = link_to 'Add New Institution', new_institution_path, :class => "add_link icon_link"
+
+  = will_paginate @institutions

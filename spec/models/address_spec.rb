@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: addresses
 #
@@ -28,6 +27,7 @@
 #  created_at                :datetime
 #  dwelling_unit_id          :integer
 #  id                        :integer          not null, primary key
+#  institute_id              :integer
 #  person_id                 :integer
 #  provider_id               :integer
 #  psu_code                  :integer          not null
@@ -67,6 +67,7 @@ describe Address do
 
   it { should belong_to(:person) }
   it { should belong_to(:provider) }
+  it { should belong_to(:institute) }
   it { should belong_to(:dwelling_unit) }
   it { should belong_to(:psu) }
   it { should belong_to(:address_rank) }
