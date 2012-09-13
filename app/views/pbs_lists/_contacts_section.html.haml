@@ -22,10 +22,13 @@
         - cls = cycle('even_record', 'odd_record')
         %tr{ :class => cls }
           %td
-            = link_to "#{contact.contact_date}", edit_person_contact_path(link.person, contact), :class => "edit_link icon_link"
+            = link_to "#{contact.contact_date}", edit_person_contact_path(link.person, contact),
+              :class => "edit_link icon_link"
           %td
             = link.person.full_name
           %td
             = contact.contact_type
           %td
-            = contact.contact_disposition
+            - event_type = @provider.provider_recruitment_event.event_type
+            - disp = contact.contact_disposition
+            = DispositionMapper.disposition_text_for_event(event_type, disp)
