@@ -86,7 +86,7 @@ NcsNavigatorCore::Application.routes.draw do
     end
     resources :non_interview_providers, :except => [:destroy]
   end
-  resources :pbs_lists do
+  resources :pbs_lists, :except => [:new, :create] do
     member do
       get :recruit_provider
     end
