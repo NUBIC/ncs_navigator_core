@@ -88,6 +88,9 @@ class PbsCodeListLoader
       ['REFUSAL_REASON_CL2', 'Not applicable', '-7'],
       ['REFUSAL_REASON_CL2', 'Missing in Error', '-4'],
 
+      ['EVENT_DSPSTN_CAT_CL1', 'Provider Based Recruitment', '7'],
+      ['EVENT_DSPSTN_CAT_CL1', 'PBS Eligibility Screening', '8'],
+
     ].each do |list_name, text, code|
       NcsCode.find_or_create_by_list_name_and_display_text_and_local_code(list_name, text, code)
     end

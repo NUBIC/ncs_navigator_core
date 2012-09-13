@@ -106,8 +106,15 @@ class DispositionMapper
     def get_key_from_event_disposition_category(category)
       result = nil
       part = category.to_s.split(' ').first
-      EVENTS.each do |e|
-        result = e if e.split(' ').first == part
+      # TODO: switch to full case stmt to handle the discrepancies between
+      #       event name and disposition category
+      case part
+      when 'Provider-Based'
+        result = PROVIDER_RECRUITMENT_EVENT
+      else
+        EVENTS.each do |e|
+          result = e if e.split(' ').first == part
+        end
       end
       result
     end
