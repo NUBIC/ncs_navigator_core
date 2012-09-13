@@ -5,15 +5,26 @@
 
 %h3
   = @provider.name_practice
-  %span.normal
-    = link_to 'Edit PBS List Record', edit_pbs_list_path(@provider.pbs_list), :class => "edit_link icon_link"
-
-    - if @provider.institution
-      = link_to 'Edit Institution Record', edit_institution_path(@provider.institution), :class => "edit_link icon_link"
-    - else
-      = link_to 'Create New Institution Record', new_institution_path(:provider_id => @provider), :class => "add_link icon_link"
 
 .page_section
+  .associated_mdes_record_actions
+    %b
+      Other MDES Records associated with Provider
+    %ul
+      %li
+        = link_to 'Edit Provider PBS List Record', edit_pbs_list_path(@provider.pbs_list),
+          :class => "edit_link icon_link"
+      %li
+        - if @provider.institution
+          = link_to 'Edit Provider Institution Record', edit_institution_path(@provider.institution),
+            { :class => "edit_link icon_link",
+              :title => "If Provider is a Birthing Hospital or Other Institution"}
+        - else
+          = link_to 'Create New Institution Record', new_institution_path(:provider_id => @provider),
+            { :class => "add_link icon_link",
+              :title => "If Provider is a Birthing Hospital or Other Institution"}
+
+
   = form_for(@provider, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
