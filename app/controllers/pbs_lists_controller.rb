@@ -9,6 +9,7 @@ class PbsListsController < ApplicationController
 
     params[:q] ||= Hash.new
     params[:q]['s'] ||= "provider_name_practice asc"
+    params[:q]['in_sample_code_eq'] ||= 1
     @q = PbsList.search(params[:q])
     @pbs_lists = @q.result.paginate(:page => params[:page], :per_page => 20)
 

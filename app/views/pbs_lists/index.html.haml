@@ -13,6 +13,8 @@
       Original location
       = radio_button_tag 'q[in_sample_code_eq]', '2', params['q'] && params['q']['in_sample_code_eq'].to_s == '2'
       Substitute location
+      = radio_button_tag 'q[in_sample_code_eq]', '', params['q'] && params['q']['in_sample_code_eq'].blank?
+      All
 
     = f.submit "Search"
 
