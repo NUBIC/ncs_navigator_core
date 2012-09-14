@@ -5,6 +5,6 @@ class AddUniqueIndexOnAccessCodeAndVersionInSurveys < ActiveRecord::Migration
   end
 
   def self.down
-    remove_index( :surveys, :name => 'surveys_access_code_version_idx' )
+    # remove_index( :surveys, :name => 'surveys_access_code_version_idx' )
   end
 end

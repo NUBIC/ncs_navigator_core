@@ -7,8 +7,8 @@ class AddDisplayTypeToAnswers < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :answers, :hide_label, :boolean
-    Answer.all.each{|a| a.update_attributes(:hide_label => true) if a.display_type == "hidden_label"}
-    remove_column :answers, :display_type
+    # add_column :answers, :hide_label, :boolean
+    # Answer.all.each{|a| a.update_attributes(:hide_label => true) if a.display_type == "hidden_label"}
+    # remove_column :answers, :display_type
   end
 end
