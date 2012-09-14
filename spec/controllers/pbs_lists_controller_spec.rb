@@ -25,9 +25,9 @@ describe PbsListsController do
       let(:provider1) { Factory(:provider, :name_practice => "provider1") }
       let(:provider2) { Factory(:provider, :name_practice => "provider2") }
       let(:provider3) { Factory(:provider, :name_practice => "provider3") }
-      let(:pbs_list1) { Factory(:pbs_list, :provider => provider1, :practice_num => 1) }
-      let(:pbs_list2) { Factory(:pbs_list, :provider => provider2, :practice_num => 2) }
-      let(:pbs_list3) { Factory(:pbs_list, :provider => provider3, :practice_num => 3) }
+      let(:pbs_list1) { Factory(:pbs_list, :provider => provider1, :practice_num => 1, :in_sample_code => 1) }
+      let(:pbs_list2) { Factory(:pbs_list, :provider => provider2, :practice_num => 2, :in_sample_code => 1) }
+      let(:pbs_list3) { Factory(:pbs_list, :provider => provider3, :practice_num => 3, :in_sample_code => 1) }
 
       describe "without search parameters" do
 

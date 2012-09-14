@@ -105,7 +105,8 @@ describe ContactsController do
       describe "GET edit - contact end time" do
 
         before do
-          ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
+          cls = [mock_contact_link(:event => mock_event(:event_type => "Pregnancy Screener"))]
+          ContactLink.stub(:where).and_return(cls)
         end
 
         it "sets the default end_time for the contact" do
