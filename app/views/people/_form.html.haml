@@ -13,6 +13,13 @@
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
 
+    - if @participant
+      .participant_relationship
+      = label_tag "name","Select Relationship to  #{@participant.person}"
+      %br
+      = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code)), { :prompt => "-- Select Relationship to Participant -- " })
+
+
     = render "shared/ncs_code_select", { :f => f, :code => :prefix_code, :label_text => "Prefix" }
 
     %p

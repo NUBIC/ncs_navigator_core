@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 class SpecimenShippingsController < ApplicationController
+  before_filter do
+    @in_edit_mode = params[:in_edit_mode] == 'true'
+    flash.discard
+  end  
   def new
     @specimen_storages = SpecimenStorage.find_all_by_id(params[:specimen_storage])
     ncs_location = ShipperDestination::SPECIMEN_LOCATIONS.first
@@ -43,6 +47,7 @@ class SpecimenShippingsController < ApplicationController
   def show
     ncs_location = ShipperDestination::SPECIMEN_LOCATIONS.first
     @send_to_site = ncs_location.first
+    @in_edit_mode = params[:in_edit_mode] == 'true'
     @specimen_shipping = SpecimenShipping.find(params[:id])
   end
 

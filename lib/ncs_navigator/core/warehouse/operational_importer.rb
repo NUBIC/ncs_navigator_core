@@ -109,8 +109,8 @@ module NcsNavigator::Core::Warehouse
       end
 
       @progress.loading('events, instruments, and links with p state impact')
-      Participant.transaction do
-        ordered_event_sets.each do |p_id, events_and_links|
+      ordered_event_sets.each do |p_id, events_and_links|
+        Participant.transaction do
           Participant.importer_mode do
             participant = Participant.where(:p_id => p_id).first
 

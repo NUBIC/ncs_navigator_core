@@ -14,13 +14,13 @@
         %input{:type=>"text", :class => "id_field", :name=> "search_id[]"}
         = submit_tag "Search", :class => "id_btn", :id => "id_btn"
       %br
-      Search by Date:
-      %br
-      From:
-      %input{:type=>"text", :class => "date start_date", :id => "start_date"}
-      To:
-      %input{:type=>"text", :class => "date end_date", :id => "end_date"}
-      = submit_tag "Search", :class => "date_btn", :id => "date_btn"
+      -#Search by Date:
+      -#%br
+      -#From:
+      -#%input{:type=>"text", :class => "date start_date", :id => "start_date"}
+      -#To:
+      -#%input{:type=>"text", :class => "date end_date", :id => "end_date"}
+      -#= submit_tag "Search", :class => "date_btn", :id => "date_btn"
     %br
     %input{ :type => 'hidden', :value => 'true', :id => 'in_edit_mode' }
     %div{:id =>"process_tabs", :class => "processing"}

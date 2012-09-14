@@ -43,10 +43,13 @@ class PeopleController < ApplicationController
 
   # GET /people/new
   # GET /people/new.json
-  def new
-    @person = Person.new
+  def new  
+    unless params[:participant_id].blank?
+      @participant = Participant.find(params[:participant_id])
+    end
+    @person = Person.new  
 
-    respond_to do |format|
+      respond_to do |format|
       format.html # new.html.haml
       format.json  { render :json => @person }
     end
@@ -59,6 +62,14 @@ class PeopleController < ApplicationController
 
     respond_to do |format|
       if @person.save
+
+        ## Create relationship to participant if participant_id is sent
+        if !params[:participant_id].blank? && !params[:relationship_code].blank?
+          @participant = Participant.find(params[:participant_id])
+          ParticipantPersonLink.create(:participant => @participant, :person => @person, :relationship_code => params[:relationship_code])
+        end
+
+
         format.html { redirect_to(people_path, :notice => 'Person was successfully created.') }
         format.json { render :json => @person }
       else
