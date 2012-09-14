@@ -27,6 +27,7 @@ class InstitutionsController < ApplicationController
     if params[:provider_id]
       @provider = Provider.find(params[:provider_id])
       @institution.institute_name = @provider.to_s
+      @institution.institute_type_code = 1 # Birthing Center
     end
 
     respond_to do |format|
