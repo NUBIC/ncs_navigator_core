@@ -335,7 +335,7 @@ class NcsCode < ActiveRecord::Base
     list_name = attribute_lookup(attribute_name)
 
     unless show_missing_in_error
-      codes.where(%q{display_text <> 'Missing in Error'})
+      codes = codes.where(%q{display_text <> 'Missing in Error'}).all
     end
 
     list = codes.map { |n| [n.display_text, n.local_code] }
