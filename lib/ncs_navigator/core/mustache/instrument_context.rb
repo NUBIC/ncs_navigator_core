@@ -251,8 +251,17 @@ module NcsNavigator::Core::Mustache
     end
 
     def c_fname
-      about_person.blank? ? "[CHILD'S FIRST NAME]" : about_person.first_name
+      child_first_name("[CHILD'S FIRST NAME]")
     end
+
+    def child_first_name_the_child
+      child_first_name("the child")
+    end
+
+    def child_first_name(txt)
+      about_person.blank? ? txt : about_person.first_name
+    end
+    private :child_first_name
 
     def c_dob
       about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
