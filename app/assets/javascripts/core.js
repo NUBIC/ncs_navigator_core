@@ -130,14 +130,4 @@ $(document).ready(function() {
   $(".notification_icon").tooltip();
   $("#tabs").tabs({ cookie: { expires: 1 } });
 
-  $("#new_contact").validate();
-  $(".edit_provider").validate({
-    debug: true,
-    rules: {
-      'provider[address_attributes][unit]': {
-        maxlength: 10,
-      },
-    },
-  });
-
 });
