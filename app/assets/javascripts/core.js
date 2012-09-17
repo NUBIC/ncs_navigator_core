@@ -131,5 +131,13 @@ $(document).ready(function() {
   $("#tabs").tabs({ cookie: { expires: 1 } });
 
   $("#new_contact").validate();
+  $(".edit_provider").validate({
+    debug: true,
+    rules: {
+      'provider[address_attributes][unit]': {
+        maxlength: 10,
+      },
+    },
+  });
 
 });
