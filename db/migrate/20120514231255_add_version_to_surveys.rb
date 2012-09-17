@@ -5,6 +5,6 @@ class AddVersionToSurveys < ActiveRecord::Migration
   end
 
   def self.down
-    # remove_column :surveys, :survey_version
+    remove_column :surveys, :survey_version
   end
 end

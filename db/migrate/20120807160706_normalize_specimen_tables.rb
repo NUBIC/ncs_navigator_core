@@ -30,23 +30,23 @@ class NormalizeSpecimenTables < ActiveRecord::Migration
   def down
     remove_foreign_key(:specimen_storage_containers, :name => 'specimen_storage_containers_specimen_shippings_fk')
     remove_foreign_key(:specimen_receipts, :name => 'specimen_receipts_specimen_storage_containers_fk')
-    # change_column :specimen_receipts, :storage_container_id, :string
+    change_column :specimen_receipts, :storage_container_id, :string
 
     remove_foreign_key(:specimen_storages, :name => 'specimen_storages_specimen_storage_containers_fk')
-    # change_column :specimen_storages, :storage_container_id, :string
+    change_column :specimen_storages, :storage_container_id, :string
 
     drop_table :specimen_storage_containers
 
     remove_foreign_key(:specimen_receipts, :name => 'specimen_receipts_specimens_fk')
-    # change_column :specimen_receipts, :specimen_id, :string
+    change_column :specimen_receipts, :specimen_id, :string
 
     add_column :specimen_shippings, :storage_container_id, :string, :limit => 36, :null => false
 
     remove_foreign_key(:specimen_receipt_confirmations, :name => 'specimen_receipt_confirmations_specimens_fk')
-    # change_column :specimen_receipt_confirmations, :specimen_id, :string
+    change_column :specimen_receipt_confirmations, :specimen_id, :string
 
     remove_foreign_key(:specimen_receipt_confirmations, :name => 'specimen_receipt_confirmations_specimen_shippings_fk')
-    # change_column :specimen_receipt_confirmations, :shipment_tracking_number_id, :string
-    # rename_column(:specimen_receipt_confirmations, :shipment_tracking_number_id, :shipment_tracking_number)
+    change_column :specimen_receipt_confirmations, :shipment_tracking_number_id, :string
+    rename_column(:specimen_receipt_confirmations, :shipment_tracking_number_id, :shipment_tracking_number)
   end
 end
