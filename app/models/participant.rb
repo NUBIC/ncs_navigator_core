@@ -263,11 +263,10 @@ class Participant < ActiveRecord::Base
     if /_LIHIConversion_/ =~ survey_title
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
       high_intensity_conversion!
-      process_high_intensity_conversion!
     end
 
     if /_PPGFollUp_/ =~ survey_title
-      follow! if can_follow?
+      follow! if can_follow? && high_intensity?
     end
 
     if known_to_be_pregnant?

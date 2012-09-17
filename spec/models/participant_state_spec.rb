@@ -207,7 +207,8 @@ describe Participant do
     context "for a non-pregnant participant" do
       let(:participant) { Factory(:participant,
                                   :low_intensity_state => 'moved_to_high_intensity_arm',
-                                  :high_intensity_state => 'converted_high_intensity') }
+                                  :high_intensity_state => 'converted_high_intensity',
+                                  :high_intensity => true) }
       let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
       let(:response_set) { Factory(:response_set, :survey => survey,
                                    :person => participant.person, :participant => participant) }
