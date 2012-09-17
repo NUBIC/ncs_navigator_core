@@ -3,8 +3,11 @@ class PbsCodeListLoader
 
   def self.load_codes
     [
-      ['INOUT_FRAME_CL1', 'Provider in final sampling frame', '1'],
-      ['INOUT_FRAME_CL1', 'Provider not in final sampling frame', '2'],
+      ['INOUT_FRAME_CL1', 'Provider location in final sampling frame; in scope for screening women from provider location sample and birth sample', '1'],
+      ['INOUT_FRAME_CL1', 'Provider location in final sampling frame; in scope for screening women from provider location sample only', '2'],
+      ['INOUT_FRAME_CL1', 'Provider location not in final sampling frame; out of scope for screening', '3'],
+      ['INOUT_FRAME_CL1', 'Hospital in final sampling frame; out of scope for screening', '4'],
+      ['INOUT_FRAME_CL1', 'Hospital not in final sampling frame; out of scope for screening', '5'],
       ['INOUT_FRAME_CL1', 'Missing in Error', '-4'],
 
       ['ORIGINAL_SUBSTITUTE_SAMPLE_CL1', 'Original sample provider location', '1'],
@@ -92,7 +95,8 @@ class PbsCodeListLoader
       ['EVENT_DSPSTN_CAT_CL1', 'PBS Eligibility Screening', '8'],
 
     ].each do |list_name, text, code|
-      NcsCode.find_or_create_by_list_name_and_display_text_and_local_code(list_name, text, code)
+      code = NcsCode.find_or_create_by_list_name_and_local_code(list_name, code)
+      code.update_attribute(:display_text, text)
     end
   end
 
