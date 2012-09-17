@@ -7,61 +7,15 @@ class SurveyorController < ApplicationController
   layout 'surveyor'
 
   ##
-  # Copied from Surveyor::SurveyorControllerMethods
-  #
-  # Required change in order to handle the breaking off of a
-  # survey at any point in a single or multi-part survey
-  # cf. params[:breakoff] or params[:finish]
-  def update
-    saved = false
-    ActiveRecord::Base.transaction do
-      @response_set = ResponseSet.find_by_access_code(params[:response_set_code], :include => {:responses => :answer}, :lock => true)
-      unless @response_set.blank?
-        saved = @response_set.update_attributes(:responses_attributes => ResponseSet.to_savable(params[:r]))
-        @response_set.complete! if saved && user_ended_survey?
-        saved &= @response_set.save
-      end
-    end
-    return redirect_to(surveyor_finish(params[:breakoff])) if saved && user_ended_survey?
-
-    respond_to do |format|
-      format.html do
-        if @response_set.blank?
-          return redirect_with_message(available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
-        else
-          flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
-          redirect_to edit_my_survey_path(:anchor => anchor_from(params[:section]), :section => section_id_from(params[:section]))
-        end
-      end
-      format.js do
-        ids, remove, question_ids = {}, {}, []
-        ResponseSet.trim_for_lookups(params[:r]).each do |k,v|
-          v[:answer_id].reject!(&:blank?) if v[:answer_id].is_a?(Array)
-          ids[k] = @response_set.responses.find(:first, :conditions => v, :order => "created_at DESC").id if !v.has_key?("id")
-          remove[k] = v["id"] if v.has_key?("id") && v.has_key?("_destroy")
-          question_ids << v["question_id"]
-        end
-        render :json => {"ids" => ids, "remove" => remove}.merge(@response_set.reload.all_dependencies(question_ids))
-      end
-    end
-  end
-
-  ##
-  # Did user send params :finish or :breakoff?
-  def user_ended_survey?
-    params[:finish] || params[:breakoff]
-  end
-
-  ##
   # Overridden from Surveyor::SurveyorControllerMethods
   # to handle Operational Data Extraction and to determine
   # whether or not this is a part of a multi-part survey
-  def surveyor_finish(breakoff = false)
+  def surveyor_finish
     set_activity_plan_for_participant
 
     contact_link = @response_set.instrument.contact_link
 
-    if @activity_plan.final_survey_part?(@response_set) || breakoff
+    if @activity_plan.final_survey_part?(@response_set) || params[:breakoff]
       # go to contact_link.edit_instrument
       update_participant_based_on_survey(@response_set)
       edit_instrument_contact_link_path(contact_link.id)
