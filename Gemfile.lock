@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/NUBIC/surveyor.git
-  revision: 304262f09296e6a885a2290b057d1062d509f7f2
+  revision: f61adbb601e021c695d9b9cbfb49c3cd9d1fa1ad
   ref: master
   specs:
     surveyor (0.23.0.pre)
@@ -74,7 +74,7 @@ GEM
       i18n
       thor (~> 0.14.6)
     bcrypt-ruby (3.0.1)
-    builder (3.0.0)
+    builder (3.0.3)
     capistrano (2.12.0)
       highline
       net-scp (>= 1.0.0)
@@ -210,10 +210,10 @@ GEM
     guard-spork (1.0.0)
       guard (>= 1.0.0)
       spork (>= 0.8.4)
-    haml (3.1.6)
+    haml (3.1.7)
     highline (1.6.13)
     hike (1.2.1)
-    i18n (0.6.0)
+    i18n (0.6.1)
     inifile (0.4.1)
     jasmine (1.2.0)
       jasmine-core (>= 1.2.0)
@@ -376,7 +376,7 @@ GEM
       linecache (>= 0.3)
     rubytree (0.7.0)
     rubyzip (0.9.9)
-    sass (3.1.19)
+    sass (3.1.21)
     sass-rails (3.1.5)
       actionpack (~> 3.1.0)
       railties (~> 3.1.0)
