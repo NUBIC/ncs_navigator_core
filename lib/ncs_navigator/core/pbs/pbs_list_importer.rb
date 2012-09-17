@@ -15,6 +15,8 @@ class PbsListImporter
 
       create_provider_address(provider, row)
 
+      create_institute(provider) if birthing_center?(pbs_list)
+
       if pbs_list.valid?
         pbs_list.save!
       else
@@ -80,6 +82,31 @@ class PbsListImporter
       address.send("#{model_attr}=", val) unless val.blank?
     end
     address.save!
+  end
+
+  def self.create_institute(provider)
+    institution = Institution.new(:institute_info_date => Date.today,
+                                  :institute_info_update => Date.today)
+    institution.institute_name = provider.to_s
+    institution.institute_type_code = 1 # Birthing Center
+    institution.save!
+
+    provider.institution = institution
+    provider.save!
+  end
+
+  ##
+  # Create Institution Record for Provider if the Provider is a Birthing Center
+  # i.e. in_out_frame_code on pbs_list is 4 or 5
+  #
+  # INOUT_FRAME_CL1
+  # 1 Provider location in final sampling frame; in scope for screening women from provider location sample and birth sample
+  # 2 Provider location in final sampling frame; in scope for screening women from provider location sample only
+  # 3 Provider location not in final sampling frame; out of scope for screening
+  # 4 Hospital in final sampling frame; out of scope for screening
+  # 5 Hospital not in final sampling frame; out of scope for screening
+  def self.birthing_center?(pbs_list)
+    [4,5].include? pbs_list.in_out_frame_code.to_i
   end
 
 end
