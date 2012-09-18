@@ -197,8 +197,6 @@ module Psc
           sa.instrument.should == I::Instrument.new(sa.survey,
                                                     sa.referenced_survey,
                                                     sa.activity_name,
-                                                    sa.participant_type_label,
-                                                    sa.order_label,
                                                     sa.event,
                                                     sa.person)
 
@@ -232,13 +230,13 @@ module Psc
       it 'derives a survey' do
         sa.derive_implied_entities
 
-        sa.survey.should == I::Survey.new(sa.instrument_label)
+        sa.survey.should == I::Survey.new(sa.instrument_label, sa.participant_type_label, sa.order_label)
       end
 
       it 'derives a referenced survey' do
         sa.derive_implied_entities
 
-        sa.referenced_survey.should == I::Survey.new(sa.references_label)
+        sa.referenced_survey.should == I::SurveyReference.new(sa.references_label)
       end
 
       it 'derives a contact link' do

@@ -77,10 +77,10 @@ module Psc
         person = I::Person.new(person_id)
         contact = I::Contact.new(scheduled_date, person)
         event = I::Event.new(event_data_collection, ideal_date, contact, person)
-        survey = I::Survey.new(instrument_pregnotpreg)
+        survey = I::Survey.new(instrument_pregnotpreg, nil, nil)
 
         report.instruments.should == Set.new([
-          I::Instrument.new(survey, nil, activity_name, nil, nil, event, person)
+          I::Instrument.new(survey, nil, activity_name, event, person)
         ])
       end
 
@@ -88,8 +88,8 @@ module Psc
         person = I::Person.new(person_id)
         contact = I::Contact.new(scheduled_date, person)
         event = I::Event.new(event_data_collection, ideal_date, contact, person)
-        survey = I::Survey.new(instrument_pregnotpreg)
-        instrument = I::Instrument.new(survey, nil, activity_name, nil, nil, event, person)
+        survey = I::Survey.new(instrument_pregnotpreg, nil, nil)
+        instrument = I::Instrument.new(survey, nil, activity_name, event, person)
 
         report.contact_links.should == Set.new([
           I::ContactLink.new(person, contact, event, instrument)
@@ -100,14 +100,12 @@ module Psc
         person = I::Person.new(person_id)
         contact = I::Contact.new(scheduled_date, person)
         event = I::Event.new(event_data_collection, ideal_date, contact, person)
-        survey = I::Survey.new(instrument_pregnotpreg)
-        instrument = I::Instrument.new(survey, nil, activity_name, nil, nil, event, person)
+        survey = I::Survey.new(instrument_pregnotpreg, nil, nil)
+        instrument = I::Instrument.new(survey, nil, activity_name, event, person)
 
-        report.instrument_plans.should == {
-          instrument => [
-            { :template => survey, :participant_type => nil }
-          ]
-        }
+        expected_plan = Psc::InstrumentPlan.new(instrument, [survey])
+
+        report.instrument_plans.should == Set.new([expected_plan])
       end
     end
 
@@ -129,10 +127,10 @@ module Psc
         person = I::Person.new(person_id)
         contact = I::Contact.new(scheduled_date, person)
         event = I::Event.new(event_birth, ideal_date, contact, person)
-        survey = I::Survey.new(instrument_birth)
+        survey = I::Survey.new(instrument_birth, 'mother', nil)
 
         report.instruments.should == Set.new([
-          I::Instrument.new(survey, nil, activity_name, 'mother', nil, event, person)
+          I::Instrument.new(survey, nil, activity_name, event, person)
         ])
       end
 
@@ -140,16 +138,13 @@ module Psc
         person = I::Person.new(person_id)
         contact = I::Contact.new(scheduled_date, person)
         event = I::Event.new(event_birth, ideal_date, contact, person)
-        root_survey = I::Survey.new(instrument_birth)
-        child_survey = I::Survey.new(instrument_baby_name)
-        root_instrument = I::Instrument.new(root_survey, nil, activity_name, 'mother', nil, event, person)
+        root_survey = I::Survey.new(instrument_birth, 'mother', nil)
+        child_survey = I::Survey.new(instrument_baby_name, 'child', '01_01')
+        root_instrument = I::Instrument.new(root_survey, nil, activity_name, event, person)
 
-        report.instrument_plans.should == {
-          root_instrument => [
-            { :template => root_survey, :participant_type => 'mother' },
-            { :template => child_survey, :participant_type => 'child' }
-          ]
-        }
+        expected_plan = Psc::InstrumentPlan.new(root_instrument, [root_survey, child_survey])
+
+        report.instrument_plans.should == Set.new([expected_plan])
       end
     end
   end

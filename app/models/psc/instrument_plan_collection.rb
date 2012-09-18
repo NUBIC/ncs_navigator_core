@@ -61,15 +61,17 @@ module Psc
       roots.each do |activity|
         root = activity.instrument
 
-        plans[activity.survey] = InstrumentPlan.new(root, [activity])
+        plans[activity.survey.access_code] = InstrumentPlan.new(root, [activity.survey])
       end
 
       children.select(&:referenced_survey).each do |activity|
-        unless plans.has_key?(activity.referenced_survey)
-          raise "Activity #{activity.activity_id} references unknown survey #{activity.referenced_survey.inspect}"
+        referenced_code = activity.referenced_survey.access_code
+
+        unless plans.has_key?(referenced_code)
+          raise "Activity #{activity.activity_id} references unknown survey #{referenced_code}"
         end
 
-        plans[activity.referenced_survey].activities << activity
+        plans[referenced_code].surveys << activity.survey
       end
 
       plans.values

@@ -63,10 +63,9 @@ module Psc
       @contacts = Set.new
       @events = Set.new
       @instruments = Set.new
+      @instrument_plans = Set.new
       @people = Set.new
       @surveys = Set.new
-
-      @instrument_plans = {}
     end
 
     ##
@@ -89,21 +88,12 @@ module Psc
 
       plans.each do |plan|
         instruments << plan.root
-
-        add_plan(plan)
+        instrument_plans << plan
 
         plan.surveys.each { |s| surveys << s }
       end
 
       logger.info 'Mapping complete'
-    end
-
-    ##
-    # @private
-    def add_plan(plan)
-      instrument_plans[plan.root] = plan.activities.map do |a|
-        { :template => a.survey, :participant_type => a.participant_type_label }
-      end
     end
   end
 end

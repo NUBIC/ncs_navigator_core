@@ -203,16 +203,23 @@ module Psc
 
       @person = im::Person.new(person_id)
       @contact = im::Contact.new(activity_date, person)
-      @event = im::Event.new(event_label, ideal_date, contact, person) if event_label
-      @survey = im::Survey.new(instrument_label) if instrument_label
-      @referenced_survey = im::Survey.new(references_label) if references_label
+
+      if event_label
+        @event = im::Event.new(event_label, ideal_date, contact, person)
+      end
+
+      if instrument_label
+        @survey = im::Survey.new(instrument_label, participant_type_label, order_label)
+      end
+
+      if references_label
+        @referenced_survey = im::SurveyReference.new(references_label)
+      end
 
       if event && survey && !referenced_survey
         @instrument = im::Instrument.new(survey,
                                          referenced_survey,
                                          activity_name,
-                                         participant_type_label,
-                                         order_label,
                                          event,
                                          person)
       end
@@ -300,7 +307,7 @@ module Psc
 
       ##
       # {Instrument} representation.
-      class Instrument < Struct.new(:survey, :referenced_survey, :name, :participant_type, :order, :event, :person)
+      class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
       end
 
       ##
@@ -310,8 +317,12 @@ module Psc
 
       ##
       # {Survey} representation.
-      class Survey < Struct.new(:instrument_label)
-        alias_method :access_code, :instrument_label
+      class Survey < Struct.new(:access_code, :participant_type, :order)
+      end
+
+      ##
+      # A survey reference.
+      class SurveyReference < Struct.new(:access_code)
       end
     end
   end
