@@ -113,9 +113,6 @@ Spork.prefork do
       DatabaseCleaner.clean_with(:truncation)
       NcsNavigatorCore.mdes_version = '3.1' # TODO: support with different versions
       NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
-
-      # TODO: remove the pbs code list load when MdesCodeListLoader handles MDES 3.0 codes
-      PbsCodeListLoader.load_codes
     end
 
     config.before(:each, :clean_with_truncation) do
