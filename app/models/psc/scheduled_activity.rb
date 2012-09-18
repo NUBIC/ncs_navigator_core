@@ -1,3 +1,4 @@
+require 'digest/sha1'
 require 'patient_study_calendar'
 
 module Psc
@@ -29,6 +30,7 @@ module Psc
   # * constructors for those two situations
   # * helpers for extracting information from activity labels
   # * normalization of data structures (i.e. all labels are presented as lists)
+  # * derivation of implied operational data entities
   # * structural equality via Struct
   #
   # While you MAY use ScheduledActivity in the same way that you would use any
@@ -109,6 +111,27 @@ module Psc
   # ----
   #
   # TODO
+  #
+  #
+  # On derived entities
+  # ===================
+  #
+  # Each activity implies a number of entities in Cases.  They are:
+  #
+  # * {Contact}
+  # * {Event}
+  # * {Instrument}
+  # * {Person}
+  # * {Survey}, main
+  # * {Survey}, referenced
+  #
+  # Invoking {#derive_implied_entities} will write implied entity stubs to
+  # contact, event, ..., survey, and referenced_survey.
+  #
+  # Many activities may imply the same entity; each activity for a given
+  # subject, for example, will imply the same person.  You should de-duplicate
+  # these implied entities before inserting them into Cases.
+  # {Psc::ScheduledActivityReport} is one way to accomplish that.
   class ScheduledActivity < Struct.new(*SCHEDULED_ACTIVITY_ATTRS)
     alias_method :name, :activity_name
     alias_method :id, :activity_id
@@ -121,6 +144,14 @@ module Psc
     NA          = 'na'
     OCCURRED    = 'occurred'
     SCHEDULED   = 'scheduled'
+
+    attr_reader :contact
+    attr_reader :contact_link
+    attr_reader :event
+    attr_reader :instrument
+    attr_reader :person
+    attr_reader :survey
+    attr_reader :referenced_survey
 
     ##
     # Constructs an instance of this class from a scheduled activity report row.
@@ -166,6 +197,35 @@ module Psc
       super
 
       @label_list ||= []
+    end
+
+    def derive_implied_entities
+      im = Implications
+
+      @person = im::Person.new(person_id)
+      @contact = im::Contact.new(activity_date, person)
+
+      if event_label
+        @event = im::Event.new(event_label, ideal_date, contact, person)
+      end
+
+      if instrument_label
+        @survey = im::Survey.new(instrument_label, participant_type_label, order_label)
+      end
+
+      if references_label
+        @referenced_survey = im::SurveyReference.new(references_label)
+      end
+
+      if event && survey && !referenced_survey
+        @instrument = im::Instrument.new(survey,
+                                         referenced_survey,
+                                         activity_name,
+                                         event,
+                                         person)
+      end
+
+      @contact_link = im::ContactLink.new(person, contact, event, instrument)
     end
 
     def labels=(v)
@@ -228,6 +288,59 @@ module Psc
     # @private
     def downcased_state
       current_state.to_s.downcase
+    end
+
+    module Implications
+      module Fingerprint
+        def fingerprint
+          concat = self.class.members.map do |m|
+            m.respond_to?(:fingerprint) ? m.fingerprint : m.to_s
+          end.join('')
+
+          @fingerprint ||= Digest::SHA1.hexdigest(concat)
+        end
+      end
+
+      ##
+      # {ContactLink} representation.
+      class ContactLink < Struct.new(:person, :contact, :event, :instrument)
+      end
+
+      ##
+      # Representation of a {Contact} from an SA report.
+      class Contact < Struct.new(:scheduled_date, :person)
+        include Fingerprint
+      end
+
+      ##
+      # {Event} representation.
+      class Event < Struct.new(:label, :ideal_date, :contact, :person)
+        include Fingerprint
+      end
+
+      ##
+      # {Instrument} representation.
+      class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
+        include Fingerprint
+      end
+
+      ##
+      # {Person} representation.
+      class Person < Struct.new(:person_id)
+        include Fingerprint
+      end
+
+      ##
+      # {Survey} representation.
+      class Survey < Struct.new(:access_code, :participant_type, :order)
+        include Fingerprint
+      end
+
+      ##
+      # A survey reference.
+      class SurveyReference < Struct.new(:access_code)
+        include Fingerprint
+      end
     end
   end
 end

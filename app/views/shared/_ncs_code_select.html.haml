@@ -3,7 +3,7 @@
 - date ||= nil
 - help_text ||= nil
 - notify_marker ||= nil
-- html_attrs ||= {}
+- html_attrs ||= { :class => "required" }
 %p
   = f.label code, label_text
   - if notify_marker

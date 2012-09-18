@@ -14,7 +14,7 @@ Feature: Creating a dwelling unit
     Then I should be on the new dwelling unit page
     And I should see "New Dwelling Unit"
     When I select "Yes" from "Duplicate Address"
-    And I select "Single Family Home" from "Type of Residence"
+    And I select "Single-Family Home" from "Type of Residence"
     And I fill in "Address One" with "1 State Str."
     And I fill in "Address Two" with "Apt 2B"
     And I fill in "City" with "Chicago"
