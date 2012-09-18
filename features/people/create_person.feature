@@ -22,7 +22,7 @@ Feature: Creating a person record
     And I select "Not Hispanic or Latino" from "Ethnic Group"
     And I select "English" from "Language"
     And I select "Married" from "Marital Status"
-    And I select "In person" from "Preferred Contact Method"
+    And I select "In-person" from "Preferred Contact Method"
     And I select "Yes" from "Planned Move"
     And I select "Address known" from "Move Info"
     And I select "Yes" from "When Move"
