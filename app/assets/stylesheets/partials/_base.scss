@@ -26,6 +26,18 @@ $PAGE_HEADER_COLOR : #007c8b;
   -webkit-border-radius: $radius;
 }
 
+@mixin colored_button {
+  -webkit-box-shadow: rgba(0,0,0,0.1) 0 1px 0 0;
+  -moz-box-shadow: rgba(0,0,0,0.1) 0 1px 0 0;
+  box-shadow: rgba(0,0,0,0.1) 0 1px 0 0;
+  font-weight: 700;
+  font-family: 'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
+  color: #fff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
 @mixin shadowbox {
   box-shadow: 0px 0px 40px $SHADOW;
   -webkit-box-shadow: 0px 0px 40px $SHADOW;

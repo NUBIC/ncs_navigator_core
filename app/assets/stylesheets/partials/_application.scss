@@ -216,20 +216,13 @@ form {
 }
 
 .blue_button {
-	-webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	-moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	background-color:#cdc9c9;
+  @include colored_button;
+
+  background-color:#cdc9c9;
 	border:1px solid #696969;
-	font-family:'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
 	font-size: 0.8em;
-	font-weight: 700;
 	padding: 4px;
 	height: 1em;
-	color:#fff;
-	border-radius:5px;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
 
   a {
     color: #696969;
@@ -238,23 +231,33 @@ form {
 }
 
 .green_button {
-  -webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-  -moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-  box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
+  @include colored_button;
+
   background-color:#66FF66;
   border:1px solid #339933;
-  font-family:'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
   font-size: 0.9em;
-  font-weight: 700;
   padding: 2px;
   height: .8em;
-  color:#fff;
-  border-radius:5px;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
 
   a {
     color: #339933;
     text-decoration: none;
+  }
+}
+
+.red_button {
+  @include colored_button;
+  background-color: lightpink;
+  border: 1px solid crimson;
+  font-size: 0.8em;
+  padding: 4px;
+
+  a {
+    color: crimson;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: blue !important;
   }
 }
