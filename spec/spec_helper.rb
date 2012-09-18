@@ -63,6 +63,8 @@ Spork.prefork do
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
+  NcsNavigatorCore.mdes_version = '3.1' # TODO: support with different versions
+
   module TestLogins
     def user_login
       Aker.authority.valid_credentials?(:user, 'test_user', 'test_user')
@@ -109,7 +111,6 @@ Spork.prefork do
     config.before(:suite) do
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.clean_with(:truncation)
-      NcsNavigatorCore.mdes_version = '3.1' # TODO: support with different versions
       NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
     end
 
