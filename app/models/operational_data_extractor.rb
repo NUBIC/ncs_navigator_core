@@ -178,6 +178,18 @@ class OperationalDataExtractor
 
     end
 
+    ##
+    # Set the Participant.participant_type_code based on the ppg_status
+    # PPG STATUS
+    # 1 PPG Group 1: Pregnant and Eligible
+    # 2 PPG Group 2: High Probability – Trying to Conceive
+    # 3 PPG Group 3: High Probability – Recent Pregnancy Loss
+    # 4 PPG Group 4: Other Probability – Not Pregnancy and not Trying
+    #
+    # PARTICIPANT_TYPE
+    # 1 Age-eligible woman, ineligible for pre-pregnancy visit - being followed
+    # 2 High-Trier - eligible for Pre-Pregnancy Visit
+    # 3 Pregnant eligible woman
     def set_participant_type(participant, ppg_code)
       p_type_code = nil
       case ppg_code
