@@ -25,4 +25,20 @@ namespace :mdes do
       $stderr.puts "There are #{NcsCode.count} codes."
     end
   end
+
+  namespace :version do
+    task :base => :environment do
+      require 'ncs_navigator/core/mdes/version'
+    end
+
+    desc 'Print the current MDES version'
+    task :show => :base do
+      puts "Current MDES version is #{NcsNavigatorCore.mdes.version}."
+    end
+
+    desc 'Set the MDES version in a new deployment'
+    task :set, [:version] => [:base] do |t, args|
+      NcsNavigator::Core::Mdes::Version.set!(args[:version])
+    end
+  end
 end

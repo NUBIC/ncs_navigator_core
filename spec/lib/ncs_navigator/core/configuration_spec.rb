@@ -135,6 +135,10 @@ module NcsNavigator::Core
     end
 
     describe '#mdes' do
+      before do
+        config.mdes_version = '2.0'
+      end
+
       it 'is a Specification' do
         config.mdes.should be_a NcsNavigator::Mdes::Specification
       end

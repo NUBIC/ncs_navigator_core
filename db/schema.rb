@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120912192132) do
+ActiveRecord::Schema.define(:version => 20120918022557) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -384,6 +384,10 @@ ActiveRecord::Schema.define(:version => 20120912192132) do
     t.boolean  "being_processed",                :default => false
     t.string   "ssu_id"
     t.string   "tsu_id"
+  end
+
+  create_table "mdes_version", :id => false, :force => true do |t|
+    t.string "number", :limit => 10, :null => false
   end
 
   create_table "merges", :force => true do |t|
