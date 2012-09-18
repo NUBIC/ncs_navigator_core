@@ -237,8 +237,8 @@ describe Fieldwork do
           json.should have_key('participants')
         end
 
-        it 'has an "instrument_templates" key' do
-          json.should have_key('instrument_templates')
+        it 'has an "instrument_plans" key' do
+          json.should have_key('instrument_plans')
         end
       end
     end
