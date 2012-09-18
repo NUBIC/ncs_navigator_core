@@ -28,7 +28,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def operational_tables
-      @operational_tables ||= NcsNavigatorCore.mdes.
+      @operational_tables ||= @wh_config.mdes.
         transmission_tables.select { |t| t.operational_table? }.collect { |t| t.name }
     end
   end
