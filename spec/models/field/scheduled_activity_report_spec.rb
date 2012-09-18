@@ -18,8 +18,8 @@ module Field
           json.should have_key('contacts')
         end
 
-        it 'has an "instrument_templates" key' do
-          json.should have_key('instrument_templates')
+        it 'has an "instrument_plans" key' do
+          json.should have_key('instrument_plans')
         end
 
         it 'has a "participants" key' do
@@ -192,15 +192,20 @@ module Field
           let(:response_sets) { [Factory(:response_set)] }
           let(:survey) { Factory(:survey) }
 
-          let(:survey_ir) { stub }
+          let(:survey_ir) { stub(:participant_type => 'child') }
 
           let(:instrument_ir) do
             stub(:event => event_ir, :person => person_ir, :survey => survey_ir, :name => 'An instrument')
           end
 
+          let(:instrument_plan_ir) do
+            stub(:root => instrument_ir, :surveys => [survey_ir], :id => 'foo')
+          end
+
           before do
             report.surveys << survey_ir
             report.instruments << instrument_ir
+            report.instrument_plans << instrument_plan_ir
             report.resolutions[survey_ir] = survey
             report.resolutions[instrument_ir] = instrument
           end
@@ -222,7 +227,9 @@ module Field
               instruments[0]['instrument_id'].should == instrument.instrument_id
             end
 
-            it "sets #/0/instrument_plan_id"
+            it "sets #/0/instrument_plan_id" do
+              instruments[0]['instrument_plan_id'].should == 'foo'
+            end
 
             it "sets #/0/name to the instrument's activity name" do
               instruments[0]['name'].should == instrument_ir.name
@@ -245,31 +252,30 @@ module Field
 
           let(:plans) { json['instrument_plans'] }
 
-          it 'sets #/0/instrument_plan_id'
-
-          it 'sets #/0/instrument_templates'
-        end
-
-        describe 'instrument_templates' do
-          include_context 'has an instrument'
-
-          let(:templates) { json['instrument_templates'] }
-
-          it 'sets #/0/instrument_template_id' do
-            templates[0]['instrument_template_id'].should == survey.api_id
+          it 'sets #/0/instrument_plan_id' do
+            plans[0]['instrument_plan_id'].should == 'foo'
           end
 
-          it 'sets #/0/version' do
-            templates[0]['version'].should == survey.updated_at.utc.as_json
+          it 'sets #/0/instrument_templates/0/instrument_template_id' do
+            plans[0]['instrument_templates'][0]['instrument_template_id'].should == survey.api_id
           end
 
-          it 'sets #/0/survey' do
-            templates[0]['survey'].should == JSON.parse(survey.to_json)
+          it 'sets #/0/instrument_templates/0/version' do
+            plans[0]['instrument_templates'][0]['version'].should == survey.updated_at.utc.as_json
           end
 
-          # Same sort of check.
-          it 'sets #/0/survey to a non-blank value' do
-            templates[0]['survey'].should_not be_blank
+          it 'sets #/0/instrument_templates/0/participant_type' do
+            plans[0]['instrument_templates'][0]['participant_type'].should == survey_ir.participant_type
+          end
+
+          it 'sets #/0/instrument_templates/0/survey' do
+            plans[0]['instrument_templates'][0]['survey'].should == JSON.parse(survey.to_json)
+          end
+
+          # This, too, is a quick check against an error in Surveyor's JSON
+          # serialization code that keeps cropping up.
+          it 'sets #/0/instrument_templates/0/survey to a non-blank value' do
+            plans[0]['instrument_templates'][0]['survey'].should_not be_blank
           end
         end
 

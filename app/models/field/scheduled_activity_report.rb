@@ -8,7 +8,7 @@ module Field
     def as_json(options = nil)
       {
         'contacts' => contacts_as_json(options),
-        'instrument_templates' => instrument_templates_as_json(options),
+        'instrument_plans' => instrument_plans_as_json(options),
         'participants' => participants_as_json(options)
       }
     end
@@ -49,13 +49,15 @@ module Field
     ##
     # @private
     def instruments_as_json(event, person, options)
+      map_instruments_to_plans
+
       instruments.select { |i| i.event == event && i.person == person }.map do |i|
         mi = m i
-        ms = m i.survey
+        plan = plan_for(i)
 
-        if mi && ms
+        if mi && plan
           adapt_model(mi).as_json(options).merge({
-            'instrument_template_id' => ms.api_id,
+            'instrument_plan_id' => plan.id,
             'name' => i.name,
             'response_sets' => mi.response_sets
           })
@@ -65,18 +67,43 @@ module Field
 
     ##
     # @private
-    def instrument_templates_as_json(options)
-      surveys.map do |s|
+    def instrument_plans_as_json(options)
+      instrument_plans.map do |p|
+        { 'instrument_plan_id' => p.id,
+          'instrument_templates' => instrument_templates_as_json(p, options)
+        }
+      end
+    end
+
+    ##
+    # @private
+    def instrument_templates_as_json(plan, options)
+      plan.surveys.map do |s|
         ms = m s
 
         if ms
           {
             'instrument_template_id' => ms.api_id,
+            'participant_type' => s.participant_type,
             'survey' => ms,
             'version' => ms.updated_at.utc
           }
         end
       end.compact
+    end
+
+    ##
+    # @private
+    def map_instruments_to_plans
+      @plan_map = {}.tap do |h|
+        instrument_plans.each { |p| h[p.root] = p }
+      end
+    end
+
+    ##
+    # @private
+    def plan_for(instrument)
+      @plan_map[instrument]
     end
 
     ##

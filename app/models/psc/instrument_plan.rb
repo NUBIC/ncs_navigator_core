@@ -16,6 +16,10 @@ module Psc
       self.surveys ||= []
     end
 
+    def id
+      root.try(:fingerprint)
+    end
+
     def order
       surveys.sort_by! { |s| s.order.to_s }
     end
