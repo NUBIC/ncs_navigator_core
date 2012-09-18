@@ -78,7 +78,7 @@ Spork.each_run do
   FactoryGirl.reload
 
   DatabaseCleaner.clean_with(:truncation)
-  NcsNavigatorCore.mdes_version = '3.1' # TODO: testing with different MDES versions
+  NcsNavigatorCore.mdes_version = '2.0' # TODO: testing with different MDES versions
   NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
 
   DatabaseCleaner.strategy = :transaction
