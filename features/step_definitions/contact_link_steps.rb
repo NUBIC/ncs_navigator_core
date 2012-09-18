@@ -6,7 +6,7 @@ Given /^the survey has been completed$/ do
     When I go to the welcome summary page
     When I follow "PPG Group 1: Pregnant and Eligible"
     When I follow "Initiate Contact"
-    When I select "In-person" from "Contact Type"
+    When I select "In person" from "Contact Type"
     And I press "Submit"
     Then I should be on the edit_person_contact page
     And I should see "Bessie Smith"

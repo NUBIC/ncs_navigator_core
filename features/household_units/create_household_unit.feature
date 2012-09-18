@@ -15,11 +15,11 @@ Feature: Creating a household unit
     And I should see "New Household Unit"
     When I select "Yes" from "Status"
     And I select "Household informant is eligible for Pregnancy Screener" from "Eligibility"
-    And I select "Single Family Home" from "Structure"
+    And I select "Single-Family Home" from "Structure"
     And I press "Submit"
     Then I should see "Household was successfully created."
     And I should be on the household units page
-    And I should see "Single Family Home"
+    And I should see "Single-Family Home"
 
   @javascript
   Scenario: Associating a person with a household unit
@@ -35,7 +35,7 @@ Feature: Creating a household unit
     And I should see "New Household Unit"
     When I select "Yes" from "Status"
     And I select "Household informant is eligible for Pregnancy Screener" from "Eligibility"
-    And I select "Single Family Home" from "Structure"
+    And I select "Single-Family Home" from "Structure"
     And I follow "add_household_person_links"
     And I focus on the autocomplete input element
     And I fill in "autocomplete_combobox_person" with "Bix"
@@ -46,7 +46,7 @@ Feature: Creating a household unit
     And I press "Submit"
     Then I should see "Household was successfully created."
     And I should be on the household units page
-    And I should see "Single Family Home"
+    And I should see "Single-Family Home"
 
     # Scenario: Creating a new household unit without selecting required attributes
     #   Given I am on the household units page
