@@ -125,7 +125,8 @@ class Merge < ActiveRecord::Base
       save(:validate => false)
 
       # Sync PSC.
-      synced = Field::PscSync.new(superposition).run(logger)
+      sync = Field::PscSync.new(superposition, logger)
+      synced = sync.run
 
       if !synced
         update_attribute(:crashed_at, Time.now)

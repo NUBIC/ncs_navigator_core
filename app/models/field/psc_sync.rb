@@ -9,12 +9,14 @@ module Field
   class PscSync
     attr_accessor :psc
 
+    attr_reader :logger
     attr_reader :events
     attr_reader :instruments
     attr_reader :psc_participants
 
-    def initialize(superposition)
+    def initialize(superposition, logger)
       @sp = superposition
+      @logger = logger
       @psc_participants = {}
     end
 
@@ -22,7 +24,7 @@ module Field
     # Runs the sync.
     #
     # Returns truthy if sync completed without errors, false otherwise.
-    def run(logger)
+    def run
       login_to_psc
 
       # Build {PscParticipant} objects that correspond to the participants in

@@ -1,5 +1,7 @@
-require 'spec_helper'
+require 'logger'
 require 'set'
+require 'spec_helper'
+require 'stringio'
 
 module Field
   describe PscSync do
@@ -11,8 +13,12 @@ module Field
     let(:person1) { Factory(:person) }
     let(:person2) { Factory(:person) }
 
+    let(:sio) { StringIO.new }
+    let(:log) { sio.string }
+    let(:logger) { ::Logger.new(sio) }
+
     let(:sp) { stub }
-    let(:sync) { PscSync.new(sp) }
+    let(:sync) { PscSync.new(sp, logger) }
 
     before do
       Factory(:participant_person_link, :participant_id => p1.id, :person_id => person1.id)
