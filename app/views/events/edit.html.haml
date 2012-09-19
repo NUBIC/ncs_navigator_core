@@ -1,8 +1,5 @@
 - title "Edit Event"
 
-.mdes_table_definition
-  = render 'documentation/event'
-
 %h3
   - if @event.participant && @event.participant.person
     = link_to @event.participant.person.to_s, participant_path(@event.participant), :class => "header_link"

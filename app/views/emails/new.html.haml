@@ -1,7 +1,6 @@
-- title "New Email"
-
-.mdes_table_definition
-  = render 'documentation/email'
+- lbl = "New Email"
+- lbl += " for #{@person}" if @person
+- title lbl
 
 .page_section
   = form_for([@person, @email], :html => {:autocomplete => "off"}) do |f|

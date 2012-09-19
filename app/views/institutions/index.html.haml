@@ -1,8 +1,5 @@
 - title "Institutions"
 
-.mdes_table_definition
-  = render 'documentation/institution'
-
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     = f.label :institute_name_cont

@@ -1,8 +1,5 @@
 - title "Addresses"
 
-.mdes_table_definition
-  = render 'documentation/address'
-
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     = f.label :address_one_cont

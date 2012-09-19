@@ -1,7 +1,6 @@
-- title "Edit Telephone"
-
-.mdes_table_definition
-  = render 'documentation/telephone'
+- lbl = "Edit Telephone"
+- lbl += " for #{@person}" if @person
+- title lbl
 
 .page_section
   = form_for([@person, @telephone], :html => {:autocomplete => "off"}) do |f|

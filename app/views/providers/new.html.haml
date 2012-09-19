@@ -1,8 +1,5 @@
 - title "New Provider"
 
-.mdes_table_definition
-  = render 'documentation/provider'
-
 .page_section
   = form_for(@provider, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object

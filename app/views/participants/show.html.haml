@@ -1,12 +1,5 @@
 - title "Participant"
 
-.mdes_table_definition
-  = render 'documentation/participant'
-  %br
-    Disposition Codes
-    %span{ :class => "disposition_icon" }
-    = render "documentation/disposition_code_list"
-
 = render "participants/header_information", :person => @person, :participant => @participant
 
 #tabs

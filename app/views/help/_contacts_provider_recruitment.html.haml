@@ -1,0 +1,11 @@
+= render "/help/help_link"
+%textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "New Contact" }
+  = render "/documentation/contact"
+
+  %p
+    .help_header
+      Page Instructions
+    .help_instructions
+      This is where you create a new Contact record with the Provider for the Provider Recruitment event.
+      Initially you would like to enter the Contact Date, the Start Time, the Person Contacted, and the Contact Method.
+      Do not set the Contact End time unless you know that this contact has been completed.
