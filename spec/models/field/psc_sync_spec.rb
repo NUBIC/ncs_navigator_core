@@ -18,7 +18,7 @@ module Field
     let(:logger) { ::Logger.new(sio) }
 
     let(:sp) { stub }
-    let(:sync) { PscSync.new(sp, logger) }
+    let(:sync) { PscSync.new }
 
     before do
       Factory(:participant_person_link, :participant_id => p1.id, :person_id => person1.id)
@@ -27,6 +27,8 @@ module Field
       sp.stub!(:current_events => [e1, e2], :current_instruments => [instrument])
 
       sync.psc = stub.as_null_object
+      sync.superposition = sp
+      sync.logger = logger
     end
 
     describe '#resolve_psc_participants' do

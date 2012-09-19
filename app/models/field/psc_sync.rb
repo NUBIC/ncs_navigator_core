@@ -10,14 +10,15 @@ module Field
   class PscSync
     attr_accessor :psc
 
+    attr_accessor :superposition
+    attr_accessor :logger
+
     attr_reader :logger
     attr_reader :events
     attr_reader :instruments
     attr_reader :psc_participants
 
-    def initialize(superposition, logger)
-      @sp = superposition
-      @logger = logger
+    def initialize
       @psc_participants = {}
     end
 
@@ -75,8 +76,8 @@ module Field
     end
 
     def resolve_psc_participants
-      @events = @sp.current_events
-      @instruments = @sp.current_instruments
+      @events = superposition.current_events
+      @instruments = superposition.current_instruments
 
       build_psc_participants(events)
       build_psc_participants(instruments)

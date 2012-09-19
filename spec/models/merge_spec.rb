@@ -23,6 +23,12 @@ describe Merge do
 
   subject { fw.merges.build }
 
+  describe '.psc_sync_strategy' do
+    it 'defaults to Field::PscSync' do
+      Merge.psc_sync_strategy.should == Field::PscSync
+    end
+  end
+
   describe '#run' do
     it 'saves the merge log' do
       subject.run

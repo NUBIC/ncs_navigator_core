@@ -40,6 +40,19 @@ class Merge < ActiveRecord::Base
   TIMEOUT = 5.minutes
 
   ##
+  # Returns the PSC sync strategy to use.  This can be changed for testing.
+  #
+  # The strategy must respond to #superposition=, #logger=, and #run, and
+  # should return true or false.
+  def self.psc_sync_strategy
+    @psc_sync_strategy || Field::PscSync
+  end
+
+  def self.psc_sync_strategy=(strategy)
+    @psc_sync_strategy = strategy
+  end
+
+  ##
   # Merges a fieldwork set with Core's datastore.  The log of the operation
   # is written to #log.
   #
@@ -125,7 +138,10 @@ class Merge < ActiveRecord::Base
       save(:validate => false)
 
       # Sync PSC.
-      sync = Field::PscSync.new(superposition, logger)
+      sync = self.class.psc_sync_strategy.new
+      sync.superposition = superposition
+      sync.logger = logger
+
       synced = sync.run
 
       if !synced
