@@ -1,5 +1,17 @@
 $(document).ready(function() {
 
+  $(".new_person").validate();
+  $(".edit_person").validate();
+
+  $(".edit_contact_link").validate({
+    rules: {
+      'contact[contact_distance]': {
+        maxlength: 4,
+        number: true
+      }
+    }
+  });
+
   $(".edit_contact").validate();
   $(".new_contact").validate();
 
@@ -87,5 +99,15 @@ $(document).ready(function() {
       },
     },
   });
+
+  $(".new_telephone").validate();
+  $(".edit_telephone").validate();
+
+  $(".new_address").validate();
+  $(".edit_address").validate();
+
+  $(".new_email").validate();
+  $(".edit_email").validate();
+
 
 });
