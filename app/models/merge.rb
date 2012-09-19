@@ -121,7 +121,7 @@ class Merge < ActiveRecord::Base
       end
 
       self.merged_at = Time.now
-      self.conflict_report = sp.conflicts.to_json
+      self.conflict_report = superposition.conflicts.to_json
       save(:validate => false)
 
       # Sync PSC.
