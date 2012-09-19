@@ -47,8 +47,7 @@
           %td
             - unless provider.contacts.blank?
               - cls = pbs.pr_recruitment_status_code.to_i == 1 ? "star_link icon_link" : "icon_link"
-              - disp = DispositionMapper.disposition_text_for_event(provider.provider_recruitment_event.event_type, contact.contact_disposition)
-              = link_to disp, path, { :class => cls }
+              = link_to pbs.pr_recruitment_status.to_s, path, { :class => cls }
 
   .links
     -#= link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"  {no option to enter the provider name here in PBS list, should be in Provider path}
