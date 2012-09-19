@@ -181,7 +181,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow do
-      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one, :following_high_intensity] => :following_high_intensity
+      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :following_high_intensity] => :following_high_intensity
     end
 
     event :impregnate do

@@ -39,7 +39,7 @@ class Psc::ScheduledActivityReport
 
           report.process
 
-          report.people.models.should == Set.new([p])
+          report.resolutions.values.should include(p)
         end
 
         it 'logs an error if a person cannot be found' do
@@ -55,7 +55,7 @@ class Psc::ScheduledActivityReport
 
           report.process
 
-          report.surveys.models.should == Set.new([s])
+          report.resolutions.values.should include(s)
         end
 
         it 'logs an error if a survey cannot be found' do
@@ -84,7 +84,8 @@ class Psc::ScheduledActivityReport
 
           report.process
 
-          report.events.models.should == Set.new([e1, e2])
+          report.resolutions.values.should include(e1)
+          report.resolutions.values.should include(e2)
         end
 
         it 'logs an error if an event cannot be found' do
@@ -119,11 +120,14 @@ class Psc::ScheduledActivityReport
           it 'starts an instrument' do
             report.process
 
-            report.instruments.models.first.should_not be_nil
+            instrument = report.resolutions.values.detect { |v| ::Instrument === v }
+            instrument.should_not be_nil
           end
 
           describe 'the started instrument' do
-            let(:instrument) { report.instruments.models.first }
+            let(:instrument) do
+              report.resolutions.values.detect { |v| ::Instrument === v }
+            end
 
             before do
               report.process
@@ -161,7 +165,7 @@ class Psc::ScheduledActivityReport
           it 'reuses that contact' do
             report.process
 
-            report.contacts.models.should == Set.new([c])
+            report.resolutions.values.should include(c)
           end
         end
 
@@ -169,11 +173,14 @@ class Psc::ScheduledActivityReport
           it 'starts a new contact' do
             report.process
 
-            report.contacts.models.first.should_not be_nil
+            contact = report.resolutions.values.detect { |v| Contact === v }
+            contact.should_not be_nil
           end
 
           describe 'the started contact' do
-            let(:contact) { report.contacts.models.first }
+            let(:contact) do
+              report.resolutions.values.detect { |v| Contact === v }
+            end
 
             before do
               report.process
@@ -203,7 +210,7 @@ class Psc::ScheduledActivityReport
             it 'reuses that link' do
               report.process
 
-              report.contact_links.models.should include(cl)
+              report.resolutions.values.should include(cl)
             end
           end
 
@@ -211,11 +218,14 @@ class Psc::ScheduledActivityReport
             it 'builds links' do
               report.process
 
-              report.contact_links.models.none?(&:nil?).should be_true
+              cl = report.resolutions.values.detect { |v| ::ContactLink === v }
+              cl.should_not be_nil
             end
 
             describe 'the built link' do
-              let(:links) { report.contact_links.models }
+              let(:links) do
+                report.resolutions.values.select { |v| ::ContactLink === v }
+              end
 
               before do
                 report.process
@@ -275,16 +285,8 @@ class Psc::ScheduledActivityReport
           report.save_models
         end
 
-        it 'saves generated contacts' do
-          report.contacts.models.none?(&:new_record?).should be_true
-        end
-
-        it 'saves generated instruments' do
-          report.instruments.models.none?(&:new_record?).should be_true
-        end
-
-        it 'saves generated contact links' do
-          report.contact_links.models.none?(&:new_record?).should be_true
+        it 'saves generated models' do
+          report.resolutions.values.none?(&:new_record?).should be_true
         end
       end
     end
