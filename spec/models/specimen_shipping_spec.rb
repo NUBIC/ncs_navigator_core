@@ -55,7 +55,6 @@ describe SpecimenShipping do
     specimen_receipt1 = Factory(:specimen_receipt, :specimen_id => specimen1.id, :specimen_storage_container_id => specimen_storage_container.id)
     specimen_receipt2 = Factory(:specimen_receipt, :specimen_id => specimen2.id, :specimen_storage_container_id => specimen_storage_container.id)
     
-    puts SpecimenShipping.all.inspect
     ss = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container("ABC123")
     ss.size.should == 1
   end
@@ -68,7 +67,6 @@ describe SpecimenShipping do
     specimen_receipt1 = Factory(:specimen_receipt, :specimen_id => specimen1.id, :specimen_storage_container_id => specimen_storage_container.id)
     specimen_receipt2 = Factory(:specimen_receipt, :specimen_id => specimen2.id, :specimen_storage_container_id => specimen_storage_container.id)
     
-    puts SpecimenShipping.all.inspect
     ss = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container("AAA")
     ss.size.should == 1
   end
@@ -81,7 +79,6 @@ describe SpecimenShipping do
     specimen_receipt1 = Factory(:specimen_receipt, :specimen_id => specimen1.id, :specimen_storage_container_id => specimen_storage_container.id)
     specimen_receipt2 = Factory(:specimen_receipt, :specimen_id => specimen2.id, :specimen_storage_container_id => specimen_storage_container.id)
     
-    puts SpecimenShipping.all.inspect
     ss = SpecimenShipping.find_id_by_tracking_number_or_specimen_or_storage_container("123")
     ss.size.should == 1
   end
