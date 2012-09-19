@@ -265,3 +265,13 @@ form {
 .hidden {
   display: none;
 }
+
+.mdes_header,
+.help_header {
+  text-decoration: underline;
+}
+
+.mdes_definition,
+.help_instructions {
+  margin: 0.25em;
+}
