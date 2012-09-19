@@ -400,6 +400,7 @@ ActiveRecord::Schema.define(:version => 20120918022557) do
     t.datetime "started_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   create_table "ncs_codes", :force => true do |t|
