@@ -60,6 +60,28 @@ describe SurveyorController do
       assigns[:activities_for_event].should be_empty
     end
 
+    it "sets correct participant for activity_plan from psc for multiple survey for single instrument" do
+      @response_set.participant = Factory(:participant)
+      @response_set.save!
+      survey1 = Factory(:survey,
+        :title => "abc", :access_code => "abc", :sections => [Factory(:survey_section)])
+      response_set1 = Factory(:response_set, :access_code => "efg",
+        :survey => survey1, :instrument => @instrument, :participant => Factory(:participant))
+
+      PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(InstrumentPlan.new)
+      get :show, :survey_code => survey1.access_code, :response_set_code => response_set1.access_code
+      assigns[:participant].should == response_set1.instrument.response_sets.first.participant
+    end
+
+    it "sets correct participant for activity_plan from psc for single survey" do
+      @response_set.participant = Factory(:participant)
+      @response_set.save!
+
+      PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(InstrumentPlan.new)
+      get :show, :survey_code => @survey.access_code, :response_set_code => @response_set.access_code
+      assigns[:participant].should == @response_set.instrument.response_sets.first.participant
+    end
+
   end
 
 
