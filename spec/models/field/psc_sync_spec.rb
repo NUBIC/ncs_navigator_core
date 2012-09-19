@@ -66,6 +66,24 @@ module Field
       end
     end
 
+    describe '#run' do
+      describe 'without a CAS URL set' do
+        before do
+          sync.stub!(:aker_configuration => Aker::Configuration.new)
+        end
+
+        it 'logs a warning' do
+          sync.run
+
+          log.should =~ /CAS URL not configured/i
+        end
+
+        it 'returns false' do
+          sync.run.should be_false
+        end
+      end
+    end
+
     describe '#grouped_instrument_sas' do
       let(:sas) { sync.grouped_instrument_sas }
       let(:pscp_i) { sync.psc_participants[instrument.participant.id] }

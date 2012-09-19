@@ -1,3 +1,4 @@
+require 'aker'
 require 'aker/cas_cli'
 require 'set'
 
@@ -25,6 +26,8 @@ module Field
     #
     # Returns truthy if sync completed without errors, false otherwise.
     def run
+      return false unless prerequisites_satisfied?
+
       login_to_psc
 
       # Build {PscParticipant} objects that correspond to the participants in
@@ -52,6 +55,21 @@ module Field
       end
     end
 
+    ##
+    # The Aker configuration to use.
+    #
+    # This is intended as a testing convenience, but in the future it might
+    # make sense to use a separate configuration for machine communication.
+    def aker_configuration
+      Aker.configuration
+    end
+
+    def prerequisites_satisfied?
+      prereqs = Prerequisites.new(aker_configuration, logger)
+
+      prereqs.satisfied?
+    end
+
     def update(groups)
       groups.each(&:update)
     end
@@ -64,8 +82,8 @@ module Field
       build_psc_participants(instruments)
     end
 
-    def login_to_psc
-      cas_cli = Aker::CasCli.new(Aker.configuration)
+    def login_to_psc(logger)
+      cas_cli = Aker::CasCli.new(aker_configuration)
       username, password = NcsNavigatorCore.machine_account_credentials
       user = cas_cli.authenticate(username, password)
 
@@ -159,6 +177,32 @@ module Field
         end
 
         psc_participant.update_scheduled_activity_states(packet)
+      end
+    end
+
+    class Prerequisites
+      include Aker::Cas::ConfigurationHelper
+
+      attr_reader :configuration
+      attr_reader :logger
+
+      def initialize(configuration, logger)
+        @configuration = configuration
+        @logger = logger
+      end
+
+      def satisfied?
+        cas_configured?.tap do |ok|
+          logger.warn "Prerequisites for PSC sync failed; sync will not run" if !ok
+        end
+      end
+
+      def cas_configured?
+        ok = cas_url
+
+        logger.warn "CAS URL not configured" if !cas_url
+
+        ok
       end
     end
   end
