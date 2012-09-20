@@ -103,15 +103,16 @@ class ContactsController < ApplicationController
     @provider = Provider.find(params[:provider_id])
     if request.get?
       # set defaults on contact
+      disp = @provider.recruited? ? DispositionMapper::PROVIDER_RECRUITED.to_s : nil
       @contact = Contact.new(:psu_code => NcsNavigatorCore.psu_code,
+                             :contact_disposition => disp,
                              :who_contacted_code => 8,    # provider
                              :contact_location_code => 3, # provider office
                              :contact_date_date => Date.today,
                              :contact_start_time => Time.now.strftime("%H:%M"))
-    else
-      @contact = Contact.new(params[:contact])
     end
     if request.post?
+      @contact = Contact.new(params[:contact])
       if params[:person_id].blank?
         flash[:warning] = "Contact requires the person who was contacted."
         render :action => "provider_recruitment"
@@ -128,9 +129,8 @@ class ContactsController < ApplicationController
           # if so update the pbs_list cooperation date
           # and redirect to provider logistics page
           if @contact.contact_disposition == DispositionMapper::PROVIDER_RECRUITED
-            if @provider.pbs_list.pr_cooperation_date.blank?
-              @provider.pbs_list.update_attribute(:pr_cooperation_date, contact.contact_date_date)
-            end
+            @provider.pbs_list.mark_recruited!(@contact)
+            flash[:notice] = "Provider has been marked recruited."
             redirect_to recruited_provider_path(@provider, :contact_id => @contact.id)
           else
             flash[:notice] = "Contact for #{@provider} was successfully created."

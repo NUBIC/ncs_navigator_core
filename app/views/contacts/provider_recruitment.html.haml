@@ -52,16 +52,13 @@
                                            :code => :contact_type_code,
                                            :other => :contact_type_other,
                                            :html_attrs => {:class => 'required'} }
-
       = render "shared/disposition_code", { :f => f,
                                             :code => :contact_disposition,
                                             :label_text => 'What happened?' }
-
       %p
         = f.label :contact_comment, "Comments"
         %br
         = f.text_area :contact_comment
-
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
 

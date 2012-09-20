@@ -10,7 +10,7 @@
   .recruit_button
     %span{ :class => "green_button" }
       = provider_recruitment_link(@pbs_list)
-  - unless @provider.contact_links.empty?
+  - if !@provider.contact_links.empty? && !@provider.recruited?
     .substitute_link
       %span{ :class => "red_button" }
         = link_to 'Assign Substitute Provider Due to Refusal to Participate',

@@ -75,6 +75,8 @@ class Provider < ActiveRecord::Base
   scope :original_in_sample_providers, includes(:pbs_list).where("pbs_lists.in_sample_code = #{ORIGINAL_IN_SAMPLE_CODE}")
   scope :substitute_in_sample_providers, includes(:pbs_list).where("pbs_lists.in_sample_code = #{SUBSTITUTE_IN_SAMPLE_CODE}")
 
+  after_save :open_recruitment
+
   def to_s
     self.name_practice.to_s
   end
@@ -118,10 +120,33 @@ class Provider < ActiveRecord::Base
   end
 
   def recruited?
-    !self.can_recruit? &&
+    self.can_recruit? &&
       !self.refused_to_participate? &&
       self.pbs_list.try(:provider_recruited?)
   end
+
+  ##
+  # True if provider logistics and all are marked complete
+  def recruitment_logistics_complete?
+    if provider_logistics.empty?
+      false
+    else
+      provider_logistics.select { |l| l.complete? }.count ==
+        provider_logistics.size
+    end
+  end
+
+  ##
+  # Set the pbs list pr_recruitment_end_date attribute to nil
+  # if any of the provider logistics are not complete
+  def open_recruitment
+    if self.pbs_list && !recruitment_logistics_complete?
+      self.pbs_list.update_attribute(:pr_recruitment_end_date, nil)
+      event = self.provider_recruitment_event
+      event.update_attribute(:event_end_date, nil) if event
+    end
+  end
+  private :open_recruitment
 
 end
 

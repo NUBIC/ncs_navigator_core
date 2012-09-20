@@ -82,5 +82,37 @@ class PbsList < ActiveRecord::Base
     !self.pr_cooperation_date.blank? && self.pr_recruitment_status_code == 1
   end
 
+  ##
+  # Sets pr_recruitment_status to 'Provider Recruited' and
+  # pr_recruitment_end_date to the contact date
+  # if the pbs list has not ended the recruitment
+  def mark_recruited!(contact)
+    if self.pr_cooperation_date.blank?
+      self.pr_cooperation_date = get_date_from_contact(contact)
+    end
+    self.pr_recruitment_status_code = 1
+    self.save!
+  end
+
+  ##
+  # Sets pr_recruitment_end_date to the contact date
+  # (or today if contact contact_date is blank)
+  # if the pbs list has not ended the recruitment
+  def complete_recruitment!(contact)
+    if recruitment_ended?
+      # NOOP
+    else
+      self.mark_recruited!(contact) unless provider_recruited?
+      dt = get_date_from_contact(contact)
+      self.update_attribute(:pr_recruitment_end_date, dt)
+      event = self.provider.try(:provider_recruitment_event)
+      event.update_attribute(:event_end_date, dt) if event
+    end
+  end
+
+  def get_date_from_contact(contact)
+    contact.contact_date_date.blank? ? Date.today : contact.contact_date_date
+  end
+
 end
 

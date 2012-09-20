@@ -85,7 +85,7 @@ class PbsListsController < ApplicationController
   end
 
   def mark_pbs_list_as_having_started_recruitment(pbs_list)
-    unless pbs_list.recruitment_started?
+    if !pbs_list.recruitment_started? && !pbs_list.provider_recruited?
       pbs_list.update_attribute(:pr_recruitment_status_code, 3)
     end
   end

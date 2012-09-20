@@ -181,6 +181,8 @@ describe ContactsController do
         @event = Factory(:event, :event_type_code => 22, :event_start_date => nil, :event_start_time => nil)
         @provider = Factory(:provider)
         @pbs_list = Factory(:pbs_list, :provider => @provider, :pr_recruitment_start_date => nil)
+        @provider.pbs_list = @pbs_list
+        @provider.save!
       end
 
       describe "GET provider_recruitment" do
@@ -233,7 +235,7 @@ describe ContactsController do
             end
 
             it "sets PR_RECRUITMENT_START_DATE on Provider PBS List to contact date" do
-              @provider.pbs_list.pr_recruitment_start_date.should be_blank
+              @pbs_list.pr_recruitment_start_date.should be_blank
               post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
               PbsList.find(@provider.pbs_list.id).pr_recruitment_start_date.should == Contact.last.contact_date_date
             end

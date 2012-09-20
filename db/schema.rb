@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120918022557) do
+ActiveRecord::Schema.define(:version => 20120920152622) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -994,6 +994,7 @@ ActiveRecord::Schema.define(:version => 20120918022557) do
     t.string   "transaction_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "completion_date"
   end
 
   create_table "provider_roles", :force => true do |t|

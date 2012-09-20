@@ -2,8 +2,11 @@
   %td.select_col
     %span{ :class => "hide" }
       = render "shared/inline_ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code, :inline => true }
-
     = render "shared/inline_ncs_code_select", { :f => f, :code => :provider_logistics_code, :label_text => "Logistic", :other => :provider_logistics_other, :inline => true }
+
+    %div{ :class => "completion_date" }
+      = f.label :completion_date
+      = f.text_field :completion_date, :class => :datepicker
 
   %td.remove_col
     = link_to_remove_fields 'Remove', f, :provider_logistics

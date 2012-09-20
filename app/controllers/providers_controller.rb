@@ -272,7 +272,9 @@ class ProvidersController < ApplicationController
     respond_to do |format|
       if @provider.update_attributes(params[:provider])
 
-        mark_pbs_list_as_having_recruited_provider(@provider.pbs_list, @contact)
+        if @provider.recruitment_logistics_complete?
+          @provider.pbs_list.complete_recruitment!(@contact)
+        end
 
         flash[:notice] = "Provider #{@provider} has been successfully recruited."
         format.html { redirect_to(pbs_lists_path) }
@@ -283,14 +285,6 @@ class ProvidersController < ApplicationController
       end
     end
   end
-
-  def mark_pbs_list_as_having_recruited_provider(pbs_list, contact)
-    attrs = {}
-    attrs[:pr_recruitment_status_code] = 1
-    attrs[:pr_recruitment_end_date] = contact.contact_date_date if contact
-    pbs_list.update_attributes(attrs) unless pbs_list.recruitment_ended?
-  end
-  private :mark_pbs_list_as_having_recruited_provider
 
   def refused
     @provider = Provider.find(params[:id])
@@ -313,9 +307,13 @@ class ProvidersController < ApplicationController
   end
 
   def mark_pbs_list_refused(pbs_list)
-    @pbs_list.substitute_provider = Provider.find(params[:substitute_provider_id]) if params[:substitute_provider_id]
     @pbs_list.pr_recruitment_end_date = Date.today
-    @pbs_list.pr_recruitment_status_code = 2
+    if params[:substitute_provider_id]
+      @pbs_list.substitute_provider = Provider.find(params[:substitute_provider_id])
+      @pbs_list.pr_recruitment_status_code = 4
+    else
+      @pbs_list.pr_recruitment_status_code = 2
+    end
     @pbs_list.save!
   end
   private :mark_pbs_list_refused

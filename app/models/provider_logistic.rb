@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: provider_logistics
 #
+#  completion_date          :date
 #  created_at               :datetime
 #  id                       :integer          not null, primary key
 #  provider_id              :integer
@@ -23,4 +23,10 @@ class ProviderLogistic < ActiveRecord::Base
   ncs_coded_attribute :provider_logistics,    'PROVIDER_LOGISTICS_CL1'
 
   belongs_to :provider
+
+  ##
+  # True if completion date exists
+  def complete?
+    !self.completion_date.blank?
+  end
 end

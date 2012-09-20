@@ -69,7 +69,7 @@ FactoryGirl.define do
     pl.association :provider,   :factory => :provider
     pl.provider_logistics_code  1
     pl.provider_logistics_other nil
-
+    pl.completion_date          nil
   end
 
   factory :non_interview_provider do |nir|

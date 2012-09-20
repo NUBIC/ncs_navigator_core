@@ -6,7 +6,9 @@ module PbsListsHelper
   end
 
   def active_provider_recruitment_link(pbs)
-    if pbs.recruitment_started?
+    if pbs.provider_recruited?
+      txt = 'Complete Provider Recruitment Logistics'
+    elsif pbs.recruitment_started?
       txt = 'Continue Provider Recruitment'
     else
       txt = 'Start Provider Recruitment'

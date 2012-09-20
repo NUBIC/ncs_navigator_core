@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: provider_logistics
 #
+#  completion_date          :date
 #  created_at               :datetime
 #  id                       :integer          not null, primary key
 #  provider_id              :integer
