@@ -11,6 +11,7 @@
 #  log             :text
 #  merged_at       :datetime
 #  proposed_data   :text
+#  staff_id        :string(255)
 #  started_at      :datetime
 #  synced_at       :datetime
 #  updated_at      :datetime

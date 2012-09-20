@@ -23,7 +23,7 @@ class Api::FieldworkController < ApplicationController
     fw = Fieldwork.for(params['id'], current_staff_id)
 
     begin
-      m = fw.merges.create!(:proposed_data => request.body.read)
+      m = fw.merges.create!(:proposed_data => request.body.read, :staff_id => current_staff_id)
     ensure
       request.body.rewind
     end
