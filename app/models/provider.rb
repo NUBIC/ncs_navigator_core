@@ -146,7 +146,12 @@ class Provider < ActiveRecord::Base
       event.update_attribute(:event_end_date, nil) if event
     end
   end
-  private :open_recruitment
+
+  ##
+  # True if no contact disposition is Provider Recruited
+  def has_no_provider_recruited_contacts?
+    self.contacts.find{ |c| c.contact_disposition == DispositionMapper::PROVIDER_RECRUITED }.blank?
+  end
 
 end
 

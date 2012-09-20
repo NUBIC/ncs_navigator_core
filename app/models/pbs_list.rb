@@ -99,9 +99,7 @@ class PbsList < ActiveRecord::Base
   # (or today if contact contact_date is blank)
   # if the pbs list has not ended the recruitment
   def complete_recruitment!(contact)
-    if recruitment_ended?
-      # NOOP
-    else
+    unless recruitment_ended?
       self.mark_recruited!(contact) unless provider_recruited?
       dt = get_date_from_contact(contact)
       self.update_attribute(:pr_recruitment_end_date, dt)

@@ -5,6 +5,9 @@ require 'ncs_navigator/configuration'
 class ContactsController < ApplicationController
   before_filter :set_event_id
 
+  permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR,
+    :only => [:destroy]
+
   # GET /contacts/new
   # GET /contacts/new.json
   def new
@@ -141,6 +144,26 @@ class ContactsController < ApplicationController
           render :action => "provider_recruitment"
         end
       end
+    end
+  end
+
+  def destroy
+    @contact = Contact.find(params[:id])
+    @contact.contact_links.each { |cl| cl.destroy }
+    @contact.destroy
+
+    if params[:pbs_list_id]
+      pbs_list = PbsList.find(params[:pbs_list_id])
+      if pbs_list.provider.has_no_provider_recruited_contacts?
+        pbs_list.provider.open_recruitment
+      end
+    end
+
+    respond_to do |format|
+      flash[:notice] = "Contact was deleted."
+      url = pbs_list.nil? ? contact_links_path : pbs_list_path(pbs_list)
+      format.html { redirect_to(url) }
+      format.xml  { head :ok }
     end
   end
 
