@@ -32,12 +32,8 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
-
-        mark_activity_occurred unless @event.event_end_date.blank?
-
-        path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
-
-        format.html { redirect_to(path, :notice => 'Event was successfully updated.') }
+        mark_activity_occurred
+        format.html { redirect_to(redirect_path, :notice => 'Event was successfully updated.') }
         format.json { head :ok }
       else
         format.html { render :action => "edit" }
@@ -73,15 +69,28 @@ class EventsController < ApplicationController
 
   private
 
+    def redirect_path
+      path = events_path
+      if @event.provider_recruitment_event?
+        provider = @event.contact_links.find { |cl| !cl.provider.nil? }.provider
+        path = pbs_list_path(provider.pbs_list)
+      elsif @event.participant.nil?
+        path = participant_path(@event.participant)
+      end
+      path
+    end
+
     ##
     # Updates activities associated with this event
     # in PSC as 'occurred'
     def mark_activity_occurred
-	    psc.activities_for_event(@event).each do |a|
-	      if @event.matches_activity(a)
-          psc.update_activity_state(activity.activity_id,
-                                    @event.participant,
-                                    Psc::ScheduledActivity::OCCURRED)
+      if !@event.event_end_date.blank? && !@event.provider_recruitment_event?
+  	    psc.activities_for_event(@event).each do |a|
+  	      if @event.matches_activity(a)
+            psc.update_activity_state(activity.activity_id,
+                                      @event.participant,
+                                      Psc::ScheduledActivity::OCCURRED)
+          end
         end
       end
     end

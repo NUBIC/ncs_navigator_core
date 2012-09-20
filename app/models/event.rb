@@ -195,8 +195,9 @@ class Event < ActiveRecord::Base
   # Returns true for provider recruitment event
   # @return [Boolean]
   def provider_event?
-    event_type.to_i == 22
+    self.event_type_code == Provider::PROVIDER_RECRUIMENT_EVENT_TYPE_CODE
   end
+  alias :provider_recruitment_event? :provider_event?
 
   ##
   # Helper method to set the disposition to Out of Window

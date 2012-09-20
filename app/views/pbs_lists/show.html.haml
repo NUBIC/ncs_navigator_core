@@ -17,6 +17,12 @@
             refused_provider_path(@provider),
             :confirm => "Are you certain you would like to assign a substitute provider?"
 
+- if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+  - if event = @provider.provider_recruitment_event
+    .provider_recruitment_event
+      %span{ :class => "green_button" }
+        = link_to "Edit Provider Recruitment Event Record", edit_event_path(event)
+
 :javascript
   $(function () {
     var pbsListUI = new NCSCore.UI.PbsList({ successPath: 'provider_staff_member' });
