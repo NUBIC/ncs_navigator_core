@@ -92,7 +92,7 @@ class SamplesController < ApplicationController
     @sample_receipt_stores = array_of_selected_samples(params[:sample_id])
     populate_samples_size(@sample_receipt_stores)
     
-    generate_email = Emailer.manifest_email(params)
+    generate_email = SpecimenMailer.manifest_email(params)
     generate_email.deliver
     respond_to do |format| 
       format.js do

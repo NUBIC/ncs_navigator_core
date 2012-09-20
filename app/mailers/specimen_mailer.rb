@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-class Emailer < ActionMailer::Base
+class SpecimenMailer < ActionMailer::Base
 
   def manifest_email(params)
     @recipients = "n-shurupova@northwestern.edu"

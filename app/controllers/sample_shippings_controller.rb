@@ -49,7 +49,7 @@ class SampleShippingsController < ApplicationController
 
   def send_email
     @sample_shipping = SampleShipping.find(params[:sample_shipping][:id])
-    generate_email = Emailer.manifest_email(extract_params(@sample_shipping))
+    generate_email = SpecimenMailer.manifest_email(extract_params(@sample_shipping))
     generate_email.deliver
     respond_to do |format|
       # TODO - below works for the old path -- remove during cleaning up
