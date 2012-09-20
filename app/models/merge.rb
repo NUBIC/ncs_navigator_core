@@ -11,6 +11,7 @@
 #  log             :text
 #  merged_at       :datetime
 #  proposed_data   :text
+#  staff_id        :string(255)
 #  started_at      :datetime
 #  synced_at       :datetime
 #  updated_at      :datetime
@@ -33,6 +34,8 @@ class Merge < ActiveRecord::Base
                                 :converter => lambda { |raw| ConflictReport.new(raw) }
 
   delegate :original_data, :to => :fieldwork
+
+  validates_presence_of :staff_id
 
   S = Case::Struct.new(:started_at, :merged_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
   N = Case::Not
