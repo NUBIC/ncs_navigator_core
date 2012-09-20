@@ -57,6 +57,7 @@ class Contact < ActiveRecord::Base
   has_many :contact_links
   has_many :instruments, :through => :contact_links
   has_many :non_interview_reports
+  has_one :non_interview_provider
   has_one :participant_visit_record
   has_many :participant_visit_consents
 
