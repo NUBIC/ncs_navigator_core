@@ -40,7 +40,7 @@ class SurveyorController < ApplicationController
   # Piggy-back on the render_context callback from SurveyorControllerMethods
   # to ensure that we have the response_set object for this
   def set_activity_plan_for_participant
-    @participant          = @response_set.participant
+    @participant          = @response_set.instrument.response_sets.first.participant
     @instrument           = @response_set.instrument
     @event                = @instrument.event
     @activities_for_event = []

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 require 'spec_helper'
-
 require 'set'
+
+require File.expand_path('../be_adapted_matcher', __FILE__)
 
 module Field
   describe Superposition do
@@ -148,7 +149,7 @@ module Field
       it_should_behave_like 'an entity set', :proposed, 'responses'
     end
 
-    describe '#set_current' do
+    shared_context 'current data' do
       let!(:contact) { Factory(:contact, :contact_id => contact_id) }
       let!(:event) { Factory(:event, :event_id => event_id) }
       let!(:instrument) { Factory(:instrument, :instrument_id => instrument_id) }
@@ -164,33 +165,61 @@ module Field
         load_proposed
         load_current
       end
+    end
+
+    describe '#set_current' do
+      include_context 'current data'
 
       it 'resolves contacts' do
-        subject.contacts[contact_id][:current].should == contact
+        subject.contacts[contact_id][:current].should be_adapted(contact)
       end
 
       it 'resolves events' do
-        subject.events[event_id][:current].should == event
+        subject.events[event_id][:current].should be_adapted(event)
       end
 
       it 'resolves instruments' do
-        subject.instruments[instrument_id][:current].should == instrument
+        subject.instruments[instrument_id][:current].should be_adapted(instrument)
       end
 
       it 'resolves participants' do
-        subject.participants[participant_id][:current].should == participant
+        subject.participants[participant_id][:current].should be_adapted(participant)
       end
 
       it 'resolves persons' do
-        subject.people[person_id][:current].should == person
+        subject.people[person_id][:current].should be_adapted(person)
       end
 
       it 'resolves response sets' do
-        subject.response_sets[response_set_id][:current].should == response_set
+        subject.response_sets[response_set_id][:current].should be_adapted(response_set)
       end
 
       it 'resolves responses' do
-        subject.responses[response_id][:current].should == response
+        subject.responses[response_id][:current].should be_adapted(response)
+      end
+    end
+
+    describe '#current_events' do
+      include_context 'current data'
+
+      it 'returns events in the current set' do
+        subject.current_events.should == [event]
+      end
+    end
+
+    describe '#current_instruments' do
+      include_context 'current data'
+
+      it 'returns instruments in the current set' do
+        subject.current_instruments.should == [instrument]
+      end
+    end
+
+    describe '#current_participants' do
+      include_context 'current data'
+
+      it 'returns participants in the current set' do
+        subject.current_participants.should == [participant]
       end
     end
   end

@@ -31,8 +31,6 @@
 #  updated_at               :datetime
 #
 
-
-
 # An Instrument is a scheduled, partially executed or
 # completely executed questionnaire or paper form. An
 # Instrument can also be an Electronic Health Record or
@@ -139,11 +137,118 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # Given a {PscParticipant}, returns the participant's scheduled activities
+  # that match this instrument.  If no activities match, returns [].
+  #
+  # The PscParticipant passed here MUST reference the same Participant as this
+  # instrument's event.
+  #
+  # This method will load the following associations:
+  #
+  # * event.participant
+  # * survey
+  #
+  # You SHOULD eager load these associations when checking activity IDs across
+  # multiple instruments.
+  #
+  #
+  # Match criteria
+  # ==============
+  #
+  # Let:
+  #
+  # * SAC(I) be the access code for the survey on instrument I, and
+  # * L(A) the set of labels on activity A.
+  #
+  # SAC(I) can be computed as Survey.to_normalized_string(self.survey.title)
+  #
+  # 1. If SAC(I) matches a references label in L(A), add A as an activity for I.
+  # 2. If SAC(I) matches an instrument label in L(A) and L(A) has no references
+  #    labels, add A as an activity for I.
+  #
+  # Instruments form a tree one level deep.  In the below diagram, each I is an
+  # instrument, and a, b, and c are activities.
+  #
+  #           Ia
+  #          _|_
+  #         |   |
+  #         Ib  Ic
+  #
+  # This situation can be set up if b and c have references labels pointing to
+  # the instrument implied by a.  Under the above model, completing Ia will
+  # close activities a, b, and c; however, completing just Ib or Ic will not
+  # result in any changes to PSC schedules.
+  def scheduled_activities(psc_participant)
+    if psc_participant.participant.id != participant.try(:id)
+      raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.try(:id)})"
+    end
+
+    activities = psc_participant.scheduled_activities
+    survey_code = survey.access_code
+
+    activities.select do |id, sa|
+      instr = sa.instrument_label
+      ref = sa.references_label
+
+      code = if instr && !ref
+               Survey.to_normalized_string(instr)
+             elsif ref
+               Survey.to_normalized_string(ref)
+             end
+
+      survey_code == code
+    end.map { |id, sa| sa }
+  end
+
+  ##
+  # The desired state for the scheduled activities backing this Instrument.
+  # This SHOULD be one of the values defined on Psc::ScheduledActivity.
+  #
+  # Here's how instruments and their backing activities match up:
+  #
+  # | Instrument status | Desired activity state |
+  # | Complete          | Occurred               |
+  # | Missing in Error  | Scheduled              |
+  # | Not started       | Scheduled              |
+  # | Partial           | Scheduled              |
+  # | Refused           | Canceled               |
+  def desired_sa_state
+    sa = Psc::ScheduledActivity
+
+    case instrument_status.to_s
+    when 'Complete' then sa::OCCURRED
+    when 'Missing in Error', 'Not started', 'Partial' then sa::SCHEDULED
+    when 'Refused' then sa::CANCELED
+    else raise "Cannot map #{instrument_status.to_s.inspect} to a scheduled activity state"
+    end
+  end
+
+  ##
+  # The end date for this instrument's scheduled activities.  Returns a string
+  # in YYYY-MM-DD format or nil if no end date is set.
+  #
+  # @return [String, nil]
+  def sa_end_date
+    instrument_end_date.try(:strftime, '%Y-%m-%d')
+  end
+
+  ##
+  # When the scheduled activity states for this instrument are synced, the
+  # string from this method is supplied as the reason.
+  def sa_state_change_reason
+    'Synchronized from Cases'
+  end
+
+  ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]
   def to_s
     instrument_type.to_s
+  end
+
+  def participant
+    event.try(:participant)
   end
 
   ##
@@ -237,4 +342,3 @@ class Instrument < ActiveRecord::Base
       end
     end
 end
-

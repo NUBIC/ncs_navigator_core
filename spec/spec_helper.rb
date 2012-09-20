@@ -132,6 +132,7 @@ Spork.prefork do
 
     config.extend VCR::RSpec::Macros
 
+    config.include ScheduledActivities
     config.include TestLogins
     config.include TestSurveys
 

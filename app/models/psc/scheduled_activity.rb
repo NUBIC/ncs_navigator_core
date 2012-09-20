@@ -194,7 +194,13 @@ module Psc
     end
 
     def initialize(*args)
-      super
+      if args.length == 1 && args.first.respond_to?(:each_pair)
+        super()
+
+        args.first.each { |k, v| send("#{k}=", v) }
+      else
+        super
+      end
 
       @label_list ||= []
     end

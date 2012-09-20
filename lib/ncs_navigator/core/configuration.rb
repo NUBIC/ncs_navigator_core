@@ -96,5 +96,9 @@ module NcsNavigator::Core
           Mdes::Version.new(version.to_s)
         end
     end
+
+    def machine_account_credentials
+      ['ncs_navigator_cases', suite_configuration.core_machine_account_password]
+    end
   end
 end

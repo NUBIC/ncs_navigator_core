@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'erb'
 require 'facets/random'
+require 'ostruct'
 
 def link_participant_to_associated_entities
   @p.person = @person
@@ -20,6 +21,15 @@ Before '@merge' do
     extend Forwardable
 
     def_delegators :browser, *Rack::Test::Methods::METHODS
+  end
+
+  # We're not concerned with the Cases -> PSC sync for most merge scenarios, so
+  # just make it always succeed.  Scenarios that do care about that can fix
+  # this up.
+  Merge.psc_sync_strategy = Class.new(OpenStruct) do
+    def run
+      true
+    end
   end
 end
 

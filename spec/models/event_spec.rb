@@ -29,8 +29,6 @@
 #  updated_at                         :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
@@ -335,7 +333,6 @@ describe Event do
       Factory(:event, :event_type_code => 22).should be_provider_event
     end
 
-
   end
 
   context "time format" do
@@ -355,7 +352,6 @@ describe Event do
       let(:time_name) { "Event end time" }
     end
   end
-
 
   context "auto-completing MDES data" do
 
@@ -692,5 +688,109 @@ describe Event do
 
   end
 
-end
+  describe '#scheduled_activities' do
+    let(:event) { Factory(:event) }
 
+    describe "if the given PscParticipant does not match this event's participant" do
+      let(:psc_participant) { stub(:participant => Participant.new) }
+
+      it 'raises an error' do
+        lambda { event.scheduled_activities(psc_participant) }.should raise_error
+      end
+    end
+
+    # See PscParticipant#scheduled_activities.
+    let(:schedule) do
+      [
+        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
+        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar'),
+        sa(:labels => ['event:pregnancy_visit_2'], :ideal_date => '2012-02-02', :activity_id => 'baz')
+      ]
+    end
+
+    let(:psc_participant) { stub(:participant => event.participant) }
+
+    it 'returns activities whose label and ideal date match' do
+      # Pregnancy Visit 1.
+      event.event_type = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 13)
+      event.event_start_date = '2012-01-01'
+      psc_participant.stub!(:scheduled_activities).and_return(schedule)
+
+      event.scheduled_activities(psc_participant).should == [
+        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
+        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar')
+      ]
+    end
+  end
+
+  describe '#desired_sa_state' do
+    let(:event) { Event.new }
+    let(:desired_sa_state) { event.desired_sa_state }
+
+    let(:successful_dc) do
+      NcsNavigatorCore.mdes.disposition_codes.detect(&:success?)
+    end
+
+    let(:unsuccessful_dc) do
+      NcsNavigatorCore.mdes.disposition_codes.detect { |dc| !dc.success? }
+    end
+
+    SA = Psc::ScheduledActivity
+
+    describe 'if the event is closed' do
+      before do
+        event.stub!(:closed? => true)
+      end
+
+      describe 'and the disposition is successful' do
+        before do
+          event.disposition_code = successful_dc
+        end
+
+        it 'returns OCCURRED' do
+          desired_sa_state.should == SA::OCCURRED
+        end
+      end
+
+      describe 'and the disposition is unsuccessful' do
+        before do
+          event.disposition_code = unsuccessful_dc
+        end
+
+        it 'returns CANCELED' do
+          desired_sa_state.should == SA::CANCELED
+        end
+      end
+    end
+
+    describe 'if the event is open' do
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+  end
+
+  describe '#sa_end_date' do
+    let(:event) { Event.new }
+
+    it 'is #event_end_date in YYYY-MM-DD format' do
+      event.event_end_date = '2012-01-01'
+
+      event.sa_end_date.should == '2012-01-01'
+    end
+
+    it 'is nil if #event_end_date is nil' do
+      event.event_end_date = nil
+
+      event.sa_end_date.should be_nil
+    end
+  end
+
+  describe '#sa_state_change_reason' do
+    let(:event) { Event.new }
+
+    it 'is "Synchronized from Cases"' do
+      event.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
+end

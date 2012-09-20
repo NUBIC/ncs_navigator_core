@@ -73,27 +73,39 @@ module Psc
     def process
       logger.info 'Mapping started'
 
-      [contact_links, contacts, events, instruments, instrument_plans, people, surveys].each(&:clear)
+      reset_derivations
 
       activities.each do |activity|
-        activity.derive_implied_entities
-
-        people << activity.person
-        contacts << activity.contact
-        events << activity.event
-        contact_links << activity.contact_link
+        add_derived_entities_from_activity(activity)
       end
 
       plans = InstrumentPlanCollection.for(activities)
 
       plans.each do |plan|
-        instruments << plan.root
-        instrument_plans << plan
-
-        plan.surveys.each { |s| surveys << s }
+        add_derived_entities_from_plan(plan)
       end
 
       logger.info 'Mapping complete'
+    end
+
+    def reset_derivations
+      [contact_links, contacts, events, instruments, instrument_plans, people, surveys].each(&:clear)
+    end
+
+    def add_derived_entities_from_activity(activity)
+      activity.derive_implied_entities
+
+      people << activity.person
+      contacts << activity.contact
+      events << activity.event
+      contact_links << activity.contact_link
+    end
+
+    def add_derived_entities_from_plan(plan)
+      instruments << plan.root
+      instrument_plans << plan
+
+      plan.surveys.each { |s| surveys << s }
     end
   end
 end

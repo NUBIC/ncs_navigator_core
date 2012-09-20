@@ -31,8 +31,6 @@
 #  updated_at               :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
@@ -517,5 +515,163 @@ describe Instrument do
       result.should be_false
     end
   end
-end
 
+  describe '#scheduled_activities' do
+    let(:instrument) { Factory(:instrument, :survey => s) }
+    let(:p) { instrument.event.participant }
+    let(:s) { Factory(:survey, :access_code => 'ins-que-birth-int-ehpbhi-p2-v2-0') }
+    let(:psc_participant) { stub(:participant => p, :scheduled_activities => activities) }
+    let(:schedule) do
+      Psc::ScheduledActivity.from_schedule({
+        'labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0'
+      })
+    end
+
+    let(:activities) do
+      { 'foo' => schedule }
+    end
+
+    describe "if the given PscParticipant does not match this instruments's participant" do
+      let(:psc_participant) { stub(:participant => Participant.new) }
+
+      it 'raises an error' do
+        lambda { instrument.scheduled_activities(psc_participant) }.should raise_error
+      end
+    end
+
+    describe "if the instrument's survey matches a references label" do
+      it 'returns that activity' do
+        instrument.scheduled_activities(psc_participant).should == [
+          sa('labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0')
+        ]
+      end
+    end
+
+    describe "if the instrument's survey matches an instrument label" do
+      describe 'and the activity has no references labels' do
+        let(:schedule) do
+          Psc::ScheduledActivity.from_schedule({
+            'labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0'
+          })
+        end
+
+        it 'returns that activity' do
+          instrument.scheduled_activities(psc_participant).should == [
+            sa('labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0')
+          ]
+        end
+      end
+
+      describe 'and the activity has references labels' do
+        let(:schedule) do
+          Psc::ScheduledActivity.from_schedule({
+            'labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0 references:something_else'
+          })
+        end
+
+        it 'does not return the activity' do
+          instrument.scheduled_activities(psc_participant).should == []
+        end
+      end
+    end
+  end
+
+  describe '#desired_sa_state' do
+    let(:instrument) { Instrument.new }
+    let(:desired_sa_state) { instrument.desired_sa_state }
+
+    [
+      'Complete',
+      'Missing in Error',
+      'Not started',
+      'Partial',
+      'Refused'
+    ].each do |status|
+      let(status.downcase.gsub(' ', '_')) do
+        NcsCode.for_list_name_and_display_text('INSTRUMENT_STATUS_CL1', status)
+      end
+    end
+
+    SA = Psc::ScheduledActivity
+
+    describe 'if instrument status is nil' do
+      it 'raises an error' do
+        lambda { desired_sa_state }.should raise_error
+      end
+    end
+
+    describe 'if instrument status is Complete' do
+      before do
+        instrument.instrument_status = complete
+      end
+
+      it 'returns OCCURRED' do
+        desired_sa_state.should == SA::OCCURRED
+      end
+    end
+
+    describe 'if instrument status is Missing in Error' do
+      before do
+        instrument.instrument_status = missing_in_error
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Not started' do
+      before do
+        instrument.instrument_status = not_started
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Partial' do
+      before do
+        instrument.instrument_status = partial
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Refused' do
+      before do
+        instrument.instrument_status = refused
+      end
+
+      it 'returns CANCELED' do
+        desired_sa_state.should == SA::CANCELED
+      end
+    end
+  end
+
+  describe '#sa_end_date' do
+    let(:instrument) { Instrument.new }
+
+    it 'is #instrument_end_date in YYYY-MM-DD format' do
+      instrument.instrument_end_date = '2012-01-01'
+
+      instrument.sa_end_date.should == '2012-01-01'
+    end
+
+    it 'is nil if #instrument_end_date is nil' do
+      instrument.instrument_end_date = nil
+
+      instrument.sa_end_date.should be_nil
+    end
+  end
+
+  describe '#sa_state_change_reason' do
+    let(:instrument) { Instrument.new }
+
+    it 'is "Synchronized from Cases"' do
+      instrument.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
+end

@@ -56,7 +56,7 @@ module Field
   # to collapse the states of the superposition.  The default algorithm is
   # implemented in {Merge}.
   class Superposition
-    include Merge
+    include Field::Merge
 
     attr_accessor :contacts
     attr_accessor :events
@@ -101,6 +101,18 @@ module Field
         set_current_state(h, ::Response, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
       end
+    end
+
+    def current_events
+      events.map { |_, state| state[:current].target }
+    end
+
+    def current_instruments
+      instruments.map { |_, state| state[:current].target }
+    end
+
+    def current_participants
+      participants.map { |_, state| state[:current].target }
     end
 
     def set_state(state, data)

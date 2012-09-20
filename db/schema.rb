@@ -395,11 +395,12 @@ ActiveRecord::Schema.define(:version => 20120918022557) do
     t.text     "conflict_report"
     t.text     "log"
     t.text     "proposed_data"
-    t.datetime "completed_at"
+    t.datetime "merged_at"
     t.datetime "crashed_at"
     t.datetime "started_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   create_table "ncs_codes", :force => true do |t|

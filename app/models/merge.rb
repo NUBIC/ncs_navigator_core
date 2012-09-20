@@ -4,7 +4,7 @@
 #
 # Table name: merges
 #
-#  completed_at    :datetime
+#  merged_at       :datetime
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
@@ -34,10 +34,23 @@ class Merge < ActiveRecord::Base
 
   delegate :original_data, :to => :fieldwork
 
-  S = Case::Struct.new(:started_at, :completed_at, :crashed_at, :conflicted?, :timed_out?)
+  S = Case::Struct.new(:started_at, :merged_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
   N = Case::Not
 
   TIMEOUT = 5.minutes
+
+  ##
+  # Returns the PSC sync strategy to use.  This can be changed for testing.
+  #
+  # The strategy must respond to #superposition=, #logger=, and #run, and
+  # should return true or false.
+  def self.psc_sync_strategy
+    @psc_sync_strategy || Field::PscSync
+  end
+
+  def self.psc_sync_strategy=(strategy)
+    @psc_sync_strategy = strategy
+  end
 
   ##
   # Merges a fieldwork set with Core's datastore.  The log of the operation
@@ -78,7 +91,7 @@ class Merge < ActiveRecord::Base
   #         ...merge...
   #
   #         self.conflict_report = conflict_report
-  #         self.completed_at = Time.now
+  #         self.merged_at = Time.now
   #         save(:validate => false)
   #       rescue => e
   #         update_attribute(:crashed_at, Time.now) rescue nil
@@ -97,34 +110,47 @@ class Merge < ActiveRecord::Base
     logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
     begin
-      self.started_at = Time.now
+      # Reset timestamps.
       self.crashed_at = nil
-      self.completed_at = nil
+      self.merged_at = nil
+      self.started_at = Time.now
+      self.synced_at = nil
       save(:validate => false)
 
+      # Check fieldwork schema conformance.
       conformant = check_conformance(logger)
+
       if !conformant
-        logger.fatal 'Schema violations detected; aborting merge'
         update_attribute(:crashed_at, Time.now)
-        return
+        return false
       end
 
-      sp = Field::Superposition.new
-      sp.logger = logger
-      sp.set_original(JSON.parse(original_data))
-      sp.set_proposed(JSON.parse(proposed_data))
-      sp.set_current
+      # Do the merge.
+      superposition = do_merge
 
-      sp.build_question_response_sets
-      sp.merge
+      if !superposition
+        update_attribute(:crashed_at, Time.now)
+        return false
+      end
 
-      ok = sp.save
-
-      self.completed_at = Time.now
-      self.conflict_report = sp.conflicts.to_json
+      self.merged_at = Time.now
+      self.conflict_report = superposition.conflicts.to_json
       save(:validate => false)
 
-      ok
+      # Sync PSC.
+      sync = self.class.psc_sync_strategy.new
+      sync.superposition = superposition
+      sync.logger = logger
+
+      synced = sync.run
+
+      if !synced
+        update_attribute(:crashed_at, Time.now)
+        return false
+      end
+
+      # We're done.
+      update_attribute(:synced_at, Time.now)
     rescue => e
       logger.fatal "#{e.class.name}: #{e.message}"
       e.backtrace.each { |l| logger.fatal(l) }
@@ -144,6 +170,7 @@ class Merge < ActiveRecord::Base
   # | Value    | Meaning                                                |
   # | conflict | Merge completed with conflicts                         |
   # | error    | Merge not completed due to fatal errors                |
+  # | syncing  | Merge completed without conflicts, waiting on PSC sync |
   # | merged   | Merge completed without conflicts                      |
   # | pending  | Merge not started                                      |
   # | timeout  | Merge not completed, but exceeded a timeout threshold; |
@@ -154,13 +181,14 @@ class Merge < ActiveRecord::Base
   # be caught by the Ruby runtime.  Such errors will be present in the merge
   # log.
   def status
-    case S[started_at, completed_at, crashed_at, conflicted?, timed_out?]
-    when S[nil,        nil,          nil,        Case::Any,   N[true]   ]; 'pending'
-    when S[N[nil],     nil,          nil,        Case::Any,   N[true]   ]; 'working'
-    when S[Case::Any,  nil,          Case::Any,  Case::Any,   true      ]; 'timeout'
-    when S[Case::Any,  N[nil],       nil,        N[true],     Case::Any ]; 'merged'
-    when S[Case::Any,  N[nil],       nil,        true,        Case::Any ]; 'conflict'
-    when S[N[nil],     nil,          N[nil],     Case::Any,   Case::Any ]; 'error'
+    case S[started_at, merged_at, crashed_at, synced_at,  conflicted?, timed_out?]
+    when S[nil,        nil,       nil,        Case::Any,  Case::Any,   N[true]   ]; 'pending'
+    when S[N[nil],     nil,       nil,        Case::Any,  Case::Any,   N[true]   ]; 'working'
+    when S[Case::Any,  nil,       Case::Any,  Case::Any,  Case::Any,   true      ]; 'timeout'
+    when S[Case::Any,  N[nil],    nil,        nil,        N[true],     Case::Any ]; 'syncing'
+    when S[Case::Any,  N[nil],    nil,        N[nil],     N[true],     Case::Any ]; 'merged'
+    when S[Case::Any,  N[nil],    nil,        Case::Any,  true,        Case::Any ]; 'conflict'
+    when S[N[nil],     nil,       N[nil],     Case::Any,  Case::Any,   Case::Any ]; 'error'
     end
   end
 
@@ -170,14 +198,41 @@ class Merge < ActiveRecord::Base
 
   ##
   # @private
+  # @return [Field::Superposition, nil]
+  def do_merge
+    sp = Field::Superposition.new
+    sp.logger = logger
+    sp.set_original(JSON.parse(original_data))
+    sp.set_proposed(JSON.parse(proposed_data))
+    sp.set_current
+
+    sp.build_question_response_sets
+    sp.merge
+
+    ok = sp.save
+
+    sp if ok
+  end
+
+  ##
+  # @private
   def check_conformance(logger)
     vs = schema_violations
     ok = vs.values.all? { |v| v.empty? }
 
-    ok.tap do
+    if !ok
       vs[:original_data].each { |v| logger.fatal "[original] #{v}" }
       vs[:proposed_data].each { |v| logger.fatal "[proposed] #{v}" }
+
+      logger.fatal 'Schema violations detected; aborting merge'
     end
+
+    ok
+  end
+
+  ##
+  # @private
+  def do_psc_sync(superposition)
   end
 
   ##

@@ -362,5 +362,86 @@ module Field
         }
       end
     end
+
+    describe '#save' do
+      include NcsNavigator::Core::Fieldwork::Adapters
+
+      let(:contact) { Factory(:contact) }
+      let(:event) { Factory(:event) }
+      let(:instrument) { Factory(:instrument) }
+      let(:qrs) { QuestionResponseSet.new }
+
+      let(:ac) { adapt_model(contact) }
+      let(:ae) { adapt_model(event) }
+      let(:ai) { adapt_model(instrument) }
+
+      before do
+        subject.contacts = {
+          'c1' => {
+            :original => nil,
+            :current => ac,
+            :proposed => nil
+          }
+        }
+
+        subject.events = {
+          'e1' => {
+            :original => nil,
+            :current => ae,
+            :proposed => nil
+          }
+        }
+
+        subject.instruments = {
+          'i1' => {
+            :original => nil,
+            :current => ai,
+            :proposed => nil
+          }
+        }
+
+        subject.question_response_sets = {
+          'q1' => {
+            :original => nil,
+            :current => qrs,
+            :proposed => nil
+          }
+        }
+      end
+
+      describe 'on success' do
+        before do
+          @ret = subject.save
+        end
+
+        it 'returns merged contacts' do
+          @ret[:contacts].should == [ac]
+        end
+
+        it 'returns merged events' do
+          @ret[:events].should == [ae]
+        end
+
+        it 'returns merged instruments' do
+          @ret[:instruments].should == [ai]
+        end
+
+        it 'returns merged response sets' do
+          @ret[:question_response_sets].should == [qrs]
+        end
+      end
+
+      describe 'on failure' do
+        before do
+          ae.stub!(:save => false)
+
+          @ret = subject.save
+        end
+
+        it 'returns nil' do
+          @ret.should be_nil
+        end
+      end
+    end
   end
 end
