@@ -90,7 +90,7 @@ class SpecimensController < ApplicationController
   
   def send_email
     populate_specimen_receipts
-    generate_email = Emailer.manifest_email(params)
+    generate_email = SpecimenMailer.manifest_email(params)
     generate_email.deliver
     respond_to do |format|
       format.js do
