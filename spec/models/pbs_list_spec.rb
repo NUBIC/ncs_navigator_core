@@ -115,5 +115,23 @@ describe PbsList do
 
   end
 
+  describe ".provider_recruited?" do
+
+    it "returns true if the pr_cooperation_date is set and the pr_recruitment_status_code is 1 (recruited)" do
+      pbs = Factory(:pbs_list, :pr_cooperation_date => Date.today, :pr_recruitment_status_code => 1)
+      pbs.should be_provider_recruited
+    end
+
+    it "returns false if the pr_cooperation_date is not set" do
+      pbs = Factory(:pbs_list, :pr_cooperation_date => nil, :pr_recruitment_status_code => 1)
+      pbs.should_not be_provider_recruited
+    end
+
+    it "returns false if the pr_recruitment_status_code is NOT 1 (recruited)" do
+      pbs = Factory(:pbs_list, :pr_cooperation_date => Date.today, :pr_recruitment_status_code => 2)
+      pbs.should_not be_provider_recruited
+    end
+  end
+
 end
 

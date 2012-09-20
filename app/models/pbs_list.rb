@@ -78,5 +78,9 @@ class PbsList < ActiveRecord::Base
     !self.substitute_provider_id.blank?
   end
 
+  def provider_recruited?
+    !self.pr_cooperation_date.blank? && self.pr_recruitment_status_code == 1
+  end
+
 end
 
