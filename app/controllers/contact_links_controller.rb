@@ -170,7 +170,7 @@ class ContactLinksController < ApplicationController
       instrument = @contact_link.instrument
       if instrument
         instrument.instrument_start_date = instrument.created_at.to_date
-        instrument.instrument_end_date = Date.today
+        instrument.instrument_end_date = contact.contact_date_date.nil? ? Date.today : contact.contact_date_date
         instrument.instrument_start_time = instrument.created_at.strftime("%H:%M")
         instrument.instrument_end_time = Time.now.strftime("%H:%M")
       end
