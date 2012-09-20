@@ -3,6 +3,8 @@
 
 class DispositionMapper
 
+  PROVIDER_RECRUITED = 70
+
   GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"     #3
   HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"   #2
   INTERNET_SURVEY_EVENT       = "Internet Survey Event"         #6
