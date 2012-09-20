@@ -178,8 +178,9 @@ describe ContactsController do
     context "PBS provider recruitment event" do
 
       before(:each) do
-        @event = Factory(:event, :event_type_code => 22)
+        @event = Factory(:event, :event_type_code => 22, :event_start_date => nil, :event_start_time => nil)
         @provider = Factory(:provider)
+        @pbs_list = Factory(:pbs_list, :provider => @provider, :pr_recruitment_start_date => nil)
       end
 
       describe "GET provider_recruitment" do
@@ -226,10 +227,29 @@ describe ContactsController do
               assigns(:contact).should be_persisted
             end
 
-            it "redirects to the post_recruitment_contact provider page" do
+            it "redirects to the pbs_lists page" do
               post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
-              response.should redirect_to(post_recruitment_contact_provider_path(@provider, :contact_id => assigns(:contact).id))
+              response.should redirect_to(pbs_lists_path)
             end
+
+            it "sets PR_RECRUITMENT_START_DATE on Provider PBS List to contact date" do
+              @provider.pbs_list.pr_recruitment_start_date.should be_blank
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              PbsList.find(@provider.pbs_list.id).pr_recruitment_start_date.should == Contact.last.contact_date_date
+            end
+
+            it "updates the Provider recruitment event record with information from contact" do
+              @event.event_start_date.should be_blank
+              @event.event_start_time.should be_blank
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              e = Event.find(@event.id)
+              c = Contact.last
+              e.event_start_date.should == c.contact_date_date
+              e.event_start_time.should == c.contact_start_time
+              e.event_disposition.should == c.contact_disposition
+            end
+
+
           end
         end
 

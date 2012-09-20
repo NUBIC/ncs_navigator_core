@@ -125,12 +125,6 @@ describe PbsListsController do
             PbsList.find(pbs_list.id).pr_recruitment_status_code.should == 3
           end
 
-          it "sets PR_RECRUITMENT_START_DATE to current date" do
-            pbs_list.pr_recruitment_start_date.should be_blank
-            get :recruit_provider, :id => pbs_list.id
-            PbsList.find(pbs_list.id).pr_recruitment_start_date.should == Date.today
-          end
-
         end
 
         it "redirects to provider_staff_list_path" do

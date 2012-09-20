@@ -115,10 +115,23 @@ class ContactsController < ApplicationController
         @person = Person.find(params[:person_id])
 
         if @contact.save
-          # set the event disposition to that of the contact
-          @event.update_attribute(:event_disposition, @contact.contact_disposition)
+          update_provider_recruitment_event(@event, @contact)
+          update_provider_pbs_list_record(@provider.pbs_list, @contact)
           link = find_or_create_contact_link
-          redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
+
+          # check if the provider was recruited
+          # if so update the pbs_list cooperation date
+          # and redirect to provider logistics page
+          if @contact.contact_disposition == DispositionMapper::PROVIDER_RECRUITED
+            if @provider.pbs_list.pr_cooperation_date.blank?
+              @provider.pbs_list.update_attribute(:pr_cooperation_date, contact.contact_date_date)
+            end
+            redirect_to recruited_provider_path(@provider, :contact_id => @contact.id)
+          else
+            flash[:notice] = "Contact for #{@provider} was successfully created."
+            redirect_to pbs_lists_path
+            # redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
+          end
         else
           render :action => "provider_recruitment"
         end
@@ -127,6 +140,28 @@ class ContactsController < ApplicationController
   end
 
   private
+
+    def update_provider_pbs_list_record(pbs_list, contact)
+      if pbs_list.pr_recruitment_start_date.blank?
+        pbs_list.update_attribute(:pr_recruitment_start_date, contact.contact_date_date)
+      end
+    end
+
+    def update_provider_recruitment_event(event, contact)
+      event_attrs = {}
+      # set the event disposition to that of the contact
+      # unless the event disposition is Provider Recruited
+      if event.event_disposition.to_i != DispositionMapper::PROVIDER_RECRUITED
+        event_attrs[:event_disposition] = contact.contact_disposition
+      end
+      if event.event_start_date.blank?
+        event_attrs[:event_start_date] = contact.contact_date_date
+      end
+      if event.event_start_time.blank?
+        event_attrs[:event_start_time] = contact.contact_start_time
+      end
+      event.update_attributes(event_attrs) unless event_attrs.blank?
+    end
 
     # TODO: remove call to new_event_for_person
     def event_for_person(save = true)
@@ -157,7 +192,7 @@ class ContactsController < ApplicationController
       link
     end
 
-        ##
+    ##
     # Determine the disposition group to be used from the contact type or instrument taken
     def set_disposition_group
       @disposition_group = nil
