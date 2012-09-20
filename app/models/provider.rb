@@ -109,7 +109,8 @@ class Provider < ActiveRecord::Base
   end
 
   def substitute_provider?
-    self.pbs_list.try(:in_sample_code) == 2 && self.substitute_pbs_list
+    self.pbs_list.try(:in_sample_code) == 2 &&
+      self.substitute_pbs_list
   end
 
   def refused_to_participate?
@@ -117,7 +118,9 @@ class Provider < ActiveRecord::Base
   end
 
   def recruited?
-    !self.can_recruit? && !self.refused_to_participate?
+    !self.can_recruit? &&
+      !self.refused_to_participate? &&
+      self.pbs_list.try(:provider_recruited?)
   end
 
 end
