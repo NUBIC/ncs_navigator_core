@@ -15,6 +15,8 @@
   = form_for(@provider, :url => process_recruited_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
+    = hidden_field_tag :contact_id, @contact.id if @contact
+
     .provider_logistics
       - @providerLogisticsTemplate = generate_nested_attributes_template(f, :provider_logistics, 'providers/provider_logistics')
       %table{ :class => 'records provider_logistics' }
