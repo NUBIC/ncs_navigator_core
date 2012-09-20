@@ -261,16 +261,18 @@ class ProvidersController < ApplicationController
 
   def recruited
     @provider = Provider.find(params[:id])
+    @contact  = Contact.find(params[:contact_id]) if params[:contact_id]
     @provider.provider_logistics.build if @provider.provider_logistics.blank?
   end
 
   def process_recruited
     @provider = Provider.find(params[:id])
+    @contact  = Contact.find(params[:contact_id]) if params[:contact_id]
 
     respond_to do |format|
       if @provider.update_attributes(params[:provider])
 
-        mark_pbs_list_as_having_recruited_provider(@provider.pbs_list)
+        mark_pbs_list_as_having_recruited_provider(@provider.pbs_list, @contact)
 
         flash[:notice] = "Provider #{@provider} has been successfully recruited."
         format.html { redirect_to(pbs_lists_path) }
@@ -282,12 +284,10 @@ class ProvidersController < ApplicationController
     end
   end
 
-  def mark_pbs_list_as_having_recruited_provider(pbs_list)
-    attrs = {
-      :pr_cooperation_date => Date.today,
-      :pr_recruitment_end_date => Date.today,
-      :pr_recruitment_status_code => 1
-    }
+  def mark_pbs_list_as_having_recruited_provider(pbs_list, contact)
+    attrs = {}
+    attrs[:pr_recruitment_status_code] = 1
+    attrs[:pr_recruitment_end_date] = contact.contact_date_date if contact
     pbs_list.update_attributes(attrs) unless pbs_list.recruitment_ended?
   end
   private :mark_pbs_list_as_having_recruited_provider

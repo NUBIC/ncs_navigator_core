@@ -298,25 +298,6 @@ describe ProvidersController do
 
       end
 
-      # describe "with invalid params" do
-      #   describe "with html request" do
-      #     it "assigns a newly created but unsaved provider as @provider" do
-      #       # Trigger the behavior that occurs when invalid params are submitted
-      #       Provider.any_instance.stub(:save).and_return(false)
-      #       post :create, :provider => {}
-      #       assigns(:provider).should be_a_new(Provider)
-      #     end
-      #
-      #     it "re-renders the 'new' template" do
-      #       # Trigger the behavior that occurs when invalid params are submitted
-      #       Provider.any_instance.stub(:save).and_return(false)
-      #       post :create, :provider => {}
-      #       response.should render_template("new")
-      #     end
-      #   end
-      #
-      # end
-
     end
 
     describe "GET edit_staff" do
@@ -339,6 +320,7 @@ describe ProvidersController do
     describe "PUT process_recruited" do
 
       let(:provider) { Factory(:provider) }
+      let(:contact) { Factory(:contact) }
 
       describe "with valid params" do
         describe "with html request" do
@@ -358,15 +340,10 @@ describe ProvidersController do
           end
 
           it "updates the provider pbs_list record" do
-            put :process_recruited, :id => provider.id, :provider => {}
+            put :process_recruited, :id => provider.id, :contact_id => contact.id, :provider => {}
             provider.pbs_list.pr_recruitment_status_code.should == 1
-            provider.pbs_list.pr_recruitment_end_date.should == Date.today
-            provider.pbs_list.pr_cooperation_date.should == Date.today
+            provider.pbs_list.pr_recruitment_end_date.should == contact.contact_date_date
           end
-
-          # {"id"=>"90", "provider"=>{"provider_logistics_attributes"=>
-          #                {"0"=>{"provider_logistics_other"=>"", "psu_code"=>"20000030", "provider_logistics_code"=>"-5"},
-          #                 "1340395795081"=>{"provider_logistics_other"=>"", "psu_code"=>"20000030", "provider_logistics_code"=>"3"}}}}
 
         end
       end
