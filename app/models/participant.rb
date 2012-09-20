@@ -1055,6 +1055,9 @@ class Participant < ActiveRecord::Base
     end
 
     def next_scheduled_event_date
+      # TODO: probably use get_date_to_schedule_next_event_from_contact_link
+      #       instead of Date.today to determine next scheduled event date
+      #       to handle previous events entered
       (interval == 0) ? Date.today : (date_used_to_schedule_next_event.to_date + interval)
     end
 
