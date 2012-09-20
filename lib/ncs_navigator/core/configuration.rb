@@ -49,6 +49,10 @@ module NcsNavigator::Core
       "[NCS Navigator Cases #{study_center_short_name} #{Rails.env.titlecase}] "
     end
 
+    def mail_from
+      suite_configuration.core_mail_from
+    end
+
     def footer_right_logo_path
       footer_logo_path(:right)
     end
