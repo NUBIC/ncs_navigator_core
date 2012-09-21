@@ -21,7 +21,7 @@
                   :class => "show_link icon_link"
                 = "(#{rs.participant.person})" if rs.participant
 
-    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
       %p
         = link_to "Search for Responses by Data Export Identifier",
           responses_for_person_path(@person),
