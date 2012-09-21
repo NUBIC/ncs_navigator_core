@@ -32,7 +32,11 @@ describe MergeMailer do
     describe 'message body' do
       let(:body) { message.body }
 
-      it 'identifies the responsible device'
+      it 'identifies the responsible device' do
+        merge.client_id = 'bar'
+
+        body.should =~ /Device ID: bar/
+      end
 
       it 'identifies the responsible staff member' do
         merge.staff_id = 'foo'
