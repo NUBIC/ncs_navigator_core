@@ -3,6 +3,7 @@
 #
 # Table name: merges
 #
+#  client_id       :string(255)
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
@@ -35,6 +36,7 @@ class Merge < ActiveRecord::Base
 
   delegate :original_data, :to => :fieldwork
 
+  validates_presence_of :client_id
   validates_presence_of :staff_id
 
   S = Case::Struct.new(:started_at, :merged_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
