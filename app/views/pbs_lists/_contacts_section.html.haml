@@ -35,6 +35,12 @@
             - disp = contact.contact_disposition
             = DispositionMapper.disposition_text_for_event(event_type, disp)
           %td
-            - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+            - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
               = link_to 'Delete', contact_path(contact, :pbs_list_id => @pbs_list.id), :confirm => 'Are you sure you want to delete this contact?',
                 :method => :delete, :class => "delete_link icon_link"
+        - unless contact.contact_comment.blank?
+          %tr{ :class => cls }
+            %td{ :colspan => 4 }
+              Comment:
+              = contact.contact_comment
+            %td{ :colspan => 1 }
