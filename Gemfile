@@ -36,7 +36,7 @@ gem 'json-schema'
 gem 'ncs_mdes', '>= 0.10.0'
 gem 'surveyor', :git => 'https://github.com/NUBIC/surveyor.git', :ref => 'master'
 gem 'psc'
-gem 'ncs_navigator_configuration'
+gem 'ncs_navigator_configuration', :git => 'https://github.com/NUBIC/ncs_navigator_configuration.git'
 gem 'sidekiq'
 
 gem 'state_machine'
