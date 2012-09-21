@@ -40,7 +40,16 @@ describe MergeMailer do
         body.should =~ /Staff ID: foo/
       end
 
-      it 'links to the conflict report'
+      it 'links to the conflict report' do
+        core_host = URI(NcsNavigatorCore.configuration.base_uri).host
+
+        fw = Factory(:fieldwork)
+        fw.fieldwork_id = 'foo'
+        merge.fieldwork = fw
+        merge.stub!(:id => 1)
+
+        body.should =~ %r{https://#{core_host}/fieldwork/foo/merges/1}
+      end
     end
   end
 end
