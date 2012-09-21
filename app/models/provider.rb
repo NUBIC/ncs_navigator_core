@@ -142,6 +142,9 @@ class Provider < ActiveRecord::Base
   def open_recruitment
     if self.pbs_list && !recruitment_logistics_complete?
       self.pbs_list.update_attribute(:pr_recruitment_end_date, nil)
+      if self.has_no_provider_recruited_contacts?
+        self.pbs_list.update_attribute(:pr_recruitment_status_code, 3)
+      end
       event = self.provider_recruitment_event
       event.update_attribute(:event_end_date, nil) if event
     end
