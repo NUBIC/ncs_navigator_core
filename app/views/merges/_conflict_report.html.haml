@@ -1,0 +1,30 @@
+%table.conflict_report.records
+  %caption
+    Conflict report
+  %tr
+    %th
+      Entity
+    %th
+      Attribute
+    %th
+      Original
+    %th
+      Current
+    %th
+      Proposed
+  - report.each.with_resolved_ncs_codes do |entity, attributes|
+    - row_class = "conflict #{cycle('even_record', 'odd_record')}"
+    %tr{:class => row_class}
+      %td.entity{:rowspan => attributes.length + 1}
+        = "#{entity.type} #{entity.public_id}"
+    - attributes.each do |attribute|
+      %tr{%s(data-entity-type) => entity.type, %s(data-public-id) => entity.public_id, :class => row_class}
+        - name = attribute.humanize
+        %td.attribute
+          = name
+        %td.current{%s(data-name) => name}
+          = attribute.current
+        %td.original{%s(data-name) => name}
+          = attribute.original
+        %td.proposed{%s(data-name) => name}
+          = attribute.proposed

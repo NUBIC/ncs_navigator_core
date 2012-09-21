@@ -29,7 +29,7 @@ require 'stringio'
 class Merge < ActiveRecord::Base
   belongs_to :fieldwork, :inverse_of => :merges
 
-  composed_of :conflict_report, :mapping => %w(conflict_report to_s),
+  composed_of :conflict_report, :mapping => %w(conflict_report to_json),
                                 :allow_nil => true,
                                 :converter => lambda { |raw| ConflictReport.new(raw) }
 
@@ -137,7 +137,7 @@ class Merge < ActiveRecord::Base
       end
 
       self.merged_at = Time.now
-      self.conflict_report = superposition.conflicts.to_json
+      self.conflict_report = superposition.conflicts
       save(:validate => false)
 
       # Sync PSC.
