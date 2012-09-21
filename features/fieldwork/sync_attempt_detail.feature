@@ -15,7 +15,7 @@ Feature: Detail view of a sync attempt
       | entity         | attribute | original | current | proposed |
       | Contact abcdef | language  | 0        | 1       | 2        |
 
-    When I go to the sync attempt page for "foo"
+    When I go to the latest sync attempt page for "foo"
 
     Then I see the conflict report
       | entity         | attribute | original | current | proposed |
@@ -26,7 +26,7 @@ Feature: Detail view of a sync attempt
       | entity         | attribute             | original | current | proposed |
       | Contact abcdef | contact_language_code | -4       | 1       | 2        |
 
-    When I go to the sync attempt page for "foo"
+    When I go to the latest sync attempt page for "foo"
 
     Then I see the conflict report
       | entity         | attribute             | original         | current | proposed |

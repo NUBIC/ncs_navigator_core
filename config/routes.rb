@@ -179,7 +179,13 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
 
-  resources :fieldwork, :only => [:index, :show]
+  resources :fieldwork, :only => :index do
+    resources :merges, :only => :show do
+      collection do
+        get :latest
+      end
+    end
+  end
 
   match "/faq", :to => "welcome#faq", :via => [:get]
   match "/reports", :to => "reports#index", :via => [:get]
