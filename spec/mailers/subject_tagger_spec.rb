@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SubjectTagger do
   let(:message) { Mail::Message.new }
   let(:prefix) { NcsNavigatorCore.configuration.email_prefix }
-  let(:tagger) { SubjectTagger.new }
+  let(:tagger) { SubjectTagger }
 
   it 'prepends an origin tag' do
     tagger.delivering_email(message)
