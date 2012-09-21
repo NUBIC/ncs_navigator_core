@@ -179,8 +179,8 @@ describe Fieldwork do
     end
 
     it 'returns #proposed_data on the latest associated Merge' do
-      m1 = subject.merges.create!(:proposed_data => '{"foo":null}', :created_at => Time.now + 10)
-      m2 = subject.merges.create!(:proposed_data => '{"bar":null}', :created_at => Time.now - 10)
+      m1 = subject.merges.create!(:proposed_data => '{"foo":null}', :created_at => Time.now + 10, :client_id => 'foo')
+      m2 = subject.merges.create!(:proposed_data => '{"bar":null}', :created_at => Time.now - 10, :client_id => 'foo')
 
       subject.latest_proposed_data.should == '{"foo":null}'
     end

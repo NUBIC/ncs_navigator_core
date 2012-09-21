@@ -5,7 +5,7 @@ Given /^the sync attempts$/ do |table|
     status = sync['status']
 
     steps %Q{
-      When I PUT /api/v1/fieldwork/#{id} with
+      When I PUT /api/v1/fieldwork/#{id}?client_id=foo with
       """
       {}
       """
@@ -30,7 +30,7 @@ Given /^merging "([^"]*)" caused conflicts$/ do |fw_id, table|
     report.add(entity, public_id, h['attribute'], h['original'], h['current'], h['proposed'])
   end
 
-  fw.merges.create!(:conflict_report => report, :staff_id => 'fake')
+  fw.merges.create!(:conflict_report => report, :staff_id => 'foo', :client_id => 'bar')
 end
 
 # NB: These Then-steps rely on Capybara's #all returning elements in a
