@@ -34,19 +34,20 @@
     .front_page_section.page_section
       .column-container
         .column-1
-          - if recruitment_strategy.pbs?
+          - if recruitment_strategy.pbs? && permit?(Role::SYSTEM_ADMINISTRATOR)
             .pbs
               %h4
                 Upload spreadsheet data
               %ul
                 %li
                   = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
-          .participants
-            %h4
-              Administer Instruments
-            %ul
-              %li
-                = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
+          - unless recruitment_strategy.pbs?
+            .participants
+              %h4
+                Administer Instruments
+              %ul
+                %li
+                  = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
           .reports
             %h4
               Reports

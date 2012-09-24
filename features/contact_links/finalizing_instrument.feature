@@ -4,7 +4,7 @@ Feature: Finalizing an instrument
   In order to ensure a contact link record is created after a survey has been completed
   As a user
   I want to complete the entry of the contact link
-
+x
   Scenario: Finalizing an instrument
   Given a registered pregnant participant on the ppg1 page with an instrument
   When I follow "Bessie Smith"
