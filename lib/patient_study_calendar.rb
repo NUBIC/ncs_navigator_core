@@ -431,13 +431,12 @@ class PatientStudyCalendar
   # @param [String] - reason
   def schedule_pending_event(event, value, date, reason = nil)
     participant = event.participant
-    event_type  = event.event_type
     if activities = activities_to_reschedule(event)
       activities.each do |activity_identifier|
         update_activity_state(activity_identifier, participant, value, date, reason)
       end
     else
-      schedule_known_event(participant, event_type, date)
+      schedule_known_event(participant, event.event_type.to_s, date)
     end
   end
 
