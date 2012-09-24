@@ -12,6 +12,7 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20120920215859) do
+
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
     t.string   "address_id",                :limit => 36,  :null => false
