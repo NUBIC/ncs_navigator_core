@@ -1,0 +1,23 @@
+.column-container
+
+  = hidden_field_tag :close, @close
+
+  .instructional_note
+    To close the Event, simply set the Event End Date and Event End Time.
+
+  %p
+    = f.label :event_end_date, "Event End Date", :class => "important_field"
+    %span{ :class => "notification_icon" }
+    = render "events/event_end_date_tooltip"
+  %p
+    = f.text_field :event_end_date, :class => "datepicker important_field"
+
+  %p
+    = f.label :event_end_time, "Event End Time"
+    %br
+    = f.text_field :event_end_time, :class => "timepicker"
+
+  %p
+    = f.label :event_comment, "Comment"
+    %br
+    = f.text_area :event_comment

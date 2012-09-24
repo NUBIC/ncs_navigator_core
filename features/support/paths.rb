@@ -74,6 +74,14 @@ module NavigationHelpers
     when /^the edit_contact_link page$/
       edit_contact_link_path(ContactLink.last)
 
+    when /^the edit_contact_link_contact page$/
+      contact_link = ContactLink.last
+      edit_contact_link_contact_path(contact_link, contact_link.contact)
+
+    when /^the edit_contact_link_event page$/
+      contact_link = ContactLink.last
+      edit_contact_link_event_path(contact_link, contact_link.event)
+
     when /^the decision_page_contact_link page$/
       decision_page_contact_link_path(ContactLink.last)
 

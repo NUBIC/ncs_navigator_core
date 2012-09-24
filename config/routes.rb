@@ -60,7 +60,9 @@ NcsNavigatorCore::Application.routes.draw do
       put :finalize_instrument
       get :decision_page
     end
-    resources :instrument, :except => [:index, :destroy]
+    resources :instruments, :except => [:index, :destroy]
+    resources :events, :except => [:index, :destroy]
+    resources :contacts, :except => [:index, :destroy]
   end
   resources :non_interview_reports, :except => [:index, :destroy, :show]
   resources :participant_consents

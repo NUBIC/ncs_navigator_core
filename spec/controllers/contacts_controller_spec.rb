@@ -62,20 +62,19 @@ describe ContactsController do
       describe "GET edit" do
 
         before(:each) do
-          params = {:participant => @participant, :event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code}
-          Event.stub(:new).with(params).and_return(mock_event(params))
+          @event = Factory(:event, :event_type => @preg_screen_event)
+          @contact_link = Factory(:contact_link, :person => @person, :event => @event)
           Contact.stub(:find).with("37").and_return(mock_contact(:set_default_end_time => nil))
-          ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
         end
 
         it "assigns the requested contact as @contact" do
-          get :edit, :id => "37", :person_id => @person.id
+          get :edit, :id => "37", :contact_link_id => @contact_link.id
           assigns[:contact].should equal(mock_contact)
         end
 
         it "assigns the contact link event as @event" do
-          get :edit, :id => "37", :person_id => @person.id
-          assigns[:event].should equal(mock_event)
+          get :edit, :id => "37", :contact_link_id => @contact_link.id
+          assigns[:event].id.should equal(@event.id)
         end
       end
 
@@ -93,7 +92,7 @@ describe ContactsController do
           @person.contact_links.reload
           @person.upcoming_events.to_s.should include("PPG 1 and 2")
           @person.contact_links.size.should == 1
-          get :edit, :id => @contact.id, :person_id => @person.id, :next_event => true
+          get :edit, :id => @contact.id, :contact_link_id => contact_link.id, :next_event => true
           @person.contact_links.reload
           @person.contact_links.size.should == 2
           @person.contact_links.map(&:event).map(&:event_type).should == [@ppg12_event, @preg_screen_event]
@@ -105,19 +104,20 @@ describe ContactsController do
       describe "GET edit - contact end time" do
 
         before do
-          cls = [mock_contact_link(:event => mock_event(:event_type => "Pregnancy Screener"))]
-          ContactLink.stub(:where).and_return(cls)
+          @contact_link = Factory(:contact_link, :person => @person,
+            :contact => Factory(:contact),
+            :event => Factory(:event, :event_type => @preg_screen_event))
         end
 
         it "sets the default end_time for the contact" do
           contact = Factory(:contact, :contact_date_date => Date.today, :contact_end_time => nil)
-          get :edit, :id => contact.id, :person_id => @person.id
+          get :edit, :id => contact.id, :contact_link_id => @contact_link.id
           assigns[:contact].contact_end_time.should_not be_blank
         end
 
         it "does not set the end_time for a contact that happened in the past" do
           contact = Factory(:contact, :contact_date_date => 2.days.ago.to_date, :contact_end_time => nil)
-          get :edit, :id => contact.id, :person_id => @person.id
+          get :edit, :id => contact.id, :contact_link_id => @contact_link.id
           assigns[:contact].contact_end_time.should be_blank
         end
       end

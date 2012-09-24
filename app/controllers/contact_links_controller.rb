@@ -61,7 +61,7 @@ class ContactLinksController < ApplicationController
 
         format.html {
           if params[:commit] == "Continue"
-            redirect_to(edit_person_contact_path(@contact_link.person, @contact_link.contact, :next_event => true), :notice => notice)
+            redirect_to(edit_contact_link_contact_path(@contact_link, @contact_link.contact, :next_event => true), :notice => notice)
           else
             path = @contact_link.person.participant ? participant_path(@contact_link.person.participant) : person_path(@contact_link.person)
             redirect_to(path, :notice => notice)

@@ -1,5 +1,7 @@
 .column-container
 
+  = hidden_field_tag :contact_link_id, @contact_link.id if @contact_link
+
   %a{ :href => "javascript:void(0);", :class => "toggle_enable_link icon_link", :id => "enable_event_type_code" }
     Enable Event Type
   %a{ :href => "javascript:void(0);", :class => "toggle_disable_link icon_link", :id => "disable_event_type_code" }
