@@ -60,26 +60,29 @@ describe SurveyorController do
       assigns[:activities_for_event].should be_empty
     end
 
-    it "sets correct participant for activity_plan from psc for multiple survey for single instrument" do
-      @response_set.participant = Factory(:participant)
-      @response_set.save!
-      survey1 = Factory(:survey,
-        :title => "abc", :access_code => "abc", :sections => [Factory(:survey_section)])
-      response_set1 = Factory(:response_set, :access_code => "efg",
-        :survey => survey1, :instrument => @instrument, :participant => Factory(:participant))
-
-      PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(InstrumentPlan.new)
-      get :show, :survey_code => survey1.access_code, :response_set_code => response_set1.access_code
-      assigns[:participant].should == response_set1.instrument.response_sets.first.participant
-    end
-
-    it "sets correct participant for activity_plan from psc for single survey" do
-      @response_set.participant = Factory(:participant)
+    it "sets participant'mother as participant for activity_plan from psc if participant is child" do
+      mother_participant = Factory(:participant)
+      mother_person = Factory(:person)
+      person_participant_link_for_mother = Factory(:participant_person_link, :participant => mother_participant, :person => mother_person)
+      child_participant = Factory(:participant, :p_type_code => 6)
+      person_participant_link_for_child = Factory(:participant_person_link, :participant => child_participant, :person => mother_person, :relationship_code => 2)
+      
+      @response_set.participant = child_participant
       @response_set.save!
 
       PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(InstrumentPlan.new)
       get :show, :survey_code => @survey.access_code, :response_set_code => @response_set.access_code
-      assigns[:participant].should == @response_set.instrument.response_sets.first.participant
+      assigns[:participant].should == mother_participant
+    end
+
+    it "sets participant as participant for activity_plan from psc if participant is not child" do
+      participant = Factory(:participant)
+      @response_set.participant = participant
+      @response_set.save!
+
+      PatientStudyCalendar.any_instance.stub(:build_activity_plan).and_return(InstrumentPlan.new)
+      get :show, :survey_code => @survey.access_code, :response_set_code => @response_set.access_code
+      assigns[:participant].should == participant
     end
 
   end

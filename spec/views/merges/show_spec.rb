@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe 'fieldwork/show' do
+describe 'merges/show' do
   let(:fieldwork) { Fieldwork.new }
 
   before do

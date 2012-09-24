@@ -21,8 +21,9 @@ require 'spec_helper'
 describe Merge do
   let!(:fw) { Factory(:fieldwork) }
 
-  subject { fw.merges.build(:staff_id => 'foo') }
+  subject { fw.merges.build(:client_id => 'bar', :staff_id => 'foo') }
 
+  it { should validate_presence_of(:client_id) }
   it { should validate_presence_of(:staff_id) }
 
   describe '.psc_sync_strategy' do

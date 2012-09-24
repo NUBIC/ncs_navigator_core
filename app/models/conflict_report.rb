@@ -62,14 +62,10 @@ class ConflictReport
   extend Forwardable
   include Enumerable
 
-  def_delegator :@raw, :blank?
+  def_delegators :@raw, :blank?, :to_s, :as_json
 
   def initialize(json = nil)
     @raw = (JSON.parse(json) if json) || {}
-  end
-
-  def to_s
-    @raw.to_json
   end
 
   def to_hash

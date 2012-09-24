@@ -11,7 +11,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120920215859) do
+ActiveRecord::Schema.define(:version => 20120921212540) do
+
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
     t.string   "address_id",                :limit => 36,  :null => false
@@ -401,6 +402,7 @@ ActiveRecord::Schema.define(:version => 20120920215859) do
     t.datetime "updated_at"
     t.datetime "synced_at"
     t.string   "staff_id"
+    t.string   "client_id"
   end
 
   create_table "ncs_codes", :force => true do |t|

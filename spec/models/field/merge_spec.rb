@@ -3,6 +3,7 @@
 #
 # Table name: merges
 #
+#  client_id       :string(255)
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime

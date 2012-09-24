@@ -26,6 +26,13 @@ module NcsNavigator::Core
       @suite_configuration || NcsNavigator.configuration
     end
 
+    ##
+    # For use by mailers and other code that needs to know the URI of this
+    # Cases instance, but doesn't have access to the Rack environment.
+    def base_uri
+      suite_configuration.core_uri
+    end
+
     # Attributes which are taken directly from the Core section of the
     # suite configuration without coercion or validation.
     %w(
@@ -47,6 +54,10 @@ module NcsNavigator::Core
 
     def email_prefix
       "[NCS Navigator Cases #{study_center_short_name} #{Rails.env.titlecase}] "
+    end
+
+    def mail_from
+      suite_configuration.core_mail_from
     end
 
     def footer_right_logo_path

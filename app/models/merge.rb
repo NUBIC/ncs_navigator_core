@@ -3,6 +3,7 @@
 #
 # Table name: merges
 #
+#  client_id       :string(255)
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
@@ -29,12 +30,13 @@ require 'stringio'
 class Merge < ActiveRecord::Base
   belongs_to :fieldwork, :inverse_of => :merges
 
-  composed_of :conflict_report, :mapping => %w(conflict_report to_s),
+  composed_of :conflict_report, :mapping => %w(conflict_report to_json),
                                 :allow_nil => true,
                                 :converter => lambda { |raw| ConflictReport.new(raw) }
 
   delegate :original_data, :to => :fieldwork
 
+  validates_presence_of :client_id
   validates_presence_of :staff_id
 
   S = Case::Struct.new(:started_at, :merged_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
@@ -137,7 +139,7 @@ class Merge < ActiveRecord::Base
       end
 
       self.merged_at = Time.now
-      self.conflict_report = superposition.conflicts.to_json
+      self.conflict_report = superposition.conflicts
       save(:validate => false)
 
       # Sync PSC.

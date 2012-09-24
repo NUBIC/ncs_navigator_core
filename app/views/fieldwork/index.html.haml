@@ -22,6 +22,6 @@
         %td.status
           = latest_merge_status(fw)
         %td
-          = link_to 'View', fieldwork_path(fw.fieldwork_id)
+          = link_to 'View', latest_fieldwork_merges_path(fw.fieldwork_id)
 
   = will_paginate @fieldworks

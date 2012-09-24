@@ -4,6 +4,8 @@
 class Api::FieldworkController < ApplicationController
   respond_to :json
 
+  before_filter :require_client_id, :only => [:create, :update]
+
   def create
     unless %w(client_id end_date start_date).all? { |k| params.has_key?(k) }
       render :nothing => true, :status => :bad_request and return
@@ -23,7 +25,9 @@ class Api::FieldworkController < ApplicationController
     fw = Fieldwork.for(params['id'], current_staff_id)
 
     begin
-      m = fw.merges.create!(:proposed_data => request.body.read, :staff_id => current_staff_id)
+      m = fw.merges.create!(:proposed_data => request.body.read,
+                            :staff_id => current_staff_id,
+                            :client_id => params[:client_id])
     ensure
       request.body.rewind
     end
@@ -37,5 +41,11 @@ class Api::FieldworkController < ApplicationController
     fw = Fieldwork.find_by_fieldwork_id(params['id'])
 
     respond_with fw
+  end
+
+  def require_client_id
+    if params[:client_id].blank?
+      render :nothing => true, :status => :bad_request
+    end
   end
 end

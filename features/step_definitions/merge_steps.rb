@@ -99,7 +99,7 @@ Given /^I complete the fieldwork set$/ do |table|
   fieldwork_data = ERB.new(File.read(data_file)).result(binding)
 
   uri = last_response.headers['Location']
-  put uri, fieldwork_data
+  put "#{uri}?client_id=foo", fieldwork_data
 end
 
 When /^the merge runs$/ do
