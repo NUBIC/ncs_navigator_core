@@ -22,6 +22,13 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    if params[:contact_link_id]
+      @contact_link = ContactLink.find(params[:contact_link_id])
+      if @event.event_disposition.blank?
+        @event.event_disposition = @contact_link.contact.contact_disposition
+      end
+    end
+    @close = params[:close]
     set_disposition_group
   end
 
@@ -29,11 +36,29 @@ class EventsController < ApplicationController
   # PUT /events/1.json
   def update
     @event = Event.find(params[:id])
-
+    if params[:contact_link_id]
+      @contact_link = ContactLink.find(params[:contact_link_id])
+    end
+    @close = params[:close]
     respond_to do |format|
       if @event.update_attributes(params[:event])
         mark_activity_occurred
-        format.html { redirect_to(redirect_path, :notice => 'Event was successfully updated.') }
+
+        notice = 'Event was successfully updated.'
+
+        participant = @event.participant
+        if participant.pending_events.blank?
+          resp = Event.schedule_and_create_placeholder(psc, participant)
+          notice += " Could not schedule next event [#{participant.next_study_segment}]" unless resp
+        end
+
+        format.html do
+          if params[:commit] == "Continue" && @contact_link
+            redirect_to(edit_contact_link_contact_path(@contact_link, @contact_link.contact, :next_event => true), :notice => notice)
+          else
+            redirect_to(redirect_path, :notice => notice)
+          end
+        end
         format.json { head :ok }
       else
         format.html { render :action => "edit" }
@@ -74,7 +99,7 @@ class EventsController < ApplicationController
       if @event.provider_recruitment_event?
         provider = @event.contact_links.find { |cl| !cl.provider.nil? }.provider
         path = pbs_list_path(provider.pbs_list)
-      elsif @event.participant.nil?
+      elsif !@event.participant.nil?
         path = participant_path(@event.participant)
       end
       path

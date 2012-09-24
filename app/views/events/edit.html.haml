@@ -1,8 +1,10 @@
-- title "Edit Event"
+- title @close ? "Close Event" : "Edit Event"
+
+- person = @event.participant.person
 
 %h3
-  - if @event.participant && @event.participant.person
-    = link_to @event.participant.person.to_s, participant_path(@event.participant), :class => "header_link"
+  - if @event.participant && person
+    = link_to person.to_s, participant_path(@event.participant), :class => "header_link"
   - else
     Event has no associated participant.
   = " :: "
@@ -12,7 +14,17 @@
   = form_for(@event, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
-    = render "/events/form_fields", :f => f
+    - if @close
+      = render "/events/close_event_form_fields", :f => f
+    - else
+      = render "/events/form_fields", :f => f
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
+      - if person && @contact_link && continuable?(@event)
+        %p
+          = "- OR -"
+        %p
+          = "Continue onto #{upcoming_events_for(person)}"
+          %br
+          = f.submit "Continue", :confirm => "Are you sure you would like to continue to #{upcoming_events_for(person)}?"

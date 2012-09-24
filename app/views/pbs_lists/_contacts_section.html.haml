@@ -24,7 +24,7 @@
         - cls = cycle('even_record', 'odd_record')
         %tr{ :class => cls }
           %td
-            = link_to "#{contact.contact_date}", edit_person_contact_path(link.person, contact),
+            = link_to "#{contact.contact_date}", edit_contact_link_contact_path(link, contact),
               :class => "edit_link icon_link", :title => "Edit Contact Record"
           %td
             = link.person.full_name

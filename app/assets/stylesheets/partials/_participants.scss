@@ -24,13 +24,21 @@
 
 }
 
-
-
 .participant_events {
   .event {
+    @include rounded-corners(0.5em);
+    border: 2px solid $BORDER_GRAY;
+    margin-bottom: 0.75em;
+
+    .no_event_contact_records {
+      padding: 0.5em;
+    }
+
     .header {
-      border: 1px solid $BORDER_GRAY;
       padding: 0.25em;
+    }
+    .event_actions {
+      float: right;
     }
   }
 }
