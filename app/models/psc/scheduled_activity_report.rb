@@ -79,6 +79,8 @@ module Psc
         add_derived_entities_from_activity(activity)
       end
 
+      log_derivations
+
       plans = InstrumentPlanCollection.for(activities)
 
       plans.each do |plan|
@@ -89,7 +91,21 @@ module Psc
     end
 
     def reset_derivations
-      [contact_links, contacts, events, instruments, instrument_plans, people, surveys].each(&:clear)
+      derivation_collections.each(&:clear)
+    end
+
+    def log_derivations
+      return unless logger.level == ::Logger::DEBUG
+
+      derivation_collections.each do |dc|
+        dc.each do |entity|
+          logger.debug { "Derived #{entity.inspect} from PSC schedule" }
+        end
+      end
+    end
+
+    def derivation_collections
+      [contact_links, contacts, events, instruments, instrument_plans, people, surveys]
     end
 
     def add_derived_entities_from_activity(activity)
