@@ -7,14 +7,6 @@ tmp
 tmtags
 coverage.data
 coverage
-app/coffeescripts/math.coffee
-public/javascripts/Player.js
-public/javascripts/Song.js
-public/javascripts/compiled/math.js
-spec/coffeescripts/math_spec.coffee
-spec/javascripts/PlayerSpec.js
-spec/javascripts/helpers/SpecHelper.js
-spec/javascripts/math_spec.js
 doc/survey_to_operational_data_maps
 doc/data
 doc/notes
