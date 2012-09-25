@@ -92,6 +92,7 @@ describe Participant do
 
     it "starts a pregnant participant at PV1" do
       pr = Factory(:low_intensity_ppg1_participant)
+      pr.person = Factory(:person)
       pr.should be_high_intensity
       pr.low_intensity_state.should == "started_in_high_intensity_arm"
 
@@ -532,16 +533,53 @@ describe Participant do
 
     context "in the low intensity protocol" do
 
-      it "knows the upcoming applicable events for a new participant" do
-        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
+      it "uses the date from last contact date to determine the next scheduled event date" do
+        trying = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
         person = Factory(:person)
         @participant = Factory(:participant, :high_intensity => false)
         @participant.person = person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
-        Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status => trying)
+        contact = Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01')
+        Factory(:contact_link, :person => person, :contact => contact)
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        @participant.next_scheduled_event.date.should == Date.parse('2012-01-01')
+      end
+
+      it "uses today's date to determine the next scheduled event date if no contacts" do
+        trying = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => false)
+        @participant.person = person
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status => trying)
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
         @participant.next_scheduled_event.date.should == Date.today
+      end
+
+      it "uses today's date to determine the next scheduled event date if no person" do
+        trying = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
+        @participant = Factory(:participant, :high_intensity => false)
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status => trying)
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        @participant.next_scheduled_event.date.should == Date.today
+      end
+
+      it "uses the birth event contact date to determine the next scheduled event date" do
+        person = Factory(:person)
+        @participant = Factory(:participant, :high_intensity => false)
+        @participant.person = person
+        @participant.register!
+        @participant.assign_to_pregnancy_probability_group!
+        @participant.birth_event_low!
+        contact = Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01')
+        Factory(:contact_link, :person => person, :contact => contact)
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
+        @participant.next_scheduled_event.date.should == Date.parse('2012-07-01')
       end
 
       it "uses the birth event contact date to determine the next scheduled event date" do
@@ -791,7 +829,9 @@ describe Participant do
         participant.ppg_status.local_code.should == 1
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
         participant.can_impregnate_low?.should be_true
-
+        lo_i_quex = Factory(:event, :participant => participant, :event_start_date => Date.today, :event_end_date => Date.today,
+                            :event_type => NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33))
+        participant.events << lo_i_quex
         participant.impregnate_low!
         participant.should be_pregnant
         participant.stub!(:due_date).and_return { 150.days.from_now.to_date }

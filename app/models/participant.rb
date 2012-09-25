@@ -512,7 +512,9 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next Follow-Up event
   # @return [Date]
   def follow_up_interval
-    if low_intensity? or recent_loss?
+    if should_take_low_intensity_questionnaire?
+      0
+    elsif low_intensity? or recent_loss?
       6.months
     else
       3.months
@@ -958,6 +960,8 @@ class Participant < ActiveRecord::Base
     def next_low_intensity_study_segment
       if pending? || registered?
         PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      elsif should_take_low_intensity_questionnaire?
+        PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
@@ -1055,10 +1059,7 @@ class Participant < ActiveRecord::Base
     end
 
     def next_scheduled_event_date
-      # TODO: probably use get_date_to_schedule_next_event_from_contact_link
-      #       instead of Date.today to determine next scheduled event date
-      #       to handle previous events entered
-      (interval == 0) ? Date.today : (date_used_to_schedule_next_event.to_date + interval)
+      (interval == 0) ? get_date_to_schedule_next_event_from_contact_link : (date_used_to_schedule_next_event.to_date + interval)
     end
 
     def date_used_to_schedule_next_event
@@ -1072,15 +1073,19 @@ class Participant < ActiveRecord::Base
     end
 
     ##
-    # Use Most recent contact link contact date if it exists
+    # if person and contacts exist, use most recent contact link contact date if it exists
     # otherwise use the created at attribute for the contact link
+    # else use today's date.
     # @return [Date]
     def get_date_to_schedule_next_event_from_contact_link
       # contact_links are delegated to person and ordered by created_at DESC
-      most_recent_contact_link = contact_links.first
-      result = most_recent_contact_link.created_at.to_date
-      if most_recent_contact_link.contact && most_recent_contact_link.contact.contact_date_date
-        result = most_recent_contact_link.contact.contact_date_date
+      if person && most_recent_contact_link = contact_links.first
+        result = most_recent_contact_link.created_at.to_date
+        if most_recent_contact_link.contact && most_recent_contact_link.contact.contact_date_date
+          result = most_recent_contact_link.contact.contact_date_date
+        end
+      else
+        result = Date.today
       end
       result
     end

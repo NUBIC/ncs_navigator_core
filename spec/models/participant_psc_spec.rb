@@ -63,7 +63,9 @@ describe Participant do
             participant.should be_known_to_be_pregnant
             participant.impregnate_low!
             # participant.birth_event_low!
-
+            lo_i_quex = Factory(:event, :participant => participant, :event_start_date => Date.today, :event_end_date => Date.today,
+                                :event_type => NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33))
+            participant.events << lo_i_quex
             participant.stub!(:due_date).and_return { 150.days.from_now.to_date }
 
             participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW

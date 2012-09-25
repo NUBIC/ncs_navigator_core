@@ -57,8 +57,12 @@ describe ParticipantsHelper do
 
     describe ".displayable_next_scheduled_event" do
 
-      let(:next_scheduled_lo_i_event) { lo_i_participant2.next_scheduled_event.event }
-      let(:next_scheduled_hi_i_event) { hi_i_participant2.next_scheduled_event.event }
+      let(:next_scheduled_lo_i_event) { 
+        lo_i_participant2.person = Factory(:person)
+        lo_i_participant2.next_scheduled_event.event }
+      let(:next_scheduled_hi_i_event) { 
+        hi_i_participant2.person = Factory(:person)
+        hi_i_participant2.next_scheduled_event.event }
 
       describe "non two-tier recruitment strategy" do
 

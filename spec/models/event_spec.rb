@@ -556,6 +556,7 @@ describe Event do
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
         part = Factory(:high_intensity_pregnancy_one_participant)
+        part.person = Factory(:person)
         part.next_scheduled_event.event.
           should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
 
