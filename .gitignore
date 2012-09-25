@@ -31,7 +31,5 @@ doc/contact_event_workflow.pdf
 # Surveys are in a separate project
 surveys
 
-# Pow configuration
+# Pow local configuration
 .powenv
-.powenv_1.8.7
-.powrc
