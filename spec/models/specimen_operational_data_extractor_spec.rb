@@ -66,10 +66,11 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 6
+        instrument.specimens.reload
+        instrument.specimens.count.should == 6
 
         specimen_ids.each do |specimen_id|
-          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
 
       end
@@ -90,11 +91,13 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 1
+        instrument.specimens.reload
+        instrument.specimens.count.should == 1
 
         specimen_ids.each do |specimen_id|
-          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
+
 
       end
 
@@ -120,11 +123,13 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        Specimen.where(:instrument_id => instrument.id).count.should == 4
+        instrument.specimens.reload
+        instrument.specimens.count.should == 4
 
         specimen_ids.each do |specimen_id|
-          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
+
 
         update_specimen_ids = [
           "AA999999-SS10",
@@ -149,12 +154,12 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 6
+        instrument.specimens.reload
+        instrument.specimens.count.should == 6
 
         update_specimen_ids.each do |specimen_id|
-          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
-
 
       end
 
@@ -181,10 +186,11 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 3
+        instrument.specimens.reload
+        instrument.specimens.count.should == 3
 
         specimen_ids.each do |specimen_id|
-          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
 
       end
@@ -205,10 +211,11 @@ describe SpecimenOperationalDataExtractor do
 
         SpecimenOperationalDataExtractor.extract_data(response_set)
 
-        specimens = Specimen.where(:instrument_id => instrument.id).count.should == 1
+        instrument.specimens.reload
+        instrument.specimens.count.should == 1
 
         specimen_ids.each do |specimen_id|
-          Specimen.where(:instrument_id => instrument.id, :specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
 
       end
