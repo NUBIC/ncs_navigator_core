@@ -6,8 +6,11 @@
     #edit_participant_link
       = link_to "Edit Participant Record", edit_participant_path(@person.participant), :class => "edit_link icon_link"
   - else
-    #create_participant_link
-      = link_to "Create Participant Record", new_participant_path(:person_id => @person.id), :class => "edit_link icon_link"
+    - if permit?(Role::SYSTEM_ADMINISTRATOR)
+      #create_participant_link
+        = link_to "Create Participant Record", new_participant_path(:person_id => @person.id),
+          :class => "edit_link icon_link",
+          :confirm => "Are you certain that #{@person} should be made a Participant?"
   = form_for(@person, :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
 
