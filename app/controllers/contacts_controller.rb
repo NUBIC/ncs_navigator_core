@@ -51,7 +51,9 @@ class ContactsController < ApplicationController
 
   # GET /contact/1/edit
   def edit
-    @person  = Person.find(params[:person_id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    @person       = @contact_link.person
+
     @contact = Contact.find(params[:id])
     @contact.set_default_end_time
 
@@ -61,27 +63,23 @@ class ContactsController < ApplicationController
       else
         @event = event_for_person
       end
-      link = find_or_create_contact_link
-      redirect_to(select_instrument_contact_link_path(link))
+      redirect_to(select_instrument_contact_link_path(find_or_create_contact_link))
     else
-      @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact.id, @person.id).first
       @event = @contact_link.event
       set_disposition_group
     end
   end
 
   def update
-    @person  = Person.find(params[:person_id])
-    @contact = Contact.find(params[:id])
-
-    @contact_link = ContactLink.where("contact_id = ? AND person_id = ?", @contact.id, @person.id).first
-    @event = @contact_link.event
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    @person       = @contact_link.person
+    @contact      = Contact.find(params[:id])
+    @event        = @contact_link.event
 
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
-        link = find_or_create_contact_link
 
-        format.html { redirect_to(post_update_redirect_path(link), :notice => 'Contact was successfully updated.') }
+        format.html { redirect_to(post_update_redirect_path(@contact_link), :notice => 'Contact was successfully updated.') }
         format.json { render :json => @contact }
       else
         set_disposition_group
@@ -95,7 +93,7 @@ class ContactsController < ApplicationController
     if link && link.provider
       contact_log_provider_path(link.provider)
     else
-      select_instrument_contact_link_path(link)
+      decision_page_contact_link_path(link)
     end
   end
   private :post_update_redirect_path
