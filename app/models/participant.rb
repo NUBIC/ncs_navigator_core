@@ -449,7 +449,7 @@ class Participant < ActiveRecord::Base
   # Returns all events where event_end_date is not null
   # @return [Array<Event>]
   def completed_events(event_type = nil)
-    result = events.select { |e| !e.event_end_date.blank? }
+    result = events.select { |e| e.closed? }
     result = result.select { |e| e.event_type == event_type } if event_type
     result
   end
