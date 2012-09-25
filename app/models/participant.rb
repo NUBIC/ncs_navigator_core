@@ -302,6 +302,8 @@ class Participant < ActiveRecord::Base
       end
     end
 
+    # TODO: move this to a method that can be called after Contact or Event
+    #       has been updated cf. #2524
     if known_to_have_experienced_child_loss? && can_lose_child?
       lose_child!
     end
