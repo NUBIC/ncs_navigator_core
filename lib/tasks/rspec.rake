@@ -3,7 +3,7 @@ begin
 
   namespace :spec do
     desc "Run non-warehouse specs"
-    RSpec::Core::RakeTask.new(:core) do |t|
+    RSpec::Core::RakeTask.new(:core => Rake::Task[:spec].prerequisites) do |t|
       t.pattern = "spec/**/*_spec.rb"
       t.rspec_opts = "-t ~warehouse"
     end
