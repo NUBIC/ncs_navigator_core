@@ -70,8 +70,7 @@ class SurveyorController < ApplicationController
     # TODO: ensure that the state transitions are based on the responses in the response set
     #       and that the disposition of the instrument was completed
     def update_participant_based_on_survey(response_set)
-      participant = response_set.participant
-      if participant
+      if participant = response_set.participant
         participant.update_state_after_survey(response_set, psc)
       end
     end
