@@ -5,6 +5,8 @@ db/*.sqlite3
 importer_passthrough
 log
 tmp
+*.patch
+*.tar
 
 # General temp files
 .DS_Store
@@ -32,4 +34,4 @@ doc/contact_event_workflow.pdf
 surveys
 
 # Pow local configuration
-.powenv
+.powenv*
