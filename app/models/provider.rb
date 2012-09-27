@@ -70,6 +70,8 @@ class Provider < ActiveRecord::Base
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :staff, :allow_destroy => true
   accepts_nested_attributes_for :provider_logistics, :allow_destroy => true
+  accepts_nested_attributes_for :provider_roles, :allow_destroy => true
+  accepts_nested_attributes_for :pbs_provider_roles, :allow_destroy => true
 
   PROVIDER_RECRUIMENT_EVENT_TYPE_CODE = 22
   ORIGINAL_IN_SAMPLE_CODE = 1

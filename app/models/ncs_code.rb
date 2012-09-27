@@ -282,6 +282,9 @@ class NcsCode < ActiveRecord::Base
     :provider_info_source_code        => 'INFORMATION_SOURCE_CL2',
     :list_subsampling_code            => 'CONFIRM_TYPE_CL2',
 
+    ### pbs_provider_role
+    :provider_role_pbs_code           => 'PROVIDER_STUDY_ROLE_CL2',
+
     ### pbs_list
     # :psu_code                         => 'PSU_CL1',
     :in_out_frame_code                => 'INOUT_FRAME_CL1',                 # MDES 3.0

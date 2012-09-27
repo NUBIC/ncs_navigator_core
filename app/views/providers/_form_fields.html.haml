@@ -39,7 +39,18 @@
 
 = render "shared/ncs_code_select", { :f => f, :code => :provider_type_code, :label_text => "Provider Type", :other => :provider_type_other }
 
-= render "shared/ncs_code_select", { :f => f, :code => :provider_ncs_role_code, :label_text => "Provider Role", :other => :provider_ncs_role_other }
+- if recruitment_strategy.pbs?
+
+  .pbs_provider_roles
+    - @pbsProviderRolesTemplate = generate_nested_attributes_template(f, :pbs_provider_roles, 'providers/pbs_provider_roles')
+    %table{ :class => 'records pbs_provider_roles' }
+      %tbody.nested_records_pbs_provider_roles
+        = f.fields_for :pbs_provider_roles do |ppr|
+          = render :partial => 'providers/pbs_provider_roles', :locals => { :f => ppr }
+      %tfoot
+        %tr.row
+          %td{ :colspan => '2' }
+            = link_to_add_fields "Add Provider Role", :pbs_provider_roles
 
 = render "shared/ncs_code_select", { :f => f, :code => :practice_info_code, :label_text => "Practice Information" }
 
@@ -110,5 +121,6 @@
 
     providerLogisticsAttributesForm = new NCSCore.UI.ProviderLogisticAssociation({
       providerLogisticTemplate: '#{@providerLogisticsTemplate}' });
-
+    pbsProviderRolesAttributesForm = new NCSCore.UI.PbsProviderRoleAssociation({
+      pbsProviderRolesTemplate: '#{@pbsProviderRolesTemplate}' });
   });

@@ -20,4 +20,8 @@ class PbsProviderRole < ActiveRecord::Base
   ncs_coded_attribute :psu,                   'PSU_CL1'
   ncs_coded_attribute :provider_role_pbs,     'PROVIDER_STUDY_ROLE_CL2'
   belongs_to :provider
+
+  def to_s
+    "#{provider_role_pbs} #{provider_role_pbs_other}".strip
+  end
 end

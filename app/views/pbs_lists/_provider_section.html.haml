@@ -35,10 +35,14 @@
             = @provider.provider_type_other unless @provider.provider_type_other.blank?
         %p
           %span{ :class => "label" }
-            Provider Role
+            Provider Roles
           %span{ :class => "value" }
-            = @provider.provider_ncs_role
-            = @provider.provider_ncs_role_other unless @provider.provider_ncs_role_other.blank?
+            - if @provider.pbs_provider_roles.blank?
+              No provider roles assigned
+            - else
+              - @provider.pbs_provider_roles.each do |role|
+                = role
+
         %p
           %span{ :class => "label" }
             Practice Information
