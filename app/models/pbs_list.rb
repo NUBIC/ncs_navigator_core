@@ -62,6 +62,14 @@ class PbsList < ActiveRecord::Base
 
   SEARCH_LOCATIONS = ["Original location", "Substitute location"]
 
+  ##
+  # Returns true if the in_out_frame_code is one of the following:
+  # * 4 Hospital in final sampling frame; out of scope for screening
+  # * 5 Hospital not in final sampling frame; out of scope for screening
+  def hospital?
+    [4,5].include?(in_out_frame_code)
+  end
+
   def recruitment_started?
     !self.pr_recruitment_start_date.blank? && self.pr_recruitment_status_code == 3
   end

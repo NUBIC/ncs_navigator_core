@@ -39,7 +39,9 @@
         %tr{ :class => cycle('even_record', 'odd_record') }
           - name = blank_safe(provider.name_practice)
           %td{ :title => "#{name} - #{provider.address.to_s}" }
-            = link_to name, path, { :class => "icon_link" }
+            - cls = "icon_link"
+            - cls += " hospital_link" if pbs.hospital?
+            = link_to name, path, { :class => cls }
           %td
             - unless provider.contacts.blank?
               - txt = "#{contact.contact_date} #{contact.contact_start_time}"
