@@ -56,7 +56,7 @@ module NcsNavigator::Core::Warehouse
         :preferred_contact_method_other => :pref_contact_oth,
         :planned_move_code => :plan_move
       },
-      :ignored_columns => %w(person_dob_date date_move_date response_set_id)
+      :ignored_columns => %w(person_dob_date date_move_date response_set_id role)
     )
 
     produce_one_for_one(:household_person_links, LinkPersonHousehold,
