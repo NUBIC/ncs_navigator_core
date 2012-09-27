@@ -66,6 +66,9 @@ describe Provider do
 
   it { should have_many(:non_interview_providers) }
 
+  it { should have_many(:pbs_provider_roles) }
+  it { should have_many(:provider_roles) }
+
   describe ".to_s" do
     it "returns the name_practice" do
       Factory(:provider, :name_practice => "expected").to_s.should == "expected"

@@ -22,6 +22,12 @@ FactoryGirl.define do
     pr.provider_ncs_role_code     1
   end
 
+  factory :pbs_provider_role do |pr|
+    pr.psu_code                   2000030
+    pr.association :provider, :factory => :provider
+    pr.provider_role_pbs_code     1
+  end
+
   factory :person_provider_link do |ppl|
     ppl.psu_code                   2000030
     ppl.association :provider, :factory => :provider

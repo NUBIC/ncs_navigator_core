@@ -61,6 +61,9 @@ class Provider < ActiveRecord::Base
   has_many :provider_logistics
   has_many :non_interview_providers
 
+  has_many :provider_roles
+  has_many :pbs_provider_roles, :class_name => 'PbsProviderRole', :foreign_key => 'provider_id'
+
   belongs_to :institution
 
   accepts_nested_attributes_for :address, :allow_destroy => true
