@@ -22,6 +22,12 @@
   = label_tag 'email', "Email"
   %br
   = text_field_tag 'email', @email.email, { :type => "email" }
+
+%p
+  = label_tag 'person[role]', "Role"
+  %br
+  = text_field_tag 'person[role]', @staff.role
+
 %p
   = check_box_tag 'primary_contact', '1', @link.primary_contact
   = label_tag 'primary_contact', "Primary Contact?"

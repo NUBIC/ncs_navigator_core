@@ -6,6 +6,8 @@
     - name = blank_safe(member.first_name  + " " + member.last_name)
     = link_to name, edit_staff_provider_path(@provider, :person_id => member.id),
         {:title => "Edit #{name}", :class => "edit_staff_modal_form_link"}
+  %span{ :class => "staff_data name"}
+    = member.role
   %span{ :class => "staff_data phone_data" }
     = phone_number_formatter(member.primary_work_phone.to_s)
   %span{ :class => "staff_data email"}

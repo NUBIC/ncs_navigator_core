@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: people
 #
@@ -37,6 +36,7 @@
 #  prefix_code                    :integer          not null
 #  psu_code                       :integer          not null
 #  response_set_id                :integer
+#  role                           :string(255)
 #  sex_code                       :integer          not null
 #  suffix_code                    :integer          not null
 #  title                          :string(5)
