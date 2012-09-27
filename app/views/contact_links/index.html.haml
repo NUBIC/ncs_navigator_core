@@ -14,6 +14,12 @@
     %p
       = f.label :person_last_name_cont, "Last Name Contains"
       = f.text_field :person_last_name_cont
+
+    - if recruitment_strategy.pbs?
+      %p
+        = f.label :provider_name_practice_cont, "Provider Name Contains"
+        = f.text_field :provider_name_practice_cont
+
     %p
       = f.label :contact_contact_comment_cont, "Contact Comments Contains"
       = f.text_field :contact_contact_comment_cont
@@ -51,36 +57,34 @@
           Time
         %th
           = sort_link @q, "person_last_name", "Person"
+        - if recruitment_strategy.pbs?
+          %th
+            = sort_link @q, "provider_name_practice", "Provider"
         %th
           = sort_link @q, "contact_contact_disposition", "Contact Disp"
         %th
           = sort_link @q, "event_event_type_code", "Event"
-        %th
-          = sort_link @q, "event_event_disposition", "Event Disp"
-        %th
+
       - @contact_links.each do |cl|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
             = cl.contact.contact_type
           %td
-            = cl.contact.contact_date_date
+            = link_to cl.contact.contact_date_date, edit_contact_link_contact_path(cl, cl.contact), :class => "edit_link icon_link"
           %td
             = "#{cl.contact.contact_start_time}-#{blank_safe(cl.contact.contact_end_time)}"
           %td
             - if cl.person.blank?
               = blank_safe(cl.person, "N/A")
             - elsif cl.person.participant?
-              = link_to blank_safe(cl.person.to_s), person_path(cl.person), :class => 'edit_link icon_link'
+              = link_to blank_safe(cl.person.to_s), participant_path(cl.person.participant), :class => 'edit_link icon_link'
             - else
               = blank_safe(cl.person.to_s)
+          - if recruitment_strategy.pbs?
+            %td
+              = cl.provider
           %td
             = cl.contact_disposition
           %td
             = cl.event.event_type
-          %td
-            = cl.event_disposition
-            %br
-            = cl.event.event_disposition_category
-          %td
-            = link_to 'Edit', edit_contact_link_path(cl), :class => "edit_link icon_link"
   = will_paginate @contact_links
