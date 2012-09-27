@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120927152830) do
+ActiveRecord::Schema.define(:version => 20120927175448) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -1008,6 +1008,8 @@ ActiveRecord::Schema.define(:version => 20120927152830) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "completion_date"
+    t.text     "comment"
+    t.boolean  "refusal"
   end
 
   create_table "provider_roles", :force => true do |t|

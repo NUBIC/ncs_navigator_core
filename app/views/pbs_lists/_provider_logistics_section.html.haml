@@ -1,0 +1,32 @@
+#provider_logistics_section
+  %span{ :id => "provider_logistics_header" }
+    Provider Logistics
+
+- if @provider.provider_logistics.empty?
+  #provider_logistics
+    No provider_logistics exist for this provider.
+- else
+  #provider_logistics
+    %table{ :id => 'provider_logistics_line_items', :class => "records" }
+      %tr
+        %th{:id => "table_header_left_end"}
+          Completion Date
+        %th{:id => "table_header_middle"}
+          Logistic
+        %th{:id => "table_header_right_end"}
+          Other
+      - @provider.provider_logistics.each do |pl|
+        - cls = cycle('even_record', 'odd_record')
+        %tr{ :class => cls }
+          %td
+            = blank_safe pl.completion_date
+          %td
+            = link_to "#{pl.provider_logistics}", recruited_provider_path(@provider),
+              :title => "Edit Provider Logistic"
+          %td
+            = pl.provider_logistics_other
+        - unless pl.comment.blank?
+          %tr{ :class => cls }
+            %td{ :colspan => 3 }
+              Comment:
+              = pl.comment

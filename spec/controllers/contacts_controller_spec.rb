@@ -231,7 +231,7 @@ describe ContactsController do
 
             it "redirects to the pbs_lists page" do
               post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
-              response.should redirect_to(pbs_lists_path)
+              response.should redirect_to(pbs_list_path(@provider.pbs_list))
             end
 
             it "sets PR_RECRUITMENT_START_DATE on Provider PBS List to contact date" do

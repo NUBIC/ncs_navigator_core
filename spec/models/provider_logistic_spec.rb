@@ -3,6 +3,7 @@
 #
 # Table name: provider_logistics
 #
+#  comment                  :text
 #  completion_date          :date
 #  created_at               :datetime
 #  id                       :integer          not null, primary key
@@ -11,6 +12,7 @@
 #  provider_logistics_id    :string(36)       not null
 #  provider_logistics_other :string(255)
 #  psu_code                 :integer          not null
+#  refusal                  :boolean
 #  transaction_type         :string(255)
 #  updated_at               :datetime
 #

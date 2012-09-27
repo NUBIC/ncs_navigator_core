@@ -17,6 +17,8 @@
           Method of Contact
         %th{:id => "staff_table_header_middle"}
           Status
+        %th
+          Report Issue
         %th{:id => "staff_table_header_right_end"}
           Delete
       - @provider.contact_links.each do |link|
@@ -34,6 +36,16 @@
             - event_type = @provider.provider_recruitment_event.event_type
             - disp = contact.contact_disposition
             = DispositionMapper.disposition_text_for_event(event_type, disp)
+          %td
+            - unless contact.contact_disposition == DispositionMapper::PROVIDER_RECRUITED
+              - title_text = "Was the provider unavailable, were there issues, or did the provider refuse to participate?"
+              - if contact.non_interview_provider.blank?
+                = link_to "New Report", new_provider_non_interview_provider_path(@provider, :contact_id => contact.id),
+                  :class => "add_link icon_link", :title => title_text
+              - else
+                = link_to "Edit Report",
+                  edit_provider_non_interview_provider_path(@provider, contact.non_interview_provider, :contact_id => contact.id),
+                  :class => "edit_link icon_link", :title => title_text
           %td
             - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
               = link_to 'Delete', contact_path(contact, :pbs_list_id => @pbs_list.id), :confirm => 'Are you sure you want to delete this contact?',

@@ -1,10 +1,14 @@
+- obj = f.object
+
 .column-container
 
   = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
 
   = render "shared/ncs_code_select", { :f => f, :code => :nir_type_provider_code, :label_text => "Description of Non-Interview of Provider", :other => :nir_type_provider_other }
 
-  .nir_section.hide.nir_type_provider_1
+  - cls = "nir_section nir_type_provider_1"
+  - cls += " hide" if obj.nir_type_provider_code != 1
+  %div{ :class => cls }
     = render "shared/ncs_code_select", { :f => f, :code => :nir_closed_info_code, :label_text => "Source of Verified Location Closure", :other => :nir_closed_info_other }
 
     %p
@@ -14,17 +18,23 @@
 
     = render "shared/ncs_code_select", { :f => f, :code => :perm_closure_code, :label_text => "Is the closure permanent?" }
 
-  .nir_section.hide.nir_type_provider_2
+  - cls = "nir_section nir_type_provider_2"
+  - cls += " hide" if obj.nir_type_provider_code != 2
+  %div{ :class => cls }
     = render "shared/ncs_code_select", { :f => f, :code => :who_refused_code, :label_text => "Person in the provider's office who refused participation", :other => :who_refused_other }
 
     = render "shared/ncs_code_select", { :f => f, :code => :refuser_strength_code, :label_text => "Strength/Intensity of Refusal" }
 
     = render "shared/ncs_code_select", { :f => f, :code => :ref_action_provider_code, :label_text => "Recommended next steps for case" }
 
-  .nir_section.hide.nir_type_provider_3
+  - cls = "nir_section nir_type_provider_3"
+  - cls += " hide" if obj.nir_type_provider_code != 3
+  %div{ :class => cls }
     = render "shared/ncs_code_select", { :f => f, :code => :who_confirm_noprenatal_code, :label_text => "Person in the provider's office who stated provider practice does not include prenatal care.", :other => :who_confirm_noprenatal_other }
 
-  .nir_section.hide.nir_type_provider_4
+  - cls = "nir_section nir_type_provider_4"
+  - cls += " hide" if obj.nir_type_provider_code != 4
+  %div{ :class => cls }
     = render "shared/ncs_code_select", { :f => f, :code => :nir_moved_info_code, :label_text => "Source of Verified Relocation Information", :other => :nir_moved_info_other }
 
     %p

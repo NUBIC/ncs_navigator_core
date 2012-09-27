@@ -133,10 +133,13 @@ class ContactsController < ApplicationController
             @provider.pbs_list.mark_recruited!(@contact)
             flash[:notice] = "Provider has been marked recruited."
             redirect_to recruited_provider_path(@provider, :contact_id => @contact.id)
+          elsif DispositionMapper::PROVIDER_REFUSED.include? @contact.contact_disposition
+            flash[:warning] = "Provider has been marked as refused. Please provide reason for refusal."
+            redirect_to new_provider_non_interview_provider_path(@provider, :contact_id => @contact.id, :refusal => true)
           else
             flash[:notice] = "Contact for #{@provider} was successfully created."
-            redirect_to pbs_lists_path
-            # redirect_to post_recruitment_contact_provider_path(@provider, :contact_id => @contact.id)
+            redirect_path = @provider.pbs_list ? pbs_list_path(@provider.pbs_list) : pbs_lists_path
+            redirect_to redirect_path
           end
         else
           render :action => "provider_recruitment"

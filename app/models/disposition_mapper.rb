@@ -4,6 +4,7 @@
 class DispositionMapper
 
   PROVIDER_RECRUITED = 70
+  PROVIDER_REFUSED   = [46,47,48,49,50,51,52,53]
 
   GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"     #3
   HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"   #2
