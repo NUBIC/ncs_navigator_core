@@ -149,10 +149,7 @@ class Merge < ActiveRecord::Base
 
       synced = sync.run
 
-      if !synced
-        update_attribute(:crashed_at, Time.now)
-        return false
-      end
+      return false if !synced
 
       # We're done.
       update_attribute(:synced_at, Time.now)
