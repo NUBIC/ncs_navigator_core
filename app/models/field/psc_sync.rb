@@ -83,7 +83,7 @@ module Field
       build_psc_participants(instruments)
     end
 
-    def login_to_psc(logger)
+    def login_to_psc
       cas_cli = Aker::CasCli.new(aker_configuration)
       username, password = NcsNavigatorCore.machine_account_credentials
       user = cas_cli.authenticate(username, password)
