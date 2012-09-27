@@ -311,11 +311,9 @@ class ProvidersController < ApplicationController
 
   def mark_pbs_list_refused(pbs_list)
     @pbs_list.pr_recruitment_end_date = Date.today
+    @pbs_list.pr_recruitment_status_code = 2
     if params[:substitute_provider_id]
       @pbs_list.substitute_provider = Provider.find(params[:substitute_provider_id])
-      @pbs_list.pr_recruitment_status_code = 4
-    else
-      @pbs_list.pr_recruitment_status_code = 2
     end
     @pbs_list.save!
   end

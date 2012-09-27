@@ -122,18 +122,20 @@ class ContactsController < ApplicationController
         @person = Person.find(params[:person_id])
 
         if @contact.save
-          update_provider_recruitment_event(@event, @contact)
-          update_provider_pbs_list_record(@provider.pbs_list, @contact)
           link = find_or_create_contact_link
+
+          update_provider_recruitment_event(@event, @contact)
+          @provider.pbs_list.set_recruitment_start_date!
 
           # check if the provider was recruited
           # if so update the pbs_list cooperation date
           # and redirect to provider logistics page
           if @contact.contact_disposition == DispositionMapper::PROVIDER_RECRUITED
-            @provider.pbs_list.mark_recruited!(@contact)
+            @provider.pbs_list.mark_recruited!
             flash[:notice] = "Provider has been marked recruited."
             redirect_to recruited_provider_path(@provider, :contact_id => @contact.id)
           elsif DispositionMapper::PROVIDER_REFUSED.include? @contact.contact_disposition
+            @provider.pbs_list.mark_refused!
             flash[:warning] = "Provider has been marked as refused. Please provide reason for refusal."
             redirect_to new_provider_non_interview_provider_path(@provider, :contact_id => @contact.id, :refusal => true)
           else
@@ -155,9 +157,7 @@ class ContactsController < ApplicationController
 
     if params[:pbs_list_id]
       pbs_list = PbsList.find(params[:pbs_list_id])
-      if pbs_list.provider.has_no_provider_recruited_contacts?
-        pbs_list.provider.open_recruitment
-      end
+      pbs_list.update_state!
     end
 
     respond_to do |format|
@@ -169,12 +169,6 @@ class ContactsController < ApplicationController
   end
 
   private
-
-    def update_provider_pbs_list_record(pbs_list, contact)
-      if pbs_list.pr_recruitment_start_date.blank?
-        pbs_list.update_attribute(:pr_recruitment_start_date, contact.contact_date_date)
-      end
-    end
 
     def update_provider_recruitment_event(event, contact)
       event_attrs = {}

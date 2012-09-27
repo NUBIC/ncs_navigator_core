@@ -48,11 +48,12 @@
               = link_to txt, path, { :class => "icon_link" }
           %td
             - unless provider.contacts.blank?
-              - cls = pbs.pr_recruitment_status_code.to_i == 1 ? "star_link icon_link" : "icon_link"
+              - cls = "icon_link"
+              - if pbs.pr_recruitment_status_code.to_i == 1
+                - cls += pbs.provider.recruitment_logistics_complete? ? " star_link" : " notification_icon"
               = link_to pbs.pr_recruitment_status.to_s, path, { :class => cls }
 
   .links
-    -#= link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"  {no option to enter the provider name here in PBS list, should be in Provider path}
     %br
     = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
 

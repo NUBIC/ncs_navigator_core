@@ -143,9 +143,10 @@ class Provider < ActiveRecord::Base
 
   ##
   # Set the pbs list pr_recruitment_end_date attribute to nil
-  # if any of the provider logistics are not complete
+  # if any of the provider logistics are not complete or
+  # there are no provider recruited contacts
   def open_recruitment
-    if self.pbs_list && !recruitment_logistics_complete?
+    if self.pbs_list && (!recruitment_logistics_complete? || has_no_provider_recruited_contacts?)
       self.pbs_list.update_attribute(:pr_recruitment_end_date, nil)
       if self.has_no_provider_recruited_contacts?
         self.pbs_list.update_attribute(:pr_recruitment_status_code, 3)
