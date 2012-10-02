@@ -3,15 +3,12 @@
 
 require 'ncs_navigator/core'
 
-require 'ncs_navigator/warehouse/models/two_point_zero'
-
 module NcsNavigator::Core::Warehouse
   ##
   # Converts the contents of a core instance into appropriate MDES
   # model instances for MDES Warehouse.
   class OperationalEnumerator
     include NcsNavigator::Warehouse::Transformers::Database
-    include NcsNavigator::Warehouse::Models::TwoPointZero
 
     extend DatabaseEnumeratorHelpers
 
@@ -20,15 +17,15 @@ module NcsNavigator::Core::Warehouse
     on_unused_columns :fail
     ignored_columns :id, :transaction_type, :updated_at, :created_at, :being_processed
 
-    produce_one_for_one(:listing_units, ListingUnit)
+    produce_one_for_one(:listing_units, :ListingUnit)
 
-    produce_one_for_one(:dwelling_units, DwellingUnit,
+    produce_one_for_one(:dwelling_units, :DwellingUnit,
       :public_ids => [
         { :table => :listing_units, :public_id => :list_id }
       ]
     )
 
-    produce_one_for_one(:household_units, HouseholdUnit,
+    produce_one_for_one(:household_units, :HouseholdUnit,
       :column_map => {
         :hh_eligibility_code => :hh_elig,
         :number_of_age_eligible_women => :num_age_elig,
@@ -39,14 +36,14 @@ module NcsNavigator::Core::Warehouse
       }
     )
 
-    produce_one_for_one(:dwelling_household_links, LinkHouseholdDwelling,
+    produce_one_for_one(:dwelling_household_links, :LinkHouseholdDwelling,
       :public_ids => [
         { :table => :dwelling_units, :public_id => :du_id },
         { :table => :household_units, :public_id => :hh_id }
       ]
     )
 
-    produce_one_for_one(:people, Person,
+    produce_one_for_one(:people, :Person,
       :column_map => {
         :language_code => :person_lang,
         :language_other => :person_lang_oth,
@@ -59,20 +56,20 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(person_dob_date date_move_date response_set_id role)
     )
 
-    produce_one_for_one(:household_person_links, LinkPersonHousehold,
+    produce_one_for_one(:household_person_links, :LinkPersonHousehold,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
         { :table => :household_units, :public_id => :hh_id }
       ]
     )
 
-    produce_one_for_one(:person_races, PersonRace,
+    produce_one_for_one(:person_races, :PersonRace,
       :public_ids => [
         { :table => :people, :join_column => :person_id }
       ]
     )
 
-    produce_one_for_one(:participants, Participant,
+    produce_one_for_one(:participants, :Participant,
       :column_map => {
         :pid_age_eligibility_code => :pid_age_elig
       },
@@ -82,7 +79,7 @@ module NcsNavigator::Core::Warehouse
       )
     )
 
-    produce_one_for_one(:participant_person_links, LinkPersonParticipant,
+    produce_one_for_one(:participant_person_links, :LinkPersonParticipant,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
         :participants
@@ -94,17 +91,17 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(response_set_id)
     )
 
-    produce_one_for_one(:ppg_details, PpgDetails,
+    produce_one_for_one(:ppg_details, :PpgDetails,
       :public_ids => %w(participants),
       :ignored_columns => %w(response_set_id)
     )
 
-    produce_one_for_one(:ppg_status_histories, PpgStatusHistory,
+    produce_one_for_one(:ppg_status_histories, :PpgStatusHistory,
       :public_ids => %w(participants),
       :ignored_columns => %w(response_set_id ppg_status_date_date)
     )
 
-    produce_one_for_one(:contacts, Contact,
+    produce_one_for_one(:contacts, :Contact,
       :selects => [
         "(t.contact_disposition % 500 + 500) normalized_contact_disposition"
       ],
@@ -117,7 +114,7 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(contact_date_date contact_disposition lock_version)
     )
 
-    produce_one_for_one(:participant_consents, ParticipantConsent,
+    produce_one_for_one(:participant_consents, :ParticipantConsent,
       :public_ids => [
         :participants,
         :contacts,
@@ -130,15 +127,15 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    produce_one_for_one(:participant_consent_samples, ParticipantConsentSample,
+    produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
       :public_ids => %w(participants participant_consents)
     )
 
-    produce_one_for_one(:participant_authorization_forms, ParticipantAuth,
+    produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
       :public_ids => %w(participants contacts)
     )
 
-    produce_one_for_one(:participant_visit_consents, ParticipantVisConsent,
+    produce_one_for_one(:participant_visit_consents, :ParticipantVisConsent,
       :public_ids => [
         :participants,
         :contacts,
@@ -148,7 +145,7 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    produce_one_for_one(:participant_visit_records, ParticipantRvis,
+    produce_one_for_one(:participant_visit_records, :ParticipantRvis,
       :public_ids => [
         :participants,
         :contacts,
@@ -159,7 +156,7 @@ module NcsNavigator::Core::Warehouse
       ]
     )
 
-    produce_one_for_one(:events, Event,
+    produce_one_for_one(:events, :Event,
       :public_ids => [
         { :table => :participants, :public_id => :p_id, :public_ref => :participant_id }
       ],
@@ -183,7 +180,7 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(event_disposition scheduled_study_segment_identifier lock_version)
     )
 
-    produce_one_for_one(:instruments, Instrument,
+    produce_one_for_one(:instruments, :Instrument,
       :public_ids => %w(events),
       :where => %q{
         EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
@@ -204,7 +201,7 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(person_id survey_id lock_version)
     )
 
-    produce_one_for_one(:contact_links, LinkContact,
+    produce_one_for_one(:contact_links, :LinkContact,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
         :events,
@@ -216,7 +213,7 @@ module NcsNavigator::Core::Warehouse
       }
     )
 
-    produce_one_for_one(:non_interview_reports, NonInterviewRpt,
+    produce_one_for_one(:non_interview_reports, :NonInterviewRpt,
       :public_ids => [
         :contacts,
         { :table => :people, :join_column => :person_id },
@@ -242,7 +239,7 @@ module NcsNavigator::Core::Warehouse
       :ignored_columns => %w(date_available_date date_moved_date)
     )
 
-    produce_one_for_one(:dwelling_unit_type_non_interview_reports, NonInterviewRptDutype,
+    produce_one_for_one(:dwelling_unit_type_non_interview_reports, :NonInterviewRptDutype,
       :public_ids => [
         { :table => :non_interview_reports, :public_id => :nir_id }
       ],
@@ -252,7 +249,7 @@ module NcsNavigator::Core::Warehouse
       }
     )
 
-    produce_one_for_one(:no_access_non_interview_reports, NonInterviewRptNoaccess,
+    produce_one_for_one(:no_access_non_interview_reports, :NonInterviewRptNoaccess,
       :public_ids => [
         { :table => :non_interview_reports, :public_id => :nir_id }
       ],
@@ -263,19 +260,19 @@ module NcsNavigator::Core::Warehouse
       }
     )
 
-    produce_one_for_one(:refusal_non_interview_reports, NonInterviewRptRefusal,
+    produce_one_for_one(:refusal_non_interview_reports, :NonInterviewRptRefusal,
       :public_ids => [
         { :table => :non_interview_reports, :public_id => :nir_id }
       ]
     )
 
-    produce_one_for_one(:vacant_non_interview_reports, NonInterviewRptVacant,
+    produce_one_for_one(:vacant_non_interview_reports, :NonInterviewRptVacant,
       :public_ids => [
         { :table => :non_interview_reports, :public_id => :nir_id }
       ]
     )
 
-    produce_one_for_one(:addresses, Address,
+    produce_one_for_one(:addresses, :Address,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
         { :table => :dwelling_units, :public_id => :du_id }
@@ -290,14 +287,14 @@ module NcsNavigator::Core::Warehouse
       )
     )
 
-    produce_one_for_one(:emails, Email,
+    produce_one_for_one(:emails, :Email,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
       :ignored_columns => %w(email_start_date_date email_end_date_date response_set_id)
     )
 
-    produce_one_for_one(:telephones, Telephone,
+    produce_one_for_one(:telephones, :Telephone,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],

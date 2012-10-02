@@ -849,10 +849,10 @@ module NcsNavigator::Core::Warehouse
       let(:producer) {
         OperationalEnumerator.record_producers.find { |rp| rp.name == :participants }
       }
-      let(:column_map) { producer.column_map(Participant.attribute_names) }
+      let(:column_map) { producer.column_map(Participant.attribute_names, wh_config) }
 
       it 'includes the MDES model' do
-        producer.model.should == wh_config.model(:Participant)
+        producer.model(wh_config).should == wh_config.model(:Participant)
       end
 
       it 'includes a column map' do

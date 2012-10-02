@@ -62,7 +62,7 @@ module NcsNavigator::Core::Warehouse
         :LinkContact, :Event, :Instrument
       ].each do |manual|
         it "handles #{manual} manually" do
-          OperationalImporter.automatic_producers.collect(&:model).
+          OperationalImporter.automatic_producers.collect { |ap| ap.model(wh_config) }.
             should_not include(wh_config.model(manual))
         end
       end
@@ -609,7 +609,7 @@ module NcsNavigator::Core::Warehouse
         select { |rp| producer_names.include?(rp.name) }
 
       # produce in a transaction so that FK order doesn't matter
-      producers.first.model.transaction do
+      producers.first.model(wh_config).transaction do
         enumerator.to_a(*producer_names).each do |mdes_rec|
           mdes_key = mdes_rec.key.first
           mdes_key_name = mdes_rec.class.key.first.name
@@ -631,7 +631,7 @@ module NcsNavigator::Core::Warehouse
       core_records.each(&:destroy)
 
       prime_producer = producers.find { |rp| rp.name == core_record.class.table_name.to_sym }
-      prime_producer.model.first(prime_producer.model.key.first.name => core_record.public_id)
+      prime_producer.model(wh_config).first(prime_producer.model(wh_config).key.first.name => core_record.public_id)
     end
 
     def code_for_event_type(event_type_name)

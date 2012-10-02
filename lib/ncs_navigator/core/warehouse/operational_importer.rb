@@ -67,7 +67,7 @@ module NcsNavigator::Core::Warehouse
 
     def self.automatic_producers
       OperationalEnumerator.record_producers.reject { |rp|
-        %w(LinkContact Event Instrument).include?(rp.model.to_s.demodulize)
+        %w(LinkContact Event Instrument).include?(rp.model_or_reference.to_s.demodulize)
       }
     end
 
@@ -80,7 +80,7 @@ module NcsNavigator::Core::Warehouse
 
     def create_simply_mapped_core_records(mdes_producer)
       core_model = core_model_for_table(mdes_producer.name)
-      mdes_model = mdes_producer.model
+      mdes_model = mdes_producer.model(wh_config)
       count = mdes_model.count
       offset = 0
       while offset < count
@@ -273,7 +273,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def mdes_model_for_core_table(core_table)
-      find_producer(core_table).model
+      find_producer(core_table).model(wh_config)
     end
 
     def build_ordered_event_sets
@@ -404,7 +404,7 @@ module NcsNavigator::Core::Warehouse
 
     def create_core_records_without_state_impact(core_model)
       load_message = "#{core_model.name.underscore.gsub('_', ' ').pluralize} without p state impact"
-      mdes_model = find_producer(core_model.table_name).model
+      mdes_model = find_producer(core_model.table_name).model(wh_config)
       key_name = mdes_model.key.first.name
       cond = <<-SQL
         FROM #{mdes_model.mdes_table_name} t
@@ -490,7 +490,7 @@ module NcsNavigator::Core::Warehouse
 
     def column_map(core_model)
       column_maps[core_model] ||=
-        find_producer(core_model.table_name).column_map(core_model.attribute_names)
+        find_producer(core_model.table_name).column_map(core_model.attribute_names, wh_config)
     end
 
     def column_maps

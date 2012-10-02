@@ -62,9 +62,9 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-# gem 'ncs_mdes_warehouse',
-#   :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
-gem 'ncs_mdes_warehouse', '~> 0.8'
+gem 'ncs_mdes_warehouse',
+  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
+# gem 'ncs_mdes_warehouse', '~> 0.9'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
