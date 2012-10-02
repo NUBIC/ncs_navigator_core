@@ -61,6 +61,15 @@ class Address < ActiveRecord::Base
   ncs_coded_attribute :address_description, 'RESIDENCE_TYPE_CL1'
   ncs_coded_attribute :state,               'STATE_CL1'
 
+  validates :address_one,         :length => { :maximum => 100 }, :allow_blank => true
+  validates :address_two,         :length => { :maximum => 100 }, :allow_blank => true
+  validates :city,                :length => { :maximum => 50 },  :allow_blank => true
+  validates :unit,                :length => { :maximum => 10 },  :allow_blank => true
+  validates :zip,                 :length => { :is => 5 },        :allow_blank => true, :numericality => true
+  validates :zip4,                :length => { :is => 4 },        :allow_blank => true, :numericality => true
+  validates :address_end_date,    :length => { :is => 10 },       :allow_blank => true
+  validates :address_start_date,  :length => { :is => 10 },       :allow_blank => true
+
   def self.home_address_type
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first
   end

@@ -56,6 +56,11 @@ class Telephone < ActiveRecord::Base
   ncs_coded_attribute :cell_permission,   'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :text_permission,   'CONFIRM_TYPE_CL2'
 
+  validates :phone_ext,        :length => { :maximum => 5 },  :allow_blank => true
+  validates :phone_nbr,        :length => { :is => 10 },      :allow_blank => true, :numericality => true
+  validates :phone_end_date,   :length => { :is => 10 },      :allow_blank => true
+  validates :phone_start_date, :length => { :is => 10 },      :allow_blank => true
+
   HOME_PHONE_CODE = 1
   WORK_PHONE_CODE = 2
   CELL_PHONE_CODE = 3

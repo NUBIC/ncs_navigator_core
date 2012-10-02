@@ -69,6 +69,8 @@ describe Provider do
   it { should have_many(:pbs_provider_roles) }
   it { should have_many(:provider_roles) }
 
+  it { should ensure_length_of(:name_practice).is_at_most(100) }
+
   describe ".to_s" do
     it "returns the name_practice" do
       Factory(:provider, :name_practice => "expected").to_s.should == "expected"

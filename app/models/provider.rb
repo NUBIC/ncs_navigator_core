@@ -73,6 +73,8 @@ class Provider < ActiveRecord::Base
   accepts_nested_attributes_for :provider_roles, :allow_destroy => true
   accepts_nested_attributes_for :pbs_provider_roles, :allow_destroy => true
 
+  validates :name_practice, :length => { :maximum => 100 }, :allow_blank => true
+
   PROVIDER_RECRUIMENT_EVENT_TYPE_CODE = 22
   ORIGINAL_IN_SAMPLE_CODE = 1
   SUBSTITUTE_IN_SAMPLE_CODE = 2

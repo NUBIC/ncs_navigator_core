@@ -87,10 +87,15 @@ class Person < ActiveRecord::Base
 
   has_many :participant_person_links
   has_many :participants, :through => :participant_person_links
-  # validates_presence_of :first_name
-  # validates_presence_of :last_name
 
-  validates_length_of :title, :maximum => 5, :allow_blank => true
+  validates :title,       :length => { :maximum => 5 }, :allow_blank => true
+  validates :person_dob,  :length => { :is => 10 },     :allow_blank => true
+  validates :date_move,   :length => { :is => 7 },      :allow_blank => true
+
+  validates :first_name,  :length => { :maximum => 30 }, :allow_blank => true
+  validates :last_name,   :length => { :maximum => 30 }, :allow_blank => true
+  validates :maiden_name, :length => { :maximum => 30 }, :allow_blank => true
+  validates :middle_name, :length => { :maximum => 30 }, :allow_blank => true
 
   accepts_nested_attributes_for :addresses, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true

@@ -70,6 +70,9 @@ describe Contact do
       with_message(%q(contact_end_time is invalid ("66:66")))
   }
 
+  it { should validate_numericality_of(:contact_distance) }
+  it { should ensure_length_of(:contact_date).is_equal_to(10) }
+
   it_should_behave_like 'an optimistically locked record' do
     subject { Factory(:contact) }
 

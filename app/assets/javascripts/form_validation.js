@@ -1,20 +1,93 @@
 $(document).ready(function() {
 
-  $(".new_person").validate();
-  $(".edit_person").validate();
+  // participant
 
+
+  // person
+  $(".new_person").validate({
+    rules: {
+      'person[person_dob]': {
+        minlength: 10,
+        maxlength: 10
+      },
+      'person[date_move]': {
+        minlength: 7,
+        maxlength: 7
+      },
+      'person[title]': {
+        maxlength: 5
+      },
+      'person[first_name]': {
+        maxlength: 30
+      },
+      'person[last_name]': {
+        maxlength: 30
+      },
+      'person[maiden_name]': {
+        maxlength: 30
+      },
+      'person[middle_name]': {
+        maxlength: 30
+      }
+    }
+  });
+  $(".edit_person").validate({
+    rules: {
+      'person[person_dob]': {
+        minlength: 10,
+        maxlength: 10
+      },
+      'person[date_move]': {
+        minlength: 7,
+        maxlength: 7
+      },
+      'person[title]': {
+        maxlength: 5
+      },
+      'person[first_name]': {
+        maxlength: 30
+      },
+      'person[last_name]': {
+        maxlength: 30
+      },
+      'person[maiden_name]': {
+        maxlength: 30
+      },
+      'person[middle_name]': {
+        maxlength: 30
+      }
+    }
+  });
+
+  // contact_link
   $(".edit_contact_link").validate({
     rules: {
       'contact[contact_distance]': {
-        maxlength: 4,
+        maxlength: 6,
         number: true
       }
     }
   });
 
-  $(".edit_contact").validate();
-  $(".new_contact").validate();
+  // contact
+  $(".edit_contact").validate({
+    rules: {
+      'contact[contact_distance]': {
+        maxlength: 6,
+        number: true
+      }
+    }
+  });
+  $(".new_contact").validate({
+    rules: {
+      'contact[contact_distance]': {
+        maxlength: 6,
+        number: true
+      }
+    }
+  });
 
+  // provider
   $(".edit_provider").validate({
     rules: {
       'provider[name_practice]': {
@@ -49,6 +122,7 @@ $(document).ready(function() {
     },
   });
 
+  // pbs_list
   $(".edit_pbs_list").validate({
     rules: {
       "pbs_list[practice_num]": {
@@ -100,14 +174,58 @@ $(document).ready(function() {
     },
   });
 
+  // telephone
   $(".new_telephone").validate();
   $(".edit_telephone").validate();
 
-  $(".new_address").validate();
-  $(".edit_address").validate();
+  // address
+  $(".new_address").validate({
+    rules: {
+      'address[zip]': {
+        minlength: 5,
+        maxlength: 5,
+        number: true
+      },
+      'address[zip4]': {
+        minlength: 4,
+        maxlength: 4,
+        number: true
+      }
+    }
+  });
+  $(".edit_address").validate({
+    rules: {
+      'address[zip]': {
+        minlength: 5,
+        maxlength: 5,
+        number: true
+      },
+      'address[zip4]': {
+        minlength: 4,
+        maxlength: 4,
+        number: true
+      }
+    }
+  });
 
+  // email
   $(".new_email").validate();
   $(".edit_email").validate();
 
+  // provider
+  $(".edit_provider").validate({
+    rules: {
+      'provider[name_practice]': {
+        maxlength: 100
+      }
+    }
+  });
+  $(".new_provider").validate({
+    rules: {
+      'provider[name_practice]': {
+        maxlength: 100
+      }
+    }
+  });
 
 });

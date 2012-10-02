@@ -78,6 +78,17 @@ describe Address do
   it { should belong_to(:state) }
   it { should belong_to(:response_set) }
 
+  it { should ensure_length_of(:address_one).is_at_most(100) }
+  it { should ensure_length_of(:address_two).is_at_most(100) }
+  it { should ensure_length_of(:city).is_at_most(50) }
+  it { should ensure_length_of(:unit).is_at_most(10) }
+  it { should ensure_length_of(:zip).is_equal_to(5) }
+  it { should ensure_length_of(:zip4).is_equal_to(4) }
+  it { should validate_numericality_of(:zip) }
+  it { should validate_numericality_of(:zip4) }
+  it { should ensure_length_of(:address_end_date).is_equal_to(10) }
+  it { should ensure_length_of(:address_start_date).is_equal_to(10) }
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

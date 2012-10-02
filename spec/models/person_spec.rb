@@ -105,6 +105,14 @@ describe Person do
   it { should have_many(:emails) }
   it { should have_many(:races) }
 
+  it { should ensure_length_of(:person_dob).is_equal_to(10) }
+  it { should ensure_length_of(:date_move).is_equal_to(7) }
+  it { should ensure_length_of(:title).is_at_most(5) }
+  it { should ensure_length_of(:first_name).is_at_most(30) }
+  it { should ensure_length_of(:last_name).is_at_most(30) }
+  it { should ensure_length_of(:maiden_name).is_at_most(30) }
+  it { should ensure_length_of(:middle_name).is_at_most(30) }
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

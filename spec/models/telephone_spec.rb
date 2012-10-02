@@ -58,6 +58,13 @@ describe Telephone do
   it { should belong_to(:text_permission) }
   it { should belong_to(:response_set) }
 
+  it { should ensure_length_of(:phone_ext).is_at_most(5) }
+  # TODO: create tests for these - we override phone_nbr= so the stock shoulda tests fail
+  # it { should validate_numericality_of(:phone_nbr) }
+  # it { should ensure_length_of(:phone_nbr).is_equal_to(10) }
+  it { should ensure_length_of(:phone_end_date).is_equal_to(10) }
+  it { should ensure_length_of(:phone_start_date).is_equal_to(10) }
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do

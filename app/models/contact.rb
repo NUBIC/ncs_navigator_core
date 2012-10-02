@@ -66,6 +66,9 @@ class Contact < ActiveRecord::Base
 
   before_validation :strip_time_whitespace
 
+  validates :contact_date,     :length => { :is => 10 }, :allow_blank => true
+  validates :contact_distance, :length => { :maximum => 6 }, :allow_blank => true, :numericality => true
+
   ##
   # Start a contact and prepopulate properties based on the person contacted
   # @param [Person]
