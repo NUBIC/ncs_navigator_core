@@ -12,6 +12,7 @@ module NcsNavigator::Core::Warehouse
   autoload :OperationalEnumerator,        'ncs_navigator/core/warehouse/operational_enumerator'
   autoload :OperationalImporter,          'ncs_navigator/core/warehouse/operational_importer'
   autoload :OperationalImporterPscSync,   'ncs_navigator/core/warehouse/operational_importer_psc_sync'
+  autoload :TwoPointOne,                  'ncs_navigator/core/warehouse/two_point_one'
   autoload :TwoPointZero,                 'ncs_navigator/core/warehouse/two_point_zero'
   autoload :UnusedOperationalPassthrough, 'ncs_navigator/core/warehouse/unused_operational_passthrough'
   autoload :UnusedPassthrough,            'ncs_navigator/core/warehouse/unused_passthrough'
