@@ -15,8 +15,12 @@ module NcsNavigator::Core::Warehouse
       OperationalImporter.new(wh_config)
     }
 
+    let(:enumerator_class) {
+      OperationalEnumerator.select_implementation(wh_config)
+    }
+
     let(:enumerator) {
-      OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
+      enumerator_class.new(wh_config, :bcdatabase => bcdatabase_config)
     }
 
     def save_wh(record)
@@ -55,14 +59,14 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        OperationalImporter.automatic_producers.size.should == 25
+        importer.automatic_producers.size.should == 25
       end
 
       [
         :LinkContact, :Event, :Instrument
       ].each do |manual|
         it "handles #{manual} manually" do
-          OperationalImporter.automatic_producers.collect { |ap| ap.model(wh_config) }.
+          importer.automatic_producers.collect { |ap| ap.model(wh_config) }.
             should_not include(wh_config.model(manual))
         end
       end
@@ -224,7 +228,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'resolving associations' do
-        let(:auto_names) { OperationalImporter.automatic_producers.collect(&:name) }
+        let(:auto_names) { importer.automatic_producers.collect(&:name) }
 
         describe 'backward' do
           let!(:mdes_person) { create_warehouse_record_via_core(Person, 'P24') }
@@ -605,7 +609,7 @@ module NcsNavigator::Core::Warehouse
 
       # produce all related so that warehouse FKs are satisfied
       producer_names = core_instances.collect { |ci| ci.class.table_name.to_sym }.uniq
-      producers = OperationalEnumerator.record_producers.
+      producers = enumerator_class.record_producers.
         select { |rp| producer_names.include?(rp.name) }
 
       # produce in a transaction so that FK order doesn't matter

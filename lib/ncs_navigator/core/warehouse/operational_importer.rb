@@ -2,8 +2,6 @@
 
 
 require 'ncs_navigator/core/warehouse'
-# To preload the same version of the models used by OperationalEnumerator
-require 'ncs_navigator/core/warehouse/operational_enumerator'
 
 require 'forwardable'
 require 'paper_trail'
@@ -23,7 +21,6 @@ module NcsNavigator::Core::Warehouse
 
     attr_reader :wh_config
 
-    def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
     def initialize(wh_config)
@@ -65,8 +62,8 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def self.automatic_producers
-      OperationalEnumerator.record_producers.reject { |rp|
+    def automatic_producers
+      operational_enumerator.record_producers.reject { |rp|
         %w(LinkContact Event Instrument).include?(rp.model_or_reference.to_s.demodulize)
       }
     end
@@ -77,6 +74,10 @@ module NcsNavigator::Core::Warehouse
     end
 
     private
+
+    def operational_enumerator
+      OperationalEnumerator.select_implementation(wh_config)
+    end
 
     def create_simply_mapped_core_records(mdes_producer)
       core_model = core_model_for_table(mdes_producer.name)
@@ -485,7 +486,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def find_producer(name)
-      OperationalEnumerator.record_producers.find { |rp| rp.name.to_sym == name.to_sym }
+      operational_enumerator.record_producers.find { |rp| rp.name.to_sym == name.to_sym }
     end
 
     def column_map(core_model)
