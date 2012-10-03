@@ -1,10 +1,11 @@
 - title @close ? "Close Event" : "Edit Event"
 
-- person = @event.participant.person
+- participant = @event.participant
+- person = participant.try(:person)
 
 %h3
-  - if @event.participant && person
-    = link_to person.to_s, participant_path(@event.participant), :class => "header_link"
+  - if participant && person
+    = link_to person.to_s, participant_path(participant), :class => "header_link"
   - else
     Event has no associated participant.
   = " :: "
