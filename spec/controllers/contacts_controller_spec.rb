@@ -275,7 +275,40 @@ describe ContactsController do
         end
       end
 
+      describe "PUT provider_recruitment" do
+        def contact_attrs
+          {
+            "contact_start_time" => "11:22",
+            "contact_end_time" => "11:27",
+          }
+        end
 
+        before(:each) do
+          @contact = Factory(:contact)
+          @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => @event, :provider => @provider)
+        end
+
+        describe "with valid params" do
+          describe "with html request" do
+            it "updates the requested contact" do
+              Contact.any_instance.should_receive(:update_attributes).with(contact_attrs)
+              put :update, :id => @contact.id, :contact => contact_attrs, :contact_link_id => @contact_link.id
+            end
+
+            it "redirects to the provider's pbs_lists page" do
+              put :update, :id => @contact.id, :contact => contact_attrs, :contact_link_id => @contact_link
+              response.should redirect_to(pbs_list_path(@provider.pbs_list))
+            end
+
+            it "with no provider pbs_lists redirects to the all pbs_lists page" do
+              @contact_link.provider = Factory(:provider)
+              @contact_link.save!
+              put :update, :id => @contact.id, :contact => contact_attrs, :contact_link_id => @contact_link
+              response.should redirect_to(pbs_lists_path)
+            end
+          end
+        end
+      end
     end
 
   end
