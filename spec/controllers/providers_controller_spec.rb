@@ -337,9 +337,9 @@ describe ProvidersController do
             assigns(:provider).should eq(provider)
           end
 
-          it "redirects to the pbs_lists index page" do
+          it "redirects to the pbs_list info page for the provider" do
             put :process_recruited, :id => provider.id, :provider => {}
-            response.should redirect_to(pbs_lists_path)
+            response.should redirect_to(pbs_list_path(provider.pbs_list))
           end
 
           it "does not call mark_recruited if the provider has no provider_logistics complete" do
