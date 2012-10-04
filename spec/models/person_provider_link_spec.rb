@@ -34,7 +34,7 @@ describe PersonProviderLink do
   it { should belong_to(:is_active) }
   it { should belong_to(:provider_intro_outcome) }
 
-  it { should validate_presence_of(:person) }
+  # it { should validate_presence_of(:person) }
   it { should validate_presence_of(:provider) }
 
   context "as mdes record" do
