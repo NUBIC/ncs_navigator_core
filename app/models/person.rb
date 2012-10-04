@@ -88,6 +88,9 @@ class Person < ActiveRecord::Base
   has_many :participant_person_links
   has_many :participants, :through => :participant_person_links
 
+  has_many :person_provider_links
+  has_many :providers, :through => :person_provider_links
+
   validates :title,       :length => { :maximum => 5 }, :allow_blank => true
   validates :person_dob,  :length => { :is => 10 },     :allow_blank => true
   validates :date_move,   :length => { :is => 7 },      :allow_blank => true
@@ -100,6 +103,8 @@ class Person < ActiveRecord::Base
   accepts_nested_attributes_for :addresses, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :emails, :allow_destroy => true
+
+  accepts_nested_attributes_for :person_provider_links, :allow_destroy => true
 
   before_save do
     self.age = self.computed_age if self.age.blank?

@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: person_provider_links
 #
 #  created_at                   :datetime
+#  date_first_visit             :string(255)
+#  date_first_visit_date        :date
 #  id                           :integer          not null, primary key
 #  is_active_code               :integer          not null
 #  person_id                    :integer
 #  person_provider_id           :string(36)       not null
+#  pre_screening_status_code    :integer          not null
 #  provider_id                  :integer
 #  provider_intro_outcome_code  :integer          not null
 #  provider_intro_outcome_other :string(255)
 #  psu_code                     :integer          not null
+#  sample_person_code           :integer          not null
 #  transaction_type             :string(36)
 #  updated_at                   :datetime
 #
@@ -53,6 +56,9 @@ describe PersonProviderLink do
       obj = PersonProviderLink.first
       obj.is_active.local_code.should == -4
       obj.provider_intro_outcome.local_code.should == -4
+
+      obj.sampled_person.local_code.should == -4
+      obj.pre_screening_status.local_code.should == -4
     end
   end
 

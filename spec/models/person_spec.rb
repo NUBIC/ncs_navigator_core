@@ -97,6 +97,9 @@ describe Person do
   it { should have_many(:participant_person_links) }
   it { should have_many(:participants).through(:participant_person_links) }
 
+  it { should have_many(:person_provider_links) }
+  it { should have_many(:providers).through(:person_provider_links) }
+
   it { should have_many(:household_person_links) }
   it { should have_many(:household_units).through(:household_person_links) }
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120927200550) do
+ActiveRecord::Schema.define(:version => 20121003205524) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -773,6 +773,10 @@ ActiveRecord::Schema.define(:version => 20120927200550) do
     t.string   "transaction_type",             :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sample_person_code",                         :null => false
+    t.integer  "pre_screening_status_code",                  :null => false
+    t.string   "date_first_visit"
+    t.date     "date_first_visit_date"
   end
 
   create_table "person_races", :force => true do |t|
