@@ -26,8 +26,7 @@ class ApplicationController < ActionController::Base
     end
 
     def recruitment_strategy
-      @recruitment_strategy ||= RecruitmentStrategy.recruitment_type_strategy(
-                                  NcsNavigatorCore.recruitment_type_id)
+      NcsNavigatorCore.recruitment_strategy
     end
 
   private

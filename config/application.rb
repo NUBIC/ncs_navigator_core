@@ -94,6 +94,11 @@ module NcsNavigatorCore
     def configuration
       NcsNavigator::Core::Configuration.instance
     end
+
+    def recruitment_strategy
+      @recruitment_strategy ||= RecruitmentStrategy.recruitment_type_strategy(
+                                  NcsNavigator::Core::Configuration.instance.recruitment_type_id)
+    end
   end
 end
 
