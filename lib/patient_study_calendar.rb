@@ -8,9 +8,10 @@ require 'psc_participant'
 class PatientStudyCalendar
   extend Forwardable
 
-  LOW_INTENSITY  = "LO-Intensity"
-  HIGH_INTENSITY = "HI-Intensity"
-  CHILD_EPOCH    = "Child"
+  LOW_INTENSITY   = "LO-Intensity"
+  HIGH_INTENSITY  = "HI-Intensity"
+  CHILD_EPOCH     = "Child"
+  PBS_ELIGIBILITY = "PBS-Eligibility"
 
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
@@ -24,18 +25,20 @@ class PatientStudyCalendar
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
   CHILD                 = "Child"
 
+
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
   LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
   LOW_INTENSITY_POSTNATAL             = "#{LOW_INTENSITY}: #{POSTNATAL}"
 
-
   HIGH_INTENSITY_HI_LO_CONVERSION       = "#{HIGH_INTENSITY}: #{HI_LO_CONVERSION}"
   HIGH_INTENSITY_PPG_FOLLOW_UP          = "#{HIGH_INTENSITY}: #{PPG_FOLLOW_UP}"
   HIGH_INTENSITY_PRE_PREGNANCY          = "#{HIGH_INTENSITY}: #{PRE_PREGNANCY}"
   HIGH_INTENSITY_PREGNANCY_VISIT_1      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_1}"
   HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
+
+  PBS_ELIGIBILITY_SCREENER = "#{PBS_ELIGIBILITY}: #{PBS_ELIGIBILITY}"
 
   CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"
 
@@ -169,7 +172,8 @@ class PatientStudyCalendar
   end
 
   def assign_subject(participant, event_type = nil, date = nil)
-    participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
+    # move state so that the participant can tell PSC what is the next study segment to schedule
+    participant.register! if participant.can_register?
     return nil if should_skip_event?(event_type)
     return nil if is_registered?(participant) || participant.next_study_segment.blank?
     data = build_subject_assignment_request(participant, event_type, date)

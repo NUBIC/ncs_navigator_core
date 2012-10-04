@@ -961,7 +961,7 @@ class Participant < ActiveRecord::Base
 
     def next_low_intensity_study_segment
       if pending? || registered?
-        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+        screener_instrument
       elsif should_take_low_intensity_questionnaire?
         PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
       elsif postnatal?
@@ -984,7 +984,7 @@ class Participant < ActiveRecord::Base
     def next_high_intensity_study_segment
       if registered?
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
-        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+        screener_instrument
       elsif in_high_intensity_arm?
         PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
       elsif following_high_intensity? || converted_high_intensity?
@@ -1001,6 +1001,14 @@ class Participant < ActiveRecord::Base
         PatientStudyCalendar::CHILD_CHILD
       else
         nil
+      end
+    end
+
+    def screener_instrument
+      if NcsNavigatorCore.recruitment_strategy.pbs?
+        PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
+      else
+        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       end
     end
 

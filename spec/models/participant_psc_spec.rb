@@ -17,6 +17,29 @@ describe Participant do
 
   end
 
+  context "for the PBS protocol" do
+
+    context "a registered participant" do
+
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
+
+      before(:each) do
+        participant.person = person
+        participant.register!
+
+        NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
+      end
+
+      it "is scheduled for the PBS Eligibility Screener event on that day" do
+        participant.next_study_segment.should == PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
+        participant.next_scheduled_event.event.should == participant.next_study_segment
+        participant.next_scheduled_event.date.should == Date.today
+      end
+
+    end
+  end
+
   context "in the low intensity arm" do
 
     context "a registered participant" do

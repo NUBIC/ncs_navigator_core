@@ -33,6 +33,8 @@ FactoryGirl.define do
     ppl.association :provider, :factory => :provider
     ppl.association :person, :factory => :person
     ppl.provider_intro_outcome_code     1
+    ppl.sampled_person_code             1
+    ppl.pre_screening_status_code       1
   end
 
   factory :personnel_provider_link do |ppl|
