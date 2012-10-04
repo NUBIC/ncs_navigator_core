@@ -1,3 +1,4 @@
-- title "New Person"
+- txt = @provider.nil? ? "New Person" : "New Person for #{@provider}"
+- title txt
 
 = render "form"

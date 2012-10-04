@@ -33,5 +33,5 @@ class PersonProviderLink < ActiveRecord::Base
   belongs_to :person
 
   validates_presence_of :provider
-  validates_presence_of :person
+  validates_presence_of :person, :on => :update
 end

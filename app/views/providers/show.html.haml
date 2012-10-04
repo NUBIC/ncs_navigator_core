@@ -1,0 +1,29 @@
+- title "Provider"
+
+%h3
+  = "#{@provider.name_practice}"
+
+.page_section
+  - if @provider.people.empty?
+    %b
+      Patients at this Location
+    #no_records
+      No patients exist for provider.
+  - else
+    %table.records
+      %tr
+        %th
+          Patients at this Location
+        %th
+
+      - @provider.people.each do |per|
+        %tr{ :class => cycle('even_record', 'odd_record') }
+          %td
+            = link_to blank_safe(per.full_name), edit_provider_person_path(@provider, per),
+              :class => "edit_link icon_link"
+          %td
+            = link_to "Administer Eligibility Screener",
+              start_pbs_eligibility_screener_instrument_path(:person_id => per.id),
+              :class => "add_link icon_link"
+  .links
+    = link_to 'Add New Patient', new_provider_person_path(@provider), :class => "add_link icon_link"

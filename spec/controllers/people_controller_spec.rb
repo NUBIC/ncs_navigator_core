@@ -83,6 +83,24 @@ describe PeopleController do
 
     end
 
+    describe "GET new" do
+      it "assigns a new person as @person" do
+        get :new
+        assigns(:person).should be_a_new(Person)
+      end
+    end
+
+    context "with a provider" do
+
+      let(:provider) { Factory(:provider) }
+
+      describe "GET new" do
+        it "assigns a new provider as @provider" do
+          get :new, :provider_id => provider.id
+          assigns(:provider).should == provider
+        end
+      end
+    end
   end
 
   context "with an authenticated yet unauthorized user"  do

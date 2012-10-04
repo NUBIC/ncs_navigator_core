@@ -704,6 +704,8 @@ class Participant < ActiveRecord::Base
     low_intensity? && pregnant_or_trying? && !completed_event?(NcsCode.low_intensity_data_collection)
   end
 
+
+
   ##
   # @return [true,false]
   def low_intensity?

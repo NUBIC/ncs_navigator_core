@@ -64,6 +64,9 @@ class Provider < ActiveRecord::Base
   has_many :provider_roles
   has_many :pbs_provider_roles, :class_name => 'PbsProviderRole', :foreign_key => 'provider_id'
 
+  has_many :person_provider_links
+  has_many :people, :through => :person_provider_links
+
   belongs_to :institution
 
   accepts_nested_attributes_for :address, :allow_destroy => true
@@ -127,9 +130,8 @@ class Provider < ActiveRecord::Base
   end
 
   def recruited?
-    self.can_recruit? &&
-      !self.refused_to_participate? &&
-      self.pbs_list.try(:provider_recruited?)
+    (self.can_recruit? || self.pbs_list.try(:provider_recruited?)) &&
+      !self.refused_to_participate?
   end
 
   ##

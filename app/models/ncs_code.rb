@@ -309,6 +309,13 @@ class NcsCode < ActiveRecord::Base
     :nir_moved_info_code =>            'INFORMATION_SOURCE_CL8',
     :perm_moved_code =>                'CONFIRM_TYPE_CL10',
 
+    ### person_provider_link
+    # :psu,                     'PSU_CL1'
+    :is_active_code                 => 'CONFIRM_TYPE_CL2',
+    :provider_intro_outcome_code    => 'STUDY_INTRODCTN_OUTCOME_CL1',
+    :sampled_person_code            => 'CONFIRM_TYPE_CL2',
+    :pre_screening_status_code      => 'SCREENING_STATUS_CL1',
+
   }.with_indifferent_access
 
   ##

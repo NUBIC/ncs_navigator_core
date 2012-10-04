@@ -88,6 +88,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :process_refused
     end
     resources :non_interview_providers, :except => [:destroy]
+    resources :people, :except => [:index, :destroy, :show]
   end
   resources :pbs_lists, :except => [:new, :create] do
     member do
@@ -205,6 +206,7 @@ NcsNavigatorCore::Application.routes.draw do
   match "/welcome/overdue_activities", :to => "welcome#overdue_activities"
   match "/welcome/pending_events", :to => "welcome#pending_events"
   match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
+  match "welcome/start_pbs_eligibility_screener_instrument", :to => "welcome#start_pbs_eligibility_screener_instrument", :as => "start_pbs_eligibility_screener_instrument"
 
   root :to => "welcome#index"
 

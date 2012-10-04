@@ -69,6 +69,9 @@ describe Provider do
   it { should have_many(:pbs_provider_roles) }
   it { should have_many(:provider_roles) }
 
+  it { should have_many(:person_provider_links) }
+  it { should have_many(:people).through(:person_provider_links) }
+
   it { should ensure_length_of(:name_practice).is_at_most(100) }
 
   describe ".to_s" do
