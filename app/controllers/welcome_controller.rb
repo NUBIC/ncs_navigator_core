@@ -58,7 +58,7 @@ class WelcomeController < ApplicationController
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant)
+      destroy_participant_and_redirect(participant, resp)
     end
   end
 
@@ -72,13 +72,13 @@ class WelcomeController < ApplicationController
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant, false)
+      destroy_participant_and_redirect(participant, resp, false)
     end
   end
 
   private
 
-    def destroy_participant(participant, destroy_person = true)
+    def destroy_participant_and_redirect(participant, resp, destroy_person = true)
       ppl = participant.participant_person_links.where(:relationship_code => 1).first
       ppl.destroy if ppl
       participant.destroy

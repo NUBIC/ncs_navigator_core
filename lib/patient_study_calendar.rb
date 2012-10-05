@@ -174,17 +174,18 @@ class PatientStudyCalendar
   def assign_subject(participant, event_type = nil, date = nil)
     # move state so that the participant can tell PSC what is the next study segment to schedule
     participant.register! if participant.can_register?
-    return nil if should_skip_event?(event_type)
-    return nil if is_registered?(participant) || participant.next_study_segment.blank?
-    data = build_subject_assignment_request(participant, event_type, date)
-
-    Rails.logger.info("~~~ assign_subject #{data.inspect}")
-
-    response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
-                    data)
-    registered_participants.cache_registration_status(
-      psc_assignment_id(participant), valid_response?(response))
-    response
+    if should_skip_event?(event_type)
+      return nil
+    elsif is_registered?(participant) || participant.next_study_segment.blank?
+      return nil
+    else
+      data = build_subject_assignment_request(participant, event_type, date)
+      response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
+                      data)
+      registered_participants.cache_registration_status(
+        psc_assignment_id(participant), valid_response?(response))
+      response
+    end
   end
 
   def should_skip_event?(event_type)
@@ -788,6 +789,8 @@ class PatientStudyCalendar
                 "Pregnancy Probability"
               when "Father Consent and Interview"
                 "Father"
+              when "PBS-Eligibility"
+                "PBS Participant Eligibility Screening"
               when /Consent/
                 "Informed Consent"
               else

@@ -20,7 +20,7 @@ class ContactsController < ApplicationController
     @event = event_for_person(false)
     @requires_consent = @person.participant &&
                         @person.participant.consented? == false &&
-                        @event.event_type.display_text != "Pregnancy Screener"
+                        !@event.event_type.display_text.include?("Screener")
 
     respond_to do |format|
       format.html # new.html.haml
