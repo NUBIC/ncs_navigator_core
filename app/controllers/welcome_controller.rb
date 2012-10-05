@@ -58,18 +58,35 @@ class WelcomeController < ApplicationController
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)
     else
-      ppl = participant.participant_person_links.where(:relationship_code => 1).first
-      ppl.destroy if ppl
-      participant.destroy
-      person.destroy
-      error_msg = resp.blank? ? "Unable to start pregnancy screener instrument." : "#{resp.body}"
-      flash[:warning] = error_msg
-      redirect_to :controller => "welcome", :action => "index"
+      destroy_participant_and_redirect(participant)
     end
+  end
 
+  def start_pbs_eligibility_screener_instrument
+    person = Person.find(params[:person_id])
+    participant = Participant.create(:psu_code => @psu_code)
+    participant.person = person
+    participant.save!
+
+    resp = psc.assign_subject(participant)
+    if resp && resp.status.to_i < 299
+      redirect_to new_person_contact_path(person)
+    else
+      destroy_participant_and_redirect(participant, false)
+    end
   end
 
   private
+
+    def destroy_participant(participant, destroy_person = true)
+      ppl = participant.participant_person_links.where(:relationship_code => 1).first
+      ppl.destroy if ppl
+      participant.destroy
+      person.destroy if destroy_person
+      error_msg = resp.blank? ? "Unable to start eligibility screener instrument." : "#{resp.body}"
+      flash[:warning] = error_msg
+      redirect_to :controller => "welcome", :action => "index"
+    end
 
     def get_scheduled_activities_report(options = {})
       @start_date = 1.day.ago.to_date.to_s
