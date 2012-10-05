@@ -93,9 +93,7 @@ class Participant < ActiveRecord::Base
   # If the recruitment_strategy is not Hi/Lo (two_tier_knowledgable)
   # then set the participant firmly in the high_intensity_state machine.
   def set_initial_state_for_recruitment_strategy
-    recruitment_strategy = RecruitmentStrategy.recruitment_type_strategy(NcsNavigatorCore.recruitment_type_id)
-
-    unless recruitment_strategy.two_tier_knowledgable?
+    unless NcsNavigatorCore.recruitment_strategy.two_tier_knowledgable?
       self.high_intensity = true
       self.start_in_high_intensity_arm!
       self.high_intensity_conversion! if can_high_intensity_conversion?
@@ -704,6 +702,14 @@ class Participant < ActiveRecord::Base
     low_intensity? && pregnant_or_trying? && !completed_event?(NcsCode.low_intensity_data_collection)
   end
 
+  ##
+  # Participant should be screened if they have not completed either
+  # the Pregnancy Screener or PBS Eligibility Screener event
+  def should_be_screened?
+    !completed_event?(NcsNavigatorCore.recruitment_strategy.pbs? ?
+                      NcsCode.pbs_eligibility_screener :
+                      NcsCode.pregnancy_screener)
+  end
 
 
   ##
@@ -962,7 +968,7 @@ class Participant < ActiveRecord::Base
     end
 
     def next_low_intensity_study_segment
-      if pending? || registered?
+      if pending? || registered? || should_be_screened?
         screener_instrument
       elsif should_take_low_intensity_questionnaire?
         PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
@@ -984,7 +990,9 @@ class Participant < ActiveRecord::Base
     end
 
     def next_high_intensity_study_segment
-      if registered?
+      if should_be_screened?
+        screener_instrument
+      elsif registered?
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
         screener_instrument
       elsif in_high_intensity_arm?

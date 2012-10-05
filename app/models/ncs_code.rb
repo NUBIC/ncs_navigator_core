@@ -404,6 +404,18 @@ class NcsCode < ActiveRecord::Base
     for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
   end
 
+  # Special case helper method to get EVENT_TYPE_CL1 for Pregnancy Screener
+  # Used to determine if participant should be screened
+  def self.pregnancy_screener
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
+  end
+
+  # Special case helper method to get EVENT_TYPE_CL1 for PBS Eligibility Screener
+  # Used to determine if participant should be screened
+  def self.pbs_eligibility_screener
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 34)
+  end
+
   def to_s
     display_text
   end

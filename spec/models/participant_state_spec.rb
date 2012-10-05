@@ -89,9 +89,10 @@ describe Participant do
 
   context "after completing the Low Intensity Questionnaire Instrument" do
 
-    let(:participant) { participant= Factory(:participant, :low_intensity_state => 'in_pregnancy_probability_group') 
-                        lo_i_quex = Factory(:event, :participant => participant, :event_start_date => Date.today, :event_end_date => Date.today,
-                            :event_type => NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33))
+    let(:participant) { participant= Factory(:participant, :low_intensity_state => 'in_pregnancy_probability_group')
+                        lo_i_quex = Factory(:event, :participant => participant,
+                                            :event_start_date => Date.today, :event_end_date => Date.today,
+                                            :event_type => NcsCode.low_intensity_data_collection)
                         participant.events << lo_i_quex
                         participant }
     let(:survey) { Factory(:survey, :title => "_LIPregNotPreg_") }

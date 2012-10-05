@@ -557,6 +557,10 @@ describe Event do
 
         part = Factory(:high_intensity_pregnancy_one_participant)
         part.person = Factory(:person)
+        part.events << Factory(:event, :participant => part,
+                                :event_start_date => Date.today, :event_end_date => Date.today,
+                                :event_type => NcsCode.pregnancy_screener)
+
         part.next_scheduled_event.event.
           should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
 

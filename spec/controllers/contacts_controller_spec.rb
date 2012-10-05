@@ -26,7 +26,7 @@ describe ContactsController do
     context "for a new person" do
       before(:each) do
         login(user_login)
-        @preg_screen_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29)
+        @preg_screen_event = NcsCode.pregnancy_screener
         @ppg12_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
 
         @person      = Factory(:person)
@@ -81,11 +81,15 @@ describe ContactsController do
       describe "GET edit with next_event param" do
         it "creates a new contact link and event when continuing to next event" do
           @contact = Factory(:contact)
-          contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => Factory(:event, :event_type => @preg_screen_event))
+          event = Factory(:event, :participant => @participant,
+                          :event_start_date => Date.today, :event_end_date => Date.today,
+                          :event_type => NcsCode.pregnancy_screener)
+          contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
           @person.upcoming_events.to_s.should include("Pregnancy Screener")
 
           @participant.register!
           @participant.assign_to_pregnancy_probability_group!
+          @participant.events << event
           Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
 
           @person.participant.reload
@@ -133,6 +137,10 @@ describe ContactsController do
         @person      = Factory(:person)
         @participant = Factory(:low_intensity_ppg2_participant)
         @participant.person = @person
+        event = Factory(:event, :participant => @participant,
+                        :event_start_date => Date.today, :event_end_date => Date.today,
+                        :event_type => NcsCode.pregnancy_screener)
+        @participant.events << event
         @participant.save!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
         Contact.stub(:new).and_return(mock_contact)

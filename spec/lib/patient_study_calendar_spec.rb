@@ -217,7 +217,7 @@ describe PatientStudyCalendar do
     it "registers a participant with the study" do
       VCR.use_cassette('psc/assign_subject') do
         subject.is_registered?(@participant).should be_false
-        @participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+        @participant.next_study_segment.should include("Pregnancy Screener")
         resp = subject.assign_subject(@participant)
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
       end
@@ -233,7 +233,7 @@ describe PatientStudyCalendar do
         ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
         Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
 
-        participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+        participant.next_study_segment.should include("Pregnancy Screener")
         resp = subject.assign_subject(participant)
 
         resp = subject.assignment_identifier(participant)
