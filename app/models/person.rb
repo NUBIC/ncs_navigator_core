@@ -14,6 +14,8 @@
 #  first_name                     :string(30)
 #  id                             :integer          not null, primary key
 #  language_code                  :integer          not null
+#  language_new_code              :integer
+#  language_new_other             :string(255)
 #  language_other                 :string(255)
 #  last_name                      :string(30)
 #  maiden_name                    :string(30)
@@ -62,6 +64,7 @@ class Person < ActiveRecord::Base
   ncs_coded_attribute :deceased,                 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :ethnic_group,             'ETHNICITY_CL1'
   ncs_coded_attribute :language,                 'LANGUAGE_CL2'
+  ncs_coded_attribute :language_new,             'LANGUAGE_CL8'
   ncs_coded_attribute :marital_status,           'MARITAL_STATUS_CL1'
   ncs_coded_attribute :preferred_contact_method, 'CONTACT_TYPE_CL1'
   ncs_coded_attribute :planned_move,             'CONFIRM_TYPE_CL1'

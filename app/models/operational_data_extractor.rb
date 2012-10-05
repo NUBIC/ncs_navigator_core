@@ -123,21 +123,15 @@ class OperationalDataExtractor
     # # 2ND TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS).
     # # 3RD TRIMESTER:      ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 235 DAYS).
     # # DON’T KNOW/REFUSED: ORIG_DUE_DATE = TODAY’S DATE + (280 DAYS – 140 DAYS)
-    def determine_due_date(key, response)
-
+    def determine_due_date(key, response, value = nil)
       return nil unless should_calculate_due_date?(key, response)
 
-      value = case response.answer.response_class
-              when "integer"
-                response.integer_value
-              when "date", "datetime", "time"
-                response.datetime_value
-              when "answer"
-                response.answer.reference_identifier.gsub("neg_", "-").to_i
-              end
+      value = determine_value_from_response(response) if value.nil?
 
       due_date =  case key
                   when "ORIG_DUE_DATE", "DUE_DATE", "PPG_DUE_DATE_1"
+                    value
+                  when "ORIG_DUE_DATE_MM", "ORIG_DUE_DATE_DD", "ORIG_DUE_DATE_YY"
                     value
                   when "DATE_PERIOD"
                     value + 280.days
@@ -172,10 +166,26 @@ class OperationalDataExtractor
         answer_class == "integer"
       when "TRIMESTER"
         answer_class == "answer"
+      when "ORIG_DUE_DATE_MM", "ORIG_DUE_DATE_DD", "ORIG_DUE_DATE_YY"
+        answer_class == "string"
+      when "DATE_PERIOD_MM", "DATE_PERIOD_DD", "DATE_PERIOD_YY"
+        answer_class == "string"
       else
         false
       end
 
+    end
+
+    def determine_value_from_response(response)
+      value = case response.answer.response_class
+              when "integer"
+                response.integer_value
+              when "date", "datetime", "time"
+                response.datetime_value
+              when "answer"
+                response.answer.reference_identifier.gsub("neg_", "-").to_i
+              end
+      value
     end
 
     ##
