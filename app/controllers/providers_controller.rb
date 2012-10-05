@@ -280,7 +280,7 @@ class ProvidersController < ApplicationController
         end
 
         flash[:notice] = "Provider #{@provider} has been successfully recruited."
-        format.html { redirect_to(pbs_lists_path) }
+        format.html { redirect_to(pbs_list_path(@provider.pbs_list)) }
         format.json  { render :json => @provider }
       else
         format.html { render :action => "recruited" }

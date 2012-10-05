@@ -7,7 +7,7 @@
         <period id="c791d8a3-e26e-461a-8425-f5acce73ac1b" name="screener" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="df1ceee2-0b0d-45ad-9a5d-982c15738817" day="1">
             <label id="d3c7a36d-704f-4e6a-ae70-e7abfeb6ea6e" name="event:pregnancy_screener"/>
-            <label id="c372514f-1f4d-44f2-8eb6-13b15b94cf38" name="instrument:ins_que_pregscreen_int_hili_p2_v2.0"/>
+            <label id="1974bea2-ee64-40ab-9466-6d8f9fee0f84" name="instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0"/>
             <activity-reference code="PSI" source="NCS"/>
           </planned-activity>
         </period>
@@ -20,7 +20,9 @@
           </planned-activity>
           <planned-activity id="bbb8de5c-a025-4b4c-b7d2-577a96551263" day="1">
             <label id="9a66686c-7f6b-433e-8832-5dc8240036f8" name="event:low_intensity_data_collection"/>
-            <label id="cbd382ef-6fc6-4569-8e37-f1e0f3d30128" name="instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"/>
+            <label id="284b06a2-78a2-4bfe-82b4-180c8e1ac9d6" name="instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"/>
+            <label id="4315eb66-acef-4552-bd66-bc7924e3cfcd" name="order:01_01"/>
+            <label id="cb3b7f70-5193-4d83-8be5-1929352c7842" name="participant_type:mother"/>
             <activity-reference code="LII" source="NCS"/>
           </planned-activity>
         </period>
@@ -29,12 +31,16 @@
         <period id="fa423dbe-cccb-4f36-966b-a03988aa88ba" name="Follow Up CATI" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="0fd3ef61-49ce-49dc-aa70-b23e01428ae8" day="1">
             <label id="8f3f5e27-50b2-4133-b106-ee1fb423b3f5" name="event:pregnancy_probability"/>
-            <label id="bcf6c0ac-31ee-4294-91de-3c39380ed539" name="instrument:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"/>
+            <label id="6f8fca39-6494-47ff-a708-f9f896989627" name="instrument:2.0:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"/>
+            <label id="f953724f-0712-4b93-8bc5-6d669795fd6c" name="order:01_01"/>
+            <label id="c958a848-1291-4e64-990f-43017974f9bc" name="participant_type:mother"/>
             <activity-reference code="PPGFUI" source="NCS"/>
           </planned-activity>
           <planned-activity id="3613113a-fae4-4af4-b6f0-c30ae09a67b2" day="1">
             <label id="92f83b61-f61d-4e2e-b37e-bab62efcb706" name="event:pregnancy_probability"/>
-            <label id="e272e18d-4fa9-4324-aa1e-baf49fd6cca3" name="instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"/>
+            <label id="36b5d73a-da08-4516-abfa-d13b8445fcce" name="instrument:2.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"/>
+            <label id="6d146de7-a5f9-471d-a451-5593c455c4f7" name="order:02_01"/>
+            <label id="251b34c8-19cb-495a-ad0f-9ad851639cf7" name="participant_type:mother"/>
             <activity-reference code="PPGFUSAQ" source="NCS"/>
           </planned-activity>
         </period>
@@ -43,9 +49,29 @@
         <period id="3902c526-01ee-4183-a16d-0179b7f43bef" name="Birth Visit" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="32d4d5e0-36d2-4fe5-ad01-53c7cdb1d87f" day="1">
             <label id="2a47b454-9322-48d4-ad48-7b4f1777eea7" name="event:birth"/>
-            <label id="0a4b7e0c-b8aa-44b5-9f96-a5d754a5092e" name="instrument:ins_que_birth_int_li_p2_v1.0"/>
+            <label id="c67892b7-111c-4ed0-80f1-daf34ba2c1f3" name="instrument:2.0:ins_que_birth_int_li_p2_v1.0_part_one"/>
             <label id="9475cef4-137e-44ec-81e0-27f218cf5279" name="mode:low_intensity_birth"/>
+            <label id="c076991f-8648-409c-8c4f-75f74c7ea6ac" name="order:01_01"/>
+            <label id="97b54ecc-0ca3-4d68-a5ca-1077dcb51bcc" name="participant_type:mother"/>
             <activity-reference code="LIBI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="023c7f19-a172-4700-864f-f825f14eea5a" day="1">
+            <label id="018d97c5-1aec-439b-9260-ddc353b39da6" name="event:birth"/>
+            <label id="76148a28-59c4-47da-8690-cc216fad5125" name="instrument:2.0:ins_que_birth_int_li_p2_v1.0_part_two"/>
+            <label id="9da88d76-ce62-42f0-9df7-d2b41cbda113" name="mode:low_intensity_birth"/>
+            <label id="e4fe8f9e-4c51-48bb-a4d5-b5f6283e5b47" name="order:01_03"/>
+            <label id="0deef30b-b487-424f-94a7-9d4492307e66" name="participant_type:mother"/>
+            <label id="a0dc63d2-1a4e-4d61-9cbf-83c92b076432" name="references:2.0:ins_que_birth_int_li_p2_v1.0_part_one"/>
+            <activity-reference code="LIBI B2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="018502ad-a622-4db4-9f12-8ec5ac2f6f50" day="1">
+            <label id="1f43a48b-4892-47db-ad6f-c38b1082cbe7" name="event:birth"/>
+            <label id="d1667257-5adc-497f-978a-835c8336cd44" name="instrument:2.0:ins_que_birth_int_li_p2_v1.0_birth_visit_li_baby_name"/>
+            <label id="810f64ba-d737-4d95-9e94-bb6a4a922c45" name="mode:low_intensity_birth"/>
+            <label id="01307f87-497e-4dd8-8ea4-512ccdf0039b" name="order:01_02"/>
+            <label id="e6189da1-29e8-4275-8da3-a823375c0e7a" name="participant_type:child"/>
+            <label id="ad7ddcda-14d3-49c1-9665-efa0aec715fd" name="references:2.0:ins_que_birth_int_li_p2_v1.0_part_one"/>
+            <activity-reference code="LIBI BN" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -53,7 +79,9 @@
         <period id="8f6e304c-a0a4-494b-84d7-811ffb14d927" name="Low to High Conversion" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="3ff90782-a30e-425f-96ad-2ea589c756fc" day="1">
             <label id="2e59ea43-6d6d-41e0-b5cc-e66ecff8fcc4" name="event:low_to_high_conversion"/>
-            <label id="d6b78228-39a3-4bd7-9107-e23dcaf931ec" name="instrument:ins_que_lihiconversion_int_hili_p2_v1.0"/>
+            <label id="60abb4df-9e92-46be-8c36-4477e4e15289" name="instrument:2.0:ins_que_lihiconversion_int_hili_p2_v1.0"/>
+            <label id="bd38f9cc-dbab-45a3-abc2-76fe94aff80b" name="order:01_01"/>
+            <label id="bafcff6e-cab0-40b7-bbfa-e607f941d27b" name="participant_type:mother"/>
             <activity-reference code="LIITHICI" source="NCS"/>
           </planned-activity>
         </period>
@@ -62,7 +90,9 @@
         <period id="98b4e024-066b-4712-a7ff-47c9eba3f0e2" name="Questionnaire" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="c6ca0a71-c3c0-48b8-af52-77bd246c0992" day="1">
             <label id="c83eb8c5-2e2d-47fa-b267-7bfd676f63c6" name="event:low_intensity_data_collection"/>
-            <label id="9a34b0f1-dc49-4117-b6aa-c3573ca693b0" name="instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"/>
+            <label id="547044f5-44b6-4df6-8acb-7547a352caf6" name="instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"/>
+            <label id="91d46b61-451a-4842-bb38-e9dfe09393f3" name="order:01_01"/>
+            <label id="d51e51cf-8c60-49d3-825f-87b2c28efc99" name="participant_type:mother"/>
             <activity-reference code="LII" source="NCS"/>
           </planned-activity>
         </period>
@@ -77,7 +107,9 @@
           </planned-activity>
           <planned-activity id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9" day="1">
             <label id="34abbbe0-eef3-4025-a6d8-b42e2003b5c4" name="event:pregnancy_visit_1"/>
-            <label id="54becd59-931f-4857-a2da-979d1860c2a0" name="instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0"/>
+            <label id="6ed0965f-23e4-4347-878e-d2317a978db3" name="instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0"/>
+            <label id="385d0499-3af2-43cb-a07d-a8b9269ad35b" name="order:01_01"/>
+            <label id="0f53a2dc-bee5-4d0f-bde4-5045af7dbcf8" name="participant_type:mother"/>
             <activity-reference code="PV1I" source="NCS"/>
           </planned-activity>
           <planned-activity id="99aa3b3b-e262-4385-881b-49a23fc47a13" day="1">
@@ -86,31 +118,41 @@
           </planned-activity>
           <planned-activity id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b" day="1">
             <label id="cfb573b9-60fb-4f99-90b9-654816875621" name="event:pregnancy_visit_1"/>
-            <label id="bb9cac0f-6d57-47f8-b3d8-6f8f50077687" name="instrument:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0"/>
+            <label id="1b3ef0fc-ab90-43d9-993c-7d9e09f5b26e" name="instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0"/>
+            <label id="0171a563-de33-4222-a6c7-270f202b491b" name="order:02_01"/>
+            <label id="44a0f1eb-dd02-45bf-b74a-a70f774bbb55" name="participant_type:mother"/>
             <activity-reference code="PV1SAQ" source="NCS"/>
           </planned-activity>
           <planned-activity id="fa8ccc94-9353-4819-ad59-e33301c6062a" day="1">
             <label id="7d7cf2ca-d8d7-4237-b2f2-4c8a0b56738c" name="collection:environmental"/>
             <label id="a9c25071-f0ae-417a-88ea-cce562c0e967" name="event:pregnancy_visit_1"/>
-            <label id="2234b690-2541-4b5f-b154-8a8036904221" name="instrument:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="2407d46e-c9df-4a5a-9993-fba8ded2b53e" name="instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="07681e24-ed43-4556-8d08-590028534061" name="order:21_01"/>
+            <label id="e5fa9255-abf7-4ebd-98cf-b419e110993e" name="participant_type:mother"/>
             <activity-reference code="ETWPharmTCI" source="NCS"/>
           </planned-activity>
           <planned-activity id="81956a56-e5c0-4c15-ba7b-386dec3697e9" day="1">
             <label id="999bf9c7-3aae-4e47-bf27-553d9819109b" name="collection:environmental"/>
             <label id="85ffeb95-ca7f-472c-a25c-d139e91f6bb2" name="event:pregnancy_visit_1"/>
-            <label id="68c020f9-6107-4509-9342-0509fa4d423d" name="instrument:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="c4ee2423-9aba-4718-b8c8-69f4890b90c6" name="instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="31770aa9-ff32-4fe8-8afb-2b6490c4c58a" name="order:22_01"/>
+            <label id="f19f479f-d44f-4a34-b88d-c8b011c34388" name="participant_type:mother"/>
             <activity-reference code="EVBDTCI" source="NCS"/>
           </planned-activity>
           <planned-activity id="803eaa20-6a1d-4e39-807d-fa2eba112ba9" day="1">
             <label id="998c9799-ab7b-4974-ba36-50d7c018c1bb" name="collection:biological"/>
             <label id="046606e6-31c2-41c6-8df9-3c7d46345877" name="event:pregnancy_visit_1"/>
-            <label id="c22157d5-7b63-4ec9-900a-f4d3af17f4a1" name="instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+            <label id="79945f2a-7a88-4cf4-8c25-2f2c1cfac353" name="instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+            <label id="b16aff21-0439-4296-a0f4-6e82bf3da59f" name="order:11_01"/>
+            <label id="f61e9cce-29d9-4cff-84a0-dce736405dfc" name="participant_type:mother"/>
             <activity-reference code="BAUI" source="NCS"/>
           </planned-activity>
           <planned-activity id="cad092e0-5863-44ee-9439-506bf34c1a97" day="1">
             <label id="3f795fc9-7941-41db-a341-dd9aa9f840db" name="collection:biological"/>
             <label id="a4cb1abb-5b0f-4523-83a3-9d21495fa9b6" name="event:pregnancy_visit_1"/>
-            <label id="92040828-3cd9-4777-ba6f-3f8432264c31" name="instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="9f08e5e4-8d85-4690-90da-6488b85d123d" name="instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="a038cceb-9eb5-408a-b49b-837b0313b24a" name="order:10_01"/>
+            <label id="5162951f-34b3-4b37-aa54-661a4a201aa2" name="participant_type:mother"/>
             <activity-reference code="BABI" source="NCS"/>
           </planned-activity>
           <planned-activity id="39ba335d-b52e-48e6-8e5c-41768f2e4377" day="1" condition="if this is only visit before birth of baby">
@@ -124,7 +166,9 @@
           <planned-activity id="920d662a-5a70-4b64-880e-dd1511496caf" day="1">
             <label id="b0f450c3-863b-4d5f-9f2a-3b5da19dec26" name="collection:environmental"/>
             <label id="dc970423-209d-436b-9408-0b6e41edbe22" name="event:pregnancy_visit_1"/>
-            <label id="1b9efbe0-8b31-4bc6-afba-75ee9b87894e" name="instrument:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="f900e998-9adf-4f6a-97be-ce8c462f791f" name="instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="455b7770-6279-4f16-84cc-9d49691e8c28" name="order:20_01"/>
+            <label id="64b9676c-545b-4179-8e4a-826e18559d46" name="participant_type:mother"/>
             <activity-reference code="ETWPestTCI" source="NCS"/>
           </planned-activity>
         </period>
@@ -142,23 +186,31 @@
           <planned-activity id="94b28d6d-a769-45dd-a0a3-de5a93bf76f9" day="1">
             <label id="72ebaff1-850f-4941-87da-032e270e8edb" name="collection:biological"/>
             <label id="1ec034c7-ebda-4eb8-b099-77040f440670" name="event:pre-pregnancy_visit"/>
-            <label id="269b21dc-0a23-42e5-8de1-b988cd9d9a61" name="instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+            <label id="be2e6f20-7ac4-42e8-92c4-85ad4a0c571d" name="instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+            <label id="3b1c754f-8d2b-4b19-b6ff-4073ecfcb1eb" name="order:11_01"/>
+            <label id="8751d30e-89ab-42f1-876b-e4367c73ac8b" name="participant_type:mother"/>
             <activity-reference code="BAUI" source="NCS"/>
           </planned-activity>
           <planned-activity id="2eab7a03-9e0b-449f-82c4-9087b705ff29" details="non-fasting" day="1">
             <label id="5a22bcdc-0fe0-4dcd-ae44-7db45f07a2ac" name="collection:biological"/>
             <label id="b8373078-d348-4c01-8cc5-0afb7d735488" name="event:pre-pregnancy_visit"/>
-            <label id="4552cb4e-e5e2-47ce-98dc-7ecaf8f26aa5" name="instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="bdd6c27b-eed5-4ccb-ac1e-97290535dc0a" name="instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="3d17850d-6b2f-40d0-b39f-0eb97fcf7d89" name="order:10_01"/>
+            <label id="4179eacf-596f-46bc-88c9-400de44c40d3" name="participant_type:mother"/>
             <activity-reference code="BABI" source="NCS"/>
           </planned-activity>
           <planned-activity id="c767a6de-4bc5-4143-b76d-59439ec82a63" day="1">
             <label id="b07d5166-bef3-4777-8ecd-1399b5224b31" name="event:pre-pregnancy_visit"/>
-            <label id="e1241d4a-e252-48e1-bf3c-d8cf138899d0" name="instrument:ins_que_prepreg_saq_ehpbhi_p2_v1.1"/>
+            <label id="aef9acef-0861-4fd5-9e8e-a80a64fb13dc" name="instrument:2.0:ins_que_prepreg_saq_ehpbhi_p2_v1.1"/>
+            <label id="7dc3956e-1c86-4ce0-b3f3-675fdd1c858d" name="order:02_01"/>
+            <label id="65bd1879-5b3d-4cb9-b573-09b5887d2b53" name="participant_type:mother"/>
             <activity-reference code="SAQ (pre)" source="NCS"/>
           </planned-activity>
           <planned-activity id="e0149f26-2fd8-4be0-9f4c-45ec3ace25ca" day="1">
             <label id="58c66ba1-cf6d-48cd-9a88-e7ddb2ac95df" name="event:pre-pregnancy_visit"/>
-            <label id="08a8a14e-bdbc-43f5-9bb0-2ffec744f344" name="instrument:ins_que_prepreg_int_ehpbhi_p2_v1.1"/>
+            <label id="9b0c032b-7509-4fb2-b2f7-f23e16ee75fb" name="instrument:2.0:ins_que_prepreg_int_ehpbhi_p2_v1.1"/>
+            <label id="ddd5e82c-957c-405b-96af-490171de4504" name="order:01_01"/>
+            <label id="89f6296f-405b-4c62-9b1a-e08b59feddb8" name="participant_type:mother"/>
             <activity-reference code="PPI" source="NCS"/>
           </planned-activity>
         </period>
@@ -168,25 +220,33 @@
           <planned-activity id="30a79ffb-f7de-41dd-841e-0f8ca6a97c0c" day="1">
             <label id="9895a789-1885-4f37-9345-087430caa2d1" name="collection:biological"/>
             <label id="10cdfe34-e5bc-4f70-ba4a-04fedcd826f6" name="event:pregnancy_visit_2"/>
-            <label id="4fa14fb9-78a2-427a-a21b-ca1fdb2f4dbc" name="instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="109d8396-cee5-4317-81c4-a3075a207c1a" name="instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="d738f7de-ef2d-42f9-ab17-5e8a9ac51b4f" name="order:10_01"/>
+            <label id="cbfb190e-5eb4-4b54-bf01-d462b6b45dd2" name="participant_type:mother"/>
             <activity-reference code="BABI" source="NCS"/>
           </planned-activity>
           <planned-activity id="f75e6c58-4bb2-4330-81c5-ff5d6dd2c9d0" day="1">
             <label id="87c2806b-3f66-4992-ba38-a5d60e5474af" name="collection:biological"/>
             <label id="c5e51fdd-d0d3-44d4-b41d-bd7d5456ddb0" name="event:pregnancy_visit_2"/>
-            <label id="71c8e1cc-b0cc-4de3-bf9f-2bd0d95abeae" name="instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+            <label id="cc2543c6-653e-450e-ad1e-7c7e0a2c97a1" name="instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"/>
+            <label id="abaa2ee3-4b78-446c-a710-30b788b4f218" name="order:11_01"/>
+            <label id="dacbe3fa-9876-45ef-bca0-e0b5ac5fba96" name="participant_type:mother"/>
             <activity-reference code="BAUI" source="NCS"/>
           </planned-activity>
           <planned-activity id="af2e94c7-0355-4e75-9b30-99bacb6a5163" day="1">
             <label id="5deaa56c-1a22-45b0-9e7b-6c9523d7b0ab" name="collection:environmental"/>
             <label id="82eb7556-a478-416a-9b5f-7f3d1a0b6a64" name="event:pregnancy_visit_2"/>
-            <label id="7e5e8ecd-26fc-4389-a792-2464eb1cc363" name="instrument:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="cf7865d0-7e5e-4559-8d1f-15e428438158" name="instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="6d2f4414-4ba2-46ce-8977-bbd47bc28b0f" name="order:20_01"/>
+            <label id="0090a119-5bc6-4c03-af92-6da3fab40c61" name="participant_type:mother"/>
             <activity-reference code="ETWPharmTCI" source="NCS"/>
           </planned-activity>
           <planned-activity id="20a940d5-fc5d-4d8d-9427-68fff2638845" day="1">
             <label id="d2ff8f33-dddb-4895-8144-f661af32df63" name="collection:environmental"/>
             <label id="e12e9da2-5af5-47fe-88c1-01d2203e6d1a" name="event:pregnancy_visit_2"/>
-            <label id="873367e5-9986-41a3-9e6c-787fc6706e19" name="instrument:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="4f1b9370-03cf-41a5-bc5b-d4c4a07986d4" name="instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0"/>
+            <label id="13f7d3fb-b765-4d15-bd2b-5e75a343c216" name="order:21_01"/>
+            <label id="e4847bf2-96f0-46b6-8413-e998ca174aa6" name="participant_type:mother"/>
             <activity-reference code="EVBDTCI" source="NCS"/>
           </planned-activity>
           <planned-activity id="6bb3cb8e-5e47-42e7-9b00-352106c9bfb5" day="1">
@@ -199,12 +259,16 @@
           </planned-activity>
           <planned-activity id="93589159-2493-4d02-9c7c-dc253692bd80" day="1">
             <label id="b727f337-3e0a-4f6e-8169-967e71d51490" name="event:pregnancy_visit_2"/>
-            <label id="e86ee865-096f-4d9d-b386-2105c430725d" name="instrument:ins_que_pregvisit2_int_ehpbhi_p2_v2.0"/>
+            <label id="ba37c07c-3c18-4b17-8d11-b5a1df546cf8" name="instrument:2.0:ins_que_pregvisit2_int_ehpbhi_p2_v2.0"/>
+            <label id="29d3e31f-30a8-4592-9f3c-d8ebb70abcb5" name="order:01_01"/>
+            <label id="b823c184-fb27-4326-8695-8c7620df11ad" name="participant_type:mother"/>
             <activity-reference code="PV2I" source="NCS"/>
           </planned-activity>
           <planned-activity id="4a3ec00c-7aeb-489e-9f54-acf445219ece" day="1">
             <label id="28fecb6c-5a22-41b6-9df1-bafb7cd98fd5" name="event:pregnancy_visit_2"/>
-            <label id="63d4e566-1569-49dc-8b02-7d1e0c99d6cb" name="instrument:ins_que_pregvisit2_saq_ehpbhi_p2_v2.0"/>
+            <label id="9579ca40-fb6c-483c-9d0f-94bbd9244879" name="instrument:2.0:ins_que_pregvisit2_saq_ehpbhi_p2_v2.0"/>
+            <label id="6ba7fc02-1da3-4a61-8d9a-5261e707cf47" name="order:02_01"/>
+            <label id="7ae6d682-94c9-454f-8f33-3d8d1e2b16f2" name="participant_type:mother"/>
             <activity-reference code="PV2SAQ" source="NCS"/>
           </planned-activity>
         </period>
@@ -220,17 +284,18 @@
       <study-segment id="a6af42b4-6aec-4c63-a8d3-8b59474da940" name="Father Consent and Interview">
         <period id="e526bc74-f474-4544-85d2-ced85b6d16f0" name="Father Consent and Interview" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="4e33bea0-cefa-4132-bd1b-5179eec993d9" day="1">
-            <label id="aaf73ccc-ccf1-42ec-a475-a77617eff4ef" name="event:father"/>
             <label id="3ce40ce5-609f-4e53-ace9-11e3a3880abd" name="event:informed_consent"/>
-            <label id="7598ebcc-ac8d-4611-8b30-c191f985a3b9" name="instrument:ins_que_father_int_ehpbhi_p2_v1.0"/>
             <activity-reference code="FC" source="NCS"/>
           </planned-activity>
           <planned-activity id="a7f71d09-59d1-474a-8414-3fdb6c15eb2c" day="1">
-            <label id="30c947eb-c3dc-44f7-a13c-1254406a3a10" name="father"/>
+            <label id="5c37accc-e738-45d5-a3da-2231cc621364" name="event:father"/>
             <activity-reference code="VIS (father)" source="NCS"/>
           </planned-activity>
           <planned-activity id="b1b535d1-6c50-4865-9dda-610f7e5d0261" day="1">
-            <label id="8543c849-a117-40f6-ac14-2b4eb0d035a7" name="father"/>
+            <label id="9079c2b3-2c30-4dc3-98ec-86f3c8f00a5b" name="event:father"/>
+            <label id="800ef597-5e03-4397-a08b-63eb85ab12b8" name="instrument:2.0:ins_que_father_int_ehpbhi_p2_v1.0"/>
+            <label id="a87667c6-4268-44cb-bfed-2683ce653fce" name="order:01_01"/>
+            <label id="174256e9-94c6-4d68-8bcd-6fa2f2254de8" name="participant_type:father"/>
             <activity-reference code="FI" source="NCS"/>
           </planned-activity>
         </period>
@@ -239,12 +304,16 @@
         <period id="d5886fe9-0ddb-4683-9b99-4b01212ce300" name="PPG Follow-Up" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="9db060c7-93fe-47d4-8941-e706b4459c5f" day="1">
             <label id="2b7732f0-0faf-4747-92d6-bd222d31e874" name="event:pregnancy_probability"/>
-            <label id="a30be0ad-b1b9-4473-9e69-2db7c6dea999" name="instrument:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"/>
+            <label id="681e93ee-8113-4b1d-af46-961d2bf04980" name="instrument:2.0:ins_que_ppgfollup_int_ehpbhili_p2_v1.2"/>
+            <label id="4c8960da-740b-407d-a7f2-81f8290fab14" name="order:01_01"/>
+            <label id="a2e8f17a-ac37-4446-a245-fa7539573bd4" name="participant_type:mother"/>
             <activity-reference code="PPGFUI" source="NCS"/>
           </planned-activity>
           <planned-activity id="930ce80d-b991-42db-99df-ac3e4bcce069" day="1">
             <label id="1463c9f5-2421-43fc-bd38-03e01de3e5db" name="event:pregnancy_probability"/>
-            <label id="42412825-d08c-4762-8045-aa251e69f18d" name="instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"/>
+            <label id="96247459-bcc0-40f6-8cde-e07d67f1d86b" name="instrument:2.0:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1"/>
+            <label id="d6e085c1-4a39-42e0-8a6b-0db9b7fdf08f" name="order:02_01"/>
+            <label id="5df97dce-de04-4707-b34e-e3967290fb18" name="participant_type:mother"/>
             <activity-reference code="PPGFUSAQ" source="NCS"/>
           </planned-activity>
         </period>
@@ -257,78 +326,278 @@
             <label id="76258c52-6a8d-4d30-a74d-a1669202d068" name="event:birth"/>
             <activity-reference code="BVIS" source="NCS"/>
           </planned-activity>
-          <planned-activity id="6140789b-b3fe-4276-ac43-38b4d447e6e9" details="w/in 10 days of birth" day="1">
-            <label id="7e428ee1-e954-4b46-9d3b-c8eac1be14c2" name="event:birth"/>
-            <label id="eff1b533-188b-4e0e-b883-fc4caa2c15e8" name="instrument:ins_que_birth_int_ehpbhi_p2_v2.0"/>
-            <activity-reference code="BI" source="NCS"/>
-          </planned-activity>
           <planned-activity id="a9a7f9cd-cf0c-4ff7-8276-f1112f5587bd" day="1">
             <label id="9e4e1d42-e357-4a25-b1c6-42eb35010c4c" name="collection:biological"/>
             <label id="ed032231-ea7a-4307-89be-2426ae314d6e" name="event:birth"/>
-            <label id="0cc411b2-454f-4d2f-8d74-41461241a36e" name="instrument:ins_bio_cordblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="e3c92484-654a-4d73-ac6a-3858352a1fa7" name="instrument:2.0:ins_bio_cordblood_dci_ehpbhi_p2_v1.0"/>
+            <label id="11d8c768-0454-4725-bb0c-1100068462fd" name="order:10_01"/>
+            <label id="fb7243cf-3fe7-41db-87c3-a0ae1ba924ca" name="participant_type:child"/>
             <activity-reference code="BCBI" source="NCS"/>
           </planned-activity>
           <planned-activity id="d2419f3b-021b-40a8-b68a-547094382a49" day="1">
             <label id="b42b8463-3b9e-4fde-b21b-5390fe6407a0" name="event:birth"/>
             <activity-reference code="IHCL" source="NCS"/>
           </planned-activity>
-          <planned-activity id="88d9cdb6-3e22-4b37-8f65-2dcbe11b5f3b" details="2-4 month window" day="92">
-            <label id="3bde1836-76e7-4df1-8e05-d3e825d5665e" name="event:3_month"/>
-            <label id="bd4eb4f4-5d13-4101-860e-3f40178dcaff" name="instrument:ins_que_3mmother_int_ehpbhi_p2_v1.1"/>
-            <activity-reference code="3MMPI" source="NCS"/>
-          </planned-activity>
           <planned-activity id="2bb166f9-f124-4b23-bdaa-8feb8a2eca1b" details="5-7 month window" day="183">
             <label id="4daa8cef-6bb7-4301-9967-99b88c3f1703" name="event:6_month"/>
             <activity-reference code="6MVIS" source="NCS"/>
           </planned-activity>
-          <planned-activity id="e2531488-58e7-4721-b5f0-cbf9e8850ffd" details="5-7 month window" day="183">
-            <label id="aec9a866-3d89-4649-86b7-ae9f7fead13c" name="event:6_month"/>
-            <label id="28e02ee9-014c-4fb8-8b94-569926483ebe" name="instrument:ins_que_6mmother_int_ehpbhi_p2_v1.1"/>
-            <activity-reference code="6MMI" source="NCS"/>
-          </planned-activity>
           <planned-activity id="01be00a9-bcf1-4d40-918e-d41d65ccaac6" details="5-7 month window" day="183">
             <label id="5be5edee-0162-478b-8991-a37ba5bfaf13" name="event:6_month"/>
-            <label id="e5ebadb8-44d1-4f6b-9de5-57decfc1d96c" name="instrument:ins_que_6minfantfeed_saq_ehpbhi_p2_v2.0"/>
+            <label id="782ee013-f24f-4399-936c-e54d32c53132" name="instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v2.0"/>
+            <label id="80fabdf4-bb41-4d69-991c-a07f88b42424" name="order:02_01"/>
+            <label id="70417b9a-4248-4db5-8d2e-7445b957ff7e" name="participant_type:child"/>
             <activity-reference code="6MIFSAQ" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="d0e3ac20-b91f-4c2a-8217-a42b114afde6" details="8-10 month window" day="274">
-            <label id="9a9b94be-c01a-4669-addb-f05eaf0f18c7" name="event:9_month"/>
-            <label id="00d2ec12-dd27-47f9-a64f-563e0f179c73" name="instrument:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
-            <activity-reference code="9MMPI" source="NCS"/>
           </planned-activity>
           <planned-activity id="71eff7d1-e4a3-446b-a878-ef835b368181" details="11-15 month window" day="366">
             <label id="bf9adf26-86a7-4b84-be97-bd0c61ff7a38" name="event:12_month"/>
             <activity-reference code="12MVIS" source="NCS"/>
           </planned-activity>
-          <planned-activity id="4487f930-29aa-464d-a1d8-0b182cecfd40" details="11-15 month window" day="366">
-            <label id="a9e62c4b-b58c-4575-afd1-0b4766b65175" name="event:12_month"/>
-            <label id="b697464d-d3d3-4293-8d68-c1e3a26a0309" name="instrument:ins_que_12mmother_int_ehpbhi_p2_v1.1"/>
-            <activity-reference code="12MMI" source="NCS"/>
-          </planned-activity>
           <planned-activity id="599d1e75-7d6e-4933-a69a-76c83a7b9f80" details="11-15 month window" day="366">
             <label id="5b67a669-f3fb-4630-8d1a-1fc78dc7c3e1" name="event:12_month"/>
-            <label id="3b89598e-b873-46e0-a8fa-5bd845c82a05" name="instrument:ins_que_12mmother_saq_ehpbhi_p2_v2.0"/>
+            <label id="0f5bbd6e-e880-40d0-aca2-ca3d1bd33269" name="instrument:2.0:ins_que_12mmother_saq_ehpbhi_p2_v2.0"/>
+            <label id="54d3c3b2-c4be-4daf-9474-e4e1327b1ced" name="order:02_01"/>
+            <label id="422ff783-94fb-4fdb-9f10-1ea6ebe1d5c4" name="participant_type:mother"/>
             <activity-reference code="12MMSAQ" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="735de02c-bdc9-44fd-ac59-d901a90e3799" details="16-22 month window" day="548">
-            <label id="5e3df048-ad94-4f8e-bf3e-3bf25e34576a" name="event:18_month"/>
-            <label id="7599d952-d8d2-49bd-a270-9892059b100f" name="instrument:ins_que_18mmother_int_ehpbhi_p2_v1.0"/>
-            <activity-reference code="18MMI" source="NCS"/>
           </planned-activity>
           <planned-activity id="0a0919e3-79c3-435f-b897-9e0c4fa4247f" details="16-22 month window" day="548">
             <label id="96eeff0b-6593-4d6e-83ac-d9ad65e0ac88" name="event:18_month"/>
-            <label id="ba384749-012d-4a4d-8bcf-15a0d1666bcf" name="instrument:ins_que_18mmother_saq_ehpbhi_p2_v1.0"/>
+            <label id="655028d2-a1fc-44cc-8faf-8a4d6f90d8c6" name="instrument:2.0:ins_que_18mmother_saq_ehpbhi_p2_v1.0"/>
+            <label id="4e032229-2099-48e0-81f8-472619cc79ce" name="order:02_01"/>
+            <label id="14a41e20-ca9f-4a02-a255-16514f685daa" name="participant_type:mother"/>
             <activity-reference code="18MMSAQ" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="d3a1f314-a163-4bb3-aa42-ccf639034814" details="23-28 month window" day="730">
-            <label id="99a2fd43-51ae-47c2-894b-98776e6e313c" name="event:24_month"/>
-            <label id="1839494a-8f09-4831-85d1-a882aa16073d" name="instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0"/>
-            <activity-reference code="24MMI" source="NCS"/>
           </planned-activity>
           <planned-activity id="06b1e674-3af9-45e1-ac7e-2c30843fd365" details="23-28 month window" day="730">
             <label id="749cabe1-5099-4363-ad58-cbbeacb49143" name="event:24_month"/>
-            <label id="2ee9c976-0f6d-44ad-ada4-5c603ca4dd21" name="instrument:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
+            <label id="2bb98cfe-4fa5-4258-8063-38635ce9fb0f" name="instrument:2.0:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
+            <label id="7bc3d036-cc17-436f-a0c1-12630eea4a58" name="order:02_01"/>
+            <label id="2fdbab6b-f106-4280-8de2-01c20b279c69" name="participant_type:mother"/>
             <activity-reference code="24MMSAQ" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="0dae325c-4033-4a4a-82aa-e8378177c9eb" details="w/in 10 days of birth" day="1">
+            <label id="aa4d6fbc-6b13-412b-a75b-a61afc6427be" name="event:birth"/>
+            <label id="88f1087b-f43a-45f8-bcd9-d95e30de02cd" name="instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_two"/>
+            <label id="2d429780-78c5-4993-92ac-f2a5a2e44667" name="order:01_03"/>
+            <label id="1cc25915-c176-47d5-b9f1-bfac30738c88" name="participant_type:mother"/>
+            <label id="1d6d4153-ec06-4ab4-83ab-18a5f3aca1ee" name="references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one"/>
+            <activity-reference code="BI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="b91da252-9133-497a-b241-375b7d71c229" details="for each child" day="1">
+            <label id="f20b4401-95d7-46c9-9444-3a44002964a0" name="event:birth"/>
+            <label id="1b17926b-8737-4abe-bbc2-71784c212b3b" name="instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name"/>
+            <label id="15151c08-e3dc-49c7-9d51-3dfad70dcdf3" name="order:01_02"/>
+            <label id="fa00cda4-003b-4767-bc96-df97c979e912" name="participant_type:child"/>
+            <label id="73913c30-f107-4ac1-a97d-5ab4a687c1ae" name="references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one"/>
+            <activity-reference code="BI BN" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="7b2c914e-e0e4-41cd-a2f4-5e3557426fbb" day="92">
+            <label id="04d4fa9f-08f2-428b-936c-4065341ad0c3" name="event:3_month"/>
+            <label id="246ae879-4f09-42b7-b41b-3c93b3bd94b5" name="instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_two"/>
+            <label id="0eb0842e-da75-423d-a106-a0f29e78c70c" name="order:01_03"/>
+            <label id="4b1533cd-322d-46b7-b228-e540433e1d87" name="participant_type:mother"/>
+            <label id="1898575c-49da-4a6b-853c-4196fcb0bf4c" name="references:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="3MMPI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="9a2b7579-518f-4a55-9186-19a6436d14d0" details="for each child" day="92">
+            <label id="2fd5f478-c7f1-4d7b-8d2b-3ca5ca2b0598" name="event:3_month"/>
+            <label id="1097c3cd-16b6-400c-9d20-25ab56818aa5" name="instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_detail"/>
+            <label id="4cb06d1a-e006-4e04-a287-e1c08e5b3c5e" name="order:01_02"/>
+            <label id="6066f2aa-0568-4cda-9a99-7d99f115ea33" name="participant_type:child"/>
+            <label id="2f0368c9-5b09-438e-91a0-09bc3052aacd" name="references:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="3MMPI CD" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="67b46261-201b-469e-8a84-088b5165a6cc" details="for each child" day="92">
+            <label id="a235105e-c267-4736-8dfb-c2fa9c630ade" name="event:3_month"/>
+            <label id="fa7ce0b6-f7c0-424b-b01a-35e33cbfddf9" name="instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_child_habits"/>
+            <label id="e11e3dfd-feb6-499c-a573-a9cc521be9f5" name="order:01_04"/>
+            <label id="8da67a35-81a6-4f6a-b409-6e3fd469cf69" name="participant_type:child"/>
+            <label id="e320215a-a727-436b-b629-792bb96ae895" name="references:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="3MMPI CH" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="5872a8c5-441f-4a2d-ad24-fbe12edc9331" day="183">
+            <label id="ddd0cd66-10ec-4420-b002-ae58b5133444" name="event:6_month"/>
+            <label id="9e221e14-5e66-463d-8b27-ff6d4408892e" name="instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_two"/>
+            <label id="e446146c-dec6-4400-95ca-de3460bcfba2" name="order:01_03"/>
+            <label id="0e95a23a-174d-4606-8f1f-df18bcb7397b" name="participant_type:mother"/>
+            <label id="0e2a9395-86f2-4639-acb8-fddfd588cf2d" name="references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="6MMI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="837251ed-7843-40ab-a9e6-7e2f891b470d" details="for each child" day="183">
+            <label id="557e98c2-de01-4357-b4a7-9c5c6dbae8a8" name="event:6_month"/>
+            <label id="467db0fc-ecc8-48a7-bc71-4ddf35a708cf" name="instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_six_mth_mother_detail"/>
+            <label id="7fde088c-e747-45fd-92e9-983eb344479c" name="order:01_02"/>
+            <label id="09d8e82a-c807-4982-810f-b8323ae3553c" name="participant_type:child"/>
+            <label id="921f4166-f585-40aa-8fb2-e9a2fb9d6a8e" name="references:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="6MMI MD" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="206ed626-4d1b-441c-9f77-89eda9f2a1fb" details="for each child" day="274">
+            <label id="9c5eace9-746a-4309-89be-4e2f8afd2ac2" name="event:9_month"/>
+            <label id="9187e867-7ba6-4bde-a3aa-5c388979886e" name="instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail"/>
+            <label id="a5250c46-c1d8-4f6c-ac6d-d374bc37ea9b" name="order:01_02"/>
+            <label id="d814fe81-8539-45f3-9683-3685a3228385" name="participant_type:child"/>
+            <label id="c4cdd598-d8a5-4935-86dd-dfb7be87bdc6" name="references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
+            <activity-reference code="9MMPI MD" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="7de5af22-cf1d-47ea-ac9c-e23e93f8e8e0" day="366">
+            <label id="f3c73322-f1e1-452a-a960-93213cc3b70a" name="event:12_month"/>
+            <label id="217831a0-5814-4f22-9e6c-2949a1c37282" name="instrument:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_two"/>
+            <label id="2f1ba4e2-2a5c-455e-880f-38f117e88680" name="order:01_03"/>
+            <label id="dbf3e349-792c-4690-87c4-db18da1c1e8b" name="participant_type:mother"/>
+            <label id="bc178b15-f045-4046-a26a-aadc28fdcacc" name="references:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="12MMI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="48da916f-60b7-4643-93f3-19a4eddf9089" details="for each child" day="366">
+            <label id="53f2ee2e-99c8-4a88-a7cb-621d0636b666" name="event:12_month"/>
+            <label id="c89ed648-ddcd-4bdf-8a35-b67014f43566" name="instrument:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_twelve_mth_mother_detail"/>
+            <label id="a8cea514-7388-4a17-8f02-0c89a7bb3f0f" name="order:01_02"/>
+            <label id="caedf947-7c3f-458c-bfd0-b69e4b07f7d5" name="participant_type:child"/>
+            <label id="119388a2-8dfc-40ba-a2c8-1d8972ba97f7" name="references:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <activity-reference code="12MMI MD" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="03e4da89-a3c6-4f65-ac8a-60e92a314193" day="548">
+            <label id="b921fce5-d558-47c5-b729-efc7578b042f" name="event:18_month"/>
+            <label id="a3e0fa31-1dd3-490e-9741-3d6f36dddcb9" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_two"/>
+            <label id="b631a124-3ca8-40c3-847b-309d104acd8a" name="order:01_03"/>
+            <label id="9fa67a96-9e8f-43a7-abb3-1443b8f950c4" name="participant_type:mother"/>
+            <label id="edb2d598-416a-48d0-87b2-883ac3374457" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="18MMI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="4703e456-b50f-45dd-9074-b54f61c613d6" day="548">
+            <label id="b4baffb7-5e31-4ef7-9b3d-fb84f50eade3" name="event:18_month"/>
+            <label id="8d8c1a12-7048-4972-ba2f-bd6c173f2001" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_three"/>
+            <label id="130fb659-2bbf-4122-99e4-4d9ab6200d83" name="order:01_05"/>
+            <label id="4940ba7f-ab64-4d9e-8548-96cd29ea1c49" name="participant_type:mother"/>
+            <label id="1aface68-6659-4c63-ba65-11632a3d3974" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="18MMI3" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="bc551e77-4de0-47ed-9662-d077125c18dd" day="548">
+            <label id="f5b8125b-1a54-44bd-a9c2-eb4534752fc6" name="event:18_month"/>
+            <label id="179c805b-acd9-48cf-a8eb-fe0f2e3652aa" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_four"/>
+            <label id="ede32ca6-ce37-4ed4-b321-4a5efed57a24" name="order:01_07"/>
+            <label id="8e521ade-cd75-4297-a47f-58f4ae3955c8" name="participant_type:mother"/>
+            <label id="fe7e86fe-523b-469c-870f-704cb9f16767" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="18MMI4" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="58e4444f-dbe3-4f38-95c9-8137a286bfe4" details="for each child" day="548">
+            <label id="c9e88bd7-216c-4ddf-8405-568091409977" name="event:18_month"/>
+            <label id="6087d280-78b3-4afb-9b88-9b17df1a17ef" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_detail"/>
+            <label id="93a73e40-3b5a-4bb2-940a-a8bc872e72d4" name="order:01_02"/>
+            <label id="2bd8ef1b-d5d3-4a6d-86df-7042e944148c" name="participant_type:child"/>
+            <label id="d785969b-3c1b-4972-a472-c8e7754d0a9f" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="18MMI MD" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="ecfbdfbd-2f3d-4071-b0e4-2d3320c1f7bf" details="for each child" day="548">
+            <label id="32288b82-ef87-40ad-8bf9-63a26964ce6c" name="event:18_month"/>
+            <label id="92c99dd7-6c4f-4d0a-9134-1dc70e56697b" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_habits"/>
+            <label id="2d188528-6eb6-45f4-9107-cdb1e969948d" name="order:01_04"/>
+            <label id="c11505b9-d88e-4b06-90d3-6d2763dc9360" name="participant_type:child"/>
+            <label id="17f31880-24da-4761-bfe7-f8bb9929c4fe" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="18MMI MH" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="11991a81-9666-4d09-b8f2-745e7e45e8d3" details="for each child" day="548">
+            <label id="bc428ce2-3c01-4007-a715-3f154c16a00a" name="event:18_month"/>
+            <label id="8d2208a3-67a3-4324-8d9a-afefe002fda6" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_mold.room_mold_child"/>
+            <label id="1203ada8-267b-497b-a13e-e74b9338606a" name="order:01_06"/>
+            <label id="7decd667-f931-4095-b7de-20fbd439b6bb" name="participant_type:child"/>
+            <label id="f6715a70-ac30-4989-981f-4d25eb14b97a" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="18MMI MM" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="c08cfb96-96d3-4876-a9f5-ed7df94deb7a" day="730">
+            <label id="0865d53d-03e2-4b6f-ab45-d7d5ed99be18" name="event:24_month"/>
+            <label id="4361ae48-5e5b-4ba0-b65b-ff4f2604a9cf" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_two"/>
+            <label id="2338b3a0-4b1c-4e79-bd88-72a705c3a374" name="order:01_03"/>
+            <label id="aa78973c-0a97-4b0f-a781-3b68c213d722" name="participant_type:mother"/>
+            <label id="8922423f-f790-422e-a3b2-88faa9949eaa" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="24MMI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="eaf53769-ecaa-41fb-9dba-baaac948bb3e" day="730">
+            <label id="11c1839a-1bb5-4006-953f-1ce3002fdafa" name="event:24_month"/>
+            <label id="50114a3c-6aad-4940-8591-0fd375534ec2" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_three"/>
+            <label id="27c66529-bae8-4ad2-8534-68e5810c824a" name="order:01_05"/>
+            <label id="9147ca83-3977-4520-9d93-3a4de4221225" name="participant_type:mother"/>
+            <label id="8a0b71f6-f570-449c-8417-462f92d1576c" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="24MMI3" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="1d4cc487-1fb4-459d-b026-96481d180a3c" day="730">
+            <label id="b95fea4f-7364-4c23-990c-8c5420291207" name="event:24_month"/>
+            <label id="50538d09-4dbb-474d-9f33-28367caa7149" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_four"/>
+            <label id="6fab5ed8-0e35-4359-bd59-7cdcaa68b2b3" name="order:01_07"/>
+            <label id="3300b475-20da-4498-aba3-04af2da344cd" name="participant_type:mother"/>
+            <label id="9b0dc8fe-7ddd-4a78-a5e2-41b681091647" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="24MMI4" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="1415b015-89e2-46e8-b538-2b51ac32da7c" details="for each child" day="730">
+            <label id="98e11894-dec0-4cfb-b3b3-9c19317eed32" name="event:24_month"/>
+            <label id="349f272c-dca7-4225-9b68-85f48ed0e0b7" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_detail"/>
+            <label id="b83dd385-ce16-4731-8a5b-44013bdda43e" name="order:01_02"/>
+            <label id="763f075e-1b2d-42f0-9522-7859d249a85c" name="participant_type:child"/>
+            <label id="6e8694fb-14a5-4073-a2dc-222a03877b1f" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="24MMI MD" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="ac876b37-8ed2-493c-ba62-c4b1cd07f4cf" day="730">
+            <label id="5516e199-9679-43f5-9f5c-531f0ef7d2fc" name="event:24_month"/>
+            <label id="f5dc1362-07b5-42e6-93a6-18696e08a0b6" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_habits"/>
+            <label id="8f48a9b2-ba9d-410c-97a5-14077bb81a97" name="order:01_04"/>
+            <label id="45052de1-84b8-4991-923a-700f122ad40b" name="participant_type:child"/>
+            <label id="0649366f-b901-4ef7-8c59-923cdf1e013d" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="24MMI MH" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="dadf88a4-be33-4f74-998e-0b67f3e7e39f" details="for each child" day="730">
+            <label id="155ec6df-19e0-4892-97cb-1b1d1ace2690" name="event:24_month"/>
+            <label id="424061d2-c780-4510-9868-41154021a491" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_mold.room_mold_child"/>
+            <label id="bb4ef00e-9e11-449a-9d34-54c4e2825dbb" name="order:01_06"/>
+            <label id="e61bb7f6-0194-4377-bd22-e753d5a822af" name="participant_type:child"/>
+            <label id="ae9359f3-27fa-4df7-945f-1c812ce21ebe" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <activity-reference code="24MMI MM" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="d48b58fe-04e6-4ddf-acd5-c89e31dfd052" day="1">
+            <label id="8222aed0-bf67-4243-9fba-e00f12f6935f" name="event:birth"/>
+            <label id="f4366f29-ee60-4971-8442-2b36e3490d7d" name="instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one"/>
+            <label id="4277dd59-3525-43c9-bdd3-378df2b6972a" name="order:01_01"/>
+            <label id="068c9c8f-3967-44b1-acbb-892a68220624" name="participant_type:mother"/>
+            <activity-reference code="BI1" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="38c6cdae-fac6-46eb-8e30-551aeb7a3269" day="92">
+            <label id="872f9417-06f5-4755-8b74-462c5fa35265" name="event:3_month"/>
+            <label id="cc14aefc-c337-4009-bb2c-b924ffd55d0d" name="instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <label id="33c14236-085e-4c90-8cb1-28c2e9a416bc" name="order:01_01"/>
+            <label id="fd98e5e4-421e-4668-8471-8e020938a809" name="participant_type:mother"/>
+            <activity-reference code="3MMPI1" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="2617458d-e457-4909-a2ed-b0f54fdef877" day="183">
+            <label id="2f21d31c-b14e-4725-bd3c-2bbcb9842469" name="event:6_month"/>
+            <label id="143c6ee3-6486-43c5-a731-be7edac4220f" name="instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <label id="a9f8d6b4-b969-45f9-8c0a-0e47468e48b0" name="order:01_01"/>
+            <label id="d4c058c8-4fbf-4139-83bf-7259f9c17f43" name="participant_type:mother"/>
+            <activity-reference code="6MMI1" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="d4518fd1-25fb-4602-a4e0-fb89d34c3435" day="274">
+            <label id="809012e6-62ee-489f-9534-98d317416faf" name="event:9_month"/>
+            <label id="dd6ed6f9-f8e4-406a-bcf9-eba073a1b7b2" name="instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
+            <label id="6a65b94a-8328-4494-9adf-48e18c8aab40" name="order:01_01"/>
+            <label id="fd300c93-a5dd-4a16-92da-8d0870ba9b9f" name="participant_type:mother"/>
+            <activity-reference code="9MMPI1" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="7083e4a1-4f2b-45e3-a35c-f4fcbd93d323" day="366">
+            <label id="37329999-9aa9-4045-960b-a5854c66d024" name="event:12_month"/>
+            <label id="7c8a64ad-88e0-40f6-bfac-959d23e861f6" name="instrument:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <label id="c7600339-6f9e-4a21-b4e3-9fcfc55ded15" name="order:01_01"/>
+            <label id="ec5f851c-6336-46ce-acf5-99a46bc49916" name="participant_type:mother"/>
+            <activity-reference code="12MMI1" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="155b16b9-6a5c-4f45-b2ce-535d794a9210" day="548">
+            <label id="75faa9d6-5d43-4f17-b002-592d1ed59af6" name="event:18_month"/>
+            <label id="718f420d-3711-46ce-8d91-4a588d6a6176" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <label id="435dc5c5-01bd-424e-849d-f028f2fdba57" name="order:01_01"/>
+            <label id="883f03e1-0325-4047-a605-8dcaba7caab8" name="participant_type:mother"/>
+            <activity-reference code="18MMI1" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="584f17eb-1f34-4660-a0e0-8312349b9688" day="730">
+            <label id="7dba7ba5-8fed-4d8a-8eb4-9ca9fc33fdc8" name="event:24_month"/>
+            <label id="b197b7b6-e689-4952-af0e-6d138969a7cc" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
+            <label id="f565566c-af71-4c23-8023-7265ba37762c" name="order:01_01"/>
+            <label id="fa028f78-d01b-4353-bfc6-6c54560ec087" name="participant_type:mother"/>
+            <activity-reference code="24MMI1" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -336,50 +605,75 @@
   </planned-calendar>
   <sources>
     <source name="NCS">
+      <activity name="18-Month Mother Interview Mother Mold" code="18MMI MM" description="18-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
       <activity name="Pregnancy Visit 1 SAQ" code="PV1SAQ" description="Pregnancy Visit 1 SAQ" type="Instrument"/>
-      <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
-      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview" type="Instrument"/>
       <activity name="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" code="ETWPharmTCI" description="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" type="Environment"/>
       <activity name="Father Interview" code="FI" description="Father Interview" type="Instrument"/>
-      <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
+      <activity name="9-Month Mother Phone Interview Mother Detail" code="9MMPI MD" description="9-Month Mother Phone Interview Mother Detail - Child Loop" type="Instrument"/>
       <activity name="Pregnancy Visit 2 SAQ" code="PV2SAQ" description="Pregnancy Visit 2 SAQ" type="Instrument"/>
+      <activity name="18-Month Mother Interview Mother Detail" code="18MMI MD" description="18-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
+      <activity name="18-Month Mother Interview Mother Habits" code="18MMI MH" description="18-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
       <activity name="6-Month Infant Feeding SAQ" code="6MIFSAQ" description="6-Month Infant Feeding SAQ" type="Instrument"/>
       <activity name="Environmental Tap Water Pesticides Technician Collect Instrument" code="ETWPestTCI" description="Environmental Tap Water Pesticides Technician Collect Instrument" type="Environment"/>
-      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview" type="Instrument"/>
-      <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
-      <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
+      <activity name="12-Month Mother Interview Mother Detail" code="12MMI MD" description="12-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
+      <activity name="9-Month Mother Phone Interview Part One" code="9MMPI1" description="9-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Low Intensity Invitation to High-Intensity Conversion Interview" code="LIITHICI" description="Low Intensity Invitation to High-Intensity Conversion Interview" type="Instrument"/>
       <activity name="Father Consent" code="FC" description="Father Consent" type="Consent"/>
       <activity name="Pregnancy Visit 2 Information Sheet" code="VIS 2" description="Pregnancy Visit 2 Information Sheet" type="Information Sheet"/>
       <activity name="Pregnancy Visit 1 Information Sheet" code="VIS 1" description="Pregnancy Visit 1 Information Sheet" type="Information Sheet"/>
-      <activity name="12-Month Visit Information Sheet" code="12MVIS" description="12-Month Visit Information Sheet" type="Information Sheet"/>
-      <activity name="9-Month Mother Phone Interview" code="9MMPI" description="9-Month Mother Phone Interview" type="Instrument"/>
+      <activity name="Birth Interview Part One" code="BI1" description="Birth Interview Part One" type="Instrument"/>
+      <activity name="Birth Interview Part Two" code="BI2" description="Birth Interview Part Two" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview Child Detail" code="3MMPI CD" description="3-Month Mother Phone Interview Child Detail - Child Loop" type="Instrument"/>
       <activity name="Biospecimen Adult Urine Instrument" code="BAUI" description="Biospecimen Adult Urine Instrument" type="Biospecimen"/>
+      <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
-      <activity name="Birth Interview" code="BI" description="Birth Interview" type="Instrument"/>
       <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
+      <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
+      <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
+      <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Pre-Pregnancy Interview" code="PPI" description="Pre-Pregnancy Interview" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part Four" code="18MMI4" description="18-Month Mother Interview Part Four" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part Two" code="18MMI2" description="18-Month Mother Interview Part Two" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part Three" code="18MMI3" description="18-Month Mother Interview Part Three" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
+      <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
+      <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
+      <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
+      <activity name="24-Month Mother Interview Part One" code="24MMI1" description="24-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="24-Month Mother Interview Part Two" code="24MMI2" description="24-Month Mother Interview Part Two" type="Instrument"/>
+      <activity name="24-Month Mother Interview Part Three" code="24MMI3" description="24-Month Mother Interview Part Three" type="Instrument"/>
+      <activity name="24-Month Mother Interview Part Four" code="24MMI4" description="24-Month Mother Interview Part Four" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview Part One" code="3MMPI1" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
+      <activity name="6-Month Mother Interview Mother Detail" code="6MMI MD" description="6-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
+      <activity name="12-Month Visit Information Sheet" code="12MVIS" description="12-Month Visit Information Sheet" type="Information Sheet"/>
+      <activity name="3-Month Mother Phone Interview Part Two" code="3MMPI2" description="3-Month Mother Phone Interview Part Two" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview Part Three" code="3MMPI3" description="3-Month Mother Phone Interview Part Three" type="Instrument"/>
+      <activity name="24-Month Mother Interview Mother Detail" code="24MMI MD" description="24-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
+      <activity name="24-Month Mother Interview Mother Habits" code="24MMI MH" description="24-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
+      <activity name="Birth Interview Baby Name" code="BI BN" description="Birth Interview Baby Name - Child Loop" type="Instrument"/>
+      <activity name="24-Month Mother Interview Mother Mold" code="24MMI MM" description="24-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
+      <activity name="Low-Intensity Birth Interview Baby Name" code="LIBI BN" description="Low-Intensity Birth Interview Baby Name - Child Loop" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview" code="LIBI" description="Low-Intensity Birth Interview" type="Instrument"/>
-      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up Interview" code="PPGFUI" description="Pregnancy Probability Group Follow-Up Interview" type="Instrument"/>
-      <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview" type="Instrument"/>
       <activity name="18-Month Mother SAQ" code="18MMSAQ" description="18-Month Mother SAQ" type="Instrument"/>
       <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
       <activity name="Child Consent" code="CC" description="Child Consent" type="Consent"/>
       <activity name="Father Visit Information Sheet" code="VIS (father)" description="Father Visit Information Sheet" type="Information Sheet"/>
-      <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
+      <activity name="12-Month Mother Interview Part Two" code="12MMI2" description="12-Month Mother Interview Part Two" type="Instrument"/>
+      <activity name="12-Month Mother Interview Part One" code="12MMI1" description="12-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Pre-Pregnancy SAQ" code="SAQ (pre)" description="Pre-Pregnancy SAQ" type="Instrument"/>
-      <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
+      <activity name="Low-Intensity Birth Interview Part Two" code="LIBI B2" description="Low-Intensity Birth Interview Part Two" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up SAQ" code="PPGFUSAQ" description="Pregnancy Probability Group Follow-Up SAQ" type="Instrument"/>
-      <activity name="24-Month Mother Interview" code="24MMI" description="24-Month Mother Interview" type="Instrument"/>
-      <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Low-Intensity Interview" code="LII" description="Low-Intensity Interview" type="Instrument"/>
-      <activity name="Pre-Pregnancy Interview" code="PPI" description="Pre-Pregnancy Interview" type="Instrument"/>
       <activity name="Low-Intensity Consent" code="LIC" description="Low-Intensity Consent" type="Consent"/>
       <activity name="Infant Health Care Log" code="IHCL" description="Infant Health Care Log" type="Instrument"/>
       <activity name="Pregnancy Visit 2 Interview" code="PV2I" description="Pregnancy Visit 2 Interview" type="Instrument"/>
       <activity name="6-Month Visit Information Sheet" code="6MVIS" description="6-Month Visit Information Sheet" type="Information Sheet"/>
       <activity name="Pregnancy Visit 1 Interview" code="PV1I" description="Pregnancy Visit 1 Interview" type="Instrument"/>
-      <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="6-Month Mother Interview Part Two" code="6MMI2" description="6-Month Mother Interview Part Two" type="Instrument"/>
+      <activity name="6-Month Mother Interview Part One" code="6MMI1" description="6-Month Mother Interview Part One" type="Instrument"/>
     </source>
   </sources>
 </study-snapshot>

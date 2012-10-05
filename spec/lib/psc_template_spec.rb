@@ -159,6 +159,7 @@ describe 'PSC template' do
     }
 
     it 'covers only mapped instruments' do
+      pending '#2450'
       (instruments_named_in_labels - instruments_from_map).uniq.should == []
     end
   end

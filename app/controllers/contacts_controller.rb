@@ -78,8 +78,7 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       if @contact.update_attributes(params[:contact])
-
-        format.html { redirect_to(post_update_redirect_path(@contact_link), :notice => 'Contact was successfully updated.') }
+        format.html { post_update_redirect_path(@contact_link)}
         format.json { render :json => @contact }
       else
         set_disposition_group
@@ -91,10 +90,13 @@ class ContactsController < ApplicationController
 
   def post_update_redirect_path(link)
     if link && link.provider
-      contact_log_provider_path(link.provider)
+      redirect_path = link.provider.pbs_list ? pbs_list_path(link.provider.pbs_list) : pbs_lists_path
+      notice = "Contact for #{link.provider} was successfully updated."
     else
-      decision_page_contact_link_path(link)
+      redirect_path = decision_page_contact_link_path(link)
+      notice = "Contact was successfully updated."
     end
+    redirect_to(redirect_path, :notice => notice)
   end
   private :post_update_redirect_path
 
