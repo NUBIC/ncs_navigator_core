@@ -8,6 +8,8 @@ require 'ncs_navigator/core/warehouse'
 
 module NcsNavigator::Core::Warehouse::TwoPointOne
   describe OperationalEnumerator, :clean_with_truncation, :slow, :warehouse do
+    let(:operational_enumerator_class) { OperationalEnumerator }
+
     let(:wh_config) {
       NcsNavigator::Warehouse::Configuration.new.tap do |config|
         config.mdes_version = '2.1'
