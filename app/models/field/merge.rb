@@ -31,8 +31,15 @@ module Field
   # fieldwork set sent to a field client, and a corresponding fieldwork set
   # received from a field client.
   #
-  # Currently, five entities are merged: {Contact}, {Event}, {Instrument},
-  # {ResponseSet}, and {Response} via {QuestionResponseSet}.
+  # Currently, the following entities are merged:
+  #
+  # * {Contact}
+  # * {Event}
+  # * {Instrument}
+  # * {Response} via {QuestionResponseSet}
+  # * {ResponseSet}
+  # * {Participant}
+  # * {Person}
   #
   #
   # Overview
@@ -53,10 +60,10 @@ module Field
   # Atomic vs. non-atomic merge
   # ===========================
   #
-  # Contacts, Events, Instruments, and ResponseSets can all be merged
-  # non-atomically, which means that we can commit changes even in the presence
-  # of conflicts.  (Also, we can retry the merge on those entities and progress
-  # towards a fully merged state.)
+  # Contacts, Events, Persons, Participants, ResponseSets, and Instruments can
+  # all be merged non-atomically, which means that we can commit changes even
+  # in the presence of conflicts.  (Also, we can retry the merge on those
+  # entities and progress towards a fully merged state.)
   #
   # QuestionResponseSets, on the other hand, must be merged atomically: if
   # there exist conflicts on any attribute on any Response, none of the
@@ -113,6 +120,15 @@ module Field
   #
   # All entities involved in the merge use ActiveRecord's optimistic locking
   # mechanism, and Merge#save will re-raise ActiveRecord::StaleObjectError.
+  #
+  #
+  # Participant/Person considerations
+  # =================================
+  #
+  # Person data is only partially merged by this process.  Contact information
+  # for a person (address, email, phone) is handled by
+  # {PregnancyScreenerOperationalDataExtractor}.  See
+  # {ResponseSet#extract_operational_data} for more information.
   module Merge
     attr_accessor :logger
     attr_accessor :conflicts
