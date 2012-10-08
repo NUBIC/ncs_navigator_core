@@ -57,7 +57,7 @@ class Telephone < ActiveRecord::Base
   ncs_coded_attribute :text_permission,   'CONFIRM_TYPE_CL2'
 
   validates :phone_ext,        :length => { :maximum => 5 },  :allow_blank => true
-  validates :phone_nbr,        :length => { :is => 10 },      :allow_blank => true, :numericality => true
+  validates :phone_nbr,        :length => { :maximum => 10 }, :allow_blank => true, :numericality => true
   validates :phone_end_date,   :length => { :is => 10 },      :allow_blank => true
   validates :phone_start_date, :length => { :is => 10 },      :allow_blank => true
 
@@ -91,7 +91,17 @@ class Telephone < ActiveRecord::Base
   end
 
   def phone_nbr=(nbr)
-    self[:phone_nbr] = nbr.scan(/\d/).join if nbr.is_a? String
+    self[:phone_nbr] =
+      case nbr
+      when nil
+        nil
+      when /^-/
+        nbr
+      when String
+        nbr.scan(/\d|[a-zA-Z]/).join
+      else
+        nbr.to_s
+      end
   end
 
   ##

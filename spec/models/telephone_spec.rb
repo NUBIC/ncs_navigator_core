@@ -91,6 +91,14 @@ describe Telephone do
       phone.phone_nbr.should == '3125035555'
     end
 
+    it 'clears if set to nil' do
+      phone.phone_nbr = '1'
+      phone.phone_nbr.should_not be_nil # setup
+
+      phone.phone_nbr = nil
+      phone.phone_nbr.should be_nil
+    end
+
     it 'blocks numbers that are longer than 10 digits' do
       phone.phone_nbr = '12345678901'
       phone.should_not be_valid
@@ -102,26 +110,28 @@ describe Telephone do
     end
 
     it 'allows numbers that are less than 10 digits' do
-      pending '#2578'
       phone.phone_nbr = '123456789'
       phone.should be_valid
     end
 
     it 'preserves alphabetic phone numbers' do
-      pending '#2578'
       phone.phone_nbr = '888-GUD-TEST'
       phone.phone_nbr.should == '888GUDTEST'
     end
 
+    it 'accepts a number' do
+      phone.phone_nbr = 456
+      phone.should be_valid
+      phone.phone_nbr.should == '456'
+    end
+
     describe 'and coded values' do
       it 'allows them' do
-        pending '#2578'
         phone.phone_nbr = '-8'
         phone.should be_valid
       end
 
       it 'does not change them' do
-        pending '#2578'
         phone.phone_nbr = '-1'
         phone.phone_nbr.should == '-1'
       end
