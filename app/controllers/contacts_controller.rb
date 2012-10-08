@@ -90,6 +90,10 @@ class ContactsController < ApplicationController
 
   def post_update_redirect_path(link)
     if link && link.provider
+      if link.provider.pbs_list
+        link.provider.pbs_list.update_recruitment_dates!
+        link.provider.pbs_list.update_recruitment_status!
+      end
       redirect_path = link.provider.pbs_list ? pbs_list_path(link.provider.pbs_list) : pbs_lists_path
       notice = "Contact for #{link.provider} was successfully updated."
     else
@@ -127,7 +131,8 @@ class ContactsController < ApplicationController
           link = find_or_create_contact_link
 
           update_provider_recruitment_event(@event, @contact)
-          @provider.pbs_list.set_recruitment_start_date!
+          @provider.pbs_list.update_recruitment_dates!
+          @provider.pbs_list.update_recruitment_status!
 
           # check if the provider was recruited
           # if so update the pbs_list cooperation date
@@ -159,7 +164,8 @@ class ContactsController < ApplicationController
 
     if params[:pbs_list_id]
       pbs_list = PbsList.find(params[:pbs_list_id])
-      pbs_list.update_state!
+      pbs_list.update_recruitment_dates!
+      pbs_list.update_recruitment_status!
     end
 
     respond_to do |format|

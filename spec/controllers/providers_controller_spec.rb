@@ -363,6 +363,20 @@ describe ProvidersController do
             pbs_list.pr_recruitment_status_code.should == 1
           end
 
+          it "sets provider recruitment event end date if the provider has all provider_logistics complete" do
+            provider.should_not be_nil
+            pbs_list_id = provider.pbs_list.id
+            Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+            :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => provider)
+            put :process_recruited, :id => provider.id, :contact_id => contact.id,
+              :provider => { :id => provider.id,
+                :provider_logistics_attributes =>
+                  [{ :provider_logistics_code => "1", :completion_date => "2012-05-20" }]
+              }
+            pbs_list = PbsList.find(pbs_list_id)
+            pbs_list.provider.provider_recruitment_event.event_end_date.should == Date.new(2012, 05, 20)
+          end
+
           it "does not call mark_recruited if the provider has not marked all provider_logistics complete" do
             put :process_recruited, :id => provider.id, :contact_id => contact.id,
               :provider =>{ :provider_logistics_attributes =>
