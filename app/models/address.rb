@@ -65,8 +65,8 @@ class Address < ActiveRecord::Base
   validates :address_two,         :length => { :maximum => 100 }, :allow_blank => true
   validates :city,                :length => { :maximum => 50 },  :allow_blank => true
   validates :unit,                :length => { :maximum => 10 },  :allow_blank => true
-  validates :zip,                 :length => { :is => 5 },        :allow_blank => true, :numericality => true
-  validates :zip4,                :length => { :is => 4 },        :allow_blank => true, :numericality => true
+  validates :zip,                 :length => { :maximum => 5 },   :allow_blank => true, :numericality => true
+  validates :zip4,                :length => { :maximum => 4 },   :allow_blank => true, :numericality => true
   validates :address_end_date,    :length => { :is => 10 },       :allow_blank => true
   validates :address_start_date,  :length => { :is => 10 },       :allow_blank => true
 
