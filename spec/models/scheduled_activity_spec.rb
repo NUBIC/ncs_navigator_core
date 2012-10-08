@@ -12,7 +12,7 @@ describe ScheduledActivity do
       :activity_name => "Birth Interview",
       :activity_type => "Instrument",
       :person_id => "asdf",
-      :labels => "event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:ins_que_birth_int_ehpbhi_p2_v2.0"
+      :labels => "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:ins_que_birth_int_ehpbhi_p2_v2.0"
     }
   end
 
@@ -96,8 +96,8 @@ describe ScheduledActivity do
 
     context "with instruments" do
 
-      let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:A") }
-      let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:A.B") }
+      let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:1.0:A") }
+      let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:1.0:A.B") }
 
       describe ".<=>" do
 
@@ -118,8 +118,8 @@ describe ScheduledActivity do
       let(:p1)   { Factory(:participant, :p_id => "a") }
       let(:p2)   { Factory(:participant, :p_id => "b") }
 
-      let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:X", :participant => p1) }
-      let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:X", :participant => p2) }
+      let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:1.0:X", :participant => p1) }
+      let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:1.0:X", :participant => p2) }
 
       describe ".<=>" do
 

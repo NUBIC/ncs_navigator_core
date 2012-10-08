@@ -499,7 +499,7 @@ describe PatientStudyCalendar do
 
             sss = subject_schedule_status[0]
             sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
-            sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            sss.labels.should == "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
             sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
@@ -531,7 +531,7 @@ describe PatientStudyCalendar do
 
             sss = subject_schedule_status[1]
             sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
-            sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            sss.labels.should == "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
 

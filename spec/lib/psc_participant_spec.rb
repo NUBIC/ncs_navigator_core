@@ -400,7 +400,7 @@ describe PscParticipant do
       subject.schedule = {
         'days' => {
           '2010-01-04' => schedule_day('2010-01-04', [
-              { 'id' => '0104a', 'labels' => 'event:pv1 instrument:foo' },
+              { 'id' => '0104a', 'labels' => 'event:pv1 instrument:1.0:foo' },
               { 'id' => '0104b' },
               { 'id' => '0104c', 'labels' => 'event:informed_consent' }
             ]),

@@ -623,7 +623,7 @@ describe Event do
     context "parsing psc labels" do
       describe "#parse_label" do
         it "returns the event portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Event.parse_label(lbl).should == "low_intensity_data_collection"
         end
 
@@ -633,7 +633,7 @@ describe Event do
         end
 
         it "returns nil if event portion is not included in label" do
-          lbl = "instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Event.parse_label(lbl).should be_nil
         end
       end
@@ -656,12 +656,12 @@ describe Event do
       end
 
       it "is true if event_type matches label and event_start_date matches ideal date" do
-        lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
         @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_true
       end
 
       it "is false if event_type does not match label" do
-        lbl = "event:not_the_event instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        lbl = "event:not_the_event instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
         @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_false
       end
 

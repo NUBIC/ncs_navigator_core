@@ -238,7 +238,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"event:low_to_high_conversion instrument:ins_que_lihiconversion_int_hili_p2_v1.0\",
+                              \"labels\": \"event:low_to_high_conversion instrument:2.0:ins_que_lihiconversion_int_hili_p2_v1.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -277,7 +277,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"event:birth instrument:ins_que_birth_int_li_p2_v1.0 mode:low_intensity_birth\",
+                              \"labels\": \"event:birth instrument:2.0:ins_que_birth_int_li_p2_v1.0 mode:low_intensity_birth\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -355,7 +355,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"event:pregnancy_screener instrument:ins_que_pregscreen_int_hili_p2_v2.0\",
+                              \"labels\": \"event:pregnancy_screener instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -394,7 +394,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0\",
+                              \"labels\": \"event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -440,7 +440,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"collection:biological event:pregnancy_visit_1 instrument:ins_bio_adultblood_dci_ehpbhi_p2_v1.0\",
+                              \"labels\": \"collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -481,7 +481,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0\",
+                              \"labels\": \"collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -522,7 +522,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"collection:environmental event:pregnancy_visit_1 instrument:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0\",
+                              \"labels\": \"collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -563,7 +563,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"collection:environmental event:pregnancy_visit_1 instrument:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0\",
+                              \"labels\": \"collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -604,7 +604,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"collection:environmental event:pregnancy_visit_1 instrument:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0\",
+                              \"labels\": \"collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {
@@ -769,7 +769,7 @@
                                   ]
                               },
                               \"subject\": \"Francesca Zupicich\",
-                              \"labels\": \"event:pregnancy_visit_1 instrument:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0\",
+                              \"labels\": \"event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0\",
                               \"formatted_plan_day\": \"Day 1\",
                               \"state_history\": [
                                   {

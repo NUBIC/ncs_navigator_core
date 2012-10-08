@@ -104,7 +104,7 @@ module NcsNavigator::Core::Warehouse
 
         add_link_contact_hash('e1_lc2', 'e1', '2010-01-12')
         redis.sadd(
-          "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:e1",
+          "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:1.0:e1",
           'e1_lc2')
       end
 
@@ -540,7 +540,7 @@ module NcsNavigator::Core::Warehouse
           },
           'sa3' => {
             'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
+            'labels' => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
           },
           'sa4' => {
             'current_state' => { 'name' => 'scheduled' },
@@ -552,7 +552,7 @@ module NcsNavigator::Core::Warehouse
       describe 'for contact links with instruments' do
         before do
           %w(e1_lc1i e1_lc3i e1_lc2i).each do |lc_id|
-            redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contacts_with_instrument:e1_i1", lc_id)
+            redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contacts_with_instrument:1.0:e1_i1", lc_id)
           end
         end
 
@@ -715,7 +715,7 @@ module NcsNavigator::Core::Warehouse
           'sa3' => {
             'id' => 'sa3',
             'current_state' => { 'name' => 'occurred' },
-            'labels' => 'event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
+            'labels' => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
           },
         }
       }
