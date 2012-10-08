@@ -40,8 +40,9 @@
 require 'spec_helper'
 
 describe Telephone do
+  let(:phone) { Factory(:telephone) }
+
   it "should create a new instance given valid attributes" do
-    phone = Factory(:telephone)
     phone.should_not be_nil
   end
 
@@ -59,23 +60,17 @@ describe Telephone do
   it { should belong_to(:response_set) }
 
   it { should ensure_length_of(:phone_ext).is_at_most(5) }
-  # TODO: create tests for these - we override phone_nbr= so the stock shoulda tests fail
-  # it { should validate_numericality_of(:phone_nbr) }
-  # it { should ensure_length_of(:phone_nbr).is_equal_to(10) }
   it { should ensure_length_of(:phone_end_date).is_equal_to(10) }
   it { should ensure_length_of(:phone_start_date).is_equal_to(10) }
 
   context "as mdes record" do
-
     it "sets the public_id to a uuid" do
-      phone = Factory(:telephone)
       phone.public_id.should_not be_nil
       phone.phone_id.should == phone.public_id
       phone.phone_id.length.should == 36
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
-
       phone = Telephone.new
       phone.person = Factory(:person)
       phone.save!
@@ -87,6 +82,49 @@ describe Telephone do
       obj.phone_landline.local_code.should == -4
       obj.cell_permission.local_code.should == -4
       obj.text_permission.local_code.should == -4
+    end
+  end
+
+  describe '#phone_nbr' do
+    it 'strips out punctuation' do
+      phone.phone_nbr = '(312) 503-5555'
+      phone.phone_nbr.should == '3125035555'
+    end
+
+    it 'blocks numbers that are longer than 10 digits' do
+      phone.phone_nbr = '12345678901'
+      phone.should_not be_valid
+    end
+
+    it 'allows numbers that are exactly 10 digits' do
+      phone.phone_nbr = '1234567890'
+      phone.should be_valid
+    end
+
+    it 'allows numbers that are less than 10 digits' do
+      pending '#2578'
+      phone.phone_nbr = '123456789'
+      phone.should be_valid
+    end
+
+    it 'preserves alphabetic phone numbers' do
+      pending '#2578'
+      phone.phone_nbr = '888-GUD-TEST'
+      phone.phone_nbr.should == '888GUDTEST'
+    end
+
+    describe 'and coded values' do
+      it 'allows them' do
+        pending '#2578'
+        phone.phone_nbr = '-8'
+        phone.should be_valid
+      end
+
+      it 'does not change them' do
+        pending '#2578'
+        phone.phone_nbr = '-1'
+        phone.phone_nbr.should == '-1'
+      end
     end
   end
 end
