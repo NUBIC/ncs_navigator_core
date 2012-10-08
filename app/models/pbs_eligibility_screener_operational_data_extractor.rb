@@ -164,7 +164,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
 
         if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
           due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
-          ppg_detail.orig_due_date = due_date if due_date
+          ppg_detail.orig_due_date = due_date if ppg_detail && due_date
         end
 
       end

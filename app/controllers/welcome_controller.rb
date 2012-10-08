@@ -67,7 +67,6 @@ class WelcomeController < ApplicationController
     participant = Participant.create(:psu_code => @psu_code)
     participant.person = person
     participant.save!
-
     resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)

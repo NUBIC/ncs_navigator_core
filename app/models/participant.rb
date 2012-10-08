@@ -711,7 +711,6 @@ class Participant < ActiveRecord::Base
                       NcsCode.pregnancy_screener)
   end
 
-
   ##
   # @return [true,false]
   def low_intensity?

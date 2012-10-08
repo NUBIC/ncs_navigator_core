@@ -53,6 +53,9 @@ Given /^the following registered unconsented trying participants:$/ do |table|
     participant.events << Factory(:event, :participant => participant,
                         :event_start_date => Date.today, :event_end_date => Date.today,
                         :event_type => NcsCode.pregnancy_screener)
+    participant.events << Factory(:event, :participant => participant,
+                        :event_start_date => Date.today, :event_end_date => nil,
+                        :event_type => NcsCode.low_intensity_data_collection)
     # participant.follow_low_intensity!
   end
 end
@@ -68,13 +71,17 @@ Given /^the following registered unconsented high intensity trying participants:
 
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
     participant.register!
-    participant.events << Factory(:event, :participant => participant,
-                        :event_start_date => Date.today, :event_end_date => Date.today,
-                        :event_type => NcsCode.pregnancy_screener)
-
     participant.assign_to_pregnancy_probability_group!
     participant.enroll_in_high_intensity_arm!
     participant.non_pregnant_informed_consent!
+
+    participant.events << Factory(:event, :participant => participant,
+                        :event_start_date => Date.today, :event_end_date => Date.today,
+                        :event_type => NcsCode.pregnancy_screener)
+    participant.events << Factory(:event, :participant => participant,
+                        :event_start_date => Date.today, :event_end_date => nil,
+                        :event_type => NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 32))
+
   end
 end
 
