@@ -28,6 +28,7 @@
 #  dwelling_unit_id          :integer
 #  id                        :integer          not null, primary key
 #  institute_id              :integer
+#  lock_version              :integer          default(0)
 #  person_id                 :integer
 #  provider_id               :integer
 #  psu_code                  :integer          not null

@@ -8,6 +8,7 @@
 #  created_at              :datetime
 #  id                      :integer          not null, primary key
 #  institute_id            :integer
+#  lock_version            :integer          default(0)
 #  person_id               :integer
 #  phone_comment           :text
 #  phone_end_date          :string(10)

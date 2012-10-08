@@ -13,6 +13,7 @@
 #  high_intensity            :boolean          default(FALSE)
 #  high_intensity_state      :string(255)
 #  id                        :integer          not null, primary key
+#  lock_version              :integer          default(0)
 #  low_intensity_state       :string(255)
 #  p_id                      :string(36)       not null
 #  p_type_code               :integer          not null

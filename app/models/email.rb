@@ -23,6 +23,7 @@
 #  email_type_code         :integer          not null
 #  email_type_other        :string(255)
 #  id                      :integer          not null, primary key
+#  lock_version            :integer          default(0)
 #  person_id               :integer
 #  psu_code                :integer          not null
 #  response_set_id         :integer
