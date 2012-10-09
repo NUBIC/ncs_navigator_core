@@ -90,8 +90,7 @@ module Field
     attr_accessor :responses
 
     ##
-    # By default, this logger throws messages to a bit bucket.  If you want log
-    # messages, provide your own logger.
+    # By default, this logger throws messages to the Rails logger.
     attr_accessor :logger
 
     def initialize
@@ -104,7 +103,7 @@ module Field
       self.response_sets = {}
       self.responses = {}
 
-      self.logger = Logger.new(nil)
+      self.logger = Rails.logger
     end
 
     def build(original, proposed)
