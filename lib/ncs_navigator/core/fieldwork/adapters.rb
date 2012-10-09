@@ -295,9 +295,6 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  ##
-  # At present, this is just for completeness.  It doesn't participate in the
-  # merge process.
   class ParticipantModelAdapter < Adapter
     include ModelBehavior
   end
@@ -314,28 +311,23 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  ##
-  # At present, this is just for completeness.  It doesn't participate in the
-  # merge process.
-  class PersonModelAdapter < Adapter
+  class PersonAdapter < Adapter
+    attr_accessors %w(
+      first_name
+      last_name
+      middle_name
+      person_id
+      prefix_code
+      suffix_code
+    )
+  end
+
+  class PersonModelAdapter < PersonAdapter
     include ModelBehavior
   end
 
-  class PersonHashAdapter < Adapter
+  class PersonHashAdapter < PersonAdapter
     include HashBehavior
-
-    attr_accessors %w(
-      cell_phone
-      city
-      email
-      home_phone
-      name
-      person_id
-      relationship_code
-      state
-      street
-      zip_code
-    )
 
     def model_class
       ::Person

@@ -131,6 +131,18 @@ module Field
       it_merges 'created_at'
     end
 
+    when_merging 'Person' do
+      let(:properties) do
+        SCHEMA['properties']['participants']['items']['properties']['persons']['items']['properties']
+      end
+
+      it_merges 'first_name'
+      it_merges 'last_name'
+      it_merges 'middle_name'
+      it_merges 'prefix_code'
+      it_merges 'suffix_code'
+    end
+
     describe 'when merging QuestionResponseSets' do
       before do
         test_set = {
@@ -326,12 +338,14 @@ module Field
       let(:event) { Factory(:event) }
       let(:response_set) { Factory(:response_set) }
       let(:instrument) { Factory(:instrument) }
+      let(:person) { Factory(:person) }
       let(:qrs) { QuestionResponseSet.new }
 
       let(:ac) { adapt_model(contact) }
       let(:ae) { adapt_model(event) }
       let(:rs) { adapt_model(response_set) }
       let(:ai) { adapt_model(instrument) }
+      let(:pe) { adapt_model(person) }
 
       before do
         subject.contacts = {
@@ -366,6 +380,14 @@ module Field
           }
         }
 
+        subject.people = {
+          'p1' => {
+            :original => nil,
+            :current => pe,
+            :proposed => nil
+          }
+        }
+
         subject.question_response_sets = {
           'q1' => {
             :original => nil,
@@ -390,6 +412,10 @@ module Field
 
         it 'returns merged instruments' do
           @ret[:instruments].should == [ai]
+        end
+
+        it 'returns merged people' do
+          @ret[:people].should == [pe]
         end
 
         it 'returns merged response sets' do
