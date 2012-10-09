@@ -141,6 +141,7 @@ module Field
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
       response_sets.each { |id, state| merge_entity(state, 'ResponseSet', id) }
       people.each { |id, state| merge_entity(state, 'Person', id) }
+      participants.each { |id, state| merge_entity(state, 'Participant', id) }
       question_response_sets.each { |id, state| merge_entity(state, 'QuestionResponseSet', id) }
     end
 
@@ -164,6 +165,8 @@ module Field
     #       :events => [#<Event ...>, ...],
     #       :instruments => [#<Instrument ...>, ...],
     #       :response_sets => [#<ResponseSet ...>, ...],
+    #       :people => [#<Person ...>, ...],
+    #       :participants => [#<Participant ...>, ...],
     #       :question_response_sets => [#<QuestionResponseSet ...>, ...]
     #     }
     #
@@ -175,6 +178,7 @@ module Field
         :instruments => current_for(instruments),
         :response_sets => current_for(response_sets),
         :people => current_for(people),
+        :participants => current_for(participants),
         :question_response_sets => current_for(question_response_sets)
       }
 

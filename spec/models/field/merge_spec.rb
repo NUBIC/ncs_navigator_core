@@ -339,6 +339,7 @@ module Field
       let(:response_set) { Factory(:response_set) }
       let(:instrument) { Factory(:instrument) }
       let(:person) { Factory(:person) }
+      let(:participant) { Factory(:participant) }
       let(:qrs) { QuestionResponseSet.new }
 
       let(:ac) { adapt_model(contact) }
@@ -346,6 +347,7 @@ module Field
       let(:rs) { adapt_model(response_set) }
       let(:ai) { adapt_model(instrument) }
       let(:pe) { adapt_model(person) }
+      let(:pa) { adapt_model(participant) }
 
       before do
         subject.contacts = {
@@ -388,6 +390,14 @@ module Field
           }
         }
 
+        subject.participants = {
+          'p1' => {
+            :original => nil,
+            :current => pa,
+            :proposed => nil
+          }
+        }
+
         subject.question_response_sets = {
           'q1' => {
             :original => nil,
@@ -412,6 +422,10 @@ module Field
 
         it 'returns merged instruments' do
           @ret[:instruments].should == [ai]
+        end
+
+        it 'returns merged participants' do
+          @ret[:participants].should == [pa]
         end
 
         it 'returns merged people' do

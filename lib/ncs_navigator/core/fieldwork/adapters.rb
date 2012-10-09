@@ -295,16 +295,18 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ParticipantModelAdapter < Adapter
-    include ModelBehavior
-  end
-
-  class ParticipantHashAdapter < Adapter
-    include HashBehavior
-
+  class ParticipantAdapter < Adapter
     attr_accessors %w(
       p_id
     )
+  end
+
+  class ParticipantModelAdapter < ParticipantAdapter
+    include ModelBehavior
+  end
+
+  class ParticipantHashAdapter < ParticipantAdapter
+    include HashBehavior
 
     def model_class
       ::Participant
