@@ -9,6 +9,18 @@ Feature: Merging data from field clients
   Background:
     Given an authenticated user
 
+  @wip
+  Scenario: New participants are stored
+    When I complete the fieldwork set
+      | start_date          | 2005-07-01                |
+      | end_date            | 2005-07-30                |
+      | client_id           | 1234567890                |
+      | with                | new_participants.json.erb |
+    And the merge runs
+    And I go to the participant page
+
+    Then I should see "Bessie Smith"
+
   Scenario: Changes to contacts, events, and instruments are stored
     Given the participant
       | person/first_name | Bessie              |
