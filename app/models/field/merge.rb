@@ -161,14 +161,17 @@ module Field
     # If save succeeds, this method returns the merged model objects in a map
     # of the form
     #
-    #     { :contacts => [#<Contact ...>, ...],
-    #       :events => [#<Event ...>, ...],
-    #       :instruments => [#<Instrument ...>, ...],
-    #       :response_sets => [#<ResponseSet ...>, ...],
-    #       :people => [#<Person ...>, ...],
-    #       :participants => [#<Participant ...>, ...],
-    #       :question_response_sets => [#<QuestionResponseSet ...>, ...]
+    #     { :contacts => [contact, ...],
+    #       :events => [event, ...],
+    #       :instruments => [instrument, ...],
+    #       :response_sets => [response_set, ...],
+    #       :people => [person, ...],
+    #       :participants => [participant, ...],
+    #       :question_response_sets => [question_response_set, ...]
     #     }
+    #
+    # Each entity in each list is an adapted ActiveRecord model object; see
+    # {NcsNavigator::Core::Fieldwork::Adapters} for more information.
     #
     # If save fails, returns nil.
     def save
