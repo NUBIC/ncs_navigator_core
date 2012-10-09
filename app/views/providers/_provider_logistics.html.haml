@@ -15,3 +15,7 @@
 
   %td.remove_col
     = link_to_remove_fields 'Remove', f, :provider_logistics
+:javascript
+  $(document).ready(function() {
+    setCompletionDateForNoneLogistic()
+  });
