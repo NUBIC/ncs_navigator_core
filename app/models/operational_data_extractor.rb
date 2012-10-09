@@ -3,6 +3,7 @@
 
 class OperationalDataExtractor
   EXTRACTORS = [
+    [/_Tracing_/,           TracingModuleOperationalDataExtractor],
     [/_PBSamplingScreen_/,  PbsEligibilityScreenerOperationalDataExtractor],
     [/_PregScreen_/,        PregnancyScreenerOperationalDataExtractor],
     [/_PPGFollUp_/,         PpgFollowUpOperationalDataExtractor],
