@@ -130,6 +130,8 @@ module Field
   # {PregnancyScreenerOperationalDataExtractor}.  See
   # {ResponseSet#extract_operational_data} for more information.
   module Merge
+    include Linking
+
     attr_accessor :logger
     attr_accessor :conflicts
 
@@ -186,7 +188,7 @@ module Field
       }
 
       ActiveRecord::Base.transaction do
-        ok = map.values.all? { |c| save_collection(c) }
+        ok = map.values.all? { |c| save_collection(c) } and link
 
         if ok
           logger.info { 'Merge saved' }
