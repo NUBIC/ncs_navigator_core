@@ -130,7 +130,7 @@ class Merge < ActiveRecord::Base
       end
 
       # Do the merge.
-      superposition = do_merge
+      superposition = do_merge(logger)
 
       if !superposition
         update_attribute(:crashed_at, Time.now)
@@ -201,7 +201,7 @@ class Merge < ActiveRecord::Base
   ##
   # @private
   # @return [Field::Superposition, nil]
-  def do_merge
+  def do_merge(logger)
     sp = Field::Superposition.new
     sp.logger = logger
     sp.build(JSON.parse(original_data), JSON.parse(proposed_data))
