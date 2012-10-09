@@ -919,7 +919,7 @@ class Participant < ActiveRecord::Base
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
     else
-      fail "Unhandled event type for participant state #{event_type.local_code.inspect}"
+      fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
   end
 
