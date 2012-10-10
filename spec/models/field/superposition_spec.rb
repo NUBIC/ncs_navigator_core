@@ -19,7 +19,7 @@ module Field
     let(:proposed_data) { File.read("#{Rails.root}/spec/fixtures/field/proposed_data.json") }
     let(:proposed_json) { JSON.parse(proposed_data) }
 
-    # Commonly used UUIDs.
+    # Commonly used UUIDs in the original and proposed datasets.
     let(:contact_id) { 'dc2a6c42-3b01-4c91-9e27-104c5aa3ef49' }
     let(:event_id) { 'bce1e030-34d3-012f-c157-58b035fb69ca' }
     let(:instrument_id) { 'c41f14e0-356c-012f-c15d-58b035fb69ca' }
