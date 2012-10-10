@@ -132,10 +132,10 @@ module Field
       res = {}
 
       responses.each do |_, state|
-        state.each do |name, response|
+        state.each do |state_name, response|
           res[response.question_id] ||= {}
-          res[response.question_id][name] ||= QuestionResponseSet.new
-          res[response.question_id][name] << response
+          res[response.question_id][state_name] ||= QuestionResponseSet.new
+          res[response.question_id][state_name] << response
         end
       end
 
