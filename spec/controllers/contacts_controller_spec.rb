@@ -27,14 +27,15 @@ describe ContactsController do
       before(:each) do
         login(user_login)
         @preg_screen_event = NcsCode.pregnancy_screener
-        @ppg12_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
+        @ppg12_event = NcsCode.low_intensity_data_collection
 
         @person      = Factory(:person)
         @participant = Factory(:participant)
         @participant.person = @person
         @participant.save!
 
-        @person.upcoming_events.should == ["LO-Intensity: Pregnancy Screener"]
+        @person.upcoming_events.size.should == 1
+        @person.upcoming_events.first.should include("Pregnancy Screener")
         @person.should be_participant
       end
 

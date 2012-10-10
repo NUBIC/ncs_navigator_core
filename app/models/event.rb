@@ -433,9 +433,9 @@ class Event < ActiveRecord::Base
 
     if resp && resp.success?
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
-
       psc.unique_label_ideal_date_pairs_for_scheduled_segment(participant, study_segment_identifier).each do |lbl, dt|
-        Event.create_placeholder_record(participant, dt, NcsCode.find_event_by_lbl(lbl).local_code, study_segment_identifier)
+        code = NcsCode.find_event_by_lbl(lbl)
+        Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
       end
 
       unless NcsNavigatorCore.expanded_phase_two?

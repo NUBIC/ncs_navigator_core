@@ -210,6 +210,7 @@ class ContactsController < ApplicationController
       if participant = @person.participant
         if participant.pending_events.blank?
           Event.schedule_and_create_placeholder(psc, participant)
+          participant.events.reload
         end
         participant.pending_events.first
       else

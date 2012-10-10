@@ -52,7 +52,7 @@ class ContactLinksController < ApplicationController
          @contact_link.event.update_attributes(params[:event]) &&
          @contact_link.contact.update_attributes(params[:contact])
 
-         notice = 'Contact was successfully updated.'
+        notice = 'Contact was successfully updated.'
 
         if @contact_link.event.participant.pending_events.blank?
           resp = Event.schedule_and_create_placeholder(psc, @contact_link.event.participant)

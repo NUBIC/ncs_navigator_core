@@ -237,14 +237,24 @@ describe Participant do
                                    :person => participant.person, :participant => participant) }
 
       describe "a high intensity participant" do
-        it "moves to the high intensity pregnancy_one state" do
+        it "moves to the high intensity pregnancy_one state if due_date is < 3 months" do
           Factory(:ppg_detail, :participant => participant, :ppg_first => status1,
-                  :orig_due_date => 4.months.from_now.strftime("%m/%d/%Y"))
+                  :orig_due_date => 2.months.from_now.strftime("%m/%d/%Y"))
 
           participant.should be_converted_high_intensity
           participant.update_state_after_survey(response_set, psc)
           participant.should be_pregnancy_one
         end
+
+        it "remains in the following_high_intensity state if due_date is > 3 months" do
+          Factory(:ppg_detail, :participant => participant, :ppg_first => status1,
+                  :orig_due_date => 4.months.from_now.strftime("%m/%d/%Y"))
+
+          participant.should be_converted_high_intensity
+          participant.update_state_after_survey(response_set, psc)
+          participant.should be_following_high_intensity
+        end
+
       end
     end
 

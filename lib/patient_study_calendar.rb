@@ -412,6 +412,8 @@ class PatientStudyCalendar
   # @param [Date]
   # @return [Boolean]
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
+
+    next_scheduled_event = strip_epoch(next_scheduled_event)
     return false if should_skip_event?(next_scheduled_event)
 
     result = true

@@ -183,7 +183,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :impregnate do
-      transition [:following_high_intensity, :pre_pregnancy] => :pregnancy_one
+      transition [:following_high_intensity, :pre_pregnancy, :converted_high_intensity] => :pregnancy_one
     end
 
     event :pregnancy_one_visit do
@@ -254,6 +254,11 @@ class Participant < ActiveRecord::Base
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     end
 
+    if /_PBSamplingScreen_/ =~ survey_title
+      psc.update_subject(self)
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
+    end
+
     if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
       follow_low_intensity!
     end
@@ -274,7 +279,9 @@ class Participant < ActiveRecord::Base
         impregnate_low!
       end
 
-      if high_intensity? && can_impregnate?
+      if high_intensity? &&
+         can_impregnate? &&
+         !due_date_is_greater_than_follow_up_interval
         impregnate!
       end
     end
@@ -305,9 +312,6 @@ class Participant < ActiveRecord::Base
     if known_to_have_experienced_child_loss? && can_lose_child?
       lose_child!
     end
-
-    # TODO: update participant state for each survey
-    #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
 
     self.update_attribute(:being_followed, true) unless self.being_followed?
   end
@@ -867,6 +871,8 @@ class Participant < ActiveRecord::Base
   # [31, "24 Month"],
   # [32, "Low to High Conversion"],
   # [33, "Low Intensity Data Collection"],
+  # [34, "PBS Participant Eligibility Screening"],
+  # [35, "PBS Frame SAQ"],
   # [-5, "Other"],
   # [-4, "Missing in Error"]
   #
@@ -878,8 +884,8 @@ class Participant < ActiveRecord::Base
     register! if can_register?  # assume known to PSC
 
     case event.event_type.local_code
-    when 4, 5, 6, 29
-      # Pregnancy Screener Events
+    when 4, 5, 6, 29, 34
+      # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
       # Informed Consent

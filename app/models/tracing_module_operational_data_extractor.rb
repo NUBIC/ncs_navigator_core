@@ -227,7 +227,7 @@ class TracingModuleOperationalDataExtractor
 
         if CONTACT_1_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            contact1 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_1_PERSON_MAP[data_export_identifier].to_sym => value).first
+            contact1 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_1_PERSON_MAP[data_export_identifier].to_sym => value.to_s).first
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
@@ -282,7 +282,7 @@ class TracingModuleOperationalDataExtractor
 
         if CONTACT_2_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            contact2 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_2_PERSON_MAP[data_export_identifier].to_sym => value).first
+            contact2 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_2_PERSON_MAP[data_export_identifier].to_sym => value.to_s).first
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
@@ -337,7 +337,7 @@ class TracingModuleOperationalDataExtractor
 
         if CONTACT_3_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            contact3 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_3_PERSON_MAP[data_export_identifier].to_sym => value).first
+            contact3 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_3_PERSON_MAP[data_export_identifier].to_sym => value.to_s).first
             if contact3.nil?
               contact3 = Person.new(:psu => person.psu, :response_set => response_set)
             end
