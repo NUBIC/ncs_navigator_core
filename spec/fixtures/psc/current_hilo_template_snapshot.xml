@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <study-snapshot xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a">
     <epoch id="73f6c858-4069-411a-8d82-c9d558c07d68" name="LO-Intensity">
@@ -602,6 +601,24 @@
         </period>
       </study-segment>
     </epoch>
+    <epoch id="4950389a-cd24-4ae0-8c3f-248732ffa093" name="PBS-Eligibility">
+      <study-segment id="f1ec472e-145b-48b4-b4f6-ec5d18e60dc5" name="PBS-Eligibility">
+        <period id="48b7cc23-e93d-498b-a746-f93fdf2d4a3a" name="PBS Eligibility Screener" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+          <planned-activity id="999b184f-4497-4b20-97d0-ea0e0bda4480" day="1">
+            <label id="35316821-86da-40a1-851a-ee2022cb0c36" name="event:pbs_participant_eligibility_screening"/>
+            <label id="8b1de1f0-938d-468b-be79-0ece2103f2e3" name="instrument:3.0:ins_que_pbsamplingscreen_int_pbs_m3.0_v1.0"/>
+            <label id="dca59972-74cb-4886-81cf-e3e27dcfb959" name="order:10_01"/>
+            <activity-reference code="PBSESI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="c8946f02-c7f3-4343-a32a-17c8b8249a68" day="1">
+            <label id="65ab9671-fdec-4c3a-a1d0-6b18fc34bda9" name="event:pbs_participant_eligibility_screening"/>
+            <label id="38f9da11-92ee-454e-98f0-8bab047a6266" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="48f7884e-9c95-41a8-ac16-ad6238064c26" name="order:10_99"/>
+            <activity-reference code="TM" source="NCS"/>
+          </planned-activity>
+        </period>
+      </study-segment>
+    </epoch>
   </planned-calendar>
   <sources>
     <source name="NCS">
@@ -638,6 +655,7 @@
       <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
+      <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
       <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
       <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
       <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
@@ -666,6 +684,7 @@
       <activity name="Pre-Pregnancy SAQ" code="SAQ (pre)" description="Pre-Pregnancy SAQ" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview Part Two" code="LIBI B2" description="Low-Intensity Birth Interview Part Two" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up SAQ" code="PPGFUSAQ" description="Pregnancy Probability Group Follow-Up SAQ" type="Instrument"/>
+      <activity name="Tracing Module" code="TM" description="Tracing Module" type="Instrument"/>
       <activity name="Low-Intensity Interview" code="LII" description="Low-Intensity Interview" type="Instrument"/>
       <activity name="Low-Intensity Consent" code="LIC" description="Low-Intensity Consent" type="Consent"/>
       <activity name="Infant Health Care Log" code="IHCL" description="Infant Health Care Log" type="Instrument"/>
