@@ -1,6 +1,17 @@
 NCSCore = {};
 NCSCore.UI = {};
 
+function get_today_date_in_mdes_format() {
+  var today= new Date();
+  var month = today.getMonth() + 1;
+  var day = today.getDate();
+
+  var todayInMdes = today.getFullYear() + '-' +
+      ((''+month).length<2 ? '0' : '') + month + '-' +
+      ((''+day).length<2 ? '0' : '') + day;
+  return todayInMdes;
+}
+
 // Used inside document ready method call to wire up selects with other fields
 function wire_up_select_other(select_id, other_id) {
   check_select_for_other(select_id, other_id);
