@@ -18,12 +18,13 @@
   .recruit_button
     %span{ :class => "green_button" }
       = provider_recruitment_link(@pbs_list)
-  - if !@provider.contact_links.empty? && !@provider.recruited?
-    .substitute_link
-      %span{ :class => "red_button" }
-        = link_to 'Assign Substitute Provider Due to Refusal to Participate',
-            refused_provider_path(@provider),
-            :confirm => "Are you certain you would like to assign a substitute provider?"
+
+- if !@provider.contact_links.empty? && !@provider.recruited?
+  .substitute_link
+    %span{ :class => "red_button" }
+      = link_to 'Assign Substitute Provider Due to Refusal to Participate',
+          refused_provider_path(@provider),
+          :confirm => "Are you certain you would like to assign a substitute provider?"
 
 :javascript
   $(function () {
