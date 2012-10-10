@@ -94,9 +94,9 @@ class Person < ActiveRecord::Base
   has_many :person_provider_links
   has_many :providers, :through => :person_provider_links
 
-  validates :title,       :length => { :maximum => 5 }, :allow_blank => true
-  validates :person_dob,  :length => { :is => 10 },     :allow_blank => true
-  validates :date_move,   :length => { :is => 7 },      :allow_blank => true
+  validates :title,       :length => { :maximum => 5 },  :allow_blank => true
+  validates :person_dob,  :length => { :maximum => 10 }, :allow_blank => true
+  validates :date_move,   :length => { :is => 7 },       :allow_blank => true
 
   validates :first_name,  :length => { :maximum => 30 }, :allow_blank => true
   validates :last_name,   :length => { :maximum => 30 }, :allow_blank => true
