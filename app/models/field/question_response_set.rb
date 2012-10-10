@@ -122,7 +122,7 @@ module Field
 
     ##
     # QuestionResponseSets are changed when responses are added to them via #<<
-    # or #replace.  Their change state is reset on successful save.
+    # or #patch.  Their change state is reset on successful save.
     def changed?
       changed
     end
