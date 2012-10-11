@@ -210,7 +210,7 @@ class PregnancyVisitOperationalDataExtractor
 
         if BIRTH_ADDRESS_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            birth_address ||= Address.where(:response_set_id => response_set.id).where(BIRTH_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+            birth_address ||= Address.where(:response_set_id => response_set.id).where(BIRTH_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
             if birth_address.nil?
               birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
             end
@@ -220,7 +220,7 @@ class PregnancyVisitOperationalDataExtractor
 
         if CONTACT_1_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            contact1 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_1_PERSON_MAP[data_export_identifier].to_sym => value).first
+            contact1 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_1_PERSON_MAP[data_export_identifier].to_sym => value.to_s).first
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
@@ -232,7 +232,7 @@ class PregnancyVisitOperationalDataExtractor
 
           if CONTACT_1_RELATIONSHIP_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_1_RELATIONSHIP_MAP[data_export_identifier].to_sym => value).first
+              contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_1_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1relationship.nil?
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -244,7 +244,7 @@ class PregnancyVisitOperationalDataExtractor
 
           if CONTACT_1_ADDRESS_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_1_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+              contact1address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_1_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
@@ -254,7 +254,7 @@ class PregnancyVisitOperationalDataExtractor
 
           if CONTACT_1_PHONE_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_1_PHONE_MAP[data_export_identifier].to_sym => value).first
+              contact1phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_1_PHONE_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -266,7 +266,7 @@ class PregnancyVisitOperationalDataExtractor
 
         if CONTACT_2_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            contact2 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_2_PERSON_MAP[data_export_identifier].to_sym => value).first
+            contact2 ||= Person.where(:response_set_id => response_set.id).where(CONTACT_2_PERSON_MAP[data_export_identifier].to_sym => value.to_s).first
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
@@ -278,7 +278,7 @@ class PregnancyVisitOperationalDataExtractor
 
           if CONTACT_2_RELATIONSHIP_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_2_RELATIONSHIP_MAP[data_export_identifier].to_sym => value).first
+              contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_2_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2relationship.nil?
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -290,7 +290,7 @@ class PregnancyVisitOperationalDataExtractor
 
           if CONTACT_2_ADDRESS_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_2_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+              contact2address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_2_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
@@ -300,7 +300,7 @@ class PregnancyVisitOperationalDataExtractor
 
           if CONTACT_2_PHONE_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_2_PHONE_MAP[data_export_identifier].to_sym => value).first
+              contact2phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_2_PHONE_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -319,10 +319,10 @@ class PregnancyVisitOperationalDataExtractor
                 first_name = full_name[0, (full_name.size - 1) ].join(" ")
                 father ||= Person.where(:response_set_id => response_set.id).where(:first_name => first_name).where(:last_name => last_name).first
               else
-                father ||= Person.where(:response_set_id => response_set.id).where(:first_name => value).first
+                father ||= Person.where(:response_set_id => response_set.id).where(:first_name => value.to_s).first
               end
             else
-              father ||= Person.where(:response_set_id => response_set.id).where(FATHER_PERSON_MAP[data_export_identifier].to_sym => value).first
+              father ||= Person.where(:response_set_id => response_set.id).where(FATHER_PERSON_MAP[data_export_identifier].to_sym => value.to_s).first
             end
 
             if father.nil?
@@ -337,7 +337,7 @@ class PregnancyVisitOperationalDataExtractor
 
         if FATHER_ADDRESS_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            father_address ||= Address.where(:response_set_id => response_set.id).where(FATHER_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+            father_address ||= Address.where(:response_set_id => response_set.id).where(FATHER_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
             if father_address.nil?
               father_address = Address.new(:person => father, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
             end
@@ -347,7 +347,7 @@ class PregnancyVisitOperationalDataExtractor
 
         if FATHER_PHONE_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            father_phone ||= Telephone.where(:response_set_id => response_set.id).where(FATHER_PHONE_MAP[data_export_identifier].to_sym => value).first
+            father_phone ||= Telephone.where(:response_set_id => response_set.id).where(FATHER_PHONE_MAP[data_export_identifier].to_sym => value.to_s).first
             if father_phone.nil?
               father_phone = Telephone.new(:person => father, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end

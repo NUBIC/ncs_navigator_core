@@ -238,7 +238,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_1_RELATIONSHIP_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_1_RELATIONSHIP_MAP[data_export_identifier].to_sym => value).first
+              contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_1_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1relationship.nil?
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -250,7 +250,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_1_ADDRESS_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_1_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+              contact1address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_1_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
@@ -260,7 +260,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_1_PHONE_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_1_PHONE_MAP[data_export_identifier].to_sym => value).first
+              contact1phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_1_PHONE_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -270,7 +270,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_1_PHONE_2_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact1phone2 ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_1_PHONE_2_MAP[data_export_identifier].to_sym => value).first
+              contact1phone2 ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_1_PHONE_2_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1phone2.nil?
                 contact1phone2 = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -294,7 +294,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_2_RELATIONSHIP_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_2_RELATIONSHIP_MAP[data_export_identifier].to_sym => value).first
+              contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_2_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2relationship.nil?
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -306,7 +306,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_2_ADDRESS_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_2_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+              contact2address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_2_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
@@ -316,7 +316,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_2_PHONE_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_2_PHONE_MAP[data_export_identifier].to_sym => value).first
+              contact2phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_2_PHONE_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -326,7 +326,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_2_PHONE_2_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact2phone2 ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_2_PHONE_2_MAP[data_export_identifier].to_sym => value).first
+              contact2phone2 ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_2_PHONE_2_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2phone2.nil?
                 contact2phone2 = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -350,7 +350,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_3_RELATIONSHIP_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact3relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_3_RELATIONSHIP_MAP[data_export_identifier].to_sym => value).first
+              contact3relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_3_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact3relationship.nil?
                 contact3relationship = ParticipantPersonLink.new(:person => contact3, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -362,7 +362,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_3_ADDRESS_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact3address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_3_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+              contact3address ||= Address.where(:response_set_id => response_set.id).where(CONTACT_3_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact3address.nil?
                 contact3address = Address.new(:person => contact3, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
@@ -372,7 +372,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_3_PHONE_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact3phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_3_PHONE_MAP[data_export_identifier].to_sym => value).first
+              contact3phone ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_3_PHONE_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact3phone.nil?
                 contact3phone = Telephone.new(:person => contact3, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
@@ -382,7 +382,7 @@ class TracingModuleOperationalDataExtractor
 
           if CONTACT_3_PHONE_2_MAP.has_key?(data_export_identifier)
             unless value.blank?
-              contact3phone2 ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_3_PHONE_2_MAP[data_export_identifier].to_sym => value).first
+              contact3phone2 ||= Telephone.where(:response_set_id => response_set.id).where(CONTACT_3_PHONE_2_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact3phone2.nil?
                 contact3phone2 = Telephone.new(:person => contact3, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end

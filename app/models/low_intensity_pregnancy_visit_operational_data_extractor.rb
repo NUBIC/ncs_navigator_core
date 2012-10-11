@@ -37,7 +37,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
 
         if BIRTH_ADDRESS_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            birth_address ||= Address.where(:response_set_id => response_set.id).where(BIRTH_ADDRESS_MAP[data_export_identifier].to_sym => value).first
+            birth_address ||= Address.where(:response_set_id => response_set.id).where(BIRTH_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
             if birth_address.nil?
               birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
             end
