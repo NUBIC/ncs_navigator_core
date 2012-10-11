@@ -706,11 +706,11 @@ describe Event do
 
     # See PscParticipant#scheduled_activities.
     let(:schedule) do
-      [
-        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
-        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar'),
-        sa(:labels => ['event:pregnancy_visit_2'], :ideal_date => '2012-02-02', :activity_id => 'baz')
-      ]
+      {
+        'foo' => sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
+        'bar' => sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar'),
+        'baz' => sa(:labels => ['event:pregnancy_visit_2'], :ideal_date => '2012-02-02', :activity_id => 'baz')
+      }
     end
 
     let(:psc_participant) { stub(:participant => event.participant) }
