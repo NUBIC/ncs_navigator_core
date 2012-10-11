@@ -19,12 +19,12 @@ Feature: Merging data from field clients
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2005-07-15                           |
     And the survey
-      | title           | pregnancy_survey_v1.0 |
+      | title | pregnancy_survey_v1.0 |
     And I complete the fieldwork set
-      | start_date          | 2005-07-01         |
-      | end_date            | 2005-07-30         |
-      | client_id           | 1234567890         |
-      | with                | fieldwork.json.erb |
+      | start_date | 2005-07-01         |
+      | end_date   | 2005-07-30         |
+      | client_id  | 1234567890         |
+      | with       | fieldwork.json.erb |
 
     When the merge runs
     And I go to the participant page
@@ -51,3 +51,6 @@ Feature: Merging data from field clients
     When I follow "pregnancy_survey_v1.0"
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
+
+  Scenario: The field client may create response sets
+
