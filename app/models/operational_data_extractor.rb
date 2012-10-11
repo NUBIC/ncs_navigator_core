@@ -221,12 +221,13 @@ class OperationalDataExtractor
       @primary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
     end
 
-    def set_value(obj, attr, val)
-      return if val.blank?
-      if attr.include?('_code')
-        obj.send("#{attr}=", val)
+    def set_value(obj, attr, value)
+      if value.blank?
+        log_error(obj, "#{attr} not set because value is blank.")
+      elsif attr.include?('_code')
+        obj.send("#{attr}=", value)
       else
-        validate_and_set(obj, attr, val)
+        validate_and_set(obj, attr, value)
       end
     end
 
@@ -236,19 +237,32 @@ class OperationalDataExtractor
     def validate_and_set(obj, attr, value)
       if value.to_i >= 0
         obj.send("#{attr}=", value)
-
         validators = obj.class.validators_on( attr )
         if !validators.empty?
           validators.each { |v| v.validate obj }
 
           unless obj.errors.full_messages.blank?
             obj.send("#{attr}=", nil)
-            # TODO: LOG the reason that the instrument value is not being set
-            #       "#{attr} on #{obj.class} #{obj.id} not set because #{obj.errors.full_messages}.to_sentence"
+            log_error(obj, "#{attr} not set because #{obj.errors.full_messages.to_sentence}.")
             obj.errors.clear
           end
         end
+      else
+        log_error(obj, "#{attr} not set because #{value} is negative.")
       end
+    end
+
+    def log_error(obj, msg)
+      path = error_log_path
+      File.open(path, 'w') { |f| f.write("[#{Time.now.to_s(:db)}] OPERATIONAL DATA EXTRACTION ERROR LOG\n\n") } unless File.exists?(path)
+      File.open(path, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] [#{obj.class}] [#{obj.id}] #{msg}") }
+    end
+
+    def error_log_path
+      dir = "#{Rails.root}/log/operational_data_extractor"
+      FileUtils.makedirs(dir) unless File.exists?(dir)
+      log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_data_extraction_errors.log"
+      log_path
     end
 
   end
