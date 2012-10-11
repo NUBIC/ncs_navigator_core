@@ -20,9 +20,9 @@ module Field
   # * {Response}
   # * {ResponseSet}
   #
-  # A superposition is built by calling {#set_original}, {#set_proposed}, and
-  # {#set_current}.  The superposition is represented in {#contacts},
-  # {#events}, etc. with a hash of the format
+  # A superposition is built by calling {#build} and passing hashes
+  # representing original and proposed data.  The superposition is represented
+  # in {#contacts}, {#events}, etc. with a hash of the format
   #
   #     {
   #       entity_id => {
@@ -51,8 +51,7 @@ module Field
   # An example:
   #
   #     sp = Superposition.new
-  #     sp.set_original(...)
-  #     sp.set_proposed(...)
+  #     sp.build(original, proposed)
   #
   #     c = sp.contacts.first[:proposed]
   #     c.ancestors # => { :person_id => 'foobar' }
@@ -86,6 +85,7 @@ module Field
     attr_accessor :instruments
     attr_accessor :participants
     attr_accessor :people
+    attr_accessor :question_response_sets
     attr_accessor :response_sets
     attr_accessor :responses
 
@@ -100,10 +100,19 @@ module Field
       self.instruments = {}
       self.participants = {}
       self.people = {}
+      self.question_response_sets = {}
       self.response_sets = {}
       self.responses = {}
 
       self.logger = Logger.new(nil)
+    end
+
+    def build(original, proposed)
+      set_original(original)
+      set_proposed(proposed)
+      set_current
+
+      build_question_response_sets
     end
 
     def set_original(data)
@@ -124,6 +133,20 @@ module Field
         set_current_state(h, ::Response, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
       end
+    end
+
+    def build_question_response_sets
+      res = {}
+
+      responses.each do |_, state|
+        state.each do |state_name, response|
+          res[response.question_id] ||= {}
+          res[response.question_id][state_name] ||= QuestionResponseSet.new
+          res[response.question_id][state_name] << response
+        end
+      end
+
+      self.question_response_sets = res
     end
 
     def current_events
