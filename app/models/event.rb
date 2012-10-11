@@ -315,7 +315,7 @@ class Event < ActiveRecord::Base
 
     all_activities = psc_participant.scheduled_activities
 
-    all_activities.select { |sa| implied_by?(sa.event_label, sa.ideal_date) }
+    all_activities.select { |_, sa| implied_by?(sa.event_label, sa.ideal_date) }.values
   end
 
   ##
@@ -336,7 +336,7 @@ class Event < ActiveRecord::Base
     sa = Psc::ScheduledActivity
 
     if closed?
-      if disposition_code.success?
+      if disposition_code.try(:success?)
         sa::OCCURRED
       else
         sa::CANCELED
