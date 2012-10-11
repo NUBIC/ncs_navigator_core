@@ -243,7 +243,7 @@ class PostNatalOperationalDataExtractor
 
         if CHILD_PERSON_NAME_MAP.has_key?(data_export_identifier)
           person = ParticipantPersonLink.where(:participant_id => participant).first.person
-          person.send("#{CHILD_PERSON_NAME_MAP[data_export_identifier]}=", value)
+          OperationalDataExtractor.set_value(person, CHILD_PERSON_NAME_MAP[data_export_identifier], value)
           person.save!
         end
 
@@ -251,7 +251,7 @@ class PostNatalOperationalDataExtractor
         if CHILD_PERSON_DATE_OF_BIRTH_MAP.has_key?(data_export_identifier)
           person = ParticipantPersonLink.where(:participant_id => participant).first.person
           unless value.blank?
-            person.send("#{CHILD_PERSON_DATE_OF_BIRTH_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(person, CHILD_PERSON_DATE_OF_BIRTH_MAP[data_export_identifier], value)
           end
         end
 
@@ -268,7 +268,7 @@ class PostNatalOperationalDataExtractor
                                 :email_active => email_active,
                                 :email_info_source => info_source)
             end
-            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -279,7 +279,7 @@ class PostNatalOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -289,7 +289,7 @@ class PostNatalOperationalDataExtractor
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            contact1.send("#{CONTACT_1_PERSON_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -302,7 +302,8 @@ class PostNatalOperationalDataExtractor
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              contact1relationship.send("#{CONTACT_1_RELATIONSHIP_MAP[data_export_identifier]}=", OperationalDataExtractor.contact_to_person_relationship(value))
+              value = OperationalDataExtractor.contact_to_person_relationship(value)
+              OperationalDataExtractor.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -312,7 +313,7 @@ class PostNatalOperationalDataExtractor
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
               end
-              contact1address.send("#{CONTACT_1_ADDRESS_MAP[data_export_identifier]}=", value)
+              OperationalDataExtractor.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -322,7 +323,7 @@ class PostNatalOperationalDataExtractor
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set)
               end
-              contact1phone.send("#{CONTACT_1_PHONE_MAP[data_export_identifier]}=", value)
+              OperationalDataExtractor.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -334,7 +335,7 @@ class PostNatalOperationalDataExtractor
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            contact2.send("#{CONTACT_2_PERSON_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -347,7 +348,8 @@ class PostNatalOperationalDataExtractor
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              contact2relationship.send("#{CONTACT_2_RELATIONSHIP_MAP[data_export_identifier]}=", OperationalDataExtractor.contact_to_person_relationship(value))
+              value = OperationalDataExtractor.contact_to_person_relationship(value)
+              OperationalDataExtractor.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -357,7 +359,7 @@ class PostNatalOperationalDataExtractor
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
               end
-              contact2address.send("#{CONTACT_2_ADDRESS_MAP[data_export_identifier]}=", value)
+              OperationalDataExtractor.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -367,7 +369,7 @@ class PostNatalOperationalDataExtractor
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set)
               end
-              contact2phone.send("#{CONTACT_2_PHONE_MAP[data_export_identifier]}=", value)
+              OperationalDataExtractor.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
             end
           end
         end

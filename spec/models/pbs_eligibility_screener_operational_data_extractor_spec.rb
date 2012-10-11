@@ -8,14 +8,16 @@ describe PbsEligibilityScreenerOperationalDataExtractor do
 
   context "extracting person operational data" do
 
-    let(:age_range)      { NcsCode.for_list_name_and_local_code("AGE_RANGE_CL8", 2) }
-    let(:ethnic_group)   { NcsCode.for_list_name_and_local_code("ETHNICITY_CL1", 2) }
-    let(:language)       { NcsCode.for_list_name_and_local_code("LANGUAGE_CL10", 1) }
-    let(:age_eligible)   { NcsCode.for_list_name_and_local_code("AGE_ELIGIBLE_CL2", 1) }
-    let(:entered_age)    { 30 }
+    let(:age_range)             { NcsCode.for_list_name_and_local_code("AGE_RANGE_CL8", 2) }
+    let(:age_range_refused)     { NcsCode.for_list_name_and_local_code("AGE_RANGE_CL8", -1) }
+    let(:ethnic_group)          { NcsCode.for_list_name_and_local_code("ETHNICITY_CL1", 2) }
+    let(:ethnic_group_refused)  { NcsCode.for_list_name_and_local_code("ETHNICITY_CL1", -1) }
+    let(:language)              { NcsCode.for_list_name_and_local_code("LANGUAGE_CL10", 1) }
+    let(:age_eligible)          { NcsCode.for_list_name_and_local_code("AGE_ELIGIBLE_CL2", 1) }
+    let(:entered_age)           { 30 }
 
     before(:each) do
-      @person = Factory(:person)
+      @person = Factory(:person, :first_name => nil, :last_name => nil, :middle_name => nil, :person_dob => nil)
       @participant = Factory(:participant)
       @participant.person = @person
       @survey = create_pbs_eligibility_screener_survey_with_person_operational_data
@@ -57,39 +59,134 @@ describe PbsEligibilityScreenerOperationalDataExtractor do
       person.participant.pid_age_eligibility.display_text.should == age_eligible.display_text
       person.participant.pid_age_eligibility.local_code.should == age_eligible.local_code
     end
+
+    it "does not set negative values for non coded person operational data" do
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
+      response_set.save!
+
+      take_survey(@survey, response_set) do |a|
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.R_FNAME"
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.R_MNAME"
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.R_LNAME"
+        a.dont_know "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_DOB"
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.AGE_RANGE_PBS", age_range_refused
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ETHNIC_ORIGIN", ethnic_group_refused
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_LANG_NEW", language
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 8
+
+      PbsEligibilityScreenerOperationalDataExtractor.extract_data(response_set)
+
+      person = Person.find(@person.id)
+      person.first_name.should be_nil
+      person.middle_name.should be_nil
+      person.last_name.should be_nil
+      person.person_dob.should be_nil
+
+      person.age_range.local_code.should == -1
+      person.ethnic_group.should == ethnic_group_refused
+    end
   end
 
-  it "extracts address operational data from the survey responses" do
-    state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+  describe "address" do
 
-    person = Factory(:person)
-    person.addresses.size.should == 0
+    it "extracts operational data from the survey responses" do
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      person = Factory(:person)
+      participant = Factory(:participant)
+      survey = create_pbs_eligibility_screener_survey_with_address_operational_data
 
-    participant = Factory(:participant)
-    survey = create_pbs_eligibility_screener_survey_with_address_operational_data
-    response_set, instrument = prepare_instrument(person, participant, survey)
-    response_set.save!
+      person.addresses.size.should == 0
+      response_set, instrument = prepare_instrument(person, participant, survey)
+      response_set.save!
 
-    take_survey(survey, response_set) do |a|
-      a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
-      a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_2", ''
-      a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.UNIT", ''
-      a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CITY", 'Chicago'
-      a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.STATE", state
-      a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP", '65432'
-      a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP4", '1234'
+      take_survey(survey, response_set) do |a|
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_2", ''
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.UNIT", ''
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CITY", 'Chicago'
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.STATE", state
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP", '65432'
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      PbsEligibilityScreenerOperationalDataExtractor.extract_data(response_set)
+
+      person = Person.find(person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      address.address_rank_code.should == 1
     end
 
-    response_set.responses.reload
-    response_set.responses.size.should == 7
+    it "does not set negative values for non coded attributes" do
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      person = Factory(:person)
+      participant = Factory(:participant)
+      survey = create_pbs_eligibility_screener_survey_with_address_operational_data
+      person.addresses.size.should == 0
+      response_set, instrument = prepare_instrument(person, participant, survey)
+      response_set.save!
 
-    PbsEligibilityScreenerOperationalDataExtractor.extract_data(response_set)
+      take_survey(survey, response_set) do |a|
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_2"
+        a.dont_know "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.UNIT"
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CITY", 'Chicago'
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.STATE", state
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP"
+        a.dont_know "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP4"
+      end
 
-    person = Person.find(person.id)
-    person.addresses.size.should == 1
-    address = person.addresses.first
-    address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
-    address.address_rank_code.should == 1
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      PbsEligibilityScreenerOperationalDataExtractor.extract_data(response_set)
+
+      person = Person.find(person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
+      address.address_rank_code.should == 1
+    end
+
+    it "does not set invalid values" do
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      person = Factory(:person)
+      participant = Factory(:participant)
+      survey = create_pbs_eligibility_screener_survey_with_address_operational_data
+      person.addresses.size.should == 0
+      response_set, instrument = prepare_instrument(person, participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_1", '123 Easy St.'
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ADDRESS_2"
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.UNIT", "123456789987654321"
+        a.str "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CITY", 'Chicago'
+        a.choice "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.STATE", state
+        a.refused "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP"
+        a.dont_know "#{PbsEligibilityScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ZIP4"
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      PbsEligibilityScreenerOperationalDataExtractor.extract_data(response_set)
+
+      person = Person.find(person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
+      address.address_rank_code.should == 1
+    end
+
   end
 
   context "extracting telephone operational data from the survey responses" do

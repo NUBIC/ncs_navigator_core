@@ -221,6 +221,36 @@ class OperationalDataExtractor
       @primary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
     end
 
+    def set_value(obj, attr, val)
+      return if val.blank?
+      if attr.include?('_code')
+        obj.send("#{attr}=", val)
+      else
+        validate_and_set(obj, attr, val)
+      end
+    end
+
+    ##
+    # Do not set if not an NCS Code attribute and value is negative
+    # or if the value is not valid
+    def validate_and_set(obj, attr, value)
+      if value.to_i >= 0
+        obj.send("#{attr}=", value)
+
+        validators = obj.class.validators_on( attr )
+        if !validators.empty?
+          validators.each { |v| v.validate obj }
+
+          unless obj.errors.full_messages.blank?
+            obj.send("#{attr}=", nil)
+            # TODO: LOG the reason that the instrument value is not being set
+            #       "#{attr} on #{obj.class} #{obj.id} not set because #{obj.errors.full_messages}.to_sentence"
+            obj.errors.clear
+          end
+        end
+      end
+    end
+
   end
 
 end

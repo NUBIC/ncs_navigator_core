@@ -40,7 +40,10 @@ module SurveyCompletion
 
     def choice(identifier, answer)
       for_each_match(identifier) do |q, section|
-        create_choice_response(q, :reference_identifier, answer.local_code.to_s, section)
+        val = answer.local_code.to_s
+        # handle negative value reference identifier
+        val = val.gsub("-", "neg_") if answer.local_code.to_i < 0
+        create_choice_response(q, :reference_identifier, val, section)
       end
     end
 
@@ -53,6 +56,18 @@ module SurveyCompletion
     def no(identifier)
       for_each_match(identifier) do |q, section|
         create_choice_response(q, :text, 'No', section)
+      end
+    end
+
+    def refused(identifier)
+      for_each_match(identifier) do |q, section|
+        create_choice_response(q, :text, 'Refused', section)
+      end
+    end
+
+    def dont_know(identifier)
+      for_each_match(identifier) do |q, section|
+        create_choice_response(q, :text, "Don't know", section)
       end
     end
 

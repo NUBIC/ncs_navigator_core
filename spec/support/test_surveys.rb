@@ -288,15 +288,23 @@ module TestSurveys
     # Address One
     q = Factory(:question, :reference_identifier => "ADDRESS_1", :data_export_identifier => "PBS_ELIG_SCREENER.ADDRESS_1", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     # Address Two
     q = Factory(:question, :reference_identifier => "ADDRESS_2", :data_export_identifier => "PBS_ELIG_SCREENER.ADDRESS_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     # Unit
     q = Factory(:question, :reference_identifier => "UNIT", :data_export_identifier => "PBS_ELIG_SCREENER.UNIT", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     # City
     q = Factory(:question, :reference_identifier => "CITY", :data_export_identifier => "PBS_ELIG_SCREENER.CITY", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     # State
     q = Factory(:question, :reference_identifier => "STATE", :data_export_identifier => "PBS_ELIG_SCREENER.STATE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
@@ -304,10 +312,13 @@ module TestSurveys
     # Zip
     q = Factory(:question, :reference_identifier => "ZIP", :data_export_identifier => "PBS_ELIG_SCREENER.ZIP", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     # plus 4
     q = Factory(:question, :reference_identifier => "ZIP4", :data_export_identifier => "PBS_ELIG_SCREENER.ZIP4", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
-
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     survey
   end
 

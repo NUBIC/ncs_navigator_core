@@ -94,13 +94,20 @@ class PbsEligibilityScreenerOperationalDataExtractor
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
-          person.send("#{PERSON_MAP[data_export_identifier]}=", value)
+          OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
         end
 
         # AGE_RANGE_CL8 in instrument - AGE_RANGE_CL1 in person
         # So if it is 1 then 1 otherwise set to -6 unknown because of the code list mismatch
         if AGE_RANGE_MAP.has_key?(data_export_identifier)
-          val = value == 1 ? 1 : -6
+          val = case value
+                when 1
+                  1
+                when -1
+                  -1
+                else
+                  -6
+                end
           person.send("#{AGE_RANGE_MAP[data_export_identifier]}=", val)
         end
 
@@ -115,7 +122,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
               address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                     :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            address.send("#{ADDRESS_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(address, ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -125,8 +132,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
             if phone1.nil?
               phone1 = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            phone1.send("#{TELEPHONE_MAP1[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(phone1, TELEPHONE_MAP1[data_export_identifier], value)
           end
         end
 
@@ -136,8 +142,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
             if phone2.nil?
               phone2 = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            phone2.send("#{TELEPHONE_MAP2[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(phone2, TELEPHONE_MAP2[data_export_identifier], value)
           end
         end
 
@@ -147,7 +152,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -158,8 +163,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
           if ppg_detail.nil?
             ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu, :response_set => response_set)
           end
-
-          ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", value)
+          OperationalDataExtractor.set_value(ppg_detail, PPG_DETAILS_MAP[data_export_identifier], value)
         end
 
         if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
