@@ -477,9 +477,13 @@ module NcsNavigator::Core::Warehouse
           SET being_followed=(
             enroll_status_code=1
             AND (
-              EXISTS (SELECT 'x' FROM ppg_details d WHERE d.participant_id=p.id AND d.ppg_first_code=1)
-              OR
-              EXISTS (SELECT 'x' FROM ppg_status_histories h WHERE h.participant_id=p.id AND h.ppg_status_code=1)
+              ( -- ever pregnant
+                EXISTS (SELECT 'x' FROM ppg_details d WHERE d.participant_id=p.id AND d.ppg_first_code=1)
+                OR
+                EXISTS (SELECT 'x' FROM ppg_status_histories h WHERE h.participant_id=p.id AND h.ppg_status_code=1)
+              ) OR ( -- a child
+                p.p_type_code = 6
+              )
             )
           )
         SQL
