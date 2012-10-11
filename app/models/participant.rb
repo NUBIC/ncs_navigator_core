@@ -280,8 +280,7 @@ class Participant < ActiveRecord::Base
       end
 
       if high_intensity? &&
-         can_impregnate? &&
-         !due_date_is_greater_than_follow_up_interval
+         can_impregnate?
         impregnate!
       end
     end
