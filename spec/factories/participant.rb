@@ -133,6 +133,7 @@ FactoryGirl.define do
     factory :high_intensity_ppg6_participant, :traits => [:in_high_intensity_arm, :in_ppg6]
 
     factory :high_intensity_pregnancy_one_participant, :traits => [:in_high_intensity_arm, :in_ppg1, :pregnancy_one]
+    factory :high_intensity_pregnancy_two_participant, :traits => [:in_high_intensity_arm, :in_ppg1, :pregnancy_two]
     factory :high_intensity_postnatal_participant,     :traits => [:in_high_intensity_arm, :in_ppg4, :child]
   end
 
