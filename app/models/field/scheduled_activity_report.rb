@@ -138,7 +138,11 @@ module Field
       link = participant.participant_person_links.detect { |p| p.person_id == person.id }
       addr = person.primary_address
 
-      { 'name' => person.name,
+      { 'first_name' => person.first_name,
+        'last_name' => person.last_name,
+        'middle_name' => person.middle_name,
+        'prefix_code' => person.prefix_code,
+        'suffix_code' => person.suffix_code,
         'person_id' => person.person_id,
         'relationship_code' => link.relationship_code.to_i,
         'cell_phone' => person.primary_cell_phone.try(:phone_nbr),
