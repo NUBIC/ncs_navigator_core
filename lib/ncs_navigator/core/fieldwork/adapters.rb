@@ -459,7 +459,7 @@ module NcsNavigator::Core::Fieldwork::Adapters
 
     def to_model
       super.tap do |m|
-        m.instrument_id = ancestors[:instrument].instrument_id
+        m.instrument_id = ancestors[:instrument].try(:instrument_id)
       end
     end
   end
