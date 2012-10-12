@@ -739,6 +739,10 @@ module NcsNavigator::Core::Warehouse
         create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'fred_p', :enroll_status => '1')
       }
+      let!(:fred_p_ppg1) {
+        create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
+          :p => fred_p, :ppg_first => '1')
+      }
       let(:ginger_p) {
         create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'ginger_p', :enroll_status => '2')
@@ -1162,122 +1166,142 @@ module NcsNavigator::Core::Warehouse
           before do
             keys = redis.keys('*')
             redis.del(*keys) unless keys.empty?
-
-            f_e3.event_end_date = '2010-09-08'
-            save_wh(f_e3)
-
-            do_import
           end
 
-          it "stores a set of participants that need to be sync'd" do
-            redis.smembers("#{ns}:psc_sync:participants").should include('fred_p')
-          end
+          describe 'participant selection' do
+            it "stores a set of participants that need to be sync'd" do
+              do_import
 
-          it "ignores participants that are not enrolled" do
-            redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
-          end
-
-          it "stores a list of events that need to be sync'd for each participant" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:events").
-              should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
-          end
-
-          it "stores a set of link contacts without instruments that need to be sync'd for each event for each p" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument:f_e3").sort.
-              should == %w(f_c1_e3 f_c2_e3)
-          end
-
-          it "stores a set of link contacts with instruments that need to be sync'd for each instrument for each p" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument:f_e2_i").
-              should == %w(f_c1_e2)
-          end
-
-          describe 'an event hash' do
-            let(:event_hash) { redis.hgetall("#{ns}:psc_sync:event:f_e3") }
-
-            it 'has the status' do
-              event_hash['status'].should == 'new'
+              redis.smembers("#{ns}:psc_sync:participants").should include('fred_p')
             end
 
-            it 'has the event ID' do
-              event_hash['event_id'].should == 'f_e3'
+            it "ignores participants that are not being followed" do
+              do_import
+
+              redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
             end
 
-            it 'has the event start date' do
-              event_hash['start_date'].should == '2010-09-03'
-            end
+            it "ignores child participants that are followed" do
+              ginger_p.enroll_status = '1'
+              ginger_p.p_type = '6'
+              save_wh(ginger_p)
 
-            it 'has the event end date' do
-              event_hash['end_date'].should == '2010-09-08'
-            end
+              do_import
 
-            it 'has the event type code' do
-              event_hash['event_type_code'].should == '10'
-            end
-
-            it 'has the event type label' do
-              event_hash['event_type_label'].should == 'informed_consent'
-            end
-
-            it 'knows whether the person is hi or lo' do
-              event_hash['recruitment_arm'].should == 'lo'
-            end
-
-            it 'has the sort key' do
-              event_hash['sort_key'].should == '2010-09-03:010'
+              redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
             end
           end
 
-          describe 'a link_contact hash' do
-            describe 'with an instrument' do
-              let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e2") }
+          context do
+            before do
+              f_e3.event_end_date = '2010-09-08'
+              save_wh(f_e3)
+
+              do_import
+            end
+
+            it "stores a list of events that need to be sync'd for each participant" do
+              redis.smembers("#{ns}:psc_sync:p:fred_p:events").
+                should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
+            end
+
+            it "stores a set of link contacts without instruments that need to be sync'd for each event for each p" do
+              redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument:f_e3").sort.
+                should == %w(f_c1_e3 f_c2_e3)
+            end
+
+            it "stores a set of link contacts with instruments that need to be sync'd for each instrument for each p" do
+              redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument:f_e2_i").
+                should == %w(f_c1_e2)
+            end
+
+            describe 'an event hash' do
+              let(:event_hash) { redis.hgetall("#{ns}:psc_sync:event:f_e3") }
 
               it 'has the status' do
-                lc_hash['status'].should == 'new'
-              end
-
-              it 'has the link_contact ID' do
-                lc_hash['contact_link_id'].should == 'f_c1_e2'
-              end
-
-              it 'has the contact date' do
-                lc_hash['contact_date'].should == '2010-09-03'
-              end
-
-              it 'has the contact ID' do
-                lc_hash['contact_id'].should == 'f_c1'
+                event_hash['status'].should == 'new'
               end
 
               it 'has the event ID' do
-                lc_hash['event_id'].should == 'f_e2'
+                event_hash['event_id'].should == 'f_e3'
               end
 
-              it 'has the instrument ID' do
-                lc_hash['instrument_id'].should == 'f_e2_i'
+              it 'has the event start date' do
+                event_hash['start_date'].should == '2010-09-03'
               end
 
-              it 'has the instrument type' do
-                lc_hash['instrument_type'].should == '5'
+              it 'has the event end date' do
+                event_hash['end_date'].should == '2010-09-08'
               end
 
-              it 'knows if the instrument was complete' do
-                lc_hash['instrument_status'].should == 'not started'
+              it 'has the event type code' do
+                event_hash['event_type_code'].should == '10'
+              end
+
+              it 'has the event type label' do
+                event_hash['event_type_label'].should == 'informed_consent'
+              end
+
+              it 'knows whether the person is hi or lo' do
+                event_hash['recruitment_arm'].should == 'lo'
               end
 
               it 'has the sort key' do
-                lc_hash['sort_key'].should == 'f_e2:2010-09-03:005'
+                event_hash['sort_key'].should == '2010-09-03:010'
               end
             end
 
-            describe 'without an instrument' do
-              let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e3") }
+            describe 'a link_contact hash' do
+              describe 'with an instrument' do
+                let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e2") }
 
-              it 'does not have an instrument type' do
-                lc_hash['instrument_type'].should be_nil
+                it 'has the status' do
+                  lc_hash['status'].should == 'new'
+                end
+
+                it 'has the link_contact ID' do
+                  lc_hash['contact_link_id'].should == 'f_c1_e2'
+                end
+
+                it 'has the contact date' do
+                  lc_hash['contact_date'].should == '2010-09-03'
+                end
+
+                it 'has the contact ID' do
+                  lc_hash['contact_id'].should == 'f_c1'
+                end
+
+                it 'has the event ID' do
+                  lc_hash['event_id'].should == 'f_e2'
+                end
+
+                it 'has the instrument ID' do
+                  lc_hash['instrument_id'].should == 'f_e2_i'
+                end
+
+                it 'has the instrument type' do
+                  lc_hash['instrument_type'].should == '5'
+                end
+
+                it 'knows if the instrument was complete' do
+                  lc_hash['instrument_status'].should == 'not started'
+                end
+
+                it 'has the sort key' do
+                  lc_hash['sort_key'].should == 'f_e2:2010-09-03:005'
+                end
               end
 
-              it 'has the appropriate sort key' do
-                lc_hash['sort_key'].should == 'f_e3:2010-09-03'
+              describe 'without an instrument' do
+                let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e3") }
+
+                it 'does not have an instrument type' do
+                  lc_hash['instrument_type'].should be_nil
+                end
+
+                it 'has the appropriate sort key' do
+                  lc_hash['sort_key'].should == 'f_e3:2010-09-03'
+                end
               end
             end
           end

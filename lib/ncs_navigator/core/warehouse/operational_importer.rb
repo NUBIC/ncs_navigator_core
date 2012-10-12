@@ -46,12 +46,12 @@ module NcsNavigator::Core::Warehouse
           insert_initial_ppg_status_into_history_if_necessary
         end
 
-        if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
-          create_events_and_instruments_and_contact_links
-        end
-
         if tables.empty? || tables.include?(:participants)
           set_participant_being_followed
+        end
+
+        if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
+          create_events_and_instruments_and_contact_links
         end
 
         resolve_failed_associations
@@ -115,7 +115,7 @@ module NcsNavigator::Core::Warehouse
           Participant.importer_mode do
             participant = Participant.where(:p_id => p_id).first
 
-            for_psc = (participant.enroll_status_code == 1)
+            for_psc = (participant.being_followed && participant.p_type_code != 6)
             Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
 
             # caches
