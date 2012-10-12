@@ -401,22 +401,66 @@ module NcsNavigator::Core::Fieldwork::Adapters
     end
   end
 
-  class ResponseSetModelAdapter < Adapter
-    include ModelBehavior
-  end
-
-  class ResponseSetHashAdapter < Adapter
-    include HashBehavior
-
+  class ResponseSetAdapter < Adapter
     attr_accessors %w(
       completed_at
       created_at
+      p_id
+      instrument_id
       survey_id
       uuid
     )
+  end
+
+  class ResponseSetModelAdapter < ResponseSetAdapter
+    include ModelBehavior
+
+    attr_accessors [
+      { 'uuid' => 'api_id' }
+    ]
+
+    def survey_id
+      target.survey.try(:api_id)
+    end
+
+    def survey_id=(val)
+      target.survey_id = Survey.where(:api_id => val).first.try(:id)
+    end
+
+    attr_accessible :survey_id
+
+    def p_id
+      target.participant.try(:public_id)
+    end
+
+    def p_id=(val)
+      target.participant_id = Participant.where(:p_id => val).first.try(:id)
+    end
+
+    attr_accessible :p_id
+
+    def instrument_id
+      target.instrument.try(:instrument_id)
+    end
+
+    def instrument_id=(val)
+      target.instrument_id = Instrument.where(:instrument_id => val).first.try(:id)
+    end
+
+    attr_accessible :instrument_id
+  end
+
+  class ResponseSetHashAdapter < ResponseSetAdapter
+    include HashBehavior
 
     def model_class
       ::ResponseSet
+    end
+
+    def to_model
+      super.tap do |m|
+        m.instrument_id = ancestors[:instrument].instrument_id
+      end
     end
   end
 
