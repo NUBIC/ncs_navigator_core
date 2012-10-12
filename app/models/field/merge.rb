@@ -31,8 +31,8 @@ module Field
   # fieldwork set sent to a field client, and a corresponding fieldwork set
   # received from a field client.
   #
-  # Currently, four entities are merged: {Contact}, {Event}, {Instrument}, and
-  # {Response} via {QuestionResponseSet}.
+  # Currently, five entities are merged: {Contact}, {Event}, {Instrument},
+  # {ResponseSet}, and {Response} via {QuestionResponseSet}.
   #
   #
   # Overview
@@ -53,10 +53,10 @@ module Field
   # Atomic vs. non-atomic merge
   # ===========================
   #
-  # Contacts, Events, and Instruments can all be merged non-atomically, which
-  # means that we can commit changes even in the presence of conflicts.  (Also,
-  # we can retry the merge on those entities and progress towards a fully
-  # merged state.)
+  # Contacts, Events, Instruments, and ResponseSets can all be merged
+  # non-atomically, which means that we can commit changes even in the presence
+  # of conflicts.  (Also, we can retry the merge on those entities and progress
+  # towards a fully merged state.)
   #
   # QuestionResponseSets, on the other hand, must be merged atomically: if
   # there exist conflicts on any attribute on any Response, none of the
@@ -123,6 +123,7 @@ module Field
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
+      response_sets.each { |id, state| merge_entity(state, 'ResponseSet', id) }
       question_response_sets.each { |id, state| merge_entity(state, 'QuestionResponseSet', id) }
     end
 
@@ -145,6 +146,7 @@ module Field
     #     { :contacts => [#<Contact ...>, ...],
     #       :events => [#<Event ...>, ...],
     #       :instruments => [#<Instrument ...>, ...],
+    #       :response_sets => [#<ResponseSet ...>, ...],
     #       :question_response_sets => [#<QuestionResponseSet ...>, ...]
     #     }
     #
@@ -154,6 +156,7 @@ module Field
         :contacts => current_for(contacts),
         :events => current_for(events),
         :instruments => current_for(instruments),
+        :response_sets => current_for(response_sets),
         :question_response_sets => current_for(question_response_sets)
       }
 
