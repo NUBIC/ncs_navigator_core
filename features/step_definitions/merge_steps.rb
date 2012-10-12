@@ -2,6 +2,7 @@
 require 'erb'
 require 'facets/random'
 require 'ostruct'
+require 'stringio'
 
 def link_participant_to_associated_entities
   @p.person = @person
@@ -31,6 +32,11 @@ Before '@merge' do
       true
     end
   end
+
+  # Write merge log data to a logger that we control.  (It's nice to see the
+  # merge log when things go wrong.)
+  @logdev = StringIO.new
+  Merge.log_device = @logdev
 
   # Givens establish context that needs to persist between steps.
   @context = {}
@@ -112,5 +118,8 @@ When /^the merge runs$/ do
     job['class'].constantize.new.perform(*job['args'])
   end
 
-  ok.should be_true
+  if !ok
+    puts @logdev.string
+    raise 'Merge failed; see above log'
+  end
 end
