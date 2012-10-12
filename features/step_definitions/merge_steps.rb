@@ -31,6 +31,9 @@ Before '@merge' do
       true
     end
   end
+
+  # Givens establish context that needs to persist between steps.
+  @context = {}
 end
 
 Given /^the participant$/ do |table|
@@ -39,6 +42,8 @@ Given /^the participant$/ do |table|
 
   @person = Person.create!(Hash[*person_attrs.flatten])
   @p = Participant.create!(Hash[*p_attrs.flatten])
+
+  @context.update('participant_id' => @p.public_id)
 end
 
 Given /^the event$/ do |table|
@@ -86,7 +91,7 @@ Given /^I complete the fieldwork set$/ do |table|
     Then the response status is 200
   }
 
-  context = {
+  @context.update(
     'contact_id' => Contact.last.public_id,
     'instrument_id' => Instrument.last.public_id,
     'person_id' => Person.last.public_id,
@@ -94,7 +99,7 @@ Given /^I complete the fieldwork set$/ do |table|
     'survey_id' => Survey.last.api_id,
     'question_ids' => Question.all.map(&:api_id),
     'answer_ids' => Answer.all.map(&:api_id)
-  }
+  )
 
   fieldwork_data = ERB.new(File.read(data_file)).result(binding)
 
