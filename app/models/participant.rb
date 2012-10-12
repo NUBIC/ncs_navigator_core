@@ -914,19 +914,12 @@ class Participant < ActiveRecord::Base
       move_to_high_intensity_if_required
       late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
       pregnancy_one_visit! if can_pregnancy_one_visit?
-    when 18
-      # Birth
+    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Birth and Post-natal
       if low_intensity?
         birth_event_low! if can_birth_event_low?
       else
         birth_event! if can_birth_event?
-      end
-    when 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
-      # Child interviews
-      if low_intensity?
-        postnatal!
-      else
-        parenthood!
       end
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
