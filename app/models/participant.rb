@@ -502,7 +502,7 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?, pregnancy_one?
       follow_up_interval
     when in_pregnant_state?
       due_date ? 1.day : 0
@@ -1089,7 +1089,7 @@ class Participant < ActiveRecord::Base
     end
 
     def date_used_to_schedule_next_event
-      if due_date && in_pregnant_state?
+      if due_date && next_event_is_birth?
         due_date
       elsif contact_links.blank?
         self.created_at.to_date
@@ -1114,6 +1114,10 @@ class Participant < ActiveRecord::Base
         result = Date.today
       end
       result
+    end
+
+    def next_event_is_birth?
+      pregnant_low? || ready_for_birth?
     end
 
     def in_pregnant_state?
