@@ -18,7 +18,6 @@
 #  updated_at      :datetime
 #
 
-
 require 'spec_helper'
 
 require 'stringio'
@@ -26,8 +25,7 @@ require 'json'
 
 require File.expand_path('../shared_merge_behaviors', __FILE__)
 
-SCHEMA_FILE = "#{Rails.root}/vendor/ncs_navigator_schema/fieldwork_schema.json"
-SCHEMA = JSON.parse(File.read(SCHEMA_FILE))
+SCHEMA = NcsNavigator::Core::Fieldwork::Validator.new.expanded_schema
 
 module Field
   describe Merge do
