@@ -921,8 +921,17 @@ class Participant < ActiveRecord::Base
       else
         birth_event! if can_birth_event?
       end
+    when 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Child interviews
+      if low_intensity?
+        postnatal!
+      else
+        parenthood!
+      end
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+    when 17, 19
+      # Do not correspond to states in state machine
     else
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
