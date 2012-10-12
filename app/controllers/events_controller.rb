@@ -47,6 +47,7 @@ class EventsController < ApplicationController
         notice = 'Event was successfully updated.'
 
         participant = @event.participant
+
         if participant.pending_events.blank?
           resp = Event.schedule_and_create_placeholder(psc, participant)
           notice += " Could not schedule next event [#{participant.next_study_segment}]" unless resp
@@ -131,6 +132,10 @@ class EventsController < ApplicationController
   	    case @event.event_type.to_s
   	    when "Pregnancy Screener"
           @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+        when "Provider-Based Recruitment"
+          @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
+        when "PBS Participant Eligibility Screening"
+          @disposition_group = DispositionMapper::PBS_ELIGIBILITY_EVENT
         when "Informed Consent"
           if @event.try(:participant).low_intensity?
             @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT

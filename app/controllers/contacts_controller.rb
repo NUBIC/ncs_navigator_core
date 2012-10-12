@@ -17,10 +17,10 @@ class ContactsController < ApplicationController
                              :contact_date_date => Date.today,
                              :contact_start_time => Time.now.strftime("%H:%M"))
 
-    @event = event_for_person(false)
+    @event = event_for_person
     @requires_consent = @person.participant &&
                         @person.participant.consented? == false &&
-                        @event.event_type.display_text != "Pregnancy Screener"
+                        !@event.to_s.include?("Screener")
 
     respond_to do |format|
       format.html # new.html.haml
@@ -90,6 +90,10 @@ class ContactsController < ApplicationController
 
   def post_update_redirect_path(link)
     if link && link.provider
+      if link.provider.pbs_list
+        link.provider.pbs_list.update_recruitment_dates!
+        link.provider.pbs_list.update_recruitment_status!
+      end
       redirect_path = link.provider.pbs_list ? pbs_list_path(link.provider.pbs_list) : pbs_lists_path
       notice = "Contact for #{link.provider} was successfully updated."
     else
@@ -127,7 +131,8 @@ class ContactsController < ApplicationController
           link = find_or_create_contact_link
 
           update_provider_recruitment_event(@event, @contact)
-          @provider.pbs_list.set_recruitment_start_date!
+          @provider.pbs_list.update_recruitment_dates!
+          @provider.pbs_list.update_recruitment_status!
 
           # check if the provider was recruited
           # if so update the pbs_list cooperation date
@@ -159,7 +164,8 @@ class ContactsController < ApplicationController
 
     if params[:pbs_list_id]
       pbs_list = PbsList.find(params[:pbs_list_id])
-      pbs_list.update_state!
+      pbs_list.update_recruitment_dates!
+      pbs_list.update_recruitment_status!
     end
 
     respond_to do |format|
@@ -188,19 +194,36 @@ class ContactsController < ApplicationController
       event.update_attributes(event_attrs) unless event_attrs.blank?
     end
 
-    # TODO: remove call to new_event_for_person
-    def event_for_person(save = true)
-      if @event_id.to_i > 0
-        event = Event.find(@event_id)
+    ##
+    # Find event by given event id or
+    # determine next event from the person cf. next_event_for_person
+    def event_for_person
+      params[:event_id].to_i > 0 ? Event.find(params[:event_id]) : next_event_for_person
+    end
+
+    ##
+    # If person.participant exists use that participant's next pending event
+    # or schedule that event if that does not exist.
+    # If there is no participant for this person fall back on the
+    # new_event_for_person method.
+    def next_event_for_person
+      if participant = @person.participant
+        if participant.pending_events.blank?
+          Event.schedule_and_create_placeholder(psc, participant)
+          participant.events.reload
+        end
+        participant.pending_events.first
       else
-        event = new_event_for_person(@person, params[:event_type_id])
+        # TODO: remove call to new_event_for_person
+        #       should use Event.schedule_and_create_placeholder above
+        #       we need to ensure that a participant record exists for
+        #       the person at this point
+        new_event_for_person(@person)
       end
-      event.save! if save
-      event
     end
 
     def set_event_id
-      @event_id = params[:event_id] if params[:event_id]
+      @event_id = params[:event_id]
     end
 
     def find_or_create_contact_link

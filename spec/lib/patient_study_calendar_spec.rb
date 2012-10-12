@@ -60,7 +60,7 @@ describe PatientStudyCalendar do
   it "gets the segments for the study" do
     use_template_snapshot_cassette do
       segments = subject.segments
-      segments.size.should == 13
+      segments.size.should == 14
       segments.first.attr('name').should == "Pregnancy Screener"
     end
   end
@@ -217,7 +217,7 @@ describe PatientStudyCalendar do
     it "registers a participant with the study" do
       VCR.use_cassette('psc/assign_subject') do
         subject.is_registered?(@participant).should be_false
-        @participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+        @participant.next_study_segment.should include("Pregnancy Screener")
         resp = subject.assign_subject(@participant)
         resp.headers["location"].should == "#{@uri}api/v1/studies/NCS+Hi-Lo/schedules/todo"
       end
@@ -233,7 +233,7 @@ describe PatientStudyCalendar do
         ppg1 = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1)
         Factory(:ppg_status_history, :participant => participant, :ppg_status => ppg1)
 
-        participant.next_study_segment.should == "LO-Intensity: Pregnancy Screener"
+        participant.next_study_segment.should include("Pregnancy Screener")
         resp = subject.assign_subject(participant)
 
         resp = subject.assignment_identifier(participant)
@@ -499,7 +499,7 @@ describe PatientStudyCalendar do
 
             sss = subject_schedule_status[0]
             sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
-            sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            sss.labels.should == "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
             sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
@@ -531,7 +531,7 @@ describe PatientStudyCalendar do
 
             sss = subject_schedule_status[1]
             sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
-            sss.labels.should == "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+            sss.labels.should == "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
 

@@ -114,11 +114,11 @@ class PregnancyScreenerOperationalDataExtractor
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
-          person.send("#{PERSON_MAP[data_export_identifier]}=", value)
+          OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
         end
 
-        if PARTICIPANT_MAP.has_key?(data_export_identifier)
-          participant.send("#{PARTICIPANT_MAP[data_export_identifier]}=", value) unless participant.blank?
+        if PARTICIPANT_MAP.has_key?(data_export_identifier) && !participant.blank?
+          OperationalDataExtractor.set_value(participant, PARTICIPANT_MAP[data_export_identifier], value)
         end
 
         if ADDRESS_MAP.has_key?(data_export_identifier)
@@ -128,7 +128,7 @@ class PregnancyScreenerOperationalDataExtractor
               address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                     :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            address.send("#{ADDRESS_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(address, ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -139,7 +139,7 @@ class PregnancyScreenerOperationalDataExtractor
               mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                          :address_type => Address.mailing_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            mail_address.send("#{MAIL_ADDRESS_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -149,8 +149,7 @@ class PregnancyScreenerOperationalDataExtractor
             if phone.nil?
               phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -161,8 +160,7 @@ class PregnancyScreenerOperationalDataExtractor
               home_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -173,7 +171,7 @@ class PregnancyScreenerOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -183,7 +181,7 @@ class PregnancyScreenerOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 

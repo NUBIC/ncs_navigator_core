@@ -57,6 +57,17 @@ module NcsNavigator::Core::Mustache
       end
     end
 
+    def pregnancy_to_confirm
+      # TODO: add (Just to confirm) . . . if participant known to be pregnant
+      "A"
+    end
+
+    def visit_today
+      # TODO: the impossible - know the first date of visit with provider
+      # {Is your visit today/{Was your visit on {DATE OF VISIT}}
+      "Is your visit today"
+    end
+
     ### Dates and times ###
 
     def last_year

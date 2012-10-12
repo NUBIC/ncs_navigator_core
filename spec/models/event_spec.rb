@@ -557,6 +557,10 @@ describe Event do
 
         part = Factory(:high_intensity_pregnancy_one_participant)
         part.person = Factory(:person)
+        part.events << Factory(:event, :participant => part,
+                                :event_start_date => Date.today, :event_end_date => Date.today,
+                                :event_type => NcsCode.pregnancy_screener)
+
         part.next_scheduled_event.event.
           should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
 
@@ -623,7 +627,7 @@ describe Event do
     context "parsing psc labels" do
       describe "#parse_label" do
         it "returns the event portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Event.parse_label(lbl).should == "low_intensity_data_collection"
         end
 
@@ -633,7 +637,7 @@ describe Event do
         end
 
         it "returns nil if event portion is not included in label" do
-          lbl = "instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Event.parse_label(lbl).should be_nil
         end
       end
@@ -656,12 +660,12 @@ describe Event do
       end
 
       it "is true if event_type matches label and event_start_date matches ideal date" do
-        lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
         @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_true
       end
 
       it "is false if event_type does not match label" do
-        lbl = "event:not_the_event instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        lbl = "event:not_the_event instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
         @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_false
       end
 
@@ -702,11 +706,11 @@ describe Event do
 
     # See PscParticipant#scheduled_activities.
     let(:schedule) do
-      [
-        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
-        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar'),
-        sa(:labels => ['event:pregnancy_visit_2'], :ideal_date => '2012-02-02', :activity_id => 'baz')
-      ]
+      {
+        'foo' => sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
+        'bar' => sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar'),
+        'baz' => sa(:labels => ['event:pregnancy_visit_2'], :ideal_date => '2012-02-02', :activity_id => 'baz')
+      }
     end
 
     let(:psc_participant) { stub(:participant => event.participant) }

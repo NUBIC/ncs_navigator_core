@@ -80,8 +80,7 @@ class PpgFollowUpOperationalDataExtractor
             if phone.nil?
               phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -92,8 +91,7 @@ class PpgFollowUpOperationalDataExtractor
               home_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -104,7 +102,7 @@ class PpgFollowUpOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -115,8 +113,7 @@ class PpgFollowUpOperationalDataExtractor
               other_phone = Telephone.new(:person => person, :psu => person.psu,
                                           :phone_type => Telephone.other_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-
-            other_phone.send("#{OTHER_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(other_phone, OTHER_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -127,7 +124,7 @@ class PpgFollowUpOperationalDataExtractor
               work_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.work_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            work_phone.send("#{WORK_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(work_phone, WORK_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -137,7 +134,7 @@ class PpgFollowUpOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 

@@ -98,7 +98,7 @@ class PbsList < ActiveRecord::Base
   # Updates the pr_recruitment_start_date to the
   # earliest contact for provider recruitment
   def set_recruitment_start_date!
-    self.update_attribute(:pr_recruitment_start_date, earliest_provider_recruitment_contact_date)
+    self.update_attributes(:pr_recruitment_start_date => earliest_provider_recruitment_contact_date)
   end
 
   ##
@@ -106,7 +106,14 @@ class PbsList < ActiveRecord::Base
   # earliest contact for provider recruitment
   # where the provider said yes to the NCS
   def set_cooperation_date!
-    self.update_attribute(:pr_cooperation_date, earliest_successful_provider_recruitment_contact_date)
+    self.update_attributes(:pr_cooperation_date => earliest_successful_provider_recruitment_contact_date)
+  end
+
+  ##
+  # Updates the pr_recruitment_end_date to the
+  # latest provider logistics completion date
+  def set_recruitment_end_date!
+    self.update_attributes(:pr_recruitment_end_date => latest_provider_logistic_completion_date)
   end
 
   ##
@@ -115,35 +122,46 @@ class PbsList < ActiveRecord::Base
   # where the provider said yes to the NCS
   def mark_recruited!
     set_cooperation_date!
-    self.update_attribute(:pr_recruitment_status_code, 1)
+    self.update_attributes(:pr_recruitment_status_code => 1)
   end
 
   ##
   # Sets pr_recruitment_status to 'Provider Not Recruited'
   def mark_refused!
-    self.update_attribute(:pr_recruitment_status_code, 2)
+    self.update_attributes(:pr_recruitment_status_code => 2)
   end
 
   ##
-  # Sets pr_recruitment_end_date to the contact date
-  # (or today if contact contact_date is blank)
-  # if the pbs list has not ended the recruitment
-  def complete_recruitment!(contact)
-    unless recruitment_ended?
-      self.mark_recruited! unless provider_recruited?
-      dt = last_provider_logistic_completion_date
-      self.update_attribute(:pr_recruitment_end_date, dt)
-      event = self.provider.try(:provider_recruitment_event)
-      event.update_attribute(:event_end_date, dt) if event
+  # Sets pr_recruitment_status to 'Provider Recruitment In Progress'
+  def mark_in_progress!
+    self.update_attributes(:pr_recruitment_status_code => 3)
+  end
+
+  ##
+  # Marks recruited if logistics are completed and 
+  # update the provider recruitment event 
+  # date with latest logistic completion date
+  def update_recruitment_status!
+    self.mark_in_progress! if provider.has_no_provider_recruited_contacts?
+    self.mark_recruited! if provider.recruitment_logistics_complete? && !provider_recruited?
+    event = self.provider.try(:provider_recruitment_event)
+    event.update_attributes(:event_end_date => latest_provider_logistic_completion_date) if event
+  end
+
+  def latest_provider_logistic_completion_date
+    if provider.recruitment_logistics_complete?
+      provider.provider_logistics.sort_by { |l| l.completion_date }.last.completion_date
+    else
+      nil
     end
   end
 
-  def last_provider_logistic_completion_date
-    provider.provider_logistics.sort_by { |l| l.completion_date }.last.completion_date
-  end
-
   def earliest_provider_recruitment_contact_date
-    provider_recruitment_contacts.last.contact_date_date
+    if provider_recruitment_contacts.empty?
+      nil
+    else
+      provider_recruitment_contacts.last.contact_date_date
+    end
   end
 
   def earliest_successful_provider_recruitment_contact_date
@@ -161,13 +179,15 @@ class PbsList < ActiveRecord::Base
   end
 
   ##
-  # Called after deletion of contacts
+  # Called at create/update/delete of contact 
+  # or create/update/delete of logistics
   # updates the pbs_list dates appropriately
   # and opens recruitment on provider if necessary
-  def update_state!
+  def update_recruitment_dates!
     set_recruitment_start_date!
     set_cooperation_date!
-    provider.open_recruitment if provider.has_no_provider_recruited_contacts?
+    set_recruitment_end_date!
+    # provider.open_recruitment if provider.has_no_provider_recruited_contacts?
   end
 
 end

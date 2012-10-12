@@ -274,10 +274,8 @@ class ProvidersController < ApplicationController
 
     respond_to do |format|
       if @provider.update_attributes(params[:provider])
-
-        if @provider.recruitment_logistics_complete?
-          @provider.pbs_list.complete_recruitment!(@contact)
-        end
+        @provider.pbs_list.update_recruitment_status!
+        @provider.pbs_list.update_recruitment_dates!
 
         flash[:notice] = "Provider #{@provider} has been successfully recruited."
         format.html { redirect_to(pbs_list_path(@provider.pbs_list)) }

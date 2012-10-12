@@ -19,7 +19,7 @@ module Field
     let(:proposed_data) { File.read("#{Rails.root}/spec/fixtures/field/proposed_data.json") }
     let(:proposed_json) { JSON.parse(proposed_data) }
 
-    # Commonly used UUIDs.
+    # Commonly used UUIDs in the original and proposed datasets.
     let(:contact_id) { 'dc2a6c42-3b01-4c91-9e27-104c5aa3ef49' }
     let(:event_id) { 'bce1e030-34d3-012f-c157-58b035fb69ca' }
     let(:instrument_id) { 'c41f14e0-356c-012f-c15d-58b035fb69ca' }
@@ -196,6 +196,60 @@ module Field
 
       it 'resolves responses' do
         subject.responses[response_id][:current].should be_adapted(response)
+      end
+    end
+
+    describe '#build_question_response_sets' do
+      include NcsNavigator::Core::Fieldwork::Adapters
+
+      let(:q1) { Factory(:question) }
+      let(:q2) { Factory(:question) }
+      let(:a) { Factory(:answer) }
+
+      let(:hr1) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr1) { adapt_model(Response.new(:question => q1, :answer => a)) }
+      let(:hr1b) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr1b) { adapt_model(Response.new(:question => q1, :answer => a)) }
+      let(:hr2) { adapt_hash(:response, 'question_id' => q2.api_id) }
+      let(:mr2) { adapt_model(Response.new(:question => q2, :answer => a)) }
+
+      before do
+        subject.responses = {
+          'foo' => {
+            :current => hr1,
+            :original => mr1,
+            :proposed => hr1
+          },
+          'bar' => {
+            :current => hr1b,
+            :original => mr1b,
+            :proposed => hr1b
+          },
+          'baz' => {
+            :current => hr2,
+            :original => mr2,
+            :proposed => hr2
+          }
+        }
+      end
+
+      QRS = Field::QuestionResponseSet
+
+      it 'groups responses by question ID' do
+        subject.build_question_response_sets
+
+        subject.question_response_sets.should == {
+          q1.api_id => {
+            :current =>  QRS.new(hr1, hr1b),
+            :original => QRS.new(mr1, mr1b),
+            :proposed => QRS.new(hr1, hr1b)
+          },
+          q2.api_id => {
+            :current =>  QRS.new(hr2),
+            :original => QRS.new(mr2),
+            :proposed => QRS.new(hr2)
+          }
+        }
       end
     end
 

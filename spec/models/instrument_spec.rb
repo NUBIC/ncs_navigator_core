@@ -250,9 +250,9 @@ describe Instrument do
 
   describe 'parsing information from psc' do
 
-    context 'with label instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+    context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
-      let(:lbl) { 'instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
       let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
       let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0' }
 
@@ -272,7 +272,7 @@ describe Instrument do
 
       describe "#parse_label" do
         it "returns the event portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
         end
 
@@ -289,12 +289,12 @@ describe Instrument do
 
       describe "#collection?" do
         it "returns true if label denotes a collection activity" do
-          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
           Instrument.collection?(lbl).should be_true
         end
 
         it "returns false if label does not denote a collection activity" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.collection?(lbl).should be_false
         end
       end
@@ -352,7 +352,7 @@ describe Instrument do
 
       describe "#parse_label" do
         it "returns the instrument portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
         end
 
@@ -369,12 +369,12 @@ describe Instrument do
 
       describe "#collection?" do
         it "returns true if label denotes a collection activity" do
-          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
           Instrument.collection?(lbl).should be_true
         end
 
         it "returns false if label does not denote a collection activity" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.collection?(lbl).should be_false
         end
       end
@@ -554,13 +554,13 @@ describe Instrument do
       describe 'and the activity has no references labels' do
         let(:schedule) do
           Psc::ScheduledActivity.from_schedule({
-            'labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0'
+            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
           })
         end
 
         it 'returns that activity' do
           instrument.scheduled_activities(psc_participant).should == [
-            sa('labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0')
+            sa('labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0')
           ]
         end
       end
@@ -568,7 +568,7 @@ describe Instrument do
       describe 'and the activity has references labels' do
         let(:schedule) do
           Psc::ScheduledActivity.from_schedule({
-            'labels' => 'instrument:ins_que_birth_int_ehpbhi_p2_v2.0 references:something_else'
+            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:something_else'
           })
         end
 

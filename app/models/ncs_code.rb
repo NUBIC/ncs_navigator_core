@@ -386,8 +386,10 @@ class NcsCode < ActiveRecord::Base
   def self.find_event_by_lbl(lbl)
     # handle dash condition
     dash_idx = lbl.index "-"
+    pbs_idx  = lbl.index "pbs"
     txt = lbl.gsub("_", " ").titleize
     txt = txt.insert(dash_idx, "-").gsub("- ", "-") if dash_idx
+    txt = txt.gsub("Pbs", "PBS") if pbs_idx
 
     # handle lowercase condition
     [" To ", " In "].each do |should_downcase|
@@ -402,6 +404,18 @@ class NcsCode < ActiveRecord::Base
   # Used to determine if participant is eligible for conversion to High Intensity Arm
   def self.low_intensity_data_collection
     for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+  end
+
+  # Special case helper method to get EVENT_TYPE_CL1 for Pregnancy Screener
+  # Used to determine if participant should be screened
+  def self.pregnancy_screener
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
+  end
+
+  # Special case helper method to get EVENT_TYPE_CL1 for PBS Eligibility Screener
+  # Used to determine if participant should be screened
+  def self.pbs_eligibility_screener
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 34)
   end
 
   def to_s

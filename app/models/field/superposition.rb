@@ -4,41 +4,13 @@ require 'ncs_navigator/core'
 
 module Field
   ##
-  # A Superposition represents three states of the entities involved with a
-  # {Fieldwork} set:
+  # A Superposition represents three states of a dataset:
   #
-  # 1. the entities as they were when the Fieldwork set was generated
-  #    (original),
-  # 2. the entities an offline client sees them (proposed), and
-  # 3. the entities as Core sees them (current).
+  # 1. original: the data as it was when the dataset was sent to Field
+  # 2. proposed: the data as seen by Field
+  # 3. current: the data as seen by Cases
   #
-  # States 1 and 2 are set via {#set_original} and {#set_proposed}.  State
-  # 3 is set by invoking {#resolve_current}, which attempts to resolve all
-  # entities referenced in both the original and proposed sets.
-  #
-  # Entities involved with the Fieldwork set are segregated by class.  Each
-  # entity map has the form
-  #
-  #     {
-  #       entity_id => {
-  #         :original => (adapter object or nil),
-  #         :proposed => (adapter object or nil),
-  #         :current => (adapter object or nil)
-  #       }
-  #     }
-  #
-  # Nils may occur if i.e. the offline client returns newly instantiated or
-  # corrupted entities.
-  #
-  # The adapter classes can be found in
-  # {NcsNavigator::Core::Fieldwork::Adapters}, and the tools to generate those
-  # classes can be found in tools/.
-  #
-  #
-  # Entities considered
-  # ===================
-  #
-  # A Superposition has provisions for the following entities:
+  # Model objects considered:
   #
   # * {Contact}
   # * {Event}
@@ -48,13 +20,63 @@ module Field
   # * {Response}
   # * {ResponseSet}
   #
+  # A superposition is built by calling {#build} and passing hashes
+  # representing original and proposed data.  The superposition is represented
+  # in {#contacts}, {#events}, etc. with a hash of the format
   #
-  # Performing a merge
-  # ==================
+  #     {
+  #       entity_id => {
+  #         :original => (adapter object or nil),
+  #         :proposed => (adapter object or nil),
+  #         :current => (adapter object or nil)
+  #       }
+  #     }
   #
-  # Once a Superposition has been built, you can mix in a merge algorithm
-  # to collapse the states of the superposition.  The default algorithm is
-  # implemented in {Merge}.
+  # Nils may occur if the offline client returns newly instantiated or
+  # corrupted entities.
+  #
+  # Superposition includes code to collapse its states.  See {Merge} for more
+  # information.
+  #
+  #
+  # Ancestry tracking
+  # =================
+  #
+  # Superposition tracks the ancestry of objects present in the original and
+  # proposed sets.  Ancestry for each object is available via the #ancestors
+  # accessor.
+  #
+  # Superposition cannot build this ancestry data for the current state.
+  #
+  # An example:
+  #
+  #     sp = Superposition.new
+  #     sp.build(original, proposed)
+  #
+  #     c = sp.contacts.first[:proposed]
+  #     c.ancestors # => { :person_id => 'foobar' }
+  #
+  # This ancestry data is used by {Field::Merge} to create appropriate links
+  # between newly instantiated entities.
+  #
+  # Event ancestry data contains the event contact _and_ the contact's
+  # ancestors:
+  #
+  #     e = sp.events.first[:proposed]
+  #     e.ancestors # => { :person_id => 'foobar', :contact => #<ContactHashAdapter ...> }
+  #
+  # Instruments, response sets, and responses follow suit:
+  #
+  #     r = sp.responses.first[:proposed]
+  #     r.ancestors # => { :person_id => 'foobar',
+  #                        :response_set => #<ResponseSetHashAdapter ...>,
+  #                        :instrument => #<InstrumentHashAdapter ...>,
+  #                        :event => #<EventHashAdapter ...>,
+  #                        :contact => #<ContactHashAdapter ...>
+  #                      }
+  #
+  # The adapter classes are defined in
+  # {NcsNavigator::Core::Fieldwork::Adapters}.
   class Superposition
     include Field::Merge
 
@@ -63,6 +85,7 @@ module Field
     attr_accessor :instruments
     attr_accessor :participants
     attr_accessor :people
+    attr_accessor :question_response_sets
     attr_accessor :response_sets
     attr_accessor :responses
 
@@ -77,10 +100,19 @@ module Field
       self.instruments = {}
       self.participants = {}
       self.people = {}
+      self.question_response_sets = {}
       self.response_sets = {}
       self.responses = {}
 
       self.logger = Logger.new(nil)
+    end
+
+    def build(original, proposed)
+      set_original(original)
+      set_proposed(proposed)
+      set_current
+
+      build_question_response_sets
     end
 
     def set_original(data)
@@ -101,6 +133,20 @@ module Field
         set_current_state(h, ::Response, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
       end
+    end
+
+    def build_question_response_sets
+      res = {}
+
+      responses.each do |_, state|
+        state.each do |state_name, response|
+          res[response.question_id] ||= {}
+          res[response.question_id][state_name] ||= QuestionResponseSet.new
+          res[response.question_id][state_name] << response
+        end
+      end
+
+      self.question_response_sets = res
     end
 
     def current_events

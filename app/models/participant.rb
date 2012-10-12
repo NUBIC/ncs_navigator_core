@@ -93,9 +93,7 @@ class Participant < ActiveRecord::Base
   # If the recruitment_strategy is not Hi/Lo (two_tier_knowledgable)
   # then set the participant firmly in the high_intensity_state machine.
   def set_initial_state_for_recruitment_strategy
-    recruitment_strategy = RecruitmentStrategy.recruitment_type_strategy(NcsNavigatorCore.recruitment_type_id)
-
-    unless recruitment_strategy.two_tier_knowledgable?
+    unless NcsNavigatorCore.recruitment_strategy.two_tier_knowledgable?
       self.high_intensity = true
       self.start_in_high_intensity_arm!
       self.high_intensity_conversion! if can_high_intensity_conversion?
@@ -185,7 +183,7 @@ class Participant < ActiveRecord::Base
     end
 
     event :impregnate do
-      transition [:following_high_intensity, :pre_pregnancy] => :pregnancy_one
+      transition [:following_high_intensity, :pre_pregnancy, :converted_high_intensity] => :pregnancy_one
     end
 
     event :pregnancy_one_visit do
@@ -256,6 +254,11 @@ class Participant < ActiveRecord::Base
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     end
 
+    if /_PBSamplingScreen_/ =~ survey_title
+      psc.update_subject(self)
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
+    end
+
     if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
       follow_low_intensity!
     end
@@ -276,7 +279,8 @@ class Participant < ActiveRecord::Base
         impregnate_low!
       end
 
-      if high_intensity? && can_impregnate?
+      if high_intensity? &&
+         can_impregnate?
         impregnate!
       end
     end
@@ -307,9 +311,6 @@ class Participant < ActiveRecord::Base
     if known_to_have_experienced_child_loss? && can_lose_child?
       lose_child!
     end
-
-    # TODO: update participant state for each survey
-    #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
 
     self.update_attribute(:being_followed, true) unless self.being_followed?
   end
@@ -704,7 +705,14 @@ class Participant < ActiveRecord::Base
     low_intensity? && pregnant_or_trying? && !completed_event?(NcsCode.low_intensity_data_collection)
   end
 
-
+  ##
+  # Participant should be screened if they have not completed either
+  # the Pregnancy Screener or PBS Eligibility Screener event
+  def should_be_screened?
+    !completed_event?(NcsNavigatorCore.recruitment_strategy.pbs? ?
+                      NcsCode.pbs_eligibility_screener :
+                      NcsCode.pregnancy_screener)
+  end
 
   ##
   # @return [true,false]
@@ -862,6 +870,8 @@ class Participant < ActiveRecord::Base
   # [31, "24 Month"],
   # [32, "Low to High Conversion"],
   # [33, "Low Intensity Data Collection"],
+  # [34, "PBS Participant Eligibility Screening"],
+  # [35, "PBS Frame SAQ"],
   # [-5, "Other"],
   # [-4, "Missing in Error"]
   #
@@ -873,8 +883,8 @@ class Participant < ActiveRecord::Base
     register! if can_register?  # assume known to PSC
 
     case event.event_type.local_code
-    when 4, 5, 6, 29
-      # Pregnancy Screener Events
+    when 4, 5, 6, 29, 34
+      # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
       # Informed Consent
@@ -904,8 +914,8 @@ class Participant < ActiveRecord::Base
       move_to_high_intensity_if_required
       late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
       pregnancy_one_visit! if can_pregnancy_one_visit?
-    when 18
-      # Birth
+    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Birth and Post-natal
       if low_intensity?
         birth_event_low! if can_birth_event_low?
       else
@@ -913,8 +923,10 @@ class Participant < ActiveRecord::Base
       end
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+    when 17, 19
+      # Do not correspond to states in state machine
     else
-      fail "Unhandled event type for participant state #{event_type.local_code.inspect}"
+      fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
   end
 
@@ -962,7 +974,7 @@ class Participant < ActiveRecord::Base
     end
 
     def next_low_intensity_study_segment
-      if pending? || registered?
+      if pending? || registered? || should_be_screened?
         screener_instrument
       elsif should_take_low_intensity_questionnaire?
         PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
@@ -984,7 +996,9 @@ class Participant < ActiveRecord::Base
     end
 
     def next_high_intensity_study_segment
-      if registered?
+      if should_be_screened?
+        screener_instrument
+      elsif registered?
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
         screener_instrument
       elsif in_high_intensity_arm?

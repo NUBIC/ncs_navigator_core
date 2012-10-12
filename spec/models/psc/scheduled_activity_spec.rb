@@ -188,7 +188,7 @@ module Psc
 
       describe 'if the activity does not have a references label' do
         before do
-          sa.labels = 'event:foo instrument:baz'
+          sa.labels = 'event:foo instrument:1.0:baz'
 
           sa.derive_implied_entities
         end
@@ -205,7 +205,7 @@ module Psc
 
       describe 'if the activity does not have an event label' do
         before do
-          sa.labels = 'instrument:foo'
+          sa.labels = 'instrument:1.0:foo'
 
           sa.derive_implied_entities
         end
@@ -217,7 +217,7 @@ module Psc
 
       describe 'if the activity has a references label' do
         before do
-          sa.labels = 'event:foo references:bar instrument:baz'
+          sa.labels = 'event:foo references:bar instrument:1.0:baz'
 
           sa.derive_implied_entities
         end

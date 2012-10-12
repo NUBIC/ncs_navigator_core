@@ -12,11 +12,11 @@ end
 shared_context 'mapping test' do
   before do
     # ignore unused so we can see the mapping failures
-    OperationalEnumerator.on_unused_columns :ignore
+    operational_enumerator_class.on_unused_columns :ignore
   end
 
   after do
-    OperationalEnumerator.on_unused_columns :fail
+    operational_enumerator_class.on_unused_columns :fail
   end
 
   def verify_mapping(core_field, core_value, wh_field, wh_value=nil)

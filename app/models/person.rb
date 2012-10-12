@@ -94,9 +94,9 @@ class Person < ActiveRecord::Base
   has_many :person_provider_links
   has_many :providers, :through => :person_provider_links
 
-  validates :title,       :length => { :maximum => 5 }, :allow_blank => true
-  validates :person_dob,  :length => { :is => 10 },     :allow_blank => true
-  validates :date_move,   :length => { :is => 7 },      :allow_blank => true
+  validates :title,       :length => { :maximum => 5 },  :allow_blank => true
+  validates :person_dob,  :length => { :is => 10 },      :allow_blank => true
+  validates :date_move,   :length => { :is => 7 },       :allow_blank => true
 
   validates :first_name,  :length => { :maximum => 30 }, :allow_blank => true
   validates :last_name,   :length => { :maximum => 30 }, :allow_blank => true
@@ -266,7 +266,12 @@ class Person < ActiveRecord::Base
       "pre_populated_mult_child_answer_from_part_one_for_18MM",
       "pre_populated_mult_child_answer_from_part_one_for_24MM",
       "pre_populated_child_qnum_answer_from_mother_detail_for_18MM",
-      "pre_populated_child_qnum_answer_from_mother_detail_for_24MM"
+      "pre_populated_child_qnum_answer_from_mother_detail_for_24MM",
+
+      "pre_populated_psu_id",
+      "pre_populated_practice_num",
+      "pre_populated_provider_id",
+      "pre_populated_mode",
     ]
 
     response_type = "string_value"
@@ -326,6 +331,11 @@ class Person < ActiveRecord::Base
                   response_type = "integer_value"
                   resp = responses_for("TWENTY_FOUR_MTH_MOTHER_DETAIL.CHILD_QNUM").first
                   resp.send(response_type.to_sym)
+                when "pre_populated_psu_id"
+                  self.psu_code
+                when "pre_populated_mode"
+                  # TODO: get the contact mode from the last contact for this person
+                  "CAPI"
                 else
                   # TODO: handle other prepopulated fields
                   nil

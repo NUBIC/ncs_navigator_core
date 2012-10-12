@@ -214,10 +214,5 @@ module Field
         end
       end
     end
-
-    describe '#replace' do
-      let(:g1) { QuestionResponseSet.new }
-      let(:g2) { QuestionResponseSet.new }
-    end
   end
 end

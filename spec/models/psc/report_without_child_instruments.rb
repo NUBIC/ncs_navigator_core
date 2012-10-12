@@ -21,7 +21,7 @@ shared_context 'report without child instruments' do
                   "ideal_date": "2012-07-06",
                   "labels": [
                       "event:low_intensity_data_collection",
-                      "instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+                      "instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
                   ],
                   "responsible_user": "user",
                   "scheduled_date": "2012-07-10",

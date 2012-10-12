@@ -47,8 +47,8 @@ module Psc
   # Labels on activities look like this:
   #
   #     event:birth
-  #     instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name
-  #     references:ins_que_birth_int_ehpbhi_p2_v2.0
+  #     instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name
+  #     references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0
   #     order:01_01
   #     participant_type:child
   #
@@ -287,7 +287,7 @@ module Psc
     def label_with(prefix)
       label = @label_list.detect { |l| l.start_with?(prefix) }
 
-      label.match(/^[^:]+:(.+)$/)[1] if label
+      label.split(':', 3).last if label
     end
 
     ##

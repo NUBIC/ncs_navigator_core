@@ -56,7 +56,8 @@ class ApplicationController < ActionController::Base
         ets         = person.upcoming_events.collect { |e| PatientStudyCalendar.map_psc_segment_to_mdes_event_type(e) }
         event_types = NcsCode.where("list_name = ? AND display_text in (?)", list_name, ets).all
       end
-      Event.new(:participant => person.participant, :event_type => event_types.first, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today)
+      Event.new(:participant => person.participant, :event_type => event_types.first,
+                :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today)
     end
 
     # Used by contacts and contact_links controller
@@ -80,6 +81,8 @@ class ApplicationController < ActionController::Base
         end
       when "Provider-Based Recruitment"
         @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
+      when "PBS Participant Eligibility Screening"
+        @disposition_group = DispositionMapper::PBS_ELIGIBILITY_EVENT
       else
         set_disposition_group_for_contact_link
       end

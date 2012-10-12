@@ -204,11 +204,8 @@ class Merge < ActiveRecord::Base
   def do_merge
     sp = Field::Superposition.new
     sp.logger = logger
-    sp.set_original(JSON.parse(original_data))
-    sp.set_proposed(JSON.parse(proposed_data))
-    sp.set_current
+    sp.build(JSON.parse(original_data), JSON.parse(proposed_data))
 
-    sp.build_question_response_sets
     sp.merge
 
     ok = sp.save

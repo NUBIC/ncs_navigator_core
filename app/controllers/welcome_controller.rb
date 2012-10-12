@@ -58,7 +58,7 @@ class WelcomeController < ApplicationController
     if resp && resp.status.to_i < 299
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant)
+      destroy_participant_and_redirect(participant, resp)
     end
   end
 
@@ -67,18 +67,38 @@ class WelcomeController < ApplicationController
     participant = Participant.create(:psu_code => @psu_code)
     participant.person = person
     participant.save!
-
     resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
+
+      create_pbs_eligibility_screener_event_record(participant)
       redirect_to new_person_contact_path(person)
     else
-      destroy_participant_and_redirect(participant, false)
+      destroy_participant_and_redirect(participant, resp, false)
     end
   end
 
   private
 
-    def destroy_participant(participant, destroy_person = true)
+    def create_pbs_eligibility_screener_event_record(participant)
+      if activity_plan = psc.build_activity_plan(participant)
+        pbs_eligibility_screener_event_type = NcsCode.pbs_eligibility_screener
+        dates = []
+        # get dates for scheduled pbs_eligibility_screener activity for participant
+        activity_plan.scheduled_activities.each do |a|
+          code = NcsCode.find_event_by_lbl(a.event)
+          dates << a.ideal_date if code == pbs_eligibility_screener_event_type
+        end
+        # create a placeholder event for each date
+        dates.uniq.each do |dt|
+          Event.create( :participant => participant, :psu_code => participant.psu_code,
+                        :event_start_date => dt, :event_type => pbs_eligibility_screener_event_type)
+
+        end
+      end
+
+    end
+
+    def destroy_participant_and_redirect(participant, resp, destroy_person = true)
       ppl = participant.participant_person_links.where(:relationship_code => 1).first
       ppl.destroy if ppl
       participant.destroy
