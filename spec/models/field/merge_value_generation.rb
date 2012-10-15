@@ -8,6 +8,7 @@ require 'set'
 
 module MergeValueGeneration
   DATES = (Date.today - 100..Date.today).to_a
+  TIMES = (Time.now.to_i - 100..Time.now.to_i).map { |x| Time.at(x) }
 
   ##
   # Generates random values appropriate for a property's type.
@@ -17,15 +18,18 @@ module MergeValueGeneration
   def gen_values(property, count)
     type = properties[property]['type']
     format = properties[property]['format'] || ''
-    extends = properties[property]['extends'] || {}
+    pattern = properties[property]['pattern'] || ''
 
     Set.new.tap do |gen|
       while gen.length < count
         gen << if type.include?('string')
-                 if extends['$ref'] =~ /decimal_as_string/
+                 if pattern == '(?:\\d+$|\\d+.\\d+$)'
                    BigDecimal.new((rand * 100).to_s)
                  elsif format.include?('date')
                    DATES.at_rand
+                 # Our datetimes don't follow any predefined JSON Schema format.
+                 elsif format == '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:\\d{2})'
+                   TIMES.at_rand
                  else
                    String.random
                  end

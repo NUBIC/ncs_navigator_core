@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'json-schema'
 require 'ncs_navigator/core'
 require 'thread'
@@ -36,6 +35,44 @@ module NcsNavigator::Core::Fieldwork
           root_schema = JSON.parse(File.read("#{SCHEMA_ROOT}/fieldwork_schema.json"))
 
           JSON::Validator.fully_validate(root_schema, data)
+        end
+      end
+    end
+
+    ##
+    # Expands all references in the fieldwork schema.  Used in the merge tests.
+    def expanded_schema
+      LOCK.synchronize do
+        with_referenced_schemas do
+          schemas = JSON::Validator.schemas.dup
+
+          rewrite = lambda do |schema|
+            if Hash === schema
+              schema.each do |k, v|
+                if Hash === v
+                  if v['$ref']
+                    schema.update(k => rewrite[schemas[v['$ref']].schema])
+                  end
+
+                  if v['extends'] && v['extends']['$ref']
+                    ref = v['extends']['$ref']
+                    v.delete('extends')
+                    orig = v.dup
+
+                    v.deep_merge!(rewrite[schemas[ref]].schema)
+                  end
+                end
+
+                rewrite[v]
+              end
+            end
+
+            schema
+          end
+
+          root_schema = JSON.parse(File.read("#{SCHEMA_ROOT}/fieldwork_schema.json"))
+
+          rewrite[root_schema]
         end
       end
     end

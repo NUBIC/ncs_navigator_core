@@ -50,6 +50,10 @@ class ResponseSet < ActiveRecord::Base
     result
   end
 
+  def public_id
+    api_id
+  end
+
   def as_json(options = nil)
     super.merge('p_id' => participant.try(:public_id))
   end

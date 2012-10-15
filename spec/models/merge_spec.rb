@@ -26,12 +26,6 @@ describe Merge do
   it { should validate_presence_of(:client_id) }
   it { should validate_presence_of(:staff_id) }
 
-  describe '.psc_sync_strategy' do
-    it 'defaults to Field::PscSync' do
-      Merge.psc_sync_strategy.should == Field::PscSync
-    end
-  end
-
   describe '#run' do
     it 'saves the merge log' do
       subject.run
