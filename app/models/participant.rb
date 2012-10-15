@@ -63,7 +63,7 @@ class Participant < ActiveRecord::Base
   has_many :participant_staff_relationships
   has_many :participant_consents
   has_many :participant_consent_samples
-  has_many :events, :order => 'events.event_start_date'
+  has_many :events, :order => 'events.event_type_code, events.event_start_date'
   has_many :response_sets, :inverse_of => :participant
 
   # validates_presence_of :person
