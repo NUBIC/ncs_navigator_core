@@ -113,7 +113,7 @@ class EventsController < ApplicationController
       if !@event.event_end_date.blank? && !@event.provider_recruitment_event?
   	    psc.activities_for_event(@event).each do |a|
   	      if @event.matches_activity(a)
-            psc.update_activity_state(activity.activity_id,
+            psc.update_activity_state(a.activity_id,
                                       @event.participant,
                                       Psc::ScheduledActivity::OCCURRED)
           end
