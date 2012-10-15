@@ -60,6 +60,7 @@ describe ScheduledActivity do
 
     describe ".instrument" do
       it "extracts instrument from the label" do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
         scheduled_activity.instrument.should == "ins_que_birth_int_ehpbhi_p2_v2.0_baby_name"
       end
     end
@@ -67,6 +68,45 @@ describe ScheduledActivity do
     describe ".references" do
       it "extracts references from the label" do
         scheduled_activity.references.should == "ins_que_birth_int_ehpbhi_p2_v2.0"
+      end
+    end
+
+    describe ".instruments" do
+      it "extracts all instruments from the label" do
+        sa = ScheduledActivity.new(:labels =>
+          "event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+        sa.instruments.size.should == 2
+        sa.instruments.should include("ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0")
+        sa.instruments.should include("ins_que_pregvisit1_int_ehpbhi_p2_v2.0")
+      end
+
+      context "mdes version 3.0" do
+        it "sets the current mdes version as the instrument" do
+          NcsNavigatorCore.mdes.stub(:version).and_return "3.0"
+          sa = ScheduledActivity.new(:labels =>
+            "event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+
+          sa.instrument.should == "ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"
+        end
+      end
+
+      context "mdes version 2.0" do
+        it "sets the current mdes version as the instrument" do
+          NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+          sa = ScheduledActivity.new(:labels =>
+            "event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+
+          sa.instrument.should == "ins_que_pregvisit1_int_ehpbhi_p2_v2.0"
+        end
+
+        it "does not set instrument if no matching mdes version instrument" do
+          NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+          sa = ScheduledActivity.new(:labels =>
+            "event:pregnancy_visit_1 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+
+          sa.instrument.should be_blank
+        end
+
       end
     end
 
@@ -98,6 +138,10 @@ describe ScheduledActivity do
 
       let(:sc11) { ScheduledActivity.new(:labels => "order:01_01 instrument:1.0:A") }
       let(:sc12) { ScheduledActivity.new(:labels => "order:01_01 instrument:1.0:A.B") }
+
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "1.0"
+      end
 
       describe ".<=>" do
 

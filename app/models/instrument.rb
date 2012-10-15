@@ -272,12 +272,16 @@ class Instrument < ActiveRecord::Base
 
   ##
   # Given a label from PSC or surveyor access code determine the instrument version
+  # Defaults to 1.0 if there is no label or access code
   # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0
   # @return [String]
   def self.determine_version(lbl)
-    lbl = Instrument.surveyor_access_code(lbl)
-    ind = lbl.to_s.rindex("-v")
-    lbl[ind + 2, 3].sub("-", ".")
+    result = "1.0"
+    lbl = Instrument.surveyor_access_code(lbl.to_s)
+    if ind = lbl.to_s.rindex("-v")
+      result = lbl[ind + 2, 3].sub("-", ".")
+    end
+    result
   end
 
   ##
@@ -299,14 +303,20 @@ class Instrument < ActiveRecord::Base
   end
 
   def self.mdes_version(lbl)
-    lbl = Instrument.instrument_label(lbl)
+    return nil unless lbl.include?(INSTRUMENT_LABEL_MARKER)
     lbl = lbl.to_s.split(':')
     lbl.size == 3 ? lbl[1] : nil
   end
 
+  def self.matches_mdes_version?(lbl, version)
+    mdes_version(lbl) == version
+  end
+
   def self.instrument_label(lbl)
     return nil if lbl.blank?
-    lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first
+    lbl.split.select { |s| s.include?(INSTRUMENT_LABEL_MARKER) }
+      .select { |s| Instrument.matches_mdes_version?(s, NcsNavigatorCore.mdes.version) }
+      .first
   end
 
   # FIXME: This is temporary until we fix all places that call Instrument.response_set

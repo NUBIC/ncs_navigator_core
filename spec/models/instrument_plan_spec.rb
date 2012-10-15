@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe InstrumentPlan do
 
+  before(:each) do
+    NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+  end
+
   describe ".from_schedule" do
 
     it "raises an exception if no parameter is sent to constructor" do
@@ -476,7 +480,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self'
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self'
             },
             {
               'id' => '2',
@@ -484,7 +488,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:ins_que_birth_int_ehpbhi_p2_v2.0'
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
             },
             {
               'id' => '3',
@@ -504,7 +508,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-04-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:3m instrument:ins_que_3mmother_int_ehpbhi_p2_v1.1'
+              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1'
             }
           ]
         },
@@ -516,7 +520,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self'
+              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self'
             },
             {
               'id' => '5',
@@ -524,7 +528,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
+              'labels' => 'event:6m instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
             }
 
           ]
@@ -545,7 +549,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self'
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self'
             },
             {
               'id' => '12',
@@ -553,7 +557,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:birth instrument:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child'
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child'
             },
             {
               'id' => '13',
@@ -569,7 +573,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'collection:biological event:birth instrument:ins_bio_cordblood_dci_ehpbhi_p2_v1.0 order:02_01 participant_type:child'
+              'labels' => 'collection:biological event:birth instrument:2.0:ins_bio_cordblood_dci_ehpbhi_p2_v1.0 order:02_01 participant_type:child'
             }
           ]
         },
@@ -581,7 +585,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-04-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:3m instrument:ins_que_3mmother_int_ehpbhi_p2_v1.1'
+              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1'
             }
           ]
         },
@@ -593,7 +597,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self'
+              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self'
             },
             {
               'id' => '32',
@@ -601,7 +605,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
+              'labels' => 'event:6m instrument:2.0:ins_que_6minfantfeed_saq_ehpbhi_p2_v20 order:01_02 participant_type:child'
             }
 
           ]
