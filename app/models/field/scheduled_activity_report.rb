@@ -3,7 +3,7 @@ require 'ncs_navigator/core'
 module Field
   class ScheduledActivityReport < ::Psc::ScheduledActivityReport
     include ::Psc::ScheduledActivityReport::EntityResolution
-    include NcsNavigator::Core::Fieldwork::Adapters
+    include Adoption
 
     def as_json(options = nil)
       {

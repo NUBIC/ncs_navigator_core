@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Field
   describe QuestionResponseSet do
-    include NcsNavigator::Core::Fieldwork::Adapters
+    include Field::Adoption
 
     let(:group) { QuestionResponseSet.new }
     let(:q1) { Factory(:question) }

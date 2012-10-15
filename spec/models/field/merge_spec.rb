@@ -173,7 +173,7 @@ module Field
       end
 
       describe 'for sets O, C, P' do
-        include NcsNavigator::Core::Fieldwork::Adapters
+        include Field::Adoption
 
         describe 'if O = C = P = nil' do
           let(:o) { nil }
@@ -332,7 +332,7 @@ module Field
     end
 
     describe '#save' do
-      include NcsNavigator::Core::Fieldwork::Adapters
+      include Field::Adoption
 
       let(:contact) { Factory(:contact) }
       let(:event) { Factory(:event) }

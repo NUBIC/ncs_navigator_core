@@ -200,7 +200,7 @@ module Field
     end
 
     describe '#build_question_response_sets' do
-      include NcsNavigator::Core::Fieldwork::Adapters
+      include Field::Adoption
 
       let(:q1) { Factory(:question) }
       let(:q2) { Factory(:question) }

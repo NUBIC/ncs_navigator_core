@@ -224,7 +224,7 @@ module Field
     end
 
     class Context < Struct.new(:state, :superposition, :ancestors)
-      include NcsNavigator::Core::Fieldwork::Adapters
+      include Field::Adoption
 
       def add(entity, object, key)
         collection = entity.to_s.pluralize.underscore
