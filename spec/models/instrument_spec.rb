@@ -109,7 +109,7 @@ describe Instrument do
         end
       end
 
-      describe 'if there is a response set for the (person, survey) pair' do
+      describe 'when there is a response set for the (person, survey) pair' do
         before do
           Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
         end
