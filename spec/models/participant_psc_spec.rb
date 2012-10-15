@@ -324,7 +324,7 @@ describe Participant do
         participant.pregnant_informed_consent!
         participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
         participant.next_scheduled_event.event.should == participant.next_study_segment
-        participant.next_scheduled_event.date.should == Date.today
+        participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
 
       it "schedules the second pregnancy visit after the first pregnancy visit" do
