@@ -92,12 +92,12 @@ describe Instrument do
     let(:child) { Factory(:participant, :p_id => 'child') }
     let(:survey) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0') }
     let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
-    let(:inst) { Factory(:instrument, :survey => survey) }
+    let(:inst) { Factory(:instrument, :survey => survey, :event => event) }
 
     context 'a survey with one part' do
       describe 'if there is no response set for the (person, survey) pair' do
         it 'returns the result of Person#start_instrument' do
-          person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
+          person.should_receive(:start_instrument).with(survey, mother, event).and_return(inst)
 
           Instrument.start(person, mother, nil, survey, event).should == inst
         end
@@ -120,7 +120,7 @@ describe Instrument do
           end
 
           it 'returns the result of Person#start_instrument' do
-            person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
+            person.should_receive(:start_instrument).with(survey, mother, event).and_return(inst)
 
             Instrument.start(person, mother, nil, survey, event).should == inst
           end
@@ -145,6 +145,16 @@ describe Instrument do
 
           it "has one response set" do
             i.response_sets.size.should == 1
+          end
+
+        end
+
+        describe 'for a different event with the same survey' do
+
+          let(:i) { Instrument.start(person, mother, nil, survey, Factory(:event, :event_type_code => 10)) }
+
+          it "does NOT return the response set's instrument" do
+            i.should_not == inst
           end
 
         end

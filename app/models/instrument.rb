@@ -91,7 +91,7 @@ class Instrument < ActiveRecord::Base
       ins = Instrument.where(:person_id => person.id,
                              :survey_id => instrument_survey.id,
                              :event_id => event.id).order("created_at DESC").first
-      person.start_instrument(current_survey, participant, ins)
+      person.start_instrument(current_survey, participant, event, ins)
       ins
     end
   end
@@ -102,10 +102,11 @@ class Instrument < ActiveRecord::Base
   # cf. Person.start_instrument
   #
   def self.start_initial_instrument(person, participant, survey, event)
-    rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
+    where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? AND instruments.event_id = ?"
+    rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
 
     if !rs || event.closed?
-      person.start_instrument(survey, participant)
+      person.start_instrument(survey, participant, event)
     else
       rs.instrument
     end.tap { |i| i.event = event }

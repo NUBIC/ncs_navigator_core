@@ -6,7 +6,7 @@ module TestSurveys
   # Starts an Instrument for a {Person} p and {Survey} s, saves it, and
   # returns the created ResponseSet along with the Instrument.
   def prepare_instrument(person, participant, survey)
-    instr = person.start_instrument(survey, participant)
+    instr = person.start_instrument(survey, participant, nil)
     instr.save!
 
     # TODO: update this method so that all response sets are returned - not just the first
