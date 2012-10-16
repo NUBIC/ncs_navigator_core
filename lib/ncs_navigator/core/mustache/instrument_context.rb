@@ -49,12 +49,48 @@ module NcsNavigator::Core::Mustache
       @response_set.person.try(:person_dob)
     end
 
+    def p_cell_phone
+      cell_phone = "[CELL PHONE NUMBER]"
+      if person = @response_set.try(:person)
+        cell_phone = person.primary_cell_phone if person.primary_cell_phone
+      end
+      cell_phone
+    end
+    
+    def p_home_phone
+      home_phone = "[HOME PHONE NUMBER]"
+      if person = @response_set.try(:person)
+        home_phone = person.primary_home_phone if person.primary_home_phone
+      end
+      home_phone
+    end
+    
     def p_phone_number
       if person = @response_set.try(:person)
-        home_phone = person.primary_home_phone
-        cell_phone = person.primary_cell_phone
+        home_phone = p_home_phone
+        cell_phone = p_cell_phone
         home_phone ? home_phone : cell_phone
       end
+    end
+    
+    def p_email_address
+      email_address = "[EMAIL ADDRESS]"
+      if person = @response_set.try(:person)
+        email_address = person.primary_email if person.primary_email
+      end
+      email_address
+    end
+    
+    def p_primary_address
+      primary_address = "[What is your street address?]"
+      if person = @response_set.try(:person)
+        primary_address = "Let me confirm your street address. I have it as. I have it as " + person.primary_address if person.primary_address
+      end
+      primary_address
+    end
+      
+    def participant_parent_caregiver_name
+      "[Participant/Parent/Caregiver Name]"
     end
 
     def pregnancy_to_confirm
@@ -184,6 +220,15 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "Does" : "Do"
     end
 
+    # {Have/Has}
+    def have_has
+      single_birth? ? "Has" : "Have"
+    end
+    
+    def is_are
+      single_birth? ? "Is" : "Are"
+    end
+
     # {do/does}
     def do_does_downcase
       do_does.downcase
@@ -274,6 +319,18 @@ module NcsNavigator::Core::Mustache
     end
     private :child_first_name
 
+    def child_primary_address
+      "[CHILD'S PRIMARY ADDRESS]"
+    end
+    
+    def child_secondary_address
+      "[SECONDARY ADDRESS] "
+    end
+    
+    def child_secondary_number
+      "[SECONDARY PHONE NUMBER]"
+    end
+
     def c_dob
       about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
     end
@@ -306,6 +363,12 @@ module NcsNavigator::Core::Mustache
 
     def schip_name
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
+    end
+    
+    # TODO
+    def event_type
+      # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE
+      "[EVENT_TYPE]"
     end
 
   end
