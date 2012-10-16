@@ -75,7 +75,7 @@ jQuery(document).ready(function(){
     }
   });
 
-  jQuery("form#survey_form input, form#survey_form select, form#survey_form textarea").change(function(){
+  jQuery("form#survey_form input:not(.hasDatepicker), form#survey_form select, form#survey_form textarea").change(function(){
     var elements = [$('[type="submit"]').parent(), $('[name="' + this.name +'"]').closest('li')];
     blockElements(elements);
 
