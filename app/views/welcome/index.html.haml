@@ -5,10 +5,6 @@
     %li
       %a{ :href => "#scheduled_events_tab"}
         Scheduled Events
-    - if recruitment_strategy.pbs?
-      %li
-        %a{ :href => "#provider_recruitment_tab"}
-          Provider Recruitment
     %li
       %a{ :href => "#actions_tab"}
         Actions
@@ -34,36 +30,22 @@
     - else
       .front_page_section.page_section
         No Scheduled Events
-  - if recruitment_strategy.pbs?
-    #provider_recruitment_tab
-      .front_page_section.page_section
-        .column-container
-          .column-1
-            - if permit?(Role::SYSTEM_ADMINISTRATOR)
-              .pbs
-                %h4
-                  Upload spreadsheet data
-                %ul
-                  %li
-                    = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
-          .column-2
-            %h4
-              Searching
-            .model_search
-              %ul
-                %li
-                  = link_to "PBS List", pbs_lists_path, :class => "list_link icon_link"
-                %li
-                  = link_to "Providers", providers_path, :class => "search_link icon_link"
-                %li
-                  = link_to "Contacts", contact_links_path, :class => "search_link icon_link"
-                %li
-                  = link_to "Events", events_path, :class => "search_link icon_link"
+
   #actions_tab
     .front_page_section.page_section
       .column-container
         .column-1
-          - unless recruitment_strategy.pbs?
+          - if recruitment_strategy.pbs?
+            .provider_recruitment
+              %h4
+                Provider Recruitment
+              %ul
+                - if permit?(Role::SYSTEM_ADMINISTRATOR)
+                  %li
+                    = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
+                %li
+                  = link_to "Provider List", pbs_lists_path, :class => "list_link icon_link"
+          - else
             .participants
               %h4
                 Administer Instruments
@@ -73,7 +55,10 @@
           .reports
             %h4
               Reports
-            - unless recruitment_strategy.pbs?
+            - if recruitment_strategy.pbs?
+              %p
+                No reports for PBS strategy. Work In Progress.
+            - else
               %ul
                 %li
                   = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
