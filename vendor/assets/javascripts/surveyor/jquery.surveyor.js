@@ -30,8 +30,8 @@ jQuery(document).ready(function(){
   // $('li input.date').dateinput({
   //     format: 'dd mmm yyyy'
   // });
-  
-  // Default Datepicker uses jQuery UI Datepicker 
+
+  // Default Datepicker uses jQuery UI Datepicker
   jQuery("input[type='text'].datetime").datetimepicker({
   	showSecond: true,
   	showMillisec: false,
@@ -41,72 +41,74 @@ jQuery(document).ready(function(){
   	changeYear: true,
   	yearRange: '1920:2020'
   });
-  jQuery("li.date input").datepicker({ 
+  jQuery("li.date input").datepicker({
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
   	changeYear: true,
   	yearRange: '1920:2020'
   });
-  jQuery("input[type='text'].date").datepicker({ 
+  jQuery("input[type='text'].date").datepicker({
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
   	changeYear: true,
   	yearRange: '1920:2020'
   });
-  jQuery("input[type='text'].datepicker").datepicker({ 
+  jQuery("input[type='text'].datepicker").datepicker({
   	dateFormat: 'yy-mm-dd',
   	changeMonth: true,
   	changeYear: true,
   	yearRange: '1920:2020'
   });
   jQuery("input[type='text'].time").timepicker({});
-  
+
   jQuery('.surveyor_check_boxes input[type=text]').change(function(){
     var textValue = $(this).val()
     if (textValue.length > 0) {
       $(this).parent().children().has('input[type="checkbox"]')[0].children[0].checked = true;
     }
   });
-  
+
   jQuery('.surveyor_radio input[type=text]').change(function(){
     var textValue = $(this).val()
     if (textValue.length > 0) {
-      $(this).parent().children().has('input[type="radio"]')[0].children[0].checked = true;      
+      $(this).parent().children().has('input[type="radio"]')[0].children[0].checked = true;
     }
   });
 
   jQuery("form#survey_form input, form#survey_form select, form#survey_form textarea").change(function(){
     var elements = [$('[type="submit"]').parent(), $('[name="' + this.name +'"]').closest('li')];
     blockElements(elements);
-    
+
     question_data = $(this).parents('fieldset[id^="q_"],tr[id^="q_"]').find("input, select, textarea").add($("form#survey_form input[name='authenticity_token']")).serialize();
     // console.log(unescape(question_data));
-    $.ajax({ 
-      type: "PUT", 
-      url: $(this).parents('form#survey_form').attr("action"), 
-      data: question_data, dataType: 'json', 
+    $.ajax({
+      type: "PUT",
+      url: $(this).parents('form#survey_form').attr("action"),
+      data: question_data, dataType: 'json',
       success: function(response) {
         unblockElements(elements);
         successfulSave(response);
-      }, 
+      },
       error: function(xhr, ajaxOptions, thrownError) {
         unblockElements(elements);
       }
     });
   });
-  
+
   // If javascript works, we don't need to show dependents from previous sections at the top of the page.
   jQuery("#dependents").remove();
 
   function successfulSave(responseText){ // for(key in responseText) { console.log("key is "+[key]+", value is "+responseText[key]); }
-    // surveyor_controller returns a json object to show/hide elements and insert/remove ids e.g. {"ids": {"2" => 234}, "remove": {"4" => 21}, "hide":["question_12","question_13"],"show":["question_14"]}
-    jQuery.each(responseText.show, function(){ showElement(this) });
-    jQuery.each(responseText.hide, function(){ hideElement(this) });
-    jQuery.each(responseText.ids, function(k,v){ jQuery('#r_'+k+'_question_id').after('<input id="r_'+k+'_id" type="hidden" value="'+v+'" name="r['+k+'][id]"/>'); });
-    jQuery.each(responseText.remove, function(k,v){ jQuery('#r_'+k+'_id[value="'+v+'"]').remove(); });
+    if(responseText) {
+      // surveyor_controller returns a json object to show/hide elements and insert/remove ids e.g. {"ids": {"2" => 234}, "remove": {"4" => 21}, "hide":["question_12","question_13"],"show":["question_14"]}
+      jQuery.each(responseText.show, function(){ showElement(this) });
+      jQuery.each(responseText.hide, function(){ hideElement(this) });
+      jQuery.each(responseText.ids, function(k,v){ jQuery('#r_'+k+'_question_id').after('<input id="r_'+k+'_id" type="hidden" value="'+v+'" name="r['+k+'][id]"/>'); });
+      jQuery.each(responseText.remove, function(k,v){ jQuery('#r_'+k+'_id[value="'+v+'"]').remove(); });
+    }
     return false;
   }
-  
+
   function showElement(id){
     group = id.match('^g_') ? true : false;
     if (group) {
@@ -115,7 +117,7 @@ jQuery(document).ready(function(){
       jQuery('#' + id).removeClass("q_hidden");
     }
   }
-  
+
   function hideElement(id){
     group = id.match('^g_') ? true : false;
     if (group) {
@@ -124,7 +126,7 @@ jQuery(document).ready(function(){
       jQuery('#' + id).addClass("q_hidden");
     }
   }
-  
+
   function blockElements(elements) {
     $.blockUI.defaults.overlayCSS.opacity = 0;
     $.blockUI.defaults.message = null;
@@ -132,7 +134,7 @@ jQuery(document).ready(function(){
     $.blockUI.defaults.fadeOut = 0;
     $.each(elements, function(){ $(this).block()});
   }
-  
+
   function unblockElements(elements) {
     $.each(elements, function(){ $(this).unblock()});
   }
