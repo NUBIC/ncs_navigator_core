@@ -515,7 +515,7 @@ describe PatientStudyCalendar do
             Factory(:ppg_detail, :participant => @participant, :ppg_first => status2)
             Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2a)
 
-            @participant.pending_events.should == [@lo_i_quex, @informed_consent]
+            @participant.pending_events.should == [@informed_consent, @lo_i_quex]
 
             subject_schedule_status = subject.scheduled_activities(@participant)
             subject_schedule_status.size.should == 2

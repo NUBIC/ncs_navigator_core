@@ -1238,7 +1238,7 @@ describe Participant do
       end
 
       it "closes all pending events" do
-        participant.pending_events.should == [@lo_i_quex, @informed_consent]
+        participant.pending_events.should == [@informed_consent, @lo_i_quex]
         participant.switch_arm
         participant.pending_events.should == []
       end
