@@ -1,7 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-10-05T14:00:27.459Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-10-16T10:06:38.839Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 22" date="2012-10-16" mandatory="true" released-date="2012-10-16T10:06:38.839Z" updated-date="2012-10-16T10:01:21.335Z" previous-amendment-key="2012-10-15~Rev 21">
+    <planned-activity-delta id="7191caea-444b-4993-80e1-f1a434fbfee9" node-id="b91da252-9133-497a-b241-375b7d71c229">
+      <property-change id="4142524b-05c7-47b2-b075-7c093e2e1e7f" property-name="day" old-value="1" new-value="1"/>
+      <add id="f6740253-e7f2-4933-84a2-e8f9069225bf">
+        <label id="6b6f1db5-0f6b-4a0a-8326-bda65c99bb16" name="instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_birth_visit_baby_name_3"/>
+      </add>
+      <add id="6479b0ec-cd61-439f-a98c-fa26063d9321">
+        <label id="f7843746-8c9e-45ca-9973-50a8a4bf2e02" name="references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="d18d9a53-7702-403a-beb1-7d895b23c064" node-id="d48b58fe-04e6-4ddf-acd5-c89e31dfd052">
+      <property-change id="6e054a6b-183f-4364-aa1d-e8ca7c73fc90" property-name="day" old-value="1" new-value="1"/>
+      <add id="e7c70aee-b6f7-42dd-b34e-3f697188a752">
+        <label id="0bfa56e9-64d9-4e3d-bfe5-375231f4c2ae" name="instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="5c7add3c-5475-45e3-abb2-fb24f3b0d4ef" node-id="0dae325c-4033-4a4a-82aa-e8378177c9eb">
+      <property-change id="941b6642-4817-4908-941a-b4e6f7934e0e" property-name="day" old-value="1" new-value="1"/>
+      <add id="1876db03-c8b6-4fae-bdab-7cb3a77d60da">
+        <label id="bc8c975b-b801-4c4d-abc9-9241f0253945" name="instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two"/>
+      </add>
+      <add id="93b4e5aa-99d4-4f82-ad8b-c496bcfd166d">
+        <label id="b904d2a9-6d03-46d3-954a-38d768df452d" name="references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 21" date="2012-10-15" mandatory="true" released-date="2012-10-15T10:51:56.806Z" updated-date="2012-10-15T10:39:46.191Z" previous-amendment-key="2012-10-12~Rev 20">
+    <period-delta id="9ce90032-dee4-4ea4-86bc-d3f7e2e35674" node-id="c849fb47-1917-47d3-aacd-74331aa46ed8">
+      <add id="539209c7-b34a-4f39-ae20-e0f00c9e7e07">
+        <planned-activity id="8f7b2974-7cd6-4e14-887c-56d96f632608" day="1">
+          <label id="e70557c8-be9d-410e-aa07-1e3e257a094b" name="event:pregnancy_visit_1"/>
+          <label id="22c03641-eb29-4ecd-a468-be278e28d512" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="8c962df9-e1bc-4e7d-82d3-2283a0b48b1a" name="order:00_01"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="3755f047-5183-49f8-9015-98b7c6ccbb98" node-id="1c5d3b15-57e5-4cce-b933-c354b4e71238">
+      <property-change id="0f3885c1-38d0-4f0b-a947-66294031b4aa" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <period-delta id="b19568e6-f166-4265-b968-d716d5fc607b" node-id="6357145c-4d43-4527-ad9d-f277b353c70c">
+      <add id="8a986e60-b996-481c-8a79-54c385ef5da7">
+        <planned-activity id="67434ff2-6581-4573-85e1-0c93aac1773d" day="1">
+          <label id="ef0eda9e-f659-4eaf-8a40-cb6efddf5f54" name="event:pregnancy_visit_2"/>
+          <label id="c2837e11-5e2a-4bce-807c-c20adf8d0ee4" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="fc91a069-8387-429b-a94f-e5d48fea52c9" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="dabf7599-c3a3-43ad-8ec0-ac7aa767e255">
+        <planned-activity id="152543e8-313e-43bf-9125-432893b19e70" day="1">
+          <label id="554dffd8-7b76-4c44-82a7-c3163912be22" name="event:pregnancy_visit_2"/>
+          <label id="f997f075-6c0f-4895-8a91-2dbccb75cd8e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="f7306409-9fed-4127-aed4-7429f457ae68" name="order:00_01"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="15a1bc2a-6dd3-468e-994b-e11b47d17c3d" node-id="93589159-2493-4d02-9c7c-dc253692bd80">
+      <property-change id="fb418c44-d759-4ae1-961d-835cadb50ca7" property-name="day" old-value="1" new-value="1"/>
+      <add id="7c9ad45d-6e05-4ef8-ba01-1bc3387be171">
+        <label id="63cc0961-10ab-4982-8bf2-8b53695d5280" name="instrument:3.0:ins_que_pregvisit2_int_ehpbhipbs_m3.0_v3.0"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="47b1e92f-1faf-440f-9317-490cd5396dc3" node-id="4a3ec00c-7aeb-489e-9f54-acf445219ece">
+      <property-change id="c2e94d36-465a-40d8-bea6-275a8904df52" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 20" date="2012-10-12" mandatory="true" released-date="2012-10-12T13:06:20.130Z" updated-date="2012-10-12T13:06:12.502Z" previous-amendment-key="2012-10-12~Rev 19">
+    <planned-activity-delta id="78a9b34f-a3fc-4e58-9788-c0e4d178c1f4" node-id="c8946f02-c7f3-4343-a32a-17c8b8249a68">
+      <property-change id="440f21a0-43eb-4061-a187-6fdf0d93e842" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="5f35f0c6-5669-4972-b95a-c77c7223a5f7" node-id="03a14417-4d1b-4243-938b-af7dcf44771d">
+      <property-change id="c18b7b08-91ab-4717-b4d3-da7bf8539087" property-name="day" old-value="1" new-value="1"/>
+      <remove id="b2cf7d9b-a377-42c9-b836-0c06375dffe7" child-id="9377cd0a-0c9f-43ce-9b2d-162e3909249a"/>
+      <add id="261721e5-485c-453a-a1c8-d14f0393c10a">
+        <label id="040ec75c-a08b-4d93-a36f-b8d6cdae129c" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 19" date="2012-10-12" mandatory="true" released-date="2012-10-12T10:55:00.495Z" updated-date="2012-10-12T10:45:04.797Z" previous-amendment-key="2012-10-03~Rev 18">
+    <planned-activity-delta id="c535b454-0644-4f28-a5b2-5e54c3b6ac4a" node-id="cad092e0-5863-44ee-9439-506bf34c1a97">
+      <property-change id="b30fbe4e-ac3e-499a-b4dc-ed40efbed5a4" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="e8ca14d2-0f41-403c-bf19-f62b0c6ec130" node-id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9">
+      <property-change id="7643379b-5143-47ce-bc49-fddf105b81cb" property-name="day" old-value="1" new-value="1"/>
+      <add id="c3428f2c-e181-44c8-8161-607817dec7da">
+        <label id="d9efaf9c-a7e0-49aa-b857-51bc0582c625" name="instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"/>
+      </add>
+    </planned-activity-delta>
+    <period-delta id="95d4fa65-0ca5-4d32-8e30-317e810de015" node-id="c849fb47-1917-47d3-aacd-74331aa46ed8">
+      <add id="5ae83ebb-cef3-4d0c-bea4-8900822e7ed7">
+        <planned-activity id="03a14417-4d1b-4243-938b-af7dcf44771d" day="1">
+          <label id="e3d962a7-f8be-4f16-b646-684899ae9ebe" name="event:pregnancy_visit_1"/>
+          <label id="9377cd0a-0c9f-43ce-9b2d-162e3909249a" name="instrument:3.0:ins_que_tracingintmod_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="265f8f72-14cb-4a16-8a7a-ba94157fd53f" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="d673a0ff-b4a6-4cb2-9689-a7798aa6f7e0" node-id="c2edce44-60d5-4aed-8f6e-b38388fdfc0b">
+      <property-change id="59e8a6b9-894d-40c0-a74b-a3ec10471287" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 18" date="2012-10-03" mandatory="true" released-date="2012-10-05T14:00:27.459Z" updated-date="2012-10-05T13:44:35.122Z" previous-amendment-key="2012-09-26~Rev 17">
     <planned-calendar-delta id="5a977093-b6f4-449f-9499-2d366ec1ee2c" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
       <add id="8529c6ac-149a-43fa-b4f9-be8185519d6b" index="3">
@@ -2685,85 +2789,86 @@
     <source name="NCS">
       <activity name="18-Month Mother Interview Mother Mold" code="18MMI MM" description="18-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
       <activity name="Pregnancy Visit 1 SAQ" code="PV1SAQ" description="Pregnancy Visit 1 SAQ" type="Instrument"/>
-      <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
-      <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
-      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
       <activity name="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" code="ETWPharmTCI" description="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" type="Environment"/>
       <activity name="Father Interview" code="FI" description="Father Interview" type="Instrument"/>
-      <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
       <activity name="9-Month Mother Phone Interview Mother Detail" code="9MMPI MD" description="9-Month Mother Phone Interview Mother Detail - Child Loop" type="Instrument"/>
       <activity name="Pregnancy Visit 2 SAQ" code="PV2SAQ" description="Pregnancy Visit 2 SAQ" type="Instrument"/>
       <activity name="18-Month Mother Interview Mother Detail" code="18MMI MD" description="18-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
       <activity name="18-Month Mother Interview Mother Habits" code="18MMI MH" description="18-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
       <activity name="6-Month Infant Feeding SAQ" code="6MIFSAQ" description="6-Month Infant Feeding SAQ" type="Instrument"/>
       <activity name="Environmental Tap Water Pesticides Technician Collect Instrument" code="ETWPestTCI" description="Environmental Tap Water Pesticides Technician Collect Instrument" type="Environment"/>
-      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview Part One" type="Instrument"/>
       <activity name="12-Month Mother Interview Mother Detail" code="12MMI MD" description="12-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
-      <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
       <activity name="9-Month Mother Phone Interview Part One" code="9MMPI1" description="9-Month Mother Interview Part One" type="Instrument"/>
-      <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
       <activity name="Low Intensity Invitation to High-Intensity Conversion Interview" code="LIITHICI" description="Low Intensity Invitation to High-Intensity Conversion Interview" type="Instrument"/>
       <activity name="Father Consent" code="FC" description="Father Consent" type="Consent"/>
+      <activity name="Pregnancy Visit 2 Information Sheet" code="VIS 2" description="Pregnancy Visit 2 Information Sheet" type="Information Sheet"/>
+      <activity name="Pregnancy Visit 1 Information Sheet" code="VIS 1" description="Pregnancy Visit 1 Information Sheet" type="Information Sheet"/>
+      <activity name="Birth Interview Part One" code="BI1" description="Birth Interview Part One" type="Instrument"/>
+      <activity name="Birth Interview Part Two" code="BI2" description="Birth Interview Part Two" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview Child Detail" code="3MMPI CD" description="3-Month Mother Phone Interview Child Detail - Child Loop" type="Instrument"/>
+      <activity name="Biospecimen Adult Urine Instrument" code="BAUI" description="Biospecimen Adult Urine Instrument" type="Biospecimen"/>
+      <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>
+      <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
+      <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
+      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Pregnancy Probability Group Instrument CATI" code="CATI" description="Pregnancy Probability Group Instrument CATI" type="Instrument"/>
+      <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
+      <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
+      <activity name="24-Month Mother Interview" code="24MMI" description="24-Month Mother Interview" type="Instrument"/>
+      <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Pre-Pregnancy Interview" code="PPI" description="Pre-Pregnancy Interview" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part Four" code="18MMI4" description="18-Month Mother Interview Part Four" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part Two" code="18MMI2" description="18-Month Mother Interview Part Two" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part Three" code="18MMI3" description="18-Month Mother Interview Part Three" type="Instrument"/>
+      <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
+      <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
+      <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
+      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
+      <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
       <activity name="24-Month Mother Interview Part One" code="24MMI1" description="24-Month Mother Interview Part One" type="Instrument"/>
       <activity name="24-Month Mother Interview Part Two" code="24MMI2" description="24-Month Mother Interview Part Two" type="Instrument"/>
       <activity name="24-Month Mother Interview Part Three" code="24MMI3" description="24-Month Mother Interview Part Three" type="Instrument"/>
       <activity name="24-Month Mother Interview Part Four" code="24MMI4" description="24-Month Mother Interview Part Four" type="Instrument"/>
       <activity name="3-Month Mother Phone Interview Part One" code="3MMPI1" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
-      <activity name="Pregnancy Visit 2 Information Sheet" code="VIS 2" description="Pregnancy Visit 2 Information Sheet" type="Information Sheet"/>
-      <activity name="Pregnancy Visit 1 Information Sheet" code="VIS 1" description="Pregnancy Visit 1 Information Sheet" type="Information Sheet"/>
-      <activity name="Birth Interview Part One" code="BI1" description="Birth Interview Part One" type="Instrument"/>
-      <activity name="Birth Interview Part Two" code="BI2" description="Birth Interview Part Two" type="Instrument"/>
       <activity name="6-Month Mother Interview Mother Detail" code="6MMI MD" description="6-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
       <activity name="12-Month Visit Information Sheet" code="12MVIS" description="12-Month Visit Information Sheet" type="Information Sheet"/>
       <activity name="3-Month Mother Phone Interview Part Two" code="3MMPI2" description="3-Month Mother Phone Interview Part Two" type="Instrument"/>
       <activity name="3-Month Mother Phone Interview Part Three" code="3MMPI3" description="3-Month Mother Phone Interview Part Three" type="Instrument"/>
       <activity name="24-Month Mother Interview Mother Detail" code="24MMI MD" description="24-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother Interview Mother Habits" code="24MMI MH" description="24-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
-      <activity name="3-Month Mother Phone Interview Child Detail" code="3MMPI CD" description="3-Month Mother Phone Interview Child Detail - Child Loop" type="Instrument"/>
+      <activity name="Participant Verification Instrument" code="PVI" description="Participant Verification Instrument" type="Instrument"/>
       <activity name="9-Month Mother Phone Interview" code="9MMPI" description="9-Month Mother Phone Interview" type="Instrument"/>
-      <activity name="Biospecimen Adult Urine Instrument" code="BAUI" description="Biospecimen Adult Urine Instrument" type="Biospecimen"/>
       <activity name="Birth Interview" code="BI" description="Birth Interview Part One" type="Instrument"/>
-      <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>
       <activity name="Birth Interview Baby Name" code="BI BN" description="Birth Interview Baby Name - Child Loop" type="Instrument"/>
-      <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
       <activity name="24-Month Mother Interview Mother Mold" code="24MMI MM" description="24-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
-      <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
       <activity name="Low-Intensity Birth Interview Baby Name" code="LIBI BN" description="Low-Intensity Birth Interview Baby Name - Child Loop" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview" code="LIBI" description="Low-Intensity Birth Interview" type="Instrument"/>
-      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up Interview" code="PPGFUI" description="Pregnancy Probability Group Follow-Up Interview" type="Instrument"/>
       <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview Part One" type="Instrument"/>
-      <activity name="Pregnancy Probability Group Instrument CATI" code="CATI" description="Pregnancy Probability Group Instrument CATI" type="Instrument"/>
       <activity name="18-Month Mother SAQ" code="18MMSAQ" description="18-Month Mother SAQ" type="Instrument"/>
       <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
       <activity name="Child Consent" code="CC" description="Child Consent" type="Consent"/>
       <activity name="Father Visit Information Sheet" code="VIS (father)" description="Father Visit Information Sheet" type="Information Sheet"/>
       <activity name="12-Month Mother Interview Part Two" code="12MMI2" description="12-Month Mother Interview Part Two" type="Instrument"/>
-      <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
       <activity name="12-Month Mother Interview Part One" code="12MMI1" description="12-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Pre-Pregnancy SAQ" code="SAQ (pre)" description="Pre-Pregnancy SAQ" type="Instrument"/>
-      <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
       <activity name="Low-Intensity Birth Interview Part Two" code="LIBI B2" description="Low-Intensity Birth Interview Part Two" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up SAQ" code="PPGFUSAQ" description="Pregnancy Probability Group Follow-Up SAQ" type="Instrument"/>
-      <activity name="24-Month Mother Interview" code="24MMI" description="24-Month Mother Interview" type="Instrument"/>
-      <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Pregnancy 2 Record of VIS" code="PR 2" description="Pregnancy 2 Record of VIS" type="Consent"/>
       <activity name="Pregnancy 1 Record of VIS" code="PR 1" description="Pregnancy 1 Record of VIS" type="Consent"/>
       <activity name="Tracing Module" code="TM" description="Tracing Module" type="Instrument"/>
       <activity name="Low-Intensity Interview" code="LII" description="Low-Intensity Interview" type="Instrument"/>
-      <activity name="Pre-Pregnancy Interview" code="PPI" description="Pre-Pregnancy Interview" type="Instrument"/>
       <activity name="Low-Intensity Consent" code="LIC" description="Low-Intensity Consent" type="Consent"/>
       <activity name="Infant Health Care Log" code="IHCL" description="Infant Health Care Log" type="Instrument"/>
       <activity name="Pregnancy Visit 2 Interview" code="PV2I" description="Pregnancy Visit 2 Interview" type="Instrument"/>
-      <activity name="18-Month Mother Interview Part Four" code="18MMI4" description="18-Month Mother Interview Part Four" type="Instrument"/>
       <activity name="6-Month Visit Information Sheet" code="6MVIS" description="6-Month Visit Information Sheet" type="Information Sheet"/>
       <activity name="Pregnancy Visit 1 Interview" code="PV1I" description="Pregnancy Visit 1 Interview" type="Instrument"/>
-      <activity name="18-Month Mother Interview Part Two" code="18MMI2" description="18-Month Mother Interview Part Two" type="Instrument"/>
       <activity name="6-Month Mother Interview Part Two" code="6MMI2" description="6-Month Mother Interview Part Two" type="Instrument"/>
       <activity name="6-Month Mother Interview Part One" code="6MMI1" description="6-Month Mother Interview Part One" type="Instrument"/>
-      <activity name="18-Month Mother Interview Part Three" code="18MMI3" description="18-Month Mother Interview Part Three" type="Instrument"/>
-      <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
-      <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
     </source>
   </sources>
 </study>
