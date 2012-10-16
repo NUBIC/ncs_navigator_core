@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-10-16T10:06:38.839Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-10-16T14:05:35.24Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 23" date="2012-10-16" mandatory="true" released-date="2012-10-16T14:05:35.24Z" updated-date="2012-10-16T14:03:46.912Z" previous-amendment-key="2012-10-16~Rev 22">
+    <period-delta id="99aae6ba-1095-423e-82db-273ac33f9692" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
+      <add id="dbcc4209-32c4-45df-be6b-d11dc63a786c">
+        <planned-activity id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924" day="1">
+          <label id="20e13856-81ae-410c-ac1d-41aedf2c4ad6" name="event:birth"/>
+          <label id="f2a885a7-a443-40ef-a8ab-d71f16a7934e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="d42a7eaf-3137-4469-8bc6-7c5fd7193fd9" name="order:00_01"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="96dea725-a6e8-46ba-bf6a-aa066947be0e">
+        <planned-activity id="cdff78b4-ff7b-401d-be81-b61c7bbbcbf4" day="1">
+          <label id="a7909492-1325-4372-8230-19d286d01f2a" name="event:birth"/>
+          <label id="8ff56b2d-7d14-43dd-9199-216d2e438ba0" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="6bbd2c95-f3ad-4b8d-9197-08340976eb0a" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+  </amendment>
   <amendment name="Rev 22" date="2012-10-16" mandatory="true" released-date="2012-10-16T10:06:38.839Z" updated-date="2012-10-16T10:01:21.335Z" previous-amendment-key="2012-10-15~Rev 21">
     <planned-activity-delta id="7191caea-444b-4993-80e1-f1a434fbfee9" node-id="b91da252-9133-497a-b241-375b7d71c229">
       <property-change id="4142524b-05c7-47b2-b075-7c093e2e1e7f" property-name="day" old-value="1" new-value="1"/>

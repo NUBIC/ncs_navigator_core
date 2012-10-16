@@ -629,6 +629,18 @@
             <label id="fa028f78-d01b-4353-bfc6-6c54560ec087" name="participant_type:mother"/>
             <activity-reference code="24MMI1" source="NCS"/>
           </planned-activity>
+          <planned-activity id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924" day="1">
+            <label id="20e13856-81ae-410c-ac1d-41aedf2c4ad6" name="event:birth"/>
+            <label id="f2a885a7-a443-40ef-a8ab-d71f16a7934e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="d42a7eaf-3137-4469-8bc6-7c5fd7193fd9" name="order:00_01"/>
+            <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="cdff78b4-ff7b-401d-be81-b61c7bbbcbf4" day="1">
+            <label id="a7909492-1325-4372-8230-19d286d01f2a" name="event:birth"/>
+            <label id="8ff56b2d-7d14-43dd-9199-216d2e438ba0" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="6bbd2c95-f3ad-4b8d-9197-08340976eb0a" name="order:90_01"/>
+            <activity-reference code="TM" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
     </epoch>
