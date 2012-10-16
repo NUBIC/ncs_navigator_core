@@ -610,7 +610,7 @@ describe Instrument do
     let(:psc_participant) { stub(:participant => p, :scheduled_activities => activities) }
     let(:schedule) do
       Psc::ScheduledActivity.from_schedule({
-        'labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0'
+        'labels' => 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
       })
     end
 
@@ -629,7 +629,7 @@ describe Instrument do
     describe "if the instrument's survey matches a references label" do
       it 'returns that activity' do
         instrument.scheduled_activities(psc_participant).should == [
-          sa('labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0')
+          sa('labels' => 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0')
         ]
       end
     end
@@ -652,7 +652,7 @@ describe Instrument do
       describe 'and the activity has references labels' do
         let(:schedule) do
           Psc::ScheduledActivity.from_schedule({
-            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:something_else'
+            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:2.0:something_else'
           })
         end
 

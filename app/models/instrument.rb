@@ -78,10 +78,10 @@ class Instrument < ActiveRecord::Base
   #                 - the participant who the survey is about
   # @param [Survey] - instrument_survey
   #                 - the one associated with the first of multi-part sequence or singleton survey
-  #                 - i.e. the references label
+  #                 - i.e. Survey with title matching PSC activity references label
   # @param [Survey] - current_survey
   #                 - the one part of the multi-part survey or singleton
-  #                 - i.e. the instrument label
+  #                 - i.e. Survey with title matching PSC activity instrument label
   # @param [Event]  - the event associated with the Instrument
   def self.start(person, participant, instrument_survey, current_survey, event)
 

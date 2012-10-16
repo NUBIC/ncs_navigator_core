@@ -15,7 +15,7 @@ shared_context 'from report' do
               "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name",
               "order:01_02",
               "participant_type:child",
-              "references:ins_que_birth_int_ehpbhi_p2_v2.0"
+              "references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0"
           ],
           "responsible_user": "user",
           "scheduled_date": "2012-07-10",
@@ -49,7 +49,7 @@ shared_context 'from report' do
               "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name",
               "order:01_02",
               "participant_type:child",
-              "references:ins_que_birth_int_ehpbhi_p2_v2.0"
+              "references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0"
           ],
           "responsible_user": "user",
           "scheduled_date": "2012-07-10",
@@ -91,7 +91,7 @@ shared_context 'from schedule' do
           "study_segment": "HI-Intensity: Child",
           "id": "11",
           "ideal_date": "2011-01-01",
-          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name references:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_02 participant_type:child collection:biological"
+          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_02 participant_type:child collection:biological"
       }
     })
   end
@@ -113,7 +113,7 @@ shared_context 'from schedule' do
           "study_segment": "HI-Intensity: Child",
           "id": "11",
           "ideal_date": "2011-01-01",
-          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name references:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_02 participant_type:child collection:biological"
+          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_02 participant_type:child collection:biological"
       }
     })
   end

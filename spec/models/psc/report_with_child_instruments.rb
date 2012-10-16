@@ -24,7 +24,7 @@ shared_context 'report with child instruments' do
                       "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name",
                       "order:01_01",
                       "participant_type:child",
-                      "references:ins_que_birth_int_ehpbhi_p2_v2.0"
+                      "references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0"
                   ],
                   "responsible_user": "user",
                   "scheduled_date": "2012-07-10",

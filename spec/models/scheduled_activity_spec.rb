@@ -12,7 +12,7 @@ describe ScheduledActivity do
       :activity_name => "Birth Interview",
       :activity_type => "Instrument",
       :person_id => "asdf",
-      :labels => "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:ins_que_birth_int_ehpbhi_p2_v2.0"
+      :labels => "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name order:01_02 participant_type:child references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0"
     }
   end
 
@@ -67,7 +67,47 @@ describe ScheduledActivity do
 
     describe ".references" do
       it "extracts references from the label" do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
         scheduled_activity.references.should == "ins_que_birth_int_ehpbhi_p2_v2.0"
+      end
+    end
+
+    describe ".references_collection" do
+      it "extracts all references from the label" do
+        sa = ScheduledActivity.new(:labels =>
+          "event:pregnancy_visit_1 references:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 references:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+        sa.references_collection.size.should == 2
+        sa.references_collection.should include("ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0")
+        sa.references_collection.should include("ins_que_pregvisit1_int_ehpbhi_p2_v2.0")
+      end
+
+      context "mdes version 3.0" do
+        it "sets the current mdes version as the references" do
+          NcsNavigatorCore.mdes.stub(:version).and_return "3.0"
+          sa = ScheduledActivity.new(:labels =>
+            "event:pregnancy_visit_1 references:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 references:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+
+          sa.references.should == "ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"
+        end
+      end
+
+      context "mdes version 2.0" do
+        it "sets the current mdes version as the references" do
+          NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+          sa = ScheduledActivity.new(:labels =>
+            "event:pregnancy_visit_1 references:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 references:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+
+          sa.references.should == "ins_que_pregvisit1_int_ehpbhi_p2_v2.0"
+        end
+
+        it "does not set references if no matching mdes version references" do
+          NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+          sa = ScheduledActivity.new(:labels =>
+            "event:pregnancy_visit_1 references:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0 order:01_01")
+
+          sa.references.should be_blank
+        end
+
       end
     end
 
