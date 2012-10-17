@@ -343,10 +343,6 @@ module NcsNavigator::Core::Mustache
       "[ARE_YOU_OR_IS_GUARDIAN_NAME]"
     end
 
-    def still
-      "[STILL]"
-    end
-
     def primary_address
       "[PRIMARY_ADDRESS]"
     end
