@@ -3,6 +3,7 @@
 
 class OperationalDataExtractor
   EXTRACTORS = [
+    [/_ParticipantVerif_/,  ParticipantVerificationOperationalDataExtractor],
     [/_Tracing_/,           TracingModuleOperationalDataExtractor],
     [/_PBSamplingScreen_/,  PbsEligibilityScreenerOperationalDataExtractor],
     [/_PregScreen_/,        PregnancyScreenerOperationalDataExtractor],
@@ -228,6 +229,10 @@ class OperationalDataExtractor
 
     def primary_rank
       @primary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+    end
+
+    def secondary_rank
+      @secondary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
     end
 
     def set_value(obj, attr, value)
