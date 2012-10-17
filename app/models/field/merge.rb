@@ -294,11 +294,11 @@ module Field
     # @private
     # @return Boolean
     def save_collection(coll)
-      coll.all? do |entity|
+      coll.map do |entity|
         next true unless entity
 
         entity.save.tap { |ok| log_errors_for(entity, ok) }
-      end
+      end.all?
     end
 
     ##
