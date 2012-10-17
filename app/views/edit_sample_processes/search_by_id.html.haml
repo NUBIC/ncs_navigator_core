@@ -70,3 +70,9 @@
           %div{:id => 'shipped_not_confirmed_table', :class => 'shipped_not_confirmed_table'}
             %a{ :href => edit_specimen_receipt_confirmation_path(:id => @specimen_receipt_confirmation.id, :in_edit_mode => true), :class => "edit_specimen_sample_store", :id => @specimen_receipt_confirmation.id}
               = @specimen_receipt_confirmation.specimen.specimen_id
+        - if not @specimen_shippings_not_received.blank?
+          %div{:id => 'shipped_not_confirmed_specs_table', :class => 'shipped_not_confirmed_specs_table'}
+            %b Specimens:
+            - @specimen_shippings_not_received.each do |specimen_shipping|
+              %p{:class => "paragraph_shift"}
+                = link_to specimen_shipping.shipment_tracking_number, {:controller => "specimen_receipt_confirmations", :action => "index", :tracking_number => specimen_shipping.shipment_tracking_number}, :class => "confirm_link", :id => "confirm_link"
