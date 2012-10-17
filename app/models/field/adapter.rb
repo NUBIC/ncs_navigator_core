@@ -7,11 +7,9 @@ module Field
     end
 
     attr_accessor :target
-    attr_accessor :ancestors
 
     def initialize(target)
       self.target = target
-      self.ancestors = {}
     end
 
     def [](a)
