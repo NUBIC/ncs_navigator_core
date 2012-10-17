@@ -29,6 +29,10 @@ class Response < ActiveRecord::Base
 
   def self.default_scope; end
 
+  def self.with_answers_and_questions
+    includes(:answer, :question)
+  end
+
   def source_mdes_record=(record)
     self.source_mdes_table = record.class.mdes_table_name
     self.source_mdes_id = record.key.first

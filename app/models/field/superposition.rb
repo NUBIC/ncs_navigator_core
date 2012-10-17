@@ -129,7 +129,7 @@ module Field
         set_current_state(h, ::Instrument, 'instrument_id')
         set_current_state(h, ::Participant, 'p_id')
         set_current_state(h, ::Person, 'person_id')
-        set_current_state(h, ::Response, 'api_id')
+        set_current_state(h, ::Response.with_answers_and_questions, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
       end
     end
