@@ -15,7 +15,7 @@
           Root ID
         %th
           Extension
-    
+
       = f.fields_for :samples do |s|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
@@ -30,19 +30,19 @@
           %td
             = sample_root_id(s.object.sample_id)
           %td
-            = sample_extenstion(s.object.sample_id)            
+            = sample_extenstion(s.object.sample_id)
   %div{:id => 'manifest_form', :class => 'manifest_form'}
     = f.label "Staff:"
     = display_staff_info
     %br
-  
+
     = f.label "Ship Date:"
     = f.text_field :shipment_date, :class => "date important_field"
     %span{ :class => "required" } *
     %br
 
     = f.label "Ship Time:"
-    = f.text_field :shipment_time, :class => "time"
+    = f.text_field :shipment_time, :class => "timepicker"
     %br
 
 
@@ -58,11 +58,11 @@
     = f.label "Site Code:"
     = f.object.sample_receipt_shipping_center.sample_receipt_shipping_center_id
     %br
-    
+
     = f.label "Contact Name:"
     = f.text_field :contact_name
     %br
-    
+
     = f.label "Contact Phone:"
     = f.text_field :contact_phone
     %br
@@ -86,12 +86,12 @@
     = f.label "Total # Containers:"
     = f.object.samples.size
     %br
-  
+
     = f.label "Total # Samples:"
     = f.object.samples.size
     %br
 
-  = hidden_field_tag :in_edit_mode, @in_edit_mode      
+  = hidden_field_tag :in_edit_mode, @in_edit_mode
 
   = submit_tag "Generate Manifest", :class => "generate_manifest", :id => "generate_manifest", :in_edit_mode => @in_edit_mode
   -#%input{:type=>"button", :class => "exit_and_no_refresh", :value =>"Exit"}

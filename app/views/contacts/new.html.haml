@@ -1,12 +1,9 @@
 - title "New Contact"
 
-.mdes_table_definition
-  = render 'documentation/contact'
-
 %h3
   = @person
   = "::" unless @person.to_s.blank?
-  = @event.event_type.display_text
+  = @event.to_s
 - if @requires_consent
   %p
     %span.warning

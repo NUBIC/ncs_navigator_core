@@ -10,6 +10,7 @@ class NonInterviewProvidersController < ApplicationController
     @provider = Provider.find(params[:provider_id])
 
     @non_interview_provider = NonInterviewProvider.new(:psu_code => NcsNavigatorCore.psu_code, :contact => @contact, :provider => @provider)
+    @non_interview_provider.nir_type_provider_code = 2 if params[:refusal]
 
     respond_to do |format|
       format.html # new.html.erb
@@ -37,7 +38,8 @@ class NonInterviewProvidersController < ApplicationController
 
     respond_to do |format|
       if @non_interview_provider.save
-        format.html { redirect_to contact_log_provider_path(@provider.id), :notice => 'Non-Interview Provider Report was successfully created.' }
+        redirect_path = @provider.pbs_list ? pbs_list_path(@provider.pbs_list) : contact_log_provider_path(@provider.id)
+        format.html { redirect_to redirect_path, :notice => 'Non-Interview Provider Report was successfully created.' }
         format.json { render :json => @non_interview_provider, :status => :created, :location => @non_interview_provider }
       else
         format.html { render :action => "new" }
@@ -53,7 +55,9 @@ class NonInterviewProvidersController < ApplicationController
 
     respond_to do |format|
       if @non_interview_provider.update_attributes(params[:non_interview_provider])
-        format.html { redirect_to contact_log_provider_path(@non_interview_provider.provider_id), :notice => 'Non-Interview Provider Report was successfully updated.' }
+        provider = @non_interview_provider.provider
+        redirect_path = provider.pbs_list ? pbs_list_path(provider.pbs_list) : contact_log_provider_path(provider.id)
+        format.html { redirect_to redirect_path, :notice => 'Non-Interview Provider Report was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render :action => "edit" }

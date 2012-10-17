@@ -85,3 +85,10 @@ div.records {
     }
   }
 }
+
+table#provider_logistics_line_items,
+table#staff_contact_line_items {
+  tr {
+    border: none;
+  }
+}

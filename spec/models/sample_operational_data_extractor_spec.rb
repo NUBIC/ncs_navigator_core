@@ -60,10 +60,11 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).count.should == 3
+        instrument.samples.reload
+        instrument.samples.count.should == 3
 
         sample_ids.each do |sample_id|
-          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
         end
 
       end
@@ -86,10 +87,11 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).count.should == 2
+        instrument.samples.reload
+        instrument.samples.count.should == 2
 
         sample_ids.each do |sample_id|
-          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
         end
 
         sample_ids = [
@@ -109,12 +111,12 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).count.should == 3
+        instrument.samples.reload
+        instrument.samples.count.should == 3
 
         sample_ids.each do |sample_id|
-          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
         end
-
 
       end
 
@@ -134,10 +136,11 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).count.should == 1
+        instrument.samples.reload
+        instrument.samples.count.should == 1
 
         sample_ids.each do |sample_id|
-          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
         end
 
       end
@@ -170,10 +173,11 @@ describe SampleOperationalDataExtractor do
 
         SampleOperationalDataExtractor.extract_data(response_set)
 
-        samples = Sample.where(:instrument_id => instrument.id).count.should == 3
+        instrument.samples.reload
+        instrument.samples.count.should == 3
 
         sample_ids.each do |sample_id|
-          Sample.where(:instrument_id => instrument.id, :sample_id => sample_id).first.should_not be_nil
+          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
         end
 
       end

@@ -1,8 +1,5 @@
 - title "New Address"
 
-.mdes_table_definition
-  = render 'documentation/address'
-
 .page_section
   = form_for(@address, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object

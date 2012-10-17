@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 NcsNavigatorCore::Application.routes.draw do
   resources :dwelling_units do
     member do
@@ -24,6 +23,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :responses_for
       put :responses_for
       get :provider_staff_member
+      get :provider_staff_member_radio_button
     end
     resources :contacts, :except => [:index]
     resources :telephones, :except => [:index, :destroy]
@@ -60,12 +60,15 @@ NcsNavigatorCore::Application.routes.draw do
       put :finalize_instrument
       get :decision_page
     end
-    resources :instrument, :except => [:index, :destroy]
+    resources :instruments, :except => [:index, :destroy]
+    resources :events, :except => [:index, :destroy]
+    resources :contacts, :except => [:index, :destroy]
   end
   resources :non_interview_reports, :except => [:index, :destroy, :show]
   resources :participant_consents
   resources :participant_visit_records
   resources :participant_visit_consents
+  resources :institutions
   resources :providers do
     member do
       get :edit_contact_information
@@ -85,8 +88,9 @@ NcsNavigatorCore::Application.routes.draw do
       put :process_refused
     end
     resources :non_interview_providers, :except => [:destroy]
+    resources :people, :except => [:index, :destroy, :show]
   end
-  resources :pbs_lists do
+  resources :pbs_lists, :except => [:new, :create] do
     member do
       get :recruit_provider
     end
@@ -102,32 +106,6 @@ NcsNavigatorCore::Application.routes.draw do
       post :provider_recruitment
     end
   end
-
-  namespace :api do
-    scope '/v1' do
-      resources :fieldwork, :only => [:create, :update, :show]
-      resources :merges
-    end
-  end
-
-  resources :fieldwork, :only => [:index, :show]
-
-  match "/faq", :to => "welcome#faq", :via => [:get]
-  match "/reports", :to => "reports#index", :via => [:get]
-  match "/reports/index", :to => "reports#index", :via => [:get]
-  match "/reports/case_status", :to => "reports#case_status", :via => [:get, :post]
-  match "/reports/upcoming_births", :to => "reports#upcoming_births", :via => [:get]
-  match "/reports/ppg_status", :to => "reports#ppg_status", :via => [:get]
-  match "/reports/number_of_consents_by_type", :to => "reports#number_of_consents_by_type", :via => [:get]
-  match "/reports/consented_participants", :to => "reports#consented_participants", :via => [:get]
-
-  match "/welcome/summary", :to => "welcome#summary"
-  match "/welcome/upcoming_activities", :to => "welcome#upcoming_activities"
-  match "/welcome/overdue_activities", :to => "welcome#overdue_activities"
-  match "/welcome/pending_events", :to => "welcome#pending_events"
-  match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
-
-  root :to => "welcome#index"
 
   resources :specimens do
     collection do
@@ -147,8 +125,6 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
 
-  match "/shipping", :to => "shipping#index"
-
   resources :specimen_processing_shipping_centers
   resources :sample_receipt_shipping_centers
   resources :specimen_pickups, :only => [:new, :create, :show]
@@ -162,15 +138,10 @@ NcsNavigatorCore::Application.routes.draw do
   end
 
   resources :specimen_receipts
-
   resources :specimen_receipt_confirmations
-
   resources :sample_shipping_confirmations
-
   resources :sample_receipt_confirmations
-
   resources :sample_processes
-
   resources :edit_sample_processes do
     collection do
       post :search_by_id
@@ -201,4 +172,42 @@ NcsNavigatorCore::Application.routes.draw do
       post :update
     end
   end
+
+  match "/shipping", :to => "shipping#index"
+
+  namespace :api do
+    scope '/v1' do
+      resources :fieldwork, :only => [:create, :update, :show]
+      resources :merges
+
+      match '/system-status', :to => 'status#show'
+    end
+  end
+
+  resources :fieldwork, :only => :index do
+    resources :merges, :only => :show do
+      collection do
+        get :latest
+      end
+    end
+  end
+
+  match "/faq", :to => "welcome#faq", :via => [:get]
+  match "/reports", :to => "reports#index", :via => [:get]
+  match "/reports/index", :to => "reports#index", :via => [:get]
+  match "/reports/case_status", :to => "reports#case_status", :via => [:get, :post]
+  match "/reports/upcoming_births", :to => "reports#upcoming_births", :via => [:get]
+  match "/reports/ppg_status", :to => "reports#ppg_status", :via => [:get]
+  match "/reports/number_of_consents_by_type", :to => "reports#number_of_consents_by_type", :via => [:get]
+  match "/reports/consented_participants", :to => "reports#consented_participants", :via => [:get]
+
+  match "/welcome/summary", :to => "welcome#summary"
+  match "/welcome/upcoming_activities", :to => "welcome#upcoming_activities"
+  match "/welcome/overdue_activities", :to => "welcome#overdue_activities"
+  match "/welcome/pending_events", :to => "welcome#pending_events"
+  match "welcome/start_pregnancy_screener_instrument", :to => "welcome#start_pregnancy_screener_instrument", :as => "start_pregnancy_screener_instrument"
+  match "welcome/start_pbs_eligibility_screener_instrument", :to => "welcome#start_pbs_eligibility_screener_instrument", :as => "start_pbs_eligibility_screener_instrument"
+
+  root :to => "welcome#index"
+
 end

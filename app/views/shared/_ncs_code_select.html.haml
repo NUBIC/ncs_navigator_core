@@ -3,7 +3,9 @@
 - date ||= nil
 - help_text ||= nil
 - notify_marker ||= nil
-- html_attrs ||= {}
+- html_attrs ||= { :class => "required" }
+
+- html_attrs[:disabled] = "disabled" if code.to_s == "psu_code"
 %p
   = f.label code, label_text
   - if notify_marker

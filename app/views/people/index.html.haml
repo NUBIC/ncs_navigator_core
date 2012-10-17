@@ -1,8 +1,5 @@
 - title "People"
 
-.mdes_table_definition
-  = render 'documentation/person'
-
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     = f.label :last_name_start

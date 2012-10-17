@@ -1,12 +1,5 @@
 - title "Participant"
 
-.mdes_table_definition
-  = render 'documentation/participant'
-  %br
-    Disposition Codes
-    %span{ :class => "disposition_icon" }
-    = render "documentation/disposition_code_list"
-
 = render "participants/header_information", :person => @person, :participant => @participant
 
 #tabs
@@ -62,5 +55,5 @@
     = render 'participants/ppg_statuses'
     - if permit?(Role::SYSTEM_ADMINISTRATOR)
       = render 'participants/participant_state_transitions'
-    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
       = render 'participants/enrollment'

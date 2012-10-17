@@ -110,7 +110,7 @@ class BirthOperationalDataExtractor
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
-          person.send("#{PERSON_MAP[data_export_identifier]}=", value)
+          OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
         end
 
         if CHILD_PERSON_MAP.has_key?(data_export_identifier)
@@ -119,7 +119,7 @@ class BirthOperationalDataExtractor
             if child.nil?
               child = Person.new(:psu => person.psu)
             end
-            child.send("#{CHILD_PERSON_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -130,7 +130,7 @@ class BirthOperationalDataExtractor
               mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                          :address_type => Address.mailing_address_type, :response_set => response_set)
             end
-            mail_address.send("#{MAIL_ADDRESS_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -140,8 +140,7 @@ class BirthOperationalDataExtractor
             if phone.nil?
               phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
             end
-
-            phone.send("#{TELEPHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -152,8 +151,7 @@ class BirthOperationalDataExtractor
               home_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.home_phone_type, :response_set => response_set)
             end
-
-            home_phone.send("#{HOME_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -164,7 +162,7 @@ class BirthOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set)
             end
-            cell_phone.send("#{CELL_PHONE_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -174,7 +172,7 @@ class BirthOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
             end
-            email.send("#{EMAIL_MAP[data_export_identifier]}=", value)
+            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 

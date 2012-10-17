@@ -62,6 +62,14 @@ class PbsList < ActiveRecord::Base
 
   SEARCH_LOCATIONS = ["Original location", "Substitute location"]
 
+  ##
+  # Returns true if the in_out_frame_code is one of the following:
+  # * 4 Hospital in final sampling frame; out of scope for screening
+  # * 5 Hospital not in final sampling frame; out of scope for screening
+  def hospital?
+    [4,5].include?(in_out_frame_code)
+  end
+
   def recruitment_started?
     !self.pr_recruitment_start_date.blank? && self.pr_recruitment_status_code == 3
   end
@@ -70,12 +78,116 @@ class PbsList < ActiveRecord::Base
     !self.pr_recruitment_end_date.blank? && ([1,2,5].include?(self.pr_recruitment_status_code))
   end
 
+  ##
+  # True if the pr_recruitment_end_date date is set and the recruitment status is Refused
   def refused_to_participate?
     !self.pr_recruitment_end_date.blank? && self.pr_recruitment_status_code == 2
   end
 
   def has_substitute_provider?
     !self.substitute_provider_id.blank?
+  end
+
+  ##
+  # True if the cooperation date is set and the recruitment status is Recruited
+  def provider_recruited?
+    !self.pr_cooperation_date.blank? && self.pr_recruitment_status_code == 1
+  end
+
+  ##
+  # Updates the pr_recruitment_start_date to the
+  # earliest contact for provider recruitment
+  def set_recruitment_start_date!
+    self.update_attributes(:pr_recruitment_start_date => earliest_provider_recruitment_contact_date)
+  end
+
+  ##
+  # Updates the pr_cooperation_date to the
+  # earliest contact for provider recruitment
+  # where the provider said yes to the NCS
+  def set_cooperation_date!
+    self.update_attributes(:pr_cooperation_date => earliest_successful_provider_recruitment_contact_date)
+  end
+
+  ##
+  # Updates the pr_recruitment_end_date to the
+  # latest provider logistics completion date
+  def set_recruitment_end_date!
+    self.update_attributes(:pr_recruitment_end_date => latest_provider_logistic_completion_date)
+  end
+
+  ##
+  # Sets pr_recruitment_status to 'Provider Recruited' and
+  # pr_recruitment_end_date to the earliest contact for provider recruitment
+  # where the provider said yes to the NCS
+  def mark_recruited!
+    set_cooperation_date!
+    self.update_attributes(:pr_recruitment_status_code => 1)
+  end
+
+  ##
+  # Sets pr_recruitment_status to 'Provider Not Recruited'
+  def mark_refused!
+    self.update_attributes(:pr_recruitment_status_code => 2)
+  end
+
+  ##
+  # Sets pr_recruitment_status to 'Provider Recruitment In Progress'
+  def mark_in_progress!
+    self.update_attributes(:pr_recruitment_status_code => 3)
+  end
+
+  ##
+  # Marks recruited if logistics are completed and 
+  # update the provider recruitment event 
+  # date with latest logistic completion date
+  def update_recruitment_status!
+    self.mark_in_progress! if provider.has_no_provider_recruited_contacts?
+    self.mark_recruited! if provider.recruitment_logistics_complete? && !provider_recruited?
+    event = self.provider.try(:provider_recruitment_event)
+    event.update_attributes(:event_end_date => latest_provider_logistic_completion_date) if event
+  end
+
+  def latest_provider_logistic_completion_date
+    if provider.recruitment_logistics_complete?
+      provider.provider_logistics.sort_by { |l| l.completion_date }.last.completion_date
+    else
+      nil
+    end
+  end
+
+  def earliest_provider_recruitment_contact_date
+    if provider_recruitment_contacts.empty?
+      nil
+    else
+      provider_recruitment_contacts.last.contact_date_date
+    end
+  end
+
+  def earliest_successful_provider_recruitment_contact_date
+    provider_recruitment_contacts("AND contacts.contact_disposition = #{DispositionMapper::PROVIDER_RECRUITED}").last.try(:contact_date_date)
+  end
+
+  ##
+  # Returns all contacts for this provider whose event type is
+  # Provider Recruitment
+  def provider_recruitment_contacts(where = "")
+    provider.contacts.
+      joins("inner join events on contact_links.event_id = events.id").
+      where("events.event_type_code = #{Provider::PROVIDER_RECRUIMENT_EVENT_TYPE_CODE} #{where}").
+      order("contact_date DESC")
+  end
+
+  ##
+  # Called at create/update/delete of contact 
+  # or create/update/delete of logistics
+  # updates the pbs_list dates appropriately
+  # and opens recruitment on provider if necessary
+  def update_recruitment_dates!
+    set_recruitment_start_date!
+    set_cooperation_date!
+    set_recruitment_end_date!
+    # provider.open_recruitment if provider.has_no_provider_recruited_contacts?
   end
 
 end

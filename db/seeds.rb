@@ -9,5 +9,10 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
 
+if ENV['INITIAL_MDES_VERSION']
+  require 'ncs_navigator/core/mdes/version'
+  NcsNavigator::Core::Mdes::Version.set!(ENV['INITIAL_MDES_VERSION'])
+end
+
 require 'ncs_navigator/core/mdes_code_list_loader'
 NcsNavigator::Core::MdesCodeListLoader.new(:interactive => true).load_from_yaml

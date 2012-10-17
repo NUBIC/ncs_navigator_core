@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-
+# encoding: UTF-8
 class CreateValidations < ActiveRecord::Migration
   def self.up
     create_table :validations do |t|

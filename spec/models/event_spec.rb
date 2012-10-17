@@ -29,8 +29,6 @@
 #  updated_at                         :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
@@ -335,7 +333,6 @@ describe Event do
       Factory(:event, :event_type_code => 22).should be_provider_event
     end
 
-
   end
 
   context "time format" do
@@ -355,7 +352,6 @@ describe Event do
       let(:time_name) { "Event end time" }
     end
   end
-
 
   context "auto-completing MDES data" do
 
@@ -560,6 +556,11 @@ describe Event do
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
         part = Factory(:high_intensity_pregnancy_one_participant)
+        part.person = Factory(:person)
+        part.events << Factory(:event, :participant => part,
+                                :event_start_date => Date.today, :event_end_date => Date.today,
+                                :event_type => NcsCode.pregnancy_screener)
+
         part.next_scheduled_event.event.
           should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
 
@@ -626,7 +627,7 @@ describe Event do
     context "parsing psc labels" do
       describe "#parse_label" do
         it "returns the event portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Event.parse_label(lbl).should == "low_intensity_data_collection"
         end
 
@@ -636,7 +637,7 @@ describe Event do
         end
 
         it "returns nil if event portion is not included in label" do
-          lbl = "instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Event.parse_label(lbl).should be_nil
         end
       end
@@ -659,12 +660,12 @@ describe Event do
       end
 
       it "is true if event_type matches label and event_start_date matches ideal date" do
-        lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
         @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_true
       end
 
       it "is false if event_type does not match label" do
-        lbl = "event:not_the_event instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+        lbl = "event:not_the_event instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
         @event.matches_activity(ScheduledActivity.new(:ideal_date => date, :labels => lbl)).should be_false
       end
 
@@ -692,5 +693,109 @@ describe Event do
 
   end
 
-end
+  describe '#scheduled_activities' do
+    let(:event) { Factory(:event) }
 
+    describe "if the given PscParticipant does not match this event's participant" do
+      let(:psc_participant) { stub(:participant => Participant.new) }
+
+      it 'raises an error' do
+        lambda { event.scheduled_activities(psc_participant) }.should raise_error
+      end
+    end
+
+    # See PscParticipant#scheduled_activities.
+    let(:schedule) do
+      {
+        'foo' => sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
+        'bar' => sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar'),
+        'baz' => sa(:labels => ['event:pregnancy_visit_2'], :ideal_date => '2012-02-02', :activity_id => 'baz')
+      }
+    end
+
+    let(:psc_participant) { stub(:participant => event.participant) }
+
+    it 'returns activities whose label and ideal date match' do
+      # Pregnancy Visit 1.
+      event.event_type = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 13)
+      event.event_start_date = '2012-01-01'
+      psc_participant.stub!(:scheduled_activities).and_return(schedule)
+
+      event.scheduled_activities(psc_participant).should == [
+        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
+        sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar')
+      ]
+    end
+  end
+
+  describe '#desired_sa_state' do
+    let(:event) { Event.new }
+    let(:desired_sa_state) { event.desired_sa_state }
+
+    let(:successful_dc) do
+      NcsNavigatorCore.mdes.disposition_codes.detect(&:success?)
+    end
+
+    let(:unsuccessful_dc) do
+      NcsNavigatorCore.mdes.disposition_codes.detect { |dc| !dc.success? }
+    end
+
+    SA = Psc::ScheduledActivity
+
+    describe 'if the event is closed' do
+      before do
+        event.stub!(:closed? => true)
+      end
+
+      describe 'and the disposition is successful' do
+        before do
+          event.disposition_code = successful_dc
+        end
+
+        it 'returns OCCURRED' do
+          desired_sa_state.should == SA::OCCURRED
+        end
+      end
+
+      describe 'and the disposition is unsuccessful' do
+        before do
+          event.disposition_code = unsuccessful_dc
+        end
+
+        it 'returns CANCELED' do
+          desired_sa_state.should == SA::CANCELED
+        end
+      end
+    end
+
+    describe 'if the event is open' do
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+  end
+
+  describe '#sa_end_date' do
+    let(:event) { Event.new }
+
+    it 'is #event_end_date in YYYY-MM-DD format' do
+      event.event_end_date = '2012-01-01'
+
+      event.sa_end_date.should == '2012-01-01'
+    end
+
+    it 'is nil if #event_end_date is nil' do
+      event.event_end_date = nil
+
+      event.sa_end_date.should be_nil
+    end
+  end
+
+  describe '#sa_state_change_reason' do
+    let(:event) { Event.new }
+
+    it 'is "Synchronized from Cases"' do
+      event.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
+end

@@ -3,6 +3,8 @@
 
 module NcsNavigator
   module Core
+    autoload :VERSION,                  'ncs_navigator/core/version'
+
     autoload :Configuration,            'ncs_navigator/core/configuration'
     autoload :Fieldwork,                'ncs_navigator/core/fieldwork'
     autoload :Mdes,                     'ncs_navigator/core/mdes'

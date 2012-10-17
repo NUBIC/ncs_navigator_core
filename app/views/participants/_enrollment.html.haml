@@ -14,7 +14,7 @@
                 = f.submit switch_arm_message(@participant)
               - else
                 = f.submit switch_arm_message(@participant), :confirm => "Please confirm that participant is eligible for High Intensity - (i.e. in TSU)"
-    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+    - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
       .enrollment
         - if false
           %b

@@ -3,9 +3,16 @@ namespace :version do
   desc "Updates the application version file - #{Rails.root}/config/app_version.yml\n" +
        "Usage: rake version:tag TAG=1.2.3"
   task :tag do
-    tag = ENV['TAG']
+
+    tag = ENV['TAG'] || NcsNavigator::Core::VERSION
+
+    puts "About to tag version #{tag.inspect}"
+
     if tag.nil?
       puts "You must specify a tag in order to run this task."
+      return
+    elsif tag.include?('pre')
+      puts "You cannot use a 'pre' tag for this task. Update the #{Rails.root}/lib/ncs_navigator/core/version.rb file."
       return
     end
 
@@ -20,7 +27,7 @@ namespace :version do
       version_file.puts "time: #{Time.now}\n"
     end
 
-    `git commit -a -m "updated app_version.yml for tag: #{tag}"; git push; git tag -a #{tag} -m "version #{tag}"`
+    `git commit -a -m "updated app_version.yml for tag: #{tag}"; git push; git tag -a #{tag} -m "version #{tag}"; git push --tags`
   end
 
 end

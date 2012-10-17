@@ -7,7 +7,7 @@ Feature: Fieldwork check-out and check-in
   Scenario: PUT /api/v1/fieldwork/:uuid accepts data from clients
     Given an authenticated user
 
-    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
     """
     {
         "contacts": [],
@@ -18,7 +18,7 @@ Feature: Fieldwork check-out and check-in
     Then the response status is 202
 
   Scenario: PUT /api/v1/fieldwork/:uuid requires authentication
-    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
     """
     {
         "contacts": [],
@@ -30,11 +30,11 @@ Feature: Fieldwork check-out and check-in
 
   Scenario: GET /api/v1/fieldwork/:uuid returns the latest PUT
     Given an authenticated user
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
     """
     {}
     """
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
     """
     {
         "contacts": [
@@ -63,7 +63,7 @@ Feature: Fieldwork check-out and check-in
 
   Scenario: PUT /api/v1/fieldwork/:uuid returns a URL to check the merge
     Given an authenticated user
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
     """
     {}
     """
@@ -75,6 +75,15 @@ Feature: Fieldwork check-out and check-in
     """
     { "status": "pending" }
     """
+
+  Scenario: PUT /api/v1/fieldwork/:uuid requires a client ID
+    Given an authenticated user
+    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    """
+    {}
+    """
+
+    Then the response status is 400
 
   Scenario: POST /api/v1/fieldwork requires authentication
     When I POST /api/v1/fieldwork with

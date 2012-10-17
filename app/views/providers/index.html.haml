@@ -1,8 +1,5 @@
 - title "Providers"
 
-.mdes_table_definition
-  = render 'documentation/provider'
-
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     %p
@@ -28,12 +25,17 @@
       - @providers.each do |provider|
         %tr{ :class => cycle('even_record', 'odd_record') }
           - name = blank_safe(provider.name_practice)
+          - pbs = provider.pbs_list
           %td{ :title => "#{name} - #{provider.address.to_s}" }
-            = name
+            - cls = "icon_link"
+            - cls += " hospital_link" if pbs.try(:hospital?)
+            = link_to name, provider_path(provider), { :class => cls }
           %td
-            = link_to 'Edit', edit_provider_path(provider), :class => "edit_link icon_link"
+            = link_to 'Edit', edit_provider_path(provider),
+              :class => "edit_link icon_link"
           %td
-            = link_to 'Edit Contact Information', edit_contact_information_provider_path(provider), :class => "edit_link icon_link"
+            = link_to 'Edit Contact Information', edit_contact_information_provider_path(provider),
+              :class => "edit_link icon_link"
 
   .links
     = link_to 'Add New Provider record', new_provider_path, :class => "add_link icon_link"

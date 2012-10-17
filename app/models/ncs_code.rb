@@ -263,6 +263,14 @@ class NcsCode < ActiveRecord::Base
     :shipment_condition_code            =>     'SHIPMENT_CONDITION_CL1',
     :sample_condition_code              =>     'SPECIMEN_STATUS_CL7',
 
+    ### institution
+    # :psu_code                         => 'PSU_CL1',
+    :institute_type_code                => 'ORGANIZATION_TYPE_CL1',
+    :institute_relation_code            => 'PERSON_ORGNZTN_FUNCTION_CL1',
+    :institute_owner_code               => 'ORGANIZATION_OWNERSHIP_CL1',
+    :institute_unit_code                => 'ORGANIZATION_SIZE_UNIT_CL1',
+    :institute_info_source_code         => 'INFORMATION_SOURCE_CL2',
+
     ### provider
     # :psu_code                         => 'PSU_CL1',
     :provider_type_code               => 'PROVIDER_TYPE_CL1',
@@ -273,6 +281,9 @@ class NcsCode < ActiveRecord::Base
     :public_practice_code             => 'CONFIRM_TYPE_CL2',
     :provider_info_source_code        => 'INFORMATION_SOURCE_CL2',
     :list_subsampling_code            => 'CONFIRM_TYPE_CL2',
+
+    ### pbs_provider_role
+    :provider_role_pbs_code           => 'PROVIDER_STUDY_ROLE_CL2',
 
     ### pbs_list
     # :psu_code                         => 'PSU_CL1',
@@ -297,6 +308,13 @@ class NcsCode < ActiveRecord::Base
     :who_confirm_noprenatal_code =>    'REFUSAL_PROVIDER_CL1',
     :nir_moved_info_code =>            'INFORMATION_SOURCE_CL8',
     :perm_moved_code =>                'CONFIRM_TYPE_CL10',
+
+    ### person_provider_link
+    # :psu,                     'PSU_CL1'
+    :is_active_code                 => 'CONFIRM_TYPE_CL2',
+    :provider_intro_outcome_code    => 'STUDY_INTRODCTN_OUTCOME_CL1',
+    :sampled_person_code            => 'CONFIRM_TYPE_CL2',
+    :pre_screening_status_code      => 'SCREENING_STATUS_CL1',
 
   }.with_indifferent_access
 
@@ -327,7 +345,7 @@ class NcsCode < ActiveRecord::Base
     list_name = attribute_lookup(attribute_name)
 
     unless show_missing_in_error
-      codes.where(%q{display_text <> 'Missing in Error'})
+      codes = codes.where(%q{display_text <> 'Missing in Error'}).all
     end
 
     list = codes.map { |n| [n.display_text, n.local_code] }
@@ -368,8 +386,10 @@ class NcsCode < ActiveRecord::Base
   def self.find_event_by_lbl(lbl)
     # handle dash condition
     dash_idx = lbl.index "-"
+    pbs_idx  = lbl.index "pbs"
     txt = lbl.gsub("_", " ").titleize
     txt = txt.insert(dash_idx, "-").gsub("- ", "-") if dash_idx
+    txt = txt.gsub("Pbs", "PBS") if pbs_idx
 
     # handle lowercase condition
     [" To ", " In "].each do |should_downcase|
@@ -384,6 +404,18 @@ class NcsCode < ActiveRecord::Base
   # Used to determine if participant is eligible for conversion to High Intensity Arm
   def self.low_intensity_data_collection
     for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+  end
+
+  # Special case helper method to get EVENT_TYPE_CL1 for Pregnancy Screener
+  # Used to determine if participant should be screened
+  def self.pregnancy_screener
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
+  end
+
+  # Special case helper method to get EVENT_TYPE_CL1 for PBS Eligibility Screener
+  # Used to determine if participant should be screened
+  def self.pbs_eligibility_screener
+    for_list_name_and_local_code('EVENT_TYPE_CL1', 34)
   end
 
   def to_s

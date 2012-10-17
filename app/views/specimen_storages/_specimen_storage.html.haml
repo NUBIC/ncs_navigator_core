@@ -7,23 +7,23 @@
     = val.specimen.specimen_id
   = f.hidden_field :specimen_storage_container_id
   %br
-  
+
   = f.label "Staff:"
   = display_staff_info
   %br
-  
+
   = f.label :placed_in_storage_datetime, "Placed in Storage Date and Time:"
   = f.text_field :placed_in_storage_datetime, :class => "datetime important_field"
   %span{ :class => "required" } *
   %br
-  
+
   = render "shared/ncs_code_select", { :f => f, :code => :master_storage_unit_code, :label_text => "Master Storage Unit" }
   %br
-  
+
   = f.label :master_storage_unit_id, "Master Storage Unit Id:"
   = f.text_field :master_storage_unit_id
   %br
-    
+
   = f.label :storage_comment, "Storage Comment:"
   = f.text_field :storage_comment
   %br
@@ -31,16 +31,16 @@
   = f.label :storage_comment_other, "Storage Comment Other:"
   = f.text_field :storage_comment_other
   %br
-  
+
   = f.label :temp_event_starttime, "Temperature event Start Time:"
-  = f.text_field :temp_event_starttime, :class => "time"
+  = f.text_field :temp_event_starttime, :class => "timepicker"
   %br
 
   = f.label :temp_event_endtime, "Temperature event End Time:"
-  = f.text_field :temp_event_endtime, :class => "time"
+  = f.text_field :temp_event_endtime, :class => "timepicker"
   %br
-  
-  
+
+
   = f.label :temp_event_low_temp, "Temperature event - Low Temperature:"
   = f.text_field :temp_event_low_temp
   %br
@@ -48,7 +48,7 @@
   = f.label :temp_event_high_temp, "Temperature event - High Temperature:"
   = f.text_field :temp_event_high_temp
   %br
-  
+
   - text = method == :new ? "Store" : "Update"
   - clazz = method == :new ? "spec_stored" : "update_spec_stored"
   - exit_clazz = method == :new ? "exit_and_no_refresh" : "exit_and_refresh"

@@ -11,7 +11,8 @@ Feature: After completing an instrument for a contact
   And I should see "Administer another Instrument for this Event"
   And I should see "Create Participant Record of Visit"
   And I should see "Enter information about the Visit"
-  And I should see "Complete Contact and Event Records"
+  And I should see "Complete Contact Record"
+  And I should see "Complete Event Record"
   When I follow "Create Participant Record of Visit"
   Then I should be on the new_participant_visit_record page
 

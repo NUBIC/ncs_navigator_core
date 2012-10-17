@@ -6,14 +6,20 @@
 .page_section
 
   .instructional_note
-    Now that the provider has agreed to participate please update the Provider Logistics to indicate
-    the types of agreements and logistics that must be performed
-    prior to officially recruiting the provider. This will allow the PO to determine the time not only to get the
-    provider on board, but also the total time required to get a provider on board before
-    participant recruitment can commence.
+    %p
+      Now that the provider has agreed to participate please update the Provider Logistics to indicate
+      the types of agreements and logistics that must be performed
+      prior to officially recruiting the provider. This will allow the PO to determine the time not only to get the
+      provider on board, but also the total time required to get a provider on board before
+      participant recruitment can commence.
+    %p
+      Provider Recruitment will continue until all Provider Logistics have completion dates.
+      At least one Provider Logistic must be created.
 
   = form_for(@provider, :url => process_recruited_provider_path(@provider), :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
+
+    = hidden_field_tag :contact_id, @contact.id if @contact
 
     .provider_logistics
       - @providerLogisticsTemplate = generate_nested_attributes_template(f, :provider_logistics, 'providers/provider_logistics')

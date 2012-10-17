@@ -1,7 +1,5 @@
 class RecordOfContactImporter
 
-  CSV_DATE_FORMAT = '%m/%d/%Y'
-
   def self.import_data(contact_record_file)
     Rails.application.csv_impl.parse(contact_record_file, :headers => true, :header_converters => :symbol) do |row|
       next if row.header_row?
@@ -58,7 +56,7 @@ class RecordOfContactImporter
   end
 
   def self.get_event_record(row, participant)
-    start_date = Date.strptime(row[:event_start_date], CSV_DATE_FORMAT)
+    start_date = Date.parse(row[:event_start_date])
 
     event = Event.where(:participant_id => participant.id,
                         :event_type_code => row[:event_type],
@@ -79,7 +77,7 @@ class RecordOfContactImporter
   end
 
   def self.get_contact_record(row, event, person)
-    contact_date = Date.strptime(row[:contact_date], CSV_DATE_FORMAT)
+    contact_date = Date.parse(row[:contact_date])
     pre_existing_contact = nil
 
     ContactLink.where(:event_id => event.id, :person_id => person.id).all.each do |cl|

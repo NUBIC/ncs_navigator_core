@@ -47,29 +47,26 @@
                     %p{:class => "paragraph_shift"}
                       = val.sample_id
           %div{:id => "ship_specimens"}
-            = form_tag verify_specimens_path do
-              - if not @specimen_receipts_hash_not_shipped.blank?
-                %b Specimens:
-                = submit_tag "Ship", :class => "ship_specimens_btn", :id => "ship_specimens_btn", :disabled => true
-                - @specimen_receipts_hash_not_shipped.each do |k, v|
-                  %li
-                    %input{:type=>"checkbox", :class => "specimen_ship_checkbox", :id => k, :name=> "storage_container_id[]", :value => k, :checked=>false}
-                    -#%a{ :href => new_specimen_storage_path(:container_id => k), :class => "my_specimen_ship", :id => k}
-                    = "Storage container ID:"
-                    = k
-                    - SpecimenReceipt.where(:storage_container_id => k).each do |val|
-                      %p{:class => "paragraph_shift"}
-                        = val.specimen_id
+            - if not @specimen_shippings.blank?
+              - @specimen_shippings.each do |ss|
+                %a{ :href => edit_specimen_shipping_path(:id => ss.id, :in_edit_mode => true), :class => "edit_specimen_sample_store"}
+                  = "Specimen Tracking Number: "
+                  = ss.shipment_tracking_number
+                  - ss.specimen_storage_containers.each do |ssc|
+                    %p{:class => "paragraph_shift"}
+                      = "Storage container ID:"
+                      = ssc.storage_container_id
+                      - ssc.specimen_receipts.each do |sr|
+                        %p{:class => "double_paragraph_shift"}
+                          = sr.specimen.specimen_id
+
     %td
       %div{:id => "confirm"}
         - if not @sample_receipt_confirmation.blank?
           %div{:id => 'shipped_not_confirmed_table', :class => 'shipped_not_confirmed_table'}
             %a{ :href => edit_sample_receipt_confirmation_path(:id => @sample_receipt_confirmation.id, :in_edit_mode => true), :class => "edit_specimen_sample_store", :id => @sample_receipt_confirmation.id}
               = @sample_receipt_confirmation.sample.sample_id
-        - if not @specimen_shippings_not_received.blank?
-          %div{:id => 'shipped_not_confirmed_specs_table', :class => 'shipped_not_confirmed_specs_table'}
-            %b Specimens:
-            - @specimen_shippings_not_received.each do |specimen_shipping|
-              %p{:class => "paragraph_shift"}
-                = link_to specimen_shipping.shipment_tracking_number, {:controller => "specimen_receipt_confirmations", :action => "index", :tracking_number => specimen_shipping.shipment_tracking_number}, :class => "confirm_link", :id => "confirm_link"
-
+        - if not @specimen_receipt_confirmation.blank?
+          %div{:id => 'shipped_not_confirmed_table', :class => 'shipped_not_confirmed_table'}
+            %a{ :href => edit_specimen_receipt_confirmation_path(:id => @specimen_receipt_confirmation.id, :in_edit_mode => true), :class => "edit_specimen_sample_store", :id => @specimen_receipt_confirmation.id}
+              = @specimen_receipt_confirmation.specimen.specimen_id

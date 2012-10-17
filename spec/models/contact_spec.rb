@@ -55,6 +55,11 @@ describe Contact do
   it { should belong_to(:who_contacted) }
 
   it { should have_many(:contact_links) }
+  it { should have_many(:instruments).through(:contact_links) }
+  it { should have_one(:non_interview_provider) }
+  it { should have_many(:non_interview_reports) }
+  it { should have_one(:participant_visit_record) }
+  it { should have_many(:participant_visit_consents) }
 
   it {
     should validate_format_of(:contact_start_time).with('66:66').
@@ -64,6 +69,9 @@ describe Contact do
     should validate_format_of(:contact_end_time).with('66:66').
       with_message(%q(contact_end_time is invalid ("66:66")))
   }
+
+  it { should validate_numericality_of(:contact_distance) }
+  it { should ensure_length_of(:contact_date).is_equal_to(10) }
 
   it_should_behave_like 'an optimistically locked record' do
     subject { Factory(:contact) }
@@ -144,8 +152,8 @@ describe Contact do
       l2 = Factory(:contact_link, :contact => c)
 
       c.contact_links.reload
-      c.contact_links.should == [l1, l2]
-
+      c.contact_links.should include(l1)
+      c.contact_links.should include(l2)
     end
 
     it "knows all instruments associated with this contact" do

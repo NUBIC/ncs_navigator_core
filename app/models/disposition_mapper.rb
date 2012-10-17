@@ -3,6 +3,9 @@
 
 class DispositionMapper
 
+  PROVIDER_RECRUITED = 70
+  PROVIDER_REFUSED   = [46,47,48,49,50,51,52,53]
+
   GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"     #3
   HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"   #2
   INTERNET_SURVEY_EVENT       = "Internet Survey Event"         #6
@@ -106,8 +109,15 @@ class DispositionMapper
     def get_key_from_event_disposition_category(category)
       result = nil
       part = category.to_s.split(' ').first
-      EVENTS.each do |e|
-        result = e if e.split(' ').first == part
+      # TODO: switch to full case stmt to handle the discrepancies between
+      #       event name and disposition category
+      case part
+      when 'Provider-Based'
+        result = PROVIDER_RECRUITMENT_EVENT
+      else
+        EVENTS.each do |e|
+          result = e if e.split(' ').first == part
+        end
       end
       result
     end

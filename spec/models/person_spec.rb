@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: people
 #
@@ -15,6 +14,8 @@
 #  first_name                     :string(30)
 #  id                             :integer          not null, primary key
 #  language_code                  :integer          not null
+#  language_new_code              :integer
+#  language_new_other             :string(255)
 #  language_other                 :string(255)
 #  last_name                      :string(30)
 #  maiden_name                    :string(30)
@@ -37,6 +38,7 @@
 #  prefix_code                    :integer          not null
 #  psu_code                       :integer          not null
 #  response_set_id                :integer
+#  role                           :string(255)
 #  sex_code                       :integer          not null
 #  suffix_code                    :integer          not null
 #  title                          :string(5)
@@ -97,6 +99,9 @@ describe Person do
   it { should have_many(:participant_person_links) }
   it { should have_many(:participants).through(:participant_person_links) }
 
+  it { should have_many(:person_provider_links) }
+  it { should have_many(:providers).through(:person_provider_links) }
+
   it { should have_many(:household_person_links) }
   it { should have_many(:household_units).through(:household_person_links) }
 
@@ -104,6 +109,14 @@ describe Person do
   it { should have_many(:telephones) }
   it { should have_many(:emails) }
   it { should have_many(:races) }
+
+  it { should ensure_length_of(:person_dob).is_equal_to(10) }
+  it { should ensure_length_of(:date_move).is_equal_to(7) }
+  it { should ensure_length_of(:title).is_at_most(5) }
+  it { should ensure_length_of(:first_name).is_at_most(30) }
+  it { should ensure_length_of(:last_name).is_at_most(30) }
+  it { should ensure_length_of(:maiden_name).is_at_most(30) }
+  it { should ensure_length_of(:middle_name).is_at_most(30) }
 
   context "as mdes record" do
 

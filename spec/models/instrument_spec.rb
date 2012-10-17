@@ -31,8 +31,6 @@
 #  updated_at               :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
@@ -81,6 +79,9 @@ describe Instrument do
   it { should have_many(:legacy_instrument_data_records) }
   it { should have_one(:contact_link) }
 
+  it { should have_many(:specimens) }
+  it { should have_many(:samples) }
+
   it { should validate_presence_of(:instrument_version) }
   it { should validate_presence_of(:instrument_repeat_key) }
 
@@ -91,7 +92,7 @@ describe Instrument do
     let(:child) { Factory(:participant, :p_id => 'child') }
     let(:survey) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0') }
     let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
-    let(:inst) { Factory(:instrument, :survey => survey) }
+    let(:inst) { Factory(:instrument, :survey => survey, :event => event) }
 
     context 'a survey with one part' do
       describe 'if there is no response set for the (person, survey) pair' do
@@ -108,7 +109,7 @@ describe Instrument do
         end
       end
 
-      describe 'if there is a response set for the (person, survey) pair' do
+      describe 'when there is a response set for the (person, survey) pair' do
         before do
           Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
         end
@@ -144,6 +145,16 @@ describe Instrument do
 
           it "has one response set" do
             i.response_sets.size.should == 1
+          end
+
+        end
+
+        describe 'for a different event with the same survey' do
+
+          let(:i) { Instrument.start(person, mother, nil, survey, Factory(:event, :event_type_code => 10)) }
+
+          it "does NOT return the response set's instrument" do
+            i.should_not == inst
           end
 
         end
@@ -249,29 +260,39 @@ describe Instrument do
 
   describe 'parsing information from psc' do
 
-    context 'with label instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+    context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
-      let(:lbl) { 'instrument:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
-      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
-      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0' }
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+      end
+
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.1' }
+      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-1'}
+      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.1' }
 
       describe '#determine_version' do
-        it 'returns 1.0 for psc label' do
-          Instrument.determine_version(lbl).should == "1.0"
+        it 'returns 1.1 for psc label' do
+          Instrument.determine_version(lbl).should == "1.1"
         end
 
-        it 'returns 1.0 for surveyor access code' do
-          Instrument.determine_version(code).should == "1.0"
+        it 'returns 1.1 for surveyor access code' do
+          Instrument.determine_version(code).should == "1.1"
         end
 
-        it 'returns 1.0 for survey title' do
-          Instrument.determine_version(title).should == "1.0"
+        it 'returns 1.1 for survey title' do
+          Instrument.determine_version(title).should == "1.1"
         end
+
+        it 'returns 1.0 as a default' do
+          Instrument.determine_version(nil).should == "1.0"
+        end
+
       end
 
       describe "#parse_label" do
-        it "returns the event portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+
+        it "returns the instrument portion of the label" do
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
         end
 
@@ -288,12 +309,12 @@ describe Instrument do
 
       describe "#collection?" do
         it "returns true if label denotes a collection activity" do
-          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0"
           Instrument.collection?(lbl).should be_true
         end
 
         it "returns false if label does not denote a collection activity" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.collection?(lbl).should be_false
         end
       end
@@ -301,7 +322,12 @@ describe Instrument do
     end
 
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' do
+
       let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' }
+
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+      end
 
       describe '#determine_version' do
         it 'returns 1.0 for psc label' do
@@ -310,7 +336,66 @@ describe Instrument do
       end
     end
 
+    context 'with label instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0' do
+      let(:lbl) { 'instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0' }
+
+      context "mdes version 2.0" do
+
+        before(:each) do
+          NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+        end
+
+        describe "#instrument_label" do
+          it "returns the instrument label matching the mdes version" do
+            Instrument.instrument_label(lbl).should == "instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0"
+          end
+        end
+
+        describe "#parse_label" do
+          it "returns the instrument portion of the label" do
+            Instrument.parse_label(lbl).should == "ins_que_pregvisit1_int_ehpbhi_p2_v2.0"
+          end
+        end
+      end
+
+      context "mdes version 3.0" do
+
+        before(:each) do
+          NcsNavigatorCore.mdes.stub(:version).and_return "3.0"
+        end
+
+        describe "#instrument_label" do
+          it "returns the instrument label matching the mdes version" do
+            Instrument.instrument_label(lbl).should == "instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"
+          end
+        end
+
+        describe "#parse_label" do
+          it "returns the instrument portion of the label" do
+            Instrument.parse_label(lbl).should == "ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"
+          end
+        end
+
+        describe "#matches_mdes_version?" do
+          it "returns true for 3.0" do
+            Instrument.matches_mdes_version?(Instrument.instrument_label(lbl), "3.0").should be_true
+          end
+
+          it "returns false for 2.0" do
+            Instrument.matches_mdes_version?(Instrument.instrument_label(lbl), "2.0").should be_false
+          end
+        end
+
+      end
+
+    end
+
+
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+      end
 
       let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
       let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
@@ -351,7 +436,7 @@ describe Instrument do
 
       describe "#parse_label" do
         it "returns the instrument portion of the label" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
         end
 
@@ -368,12 +453,12 @@ describe Instrument do
 
       describe "#collection?" do
         it "returns true if label denotes a collection activity" do
-          lbl = "collection:biological event:pregnancy_visit_1 instrument:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
+          lbl = "collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 "
           Instrument.collection?(lbl).should be_true
         end
 
         it "returns false if label does not denote a collection activity" do
-          lbl = "event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0"
+          lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.collection?(lbl).should be_false
         end
       end
@@ -517,5 +602,163 @@ describe Instrument do
       result.should be_false
     end
   end
-end
 
+  describe '#scheduled_activities' do
+    let(:instrument) { Factory(:instrument, :survey => s) }
+    let(:p) { instrument.event.participant }
+    let(:s) { Factory(:survey, :access_code => 'ins-que-birth-int-ehpbhi-p2-v2-0') }
+    let(:psc_participant) { stub(:participant => p, :scheduled_activities => activities) }
+    let(:schedule) do
+      Psc::ScheduledActivity.from_schedule({
+        'labels' => 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
+      })
+    end
+
+    let(:activities) do
+      { 'foo' => schedule }
+    end
+
+    describe "if the given PscParticipant does not match this instruments's participant" do
+      let(:psc_participant) { stub(:participant => Participant.new) }
+
+      it 'raises an error' do
+        lambda { instrument.scheduled_activities(psc_participant) }.should raise_error
+      end
+    end
+
+    describe "if the instrument's survey matches a references label" do
+      it 'returns that activity' do
+        instrument.scheduled_activities(psc_participant).should == [
+          sa('labels' => 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0')
+        ]
+      end
+    end
+
+    describe "if the instrument's survey matches an instrument label" do
+      describe 'and the activity has no references labels' do
+        let(:schedule) do
+          Psc::ScheduledActivity.from_schedule({
+            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
+          })
+        end
+
+        it 'returns that activity' do
+          instrument.scheduled_activities(psc_participant).should == [
+            sa('labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0')
+          ]
+        end
+      end
+
+      describe 'and the activity has references labels' do
+        let(:schedule) do
+          Psc::ScheduledActivity.from_schedule({
+            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:2.0:something_else'
+          })
+        end
+
+        it 'does not return the activity' do
+          instrument.scheduled_activities(psc_participant).should == []
+        end
+      end
+    end
+  end
+
+  describe '#desired_sa_state' do
+    let(:instrument) { Instrument.new }
+    let(:desired_sa_state) { instrument.desired_sa_state }
+
+    [
+      'Complete',
+      'Missing in Error',
+      'Not started',
+      'Partial',
+      'Refused'
+    ].each do |status|
+      let(status.downcase.gsub(' ', '_')) do
+        NcsCode.for_list_name_and_display_text('INSTRUMENT_STATUS_CL1', status)
+      end
+    end
+
+    SA = Psc::ScheduledActivity
+
+    describe 'if instrument status is nil' do
+      it 'raises an error' do
+        lambda { desired_sa_state }.should raise_error
+      end
+    end
+
+    describe 'if instrument status is Complete' do
+      before do
+        instrument.instrument_status = complete
+      end
+
+      it 'returns OCCURRED' do
+        desired_sa_state.should == SA::OCCURRED
+      end
+    end
+
+    describe 'if instrument status is Missing in Error' do
+      before do
+        instrument.instrument_status = missing_in_error
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Not started' do
+      before do
+        instrument.instrument_status = not_started
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Partial' do
+      before do
+        instrument.instrument_status = partial
+      end
+
+      it 'returns SCHEDULED' do
+        desired_sa_state.should == SA::SCHEDULED
+      end
+    end
+
+    describe 'if instrument status is Refused' do
+      before do
+        instrument.instrument_status = refused
+      end
+
+      it 'returns CANCELED' do
+        desired_sa_state.should == SA::CANCELED
+      end
+    end
+  end
+
+  describe '#sa_end_date' do
+    let(:instrument) { Instrument.new }
+
+    it 'is #instrument_end_date in YYYY-MM-DD format' do
+      instrument.instrument_end_date = '2012-01-01'
+
+      instrument.sa_end_date.should == '2012-01-01'
+    end
+
+    it 'is nil if #instrument_end_date is nil' do
+      instrument.instrument_end_date = nil
+
+      instrument.sa_end_date.should be_nil
+    end
+  end
+
+  describe '#sa_state_change_reason' do
+    let(:instrument) { Instrument.new }
+
+    it 'is "Synchronized from Cases"' do
+      instrument.sa_state_change_reason.should == 'Synchronized from Cases'
+    end
+  end
+end

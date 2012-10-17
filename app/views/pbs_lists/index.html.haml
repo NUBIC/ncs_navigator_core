@@ -1,8 +1,5 @@
 - title "PBS Lists"
 
-.mdes_table_definition
-  = render 'documentation/pbs_list'
-
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     %p
@@ -13,6 +10,8 @@
       Original location
       = radio_button_tag 'q[in_sample_code_eq]', '2', params['q'] && params['q']['in_sample_code_eq'].to_s == '2'
       Substitute location
+      = radio_button_tag 'q[in_sample_code_eq]', '', params['q'] && params['q']['in_sample_code_eq'].blank?
+      All
 
     = f.submit "Search"
 
@@ -32,8 +31,6 @@
           Last Contact
         %th
           Status
-        %th
-          Disposition
 
       - @pbs_lists.each do |pbs|
         - provider = pbs.provider
@@ -42,22 +39,21 @@
         %tr{ :class => cycle('even_record', 'odd_record') }
           - name = blank_safe(provider.name_practice)
           %td{ :title => "#{name} - #{provider.address.to_s}" }
-            = link_to name, path, { :class => "icon_link" }
+            - cls = "icon_link"
+            - cls += " hospital_link" if pbs.hospital?
+            = link_to name, path, { :class => cls }
           %td
             - unless provider.contacts.blank?
               - txt = "#{contact.contact_date} #{contact.contact_start_time}"
               = link_to txt, path, { :class => "icon_link" }
           %td
-            - # cf. RECRUIT_STATUS_CL1 - show only values with helpful information
-            - if [1,2,3].include? pbs.pr_recruitment_status_code.to_i
-              - cls = pbs.pr_recruitment_status_code.to_i == 1 ? "star_link icon_link" : "icon_link"
-              = link_to pbs.pr_recruitment_status, path, { :class => cls }
-          %td
             - unless provider.contacts.blank?
-              = DispositionMapper.disposition_text_for_event(provider.provider_recruitment_event.event_type, contact.contact_disposition)
+              - cls = "icon_link"
+              - if pbs.pr_recruitment_status_code.to_i == 1
+                - cls += pbs.provider.recruitment_logistics_complete? ? " star_link" : " notification_icon"
+              = link_to pbs.pr_recruitment_status.to_s, path, { :class => cls }
 
   .links
-    -#= link_to 'Add New PBS List record', new_pbs_list_path, :class => "add_link icon_link"  {no option to enter the provider name here in PBS list, should be in Provider path}
     %br
     = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
 

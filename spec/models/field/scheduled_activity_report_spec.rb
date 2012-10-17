@@ -5,8 +5,6 @@ module Field
     let(:report) { Field::ScheduledActivityReport.new }
 
     describe '#to_json' do
-      R = Field::ScheduledActivityReport
-
       let(:json) { JSON.parse(report.to_json) }
 
       before do
@@ -20,24 +18,21 @@ module Field
           json.should have_key('contacts')
         end
 
-        it 'has an "instrument_templates" key' do
-          json.should have_key('instrument_templates')
+        it 'has an "instrument_plans" key' do
+          json.should have_key('instrument_plans')
         end
-        
+
         it 'has a "participants" key' do
           json.should have_key('participants')
         end
 
         shared_context 'has a person' do
           let(:person) { Factory(:person) }
-          let(:person_ir) do
-            R::Person.new.tap do |p|
-              p.model = person
-            end
-          end
+          let(:person_ir) { stub }
 
           before do
             report.people << person_ir
+            report.resolutions[person_ir] = person
           end
         end
 
@@ -46,15 +41,11 @@ module Field
 
           let(:contacts) { json['contacts'] }
           let(:contact) { Factory(:contact) }
-          let(:contact_ir) do
-            R::Contact.new.tap do |c|
-              c.person = person_ir
-              c.model = contact 
-            end
-          end
+          let(:contact_ir) { stub(:person => person_ir) }
 
           before do
             report.contacts << contact_ir
+            report.resolutions[contact_ir] = contact
           end
         end
 
@@ -135,16 +126,11 @@ module Field
 
           let(:events) { json['contacts'][0]['events'] }
           let(:event) { Factory(:event) }
-          let(:event_ir) do
-            R::Event.new.tap do |e|
-              e.model = event
-              e.contact = contact_ir
-              e.person = person_ir
-            end
-          end
+          let(:event_ir) { stub(:contact => contact_ir, :person => person_ir) }
 
           before do
             report.events << event_ir
+            report.resolutions[event_ir] = event
           end
         end
 
@@ -206,25 +192,22 @@ module Field
           let(:response_sets) { [Factory(:response_set)] }
           let(:survey) { Factory(:survey) }
 
-          let(:survey_ir) do
-            R::Survey.new.tap do |s|
-              s.model = survey
-            end
-          end
+          let(:survey_ir) { stub(:participant_type => 'child') }
 
           let(:instrument_ir) do
-            R::Instrument.new.tap do |i|
-              i.event = event_ir
-              i.person = person_ir
-              i.survey = survey_ir
-              i.name = 'An instrument'
-              i.model = instrument
-            end
+            stub(:event => event_ir, :person => person_ir, :survey => survey_ir, :name => 'An instrument')
+          end
+
+          let(:instrument_plan_ir) do
+            stub(:root => instrument_ir, :surveys => [survey_ir], :id => 'foo')
           end
 
           before do
             report.surveys << survey_ir
             report.instruments << instrument_ir
+            report.instrument_plans << instrument_plan_ir
+            report.resolutions[survey_ir] = survey
+            report.resolutions[instrument_ir] = instrument
           end
         end
 
@@ -244,8 +227,8 @@ module Field
               instruments[0]['instrument_id'].should == instrument.instrument_id
             end
 
-            it 'sets #/0/instrument_template_id to survey.api_id' do
-              instruments[0]['instrument_template_id'].should == survey.api_id
+            it "sets #/0/instrument_plan_id" do
+              instruments[0]['instrument_plan_id'].should == 'foo'
             end
 
             it "sets #/0/name to the instrument's activity name" do
@@ -264,26 +247,35 @@ module Field
           end
         end
 
-        describe 'instrument_templates' do
+        describe 'instrument_plans' do
           include_context 'has an instrument'
 
-          let(:templates) { json['instrument_templates'] }
+          let(:plans) { json['instrument_plans'] }
 
-          it 'sets #/0/instrument_template_id' do
-            templates[0]['instrument_template_id'].should == survey.api_id
+          it 'sets #/0/instrument_plan_id' do
+            plans[0]['instrument_plan_id'].should == 'foo'
           end
 
-          it 'sets #/0/version' do
-            templates[0]['version'].should == survey.updated_at.utc.as_json
+          it 'sets #/0/instrument_templates/0/instrument_template_id' do
+            plans[0]['instrument_templates'][0]['instrument_template_id'].should == survey.api_id
           end
 
-          it 'sets #/0/survey' do
-            templates[0]['survey'].should == JSON.parse(survey.to_json)
+          it 'sets #/0/instrument_templates/0/version' do
+            plans[0]['instrument_templates'][0]['version'].should == survey.updated_at.utc.as_json
           end
 
-          # Same sort of check.
-          it 'sets #/0/survey to a non-blank value' do
-            templates[0]['survey'].should_not be_blank
+          it 'sets #/0/instrument_templates/0/participant_type' do
+            plans[0]['instrument_templates'][0]['participant_type'].should == survey_ir.participant_type
+          end
+
+          it 'sets #/0/instrument_templates/0/survey' do
+            plans[0]['instrument_templates'][0]['survey'].should == JSON.parse(survey.to_json)
+          end
+
+          # This, too, is a quick check against an error in Surveyor's JSON
+          # serialization code that keeps cropping up.
+          it 'sets #/0/instrument_templates/0/survey to a non-blank value' do
+            plans[0]['instrument_templates'][0]['survey'].should_not be_blank
           end
         end
 
@@ -296,7 +288,8 @@ module Field
 
           before do
             link.save!
-            person_ir.participant_model = participant
+
+            person.stub!(:participant => participant)
           end
 
           shared_examples_for 'a participant data generator' do

@@ -15,8 +15,12 @@ module NcsNavigator::Core::Warehouse
       OperationalImporter.new(wh_config)
     }
 
+    let(:enumerator_class) {
+      OperationalEnumerator.select_implementation(wh_config)
+    }
+
     let(:enumerator) {
-      OperationalEnumerator.new(wh_config, :bcdatabase => bcdatabase_config)
+      enumerator_class.new(wh_config, :bcdatabase => bcdatabase_config)
     }
 
     def save_wh(record)
@@ -55,14 +59,14 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        OperationalImporter.automatic_producers.size.should == 25
+        importer.automatic_producers.size.should == 25
       end
 
       [
         :LinkContact, :Event, :Instrument
       ].each do |manual|
         it "handles #{manual} manually" do
-          OperationalImporter.automatic_producers.collect(&:model).
+          importer.automatic_producers.collect { |ap| ap.model(wh_config) }.
             should_not include(wh_config.model(manual))
         end
       end
@@ -224,7 +228,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'resolving associations' do
-        let(:auto_names) { OperationalImporter.automatic_producers.collect(&:name) }
+        let(:auto_names) { importer.automatic_producers.collect(&:name) }
 
         describe 'backward' do
           let!(:mdes_person) { create_warehouse_record_via_core(Person, 'P24') }
@@ -490,20 +494,9 @@ module NcsNavigator::Core::Warehouse
 
     describe 'participant being-followedness' do
       let!(:src_participant) {
-        create_warehouse_record_with_defaults(wh_config.model(:Participant), :p_id => 'zed')
+        create_warehouse_record_with_defaults(wh_config.model(:Participant),
+          :p_id => 'zed', :p_type => p_type, :enroll_status => enroll_status)
       }
-
-      let!(:ppg_details) {
-        create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
-          :ppg_first => '2', :p => src_participant)
-      }
-
-      let!(:ppg_status_history_current) {
-        create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
-          :p => src_participant, :ppg_status => '2', :ppg_status_date => '2011-06-04')
-      }
-
-      let(:ppg_pregnant) { '1' }
 
       def should_be_followed
         importer.import(:participants, :ppg_details, :ppg_status_histories)
@@ -517,61 +510,121 @@ module NcsNavigator::Core::Warehouse
         Participant.first.being_followed.should be_false
       end
 
-      describe 'when the participant is enrolled' do
-        before do
-          src_participant.enroll_status = '1'
-          save_wh(src_participant)
-        end
+      %w(1 2 3).each do |mother_type|
+        describe "for a mother of type #{mother_type}" do
+          let(:p_type) { mother_type }
 
-        it 'is true when she was pregnant when originally contacted' do
-          ppg_details.ppg_first = ppg_pregnant
-          save_wh(ppg_details)
+          let!(:ppg_details) {
+            create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
+              :ppg_first => '2', :p => src_participant)
+          }
 
-          should_be_followed
-        end
+          let!(:ppg_status_history_current) {
+            create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
+              :p => src_participant, :ppg_status => '2', :ppg_status_date => '2011-06-04')
+          }
 
-        it 'is true when she has a pregnancy in her status history' do
-          create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
-            :ppg_history_id => 'Older',  :p => src_participant,
-            :ppg_status => ppg_pregnant, :ppg_status_date => '2010-01-05')
+          let(:ppg_pregnant) { '1' }
 
-          should_be_followed
-        end
+          describe 'when she is enrolled' do
+            let(:enroll_status) { '1' }
 
-        it 'is true when she is currently pregnant' do
-          ppg_status_history_current.ppg_status = ppg_pregnant
-          save_wh(ppg_status_history_current)
+            it 'is true when she was pregnant when originally contacted' do
+              ppg_details.ppg_first = ppg_pregnant
+              save_wh(ppg_details)
 
-          should_be_followed
-        end
+              should_be_followed
+            end
 
-        it 'is false when she was not originally pregnant and has no pregnancies in her history' do
-          should_not_be_followed
-        end
+            it 'is true when she has a pregnancy in her status history' do
+              create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
+                :ppg_history_id => 'Older',  :p => src_participant,
+                :ppg_status => ppg_pregnant, :ppg_status_date => '2010-01-05')
 
-        it 'is false when she was not originally pregnant and has no status history' do
-          ppg_status_history_current.destroy
+              should_be_followed
+            end
 
-          should_not_be_followed
-        end
+            it 'is true when she is currently pregnant' do
+              ppg_status_history_current.ppg_status = ppg_pregnant
+              save_wh(ppg_status_history_current)
 
-        it 'is false when she has no PPG details and no status history' do
-          ppg_status_history_current.destroy
-          ppg_details.destroy
+              should_be_followed
+            end
 
-          should_not_be_followed
+            it 'is false when she was not originally pregnant and has no pregnancies in her history' do
+              should_not_be_followed
+            end
+
+            it 'is false when she was not originally pregnant and has no status history' do
+              ppg_status_history_current.destroy
+
+              should_not_be_followed
+            end
+
+            it 'is false when she has no PPG details and no status history' do
+              ppg_status_history_current.destroy
+              ppg_details.destroy
+
+              should_not_be_followed
+            end
+          end
+
+          %w(2 -4).each do |not_enrolled_code|
+            describe "when her enroll status is #{not_enrolled_code}" do
+              let(:enroll_status) { not_enrolled_code }
+
+              it "is false" do
+                ppg_details.ppg_first = '1'
+                save_wh(ppg_details)
+
+                should_not_be_followed
+              end
+            end
+          end
         end
       end
 
-      %w(2 -4).each do |not_enrolled_code|
-        it "is false when the participant's enrollment status is #{not_enrolled_code}" do
-          ppg_details.ppg_first = '1'
-          save_wh(ppg_details)
+      describe 'for a child' do
+        let(:p_type) { '6' }
 
-          src_participant.enroll_status = not_enrolled_code
-          save_wh(src_participant)
+        describe 'when enrolled' do
+          let(:enroll_status) { '1' }
 
-          should_not_be_followed
+          it 'is true regardless of PPG status' do
+            should_be_followed
+          end
+        end
+
+        %w(2 -4).each do |not_enrolled_code|
+          describe "when the child's enroll status is #{not_enrolled_code}" do
+            let(:enroll_status) { not_enrolled_code }
+
+            it 'is false' do
+              should_not_be_followed
+            end
+          end
+        end
+      end
+
+      describe 'for a non-followed p_type' do
+        let(:p_type) { '4' }
+
+        describe 'when enrolled' do
+          let(:enroll_status) { '1' }
+
+          it 'is false' do
+            should_not_be_followed
+          end
+        end
+
+        %w(2 -4).each do |not_enrolled_code|
+          describe "when enroll status is #{not_enrolled_code}" do
+            let(:enroll_status) { not_enrolled_code }
+
+            it 'is false' do
+              should_not_be_followed
+            end
+          end
         end
       end
     end
@@ -605,11 +658,11 @@ module NcsNavigator::Core::Warehouse
 
       # produce all related so that warehouse FKs are satisfied
       producer_names = core_instances.collect { |ci| ci.class.table_name.to_sym }.uniq
-      producers = OperationalEnumerator.record_producers.
+      producers = enumerator_class.record_producers.
         select { |rp| producer_names.include?(rp.name) }
 
       # produce in a transaction so that FK order doesn't matter
-      producers.first.model.transaction do
+      producers.first.model(wh_config).transaction do
         enumerator.to_a(*producer_names).each do |mdes_rec|
           mdes_key = mdes_rec.key.first
           mdes_key_name = mdes_rec.class.key.first.name
@@ -631,7 +684,7 @@ module NcsNavigator::Core::Warehouse
       core_records.each(&:destroy)
 
       prime_producer = producers.find { |rp| rp.name == core_record.class.table_name.to_sym }
-      prime_producer.model.first(prime_producer.model.key.first.name => core_record.public_id)
+      prime_producer.model(wh_config).first(prime_producer.model(wh_config).key.first.name => core_record.public_id)
     end
 
     def code_for_event_type(event_type_name)
@@ -685,6 +738,10 @@ module NcsNavigator::Core::Warehouse
       let(:fred_p) {
         create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'fred_p', :enroll_status => '1')
+      }
+      let!(:fred_p_ppg1) {
+        create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
+          :p => fred_p, :ppg_first => '1')
       }
       let(:ginger_p) {
         create_warehouse_record_with_defaults(wh_config.model(:Participant),
@@ -1109,122 +1166,142 @@ module NcsNavigator::Core::Warehouse
           before do
             keys = redis.keys('*')
             redis.del(*keys) unless keys.empty?
-
-            f_e3.event_end_date = '2010-09-08'
-            save_wh(f_e3)
-
-            do_import
           end
 
-          it "stores a set of participants that need to be sync'd" do
-            redis.smembers("#{ns}:psc_sync:participants").should include('fred_p')
-          end
+          describe 'participant selection' do
+            it "stores a set of participants that need to be sync'd" do
+              do_import
 
-          it "ignores participants that are not enrolled" do
-            redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
-          end
-
-          it "stores a list of events that need to be sync'd for each participant" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:events").
-              should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
-          end
-
-          it "stores a set of link contacts without instruments that need to be sync'd for each event for each p" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument:f_e3").sort.
-              should == %w(f_c1_e3 f_c2_e3)
-          end
-
-          it "stores a set of link contacts with instruments that need to be sync'd for each instrument for each p" do
-            redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument:f_e2_i").
-              should == %w(f_c1_e2)
-          end
-
-          describe 'an event hash' do
-            let(:event_hash) { redis.hgetall("#{ns}:psc_sync:event:f_e3") }
-
-            it 'has the status' do
-              event_hash['status'].should == 'new'
+              redis.smembers("#{ns}:psc_sync:participants").should include('fred_p')
             end
 
-            it 'has the event ID' do
-              event_hash['event_id'].should == 'f_e3'
+            it "ignores participants that are not being followed" do
+              do_import
+
+              redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
             end
 
-            it 'has the event start date' do
-              event_hash['start_date'].should == '2010-09-03'
-            end
+            it "ignores child participants that are followed" do
+              ginger_p.enroll_status = '1'
+              ginger_p.p_type = '6'
+              save_wh(ginger_p)
 
-            it 'has the event end date' do
-              event_hash['end_date'].should == '2010-09-08'
-            end
+              do_import
 
-            it 'has the event type code' do
-              event_hash['event_type_code'].should == '10'
-            end
-
-            it 'has the event type label' do
-              event_hash['event_type_label'].should == 'informed_consent'
-            end
-
-            it 'knows whether the person is hi or lo' do
-              event_hash['recruitment_arm'].should == 'lo'
-            end
-
-            it 'has the sort key' do
-              event_hash['sort_key'].should == '2010-09-03:010'
+              redis.smembers("#{ns}:psc_sync:participants").should_not include('ginger_p')
             end
           end
 
-          describe 'a link_contact hash' do
-            describe 'with an instrument' do
-              let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e2") }
+          context do
+            before do
+              f_e3.event_end_date = '2010-09-08'
+              save_wh(f_e3)
+
+              do_import
+            end
+
+            it "stores a list of events that need to be sync'd for each participant" do
+              redis.smembers("#{ns}:psc_sync:p:fred_p:events").
+                should == %w(f_e1 f_e2 f_e3 f_e4 f_e5)
+            end
+
+            it "stores a set of link contacts without instruments that need to be sync'd for each event for each p" do
+              redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_without_instrument:f_e3").sort.
+                should == %w(f_c1_e3 f_c2_e3)
+            end
+
+            it "stores a set of link contacts with instruments that need to be sync'd for each instrument for each p" do
+              redis.smembers("#{ns}:psc_sync:p:fred_p:link_contacts_with_instrument:f_e2_i").
+                should == %w(f_c1_e2)
+            end
+
+            describe 'an event hash' do
+              let(:event_hash) { redis.hgetall("#{ns}:psc_sync:event:f_e3") }
 
               it 'has the status' do
-                lc_hash['status'].should == 'new'
-              end
-
-              it 'has the link_contact ID' do
-                lc_hash['contact_link_id'].should == 'f_c1_e2'
-              end
-
-              it 'has the contact date' do
-                lc_hash['contact_date'].should == '2010-09-03'
-              end
-
-              it 'has the contact ID' do
-                lc_hash['contact_id'].should == 'f_c1'
+                event_hash['status'].should == 'new'
               end
 
               it 'has the event ID' do
-                lc_hash['event_id'].should == 'f_e2'
+                event_hash['event_id'].should == 'f_e3'
               end
 
-              it 'has the instrument ID' do
-                lc_hash['instrument_id'].should == 'f_e2_i'
+              it 'has the event start date' do
+                event_hash['start_date'].should == '2010-09-03'
               end
 
-              it 'has the instrument type' do
-                lc_hash['instrument_type'].should == '5'
+              it 'has the event end date' do
+                event_hash['end_date'].should == '2010-09-08'
               end
 
-              it 'knows if the instrument was complete' do
-                lc_hash['instrument_status'].should == 'not started'
+              it 'has the event type code' do
+                event_hash['event_type_code'].should == '10'
+              end
+
+              it 'has the event type label' do
+                event_hash['event_type_label'].should == 'informed_consent'
+              end
+
+              it 'knows whether the person is hi or lo' do
+                event_hash['recruitment_arm'].should == 'lo'
               end
 
               it 'has the sort key' do
-                lc_hash['sort_key'].should == 'f_e2:2010-09-03:005'
+                event_hash['sort_key'].should == '2010-09-03:010'
               end
             end
 
-            describe 'without an instrument' do
-              let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e3") }
+            describe 'a link_contact hash' do
+              describe 'with an instrument' do
+                let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e2") }
 
-              it 'does not have an instrument type' do
-                lc_hash['instrument_type'].should be_nil
+                it 'has the status' do
+                  lc_hash['status'].should == 'new'
+                end
+
+                it 'has the link_contact ID' do
+                  lc_hash['contact_link_id'].should == 'f_c1_e2'
+                end
+
+                it 'has the contact date' do
+                  lc_hash['contact_date'].should == '2010-09-03'
+                end
+
+                it 'has the contact ID' do
+                  lc_hash['contact_id'].should == 'f_c1'
+                end
+
+                it 'has the event ID' do
+                  lc_hash['event_id'].should == 'f_e2'
+                end
+
+                it 'has the instrument ID' do
+                  lc_hash['instrument_id'].should == 'f_e2_i'
+                end
+
+                it 'has the instrument type' do
+                  lc_hash['instrument_type'].should == '5'
+                end
+
+                it 'knows if the instrument was complete' do
+                  lc_hash['instrument_status'].should == 'not started'
+                end
+
+                it 'has the sort key' do
+                  lc_hash['sort_key'].should == 'f_e2:2010-09-03:005'
+                end
               end
 
-              it 'has the appropriate sort key' do
-                lc_hash['sort_key'].should == 'f_e3:2010-09-03'
+              describe 'without an instrument' do
+                let(:lc_hash) { redis.hgetall("#{ns}:psc_sync:link_contact:f_c1_e3") }
+
+                it 'does not have an instrument type' do
+                  lc_hash['instrument_type'].should be_nil
+                end
+
+                it 'has the appropriate sort key' do
+                  lc_hash['sort_key'].should == 'f_e3:2010-09-03'
+                end
               end
             end
           end

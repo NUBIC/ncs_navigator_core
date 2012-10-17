@@ -22,6 +22,13 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    if params[:contact_link_id]
+      @contact_link = ContactLink.find(params[:contact_link_id])
+      if @event.event_disposition.blank?
+        @event.event_disposition = @contact_link.contact.contact_disposition
+      end
+    end
+    @close = params[:close]
     set_disposition_group
   end
 
@@ -29,15 +36,30 @@ class EventsController < ApplicationController
   # PUT /events/1.json
   def update
     @event = Event.find(params[:id])
-
+    if params[:contact_link_id]
+      @contact_link = ContactLink.find(params[:contact_link_id])
+    end
+    @close = params[:close]
     respond_to do |format|
       if @event.update_attributes(params[:event])
+        mark_activity_occurred
 
-        mark_activity_occurred unless @event.event_end_date.blank?
+        notice = 'Event was successfully updated.'
 
-        path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
+        participant = @event.participant
 
-        format.html { redirect_to(path, :notice => 'Event was successfully updated.') }
+        if participant.pending_events.blank?
+          resp = Event.schedule_and_create_placeholder(psc, participant)
+          notice += " Could not schedule next event [#{participant.next_study_segment}]" unless resp
+        end
+
+        format.html do
+          if params[:commit] == "Continue" && @contact_link
+            redirect_to(edit_contact_link_contact_path(@contact_link, @contact_link.contact, :next_event => true), :notice => notice)
+          else
+            redirect_to(redirect_path, :notice => notice)
+          end
+        end
         format.json { head :ok }
       else
         format.html { render :action => "edit" }
@@ -73,15 +95,28 @@ class EventsController < ApplicationController
 
   private
 
+    def redirect_path
+      path = events_path
+      if @event.provider_recruitment_event?
+        provider = @event.contact_links.find { |cl| !cl.provider.nil? }.provider
+        path = pbs_list_path(provider.pbs_list)
+      elsif !@event.participant.nil?
+        path = participant_path(@event.participant)
+      end
+      path
+    end
+
     ##
     # Updates activities associated with this event
     # in PSC as 'occurred'
     def mark_activity_occurred
-	    psc.activities_for_event(@event).each do |a|
-	      if @event.matches_activity(a)
-          psc.update_activity_state(activity.activity_id,
-                                    @event.participant,
-                                    Psc::ScheduledActivity::OCCURRED)
+      if !@event.event_end_date.blank? && !@event.provider_recruitment_event?
+  	    psc.activities_for_event(@event).each do |a|
+  	      if @event.matches_activity(a)
+            psc.update_activity_state(a.activity_id,
+                                      @event.participant,
+                                      Psc::ScheduledActivity::OCCURRED)
+          end
         end
       end
     end
@@ -97,6 +132,10 @@ class EventsController < ApplicationController
   	    case @event.event_type.to_s
   	    when "Pregnancy Screener"
           @disposition_group = DispositionMapper::PREGNANCY_SCREENER_EVENT
+        when "Provider-Based Recruitment"
+          @disposition_group = DispositionMapper::PROVIDER_RECRUITMENT_EVENT
+        when "PBS Participant Eligibility Screening"
+          @disposition_group = DispositionMapper::PBS_ELIGIBILITY_EVENT
         when "Informed Consent"
           if @event.try(:participant).low_intensity?
             @disposition_group = DispositionMapper::TELEPHONE_INTERVIEW_EVENT

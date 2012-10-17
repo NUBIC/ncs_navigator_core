@@ -51,5 +51,14 @@ class SpecimenShipping < ActiveRecord::Base
   validates_presence_of :shipment_date 
   validates_presence_of :shipment_tracking_number
   validates_presence_of :shipment_temperature
+  
+  def self.find_by_tracking_number(criteria)
+    SpecimenShipping.where(:shipment_tracking_number => criteria)
+  end
+  
+  def self.find_id_by_tracking_number_or_specimen_or_storage_container(criteria)
+    specimen_shipping_ids = ActiveRecord::Base.connection.select_all("SELECT DISTINCT specimen_shipping_id FROM specimen_shippings ss INNER JOIN specimen_storage_containers ssc on ssc.specimen_shipping_id = ss.id INNER JOIN specimen_receipts r ON ssc.id = r.specimen_storage_container_id INNER JOIN specimens s ON r.specimen_id = s.id WHERE s.specimen_id = '#{criteria}' OR ss.shipment_tracking_number = '#{criteria}' OR ssc.storage_container_id = '#{criteria}'").map{|ss| ss["specimen_shipping_id"]}
+    # SpecimenShipping.where(:id => specimen_shipping_ids)
+  end
 end
 

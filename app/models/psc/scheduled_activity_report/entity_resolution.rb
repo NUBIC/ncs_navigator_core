@@ -20,6 +20,13 @@ class Psc::ScheduledActivityReport
     ]
 
     ##
+    # Maps implied objects (i.e. ScheduledActivity::Implications::*) to
+    # entities from Cases' database.
+    def resolutions
+      @resolutions ||= {}
+    end
+
+    ##
     # Finds or builds model objects that correspond to the entities derived by
     # #process.
     #
@@ -30,14 +37,18 @@ class Psc::ScheduledActivityReport
 
       super
 
-      cache = Cache.new
+      resolutions.clear
 
-      resolve_people(cache)
+      logger.info 'Resolution started'
+
+      resolve_people
       resolve_events
       resolve_contacts
       resolve_surveys
       resolve_instruments
       resolve_contact_links
+
+      logger.info 'Resolution complete'
     end
 
     ##
@@ -46,11 +57,65 @@ class Psc::ScheduledActivityReport
     #
     # Returns true if all models were saved, false otherwise.
     def save_models
+      contacts = []
+      instruments = []
+      contact_links = []
+
+      resolutions.values.each do |v|
+        case v
+        when ::Contact; contacts << v
+        when ::Instrument; instruments << v
+        when ::ContactLink; contact_links << v
+        end
+      end
+
       ActiveRecord::Base.transaction do
-        [contacts, instruments, contact_links].all? do |c|
-          c.map(&:model).compact.all?(&:save)
-        end.tap do |ok|
+        [contacts, instruments, contact_links].all? { |c| c.all?(&:save) }.tap do |ok|
           raise ActiveRecord::Rollback unless ok
+        end
+      end
+    end
+
+    ##
+    # Shorthand to look up a model for an implication object.
+    def m(implied)
+      resolutions[implied]
+    end
+
+    ##
+    # @private
+    def resolve_people
+      ptable = index(:person_id => people)
+      found = ::Person.where(:person_id => ptable.keys).includes(PERSON_EAGER_LOADING)
+      ftable = index(:person_id => found)
+
+      ptable.each do |person_id, person|
+        model = ftable[person_id]
+
+        if !model
+          logger.error "Cannot map {person ID = #{person_id}} to a person"
+        end
+
+        resolutions[person] = ftable[person_id]
+      end
+    end
+
+    ##
+    # @private
+    def resolve_events
+      events.each do |event|
+        participant = m(event.person).try(:participant)
+
+        next if !participant
+
+        possible = participant.events
+        expected = OpenStruct.new(:labels => "event:#{event.label}", :ideal_date => event.ideal_date)
+        accepted = possible.detect { |e| e.matches_activity(expected) }
+
+        if accepted
+          resolutions[event] = accepted
+        else
+          logger.error %Q{Cannot map {event label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
         end
       end
     end
@@ -59,7 +124,7 @@ class Psc::ScheduledActivityReport
     # @private
     def resolve_contacts
       contacts.each do |contact|
-        p_model = contact.person.model
+        p_model = m contact.person
 
         next if !p_model
 
@@ -68,7 +133,7 @@ class Psc::ScheduledActivityReport
         possible = p_model.contact_links.select { |cl| cl.staff_id == staff_id }.map(&:contact)
         accepted = possible.detect { |c| c.contact_date_date == date }
 
-        contact.model = accepted || ::Contact.start(p_model, :contact_date => contact.scheduled_date)
+        resolutions[contact] = accepted || ::Contact.start(p_model, :contact_date => contact.scheduled_date)
       end
     end
 
@@ -76,13 +141,13 @@ class Psc::ScheduledActivityReport
     # @private
     def resolve_contact_links
       contact_links.each do |link|
-        pm = link.person.model
+        pm = m link.person
 
         next if !pm
 
-        cm = link.contact.model
-        em = link.event.try(:model)
-        im = link.instrument.try(:model)
+        cm = m link.contact
+        em = m link.event
+        im = m link.instrument
 
         accepted = pm.contact_links.detect do |cl|
           cl.staff_id == staff_id &&
@@ -92,27 +157,7 @@ class Psc::ScheduledActivityReport
             cl.instrument_id == im.try(&:id)
         end
 
-        link.model = accepted || ::ContactLink.new(:contact => cm, :event => em, :instrument => im, :person => pm, :staff_id => staff_id)
-      end
-    end
-
-    ##
-    # @private
-    def resolve_events
-      events.each do |event|
-        participant = event.person.participant_model
-
-        next if !participant
-
-        possible = participant.events
-        expected = OpenStruct.new(:labels => "event:#{event.label}", :ideal_date => event.ideal_date)
-        accepted = possible.detect { |e| e.matches_activity(expected) }
-
-        if accepted
-          event.model = accepted
-        else
-          logger.error %Q{Cannot map {event label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
-        end
+        resolutions[link] = accepted || ::ContactLink.new(:contact => cm, :event => em, :instrument => im, :person => pm, :staff_id => staff_id)
       end
     end
 
@@ -122,41 +167,15 @@ class Psc::ScheduledActivityReport
     # @private
     def resolve_instruments
       instruments.each do |instrument|
-        pm  = instrument.person.model
-        pam = instrument.person.participant_model
-        sm  = instrument.survey.model
-        rm  = instrument.referenced_survey.try(:model)
-        em  = instrument.event.model
+        pm  = m instrument.person
+        pam = m(instrument.person).try(:participant)
+        sm  = m instrument.survey
+        rm  = m instrument.referenced_survey
+        em  = m instrument.event
 
         if pm && pam && (sm || rm) && em
-          instrument.model = ::Instrument.start(pm, pam, rm, sm, em)
+          resolutions[instrument] = ::Instrument.start(pm, pam, rm, sm, em)
         end
-      end
-    end
-
-    ##
-    # @private
-    def resolve_people(cache)
-      ids = people.map(&:person_id)
-      found = index_people ::Person.where(:person_id => ids).includes(PERSON_EAGER_LOADING)
-
-      cache.add_people(found)
-
-      people.each do |p|
-        p.model = found[p.person_id]
-        p.participant_model = cache.participant_for(p)
-
-        if !p.model
-          logger.error "Cannot map {person ID = #{p.person_id}} to a person"
-        end
-      end
-    end
-
-    ##
-    # @private
-    def index_people(people)
-      {}.tap do |h|
-        people.each { |p| h[p.person_id] = p }
       end
     end
 
@@ -166,24 +185,21 @@ class Psc::ScheduledActivityReport
     # @private
     def resolve_surveys
       surveys.each do |survey|
-        survey.model = ::Survey.most_recent_for_access_code(survey.access_code)
+        resolutions[survey] = ::Survey.most_recent_for_access_code(survey.access_code)
 
-        if !survey.model
+        if !resolutions[survey]
           logger.error %Q{Cannot map {access code = #{survey.access_code}} to a survey}
         end
       end
     end
 
-    class Cache
-      attr_reader :people
+    ##
+    # @private
+    def index(mapping)
+      by = mapping.first.first
+      entities = mapping.first.last
 
-      def add_people(people_index)
-        @people = people_index
-      end
-
-      def participant_for(person)
-        @people[person.person_id].try(:participant)
-      end
+      Hash[*entities.map { |e| [e.send(by), e] }.flatten]
     end
   end
 end

@@ -78,7 +78,7 @@ jQuery(document).ready(function(){
     }
   });
 
-  jQuery("form#survey_form input, form#survey_form select, form#survey_form textarea").change(function(){
+  jQuery("form#survey_form input:not(.hasDatepicker), form#survey_form select, form#survey_form textarea").change(function(){
     var elements = [$('[type="submit"]').parent(), $('[name="' + this.name +'"]').closest('li')];
     blockElements(elements);
 
@@ -102,11 +102,13 @@ jQuery(document).ready(function(){
   jQuery("#dependents").remove();
 
   function successfulSave(responseText){ // for(key in responseText) { console.log("key is "+[key]+", value is "+responseText[key]); }
-    // surveyor_controller returns a json object to show/hide elements and insert/remove ids e.g. {"ids": {"2" => 234}, "remove": {"4" => 21}, "hide":["question_12","question_13"],"show":["question_14"]}
-    jQuery.each(responseText.show, function(){ showElement(this) });
-    jQuery.each(responseText.hide, function(){ hideElement(this) });
-    jQuery.each(responseText.ids, function(k,v){ jQuery('#r_'+k+'_question_id').after('<input id="r_'+k+'_id" type="hidden" value="'+v+'" name="r['+k+'][id]"/>'); });
-    jQuery.each(responseText.remove, function(k,v){ jQuery('#r_'+k+'_id[value="'+v+'"]').remove(); });
+    if(responseText) {
+      // surveyor_controller returns a json object to show/hide elements and insert/remove ids e.g. {"ids": {"2" => 234}, "remove": {"4" => 21}, "hide":["question_12","question_13"],"show":["question_14"]}
+      jQuery.each(responseText.show, function(){ showElement(this) });
+      jQuery.each(responseText.hide, function(){ hideElement(this) });
+      jQuery.each(responseText.ids, function(k,v){ jQuery('#r_'+k+'_question_id').after('<input id="r_'+k+'_id" type="hidden" value="'+v+'" name="r['+k+'][id]"/>'); });
+      jQuery.each(responseText.remove, function(k,v){ jQuery('#r_'+k+'_id[value="'+v+'"]').remove(); });
+    }
     return false;
   }
 

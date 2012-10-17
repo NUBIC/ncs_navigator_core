@@ -106,6 +106,6 @@ FactoryGirl.define do
   
   factory :specimen_storage_container do |ssc|
     ssc.storage_container_id                {"ABC123"}
-    ssc.specimen_shipping_id                nil
+    ssc.association :specimen_shipping, :factory => :specimen_shipping
   end
 end

@@ -1,17 +1,28 @@
-%h3
-  = @person.to_s
+- unless @person.new_record?
+  %h3
+    = @person.to_s
 
 .page_section
   - if @person.participant?
     #edit_participant_link
       = link_to "Edit Participant Record", edit_participant_path(@person.participant), :class => "edit_link icon_link"
   - else
-    #create_participant_link
-      = link_to "Create Participant Record", new_participant_path(:person_id => @person.id), :class => "edit_link icon_link"
-  = form_for(@person, :html => {:autocomplete => "off"}) do |f|
+    - if permit?(Role::SYSTEM_ADMINISTRATOR) && !@person.new_record?
+      #create_participant_link
+        = link_to "Create Participant Record", new_participant_path(:person_id => @person.id),
+          :class => "edit_link icon_link",
+          :confirm => "Are you certain that #{@person} should be made a Participant?"
+  - form_objs = @provider.nil? ? @person : [@provider, @person]
+  = form_for(form_objs, :html => {:autocomplete => "off"}) do |f|
     = render "shared/full_error_messages", :object => f.object
 
     = render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+    - if @participant
+      .participant_relationship
+      = label_tag "name","Select Relationship to  #{@participant.person}"
+      %br
+      = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code)), { :prompt => "-- Select Relationship to Participant -- " })
 
     = render "shared/ncs_code_select", { :f => f, :code => :prefix_code, :label_text => "Prefix" }
 
@@ -106,6 +117,33 @@
       %br
       = f.text_area :person_comment
 
+    - if @provider
+      .provider_association
+        %b
+          Fields for provider association
+        %br
+        = f.fields_for :person_provider_links do |builder|
+          - next if builder.object.provider != @provider
+          = builder.hidden_field :provider_id
+          = builder.hidden_field :person_id
+
+          = render "shared/ncs_code_select",
+            { :f => builder, :code => :is_active_code, :label_text => "Is active?" }
+
+          = render "shared/ncs_code_select",
+            { :f => builder, :code => :pre_screening_status_code, :label_text => "Pre-Screening Status" }
+
+          = render "shared/ncs_code_select",
+            { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?" }
+
+          %p
+            = builder.label :date_first_visit, "Date of First Visit"
+          %p
+            = builder.text_field :date_first_visit, :class => "datepicker"
+
+          = render "shared/ncs_code_select",
+            { :f => builder, :code => :provider_intro_outcome_code, :label_text => "Outcome of Provider Introduction", :other => :provider_intro_outcome_other }
+
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
 
@@ -116,8 +154,14 @@
   // For the 'other' field
   // Check on pageload
   $(document).ready(function() {
-    wire_up_select_other("#person_language_code","#person_language_other");
-    wire_up_select_other("#person_marital_status_code","#person_marital_status_other");
-    wire_up_select_other("#person_preferred_contact_method_code","#person_preferred_contact_method_other");
-    wire_up_select_other("#person_p_info_source_code","#person_p_info_source_other");
+    wire_up_select_other("#person_language_code",
+                         "#person_language_other");
+    wire_up_select_other("#person_marital_status_code",
+                         "#person_marital_status_other");
+    wire_up_select_other("#person_preferred_contact_method_code",
+                         "#person_preferred_contact_method_other");
+    wire_up_select_other("#person_p_info_source_code",
+                         "#person_p_info_source_other");
+    wire_up_select_other("#person_person_provider_links_attributes_0_provider_intro_outcome_code",
+                         "#person_person_provider_links_attributes_0_provider_intro_outcome_other");
   });

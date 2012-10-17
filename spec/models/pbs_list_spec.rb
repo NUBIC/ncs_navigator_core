@@ -115,5 +115,152 @@ describe PbsList do
 
   end
 
+  describe ".provider_recruited?" do
+
+    it "returns true if the pr_cooperation_date is set and the pr_recruitment_status_code is 1 (recruited)" do
+      pbs = Factory(:pbs_list, :pr_cooperation_date => Date.today, :pr_recruitment_status_code => 1)
+      pbs.should be_provider_recruited
+    end
+
+    it "returns false if the pr_cooperation_date is not set" do
+      pbs = Factory(:pbs_list, :pr_cooperation_date => nil, :pr_recruitment_status_code => 1)
+      pbs.should_not be_provider_recruited
+    end
+
+    it "returns false if the pr_recruitment_status_code is NOT 1 (recruited)" do
+      pbs = Factory(:pbs_list, :pr_cooperation_date => Date.today, :pr_recruitment_status_code => 2)
+      pbs.should_not be_provider_recruited
+    end
+  end
+
+  describe "latest_provider_logistic_completion_date" do
+    before(:each) do
+      @provider = Factory(:provider)
+      @pbs_list = Factory(:pbs_list, :provider => @provider)
+    end
+
+    it "returns logistic completion date if provider logistic is complete" do
+      Factory(:provider_logistic, :completion_date => Date.new(2012, 05, 10), :provider => @provider)
+      @pbs_list.latest_provider_logistic_completion_date.should == Date.new(2012, 05, 10)
+    end
+
+    it "returns nil if provider logistic is not complete" do
+      Factory(:provider_logistic, :provider => @provider)
+      @pbs_list.latest_provider_logistic_completion_date.should == nil
+    end
+  end
+
+  describe "earliest_provider_recruitment_contact_date" do
+    before(:each) do
+      @provider = Factory(:provider)
+      @pbs_list = Factory(:pbs_list, :provider => @provider)
+    end
+
+    it "returns last contact date from the provider recruitment contacts" do
+      Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+        :contact => Factory(:contact, :contact_date_date => Date.new(2012, 05, 11)), :provider => @provider)
+      @pbs_list.earliest_provider_recruitment_contact_date.should == Date.new(2012, 05, 11)
+    end
+
+    it "returns nil if provider recruitment contacts is empty" do
+      @pbs_list.earliest_provider_recruitment_contact_date.should == nil
+    end
+  end
+
+  describe "mark_in_progress" do
+    it "set the recruitment_status_code to the 3" do
+      pbs_list = Factory(:pbs_list)
+      pbs_list.mark_in_progress!
+      pbs_list.pr_recruitment_status_code.should == 3
+    end
+  end
+
+  describe "update_recruitment_dates" do
+    before(:each) do
+      @provider = Factory(:provider)
+      @pbs_list = Factory(:pbs_list, :provider => @provider, :pr_recruitment_start_date => nil, :pr_cooperation_date => nil, :pr_recruitment_end_date => nil)
+    end
+
+    describe "set the recruitment start date to" do
+      it "nil if no provider contacts exist" do
+        @pbs_list.pr_recruitment_start_date.should be_nil
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_recruitment_start_date.should be_nil
+      end
+
+      it "lastest provider contact date" do
+        @pbs_list.pr_recruitment_start_date.should be_nil
+        Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+                :contact => Factory(:contact, :contact_date_date => Date.new(2012, 05, 11)), :provider => @provider)
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_recruitment_start_date.should == Date.new(2012, 05, 11)
+      end
+    end
+
+    describe "set the cooperation date to" do
+      it "nil if no provider recruited" do
+        @pbs_list.pr_cooperation_date.should be_nil
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_cooperation_date.should be_nil
+      end
+
+      it "earliest successful provider recruitment contact date" do
+        @pbs_list.pr_recruitment_start_date.should be_nil
+        Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+                :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => @provider)
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_cooperation_date.should == Date.new(2012, 05, 12)
+      end
+    end
+
+    describe "set the recruitment end date to" do
+      it "nil if no provider logistice exist" do
+        @pbs_list.pr_recruitment_end_date.should be_nil
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_recruitment_end_date.should be_nil
+      end
+
+      it "nil if provider logistic is not complete" do
+        Factory(:provider_logistic, :provider => @provider)
+        @pbs_list.pr_recruitment_end_date.should be_nil
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_recruitment_end_date.should be_nil
+      end
+
+      it "logistic completion date if provider logistic is complete" do
+        @pbs_list.pr_recruitment_end_date.should be_nil
+        Factory(:provider_logistic, :completion_date => Date.new(2012, 05, 15), :provider => @provider)
+        @pbs_list.update_recruitment_dates!
+        @pbs_list.pr_recruitment_end_date.should == Date.new(2012, 05, 15)
+      end
+    end
+  end
+
+  describe "update_recruitment_status" do
+    before(:each) do
+      @provider = Factory(:provider)
+      @pbs_list = Factory(:pbs_list, :provider => @provider)
+    end
+
+    it "marks the recruitment_status to the in_progress if no provider recruited contacts " do
+      @pbs_list.update_recruitment_status!
+      @pbs_list.pr_recruitment_status_code.should == 3
+    end
+
+    it "marks the recruitment_status to the recruited if recruitment logistics is completed" do
+      Factory(:provider_logistic, :completion_date => Date.new(2012, 05, 15), :provider => @provider)
+      @pbs_list.update_recruitment_status!
+      @pbs_list.pr_recruitment_status_code.should == 1
+    end
+
+    it "updates the provider event end date to the latest provider logistic completion date if such event exist" do
+      Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+        :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => @provider)
+      Factory(:provider_logistic, :completion_date => Date.new(2012, 05, 17), :provider => @provider)
+      @pbs_list.update_recruitment_status!
+      @pbs_list.provider.provider_recruitment_event.event_end_date.should == Date.new(2012, 05, 17);
+    end
+  end
+
 end
 

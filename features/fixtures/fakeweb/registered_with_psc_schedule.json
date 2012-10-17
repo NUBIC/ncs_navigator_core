@@ -325,7 +325,7 @@
                             "id":"registered_with_psc",
                             "privileges":["update"]},
                             "subject":"Bessie Smith",
-                            "labels":"event:pregnancy_visit_1 instrument:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 order:01_01",
+                            "labels":"event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 order:01_01",
                             "formatted_plan_day":"Day 1",
                             "state_history":[{"name":"scheduled","date":"2011-11-09","reason":"Initialized from template"}]
                         },{
@@ -390,7 +390,7 @@
               "id":"registered_with_psc",
               "privileges":["update"]},
               "subject":"Bessie Smith",
-              "labels":"event:low_intensity_data_collection instrument:ins_que_lipregnotpreg_int_li_p2_v2.0",
+              "labels":"event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0",
               "formatted_plan_day":"Day 1",
               "state_history":[{"name":"scheduled","date":"2012-05-09","reason":"Initialized from template"}]
             }]

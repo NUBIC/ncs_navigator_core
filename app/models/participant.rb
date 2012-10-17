@@ -63,7 +63,7 @@ class Participant < ActiveRecord::Base
   has_many :participant_staff_relationships
   has_many :participant_consents
   has_many :participant_consent_samples
-  has_many :events, :order => 'events.event_start_date'
+  has_many :events, :order => 'events.event_type_code, events.event_start_date'
   has_many :response_sets, :inverse_of => :participant
 
   # validates_presence_of :person
@@ -93,9 +93,7 @@ class Participant < ActiveRecord::Base
   # If the recruitment_strategy is not Hi/Lo (two_tier_knowledgable)
   # then set the participant firmly in the high_intensity_state machine.
   def set_initial_state_for_recruitment_strategy
-    recruitment_strategy = RecruitmentStrategy.recruitment_type_strategy(NcsNavigatorCore.recruitment_type_id)
-
-    unless recruitment_strategy.two_tier_knowledgable?
+    unless NcsNavigatorCore.recruitment_strategy.two_tier_knowledgable?
       self.high_intensity = true
       self.start_in_high_intensity_arm!
       self.high_intensity_conversion! if can_high_intensity_conversion?
@@ -181,11 +179,11 @@ class Participant < ActiveRecord::Base
     end
 
     event :follow do
-      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :pregnancy_one, :following_high_intensity] => :following_high_intensity
+      transition [:converted_high_intensity, :in_high_intensity_arm, :pre_pregnancy, :following_high_intensity] => :following_high_intensity
     end
 
     event :impregnate do
-      transition [:following_high_intensity, :pre_pregnancy] => :pregnancy_one
+      transition [:following_high_intensity, :pre_pregnancy, :converted_high_intensity] => :pregnancy_one
     end
 
     event :pregnancy_one_visit do
@@ -256,6 +254,11 @@ class Participant < ActiveRecord::Base
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     end
 
+    if /_PBSamplingScreen_/ =~ survey_title
+      psc.update_subject(self)
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
+    end
+
     if /_LIPregNotPreg_/ =~ survey_title && can_follow_low_intensity?
       follow_low_intensity!
     end
@@ -263,11 +266,10 @@ class Participant < ActiveRecord::Base
     if /_LIHIConversion_/ =~ survey_title
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
       high_intensity_conversion!
-      process_high_intensity_conversion!
     end
 
     if /_PPGFollUp_/ =~ survey_title
-      follow! if can_follow?
+      follow! if can_follow? && high_intensity?
     end
 
     if known_to_be_pregnant?
@@ -277,7 +279,8 @@ class Participant < ActiveRecord::Base
         impregnate_low!
       end
 
-      if high_intensity? && can_impregnate?
+      if high_intensity? &&
+         can_impregnate?
         impregnate!
       end
     end
@@ -303,12 +306,11 @@ class Participant < ActiveRecord::Base
       end
     end
 
+    # TODO: move this to a method that can be called after Contact or Event
+    #       has been updated cf. #2524
     if known_to_have_experienced_child_loss? && can_lose_child?
       lose_child!
     end
-
-    # TODO: update participant state for each survey
-    #       e.g. participant.assign_to_pregnancy_probability_group! after completing PregScreen
 
     self.update_attribute(:being_followed, true) unless self.being_followed?
   end
@@ -450,7 +452,7 @@ class Participant < ActiveRecord::Base
   # Returns all events where event_end_date is not null
   # @return [Array<Event>]
   def completed_events(event_type = nil)
-    result = events.select { |e| !e.event_end_date.blank? }
+    result = events.select { |e| e.closed? }
     result = result.select { |e| e.event_type == event_type } if event_type
     result
   end
@@ -500,7 +502,7 @@ class Participant < ActiveRecord::Base
       0
     when pregnancy_two?
       60.days
-    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?, pregnancy_one?
       follow_up_interval
     when in_pregnant_state?
       due_date ? 1.day : 0
@@ -513,7 +515,9 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next Follow-Up event
   # @return [Date]
   def follow_up_interval
-    if low_intensity? or recent_loss?
+    if should_take_low_intensity_questionnaire?
+      0
+    elsif low_intensity? or recent_loss?
       6.months
     else
       3.months
@@ -702,6 +706,15 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Participant should be screened if they have not completed either
+  # the Pregnancy Screener or PBS Eligibility Screener event
+  def should_be_screened?
+    !completed_event?(NcsNavigatorCore.recruitment_strategy.pbs? ?
+                      NcsCode.pbs_eligibility_screener :
+                      NcsCode.pregnancy_screener)
+  end
+
+  ##
   # @return [true,false]
   def low_intensity?
     !high_intensity
@@ -857,6 +870,8 @@ class Participant < ActiveRecord::Base
   # [31, "24 Month"],
   # [32, "Low to High Conversion"],
   # [33, "Low Intensity Data Collection"],
+  # [34, "PBS Participant Eligibility Screening"],
+  # [35, "PBS Frame SAQ"],
   # [-5, "Other"],
   # [-4, "Missing in Error"]
   #
@@ -868,8 +883,8 @@ class Participant < ActiveRecord::Base
     register! if can_register?  # assume known to PSC
 
     case event.event_type.local_code
-    when 4, 5, 6, 29
-      # Pregnancy Screener Events
+    when 4, 5, 6, 29, 34
+      # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
     when 10
       # Informed Consent
@@ -899,8 +914,8 @@ class Participant < ActiveRecord::Base
       move_to_high_intensity_if_required
       late_pregnant_informed_consent! if can_late_pregnant_informed_consent?
       pregnancy_one_visit! if can_pregnancy_one_visit?
-    when 18
-      # Birth
+    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Birth and Post-natal
       if low_intensity?
         birth_event_low! if can_birth_event_low?
       else
@@ -908,8 +923,10 @@ class Participant < ActiveRecord::Base
       end
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+    when 17, 19
+      # Do not correspond to states in state machine
     else
-      fail "Unhandled event type for participant state #{event_type.local_code.inspect}"
+      fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"
     end
   end
 
@@ -957,8 +974,10 @@ class Participant < ActiveRecord::Base
     end
 
     def next_low_intensity_study_segment
-      if pending? || registered?
-        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      if pending? || registered? || should_be_screened?
+        screener_instrument
+      elsif should_take_low_intensity_questionnaire?
+        PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
@@ -977,9 +996,11 @@ class Participant < ActiveRecord::Base
     end
 
     def next_high_intensity_study_segment
-      if registered?
+      if should_be_screened?
+        screener_instrument
+      elsif registered?
         switch_arm if high_intensity? # Participant should not be in the high intensity arm if now just registering
-        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+        screener_instrument
       elsif in_high_intensity_arm?
         PatientStudyCalendar::HIGH_INTENSITY_HI_LO_CONVERSION
       elsif following_high_intensity? || converted_high_intensity?
@@ -996,6 +1017,14 @@ class Participant < ActiveRecord::Base
         PatientStudyCalendar::CHILD_CHILD
       else
         nil
+      end
+    end
+
+    def screener_instrument
+      if NcsNavigatorCore.recruitment_strategy.pbs?
+        PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
+      else
+        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
       end
     end
 
@@ -1056,11 +1085,11 @@ class Participant < ActiveRecord::Base
     end
 
     def next_scheduled_event_date
-      (interval == 0) ? Date.today : (date_used_to_schedule_next_event.to_date + interval)
+      (interval == 0) ? get_date_to_schedule_next_event_from_contact_link : (date_used_to_schedule_next_event.to_date + interval)
     end
 
     def date_used_to_schedule_next_event
-      if due_date && in_pregnant_state?
+      if due_date && next_event_is_birth?
         due_date
       elsif contact_links.blank?
         self.created_at.to_date
@@ -1070,17 +1099,25 @@ class Participant < ActiveRecord::Base
     end
 
     ##
-    # Use Most recent contact link contact date if it exists
+    # if person and contacts exist, use most recent contact link contact date if it exists
     # otherwise use the created at attribute for the contact link
+    # else use today's date.
     # @return [Date]
     def get_date_to_schedule_next_event_from_contact_link
       # contact_links are delegated to person and ordered by created_at DESC
-      most_recent_contact_link = contact_links.first
-      result = most_recent_contact_link.created_at.to_date
-      if most_recent_contact_link.contact && most_recent_contact_link.contact.contact_date_date
-        result = most_recent_contact_link.contact.contact_date_date
+      if person && most_recent_contact_link = contact_links.first
+        result = most_recent_contact_link.created_at.to_date
+        if most_recent_contact_link.contact && most_recent_contact_link.contact.contact_date_date
+          result = most_recent_contact_link.contact.contact_date_date
+        end
+      else
+        result = Date.today
       end
       result
+    end
+
+    def next_event_is_birth?
+      pregnant_low? || ready_for_birth?
     end
 
     def in_pregnant_state?

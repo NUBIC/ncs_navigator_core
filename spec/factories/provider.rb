@@ -22,11 +22,19 @@ FactoryGirl.define do
     pr.provider_ncs_role_code     1
   end
 
+  factory :pbs_provider_role do |pr|
+    pr.psu_code                   2000030
+    pr.association :provider, :factory => :provider
+    pr.provider_role_pbs_code     1
+  end
+
   factory :person_provider_link do |ppl|
     ppl.psu_code                   2000030
     ppl.association :provider, :factory => :provider
     ppl.association :person, :factory => :person
     ppl.provider_intro_outcome_code     1
+    ppl.sampled_person_code             1
+    ppl.pre_screening_status_code       1
   end
 
   factory :personnel_provider_link do |ppl|
@@ -69,7 +77,7 @@ FactoryGirl.define do
     pl.association :provider,   :factory => :provider
     pl.provider_logistics_code  1
     pl.provider_logistics_other nil
-
+    pl.completion_date          nil
   end
 
   factory :non_interview_provider do |nir|

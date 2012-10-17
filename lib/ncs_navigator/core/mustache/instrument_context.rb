@@ -57,6 +57,17 @@ module NcsNavigator::Core::Mustache
       end
     end
 
+    def pregnancy_to_confirm
+      # TODO: add (Just to confirm) . . . if participant known to be pregnant
+      "A"
+    end
+
+    def visit_today
+      # TODO: the impossible - know the first date of visit with provider
+      # {Is your visit today/{Was your visit on {DATE OF VISIT}}
+      "Is your visit today"
+    end
+
     ### Dates and times ###
 
     def last_year
@@ -255,8 +266,17 @@ module NcsNavigator::Core::Mustache
     end
 
     def c_fname
-      about_person.blank? ? "[CHILD'S FIRST NAME]" : about_person.first_name
+      child_first_name("[CHILD'S FIRST NAME]")
     end
+
+    def child_first_name_the_child
+      child_first_name("the child")
+    end
+
+    def child_first_name(txt)
+      about_person.blank? ? txt : about_person.first_name
+    end
+    private :child_first_name
 
     def c_fname_or_the_child
       about_person.blank? ? "the Child" : about_person.first_name

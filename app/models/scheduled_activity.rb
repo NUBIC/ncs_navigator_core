@@ -2,10 +2,12 @@ class ScheduledActivity
   include Comparable
 
   attr_accessor :study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels, :person_id
-  attr_accessor :event, :instrument, :order, :participant_type, :collection, :mode, :references
+  attr_accessor :event, :references_collection, :references, :instruments, :instrument, :order, :participant_type, :collection, :mode
 
   def initialize(attrs={})
     attrs.each { |k, v| send("#{k}=", v) if respond_to?("#{k}=") }
+    @instruments ||= []
+    @references_collection ||= []
     parse_labels if @labels
   end
 
@@ -15,10 +17,45 @@ class ScheduledActivity
   def parse_labels
     @labels.split.each do |lbl|
       vals = lbl.split(':')
-      self.send("#{vals.first}=", vals.last)
+      case vals.first
+      when "instrument"
+        handle_instrument_label vals
+      when "references"
+        handle_references_label vals
+      else
+        self.send("#{vals.first}=", vals.last)
+      end
     end
   end
   private :parse_labels
+
+  ##
+  # Takes the instrument label values and adds
+  # the instrument label value to the instruments collection.
+  # If the instrument label matches the mdes version, also
+  # set the instrument value.
+  def handle_instrument_label(vals)
+    @instruments << vals.last
+    @instrument = vals.last if matches_mdes_version(vals)
+  end
+  private :handle_instrument_label
+
+  ##
+  # Takes the references label values and adds
+  # the references label value to the references collection.
+  # If the references label matches the mdes version, also
+  # set the references value.
+  def handle_references_label(vals)
+    @references_collection << vals.last
+    @references = vals.last if matches_mdes_version(vals)
+  end
+  private :handle_references_label
+
+
+  def matches_mdes_version(vals)
+    !vals.select { |v| v == NcsNavigatorCore.mdes.version }.blank?
+  end
+  private :matches_mdes_version
 
   ##
   # Override ==
@@ -128,6 +165,13 @@ class ScheduledActivity
   # Alias for the instrument attribute
   def survey_title
     instrument
+  end
+
+  def has_non_matching_mdes_version_instrument?
+    Rails.logger.info("~~~ has_non_matching_mdes_version_instrument")
+    Rails.logger.info("~~~ labels.include?(Instrument::INSTRUMENT_LABEL_MARKER) = #{labels.include?(Instrument::INSTRUMENT_LABEL_MARKER)}")
+    Rails.logger.info("~~~ instrument = #{instrument} blank? #{instrument.blank?}")
+    labels.include?(Instrument::INSTRUMENT_LABEL_MARKER) && instrument.blank?
   end
 
 end

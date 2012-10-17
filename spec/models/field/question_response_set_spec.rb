@@ -30,6 +30,14 @@ module Field
       end
     end
 
+    describe '#public_id' do
+      it "is the API ID of the first response's question" do
+        group << r1
+
+        group.public_id.should == r1.question_id
+      end
+    end
+
     describe '#patch' do
       before do
         group << r1
@@ -205,11 +213,6 @@ module Field
           g1.should_not == g2
         end
       end
-    end
-
-    describe '#replace' do
-      let(:g1) { QuestionResponseSet.new }
-      let(:g2) { QuestionResponseSet.new }
     end
   end
 end

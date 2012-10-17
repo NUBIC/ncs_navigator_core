@@ -1,9 +1,9 @@
 $(document).ready ->
 
-  $('#provider_details_show').click ->
-    $('#provider_details').show();
-    $('#provider_details_show').hide();
+  $('#details_show').click ->
+    $('#details').show();
+    $('#details_show').hide();
 
-  $('#provider_details_hide').click ->
-    $('#provider_details').hide();
-    $('#provider_details_show').show();
+  $('#details_hide').click ->
+    $('#details').hide();
+    $('#details_show').show();

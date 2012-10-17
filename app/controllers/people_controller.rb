@@ -35,10 +35,27 @@ class PeopleController < ApplicationController
     @provider = Provider.find(params[:provider_id])
   end
 
+  # GET /people/1/provider_staff_member_radio_button
+  def provider_staff_member_radio_button
+    @member = Person.find(params[:id])
+    @provider = Provider.find(params[:provider_id])
+  end
+
   # GET /people/new
   # GET /people/new.json
   def new
+    unless params[:participant_id].blank?
+      @participant = Participant.find(params[:participant_id])
+    end
+
     @person = Person.new
+    @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
+    if @provider
+      @person.person_provider_links.build(:psu_code => @psu_code,
+                                          :provider => @provider,
+                                          :person   => @person,
+                                          :sampled_person_code => 1)
+    end
 
     respond_to do |format|
       format.html # new.html.haml
@@ -50,10 +67,25 @@ class PeopleController < ApplicationController
   # POST /people.json
   def create
     @person = Person.new(params[:person])
+    @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
 
     respond_to do |format|
       if @person.save
-        format.html { redirect_to(people_path, :notice => 'Person was successfully created.') }
+
+        ## Create relationship to participant if participant_id is sent
+        if !params[:participant_id].blank? && !params[:relationship_code].blank?
+          @participant = Participant.find(params[:participant_id])
+          ParticipantPersonLink.create(:participant => @participant, :person => @person,
+                                       :relationship_code => params[:relationship_code])
+        end
+
+        path = people_path
+        msg  = 'Person was successfully created.'
+        if @provider
+          path = provider_path(@provider)
+          msg  = "Person was successfully created for #{@provider}."
+        end
+        format.html { redirect_to(path, :notice => msg) }
         format.json { render :json => @person }
       else
         format.html { render :action => "new" }
@@ -65,16 +97,26 @@ class PeopleController < ApplicationController
   # GET /people/1/edit
   def edit
     @person = Person.find(params[:id])
+    @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
   end
 
   # PUT /people/1
   # PUT /people/1.json
   def update
     @person = Person.find(params[:id])
+    @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
 
     respond_to do |format|
       if @person.update_attributes(params[:person])
-        format.html { redirect_to(people_path, :notice => 'Person was successfully updated.') }
+
+        path = people_path
+        msg  = 'Person was successfully updated.'
+        if @provider
+          path = provider_path(@provider)
+          msg  = "Person was successfully updated for #{@provider}."
+        end
+
+        format.html { redirect_to(path, :notice => msg) }
         format.json { render :json => @person }
       else
         format.html { render :action => "edit" }

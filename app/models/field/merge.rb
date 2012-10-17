@@ -3,15 +3,18 @@
 #
 # Table name: merges
 #
-#  completed_at    :datetime
+#  client_id       :string(255)
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
 #  fieldwork_id    :integer
 #  id              :integer          not null, primary key
 #  log             :text
+#  merged_at       :datetime
 #  proposed_data   :text
+#  staff_id        :string(255)
 #  started_at      :datetime
+#  synced_at       :datetime
 #  updated_at      :datetime
 #
 
@@ -28,8 +31,8 @@ module Field
   # fieldwork set sent to a field client, and a corresponding fieldwork set
   # received from a field client.
   #
-  # Currently, four entities are merged: {Contact}, {Event}, {Instrument}, and
-  # {Response} via {QuestionResponseSet}.
+  # Currently, five entities are merged: {Contact}, {Event}, {Instrument},
+  # {ResponseSet}, and {Response} via {QuestionResponseSet}.
   #
   #
   # Overview
@@ -50,10 +53,10 @@ module Field
   # Atomic vs. non-atomic merge
   # ===========================
   #
-  # Contacts, Events, and Instruments can all be merged non-atomically, which
-  # means that we can commit changes even in the presence of conflicts.  (Also,
-  # we can retry the merge on those entities and progress towards a fully
-  # merged state.)
+  # Contacts, Events, Instruments, and ResponseSets can all be merged
+  # non-atomically, which means that we can commit changes even in the presence
+  # of conflicts.  (Also, we can retry the merge on those entities and progress
+  # towards a fully merged state.)
   #
   # QuestionResponseSets, on the other hand, must be merged atomically: if
   # there exist conflicts on any attribute on any Response, none of the
@@ -113,30 +116,15 @@ module Field
   module Merge
     attr_accessor :logger
     attr_accessor :conflicts
-    attr_accessor :question_response_sets
 
     def merge
       self.conflicts = ConflictReport.new
-      self.question_response_sets ||= {}
 
       contacts.each { |id, state| merge_entity(state, 'Contact', id) }
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
+      response_sets.each { |id, state| merge_entity(state, 'ResponseSet', id) }
       question_response_sets.each { |id, state| merge_entity(state, 'QuestionResponseSet', id) }
-    end
-
-    def build_question_response_sets
-      res = {}
-
-      responses.each do |_, state|
-        state.each do |name, response|
-          res[response.question_id] ||= {}
-          res[response.question_id][name] ||= QuestionResponseSet.new
-          res[response.question_id][name] << response
-        end
-      end
-
-      self.question_response_sets = res
     end
 
     ##
@@ -151,13 +139,36 @@ module Field
     # that can be dealt with by just looking further up in the log.  There's no
     # similar way to discover errors that aren't reported due to an early
     # abort.
+    #
+    # If save succeeds, this method returns the merged model objects in a map
+    # of the form
+    #
+    #     { :contacts => [#<Contact ...>, ...],
+    #       :events => [#<Event ...>, ...],
+    #       :instruments => [#<Instrument ...>, ...],
+    #       :response_sets => [#<ResponseSet ...>, ...],
+    #       :question_response_sets => [#<QuestionResponseSet ...>, ...]
+    #     }
+    #
+    # If save fails, returns nil.
     def save
+      map = {
+        :contacts => current_for(contacts),
+        :events => current_for(events),
+        :instruments => current_for(instruments),
+        :response_sets => current_for(response_sets),
+        :question_response_sets => current_for(question_response_sets)
+      }
+
       ActiveRecord::Base.transaction do
-        [contacts, events, instruments, question_response_sets].map { |c| save_collection(c) }.all?.tap do |res|
-          unless res
-            logger.fatal { 'Errors raised during save; rolling back' }
-            raise ActiveRecord::Rollback
-          end
+        ok = map.values.all? { |c| save_collection(c) }
+
+        if ok
+          logger.info { 'Merge saved' }
+          map
+        else
+          logger.fatal { 'Errors raised during save; rolling back' }
+          raise ActiveRecord::Rollback
         end
       end
     end
@@ -255,18 +266,24 @@ module Field
     ##
     # @private
     # @return Boolean
-    def save_collection(c)
-      c.map do |public_id, state|
-        current = state[:current]
+    def save_collection(coll)
+      coll.all? do |entity|
+        next true unless entity
 
-        next true unless current
-
-        current.save.tap { |ok| log_errors_for(public_id, current, ok) }
-      end.all?
+        entity.save.tap { |ok| log_errors_for(entity, ok) }
+      end
     end
 
-    def log_errors_for(public_id, entity, ok)
+    ##
+    # @private
+    def current_for(c)
+      c.map { |public_id, state| state[:current] }
+    end
+
+    def log_errors_for(entity, ok)
       return if ok
+
+      public_id = entity.respond_to?(:public_id) ? entity.public_id : '(unknown)'
 
       logger.fatal { "[#{entity.class} #{public_id}] #{entity.class} could not be saved" }
 

@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+# encoding: UTF-8
 class Survey < ActiveRecord::Base; end
 class UpdateBlankVersionsOnSurveys < ActiveRecord::Migration
   def self.up
-    Survey.where('version IS ?', nil).each do |s|
-      s.version = 0
+    Survey.where('survey_version IS ?', nil).each do |s|
+      s.survey_version = 0
       s.save!
     end
   end

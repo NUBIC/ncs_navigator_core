@@ -17,6 +17,28 @@ describe Participant do
 
   end
 
+  context "for the PBS protocol" do
+
+    context "who has not completed the PBS Eligibility Screener event" do
+
+      let(:participant) { Factory(:participant) }
+      let(:person) { Factory(:person) }
+
+      before(:each) do
+        NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
+
+        participant.person = person
+      end
+
+      it "is scheduled for the PBS Eligibility Screener event on that day" do
+        participant.next_study_segment.should == PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
+        participant.next_scheduled_event.event.should == participant.next_study_segment
+        participant.next_scheduled_event.date.should == Date.today
+      end
+
+    end
+  end
+
   context "in the low intensity arm" do
 
     context "a registered participant" do
@@ -37,7 +59,7 @@ describe Participant do
 
     end
 
-    context "assigned to a pregnancy probability group" do
+    context "assigned to pregnancy probability group" do
 
       context "PPG Group 1: Pregnant and Eligible" do
 
@@ -46,7 +68,9 @@ describe Participant do
 
         before(:each) do
           participant.person = person
-          @lo_i_quex = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+          participant.events << Factory(:event, :participant => participant,
+                              :event_start_date => Date.today, :event_end_date => Date.today,
+                              :event_type => NcsCode.pregnancy_screener)
         end
 
         it "should schedule the LO-Intensity Quex" do
@@ -63,7 +87,9 @@ describe Participant do
             participant.should be_known_to_be_pregnant
             participant.impregnate_low!
             # participant.birth_event_low!
-
+            lo_i_quex = Factory(:event, :participant => participant, :event_start_date => Date.today, :event_end_date => Date.today,
+                                :event_type => NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33))
+            participant.events << lo_i_quex
             participant.stub!(:due_date).and_return { 150.days.from_now.to_date }
 
             participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
@@ -77,7 +103,8 @@ describe Participant do
             dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
             hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
 
-            Factory(:event, :event_type => @lo_i_quex, :participant => participant, :event_end_date => Date.today)
+            Factory(:event, :event_type => NcsCode.low_intensity_data_collection,
+                    :participant => participant, :event_end_date => Date.today)
 
             participant.should be_in_tsu
             participant.should be_eligible_for_high_intensity_invitation
@@ -122,7 +149,9 @@ describe Participant do
 
         before(:each) do
           participant.person = person
-          @lo_i_quex = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+          participant.events << Factory(:event, :participant => participant,
+                              :event_start_date => Date.today, :event_end_date => Date.today,
+                              :event_type => NcsCode.pregnancy_screener)
         end
 
         it "schedules the LO-Intensity PPG 1 and 2 event on that day" do
@@ -139,12 +168,13 @@ describe Participant do
           participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
 
           event_type = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
-          event = Factory(:event, :participant => participant, :event_end_date => Date.today, :event_type => event_type)
+          event = Factory(:event, :participant => participant, :event_end_date => Date.today,
+                          :event_type => NcsCode.low_intensity_data_collection)
 
           participant.events.reload
           participant.pending_events.should be_empty
-          participant.events.should == [event]
-          participant.events.first.event_type_code.should == 33
+          participant.events.should include(event)
+          participant.events.last.event_type_code.should == NcsCode.low_intensity_data_collection.local_code
 
           participant.follow_low_intensity!
           participant.should be_following_low_intensity
@@ -177,7 +207,8 @@ describe Participant do
           dh_link = Factory(:dwelling_household_link, :dwelling_unit => du, :household_unit => hh)
           hh_pers_link = Factory(:household_person_link, :household_unit => hh, :person => participant.person)
 
-          Factory(:event, :event_type => @lo_i_quex, :participant => participant, :event_end_date => Date.today)
+          Factory(:event, :event_type => NcsCode.low_intensity_data_collection,
+                  :participant => participant, :event_end_date => Date.today)
 
           participant.person.should be_in_tsu
           participant.should be_in_tsu
@@ -198,7 +229,7 @@ describe Participant do
           participant.should be_in_tsu
           participant.should_not be_eligible_for_high_intensity_invitation
 
-          participant.completed_event?(@lo_i_quex).should be_false
+          participant.completed_event?(NcsCode.low_intensity_data_collection).should be_false
         end
 
       end
@@ -209,6 +240,9 @@ describe Participant do
 
         before(:each) do
           participant.person = person
+          participant.events << Factory(:event, :participant => participant,
+                              :event_start_date => Date.today, :event_end_date => Date.today,
+                              :event_type => NcsCode.pregnancy_screener)
         end
 
         it "schedules the LO-Intensity PPG Follow Up event 6 months out" do
@@ -237,6 +271,9 @@ describe Participant do
 
         before(:each) do
           participant.person = person
+          participant.events << Factory(:event, :participant => participant,
+                              :event_start_date => Date.today, :event_end_date => Date.today,
+                              :event_type => NcsCode.pregnancy_screener)
         end
 
         it "schedules the LO-Intensity PPG Follow Up event 6 months out" do
@@ -272,6 +309,9 @@ describe Participant do
 
       before(:each) do
         participant.person = person
+        participant.events << Factory(:event, :participant => participant,
+                                      :event_start_date => Date.today, :event_end_date => Date.today,
+                                      :event_type => NcsCode.pregnancy_screener)
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
@@ -284,7 +324,7 @@ describe Participant do
         participant.pregnant_informed_consent!
         participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
         participant.next_scheduled_event.event.should == participant.next_study_segment
-        participant.next_scheduled_event.date.should == Date.today
+        participant.next_scheduled_event.date.should == 3.months.from_now.to_date
       end
 
       it "schedules the second pregnancy visit after the first pregnancy visit" do
@@ -333,6 +373,9 @@ describe Participant do
 
       before(:each) do
         participant.person = person
+        participant.events << Factory(:event, :participant => participant,
+                                      :event_start_date => Date.today, :event_end_date => Date.today,
+                                      :event_type => NcsCode.pregnancy_screener)
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
@@ -365,6 +408,9 @@ describe Participant do
 
       before(:each) do
         participant.person = person
+        participant.events << Factory(:event, :participant => participant,
+                                      :event_start_date => Date.today, :event_end_date => Date.today,
+                                      :event_type => NcsCode.pregnancy_screener)
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do
@@ -389,6 +435,9 @@ describe Participant do
 
       before(:each) do
         participant.person = person
+        participant.events << Factory(:event, :participant => participant,
+                                      :event_start_date => Date.today, :event_end_date => Date.today,
+                                      :event_type => NcsCode.pregnancy_screener)
       end
 
       it "must first go through the LO-Intensity HI-LO Conversion event immediately" do

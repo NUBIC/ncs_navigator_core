@@ -1,4 +1,7 @@
 /* Link styles */
+a {
+  text-decoration: none;
+}
 
 input[type="submit"] {
   font-size: 1.1em;
@@ -61,6 +64,11 @@ a.sort_link:hover, a.icon_link:hover {
 .import_link, .import_link:hover,
 .export_link, .export_link:hover {
   background: url(../../assets/page_white_excel.png) 0 2px no-repeat !important;
+}
+
+.hospital_link, .hospital_link:hover {
+  background: url(../../assets/hospital-small.png) 0 2px no-repeat !important;
+  background-size: 20px 20px;
 }
 
 .search_link, .search_link:hover {

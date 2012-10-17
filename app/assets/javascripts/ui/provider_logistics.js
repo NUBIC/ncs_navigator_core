@@ -7,3 +7,19 @@ NCSCore.UI.ProviderLogisticAssociation = function (config) {
       caller: this
    });
 };
+
+function setCompletionDateForNoneLogistic() {
+	$('td.select_col').each(function() {
+		logistic_selector = $(this).children("select:first")
+		completion_date = $(this).children(".completion_date").find("input")
+		if (completion_date.val().length == 0) {
+			logistic_selector.change(function() {
+				if (logistic_selector.find("option:selected").val() == 7) {
+					completion_date.val(get_today_date_in_mdes_format)
+				} else {
+					completion_date.val('')
+				}
+			})
+		}
+	})
+}

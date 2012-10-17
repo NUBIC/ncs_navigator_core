@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-
+# encoding: UTF-8
 class AddApiIdsToResponseSetsAndResponses < ActiveRecord::Migration
   def self.up
     add_column :response_sets, :api_id, :string

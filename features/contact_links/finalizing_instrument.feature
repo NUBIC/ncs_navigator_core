@@ -26,19 +26,18 @@ Feature: Finalizing an instrument
   And I should see "Administer another Instrument for this Event"
   And I should see "Create Participant Record of Visit"
   And I should see "Enter information about the Visit"
-  And I should see "Complete Contact and Event Records"
-  When I follow "Complete Contact and Event Records"
-  Then I should be on the edit_contact_link page
-  And I should see "Remember to record the Contact and Event Dispositions."
-  And I should see "Bessie Smith has completed Instrument - INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0"
+  And I should see "Complete Contact Record"
+  When I follow "Complete Contact Record"
+  Then I should be on the edit_contact_link_contact page
   When I select "Completed interview in English" from "contact_contact_disposition"
-  And I select "Completed interview in English" from "event_event_disposition"
-  # And I press "Should this event be closed?"
-  # Then I should see "Hide End Date and Time Fields"
-  # And I click "Event end date"
-  # And I follow today's date
-  And I press "Close"
-  Then I should be on the participant page
+  And I press "Submit"
+  Then I should be on the decision_page_contact_link page
   And I should see "Contact was successfully updated."
+  And I should see "Complete Event Record"
+  When I follow "Complete Event Record"
+  Then I should be on the edit_contact_link_event page
+  When I select "Completed interview in English" from "event_event_disposition"
+  And I press "Submit"
+  Then I should be on the participant page
   And I should see "Bessie Smith"
   And I should see "High Intensity Participant :: PPG Group 1: Pregnant and Eligible "

@@ -1,12 +1,8 @@
 - title "Edit Contact"
 
-.mdes_table_definition
-  = render 'documentation/contact'
-
 %h3
   = @person
-
-%h3
+  = "::"
   = @event.event_type.display_text
 
 .page_section

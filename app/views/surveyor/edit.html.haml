@@ -30,4 +30,21 @@
 :javascript
   $(document).ready(function() {
     $("input#surveyor_javascript_enabled").val(true);
+
+    $("#survey_form input[type=submit]").click(function() {
+      $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+      $(this).attr("clicked", "true");
+    });
+
+
+    $("#survey_form").submit(function(event) {
+      var val = $("input[type=submit][clicked=true]").attr("name");
+      if(val == "breakoff") {
+        $('<input />').attr('type', 'hidden')
+          .attr('name', "finish")
+          .attr('value', true)
+          .appendTo('#survey_form');
+
+      }
+    });
   });

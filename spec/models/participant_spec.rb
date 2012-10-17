@@ -81,6 +81,7 @@ describe Participant do
   context "in the pbs protocol" do
     before do
       NcsNavigatorCore.stub(:recruitment_type_id).and_return(5)
+      NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
     end
 
     it "creates a participant in the high_intensity arm" do
@@ -92,13 +93,16 @@ describe Participant do
 
     it "starts a pregnant participant at PV1" do
       pr = Factory(:low_intensity_ppg1_participant)
+      pr.person = Factory(:person)
       pr.should be_high_intensity
       pr.low_intensity_state.should == "started_in_high_intensity_arm"
-
+      pr.events << Factory(:event, :participant => pr,
+                              :event_start_date => Date.today, :event_end_date => Date.today,
+                              :event_type => NcsCode.pbs_eligibility_screener)
       pr.should be_pregnancy_one
       pr.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1]
       pr.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
-      pr.next_scheduled_event.date.should == Date.today
+      pr.next_scheduled_event.date.should == 3.months.from_now.to_date
     end
 
   end
@@ -488,6 +492,9 @@ describe Participant do
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+        @participant.events << Factory(:event, :participant => @participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
       end
 
       it "knows the upcoming applicable events when a new record" do
@@ -531,32 +538,44 @@ describe Participant do
     end
 
     context "in the low intensity protocol" do
-
-      it "knows the upcoming applicable events for a new participant" do
-        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
-        person = Factory(:person)
+      before(:each) do
+        trying = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
+        @person = Factory(:person)
         @participant = Factory(:participant, :high_intensity => false)
-        @participant.person = person
+        @participant.person = @person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
-        Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
+        Factory(:ppg_status_history, :participant => @participant, :ppg_status => trying)
+
+        @participant.events << Factory(:event, :participant => @participant,
+                                :event_start_date => Date.today, :event_end_date => Date.today,
+                                :event_type => NcsCode.pregnancy_screener)
+      end
+
+      it "uses the date from last contact date to determine the next scheduled event date" do
+        contact = Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01')
+        Factory(:contact_link, :person => @person, :contact => contact)
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        @participant.next_scheduled_event.date.should == Date.parse('2012-01-01')
+      end
+
+      it "uses today's date to determine the next scheduled event date if no contacts" do
+        @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
+        @participant.next_scheduled_event.date.should == Date.today
+      end
+
+      it "uses today's date to determine the next scheduled event date if no person" do
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
         @participant.next_scheduled_event.date.should == Date.today
       end
 
       it "uses the birth event contact date to determine the next scheduled event date" do
-        person = Factory(:person)
-        @participant = Factory(:participant, :high_intensity => false)
-        @participant.person = person
-        @participant.register!
-        @participant.assign_to_pregnancy_probability_group!
         @participant.birth_event_low!
         contact = Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01')
-        Factory(:contact_link, :person => person, :contact => contact)
+        Factory(:contact_link, :person => @person, :contact => contact)
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
         @participant.next_scheduled_event.date.should == Date.parse('2012-07-01')
       end
-
     end
 
     context "in the high intensity protocol" do
@@ -568,9 +587,140 @@ describe Participant do
         @participant.person = person
         @participant.register!
         @participant.assign_to_pregnancy_probability_group!
+        @participant.events << Factory(:event, :participant => @participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
         Factory(:ppg_status_history, :participant => @participant, :ppg_status => status)
         @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
         @participant.next_scheduled_event.date.should == 3.months.from_now.to_date
+      end
+
+      context "for pregnancy one participant" do
+
+        before(:each) do
+          @person = Factory(:person)
+          @participant = Factory(:high_intensity_pregnancy_one_participant, :created_at => Date.new(2012, 02, 01))
+          @participant.person = @person
+          @participant.events << Factory( :event, :participant => @participant,
+                                          :event_start_date => Date.today, :event_end_date => Date.today,
+                                          :event_type => NcsCode.pregnancy_screener)
+        end
+
+        it "next event should be PV1" do
+          @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+        end
+
+        context "next event date" do
+          it "should be after 3 months from the contact date if contacts" do
+            Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
+            @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
+          end
+
+          it "should be after 3 months from participant's created_at date if no contacts" do
+            @participant.next_scheduled_event.date.should == Date.new(2012, 05, 01)
+          end
+
+          context "with due_date" do
+            before(:each) do
+              Factory(:ppg_detail, :participant => @participant,
+                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+              @participant.due_date.should == Date.new(2012, 10, 01)
+            end
+
+            it "should be after 3 months from the contact date if contacts" do
+              Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
+              @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
+            end
+
+            it "should be after 3 months from participant's created_at date if no contacts" do
+              @participant.next_scheduled_event.date.should == Date.new(2012, 05, 01)
+            end
+          end
+        end
+      end
+
+      context "for pregnancy two participant" do
+
+        before(:each) do
+          @person = Factory(:person)
+          @participant = Factory(:high_intensity_pregnancy_two_participant, :created_at => Date.new(2012, 02, 01))
+          @participant.person = @person
+          @participant.events << Factory( :event, :participant => @participant,
+                                          :event_start_date => Date.today, :event_end_date => Date.today,
+                                          :event_type => NcsCode.pregnancy_screener)
+        end
+
+        it "next event should be PV2" do
+          @participant.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
+        end
+
+        context "next event date" do
+          it "should be after 60 days from the contact date if contacts" do
+            Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
+            @participant.next_scheduled_event.date.should == Date.new(2012, 03, 01)
+          end
+
+          it "should be after 60 days from participant's created_at date if no contacts" do
+            @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
+          end
+
+          context "with due_date" do
+            before(:each) do
+              Factory(:ppg_detail, :participant => @participant,
+                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+              @participant.due_date.should == Date.new(2012, 10, 01)
+            end
+
+            it "should be after 60 days from the contact date if contacts" do
+              Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
+              @participant.next_scheduled_event.date.should == Date.new(2012, 03, 01)
+            end
+
+            it "should be after 60 days from participant's created_at date if no contacts" do
+              @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
+            end
+          end
+        end
+      end
+
+      context "for birth ready participant" do
+
+        before(:each) do
+          @person = Factory(:person)
+          @participant = Factory(:high_intensity_pregnancy_two_participant, :created_at => Date.new(2012, 02, 01))
+          @participant.person = @person
+          @participant.events << Factory( :event, :participant => @participant,
+                                          :event_start_date => Date.today, :event_end_date => Date.today,
+                                          :event_type => NcsCode.pregnancy_screener)
+          @participant.pregnancy_two_visit
+        end
+
+        it "next event should be birth" do
+          @participant.next_scheduled_event.event.should == PatientStudyCalendar::CHILD_CHILD
+        end
+
+        context "next event date" do
+          it "should be date from the last contact date if contacts" do
+            Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
+            @participant.next_scheduled_event.date.should == Date.new(2012, 01, 01)
+          end
+
+          it "should be today's date if no contacts" do
+            @participant.next_scheduled_event.date.should == Date.today
+          end
+
+          context "with due_date" do
+            before(:each) do
+              Factory(:ppg_detail, :participant => @participant,
+                :ppg_first => NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1), :orig_due_date => Date.new(2012, 10, 01))
+              @participant.due_date.should == Date.new(2012, 10, 01)
+            end
+
+            it "should be 1 day after the due date" do
+              @participant.next_scheduled_event.date.should == Date.new(2012, 10, 02)
+            end
+          end
+        end
       end
 
     end
@@ -629,7 +779,7 @@ describe Participant do
 
       before(:each) do
         @e1_1 = Factory(:event, :participant => participant1, :event_end_date => 6.months.ago)
-        @e1_2 = Factory(:event, :participant => participant1, :event_end_date => nil)
+        @e1_2 = Factory(:event, :participant => participant1, :event_end_date => nil, :event_start_date => Date.today)
         @e2_1 = Factory(:event, :participant => participant2, :event_end_date => 6.months.ago)
       end
 
@@ -640,6 +790,20 @@ describe Participant do
           participant2.pending_events.should be_empty
           participant3.pending_events.should be_empty
         end
+
+        it "orders events by event start date" do
+          @e1_3 = Factory(:event, :participant => participant1, :event_end_date => nil, :event_start_date => 6.months.from_now)
+          participant1.pending_events.should == [@e1_2, @e1_3]
+        end
+
+        it "orders events by event_type then event start date" do
+          @e1_3 = Factory(:event, :participant => participant1, :event_type_code => 13,
+                          :event_end_date => nil, :event_start_date => 6.months.from_now)
+          @e1_4 = Factory(:event, :participant => participant1, :event_type_code => 10,
+                          :event_end_date => nil, :event_start_date => 6.months.from_now)
+          participant1.pending_events.should == [@e1_2, @e1_4, @e1_3]
+        end
+
       end
 
     end
@@ -653,6 +817,9 @@ describe Participant do
         before :each do
           participant.person = person
           participant.save!
+          participant.events << Factory(:event, :participant => participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
         end
 
         describe "a participant who is pregnant - PPG 1" do
@@ -758,6 +925,9 @@ describe Participant do
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
         participant.state.should == "in_pregnancy_probability_group"
+        participant.events << Factory(:event, :participant => participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
       end
 
@@ -767,6 +937,9 @@ describe Participant do
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3)
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
+        participant.events << Factory(:event, :participant => participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP
       end
 
@@ -782,6 +955,10 @@ describe Participant do
       it "transitions from in pregnancy probability group to pregnant" do
         participant = Factory(:participant)
         participant.register!
+        participant.events << Factory(:event, :participant => participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
+
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3, :ppg_status_date => '2011-01-01' )
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group
@@ -791,7 +968,9 @@ describe Participant do
         participant.ppg_status.local_code.should == 1
         participant.next_study_segment.should == PatientStudyCalendar::LOW_INTENSITY_PPG_1_AND_2
         participant.can_impregnate_low?.should be_true
-
+        lo_i_quex = Factory(:event, :participant => participant, :event_start_date => Date.today, :event_end_date => Date.today,
+                            :event_type => NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33))
+        participant.events << lo_i_quex
         participant.impregnate_low!
         participant.should be_pregnant
         participant.stub!(:due_date).and_return { 150.days.from_now.to_date }
@@ -862,6 +1041,10 @@ describe Participant do
           @participant = Factory(:participant)
           @participant.register!
           Factory(:ppg_status_history, :participant => @participant, :ppg_status => status2, :ppg_status_date => '2011-01-01')
+          @participant.events << Factory(:event, :participant => @participant,
+                                        :event_start_date => Date.today, :event_end_date => Date.today,
+                                        :event_type => NcsCode.pregnancy_screener)
+
           @participant.assign_to_pregnancy_probability_group!
           @participant.enroll_in_high_intensity_arm!
         end
@@ -1055,7 +1238,7 @@ describe Participant do
       end
 
       it "closes all pending events" do
-        participant.pending_events.should == [@lo_i_quex, @informed_consent]
+        participant.pending_events.should == [@informed_consent, @lo_i_quex]
         participant.switch_arm
         participant.pending_events.should == []
       end

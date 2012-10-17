@@ -27,6 +27,8 @@ class ResponseSet < ActiveRecord::Base
 
   after_save :extract_operational_data
 
+  attr_accessible :participant_id
+
   def extract_operational_data
     OperationalDataExtractor.process(self) if complete?
   end
@@ -46,6 +48,10 @@ class ResponseSet < ActiveRecord::Base
       end
     end
     result
+  end
+
+  def public_id
+    api_id
   end
 
   def as_json(options = nil)

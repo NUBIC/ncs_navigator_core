@@ -1,10 +1,12 @@
 NCSCore.UI.PbsList = function (config) {
 
+  var success_path = config.successPath;
+
   var onsuccess = function(data) {
     var staff_id = data.id
     var provider_id = data.provider_id
 
-    var url = "/people/" + staff_id + "/provider_staff_member?provider_id=" + provider_id;
+    var url = "/people/" + staff_id + "/" + success_path + "?provider_id=" + provider_id;
     var img = '<img src="/assets/ajax-loader.gif" alt="Loading" height="16" width="16"></img>'
 
     // if updating existing record
@@ -17,6 +19,7 @@ NCSCore.UI.PbsList = function (config) {
     } else {
       $('div#new_staff').html('<p>Creating new record ...' + img + '</p>');
       $.get(url, null, function (response) {
+        $('.instructional_note').hide();
         $('#staff_line_items').append(response);
         $('div#new_staff').html('');
       });

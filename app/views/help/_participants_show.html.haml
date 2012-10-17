@@ -1,55 +1,61 @@
 = render "/help/help_link"
 %textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "Participant Record" }
-  You will notice a series of tabbed pages.
+  = render "/documentation/participant"
+
   %p
-    %b
-      Participant Calendar
-    %br
-    Lists all of the previously scheduled events for the participant and links to those events in PSC.
-    %br
-    If a person has pending event records, you will be asked to continue that event until it is properly closed
-    (i.e. has an end date and a closing disposition). Under the header
-    %b
-      New Contact for Pending Event
-    there will be a link to continue the pending event.
-    %br
-    Otherwise, you will be able to schedule the next event in PSC
-    %em
-      (note if the event is already scheduled for the date in the list above).
-    %br
-    Also there is a link under the heading
-    %b
-      Perform Next Event
-    to start a contact for this scheduled event.
-  %p
-    %b
-      Events and Contacts
-    %br
-    Lists all the previous contacts made for the participant associated with this person.
-    Here you will be able to view or edit the contact record.
-  %p
-    %b
-      Instruments
-    %br
-    If this person answered questions for an instrument, you will find a link to view the responses to that survey here.
-    There is Also a link to the MDES record for the Instrument record.
-  %p
-    %b
-      Contact Information
-    %br
-      Addresses, Telephone Numbers, Email Addresses
-  %p
-    %b
-      Relationships
-    %br
-    Lists all the relationships with other people in the application.
-  %p
-    %b
-      Participant Details
-    %br
-    Here is a quick view of the Participant in the study. PPG Status, Consents completed, etc.
-  %p
-    %b
-      Status History
-    %br
-    This page lists internal state transitions of the Participant as well as the PPG Status History both PPG First and subsequent PPG Status records.
+    You will notice a series of tabbed pages.
+    %p
+      .help_header
+        Upcoming Activities
+      .help_instructions
+        Lists the next scheduled event for the participant and links to those events in PSC.
+        %br
+        If a person has pending event records, you will be asked to continue that event until it is properly closed
+        (i.e. has an end date and a closing disposition). Under the header
+        %b
+          New Contact for Pending Event
+        there will be a link to continue the pending event.
+        %br
+        Otherwise, you will be able to schedule the next event in PSC
+        %em
+          (note if the event is already scheduled for the date in the list above).
+        %br
+        Also there is a link under the heading
+        %b
+          Perform Next Event
+        to start a contact for this scheduled event.
+      .help_header
+        Contact History
+      .help_instructions
+        Lists all the previous contacts made for the participant associated with this person.
+        Here you will be able to view or edit the contact and event records.
+      .help_header
+        Instruments
+      .help_instructions
+        If this person answered questions for an instrument, you will find a link to view the responses to that survey here.
+        There is also a link to the MDES record for the Instrument record.
+      .help_header
+        Contact Information
+      .help_instructions
+        Addresses, Telephone Numbers, Email Addresses
+      .help_header
+        Relationships
+      .help_instructions
+        Lists all the relationships with other people in the application.
+        %br
+        Here you can access contact information for people associated with this participant.
+      .help_header
+        Consents
+      .help_instructions
+        A list of the Participant consent records.
+      .help_header
+        Participant Schedule
+      .help_instructions
+        Lists the all past and future scheduled events for the participant and links to those events in PSC.
+      .help_header
+        Status History
+      .help_instructions
+        This page lists internal state transitions of the Participant as well as the PPG Status History
+        both PPG First and subsequent PPG Status records.
+        %br
+        This page is mostly for use by Adminstrators to update the Participant within NCS Navigator.

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: providers
 #
 #  created_at                 :datetime
 #  id                         :integer          not null, primary key
+#  institution_id             :integer
 #  list_subsampling_code      :integer
 #  name_practice              :string(100)
 #  practice_info_code         :integer          not null
@@ -47,6 +47,7 @@ describe Provider do
   it { should belong_to(:public_practice) }
   it { should belong_to(:provider_info_source) }
   it { should belong_to(:list_subsampling) }
+  it { should belong_to(:institution) }
 
   it { should have_one(:address) }
   it { should have_many(:person_provider_links) }
@@ -64,6 +65,14 @@ describe Provider do
   it { should have_one(:substitute_pbs_list) }
 
   it { should have_many(:non_interview_providers) }
+
+  it { should have_many(:pbs_provider_roles) }
+  it { should have_many(:provider_roles) }
+
+  it { should have_many(:person_provider_links) }
+  it { should have_many(:people).through(:person_provider_links) }
+
+  it { should ensure_length_of(:name_practice).is_at_most(100) }
 
   describe ".to_s" do
     it "returns the name_practice" do
@@ -232,43 +241,112 @@ describe Provider do
       let(:orig) { Factory(:provider, :name_practice => "1") }
       let(:sub)  { Factory(:provider, :name_practice => "2") }
 
-      it "returns true for original provider" do
-        Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1')
+      it "returns true for original provider and recruitment has not ended" do
+        pbs = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
+                :pr_recruitment_end_date => nil, :pr_recruitment_status_code => 4)
+        orig.pbs_list = pbs
         orig.can_recruit?.should be_true
       end
 
       it "returns false for recruited original provider" do
-        Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
+        pbs = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
                 :pr_recruitment_end_date => Date.today, :pr_recruitment_status_code => 1)
+        orig.pbs_list = pbs
         orig.can_recruit?.should be_false
       end
 
       it "returns false for refused original provider" do
-        Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
+        pbs = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1',
                 :pr_recruitment_end_date => Date.today, :pr_recruitment_status_code => 2)
+        orig.pbs_list = pbs
         orig.can_recruit?.should be_false
       end
 
       it "returns false if started as substitute but not chosen as active sub" do
-        Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2')
+        pbs = Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2')
+        sub.pbs_list = pbs
         sub.substitute_pbs_list.should be_nil
         sub.substitute_provider?.should be_false
         sub.can_recruit?.should be_false
       end
 
-      it "returns true if chosen as active sub" do
-        sub_pl = Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2')
-        orig_pl = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1', :substitute_provider_id => sub.id)
+      it "returns true if chosen as active sub and recruitment has not ended" do
+        sub_pl = Factory(:pbs_list,
+                         :provider_id => sub.id,
+                         :in_sample_code => '2',
+                         :pr_recruitment_end_date => nil,
+                         :pr_recruitment_status_code => 4)
+        sub.pbs_list = sub_pl
+        orig_pl = Factory(:pbs_list,
+                          :provider_id => orig.id,
+                          :in_sample_code => '1',
+                          :substitute_provider_id => sub.id,
+                          :pr_recruitment_status_code => 3)
+        orig.pbs_list = orig_pl
         sub.substitute_pbs_list.should == orig_pl
         sub.can_recruit?.should be_true
+      end
+
+      it "returns false if chosen as active sub and recruitment has ended" do
+        sub_pl = Factory(:pbs_list,
+                         :provider_id => sub.id,
+                         :in_sample_code => '2',
+                         :pr_recruitment_end_date => Date.today,
+                         :pr_recruitment_status_code => 1)
+        sub.pbs_list = sub_pl
+        orig_pl = Factory(:pbs_list,
+                          :provider_id => orig.id,
+                          :in_sample_code => '1',
+                          :substitute_provider_id => sub.id)
+        orig.pbs_list = orig_pl
+        sub.substitute_pbs_list.should == orig_pl
+        sub.can_recruit?.should be_false
       end
 
       it "returns false if recruited as active sub" do
         sub_pl = Factory(:pbs_list, :provider_id => sub.id, :in_sample_code => '2',
                          :pr_recruitment_end_date => Date.today, :pr_recruitment_status_code => 1)
+        sub.pbs_list = sub_pl
         orig_pl = Factory(:pbs_list, :provider_id => orig.id, :in_sample_code => '1', :substitute_provider_id => sub.id)
+        orig.pbs_list = orig_pl
         sub.substitute_pbs_list.should == orig_pl
         sub.can_recruit?.should be_false
+      end
+
+    end
+
+  end
+
+  context "provider logistics" do
+
+    let(:provider) { Factory(:provider) }
+
+    describe ".recruitment_logistics_complete?" do
+
+      it "returns false if there are no provider logistics" do
+        provider.provider_logistics.should be_empty
+        provider.recruitment_logistics_complete?.should be_false
+      end
+
+      it "returns false if there are provider logistics but at least one does not have a completion date set" do
+        [
+          Factory(:provider_logistic, :completion_date => Date.today, :provider => provider),
+          Factory(:provider_logistic, :completion_date => nil, :provider => provider)
+        ].each do |logistic|
+          provider.provider_logistics << logistic
+        end
+
+        provider.provider_logistics.should_not be_empty
+        provider.provider_logistics.size.should == 2
+        provider.recruitment_logistics_complete?.should be_false
+      end
+
+      it "returns true if all provider logistics have a completion date set" do
+        logistic = Factory(:provider_logistic, :completion_date => Date.today, :provider => provider)
+        provider.provider_logistics << logistic
+
+        provider.provider_logistics.should_not be_empty
+        provider.recruitment_logistics_complete?.should be_true
       end
 
     end

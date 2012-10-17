@@ -24,12 +24,17 @@ module NcsNavigator::Core::Warehouse
       operational_tables -
         SAMPLING_UNIT_TABLES -
         STAFF_PORTAL_TABLES -
-        OperationalEnumerator.record_producers.collect(&:model).collect(&:mdes_table_name)
+        operational_enumerator.record_producers.collect { |rp| rp.model(@wh_config) }.collect(&:mdes_table_name)
     end
 
     def operational_tables
-      @operational_tables ||= NcsNavigatorCore.mdes.
+      @operational_tables ||= @wh_config.mdes.
         transmission_tables.select { |t| t.operational_table? }.collect { |t| t.name }
     end
+
+    def operational_enumerator
+      OperationalEnumerator.select_implementation(@wh_config)
+    end
+    private :operational_enumerator
   end
 end

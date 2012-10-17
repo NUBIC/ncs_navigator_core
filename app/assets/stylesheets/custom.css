@@ -9,3 +9,7 @@ fieldset.choices {
   line-height: 1em;
   padding: 0;
 }
+
+input.add_row[type="submit"] {
+  font-size: 1.5em;
+}

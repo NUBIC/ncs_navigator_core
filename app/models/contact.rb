@@ -57,6 +57,7 @@ class Contact < ActiveRecord::Base
   has_many :contact_links
   has_many :instruments, :through => :contact_links
   has_many :non_interview_reports
+  has_one :non_interview_provider
   has_one :participant_visit_record
   has_many :participant_visit_consents
 
@@ -64,6 +65,9 @@ class Contact < ActiveRecord::Base
   validates_format_of :contact_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
   before_validation :strip_time_whitespace
+
+  validates :contact_date,     :length => { :is => 10 }, :allow_blank => true
+  validates :contact_distance, :length => { :maximum => 6 }, :allow_blank => true, :numericality => true
 
   ##
   # Start a contact and prepopulate properties based on the person contacted

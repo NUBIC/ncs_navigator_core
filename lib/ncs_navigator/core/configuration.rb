@@ -26,6 +26,13 @@ module NcsNavigator::Core
       @suite_configuration || NcsNavigator.configuration
     end
 
+    ##
+    # For use by mailers and other code that needs to know the URI of this
+    # Cases instance, but doesn't have access to the Rack environment.
+    def base_uri
+      suite_configuration.core_uri
+    end
+
     # Attributes which are taken directly from the Core section of the
     # suite configuration without coercion or validation.
     %w(
@@ -47,6 +54,10 @@ module NcsNavigator::Core
 
     def email_prefix
       "[NCS Navigator Cases #{study_center_short_name} #{Rails.env.titlecase}] "
+    end
+
+    def mail_from
+      suite_configuration.core_mail_from
     end
 
     def footer_right_logo_path
@@ -80,12 +91,25 @@ module NcsNavigator::Core
     # @return [NcsNavigator::Mdes::Specification] the specification
     #   for the MDES version that Core currently corresponds to.
     def mdes
-      @mdes ||= NcsNavigator::Mdes(mdes_version)
+      mdes_version.specification
     end
 
     def mdes_version
-      version = suite_configuration.core['mdes_version']
-      version || '2.0'
+      @mdes_version ||= Mdes::Version.new
+    end
+
+    def mdes_version=(version)
+      @mdes_version =
+        case version
+        when Mdes::Version
+          version
+        else
+          Mdes::Version.new(version.to_s)
+        end
+    end
+
+    def machine_account_credentials
+      ['ncs_navigator_cases', suite_configuration.core_machine_account_password]
     end
   end
 end

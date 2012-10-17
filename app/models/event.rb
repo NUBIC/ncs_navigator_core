@@ -29,9 +29,6 @@
 #  updated_at                         :datetime
 #
 
-
-
-
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
@@ -43,6 +40,11 @@ class Event < ActiveRecord::Base
   has_many :contact_links
   has_many :instruments, :through => :contact_links
   has_many :contacts, :through => :contact_links
+
+  composed_of :disposition_code,
+    :class_name => 'NcsNavigator::Mdes::DispositionCode',
+    :mapping => [%w(event_disposition_category_code category_code), %w(event_disposition interim_code)],
+    :constructor => lambda { |cc, ic| NcsNavigatorCore.mdes.disposition_for(cc, ic) }
 
   ncs_coded_attribute :psu,                        'PSU_CL1'
   ncs_coded_attribute :event_type,                 'EVENT_TYPE_CL1'
@@ -145,10 +147,17 @@ class Event < ActiveRecord::Base
   # An event is 'closed' or 'completed' if its end date is set.
   # @return [true, false]
   def closed?
-    !event_end_date.blank?
+    !open?
   end
   alias completed? closed?
   alias complete? closed?
+
+  ##
+  # An event is 'open' if its end date is NOT set.
+  # @return [true, false]
+  def open?
+    event_end_date.blank?
+  end
 
   ##
   # Sets the event_end_date and event_end_time
@@ -193,8 +202,9 @@ class Event < ActiveRecord::Base
   # Returns true for provider recruitment event
   # @return [Boolean]
   def provider_event?
-    event_type.to_i == 22
+    self.event_type_code == Provider::PROVIDER_RECRUIMENT_EVENT_TYPE_CODE
   end
+  alias :provider_recruitment_event? :provider_event?
 
   ##
   # Helper method to set the disposition to Out of Window
@@ -202,10 +212,18 @@ class Event < ActiveRecord::Base
     update_disposition 48
   end
 
+  def out_of_window?
+    event_disposition == 48
+  end
+
   ##
   # Helper method to set the disposition to Not Worked
   def mark_not_worked
     update_disposition 34
+  end
+
+  def not_worked?
+    event_disposition == 34
   end
 
   # TODO: determine better way to get disposition out of NcsNavigatorCore.mdes.disposition_codes
@@ -280,14 +298,84 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Given a {PscParticipant}, returns the participant's scheduled activities
+  # that match this event.  If no activities match, returns [].
+  #
+  # A PscParticipant, just like an Event, is associated with a {Participant}.
+  # The PscParticipant passed here MUST reference the same participant as this
+  # event.
+  #
+  # This method will load the {#participant} association.  If you're planning
+  # on calling this method across multiple Events, you SHOULD eager-load
+  # participants.
+  def scheduled_activities(psc_participant)
+    if psc_participant.participant.id != participant.id
+      raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.id})"
+    end
+
+    all_activities = psc_participant.scheduled_activities
+
+    all_activities.select { |_, sa| implied_by?(sa.event_label, sa.ideal_date) }.values
+  end
+
+  ##
+  # The desired state for the scheduled activities backing this Event.  This
+  # SHOULD be one of the values defined on Psc::ScheduledActivity.
+  #
+  # Here's how events and their backing activities match up:
+  #
+  # | Event state | Disposition   | Desired activity state |
+  # | Closed      | Unsuccessful  | Canceled               |
+  # | Closed      | Successful    | Occurred               |
+  # | Open        | (any)         | Scheduled              |
+  #
+  # Note: this method's behavior is independent of whether or not the Event is
+  # actually backed by anything in PSC.  This method is intended to be used by
+  # code that establishes those associations, i.e. {Field::PscSync}.
+  def desired_sa_state
+    sa = Psc::ScheduledActivity
+
+    if closed?
+      if disposition_code.try(:success?)
+        sa::OCCURRED
+      else
+        sa::CANCELED
+      end
+    else
+      sa::SCHEDULED
+    end
+  end
+
+  ##
+  # The end date for this event's scheduled activities.  Returns a string in
+  # YYYY-MM-DD format or nil if no end date is set.
+  #
+  # @return [String, nil]
+  def sa_end_date
+    event_end_date.try(:strftime, '%Y-%m-%d')
+  end
+
+  ##
+  # When the scheduled activity states for this event are synced, the string
+  # from this method is supplied as the reason.
+  def sa_state_change_reason
+    'Synchronized from Cases'
+  end
+
+  ##
   # Checks that the event label and ideal date from PSC
   # matches the event_type and event_start_date
   # @param[ScheduledActivity]
   # @return[boolean]
   def matches_activity(scheduled_activity)
+    label = Event.parse_label(scheduled_activity.labels)
+    implied_by?(label, scheduled_activity.ideal_date)
+  end
+
+  def implied_by?(label, date)
     et = event_type.to_s.downcase.gsub("  ", " ").gsub(" ", "_")
-    lbl = Event.parse_label(scheduled_activity.labels)
-    lbl == et && scheduled_activity.ideal_date == event_start_date.to_s
+
+    et == label && event_start_date.to_s == date
   end
 
   def set_event_disposition_category(contact)
@@ -345,14 +433,21 @@ class Event < ActiveRecord::Base
 
     if resp && resp.success?
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
-
       psc.unique_label_ideal_date_pairs_for_scheduled_segment(participant, study_segment_identifier).each do |lbl, dt|
-        Event.create_placeholder_record(participant, dt, NcsCode.find_event_by_lbl(lbl).local_code, study_segment_identifier)
+        code = NcsCode.find_event_by_lbl(lbl)
+        Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
       end
 
       unless NcsNavigatorCore.expanded_phase_two?
-        psc.cancel_collection_instruments(participant, study_segment_identifier, date, "Not configured to run expanded phase 2 instruments")
+        psc.cancel_collection_instruments(participant, study_segment_identifier, date,
+          "Not configured to run expanded phase 2 instruments.")
       end
+
+      unless NcsNavigatorCore.mdes.version.blank?
+        psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
+          "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
+      end
+
     end
 
     resp
@@ -401,4 +496,3 @@ class Event < ActiveRecord::Base
   end
 
 end
-

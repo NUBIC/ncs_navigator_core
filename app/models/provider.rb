@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: providers
 #
 #  created_at                 :datetime
 #  id                         :integer          not null, primary key
+#  institution_id             :integer
 #  list_subsampling_code      :integer
 #  name_practice              :string(100)
 #  practice_info_code         :integer          not null
@@ -61,10 +61,22 @@ class Provider < ActiveRecord::Base
   has_many :provider_logistics
   has_many :non_interview_providers
 
+  has_many :provider_roles
+  has_many :pbs_provider_roles, :class_name => 'PbsProviderRole', :foreign_key => 'provider_id'
+
+  has_many :person_provider_links
+  has_many :people, :through => :person_provider_links
+
+  belongs_to :institution
+
   accepts_nested_attributes_for :address, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :staff, :allow_destroy => true
   accepts_nested_attributes_for :provider_logistics, :allow_destroy => true
+  accepts_nested_attributes_for :provider_roles, :allow_destroy => true
+  accepts_nested_attributes_for :pbs_provider_roles, :allow_destroy => true
+
+  validates :name_practice, :length => { :maximum => 100 }, :allow_blank => true
 
   PROVIDER_RECRUIMENT_EVENT_TYPE_CODE = 22
   ORIGINAL_IN_SAMPLE_CODE = 1
@@ -72,6 +84,8 @@ class Provider < ActiveRecord::Base
 
   scope :original_in_sample_providers, includes(:pbs_list).where("pbs_lists.in_sample_code = #{ORIGINAL_IN_SAMPLE_CODE}")
   scope :substitute_in_sample_providers, includes(:pbs_list).where("pbs_lists.in_sample_code = #{SUBSTITUTE_IN_SAMPLE_CODE}")
+
+  after_save :open_recruitment
 
   def to_s
     self.name_practice.to_s
@@ -107,7 +121,8 @@ class Provider < ActiveRecord::Base
   end
 
   def substitute_provider?
-    self.pbs_list.try(:in_sample_code) == 2 && self.substitute_pbs_list
+    self.pbs_list.try(:in_sample_code) == 2 &&
+      self.substitute_pbs_list
   end
 
   def refused_to_participate?
@@ -115,7 +130,40 @@ class Provider < ActiveRecord::Base
   end
 
   def recruited?
-    !self.can_recruit? && !self.refused_to_participate?
+    (self.can_recruit? || self.pbs_list.try(:provider_recruited?)) &&
+      !self.refused_to_participate?
+  end
+
+  ##
+  # True if provider logistics and all are marked complete
+  def recruitment_logistics_complete?
+    if provider_logistics.empty?
+      false
+    else
+      provider_logistics.select { |l| l.complete? }.count ==
+        provider_logistics.size
+    end
+  end
+
+  ##
+  # Set the pbs list pr_recruitment_end_date attribute to nil
+  # if any of the provider logistics are not complete or
+  # there are no provider recruited contacts
+  def open_recruitment
+    if self.pbs_list && (!recruitment_logistics_complete? || has_no_provider_recruited_contacts?)
+      self.pbs_list.update_attribute(:pr_recruitment_end_date, nil)
+      if self.has_no_provider_recruited_contacts?
+        self.pbs_list.update_attribute(:pr_recruitment_status_code, 3)
+      end
+      event = self.provider_recruitment_event
+      event.update_attribute(:event_end_date, nil) if event
+    end
+  end
+
+  ##
+  # True if no contact disposition is Provider Recruited
+  def has_no_provider_recruited_contacts?
+    self.contacts.find{ |c| c.contact_disposition == DispositionMapper::PROVIDER_RECRUITED }.blank?
   end
 
 end

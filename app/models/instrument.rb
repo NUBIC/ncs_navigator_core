@@ -31,8 +31,6 @@
 #  updated_at               :datetime
 #
 
-
-
 # An Instrument is a scheduled, partially executed or
 # completely executed questionnaire or paper form. An
 # Instrument can also be an Electronic Health Record or
@@ -57,6 +55,9 @@ class Instrument < ActiveRecord::Base
   has_many :response_sets, :inverse_of => :instrument, :order => 'created_at ASC'
   has_many :legacy_instrument_data_records, :inverse_of => :instrument
 
+  has_many :samples, :inverse_of => :instrument, :order => 'created_at ASC'
+  has_many :specimens, :inverse_of => :instrument, :order => 'created_at ASC'
+
   validates_presence_of :instrument_version
   validates_presence_of :instrument_repeat_key
 
@@ -77,10 +78,10 @@ class Instrument < ActiveRecord::Base
   #                 - the participant who the survey is about
   # @param [Survey] - instrument_survey
   #                 - the one associated with the first of multi-part sequence or singleton survey
-  #                 - i.e. the references label
+  #                 - i.e. Survey with title matching PSC activity references label
   # @param [Survey] - current_survey
   #                 - the one part of the multi-part survey or singleton
-  #                 - i.e. the instrument label
+  #                 - i.e. Survey with title matching PSC activity instrument label
   # @param [Event]  - the event associated with the Instrument
   def self.start(person, participant, instrument_survey, current_survey, event)
 
@@ -101,7 +102,8 @@ class Instrument < ActiveRecord::Base
   # cf. Person.start_instrument
   #
   def self.start_initial_instrument(person, participant, survey, event)
-    rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
+    where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? AND instruments.event_id = ?"
+    rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
 
     if !rs || event.closed?
       person.start_instrument(survey, participant)
@@ -139,11 +141,118 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # Given a {PscParticipant}, returns the participant's scheduled activities
+  # that match this instrument.  If no activities match, returns [].
+  #
+  # The PscParticipant passed here MUST reference the same Participant as this
+  # instrument's event.
+  #
+  # This method will load the following associations:
+  #
+  # * event.participant
+  # * survey
+  #
+  # You SHOULD eager load these associations when checking activity IDs across
+  # multiple instruments.
+  #
+  #
+  # Match criteria
+  # ==============
+  #
+  # Let:
+  #
+  # * SAC(I) be the access code for the survey on instrument I, and
+  # * L(A) the set of labels on activity A.
+  #
+  # SAC(I) can be computed as Survey.to_normalized_string(self.survey.title)
+  #
+  # 1. If SAC(I) matches a references label in L(A), add A as an activity for I.
+  # 2. If SAC(I) matches an instrument label in L(A) and L(A) has no references
+  #    labels, add A as an activity for I.
+  #
+  # Instruments form a tree one level deep.  In the below diagram, each I is an
+  # instrument, and a, b, and c are activities.
+  #
+  #           Ia
+  #          _|_
+  #         |   |
+  #         Ib  Ic
+  #
+  # This situation can be set up if b and c have references labels pointing to
+  # the instrument implied by a.  Under the above model, completing Ia will
+  # close activities a, b, and c; however, completing just Ib or Ic will not
+  # result in any changes to PSC schedules.
+  def scheduled_activities(psc_participant)
+    if psc_participant.participant.id != participant.try(:id)
+      raise "Participant mismatch (psc_participant: #{psc_participant.participant.id}, self: #{participant.try(:id)})"
+    end
+
+    activities = psc_participant.scheduled_activities
+    survey_code = survey.access_code
+
+    activities.select do |id, sa|
+      instr = sa.instrument_label
+      ref = sa.references_label
+
+      code = if instr && !ref
+               Survey.to_normalized_string(instr)
+             elsif ref
+               Survey.to_normalized_string(ref)
+             end
+
+      survey_code == code
+    end.map { |id, sa| sa }
+  end
+
+  ##
+  # The desired state for the scheduled activities backing this Instrument.
+  # This SHOULD be one of the values defined on Psc::ScheduledActivity.
+  #
+  # Here's how instruments and their backing activities match up:
+  #
+  # | Instrument status | Desired activity state |
+  # | Complete          | Occurred               |
+  # | Missing in Error  | Scheduled              |
+  # | Not started       | Scheduled              |
+  # | Partial           | Scheduled              |
+  # | Refused           | Canceled               |
+  def desired_sa_state
+    sa = Psc::ScheduledActivity
+
+    case instrument_status.to_s
+    when 'Complete' then sa::OCCURRED
+    when 'Missing in Error', 'Not started', 'Partial' then sa::SCHEDULED
+    when 'Refused' then sa::CANCELED
+    else raise "Cannot map #{instrument_status.to_s.inspect} to a scheduled activity state"
+    end
+  end
+
+  ##
+  # The end date for this instrument's scheduled activities.  Returns a string
+  # in YYYY-MM-DD format or nil if no end date is set.
+  #
+  # @return [String, nil]
+  def sa_end_date
+    instrument_end_date.try(:strftime, '%Y-%m-%d')
+  end
+
+  ##
+  # When the scheduled activity states for this instrument are synced, the
+  # string from this method is supplied as the reason.
+  def sa_state_change_reason
+    'Synchronized from Cases'
+  end
+
+  ##
   # Display text from the NcsCode list INSTRUMENT_TYPE_CL1
   # cf. instrument_type belongs_to association
   # @return [String]
   def to_s
     instrument_type.to_s
+  end
+
+  def participant
+    event.try(:participant)
   end
 
   ##
@@ -164,12 +273,16 @@ class Instrument < ActiveRecord::Base
 
   ##
   # Given a label from PSC or surveyor access code determine the instrument version
+  # Defaults to 1.0 if there is no label or access code
   # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0
   # @return [String]
   def self.determine_version(lbl)
-    lbl = Instrument.surveyor_access_code(lbl)
-    ind = lbl.to_s.rindex("-v")
-    lbl[ind + 2, 3].sub("-", ".")
+    result = "1.0"
+    lbl = Instrument.surveyor_access_code(lbl.to_s)
+    if ind = lbl.to_s.rindex("-v")
+      result = lbl[ind + 2, 3].sub("-", ".")
+    end
+    result
   end
 
   ##
@@ -191,14 +304,20 @@ class Instrument < ActiveRecord::Base
   end
 
   def self.mdes_version(lbl)
-    lbl = Instrument.instrument_label(lbl)
+    return nil unless lbl.include?(INSTRUMENT_LABEL_MARKER)
     lbl = lbl.to_s.split(':')
     lbl.size == 3 ? lbl[1] : nil
   end
 
+  def self.matches_mdes_version?(lbl, version)
+    mdes_version(lbl) == version
+  end
+
   def self.instrument_label(lbl)
     return nil if lbl.blank?
-    lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first
+    lbl.split.select { |s| s.include?(INSTRUMENT_LABEL_MARKER) }
+      .select { |s| Instrument.matches_mdes_version?(s, NcsNavigatorCore.mdes.version) }
+      .first
   end
 
   # FIXME: This is temporary until we fix all places that call Instrument.response_set
@@ -237,4 +356,3 @@ class Instrument < ActiveRecord::Base
       end
     end
 end
-

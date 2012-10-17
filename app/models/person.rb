@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: people
 #
@@ -15,6 +14,8 @@
 #  first_name                     :string(30)
 #  id                             :integer          not null, primary key
 #  language_code                  :integer          not null
+#  language_new_code              :integer
+#  language_new_other             :string(255)
 #  language_other                 :string(255)
 #  last_name                      :string(30)
 #  maiden_name                    :string(30)
@@ -37,6 +38,7 @@
 #  prefix_code                    :integer          not null
 #  psu_code                       :integer          not null
 #  response_set_id                :integer
+#  role                           :string(255)
 #  sex_code                       :integer          not null
 #  suffix_code                    :integer          not null
 #  title                          :string(5)
@@ -62,6 +64,7 @@ class Person < ActiveRecord::Base
   ncs_coded_attribute :deceased,                 'CONFIRM_TYPE_CL2'
   ncs_coded_attribute :ethnic_group,             'ETHNICITY_CL1'
   ncs_coded_attribute :language,                 'LANGUAGE_CL2'
+  ncs_coded_attribute :language_new,             'LANGUAGE_CL8'
   ncs_coded_attribute :marital_status,           'MARITAL_STATUS_CL1'
   ncs_coded_attribute :preferred_contact_method, 'CONTACT_TYPE_CL1'
   ncs_coded_attribute :planned_move,             'CONFIRM_TYPE_CL1'
@@ -87,14 +90,24 @@ class Person < ActiveRecord::Base
 
   has_many :participant_person_links
   has_many :participants, :through => :participant_person_links
-  # validates_presence_of :first_name
-  # validates_presence_of :last_name
 
-  validates_length_of :title, :maximum => 5, :allow_blank => true
+  has_many :person_provider_links
+  has_many :providers, :through => :person_provider_links
+
+  validates :title,       :length => { :maximum => 5 },  :allow_blank => true
+  validates :person_dob,  :length => { :is => 10 },      :allow_blank => true
+  validates :date_move,   :length => { :is => 7 },       :allow_blank => true
+
+  validates :first_name,  :length => { :maximum => 30 }, :allow_blank => true
+  validates :last_name,   :length => { :maximum => 30 }, :allow_blank => true
+  validates :maiden_name, :length => { :maximum => 30 }, :allow_blank => true
+  validates :middle_name, :length => { :maximum => 30 }, :allow_blank => true
 
   accepts_nested_attributes_for :addresses, :allow_destroy => true
   accepts_nested_attributes_for :telephones, :allow_destroy => true
   accepts_nested_attributes_for :emails, :allow_destroy => true
+
+  accepts_nested_attributes_for :person_provider_links, :allow_destroy => true
 
   before_save do
     self.age = self.computed_age if self.age.blank?
@@ -253,7 +266,12 @@ class Person < ActiveRecord::Base
       "pre_populated_mult_child_answer_from_part_one_for_18MM",
       "pre_populated_mult_child_answer_from_part_one_for_24MM",
       "pre_populated_child_qnum_answer_from_mother_detail_for_18MM",
-      "pre_populated_child_qnum_answer_from_mother_detail_for_24MM"
+      "pre_populated_child_qnum_answer_from_mother_detail_for_24MM",
+
+      "pre_populated_psu_id",
+      "pre_populated_practice_num",
+      "pre_populated_provider_id",
+      "pre_populated_mode",
     ]
 
     response_type = "string_value"
@@ -313,6 +331,11 @@ class Person < ActiveRecord::Base
                   response_type = "integer_value"
                   resp = responses_for("TWENTY_FOUR_MTH_MOTHER_DETAIL.CHILD_QNUM").first
                   resp.send(response_type.to_sym)
+                when "pre_populated_psu_id"
+                  self.psu_code
+                when "pre_populated_mode"
+                  # TODO: get the contact mode from the last contact for this person
+                  "CAPI"
                 else
                   # TODO: handle other prepopulated fields
                   nil

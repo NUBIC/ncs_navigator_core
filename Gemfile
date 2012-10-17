@@ -33,10 +33,10 @@ end
 gem 'jquery-rails'
 gem 'json-schema'
 
-gem 'ncs_mdes', '>= 0.8.1'
+gem 'ncs_mdes', '>= 0.10.0'
 gem 'surveyor', :git => 'https://github.com/NUBIC/surveyor.git', :ref => 'master'
 gem 'psc'
-gem 'ncs_navigator_configuration'
+gem 'ncs_navigator_configuration', :git => 'https://github.com/NUBIC/ncs_navigator_configuration.git'
 gem 'sidekiq'
 
 gem 'state_machine'
@@ -64,7 +64,7 @@ end
 
 # gem 'ncs_mdes_warehouse',
 #   :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
-gem 'ncs_mdes_warehouse', '~> 0.7', '>= 0.7.3'
+gem 'ncs_mdes_warehouse', '~> 0.9'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 

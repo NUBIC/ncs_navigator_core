@@ -2,6 +2,7 @@
   = f.hidden_field :psu_code
   = hidden_field_tag :event_type_id, @event.event_type.id
   = hidden_field_tag :event_id, @event_id if @event_id
+  = hidden_field_tag :contact_link_id, @contact_link.id if @contact_link
   = hidden_field_tag :next_event, params[:next_event]
 
   %p
@@ -12,12 +13,12 @@
   %p
     = f.label :contact_start_time, "Contact Start Time"
     %br
-    = f.text_field :contact_start_time, :class => "time"
+    = f.text_field :contact_start_time, :class => "timepicker"
 
   %p
     = f.label :contact_end_time, "Contact End Time"
     %br
-    = f.text_field :contact_end_time, :class => "time"
+    = f.text_field :contact_end_time, :class => "timepicker"
 
   = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Person Contacted", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
 

@@ -21,63 +21,67 @@
   %br
   = f.text_field :practice_num
 
-= render "shared/ncs_code_select", { :f => f, :code => :in_out_frame_code, :label_text => "In final sampling frame?" } # MDES 3.0
+= render "shared/ncs_code_select",
+  { :f => f, :code => :in_out_frame_code, :label_text => "In final sampling frame?", :html_attrs => { :disabled => true } }
 
-= render "shared/ncs_code_select", { :f => f, :code => :in_sample_code, :label_text => "In original sample?" } # MDES 3.0
+= render "shared/ncs_code_select",
+  { :f => f, :code => :in_sample_code, :label_text => "In original sample?", :html_attrs => { :disabled => true } }
 
-= render "shared/ncs_code_select", { :f => f, :code => :in_out_psu_code, :label_text => "Located inside PSU?" } # MDES 3.0
+= render "shared/ncs_code_select",
+  { :f => f, :code => :in_out_psu_code, :label_text => "Located inside PSU?", :html_attrs => { :disabled => true } }
 
 %p
   = f.label :mos, "Measure of Size"
   %br
-  = f.text_field :mos
+  = f.text_field :mos, :disabled => true
 
-= render "shared/ncs_code_select", { :f => f, :code => :cert_flag_code, :label_text => "Is a certainty unit?" } # MDES 3.0
+= render "shared/ncs_code_select",
+  { :f => f, :code => :cert_flag_code, :label_text => "Is a certainty unit?", :html_attrs => { :disabled => true } }
 
 %p
   = f.label :stratum, "Stratum Identification Number"
   %br
-  = f.text_field :stratum
+  = f.text_field :stratum, :disabled => true
 
 %p
   = f.label :sort_var1, "Stratum Sort Variable 1"
   %br
-  = f.text_field :sort_var1
+  = f.text_field :sort_var1, :disabled => true
 
 %p
   = f.label :sort_var2, "Stratum Sort Variable 2"
   %br
-  = f.text_field :sort_var2
+  = f.text_field :sort_var2, :disabled => true
 
 %p
   = f.label :sort_var3, "Stratum Sort Variable 3"
   %br
-  = f.text_field :sort_var3
+  = f.text_field :sort_var3, :disabled => true
 
 %p
   = f.label :frame_order, "Frame Order"
   %br
-  = f.text_field :frame_order
+  = f.text_field :frame_order, :disabled => true
 
 %p
   = f.label :selection_probability_location, "Selection Probability of Location"
   %br
-  = f.text_field :selection_probability_location
+  = f.text_field :selection_probability_location, :disabled => true
 
 %p
   = f.label :sampling_interval_woman, "Sampling Interval"
   %br
-  = f.text_field :sampling_interval_woman
+  = f.text_field :sampling_interval_woman, :disabled => true
 
 %p
   = f.label :selection_probability_woman, "Selection Probability of Women"
   %br
-  = f.text_field :selection_probability_woman
+  = f.text_field :selection_probability_woman, :disabled => true
 
 %p
   = f.label :selection_probability_overall, "Overall Selection Probability"
   %br
-  = f.text_field :selection_probability_overall
+  = f.text_field :selection_probability_overall, :disabled => true
 
 = render "shared/ncs_code_select", { :f => f, :code => :frame_completion_req_code, :label_text => "Must complete PBS Frame SAQ?" }
 

@@ -1,12 +1,5 @@
 - title "Person"
 
-.mdes_table_definition
-  = render 'documentation/person'
-  %br
-    Disposition Codes
-    %span{ :class => "disposition_icon" }
-    = render "documentation/disposition_code_list"
-
 %h3
   = "#{@person} :: #{@person.public_id}"
 - if @person.participant

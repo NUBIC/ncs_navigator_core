@@ -31,6 +31,9 @@ describe ParticipantsHelper do
         end
 
         it "returns upcoming_events.to_s for a hi I participant" do
+          hi_i_participant.events << Factory(:event, :participant => hi_i_participant,
+                                              :event_start_date => Date.today, :event_end_date => Date.today,
+                                              :event_type => NcsCode.pregnancy_screener)
           expected = hi_i_participant.upcoming_events.first.to_s.gsub!("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '')
           helper.upcoming_events_for(hi_i_participant).should include(expected)
         end
@@ -57,8 +60,12 @@ describe ParticipantsHelper do
 
     describe ".displayable_next_scheduled_event" do
 
-      let(:next_scheduled_lo_i_event) { lo_i_participant2.next_scheduled_event.event }
-      let(:next_scheduled_hi_i_event) { hi_i_participant2.next_scheduled_event.event }
+      let(:next_scheduled_lo_i_event) {
+        lo_i_participant2.person = Factory(:person)
+        lo_i_participant2.next_scheduled_event.event }
+      let(:next_scheduled_hi_i_event) {
+        hi_i_participant2.person = Factory(:person)
+        hi_i_participant2.next_scheduled_event.event }
 
       describe "non two-tier recruitment strategy" do
 

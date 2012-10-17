@@ -11,6 +11,10 @@ ul.recruitment {
   }
 }
 
+.recruit_button {
+  margin-top: 1em;
+}
+
 #provider_info {
   margin-bottom: 2em;
 }
@@ -85,6 +89,7 @@ ul.recruitment {
   width: 10%;
 }
 
+#table_header_left_end,
 #staff_table_header_left_end
 {
   background-color:#d3d3d3;
@@ -93,11 +98,13 @@ ul.recruitment {
   -webkit-border-radius:5px 0px 0px 5px;
 }
 
+#table_header_middle,
 #staff_table_header_middle
 {
   background-color:#d3d3d3;
 }
 
+#table_header_right_end,
 #staff_table_header_right_end
 {
   background-color:#d3d3d3;
@@ -106,12 +113,22 @@ ul.recruitment {
   -webkit-border-radius:0px 5px 5px 0px;
 }
 
+#provider_logistics_section,
 #contact_history {
   margin-top: 2em;
   margin-bottom: .5em;
 
+  #provider_logistics_header,
   #contact_history_header {
     font-size: 1.1em;
     font-weight: 600;
   }
+}
+
+.completion_date {
+}
+
+.provider_logistics_comment {
+  width: 60em;
+  height: 2em;
 }

@@ -6,12 +6,27 @@
 
 = render "/pbs_lists/contacts_section"
 
+- if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
+  - if event = @provider.provider_recruitment_event
+    .provider_recruitment_event
+      %span{ :class => "green_button" }
+        = link_to "Edit Provider Recruitment Event Record", edit_event_path(event)
+
+= render "/pbs_lists/provider_logistics_section"
+
 - if @provider.can_recruit?
-  %p
+  .recruit_button
     %span{ :class => "green_button" }
       = provider_recruitment_link(@pbs_list)
 
+- if !@provider.contact_links.empty? && !@provider.recruited?
+  .substitute_link
+    %span{ :class => "red_button" }
+      = link_to 'Assign Substitute Provider Due to Refusal to Participate',
+          refused_provider_path(@provider),
+          :confirm => "Are you certain you would like to assign a substitute provider?"
+
 :javascript
   $(function () {
-    var pbsListUI = new NCSCore.UI.PbsList();
+    var pbsListUI = new NCSCore.UI.PbsList({ successPath: 'provider_staff_member' });
   });

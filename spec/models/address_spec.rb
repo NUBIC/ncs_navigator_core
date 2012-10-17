@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: addresses
 #
@@ -28,6 +27,7 @@
 #  created_at                :datetime
 #  dwelling_unit_id          :integer
 #  id                        :integer          not null, primary key
+#  institute_id              :integer
 #  person_id                 :integer
 #  provider_id               :integer
 #  psu_code                  :integer          not null
@@ -45,13 +45,13 @@
 require 'spec_helper'
 
 describe Address do
+  let(:addr) { Factory(:address) }
+
   it "should create a new instance given valid attributes" do
-    addr = Factory(:address)
     addr.should_not be_nil
   end
 
   it "should describe itself" do
-    addr = Factory(:address)
     addr.to_s.should == "#{addr.state}"
 
     addr.address_one = "1 Main"
@@ -67,6 +67,7 @@ describe Address do
 
   it { should belong_to(:person) }
   it { should belong_to(:provider) }
+  it { should belong_to(:institute) }
   it { should belong_to(:dwelling_unit) }
   it { should belong_to(:psu) }
   it { should belong_to(:address_rank) }
@@ -76,6 +77,45 @@ describe Address do
   it { should belong_to(:address_description) }
   it { should belong_to(:state) }
   it { should belong_to(:response_set) }
+
+  it { should ensure_length_of(:address_one).is_at_most(100) }
+  it { should ensure_length_of(:address_two).is_at_most(100) }
+  it { should ensure_length_of(:city).is_at_most(50) }
+  it { should ensure_length_of(:unit).is_at_most(10) }
+  it { should ensure_length_of(:zip).is_at_most(5) }
+  it { should ensure_length_of(:zip4).is_at_most(4) }
+  it { should validate_numericality_of(:zip) }
+  it { should validate_numericality_of(:zip4) }
+  it { should ensure_length_of(:address_end_date).is_equal_to(10) }
+  it { should ensure_length_of(:address_start_date).is_equal_to(10) }
+
+  describe '#zip' do
+    describe 'validity' do
+      it "allows imported semilegal coded values" do
+        addr.zip = '-1'
+        addr.should be_valid
+      end
+
+      it 'allows leading zeros' do
+        addr.zip = '04567'
+        addr.should be_valid
+      end
+    end
+  end
+
+  describe '#zip4' do
+    describe 'validity' do
+      it "allows imported semilegal coded values" do
+        addr.zip4 = '-1'
+        addr.should be_valid
+      end
+
+      it 'allows leading zeros' do
+        addr.zip4 = '0001'
+        addr.should be_valid
+      end
+    end
+  end
 
   context "as mdes record" do
 

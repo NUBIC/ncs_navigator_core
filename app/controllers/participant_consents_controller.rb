@@ -14,8 +14,10 @@ class ParticipantConsentsController < ApplicationController
     @participant  = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
     @contact = @contact_link.contact
-    @participant_consent = ParticipantConsent.new(:participant => @participant, :contact => @contact,
-      :consent_form_type_code => @consent_type_code.to_i, :consent_date => Date.today)
+    @participant_consent = ParticipantConsent.new(:participant => @participant,
+                                                  :contact => @contact,
+                                                  :consent_form_type_code => @consent_type_code.to_i,
+                                                  :consent_date => Date.today)
 
     build_participant_consent_samples
 

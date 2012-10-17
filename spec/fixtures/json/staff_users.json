@@ -1,0 +1,81 @@
+[
+    {
+        "notify": true,
+        "study_center": 20000029,
+        "ncs_inactive_date": null,
+        "staff_type_other": null,
+        "ethnicity": null,
+        "staff_id": "3012261e-de1c-4951-a460-80d437d111d6",
+        "zipcode": null,
+        "numeric_id": 744462001,
+        "race_other": null,
+        "username": "asdf123",
+        "gender": null,
+        "age_group_code": null,
+        "external": false,
+        "roles": [
+            {
+                "name": "Outreach Staff"
+            }
+        ],
+        "staff_type": null,
+        "languages": [ ],
+        "last_name": "Birch",
+        "subcontractor": null,
+        "race": null,
+        "experience": null,
+        "email": "john.birch@sc.edu",
+        "first_name": "John",
+        "ncs_active_date": null
+    },
+    {
+        "notify": true,
+        "study_center": 20000029,
+        "ncs_inactive_date": null,
+        "staff_type_other": null,
+        "ethnicity": null,
+        "staff_id": "2369beaf-7772-47e2-8c4a-2aa9b5c34426",
+        "zipcode": null,
+        "numeric_id": 75203004,
+        "race_other": null,
+        "username": "qwer123",
+        "gender": null,
+        "age_group_code": null,
+        "external": false,
+        "roles": [
+            {
+                "name": "System Administrator"
+            },
+            {
+                "name": "User Administrator"
+            },
+            {
+                "name": "Field Staff"
+            },
+            {
+                "name": "Phone Staff"
+            },
+            {
+                "name": "Administrative Staff"
+            },
+            {
+                "name": "Biological Specimen Collector"
+            },
+            {
+                "name": "Specimen Processor"
+            },
+            {
+                "name": "Data Reader"
+            }
+        ],
+        "staff_type": null,
+        "languages": [ ],
+        "last_name": "Free",
+        "subcontractor": null,
+        "race": null,
+        "experience": null,
+        "email": "pf@sc.net",
+        "first_name": "Pete",
+        "ncs_active_date": null
+    }
+]

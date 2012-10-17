@@ -20,3 +20,6 @@
               = blank_safe(ppl.person.name)
             %td
               = ppl.relationship
+
+  .links
+    = link_to 'New Person', new_person_path(:participant_id => @participant), :class => "add_link icon_link"

@@ -7,12 +7,12 @@
 %p
   = label_tag 'person[first_name]', "First Name"
   %br
-  = text_field_tag 'person[first_name]', @staff.first_name
+  = text_field_tag 'person[first_name]', @staff.first_name, :class => "required"
 
 %p
   = label_tag 'person[last_name]', "Last Name"
   %br
-  = text_field_tag 'person[last_name]', @staff.last_name
+  = text_field_tag 'person[last_name]', @staff.last_name, :class => "required"
 
 %p
   = label_tag 'telephone_number', "Phone Number"
@@ -22,6 +22,13 @@
   = label_tag 'email', "Email"
   %br
   = text_field_tag 'email', @email.email, { :type => "email" }
+
+%p
+  = label_tag 'person[role]', "Role"
+  %br
+  = text_field_tag 'person[role]', @staff.role
+
 %p
   = check_box_tag 'primary_contact', '1', @link.primary_contact
   = label_tag 'primary_contact', "Primary Contact?"
+  = image_tag('first-prize-ribbon-30x38.png', :size => '20x24')

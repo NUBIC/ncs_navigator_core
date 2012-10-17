@@ -74,6 +74,14 @@ module NavigationHelpers
     when /^the edit_contact_link page$/
       edit_contact_link_path(ContactLink.last)
 
+    when /^the edit_contact_link_contact page$/
+      contact_link = ContactLink.last
+      edit_contact_link_contact_path(contact_link, contact_link.contact)
+
+    when /^the edit_contact_link_event page$/
+      contact_link = ContactLink.last
+      edit_contact_link_event_path(contact_link, contact_link.event)
+
     when /^the decision_page_contact_link page$/
       decision_page_contact_link_path(ContactLink.last)
 
@@ -98,8 +106,8 @@ module NavigationHelpers
     when /^the field client activity page$/
       fieldwork_index_path
 
-    when /^the sync attempt page for "([^"]*)"$/
-      fieldwork_path($1)
+    when /^the latest sync attempt page for "([^"]*)"$/
+      latest_fieldwork_merges_path($1)
 
     # the following are examples using path_to_pickle
 

@@ -6,6 +6,9 @@ class ProvidersController < ApplicationController
   def index
     params[:page] ||= 1
 
+    params[:q] ||= Hash.new
+    params[:q]['s'] ||= "name_practice asc"
+
     @q = Provider.search(params[:q])
     result = @q.result(:distinct => true)
     @providers = result.paginate(:page => params[:page], :per_page => 20)
@@ -261,19 +264,21 @@ class ProvidersController < ApplicationController
 
   def recruited
     @provider = Provider.find(params[:id])
+    @contact  = Contact.find(params[:contact_id]) if params[:contact_id]
     @provider.provider_logistics.build if @provider.provider_logistics.blank?
   end
 
   def process_recruited
     @provider = Provider.find(params[:id])
+    @contact  = Contact.find(params[:contact_id]) if params[:contact_id]
 
     respond_to do |format|
       if @provider.update_attributes(params[:provider])
-
-        mark_pbs_list_as_having_recruited_provider(@provider.pbs_list)
+        @provider.pbs_list.update_recruitment_status!
+        @provider.pbs_list.update_recruitment_dates!
 
         flash[:notice] = "Provider #{@provider} has been successfully recruited."
-        format.html { redirect_to(pbs_lists_path) }
+        format.html { redirect_to(pbs_list_path(@provider.pbs_list)) }
         format.json  { render :json => @provider }
       else
         format.html { render :action => "recruited" }
@@ -281,16 +286,6 @@ class ProvidersController < ApplicationController
       end
     end
   end
-
-  def mark_pbs_list_as_having_recruited_provider(pbs_list)
-    attrs = {
-      :pr_cooperation_date => Date.today,
-      :pr_recruitment_end_date => Date.today,
-      :pr_recruitment_status_code => 1
-    }
-    pbs_list.update_attributes(attrs) unless pbs_list.recruitment_ended?
-  end
-  private :mark_pbs_list_as_having_recruited_provider
 
   def refused
     @provider = Provider.find(params[:id])
@@ -313,9 +308,11 @@ class ProvidersController < ApplicationController
   end
 
   def mark_pbs_list_refused(pbs_list)
-    @pbs_list.substitute_provider = Provider.find(params[:substitute_provider_id]) if params[:substitute_provider_id]
     @pbs_list.pr_recruitment_end_date = Date.today
     @pbs_list.pr_recruitment_status_code = 2
+    if params[:substitute_provider_id]
+      @pbs_list.substitute_provider = Provider.find(params[:substitute_provider_id])
+    end
     @pbs_list.save!
   end
   private :mark_pbs_list_refused

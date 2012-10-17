@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
+# encoding: UTF-8
 class AddUniqueIndexOnAccessCodeAndVersionInSurveys < ActiveRecord::Migration
   def self.up
-    add_index(:surveys, [ :access_code, :version], :name => 'surveys_access_code_version_idx', :unique => true)
+    add_index(:surveys, [ :access_code, :survey_version], :name => 'surveys_access_code_version_idx', :unique => true)
   end
 
   def self.down
-    # Removed from later migration - cf. UpdateSurveyorVersion
-    # remove_index( :surveys, :name => 'surveys_access_code_version_idx' )
+    remove_index( :surveys, :name => 'surveys_access_code_version_idx' )
   end
 end

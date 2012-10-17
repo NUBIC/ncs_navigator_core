@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# encoding: UTF-8
 class DropUniqueIndexOnAccessCodeInSurveys < ActiveRecord::Migration
   def self.up
     remove_index( :surveys, :name => 'surveys_ac_idx' )

@@ -5,15 +5,23 @@ begin
 
   namespace :ci do
     desc 'Run full CI build'
-    task :all => [:spec, :cucumber]
+    task :all => [:rails_env, :spec, :cucumber]
 
     desc 'Run CI build minus warehouse specs'
-    task :core => [:spec_core, :cucumber]
+    task :core => [:rails_env, :spec_core, :cucumber]
 
     desc 'Run CI build for warehouse only'
-    task :warehouse => ['ci:redis:start_then_stop_at_exit', :spec_warehouse]
+    task :warehouse => [:rails_env, 'ci:redis:start_then_stop_at_exit', :spec_warehouse]
 
     task :setup => ['log:clear', :navigator_configuration, 'db:migrate']
+
+    # CI tasks should be run through the ci-exec.sh script.
+    # If they are accidentally run directly, we want to
+    # make sure the RAILS_ENV is 'ci'. This prevents the
+    # development database from being clobbered by the tests.
+    task :rails_env do
+      ENV["RAILS_ENV"] ||= 'ci'
+    end
 
     # Initializes NcsNavigator.configuration in an
     # environment-independent way.

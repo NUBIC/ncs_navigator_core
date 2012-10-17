@@ -179,8 +179,8 @@ describe Fieldwork do
     end
 
     it 'returns #proposed_data on the latest associated Merge' do
-      m1 = subject.merges.create!(:proposed_data => '{"foo":null}', :created_at => Time.now + 10)
-      m2 = subject.merges.create!(:proposed_data => '{"bar":null}', :created_at => Time.now - 10)
+      m1 = subject.merges.create!(:proposed_data => '{"foo":null}', :created_at => Time.now + 10, :client_id => 'foo', :staff_id => 'bar')
+      m2 = subject.merges.create!(:proposed_data => '{"bar":null}', :created_at => Time.now - 10, :client_id => 'foo', :staff_id => 'bar')
 
       subject.latest_proposed_data.should == '{"foo":null}'
     end
@@ -237,8 +237,8 @@ describe Fieldwork do
           json.should have_key('participants')
         end
 
-        it 'has an "instrument_templates" key' do
-          json.should have_key('instrument_templates')
+        it 'has an "instrument_plans" key' do
+          json.should have_key('instrument_plans')
         end
       end
     end

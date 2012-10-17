@@ -7,6 +7,11 @@
     = link_to 'Edit Provider Info', edit_provider_path(@provider),
         { :title => "Edit Information for #{@provider}" }
 
+  - if @provider.recruited? && @provider.recruitment_logistics_complete?
+    %span{ :class => "blue_button" }
+      = link_to 'View Provider Patients', provider_path(@provider),
+          { :title => "Add, Edit, or View Patients at #{@provider}" }
+
   #address
     = @provider.address.address_one + "."
     %br
@@ -15,11 +20,11 @@
     = @provider.address.zip + "-"
     = @provider.address.zip4
 
-  %a{ :class => "toggle_link", :id => "provider_details_show" }
+  %a{ :class => "toggle_link", :id => "details_show" }
     More ...
 
-  #provider_details.hide
-    %a{ :class => "toggle_link", :id => "provider_details_hide" }
+  #details.hide
+    %a{ :class => "toggle_link", :id => "details_hide" }
       Less ...
 
     .column-container
@@ -35,10 +40,14 @@
             = @provider.provider_type_other unless @provider.provider_type_other.blank?
         %p
           %span{ :class => "label" }
-            Provider Role
+            Provider Roles
           %span{ :class => "value" }
-            = @provider.provider_ncs_role
-            = @provider.provider_ncs_role_other unless @provider.provider_ncs_role_other.blank?
+            - if @provider.pbs_provider_roles.blank?
+              No provider roles assigned
+            - else
+              - @provider.pbs_provider_roles.each do |role|
+                = role
+
         %p
           %span{ :class => "label" }
             Practice Information

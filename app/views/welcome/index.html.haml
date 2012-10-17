@@ -30,35 +30,44 @@
     - else
       .front_page_section.page_section
         No Scheduled Events
+
   #actions_tab
     .front_page_section.page_section
       .column-container
         .column-1
           - if recruitment_strategy.pbs?
-            .pbs
+            .provider_recruitment
               %h4
-                Upload spreadsheet data
+                Provider Recruitment
+              %ul
+                - if permit?(Role::SYSTEM_ADMINISTRATOR)
+                  %li
+                    = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
+                %li
+                  = link_to "Provider List", pbs_lists_path, :class => "list_link icon_link"
+          - else
+            .participants
+              %h4
+                Administer Instruments
               %ul
                 %li
-                  = link_to "Upload PBS List", upload_pbs_lists_path, :class => "import_link icon_link"
-          .participants
-            %h4
-              Administer Instruments
-            %ul
-              %li
-                = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
+                  = link_to "New Pregnancy Screener", start_pregnancy_screener_instrument_path, :class => "add_link icon_link"
           .reports
             %h4
               Reports
-            %ul
-              %li
-                = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
-              %li
-                = link_to "Upcoming Birth Report", {:controller => "reports", :action => "upcoming_births"}, :class => "report_link icon_link"
-              %li
-                = link_to "Consented Participants", {:controller => "reports", :action => "number_of_consents_by_type"}, :class => "report_link icon_link"
-              %li
-                = link_to "Field Activity Report", fieldwork_index_path, :class => "report_link icon_link"
+            - if recruitment_strategy.pbs?
+              %p
+                No reports for PBS strategy. Work In Progress.
+            - else
+              %ul
+                %li
+                  = link_to "Case Status Report", {:controller => "reports", :action => "case_status"}, :class => "report_link icon_link"
+                %li
+                  = link_to "Upcoming Birth Report", {:controller => "reports", :action => "upcoming_births"}, :class => "report_link icon_link"
+                %li
+                  = link_to "Consented Participants", {:controller => "reports", :action => "number_of_consents_by_type"}, :class => "report_link icon_link"
+                %li
+                  = link_to "Field Activity Report", fieldwork_index_path, :class => "report_link icon_link"
         .column-2
           %h4
             Searching
@@ -74,15 +83,13 @@
                 = link_to "Contacts", contact_links_path, :class => "search_link icon_link"
               %li
                 = link_to "Events", events_path, :class => "search_link icon_link"
-              %li
-                = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
-              %li
-                = link_to "Household Units", household_units_path, :class => "list_link icon_link"
-              - if recruitment_strategy.pbs?
+              - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
                 %li
-                  = link_to "PBS List", pbs_lists_path, :class => "list_link icon_link"
+                  = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
+                %li
+                  = link_to "Household Units", household_units_path, :class => "list_link icon_link"
         .column-3
-          - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR)
+          - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
             %h4
               Activities
             .activities
@@ -104,3 +111,5 @@
               %ul
                 %li
                   = link_to "Samples/Specimens", sample_processes_path, :class => "list_link icon_link"
+                %li
+                  = link_to "Edit Samples/Specimens", edit_sample_processes_path, :class => "edit_link icon_link"

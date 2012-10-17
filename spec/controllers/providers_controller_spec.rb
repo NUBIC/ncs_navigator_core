@@ -298,25 +298,6 @@ describe ProvidersController do
 
       end
 
-      # describe "with invalid params" do
-      #   describe "with html request" do
-      #     it "assigns a newly created but unsaved provider as @provider" do
-      #       # Trigger the behavior that occurs when invalid params are submitted
-      #       Provider.any_instance.stub(:save).and_return(false)
-      #       post :create, :provider => {}
-      #       assigns(:provider).should be_a_new(Provider)
-      #     end
-      #
-      #     it "re-renders the 'new' template" do
-      #       # Trigger the behavior that occurs when invalid params are submitted
-      #       Provider.any_instance.stub(:save).and_return(false)
-      #       post :create, :provider => {}
-      #       response.should render_template("new")
-      #     end
-      #   end
-      #
-      # end
-
     end
 
     describe "GET edit_staff" do
@@ -337,36 +318,75 @@ describe ProvidersController do
     end
 
     describe "PUT process_recruited" do
-
-      let(:provider) { Factory(:provider) }
-
       describe "with valid params" do
         describe "with html request" do
 
+          let(:provider) { Factory(:provider) }
+          let(:contact) { Factory(:contact) }
+
           before(:each) do
-            Factory(:pbs_list, :provider => provider)
+            pbs_list = Factory(:pbs_list, :provider => provider,
+              :pr_recruitment_end_date => nil, :pr_recruitment_status_code => 3)
+            provider.pbs_list = pbs_list
+            provider.pbs_list.should == pbs_list
           end
 
           it "assigns the requested provider as @provider" do
             put :process_recruited, :id => provider.id, :provider => {}
+            assigns(:provider).should_not be_nil
             assigns(:provider).should eq(provider)
           end
 
-          it "redirects to the pbs_lists index page" do
+          it "redirects to the pbs_list info page for the provider" do
             put :process_recruited, :id => provider.id, :provider => {}
-            response.should redirect_to(pbs_lists_path)
+            response.should redirect_to(pbs_list_path(provider.pbs_list))
           end
 
-          it "updates the provider pbs_list record" do
-            put :process_recruited, :id => provider.id, :provider => {}
-            provider.pbs_list.pr_recruitment_status_code.should == 1
-            provider.pbs_list.pr_recruitment_end_date.should == Date.today
-            provider.pbs_list.pr_cooperation_date.should == Date.today
+          it "does not call mark_recruited if the provider has no provider_logistics complete" do
+            put :process_recruited, :id => provider.id, :contact_id => contact.id,
+              :provider => { }
+            provider.pbs_list.pr_recruitment_end_date.should be_blank
+            provider.pbs_list.pr_recruitment_status_code.should == 3
           end
 
-          # {"id"=>"90", "provider"=>{"provider_logistics_attributes"=>
-          #                {"0"=>{"provider_logistics_other"=>"", "psu_code"=>"20000030", "provider_logistics_code"=>"-5"},
-          #                 "1340395795081"=>{"provider_logistics_other"=>"", "psu_code"=>"20000030", "provider_logistics_code"=>"3"}}}}
+          it "calls mark_recruited if the provider has all provider_logistics complete" do
+            provider.should_not be_nil
+            pbs_list_id = provider.pbs_list.id
+
+            put :process_recruited, :id => provider.id, :contact_id => contact.id,
+              :provider => { :id => provider.id,
+                :provider_logistics_attributes =>
+                  [{ :provider_logistics_code => "1", :completion_date => "2012-09-20" }]
+              }
+            pbs_list = PbsList.find(pbs_list_id)
+            pbs_list.pr_recruitment_end_date.should_not be_blank
+            pbs_list.pr_recruitment_status_code.should == 1
+          end
+
+          it "sets provider recruitment event end date if the provider has all provider_logistics complete" do
+            provider.should_not be_nil
+            pbs_list_id = provider.pbs_list.id
+            Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+            :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => provider)
+            put :process_recruited, :id => provider.id, :contact_id => contact.id,
+              :provider => { :id => provider.id,
+                :provider_logistics_attributes =>
+                  [{ :provider_logistics_code => "1", :completion_date => "2012-05-20" }]
+              }
+            pbs_list = PbsList.find(pbs_list_id)
+            pbs_list.provider.provider_recruitment_event.event_end_date.should == Date.new(2012, 05, 20)
+          end
+
+          it "does not call mark_recruited if the provider has not marked all provider_logistics complete" do
+            put :process_recruited, :id => provider.id, :contact_id => contact.id,
+              :provider =>{ :provider_logistics_attributes =>
+                [{ :provider_logistics_code => "1", :completion_date => "2012-09-20"},
+                 { :provider_logistics_code => "1", :completion_date => nil
+                }]
+              }
+            provider.pbs_list.pr_recruitment_end_date.should be_blank
+            provider.pbs_list.pr_recruitment_status_code.should == 3
+          end
 
         end
       end
@@ -404,19 +424,22 @@ describe ProvidersController do
       it "sets the pr_recruitment_end_date on the provider.pbs_list record" do
         pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => nil)
         put :process_refused, :id => provider.id
-        provider.pbs_list.pr_recruitment_end_date.should == Date.today
+        pbs_list = PbsList.find(pbs_list.id)
+        pbs_list.pr_recruitment_end_date.should == Date.today
       end
 
       it "sets the pr_recruitment_status to 2 (Not recruited) on the provider.pbs_list record" do
         pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => nil)
         put :process_refused, :id => provider.id
-        provider.pbs_list.pr_recruitment_status_code.should == 2
+        pbs_list = PbsList.find(pbs_list.id)
+        pbs_list.pr_recruitment_status_code.should == 2
       end
 
       it "sets the substitute_provider to the selected substitute" do
         pbs_list = Factory(:pbs_list, :provider => provider, :substitute_provider => nil)
         put :process_refused, :id => provider.id, :substitute_provider_id => sub.id
-        provider.pbs_list.substitute_provider.should == sub
+        pbs_list = PbsList.find(pbs_list.id)
+        pbs_list.substitute_provider.should == sub
       end
 
     end

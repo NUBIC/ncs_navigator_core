@@ -1,8 +1,5 @@
 - title "Addresses"
 
-.mdes_table_definition
-  = render 'documentation/address'
-
 .page_section.search
   = search_form_for(@q, :html => {:autocomplete => "off"}) do |f|
     = f.label :address_one_cont
@@ -46,7 +43,7 @@
           = sort_link @q, "state_code", "State"
         %th
           = sort_link @q, "zip"
-        %th{ :colspan => "2" }
+        %th
 
       - @addresses.each do |a|
         %tr{ :class => cycle('even_record', 'odd_record') }
@@ -60,8 +57,6 @@
             = blank_safe(a.state)
           %td
             = blank_safe(a.zip)
-          %td
-            = link_to 'View', address_path(a), :class => "show_link icon_link"
           %td
             = link_to 'Edit', edit_address_path(a), :class => "edit_link icon_link"
   .links

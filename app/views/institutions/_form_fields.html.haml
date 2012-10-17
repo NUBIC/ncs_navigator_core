@@ -1,0 +1,50 @@
+
+= hidden_field_tag "provider_id", @provider.id if @provider
+
+= render "shared/ncs_code_select", { :f => f, :code => :psu_code, :label_text => "PSU", :default_value => @psu_code }
+
+= render "shared/ncs_code_select", { :f => f, :code => :institute_type_code, :label_text => "Type", :other => :institute_type_other }
+
+%p
+  = f.label :institute_name, "Institute Name"
+  %br
+  = f.text_field :institute_name
+
+= render "shared/ncs_code_select", { :f => f, :code => :institute_relation_code, :label_text => "Relationship of Institution to Person", :other => :institute_relation_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :institute_owner_code, :label_text => "Who Owns Institution", :other => :institute_owner_other }
+
+%p
+  = f.label :institute_size, "Number of . . ."
+  %br
+  = f.text_field :institute_size
+
+= render "shared/ncs_code_select", { :f => f, :code => :institute_unit_code, :label_text => "Unit for institute size", :other => :institute_unit_other }
+
+= render "shared/ncs_code_select", { :f => f, :code => :institute_info_source_code, :label_text => "Source of information", :other => :institute_info_source_other }
+
+%p
+  = f.label :institute_info_date, "Date of initial information"
+  %br
+  = f.text_field :institute_info_date, :class => "date"
+
+%p
+  = f.label :institute_info_update, "Date of last update of information"
+  %br
+  = f.text_field :institute_info_update, :class => "date"
+
+%p
+  = f.label :institute_comment, "Comment"
+  %br
+  = f.text_area :institute_comment
+
+
+:javascript
+  $(document).ready(function() {
+    wire_up_select_other("#institution_institute_type_code","#institution_institute_type_other");
+    wire_up_select_other("#institution_institute_relation_code","#institution_institute_relation_other");
+    wire_up_select_other("#institution_institute_owner_code","#institution_institute_owner_other");
+
+    wire_up_select_other("#address_address_info_mode_code","#address_address_info_mode_other");
+    wire_up_select_other("#address_address_rank_code","#address_address_rank_other");
+  });

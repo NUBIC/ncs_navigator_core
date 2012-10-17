@@ -8,9 +8,10 @@ require 'psc_participant'
 class PatientStudyCalendar
   extend Forwardable
 
-  LOW_INTENSITY  = "LO-Intensity"
-  HIGH_INTENSITY = "HI-Intensity"
-  CHILD_EPOCH    = "Child"
+  LOW_INTENSITY   = "LO-Intensity"
+  HIGH_INTENSITY  = "HI-Intensity"
+  CHILD_EPOCH     = "Child"
+  PBS_ELIGIBILITY = "PBS-Eligibility"
 
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
@@ -24,18 +25,20 @@ class PatientStudyCalendar
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
   CHILD                 = "Child"
 
+
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
   LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
   LOW_INTENSITY_POSTNATAL             = "#{LOW_INTENSITY}: #{POSTNATAL}"
 
-
   HIGH_INTENSITY_HI_LO_CONVERSION       = "#{HIGH_INTENSITY}: #{HI_LO_CONVERSION}"
   HIGH_INTENSITY_PPG_FOLLOW_UP          = "#{HIGH_INTENSITY}: #{PPG_FOLLOW_UP}"
   HIGH_INTENSITY_PRE_PREGNANCY          = "#{HIGH_INTENSITY}: #{PRE_PREGNANCY}"
   HIGH_INTENSITY_PREGNANCY_VISIT_1      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_1}"
   HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
+
+  PBS_ELIGIBILITY_SCREENER = "#{PBS_ELIGIBILITY}: #{PBS_ELIGIBILITY}"
 
   CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"
 
@@ -169,18 +172,20 @@ class PatientStudyCalendar
   end
 
   def assign_subject(participant, event_type = nil, date = nil)
-    participant.register! if participant.can_register? # move state so that the participant can tell PSC what is the next study segment to schedule
-    return nil if should_skip_event?(event_type)
-    return nil if is_registered?(participant) || participant.next_study_segment.blank?
-    data = build_subject_assignment_request(participant, event_type, date)
-
-    Rails.logger.info("~~~ assign_subject #{data.inspect}")
-
-    response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
-                    data)
-    registered_participants.cache_registration_status(
-      psc_assignment_id(participant), valid_response?(response))
-    response
+    # move state so that the participant can tell PSC what is the next study segment to schedule
+    participant.register! if participant.can_register?
+    if should_skip_event?(event_type)
+      return nil
+    elsif is_registered?(participant) || participant.next_study_segment.blank?
+      return nil
+    else
+      data = build_subject_assignment_request(participant, event_type, date)
+      response = post("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments",
+                      data)
+      registered_participants.cache_registration_status(
+        psc_assignment_id(participant), valid_response?(response))
+      response
+    end
   end
 
   def should_skip_event?(event_type)
@@ -407,6 +412,8 @@ class PatientStudyCalendar
   # @param [Date]
   # @return [Boolean]
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
+
+    next_scheduled_event = strip_epoch(next_scheduled_event)
     return false if should_skip_event?(next_scheduled_event)
 
     result = true
@@ -431,13 +438,12 @@ class PatientStudyCalendar
   # @param [String] - reason
   def schedule_pending_event(event, value, date, reason = nil)
     participant = event.participant
-    event_type  = event.event_type
     if activities = activities_to_reschedule(event)
       activities.each do |activity_identifier|
         update_activity_state(activity_identifier, participant, value, date, reason)
       end
     else
-      schedule_known_event(participant, event_type, date)
+      schedule_known_event(participant, event.event_type.to_s, date)
     end
   end
 
@@ -472,13 +478,26 @@ class PatientStudyCalendar
   end
 
   ##
-  # Cancels all activities labelled as collection instruments (environmental or biological)
+  # Cancels all activities labeled as collection instruments (environmental or biological)
   # for the participant. Called when scheduling new segments.
   # @param[Participant]
   # @param[String]
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+      end
+    end
+  end
+
+  ##
+  # Cancels all activities that have instruments but those instruments do not match
+  # the current mdes version known to the application. Called when scheduling new segments.
+  # @param[Participant]
+  # @param[String]
+  def cancel_non_matching_mdes_version_instruments(participant, scheduled_study_segment_identifier, date, reason)
+    activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
+      if a.has_non_matching_mdes_version_instrument?
         update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
       end
     end
@@ -785,6 +804,8 @@ class PatientStudyCalendar
                 "Pregnancy Probability"
               when "Father Consent and Interview"
                 "Father"
+              when "PBS-Eligibility"
+                "PBS Participant Eligibility Screening"
               when /Consent/
                 "Informed Consent"
               else

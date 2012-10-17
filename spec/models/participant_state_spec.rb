@@ -89,7 +89,12 @@ describe Participant do
 
   context "after completing the Low Intensity Questionnaire Instrument" do
 
-    let(:participant) { Factory(:participant, :low_intensity_state => 'in_pregnancy_probability_group') }
+    let(:participant) { participant= Factory(:participant, :low_intensity_state => 'in_pregnancy_probability_group')
+                        lo_i_quex = Factory(:event, :participant => participant,
+                                            :event_start_date => Date.today, :event_end_date => Date.today,
+                                            :event_type => NcsCode.low_intensity_data_collection)
+                        participant.events << lo_i_quex
+                        participant }
     let(:survey) { Factory(:survey, :title => "_LIPregNotPreg_") }
     let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
 
@@ -207,7 +212,8 @@ describe Participant do
     context "for a non-pregnant participant" do
       let(:participant) { Factory(:participant,
                                   :low_intensity_state => 'moved_to_high_intensity_arm',
-                                  :high_intensity_state => 'converted_high_intensity') }
+                                  :high_intensity_state => 'converted_high_intensity',
+                                  :high_intensity => true) }
       let(:survey) { Factory(:survey, :title => "_PPGFollUp_") }
       let(:response_set) { Factory(:response_set, :survey => survey,
                                    :person => participant.person, :participant => participant) }
@@ -239,6 +245,7 @@ describe Participant do
           participant.update_state_after_survey(response_set, psc)
           participant.should be_pregnancy_one
         end
+
       end
     end
 

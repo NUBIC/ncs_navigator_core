@@ -9,28 +9,13 @@ class PbsListsController < ApplicationController
 
     params[:q] ||= Hash.new
     params[:q]['s'] ||= "provider_name_practice asc"
+    params[:q]['in_sample_code_eq'] ||= 1
     @q = PbsList.search(params[:q])
     @pbs_lists = @q.result.paginate(:page => params[:page], :per_page => 20)
 
     respond_to do |format|
       format.html
       format.json { render :json => @q.result.all }
-    end
-  end
-
-  def new
-    if params[:provider_id]
-
-      @provider = Provider.find(params[:provider_id])
-      @pbs_list = PbsList.new(:provider => @provider, :psu_code => @psu_code)
-
-      respond_to do |format|
-        format.html
-        format.json { render :json => @pbs_list }
-      end
-    #else
-      #flash[:warning] = "Provider is required when creating a PBS List record."
-      #redirect_to pbs_lists_path 
     end
   end
 
@@ -51,21 +36,6 @@ class PbsListsController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render :json => @pbs_list }
-    end
-  end
-
-  def create
-    @pbs_list = PbsList.new(params[:pbs_list])
-
-    respond_to do |format|
-      if @pbs_list.save
-        flash[:notice] = 'PBS List Record was successfully created.'
-        format.html { redirect_to(edit_pbs_list_path(@pbs_list)) }
-        format.json  { render :json => @pbs_list }
-      else
-        format.html { render :action => "new" }
-        format.json  { render :json => @pbs_list.errors, :status => :unprocessable_entity }
-      end
     end
   end
 
@@ -108,19 +78,16 @@ class PbsListsController < ApplicationController
 
     event = @pbs_list.provider.provider_recruitment_event
     if event.blank?
-      event = Event.create!(:event_type_code => 22,
-                           :event_start_date => Date.today,
-                           :event_start_time => Time.now.strftime('%H:%M'))
+      event = Event.create!(:event_type_code => Provider::PROVIDER_RECRUIMENT_EVENT_TYPE_CODE,
+                            :event_disposition_category_code => 7)
     end
-    redirect_to staff_list_provider_path(@pbs_list.provider, :event_id => event.id)
+    redirect_to provider_recruitment_contacts_path(:provider_id => @pbs_list.provider, :event_id => event)
   end
 
   def mark_pbs_list_as_having_started_recruitment(pbs_list)
-    attrs = {
-      :pr_recruitment_start_date => Date.today,
-      :pr_recruitment_status_code => 3
-    }
-    pbs_list.update_attributes(attrs) unless pbs_list.recruitment_started?
+    if !pbs_list.recruitment_started? && !pbs_list.provider_recruited?
+      pbs_list.update_attribute(:pr_recruitment_status_code, 3)
+    end
   end
   private :mark_pbs_list_as_having_started_recruitment
 

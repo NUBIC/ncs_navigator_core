@@ -12,6 +12,15 @@
           - person = participant.person
           .event
             .header
+              .event_actions
+                - unless event.closed?
+                  - unless event.contact_links.blank?
+                    = link_to "Close Event", edit_event_path(event, :close => 'true'),
+                      :class => "close_link icon_link",
+                      :confirm => "Are you certain that this event should be closed?"
+                  = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(participant),
+                    :class => "out_of_window_link icon_link",
+                    :confirm => "Are you certain that this event is out of window?"
               %span.new_contact_for_previous_event
                 = link_to "New Contact", new_person_contact_path(person, :event_id => event.id), :class => "add_link icon_link", :title => "New Contact for #{event_name}" if event.closed?
               %span.type
@@ -20,14 +29,13 @@
                 = blank_safe(event.event_start_date)
                 = " - "
                 = blank_safe(event.event_end_date)
-                = link_to "Mark Out of Window", mark_event_out_of_window_participant_path(participant), :class => "out_of_window_link icon_link" unless event.closed?
               #span.disposition
                 - if event.event_disposition
                   - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
                   = disp.blank? ? "#{event.event_disposition} - #{event.event_disposition_category}" : disp
             .contact_link
               - if event.contact_links.blank?
-                .no_records
+                .no_event_contact_records
                   No contacts exist for this event.
               - else
                 %table.records
@@ -46,29 +54,32 @@
                       Continue
                   - event.contact_links.each do |cl|
                     - cls = cycle('even_record', 'odd_record')
+                    - contact = cl.contact
                     %tr{ :class => cls }
                       %td
-                        = cl.contact.contact_type
+                        = contact.contact_type
                       %td
-                        = link_to cl.contact.contact_date, edit_contact_link_path(cl), :class => "show_link icon_link"
+                        = link_to contact.contact_date, edit_contact_link_contact_path(cl, contact), :class => "show_link icon_link"
                       %td
-                        = cl.contact.contact_start_time
+                        = contact.contact_start_time
                       %td
-                        = cl.contact.contact_end_time
+                        = contact.contact_end_time
                       %td
-                        - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, cl.contact.contact_disposition)
-                        = disp.blank? ? cl.contact.contact_disposition : disp
+                        - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
+                        = disp.blank? ? contact.contact_disposition : disp
                       %td.hide
-                        - if cl.contact.contact_date_date == Date.today && cl.event.event_end_date.blank?
-                          = link_to "Continue #{cl.event.event_type}", new_person_contact_path(@person, :event_type_id => cl.event.event_type.id), :class => "add_link icon_link"
-                    - unless cl.contact.contact_comment.blank?
+                        - if contact.contact_date_date == Date.today && event.event_end_date.blank?
+                          = link_to "Continue #{event.event_type}", new_person_contact_path(@person, :event_type_id => event.event_type.id),
+                            :class => "add_link icon_link"
+                    - unless contact.contact_comment.blank?
                       %tr{ :class => "comment_#{cls} #{cls}"  }
                         %td{ :colspan => 6 }
-                          = blank_safe(cl.contact.contact_comment, 'No comment')
-                    - unless cl.contact.non_interview_reports.blank?
+                          = blank_safe(contact.contact_comment, 'No comment')
+                    - unless contact.non_interview_reports.blank?
                       %tr{ :class => "comment_#{cls} #{cls}"  }
                         %td{ :colspan => 6 }
                           %b
                             Non-Interview Reports
-                          - cl.contact.non_interview_reports.each do |nir|
-                            = link_to "#{nir.nir_type_person}", edit_non_interview_report_path(nir, :contact_link_id => cl.id), :class => "edit_link icon_link", :title => nir.nir
+                          - contact.non_interview_reports.each do |nir|
+                            = link_to "#{nir.nir_type_person}", edit_non_interview_report_path(nir, :contact_link_id => cl.id),
+                              :class => "edit_link icon_link", :title => nir.nir

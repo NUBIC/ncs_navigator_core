@@ -2,8 +2,6 @@
 
 
 require 'ncs_navigator/core/warehouse'
-# To preload the same version of the models used by OperationalEnumerator
-require 'ncs_navigator/core/warehouse/operational_enumerator'
 
 require 'forwardable'
 require 'paper_trail'
@@ -23,7 +21,6 @@ module NcsNavigator::Core::Warehouse
 
     attr_reader :wh_config
 
-    def_delegators self, :automatic_producers
     def_delegators :wh_config, :shell, :log
 
     def initialize(wh_config)
@@ -49,12 +46,12 @@ module NcsNavigator::Core::Warehouse
           insert_initial_ppg_status_into_history_if_necessary
         end
 
-        if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
-          create_events_and_instruments_and_contact_links
-        end
-
         if tables.empty? || tables.include?(:participants)
           set_participant_being_followed
+        end
+
+        if tables.empty? || tables.any? { |t| [:events, :contact_links, :instruments].include?(t) }
+          create_events_and_instruments_and_contact_links
         end
 
         resolve_failed_associations
@@ -65,9 +62,9 @@ module NcsNavigator::Core::Warehouse
       end
     end
 
-    def self.automatic_producers
-      OperationalEnumerator.record_producers.reject { |rp|
-        %w(LinkContact Event Instrument).include?(rp.model.to_s.demodulize)
+    def automatic_producers
+      operational_enumerator.record_producers.reject { |rp|
+        %w(LinkContact Event Instrument).include?(rp.model_or_reference.to_s.demodulize)
       }
     end
 
@@ -78,9 +75,13 @@ module NcsNavigator::Core::Warehouse
 
     private
 
+    def operational_enumerator
+      OperationalEnumerator.select_implementation(wh_config)
+    end
+
     def create_simply_mapped_core_records(mdes_producer)
       core_model = core_model_for_table(mdes_producer.name)
-      mdes_model = mdes_producer.model
+      mdes_model = mdes_producer.model(wh_config)
       count = mdes_model.count
       offset = 0
       while offset < count
@@ -109,12 +110,12 @@ module NcsNavigator::Core::Warehouse
       end
 
       @progress.loading('events, instruments, and links with p state impact')
-      Participant.transaction do
-        ordered_event_sets.each do |p_id, events_and_links|
+      ordered_event_sets.each do |p_id, events_and_links|
+        Participant.transaction do
           Participant.importer_mode do
             participant = Participant.where(:p_id => p_id).first
 
-            for_psc = (participant.enroll_status_code == 1)
+            for_psc = (participant.being_followed && participant.p_type_code != 6)
             Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
 
             # caches
@@ -273,7 +274,7 @@ module NcsNavigator::Core::Warehouse
     end
 
     def mdes_model_for_core_table(core_table)
-      find_producer(core_table).model
+      find_producer(core_table).model(wh_config)
     end
 
     def build_ordered_event_sets
@@ -404,7 +405,7 @@ module NcsNavigator::Core::Warehouse
 
     def create_core_records_without_state_impact(core_model)
       load_message = "#{core_model.name.underscore.gsub('_', ' ').pluralize} without p state impact"
-      mdes_model = find_producer(core_model.table_name).model
+      mdes_model = find_producer(core_model.table_name).model(wh_config)
       key_name = mdes_model.key.first.name
       cond = <<-SQL
         FROM #{mdes_model.mdes_table_name} t
@@ -476,21 +477,25 @@ module NcsNavigator::Core::Warehouse
           SET being_followed=(
             enroll_status_code=1
             AND (
-              EXISTS (SELECT 'x' FROM ppg_details d WHERE d.participant_id=p.id AND d.ppg_first_code=1)
-              OR
-              EXISTS (SELECT 'x' FROM ppg_status_histories h WHERE h.participant_id=p.id AND h.ppg_status_code=1)
+              ( -- ever pregnant
+                EXISTS (SELECT 'x' FROM ppg_details d WHERE d.participant_id=p.id AND d.ppg_first_code=1)
+                OR
+                EXISTS (SELECT 'x' FROM ppg_status_histories h WHERE h.participant_id=p.id AND h.ppg_status_code=1)
+              ) OR ( -- a child
+                p.p_type_code = 6
+              )
             )
           )
         SQL
     end
 
     def find_producer(name)
-      OperationalEnumerator.record_producers.find { |rp| rp.name.to_sym == name.to_sym }
+      operational_enumerator.record_producers.find { |rp| rp.name.to_sym == name.to_sym }
     end
 
     def column_map(core_model)
       column_maps[core_model] ||=
-        find_producer(core_model.table_name).column_map(core_model.attribute_names)
+        find_producer(core_model.table_name).column_map(core_model.attribute_names, wh_config)
     end
 
     def column_maps

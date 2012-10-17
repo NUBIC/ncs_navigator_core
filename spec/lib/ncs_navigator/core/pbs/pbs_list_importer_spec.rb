@@ -72,5 +72,21 @@ module NcsNavigator::Core::Pbs
       end
     end
 
+    context "birthing center" do
+
+      describe ".create_institute" do
+        it "creates an Institution record associated with the Provider" do
+          Institution.count.should == 0
+          PbsListImporter.import_data(File.open("#{Rails.root}/spec/fixtures/data/pbs_list_birthing_center.csv"))
+          Institution.count.should == 1
+          Provider.first.institution.should be_blank
+          Provider.last.institution.should_not be_blank
+
+          Institution.first.institute_name.should == Provider.last.to_s
+        end
+      end
+
+    end
+
   end
 end

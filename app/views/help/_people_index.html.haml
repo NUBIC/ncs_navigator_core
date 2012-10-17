@@ -1,7 +1,9 @@
 = render "/help/help_link"
 %textarea{ :cols => "0", :rows => "0", :id => "help_text", :class => "help_text", :style => "display:none", :title => "People" }
+  = render "/documentation/person"
   %p
-    This page lists all of the people in the application database.
-  %p
-    You can search for people by their first name, last name, or unique public identifier.
-    You can also sort the results by those same fields.
+    .help_instructions
+      This page lists all of the people in the application database.
+    %p
+      You can search for people by their first name, last name, or unique public identifier.
+      You can also sort the results by those same fields.

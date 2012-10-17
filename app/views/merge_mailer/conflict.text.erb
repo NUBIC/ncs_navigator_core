@@ -1,0 +1,12 @@
+A conflict was detected when merging data from a field client.
+
+Staff ID: <%= @merge.staff_id %>
+Device ID: <%= @merge.client_id %>
+
+<%- if @fieldwork_id %>
+You can view the conflict report here:
+<%= fieldwork_merge_url(:host => @host,
+                        :protocol => 'https',
+                        :id => @merge.id,
+                        :fieldwork_id => @fieldwork_id) %>
+<% end %>

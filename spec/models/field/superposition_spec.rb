@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 require 'spec_helper'
-
 require 'set'
+
+require File.expand_path('../be_adapted_matcher', __FILE__)
 
 module Field
   describe Superposition do
@@ -18,7 +19,7 @@ module Field
     let(:proposed_data) { File.read("#{Rails.root}/spec/fixtures/field/proposed_data.json") }
     let(:proposed_json) { JSON.parse(proposed_data) }
 
-    # Commonly used UUIDs.
+    # Commonly used UUIDs in the original and proposed datasets.
     let(:contact_id) { 'dc2a6c42-3b01-4c91-9e27-104c5aa3ef49' }
     let(:event_id) { 'bce1e030-34d3-012f-c157-58b035fb69ca' }
     let(:instrument_id) { 'c41f14e0-356c-012f-c15d-58b035fb69ca' }
@@ -148,7 +149,7 @@ module Field
       it_should_behave_like 'an entity set', :proposed, 'responses'
     end
 
-    describe '#set_current' do
+    shared_context 'current data' do
       let!(:contact) { Factory(:contact, :contact_id => contact_id) }
       let!(:event) { Factory(:event, :event_id => event_id) }
       let!(:instrument) { Factory(:instrument, :instrument_id => instrument_id) }
@@ -164,33 +165,115 @@ module Field
         load_proposed
         load_current
       end
+    end
+
+    describe '#set_current' do
+      include_context 'current data'
 
       it 'resolves contacts' do
-        subject.contacts[contact_id][:current].should == contact
+        subject.contacts[contact_id][:current].should be_adapted(contact)
       end
 
       it 'resolves events' do
-        subject.events[event_id][:current].should == event
+        subject.events[event_id][:current].should be_adapted(event)
       end
 
       it 'resolves instruments' do
-        subject.instruments[instrument_id][:current].should == instrument
+        subject.instruments[instrument_id][:current].should be_adapted(instrument)
       end
 
       it 'resolves participants' do
-        subject.participants[participant_id][:current].should == participant
+        subject.participants[participant_id][:current].should be_adapted(participant)
       end
 
       it 'resolves persons' do
-        subject.people[person_id][:current].should == person
+        subject.people[person_id][:current].should be_adapted(person)
       end
 
       it 'resolves response sets' do
-        subject.response_sets[response_set_id][:current].should == response_set
+        subject.response_sets[response_set_id][:current].should be_adapted(response_set)
       end
 
       it 'resolves responses' do
-        subject.responses[response_id][:current].should == response
+        subject.responses[response_id][:current].should be_adapted(response)
+      end
+    end
+
+    describe '#build_question_response_sets' do
+      include NcsNavigator::Core::Fieldwork::Adapters
+
+      let(:q1) { Factory(:question) }
+      let(:q2) { Factory(:question) }
+      let(:a) { Factory(:answer) }
+
+      let(:hr1) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr1) { adapt_model(Response.new(:question => q1, :answer => a)) }
+      let(:hr1b) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr1b) { adapt_model(Response.new(:question => q1, :answer => a)) }
+      let(:hr2) { adapt_hash(:response, 'question_id' => q2.api_id) }
+      let(:mr2) { adapt_model(Response.new(:question => q2, :answer => a)) }
+
+      before do
+        subject.responses = {
+          'foo' => {
+            :current => hr1,
+            :original => mr1,
+            :proposed => hr1
+          },
+          'bar' => {
+            :current => hr1b,
+            :original => mr1b,
+            :proposed => hr1b
+          },
+          'baz' => {
+            :current => hr2,
+            :original => mr2,
+            :proposed => hr2
+          }
+        }
+      end
+
+      QRS = Field::QuestionResponseSet
+
+      it 'groups responses by question ID' do
+        subject.build_question_response_sets
+
+        subject.question_response_sets.should == {
+          q1.api_id => {
+            :current =>  QRS.new(hr1, hr1b),
+            :original => QRS.new(mr1, mr1b),
+            :proposed => QRS.new(hr1, hr1b)
+          },
+          q2.api_id => {
+            :current =>  QRS.new(hr2),
+            :original => QRS.new(mr2),
+            :proposed => QRS.new(hr2)
+          }
+        }
+      end
+    end
+
+    describe '#current_events' do
+      include_context 'current data'
+
+      it 'returns events in the current set' do
+        subject.current_events.should == [event]
+      end
+    end
+
+    describe '#current_instruments' do
+      include_context 'current data'
+
+      it 'returns instruments in the current set' do
+        subject.current_instruments.should == [instrument]
+      end
+    end
+
+    describe '#current_participants' do
+      include_context 'current data'
+
+      it 'returns participants in the current set' do
+        subject.current_participants.should == [participant]
       end
     end
   end

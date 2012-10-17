@@ -26,15 +26,16 @@ describe ContactsController do
     context "for a new person" do
       before(:each) do
         login(user_login)
-        @preg_screen_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29)
-        @ppg12_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 33)
+        @preg_screen_event = NcsCode.pregnancy_screener
+        @ppg12_event = NcsCode.low_intensity_data_collection
 
         @person      = Factory(:person)
         @participant = Factory(:participant)
         @participant.person = @person
         @participant.save!
 
-        @person.upcoming_events.should == ["LO-Intensity: Pregnancy Screener"]
+        @person.upcoming_events.size.should == 1
+        @person.upcoming_events.first.should include("Pregnancy Screener")
         @person.should be_participant
       end
 
@@ -42,9 +43,12 @@ describe ContactsController do
 
         before(:each) do
           Contact.stub(:new).and_return(mock_contact)
-          params = {:participant => @participant, :event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
-          # TODO: Event is a value object. Why stub?
-          Event.stub(:new).with(params).and_return(mock_event(params))
+          params = {:participant => @participant, :event_type => @preg_screen_event,
+                    :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
+          @event = Factory(:event, params)
+          Event.stub(:new).with(params).and_return(@event)
+          Event.stub(:schedule_and_create_placeholder).and_return(nil)
+          @participant.events << @event
         end
 
         it "assigns a new contact as @contact" do
@@ -54,49 +58,59 @@ describe ContactsController do
 
         it "assigns a new event as @event" do
           get :new, :person_id => @person.id
-          assigns[:event].should equal(mock_event)
-          assigns[:event].event_type.should equal(@preg_screen_event)
+          assigns[:event].should == @event
+          assigns[:event].event_type.should == @preg_screen_event
         end
       end
 
       describe "GET edit" do
 
         before(:each) do
-          params = {:participant => @participant, :event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code}
-          Event.stub(:new).with(params).and_return(mock_event(params))
+          @event = Factory(:event, :event_type => @preg_screen_event)
+          @contact_link = Factory(:contact_link, :person => @person, :event => @event)
           Contact.stub(:find).with("37").and_return(mock_contact(:set_default_end_time => nil))
-          ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
         end
 
         it "assigns the requested contact as @contact" do
-          get :edit, :id => "37", :person_id => @person.id
+          get :edit, :id => "37", :contact_link_id => @contact_link.id
           assigns[:contact].should equal(mock_contact)
         end
 
         it "assigns the contact link event as @event" do
-          get :edit, :id => "37", :person_id => @person.id
-          assigns[:event].should equal(mock_event)
+          get :edit, :id => "37", :contact_link_id => @contact_link.id
+          assigns[:event].id.should equal(@event.id)
         end
       end
 
       describe "GET edit with next_event param" do
         it "creates a new contact link and event when continuing to next event" do
+          Event.stub(:schedule_and_create_placeholder).and_return(nil)
+
           @contact = Factory(:contact)
-          contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => Factory(:event, :event_type => @preg_screen_event))
+          event = Factory(:event, :participant => @participant,
+                          :event_start_date => Date.today, :event_end_date => Date.today,
+                          :event_type => NcsCode.pregnancy_screener)
+          event2 = Factory(:event, :participant => @participant,
+                          :event_start_date => Date.today, :event_end_date => nil,
+                          :event_type => @ppg12_event)
+          contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
           @person.upcoming_events.to_s.should include("Pregnancy Screener")
 
           @participant.register!
           @participant.assign_to_pregnancy_probability_group!
+          @participant.events << event
+          @participant.events << event2
           Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
 
           @person.participant.reload
           @person.contact_links.reload
           @person.upcoming_events.to_s.should include("PPG 1 and 2")
           @person.contact_links.size.should == 1
-          get :edit, :id => @contact.id, :person_id => @person.id, :next_event => true
+
+          get :edit, :id => @contact.id, :contact_link_id => contact_link.id, :next_event => true
           @person.contact_links.reload
           @person.contact_links.size.should == 2
-          @person.contact_links.map(&:event).map(&:event_type).should == [@ppg12_event, @preg_screen_event]
+          @person.contact_links.map(&:event).compact.map(&:event_type).uniq.should == [@ppg12_event, @preg_screen_event]
           @person.contact_links.map(&:contact).uniq.should == [@contact]
         end
 
@@ -105,18 +119,20 @@ describe ContactsController do
       describe "GET edit - contact end time" do
 
         before do
-          ContactLink.stub(:where).and_return([mock_contact_link(:event => mock_event)])
+          @contact_link = Factory(:contact_link, :person => @person,
+            :contact => Factory(:contact),
+            :event => Factory(:event, :event_type => @preg_screen_event))
         end
 
         it "sets the default end_time for the contact" do
           contact = Factory(:contact, :contact_date_date => Date.today, :contact_end_time => nil)
-          get :edit, :id => contact.id, :person_id => @person.id
+          get :edit, :id => contact.id, :contact_link_id => @contact_link.id
           assigns[:contact].contact_end_time.should_not be_blank
         end
 
         it "does not set the end_time for a contact that happened in the past" do
           contact = Factory(:contact, :contact_date_date => 2.days.ago.to_date, :contact_end_time => nil)
-          get :edit, :id => contact.id, :person_id => @person.id
+          get :edit, :id => contact.id, :contact_link_id => @contact_link.id
           assigns[:contact].contact_end_time.should be_blank
         end
       end
@@ -132,6 +148,10 @@ describe ContactsController do
         @person      = Factory(:person)
         @participant = Factory(:low_intensity_ppg2_participant)
         @participant.person = @person
+        @event = Factory(:event, :participant => @participant,
+                        :event_start_date => Date.today, :event_end_date => Date.today,
+                        :event_type => NcsCode.pregnancy_screener)
+        @participant.events << @event
         @participant.save!
         Factory(:ppg_status_history, :participant => @participant, :ppg_status_code => 2)
         Contact.stub(:new).and_return(mock_contact)
@@ -143,12 +163,14 @@ describe ContactsController do
         before(:each) do
           expected_params = {
             :participant => @participant,
-            :event_type => NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 33),
+            :event_type => NcsCode.low_intensity_data_collection,
             :psu_code => NcsNavigatorCore.psu_code,
             :event_start_date => Date.today
           }
-          # TODO: Event is a value object. Why stub?
-          Event.stub(:new).with(expected_params).and_return(mock_event(expected_params))
+          @event33 = Factory(:event, expected_params)
+          @participant.events << @event33
+          Event.stub(:new).with(expected_params).and_return(@event33)
+          Event.stub(:schedule_and_create_placeholder).and_return(nil)
         end
 
         it "assigns a new contact as @contact" do
@@ -158,18 +180,21 @@ describe ContactsController do
 
         it "assigns a new event as @event" do
           get :new, :person_id => @person.id
-          assigns[:event].should equal(mock_event)
-          assigns[:event].event_type.local_code.should equal(33)
+          assigns[:event].should == @event33
+          assigns[:event].event_type.local_code.should == 33
         end
-      end
 
-      describe "GET new with a given event_type" do
-        it "assigns a new event as @event with the given event type" do
-          # TODO: code?
-          @preg_screen_event = NcsCode.for_list_name_and_local_code("EVENT_TYPE_CL1", 29)
-          get :new, :person_id => @person.id, :event_type_id => @preg_screen_event.id
-          assigns[:event].event_type.local_code.should == @preg_screen_event.local_code
+        describe "with a given event_type" do
+          it "assigns a new event as @event with the given event type" do
+            @participant.pending_events.should == [@event33]
+
+            Event.stub(:schedule_and_create_placeholder).and_return(nil)
+
+            get :new, :person_id => @person.id, :event_type_id => NcsCode.low_intensity_data_collection.id
+            assigns[:event].event_type.local_code.should == NcsCode.low_intensity_data_collection.local_code
+          end
         end
+
       end
 
     end
@@ -177,16 +202,14 @@ describe ContactsController do
     context "PBS provider recruitment event" do
 
       before(:each) do
-        @event = Factory(:event, :event_type_code => 22)
+        @event = Factory(:event, :event_type_code => 22, :event_start_date => nil, :event_start_time => nil)
         @provider = Factory(:provider)
+        @pbs_list = Factory(:pbs_list, :provider => @provider, :pr_recruitment_start_date => nil)
+        @provider.pbs_list = @pbs_list
+        @provider.save!
       end
 
       describe "GET provider_recruitment" do
-
-        it "assigns the requested person as @person" do
-          get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
-          assigns(:person).should eq(@person)
-        end
 
         it "assigns the requested event as @event" do
           get :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id
@@ -230,10 +253,29 @@ describe ContactsController do
               assigns(:contact).should be_persisted
             end
 
-            it "redirects to the post_recruitment_contact provider page" do
+            it "redirects to the pbs_lists page" do
               post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
-              response.should redirect_to(post_recruitment_contact_provider_path(@provider, :contact_id => assigns(:contact).id))
+              response.should redirect_to(pbs_list_path(@provider.pbs_list))
             end
+
+            it "sets PR_RECRUITMENT_START_DATE on Provider PBS List to contact date" do
+              @pbs_list.pr_recruitment_start_date.should be_blank
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              PbsList.find(@provider.pbs_list.id).pr_recruitment_start_date.should == Contact.last.contact_date_date
+            end
+
+            it "updates the Provider recruitment event record with information from contact" do
+              @event.event_start_date.should be_blank
+              @event.event_start_time.should be_blank
+              post :provider_recruitment, :person_id => @person.id, :event_id => @event.id, :provider_id => @provider.id, :contact => contact_attrs
+              e = Event.find(@event.id)
+              c = Contact.last
+              e.event_start_date.should == c.contact_date_date
+              e.event_start_time.should == c.contact_start_time
+              e.event_disposition.should == c.contact_disposition
+            end
+
+
           end
         end
 
@@ -257,7 +299,40 @@ describe ContactsController do
         end
       end
 
+      describe "PUT provider_recruitment" do
+        def contact_attrs
+          {
+            "contact_start_time" => "11:22",
+            "contact_end_time" => "11:27",
+          }
+        end
 
+        before(:each) do
+          @contact = Factory(:contact)
+          @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => @event, :provider => @provider)
+        end
+
+        describe "with valid params" do
+          describe "with html request" do
+            it "updates the requested contact" do
+              Contact.any_instance.should_receive(:update_attributes).with(contact_attrs)
+              put :update, :id => @contact.id, :contact => contact_attrs, :contact_link_id => @contact_link.id
+            end
+
+            it "redirects to the provider's pbs_lists page" do
+              put :update, :id => @contact.id, :contact => contact_attrs, :contact_link_id => @contact_link
+              response.should redirect_to(pbs_list_path(@provider.pbs_list))
+            end
+
+            it "with no provider pbs_lists redirects to the all pbs_lists page" do
+              @contact_link.provider = Factory(:provider)
+              @contact_link.save!
+              put :update, :id => @contact.id, :contact => contact_attrs, :contact_link_id => @contact_link
+              response.should redirect_to(pbs_lists_path)
+            end
+          end
+        end
+      end
     end
 
   end

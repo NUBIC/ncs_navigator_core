@@ -17,6 +17,7 @@ module Psc
     attr_reader :contacts
     attr_reader :events
     attr_reader :instruments
+    attr_reader :instrument_plans
     attr_reader :people
     attr_reader :surveys
 
@@ -58,12 +59,13 @@ module Psc
       @filters = filters
       @activities = coll
 
-      @contact_links = Collection.new
-      @contacts = Collection.new
-      @events = Collection.new
-      @instruments = Collection.new
-      @people = Collection.new
-      @surveys = Collection.new
+      @contact_links = Set.new
+      @contacts = Set.new
+      @events = Set.new
+      @instruments = Set.new
+      @instrument_plans = Set.new
+      @people = Set.new
+      @surveys = Set.new
     end
 
     ##
@@ -71,176 +73,55 @@ module Psc
     def process
       logger.info 'Mapping started'
 
-      [contact_links, contacts, events, instruments, people, surveys].each(&:clear)
+      reset_derivations
 
       activities.each do |activity|
-        p = add_person(activity)
-        c = add_contact(activity, p)
-        e = add_event(activity, c, p)
-        s = add_survey(activity)
-        r = add_referenced_survey(activity)
+        add_derived_entities_from_activity(activity)
+      end
 
-        i = if operational_record_implied?(e, s, r)
-              add_instrument(activity, s, r, e, p)
-            end
+      log_derivations
 
-        add_contact_link(p, c, e, i)
+      plans = InstrumentPlanCollection.for(activities)
+
+      plans.each do |plan|
+        add_derived_entities_from_plan(plan)
       end
 
       logger.info 'Mapping complete'
     end
 
-    ##
-    # @private
-    def operational_record_implied?(event, survey, referenced_survey)
-      event && survey && referenced_survey.nil?
+    def reset_derivations
+      derivation_collections.each(&:clear)
     end
 
-    ##
-    # @private
-    def add_contact_link(person, contact, event, instrument)
-      contact_links << ContactLink.new(person, contact, event, instrument)
-    end
+    def log_derivations
+      return unless logger.level == ::Logger::DEBUG
 
-    ##
-    # @private
-    def add_contact(activity, person)
-      contacts << Contact.new(activity.activity_date, person)
-    end
-
-    ##
-    # @private
-    def add_event(activity, contact, person)
-      el = activity.event_label
-
-      events << Event.new(el, activity.ideal_date, contact, person) if el
-    end
-
-    ##
-    # @private
-    def add_instrument(activity, survey, referenced_survey, event, person)
-      instruments << Instrument.new(survey, referenced_survey, activity.activity_name, event, person)
-    end
-
-    ##
-    # @private
-    def add_person(activity)
-      people << Person.new(activity.person_id)
-    end
-
-    ##
-    # @private
-    def add_survey(activity, label = activity.instrument_label)
-      surveys << Survey.new(label) if label
-    end
-
-    def add_referenced_survey(activity)
-      add_survey(activity, activity.references_label)
-    end
-
-    # Intermediate representatations start here.
-    #
-    # These are used to map entities in the scheduled activity report to Cases'
-    # entities.
-
-    ##
-    # A collection of IRs.
-    class Collection
-      include Enumerable
-
-      def initialize
-        @set = {}
-      end
-
-      ##
-      # Given two value objects v1 and v2 that are eql but not equal[0],
-      # selects the first of [v1, v2] added to the collection, and returns it
-      # for all subsequent << operations.
-      #
-      # We do this because mutating non-comparable state on value objects is
-      # quite convenient when it comes to model resolution.
-      #
-      # [0]: See http://ruby-doc.org/core-1.9.3/Object.html#method-i-eql-3F.
-      #
-      # In short:
-      #
-      #     class S < Struct.new(:foo); end
-      #
-      #     a = S.new
-      #     b = S.new
-      #
-      #     a.object_id != b.object_id  # => true
-      #
-      #     a.eql?(b)   # => true
-      #     a.equal?(b) # => false
-      def <<(item)
-        if @set.has_key?(item)
-          @set[item]
-        else
-          @set[item] = item
+      derivation_collections.each do |dc|
+        dc.each do |entity|
+          logger.debug { "Derived #{entity.inspect} from PSC schedule" }
         end
-
-        @set[item]
-      end
-
-      def each
-        @set.values.each { |v| yield v }
-      end
-
-      def clear
-        @set.clear
-      end
-
-      ##
-      # For testing.
-      def ==(other)
-        Set.new(@set.values) == Set.new(other)
-      end
-
-      ##
-      # For testing.
-      def models
-        Set.new(map(&:model))
       end
     end
 
-    ##
-    # {ContactLink} representation.
-    class ContactLink < Struct.new(:person, :contact, :event, :instrument)
-      attr_accessor :model
+    def derivation_collections
+      [contact_links, contacts, events, instruments, instrument_plans, people, surveys]
     end
 
-    ##
-    # Representation of a {Contact} from an SA report.
-    class Contact < Struct.new(:scheduled_date, :person)
-      attr_accessor :model
+    def add_derived_entities_from_activity(activity)
+      activity.derive_implied_entities
+
+      people << activity.person
+      contacts << activity.contact
+      events << activity.event
+      contact_links << activity.contact_link
     end
 
-    ##
-    # {Event} representation.
-    class Event < Struct.new(:label, :ideal_date, :contact, :person)
-      attr_accessor :model
-    end
+    def add_derived_entities_from_plan(plan)
+      instruments << plan.root
+      instrument_plans << plan
 
-    ##
-    # {Instrument} representation.
-    class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
-      attr_accessor :model
-    end
-
-    ##
-    # {Person} representation.
-    class Person < Struct.new(:person_id)
-      attr_accessor :model
-      attr_accessor :participant_model
-    end
-
-    ##
-    # {Survey} representation.
-    class Survey < Struct.new(:instrument_label)
-      attr_accessor :model
-
-      alias_method :access_code, :instrument_label
+      plan.surveys.each { |s| surveys << s }
     end
   end
 end

@@ -4,7 +4,7 @@
 #
 # Table name: merges
 #
-#  completed_at    :datetime
+#  merged_at       :datetime
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
@@ -21,7 +21,10 @@ require 'spec_helper'
 describe Merge do
   let!(:fw) { Factory(:fieldwork) }
 
-  subject { fw.merges.build }
+  subject { fw.merges.build(:client_id => 'bar', :staff_id => 'foo') }
+
+  it { should validate_presence_of(:client_id) }
+  it { should validate_presence_of(:staff_id) }
 
   describe '#run' do
     it 'saves the merge log' do
@@ -63,9 +66,9 @@ describe Merge do
         subject.started_at = nil
       end
 
-      describe 'and completed_at is nil' do
+      describe 'and merged_at is nil' do
         before do
-          subject.completed_at = nil
+          subject.merged_at = nil
         end
 
         it 'is "pending"' do
@@ -79,9 +82,9 @@ describe Merge do
         subject.started_at = Time.now
       end
 
-      describe 'and completed_at is nil' do
+      describe 'and merged_at is nil' do
         before do
-          subject.completed_at = nil
+          subject.merged_at = nil
         end
 
         it 'is "working"' do
@@ -122,9 +125,9 @@ describe Merge do
       end
     end
 
-    describe 'if completed_at is not nil' do
+    describe 'if merged_at is not nil' do
       before do
-        subject.completed_at = Time.now
+        subject.merged_at = Time.now
       end
 
       describe 'and there are no conflicts' do
@@ -132,8 +135,14 @@ describe Merge do
           subject.stub!(:conflicted? => false)
         end
 
-        it 'is "merged"' do
-          subject.status.should == 'merged'
+        describe 'and the data is synced' do
+          before do
+            subject.synced_at = Time.now
+          end
+
+          it 'is "merged"' do
+            subject.status.should == 'merged'
+          end
         end
       end
 
@@ -144,6 +153,28 @@ describe Merge do
 
         it 'is "conflict"' do
           subject.status.should == 'conflict'
+        end
+      end
+    end
+
+    describe 'if merged_at is not nil' do
+      before do
+        subject.merged_at = Time.now
+      end
+
+      describe 'and there are no conflicts' do
+        before do
+          subject.stub!(:conflicted? => false)
+        end
+
+        describe 'and the data is not synced' do
+          before do
+            subject.synced_at = nil
+          end
+
+          it 'is "syncing"' do
+            subject.status.should == 'syncing'
+          end
         end
       end
     end
@@ -185,7 +216,7 @@ describe Merge do
     ##
     # The smallest possible valid fieldwork object.
     let(:valid) do
-      { 'contacts' => [], 'participants' => [], 'instrument_templates' => [] }
+      { 'contacts' => [], 'participants' => [], 'instrument_plans' => [] }
     end
 
     let(:invalid) do

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: addresses
 #
@@ -28,6 +27,7 @@
 #  created_at                :datetime
 #  dwelling_unit_id          :integer
 #  id                        :integer          not null, primary key
+#  institute_id              :integer
 #  person_id                 :integer
 #  provider_id               :integer
 #  psu_code                  :integer          not null
@@ -52,6 +52,7 @@ class Address < ActiveRecord::Base
   belongs_to :dwelling_unit
   belongs_to :response_set
   belongs_to :provider
+  belongs_to :institute, :class_name => 'Institution', :foreign_key => :institute_id
   ncs_coded_attribute :psu,                 'PSU_CL1'
   ncs_coded_attribute :address_rank,        'COMMUNICATION_RANK_CL1'
   ncs_coded_attribute :address_info_source, 'INFORMATION_SOURCE_CL1'
@@ -59,6 +60,15 @@ class Address < ActiveRecord::Base
   ncs_coded_attribute :address_type,        'ADDRESS_CATEGORY_CL1'
   ncs_coded_attribute :address_description, 'RESIDENCE_TYPE_CL1'
   ncs_coded_attribute :state,               'STATE_CL1'
+
+  validates :address_one,         :length => { :maximum => 100 }, :allow_blank => true
+  validates :address_two,         :length => { :maximum => 100 }, :allow_blank => true
+  validates :city,                :length => { :maximum => 50 },  :allow_blank => true
+  validates :unit,                :length => { :maximum => 10 },  :allow_blank => true
+  validates :zip,                 :length => { :maximum => 5 },   :allow_blank => true, :numericality => true
+  validates :zip4,                :length => { :maximum => 4 },   :allow_blank => true, :numericality => true
+  validates :address_end_date,    :length => { :is => 10 },       :allow_blank => true
+  validates :address_start_date,  :length => { :is => 10 },       :allow_blank => true
 
   def self.home_address_type
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first

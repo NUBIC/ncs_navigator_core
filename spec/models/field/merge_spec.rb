@@ -3,18 +3,20 @@
 #
 # Table name: merges
 #
-#  completed_at    :datetime
+#  client_id       :string(255)
 #  conflict_report :text
 #  crashed_at      :datetime
 #  created_at      :datetime
 #  fieldwork_id    :integer
 #  id              :integer          not null, primary key
 #  log             :text
+#  merged_at       :datetime
 #  proposed_data   :text
+#  staff_id        :string(255)
 #  started_at      :datetime
+#  synced_at       :datetime
 #  updated_at      :datetime
 #
-
 
 require 'spec_helper'
 
@@ -23,8 +25,7 @@ require 'json'
 
 require File.expand_path('../shared_merge_behaviors', __FILE__)
 
-SCHEMA_FILE = "#{Rails.root}/vendor/ncs_navigator_schema/fieldwork_schema.json"
-SCHEMA = JSON.parse(File.read(SCHEMA_FILE))
+SCHEMA = NcsNavigator::Core::Fieldwork::Validator.new.expanded_schema
 
 module Field
   describe Merge do
@@ -119,6 +120,15 @@ module Field
       it_merges 'supervisor_review_code'
       it_merges 'instrument_type_code'
       it_merges 'instrument_type_other'
+    end
+
+    when_merging 'ResponseSet' do
+      let(:properties) do
+        SCHEMA['properties']['contacts']['items']['properties']['events']['items']['properties']['instruments']['items']['properties']['response_sets']['items']['properties']
+      end
+
+      it_merges 'completed_at'
+      it_merges 'created_at'
     end
 
     describe 'when merging QuestionResponseSets' do
@@ -309,57 +319,95 @@ module Field
       end
     end
 
-    describe '#build_question_response_sets' do
+    describe '#save' do
       include NcsNavigator::Core::Fieldwork::Adapters
 
-      let(:q1) { Factory(:question) }
-      let(:q2) { Factory(:question) }
-      let(:a) { Factory(:answer) }
+      let(:contact) { Factory(:contact) }
+      let(:event) { Factory(:event) }
+      let(:response_set) { Factory(:response_set) }
+      let(:instrument) { Factory(:instrument) }
+      let(:qrs) { QuestionResponseSet.new }
 
-      let(:hr1) { adapt_hash(:response, 'question_id' => q1.api_id) }
-      let(:mr1) { adapt_model(Response.new(:question => q1, :answer => a)) }
-      let(:hr1b) { adapt_hash(:response, 'question_id' => q1.api_id) }
-      let(:mr1b) { adapt_model(Response.new(:question => q1, :answer => a)) }
-      let(:hr2) { adapt_hash(:response, 'question_id' => q2.api_id) }
-      let(:mr2) { adapt_model(Response.new(:question => q2, :answer => a)) }
+      let(:ac) { adapt_model(contact) }
+      let(:ae) { adapt_model(event) }
+      let(:rs) { adapt_model(response_set) }
+      let(:ai) { adapt_model(instrument) }
 
       before do
-        subject.responses = {
-          'foo' => {
-            :current => hr1,
-            :original => mr1,
-            :proposed => hr1
-          },
-          'bar' => {
-            :current => hr1b,
-            :original => mr1b,
-            :proposed => hr1b
-          },
-          'baz' => {
-            :current => hr2,
-            :original => mr2,
-            :proposed => hr2
+        subject.contacts = {
+          'c1' => {
+            :original => nil,
+            :current => ac,
+            :proposed => nil
+          }
+        }
+
+        subject.events = {
+          'e1' => {
+            :original => nil,
+            :current => ae,
+            :proposed => nil
+          }
+        }
+
+        subject.instruments = {
+          'i1' => {
+            :original => nil,
+            :current => ai,
+            :proposed => nil
+          }
+        }
+
+        subject.response_sets = {
+          'rs1' => {
+            :original => nil,
+            :current => rs,
+            :proposed => nil
+          }
+        }
+
+        subject.question_response_sets = {
+          'q1' => {
+            :original => nil,
+            :current => qrs,
+            :proposed => nil
           }
         }
       end
 
-      QRS = Field::QuestionResponseSet
+      describe 'on success' do
+        before do
+          @ret = subject.save
+        end
 
-      it 'groups responses by question ID' do
-        subject.build_question_response_sets
+        it 'returns merged contacts' do
+          @ret[:contacts].should == [ac]
+        end
 
-        subject.question_response_sets.should == {
-          q1.api_id => {
-            :current =>  QRS.new(hr1, hr1b),
-            :original => QRS.new(mr1, mr1b),
-            :proposed => QRS.new(hr1, hr1b)
-          },
-          q2.api_id => {
-            :current =>  QRS.new(hr2),
-            :original => QRS.new(mr2),
-            :proposed => QRS.new(hr2)
-          }
-        }
+        it 'returns merged events' do
+          @ret[:events].should == [ae]
+        end
+
+        it 'returns merged instruments' do
+          @ret[:instruments].should == [ai]
+        end
+
+        it 'returns merged response sets' do
+          @ret[:response_sets].should == [rs]
+          @ret[:question_response_sets].should == [qrs]
+        end
+      end
+
+      describe 'on failure' do
+        before do
+          ae.stub!(:save => false)
+
+          @ret = subject.save
+        end
+
+        it 'returns nil' do
+          @ret.should be_nil
+        end
       end
     end
   end

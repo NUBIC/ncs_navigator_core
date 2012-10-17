@@ -12,7 +12,7 @@ body {
 
 .instructional_note {
   font-size: 0.8em;
-/*  font-style: italic;*/
+  /* font-style: italic; */
   color: $NOTE_GRAY;
   margin: 0 0 0.5em 1em;
 }
@@ -33,6 +33,10 @@ a {
   }
 }
 
+ul {
+  list-style-type: none;
+}
+
 select[disabled=''],
 input[disabled=''],
 select[disabled='disabled'],
@@ -42,7 +46,7 @@ input[disabled='disabled'] {
 
 .page_section {
   border: 1px solid #ccc;
-  margin: 0.5em;
+  /* margin: 0.5em; */
   padding: 0.75em 0.5em 0.5em 0.5em;
   background-color: whitesmoke;
   @include rounded-corners(.5em);
@@ -87,8 +91,13 @@ label.important_field {
   color: maroon;
 }
 
+select.error,
+input.error {
+  padding: 5px;
+}
 label.error {
   font-weight: normal;
+  padding: 5px;
 }
 
 select.important_field,
@@ -158,6 +167,9 @@ form {
     height: 200px;
     width: 325px;
   }
+  label {
+    font-weight: normal;
+  }
 }
 
 #container,
@@ -204,20 +216,14 @@ form {
 }
 
 .blue_button {
-	-webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	-moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-	background-color:#cdc9c9;
+  @include colored_button;
+
+  background-color:#cdc9c9;
 	border:1px solid #696969;
-	font-family:'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
 	font-size: 0.8em;
-	font-weight: 700;
 	padding: 4px;
+  margin: 0 0.5em;
 	height: 1em;
-	color:#fff;
-	border-radius:5px;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
 
   a {
     color: #696969;
@@ -226,23 +232,47 @@ form {
 }
 
 .green_button {
-  -webkit-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-  -moz-box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
-  box-shadow:rgba(0,0,0,0.1) 0 1px 0 0;
+  @include colored_button;
+
   background-color:#66FF66;
   border:1px solid #339933;
-  font-family:'Lucida Grande',Tahoma,Verdana,Arial,sans-serif;
   font-size: 0.9em;
-  font-weight: 700;
   padding: 2px;
   height: .8em;
-  color:#fff;
-  border-radius:5px;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
 
   a {
     color: #339933;
     text-decoration: none;
   }
+}
+
+.red_button {
+  @include colored_button;
+  background-color: lightpink;
+  border: 1px solid crimson;
+  font-size: 0.8em;
+  padding: 4px;
+
+  a {
+    color: crimson;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: blue !important;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.mdes_header,
+.help_header {
+  text-decoration: underline;
+}
+
+.mdes_definition,
+.help_instructions {
+  margin: 0.25em;
 }
