@@ -7,29 +7,17 @@ module Field::Adapters
       attr_accessors [
         { 'uuid' => 'api_id' },
         'response_group',
-        'response_set_id',
         'value'
       ]
 
-      def answer_id
-        target.answer.try(:api_id)
+      def unresolved_references
+        return {} unless source
+
+        { ::Answer => source.answer_id,
+          ::Question => source.question_id,
+          ::ResponseSet => source.ancestors[:response_set].try(:uuid)
+        }
       end
-
-      def answer_id=(val)
-        target.answer_id = Answer.where(:api_id => val).first.try(:id)
-      end
-
-      attr_accessible :answer_id
-
-      def question_id
-        target.question.try(:api_id)
-      end
-
-      def question_id=(val)
-        target.question_id = Question.where(:api_id => val).first.try(:id)
-      end
-
-      attr_accessible :question_id
     end
 
     class HashAdapter
@@ -45,14 +33,6 @@ module Field::Adapters
         uuid
         value
       )
-
-      ##
-      # Fills in Response#response_set_id.
-      def to_model
-        super.tap do |m|
-          m.response_set_id = ::ResponseSet.where(:api_id => ancestors[:response_set].uuid).first.try(:id)
-        end
-      end
 
       def model_class
         ::Response
