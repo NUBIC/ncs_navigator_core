@@ -412,29 +412,8 @@ module Field
           @ret = subject.save
         end
 
-        it 'returns merged contacts' do
-          @ret[:contacts].should == [ac]
-        end
-
-        it 'returns merged events' do
-          @ret[:events].should == [ae]
-        end
-
-        it 'returns merged instruments' do
-          @ret[:instruments].should == [ai]
-        end
-
-        it 'returns merged participants' do
-          @ret[:participants].should == [pa]
-        end
-
-        it 'returns merged people' do
-          @ret[:people].should == [pe]
-        end
-
-        it 'returns merged response sets' do
-          @ret[:response_sets].should == [rs]
-          @ret[:question_response_sets].should == [qrs]
+        it 'returns true' do
+          @ret.should be_true
         end
       end
 
@@ -445,8 +424,8 @@ module Field
           @ret = subject.save
         end
 
-        it 'returns nil' do
-          @ret.should be_nil
+        it 'returns false' do
+          @ret.should be_false
         end
       end
     end

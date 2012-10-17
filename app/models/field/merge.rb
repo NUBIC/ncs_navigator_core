@@ -159,43 +159,20 @@ module Field
     # that can be dealt with by just looking further up in the log.  There's no
     # similar way to discover errors that aren't reported due to an early
     # abort.
-    #
-    # If save succeeds, this method returns the merged model objects in a map
-    # of the form
-    #
-    #     { :contacts => [contact, ...],
-    #       :events => [event, ...],
-    #       :instruments => [instrument, ...],
-    #       :response_sets => [response_set, ...],
-    #       :people => [person, ...],
-    #       :participants => [participant, ...],
-    #       :question_response_sets => [question_response_set, ...]
-    #     }
-    #
-    # Each entity in each list is an adapted ActiveRecord model object; see
-    # {NcsNavigator::Core::Fieldwork::Adapters} for more information.
-    #
-    # If save fails, returns nil.
     def save
-      map = {
-        :contacts => current_for(contacts),
-        :events => current_for(events),
-        :instruments => current_for(instruments),
-        :response_sets => current_for(response_sets),
-        :people => current_for(people),
-        :participants => current_for(participants),
-        :question_response_sets => current_for(question_response_sets)
-      }
+      collections = [contacts, events, instruments, people, participants,
+                     response_sets,
+                     question_response_sets
+                    ].map { |c| current_for(c) }
 
       ActiveRecord::Base.transaction do
-        ok = map.values.all? { |c| save_collection(c) } and link
-
-        if ok
-          logger.info { 'Merge saved' }
-          map
-        else
-          logger.fatal { 'Errors raised during save; rolling back' }
-          raise ActiveRecord::Rollback
+        collections.map { |c| save_collection(c) }.all?.tap do |ok|
+          if ok
+            logger.info { 'Merge saved' }
+          else
+            logger.fatal { 'Errors raised during save; rolling back' }
+            raise ActiveRecord::Rollback
+          end
         end
       end
     end
