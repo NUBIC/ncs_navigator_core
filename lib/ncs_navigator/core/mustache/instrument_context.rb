@@ -156,6 +156,10 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "baby's" : "babies'"
     end
 
+    def has_baby_have_babies
+      single_birth? ? "Has the baby" : "Have the babies"
+    end
+
     # {B_NAME/your baby}
     def b_fname
       result = response_for("#{birth_baby_name_prefix}.BABY_FNAME")
@@ -254,8 +258,105 @@ module NcsNavigator::Core::Mustache
       about_person.blank? ? "[CHILD'S FIRST NAME]" : about_person.first_name
     end
 
+    def c_fname_or_the_child
+      about_person.blank? ? "the Child" : about_person.first_name
+    end
+
     def c_dob
       about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
+    end
+
+    def at_this_visit_or_at
+      "[AT_THIS_VISIT_OR_AT]"
+    end
+
+    def work_place_name
+      "[PARTICIPANTS WORKPLACE NAME]"
+    end
+
+    def work_address
+      "[WORK ADDRESS]"
+    end
+
+    def visit_today
+      "[VISIT_TODAY]"
+    end
+
+    def institution
+      "[INSTITUTION]"
+    end
+
+    def practice_name
+      "[PRACTICE_NAME]"
+    end
+
+    def county
+      "[COUNTY]"
+    end
+
+    def birthing_place
+      "[BIRTHING_PLACE]"
+    end
+
+    def stomach_back_side
+      single_birth? ? "stomach, back and side" : "stomachs, backs and sides"
+    end
+
+    def date_of_preg_visit_1
+      "[DATE OF PREGNANCY VISIT 1]"
+    end
+
+    def date_of_preg_visit_2
+      "[DATE OF PREGNANCY VISIT 2]"
+    end
+
+    def event_type
+      "[EVENT_TYPE]"
+    end
+
+    def and_birth_date
+      "and birth date"
+    end
+
+    # guardian_name is composed of g_fname, g_mname, and g_lname
+    def are_you_or_is_guardian_name
+      "[ARE_YOU_OR_IS_GUARDIAN_NAME]"
+    end
+
+    def still
+      "[STILL]"
+    end
+
+    def primary_address
+      "[PRIMARY_ADDRESS]"
+    end
+
+    def is_are
+      "[IS_ARE]"
+    end
+
+    def secondary_phone_number
+      "[SECONDARY_PHONE_NUMBER]"
+    end
+
+    def choose_date_range_for_birth_instrument
+      if date_of_preg_visit_2
+        return "between #{date_of_preg_visit_2} and #{c_dob}"
+      elsif date_of_preg_visit_1
+        return "between #{date_of_preg_visit_1} and #{c_dob}"
+      else
+        return "before #{c_dob}"
+      end
+    end
+
+    def choose_date_range_for_birth_instrument_variation_1
+      if date_of_preg_visit_2
+        return "At this visit or at any time between #{date_of_preg_visit_2} and #{c_dob}"
+      elsif date_of_preg_visit_1
+        return "At this visit or at any time between #{date_of_preg_visit_1} and #{c_dob}"
+      else
+        return "At any time in your pregnancy"
+      end
     end
 
     def himself_herself
