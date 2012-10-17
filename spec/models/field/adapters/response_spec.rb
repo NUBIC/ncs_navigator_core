@@ -7,6 +7,62 @@ module Field::Adapters
     let(:resp) { Factory(:response, :question => q, :answer => a) }
     let(:adapter) { Response::ModelAdapter.new(resp) }
 
+    describe '#question_public_id' do
+      describe 'if no question is present' do
+        before do
+          resp.question = nil
+        end
+
+        it 'returns nil' do
+          adapter.question_public_id.should be_nil
+        end
+      end
+
+      it "returns its question's API ID" do
+        adapter.question_public_id.should == q.api_id
+      end
+
+      describe 'if #source is set' do
+        before do
+          ha = Response::HashAdapter.new({})
+          ha.question_id = 'foo'
+          adapter.source = ha
+        end
+
+        it "returns its source's question ID" do
+          adapter.question_public_id.should == 'foo'
+        end
+      end
+    end
+
+    describe '#answer_public_id' do
+      describe 'if no answer is present' do
+        before do
+          resp.answer = nil
+        end
+
+        it 'returns nil' do
+          adapter.answer_public_id.should be_nil
+        end
+      end
+
+      it "returns its answer's API ID" do
+        adapter.answer_public_id.should == a.api_id
+      end
+
+      describe 'if #source is set' do
+        before do
+          ha = Response::HashAdapter.new({})
+          ha.answer_id = 'foo'
+          adapter.source = ha
+        end
+
+        it "returns its source's answer ID" do
+          adapter.answer_public_id.should == 'foo'
+        end
+      end
+    end
+
     describe '#unresolved_references' do
       describe 'if #source is not set' do
         before do

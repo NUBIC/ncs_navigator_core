@@ -10,6 +10,14 @@ module Field::Adapters
         'value'
       ]
 
+      def answer_public_id
+        source.try(:answer_public_id) || target.answer.try(&:api_id)
+      end
+
+      def question_public_id
+        source.try(:question_public_id) || target.question.try(&:api_id)
+      end
+
       def unresolved_references
         return {} unless source
 
@@ -33,6 +41,9 @@ module Field::Adapters
         uuid
         value
       )
+
+      alias_method :answer_public_id, :answer_id
+      alias_method :question_public_id, :question_id
 
       def model_class
         ::Response

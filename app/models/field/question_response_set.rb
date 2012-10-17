@@ -3,12 +3,16 @@ require 'set'
 
 module Field
   ##
-  # This defines an equivalence class (by question ID) on Surveyor's {Response}
-  # object.  It also provides code to compare two QuestionResponseSets for
-  # answer equality and answer-and-value equality.
+  # This defines an equivalence class on Surveyor's {Response} object.  It also
+  # provides code to compare two QuestionResponseSets for answer equality and
+  # answer-and-value equality.
   #
   # QuestionResponseSet objects are designed to permit merging survey data with
   # {Merge}.
+  #
+  # The equivalence relation used by this class is equality of two responses'
+  # #question_public_id return value.  {Response::HashAdapter} and
+  # {Response::ModelAdapter} both implement this.
   #
   # The first response added to a QuestionResponseSet determines the question
   # ID for the QuestionResponseSet.  Attempts to add responses having different
@@ -35,12 +39,12 @@ module Field
     ##
     # Add a response.
     def <<(response)
-      if responses.empty?
-        @question_id = response.question_id
-      end
+      qpi = response.question_public_id
 
-      if @question_id != response.question_id
-        raise "Cannot add a response with question ID #{response.question_id} to a #{self.class.name} with question ID #{@question_id}"
+      @question_public_id = qpi if responses.empty?
+
+      if @question_public_id != qpi
+        raise "Cannot add a response with question ID #{response.question_id} to a #{self.class.name} with question ID #{@question_public_id}"
       end
 
       old_length = responses.length
@@ -49,7 +53,7 @@ module Field
     end
 
     def public_id
-      @question_id
+      @question_public_id
     end
 
     ##
@@ -96,7 +100,7 @@ module Field
 
     def collect_errors
       each do |r|
-        errors.add(r.question_id, r.errors.to_a)
+        errors.add(r.question_public_id, r.errors.to_a)
       end
     end
 
@@ -133,12 +137,12 @@ module Field
     def wrap(r)
       return r if Response === r
 
-      Response.new(r.question_id, r.answer_id, r.response_group, r.value).tap do |rf|
+      Response.new(r.question_public_id, r.answer_public_id, r.response_group, r.value).tap do |rf|
         rf.wrapped_response = r
       end
     end
 
-    class Response < Struct.new(:question_id, :answer_id, :response_group, :value)
+    class Response < Struct.new(:question_public_id, :answer_public_id, :response_group, :value)
       extend Forwardable
 
       attr_accessor :wrapped_response

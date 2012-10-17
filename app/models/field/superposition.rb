@@ -139,9 +139,9 @@ module Field
 
       responses.each do |_, state|
         state.each do |state_name, response|
-          res[response.question_id] ||= {}
-          res[response.question_id][state_name] ||= QuestionResponseSet.new
-          res[response.question_id][state_name] << response
+          res[response.question_public_id] ||= {}
+          res[response.question_public_id][state_name] ||= QuestionResponseSet.new
+          res[response.question_public_id][state_name] << response
         end
       end
 
