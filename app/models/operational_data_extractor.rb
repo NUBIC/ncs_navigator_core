@@ -145,6 +145,8 @@ class OperationalDataExtractor
                     value
                   when "ORIG_DUE_DATE_MM", "ORIG_DUE_DATE_DD", "ORIG_DUE_DATE_YY"
                     value
+                  when "DUE_DATE_MM", "DUE_DATE_DD", "DUE_DATE_YY"
+                    value
                   when "DATE_PERIOD"
                     value + 280.days
                   when "WEEKS_PREG"
@@ -172,13 +174,19 @@ class OperationalDataExtractor
     def should_calculate_due_date?(key, response)
       answer_class = response.answer.response_class
       case key
-      when "ORIG_DUE_DATE", "DUE_DATE", "PPG_DUE_DATE_1", "DATE_PERIOD"
+      when "ORIG_DUE_DATE", "PPG_DUE_DATE_1"
         answer_class == "date"
+      when "DUE_DATE"
+        answer_class == "date" || answer_class == "string"
+      when "DATE_PERIOD"
+        answer_class == "date" || answer_class == "string"
       when "WEEKS_PREG", "MONTH_PREG"
         answer_class == "integer"
       when "TRIMESTER"
         answer_class == "answer"
       when "ORIG_DUE_DATE_MM", "ORIG_DUE_DATE_DD", "ORIG_DUE_DATE_YY"
+        answer_class == "string"
+      when "DUE_DATE_MM", "DUE_DATE_DD", "DUE_DATE_YY"
         answer_class == "string"
       when "DATE_PERIOD_MM", "DATE_PERIOD_DD", "DATE_PERIOD_YY"
         answer_class == "string"
@@ -233,6 +241,10 @@ class OperationalDataExtractor
 
     def secondary_rank
       @secondary_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
+    end
+
+    def duplicate_rank
+      @duplicate_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 4)
     end
 
     def set_value(obj, attr, value)
