@@ -97,7 +97,7 @@ describe Instrument do
     context 'a survey with one part' do
       describe 'if there is no response set for the (person, survey) pair' do
         it 'returns the result of Person#start_instrument' do
-          person.should_receive(:start_instrument).with(survey, mother, event).and_return(inst)
+          person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
 
           Instrument.start(person, mother, nil, survey, event).should == inst
         end
@@ -120,7 +120,7 @@ describe Instrument do
           end
 
           it 'returns the result of Person#start_instrument' do
-            person.should_receive(:start_instrument).with(survey, mother, event).and_return(inst)
+            person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
 
             Instrument.start(person, mother, nil, survey, event).should == inst
           end

@@ -91,7 +91,7 @@ class Instrument < ActiveRecord::Base
       ins = Instrument.where(:person_id => person.id,
                              :survey_id => instrument_survey.id,
                              :event_id => event.id).order("created_at DESC").first
-      person.start_instrument(current_survey, participant, event, ins)
+      person.start_instrument(current_survey, participant, ins)
       ins
     end
   end
@@ -106,7 +106,7 @@ class Instrument < ActiveRecord::Base
     rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
 
     if !rs || event.closed?
-      person.start_instrument(survey, participant, event)
+      person.start_instrument(survey, participant)
     else
       rs.instrument
     end.tap { |i| i.event = event }

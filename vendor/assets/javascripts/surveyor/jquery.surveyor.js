@@ -68,6 +68,9 @@ jQuery(document).ready(function(){
     }
   });
 
+  // Phone format using MaskedInputPlugin
+  jQuery("input[type='text'].phone").mask("(999) 999-9999");
+
   jQuery('.surveyor_radio input[type=text]').change(function(){
     var textValue = $(this).val()
     if (textValue.length > 0) {

@@ -173,9 +173,12 @@ class PbsEligibilityScreenerOperationalDataExtractor
 
       end
 
-      if ppg_detail && !ppg_detail.ppg_first_code.blank?
+      if ppg_detail
         if due_date = calculated_due_date(response_set)
           ppg_detail.orig_due_date = due_date
+        elsif ppg_detail.orig_due_date.blank? && participant.known_to_be_pregnant?
+          due_date = (Date.today + 280.days) - (140.days)
+          ppg_detail.orig_due_date = due_date.strftime('%Y-%m-%d')
         end
         OperationalDataExtractor.set_participant_type(participant, ppg_detail.ppg_first_code)
         ppg_detail.save!

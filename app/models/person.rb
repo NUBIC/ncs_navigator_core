@@ -235,9 +235,8 @@ class Person < ActiveRecord::Base
   # @param [Survey]
   # @param [Participant] - The participant the Survey is regarding
   # @param [Instrument] - The instrument associated with the Survey (or Survey part)
-  # @param [Event] - The event associated with the Instrument
   # @return [Instrument]
-  def start_instrument(survey, participant, event, instrument = nil)
+  def start_instrument(survey, participant, instrument = nil)
     # TODO: raise Exception if survey is nil
     return if survey.nil?
 
