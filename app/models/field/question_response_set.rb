@@ -18,6 +18,7 @@ module Field
   # ID for the QuestionResponseSet.  Attempts to add responses having different
   # question IDs will raise an error.
   class QuestionResponseSet
+    extend ActiveModel::Translation
     extend Forwardable
     include Enumerable
 
