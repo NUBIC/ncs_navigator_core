@@ -181,7 +181,7 @@ class BirthOperationalDataExtractor
       if child
         child.save!
         ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
-        self.make_child_participant(child, person)
+        OperationalDataExtractor.make_child_participant(child, person)
       end
 
       if email && !email.email.blank?
@@ -217,12 +217,6 @@ class BirthOperationalDataExtractor
 
     end
 
-    def make_child_participant(child, mother)
-      child_participant = Participant.create(:psu => child.psu, :p_type_code => 6)  # NCS Child
-      child_participant.person = child
-      child_participant.save!
-      ParticipantPersonLink.create(:person_id => mother.id, :participant_id => child_participant.id, :relationship_code => 2) # 2 = Mother, associating child with its mother
-    end
 
   end
 
