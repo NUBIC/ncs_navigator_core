@@ -429,7 +429,6 @@ module NcsNavigator::Core::Mustache
 
       end
 
-
     end
 
     context "for a pregnancy visit one instrument" do
@@ -507,8 +506,8 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".at_this_visit_or_at" do
-        it "returns \"At\"" do
-          instrument_context.at_this_visit_or_at.should == "At"
+        it "returns \"at_this_visit_or_at\"" do
+          instrument_context.at_this_visit_or_at.should == "at_this_visit_or_at"
         end
       end
 
@@ -608,7 +607,7 @@ module NcsNavigator::Core::Mustache
     end
 
     describe "still" do
-      it "returns 'still' if CHILD_TIME = 1, -1 or -2"
+      it "returns 'still' if CHILD_TIME = 1, -1 or -2" do
         pending
       end
       it "returns nothing if CHILD_TIME = 2 or does not exist" do
