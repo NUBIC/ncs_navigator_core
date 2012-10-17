@@ -15,6 +15,8 @@ module Field::Adapters
       extend ActiveModel::Naming
     end
 
+    attr_accessor :source
+
     ##
     # Used when generating a fieldwork set.
     #

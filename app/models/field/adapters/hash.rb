@@ -11,6 +11,7 @@ module Field::Adapters
     def to_model
       adapt_model(model_class.new).tap do |m|
         m.ancestors = ancestors
+        m.source = self
         m.patch(target)
       end
     end
