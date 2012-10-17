@@ -13,9 +13,9 @@ module Field::Adapters
       def unresolved_references
         return {} unless source
 
-        { ::Instrument => source.ancestors[:instrument].try(:[], :instrument_id),
-          ::Participant => source.p_id,
-          ::Survey => source.survey_id
+        { ::Instrument => [source.ancestors[:instrument].try(:[], :instrument_id)],
+          ::Participant => [source.p_id],
+          ::Survey => [source.survey_id]
         }
       end
     end

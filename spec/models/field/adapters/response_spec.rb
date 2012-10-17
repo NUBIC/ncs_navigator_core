@@ -83,20 +83,20 @@ module Field::Adapters
       it 'returns the answer public ID' do
         ha.answer_id = 'foo'
 
-        adapter.unresolved_references[::Answer].should == 'foo'
+        adapter.unresolved_references[::Answer].should == ['foo']
       end
 
       it 'returns the question public ID' do
         ha.question_id = 'bar'
 
-        adapter.unresolved_references[::Question].should == 'bar'
+        adapter.unresolved_references[::Question].should == ['bar']
       end
 
       it 'returns the response set public ID' do
         hrs = ResponseSet::HashAdapter.new('uuid' => 'baz')
         ha.ancestors = { :response_set => hrs }
 
-        adapter.unresolved_references[::ResponseSet].should == 'baz'
+        adapter.unresolved_references[::ResponseSet].should == ['baz']
       end
     end
 

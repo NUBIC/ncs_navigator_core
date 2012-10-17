@@ -21,9 +21,9 @@ module Field::Adapters
       def unresolved_references
         return {} unless source
 
-        { ::Answer => source.answer_id,
-          ::Question => source.question_id,
-          ::ResponseSet => source.ancestors[:response_set].try(:uuid)
+        { ::Answer => [source.answer_id],
+          ::Question => [source.question_id],
+          ::ResponseSet => [source.ancestors[:response_set].try(:uuid)]
         }
       end
     end

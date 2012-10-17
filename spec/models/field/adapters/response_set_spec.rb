@@ -25,20 +25,20 @@ module Field::Adapters
       it 'returns the survey public ID' do
         ha.survey_id = 'foo'
 
-        adapter.unresolved_references[::Survey].should == 'foo'
+        adapter.unresolved_references[::Survey].should == ['foo']
       end
 
       it 'returns the participant public ID' do
         ha.p_id = 'bar'
 
-        adapter.unresolved_references[::Participant].should == 'bar'
+        adapter.unresolved_references[::Participant].should == ['bar']
       end
 
       it 'returns the instrument public ID' do
         ia = Instrument::HashAdapter.new('instrument_id' =>  'baz')
         ha.ancestors = { :instrument => ia }
 
-        adapter.unresolved_references[::Instrument].should == 'baz'
+        adapter.unresolved_references[::Instrument].should == ['baz']
       end
     end
   end
