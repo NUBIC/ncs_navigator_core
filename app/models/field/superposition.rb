@@ -242,7 +242,7 @@ module Field
 
         c[kv][state] = adapter ? adapter : object
 
-        if adapter
+        if adapter.respond_to?(:ancestors=)
           adapter.ancestors = ancestors
         end
 
