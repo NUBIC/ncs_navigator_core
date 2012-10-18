@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 module NcsNavigator
   module Core
     autoload :VERSION,                  'ncs_navigator/core/version'

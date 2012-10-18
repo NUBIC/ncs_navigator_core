@@ -18,7 +18,6 @@
 #  updated_at      :datetime
 #
 
-
 require 'ncs_navigator/core'
 
 require 'case'

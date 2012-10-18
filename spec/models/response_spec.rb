@@ -25,8 +25,6 @@
 #  updated_at        :datetime
 #
 
-
-
 require 'spec_helper'
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
 require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
@@ -241,4 +239,3 @@ end
     end
   end
 end
-

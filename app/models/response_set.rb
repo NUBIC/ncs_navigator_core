@@ -17,8 +17,6 @@
 #  user_id                                   :integer
 #
 
-
-
 class ResponseSet < ActiveRecord::Base
   include NcsNavigator::Core::HasPublicId
   include Surveyor::Models::ResponseSetMethods
@@ -61,4 +59,3 @@ class ResponseSet < ActiveRecord::Base
     super.merge('p_id' => participant.try(:public_id))
   end
 end
-

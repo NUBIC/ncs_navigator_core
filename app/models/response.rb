@@ -80,4 +80,3 @@ class Response < ActiveRecord::Base
     as(a.response_class.to_sym) unless a.response_class == 'answer'
   end
 end
-

@@ -17,8 +17,6 @@
 #  user_id                                   :integer
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
@@ -231,4 +229,3 @@ describe ResponseSet do
   end
 
 end
-
