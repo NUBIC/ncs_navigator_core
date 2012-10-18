@@ -21,11 +21,18 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
+
 describe ResponseSet do
 
   it { should belong_to(:person) }
   it { should belong_to(:instrument) }
   it { should belong_to(:participant) }
+
+  it_should_behave_like 'a publicly identified record' do
+    let(:o1) { Factory(:response_set) }
+    let(:o2) { Factory(:response_set) }
+  end
 
   describe '#instrument' do
     it 'is the inverse of Instrument#response_set' do

@@ -25,12 +25,21 @@
 #
 
 class Response < ActiveRecord::Base
+  include NcsNavigator::Core::HasPublicId
   include Surveyor::Models::ResponseMethods
+
+  def self.public_id_field
+    :api_id
+  end
 
   def self.default_scope; end
 
   def self.with_answers_and_questions
     includes(:answer, :question)
+  end
+
+  def public_id
+    api_id
   end
 
   def source_mdes_record=(record)

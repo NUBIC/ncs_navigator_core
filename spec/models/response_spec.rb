@@ -29,6 +29,7 @@
 
 require 'spec_helper'
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
+require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
 
 describe Response do
   describe 'import record fields' do
@@ -69,6 +70,14 @@ describe Response do
         subject.source_mdes_id.should == '00000-11111-66'
       end
     end
+  end
+
+  it_should_behave_like 'a publicly identified record' do
+    let(:a) { Factory(:answer) }
+    let(:q) { Factory(:question) }
+
+    let(:o1) { Factory(:response, :answer => a, :question => q) }
+    let(:o2) { Factory(:response, :answer => a, :question => q) }
   end
 
   it_should_behave_like 'an optimistically locked record' do

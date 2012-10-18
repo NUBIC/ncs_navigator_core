@@ -20,12 +20,17 @@
 
 
 class ResponseSet < ActiveRecord::Base
+  include NcsNavigator::Core::HasPublicId
   include Surveyor::Models::ResponseSetMethods
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :instrument, :inverse_of => :response_sets
   belongs_to :participant, :inverse_of => :response_sets
 
   after_save :extract_operational_data
+
+  def self.public_id_field
+    :api_id
+  end
 
   def extract_operational_data
     OperationalDataExtractor.process(self) if complete?
