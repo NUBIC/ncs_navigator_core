@@ -215,10 +215,14 @@ class PbsEligibilityScreenerOperationalDataExtractor
     def due_date_response(response_set, date_question)
       dt = date_string(response_set, date_question)
       unless dt.blank?
-        return OperationalDataExtractor.determine_due_date(
-          "#{date_question}_DD",
-          response_for(response_set, "#{INTERVIEW_PREFIX}.#{date_question}_DD"),
-          Date.parse(dt))
+        begin
+          OperationalDataExtractor.determine_due_date(
+            "#{date_question}_DD",
+            response_for(response_set, "#{INTERVIEW_PREFIX}.#{date_question}_DD"),
+            Date.parse(dt))
+        rescue
+          #NOOP - unparseable date
+        end
       end
     end
 

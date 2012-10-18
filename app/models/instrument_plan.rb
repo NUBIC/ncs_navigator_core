@@ -222,9 +222,10 @@ class InstrumentPlan
   # @param String - survey_title
   # @return [Array<ScheduledActivities>]
   def scheduled_activities_for_survey(survey_title)
-    a = scheduled_activity_for_survey(survey_title)
-    scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
-                                       sa.references == a.survey_root }.sort
+    if a = scheduled_activity_for_survey(survey_title)
+      scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
+                                         sa.references == a.survey_root }.sort
+    end
   end
 
   ##

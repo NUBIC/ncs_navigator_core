@@ -12,7 +12,7 @@ class WelcomeController < ApplicationController
   def upcoming_activities
     @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
         get_scheduled_activities_report).sort_by{ |sa| sa.activity_date }
-    if params[:export]
+    if params[:export] && @scheduled_activities
       csv_data = to_csv(@scheduled_activities)
       outfile = "scheduled_activities_" + Time.now.strftime("%m-%d-%Y") + ".csv"
       send_data csv_data,
@@ -25,7 +25,7 @@ class WelcomeController < ApplicationController
     criteria = { :end_date => 1.day.ago.to_date.to_s }
     @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
         psc.scheduled_activities_report(criteria)).sort_by{ |sa| sa.activity_date }
-    if params[:export]
+    if params[:export] && @scheduled_activities
       csv_data = to_csv(@scheduled_activities)
       outfile = "overdue_activities_" + Time.now.strftime("%m-%d-%Y") + ".csv"
       send_data csv_data,
@@ -121,7 +121,7 @@ class WelcomeController < ApplicationController
     def get_scheduled_activities_report(options = {})
       @start_date = 1.day.ago.to_date.to_s
       @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
-      criteria = { :start_date => @start_date, :end_date => @end_date }
+      criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
       criteria.merge(options) if options
 
       psc.scheduled_activities_report(criteria)

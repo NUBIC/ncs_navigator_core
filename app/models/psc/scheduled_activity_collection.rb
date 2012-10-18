@@ -29,6 +29,7 @@ module Psc
     #
     # @see PatientStudyCalendar#scheduled_activities_report
     def self.from_report(report)
+      return if report.nil?
       new.tap do |c|
         report['rows'].each { |r| c.add_from_report(r) }
       end
