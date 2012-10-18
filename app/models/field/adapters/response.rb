@@ -18,7 +18,7 @@ module Field::Adapters
         source.try(:question_public_id) || target.question.try(&:api_id)
       end
 
-      def unresolved_references
+      def pending_prerequisites
         return {} unless source
 
         { ::Answer => [source.answer_id],

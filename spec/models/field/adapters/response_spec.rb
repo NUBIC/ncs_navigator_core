@@ -63,14 +63,14 @@ module Field::Adapters
       end
     end
 
-    describe '#unresolved_references' do
+    describe '#pending_prerequisites' do
       describe 'if #source is not set' do
         before do
           adapter.source = nil
         end
 
         it 'is empty' do
-          adapter.unresolved_references.should be_empty
+          adapter.pending_prerequisites.should be_empty
         end
       end
 
@@ -83,20 +83,20 @@ module Field::Adapters
       it 'returns the answer public ID' do
         ha.answer_id = 'foo'
 
-        adapter.unresolved_references[::Answer].should == ['foo']
+        adapter.pending_prerequisites[::Answer].should == ['foo']
       end
 
       it 'returns the question public ID' do
         ha.question_id = 'bar'
 
-        adapter.unresolved_references[::Question].should == ['bar']
+        adapter.pending_prerequisites[::Question].should == ['bar']
       end
 
       it 'returns the response set public ID' do
         hrs = ResponseSet::HashAdapter.new('uuid' => 'baz')
         ha.ancestors = { :response_set => hrs }
 
-        adapter.unresolved_references[::ResponseSet].should == ['baz']
+        adapter.pending_prerequisites[::ResponseSet].should == ['baz']
       end
     end
 

@@ -10,7 +10,7 @@ module Field::Adapters
         { 'uuid' => 'api_id' }
       ]
 
-      def unresolved_references
+      def pending_prerequisites
         return {} unless source
 
         { ::Instrument => [source.ancestors[:instrument].try(:[], :instrument_id)],

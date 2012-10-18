@@ -5,14 +5,14 @@ module Field::Adapters
     let(:rs) { Factory(:response_set) }
     let(:adapter) { ResponseSet::ModelAdapter.new(rs) }
 
-    describe '#unresolved_references' do
+    describe '#pending_prerequisites' do
       describe 'if #source is not set' do
         before do
           adapter.source = nil
         end
 
         it 'is empty' do
-          adapter.unresolved_references.should be_empty
+          adapter.pending_prerequisites.should be_empty
         end
       end
 
@@ -25,20 +25,20 @@ module Field::Adapters
       it 'returns the survey public ID' do
         ha.survey_id = 'foo'
 
-        adapter.unresolved_references[::Survey].should == ['foo']
+        adapter.pending_prerequisites[::Survey].should == ['foo']
       end
 
       it 'returns the participant public ID' do
         ha.p_id = 'bar'
 
-        adapter.unresolved_references[::Participant].should == ['bar']
+        adapter.pending_prerequisites[::Participant].should == ['bar']
       end
 
       it 'returns the instrument public ID' do
         ia = Instrument::HashAdapter.new('instrument_id' =>  'baz')
         ha.ancestors = { :instrument => ia }
 
-        adapter.unresolved_references[::Instrument].should == ['baz']
+        adapter.pending_prerequisites[::Instrument].should == ['baz']
       end
     end
   end
