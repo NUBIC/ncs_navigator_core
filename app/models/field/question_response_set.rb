@@ -1,3 +1,4 @@
+require 'facets/hash/weave'
 require 'forwardable'
 require 'set'
 
@@ -45,7 +46,7 @@ module Field
       @question_public_id = qpi if responses.empty?
 
       if @question_public_id != qpi
-        raise "Cannot add a response with question ID #{response.question_id} to a #{self.class.name} with question ID #{@question_public_id}"
+        raise "Cannot add a response with question ID #{response.public_question_id} to a #{self.class.name} with question ID #{@question_public_id}"
       end
 
       old_length = responses.length
@@ -55,6 +56,14 @@ module Field
 
     def public_id
       @question_public_id
+    end
+
+    def pending_prerequisites
+      responses.map(&:pending_prerequisites).inject(&:weave)
+    end
+
+    def pending_postrequisites
+      responses.map(&:pending_postrequisites).inject(&:weave)
     end
 
     ##
@@ -150,6 +159,7 @@ module Field
       attr_accessor :response_model
 
       def_delegators :response_model, :mark_for_destruction, :marked_for_destruction?, :save, :destroy, :errors
+      def_delegators :response_model, :pending_prerequisites, :pending_postrequisites
 
       def resolve_model
         self.response_model = wrapped_response.to_model

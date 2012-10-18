@@ -64,6 +64,40 @@ module Field
       end
     end
 
+    describe '#pending_prerequisites' do
+      let(:group) { QuestionResponseSet.new(r1, r1b) }
+
+      before do
+        r1.stub!(:pending_prerequisites => { ::Answer => ['foo'] })
+        r1b.stub!(:pending_prerequisites => { ::Answer => ['bar'] })
+
+        group.resolve_models
+      end
+
+      it 'returns pending prerequisites of its responses' do
+        group.pending_prerequisites.should == {
+          ::Answer => ['foo', 'bar']
+        }
+      end
+    end
+
+    describe '#pending_postrequisites' do
+      let(:group) { QuestionResponseSet.new(r1, r1b) }
+
+      before do
+        r1.stub!(:pending_postrequisites => { ::Answer => ['foo'] })
+        r1b.stub!(:pending_postrequisites => { ::Answer => ['bar'] })
+
+        group.resolve_models
+      end
+
+      it 'returns pending postrequisites of its responses' do
+        group.pending_postrequisites.should == {
+          ::Answer => ['foo', 'bar']
+        }
+      end
+    end
+
     describe '#to_model' do
       it 'returns itself' do
         group.to_model.should == group
