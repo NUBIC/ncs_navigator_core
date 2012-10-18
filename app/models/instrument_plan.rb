@@ -140,8 +140,8 @@ class InstrumentPlan
   #
   # @return Boolean
   def final_survey_part?(response_set)
-    scheduled_activities_for_survey(response_set.survey.title).size ==
-      response_set.instrument.response_sets.size
+    scheduled_activities_for_survey(response_set.survey.title).try(:size) ==
+      response_set.instrument.response_sets.try(:size)
   end
 
   ##
