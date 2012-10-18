@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../../../../shared/models/a_publicly_identified_record', __FILE__)
+
 module NcsNavigator::Core::Mdes
   class Foo < ActiveRecord::Base
     include MdesRecord
@@ -46,6 +48,11 @@ module NcsNavigator::Core::Mdes
           drop_table :bars
         end
       end
+    end
+
+    it_should_behave_like 'a publicly identified record' do
+      let(:o1) { Foo.create! }
+      let(:o2) { Foo.create! }
     end
 
     describe '.public_id' do

@@ -14,6 +14,8 @@ module NcsNavigator::Core::Mdes
       before_validation :set_psu_code
       before_validation :set_missing_in_error
       before_save :format_dates
+
+      include NcsNavigator::Core::HasPublicId
     end
 
     module ClassMethods
