@@ -56,7 +56,7 @@ module NcsNavigator::Core::Mustache
       end
       cell_phone
     end
-    
+
     def p_home_phone
       home_phone = "[HOME PHONE NUMBER]"
       if person = @response_set.try(:person)
@@ -64,15 +64,19 @@ module NcsNavigator::Core::Mustache
       end
       home_phone
     end
-    
+
     def p_phone_number
       if person = @response_set.try(:person)
         home_phone = p_home_phone
         cell_phone = p_cell_phone
-        home_phone ? home_phone : cell_phone
+
+        result = nil
+        result = cell_phone unless cell_phone == "[CELL PHONE NUMBER]"
+        result = home_phone unless home_phone == "[HOME PHONE NUMBER]"
+        result
       end
     end
-    
+
     def p_email_address
       email_address = "[EMAIL ADDRESS]"
       if person = @response_set.try(:person)
@@ -80,7 +84,7 @@ module NcsNavigator::Core::Mustache
       end
       email_address
     end
-    
+
     def p_primary_address
       primary_address = "[What is your street address?]"
       if person = @response_set.try(:person)
@@ -88,7 +92,7 @@ module NcsNavigator::Core::Mustache
       end
       primary_address
     end
-      
+
     def participant_parent_caregiver_name
       "[Participant/Parent/Caregiver Name]"
     end
@@ -228,7 +232,7 @@ module NcsNavigator::Core::Mustache
     def have_has
       single_birth? ? "Has" : "Have"
     end
-    
+
     def is_are
       single_birth? ? "Is" : "Are"
     end
@@ -326,15 +330,15 @@ module NcsNavigator::Core::Mustache
     def child_primary_address
       "[CHILD'S PRIMARY ADDRESS]"
     end
-    
+
     def child_secondary_address
       "[SECONDARY ADDRESS] "
     end
-    
+
     def child_secondary_number
       "[SECONDARY PHONE NUMBER]"
     end
-    
+
     def c_fname_or_the_child
       about_person.blank? ? "the Child" : about_person.first_name
     end
@@ -461,7 +465,7 @@ module NcsNavigator::Core::Mustache
     def schip_name
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
     end
-    
+
     # TODO
     def event_type
       # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE
