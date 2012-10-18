@@ -77,6 +77,10 @@ module Field::Adapters
       true
     end
 
+    def pending_prerequisites
+      {}
+    end
+
     # These methods are used in various field classes.
     def_delegators :target,
       :changed?,
