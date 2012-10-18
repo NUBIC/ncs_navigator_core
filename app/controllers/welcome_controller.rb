@@ -122,7 +122,7 @@ class WelcomeController < ApplicationController
       @start_date = 1.day.ago.to_date.to_s
       @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
       criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
-      criteria.merge(options) if options
+      criteria.merge!(options) if options
 
       psc.scheduled_activities_report(criteria)
     end
