@@ -4,7 +4,7 @@ namespace :configuration do
     ["left", "right"].each do |i|
       from = NcsNavigator.configuration.send("footer_logo_#{i}")
       if from
-        to = Rails.root + 'public/assets/images' + from.basename
+        to = Rails.root + 'public/assets' + from.basename
         if to.exist?
           # Ensure that the target is writable if it already exists.
           # This check & update permits the source images to be
