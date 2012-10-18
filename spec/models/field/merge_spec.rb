@@ -128,7 +128,6 @@ module Field
       end
 
       it_merges 'completed_at'
-      it_merges 'created_at'
     end
 
     when_merging 'Person' do

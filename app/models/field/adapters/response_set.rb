@@ -6,7 +6,6 @@ module Field::Adapters
 
       attr_accessors [
         'completed_at',
-        'created_at',
         { 'uuid' => 'api_id' }
       ]
 
@@ -26,7 +25,6 @@ module Field::Adapters
 
       attr_accessors %w(
         completed_at
-        created_at
         p_id
         instrument_id
         survey_id
