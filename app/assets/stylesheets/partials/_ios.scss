@@ -1,0 +1,66 @@
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
+  /* For landscape layouts only */
+
+  body {
+    font-size: 13px;
+  }
+
+  body.ncs {
+
+    #container {
+      width: $ios_container_size;
+    }
+
+    #header {
+      width: $ios_container_size;
+    }
+
+    #content {
+      width: 847px;
+      padding: 1em 2em;
+    }
+
+    #footer {
+      .ncs_logo {
+        @include column(1);
+        @include prepend(0);
+      }
+
+      .contact_info {
+        @include column(15);
+        @include append(0);
+      }
+
+      .ncs_text {
+        @include prepend-top(1em);
+        @include column(1,true);
+      }
+    }
+
+  }
+
+  .column-container {
+    @include column(18, true);
+
+    .column-1 {
+      @include column(6);
+    }
+
+    .column-2 {
+      @include column(5);
+    }
+
+    .column-3 {
+      @include column(5, true);
+    }
+
+    .buttons {
+      @include column(17, true);
+    }
+
+  }
+
+  #tabs .ui-widget-header .ui-state-default {
+    font-size: 0.8em;
+  }
+}
