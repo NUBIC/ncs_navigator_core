@@ -331,4 +331,271 @@ describe PregnancyVisitOperationalDataExtractor do
 
   end
 
+  context "determining the due date of a pregnant woman" do
+
+    let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+    let(:neg_1) { stub(:local_code => 'neg_1') }
+    let(:neg_2) { stub(:local_code => 'neg_2') }
+    let(:tri1) { stub(:local_code => '1') }
+    let(:tri2) { stub(:local_code => '2') }
+    let(:tri3) { stub(:local_code => '3') }
+
+    before(:each) do
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
+      Factory(:ppg_detail, :participant => @participant)
+    end
+
+    context "for PBS PV1" do
+      before(:each) do
+        @survey = create_pbs_pregnancy_visit_1_with_due_date
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        @response_set.save!
+      end
+
+      it "sets the due date to the date provided by the participant" do
+        due_date = Date.parse("2012-02-29")
+
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_MM", due_date.month
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_DD", due_date.day
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_YY", due_date.year
+        end
+
+        @response_set.responses.reload
+        @response_set.responses.size.should == 4
+
+        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+
+        person  = Person.find(@person.id)
+        participant = person.participant
+        participant.due_date.should == due_date
+      end
+
+      # # CALCULATE DUE DATE FROM THE FIRST DATE OF LAST MENSTRUAL PERIOD AND SET ORIG_DUE_DATE = DATE_PERIOD + 280 DAYS
+      it "calculates the due date based on the date of the last menstrual period" do
+        last_period = 20.weeks.ago.to_date
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_MM", neg_2
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_DD", neg_2
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_YY", neg_2
+
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD", last_period.to_s
+        end
+
+        @response_set.responses.reload
+        @response_set.responses.size.should == 5
+
+        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+
+        person  = Person.find(@person.id)
+        participant = person.participant
+        participant.due_date.should == last_period + 280.days
+      end
+
+      it "does not set the due date if the date of the last menstrual period is not valid date" do
+        last_period = "2012-92-92"
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD", last_period
+        end
+
+        @response_set.responses.reload
+        @response_set.responses.size.should == 2
+
+        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+
+        person  = Person.find(@person.id)
+        participant = person.participant
+        participant.due_date.should be_nil
+      end
+    end
+
+    context "for PBS PV2" do
+      before(:each) do
+        @survey = create_pbs_pregnancy_visit_2_with_due_date
+        @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+        @response_set.save!
+      end
+
+      it "sets the due date to the date provided by the participant" do
+        due_date = "2012-02-29"
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE", due_date
+        end
+
+        @response_set.responses.reload
+        @response_set.responses.size.should == 2
+
+        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+
+        person  = Person.find(@person.id)
+        participant = person.participant
+        participant.due_date.should == Date.parse("2012-02-29")
+      end
+
+      it "does not set the due date if date provided by the participant is not valid date" do
+        due_date = "2012-92-92"
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE", due_date
+        end
+
+        @response_set.responses.reload
+        @response_set.responses.size.should == 2
+
+        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+
+        person  = Person.find(@person.id)
+        participant = person.participant
+        participant.due_date.should be_nil
+      end
+    end
+  end
+
+  context "extracts address operational data from the survey responses" do
+
+    before(:each) do
+      @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      @person = Factory(:person)
+      @person.addresses.size.should == 0
+      @participant = Factory(:participant)
+    end
+
+    it "for birth address for PBS PV1" do
+      survey = create_pbs_pregnancy_visit_1_with_birth_address_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 5
+
+      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+
+      person  = Person.find(@person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+    end
+
+    it "for work address for PBS PV1" do
+      survey = create_pbs_pregnancy_visit_1_with_work_address_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", '123 Work Way'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_UNIT", '3333'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE", @state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIPCODE", '65432'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+
+      person  = Person.find(@person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.address_type.should == Address.work_address_type
+      address.to_s.should == "123 Work Way 3333 Chicago, ILLINOIS 65432-1234"
+    end
+
+    it "for birth address for PBS PV2" do
+      survey = create_pbs_pregnancy_visit_2_with_birth_address_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_STATE", @state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 5
+
+      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+
+      person  = Person.find(@person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+    end
+
+    it "for work address for PBS PV2" do
+      survey = create_pbs_pregnancy_visit_2_with_work_address_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", '123 Work Way'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_UNIT", '3333'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_CITY", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_STATE", @state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIPCODE", '65432'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+
+      person  = Person.find(@person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.address_type.should == Address.work_address_type
+      address.to_s.should == "123 Work Way 3333 Chicago, ILLINOIS 65432-1234"
+    end
+
+    it "for confirm work address for PBS PV2" do
+      survey = create_pbs_pregnancy_visit_2_with_confirm_work_address_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_1", '123 Confirm Work Way'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_2", ''
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_UNIT", '3333'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_CITY", 'Chicago'
+        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_STATE", @state
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIPCODE", '65432'
+        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+
+      person  = Person.find(@person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.address_type.should == Address.work_address_type
+      address.address_rank.should == OperationalDataExtractor.duplicate_rank
+      address.to_s.should == "123 Confirm Work Way 3333 Chicago, ILLINOIS 65432-1234"
+    end
+  end
+
 end
