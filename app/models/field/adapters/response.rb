@@ -3,6 +3,7 @@ module Field::Adapters
     class ModelAdapter
       include Field::Adapter
       include Field::Adapters::Model
+      include SetsPrerequisites
 
       attr_accessors [
         { 'uuid' => 'api_id' },
@@ -18,13 +19,21 @@ module Field::Adapters
         source.try(:question_public_id) || target.question.try(&:api_id)
       end
 
+      def response_set_public_id
+        source.try(:ancestors).try(:[], :response_set).try(:uuid)
+      end
+
       def pending_prerequisites
         return {} unless source
 
-        { ::Answer => [source.answer_id],
-          ::Question => [source.question_id],
-          ::ResponseSet => [source.ancestors[:response_set].try(:uuid)]
+        { ::Answer => [answer_public_id],
+          ::Question => [question_public_id],
+          ::ResponseSet => [response_set_public_id]
         }
+      end
+
+      def ensure_prerequisites(map)
+        try_to_set(map, :answer, :question, :response_set)
       end
     end
 

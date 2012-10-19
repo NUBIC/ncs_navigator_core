@@ -3,6 +3,7 @@ module Field::Adapters
     class ModelAdapter
       include Field::Adapter
       include Field::Adapters::Model
+      include SetsPrerequisites
 
       attr_accessors [
         'completed_at',
@@ -12,10 +13,26 @@ module Field::Adapters
       def pending_prerequisites
         return {} unless source
 
-        { ::Instrument => [source.ancestors[:instrument].try(:[], :instrument_id)],
-          ::Participant => [source.p_id],
-          ::Survey => [source.survey_id]
+        { ::Instrument => [instrument_public_id],
+          ::Participant => [participant_public_id],
+          ::Survey => [survey_public_id]
         }
+      end
+
+      def instrument_public_id
+        source.try(:ancestors).try(:[], :instrument).try(:instrument_id)
+      end
+
+      def participant_public_id
+        source.try(:p_id)
+      end
+
+      def survey_public_id
+        source.try(:survey_id)
+      end
+
+      def ensure_prerequisites(map)
+        try_to_set(map, :instrument, :participant, :survey)
       end
     end
 
