@@ -59,11 +59,11 @@ module Field
     end
 
     def pending_prerequisites
-      responses.map(&:pending_prerequisites).inject(&:weave)
+      responses.map(&:pending_prerequisites).inject({}, &:weave)
     end
 
     def pending_postrequisites
-      responses.map(&:pending_postrequisites).inject(&:weave)
+      responses.map(&:pending_postrequisites).inject({}, &:weave)
     end
 
     ##
