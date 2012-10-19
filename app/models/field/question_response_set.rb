@@ -91,8 +91,6 @@ module Field
     # Saves and destroys responses.
     def save(options = {})
       ActiveRecord::Base.transaction do
-        resolve_models
-
         ok = all? do |r|
           r.marked_for_destruction? ? r.destroy : r.save
         end
@@ -149,6 +147,7 @@ module Field
 
       Response.new(r.question_public_id, r.answer_public_id, r.response_group, r.value).tap do |rf|
         rf.wrapped_response = r
+        rf.resolve_model
       end
     end
 
