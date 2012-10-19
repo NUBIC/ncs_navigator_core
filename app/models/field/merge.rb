@@ -242,7 +242,7 @@ module Field
       result = collapse(o, c, p)
 
       if result == :conflict
-        logger.debug { "Detected conflict: [o, c, p] = #{[o, c, p].inspect}" }
+        logger.warn { "Detected conflict: [o, c, p] = #{[o, c, p].inspect}" }
         conflicts.add(entity, id, attr, o, c, p)
       else
         logger.debug { "Collapsed [o, c, p] = #{[o, c, p].inspect} to #{result.inspect}" }
