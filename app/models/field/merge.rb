@@ -162,7 +162,7 @@ module Field
       collections = [contacts, events, instruments, people, participants,
                      response_sets,
                      question_response_sets
-                    ].map { |c| current_for(c) }
+                    ].map { |c| current_for(c).compact }
 
       ActiveRecord::Base.transaction do
         collections.map { |c| save_collection(c) }.all?.tap do |ok|

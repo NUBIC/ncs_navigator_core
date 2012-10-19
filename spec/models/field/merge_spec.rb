@@ -406,6 +406,12 @@ module Field
         }
       end
 
+      it 'skips nil entities' do
+        subject.instruments = { 'p1' => {} }
+
+        subject.save.should be_true
+      end
+
       describe 'on success' do
         before do
           @ret = subject.save
