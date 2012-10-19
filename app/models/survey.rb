@@ -27,6 +27,7 @@
 
 class Survey < ActiveRecord::Base
   include Surveyor::Models::SurveyMethods
+  include NcsNavigator::Core::Surveyor::HasPublicId
   include NcsNavigator::Core::MdesInstrumentSurvey
 
   def self.most_recent_for_title(title)
