@@ -322,6 +322,10 @@ module NcsNavigator::Core::Mustache
       child_first_name("the child")
     end
 
+    def child_first_name_your_baby
+      child_first_name("your baby")
+    end
+
     def child_first_name(txt)
       about_person.blank? ? txt : about_person.first_name
     end
