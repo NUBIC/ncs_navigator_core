@@ -81,6 +81,16 @@ end
   Surveyor::Parser.new.parse(str)
 end
 
+# FIXME: This is a pretty terrible hack, but Cases' current UI provides no way
+# of differentating between response sets.
+Given /^there are no response sets for "([^"]*)"$/ do |survey_title|
+  survey = Survey.where(:title => survey_title).first
+  response_sets = ResponseSet.where(:survey_id => survey.id)
+  response_sets.each(&:destroy)
+
+  ResponseSet.where(:survey_id => survey.id).count.should == 0
+end
+
 Given /^I complete the fieldwork set$/ do |table|
   data = table.rows_hash
 

@@ -80,6 +80,7 @@ Feature: Merging data from field clients
       | end_date   | 2005-07-30                 |
       | client_id  | 1234567890                 |
       | with       | new_response_sets.json.erb |
+    And there are no response sets for "pregnancy_survey_v1.0"
 
     When the merge runs
     And I go to the participant page
