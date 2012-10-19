@@ -88,6 +88,23 @@ module NcsNavigator::Core::Mustache
 
     context "obtaining information from the person taking the survey" do
 
+      describe ".p_primary_address" do
+
+        it "returns \"[What is your street address?]\" if the person has no primary address" do
+          person = mock_model(Person, :primary_address => nil)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_primary_address.should == "[What is your street address?]"
+        end
+
+        it "returns the primary address" do
+          address = mock_model(Address, :to_s => "123 Easy Street")
+          person = mock_model(Person, :primary_address => address)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_primary_address.should ==
+            "Let me confirm your street address. I have it as. I have it as #{address.to_s}."
+        end
+      end
+
       describe ".p_phone_number" do
 
         let(:home_phone) { "312-555-1234" }
