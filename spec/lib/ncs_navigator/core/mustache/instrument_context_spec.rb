@@ -101,7 +101,7 @@ module NcsNavigator::Core::Mustache
           person = mock_model(Person, :primary_address => address)
           rs = mock_model(ResponseSet, :person => person)
           InstrumentContext.new(rs).p_primary_address.should ==
-            "Let me confirm your street address. I have it as. I have it as #{address.to_s}."
+            "Let me confirm your street address. I have it as #{address.to_s}."
         end
       end
 

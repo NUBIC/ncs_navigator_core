@@ -88,7 +88,7 @@ module NcsNavigator::Core::Mustache
     def p_primary_address
       primary_address = "[What is your street address?]"
       if person = @response_set.try(:person)
-        primary_address = "Let me confirm your street address. I have it as. I have it as #{person.primary_address}." if person.primary_address
+        primary_address = "Let me confirm your street address. I have it as #{person.primary_address}." if person.primary_address
       end
       primary_address
     end
