@@ -269,12 +269,38 @@ module Field
     ##
     # @private
     # @return Boolean
-    def save_collection(coll)
-      coll.map do |entity|
+    def save_collection(c)
+      ok = ensure_prerequisites(c)
+      ok = ok && save_entities(c)
+    end
+
+    ##
+    # @private
+    def ensure_prerequisites(c)
+      pending = c.map(&:pending_prerequisites).inject({}, &:weave)
+      map = resolve_requisites(pending)
+
+      c.map { |m| m.ensure_prerequisites(map) }.all?
+    end
+
+    ##
+    # @private
+    def save_entities(c)
+      c.map do |entity|
         next true unless entity
 
         entity.save.tap { |ok| log_errors_for(entity, ok) }
       end.all?
+    end
+
+    ##
+    # @private
+    def resolve_requisites(reqs)
+      {}.tap do |map|
+        reqs.each do |model, public_ids|
+          map[model] = model.public_id_to_id_map(public_ids)
+        end
+      end
     end
 
     ##
