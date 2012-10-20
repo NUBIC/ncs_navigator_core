@@ -5,7 +5,6 @@ module Field::Adapters
     let(:resp) { ::Response.new }
     let(:adapter) { Response::ModelAdapter.new(resp) }
 
-
     describe '#question_public_id' do
       let(:q) { Factory(:question) }
 

@@ -9,7 +9,6 @@ Feature: Merging data from field clients
   Background:
     Given an authenticated user
 
-  @wip
   Scenario: New participants are stored
     When I complete the fieldwork set
       | start_date          | 2005-07-01                |

@@ -159,7 +159,7 @@ module Field
     # similar way to discover errors that aren't reported due to an early
     # abort.
     def save
-      collections = [contacts, events, instruments, people, participants,
+      collections = [contacts, events, instruments, participants, people,
                      response_sets,
                      question_response_sets
                     ].map { |c| current_for(c).compact }
@@ -272,6 +272,7 @@ module Field
     def save_collection(c)
       ok = ensure_prerequisites(c)
       ok = ok && save_entities(c)
+      ok = ok && ensure_postrequisites(c)
     end
 
     ##
@@ -287,10 +288,17 @@ module Field
     # @private
     def save_entities(c)
       c.map do |entity|
-        next true unless entity
-
         entity.save.tap { |ok| log_errors_for(entity, ok) }
       end.all?
+    end
+
+    ##
+    # @private
+    def ensure_postrequisites(c)
+      pending = c.map(&:pending_postrequisites).inject({}, &:weave)
+      map = resolve_requisites(pending)
+
+      c.map { |m| m.ensure_postrequisites(map) }.all?
     end
 
     ##
