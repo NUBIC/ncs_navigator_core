@@ -53,31 +53,19 @@ module Field::Adapters
       self
     end
 
-    def save(options = {})
-      ensure_prerequisites(options) && save_self(options) && ensure_postrequisites(options)
-    end
-
-    ##
-    # Canonical prerequisite examples: belongs-to and has-one associations.
-    #
-    # Override this in an adapter if necessary.
-    def ensure_prerequisites(options)
+    def ensure_prerequisites(map)
       true
     end
 
-    def save_self(options)
-      target.save(options)
-    end
-
-    ##
-    # Canonical postrequisite example: many-to-many associations.
-    #
-    # Override this in an adapter if necessary.
-    def ensure_postrequisites(options)
+    def ensure_postrequisites(map)
       true
     end
 
     def pending_prerequisites
+      {}
+    end
+
+    def pending_postrequisites
       {}
     end
 
@@ -92,6 +80,7 @@ module Field::Adapters
       :new_record?,
       :persisted?,
       :public_id,
+      :save,
       :valid?
   end
 end
