@@ -36,11 +36,17 @@ module Field::Adapters
       end
 
       def ensure_postrequisites(map)
-        person_id = map[::Person][person_public_id]
-        participant_id = map[::Participant][participant_public_id]
-        ppl = ParticipantPersonLink.find_or_create_by_person_id_and_participant_id_and_relationship_code(person_id, participant_id, relationship_code)
+        parameters = {
+          :person_id => map[::Person][person_public_id],
+          :participant_id => map[::Participant][participant_public_id],
+          :relationship_code => relationship_code
+        }
 
-        ppl.persisted?
+        if !ParticipantPersonLink.exists?(parameters)
+          ParticipantPersonLink.create(parameters)
+        else
+          true
+        end
       end
     end
 
