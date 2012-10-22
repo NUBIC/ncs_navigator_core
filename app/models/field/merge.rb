@@ -304,11 +304,13 @@ module Field
     ##
     # @private
     def resolve_requisites(reqs)
-      {}.tap do |map|
+      m = {}.tap do |map|
         reqs.each do |model, public_ids|
           map[model] = model.public_id_to_id_map(public_ids)
         end
       end
+
+      IdMap.new(m)
     end
 
     ##

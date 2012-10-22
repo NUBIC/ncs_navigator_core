@@ -43,9 +43,10 @@ module Field::Adapters
       let(:participant) { Factory(:participant) }
 
       let(:map) do
-        { ::Person => { 'foo' => person.id },
+        Field::IdMap.new({
+          ::Person => { 'foo' => person.id },
           ::Participant => { 'bar' => participant.id }
-        }
+        })
       end
 
       before do

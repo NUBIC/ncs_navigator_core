@@ -7,10 +7,8 @@ module Field::Adapters
         model = reflection.klass
 
         if target.send(fk_column).blank?
-          id_map = map[model]
-          next false unless id_map
-
-          target.send("#{fk_column}=", id_map[send("#{prereq}_public_id")])
+          public_id = send("#{prereq}_public_id")
+          target.send("#{fk_column}=", map.id_for(model, public_id))
         end
 
         target.send(fk_column)

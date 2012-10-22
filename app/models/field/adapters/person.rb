@@ -37,8 +37,8 @@ module Field::Adapters
 
       def ensure_postrequisites(map)
         parameters = {
-          :person_id => map[::Person][person_public_id],
-          :participant_id => map[::Participant][participant_public_id],
+          :person_id => map.id_for(::Person, person_public_id),
+          :participant_id => map.id_for(::Participant, participant_public_id),
           :relationship_code => relationship_code
         }
 

@@ -109,10 +109,11 @@ module Field::Adapters
     describe '#ensure_prerequisites' do
       let(:ha) { Response::HashAdapter.new({}) }
       let(:map) do
-        { ::Answer => { 'foo' => 1 },
+        Field::IdMap.new({
+          ::Answer => { 'foo' => 1 },
           ::Question => { 'bar' => 2 },
           ::ResponseSet => { 'baz' => 3 }
-        }
+        })
       end
 
       before do
