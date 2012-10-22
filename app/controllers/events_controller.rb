@@ -94,7 +94,7 @@ class EventsController < ApplicationController
   private
 
     def set_defaults_for_event
-      if @event.event_disposition.blank? || @event.event_disposition_code < 0
+      if @event.event_disposition.blank? || @event.event_disposition < 0
         @event.event_disposition = @contact_link.contact.contact_disposition
       end
 
