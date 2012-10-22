@@ -70,6 +70,10 @@ module Field
       responses.map { |r| r.ensure_prerequisites(map) }.all?
     end
 
+    def ensure_postrequisites(map)
+      responses.map { |r| r.ensure_postrequisites(map) }.all?
+    end
+
     ##
     # Marks all existing responses for destruction and inserts new responses
     # from another QuestionResponseSet.
@@ -162,7 +166,7 @@ module Field
       attr_accessor :response_model
 
       def_delegators :response_model, :mark_for_destruction, :marked_for_destruction?, :save, :destroy, :errors
-      def_delegators :response_model, :pending_prerequisites, :pending_postrequisites, :ensure_prerequisites
+      def_delegators :response_model, :pending_prerequisites, :pending_postrequisites, :ensure_prerequisites, :ensure_postrequisites
 
       def resolve_model
         self.response_model = wrapped_response.to_model
