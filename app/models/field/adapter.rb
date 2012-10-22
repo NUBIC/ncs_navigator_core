@@ -21,7 +21,11 @@ module Field
     end
 
     def ==(other)
-      other.target == target && other.ancestors == ancestors
+      if other.respond_to?(:to_hash)
+        target.to_hash == other.to_hash
+      else
+        other.target == target
+      end
     end
 
     module ClassMethods

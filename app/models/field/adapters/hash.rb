@@ -23,10 +23,6 @@ module Field::Adapters
       end
     end
 
-    def ==(other)
-      target == other
-    end
-
     def set(attr, value)
       target[attr] = value
     end
