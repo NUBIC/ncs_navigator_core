@@ -51,7 +51,7 @@ gem 'redis'
 
 group :development do
   gem 'capistrano'
-  gem 'ruby-debug', :platform => :ruby_18
+  gem 'debugger'
 end
 
 group :osx_development do
