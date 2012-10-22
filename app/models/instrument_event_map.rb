@@ -103,6 +103,8 @@ class InstrumentEventMap
       next if filename.include?("_DCI_") && with_specimens == "false"
 
       case NcsNavigatorCore.recruitment_type_id
+      when 5
+        results << ie if filename.include?("PB")
       when 3
         results << ie if filename.include?("HILI") || filename.include?("HI") || filename.include?("LI")
       when 2
