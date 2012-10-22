@@ -24,9 +24,7 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     if params[:contact_link_id]
       @contact_link = ContactLink.find(params[:contact_link_id])
-      if @event.event_disposition.blank?
-        @event.event_disposition = @contact_link.contact.contact_disposition
-      end
+      set_defaults_for_event
     end
     @close = params[:close]
     set_disposition_group
@@ -94,6 +92,23 @@ class EventsController < ApplicationController
   end
 
   private
+
+    def set_defaults_for_event
+      if @event.event_disposition.blank? || @event.event_disposition_code < 0
+        @event.event_disposition = @contact_link.contact.contact_disposition
+      end
+
+      if (@event.event_disposition_category.blank? || @event.event_disposition_category_code < 0) &&
+          @contact_link.try(:contact)
+        @event.set_event_disposition_category(@contact_link.contact)
+      end
+
+      @event.event_repeat_key = @event.determine_repeat_key
+
+      if @contact_link.instrument && response_set = @contact_link.instrument.response_set
+        @event.set_event_breakoff(response_set)
+      end
+    end
 
     def redirect_path
       path = events_path
