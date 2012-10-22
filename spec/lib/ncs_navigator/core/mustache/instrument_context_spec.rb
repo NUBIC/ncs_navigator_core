@@ -490,23 +490,23 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".has_baby_have_babies" do
-        it "returns 'Has the baby' if unknown if single or multiple gestation" do
-          instrument_context.has_baby_have_babies.should == 'Has the baby'
+        it "returns 'HAS THE BABY' if unknown if single or multiple gestation" do
+          instrument_context.has_baby_have_babies.should == 'HAS THE BABY'
         end
 
-        it "returns 'Has the baby' if singleton gestation" do
+        it "returns 'HAS THE BABY' if singleton gestation" do
           create_singleton_gestation
-          instrument_context.has_baby_have_babies.should == 'Has the baby'
+          instrument_context.has_baby_have_babies.should == 'HAS THE BABY'
         end
 
-        it "returns 'Have the babies' if twin gestation" do
+        it "returns 'HAVE THE BABIES' if twin gestation" do
           create_twin_gestation
-          instrument_context.has_baby_have_babies.should == 'Have the babies'
+          instrument_context.has_baby_have_babies.should == 'HAVE THE BABIES'
         end
 
-        it "returns 'Have the babies' if triplet or higher gestation" do
+        it "returns 'HAVE THE BABIES' if triplet or higher gestation" do
           create_triplet_gestation
-          instrument_context.has_baby_have_babies.should == 'Have the babies'
+          instrument_context.has_baby_have_babies.should == 'HAVE THE BABIES'
         end
       end
 

@@ -366,17 +366,17 @@
   version_number: 1.0
 - name: Tracing Interview
   filename: INS_QUE_Tracing_INT_EHPBHILIPBS_M3.0_V1.0
-  event: PBS Participant Eligibility Screening, Pregnancy Visit 1, Pregnancy Visit 2, Birth (EH, PB, HI), Birth (LI), 3-Month, 6-Month, 9-Month, 12-Month, 18-Month, 24-Month, 30-Month
+  event: PBS Participant Eligibility Screening; Pregnancy Visit 1; Pregnancy Visit 2; Birth; 3M; 6M; 9M; 12M; 18M; 24M; 30M
   version_number: 1.0
 - name: Multi-Mode Information Script Instrument
   filename: INS_CON_MultiModeVisitInfo_DCI_EHPBHILIPBS_M3.0_1.0
-  event: Pregnancy Visit 1 (PBS only), Pregnancy Visit 2 (PBS only), Father, Birth, 3-Month, 6-Month, 9-Month, 12-Month, 18-Month, 24-Month, 30-Month
+  event: Pregnancy Visit 1; Pregnancy Visit 2; Birth; 3M; 6M; 9M; 12M; 18M; 24M; 30M
   version_number: 1.0
 - name: Participant Verification Questionnaire
   filename: INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0
-  event: Pregnancy Visit 1, Pregnancy Visit 2, Father, Birth(EH,PB,HI), Birth(LI), 3-Month, 6-Month, 9-Month, 12-Month, 18-Month, 24-Month, 30-Month
+  event: Pregnancy Visit 1; Pregnancy Visit 2; Birth; 3M; 6M; 9M; 12M; 18M; 24M; 30M; Father
   version_number: 1.0
 - name: Non-interview Respondent Questionnaire
   filename: INS_QUE_NonIntRespQues_INT_EHPBHILI_M3.0_V1.0
-  event: All Events
+  event: PBS Participant Eligibility Screening; Pregnancy Visit 1; Pregnancy Visit 2; Birth; 3M; 6M; 9M; 12M; 18M; 24M; 30M; Father
   version_number: 1.0

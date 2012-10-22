@@ -8,7 +8,7 @@ describe InstrumentEventMap do
 
   it "knows all events" do
     events = InstrumentEventMap.events
-    events.size.should == 17
+    events.size.should == 19
 
     [ "Household Enumeration",
       # "Provider-Based Recruitment",
@@ -27,6 +27,7 @@ describe InstrumentEventMap do
       "12M",
       "18M",
       "24M",
+      "30M",
       "Validation Event"].each do |e|
       events.should include e
     end
