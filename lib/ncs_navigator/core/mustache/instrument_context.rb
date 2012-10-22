@@ -411,6 +411,10 @@ module NcsNavigator::Core::Mustache
       "[EVENT_TYPE]"
     end
 
+    def event_type_upcase
+      "[EVENT_TYPE]"
+    end
+
     def and_birth_date
       "and birth date"
     end
