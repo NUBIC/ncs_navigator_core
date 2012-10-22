@@ -18,7 +18,6 @@ module Field::Adapters
 
     def to_model
       adapt_model(model_class.new).tap do |m|
-        puts "tm: #{m.class} #{m.object_id}"
         m.source = self
         m.patch(target)
       end
