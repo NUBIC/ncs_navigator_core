@@ -36,6 +36,8 @@ module Field::Adapters
       end
 
       def ensure_postrequisites(map)
+        return true unless source
+
         parameters = {
           :person_id => map.id_for(::Person, person_public_id),
           :participant_id => map.id_for(::Participant, participant_public_id),
