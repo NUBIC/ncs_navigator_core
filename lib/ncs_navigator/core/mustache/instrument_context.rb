@@ -201,6 +201,10 @@ module NcsNavigator::Core::Mustache
     def baby_babies
       single_birth? ? "baby" : "babies"
     end
+    
+    def baby_babies_upcase
+      single_birth? ? "BABY" : "BABIES"
+    end
 
     # {BABY’S/BABIES’}
     def babys_babies
@@ -208,7 +212,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def has_baby_have_babies
-      single_birth? ? "Has the baby" : "Have the babies"
+      single_birth? ? "HAS THE BABY" : "HAVE THE BABIES"
     end
 
     # {B_NAME/your baby}
@@ -231,6 +235,10 @@ module NcsNavigator::Core::Mustache
     # {Have/Has}
     def have_has
       single_birth? ? "Has" : "Have"
+    end
+    
+    def has_have_upcase
+      single_birth? ? "HAS" : "HAVE"
     end
 
     def is_are
@@ -380,7 +388,11 @@ module NcsNavigator::Core::Mustache
     end
 
     def birthing_place
-      "[BIRTHING_PLACE]"
+      "[Hospital/Birthing center/Other place]"
+    end
+    
+    def birthing_place_upcase
+      "[HOSPITAL/BIRTHING CENTER/OTHER PLACE]"
     end
 
     def stomach_back_side
