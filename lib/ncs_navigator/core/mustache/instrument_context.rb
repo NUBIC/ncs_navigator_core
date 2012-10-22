@@ -360,7 +360,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def at_this_visit_or_at
-      "at_this_visit_or_at"
+      "At this visit or at / At"
     end
 
     def work_place_name
