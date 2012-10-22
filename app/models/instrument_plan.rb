@@ -140,8 +140,8 @@ class InstrumentPlan
   #
   # @return Boolean
   def final_survey_part?(response_set)
-    scheduled_activities_for_survey(response_set.survey.title).try(:size) ==
-      response_set.instrument.response_sets.try(:size)
+    scheduled_activities_for_survey(response_set.survey.title).size ==
+      response_set.instrument.response_sets.size
   end
 
   ##
@@ -218,6 +218,7 @@ class InstrumentPlan
   # Finds the scheduled activity for the given title and matches it to
   # other scheduled activities (the other survey parts) associated to the found
   # scheduled activity.
+  # If there are no matching activities an empty array is returned.
   #
   # @param String - survey_title
   # @return [Array<ScheduledActivities>]
@@ -225,6 +226,8 @@ class InstrumentPlan
     if a = scheduled_activity_for_survey(survey_title)
       scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
                                          sa.references == a.survey_root }.sort
+    else
+      []
     end
   end
 
