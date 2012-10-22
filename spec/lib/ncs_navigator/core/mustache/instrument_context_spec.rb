@@ -523,8 +523,8 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".at_this_visit_or_at" do
-        it "returns \"at_this_visit_or_at\"" do
-          instrument_context.at_this_visit_or_at.should == "at_this_visit_or_at"
+        it "returns \"At this visit or at / At\"" do
+          instrument_context.at_this_visit_or_at.should == "At this visit or at / At"
         end
       end
 
