@@ -68,10 +68,8 @@
     width: 850px;
     padding-right: 5px;
 
-    .survey_section {
-      fieldset {
-        border: none !important;
-      }
+    input[type="submit"] {
+      margin-top: 2em;
     }
   }
 
