@@ -128,7 +128,7 @@ body.ncs {
     font-size: 1.1em;
 
     .ncs_logo {
-      @include prepend(1);
+      @include prepend-top(1em);
       @include column(6);
     }
 

@@ -372,7 +372,11 @@ module NcsNavigator::Core::Mustache
     end
 
     def visit_today
-      "[VISIT_TODAY]"
+      "[VISIT TODAY]"
+    end
+
+    def date_of_visit
+      "[DATE OF VISIT]"
     end
 
     def institution
@@ -393,6 +397,12 @@ module NcsNavigator::Core::Mustache
 
     def birthing_place_upcase
       "[HOSPITAL/BIRTHING CENTER/OTHER PLACE]"
+    end
+
+    # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
+    # participant may have visited
+    def his_her
+      "[his_her]"
     end
 
     def stomach_back_side
