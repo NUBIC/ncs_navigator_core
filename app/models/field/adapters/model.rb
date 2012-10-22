@@ -44,7 +44,7 @@ module Field::Adapters
     end
 
     ##
-    # Models can be merged on an attribute-by-attribute basis.
+    # By default, models can be merged on an attribute-by-attribute basis.
     def merge_atomically?
       false
     end
@@ -53,20 +53,28 @@ module Field::Adapters
       self
     end
 
-    def ensure_prerequisites(map)
-      true
-    end
-
-    def ensure_postrequisites(map)
-      true
-    end
-
+    ##
+    # Unless otherwise specified, a model has no prerequisites.
     def pending_prerequisites
       {}
     end
 
+    ##
+    # Unless otherwise specified, a model has no postrequisites.
     def pending_postrequisites
       {}
+    end
+
+    ##
+    # Default prerequisites are vacuously satisfied.
+    def ensure_prerequisites(map)
+      true
+    end
+
+    ##
+    # Default postrequisites are vacuously satisfied.
+    def ensure_postrequisites(map)
+      true
     end
 
     # These methods are used in various field classes.
