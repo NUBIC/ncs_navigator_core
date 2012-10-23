@@ -87,3 +87,43 @@ Feature: Merging data from field clients
 
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
+
+  @wip
+  Scenario: New contacts can be associated with new people
+    Given the survey
+      | title | pregnancy_survey_v1.0 |
+    And I complete the fieldwork set
+      | start_date | 2005-07-01              |
+      | end_date   | 2005-07-30              |
+      | client_id  | 1234567890              |
+      | with       | new_everything.json.erb |
+    And there are no response sets for "pregnancy_survey_v1.0"
+
+    When the merge runs
+    And I go to the participant page
+    Then show me the page
+
+    Then I should see "Bessie Smith"
+
+    # event name
+    And I should see "Pregnancy Visit 2"
+
+    # event start and end times
+    And I should see "13:30"
+    And I should see "13:35"
+
+    # event start and end dates
+    And I should see "2005-07-17"
+    And I should see "2005-07-18"
+
+    # event disposition
+    And I should see "Participant cognitively unable to provide informed consent/complete interview"
+
+    # instrument name
+    And I should see "pregnancy_survey_v1.0"
+
+    # survey data
+    When I follow "pregnancy_survey_v1.0"
+
+    Then the "r_1_string_value" field should contain "Jeff January"
+    And the "r_2_string_value" field should contain "04/19/2012 13:33"
