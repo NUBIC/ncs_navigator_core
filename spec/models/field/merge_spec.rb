@@ -120,6 +120,7 @@ module Field
       it_merges 'supervisor_review_code'
       it_merges 'instrument_type_code'
       it_merges 'instrument_type_other'
+      it_merges 'instrument_version'
     end
 
     when_merging 'ResponseSet' do

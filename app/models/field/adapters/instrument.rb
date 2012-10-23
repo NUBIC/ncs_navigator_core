@@ -16,6 +16,7 @@ module Field::Adapters
       instrument_status_code
       instrument_type_code
       instrument_type_other
+      instrument_version
       supervisor_review_code
     )
 
