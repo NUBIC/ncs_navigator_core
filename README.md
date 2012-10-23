@@ -27,14 +27,14 @@ Prerequisites
 
 On the deployment workstation:
 
-* Ruby 1.8.7
+* Ruby 1.9.3
 * RubyGems
 * [Bundler][] (install as a gem)
 * A [git][] client
 
 On the application server:
 
-* Ruby 1.8.7 ([Ruby Enterprise Edition][ree] is what GCSC uses)
+* Ruby 1.9.3
 * RubyGems
 * [Bundler][] (install as a gem)
 * [Passenger][]
