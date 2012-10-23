@@ -22,7 +22,8 @@ class SurveyorController < ApplicationController
     else
       # go to next part of the survey
       activity = @activity_plan.current_scheduled_activity(contact_link.event.to_s, @response_set)
-      survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(activity.instrument))
+      access_code = Survey.to_normalized_string(activity.instrument)
+      survey = Survey.most_recent_for_access_code(access_code)
       start_instrument_person_path(@response_set.person,
                                    :participant_id => activity.participant.id,
                                    :references_survey_access_code => activity.references.to_s,

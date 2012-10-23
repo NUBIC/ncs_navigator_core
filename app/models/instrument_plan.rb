@@ -26,7 +26,7 @@ class InstrumentPlan
   # @param [Hash]
   def parse_schedule(schedule)
     activities(schedule).each do |activity|
-      sa  = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
+      sa = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
       @scheduled_activities << sa if sa.scheduled?
     end
   end
@@ -218,13 +218,17 @@ class InstrumentPlan
   # Finds the scheduled activity for the given title and matches it to
   # other scheduled activities (the other survey parts) associated to the found
   # scheduled activity.
+  # If there are no matching activities an empty array is returned.
   #
   # @param String - survey_title
   # @return [Array<ScheduledActivities>]
   def scheduled_activities_for_survey(survey_title)
-    a = scheduled_activity_for_survey(survey_title)
-    scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
-                                       sa.references == a.survey_root }.sort
+    if a = scheduled_activity_for_survey(survey_title)
+      scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
+                                         sa.references == a.survey_root }.sort
+    else
+      []
+    end
   end
 
   ##

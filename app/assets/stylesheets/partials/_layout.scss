@@ -1,5 +1,5 @@
 .column-container {
-  @include column(24, true);
+  @include column(23, true);
 
   .column-1 {
     @include column(7);
@@ -14,12 +14,12 @@
   }
 
   .column-3 {
-    @include column(8, true);
+    @include column(7, true);
     margin-top: 1em;
   }
 
   .buttons {
-    @include column(23, true);
+    @include column(21, true);
     @include prepend(1);
     margin-bottom: 1em;
   }

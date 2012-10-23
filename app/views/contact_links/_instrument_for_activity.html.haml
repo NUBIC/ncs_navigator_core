@@ -1,5 +1,4 @@
 - if survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(activity.instrument))
-
   - if contact_link.contact.instrument_survey_titles.include?(survey.title)
     %div{ :class => "known_instrument", :title => survey.title}
       = activity.activity_name

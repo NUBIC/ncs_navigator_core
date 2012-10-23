@@ -97,12 +97,13 @@ class InstrumentEventMap
   # 5  Provider Based Sampling
   def self.instruments
     results = []
-    with_specimens = NcsNavigatorCore.with_specimens
     INSTRUMENT_EVENT_CONFIG.each do |ie|
       filename = ie["filename"]
-      next if filename.include?("_DCI_") && with_specimens == "false"
+      next if should_skip(filename)
 
       case NcsNavigatorCore.recruitment_type_id
+      when 5
+        results << ie if filename.include?("PB")
       when 3
         results << ie if filename.include?("HILI") || filename.include?("HI") || filename.include?("LI")
       when 2
@@ -112,6 +113,16 @@ class InstrumentEventMap
       end
     end
     results
+  end
+
+  def self.should_skip(filename)
+    if filename.include?("_DCI_") && NcsNavigatorCore.with_specimens == "false"
+      if filename.include?("ParticipantVerif") || filename.include?("MultiMode")
+        false
+      else
+        true
+      end
+    end
   end
 
 end

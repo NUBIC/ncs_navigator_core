@@ -4,3 +4,4 @@
 //= require surveyor/jquery.surveyor
 //= require surveyor/jquery.blockUI
 //= require surveyor/jquery.selectToUISlider
+//= require surveyor/jquery-masked-input-plugin

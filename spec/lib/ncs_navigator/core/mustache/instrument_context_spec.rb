@@ -88,6 +88,23 @@ module NcsNavigator::Core::Mustache
 
     context "obtaining information from the person taking the survey" do
 
+      describe ".p_primary_address" do
+
+        it "returns \"[What is your street address?]\" if the person has no primary address" do
+          person = mock_model(Person, :primary_address => nil)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_primary_address.should == "[What is your street address?]"
+        end
+
+        it "returns the primary address" do
+          address = mock_model(Address, :to_s => "123 Easy Street")
+          person = mock_model(Person, :primary_address => address)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_primary_address.should ==
+            "Let me confirm your street address. I have it as #{address.to_s}."
+        end
+      end
+
       describe ".p_phone_number" do
 
         let(:home_phone) { "312-555-1234" }
@@ -429,7 +446,6 @@ module NcsNavigator::Core::Mustache
 
       end
 
-
     end
 
     context "for a pregnancy visit one instrument" do
@@ -473,6 +489,27 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".has_baby_have_babies" do
+        it "returns 'HAS THE BABY' if unknown if single or multiple gestation" do
+          instrument_context.has_baby_have_babies.should == 'HAS THE BABY'
+        end
+
+        it "returns 'HAS THE BABY' if singleton gestation" do
+          create_singleton_gestation
+          instrument_context.has_baby_have_babies.should == 'HAS THE BABY'
+        end
+
+        it "returns 'HAVE THE BABIES' if twin gestation" do
+          create_twin_gestation
+          instrument_context.has_baby_have_babies.should == 'HAVE THE BABIES'
+        end
+
+        it "returns 'HAVE THE BABIES' if triplet or higher gestation" do
+          create_triplet_gestation
+          instrument_context.has_baby_have_babies.should == 'HAVE THE BABIES'
+        end
+      end
+
       describe ".p_full_name" do
         it "returns the full name of the person taking the survey" do
           instrument_context.p_full_name.should == @person.full_name
@@ -485,6 +522,114 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".at_this_visit_or_at" do
+        it "returns \"At this visit or at / At\"" do
+          instrument_context.at_this_visit_or_at.should == "At this visit or at / At"
+        end
+      end
+
+      describe ".work_place_name" do
+        it "returns the name of the participant's workplace" do
+          pending
+        end
+      end
+
+      describe ".work_address" do
+        it "returns the participant's workplace address" do
+          pending
+        end
+      end
+
+      describe ".visit_today" do
+        it "returns 'Is your visit today' if MODE = CAPI or PAPI" do
+          pending
+        end
+
+        it "returns 'Was your visit today' if MODE = CATI"  do
+          pending
+        end
+      end
+
+      describe ".institution" do
+        it "returned the name of the institution involved in the study" do
+          pending
+        end
+      end
+
+      describe ".practice_name" do
+        it "returns the practice associated with the study" do
+          pending
+        end
+      end
+
+      describe ".county" do
+        it "returns the county associated with the study" do
+          pending
+        end
+      end
+
+      describe ".birthing_place" do
+        it "returns the type of facility where the child was birthed" do
+          pending
+        end
+      end
+
+      describe ".stomach_back_side" do
+        it "returns singular version if single pregnancy" do
+          pending
+        end
+        it "returns plural version if multiple pregnancy" do
+          pending
+        end
+      end
+
+      describe ".date_of_preg_visit_1" do
+        it "returns the date the PregVisit1 instrument was last administered" do
+          pending
+        end
+      end
+
+      describe ".date_of_preg_visit_2" do
+        it "returns the date the PregVisit2 instrument was last administered" do
+          pending
+        end
+      end
+    end
+
+    describe "choose_date_range_for_birth_instrument" do
+      it "returns proper range depending on whether PregVisit1 or 2 have been administered" do
+        pending
+      end
+    end
+
+    describe "choose_date_range_for_birth_instrument_variation_1" do
+      it "returns proper range statement depending on whether PregVisit1 or 2 have been administered" do
+        pending
+      end
+    end
+
+    describe "c_fname_or_the_child" do
+      it "returns child's first name or 'the child" do
+        pending
+      end
+    end
+
+    describe "are_you_or_is_guardian_name" do
+      it "returns 'are you' if respondent name = guardian name" do
+        pending
+      end
+      it "returns 'is [GUARDIAN_NAME]' if respondent name != guardian name" do
+        pending
+      end
+    end
+
+    describe "still" do
+      it "returns 'still' if CHILD_TIME = 1, -1 or -2" do
+        pending
+      end
+      it "returns nothing if CHILD_TIME = 2 or does not exist" do
+        pending
+      end
     end
 
     def create_single_birth

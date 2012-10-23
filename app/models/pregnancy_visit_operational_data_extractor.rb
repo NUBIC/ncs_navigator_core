@@ -6,6 +6,8 @@ class PregnancyVisitOperationalDataExtractor
   PREGNANCY_VISIT_1_INTERVIEW_PREFIX = "PREG_VISIT_1_2"
   PREGNANCY_VISIT_2_INTERVIEW_PREFIX = "PREG_VISIT_2_2"
   PREGNANCY_VISIT_1_SAQ_PREFIX       = "PREG_VISIT_1_SAQ_2"
+  PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX = "PREG_VISIT_1_3"
+  PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX = "PREG_VISIT_2_3"
 
   PERSON_MAP = {
     "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
@@ -121,6 +123,16 @@ class PregnancyVisitOperationalDataExtractor
     "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY"              => "city",
     "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE"             => "state_code",
     "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1"       => "address_one",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_2"       => "address_two",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY"            => "city",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_1"       => "address_one",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_2"       => "address_two",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY"            => "city",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
   }
 
   FATHER_PERSON_MAP = {
@@ -138,12 +150,41 @@ class PregnancyVisitOperationalDataExtractor
     "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4"            => "zip4",
   }
 
+  WORK_ADDRESS_MAP = {
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1"       => "address_one",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2"       => "address_two",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_UNIT"            => "unit",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY"            => "city",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE"           => "state_code",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIPCODE"         => "zip",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP4"            => "zip4",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1"       => "address_one",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2"       => "address_two",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_UNIT"            => "unit",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_CITY"            => "city",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_STATE"           => "state_code",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIPCODE"         => "zip",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIP4"            => "zip4",
+  }
+
+  CONFIRM_WORK_ADDRESS_MAP = {
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_1"       => "address_one",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_2"       => "address_two",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_UNIT"            => "unit",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_CITY"            => "city",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_STATE"           => "state_code",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIPCODE"         => "zip",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIP4"            => "zip4",
+  }
+
   FATHER_PHONE_MAP = {
     "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"           => "phone_nbr",
   }
 
   DUE_DATE_DETERMINER_MAP = {
     "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD" => "DATE_PERIOD",
+    "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD" => "DATE_PERIOD",
+    "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE" => "DUE_DATE",
   }
 
   class << self
@@ -167,6 +208,8 @@ class PregnancyVisitOperationalDataExtractor
       father_phone         = nil
       father_address       = nil
       father_relationship  = nil
+      work_address         = nil
+      confirm_work_address = nil
 
       primary_rank = OperationalDataExtractor.primary_rank
 
@@ -356,8 +399,38 @@ class PregnancyVisitOperationalDataExtractor
         end
 
         if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
-          due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
-          participant.ppg_details.first.update_due_date(due_date, get_due_date_attribute(data_export_identifier)) if due_date
+           if value
+            dt = nil
+            begin
+              dt = Date.parse(value)
+            rescue
+              # NOOP - date is unparseable
+            end
+            due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r, dt) if dt
+            participant.ppg_details.first.update_due_date(due_date, get_due_date_attribute(data_export_identifier)) if due_date
+          end
+        end
+
+        if WORK_ADDRESS_MAP.has_key?(data_export_identifier)
+          unless value.blank?
+            work_address ||= Address.where(:response_set_id => response_set.id).where(WORK_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
+            if work_address.nil?
+              work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, 
+                                         :address_type => Address.work_address_type)
+            end
+            OperationalDataExtractor.set_value(work_address, WORK_ADDRESS_MAP[data_export_identifier], value)
+          end
+        end
+
+        if CONFIRM_WORK_ADDRESS_MAP.has_key?(data_export_identifier)
+          unless value.blank?
+            confirm_work_address ||= Address.where(:response_set_id => response_set.id).where(CONFIRM_WORK_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
+            if confirm_work_address.nil?
+              confirm_work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, 
+                                         :address_type => Address.work_address_type, :address_rank => OperationalDataExtractor.duplicate_rank)
+            end
+            OperationalDataExtractor.set_value(confirm_work_address, CONFIRM_WORK_ADDRESS_MAP[data_export_identifier], value)
+          end
         end
 
       end
@@ -409,6 +482,14 @@ class PregnancyVisitOperationalDataExtractor
         birth_address.save!
       end
 
+      if work_address && !work_address.to_s.blank?
+        work_address.save!
+      end
+
+      if confirm_work_address && !confirm_work_address.to_s.blank?
+        confirm_work_address.save!
+      end
+
       if email && !email.email.blank?
         person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
@@ -419,13 +500,50 @@ class PregnancyVisitOperationalDataExtractor
         cell_phone.save!
       end
 
+      if due_date = calculated_due_date(response_set)
+        participant.ppg_details.first.update_due_date(due_date)
+      end
+
       participant.save!
       person.save!
 
     end
 
+    #TODO: PBS eligibility operational data extractor has similar methods to get the  Extract methods to some common module
+    def calculated_due_date(response_set)
+      # try due date first
+      ret = nil
+      ret = due_date_response(response_set, "DUE_DATE")
+      ret
+    end
+
+    def due_date_response(response_set, date_question)
+      dt = date_string(response_set, date_question)
+      unless dt.blank?
+        return OperationalDataExtractor.determine_due_date(
+          "#{date_question}_DD",
+          response_for(response_set, "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.#{date_question}_DD"),
+          Date.parse(dt))
+      end
+    end
+
+    def date_string(response_set, str)
+      dt = []
+      ['YY', 'MM', 'DD'].each do |date_part|
+        r = response_for(response_set, "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.#{str}_#{date_part}")
+        val = OperationalDataExtractor.response_value(r) if r
+        dt << val if val.to_i > 0
+      end
+      dt.join("-")
+    end
+
+    def response_for(response_set, data_export_identifier)
+      response_set.responses.includes(:question).where(
+        "questions.data_export_identifier = ?", data_export_identifier).first
+    end
+
     def get_due_date_attribute(data_export_identifier)
-      data_export_identifier.include?(PREGNANCY_VISIT_2_INTERVIEW_PREFIX) ? :due_date_3 : :due_date_2
+      data_export_identifier.include?(PREGNANCY_VISIT_2_INTERVIEW_PREFIX) || data_export_identifier.include?(PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX) ? :due_date_3 : :due_date_2
     end
   end
 

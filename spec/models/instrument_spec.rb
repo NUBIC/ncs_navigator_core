@@ -92,7 +92,7 @@ describe Instrument do
     let(:child) { Factory(:participant, :p_id => 'child') }
     let(:survey) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0') }
     let(:survey_part) { Factory(:survey, :title => 'INS_QUE_BIRTH_INT_EHPBHI_P2_V2.0_BABY_NAME') }
-    let(:inst) { Factory(:instrument, :survey => survey) }
+    let(:inst) { Factory(:instrument, :survey => survey, :event => event) }
 
     context 'a survey with one part' do
       describe 'if there is no response set for the (person, survey) pair' do
@@ -109,7 +109,7 @@ describe Instrument do
         end
       end
 
-      describe 'if there is a response set for the (person, survey) pair' do
+      describe 'when there is a response set for the (person, survey) pair' do
         before do
           Factory(:response_set, :survey => survey, :user_id => person.id, :instrument => inst)
         end
@@ -145,6 +145,16 @@ describe Instrument do
 
           it "has one response set" do
             i.response_sets.size.should == 1
+          end
+
+        end
+
+        describe 'for a different event with the same survey' do
+
+          let(:i) { Instrument.start(person, mother, nil, survey, Factory(:event, :event_type_code => 10)) }
+
+          it "does NOT return the response set's instrument" do
+            i.should_not == inst
           end
 
         end
@@ -252,26 +262,36 @@ describe Instrument do
 
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
 
-      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
-      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
-      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.0' }
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+      end
+
+      let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.1' }
+      let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-1'}
+      let(:title) { 'INS_ENV_TapWaterPharmTechCollect_DCI_EHPBHI_P2_V1.1' }
 
       describe '#determine_version' do
-        it 'returns 1.0 for psc label' do
-          Instrument.determine_version(lbl).should == "1.0"
+        it 'returns 1.1 for psc label' do
+          Instrument.determine_version(lbl).should == "1.1"
         end
 
-        it 'returns 1.0 for surveyor access code' do
-          Instrument.determine_version(code).should == "1.0"
+        it 'returns 1.1 for surveyor access code' do
+          Instrument.determine_version(code).should == "1.1"
         end
 
-        it 'returns 1.0 for survey title' do
-          Instrument.determine_version(title).should == "1.0"
+        it 'returns 1.1 for survey title' do
+          Instrument.determine_version(title).should == "1.1"
         end
+
+        it 'returns 1.0 as a default' do
+          Instrument.determine_version(nil).should == "1.0"
+        end
+
       end
 
       describe "#parse_label" do
-        it "returns the event portion of the label" do
+
+        it "returns the instrument portion of the label" do
           lbl = "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
           Instrument.parse_label(lbl).should == "ins_que_lipregnotpreg_int_li_p2_v2.0"
         end
@@ -302,7 +322,12 @@ describe Instrument do
     end
 
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' do
+
       let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one' }
+
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+      end
 
       describe '#determine_version' do
         it 'returns 1.0 for psc label' do
@@ -311,7 +336,66 @@ describe Instrument do
       end
     end
 
+    context 'with label instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0' do
+      let(:lbl) { 'instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0' }
+
+      context "mdes version 2.0" do
+
+        before(:each) do
+          NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+        end
+
+        describe "#instrument_label" do
+          it "returns the instrument label matching the mdes version" do
+            Instrument.instrument_label(lbl).should == "instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0"
+          end
+        end
+
+        describe "#parse_label" do
+          it "returns the instrument portion of the label" do
+            Instrument.parse_label(lbl).should == "ins_que_pregvisit1_int_ehpbhi_p2_v2.0"
+          end
+        end
+      end
+
+      context "mdes version 3.0" do
+
+        before(:each) do
+          NcsNavigatorCore.mdes.stub(:version).and_return "3.0"
+        end
+
+        describe "#instrument_label" do
+          it "returns the instrument label matching the mdes version" do
+            Instrument.instrument_label(lbl).should == "instrument:3.0:ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"
+          end
+        end
+
+        describe "#parse_label" do
+          it "returns the instrument portion of the label" do
+            Instrument.parse_label(lbl).should == "ins_que_pregvisit1_int_ehpbhi_m3.0_v3.0"
+          end
+        end
+
+        describe "#matches_mdes_version?" do
+          it "returns true for 3.0" do
+            Instrument.matches_mdes_version?(Instrument.instrument_label(lbl), "3.0").should be_true
+          end
+
+          it "returns false for 2.0" do
+            Instrument.matches_mdes_version?(Instrument.instrument_label(lbl), "2.0").should be_false
+          end
+        end
+
+      end
+
+    end
+
+
     context 'with label instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' do
+
+      before(:each) do
+        NcsNavigatorCore.mdes.stub(:version).and_return "2.0"
+      end
 
       let(:lbl) { 'instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0' }
       let(:code) { 'ins-bio-adultblood-dci-ehpbhi-p2-v1-0'}
@@ -526,7 +610,7 @@ describe Instrument do
     let(:psc_participant) { stub(:participant => p, :scheduled_activities => activities) }
     let(:schedule) do
       Psc::ScheduledActivity.from_schedule({
-        'labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0'
+        'labels' => 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
       })
     end
 
@@ -545,7 +629,7 @@ describe Instrument do
     describe "if the instrument's survey matches a references label" do
       it 'returns that activity' do
         instrument.scheduled_activities(psc_participant).should == [
-          sa('labels' => 'references:ins_que_birth_int_ehpbhi_p2_v2.0')
+          sa('labels' => 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0')
         ]
       end
     end
@@ -568,7 +652,7 @@ describe Instrument do
       describe 'and the activity has references labels' do
         let(:schedule) do
           Psc::ScheduledActivity.from_schedule({
-            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:something_else'
+            'labels' => 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 references:2.0:something_else'
           })
         end
 

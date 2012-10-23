@@ -152,8 +152,8 @@ describe Contact do
       l2 = Factory(:contact_link, :contact => c)
 
       c.contact_links.reload
-      c.contact_links.should == [l1, l2]
-
+      c.contact_links.should include(l1)
+      c.contact_links.should include(l2)
     end
 
     it "knows all instruments associated with this contact" do

@@ -12,7 +12,7 @@ class WelcomeController < ApplicationController
   def upcoming_activities
     @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
         get_scheduled_activities_report).sort_by{ |sa| sa.activity_date }
-    if params[:export]
+    if params[:export] && @scheduled_activities
       csv_data = to_csv(@scheduled_activities)
       outfile = "scheduled_activities_" + Time.now.strftime("%m-%d-%Y") + ".csv"
       send_data csv_data,
@@ -25,7 +25,7 @@ class WelcomeController < ApplicationController
     criteria = { :end_date => 1.day.ago.to_date.to_s }
     @scheduled_activities = Psc::ScheduledActivityCollection.from_report(
         psc.scheduled_activities_report(criteria)).sort_by{ |sa| sa.activity_date }
-    if params[:export]
+    if params[:export] && @scheduled_activities
       csv_data = to_csv(@scheduled_activities)
       outfile = "overdue_activities_" + Time.now.strftime("%m-%d-%Y") + ".csv"
       send_data csv_data,
@@ -56,6 +56,8 @@ class WelcomeController < ApplicationController
 
     resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
+
+      create_pregnancy_screener_event_record(participant)
       redirect_to new_person_contact_path(person)
     else
       destroy_participant_and_redirect(participant, resp)
@@ -80,23 +82,31 @@ class WelcomeController < ApplicationController
   private
 
     def create_pbs_eligibility_screener_event_record(participant)
+      create_screener_event_record(participant, NcsCode.pbs_eligibility_screener)
+    end
+
+    def create_pregnancy_screener_event_record(participant)
+      create_screener_event_record(participant, NcsCode.pregnancy_screener)
+    end
+
+    def create_screener_event_record(participant, event_type)
       if activity_plan = psc.build_activity_plan(participant)
-        pbs_eligibility_screener_event_type = NcsCode.pbs_eligibility_screener
         dates = []
         # get dates for scheduled pbs_eligibility_screener activity for participant
         activity_plan.scheduled_activities.each do |a|
           code = NcsCode.find_event_by_lbl(a.event)
-          dates << a.ideal_date if code == pbs_eligibility_screener_event_type
+          dates << a.ideal_date if code == event_type
         end
         # create a placeholder event for each date
         dates.uniq.each do |dt|
           Event.create( :participant => participant, :psu_code => participant.psu_code,
-                        :event_start_date => dt, :event_type => pbs_eligibility_screener_event_type)
+                        :event_start_date => dt, :event_type => event_type)
 
         end
       end
-
     end
+
+
 
     def destroy_participant_and_redirect(participant, resp, destroy_person = true)
       ppl = participant.participant_person_links.where(:relationship_code => 1).first
@@ -109,10 +119,10 @@ class WelcomeController < ApplicationController
     end
 
     def get_scheduled_activities_report(options = {})
-      @start_date = 1.day.ago.to_date.to_s
-      @end_date   = params[:end_date] || 6.weeks.from_now.to_date.to_s
-      criteria = { :start_date => @start_date, :end_date => @end_date }
-      criteria.merge(options) if options
+      @start_date = 1.month.ago.to_date.to_s
+      @end_date   = params[:end_date] || 3.years.from_now.to_date.to_s
+      criteria = { :start_date => @start_date, :end_date => @end_date, :current_user => nil }
+      criteria.merge!(options) if options
 
       psc.scheduled_activities_report(criteria)
     end

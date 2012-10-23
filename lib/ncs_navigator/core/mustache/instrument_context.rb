@@ -49,12 +49,52 @@ module NcsNavigator::Core::Mustache
       @response_set.person.try(:person_dob)
     end
 
+    def p_cell_phone
+      cell_phone = "[CELL PHONE NUMBER]"
+      if person = @response_set.try(:person)
+        cell_phone = person.primary_cell_phone if person.primary_cell_phone
+      end
+      cell_phone
+    end
+
+    def p_home_phone
+      home_phone = "[HOME PHONE NUMBER]"
+      if person = @response_set.try(:person)
+        home_phone = person.primary_home_phone if person.primary_home_phone
+      end
+      home_phone
+    end
+
     def p_phone_number
       if person = @response_set.try(:person)
-        home_phone = person.primary_home_phone
-        cell_phone = person.primary_cell_phone
-        home_phone ? home_phone : cell_phone
+        home_phone = p_home_phone
+        cell_phone = p_cell_phone
+
+        result = nil
+        result = cell_phone unless cell_phone == "[CELL PHONE NUMBER]"
+        result = home_phone unless home_phone == "[HOME PHONE NUMBER]"
+        result
       end
+    end
+
+    def p_email_address
+      email_address = "[EMAIL ADDRESS]"
+      if person = @response_set.try(:person)
+        email_address = person.primary_email if person.primary_email
+      end
+      email_address
+    end
+
+    def p_primary_address
+      primary_address = "[What is your street address?]"
+      if person = @response_set.try(:person)
+        primary_address = "Let me confirm your street address. I have it as #{person.primary_address}." if person.primary_address
+      end
+      primary_address
+    end
+
+    def participant_parent_caregiver_name
+      "[Participant/Parent/Caregiver Name]"
     end
 
     def pregnancy_to_confirm
@@ -162,9 +202,17 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "baby" : "babies"
     end
 
+    def baby_babies_upcase
+      single_birth? ? "BABY" : "BABIES"
+    end
+
     # {BABY’S/BABIES’}
     def babys_babies
       single_birth? ? "baby's" : "babies'"
+    end
+
+    def has_baby_have_babies
+      single_birth? ? "HAS THE BABY" : "HAVE THE BABIES"
     end
 
     # {B_NAME/your baby}
@@ -182,6 +230,19 @@ module NcsNavigator::Core::Mustache
     # {Do/Does}
     def do_does
       single_birth? ? "Does" : "Do"
+    end
+
+    # {Have/Has}
+    def have_has
+      single_birth? ? "Has" : "Have"
+    end
+
+    def has_have_upcase
+      single_birth? ? "HAS" : "HAVE"
+    end
+
+    def is_are
+      single_birth? ? "Is" : "Are"
     end
 
     # {do/does}
@@ -269,13 +330,140 @@ module NcsNavigator::Core::Mustache
       child_first_name("the child")
     end
 
+    def child_first_name_your_baby
+      child_first_name("your baby")
+    end
+
     def child_first_name(txt)
       about_person.blank? ? txt : about_person.first_name
     end
     private :child_first_name
 
+    def child_primary_address
+      "[CHILD'S PRIMARY ADDRESS]"
+    end
+
+    def child_secondary_address
+      "[SECONDARY ADDRESS] "
+    end
+
+    def child_secondary_number
+      "[SECONDARY PHONE NUMBER]"
+    end
+
+    def c_fname_or_the_child
+      about_person.blank? ? "the Child" : about_person.first_name
+    end
+
     def c_dob
       about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
+    end
+
+    def at_this_visit_or_at
+      "At this visit or at / At"
+    end
+
+    def work_place_name
+      "[PARTICIPANTS WORKPLACE NAME]"
+    end
+
+    def work_address
+      "[WORK ADDRESS]"
+    end
+
+    def visit_today
+      "[VISIT TODAY]"
+    end
+
+    def date_of_visit
+      "[DATE OF VISIT]"
+    end
+
+    def institution
+      "[INSTITUTION]"
+    end
+
+    def practice_name
+      "[PRACTICE_NAME]"
+    end
+
+    def county
+      "[COUNTY]"
+    end
+
+    def birthing_place
+      "[Hospital/Birthing center/Other place]"
+    end
+
+    def birthing_place_upcase
+      "[HOSPITAL/BIRTHING CENTER/OTHER PLACE]"
+    end
+
+    # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
+    # participant may have visited
+    def his_her
+      "[his_her]"
+    end
+
+    def stomach_back_side
+      single_birth? ? "stomach, back and side" : "stomachs, backs and sides"
+    end
+
+    def date_of_preg_visit_1
+      "[DATE OF PREGNANCY VISIT 1]"
+    end
+
+    def date_of_preg_visit_2
+      "[DATE OF PREGNANCY VISIT 2]"
+    end
+
+    def event_type
+      "[EVENT_TYPE]"
+    end
+
+    def event_type_upcase
+      "[EVENT_TYPE]"
+    end
+
+    def and_birth_date
+      "and birth date"
+    end
+
+    # guardian_name is composed of g_fname, g_mname, and g_lname
+    def are_you_or_is_guardian_name
+      "[ARE_YOU_OR_IS_GUARDIAN_NAME]"
+    end
+
+    def primary_address
+      "[PRIMARY_ADDRESS]"
+    end
+
+    def is_are
+      "[IS_ARE]"
+    end
+
+    def secondary_phone_number
+      "[SECONDARY_PHONE_NUMBER]"
+    end
+
+    def choose_date_range_for_birth_instrument
+      if date_of_preg_visit_2
+        return "between #{date_of_preg_visit_2} and #{c_dob}"
+      elsif date_of_preg_visit_1
+        return "between #{date_of_preg_visit_1} and #{c_dob}"
+      else
+        return "before #{c_dob}"
+      end
+    end
+
+    def choose_date_range_for_birth_instrument_variation_1
+      if date_of_preg_visit_2
+        return "At this visit or at any time between #{date_of_preg_visit_2} and #{c_dob}"
+      elsif date_of_preg_visit_1
+        return "At this visit or at any time between #{date_of_preg_visit_1} and #{c_dob}"
+      else
+        return "At any time in your pregnancy"
+      end
     end
 
     def himself_herself
@@ -306,6 +494,12 @@ module NcsNavigator::Core::Mustache
 
     def schip_name
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
+    end
+
+    # TODO
+    def event_type
+      # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE
+      "[EVENT_TYPE]"
     end
 
   end

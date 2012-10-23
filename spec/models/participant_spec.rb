@@ -780,7 +780,7 @@ describe Participant do
 
       before(:each) do
         @e1_1 = Factory(:event, :participant => participant1, :event_end_date => 6.months.ago)
-        @e1_2 = Factory(:event, :participant => participant1, :event_end_date => nil)
+        @e1_2 = Factory(:event, :participant => participant1, :event_end_date => nil, :event_start_date => Date.today)
         @e2_1 = Factory(:event, :participant => participant2, :event_end_date => 6.months.ago)
       end
 
@@ -791,6 +791,20 @@ describe Participant do
           participant2.pending_events.should be_empty
           participant3.pending_events.should be_empty
         end
+
+        it "orders events by event start date" do
+          @e1_3 = Factory(:event, :participant => participant1, :event_end_date => nil, :event_start_date => 6.months.from_now)
+          participant1.pending_events.should == [@e1_2, @e1_3]
+        end
+
+        it "orders events by event_type then event start date" do
+          @e1_3 = Factory(:event, :participant => participant1, :event_type_code => 13,
+                          :event_end_date => nil, :event_start_date => 6.months.from_now)
+          @e1_4 = Factory(:event, :participant => participant1, :event_type_code => 10,
+                          :event_end_date => nil, :event_start_date => 6.months.from_now)
+          participant1.pending_events.should == [@e1_2, @e1_4, @e1_3]
+        end
+
       end
 
     end
@@ -1225,7 +1239,7 @@ describe Participant do
       end
 
       it "closes all pending events" do
-        participant.pending_events.should == [@lo_i_quex, @informed_consent]
+        participant.pending_events.should == [@informed_consent, @lo_i_quex]
         participant.switch_arm
         participant.pending_events.should == []
       end

@@ -78,10 +78,10 @@ class Instrument < ActiveRecord::Base
   #                 - the participant who the survey is about
   # @param [Survey] - instrument_survey
   #                 - the one associated with the first of multi-part sequence or singleton survey
-  #                 - i.e. the references label
+  #                 - i.e. Survey with title matching PSC activity references label
   # @param [Survey] - current_survey
   #                 - the one part of the multi-part survey or singleton
-  #                 - i.e. the instrument label
+  #                 - i.e. Survey with title matching PSC activity instrument label
   # @param [Event]  - the event associated with the Instrument
   def self.start(person, participant, instrument_survey, current_survey, event)
 
@@ -102,7 +102,8 @@ class Instrument < ActiveRecord::Base
   # cf. Person.start_instrument
   #
   def self.start_initial_instrument(person, participant, survey, event)
-    rs = ResponseSet.includes(:instrument).where(:survey_id => survey.id, :user_id => person.id).first
+    where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? AND instruments.event_id = ?"
+    rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
 
     if !rs || event.closed?
       person.start_instrument(survey, participant)
@@ -272,12 +273,16 @@ class Instrument < ActiveRecord::Base
 
   ##
   # Given a label from PSC or surveyor access code determine the instrument version
+  # Defaults to 1.0 if there is no label or access code
   # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0
   # @return [String]
   def self.determine_version(lbl)
-    lbl = Instrument.surveyor_access_code(lbl)
-    ind = lbl.to_s.rindex("-v")
-    lbl[ind + 2, 3].sub("-", ".")
+    result = "1.0"
+    lbl = Instrument.surveyor_access_code(lbl.to_s)
+    if ind = lbl.to_s.rindex("-v")
+      result = lbl[ind + 2, 3].sub("-", ".")
+    end
+    result
   end
 
   ##
@@ -299,14 +304,20 @@ class Instrument < ActiveRecord::Base
   end
 
   def self.mdes_version(lbl)
-    lbl = Instrument.instrument_label(lbl)
+    return nil unless lbl.include?(INSTRUMENT_LABEL_MARKER)
     lbl = lbl.to_s.split(':')
     lbl.size == 3 ? lbl[1] : nil
   end
 
+  def self.matches_mdes_version?(lbl, version)
+    mdes_version(lbl) == version
+  end
+
   def self.instrument_label(lbl)
     return nil if lbl.blank?
-    lbl.split.select{ |s| s.include?(INSTRUMENT_LABEL_MARKER) }.first
+    lbl.split.select { |s| s.include?(INSTRUMENT_LABEL_MARKER) }
+      .select { |s| Instrument.matches_mdes_version?(s, NcsNavigatorCore.mdes.version) }
+      .first
   end
 
   # FIXME: This is temporary until we fix all places that call Instrument.response_set

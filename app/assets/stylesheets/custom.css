@@ -13,3 +13,7 @@ fieldset.choices {
 input.add_row[type="submit"] {
   font-size: 1.5em;
 }
+
+#surveyor .survey_section span.help {
+  font-style: normal !important;
+}

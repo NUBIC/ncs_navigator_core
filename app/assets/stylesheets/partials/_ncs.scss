@@ -101,10 +101,10 @@ body.ncs {
   } // end of header
 
   #content {
-    @include column($blueprint-grid-columns - 2);
-    padding: 1em 0;
-    @include prepend(1);
-    @include append(1);
+    display: inline;
+    float: left;
+    width: 1105px;
+    padding: 1em 2em;
     background-color: $tab_nav_current_bg;
     @include rounded-corners(1em);
     border: 2px solid #ccc;
@@ -128,12 +128,14 @@ body.ncs {
     font-size: 1.1em;
 
     .ncs_logo {
+      @include prepend-top(1em);
       @include column(6);
     }
 
     .contact_info {
       @include prepend-top(1em);
-      @include column(14);
+      @include column(11);
+      @include append(2);
       text-align: center;
     }
 

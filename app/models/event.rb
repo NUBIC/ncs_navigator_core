@@ -385,6 +385,9 @@ class Event < ActiveRecord::Base
     end
 
     case event_type.to_s
+    when /PBS Participant Eligibility Screening/
+      # Pregnancy Screener Disposition Category Local Code = 8
+      self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 8)
     when /Pregnancy Screen/
       # Pregnancy Screener Disposition Category Local Code = 2
       self.event_disposition_category = NcsCode.for_attribute_name_and_local_code(:event_disposition_category_code, 2)
@@ -410,7 +413,6 @@ class Event < ActiveRecord::Base
       end
     end
   end
-  private :set_event_disposition_category
 
   def set_event_breakoff(response_set)
     if response_set
@@ -418,7 +420,6 @@ class Event < ActiveRecord::Base
       self.event_breakoff = NcsCode.for_attribute_name_and_local_code(:event_breakoff_code, local_code)
     end
   end
-  private :set_event_breakoff
 
   def event_disposition_text
     disp =  DispositionMapper.disposition_text_for_event(event_disposition_category, event_disposition)
@@ -439,8 +440,15 @@ class Event < ActiveRecord::Base
       end
 
       unless NcsNavigatorCore.expanded_phase_two?
-        psc.cancel_collection_instruments(participant, study_segment_identifier, date, "Not configured to run expanded phase 2 instruments")
+        psc.cancel_collection_instruments(participant, study_segment_identifier, date,
+          "Not configured to run expanded phase 2 instruments.")
       end
+
+      unless NcsNavigatorCore.mdes.version.blank?
+        psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
+          "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
+      end
+
     end
 
     resp

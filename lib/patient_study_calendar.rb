@@ -361,7 +361,7 @@ class PatientStudyCalendar
 
   def scheduled_activities_report(options = {})
     filters = {:state => Psc::ScheduledActivity::SCHEDULED, :end_date => 3.months.from_now.to_date.to_s, :current_user => nil }
-    filters = filters.merge(options)
+    filters.merge!(options)
 
     path = "reports/scheduled-activities.json?"
     path << "state=#{filters[:state]}"
@@ -478,13 +478,26 @@ class PatientStudyCalendar
   end
 
   ##
-  # Cancels all activities labelled as collection instruments (environmental or biological)
+  # Cancels all activities labeled as collection instruments (environmental or biological)
   # for the participant. Called when scheduling new segments.
   # @param[Participant]
   # @param[String]
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+      end
+    end
+  end
+
+  ##
+  # Cancels all activities that have instruments but those instruments do not match
+  # the current mdes version known to the application. Called when scheduling new segments.
+  # @param[Participant]
+  # @param[String]
+  def cancel_non_matching_mdes_version_instruments(participant, scheduled_study_segment_identifier, date, reason)
+    activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
+      if a.has_non_matching_mdes_version_instrument?
         update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
       end
     end

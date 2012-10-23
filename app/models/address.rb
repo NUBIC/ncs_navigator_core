@@ -75,6 +75,10 @@ class Address < ActiveRecord::Base
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first
   end
 
+  def self.work_address_type
+    NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 2).first
+  end
+
   def self.mailing_address_type
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 4).first
   end
