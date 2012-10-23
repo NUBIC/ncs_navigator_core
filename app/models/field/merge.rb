@@ -129,8 +129,6 @@ module Field
   # {PregnancyScreenerOperationalDataExtractor}.  See
   # {ResponseSet#extract_operational_data} for more information.
   module Merge
-    include Linking
-
     attr_accessor :logger
     attr_accessor :conflicts
 
