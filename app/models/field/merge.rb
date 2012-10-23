@@ -157,7 +157,8 @@ module Field
     # similar way to discover errors that aren't reported due to an early
     # abort.
     def save
-      collections = [contacts, events, instruments, participants, people,
+      collections = [participants, people,
+                     contacts, events, instruments,
                      response_sets,
                      question_response_sets
                     ].map { |c| current_for(c).compact }
