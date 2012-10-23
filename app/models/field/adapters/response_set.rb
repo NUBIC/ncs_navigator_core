@@ -1,8 +1,20 @@
 module Field::Adapters
   module ResponseSet
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
+    class HashAdapter < Field::HashAdapter
+      attr_accessors %w(
+        completed_at
+        p_id
+        instrument_id
+        survey_id
+        uuid
+      )
+
+      def model_class
+        ::ResponseSet
+      end
+    end
+
+    class ModelAdapter < Field::ModelAdapter
       include SetsPrerequisites
 
       attr_accessors [
@@ -33,23 +45,6 @@ module Field::Adapters
 
       def ensure_prerequisites(map)
         try_to_set(map, :instrument, :participant, :survey)
-      end
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
-      attr_accessors %w(
-        completed_at
-        p_id
-        instrument_id
-        survey_id
-        uuid
-      )
-
-      def model_class
-        ::ResponseSet
       end
     end
   end

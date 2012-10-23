@@ -1,19 +1,15 @@
 require 'forwardable'
 
-module Field::Adapters
+module Field
   ##
   # To avoid tedious unboxing code, we want to treat model adapters as
   # ActiveRecord objects.  This module lets us do so by implementing relevant
   # parts of the ActiveModel / ActiveRecord APIs.
   #
   # This module also includes code to build a whitelist of mergeable attributes.
-  module Model
-    extend ActiveSupport::Concern
+  class ModelAdapter < Adapter
+    extend ActiveModel::Naming
     extend Forwardable
-
-    included do
-      extend ActiveModel::Naming
-    end
 
     attr_accessor :source
 

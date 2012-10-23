@@ -19,17 +19,7 @@ module Field::Adapters
       event_type_other
     )
 
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
-
-      attr_accessors ATTRIBUTES
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
+    class HashAdapter < Field::HashAdapter
       attr_accessors ATTRIBUTES
 
       transform :event_end_date, :to_date
@@ -39,6 +29,10 @@ module Field::Adapters
       def model_class
         ::Event
       end
+    end
+
+    class ModelAdapter < Field::ModelAdapter
+      attr_accessors ATTRIBUTES
     end
   end
 end

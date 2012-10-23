@@ -1,8 +1,25 @@
 module Field::Adapters
   module Response
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
+    class HashAdapter < Field::HashAdapter
+      attr_accessors %w(
+        answer_id
+        created_at
+        question_id
+        response_group
+        updated_at
+        uuid
+        value
+      )
+
+      alias_method :answer_public_id, :answer_id
+      alias_method :question_public_id, :question_id
+
+      def model_class
+        ::Response
+      end
+    end
+
+    class ModelAdapter < Field::ModelAdapter
       include SetsPrerequisites
 
       attr_accessors [
@@ -34,28 +51,6 @@ module Field::Adapters
 
       def ensure_prerequisites(map)
         try_to_set(map, :answer, :question, :response_set)
-      end
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
-      attr_accessors %w(
-        answer_id
-        created_at
-        question_id
-        response_group
-        updated_at
-        uuid
-        value
-      )
-
-      alias_method :answer_public_id, :answer_id
-      alias_method :question_public_id, :question_id
-
-      def model_class
-        ::Response
       end
     end
   end

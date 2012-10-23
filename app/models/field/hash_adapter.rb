@@ -1,11 +1,11 @@
 require 'bigdecimal'
 require 'date'
 
-module Field::Adapters
+module Field
   ##
   # Type coercions to make an attribute from a hash or an ActiveRecord model
   # be appropriate for an ActiveRecord model.
-  module Hash
+  class HashAdapter < Adapter
     include Field::Adoption
 
     attr_accessor :ancestors

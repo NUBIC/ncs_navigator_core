@@ -19,17 +19,7 @@ module Field::Adapters
       supervisor_review_code
     )
 
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
-
-      attr_accessors ATTRIBUTES
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
+    class HashAdapter < Field::HashAdapter
       attr_accessors ATTRIBUTES
 
       transform :instrument_end_date, :to_date
@@ -38,6 +28,10 @@ module Field::Adapters
       def model_class
         ::Instrument
       end
+    end
+
+    class ModelAdapter < Field::ModelAdapter
+      attr_accessors ATTRIBUTES
     end
   end
 end

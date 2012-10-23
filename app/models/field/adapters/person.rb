@@ -9,10 +9,18 @@ module Field::Adapters
       suffix_code
     )
 
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
+    class HashAdapter < Field::HashAdapter
+      attr_accessors ATTRIBUTES
+      attr_accessors %w(
+        relationship_code
+      )
 
+      def model_class
+        ::Person
+      end
+    end
+
+    class ModelAdapter < Field::ModelAdapter
       attr_accessors ATTRIBUTES
 
       def person_public_id
@@ -49,20 +57,6 @@ module Field::Adapters
         else
           true
         end
-      end
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
-      attr_accessors ATTRIBUTES
-      attr_accessors %w(
-        relationship_code
-      )
-
-      def model_class
-        ::Person
       end
     end
   end

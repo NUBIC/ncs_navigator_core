@@ -21,18 +21,7 @@ module Field::Adapters
       who_contacted_other
     )
 
-    def self.adopt_hash(h)
-      HashAdapter.new(h)
-    end
-
-    def self.adopt_model(m)
-      ModelAdapter.new(m)
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
+    class HashAdapter < Field::HashAdapter
       attr_accessors ATTRIBUTES
 
       transform :contact_date_date, :to_date
@@ -43,10 +32,7 @@ module Field::Adapters
       end
     end
 
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
-
+    class ModelAdapter < Field::ModelAdapter
       attr_accessors ATTRIBUTES
     end
   end

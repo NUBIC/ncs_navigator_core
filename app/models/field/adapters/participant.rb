@@ -4,22 +4,16 @@ module Field::Adapters
       p_id
     )
 
-    class ModelAdapter
-      include Field::Adapter
-      include Field::Adapters::Model
-
-      attr_accessors ATTRIBUTES
-    end
-
-    class HashAdapter
-      include Field::Adapter
-      include Field::Adapters::Hash
-
+    class HashAdapter < Field::HashAdapter
       attr_accessors ATTRIBUTES
 
       def model_class
         ::Participant
       end
+    end
+
+    class ModelAdapter < Field::ModelAdapter
+      attr_accessors ATTRIBUTES
     end
   end
 end
