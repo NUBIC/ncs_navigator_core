@@ -101,7 +101,6 @@ module ApplicationHelper
     else
       "TYPE UNKNOWN"
     end
-
   end
 
   def sample_root_id(value)
@@ -115,12 +114,7 @@ module ApplicationHelper
   end
 
   def continuable?(event)
-    continuable_events = [ PatientStudyCalendar::PREGNANCY_SCREENER,
-                           PatientStudyCalendar::BIRTH_VISIT_INTERVIEW,
-                           PatientStudyCalendar::HI_LO_CONVERSION,
-                           PatientStudyCalendar::INFORMED_CONSENT ]
-
-    continuable_events.include?(event.to_s)
+    Event::CONTINUABLE.include?(event.to_s)
   end
 
 end

@@ -798,4 +798,12 @@ describe Event do
       event.sa_state_change_reason.should == 'Synchronized from Cases'
     end
   end
+
+  describe "CONTINUABLE" do
+
+    it "includes PBS Participant Eligibility Screening as a continuable event" do
+      Event::CONTINUABLE.should include("PBS Participant Eligibility Screening")
+    end
+  end
+
 end

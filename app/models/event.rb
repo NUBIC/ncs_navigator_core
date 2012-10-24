@@ -100,6 +100,18 @@ class Event < ActiveRecord::Base
     -4  # Missing in Error
   ]
 
+  # An event that can take place during the same contact
+  # as another event
+  CONTINUABLE = [
+    PatientStudyCalendar::PREGNANCY_SCREENER,
+    PatientStudyCalendar::PBS_ELIGIBILITY,
+    "PBS Participant Eligibility Screening",
+    PatientStudyCalendar::BIRTH_VISIT_INTERVIEW,
+    PatientStudyCalendar::HI_LO_CONVERSION,
+    PatientStudyCalendar::INFORMED_CONSENT
+  ]
+
+
   ##
   # Display text from the NcsCode list EVENT_TYPE_CL1
   # cf. event_type belongs_to association
