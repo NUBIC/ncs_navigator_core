@@ -27,7 +27,13 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/a_publicly_identified_record', __FILE__)
+
 describe Survey do
+  it_should_behave_like 'a publicly identified record' do
+    let(:o1) { Factory(:survey) }
+    let(:o2) { Factory(:survey) }
+  end
 
   context "more than one Survey having the same title", :slow do
 

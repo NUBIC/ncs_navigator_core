@@ -90,8 +90,7 @@ module Field
     attr_accessor :responses
 
     ##
-    # By default, this logger throws messages to a bit bucket.  If you want log
-    # messages, provide your own logger.
+    # By default, this logger throws messages to the Rails logger.
     attr_accessor :logger
 
     def initialize
@@ -104,7 +103,7 @@ module Field
       self.response_sets = {}
       self.responses = {}
 
-      self.logger = Logger.new(nil)
+      self.logger = Rails.logger
     end
 
     def build(original, proposed)
@@ -130,7 +129,7 @@ module Field
         set_current_state(h, ::Instrument, 'instrument_id')
         set_current_state(h, ::Participant, 'p_id')
         set_current_state(h, ::Person, 'person_id')
-        set_current_state(h, ::Response, 'api_id')
+        set_current_state(h, ::Response.with_answers_and_questions, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
       end
     end
@@ -140,9 +139,9 @@ module Field
 
       responses.each do |_, state|
         state.each do |state_name, response|
-          res[response.question_id] ||= {}
-          res[response.question_id][state_name] ||= QuestionResponseSet.new
-          res[response.question_id][state_name] << response
+          res[response.question_public_id] ||= {}
+          res[response.question_public_id][state_name] ||= QuestionResponseSet.new
+          res[response.question_public_id][state_name] << response
         end
       end
 
@@ -225,7 +224,7 @@ module Field
     end
 
     class Context < Struct.new(:state, :superposition, :ancestors)
-      include NcsNavigator::Core::Fieldwork::Adapters
+      include Field::Adoption
 
       def add(entity, object, key)
         collection = entity.to_s.pluralize.underscore
@@ -243,7 +242,7 @@ module Field
 
         c[kv][state] = adapter ? adapter : object
 
-        if adapter
+        if adapter.respond_to?(:ancestors=)
           adapter.ancestors = ancestors
         end
 

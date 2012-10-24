@@ -301,8 +301,24 @@ module Field
               participants[0]['version'].should == participant.updated_at.utc.as_json
             end
 
-            it 'sets #/0/persons/0/name' do
-              participants[0]['persons'][0]['name'].should == person.name
+            it 'sets #/0/persons/0/first_name' do
+              participants[0]['persons'][0]['first_name'].should == person.first_name
+            end
+
+            it 'sets #/0/persons/0/middle_name' do
+              participants[0]['persons'][0]['middle_name'].should == person.middle_name
+            end
+
+            it 'sets #/0/persons/0/last_name' do
+              participants[0]['persons'][0]['last_name'].should == person.last_name
+            end
+
+            it 'sets #/0/persons/0/prefix_code' do
+              participants[0]['persons'][0]['prefix_code'].should == person.prefix_code
+            end
+
+            it 'sets #/0/persons/0/suffix_code' do
+              participants[0]['persons'][0]['suffix_code'].should == person.suffix_code
             end
 
             it 'sets #/0/persons/0/person_id' do

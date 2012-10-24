@@ -128,7 +128,18 @@ module Field
       end
 
       it_merges 'completed_at'
-      it_merges 'created_at'
+    end
+
+    when_merging 'Person' do
+      let(:properties) do
+        SCHEMA['properties']['participants']['items']['properties']['persons']['items']['properties']
+      end
+
+      it_merges 'first_name'
+      it_merges 'last_name'
+      it_merges 'middle_name'
+      it_merges 'prefix_code'
+      it_merges 'suffix_code'
     end
 
     describe 'when merging QuestionResponseSets' do
@@ -161,7 +172,7 @@ module Field
       end
 
       describe 'for sets O, C, P' do
-        include NcsNavigator::Core::Fieldwork::Adapters
+        include Field::Adoption
 
         describe 'if O = C = P = nil' do
           let(:o) { nil }
@@ -320,18 +331,22 @@ module Field
     end
 
     describe '#save' do
-      include NcsNavigator::Core::Fieldwork::Adapters
+      include Field::Adoption
 
       let(:contact) { Factory(:contact) }
       let(:event) { Factory(:event) }
-      let(:response_set) { Factory(:response_set) }
+      let(:response_set) { Factory(:response_set, :instrument => instrument, :participant => participant) }
       let(:instrument) { Factory(:instrument) }
+      let(:person) { Factory(:person) }
+      let(:participant) { Factory(:participant) }
       let(:qrs) { QuestionResponseSet.new }
 
       let(:ac) { adapt_model(contact) }
       let(:ae) { adapt_model(event) }
       let(:rs) { adapt_model(response_set) }
       let(:ai) { adapt_model(instrument) }
+      let(:pe) { adapt_model(person) }
+      let(:pa) { adapt_model(participant) }
 
       before do
         subject.contacts = {
@@ -366,6 +381,22 @@ module Field
           }
         }
 
+        subject.people = {
+          'p1' => {
+            :original => nil,
+            :current => pe,
+            :proposed => nil
+          }
+        }
+
+        subject.participants = {
+          'p1' => {
+            :original => nil,
+            :current => pa,
+            :proposed => nil
+          }
+        }
+
         subject.question_response_sets = {
           'q1' => {
             :original => nil,
@@ -375,26 +406,19 @@ module Field
         }
       end
 
+      it 'skips nil entities' do
+        subject.instruments = { 'p1' => {} }
+
+        subject.save.should be_true
+      end
+
       describe 'on success' do
         before do
           @ret = subject.save
         end
 
-        it 'returns merged contacts' do
-          @ret[:contacts].should == [ac]
-        end
-
-        it 'returns merged events' do
-          @ret[:events].should == [ae]
-        end
-
-        it 'returns merged instruments' do
-          @ret[:instruments].should == [ai]
-        end
-
-        it 'returns merged response sets' do
-          @ret[:response_sets].should == [rs]
-          @ret[:question_response_sets].should == [qrs]
+        it 'returns true' do
+          @ret.should be_true
         end
       end
 
@@ -405,8 +429,8 @@ module Field
           @ret = subject.save
         end
 
-        it 'returns nil' do
-          @ret.should be_nil
+        it 'returns false' do
+          @ret.should be_false
         end
       end
     end

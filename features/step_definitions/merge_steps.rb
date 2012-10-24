@@ -4,13 +4,6 @@ require 'facets/random'
 require 'ostruct'
 require 'stringio'
 
-def link_participant_to_associated_entities
-  @p.person = @person
-  @p.events << @event
-
-  @p.save!
-end
-
 # We want direct Rack::Test access, but it's not really an API-only
 # integration test.
 Before '@merge' do
@@ -49,6 +42,9 @@ Given /^the participant$/ do |table|
   @person = Person.create!(Hash[*person_attrs.flatten])
   @p = Participant.create!(Hash[*p_attrs.flatten])
 
+  @p.person = @person
+  @p.save!
+
   @context.update('participant_id' => @p.public_id)
 end
 
@@ -61,6 +57,9 @@ Given /^the event$/ do |table|
 
   @event = Event.create!(data.merge(:event_type => code,
                                     :event_start_date => data['event_start_date']))
+
+  @p.events << @event
+  @p.save!
 end
 
 Given /^the survey$/ do |table|
@@ -82,9 +81,17 @@ end
   Surveyor::Parser.new.parse(str)
 end
 
-Given /^I complete the fieldwork set$/ do |table|
-  link_participant_to_associated_entities
+# FIXME: This is a pretty terrible hack, but Cases' current UI provides no way
+# of differentating between response sets.
+Given /^there are no response sets for "([^"]*)"$/ do |survey_title|
+  survey = Survey.where(:title => survey_title).first
+  response_sets = ResponseSet.where(:survey_id => survey.id)
+  response_sets.each(&:destroy)
 
+  ResponseSet.where(:survey_id => survey.id).count.should == 0
+end
+
+Given /^I complete the fieldwork set$/ do |table|
   data = table.rows_hash
 
   fixtures_root = File.expand_path('../../fixtures', __FILE__)
@@ -98,11 +105,11 @@ Given /^I complete the fieldwork set$/ do |table|
   }
 
   @context.update(
-    'contact_id' => Contact.last.public_id,
-    'instrument_id' => Instrument.last.public_id,
-    'person_id' => Person.last.public_id,
-    'response_set_id' => ResponseSet.last.api_id,
-    'survey_id' => Survey.last.api_id,
+    'contact_id' => Contact.last.try(:public_id),
+    'instrument_id' => Instrument.last.try(:public_id),
+    'person_id' => Person.last.try(:public_id),
+    'response_set_id' => ResponseSet.last.try(:api_id),
+    'survey_id' => Survey.last.try(:api_id),
     'question_ids' => Question.all.map(&:api_id),
     'answer_ids' => Answer.all.map(&:api_id)
   )

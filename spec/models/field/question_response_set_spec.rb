@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Field
   describe QuestionResponseSet do
-    include NcsNavigator::Core::Fieldwork::Adapters
+    include Field::Adoption
 
     let(:group) { QuestionResponseSet.new }
     let(:q1) { Factory(:question) }
@@ -34,7 +34,7 @@ module Field
       it "is the API ID of the first response's question" do
         group << r1
 
-        group.public_id.should == r1.question_id
+        group.public_id.should == r1.question_public_id
       end
     end
 
@@ -61,6 +61,36 @@ module Field
 
           group.should_not be_changed
         end
+      end
+    end
+
+    describe '#pending_prerequisites' do
+      let(:group) { QuestionResponseSet.new(r1, r1b) }
+
+      before do
+        r1.stub!(:pending_prerequisites => { ::Answer => ['foo'] })
+        r1b.stub!(:pending_prerequisites => { ::Answer => ['bar'] })
+      end
+
+      it 'returns pending prerequisites of its responses' do
+        group.pending_prerequisites.should == {
+          ::Answer => ['foo', 'bar']
+        }
+      end
+    end
+
+    describe '#pending_postrequisites' do
+      let(:group) { QuestionResponseSet.new(r1, r1b) }
+
+      before do
+        r1.stub!(:pending_postrequisites => { ::Answer => ['foo'] })
+        r1b.stub!(:pending_postrequisites => { ::Answer => ['bar'] })
+      end
+
+      it 'returns pending postrequisites of its responses' do
+        group.pending_postrequisites.should == {
+          ::Answer => ['foo', 'bar']
+        }
       end
     end
 
@@ -174,8 +204,8 @@ module Field
 
       describe 'if g1 and g2 do not address the same question ID' do
         before do
-          r1.stub!(:question_id => 'foo', :answer_id => 'foo', :response_group => 'bar', :value => 'baz')
-          r2.stub!(:question_id => 'bar', :answer_id => 'foo', :response_group => 'bar', :value => 'baz')
+          r1.stub!(:question_public_id => 'foo', :answer_public_id => 'foo', :response_group => 'bar', :value => 'baz')
+          r2.stub!(:question_public_id => 'bar', :answer_public_id => 'foo', :response_group => 'bar', :value => 'baz')
 
           g1 << r1
           g2 << r2
@@ -188,8 +218,8 @@ module Field
 
       describe 'if g1 and g2 contain the same (answer, response group, value) triples' do
         before do
-          r1.stub!(:answer_id => 'foo', :response_group => 'bar', :value => 'baz', :question_id => 'grault')
-          r2.stub!(:answer_id => 'foo', :response_group => 'bar', :value => 'baz', :question_id => 'grault')
+          r1.stub!(:answer_public_id => 'foo', :response_group => 'bar', :value => 'baz', :question_public_id => 'grault')
+          r2.stub!(:answer_public_id => 'foo', :response_group => 'bar', :value => 'baz', :question_public_id => 'grault')
 
           g1 << r1
           g2 << r2
@@ -202,8 +232,8 @@ module Field
 
       describe 'if g1 and g2 contain different (answer, response group, value) triples' do
         before do
-          r1.stub!(:answer_id => 'foo', :response_group => 'bar', :value => 'baz', :question_id => 'grault')
-          r2.stub!(:answer_id => 'qux', :response_group => 'quux', :value => 'corge', :question_id => 'grault')
+          r1.stub!(:answer_public_id => 'foo', :response_group => 'bar', :value => 'baz', :question_public_id => 'grault')
+          r2.stub!(:answer_public_id => 'qux', :response_group => 'quux', :value => 'corge', :question_public_id => 'grault')
 
           g1 << r1
           g2 << r2

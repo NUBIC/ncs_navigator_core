@@ -1,19 +1,25 @@
+require 'facets/hash/weave'
 require 'forwardable'
 require 'set'
 
 module Field
   ##
-  # This defines an equivalence class (by question ID) on Surveyor's {Response}
-  # object.  It also provides code to compare two QuestionResponseSets for
-  # answer equality and answer-and-value equality.
+  # This defines an equivalence class on Surveyor's {Response} object.  It also
+  # provides code to compare two QuestionResponseSets for answer equality and
+  # answer-and-value equality.
   #
   # QuestionResponseSet objects are designed to permit merging survey data with
   # {Merge}.
+  #
+  # The equivalence relation used by this class is equality of two responses'
+  # #question_public_id return value.  {Response::HashAdapter} and
+  # {Response::ModelAdapter} both implement this.
   #
   # The first response added to a QuestionResponseSet determines the question
   # ID for the QuestionResponseSet.  Attempts to add responses having different
   # question IDs will raise an error.
   class QuestionResponseSet
+    extend ActiveModel::Translation
     extend Forwardable
     include Enumerable
 
@@ -35,12 +41,12 @@ module Field
     ##
     # Add a response.
     def <<(response)
-      if responses.empty?
-        @question_id = response.question_id
-      end
+      qpi = response.question_public_id
 
-      if @question_id != response.question_id
-        raise "Cannot add a response with question ID #{response.question_id} to a #{self.class.name} with question ID #{@question_id}"
+      @question_public_id = qpi if responses.empty?
+
+      if @question_public_id != qpi
+        raise "Cannot add a response with question ID #{response.public_question_id} to a #{self.class.name} with question ID #{@question_public_id}"
       end
 
       old_length = responses.length
@@ -49,7 +55,23 @@ module Field
     end
 
     def public_id
-      @question_id
+      @question_public_id
+    end
+
+    def pending_prerequisites
+      responses.map(&:pending_prerequisites).inject({}, &:weave)
+    end
+
+    def pending_postrequisites
+      responses.map(&:pending_postrequisites).inject({}, &:weave)
+    end
+
+    def ensure_prerequisites(map)
+      responses.map { |r| r.ensure_prerequisites(map) }.all?
+    end
+
+    def ensure_postrequisites(map)
+      responses.map { |r| r.ensure_postrequisites(map) }.all?
     end
 
     ##
@@ -77,8 +99,6 @@ module Field
     # Saves and destroys responses.
     def save(options = {})
       ActiveRecord::Base.transaction do
-        resolve_models
-
         ok = all? do |r|
           r.marked_for_destruction? ? r.destroy : r.save
         end
@@ -96,7 +116,7 @@ module Field
 
     def collect_errors
       each do |r|
-        errors.add(r.question_id, r.errors.to_a)
+        errors.add(r.question_public_id, r.errors.to_a)
       end
     end
 
@@ -133,18 +153,20 @@ module Field
     def wrap(r)
       return r if Response === r
 
-      Response.new(r.question_id, r.answer_id, r.response_group, r.value).tap do |rf|
+      Response.new(r.question_public_id, r.answer_public_id, r.response_group, r.value).tap do |rf|
         rf.wrapped_response = r
+        rf.resolve_model
       end
     end
 
-    class Response < Struct.new(:question_id, :answer_id, :response_group, :value)
+    class Response < Struct.new(:question_public_id, :answer_public_id, :response_group, :value)
       extend Forwardable
 
       attr_accessor :wrapped_response
       attr_accessor :response_model
 
       def_delegators :response_model, :mark_for_destruction, :marked_for_destruction?, :save, :destroy, :errors
+      def_delegators :response_model, :pending_prerequisites, :pending_postrequisites, :ensure_prerequisites, :ensure_postrequisites
 
       def resolve_model
         self.response_model = wrapped_response.to_model

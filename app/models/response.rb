@@ -25,9 +25,14 @@
 #
 
 class Response < ActiveRecord::Base
+  include NcsNavigator::Core::Surveyor::HasPublicId
   include Surveyor::Models::ResponseMethods
 
   def self.default_scope; end
+
+  def self.with_answers_and_questions
+    includes(:answer, :question)
+  end
 
   def source_mdes_record=(record)
     self.source_mdes_table = record.class.mdes_table_name
@@ -67,4 +72,3 @@ class Response < ActiveRecord::Base
     as(a.response_class.to_sym) unless a.response_class == 'answer'
   end
 end
-

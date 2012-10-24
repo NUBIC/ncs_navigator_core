@@ -66,9 +66,10 @@ module Field
         end
 
         it "sets ancestry" do
-          dereferenced = Hash[*ancestry.map { |k, ptr| [k, dereference(ptr, source)] }.flatten]
+          expected = Hash[*ancestry.map { |k, ptr| [k, dereference(ptr, source)] }.flatten]
+          actual = subject.send(collection)[entity_id][state].ancestors
 
-          subject.send(collection)[entity_id][state].ancestors.should include(dereferenced)
+          actual.should include(expected)
         end
       end
     end
@@ -200,7 +201,7 @@ module Field
     end
 
     describe '#build_question_response_sets' do
-      include NcsNavigator::Core::Fieldwork::Adapters
+      include Field::Adoption
 
       let(:q1) { Factory(:question) }
       let(:q2) { Factory(:question) }

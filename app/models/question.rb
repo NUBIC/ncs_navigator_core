@@ -30,9 +30,9 @@
 
 
 class Question < ActiveRecord::Base
+  include NcsNavigator::Core::Surveyor::HasPublicId
   include Surveyor::Models::QuestionMethods
 
   default_scope :order => "display_order ASC, id ASC"
-
 end
 

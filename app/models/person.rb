@@ -18,6 +18,7 @@
 #  language_new_other             :string(255)
 #  language_other                 :string(255)
 #  last_name                      :string(30)
+#  lock_version                   :integer          default(0)
 #  maiden_name                    :string(30)
 #  marital_status_code            :integer          not null
 #  marital_status_other           :string(255)

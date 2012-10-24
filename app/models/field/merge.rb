@@ -18,7 +18,6 @@
 #  updated_at      :datetime
 #
 
-
 require 'ncs_navigator/core'
 
 require 'case'
@@ -31,8 +30,15 @@ module Field
   # fieldwork set sent to a field client, and a corresponding fieldwork set
   # received from a field client.
   #
-  # Currently, five entities are merged: {Contact}, {Event}, {Instrument},
-  # {ResponseSet}, and {Response} via {QuestionResponseSet}.
+  # Currently, the following entities are merged:
+  #
+  # * {Contact}
+  # * {Event}
+  # * {Instrument}
+  # * {Response} via {QuestionResponseSet}
+  # * {ResponseSet}
+  # * {Participant}
+  # * {Person}
   #
   #
   # Overview
@@ -53,10 +59,10 @@ module Field
   # Atomic vs. non-atomic merge
   # ===========================
   #
-  # Contacts, Events, Instruments, and ResponseSets can all be merged
-  # non-atomically, which means that we can commit changes even in the presence
-  # of conflicts.  (Also, we can retry the merge on those entities and progress
-  # towards a fully merged state.)
+  # Contacts, Events, Persons, Participants, ResponseSets, and Instruments can
+  # all be merged non-atomically, which means that we can commit changes even
+  # in the presence of conflicts.  (Also, we can retry the merge on those
+  # entities and progress towards a fully merged state.)
   #
   # QuestionResponseSets, on the other hand, must be merged atomically: if
   # there exist conflicts on any attribute on any Response, none of the
@@ -113,6 +119,15 @@ module Field
   #
   # All entities involved in the merge use ActiveRecord's optimistic locking
   # mechanism, and Merge#save will re-raise ActiveRecord::StaleObjectError.
+  #
+  #
+  # Participant/Person considerations
+  # =================================
+  #
+  # Person data is only partially merged by this process.  Contact information
+  # for a person (address, email, phone) is handled by
+  # {PregnancyScreenerOperationalDataExtractor}.  See
+  # {ResponseSet#extract_operational_data} for more information.
   module Merge
     attr_accessor :logger
     attr_accessor :conflicts
@@ -124,6 +139,8 @@ module Field
       events.each { |id, state| merge_entity(state, 'Event', id) }
       instruments.each { |id, state| merge_entity(state, 'Instrument', id) }
       response_sets.each { |id, state| merge_entity(state, 'ResponseSet', id) }
+      people.each { |id, state| merge_entity(state, 'Person', id) }
+      participants.each { |id, state| merge_entity(state, 'Participant', id) }
       question_response_sets.each { |id, state| merge_entity(state, 'QuestionResponseSet', id) }
     end
 
@@ -139,36 +156,20 @@ module Field
     # that can be dealt with by just looking further up in the log.  There's no
     # similar way to discover errors that aren't reported due to an early
     # abort.
-    #
-    # If save succeeds, this method returns the merged model objects in a map
-    # of the form
-    #
-    #     { :contacts => [#<Contact ...>, ...],
-    #       :events => [#<Event ...>, ...],
-    #       :instruments => [#<Instrument ...>, ...],
-    #       :response_sets => [#<ResponseSet ...>, ...],
-    #       :question_response_sets => [#<QuestionResponseSet ...>, ...]
-    #     }
-    #
-    # If save fails, returns nil.
     def save
-      map = {
-        :contacts => current_for(contacts),
-        :events => current_for(events),
-        :instruments => current_for(instruments),
-        :response_sets => current_for(response_sets),
-        :question_response_sets => current_for(question_response_sets)
-      }
+      collections = [contacts, events, instruments, participants, people,
+                     response_sets,
+                     question_response_sets
+                    ].map { |c| current_for(c).compact }
 
       ActiveRecord::Base.transaction do
-        ok = map.values.all? { |c| save_collection(c) }
-
-        if ok
-          logger.info { 'Merge saved' }
-          map
-        else
-          logger.fatal { 'Errors raised during save; rolling back' }
-          raise ActiveRecord::Rollback
+        collections.map { |c| save_collection(c) }.all?.tap do |ok|
+          if ok
+            logger.info { 'Merge saved' }
+          else
+            logger.fatal { 'Errors raised during save; rolling back' }
+            raise ActiveRecord::Rollback
+          end
         end
       end
     end
@@ -239,7 +240,7 @@ module Field
       result = collapse(o, c, p)
 
       if result == :conflict
-        logger.debug { "Detected conflict: [o, c, p] = #{[o, c, p].inspect}" }
+        logger.warn { "Detected conflict: [o, c, p] = #{[o, c, p].inspect}" }
         conflicts.add(entity, id, attr, o, c, p)
       else
         logger.debug { "Collapsed [o, c, p] = #{[o, c, p].inspect} to #{result.inspect}" }
@@ -266,12 +267,48 @@ module Field
     ##
     # @private
     # @return Boolean
-    def save_collection(coll)
-      coll.all? do |entity|
-        next true unless entity
+    def save_collection(c)
+      ok = ensure_prerequisites(c)
+      ok = ok && save_entities(c)
+      ok = ok && ensure_postrequisites(c)
+    end
 
+    ##
+    # @private
+    def ensure_prerequisites(c)
+      pending = c.map(&:pending_prerequisites).inject({}, &:weave)
+      map = resolve_requisites(pending)
+
+      c.map { |m| m.ensure_prerequisites(map) }.all?
+    end
+
+    ##
+    # @private
+    def save_entities(c)
+      c.map do |entity|
         entity.save.tap { |ok| log_errors_for(entity, ok) }
+      end.all?
+    end
+
+    ##
+    # @private
+    def ensure_postrequisites(c)
+      pending = c.map(&:pending_postrequisites).inject({}, &:weave)
+      map = resolve_requisites(pending)
+
+      c.map { |m| m.ensure_postrequisites(map) }.all?
+    end
+
+    ##
+    # @private
+    def resolve_requisites(reqs)
+      m = {}.tap do |map|
+        reqs.each do |model, public_ids|
+          map[model] = model.public_id_to_id_map(public_ids)
+        end
       end
+
+      IdMap.new(m)
     end
 
     ##

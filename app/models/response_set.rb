@@ -17,9 +17,8 @@
 #  user_id                                   :integer
 #
 
-
-
 class ResponseSet < ActiveRecord::Base
+  include NcsNavigator::Core::Surveyor::HasPublicId
   include Surveyor::Models::ResponseSetMethods
   belongs_to :person, :foreign_key => :user_id, :class_name => 'Person', :primary_key => :id
   belongs_to :instrument, :inverse_of => :response_sets
@@ -50,12 +49,7 @@ class ResponseSet < ActiveRecord::Base
     result
   end
 
-  def public_id
-    api_id
-  end
-
   def as_json(options = nil)
     super.merge('p_id' => participant.try(:public_id))
   end
 end
-

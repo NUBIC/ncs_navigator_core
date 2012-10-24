@@ -5,7 +5,7 @@ require 'spec_helper'
 require File.expand_path('../merge_value_generation', __FILE__)
 
 shared_context 'merge', :fieldwork_merge do
-  include NcsNavigator::Core::Fieldwork::Adapters
+  include Field::Adoption
 
   let(:collection) { entity.underscore.to_s.underscore.pluralize }
   let(:conflicts) { vessel.conflicts }

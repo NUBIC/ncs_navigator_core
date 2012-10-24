@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121004200440) do
+ActiveRecord::Schema.define(:version => 20121008201831) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                 :null => false
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(:version => 20121004200440) do
     t.integer  "response_set_id"
     t.integer  "provider_id"
     t.integer  "institute_id"
+    t.integer  "lock_version",                             :default => 0
   end
 
   create_table "answers", :force => true do |t|
@@ -207,6 +208,7 @@ ActiveRecord::Schema.define(:version => 20121004200440) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+    t.integer  "lock_version",                           :default => 0
   end
 
   create_table "environmental_equipments", :force => true do |t|
@@ -677,6 +679,7 @@ ActiveRecord::Schema.define(:version => 20121004200440) do
     t.string   "high_intensity_state"
     t.text     "enrollment_status_comment"
     t.boolean  "being_followed",                          :default => false
+    t.integer  "lock_version",                            :default => 0
   end
 
   create_table "pbs_lists", :force => true do |t|
@@ -762,6 +765,7 @@ ActiveRecord::Schema.define(:version => 20121004200440) do
     t.string   "role"
     t.integer  "language_new_code"
     t.string   "language_new_other"
+    t.integer  "lock_version",                                 :default => 0
   end
 
   create_table "person_provider_links", :force => true do |t|
@@ -813,6 +817,7 @@ ActiveRecord::Schema.define(:version => 20121004200440) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "response_set_id"
+    t.integer  "lock_version",                      :default => 0
   end
 
   create_table "ppg_status_histories", :force => true do |t|
@@ -1446,6 +1451,7 @@ ActiveRecord::Schema.define(:version => 20121004200440) do
     t.integer  "response_set_id"
     t.integer  "provider_id"
     t.integer  "institute_id"
+    t.integer  "lock_version",                          :default => 0
   end
 
   create_table "vacant_non_interview_reports", :force => true do |t|
