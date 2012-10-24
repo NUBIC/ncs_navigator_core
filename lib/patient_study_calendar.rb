@@ -569,7 +569,7 @@ class PatientStudyCalendar
     subject_attributes["person#{separator}id"]  = participant.person.public_id
 
     gender = participant.gender
-    if gender.blank? || gender == "Missing in Error"
+    if gender.blank? || gender == "Missing in Error" || gender == "Both"
       gender = "unknown"
     end
     subject_attributes["gender"] = gender
