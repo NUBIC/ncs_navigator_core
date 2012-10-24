@@ -31,7 +31,7 @@
                 = blank_safe(event.event_end_date)
               #span.disposition
                 - if event.event_disposition
-                  - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
+                  - disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
                   = disp.blank? ? "#{event.event_disposition} - #{event.event_disposition_category}" : disp
             .contact_link
               - if event.contact_links.blank?
@@ -50,11 +50,11 @@
                       End
                     %th
                       Disposition
-                    %th.hide
+                    %th
                       Continue
-                  - event.contact_links.each do |cl|
+                  - event.contact_links.map(&:contact).uniq.each do |contact|
+                    - cl = contact.contact_links.last
                     - cls = cycle('even_record', 'odd_record')
-                    - contact = cl.contact
                     %tr{ :class => cls }
                       %td
                         = contact.contact_type
@@ -65,12 +65,12 @@
                       %td
                         = contact.contact_end_time
                       %td
-                        - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
+                        - disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
                         = disp.blank? ? contact.contact_disposition : disp
-                      %td.hide
+                      %td
                         - if contact.contact_date_date == Date.today && event.event_end_date.blank?
-                          = link_to "Continue #{event.event_type}", new_person_contact_path(@person, :event_type_id => event.event_type.id),
-                            :class => "add_link icon_link"
+                          = link_to "Continue Contact", decision_page_contact_link_path(cl),
+                            :class => "continue_link icon_link"
                     - unless contact.contact_comment.blank?
                       %tr{ :class => "comment_#{cls} #{cls}"  }
                         %td{ :colspan => 6 }

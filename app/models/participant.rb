@@ -709,9 +709,17 @@ class Participant < ActiveRecord::Base
   # Participant should be screened if they have not completed either
   # the Pregnancy Screener or PBS Eligibility Screener event
   def should_be_screened?
+    new_participant_in_study? &&
     !completed_event?(NcsNavigatorCore.recruitment_strategy.pbs? ?
                       NcsCode.pbs_eligibility_screener :
                       NcsCode.pregnancy_screener)
+  end
+
+  ##
+  # True if the participant state is in one of the initial states
+  # i.e. not updated from an action in the study
+  def new_participant_in_study?
+    (converted_high_intensity? || pending? || registered?)
   end
 
   ##
