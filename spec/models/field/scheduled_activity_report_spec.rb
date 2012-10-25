@@ -181,6 +181,10 @@ module Field
             it 'sets #/0/event_end_time' do
               events[0]['event_end_time'].should == event.event_end_time
             end
+
+            it 'sets #/0/p_id' do
+              events[0]['p_id'].should == event.participant.public_id
+            end
           end
         end
 

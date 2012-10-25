@@ -38,8 +38,9 @@ module Field
 
         if me
           adapt_model(me).as_json(options).merge({
-            'name' => me.event_type.to_s,
             'instruments' => instruments_as_json(e, person, options),
+            'name' => me.event_type.to_s,
+            'p_id' => me.participant.public_id,
             'version' => me.updated_at.utc
           })
         end
