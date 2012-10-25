@@ -496,14 +496,12 @@ class Participant < ActiveRecord::Base
   # The number of months to wait before the next event
   # @return [Date]
   def interval
-    return 1.week unless pending_events.blank?
-
     case
     when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?, (can_consent? && eligible_for_low_intensity_follow_up?)
       0
-    when pregnancy_two?
+    when pregnancy_two?, pregnancy_one?
       60.days
-    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?, pregnancy_one?
+    when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
       follow_up_interval
     when in_pregnant_state?
       due_date ? 1.day : 0

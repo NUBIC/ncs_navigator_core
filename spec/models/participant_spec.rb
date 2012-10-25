@@ -103,7 +103,7 @@ describe Participant do
       pr.should be_pregnancy_one
       pr.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1]
       pr.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
-      pr.next_scheduled_event.date.should == 3.months.from_now.to_date
+      pr.next_scheduled_event.date.should == 60.days.from_now.to_date
     end
 
   end
@@ -612,13 +612,13 @@ describe Participant do
         end
 
         context "next event date" do
-          it "should be after 3 months from the contact date if contacts" do
+          it "should be after 60 days months from the contact date if contacts" do
             Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
-            @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
+            @participant.next_scheduled_event.date.should == Date.parse('2012-01-01') + 60.days
           end
 
-          it "should be after 3 months from participant's created_at date if no contacts" do
-            @participant.next_scheduled_event.date.should == Date.new(2012, 05, 01)
+          it "should be after 60 days from participant's created_at date if no contacts" do
+            @participant.next_scheduled_event.date.should == Date.parse('2012-02-01') + 60.days
           end
 
           context "with due_date" do
@@ -628,13 +628,13 @@ describe Participant do
               @participant.due_date.should == Date.new(2012, 10, 01)
             end
 
-            it "should be after 3 months from the contact date if contacts" do
+            it "should be after 60 days from the contact date if contacts" do
               Factory(:contact_link, :person => @person, :contact => Factory(:contact, :created_at => Time.now, :contact_date => '2012-01-01'))
-              @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
+              @participant.next_scheduled_event.date.should == Date.parse('2012-01-01') + 60.days
             end
 
-            it "should be after 3 months from participant's created_at date if no contacts" do
-              @participant.next_scheduled_event.date.should == Date.new(2012, 05, 01)
+            it "should be after 60 days from participant's created_at date if no contacts" do
+              @participant.next_scheduled_event.date.should == Date.parse('2012-02-01') + 60.days
             end
           end
         end
