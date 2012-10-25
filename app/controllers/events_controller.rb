@@ -38,6 +38,15 @@ class EventsController < ApplicationController
       @contact_link = ContactLink.find(params[:contact_link_id])
     end
     @close = params[:close]
+
+    if @event.open_contacts? && !@event.continuable?
+      if (!params[:event][:event_end_date].nil? || !params[:event][:event_end_date].nil?)
+        flash[:warning] = "Event cannot be closed. Please close all contacts associated with this event before setting the event end date."
+      end
+      params[:event][:event_end_date] = nil
+      params[:event][:event_end_time] = nil
+    end
+
     respond_to do |format|
       if @event.update_attributes(params[:event])
         mark_activity_occurred

@@ -114,7 +114,7 @@ module ApplicationHelper
   end
 
   def continuable?(event)
-    Event::CONTINUABLE.include?(event.to_s)
+    event.continuable?
   end
 
 end

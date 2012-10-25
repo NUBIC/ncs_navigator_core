@@ -103,6 +103,10 @@ class Contact < ActiveRecord::Base
   alias completed? closed?
   alias complete? closed?
 
+  def open?
+    !closed? && self.contact_end_time.blank?
+  end
+
   ##
   # Given an instrument, presumably after the instrument has been administered, set attributes on the
   # contact that can be inferred based on the instrument and type of contact

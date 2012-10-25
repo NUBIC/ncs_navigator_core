@@ -111,7 +111,6 @@ class Event < ActiveRecord::Base
     PatientStudyCalendar::INFORMED_CONSENT
   ]
 
-
   ##
   # Display text from the NcsCode list EVENT_TYPE_CL1
   # cf. event_type belongs_to association
@@ -193,6 +192,20 @@ class Event < ActiveRecord::Base
   # @return [Boolean]
   def can_delete?
     !closed? && contact_links.blank?
+  end
+
+  ##
+  # True is there are any open contacts associated
+  # with this event
+  def open_contacts?
+    self.contacts.select(&:open?).size > 0
+  end
+
+  ##
+  # True if this event can occur before another event
+  # during the same contact.
+  def continuable?
+    Event::CONTINUABLE.include?(self.to_s)
   end
 
   ##

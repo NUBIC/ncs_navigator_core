@@ -806,4 +806,21 @@ describe Event do
     end
   end
 
+  describe ".open_contacts?" do
+
+    let(:contact) { Factory(:contact, :contact_end_time => nil) }
+    let(:event) { Factory(:event) }
+    let(:contact_link) { Factory(:contact_link, :contact => contact, :event => event) }
+
+    it "returns true if any contact associated with the event is open" do
+      contact_link.event.open_contacts?.should be_true
+    end
+
+    it "returns false if there are no opend contacts associated with the event" do
+      contact_link.contact.update_attribute(:contact_end_time, "12:00")
+      contact_link.event.open_contacts?.should be_false
+    end
+
+  end
+
 end

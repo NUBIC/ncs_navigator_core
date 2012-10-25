@@ -31,12 +31,15 @@ describe ApplicationHelper do
   context "limiting continue" do
     describe ".continuable?" do
 
-      before(:each) do
-        @continuable_event = "Pregnancy Screener"
+      let(:continuable_event) { Factory(:event, :event_type_code => 10) } # Informed Consent
+      let(:noncontinuable_event) { Factory(:event, :event_type_code => 23) } # 3 Month
+
+      it "returns true if event type is a continuable event" do
+        helper.continuable?(continuable_event).should be_true
       end
 
-      it "returns true if string is the title of a continuable event" do
-        helper.continuable?(@continuable_event).should == true
+      it "returns false if event type is NOT a continuable event" do
+        helper.continuable?(noncontinuable_event).should be_false
       end
     end
   end
