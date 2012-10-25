@@ -349,19 +349,52 @@ describe Participant do
 
       describe "having a due date before the next scheduled event date" do
 
-        it "schedules the birth event before Pregnancy Visit 2" do
-          status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1)
-          Factory(:ppg_detail, :participant => participant, :ppg_first => status, :orig_due_date => 24.days.from_now.to_date)
+        let(:status) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
 
-          participant.pregnant_informed_consent!
-          participant.pregnancy_one_visit!
-          # Next event is not PV2
-          # participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
-          participant.next_study_segment.should == PatientStudyCalendar::CHILD_CHILD
-          participant.next_scheduled_event.event.should == participant.next_study_segment
-          participant.next_scheduled_event.date.should == 25.days.from_now.to_date
+        before(:each) do
+          Factory(:ppg_detail, :participant => participant, :ppg_first => status, :orig_due_date => 24.days.from_now.to_date)
         end
 
+        describe "without a known contact" do
+          it "schedules the birth event before Pregnancy Visit 2" do
+            participant.pregnant_informed_consent!
+            participant.pregnancy_one_visit!
+
+            participant.next_study_segment.should == PatientStudyCalendar::CHILD_CHILD
+            participant.next_scheduled_event.event.should == participant.next_study_segment
+            participant.next_scheduled_event.date.should == 25.days.from_now.to_date
+          end
+        end
+
+        describe "with a known contact" do
+          describe "where the contact is less than 60 days before the due date" do
+            it "schedules the birth event before Pregnancy Visit 2" do
+              contact = Factory(:contact, :contact_date_date => 24.days.ago.to_date)
+              contact_link = Factory(:contact_link, :contact => contact, :person => participant.person)
+
+              participant.pregnant_informed_consent!
+              participant.pregnancy_one_visit!
+
+              participant.next_study_segment.should == PatientStudyCalendar::CHILD_CHILD
+              participant.next_scheduled_event.event.should == participant.next_study_segment
+              participant.next_scheduled_event.date.should == 25.days.from_now.to_date
+            end
+          end
+
+          describe "where the contact is greater than 60 days before the due date" do
+            it "schedules the Pregnancy Visit 2 event" do
+              contact = Factory(:contact, :contact_date_date => 60.days.ago.to_date)
+              contact_link = Factory(:contact_link, :contact => contact, :person => participant.person)
+
+              participant.pregnant_informed_consent!
+              participant.pregnancy_one_visit!
+
+              participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_2
+              participant.next_scheduled_event.event.should == participant.next_study_segment
+              participant.next_scheduled_event.date.should == contact.contact_date_date + 60.days
+            end
+          end
+        end
       end
 
     end
