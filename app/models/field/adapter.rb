@@ -31,7 +31,13 @@ module Field
   class Adapter
     include ActiveModel::MassAssignmentSecurity
 
+    ##
+    # The wrapped object.
     attr_accessor :target
+
+    ##
+    # The {Superposition} this adapter belongs to.
+    attr_accessor :superposition
 
     ##
     # Builds attribute accessors.

@@ -90,6 +90,12 @@ module Field
     attr_accessor :responses
 
     ##
+    # The staff ID of the user building the superposition.
+    #
+    # This is used by some adapters, i.e. {Adapters::Instrument::ModelAdapter}.
+    attr_accessor :staff_id
+
+    ##
     # By default, this logger throws messages to the Rails logger.
     attr_accessor :logger
 
@@ -241,6 +247,8 @@ module Field
                   end
 
         c[kv][state] = adapter ? adapter : object
+
+        adapter.superposition = superposition
 
         if adapter.respond_to?(:ancestors=)
           adapter.ancestors = ancestors

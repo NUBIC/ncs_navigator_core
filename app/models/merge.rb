@@ -204,6 +204,7 @@ class Merge < ActiveRecord::Base
   def do_merge(logger)
     sp = Field::Superposition.new
     sp.logger = logger
+    sp.staff_id = staff_id
     sp.build(JSON.parse(original_data), JSON.parse(proposed_data))
 
     sp.merge

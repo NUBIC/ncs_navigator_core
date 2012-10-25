@@ -130,6 +130,8 @@ module Field
   # {ResponseSet#extract_operational_data} for more information.
   module Merge
     attr_accessor :logger
+
+    ##
     attr_accessor :conflicts
 
     def merge

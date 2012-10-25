@@ -33,6 +33,11 @@ module Field::Adapters
 
     class ModelAdapter < Field::ModelAdapter
       attr_accessors ATTRIBUTES
+
+      def staff_id
+        superposition.try(:staff_id)
+      end
+
     end
   end
 end
