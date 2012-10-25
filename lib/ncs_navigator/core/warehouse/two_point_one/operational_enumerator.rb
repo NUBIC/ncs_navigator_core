@@ -55,7 +55,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       },
       :ignored_columns => %w(
         person_dob_date date_move_date response_set_id role
-        language_new_code language_new_other
+        language_new_code language_new_other lock_version
       )
     )
 
@@ -78,7 +78,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       },
       :ignored_columns => %w(
         person_id high_intensity low_intensity_state high_intensity_state
-        enrollment_status_comment being_followed
+        enrollment_status_comment being_followed lock_version
       )
     )
 
@@ -96,7 +96,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
 
     produce_one_for_one(:ppg_details, :PpgDetails,
       :public_ids => %w(participants),
-      :ignored_columns => %w(response_set_id)
+      :ignored_columns => %w(response_set_id lock_version)
     )
 
     produce_one_for_one(:ppg_status_histories, :PpgStatusHistory,
@@ -287,6 +287,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       :ignored_columns => %w(
         address_start_date_date address_end_date_date
         response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
+        lock_version
       )
     )
 
@@ -294,14 +295,18 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
-      :ignored_columns => %w(email_start_date_date email_end_date_date response_set_id)
+      :ignored_columns => %w(
+        email_start_date_date email_end_date_date response_set_id lock_version
+      )
     )
 
     produce_one_for_one(:telephones, :Telephone,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
       ],
-      :ignored_columns => %w(phone_start_date_date phone_end_date_date response_set_id)
+      :ignored_columns => %w(
+        phone_start_date_date phone_end_date_date response_set_id lock_version
+      )
     )
   end
 end
