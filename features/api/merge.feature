@@ -101,7 +101,6 @@ Feature: Merging data from field clients
 
     When the merge runs
     And I go to the participant page
-    Then show me the page
 
     Then I should see "Bessie Smith"
 
