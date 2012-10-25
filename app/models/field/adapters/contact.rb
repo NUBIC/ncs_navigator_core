@@ -30,6 +30,12 @@ module Field::Adapters
       def model_class
         ::Contact
       end
+
+      ##
+      # Used by {Instrument::ModelAdapter} to construct {ContactLink}s.
+      def person_id
+        get('person_id')
+      end
     end
 
     class ModelAdapter < Field::ModelAdapter
