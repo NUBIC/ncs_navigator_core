@@ -355,41 +355,31 @@ describe Contact do
   end
 
   describe "#start" do
+    let!(:person) { Factory(:person) }
+
     before(:each) do
-      @person = Factory(:person)
-      Factory(:contact_link,
-        :contact => Contact.new(
-          :contact_language_code => 1,
-          :contact_language_other => 'aak',
-          :contact_interpret_code => 3,
-          :contact_interpret_other => 'red'),
-        :person => @person)
-      Factory(:contact_link,
-        :contact => Contact.new(
-          :contact_language_code => 2,
-          :contact_language_other => 'eek',
-          :contact_interpret_code => 1,
-          :contact_interpret_other => 'blue'),
-        :person => @person)
-      Factory(:contact_link,
-        :contact => Contact.new(
-          :contact_language_code => 3,
-          :contact_language_other => 'ook',
-          :contact_interpret_code => 2,
-          :contact_interpret_other => 'green'),
-        :person => @person)
+      [
+        [1, 'aak', 3, 'red'],
+        [3, 'ook', 2, 'green']
+      ].each do |lang_code, lang_other, interp_code, interp_other|
+        contact = Factory(:contact,
+                          :contact_language_code => lang_code,
+                          :contact_language_other => lang_other,
+                          :contact_interpret_code => interp_code,
+                          :contact_interpret_other => interp_other)
+
+        Factory(:contact_link, :contact => contact, :person => person)
+      end
     end
 
     it "defaults the language to the last contact with a language" do
-      Contact.start(@person).contact_language_code.should == 3
-      Contact.start(@person).contact_language_other.should == 'ook'
+      Contact.start(person).contact_language_code.should == 3
+      Contact.start(person).contact_language_other.should == 'ook'
     end
 
     it "it defaults interpreter to the last contact with an interpreter" do
-      Contact.start(@person).contact_interpret_code.should == 2
-      Contact.start(@person).contact_interpret_other.should == 'green'
+      Contact.start(person).contact_interpret_code.should == 2
+      Contact.start(person).contact_interpret_other.should == 'green'
     end
   end
-
 end
-
