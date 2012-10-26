@@ -6,23 +6,23 @@
   = hidden_field_tag :next_event, params[:next_event]
 
   %p
-    = f.label :contact_date_date, "Contact Date"
+    = label_tag "When did this contact happen?"
     %br
+    = f.label :contact_date_date, "Date"
     = f.text_field :contact_date_date, :class => "datepicker"
 
   %p
-    = f.label :contact_start_time, "Contact Start Time"
-    %br
+    = f.label :contact_start_time, "Start Time"
     = f.text_field :contact_start_time, :class => "timepicker"
 
-  %p
-    = f.label :contact_end_time, "Contact End Time"
-    %br
-    = f.text_field :contact_end_time, :class => "timepicker"
+  -#%p
+  -#  = f.label :contact_end_time, "End Time"
+  -#  %br
+  -#  = f.text_field :contact_end_time, :class => "timepicker"
 
-  = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "Person Contacted", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
+  = render "shared/ncs_code_select", { :f => f, :code => :who_contacted_code, :label_text => "How does the contacted person relate to the NCS?", :other => :who_contacted_other, :help_text => "contacts/contact_who_contacted_tooltip" }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "Contact Method", :other => :contact_type_other }
+  = render "shared/ncs_code_select", { :f => f, :code => :contact_type_code, :label_text => "How did you contact them?", :other => :contact_type_other }
 
   - unless f.object.new_record?
 
@@ -48,7 +48,7 @@
     = render "shared/ncs_code_select", { :f => f, :code => :contact_interpret_code, :label_text => "Interpret", :other => :contact_interpret_other, :help_text => "contacts/contact_interpret_tooltip" }
 
   %p
-    = f.label :contact_comment, "Comment"
+    = f.label :contact_comment, "Optional Comments"
     %br
     = f.text_area :contact_comment
 
