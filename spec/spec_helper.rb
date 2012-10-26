@@ -134,7 +134,21 @@ Spork.prefork do
 
     config.include ScheduledActivities
     config.include TestLogins
-    config.include TestSurveys
+    [
+      TestSurveys,
+      ParticipantVerification,
+      PregnancyScreener,
+      PbsEligibilityScreener,
+      Tracing,
+      LoIntensityQuex,
+      PpgFollowUp,
+      PrePregnancyVisit,
+      PregnancyVisitOne,
+      PregnancyVisitTwo,
+      BirthVisit,
+      SamplesAndSpecimens,
+      PostNatal
+    ].each { |test_survey| config.include test_survey }
 
     if ENV['PROFILE_DB']
       ActiveRecordQueryProfiler.register(config)

@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
 
-module TestSurveys
+module LoIntensityQuex
+  def create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
 
-  ##
-  # Starts an Instrument for a {Person} p and {Survey} s, saves it, and
-  # returns the created ResponseSet along with the Instrument.
-  def prepare_instrument(person, participant, survey)
-    instr = person.start_instrument(survey, participant)
-    instr.save!
-
-    # TODO: update this method so that all response sets are returned - not just the first
-    [instr.response_sets.first, instr]
-  end
-
-  def create_test_survey_for_person
-    survey = Factory(:survey, :title => "INS_QUE_Something_INT_LI_P2_V2.0", :access_code => "ins-que-something-int-li-p2-v2-0")
+    survey = Factory(:survey, :title => "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0", :access_code => "ins-que-lipregnotpreg-int-li-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
     # Pregnant
     q = Factory(:question, :reference_identifier => "PREGNANT", :data_export_identifier => "PREG_VISIT_LI_2.PREGNANT", :survey_section_id => survey_section.id)
@@ -29,5 +18,4 @@ module TestSurveys
 
     survey
   end
-
 end
