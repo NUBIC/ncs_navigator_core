@@ -17,5 +17,6 @@ module NcsNavigator
     autoload :Surveyor,                 'ncs_navigator/core/surveyor'
     autoload :RedisConfiguration,       'ncs_navigator/core/redis_configuration'
     autoload :Warehouse,                'ncs_navigator/core/warehouse'
+    autoload :ResponseSetPopulator,     'ncs_navigator/core/response_set_populator'
   end
 end
