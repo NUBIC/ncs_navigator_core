@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class SpecimenOperationalDataExtractor
+class OperationalDataExtractor::Specimen
   SPECIMEN_MAP = {
     "SPEC_URINE.SPECIMEN_ID" => "specimen_id",
     "SPEC_BLOOD_TUBE[tube_type=1].SPECIMEN_ID" => "specimen_id",
@@ -25,7 +25,7 @@ class SpecimenOperationalDataExtractor
 
       response_set.responses.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if SPECIMEN_MAP.has_key?(data_export_identifier)

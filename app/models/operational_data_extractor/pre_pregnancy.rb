@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class PrePregnancyOperationalDataExtractor
+class OperationalDataExtractor::PrePregnancy
 
   INTERVIEW_PREFIX = "PRE_PREG"
 
@@ -87,7 +87,7 @@ class PrePregnancyOperationalDataExtractor
       contact2phone        = nil
       contact2address      = nil
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :phone_rank => primary_rank)
       email = Email.new(:person => person, :email_rank => primary_rank)
@@ -104,12 +104,12 @@ class PrePregnancyOperationalDataExtractor
 
       response_set.responses.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -120,7 +120,7 @@ class PrePregnancyOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -130,7 +130,7 @@ class PrePregnancyOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -140,7 +140,7 @@ class PrePregnancyOperationalDataExtractor
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -153,8 +153,8 @@ class PrePregnancyOperationalDataExtractor
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -164,7 +164,7 @@ class PrePregnancyOperationalDataExtractor
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -174,7 +174,7 @@ class PrePregnancyOperationalDataExtractor
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -186,7 +186,7 @@ class PrePregnancyOperationalDataExtractor
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -199,8 +199,8 @@ class PrePregnancyOperationalDataExtractor
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -210,7 +210,7 @@ class PrePregnancyOperationalDataExtractor
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -220,7 +220,7 @@ class PrePregnancyOperationalDataExtractor
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
             end
           end
         end

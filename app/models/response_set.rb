@@ -29,7 +29,7 @@ class ResponseSet < ActiveRecord::Base
   attr_accessible :participant_id
 
   def extract_operational_data
-    OperationalDataExtractor.process(self) if complete?
+    OperationalDataExtractor::Base.process(self) if complete?
   end
 
   def has_responses_in_each_section_with_questions?

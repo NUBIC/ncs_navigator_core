@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class ParticipantVerificationOperationalDataExtractor
+class OperationalDataExtractor::ParticipantVerification
 
   INTERVIEW_PREFIX = "PARTICIPANT_VERIF"
 
@@ -75,8 +75,8 @@ class ParticipantVerificationOperationalDataExtractor
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor.primary_rank
-      secondary_rank = OperationalDataExtractor.secondary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
+      secondary_rank = OperationalDataExtractor::Base.secondary_rank
 
       child          = nil
       child_phone    = nil
@@ -86,11 +86,11 @@ class ParticipantVerificationOperationalDataExtractor
 
       response_set.responses.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
-          OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
+          OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
         end
 
         if CHILD_PERSON_MAP.has_key?(data_export_identifier)
@@ -98,7 +98,7 @@ class ParticipantVerificationOperationalDataExtractor
             if child.nil?
               child = Person.new(:psu => person.psu)
             end
-            OperationalDataExtractor.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -109,7 +109,7 @@ class ParticipantVerificationOperationalDataExtractor
               child_address = Address.new(:person => child, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                          :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(child_address, CHILD_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(child_address, CHILD_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -120,7 +120,7 @@ class ParticipantVerificationOperationalDataExtractor
               child_address2 = Address.new(:person => child, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                          :address_type => Address.home_address_type, :response_set => response_set, :address_rank => secondary_rank)
             end
-            OperationalDataExtractor.set_value(child_address2, CHILD_ADDRESS_2_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(child_address2, CHILD_ADDRESS_2_MAP[data_export_identifier], value)
           end
         end
 
@@ -131,7 +131,7 @@ class ParticipantVerificationOperationalDataExtractor
               child_phone = Telephone.new(:person => child, :psu => person.psu, :phone_type => Telephone.home_phone_type,
                                           :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(child_phone, CHILD_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(child_phone, CHILD_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -142,7 +142,7 @@ class ParticipantVerificationOperationalDataExtractor
               child_phone2 = Telephone.new(:person => child, :psu => person.psu, :phone_type => Telephone.home_phone_type,
                                            :response_set => response_set, :phone_rank => secondary_rank)
             end
-            OperationalDataExtractor.set_value(child_phone2, CHILD_PHONE_2_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(child_phone2, CHILD_PHONE_2_MAP[data_export_identifier], value)
           end
         end
 
@@ -152,7 +152,7 @@ class ParticipantVerificationOperationalDataExtractor
         child.save!
         # 8 - Child
         ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8)
-        OperationalDataExtractor.make_child_participant(child, person)
+        OperationalDataExtractor::Base.make_child_participant(child, person)
 
         if child_phone && !child_phone.phone_nbr.blank?
           child_phone.save!

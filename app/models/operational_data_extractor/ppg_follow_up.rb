@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class PpgFollowUpOperationalDataExtractor
+class OperationalDataExtractor::PpgFollowUp
 
   INTERVIEW_PREFIX = "PPG_CATI"
   SAQ_PREFIX       = "PPG_SAQ"
@@ -59,7 +59,7 @@ class PpgFollowUpOperationalDataExtractor
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       ppg_status_history = nil
       home_phone         = nil
@@ -70,7 +70,7 @@ class PpgFollowUpOperationalDataExtractor
       email              = nil
 
       response_set.responses.each do |r|
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
 
         data_export_identifier = r.question.data_export_identifier
 
@@ -80,7 +80,7 @@ class PpgFollowUpOperationalDataExtractor
             if phone.nil?
               phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -91,7 +91,7 @@ class PpgFollowUpOperationalDataExtractor
               home_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -102,7 +102,7 @@ class PpgFollowUpOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -113,7 +113,7 @@ class PpgFollowUpOperationalDataExtractor
               other_phone = Telephone.new(:person => person, :psu => person.psu,
                                           :phone_type => Telephone.other_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(other_phone, OTHER_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(other_phone, OTHER_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -124,7 +124,7 @@ class PpgFollowUpOperationalDataExtractor
               work_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.work_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(work_phone, WORK_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(work_phone, WORK_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -134,7 +134,7 @@ class PpgFollowUpOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -168,14 +168,14 @@ class PpgFollowUpOperationalDataExtractor
         end
 
         if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
-          due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
+          due_date = OperationalDataExtractor::Base.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
           participant.ppg_details.first.update_due_date(due_date, :orig_due_date) if due_date
         end
 
       end
 
       if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
-        OperationalDataExtractor.set_participant_type(participant, ppg_status_history.ppg_status_code)
+        OperationalDataExtractor::Base.set_participant_type(participant, ppg_status_history.ppg_status_code)
         ppg_status_history.save!
       end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PostNatalOperationalDataExtractor do
+describe OperationalDataExtractor::PostNatal do
   include SurveyCompletion
 
   context "extracting child data" do
@@ -21,15 +21,15 @@ describe PostNatalOperationalDataExtractor do
       response_set.save!
 
       take_survey(@survey, response_set) do |a|
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_CHILD_SECTION_PREFIX}.C_FNAME", 'Jo'
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_CHILD_SECTION_PREFIX}.C_LNAME", 'Stafford'
-        a.date "#{PostNatalOperationalDataExtractor::SIX_MONTH_CHILD_SECTION_PREFIX}.CHILD_DOB", '01/01/2012'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.C_FNAME", 'Jo'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.C_LNAME", 'Stafford'
+        a.date "#{OperationalDataExtractor::PostNatal::SIX_MONTH_CHILD_SECTION_PREFIX}.CHILD_DOB", '01/01/2012'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      PostNatalOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PostNatal.extract_data(response_set)
 
       Person.where(:id => @child_person.id)
 
@@ -55,13 +55,13 @@ describe PostNatalOperationalDataExtractor do
       @response_set.save!
 
       take_survey(@survey, @response_set) do |a|
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.EMAIL", 'email@dev.null'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.EMAIL", 'email@dev.null'
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      PostNatalOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PostNatal.extract_data(@response_set)
 
       Person.where(:response_set_id == @response_set.id).first.emails.first.email.should == "email@dev.null"
     end
@@ -82,16 +82,16 @@ describe PostNatalOperationalDataExtractor do
       @response_set.save!
 
       take_survey(@survey, @response_set) do |a|
-        a.yes "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_1"
-        a.yes "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_2"
-        a.yes "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_4"
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE", '3125557890'
+        a.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_1"
+        a.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_2"
+        a.yes "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE_4"
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 4
 
-      PostNatalOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PostNatal.extract_data(@response_set)
 
       Person.where(:response_set_id == @response_set.id).first.telephones.first.phone_nbr.should == '3125557890'
     end
@@ -120,23 +120,23 @@ describe PostNatalOperationalDataExtractor do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_FNAME_1", 'Donna'
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_LNAME_1", 'Noble'
-        a.choice "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_RELATE_1", @contact_neighbor
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_1_1", '123 Easy St.'
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_2_1", ''
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_UNIT_1", ''
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_CITY_1", 'Chicago'
-        a.choice "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_STATE_1", state
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP_1", '65432'
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP4_1", '1234'
-        a.str "#{PostNatalOperationalDataExtractor::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_PHONE_1", '3125551212'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_FNAME_1", 'Donna'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_LNAME_1", 'Noble'
+        a.choice "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_RELATE_1", @contact_neighbor
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_1_1", '123 Easy St.'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ADDR_2_1", ''
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_UNIT_1", ''
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_CITY_1", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_STATE_1", state
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP_1", '65432'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.C_ZIP4_1", '1234'
+        a.str "#{OperationalDataExtractor::PostNatal::SIX_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_PHONE_1", '3125551212'
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      PostNatalOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PostNatal.extract_data(@response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant

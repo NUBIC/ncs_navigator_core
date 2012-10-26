@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class BirthOperationalDataExtractor
+class OperationalDataExtractor::Birth
 
   BABY_NAME_PREFIX    = "BIRTH_VISIT_BABY_NAME_2"
   BIRTH_VISIT_PREFIX  = "BIRTH_VISIT_2"
@@ -89,7 +89,7 @@ class BirthOperationalDataExtractor
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       child        = nil
       email        = nil
@@ -106,11 +106,11 @@ class BirthOperationalDataExtractor
 
       response_set.responses.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
-          OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
+          OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
         end
 
         if CHILD_PERSON_MAP.has_key?(data_export_identifier)
@@ -119,7 +119,7 @@ class BirthOperationalDataExtractor
             if child.nil?
               child = Person.new(:psu => person.psu)
             end
-            OperationalDataExtractor.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -130,7 +130,7 @@ class BirthOperationalDataExtractor
               mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                          :address_type => Address.mailing_address_type, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -140,7 +140,7 @@ class BirthOperationalDataExtractor
             if phone.nil?
               phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -151,7 +151,7 @@ class BirthOperationalDataExtractor
               home_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.home_phone_type, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -162,7 +162,7 @@ class BirthOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -172,7 +172,7 @@ class BirthOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -181,7 +181,7 @@ class BirthOperationalDataExtractor
       if child
         child.save!
         ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
-        OperationalDataExtractor.make_child_participant(child, person)
+        OperationalDataExtractor::Base.make_child_participant(child, person)
       end
 
       if email && !email.email.blank?

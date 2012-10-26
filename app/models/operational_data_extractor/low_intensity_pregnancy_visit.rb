@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class LowIntensityPregnancyVisitOperationalDataExtractor
+class OperationalDataExtractor::LowIntensityPregnancyVisit
 
   INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
 
@@ -31,7 +31,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
       birth_address = nil
 
       response_set.responses.each do |r|
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
 
         data_export_identifier = r.question.data_export_identifier
 
@@ -41,7 +41,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
             if birth_address.nil?
               birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(birth_address, BIRTH_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(birth_address, BIRTH_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -55,7 +55,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
 
           case data_export_identifier
           when "#{INTERVIEW_PREFIX}.PREGNANT"
-            OperationalDataExtractor.set_value(ppg_status_history, PPG_STATUS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(ppg_status_history, PPG_STATUS_MAP[data_export_identifier], value)
           end
 
           if (data_export_identifier == "#{INTERVIEW_PREFIX}.DUE_DATE") && !value.blank?
@@ -66,7 +66,7 @@ class LowIntensityPregnancyVisitOperationalDataExtractor
       end
 
       if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
-        OperationalDataExtractor.set_participant_type(participant, ppg_status_history.ppg_status_code)
+        OperationalDataExtractor::Base.set_participant_type(participant, ppg_status_history.ppg_status_code)
         ppg_status_history.save!
       end
 

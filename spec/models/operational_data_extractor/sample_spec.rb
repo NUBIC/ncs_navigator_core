@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe SampleOperationalDataExtractor do
+describe OperationalDataExtractor::Sample do
   include SurveyCompletion
 
   describe ".extract_data" do
@@ -24,7 +24,7 @@ describe SampleOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        SampleOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Sample.extract_data(response_set)
 
         samples = Sample.where(:instrument_id => instrument.id).all
         samples.should_not be_blank
@@ -34,7 +34,7 @@ describe SampleOperationalDataExtractor do
 
       it "raises an exception if there is no instrument associated with the response_set" do
         mock_response_set = mock(ResponseSet, :instrument => nil)
-        expect { SampleOperationalDataExtractor.extract_data(mock_response_set) }.to raise_error
+        expect { OperationalDataExtractor::Sample.extract_data(mock_response_set) }.to raise_error
       end
 
     end
@@ -58,7 +58,7 @@ describe SampleOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 3
 
-        SampleOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Sample.extract_data(response_set)
 
         instrument.samples.reload
         instrument.samples.count.should == 3
@@ -85,7 +85,7 @@ describe SampleOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 2
 
-        SampleOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Sample.extract_data(response_set)
 
         instrument.samples.reload
         instrument.samples.count.should == 2
@@ -109,7 +109,7 @@ describe SampleOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 5
 
-        SampleOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Sample.extract_data(response_set)
 
         instrument.samples.reload
         instrument.samples.count.should == 3
@@ -134,7 +134,7 @@ describe SampleOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        SampleOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Sample.extract_data(response_set)
 
         instrument.samples.reload
         instrument.samples.count.should == 1
@@ -147,7 +147,7 @@ describe SampleOperationalDataExtractor do
 
       it "raises an exception if there is no instrument associated with the response_set" do
         mock_response_set = mock(ResponseSet, :instrument => nil)
-        expect { SampleOperationalDataExtractor.extract_data(mock_response_set) }.to raise_error
+        expect { OperationalDataExtractor::Sample.extract_data(mock_response_set) }.to raise_error
       end
 
     end
@@ -171,7 +171,7 @@ describe SampleOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 3
 
-        SampleOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Sample.extract_data(response_set)
 
         instrument.samples.reload
         instrument.samples.count.should == 3

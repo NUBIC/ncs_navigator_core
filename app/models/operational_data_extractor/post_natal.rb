@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class PostNatalOperationalDataExtractor
+class OperationalDataExtractor::PostNatal
 
   THREE_MONTH_CHILD_SECTION_PREFIX  = "THREE_MTH_MOTHER_CHILD_DETAIL"
   SIX_MONTH_CHILD_SECTION_PREFIX   = "SIX_MTH_MOTHER_DETAIL"
@@ -212,7 +212,7 @@ class PostNatalOperationalDataExtractor
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
       info_source = NcsCode.for_list_name_and_local_code("INFORMATION_SOURCE_CL2", 1)
       type_email = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
       email_share = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
@@ -238,12 +238,12 @@ class PostNatalOperationalDataExtractor
       contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant)
 
       response_set.responses.each do |r|
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if CHILD_PERSON_NAME_MAP.has_key?(data_export_identifier)
           person = ParticipantPersonLink.where(:participant_id => participant).first.person
-          OperationalDataExtractor.set_value(person, CHILD_PERSON_NAME_MAP[data_export_identifier], value)
+          OperationalDataExtractor::Base.set_value(person, CHILD_PERSON_NAME_MAP[data_export_identifier], value)
           person.save!
         end
 
@@ -251,7 +251,7 @@ class PostNatalOperationalDataExtractor
         if CHILD_PERSON_DATE_OF_BIRTH_MAP.has_key?(data_export_identifier)
           person = ParticipantPersonLink.where(:participant_id => participant).first.person
           unless value.blank?
-            OperationalDataExtractor.set_value(person, CHILD_PERSON_DATE_OF_BIRTH_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(person, CHILD_PERSON_DATE_OF_BIRTH_MAP[data_export_identifier], value)
           end
         end
 
@@ -268,7 +268,7 @@ class PostNatalOperationalDataExtractor
                                 :email_active => email_active,
                                 :email_info_source => info_source)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -279,7 +279,7 @@ class PostNatalOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -289,7 +289,7 @@ class PostNatalOperationalDataExtractor
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -302,8 +302,8 @@ class PostNatalOperationalDataExtractor
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -313,7 +313,7 @@ class PostNatalOperationalDataExtractor
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -323,7 +323,7 @@ class PostNatalOperationalDataExtractor
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -335,7 +335,7 @@ class PostNatalOperationalDataExtractor
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -348,8 +348,8 @@ class PostNatalOperationalDataExtractor
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -359,7 +359,7 @@ class PostNatalOperationalDataExtractor
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -369,7 +369,7 @@ class PostNatalOperationalDataExtractor
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set)
               end
-              OperationalDataExtractor.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
             end
           end
         end

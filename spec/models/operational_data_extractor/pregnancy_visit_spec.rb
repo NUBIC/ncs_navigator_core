@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe PregnancyVisitOperationalDataExtractor do
+describe OperationalDataExtractor::PregnancyVisit do
   include SurveyCompletion
 
   # R_FNAME               Person.first_name
@@ -22,16 +22,16 @@ describe PregnancyVisitOperationalDataExtractor do
     response_set.save!
 
     take_survey(survey, response_set) do |a|
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME", 'Jo'
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
-      a.date "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
-      a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+      a.date "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
+      a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG", age_eligible
     end
 
     response_set.responses.reload
     response_set.responses.size.should == 4
 
-    PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
     person = Person.find(person.id)
     person.first_name.should == "Jo"
@@ -81,22 +81,22 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set.save!
 
       take_survey(survey, response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME", 'Lonnie Johnson'
-        a.int "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE", 23
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_1", '123 Easy St.'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_UNIT", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_CITY", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_STATE", state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIPCODE", '65432'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4", '1234'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE", '3125551212'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME", 'Lonnie Johnson'
+        a.int "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE", 23
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_1", '123 Easy St.'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_UNIT", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_STATE", state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIPCODE", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4", '1234'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE", '3125551212'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 10
 
-      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -118,23 +118,23 @@ describe PregnancyVisitOperationalDataExtractor do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Donna'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Noble'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_friend
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_1", '123 Easy St.'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_1", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_1", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_1", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_1", state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_1", '65432'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_1", '1234'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_1", '3125551212'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Donna'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Noble'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_friend
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_1", '123 Easy St.'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_1", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_1", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_1", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_1", state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_1", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_1", '1234'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_1", '3125551212'
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -154,23 +154,23 @@ describe PregnancyVisitOperationalDataExtractor do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2", 'Carole'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_2", 'King'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_2", '123 Tapestry St.'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_2", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_2", state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_2", '65432'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_2", '1234'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_2", '3125551212'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2", 'Carole'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_2", 'King'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_2", @contact_neighbor
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_2", '123 Tapestry St.'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_2", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_2", state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_2", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_2", '1234'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_2", '3125551212'
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -190,15 +190,15 @@ describe PregnancyVisitOperationalDataExtractor do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Ivy'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Anderson'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_aunt_uncle
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Ivy'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Anderson'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_aunt_uncle
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -213,15 +213,15 @@ describe PregnancyVisitOperationalDataExtractor do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Billie'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Holiday'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_grandparent
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1", 'Billie'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1", 'Holiday'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1", @contact_grandparent
       end
 
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -249,15 +249,15 @@ describe PregnancyVisitOperationalDataExtractor do
     response_set.save!
 
     take_survey(survey, response_set) do |a|
-      a.yes "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"
-      a.yes "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_4"
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
+      a.yes "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"
+      a.yes "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_4"
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
     end
 
     response_set.responses.reload
     response_set.responses.size.should == 3
 
-    PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
     person  = Person.find(person.id)
     person.telephones.size.should == 2
@@ -284,13 +284,13 @@ describe PregnancyVisitOperationalDataExtractor do
     response_set.responses.size.should == 0
 
     take_survey(survey, response_set) do |a|
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
     end
 
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
     person = Person.find(person.id)
     person.emails.size.should == 1
@@ -311,18 +311,18 @@ describe PregnancyVisitOperationalDataExtractor do
     response_set.save!
 
     take_survey(survey, response_set) do |a|
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_1", '123 Hospital Way'
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_2", ''
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_UNIT", ''
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
-      a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE", state
-      a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_1", '123 Hospital Way'
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_2", ''
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_UNIT", ''
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+      a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE", state
+      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
     end
 
     response_set.responses.reload
     response_set.responses.size.should == 6
 
-    PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
     person  = Person.find(person.id)
     person.addresses.size.should == 1
@@ -359,16 +359,16 @@ describe PregnancyVisitOperationalDataExtractor do
         due_date = Date.parse("2012-02-29")
 
         take_survey(@survey, @response_set) do |a|
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_MM", due_date.month
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_DD", due_date.day
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_YY", due_date.year
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_MM", due_date.month
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_DD", due_date.day
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_YY", due_date.year
         end
 
         @response_set.responses.reload
         @response_set.responses.size.should == 4
 
-        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -379,18 +379,18 @@ describe PregnancyVisitOperationalDataExtractor do
       it "calculates the due date based on the date of the last menstrual period" do
         last_period = 20.weeks.ago.to_date
         take_survey(@survey, @response_set) do |a|
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_MM", neg_2
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_DD", neg_2
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_YY", neg_2
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_MM", neg_2
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_DD", neg_2
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DUE_DATE_YY", neg_2
 
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD", last_period.to_s
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD", last_period.to_s
         end
 
         @response_set.responses.reload
         @response_set.responses.size.should == 5
 
-        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -400,14 +400,14 @@ describe PregnancyVisitOperationalDataExtractor do
       it "does not set the due date if the date of the last menstrual period is not valid date" do
         last_period = "2012-92-92"
         take_survey(@survey, @response_set) do |a|
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD", last_period
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD", last_period
         end
 
         @response_set.responses.reload
         @response_set.responses.size.should == 2
 
-        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -425,14 +425,14 @@ describe PregnancyVisitOperationalDataExtractor do
       it "sets the due date to the date provided by the participant" do
         due_date = "2012-02-29"
         take_survey(@survey, @response_set) do |a|
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE", due_date
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE", due_date
         end
 
         @response_set.responses.reload
         @response_set.responses.size.should == 2
 
-        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -442,14 +442,14 @@ describe PregnancyVisitOperationalDataExtractor do
       it "does not set the due date if date provided by the participant is not valid date" do
         due_date = "2012-92-92"
         take_survey(@survey, @response_set) do |a|
-          a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
-          a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE", due_date
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE", due_date
         end
 
         @response_set.responses.reload
         @response_set.responses.size.should == 2
 
-        PregnancyVisitOperationalDataExtractor.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -473,17 +473,17 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set.save!
 
       take_survey(survey, response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", @state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 5
 
-      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -497,19 +497,19 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set.save!
 
       take_survey(survey, response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", '123 Work Way'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_UNIT", '3333'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE", @state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIPCODE", '65432'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP4", '1234'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", '123 Work Way'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_UNIT", '3333'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE", @state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIPCODE", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP4", '1234'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -524,17 +524,17 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set.save!
 
       take_survey(survey, response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_STATE", @state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_STATE", @state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 5
 
-      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -548,19 +548,19 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set.save!
 
       take_survey(survey, response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", '123 Work Way'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_UNIT", '3333'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_CITY", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_STATE", @state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIPCODE", '65432'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIP4", '1234'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1", '123 Work Way'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_UNIT", '3333'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_STATE", @state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIPCODE", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ZIP4", '1234'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -575,25 +575,25 @@ describe PregnancyVisitOperationalDataExtractor do
       response_set.save!
 
       take_survey(survey, response_set) do |a|
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_1", '123 Confirm Work Way'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_2", ''
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_UNIT", '3333'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_CITY", 'Chicago'
-        a.choice "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_STATE", @state
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIPCODE", '65432'
-        a.str "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIP4", '1234'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_1", '123 Confirm Work Way'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_UNIT", '3333'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_STATE", @state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIPCODE", '65432'
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.CWORK_ZIP4", '1234'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      PregnancyVisitOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
       address.address_type.should == Address.work_address_type
-      address.address_rank.should == OperationalDataExtractor.duplicate_rank
+      address.address_rank.should == OperationalDataExtractor::Base.duplicate_rank
       address.to_s.should == "123 Confirm Work Way 3333 Chicago, ILLINOIS 65432-1234"
     end
   end

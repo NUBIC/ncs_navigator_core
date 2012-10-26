@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
 
 
-class OperationalDataExtractor
+class OperationalDataExtractor::Base
   EXTRACTORS = [
-    [/_ParticipantVerif_/,  ParticipantVerificationOperationalDataExtractor],
-    [/_Tracing_/,           TracingModuleOperationalDataExtractor],
-    [/_PBSamplingScreen_/,  PbsEligibilityScreenerOperationalDataExtractor],
-    [/_PregScreen_/,        PregnancyScreenerOperationalDataExtractor],
-    [/_PPGFollUp_/,         PpgFollowUpOperationalDataExtractor],
-    [/_PrePreg_/,           PrePregnancyOperationalDataExtractor],
-    [/_PregVisit/,          PregnancyVisitOperationalDataExtractor],
-    [/_LIPregNotPreg/,      LowIntensityPregnancyVisitOperationalDataExtractor],
-    [/_Birth/,              BirthOperationalDataExtractor],
-    [/_AdultBlood_/,        SpecimenOperationalDataExtractor],
-    [/_AdultUrine_/,        SpecimenOperationalDataExtractor],
-    [/_CordBlood_/,         SpecimenOperationalDataExtractor],
-    [/_TapWater/,           SampleOperationalDataExtractor],
-    [/_VacBagDust/,         SampleOperationalDataExtractor],
-    [/_3MMother/,           PostNatalOperationalDataExtractor],
-    [/_6MMother/,           PostNatalOperationalDataExtractor],
-    [/_9MMother/,           PostNatalOperationalDataExtractor],
-    [/_12MMother/,          PostNatalOperationalDataExtractor],
-    [/_18MMother/,          PostNatalOperationalDataExtractor],
-    [/_24MMother/,          PostNatalOperationalDataExtractor],
+    [/_ParticipantVerif_/,  OperationalDataExtractor::ParticipantVerification],
+    [/_Tracing_/,           OperationalDataExtractor::TracingModule],
+    [/_PBSamplingScreen_/,  OperationalDataExtractor::PbsEligibilityScreener],
+    [/_PregScreen_/,        OperationalDataExtractor::PregnancyScreener],
+    [/_PPGFollUp_/,         OperationalDataExtractor::PpgFollowUp],
+    [/_PrePreg_/,           OperationalDataExtractor::PrePregnancy],
+    [/_PregVisit/,          OperationalDataExtractor::PregnancyVisit],
+    [/_LIPregNotPreg/,      OperationalDataExtractor::LowIntensityPregnancyVisit],
+    [/_Birth/,              OperationalDataExtractor::Birth],
+    [/_AdultBlood_/,        OperationalDataExtractor::Specimen],
+    [/_AdultUrine_/,        OperationalDataExtractor::Specimen],
+    [/_CordBlood_/,         OperationalDataExtractor::Specimen],
+    [/_TapWater/,           OperationalDataExtractor::Sample],
+    [/_VacBagDust/,         OperationalDataExtractor::Sample],
+    [/_3MMother/,           OperationalDataExtractor::PostNatal],
+    [/_6MMother/,           OperationalDataExtractor::PostNatal],
+    [/_9MMother/,           OperationalDataExtractor::PostNatal],
+    [/_12MMother/,          OperationalDataExtractor::PostNatal],
+    [/_18MMother/,          OperationalDataExtractor::PostNatal],
+    [/_24MMother/,          OperationalDataExtractor::PostNatal],
   ]
 
   class << self
@@ -32,7 +32,7 @@ class OperationalDataExtractor
 
     def extractor_for(response_set)
       extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
-      extractor ? extractor[1] : PregnancyScreenerOperationalDataExtractor
+      extractor ? extractor[1] : OperationalDataExtractor::PregnancyScreener
     end
 
     def response_value(response)

@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe OperationalDataExtractor do
+describe OperationalDataExtractor::Base do
 
   it "sets up the test properly" do
 
@@ -35,101 +35,101 @@ describe OperationalDataExtractor do
     let(:participant) { Factory(:participant) }
 
     context "with a pregnancy screener instrument" do
-      it "chooses the PregnancyScreenerOperationalDataExtractor" do
+      it "chooses the OperationalDataExtractor::PregnancyScreener" do
         survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == PregnancyScreenerOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::PregnancyScreener
       end
     end
 
     context "with a pregnancy probability instrument" do
-      it "chooses the PpgFollowUpOperationalDataExtractor" do
+      it "chooses the OperationalDataExtractor::PpgFollowUp" do
         survey = create_follow_up_survey_with_ppg_status_history_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == PpgFollowUpOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::PpgFollowUp
       end
     end
 
     context "with a pre pregnancy instrument" do
-      it "chooses the PrePregnancyOperationalDataExtractor" do
+      it "chooses the OperationalDataExtractor::PrePregnancy" do
         survey = create_pre_pregnancy_survey_with_person_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == PrePregnancyOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::PrePregnancy
       end
     end
 
     context "with a pregnancy visit instrument" do
-      it "chooses the PregnancyVisitOperationalDataExtractor" do
+      it "chooses the OperationalDataExtractor::PregnancyVisit" do
         survey = create_pregnancy_visit_1_survey_with_person_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == PregnancyVisitOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::PregnancyVisit
       end
     end
 
     context "with a birth visit instrument" do
-      it "chooses the BirthOperationalDataExtractor" do
+      it "chooses the OperationalDataExtractor::Birth" do
         survey = create_birth_survey_with_child_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == BirthOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::Birth
       end
     end
 
     context "with a lo i pregnancy screener instrument" do
-      it "chooses the LowIntensityPregnancyVisitOperationalDataExtractor" do
+      it "chooses the OperationalDataExtractor::LowIntensityPregnancyVisit" do
         survey = create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == LowIntensityPregnancyVisitOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::LowIntensityPregnancyVisit
       end
     end
 
     context "with an adult blood instrument" do
-      it "chooses the SpecimenOperationalDataExractor" do
+      it "chooses the OperationalDataExtractor::Specimen" do
         survey = create_adult_blood_survey_with_specimen_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == SpecimenOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::Specimen
       end
     end
 
     context "with an adult urine instrument" do
-      it "chooses the SpecimenOperationalDataExractor" do
+      it "chooses the OperationalDataExtractor::Specimen" do
         survey = create_adult_urine_survey_with_specimen_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == SpecimenOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::Specimen
       end
     end
 
     context "with a cord blood instrument" do
-      it "chooses the SpecimenOperationalDataExractor" do
+      it "chooses the OperationalDataExtractor::Specimen" do
         survey = create_cord_blood_survey_with_specimen_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == SpecimenOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::Specimen
       end
     end
 
     context "with a tap water instrument" do
-      it "chooses the SampleOperationalDataExractor" do
+      it "chooses the OperationalDataExtractor::Sample" do
         survey = create_tap_water_survey_with_sample_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == SampleOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::Sample
       end
     end
 
     context "with a vacuum bag dust instrument" do
-      it "chooses the SampleOperationalDataExractor" do
+      it "chooses the OperationalDataExtractor::Sample" do
         survey = create_vacuum_bag_dust_survey_with_sample_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
-        handler = OperationalDataExtractor.extractor_for(response_set)
-        handler.should == SampleOperationalDataExtractor
+        handler = OperationalDataExtractor::Base.extractor_for(response_set)
+        handler.should == OperationalDataExtractor::Sample
       end
     end
 
@@ -152,7 +152,7 @@ describe OperationalDataExtractor do
     describe "#process" do
 
       before(:each) do
-        OperationalDataExtractor.process(@response_set)
+        OperationalDataExtractor::Base.process(@response_set)
       end
 
       it "creates only one data record for the extracted data" do
@@ -162,7 +162,7 @@ describe OperationalDataExtractor do
         phones.size.should == 1
         phones.first.phone_nbr.should == "3125551212"
 
-        OperationalDataExtractor.process(@response_set)
+        OperationalDataExtractor::Base.process(@response_set)
         person = Person.find(@person.id)
         person.telephones.should == phones
         person.telephones.first.phone_nbr.should == "3125551212"
@@ -177,7 +177,7 @@ describe OperationalDataExtractor do
 
         @response_set.responses.first.string_value = "3125556789"
 
-        OperationalDataExtractor.process(@response_set)
+        OperationalDataExtractor::Base.process(@response_set)
         person = Person.find(@person.id)
         person.telephones.should == phones
         person.telephones.first.phone_nbr.should == "3125556789"

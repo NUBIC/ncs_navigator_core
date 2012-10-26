@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe ParticipantVerificationOperationalDataExtractor do
+describe OperationalDataExtractor::ParticipantVerification do
   include SurveyCompletion
 
   context "child records" do
@@ -26,15 +26,15 @@ describe ParticipantVerificationOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_LNAME", 'James'
-        a.date "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.CHILD_DOB", '01/01/2013'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.CHILD_DOB", '01/01/2013'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      ParticipantVerificationOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -59,21 +59,21 @@ describe ParticipantVerificationOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_LNAME", 'James'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_ADDRESS_1", '123 Easy St.'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_ADDRESS_2", ''
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_CITY", 'Chicago'
-        a.choice "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_STATE", state
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_ZIP", '65432'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_ZIP4", '1234'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_1", '123 Easy St.'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_STATE", state
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ZIP", '65432'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_ZIP4", '1234'
 
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      ParticipantVerificationOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -91,21 +91,21 @@ describe ParticipantVerificationOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_LNAME", 'James'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.S_ADDRESS_1", '444 Easy St.'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.S_ADDRESS_2", 'Apt 2D'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.S_CITY", 'Chicago'
-        a.choice "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.S_STATE", state
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.S_ZIP", '65432'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.S_ZIP4", '6789'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_1", '444 Easy St.'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ADDRESS_2", 'Apt 2D'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_STATE", state
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ZIP", '65432'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.S_ZIP4", '6789'
 
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      ParticipantVerificationOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -124,15 +124,15 @@ describe ParticipantVerificationOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_LNAME", 'James'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.PA_PHONE", '312-555-1212'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PA_PHONE", '312-555-1212'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      ParticipantVerificationOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -151,15 +151,15 @@ describe ParticipantVerificationOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.C_LNAME", 'James'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.SA_PHONE", '312-555-4444'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_LNAME", 'James'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.SA_PHONE", '312-555-4444'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      ParticipantVerificationOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -188,17 +188,17 @@ describe ParticipantVerificationOperationalDataExtractor do
       response_set.save!
 
       take_survey(@survey, response_set) do |a|
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
-        a.str "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.MAIDEN_NAME", 'Hitler'
-        a.date "#{ParticipantVerificationOperationalDataExtractor::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
+        a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.MAIDEN_NAME", 'Hitler'
+        a.date "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.PERSON_DOB", '01/01/1981'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 5
 
-      ParticipantVerificationOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
       person = Person.find(@person.id)
       person.first_name.should == "Jo"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class PbsEligibilityScreenerOperationalDataExtractor
+class OperationalDataExtractor::PbsEligibilityScreener
 
   # TODO: extract contact information (language/interpreter used)
   # TODO: is address the HOME address? if so, set address_type
@@ -80,7 +80,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       ppg_detail   = nil
       email        = nil
@@ -90,11 +90,11 @@ class PbsEligibilityScreenerOperationalDataExtractor
 
       response_set.responses.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
-          OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
+          OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
         end
 
         # AGE_RANGE_CL8 in instrument - AGE_RANGE_CL1 in person
@@ -122,7 +122,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
               address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                     :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(address, ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(address, ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -132,7 +132,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
             if phone1.nil?
               phone1 = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(phone1, TELEPHONE_MAP1[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(phone1, TELEPHONE_MAP1[data_export_identifier], value)
           end
         end
 
@@ -142,7 +142,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
             if phone2.nil?
               phone2 = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(phone2, TELEPHONE_MAP2[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(phone2, TELEPHONE_MAP2[data_export_identifier], value)
           end
         end
 
@@ -152,7 +152,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -163,11 +163,11 @@ class PbsEligibilityScreenerOperationalDataExtractor
           if ppg_detail.nil?
             ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu, :response_set => response_set)
           end
-          OperationalDataExtractor.set_value(ppg_detail, PPG_DETAILS_MAP[data_export_identifier], value)
+          OperationalDataExtractor::Base.set_value(ppg_detail, PPG_DETAILS_MAP[data_export_identifier], value)
         end
 
         if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
-          due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
+          due_date = OperationalDataExtractor::Base.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
           ppg_detail.orig_due_date = due_date if ppg_detail && due_date
         end
 
@@ -180,7 +180,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
           due_date = (Date.today + 280.days) - (140.days)
           ppg_detail.orig_due_date = due_date.strftime('%Y-%m-%d')
         end
-        OperationalDataExtractor.set_participant_type(participant, ppg_detail.ppg_first_code)
+        OperationalDataExtractor::Base.set_participant_type(participant, ppg_detail.ppg_first_code)
         ppg_detail.save!
       end
 
@@ -216,7 +216,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
       dt = date_string(response_set, date_question)
       unless dt.blank?
         begin
-          OperationalDataExtractor.determine_due_date(
+          OperationalDataExtractor::Base.determine_due_date(
             "#{date_question}_DD",
             response_for(response_set, "#{INTERVIEW_PREFIX}.#{date_question}_DD"),
             Date.parse(dt))
@@ -230,7 +230,7 @@ class PbsEligibilityScreenerOperationalDataExtractor
       dt = []
       ['YY', 'MM', 'DD'].each do |date_part|
         r = response_for(response_set, "#{INTERVIEW_PREFIX}.#{str}_#{date_part}")
-        val = OperationalDataExtractor.response_value(r) if r
+        val = OperationalDataExtractor::Base.response_value(r) if r
         dt << val if val.to_i > 0
       end
       dt.join("-")

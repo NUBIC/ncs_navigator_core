@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class TracingModuleOperationalDataExtractor
+class OperationalDataExtractor::TracingModule
 
   TRACING_MODULE_PREFIX = "TRACING_INT"
 
@@ -141,7 +141,7 @@ class TracingModuleOperationalDataExtractor
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       email        = nil
       home_phone   = nil
@@ -167,7 +167,7 @@ class TracingModuleOperationalDataExtractor
 
       response_set.responses.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if ADDRESS_MAP.has_key?(data_export_identifier)
@@ -177,7 +177,7 @@ class TracingModuleOperationalDataExtractor
               address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                     :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(address, ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(address, ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -188,7 +188,7 @@ class TracingModuleOperationalDataExtractor
               new_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
                                          :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(new_address, NEW_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(new_address, NEW_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -199,7 +199,7 @@ class TracingModuleOperationalDataExtractor
               home_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -210,7 +210,7 @@ class TracingModuleOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -220,7 +220,7 @@ class TracingModuleOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -230,7 +230,7 @@ class TracingModuleOperationalDataExtractor
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -243,8 +243,8 @@ class TracingModuleOperationalDataExtractor
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -254,7 +254,7 @@ class TracingModuleOperationalDataExtractor
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -264,7 +264,7 @@ class TracingModuleOperationalDataExtractor
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -274,7 +274,7 @@ class TracingModuleOperationalDataExtractor
               if contact1phone2.nil?
                 contact1phone2 = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact1phone2, CONTACT_1_PHONE_2_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1phone2, CONTACT_1_PHONE_2_MAP[data_export_identifier], value)
             end
           end
 
@@ -286,7 +286,7 @@ class TracingModuleOperationalDataExtractor
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -299,8 +299,8 @@ class TracingModuleOperationalDataExtractor
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -310,7 +310,7 @@ class TracingModuleOperationalDataExtractor
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -320,7 +320,7 @@ class TracingModuleOperationalDataExtractor
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -330,7 +330,7 @@ class TracingModuleOperationalDataExtractor
               if contact2phone2.nil?
                 contact2phone2 = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact2phone2, CONTACT_2_PHONE_2_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2phone2, CONTACT_2_PHONE_2_MAP[data_export_identifier], value)
             end
           end
 
@@ -342,7 +342,7 @@ class TracingModuleOperationalDataExtractor
             if contact3.nil?
               contact3 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact3, CONTACT_3_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact3, CONTACT_3_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -355,8 +355,8 @@ class TracingModuleOperationalDataExtractor
                 contact3relationship = ParticipantPersonLink.new(:person => contact3, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact3relationship, CONTACT_3_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact3relationship, CONTACT_3_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -366,7 +366,7 @@ class TracingModuleOperationalDataExtractor
               if contact3address.nil?
                 contact3address = Address.new(:person => contact3, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact3address, CONTACT_3_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact3address, CONTACT_3_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -376,7 +376,7 @@ class TracingModuleOperationalDataExtractor
               if contact3phone.nil?
                 contact3phone = Telephone.new(:person => contact3, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact3phone, CONTACT_3_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact3phone, CONTACT_3_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -386,7 +386,7 @@ class TracingModuleOperationalDataExtractor
               if contact3phone2.nil?
                 contact3phone2 = Telephone.new(:person => contact3, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact3phone2, CONTACT_3_PHONE_2_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact3phone2, CONTACT_3_PHONE_2_MAP[data_export_identifier], value)
             end
           end
         end

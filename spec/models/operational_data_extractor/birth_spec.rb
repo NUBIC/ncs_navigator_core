@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe BirthOperationalDataExtractor do
+describe OperationalDataExtractor::Birth do
   include SurveyCompletion
 
   context "creating a new person record for the child" do
@@ -26,16 +26,16 @@ describe BirthOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, survey)
 
       take_survey(survey, response_set) do |a|
-        a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
-        a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_MNAME", 'Jane'
-        a.str "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_LNAME", 'Williams'
-        a.choice "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_SEX", @female
+        a.str "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME", 'Mary'
+        a.str "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_MNAME", 'Jane'
+        a.str "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_LNAME", 'Williams'
+        a.choice "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX", @female
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 4
 
-      BirthOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::Birth.extract_data(response_set)
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -76,14 +76,14 @@ describe BirthOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
       take_survey(@survey, response_set) do |a|
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.R_LNAME", 'Goldsmith'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.R_FNAME", 'Jocelyn'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.R_LNAME", 'Goldsmith'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 2
 
-      BirthOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::Birth.extract_data(response_set)
 
       person = Person.find(@person.id)
       person.first_name.should == "Jocelyn"
@@ -99,19 +99,19 @@ describe BirthOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
       take_survey(@survey, response_set) do |a|
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
-        a.choice "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      BirthOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::Birth.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -125,20 +125,20 @@ describe BirthOperationalDataExtractor do
       @person.telephones.size.should == 0
 
       take_survey(@survey, response_set) do |a|
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR", '3125551234'
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH", ''
-        a.choice "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_TYPE", cell
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH", ''
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.HOME_PHONE", '3125554321'
-        a.yes "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE_2"
-        a.yes "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE_4"
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.CELL_PHONE", '3125557890'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_NBR", '3125551234'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH", ''
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_TYPE", cell
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH", ''
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.HOME_PHONE", '3125554321'
+        a.yes "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE_2"
+        a.yes "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE_4"
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.CELL_PHONE", '3125557890'
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      BirthOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::Birth.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.telephones.size.should == 3
@@ -159,14 +159,14 @@ describe BirthOperationalDataExtractor do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
       take_survey(@survey, response_set) do |a|
-        a.str "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'
-        a.choice "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.EMAIL_TYPE", home
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.EMAIL", 'email@dev.null'
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.EMAIL_TYPE", home
       end
 
       response_set.responses.reload
       response_set.responses.size.should == 2
 
-      BirthOperationalDataExtractor.extract_data(response_set)
+      OperationalDataExtractor::Birth.extract_data(response_set)
 
       person  = Person.find(@person.id)
       person.emails.size.should == 2

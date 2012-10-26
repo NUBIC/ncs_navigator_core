@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class SampleOperationalDataExtractor
+class OperationalDataExtractor::Sample
 
   SAMPLE_MAP = {
     "VACUUM_BAG.SAMPLE_ID" => "sample_id",
@@ -21,7 +21,7 @@ class SampleOperationalDataExtractor
 
       response_set.responses.sort_by { |r| r.question.display_order }.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if SAMPLE_MAP.has_key?(data_export_identifier)

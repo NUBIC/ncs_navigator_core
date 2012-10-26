@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class PregnancyVisitOperationalDataExtractor
+class OperationalDataExtractor::PregnancyVisit
 
   PREGNANCY_VISIT_1_INTERVIEW_PREFIX = "PREG_VISIT_1_2"
   PREGNANCY_VISIT_2_INTERVIEW_PREFIX = "PREG_VISIT_2_2"
@@ -211,16 +211,16 @@ class PregnancyVisitOperationalDataExtractor
       work_address         = nil
       confirm_work_address = nil
 
-      primary_rank = OperationalDataExtractor.primary_rank
+      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       response_set.responses.sort_by { |r| r.question.display_order }.each do |r|
 
-        value = OperationalDataExtractor.response_value(r)
+        value = OperationalDataExtractor::Base.response_value(r)
         data_export_identifier = r.question.data_export_identifier
 
         if PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-            OperationalDataExtractor.set_value(person, PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -237,7 +237,7 @@ class PregnancyVisitOperationalDataExtractor
               cell_phone = Telephone.new(:person => person, :psu => person.psu,
                                          :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -247,7 +247,7 @@ class PregnancyVisitOperationalDataExtractor
             if email.nil?
               email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(email, EMAIL_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
           end
         end
 
@@ -257,7 +257,7 @@ class PregnancyVisitOperationalDataExtractor
             if birth_address.nil?
               birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(birth_address, BIRTH_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(birth_address, BIRTH_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -267,7 +267,7 @@ class PregnancyVisitOperationalDataExtractor
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact1, CONTACT_1_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -280,8 +280,8 @@ class PregnancyVisitOperationalDataExtractor
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact1relationship, CONTACT_1_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -291,7 +291,7 @@ class PregnancyVisitOperationalDataExtractor
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1address, CONTACT_1_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -301,7 +301,7 @@ class PregnancyVisitOperationalDataExtractor
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact1phone, CONTACT_1_PHONE_MAP[data_export_identifier], value)
             end
           end
 
@@ -313,7 +313,7 @@ class PregnancyVisitOperationalDataExtractor
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
-            OperationalDataExtractor.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(contact2, CONTACT_2_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -326,8 +326,8 @@ class PregnancyVisitOperationalDataExtractor
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
               end
-              value = OperationalDataExtractor.contact_to_person_relationship(value)
-              OperationalDataExtractor.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
+              value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
+              OperationalDataExtractor::Base.set_value(contact2relationship, CONTACT_2_RELATIONSHIP_MAP[data_export_identifier], value)
             end
           end
 
@@ -337,7 +337,7 @@ class PregnancyVisitOperationalDataExtractor
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2address, CONTACT_2_ADDRESS_MAP[data_export_identifier], value)
             end
           end
 
@@ -347,7 +347,7 @@ class PregnancyVisitOperationalDataExtractor
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
               end
-              OperationalDataExtractor.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
+              OperationalDataExtractor::Base.set_value(contact2phone, CONTACT_2_PHONE_MAP[data_export_identifier], value)
             end
           end
         end
@@ -374,7 +374,7 @@ class PregnancyVisitOperationalDataExtractor
               # 7	Partner/Significant Other
               father_relationship = ParticipantPersonLink.new(:person => father, :participant => participant, :relationship_code => 7)
             end
-            OperationalDataExtractor.set_value(father, FATHER_PERSON_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(father, FATHER_PERSON_MAP[data_export_identifier], value)
           end
         end
 
@@ -384,7 +384,7 @@ class PregnancyVisitOperationalDataExtractor
             if father_address.nil?
               father_address = Address.new(:person => father, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(father_address, FATHER_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(father_address, FATHER_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -394,7 +394,7 @@ class PregnancyVisitOperationalDataExtractor
             if father_phone.nil?
               father_phone = Telephone.new(:person => father, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
             end
-            OperationalDataExtractor.set_value(father_phone, FATHER_PHONE_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(father_phone, FATHER_PHONE_MAP[data_export_identifier], value)
           end
         end
 
@@ -406,7 +406,7 @@ class PregnancyVisitOperationalDataExtractor
             rescue
               # NOOP - date is unparseable
             end
-            due_date = OperationalDataExtractor.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r, dt) if dt
+            due_date = OperationalDataExtractor::Base.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r, dt) if dt
             participant.ppg_details.first.update_due_date(due_date, get_due_date_attribute(data_export_identifier)) if due_date
           end
         end
@@ -415,10 +415,10 @@ class PregnancyVisitOperationalDataExtractor
           unless value.blank?
             work_address ||= Address.where(:response_set_id => response_set.id).where(WORK_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
             if work_address.nil?
-              work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, 
+              work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set,
                                          :address_type => Address.work_address_type)
             end
-            OperationalDataExtractor.set_value(work_address, WORK_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(work_address, WORK_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -426,10 +426,10 @@ class PregnancyVisitOperationalDataExtractor
           unless value.blank?
             confirm_work_address ||= Address.where(:response_set_id => response_set.id).where(CONFIRM_WORK_ADDRESS_MAP[data_export_identifier].to_sym => value.to_s).first
             if confirm_work_address.nil?
-              confirm_work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set, 
-                                         :address_type => Address.work_address_type, :address_rank => OperationalDataExtractor.duplicate_rank)
+              confirm_work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :response_set => response_set,
+                                         :address_type => Address.work_address_type, :address_rank => OperationalDataExtractor::Base.duplicate_rank)
             end
-            OperationalDataExtractor.set_value(confirm_work_address, CONFIRM_WORK_ADDRESS_MAP[data_export_identifier], value)
+            OperationalDataExtractor::Base.set_value(confirm_work_address, CONFIRM_WORK_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -520,7 +520,7 @@ class PregnancyVisitOperationalDataExtractor
     def due_date_response(response_set, date_question)
       dt = date_string(response_set, date_question)
       unless dt.blank?
-        return OperationalDataExtractor.determine_due_date(
+        return OperationalDataExtractor::Base.determine_due_date(
           "#{date_question}_DD",
           response_for(response_set, "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.#{date_question}_DD"),
           Date.parse(dt))
@@ -531,7 +531,7 @@ class PregnancyVisitOperationalDataExtractor
       dt = []
       ['YY', 'MM', 'DD'].each do |date_part|
         r = response_for(response_set, "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.#{str}_#{date_part}")
-        val = OperationalDataExtractor.response_value(r) if r
+        val = OperationalDataExtractor::Base.response_value(r) if r
         dt << val if val.to_i > 0
       end
       dt.join("-")

@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe SpecimenOperationalDataExtractor do
+describe OperationalDataExtractor::Specimen do
   include SurveyCompletion
 
   describe ".extract_data" do
@@ -24,7 +24,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         specimens = Specimen.where(:instrument_id => instrument.id).all
         specimens.should_not be_blank
@@ -34,7 +34,7 @@ describe SpecimenOperationalDataExtractor do
 
       it "raises an exception if there is no instrument associated with the response_set" do
         mock_response_set = mock(ResponseSet, :instrument => nil)
-        expect { SpecimenOperationalDataExtractor.extract_data(mock_response_set) }.to raise_error
+        expect { OperationalDataExtractor::Specimen.extract_data(mock_response_set) }.to raise_error
       end
 
     end
@@ -64,7 +64,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 6
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         instrument.specimens.reload
         instrument.specimens.count.should == 6
@@ -89,7 +89,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         instrument.specimens.reload
         instrument.specimens.count.should == 1
@@ -121,7 +121,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 4
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         instrument.specimens.reload
         instrument.specimens.count.should == 4
@@ -152,7 +152,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 10
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         instrument.specimens.reload
         instrument.specimens.count.should == 6
@@ -184,7 +184,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 3
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         instrument.specimens.reload
         instrument.specimens.count.should == 3
@@ -209,7 +209,7 @@ describe SpecimenOperationalDataExtractor do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        SpecimenOperationalDataExtractor.extract_data(response_set)
+        OperationalDataExtractor::Specimen.extract_data(response_set)
 
         instrument.specimens.reload
         instrument.specimens.count.should == 1
