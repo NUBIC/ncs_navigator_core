@@ -88,7 +88,6 @@ Feature: Merging data from field clients
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
 
-  @wip
   Scenario: New contacts can be associated with new people
     Given the survey
       | title | pregnancy_survey_v1.0 |
