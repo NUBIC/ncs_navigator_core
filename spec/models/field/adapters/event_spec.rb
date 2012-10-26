@@ -33,7 +33,7 @@ module Field::Adapters
 
       let(:map) do
         Field::IdMap.new({
-          ::Participant => { 'foo' => p }
+          ::Participant => { p.p_id => p.id }
         })
       end
 
