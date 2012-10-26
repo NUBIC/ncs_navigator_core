@@ -70,9 +70,12 @@ class Psc::ScheduledActivityReport
       end
 
       ActiveRecord::Base.transaction do
-        [contacts, instruments, contact_links].all? { |c| c.all?(&:save) }.tap do |ok|
-          raise ActiveRecord::Rollback unless ok
-        end
+        (contacts.all?(&:save) and
+         instruments.all?(&:save) and
+         resolve_prereq_contact_link_associations(contact_links) and
+         contact_links.all?(&:save)).tap do |ok|
+           raise ActiveRecord::Rollback unless ok
+         end
       end
     end
 
@@ -80,6 +83,58 @@ class Psc::ScheduledActivityReport
     # Shorthand to look up a model for an implication object.
     def m(implied)
       resolutions[implied]
+    end
+
+    ##
+    # FIXME: This is a bit of a mess.
+    #
+    # EntityResolution builds ContactLinks with references to other model
+    # objects.  At association time, these model objects may not be persisted.
+    #
+    # Here's what the problem looks like:
+    #
+    #     c = Contact.new
+    #     i = Instrument.new
+    #     cl = ContactLink.new(:contact => c, :instrument => i)
+    #
+    #     c.save # => true
+    #     i.save # => true
+    #     cl.save
+    #
+    # When we execute cl.save, the IDs of c and i will be copied to their
+    # foreign key fields *after* validations have run.  Presence validations
+    # interfere with this:
+    #
+    #     class ContactLink < ActiveRecord::Base
+    #       validates_presence_of :contact_id
+    #     end
+    #
+    #     cl = ContactLink.new(:contact => c, :instrument => i)
+    #     c.save # => true
+    #     cl.save # => false, whoops
+    #
+    # This method addresses this problem by re-reading ContactLink
+    # prerequisites.
+    #
+    # A Real Fix for this would be to derive contact links only after we can
+    # ensure that we will no longer be creating contacts, but that's a much
+    # bigger problem to tackle.
+    #
+    # @private
+    def resolve_prereq_contact_link_associations(links)
+      links.each do |l|
+        resolve_prereq_contact_link_association(l, :contact)
+      end
+    end
+
+    ##
+    # @private
+    def resolve_prereq_contact_link_association(link, name)
+      assoc = link.association(name)
+
+      if assoc.loaded? && link.send(assoc.reflection.foreign_key).blank?
+        assoc.replace(assoc.target)
+      end
     end
 
     ##

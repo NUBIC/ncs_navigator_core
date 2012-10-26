@@ -282,11 +282,16 @@ class Psc::ScheduledActivityReport
           report.staff_id = staff_id
           report.process
 
-          report.save_models
         end
 
         it 'saves generated models' do
+          report.save_models
+
           report.resolutions.values.none?(&:new_record?).should be_true
+        end
+
+        it 'returns true on success' do
+          report.save_models.should be_true
         end
       end
     end
