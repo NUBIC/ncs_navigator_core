@@ -12,8 +12,6 @@
 #  updated_at   :datetime
 #
 
-
-
 class NcsCode < ActiveRecord::Base
 
   validates_presence_of :list_name, :display_text, :local_code
@@ -340,6 +338,10 @@ class NcsCode < ActiveRecord::Base
     NcsCodeCollection.new(query)
   end
 
+  def self.last_modified
+    maximum(:updated_at)
+  end
+
   def self.ncs_code_lookup(attribute_name, show_missing_in_error = false)
     codes = for_attributes(attribute_name)
     list_name = attribute_lookup(attribute_name)
@@ -437,4 +439,3 @@ class NcsCode < ActiveRecord::Base
       comparison_object.local_code == self.local_code)
   end
 end
-
