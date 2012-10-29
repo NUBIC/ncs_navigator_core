@@ -5,6 +5,7 @@ module LoIntensityQuex
 
     survey = Factory(:survey, :title => "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0", :access_code => "ins-que-lipregnotpreg-int-li-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
+
     # Pregnant
     q = Factory(:question, :reference_identifier => "PREGNANT", :data_export_identifier => "PREG_VISIT_LI_2.PREGNANT", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
@@ -15,6 +16,17 @@ module LoIntensityQuex
     # Due Date
     q = Factory(:question, :reference_identifier => "DUE_DATE", :data_export_identifier => "PREG_VISIT_LI_2.DUE_DATE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Due Date", :response_class => "date")
+
+    survey
+  end
+
+  def create_lo_i_quex_with_prepopulated_ppg_status
+
+    survey = Factory(:survey, :title => "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0", :access_code => "ins-que-lipregnotpreg-int-li-p2-v2-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    q = Factory(:question, :reference_identifier => "prepopulated_ppg_status", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "PPG Status", :response_class => "integer", :reference_identifier => "ppg_status")
 
     survey
   end

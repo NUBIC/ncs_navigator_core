@@ -141,10 +141,10 @@ describe ResponseSet do
         @survey.sections_with_questions.each do |section|
           section.questions.each do |q|
             case q.data_export_identifier
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT"
               answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
               Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DUE_DATE"
               answer = q.answers.select { |a| a.response_class == "date" }.first
               Factory(:response, :survey_section_id => section.id, :datetime_value => "2012-02-29", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
             end
@@ -167,16 +167,16 @@ describe ResponseSet do
         @survey.sections_with_questions.each do |section|
           section.questions.each do |q|
             case q.data_export_identifier
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT"
               answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
               Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DUE_DATE"
               answer = q.answers.select { |a| a.response_class == "date" }.first
               Factory(:response, :survey_section_id => section.id, :datetime_value => "2012-02-29", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.EMAIL"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.EMAIL"
               answer = q.answers.select { |a| a.response_class == "string" }.first
               Factory(:response, :survey_section_id => section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ENGLISH"
               # SKIPPING THIS SECTION
             end
           end
@@ -201,16 +201,16 @@ describe ResponseSet do
         @survey.sections_with_questions.each do |section|
           section.questions.each do |q|
             case q.data_export_identifier
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.PREGNANT"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT"
               answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
               Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.DUE_DATE"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DUE_DATE"
               answer = q.answers.select { |a| a.response_class == "date" }.first
               Factory(:response, :survey_section_id => section.id, :datetime_value => "2012-02-29", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.EMAIL"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.EMAIL"
               answer = q.answers.select { |a| a.response_class == "string" }.first
               Factory(:response, :survey_section_id => section.id, :string_value => "email@dev.null", :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-            when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.ENGLISH"
+            when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ENGLISH"
               answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
               Factory(:response, :survey_section_id => section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
             end

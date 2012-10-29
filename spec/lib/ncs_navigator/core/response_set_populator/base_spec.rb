@@ -92,6 +92,15 @@ module NcsNavigator::Core
           end
         end
 
+        context "with a low intensity instrument" do
+          it "chooses the ResponseSetPopulator::LowIntensity" do
+            survey = create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
+            response_set, instrument = prepare_instrument(person, participant, survey)
+            handler = ResponseSetPopulator::Base.populator_for(response_set)
+            handler.should == ResponseSetPopulator::LowIntensity
+          end
+        end
+
       end
     end
   end

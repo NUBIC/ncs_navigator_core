@@ -114,5 +114,18 @@ module BirthVisit
     survey
   end
 
+  def create_birth_survey_with_prepopulated_mode_of_contact
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_BIRTH_VISIT_BABY_NAME_3", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-birth-visit-baby-name-3")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated mode of contact
+    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
+    a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
+    a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")
+
+    survey
+  end
+
 
 end

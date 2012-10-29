@@ -2,14 +2,8 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::ResponseSetPopulator
-  class Base
 
-    POPULATORS = [
-      [/_ParticipantVerif_/,  ParticipantVerification],
-      [/_Tracing_/,           TracingModule],
-      [/_PBSamplingScreen_/,  PbsEligibilityScreener],
-      [/_PregScreen_/,        PregnancyScreener],
-    ]
+  class Base
 
     attr_accessor :person
     attr_accessor :survey
@@ -40,12 +34,41 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def process
-      Base.populator_for(response_set).populate(self)
+      Base.populator_for(survey).new(to_params).populate
     end
 
-    def self.populator_for(response_set)
-      populator = POPULATORS.find { |instrument, handler| instrument =~ response_set.survey.title }
+    def self.populator_for(survey)
+      populator = POPULATORS.find { |instrument, handler| instrument =~ survey.title }
       populator ? populator[1] : TracingModule
+    end
+
+    def to_params
+      {
+        :person => person,
+        :survey => survey,
+        :instrument => instrument,
+        :contact_link => contact_link
+      }
+    end
+
+    def find_question_for_reference_identifier(reference_identifier)
+      question = nil
+      survey.sections_with_questions.each do |section|
+        section.questions.each do |q|
+          question = q if q.reference_identifier == reference_identifier
+          break unless question.nil?
+        end
+        break unless question.nil?
+      end
+      question
+    end
+
+    def build_response_for_value(response_type, response_set, question, answer, value)
+      if response_type == "answer"
+        response_set.responses.build(:question => question, :answer => answer)
+      else
+        response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
+      end
     end
 
   end
