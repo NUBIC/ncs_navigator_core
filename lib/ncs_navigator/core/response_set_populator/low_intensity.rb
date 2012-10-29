@@ -4,6 +4,12 @@ require 'ncs_navigator/core'
 module NcsNavigator::Core::ResponseSetPopulator
   class LowIntensity < Base
 
+    def reference_identifiers
+      [
+        "prepopulated_ppg_status",
+      ]
+    end
+
     ##
     # Set values in the most recent response set for the instrument
     def populate
@@ -16,13 +22,6 @@ module NcsNavigator::Core::ResponseSetPopulator
     # @param [ResponseSet]
     # @return [ResponseSet]
     def prepopulate_response_set(response_set)
-      # TODO: determine way to know about initializing data for each survey
-      reference_identifiers = [
-        "prepopulated_ppg_status",
-      ]
-
-      response_type = "string_value"
-
       reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           answer = question.answers.first
@@ -32,6 +31,7 @@ module NcsNavigator::Core::ResponseSetPopulator
                     person.ppg_status
                   else
                     # TODO: handle other prepopulated fields
+                    response_type = "string_value"
                     nil
                   end
           response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)

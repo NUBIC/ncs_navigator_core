@@ -2,6 +2,6 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::ResponseSetPopulator
-  class ParticipantVerification
+  class ParticipantVerification < Base
   end
 end

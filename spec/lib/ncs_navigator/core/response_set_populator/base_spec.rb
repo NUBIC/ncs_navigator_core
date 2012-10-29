@@ -78,7 +78,7 @@ module NcsNavigator::Core
           it "chooses the ResponseSetPopulator::PregnancyScreener" do
             survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
             response_set, instrument = prepare_instrument(person, participant, survey)
-            handler = ResponseSetPopulator::Base.populator_for(response_set)
+            handler = ResponseSetPopulator::Base.populator_for(survey)
             handler.should == ResponseSetPopulator::PregnancyScreener
           end
         end
@@ -87,7 +87,7 @@ module NcsNavigator::Core
           it "chooses the ResponseSetPopulator::PregnancyScreener" do
             survey = create_tracing_module_survey_with_email_operational_data
             response_set, instrument = prepare_instrument(person, participant, survey)
-            handler = ResponseSetPopulator::Base.populator_for(response_set)
+            handler = ResponseSetPopulator::Base.populator_for(survey)
             handler.should == ResponseSetPopulator::TracingModule
           end
         end
@@ -96,7 +96,7 @@ module NcsNavigator::Core
           it "chooses the ResponseSetPopulator::LowIntensity" do
             survey = create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
             response_set, instrument = prepare_instrument(person, participant, survey)
-            handler = ResponseSetPopulator::Base.populator_for(response_set)
+            handler = ResponseSetPopulator::Base.populator_for(survey)
             handler.should == ResponseSetPopulator::LowIntensity
           end
         end

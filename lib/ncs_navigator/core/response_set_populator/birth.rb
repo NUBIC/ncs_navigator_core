@@ -4,6 +4,12 @@ require 'ncs_navigator/core'
 module NcsNavigator::Core::ResponseSetPopulator
   class Birth < Base
 
+    def reference_identifiers
+      [
+        "prepopulated_mode_of_contact",
+      ]
+    end
+
     ##
     # Set values in the most recent response set for the instrument
     def populate
@@ -16,25 +22,16 @@ module NcsNavigator::Core::ResponseSetPopulator
     # @param [ResponseSet]
     # @return [ResponseSet]
     def prepopulate_response_set(response_set)
-      # TODO: determine way to know about initializing data for each survey
-      reference_identifiers = [
-        "prepopulated_mode_of_contact",
-      ]
-
-      response_type = "string_value"
-
       reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
           answer = question.answers.first
           value = case reference_identifier
                   when "prepopulated_mode_of_contact"
                     response_type = "answer_value"
-                    # If In-Person use 'capi' otherwise use 'cati'
-                    # TODO: how to determine 'papi' ?
-                    ri = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
-                    answer = question.answers.select { |a| a.reference_identifier == ri }.first
+                    answer = prepopulated_mode_of_contact(question)
                   else
                     # TODO: handle other prepopulated fields
+                    response_type = "string_value"
                     nil
                   end
 

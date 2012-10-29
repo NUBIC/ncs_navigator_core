@@ -57,7 +57,6 @@ module PbsEligibilityScreener
     survey
   end
 
-
   def create_pbs_eligibility_screener_survey_with_address_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -98,7 +97,6 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     survey
   end
-
 
   def create_pbs_eligibility_screener_survey_with_telephone_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
@@ -214,6 +212,35 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "3rd trimester (7-9 months pregnant)", :response_class => "answer", :reference_identifier => "3")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    survey
+  end
+
+  def create_pbs_eligibility_screener_survey_with_prepopulated_questions
+    survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated psu
+    q = Factory(:question, :reference_identifier => "prepopulated_psu_id", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "PSU#", :response_class => "string", :reference_identifier => "psu_id")
+
+    # prepopulated practice num
+    q = Factory(:question, :reference_identifier => "prepopulated_practice_num", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "PRACTICE#", :response_class => "string", :reference_identifier => "practice_num")
+
+    # prepopulated provider id
+    q = Factory(:question, :reference_identifier => "prepopulated_provider_id", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "LOCATION#", :response_class => "string", :reference_identifier => "provider_id")
+
+    # NAME PRACTICE
+    q = Factory(:question, :reference_identifier => "NAME_PRACTICE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "NAME OF PRACTICE", :response_class => "string", :reference_identifier => "name_practice")
+
+    # prepopulated mode of contact
+    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
+    a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
+    a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")
 
     survey
   end

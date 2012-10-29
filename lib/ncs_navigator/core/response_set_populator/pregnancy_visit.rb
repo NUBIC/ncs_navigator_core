@@ -2,6 +2,6 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::ResponseSetPopulator
-  class PregnancyVisit
+  class PregnancyVisit < Base
   end
 end

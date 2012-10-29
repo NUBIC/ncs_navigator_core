@@ -2,6 +2,6 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::ResponseSetPopulator
-  class TracingModule
+  class TracingModule < Base
   end
 end

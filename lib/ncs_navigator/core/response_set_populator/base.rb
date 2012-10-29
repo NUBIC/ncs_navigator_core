@@ -33,6 +33,11 @@ module NcsNavigator::Core::ResponseSetPopulator
       @contact ||= self.contact_link.contact if self.contact_link
     end
 
+    # To be implemented by subclasses
+    def reference_identifiers
+      []
+    end
+
     def process
       Base.populator_for(survey).new(to_params).populate
     end
@@ -67,8 +72,16 @@ module NcsNavigator::Core::ResponseSetPopulator
       if response_type == "answer"
         response_set.responses.build(:question => question, :answer => answer)
       else
+        return if value.nil?
         response_set.responses.build(:question => question, :answer => answer, response_type.to_sym => value)
       end
+    end
+
+    def prepopulated_mode_of_contact(question)
+      # If In-Person use 'capi' otherwise use 'cati'
+      # TODO: how to determine 'papi' ?
+      ri = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
+      answer = question.answers.select { |a| a.reference_identifier == ri }.first
     end
 
   end
