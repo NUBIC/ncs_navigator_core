@@ -103,6 +103,31 @@ describe Event do
 
   end
 
+  describe "sorting" do
+    it "sorts by Event::TYPE_ORDER" do
+
+      v = Factory(:event, :event_type_code => 21)
+      pv1 = Factory(:event, :event_type_code => 13)
+      ic = Factory(:event, :event_type_code => 10)
+      m3 = Factory(:event, :event_type_code => 23)
+
+      event_array = [pv1, ic, m3, v]
+
+      event_array[0].should == pv1
+      event_array[1].should == ic
+      event_array[2].should == m3
+      event_array[3].should == v
+
+      ordered_event_array =  Event.sort(event_array)
+      ordered_event_array[0].should == ic
+      ordered_event_array[1].should == pv1
+      ordered_event_array[2].should == v
+      ordered_event_array[3].should == m3
+
+    end
+    
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
