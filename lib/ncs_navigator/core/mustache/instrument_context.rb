@@ -42,11 +42,12 @@ module NcsNavigator::Core::Mustache
     ### Person taking survey ###
 
     def p_full_name
-      @response_set.person.try(:full_name)
+      full_name = @response_set.person.try(:full_name)
+      full_name.blank? ? '[UNKNOWN]' : full_name
     end
 
     def p_dob
-      @response_set.person.try(:person_dob)
+      @response_set.person.try(:person_dob) || "[UNKNOWN]"
     end
 
     def p_cell_phone
@@ -155,11 +156,11 @@ module NcsNavigator::Core::Mustache
     def multiple_birth_prefix
       case @response_set.survey.title
       when /_PregVisit1/
-        PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
+        OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
       when /_Birth_INT_LI_/
-        BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+        OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
       else
-        BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+        OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
       end
     end
 
@@ -174,9 +175,9 @@ module NcsNavigator::Core::Mustache
 
     def birth_baby_name_prefix
       if /_Birth_INT_LI_/ =~ @response_set.survey.title
-        BirthOperationalDataExtractor::BABY_NAME_LI_PREFIX
+        OperationalDataExtractor::Birth::BABY_NAME_LI_PREFIX
       else
-        BirthOperationalDataExtractor::BABY_NAME_PREFIX
+        OperationalDataExtractor::Birth::BABY_NAME_PREFIX
       end
     end
 
@@ -295,14 +296,14 @@ module NcsNavigator::Core::Mustache
 
     def pregnancy_visit_prefix
       if /_Birth_INT_LI_/ =~ @response_set.survey.title
-        BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+        OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
       else
-        BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+        OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
       end
     end
 
     def f_fname
-      father_full_name = response_for("#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME")
+      father_full_name = response_for("#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME")
       father_full_name.blank? ? "the father" : father_full_name.split(' ')[0]
     end
 
