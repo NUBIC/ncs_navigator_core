@@ -27,7 +27,6 @@ Feature: NCS code retrieval
 
     Then the response status is 304
 
-  @wip
   Scenario: GET /api/v1/ncs_codes returns all NCS codes
     Given an authenticated user
 
@@ -35,3 +34,6 @@ Feature: NCS code retrieval
       | X-Client-ID | foo |
 
     Then the response status is 200
+    And the response body contains the MDES version
+    And the response body contains the MDES specification version
+    And the response body contains NCS codes
