@@ -12,8 +12,10 @@ module Field
     let(:instrument) { Factory(:instrument, :event => e2) }
     let(:p1) { Factory(:participant) }
     let(:p2) { Factory(:participant) }
+    let(:p3) { Factory(:participant) }
     let(:person1) { Factory(:person) }
     let(:person2) { Factory(:person) }
+    let(:person3) { Factory(:person) }
 
     let(:sio) { StringIO.new }
     let(:log) { sio.string }
@@ -25,17 +27,24 @@ module Field
     before do
       Factory(:participant_person_link, :participant_id => p1.id, :person_id => person1.id)
       Factory(:participant_person_link, :participant_id => p2.id, :person_id => person2.id)
+      Factory(:participant_person_link, :participant_id => p3.id, :person_id => person3.id)
 
-      sp.stub!(:current_events => [e1, e2], :current_instruments => [instrument])
+      sp.stub!(:current_events => [e1, e2],
+               :current_instruments => [instrument],
+               :current_participants => [p1, p2, p3])
 
       sync.psc = stub.as_null_object
       sync.superposition = sp
       sync.logger = logger
     end
 
-    describe '#resolve_psc_participants' do
+    describe '#find_participants' do
       before do
-        sync.resolve_psc_participants
+        sync.find_participants
+      end
+
+      it 'builds one PscParticipant per participant' do
+        sync.psc_participants.should have_psc_participants(p1, p2, p3)
       end
 
       it 'builds one PscParticipant per event participant' do
@@ -55,7 +64,7 @@ module Field
       let(:sas_e2) { [Psc::ScheduledActivity.new(:activity_id => 'bar')] }
 
       before do
-        sync.resolve_psc_participants
+        sync.find_participants
 
         e1.stub!(:scheduled_activities => sas_e1)
         e2.stub!(:scheduled_activities => sas_e2)
@@ -93,7 +102,7 @@ module Field
       let(:sas_i) { [Psc::ScheduledActivity.new] }
 
       before do
-        sync.resolve_psc_participants
+        sync.find_participants
 
         instrument.stub!(:scheduled_activities => sas_i)
       end
