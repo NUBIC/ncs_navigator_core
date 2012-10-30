@@ -31,11 +31,7 @@ module NcsNavigator::Core
             rs = rsp.process
             rs.responses.should_not be_empty
             rs.should == @response_set
-            assert_response_value(rs, "capi", "CAPI")
-
-
-            rs.responses.first.answer.reference_identifier.should == "capi"
-            rs.responses.first.to_s.should == "CAPI"
+            assert_response_value(rs, "prepopulated_mode_of_contact", "CAPI")
           end
         end
 
@@ -48,7 +44,7 @@ module NcsNavigator::Core
             params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
             rsp = ResponseSetPopulator::Base.new(params)
             rs = rsp.process
-            assert_response_value(rs, "cati", "CATI")
+            assert_response_value(rs, "prepopulated_mode_of_contact", "CATI")
           end
         end
       end
@@ -58,7 +54,7 @@ module NcsNavigator::Core
         params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
         rsp = ResponseSetPopulator::Base.new(params)
         rs = rsp.process
-        assert_response_value(rs, "psu_id", "the_psu")
+        assert_response_value(rs, "prepopulated_psu_id", "the_psu")
       end
 
       describe "for a participant associated with a provider" do
@@ -71,7 +67,7 @@ module NcsNavigator::Core
           params = { :person => @person, :instrument => @instrument, :survey => @survey }
           rsp = ResponseSetPopulator::Base.new(params)
           rs = rsp.process
-          assert_response_value(rs, "practice_num", "999")
+          assert_response_value(rs, "prepopulated_practice_num", "999")
         end
 
         it "does not create a response if the value is nil" do
@@ -82,7 +78,7 @@ module NcsNavigator::Core
           params = { :person => @person, :instrument => @instrument, :survey => @survey }
           rsp = ResponseSetPopulator::Base.new(params)
           rs = rsp.process
-          response = rs.responses.select { |r| r.answer.reference_identifier == "practice_num" }.first
+          response = rs.responses.select { |r| r.question.reference_identifier == "prepopulated_practice_num" }.first
           response.should be_nil
         end
 
@@ -93,7 +89,7 @@ module NcsNavigator::Core
           params = { :person => @person, :instrument => @instrument, :survey => @survey }
           rsp = ResponseSetPopulator::Base.new(params)
           rs = rsp.process
-          assert_response_value(rs, "provider_id", provider.public_id)
+          assert_response_value(rs, "prepopulated_provider_id", provider.public_id)
         end
 
         it "sets the name of the practice" do
@@ -103,7 +99,7 @@ module NcsNavigator::Core
           params = { :person => @person, :instrument => @instrument, :survey => @survey }
           rsp = ResponseSetPopulator::Base.new(params)
           rs = rsp.process
-          assert_response_value(rs, "name_practice", "provider name of practice")
+          assert_response_value(rs, "NAME_PRACTICE", "provider name of practice")
         end
 
         it "uses the first known provider to prepopulate" do
@@ -116,14 +112,14 @@ module NcsNavigator::Core
           params = { :person => @person, :instrument => @instrument, :survey => @survey }
           rsp = ResponseSetPopulator::Base.new(params)
           rs = rsp.process
-          assert_response_value(rs, "name_practice", "provider name of practice")
+          assert_response_value(rs, "NAME_PRACTICE", "provider name of practice")
         end
 
       end
     end
 
     def assert_response_value(response_set, reference_identifier, value)
-      response = response_set.responses.select { |r| r.answer.reference_identifier == reference_identifier }.first
+      response = response_set.responses.select { |r| r.question.reference_identifier == reference_identifier }.first
       response.should_not be_nil
       response.to_s.should == value
     end

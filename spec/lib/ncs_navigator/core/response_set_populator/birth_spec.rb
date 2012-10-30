@@ -31,7 +31,7 @@ module NcsNavigator::Core
           rs = rsp.process
           rs.responses.should_not be_empty
           rs.should == @response_set
-          rs.responses.first.answer.reference_identifier.should == "capi"
+          rs.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
           rs.responses.first.to_s.should == "CAPI"
         end
       end
@@ -48,7 +48,7 @@ module NcsNavigator::Core
           rs = rsp.process
           rs.responses.should_not be_empty
           rs.should == @response_set
-          rs.responses.first.answer.reference_identifier.should == "cati"
+          rs.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
           rs.responses.first.to_s.should == "CATI"
         end
       end
