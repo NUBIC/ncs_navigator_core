@@ -94,11 +94,19 @@ module SurveyCompletion
     end
 
     def create_choice_response(q, k, v, section)
-      answer = q.answers.detect { |a| a.response_class == 'answer' && a.send(k) == v }
+      answer = q.answers.detect { |a| a.response_class == 'answer' && value_matches(a, k, v) }
 
       assert answer, q, { k => v }, section
 
       create_response(q, answer, section)
+    end
+
+    def value_matches(a, k, v)
+      if k == :text
+        a.send(k).upcase == v.upcase
+      else
+        a.send(k) == v
+      end
     end
 
     def create_response(q, a, section, options = {})
