@@ -207,6 +207,13 @@ class Person < ActiveRecord::Base
   end
 
   ##
+  # Helper method to return the first known provider associated with the person
+  # @return [Provider]
+  def provider
+    providers.first
+  end
+
+  ##
   # The Participant ppg_status local_code (cf. NcsCode) if applicable
   # @return [Integer]
   def ppg_status
@@ -247,7 +254,7 @@ class Person < ActiveRecord::Base
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
 
-      instr.response_sets.each { |rs| prepopulate_response_set(rs, survey) }
+      # instr.response_sets.each { |rs| prepopulate_response_set(rs, survey) }
     end
   end
 
