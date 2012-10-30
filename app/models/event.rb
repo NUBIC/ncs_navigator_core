@@ -57,6 +57,30 @@ class Event < ActiveRecord::Base
 
   before_validation :strip_time_whitespace
 
+  POSTNATAL_EVENTS = [
+    18, # Birth
+    23, # 3 Month
+    24, # 6 Month
+    25, # 6-Month Infant Feeding SAQ
+    26, # 9 Month
+    27, # 12 Month
+    28, # 12 Month Mother Interview SAQ
+    30, # 18 Month
+    31, # 24 Month
+  ]
+
+  PRE_PARTICIPANT_EVENTS = [
+     1, # Household Enumeration
+     2, # Two Tier Enumeration
+    22, # Provider-Based Recruitment
+     3, # Ongoing Tracking of Dwelling Units
+     4, # Pregnancy Screening - Provider Group
+     5, # Pregnancy Screening – High Intensity  Group
+     6, # Pregnancy Screening – Low Intensity Group
+     9, # Pregnancy Screening - Household Enumeration Group
+    29, # Pregnancy Screener
+  ]
+
   ##
   # A partial ordering of MDES event types. The ordering is such that,
   # if an event of type A and one of type B occur on the same day, A
@@ -212,7 +236,14 @@ class Event < ActiveRecord::Base
   # Returns true for all pre-participant events
   # @return [Boolean]
   def enumeration_event?
-    [1, 2, 3, 4, 5, 6, 9, 22, 29].include? event_type.to_i
+    PRE_PARTICIPANT_EVENTS.include? event_type_code
+  end
+
+  ##
+  # Returns true for all post-natal events (includes Birth)
+  # @return [Boolean]
+  def postnatal?
+    POSTNATAL_EVENTS.include? event_type_code
   end
 
   ##

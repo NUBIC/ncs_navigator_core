@@ -302,4 +302,49 @@ module Tracing
     survey
   end
 
+  def create_tracing_survey_with_prepopulated_fields
+    survey = Factory(:survey, :title => "INS_QUE_Tracing_INT_EHPBHILIPBS_M3.0_V1.0", :access_code => "ins-que-tracing-int-ehpbhilipbs-m3-0-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated mode of contact
+    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
+    a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
+    a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")
+
+    # prepopulated_is_showing_address_for_tracing
+    q = Factory(:question, :reference_identifier => "prepopulated_should_show_address_for_tracing", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_address_provided
+    q = Factory(:question, :reference_identifier => "prepopulated_is_address_provided", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_home_phone_provided
+    q = Factory(:question, :reference_identifier => "prepopulated_is_home_phone_provided", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_valid_cell_phone_provided
+    q = Factory(:question, :reference_identifier => "prepopulated_is_valid_cell_phone_provided", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_valid_cell_phone_2_provided
+    q = Factory(:question, :reference_identifier => "prepopulated_is_valid_cell_phone_2_provided", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # CELL_PHONE_2
+    q = Factory(:question, :reference_identifier => "CELL_PHONE_2", :data_export_identifier => "TRACING_INT.CELL_PHONE_2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "neg_2")
+
+    survey
+  end
+
 end
