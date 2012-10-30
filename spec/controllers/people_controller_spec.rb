@@ -64,23 +64,6 @@ describe PeopleController do
           assigns[:people].should_not include @person3
         end
       end
-
-      describe "json" do
-
-        it "returns the result" do
-          get :index, :q => { :first_name_start => "Ja" }, :format => :json
-          # response.body.should == [@person1].to_json - does not work since psu_code is a string
-          parsed_body = ActiveSupport::JSON.decode(response.body)
-          parsed_body.size.should == 1
-          parsed_body.first.should include "person"
-          person = parsed_body.first["person"]
-          person["title"].should == @person1.title
-          person["first_name"].should == @person1.first_name
-          person["last_name"].should == @person1.last_name
-          person["psu_code"].should == @person1.psu_code
-        end
-      end
-
     end
 
     describe "GET new" do
