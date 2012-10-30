@@ -3,6 +3,8 @@ require 'set'
 require 'spec_helper'
 require 'stringio'
 
+require File.expand_path('../have_psc_participants_matcher', __FILE__)
+
 module Field
   describe PscSync do
     let(:e1) { Factory(:event, :participant => p1) }
@@ -37,12 +39,11 @@ module Field
       end
 
       it 'builds one PscParticipant per event participant' do
-        sync.psc_participants.detect { |_, pscp| pscp.participant == e1.participant }.should_not be_nil
-        sync.psc_participants.detect { |_, pscp| pscp.participant == e2.participant }.should_not be_nil
+        sync.psc_participants.should have_psc_participants(e1.participant, e2.participant)
       end
 
       it 'builds one PscParticipant per instrument participant' do
-        sync.psc_participants.detect { |_, pscp| pscp.participant == instrument.participant }.should_not be_nil
+        sync.psc_participants.should have_psc_participants(instrument.participant)
       end
     end
 
