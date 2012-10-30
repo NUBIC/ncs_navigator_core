@@ -386,10 +386,10 @@ describe Person do
 
       survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_2"
+        when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_2"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
           Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
-        when "#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_4"
+        when "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_4"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
           Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
         end
@@ -399,11 +399,11 @@ describe Person do
       response_set.responses.size.should == 2
 
       person  = Person.find(person.id)
-      can_use_phone_to_setup_appts = person.responses_for("#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_2")
+      can_use_phone_to_setup_appts = person.responses_for("#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_2")
       can_use_phone_to_setup_appts.size.should == 1
       can_use_phone_to_setup_appts.first.to_s.should == "Yes"
 
-      can_text_to_setup_appts = person.responses_for("#{PregnancyScreenerOperationalDataExtractor::INTERVIEW_PREFIX}.CELL_PHONE_4")
+      can_text_to_setup_appts = person.responses_for("#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.CELL_PHONE_4")
       can_text_to_setup_appts.size.should == 1
       can_text_to_setup_appts.first.to_s.should == "Yes"
     end
