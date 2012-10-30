@@ -70,6 +70,7 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def build_response_for_value(response_type, response_set, question, answer, value)
       if response_type == "answer"
+        return if answer.nil?
         response_set.responses.build(:question => question, :answer => answer)
       else
         return if value.nil?

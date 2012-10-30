@@ -27,7 +27,7 @@ module NcsNavigator::Core::ResponseSetPopulator
           answer = question.answers.first
           value = case reference_identifier
                   when "prepopulated_mode_of_contact"
-                    response_type = "answer_value"
+                    response_type = "answer"
                     answer = prepopulated_mode_of_contact(question)
                   else
                     # TODO: handle other prepopulated fields

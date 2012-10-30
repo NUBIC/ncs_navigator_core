@@ -11,7 +11,19 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_is_address_provided",
         "prepopulated_is_home_phone_provided",
         "prepopulated_is_valid_cell_phone_provided",
-        "prepopulated_is_valid_cell_phone_2_provided"
+        "prepopulated_is_valid_cell_phone_2_provided",
+        "prepopulated_is_valid_cell_phone_3_provided",
+        "prepopulated_is_valid_cell_phone_4_provided",
+        "prepopulated_should_show_email_for_tracing",
+        "prepopulated_is_valid_email_provided",
+        "prepopulated_is_valid_email_appt_provided",
+        "prepopulated_is_valid_email_questionnaire_provided",
+        "prepopulated_should_show_contact_for_tracing",
+        "prepopulated_is_event_type_birth",
+        "prepopulated_is_valid_contact_for_all_provided",
+        "prepopulated_is_event_type_pbs_participant_eligibility_screening",
+        "prepopulated_is_prev_city_provided",
+        "prepopulated_valid_driver_license_provided"
       ]
     end
 
@@ -29,28 +41,52 @@ module NcsNavigator::Core::ResponseSetPopulator
     def prepopulate_response_set(response_set)
       reference_identifiers.each do |reference_identifier|
         if question = find_question_for_reference_identifier(reference_identifier)
-          response_type = "answer_value"
+          response_type = "answer"
 
           answer = question.answers.first
-          value = case reference_identifier
+          answer = case reference_identifier
                   when "prepopulated_mode_of_contact"
-                    answer = prepopulated_mode_of_contact(question)
+                    prepopulated_mode_of_contact(question)
                   when "prepopulated_should_show_address_for_tracing"
-                    answer = should_show_address?(question)
+                    should_show_address?(question)
                   when "prepopulated_is_address_provided"
-                    answer = has_address?(question)
+                    has_address?(question)
                   when "prepopulated_is_home_phone_provided"
-                    answer = has_home_phone?(question)
+                    has_home_phone?(question)
                   when "prepopulated_is_valid_cell_phone_provided"
-                    answer = has_valid_cell_phone?(question)
+                    has_valid_cell_phone?(question)
                   when "prepopulated_is_valid_cell_phone_2_provided"
-                    answer = has_cell_phone_2_been_answered?(question)
+                    has_cell_phone_2_been_answered?(question)
+                  when "prepopulated_is_valid_cell_phone_3_provided"
+                    has_cell_phone_3_been_answered?(question)
+                  when "prepopulated_is_valid_cell_phone_4_provided"
+                    has_cell_phone_4_been_answered?(question)
+                  when "prepopulated_should_show_email_for_tracing"
+                    should_show_email_for_tracing?(question)
+                  when "prepopulated_is_valid_email_provided"
+                    has_email?(question)
+                  when "prepopulated_is_valid_email_appt_provided"
+                    has_answered_email_appt?(question)
+                  when "prepopulated_is_valid_email_questionnaire_provided"
+                    has_answered_email_quest?(question)
+                  when "prepopulated_should_show_contact_for_tracing"
+                    should_show_contact?(question)
+                  when "prepopulated_is_event_type_birth"
+                    is_event_birth?(question)
+                  when "prepopulated_is_valid_contact_for_all_provided"
+                    are_all_contacts_provided?(question)
+                  when "prepopulated_is_event_type_pbs_participant_eligibility_screening"
+                    is_event_pbs_participant_eligibility_screening?(question)
+                  when "prepopulated_is_prev_city_provided"
+                    has_answered_prev_city?(question)
+                  when "prepopulated_valid_driver_license_provided"
+                    has_answered_driver_license?(question)
                   else
                     # TODO: handle other prepopulated fields
                     nil
                   end
 
-        build_response_for_value(response_type, response_set, question, answer, value)
+          build_response_for_value(response_type, response_set, question, answer, nil)
         end
       end
       response_set
@@ -109,9 +145,108 @@ module NcsNavigator::Core::ResponseSetPopulator
     #    -  IF CELL_PHONE_2 COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING CELL_PHONE_2.
     #    -  OTHERWISE, GO TO CELL_PHONE_2.
     def has_cell_phone_2_been_answered?(question)
-      ri = person.responses_for("TRACING_INT.CELL_PHONE_2").blank? ? "false" : "true"
+      has_cell_phone_question_been_answered?(question, "2")
+    end
+
+    #  PROGRAMMER INSTRUCTIONS:
+    #    -  IF CELL_PHONE_3 COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING CELL_PHONE_3.
+    #    -  OTHERWISE, GO TO CELL_PHONE_3.
+    #
+    # - IF CELL_PHONE_3 COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED
+    def has_cell_phone_3_been_answered?(question)
+      has_cell_phone_question_been_answered?(question, "3")
+    end
+
+    #  PROGRAMMER INSTRUCTIONS:
+    #    -  IF CELL_PHONE_3 = 2, -1, OR -2, OR
+    #    -  IF CELL_PHONE_4 COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING CELL_PHONE_4.
+    #    -  OTHERWISE, GO TO CELL_PHONE_4.
+    #
+    # - IF CELL_PHONE_4 COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED
+    def has_cell_phone_4_been_answered?(question)
+      has_cell_phone_question_been_answered?(question, "4")
+    end
+
+    def has_cell_phone_question_been_answered?(question, int)
+      has_answered_question?(question, "TRACING_INT.CELL_PHONE_#{int}")
+    end
+    private :has_cell_phone_question_been_answered?
+
+    #  PROGRAMMER INSTRUCTIONS:
+    #    -  IF EVENT_TYPE = BIRTH, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH:
+    #        o  IF EMAIL COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO EMAIL_CONFIRM.
+    #        o  OTHERWISE, GO TO EMAIL.
+    #    -  OTHERWISE, IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, 3 MONTH, 9 MONTH, 18 MONTH, 24 MONTH, 30 MONTH, OR
+    #       36 MONTH, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING EMAIL_QUEST.
+    def should_show_email_for_tracing?(question)
+      event_type_code = event.try(:event_type_code).to_i
+      # If event is Birth, PV1, PV2, 6M, 12M
+      ri = [18, 13, 15, 24, 27].include?(event_type_code) ? "true" : "false"
       question.answers.select { |a| a.reference_identifier == ri }.first
     end
+
+    def has_email?(question)
+      ri =  person.primary_email.nil? ? "false" : "true"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+    #  PROGRAMMER INSTRUCTIONS:
+    #    -  IF EMAIL_APPT COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING EMAIL_APPT.
+    #    -  OTHERWISE, GO TO EMAIL_APPT.
+    def has_answered_email_appt?(question)
+      has_answered_question?(question, "TRACING_INT.EMAIL_APPT")
+    end
+
+    #  PROGRAMMER INSTRUCTIONS:
+    #    -  IF EMAIL_APPT = 2, -1, OR -2, OR
+    #    -  IF EMAIL_QUEST COLLECTED PREVIOUSLY AND VALID RESPONSE PROVIDED, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING EMAIL_QUEST.
+    #    -  OTHERWISE, GO TO EMAIL_QUEST.
+    def has_answered_email_quest?(question)
+      has_answered_question?(question, "TRACING_INT.EMAIL_QUEST")
+    end
+
+    # IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH
+    def should_show_contact?(question)
+      event_type_code = event.try(:event_type_code).to_i
+      ri = [34, 13, 15, 24, 27].include?(event_type_code) ? "true" : "false"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+    # IF EVENT_TYPE = BIRTH
+    def is_event_birth?(question)
+      ri = (event.try(:event_type_code).to_i == 18) ? "true" : "false"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+    # - VALID CONTACT INFORMATION PROVIDED FOR THREE RELATIVES OR FRIENDS PREVIOUSLY FOR (R_FNAME)/(R_MNAME)/(R_LNAME)
+    def are_all_contacts_provided?(question)
+      ri = "true"
+      [1,2,3].each do |i|
+        ri = "false" if person.responses_for("TRACING_INT.CONTACT_RELATE_#{i}").blank?
+      end
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+    # IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING
+    def is_event_pbs_participant_eligibility_screening?(question)
+      ri = (event.try(:event_type_code).to_i == 34) ? "true" : "false"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+    def has_answered_prev_city?(question)
+      has_answered_question?(question, "TRACING_INT.PREV_CITY")
+    end
+
+    def has_answered_driver_license?(question)
+      has_answered_question?(question, "TRACING_INT.DR_LICENSE_NUM")
+    end
+
+
+    def has_answered_question?(question, data_export_identifier)
+      ri = person.responses_for(data_export_identifier).blank? ? "false" : "true"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+    private :has_answered_question?
 
   end
 end
