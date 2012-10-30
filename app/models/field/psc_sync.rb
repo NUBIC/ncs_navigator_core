@@ -79,8 +79,8 @@ module Field
       @events = superposition.current_events
       @instruments = superposition.current_instruments
 
-      build_psc_participants(events)
-      build_psc_participants(instruments)
+      build_psc_participants_from(events)
+      build_psc_participants_from(instruments)
     end
 
     def login_to_psc
@@ -95,7 +95,7 @@ module Field
 
     ##
     # @private
-    def build_psc_participants(list)
+    def build_psc_participants_from(list)
       list.each do |obj|
         p = obj.participant
 
