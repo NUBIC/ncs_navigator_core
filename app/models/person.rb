@@ -254,6 +254,8 @@ class Person < ActiveRecord::Base
       rs = instr.response_sets.build(:survey => survey, :user_id => self.id)
       rs.participant = participant
 
+      # TODO: remove this after we are certain that the prepopulation step is done
+      #       after the initial creation of the response set
       # instr.response_sets.each { |rs| prepopulate_response_set(rs, survey) }
     end
   end

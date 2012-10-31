@@ -9,8 +9,8 @@ Feature: Finalizing an instrument
   Given a registered pregnant participant on the ppg1 page with an instrument
   When I follow "Bessie Smith"
   Then I follow "Initiate Contact"
-  And I select "In-person" from "Contact Method"
-  And I press "Submit"
+  And I select "In-person" from "How did you contact them?"
+  And I press "Start Contact"
   Then I should be on the select_instrument_contact_link page
   And I should see "Bessie Smith"
   And I should see "Pregnancy Visit 1"

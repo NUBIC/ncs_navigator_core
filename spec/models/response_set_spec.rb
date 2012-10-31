@@ -68,45 +68,6 @@ describe ResponseSet do
     end
   end
 
-  context "with instruments" do
-    describe "a participant who is in ppg1 - Currently Pregnant and Eligible" do
-
-      let(:person) { Factory(:person) }
-      let(:participant) { Factory(:participant, :high_intensity => true, :high_intensity_state => "pregnancy_one") }
-
-      let(:access_code) { "ins-que-pregvisit1-int-ehpbhi-p2-v2-0" }
-      let(:status1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 1) }
-
-      it "creates a response set for the instrument with prepopulated answers" do
-
-        participant.person = person
-
-        pv1survey = Survey.find_by_access_code(access_code)
-        if pv1survey.blank?
-          pv1survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0", :access_code => access_code)
-        end
-
-        Factory(:ppg_status_history, :participant => participant, :ppg_status => status1)
-
-        section   = Factory(:survey_section, :survey => pv1survey)
-        question  = Factory(:question, :survey_section => section, :data_export_identifier => "name", :reference_identifier => "prepopulated_name")
-        answer    = Factory(:answer, :question => question)
-
-        ResponseSet.where(:user_id => person.id).should be_empty
-        instrument_type = NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1)
-
-        rs, ins = prepare_instrument(person, participant, pv1survey)
-        rs.save!
-        rs = ResponseSet.where(:user_id => person.id).first
-        rs.should_not be_nil
-        rs.responses.should_not be_empty
-        rs.responses.first.string_value.should == person.name
-      end
-
-    end
-
-  end
-
   context "knowing if the user answered questions in each section" do
     before(:each) do
 

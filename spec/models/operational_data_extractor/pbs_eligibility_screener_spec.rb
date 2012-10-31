@@ -20,6 +20,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @person = Factory(:person, :first_name => nil, :last_name => nil, :middle_name => nil, :person_dob => nil)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
       @survey = create_pbs_eligibility_screener_survey_with_person_operational_data
     end
 

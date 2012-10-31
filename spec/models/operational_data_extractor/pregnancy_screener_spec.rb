@@ -18,6 +18,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @person = Factory(:person)
       @participant = Factory(:participant)
       @participant.person = @person
+      @participant.save!
       @survey = create_pregnancy_screener_survey_with_person_operational_data
     end
 
