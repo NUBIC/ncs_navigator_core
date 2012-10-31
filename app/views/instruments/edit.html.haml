@@ -1,0 +1,30 @@
+- title "Finalize Instrument"
+
+%p
+  - if @survey
+    = @person
+    - if @response_set.complete?
+      has completed
+    - else
+      has taken
+    Instrument -
+    = @survey.title
+
+.page_section
+  = form_for(@instrument, :html => {:autocomplete => "off"}) do |f|
+    = render "shared/full_error_messages", :object => f.object
+
+    = f.hidden_field :person_id
+
+    .contact_link_section
+      %h3
+        Instrument
+      - @instrument.response_sets.each do |rs|
+        .survey
+          = link_to rs.survey.title, edit_my_survey_path(:survey_code => rs.survey.access_code, :response_set_code => rs.access_code), :class => "edit_link icon_link"
+
+      = fields_for @instrument do |instrument|
+        = render "form_fields", { :f => instrument }
+
+    %p
+      = f.submit "Submit", :disable_with => 'Submitting...'

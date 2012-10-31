@@ -104,44 +104,44 @@ class ContactLinksController < ApplicationController
     @current_activity     = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
   end
 
-  ##
-  # Displays the form for the Instrument record associated with the given ContactLink
-  # Posts the form to the finalize_instrument path
-  def edit_instrument
-    @contact_link = ContactLink.find(params[:id])
-    @person       = @contact_link.person
-    @instrument   = @contact_link.instrument
-    @response_set = @instrument.response_set
-    @survey       = @response_set.survey if @response_set
-    set_instrument_time_and_date(@contact_link.contact)
+  # ##
+  # # Displays the form for the Instrument record associated with the given ContactLink
+  # # Posts the form to the finalize_instrument path
+  # def edit_instrument
+  #   @contact_link = ContactLink.find(params[:id])
+  #   @person       = @contact_link.person
+  #   @instrument   = @contact_link.instrument
+  #   @response_set = @instrument.response_set
+  #   @survey       = @response_set.survey if @response_set
+  #   set_instrument_time_and_date(@contact_link.contact)
 
-    @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
-    @instrument.set_instrument_breakoff(@response_set)
-    if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
-      @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
-    end
-  end
+  #   @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
+  #   @instrument.set_instrument_breakoff(@response_set)
+  #   if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
+  #     @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
+  #   end
+  # end
 
-  ##
-  # Updates the Instrument record for the given ContactLink
-  # Afterwards redirects the user to the /contact_links/:id/decision_page
-  def finalize_instrument
-    @contact_link = ContactLink.find(params[:id])
+  # ##
+  # # Updates the Instrument record for the given ContactLink
+  # # Afterwards redirects the user to the /contact_links/:id/decision_page
+  # def finalize_instrument
+  #   @contact_link = ContactLink.find(params[:id])
 
-    respond_to do |format|
-      if @contact_link.instrument.update_attributes(params[:instrument])
+  #   respond_to do |format|
+  #     if @contact_link.instrument.update_attributes(params[:instrument])
 
-        mark_activity_occurred if @contact_link.instrument.complete?
+  #       mark_activity_occurred if @contact_link.instrument.complete?
 
-        format.html { redirect_to(decision_page_contact_link_path(@contact_link), :notice => 'Instrument was successfully updated.') }
-        format.json { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.json { render :json => @contact_link.errors, :status => :unprocessable_entity }
-      end
-    end
+  #       format.html { redirect_to(decision_page_contact_link_path(@contact_link), :notice => 'Instrument was successfully updated.') }
+  #       format.json { head :ok }
+  #     else
+  #       format.html { render :action => "edit" }
+  #       format.json { render :json => @contact_link.errors, :status => :unprocessable_entity }
+  #     end
+  #   end
 
-  end
+  # end
 
   private
 

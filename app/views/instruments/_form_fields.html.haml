@@ -1,19 +1,10 @@
 .column-container
-  .column-1
-    = render "shared/ncs_code_select", { :f => f, :code => :instrument_type_code, :label_text => "Instrument Type", :other => :instrument_type_other }
+   
+  .column
+  %br
+    = render "shared/ncs_code_select", { :f => f, :code => :instrument_status_code, :label_text => "Instrument Status", :notify_marker => true }
 
-    %p
-      = f.label :instrument_version, "Instrument Version"
-      %br
-      = f.text_field :instrument_version
-
-    %p
-      = f.label :instrument_repeat_key, "Instrument Repeat Key"
-      %span{ :class => "help_icon" }
-      = render "instruments/instrument_repeat_key_tooltip"
-    %p
-      = f.text_field :instrument_repeat_key
-
+    = render "shared/ncs_code_select", { :f => f, :code => :instrument_breakoff_code, :label_text => "Breakoff", :help_text => "instruments/instrument_breakoff_tooltip" }
     %p
       = f.label :instrument_start_date, "Instrument Start Date"
       %br
@@ -34,10 +25,21 @@
       %br
       = f.text_field :instrument_end_time, :class => "timepicker"
 
-  .column-2
-    = render "shared/ncs_code_select", { :f => f, :code => :instrument_status_code, :label_text => "Instrument Status", :notify_marker => true }
 
-    = render "shared/ncs_code_select", { :f => f, :code => :instrument_breakoff_code, :label_text => "Breakoff", :help_text => "instruments/instrument_breakoff_tooltip" }
+  .hidden
+    = render "shared/ncs_code_select", { :f => f, :code => :instrument_type_code, :label_text => "Instrument Type", :other => :instrument_type_other }
+
+    %p
+      = f.label :instrument_version, "Instrument Version"
+      %br
+      = f.text_field :instrument_version
+
+    %p
+      = f.label :instrument_repeat_key, "Instrument Repeat Key"
+      %span{ :class => "help_icon" }
+      = render "instruments/instrument_repeat_key_tooltip"
+    %p
+      = f.text_field :instrument_repeat_key 
 
     = render "shared/ncs_code_select", { :f => f, :code => :instrument_mode_code, :label_text => "Instrument Mode", :other => :instrument_mode_other }
 
