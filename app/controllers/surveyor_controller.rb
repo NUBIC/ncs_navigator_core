@@ -13,12 +13,12 @@ class SurveyorController < ApplicationController
   def surveyor_finish
     set_activity_plan_for_participant
 
-    contact_link = @response_set.instrument.contact_link
+    instrument = @response_set.instrument
 
     if @activity_plan.final_survey_part?(@response_set) || params[:breakoff]
       # go to contact_link.edit_instrument
       update_participant_based_on_survey(@response_set)
-      edit_instrument_contact_link_path(contact_link.id)
+      edit_instrument_path(instrument.id)
     else
       # go to next part of the survey
       activity = @activity_plan.current_scheduled_activity(contact_link.event.to_s, @response_set)

@@ -144,7 +144,7 @@ class Event < ActiveRecord::Base
     result
   end
 
-    def strip_time_whitespace
+  def strip_time_whitespace
     self.event_start_time.strip! if self.event_start_time
     self.event_end_time.strip! if self.event_end_time
   end
