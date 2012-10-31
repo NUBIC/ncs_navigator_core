@@ -431,7 +431,8 @@ class Person < ActiveRecord::Base
   # @return [Array<Response>]
   def responses_for(data_export_identifier)
     Response.includes([:answer, :question, :response_set]).where(
-      "response_sets.user_id = ? AND questions.data_export_identifier = ?", self.id, data_export_identifier).all
+      "response_sets.user_id = ? AND questions.data_export_identifier = ?", self.id, data_export_identifier).
+      order("responses.created_at").all
   end
 
   ##

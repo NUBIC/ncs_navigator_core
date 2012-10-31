@@ -19,6 +19,8 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_PregScreen_/,        PregnancyScreener],
     [/_QUE_LI/,             LowIntensity],
     [/_Birth_/,             Birth],
+    [/_PregVisit1_/,        PregnancyVisit],
+    [/_PregVisit2_/,        PregnancyVisit],
   ]
 
 end

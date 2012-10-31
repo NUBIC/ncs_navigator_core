@@ -318,6 +318,30 @@ module PregnancyVisitOne
     survey
   end
 
+  def create_screener_survey_with_fields_used_in_pv1_prepopulation
+    survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    q = Factory(:question, :reference_identifier => "OWN_HOME", :data_export_identifier => "PBS_ELIG_SCREENER.OWN_HOME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
+
+    survey
+  end
+
+  def create_pre_preg_survey_with_fields_used_in_pv1_prepopulation
+    survey = Factory(:survey, :title => "INS_QUE_PrePreg_INT_EHPBHI_P2_V1.1", :access_code => "ins-que-prepreg-int-ehpbhi-p2-v1-1")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    q = Factory(:question, :reference_identifier => "OWN_HOME", :data_export_identifier => "PRE_PREG.OWN_HOME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
+
+    q = Factory(:question, :reference_identifier => "RECENT_MOVE", :data_export_identifier => "PRE_PREG.RECENT_MOVE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
+
+    survey
+  end
+
   def create_pregnancy_visit_survey_with_prepopulated_fields
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-m3-0-v3-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -327,6 +351,26 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
     a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
     a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")
+
+    # prepopulated_should_show_height
+    q = Factory(:question, :reference_identifier => "prepopulated_should_show_height", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_should_show_recent_move_for_preg_visit_one
+    q = Factory(:question, :reference_identifier => "prepopulated_should_show_recent_move_for_preg_visit_one", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_first_pregnancy_visit_one
+    q = Factory(:question, :reference_identifier => "prepopulated_is_first_pregnancy_visit_one", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one
+    q = Factory(:question, :reference_identifier => "prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
 
     survey
   end
