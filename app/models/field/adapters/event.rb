@@ -21,6 +21,9 @@ module Field::Adapters
 
     class HashAdapter < Field::HashAdapter
       attr_accessors ATTRIBUTES
+      attr_accessors %w(
+        p_id
+      )
 
       transform :event_end_date, :to_date
       transform :event_incentive_cash, :to_bigdecimal
@@ -33,6 +36,23 @@ module Field::Adapters
 
     class ModelAdapter < Field::ModelAdapter
       attr_accessors ATTRIBUTES
+
+      def participant_public_id
+        source.try(:p_id)
+      end
+
+      def pending_prerequisites
+        return {} unless source
+
+        { ::Participant => [participant_public_id] }
+      end
+
+      def ensure_prerequisites(map)
+        return true unless source
+
+        participant_id = map.id_for(::Participant, participant_public_id)
+        target.participant_id = participant_id
+      end
     end
   end
 end

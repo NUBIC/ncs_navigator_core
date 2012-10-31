@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'rack/test'
 
 # For API tests, it's nice to have more direct control over the HTTP request and
@@ -64,6 +63,12 @@ When /^I POST ([^\s]+) with$/ do |url, table|
 end
 
 When /^I GET ([^\s]+)$/ do |url|
+  get url
+end
+
+When /^I GET ([^\s]+) with headers$/ do |url, headers|
+  headers.rows_hash.each { |k, v| header(k, v) }
+
   get url
 end
 

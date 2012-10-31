@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.1'
 
+gem 'active_model_serializers'
 gem 'bcdatabase', '~> 1.0'
 gem 'aker', '~> 3.0'
 gem 'aker-rails'
@@ -62,9 +63,9 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-# gem 'ncs_mdes_warehouse',
-#   :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
-gem 'ncs_mdes_warehouse', '~> 0.9'
+gem 'ncs_mdes_warehouse',
+  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
+# gem 'ncs_mdes_warehouse', '~> 0.10'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 

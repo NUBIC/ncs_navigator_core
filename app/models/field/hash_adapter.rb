@@ -19,6 +19,7 @@ module Field
     def to_model
       adapt_model(model_class.new).tap do |m|
         m.source = self
+        m.superposition = superposition
         m.patch(target)
       end
     end

@@ -144,6 +144,13 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Sort given array by event_type_code
+  # according to the order in Event::TYPE_ORDER
+  def self.sort(event_array)
+    event_array.sort_by { |e| Event::TYPE_ORDER.index(e.event_type_code.to_i) }
+  end
+
+  ##
   # Format the event start date
   # @return [String]
   def event_start
@@ -161,7 +168,7 @@ class Event < ActiveRecord::Base
     result
   end
 
-  def strip_time_whitespace
+    def strip_time_whitespace
     self.event_start_time.strip! if self.event_start_time
     self.event_end_time.strip! if self.event_end_time
   end

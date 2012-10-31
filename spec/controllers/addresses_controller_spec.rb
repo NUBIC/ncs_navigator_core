@@ -56,20 +56,6 @@ describe AddressesController do
           assigns[:addresses].should_not include @address3
         end
       end
-
-      describe "json" do
-        it "returns the result" do
-          get :index, :q => { :address_one_cont => "1" }, :format => :json
-          parsed_body = ActiveSupport::JSON.decode(response.body)
-          parsed_body.size.should == 1
-          parsed_body.first.should include "address"
-          address = parsed_body.first["address"]
-          address["address_one"].should == @address1.address_one
-          address["address_two"].should == @address1.address_two
-          address["psu_code"].should == @address1.psu_code
-        end
-      end
-
     end
 
     describe "GET new" do
