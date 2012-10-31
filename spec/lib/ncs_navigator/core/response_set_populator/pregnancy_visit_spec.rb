@@ -13,6 +13,122 @@ module NcsNavigator::Core
       response.to_s.should == value
     end
 
+    context "with pregnancy visit two instrument" do
+
+      let(:person) { Factory(:person) }
+      let(:participant) { Factory(:participant) }
+      let(:survey) { create_pbs_pregnancy_visit_2_with_prepopulated_fields }
+      let(:pv1_event) { Factory(:event, :event_type_code => 13) }
+      let(:ic_event) { Factory(:event, :event_type_code => 10) }
+
+      before(:each) do
+        participant.person = person
+        participant.save!
+
+        @response_set, @instrument = prepare_instrument(person, participant, survey)
+        @response_set.responses.should be_empty
+      end
+
+      describe "prepopulated_is_work_name_previously_collected_and_valid" do
+
+        it "should be FALSE if work name was not previously answered" do
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
+        end
+
+        it "should be FALSE if work name was previously answered as refused" do
+          pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.refused "PREG_VISIT_1_3.WORK_NAME"
+          end
+
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
+        end
+
+        it "should be FALSE if work name was previously answered as don't know" do
+          pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.dont_know "PREG_VISIT_1_3.WORK_NAME"
+          end
+
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_name_previously_collected_and_valid", "FALSE")
+        end
+
+        it "should be TRUE if work name was previously answered" do
+          pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.str "PREG_VISIT_1_3.WORK_NAME", "work_name"
+          end
+
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_name_previously_collected_and_valid", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_is_work_address_previously_collected_and_valid" do
+
+        it "should be FALSE if work address was not previously answered" do
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
+        end
+
+        it "should be FALSE if work address was previously answered as refused" do
+          pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          end
+
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
+        end
+
+        it "should be FALSE if work address was previously answered as don't know" do
+          pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          end
+
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_address_previously_collected_and_valid", "FALSE")
+        end
+
+        it "should be TRUE if work address was previously answered" do
+          pv1_survey = create_pv1_with_fields_for_pv2_prepopulation
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.str "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
+          end
+
+          params = { :person => person, :instrument => @instrument, :survey => survey }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_is_work_address_previously_collected_and_valid", "TRUE")
+        end
+
+      end
+
+    end
+
     context "with pregnancy visit one instrument" do
 
       let(:person) { Factory(:person) }
@@ -152,14 +268,6 @@ module NcsNavigator::Core
             assert_response_value(ResponseSetPopulator::Base.new(params).process,
               "prepopulated_should_show_recent_move_for_preg_visit_one", "TRUE")
           end
-
-              # PROGRAMMER INSTRUCTIONS:
-    # - IF FIRST PREGNANCY VISIT 1 INTERVIEW:
-    # -   IF OWN_HOME WAS ASKED DURING PREGNANCY SCREENER OR PRE-PREGANCY VISIT, THEN ASK RECENT_MOVE.
-    # -   OTHERWISE, GO TO OWN_HOME.
-    # - IF SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW:
-    # -   GO TO RECENT_MOVE
-
         end
 
       end

@@ -9,7 +9,9 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_should_show_height",
         "prepopulated_should_show_recent_move_for_preg_visit_one",
         "prepopulated_is_first_pregnancy_visit_one",
-        "prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one"
+        "prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one",
+        "prepopulated_is_work_name_previously_collected_and_valid",
+        "prepopulated_is_work_address_previously_collected_and_valid",
       ]
     end
 
@@ -39,11 +41,14 @@ module NcsNavigator::Core::ResponseSetPopulator
                     is_first_pregnancy_visit_one?(question)
                   when "prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one"
                     is_pre_pregnancy_information_available_and_recent_move_coded_as_one?(question)
+                  when "prepopulated_is_work_name_previously_collected_and_valid"
+                    is_work_name_previously_collected_and_valid?(question)
+                  when "prepopulated_is_work_address_previously_collected_and_valid"
+                    is_work_address_previously_collected_and_valid?(question)
                   else
                     # TODO: handle other prepopulated fields
                     nil
                   end
-
           build_response_for_value(response_type, response_set, question, answer, nil)
         end
       end
@@ -101,12 +106,43 @@ module NcsNavigator::Core::ResponseSetPopulator
       question.answers.select { |a| a.reference_identifier == ri }.first
     end
 
+    # PROGRAMMER INSTRUCTIONS:
+    # - IF WORKING= 1, AND WORK_NAME PREVIOUSLY COLLECTED AND VALID RESPONSE PROVIDED, GO TO WORK_NAME_CONFIRM.
+    # - IF WORKING = 1, AND WORK_NAME NOT PREVIOUSLY COLLECTED OR VALID RESPONSE NOT PROVIDED, GO TO WORK_NAME.
+    def is_work_name_previously_collected_and_valid?(question)
+      most_recent_response = person.responses_for("PREG_VISIT_1_3.WORK_NAME").last
+      ri = response_exists_and_is_valid?(most_recent_response.to_s) ? "true" : "false"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+    # - IF WORK_ADDRESS_VARIABLES NOT COLLECTED PREVIOUSLY OR VALID WORK ADDRESS NOT PROVIDED, GO TO WORK_ADDRESS_VARIABLES.
+    # - IF WORK_ADDRESS_VARIABLES COLLECTED PREVIOUSLY AND VALID WORK ADDRESS PROVIDED, GO TO WORK_ADDRESS_VARIABLES_CONFIRM.
+    #   OTHERWISE, GO TO TIME_STAMP_EM_ET.
+    def is_work_address_previously_collected_and_valid?(question)
+      most_recent_response = person.responses_for("PREG_VISIT_1_3.WORK_ADDRESS_1").last
+      ri = response_exists_and_is_valid?(most_recent_response.to_s) ? "true" : "false"
+      question.answers.select { |a| a.reference_identifier == ri }.first
+    end
+
+
     def is_first_pv1?
       pv1_contacts = person.contact_links.select do |cl|
         cl.event.try(:event_type_code) == 13
       end.map(&:contact).uniq
       pv1_contacts.count == 0
     end
+
+    def response_exists_and_is_valid?(resp)
+      resp = resp.upcase
+      if !resp.blank? &&
+          resp != "REFUSED" &&
+          resp != "DON'T KNOW"
+        true
+      else
+        false
+      end
+    end
+    private :response_exists_and_is_valid?
 
   end
 end

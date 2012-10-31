@@ -100,4 +100,41 @@ module PregnancyVisitTwo
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
     survey
   end
+
+  def create_pv1_with_fields_for_pv2_prepopulation
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-m3-0-v3-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Work Name
+    q = Factory(:question, :reference_identifier => "work_name", :data_export_identifier => "PREG_VISIT_1_3.WORK_NAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Work Name", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # Work Address
+    q = Factory(:question, :reference_identifier => "work_address", :data_export_identifier => "PREG_VISIT_1_3.WORK_ADDRESS_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    survey
+  end
+
+  def create_pbs_pregnancy_visit_2_with_prepopulated_fields
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit2_INT_EHPBHIPBS_M3.0_V3.0", :access_code => "ins-que-pregvisit2-int-ehpbhipbs-m3-0-v3-0_test")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated_is_work_name_previously_collected_and_valid
+    q = Factory(:question, :reference_identifier => "prepopulated_is_work_name_previously_collected_and_valid", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_work_address_previously_collected_and_valid
+    q = Factory(:question, :reference_identifier => "prepopulated_is_work_address_previously_collected_and_valid", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    survey
+  end
+
 end
