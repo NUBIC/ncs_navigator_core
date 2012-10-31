@@ -317,4 +317,18 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "Phone Number", :response_class => "string")
     survey
   end
+
+  def create_pregnancy_visit_survey_with_prepopulated_fields
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-m3-0-v3-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated mode of contact
+    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
+    a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
+    a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")
+
+    survey
+  end
+
 end
