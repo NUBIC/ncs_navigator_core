@@ -127,5 +127,53 @@ module BirthVisit
     survey
   end
 
+  def create_birth_part_one_survey_with_prepopulated_fields_for_part_two
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # BIRTH_DELIVER
+    q = Factory(:question, :reference_identifier => "BIRTH_DELIVER", :data_export_identifier => "BIRTH_VISIT_3.BIRTH_DELIVER", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "HOSPITAL", :response_class => "answer", :reference_identifier => "hospital")
+    a = Factory(:answer, :question_id => q.id, :text => "BIRTHING CENTER", :response_class => "answer", :reference_identifier => "birthing_center")
+    a = Factory(:answer, :question_id => q.id, :text => "AT HOME", :response_class => "answer", :reference_identifier => "at_home")
+    a = Factory(:answer, :question_id => q.id, :text => "SOME OTHER PLACE", :response_class => "answer", :reference_identifier => "some_other_place")
+
+    # RELEASE
+    q = Factory(:question, :reference_identifier => "RELEASE", :data_export_identifier => "BIRTH_VISIT_3.RELEASE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+
+    # MULTIPLE
+    q = Factory(:question, :reference_identifier => "MULTIPLE", :data_export_identifier => "BIRTH_VISIT_3.MULTIPLE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+
+    survey
+  end
+
+
+  def create_birth_part_two_survey_with_prepopulated_fields_from_part_one
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # prepopulated_birth_deliver_from_birth_visit_part_one
+    q = Factory(:question, :reference_identifier => "prepopulated_birth_deliver_from_birth_visit_part_one", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "HOSPITAL", :response_class => "answer", :reference_identifier => "hospital")
+    a = Factory(:answer, :question_id => q.id, :text => "BIRTHING CENTER", :response_class => "answer", :reference_identifier => "birthing_center")
+    a = Factory(:answer, :question_id => q.id, :text => "AT HOME", :response_class => "answer", :reference_identifier => "at_home")
+    a = Factory(:answer, :question_id => q.id, :text => "SOME OTHER PLACE", :response_class => "answer", :reference_identifier => "some_other_place")
+
+    # prepopulated_release_from_birth_visit_part_one
+    q = Factory(:question, :reference_identifier => "prepopulated_release_from_birth_visit_part_one", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+
+    # prepopulated_multiple_from_birth_visit_part_one
+    q = Factory(:question, :reference_identifier => "prepopulated_multiple_from_birth_visit_part_one", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+
+    survey
+  end
 
 end

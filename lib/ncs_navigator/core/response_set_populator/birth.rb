@@ -7,6 +7,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     def reference_identifiers
       [
         "prepopulated_mode_of_contact",
+        "prepopulated_birth_deliver_from_birth_visit_part_one"
       ]
     end
 
@@ -29,6 +30,11 @@ module NcsNavigator::Core::ResponseSetPopulator
                   when "prepopulated_mode_of_contact"
                     response_type = "answer"
                     answer = prepopulated_mode_of_contact(question)
+                  when "prepopulated_birth_deliver_from_birth_visit_part_one"
+                    response_type = "answer"
+                    if most_recent_response = person.responses_for("BIRTH_VISIT_3.BIRTH_DELIVER").last
+                      answer = question.answers.select{ |a| a.reference_identifier == most_recent_response.answer.reference_identifier }.first
+                    end
                   else
                     # TODO: handle other prepopulated fields
                     response_type = "string_value"
