@@ -114,9 +114,11 @@ module NcsNavigator::Core::Warehouse
         Participant.transaction do
           Participant.importer_mode do
             participant = Participant.where(:p_id => p_id).first
+            loader = Psc::SyncLoader.new
+            loader.sync_key = lambda { |*c| [self.class.name, 'psc_sync', c].flatten.join(':') }
 
             for_psc = (participant.being_followed && participant.p_type_code != 6)
-            Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
+            loader.cache_participant(participant) if for_psc
 
             # caches
             core_instruments = {}
@@ -129,7 +131,7 @@ module NcsNavigator::Core::Warehouse
                 participant.set_state_for_event_type(core_event)
               end
 
-              cache_event_for_psc_sync(participant, core_event) if for_psc
+              loader.cache_event(participant, core_event) if for_psc
 
               save_core_record(core_event)
 
@@ -145,9 +147,11 @@ module NcsNavigator::Core::Warehouse
                   contact_id = core_contact_link.contact_id
                   core_contact = (core_contacts[contact_id] ||= Contact.find(contact_id))
 
-                  cache_link_contact_for_psc_sync(
-                    participant, core_event, core_contact_link, core_contact,
-                    core_instruments[core_contact_link.instrument_id])
+                  loader.cache_contact_link(participant,
+                                            core_event,
+                                            core_contact_link,
+                                            core_contact,
+                                            core_instruments[core_contact_link.instrument_id])
                 end
                 save_core_record(core_contact_link)
               end
@@ -174,10 +178,6 @@ module NcsNavigator::Core::Warehouse
       else
         true
       end
-    end
-
-    def sync_key(*key_parts)
-      [self.class.name, 'psc_sync', key_parts].flatten.join(':')
     end
 
     def cache_event_for_psc_sync(participant, core_event)
