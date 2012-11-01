@@ -162,6 +162,7 @@ class Participant < ActiveRecord::Base
     after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_conversion!
     after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
     after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
+    # TODO: probably need a PPG update trigger for :lose_pregnancy
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -197,6 +198,10 @@ class Participant < ActiveRecord::Base
 
     event :late_pregnancy_one_visit do
       transition [:pregnancy_one, :pregnancy_two] => :ready_for_birth
+    end
+
+    event :lose_pregnancy do
+      transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :following_high_intensity
     end
 
     event :birth_event do
@@ -478,11 +483,76 @@ class Participant < ActiveRecord::Base
       event.mark_out_of_window
       event.close!
       event.cancel_activities(psc, "Missed Event - Out of Window")
-      set_state_for_event_type(event) if event.event_type_code != 32
-      resp = Event.schedule_and_create_placeholder(psc, self) if self.pending_events.blank?
+      #set_state_for_event_type(event) if event.event_type_code != 32
+      if self.pending_events.blank?
+        update_state_to_next_event(event)
+        resp = Event.schedule_and_create_placeholder(psc, self) 
+      end  
     end
     resp
   end
+
+  ##
+  def update_state_to_next_event(event)
+
+    case event.event_type.local_code
+    when 4, 5, 6, 9, 29, 34  
+      # Pregnancy Screener Events or PBS Eligibility Screener
+      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
+
+    when 10 
+      # Informed Consent
+      low_intensity_consent! if can_low_intensity_consent?
+      
+    when 33
+      # Lo I Quex 
+      follow_low_intensity! if can_follow_low_intensity?
+    
+    when 32
+      #Low to High Conversion
+      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
+      high_intensity_conversion!
+    
+    when 7,8
+      # Pregnancy Probability
+      follow! if can_follow? && high_intensity?
+    
+      if known_to_be_pregnant?
+        if low_intensity? &&
+         can_impregnate_low? &&
+         !due_date_is_greater_than_follow_up_interval
+         impregnate_low!
+        end
+
+        if high_intensity? &&
+         can_impregnate?
+        impregnate!
+        end
+      end
+
+    when 11, 12
+      # Pre-Pregnancy
+      non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      follow! if can_follow?
+    
+    when 13, 14
+      # Pregnancy Visit 1 
+      pregnancy_one_visit! if can_pregnancy_one_visit?
+    
+    when 15, 16
+      # Pregnancy Visit 2  
+      pregnancy_two_visit! if can_pregnancy_two_visit?
+    
+    when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
+      # Birth and Post-natal
+      if low_intensity?
+        birth_event_low! if can_birth_event_low?
+      else
+        birth_event! if can_birth_event?
+      end
+    end
+
+  end  
 
   ##
   # Display text from the NcsCode list PARTICIPANT_TYPE_CL1
@@ -909,6 +979,7 @@ class Participant < ActiveRecord::Base
       # Pre-Pregnancy
       move_to_high_intensity_if_required
       non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      lose_pregnancy! if can_lose_pregnancy?
       follow!
     when 13, 14
       # Pregnancy Visit 1

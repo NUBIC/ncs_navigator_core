@@ -19,6 +19,7 @@ gem 'paper_trail', '~> 2'
 gem 'ransack'
 gem 'foreman'
 gem 'foreigner'
+gem 'facets', :require => false
 
 group :assets do
   # sass-rails 3.1.6 induces indefinite recursion during
@@ -91,7 +92,6 @@ group :test, :ci do
   gem 'database_cleaner',
     :git => 'git://github.com/rsutphin/database_cleaner.git', :branch => 'dm-pg-single-trunc'
   gem 'shoulda'
-  gem 'facets', :require => false
   gem 'factory_girl', '~> 2.6'
   gem 'simplecov', :require => false
   gem 'pickle'
