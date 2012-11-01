@@ -33,6 +33,10 @@ module NcsNavigator::Core::ResponseSetPopulator
       @contact ||= self.contact_link.contact if self.contact_link
     end
 
+    def participant
+      @participant ||= self.instrument.response_sets.last.try(:participant)
+    end
+
     # To be implemented by subclasses
     def reference_identifiers
       []
@@ -78,11 +82,21 @@ module NcsNavigator::Core::ResponseSetPopulator
       end
     end
 
+    def valid_response_exists?(data_export_identifier)
+      invalid_reference_identifiers = ["neg_1", "neg_2"]
+      result = false
+      if response = person.responses_for(data_export_identifier).first
+        reference_identifier = response.try(:answer).try(:reference_identifier).to_s
+        result = true unless invalid_reference_identifiers.include?(reference_identifier)
+      end
+      result
+    end
+
     def prepopulated_mode_of_contact(question)
       # If In-Person use 'capi' otherwise use 'cati'
       # TODO: how to determine 'papi' ?
-      ri = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
-      answer = question.answers.select { |a| a.reference_identifier == ri }.first
+      reference_identifier = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
+      answer = question.answers.select { |a| a.reference_identifier == reference_identifier }.first
     end
 
   end

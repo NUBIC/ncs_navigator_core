@@ -552,6 +552,75 @@ describe Person do
     end
   end
 
+  describe ".first_child?" do
+
+    let(:mother) { Factory(:person) }
+    let(:first_child) { Factory(:person) }
+    let(:second_child) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+
+    before(:each) do
+      participant.person = mother
+      participant.save!
+    end
+
+    it "is false if the person is not a child" do
+      mother.should_not be_first_child
+    end
+
+    describe "with one child" do
+
+      before(:each) do
+        child_participant = Factory(:participant)
+        child_participant.person = first_child
+        child_participant.save!
+
+        ParticipantPersonLink.create(:person_id => first_child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
+        ParticipantPersonLink.create(:person_id => mother.id, :participant_id => child_participant.id, :relationship_code => 2) # 2 Mother
+      end
+
+      it "is true if the child is an only child" do
+        first_child.mother.should_not be_nil
+        first_child.mother.should == mother
+        mother.children.size.should == 1
+
+        first_child.should be_first_child
+      end
+
+      describe "and a subsequent child" do
+
+        before(:each) do
+          second_child_participant = Factory(:participant)
+          second_child_participant.person = second_child
+          second_child_participant.save!
+
+          ParticipantPersonLink.create(:person_id => second_child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
+          ParticipantPersonLink.create(:person_id => mother.id, :participant_id => second_child_participant.id, :relationship_code => 2) # 2 Mother
+        end
+
+        it "is true if the child is the first child of many" do
+          first_child.mother.should_not be_nil
+          first_child.mother.should == mother
+          second_child.mother.should_not be_nil
+          second_child.mother.should == mother
+          mother.children.size.should == 2
+
+          first_child.should be_first_child
+        end
+
+        it "is false if the child is NOT the first child of many" do
+          first_child.mother.should_not be_nil
+          first_child.mother.should == mother
+          second_child.mother.should_not be_nil
+          second_child.mother.should == mother
+          mother.children.size.should == 2
+
+          first_child.should be_first_child
+        end
+      end
+    end
+  end
+
   describe 'contact information helpers' do
     let!(:primary) { NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1) }
     let!(:address) { Factory(:address, :address_rank_code => primary.to_i, :person => person) }

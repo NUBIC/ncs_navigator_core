@@ -128,7 +128,7 @@ module BirthVisit
   end
 
   def create_birth_part_one_survey_with_prepopulated_fields_for_part_two
-    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-two")
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-one")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
     # BIRTH_DELIVER

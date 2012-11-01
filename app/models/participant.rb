@@ -59,7 +59,7 @@ class Participant < ActiveRecord::Base
   has_many :low_intensity_state_transition_audits,  :class_name => "ParticipantLowIntensityStateTransition",  :foreign_key => "participant_id", :dependent => :destroy
   has_many :high_intensity_state_transition_audits, :class_name => "ParticipantHighIntensityStateTransition", :foreign_key => "participant_id", :dependent => :destroy
 
-  has_many :participant_person_links
+  has_many :participant_person_links, :order => 'participant_person_links.created_at'
   has_many :people, :through => :participant_person_links
   has_many :participant_staff_relationships
   has_many :participant_consents

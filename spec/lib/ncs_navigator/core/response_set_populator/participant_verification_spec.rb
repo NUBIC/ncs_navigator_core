@@ -13,12 +13,10 @@ module NcsNavigator::Core
       response.to_s.should == value
     end
 
-    context "for a participant verification instrument" do
+    context "with participant verification instrument pt one" do
 
       let(:person) { Factory(:person) }
       let(:survey_pt1) { create_participant_verification_part_one_survey_with_prepopulated_fields }
-      # let(:survey_child) { create_participant_verification_child_survey_with_prepopulated_fields }
-      # let(:survey_pt2) { create_participant_verification_part_two_survey_with_prepopulated_fields }
 
       before(:each) do
         participant = Factory(:participant)
@@ -27,16 +25,7 @@ module NcsNavigator::Core
 
         @response_set_pt1, @instrument_pt1 = prepare_instrument(person, participant, survey_pt1)
         @response_set_pt1.responses.should be_empty
-
-        # # Yes this should be the same instrument - bypassing the PSC reference connection for now
-        # @response_set_child, @instrument_child = prepare_instrument(person, participant, survey_child)
-        # @response_set_child.responses.should be_empty
-
-        # # Yes this should be the same instrument - bypassing the PSC reference connection for now
-        # @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
-        # @response_set_pt2.responses.should be_empty
       end
-
 
       describe "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification" do
 
@@ -99,7 +88,7 @@ module NcsNavigator::Core
         end
 
         it "is TRUE if the person has a first, last and has responded has no middle name previously" do
-          person.stub!(:middle_name).and_return(nil)
+          Person.any_instance.stub(:middle_name).and_return(nil)
           person.middle_name.should be_nil
 
           none = mock(NcsCode, :local_code => '-7')
@@ -225,7 +214,261 @@ module NcsNavigator::Core
           params = { :person => person, :instrument => @instrument_pt1, :survey => survey_pt1 }
           assert_response_value(ResponseSetPopulator::Base.new(params).process,
             "prepopulated_person_dob_previously_collected", "TRUE")
+        end
 
+      end
+
+    end
+
+    context "with participant verification instrument part two" do
+
+      let(:person) { Factory(:person) }
+      let(:mother) { Factory(:participant) }
+      let(:child_person) { Factory(:person) }
+      let(:child) { Factory(:participant) }
+
+      let(:second_child_person) { Factory(:person) }
+      let(:second_child) { Factory(:participant) }
+
+      let(:third_child_person) { Factory(:person) }
+      let(:third_child) { Factory(:participant) }
+
+
+      let(:survey_pt2) { create_participant_verification_part_two_survey_with_prepopulated_fields }
+
+      before(:each) do
+        mother.person = person
+        mother.save!
+
+        child.person = child_person
+        ParticipantPersonLink.create(:person_id => child_person.id, :participant_id => mother.id, :relationship_code => 8) # 8 Child
+        ParticipantPersonLink.create(:person_id => person.id, :participant_id => child.id, :relationship_code => 2) # 2 Mother
+        child.save!
+
+        # third_child.person = third_child_person
+        # ParticipantPersonLink.create(:person_id => third_child_person.id, :participant_id => mother.id, :relationship_code => 8) # 8 Child
+        # ParticipantPersonLink.create(:person_id => person.id, :participant_id => third_child.id, :relationship_code => 2) # 2 Mother
+        # third_child.save!
+
+        @response_set_pt2, @instrument_pt2 = prepare_instrument(person, child, survey_pt2)
+        @response_set_pt2.responses.should be_empty
+      end
+
+      describe "prepopulated_should_show_child_name" do
+
+        it "is TRUE if the child (participant) name is unknown" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_name", "TRUE")
+        end
+
+        it "is FALSE if the child (participant) name is known" do
+          child_person.first_name.should_not be_nil
+          child_person.last_name.should_not be_nil
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_name", "FALSE")
+        end
+
+        it "is FALSE if the person has previously responded" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.str "PARTICIPANT_VERIF.C_FNAME", "cfname"
+            a.str "PARTICIPANT_VERIF.C_LNAME", "clname"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_name", "FALSE")
+
+        end
+
+        it "is TRUE if the person has responded refused previously" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.refused "PARTICIPANT_VERIF.C_FNAME"
+            a.refused "PARTICIPANT_VERIF.C_LNAME"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_name", "TRUE")
+        end
+
+        it "is TRUE if the person has responded don't know previously" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.dont_know "PARTICIPANT_VERIF.C_FNAME"
+            a.dont_know "PARTICIPANT_VERIF.C_LNAME"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_name", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_should_show_child_dob" do
+
+        it "is TRUE if the child (participant) dob is unknown" do
+          Person.any_instance.stub(:person_dob_date).and_return(nil)
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_dob", "TRUE")
+        end
+
+        it "is FALSE if the child (participant) dob is known" do
+          Person.any_instance.stub(:person_dob_date).and_return(Date.today)
+          child_person.person_dob_date.should_not be_nil
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_dob", "FALSE")
+        end
+
+        it "is FALSE if the person has previously responded" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.date "PARTICIPANT_VERIF.CHILD_DOB", Date.today
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_dob", "FALSE")
+
+        end
+
+        it "is TRUE if the person has responded refused previously" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.refused "PARTICIPANT_VERIF.CHILD_DOB"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_dob", "TRUE")
+        end
+
+        it "is TRUE if the person has responded don't know previously" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.dont_know "PARTICIPANT_VERIF.CHILD_DOB"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_dob", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_should_show_child_sex" do
+
+        it "is TRUE if the child (participant) sex is unknown" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_sex", "TRUE")
+        end
+
+        it "is FALSE if the child (participant) sex is known" do
+          Person.any_instance.stub(:sex_code).and_return(1)
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_sex", "FALSE")
+        end
+
+        it "is FALSE if the person has previously responded" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.choice "PARTICIPANT_VERIF.CHILD_SEX", mock(NcsCode, :local_code => 1)
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_sex", "FALSE")
+        end
+
+        it "is TRUE if the person has responded refused previously" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.refused "PARTICIPANT_VERIF.CHILD_SEX"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_sex", "TRUE")
+        end
+
+        it "is TRUE if the person has responded don't know previously" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.dont_know "PARTICIPANT_VERIF.CHILD_SEX"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_child_sex", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_first_child" do
+
+        it "is TRUE if the child (participant) is the first (or only) child" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_first_child", "TRUE")
+        end
+
+        it "is FALSE if the child is not the first child" do
+          second_child.person = second_child_person
+          ParticipantPersonLink.create(:person_id => second_child_person.id, :participant_id => mother.id, :relationship_code => 8) # 8 Child
+          ParticipantPersonLink.create(:person_id => person.id, :participant_id => second_child.id, :relationship_code => 2) # 2 Mother
+          second_child.save!
+
+          @response_set_pt2_second_child, @instrument_pt2_second_child = prepare_instrument(person, second_child, survey_pt2)
+          @response_set_pt2_second_child.responses.should be_empty
+
+          params = { :person => person, :instrument => @instrument_pt2_second_child, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_first_child", "FALSE")
+        end
+
+      end
+
+      describe "prepopulated_resp_guard_previously_collected" do
+
+        it "is FALSE if there is no previous response for RESP_GUARD" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_resp_guard_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for RESP_GUARD" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.RESP_GUARD"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_resp_guard_previously_collected", "TRUE")
         end
 
       end
