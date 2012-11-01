@@ -90,6 +90,32 @@ namespace :import do
     importer.reset
   end
 
+  desc 'Check for imported participants which are not in PSC'
+  task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment] do
+    require 'ncs_navigator/core'
+    psc = PatientStudyCalendar.new(user_for_psc)
+
+    # Expected participants for PSC are those 1) actively followed and 2) not children.
+    expected_ps = Participant.includes(:participant_person_links => [:person]).
+      where('being_followed = ? AND p_type_code != ?', true, 6)
+    missing_ps = expected_ps.reject { |p|
+      psc.is_registered?(p).tap do |result|
+        $stderr.write(result ? '.' : '!')
+        $stderr.flush
+      end
+    }
+    $stderr.puts
+
+    if missing_ps.empty?
+      $stderr.puts "All #{expected_ps.size} expected participant#{'s' unless expected_ps.size == 1} present."
+    else
+      $stderr.puts "The following participant#{'s' unless missing_ps.size == 1} expected but not present:"
+      missing_ps.each do |p|
+        $stderr.puts "* #{p.public_id} (cases: #{p.id})"
+      end
+    end
+  end
+
   desc 'Import instrument data'
   task :instruments => [:warehouse_setup, :environment] do
     require 'ncs_navigator/core'
