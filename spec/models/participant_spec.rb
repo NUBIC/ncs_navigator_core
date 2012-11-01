@@ -1071,6 +1071,50 @@ describe Participant do
           @participant.next_study_segment.should == PatientStudyCalendar::HIGH_INTENSITY_PRE_PREGNANCY
         end
 
+        describe 'when there is a pregnancy' do
+          before do
+            @participant.non_pregnant_informed_consent!
+            @participant.follow!
+            @participant.impregnate!
+
+            # setup check
+            @participant.high_intensity_state.should == 'pregnancy_one'
+          end
+
+          shared_examples 'lost pregnancy' do
+            it 'transitions back to following' do
+              @participant.high_intensity_state.should == 'following_high_intensity'
+            end
+          end
+
+          describe 'and it is lost before PV1' do
+            before do
+              @participant.lose_pregnancy!
+            end
+
+            include_examples 'lost pregnancy'
+          end
+
+          describe 'and it is lost between PV1 and PV2' do
+            before do
+              @participant.pregnancy_one_visit!
+              @participant.lose_pregnancy!
+            end
+
+            include_examples 'lost pregnancy'
+          end
+
+          describe 'and it is lost between PV2 and birth' do
+            before do
+              @participant.pregnancy_one_visit!
+              @participant.pregnancy_two_visit!
+              @participant.lose_pregnancy!
+            end
+
+            include_examples 'lost pregnancy'
+          end
+        end
+
       end
     end
   end

@@ -162,6 +162,7 @@ class Participant < ActiveRecord::Base
     after_transition :on => :high_intensity_conversion, :do => :process_high_intensity_conversion!
     after_transition :on => :pregnancy_one_visit, :do => :process_pregnancy_visit_one!
     after_transition :on => :birth_event, :do => :update_ppg_status_after_birth
+    # TODO: probably need a PPG update trigger for :lose_pregnancy
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
@@ -197,6 +198,10 @@ class Participant < ActiveRecord::Base
 
     event :late_pregnancy_one_visit do
       transition [:pregnancy_one, :pregnancy_two] => :ready_for_birth
+    end
+
+    event :lose_pregnancy do
+      transition [:pregnancy_one, :pregnancy_two, :ready_for_birth] => :following_high_intensity
     end
 
     event :birth_event do
@@ -914,6 +919,7 @@ class Participant < ActiveRecord::Base
       # Pre-Pregnancy
       move_to_high_intensity_if_required
       non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
+      lose_pregnancy! if can_lose_pregnancy?
       follow!
     when 13, 14
       # Pregnancy Visit 1
