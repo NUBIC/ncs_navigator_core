@@ -14,9 +14,8 @@
   .page_section
     %h3
       Edit Instrument Records
-          .edit_instrument
-            = link_to "Edit #{instrument}",
-              edit_instrument_path, :class => "edit_link icon_link"
+    .edit_instrument
+      = link_to "Edit #{@instrument}", edit_instrument_path, :class => "edit_link icon_link"
 
 .page_section
   %h3

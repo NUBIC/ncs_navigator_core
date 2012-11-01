@@ -11,11 +11,11 @@ module NcsNavigator::Core::Mustache
       InstrumentContext.ancestors.should include(Mustache)
     end
 
-    let(:baby_fname) { "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_FNAME" }
-    let(:baby_sex)   { "#{BirthOperationalDataExtractor::BABY_NAME_PREFIX}.BABY_SEX" }
-    let(:multiple)   { "#{BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX}.MULTIPLE" }
+    let(:baby_fname) { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_FNAME" }
+    let(:baby_sex)   { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX" }
+    let(:multiple)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE" }
 
-    let(:multiple_gestation) { "#{PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
+    let(:multiple_gestation) { "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
 
     context "without a response set" do
 
@@ -172,9 +172,9 @@ module NcsNavigator::Core::Mustache
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       describe ".multiple_birth_prefix" do
-        it "returns BirthOperationalDataExtractor::BIRTH_LI_PREFIX" do
+        it "returns OperationalDataExtractor::Birth::BIRTH_LI_PREFIX" do
           instrument_context.multiple_birth_prefix.should ==
-            BirthOperationalDataExtractor::BIRTH_LI_PREFIX
+            OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
         end
       end
 
@@ -185,9 +185,9 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".birth_baby_name_prefix" do
-        it "returns BirthOperationalDataExtractor::BABY_NAME_LI_PREFIX" do
+        it "returns OperationalDataExtractor::Birth::BABY_NAME_LI_PREFIX" do
           instrument_context.birth_baby_name_prefix.should ==
-            BirthOperationalDataExtractor::BABY_NAME_LI_PREFIX
+            OperationalDataExtractor::Birth::BABY_NAME_LI_PREFIX
         end
       end
 
@@ -201,9 +201,9 @@ module NcsNavigator::Core::Mustache
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       describe ".multiple_birth_prefix" do
-        it "returns BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX" do
+        it "returns OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX" do
           instrument_context.multiple_birth_prefix.should ==
-            BirthOperationalDataExtractor::BIRTH_VISIT_PREFIX
+            OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
         end
       end
 
@@ -214,9 +214,9 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".birth_baby_name_prefix" do
-        it "returns BirthOperationalDataExtractor::BABY_NAME_PREFIX" do
+        it "returns OperationalDataExtractor::Birth::BABY_NAME_PREFIX" do
           instrument_context.birth_baby_name_prefix.should ==
-            BirthOperationalDataExtractor::BABY_NAME_PREFIX
+            OperationalDataExtractor::Birth::BABY_NAME_PREFIX
         end
       end
 
@@ -456,9 +456,9 @@ module NcsNavigator::Core::Mustache
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       describe ".multiple_birth_prefix" do
-        it "returns PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX" do
+        it "returns OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX" do
           instrument_context.multiple_birth_prefix.should ==
-            PregnancyVisitOperationalDataExtractor::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
+            OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
         end
       end
 
@@ -514,12 +514,25 @@ module NcsNavigator::Core::Mustache
         it "returns the full name of the person taking the survey" do
           instrument_context.p_full_name.should == @person.full_name
         end
+
+        it "returns '[UNKNOWN]' if the full_name is blank" do
+          Person.any_instance.stub(:full_name).and_return('')
+          instrument_context.p_full_name.should == '[UNKNOWN]'
+        end
+
       end
 
       describe ".p_dob" do
         it "returns the date of birth of the person taking the survey" do
+          Person.any_instance.stub(:person_dob).and_return(20.years.ago)
           instrument_context.p_dob.should == @person.person_dob
         end
+
+        it "returns '[UNKNOWN]' if the person_dob is nil" do
+          Person.any_instance.stub(:person_dob).and_return(nil)
+          instrument_context.p_dob.should == '[UNKNOWN]'
+        end
+
       end
 
       describe ".at_this_visit_or_at" do

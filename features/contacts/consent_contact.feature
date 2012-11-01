@@ -10,10 +10,10 @@ Feature: Obtaining participant consent
     When I am on the new contact path for the participant
     Then I should see "Bessie Smith"
     And I should see "Consent required"
-    When I select "In-person" from "Contact Method"
-    And I fill in "Contact Date" with "01/01/2001"
-    And I select "NCS Participant" from "Person Contacted"
-    And I press "Submit"
+    When I select "In-person" from "How did you contact them?"
+    And I fill in "Date" with "01/01/2001"
+    And I select "NCS Participant" from "How does the contacted person relate to the NCS?"
+    And I press "Start Contact"
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"
@@ -35,10 +35,10 @@ Feature: Obtaining participant consent
     When I am on the new contact path for the participant
     Then I should see "Bessie Smith"
     And I should see "Consent required"
-    When I select "In-person" from "Contact Method"
-    And I fill in "Contact Date" with "01/01/2001"
-    And I select "NCS Participant" from "Person Contacted"
-    And I press "Submit"
+    When I select "In-person" from "How did you contact them?"
+    And I fill in "Date" with "01/01/2001"
+    And I select "NCS Participant" from "How does the contacted person relate to the NCS?"
+    And I press "Start Contact"
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"

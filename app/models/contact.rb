@@ -107,6 +107,10 @@ class Contact < ActiveRecord::Base
     !closed? && self.contact_end_time.blank?
   end
 
+  def via_telephone?
+    self.contact_type_code == TELEPHONE_CONTACT_CODE
+  end
+
   ##
   # Given an instrument, presumably after the instrument has been administered, set attributes on the
   # contact that can be inferred based on the instrument and type of contact
@@ -119,7 +123,7 @@ class Contact < ActiveRecord::Base
       self.who_contacted = NcsCode.for_attribute_name_and_local_code(:who_contacted_code, 1)
     end
 
-    case contact_type.to_i
+    case contact_type_code
     when TELEPHONE_CONTACT_CODE, MAILING_CONTACT_CODE
       self.contact_location = NcsCode.for_attribute_name_and_local_code(:contact_location_code, 2)
       self.contact_private  = NcsCode.for_attribute_name_and_local_code(:contact_private_code, 2)
