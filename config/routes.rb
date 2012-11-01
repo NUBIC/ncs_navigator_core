@@ -55,12 +55,11 @@ NcsNavigatorCore::Application.routes.draw do
   resources :contact_links do
     member do
       get :select_instrument
-      # TODO: move these to instruments controller
-      #get :edit_instrument
-      #put :finalize_instrument
+      get :edit_instrument
+      put :finalize_instrument
       get :decision_page
     end
-    #resources :instruments, :except => [:index, :destroy]
+    resources :instruments, :except => [:index, :destroy]
     resources :events, :except => [:index, :destroy]
     resources :contacts, :except => [:index, :destroy]
   end
