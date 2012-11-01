@@ -125,7 +125,7 @@ describe Event do
       ordered_event_array[3].should == m3
 
     end
-    
+
   end
 
   context "as mdes record" do
@@ -848,4 +848,20 @@ describe Event do
 
   end
 
+  describe '#label' do
+    let(:event) { Event.new(:event_type => et) }
+    let(:et) { NcsCode.new }
+
+    it 'turns Foo Bar into foo_bar' do
+      et.display_text = 'Foo Bar'
+
+      event.label.should == 'foo_bar'
+    end
+
+    it 'squeezes spaces' do
+      et.display_text = 'Foo    Bar'
+
+      event.label.should == 'foo_bar'
+    end
+  end
 end
