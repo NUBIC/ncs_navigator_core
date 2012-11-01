@@ -333,17 +333,21 @@ class Event < ActiveRecord::Base
     if event_disposition_category && event_disposition
       case event_disposition_category.local_code
       when 1 # Household Enumeration
-        (540..545) === event_disposition
+        (40..45) === event_disposition || (540..545) === event_disposition
       when 2 # Pregnancy Screener
-        (560..565) === event_disposition
+        (60..65) === event_disposition || (560..565) === event_disposition
       when 3 # General Study
-        (560..562) === event_disposition
+        (60..62) === event_disposition || (560..562) === event_disposition
       when 4 # Mailed Back SAQ
-        (550..556) === event_disposition
+        (50..56) === event_disposition || (550..556) === event_disposition
       when 5 # Telephone Interview
-        (590..595) === event_disposition
+        (90..95) === event_disposition || (590..595) === event_disposition
       when 6 # Internet Survey
-        (540..546) === event_disposition
+        (40..46) === event_disposition || (540..546) === event_disposition
+      when 7 # Provider Recruitment
+        570 == event_disposition || 70 == event_disposition
+      when 8 # PBS Eligibility Screening
+        (80..91) === event_disposition || (580..591) === event_disposition
       else
         false
       end

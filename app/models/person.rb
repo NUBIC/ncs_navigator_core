@@ -164,6 +164,14 @@ class Person < ActiveRecord::Base
     end
   end
 
+  def full_name_exists?
+    !first_name.blank? && !middle_name.blank? && !last_name.blank?
+  end
+
+  def only_middle_name_missing?
+    !first_name.blank? && middle_name.blank? && !last_name.blank?
+  end
+
   ##
   # Override default setter to also set Date value for use in calculations
   def person_dob=(dob)

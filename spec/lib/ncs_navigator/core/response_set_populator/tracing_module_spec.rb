@@ -52,7 +52,6 @@ module NcsNavigator::Core
 
           params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
           assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_event_type_birth", "TRUE")
-
         end
 
         it "should NOT be birth event if EVENT_TYPE is not BIRTH" do
@@ -403,7 +402,7 @@ module NcsNavigator::Core
     end
 
     def assert_response_value(response_set, reference_identifier, value)
-      response = response_set.responses.select { |r| r.question.reference_identifier == reference_identifier }.first
+      response = response_set.responses.detect { |r| r.question.reference_identifier == reference_identifier }
       response.should_not be_nil
       response.to_s.should == value
     end

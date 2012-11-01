@@ -440,7 +440,6 @@ module Tracing
     a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
     a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
 
-
     # prepopulated_should_show_prev_city_for_tracing
     q = Factory(:question, :reference_identifier => "prepopulated_is_prev_city_provided", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
