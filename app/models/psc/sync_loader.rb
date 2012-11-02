@@ -17,12 +17,6 @@ module Psc
       self.redis = Rails.application.redis
     end
 
-    def pipelined
-      redis.pipelined do |r|
-        yield dup.tap { |loader| loader.redis = r }
-      end
-    end
-
     def cache_participant(participant)
       redis.sadd(sync_key['participants'], participant.public_id)
     end
