@@ -83,11 +83,10 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def valid_response_exists?(data_export_identifier)
-      invalid_reference_identifiers = ["neg_1", "neg_2"]
       result = false
       if response = person.responses_for(data_export_identifier).first
         reference_identifier = response.try(:answer).try(:reference_identifier).to_s
-        result = true unless invalid_reference_identifiers.include?(reference_identifier)
+        result = true unless %w(neg_1 neg_2).include?(reference_identifier)
       end
       result
     end
@@ -96,7 +95,15 @@ module NcsNavigator::Core::ResponseSetPopulator
       # If In-Person use 'capi' otherwise use 'cati'
       # TODO: how to determine 'papi' ?
       reference_identifier = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
-      answer = question.answers.select { |a| a.reference_identifier == reference_identifier }.first
+      question.answers.select { |a| a.reference_identifier == reference_identifier }.first
+    end
+
+    # Find the answer with the matching reference identifier for question
+    # @param [Question]
+    # @param [String] reference_identifier matching answer
+    # @return [Answer]
+    def answer_for(question, ri)
+      question.answers.select { |a| a.reference_identifier == ri.to_s }.first
     end
 
   end
