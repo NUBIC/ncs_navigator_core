@@ -1,215 +1,165 @@
 require 'logger'
-require 'set'
 require 'spec_helper'
 require 'stringio'
 
-require File.expand_path('../have_psc_participants_matcher', __FILE__)
+require File.expand_path('../superposition_with_test_data', __FILE__)
 
 module Field
   describe PscSync do
-    let(:e1) { Factory(:event, :participant => p1) }
-    let(:e2) { Factory(:event, :participant => p2) }
-    let(:instrument) { Factory(:instrument, :event => e2) }
-    let(:p1) { Factory(:participant) }
-    let(:p2) { Factory(:participant) }
-    let(:p3) { Factory(:participant) }
-    let(:person1) { Factory(:person) }
-    let(:person2) { Factory(:person) }
-    let(:person3) { Factory(:person) }
+    include_context 'superposition with test data'
 
-    let(:sio) { StringIO.new }
-    let(:log) { sio.string }
-    let(:logger) { ::Logger.new(sio) }
-
-    let(:sp) { stub }
-    let(:sync) { PscSync.new }
+    let(:merge) { ::Merge.new }
+    let(:io) { StringIO.new }
+    let(:log) { io.string }
+    let(:logger) { Logger.new(io) }
 
     before do
-      Factory(:participant_person_link, :participant_id => p1.id, :person_id => person1.id)
-      Factory(:participant_person_link, :participant_id => p2.id, :person_id => person2.id)
-      Factory(:participant_person_link, :participant_id => p3.id, :person_id => person3.id)
+      superposition.extend(PscSync)
+      superposition.logger = logger
 
-      sp.stub!(:current_events => [e1, e2],
-               :current_instruments => [instrument],
-               :current_participants => [p1, p2, p3])
-
-      sync.psc = stub.as_null_object
-      sync.superposition = sp
-      sync.logger = logger
-    end
-
-    describe '#find_participants' do
-      before do
-        sync.find_participants
-      end
-
-      it 'builds one PscParticipant per participant' do
-        sync.psc_participants.should have_psc_participants(p1, p2, p3)
-      end
-
-      it 'builds one PscParticipant per event participant' do
-        sync.psc_participants.should have_psc_participants(e1.participant, e2.participant)
-      end
-
-      it 'builds one PscParticipant per instrument participant' do
-        sync.psc_participants.should have_psc_participants(instrument.participant)
+      superposition.aker_configuration = Aker::Configuration.new do
+        authority :cas
+        cas_parameters :cas_base_url => 'https://cas.example.edu/cas'
       end
     end
 
-    describe '#grouped_event_sas' do
-      let(:sas) { sync.grouped_event_sas }
-      let(:pscp_e1) { sync.psc_participants[e1.participant.id] }
-      let(:pscp_e2) { sync.psc_participants[e2.participant.id] }
-      let(:sas_e1) { [Psc::ScheduledActivity.new(:activity_id => 'foo')] }
-      let(:sas_e2) { [Psc::ScheduledActivity.new(:activity_id => 'bar')] }
+    let(:sp) { superposition }
 
-      before do
-        sync.find_participants
-
-        e1.stub!(:scheduled_activities => sas_e1)
-        e2.stub!(:scheduled_activities => sas_e2)
-      end
-
-      it 'returns event activity IDs grouped by PSC participant' do
-        Set.new(sas).should == Set.new([
-          PscSync::SAGroup.new(pscp_e1, e1, sas_e1),
-          PscSync::SAGroup.new(pscp_e2, e2, sas_e2)
-        ])
-      end
+    # Sanity-preserving shortcut.
+    def with_cas_success
+      VCR.use_cassette('cas/machine_account_success') { yield }
     end
 
-    describe '#run' do
-      describe 'without a CAS URL set' do
-        before do
-          sync.stub!(:aker_configuration => Aker::Configuration.new)
+    describe '#login_to_psc' do
+      describe 'on success' do
+        around do |example|
+          with_cas_success { example.run }
         end
 
-        it 'logs a warning' do
-          sync.run
+        it 'returns a PatientStudyCalendar instance' do
+          NcsNavigatorCore.suite_configuration.stub!(:core_machine_account_password => 'ncs_navigator_cases')
 
-          log.should =~ /CAS URL not configured/i
+          sp.login_to_psc.should be_instance_of(PatientStudyCalendar)
+        end
+      end
+
+      describe 'on failure' do
+        around do |example|
+          VCR.use_cassette('cas/machine_account_failure') { example.run }
         end
 
+        it 'raises an error' do
+          NcsNavigatorCore.suite_configuration.stub!(:core_machine_account_password => 'wrong')
+
+          lambda { sp.login_to_psc }.should raise_error
+        end
+      end
+    end
+
+    describe '#prepare' do
+      before do
+        with_cas_success { sp.prepare_for_sync(merge) }
+      end
+
+      it 'sets up the sync key generator' do
+        sp.keygen.should_not be_nil
+      end
+
+      it 'sets up the sync loader' do
+        sp.sync_loader.should_not be_nil
+      end
+
+      it 'sets up the PSC importer' do
+        sp.psc_importer.should_not be_nil
+      end
+    end
+
+    describe 'the sync key generator' do
+      before do
+        merge.stub!(:id => 1)
+        Time.stub!(:now => Time.at(1234567890.0))
+
+        with_cas_success { sp.prepare_for_sync(merge) }
+      end
+
+      it 'generates Redis keys having prefix merge:merge id:start time' do
+        sp.keygen['foo', 'bar'].should == 'merge:1:1234567890.0:foo:bar'
+      end
+    end
+
+    describe '#load_for_sync', :needs_superposition_current_data do
+      let(:redis) { Rails.application.redis }
+
+      before do
+        redis.flushdb
+
+        with_cas_success { sp.prepare_for_sync(merge) }
+      end
+
+      it 'loads current participants' do
+        sp.load_for_sync
+
+        sp.sync_loader.cached_participant_ids.should == [participant_id]
+      end
+
+      it 'loads current events' do
+        sp.load_for_sync
+
+        sp.sync_loader.cached_event_ids.should == [event_id]
+      end
+
+      it 'loads current contact links' do
+        c = Contact.where(:contact_id => contact_id).first
+        e = Event.where(:event_id => event_id).first
+        i = Instrument.where(:instrument_id => instrument_id).first
+        cl = Factory(:contact_link, :contact => c, :event => e, :instrument => i)
+
+        sp.load_for_sync
+
+        sp.sync_loader.cached_contact_link_ids.should include(cl.public_id)
+      end
+    end
+
+    describe '#sync_with_psc' do
+      before do
+        with_cas_success { sp.prepare_for_sync(merge) }
+      end
+
+      it 'tells OperationalImporterPscSync to import' do
+        sp.psc_importer.should_receive(:import)
+
+        sp.sync_with_psc
+      end
+
+      describe 'if OperationalImporterPscSync#import does not raise' do
+        it 'returns true' do
+          sp.psc_importer.stub!(:import)
+
+          sp.sync_with_psc.should be_true
+        end
+      end
+
+      describe 'if OperationalImporterPscSync#import raises' do
         it 'returns false' do
-          sync.run.should be_false
-        end
-      end
-    end
+          sp.psc_importer.stub!(:import).and_raise
 
-    describe '#grouped_instrument_sas' do
-      let(:sas) { sync.grouped_instrument_sas }
-      let(:pscp_i) { sync.psc_participants[instrument.participant.id] }
-      let(:sas_i) { [Psc::ScheduledActivity.new] }
-
-      before do
-        sync.find_participants
-
-        instrument.stub!(:scheduled_activities => sas_i)
-      end
-
-      it 'returns instrument activities grouped by PSC participant' do
-        Set.new(sas).should == Set.new([
-          PscSync::SAGroup.new(pscp_i, instrument, sas_i)
-        ])
-      end
-    end
-
-    describe '#prioritize' do
-      let(:pscp1) { stub }
-      let(:sa1) { Psc::ScheduledActivity.new(:activity_id => 'foo') }
-      let(:sa2) { Psc::ScheduledActivity.new(:activity_id => 'bar') }
-      let(:sa3) { Psc::ScheduledActivity.new(:activity_id => 'baz') }
-
-      let(:event) { stub }
-      let(:instrument) { stub }
-
-      let(:instrument_sa_groups) do
-        [PscSync::SAGroup.new(pscp1, instrument, [sa1, sa2])]
-      end
-
-      let(:event_sa_groups) do
-        [PscSync::SAGroup.new(pscp1, event, [sa2, sa3])]
-      end
-
-      let(:sas) { sync.prioritize(instrument_sa_groups, event_sa_groups) }
-
-      it 'removes event SAs that are also instrument SAs' do
-        sas.should == [
-          [PscSync::SAGroup.new(pscp1, instrument, [sa1, sa2])],
-          [PscSync::SAGroup.new(pscp1, event, [sa3])]
-        ]
-      end
-    end
-
-    describe '#update' do
-      let(:pscp) { stub }
-      let(:sa1) { Psc::ScheduledActivity.new(:activity_id => 'foo') }
-      let(:sa2) { Psc::ScheduledActivity.new(:activity_id => 'bar') }
-
-      let(:date) { '2012-01-01' }
-      let(:occurred) { Psc::ScheduledActivity::OCCURRED }
-      let(:reason) { 'A reason' }
-
-      let(:object) do
-        stub(:sa_end_date => date, :desired_sa_state => occurred, :sa_state_change_reason => reason)
-      end
-
-      let(:group) { PscSync::SAGroup.new(pscp, object, [sa1, sa2]) }
-
-      let(:update_request) do
-        { sa1.id => { 'date' => date, 'reason' => reason, 'state' => occurred },
-          sa2.id => { 'date' => date, 'reason' => reason, 'state' => occurred }
-        }
-      end
-
-      it 'updates SAs in groups' do
-        pscp.should_receive(:update_scheduled_activity_states).with(update_request)
-
-        sync.update([group])
-      end
-    end
-  end
-
-  describe PscSync::SAGroup do
-    let(:group) { PscSync::SAGroup.new }
-    let(:obj) { stub }
-
-    before do
-      group.object = obj
-    end
-
-    describe '#reject_unchanged' do
-      let(:sa1) { Psc::ScheduledActivity.new }
-
-      before do
-        group.sas = [sa1]
-      end
-
-      describe 'for each activity' do
-        describe 'if the activity state matches the desired state' do
-          before do
-            sa1.current_state = Psc::ScheduledActivity::OCCURRED
-            obj.stub(:desired_sa_state => Psc::ScheduledActivity::OCCURRED)
-          end
-
-          it 'removes the activity from the group' do
-            group.reject_unchanged
-
-            group.sas.should_not include(sa1)
-          end
+          sp.sync_with_psc.should be_false
         end
 
-        describe 'if the activity state does not match the desired state' do
-          before do
-            sa1.current_state = Psc::ScheduledActivity::SCHEDULED
-            obj.stub(:desired_sa_state => Psc::ScheduledActivity::OCCURRED)
-          end
+        it 'records the exception in the log' do
+          sp.psc_importer.stub!(:import).and_raise('whoops')
+          sp.sync_with_psc
 
-          it 'keeps the activity in the group' do
-            group.reject_unchanged
+          log.should =~ /OperationalImporterPscSync raised [^:]+: whoops/i
+        end
 
-            group.sas.should include(sa1)
-          end
+        it 'records the exception stack trace' do
+          sp.psc_importer.stub!(:import).and_raise('whoops')
+          sp.sync_with_psc
+
+          # Checking whether or not the method name shows up in the log isn't
+          # _that_ good of an assertion, but it's good enough for now.
+          log.should =~ /sync_with_psc/
         end
       end
     end

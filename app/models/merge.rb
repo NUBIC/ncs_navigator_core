@@ -45,14 +45,15 @@ class Merge < ActiveRecord::Base
   TIMEOUT = 5.minutes
 
   ##
-  # Permits customization of the PSC sync strategy.  If not set,
-  # {Field::PscSync} will be used.
-  cattr_accessor :psc_sync_strategy
-
-  ##
   # Permits customization of the log device used by the merge process.  If not
   # set, a StringIO instance that is dumped into the merge record will be used.
   cattr_accessor :log_device
+
+  ##
+  # If stubbed to return false, PSC sync will not be done.
+  def self.sync_with_psc?
+    true
+  end
 
   ##
   # Merges a fieldwork set with Core's datastore.  The log of the operation
@@ -108,7 +109,6 @@ class Merge < ActiveRecord::Base
   # flag will not be set and the merge will timeout.
   def run
     logdev = self.class.log_device || StringIO.new
-    sync_strategy = self.class.psc_sync_strategy || Field::PscSync
 
     logger = ::Logger.new(logdev).tap { |l| l.formatter = ::Logger::Formatter.new }
     logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
@@ -141,14 +141,12 @@ class Merge < ActiveRecord::Base
       self.conflict_report = superposition.conflicts
       save(:validate => false)
 
-      # Sync PSC.
-      sync = sync_strategy.new
-      sync.superposition = superposition
-      sync.logger = logger
-
-      synced = sync.run
-
-      return false if !synced
+      # Sync PSC unless we're told to not do so.
+      if self.class.sync_with_psc?
+        superposition.prepare_for_sync(self)
+        synced = superposition.sync_with_psc
+        return false if !synced
+      end
 
       # We're done.
       update_attribute(:synced_at, Time.now)
@@ -228,11 +226,6 @@ class Merge < ActiveRecord::Base
     end
 
     ok
-  end
-
-  ##
-  # @private
-  def do_psc_sync(superposition)
   end
 
   ##

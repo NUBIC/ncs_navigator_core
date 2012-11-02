@@ -1,93 +1,50 @@
-require 'aker'
 require 'aker/cas_cli'
-require 'set'
+require 'ncs_navigator/core'
+require 'ncs_navigator/warehouse'
+require 'patient_study_calendar'
 
 module Field
   ##
-  # This is meant for use by {::Merge#run}.
+  # Augments {Superposition} with code to sync its contents with a PSC instance
+  # via {NcsNavigator::Core::Warehouse::OperationalImporterPscSync}.
   #
-  # @private
-  class PscSync
-    attr_accessor :psc
-
-    attr_accessor :superposition
-    attr_accessor :logger
-
-    attr_reader :logger
-    attr_reader :events
-    attr_reader :instruments
-    attr_reader :participants
-    attr_reader :psc_participants
-
-    def initialize
-      @psc_participants = {}
-    end
+  # There are three public methods:
+  #
+  # 1. {#login_to_psc}
+  # 2. {#load_for_sync}
+  # 3. {#sync_with_psc}
+  #
+  # {#sync_with_psc} requires the results of {#login_to_psc} and
+  # {#load_for_sync}, so it invokes them.
+  module PscSync
+    include NcsNavigator::Core::Warehouse
 
     ##
-    # Runs the sync.
-    #
-    # Returns truthy if sync completed without errors, false otherwise.
-    def run
-      return false unless prerequisites_satisfied?
-
-      login_to_psc
-
-      # Find all participants referenced in the superposition.
-      find_participants
-
-      # Register the participants that need to be registered.
-      register_participants
-
-      # Resolve SAs that correspond to instruments and events in the
-      # fieldwork.
-      instrument_sa_groups, event_sa_groups =
-        prioritize(grouped_instrument_sas, grouped_event_sas)
-
-      # Remove instrument activities that don't need to be synced.
-      instrument_sa_groups.each { |g| g.reject_unchanged }
-
-      # Ditto for events.
-      event_sa_groups.each { |g| g.reject_unchanged }
-
-      # Update SAs.
-      begin
-        update(instrument_sa_groups)
-        update(event_sa_groups)
-      rescue PatientStudyCalendar::ResponseError => e
-        logger.error { "PSC sync raised #{e.class}: #{e.message}" }
-        false
-      end
-    end
+    # Set this to use a non-global Aker configuration for CAS communication.
+    attr_accessor :aker_configuration
 
     ##
-    # The Aker configuration to use.
-    #
-    # This is intended as a testing convenience, but in the future it might
-    # make sense to use a separate configuration for machine communication.
+    # The {Psc::SyncLoader} used to perform the sync.  This is set by
+    # {#prepare_for_sync}.
+    attr_accessor :sync_loader
+
+    ##
+    # The PSC importer.  Set by {#prepare_for_sync}.
+    attr_accessor :psc_importer
+
+    ##
+    # A procedure that generates Redis keys.  Set by {#prepare_for_sync}.
+    attr_accessor :keygen
+
+    ##
+    # Defaults self.aker_configuration to the global Aker configuration.
     def aker_configuration
-      Aker.configuration
+      @aker_configuration || Aker.configuration
     end
 
-    def prerequisites_satisfied?
-      prereqs = Prerequisites.new(aker_configuration, logger)
-
-      prereqs.satisfied?
-    end
-
-    def update(groups)
-      groups.each(&:update)
-    end
-
-    def find_participants
-      @events = superposition.current_events
-      @instruments = superposition.current_instruments
-      @participants = superposition.current_participants
-
-      build_psc_participants_from(events) { |o| o.participant }
-      build_psc_participants_from(instruments) { |o| o.participant }
-      build_psc_participants_from(participants) { |o| o }
-    end
-
+    ##
+    # Logs into PSC using Cases' machine account.  Returns a
+    # {PatientStudyCalendar} instance on success, raises an error on failure.
     def login_to_psc
       cas_cli = Aker::CasCli.new(aker_configuration)
       username, password = NcsNavigatorCore.machine_account_credentials
@@ -95,120 +52,93 @@ module Field
 
       raise "Authentication as #{username} failed" unless user
 
-      @psc = PatientStudyCalendar.new(user)
+      PatientStudyCalendar.new(user)
     end
 
     ##
-    # @private
-    def build_psc_participants_from(list)
-      list.each do |obj|
-        p = yield obj
+    # Builds objects and sets up a CAS session.
+    def prepare_for_sync(merge)
+      started = Time.now.to_f
 
-        unless psc_participants.has_key?(p.id)
-          psc_participants[p.id] = PscParticipant.new(psc, p)
-        end
+      self.keygen = lambda do |*c|
+        ['merge', merge.id, started, c].flatten.join(':')
+      end
+
+      self.sync_loader = Psc::SyncLoader.new(keygen)
+
+      config = ImportConfiguration.new(logger)
+      psc = login_to_psc
+      self.psc_importer = OperationalImporterPscSync.new(psc, config, keygen)
+    end
+
+    def load_for_sync
+      current_participants.each do |p|
+        sync_loader.cache_participant(p)
+      end
+
+      events = load_events
+      contact_links = load_contact_links
+
+      events.each do |e|
+        sync_loader.cache_event(e, e.participant)
+      end
+
+      contact_links.each do |cl|
+        sync_loader.cache_contact_link(cl, cl.contact, cl.instrument, cl.event, cl.participant)
+      end
+    end
+
+    def sync_with_psc
+      load_for_sync
+
+      begin
+        psc_importer.import
+        true
+      rescue Exception => e
+        logger.fatal { "OperationalImporterPscSync raised #{e.class}: #{e.message}" }
+        logger.fatal { e.backtrace.join("\n") }
+        false
       end
     end
 
     ##
-    # Retrieve open SAs for each event or instrument, and group them by the
-    # {PscParticipant} matching the event or instrument.
+    # Loads events and associated entities used by Psc::SyncLoader.
     #
-    # Returns an array of (object, SA array) pairs.
-    def grouped_sas(collection)
-      sa_groups = {}
-
-      collection.each do |obj|
-        pscp = psc_participants[obj.participant.id]
-        activities = obj.scheduled_activities(pscp)
-
-        sa_groups[pscp] ||= SAGroup.new(pscp, obj, [])
-        sa_groups[pscp].add_activities(activities)
-      end
-
-      sa_groups.values
-    end
-
-    def grouped_event_sas
-      grouped_sas(events)
-    end
-
-    def grouped_instrument_sas
-      grouped_sas(instruments)
+    # @private
+    def load_events
+      Event.includes(:participant).where(:id => current_events.map(&:id))
     end
 
     ##
-    # SAs belonging to instruments will also belong to events.  They should,
-    # however, be updated with a reason stating that the state change occurred
-    # due to instrument completion.
-    def prioritize(instrument_sa_groups, event_sa_groups)
-      instrument_sas = Set.new
+    # Loads associations used by the PSC sync loader.
+    #
+    # @private
+    def load_contact_links
+      cs = current_contacts.map(&:id)
+      es = current_events.map(&:id)
+      is = current_instruments.map(&:id)
 
-      instrument_sa_groups.each do |sa_group|
-        instrument_sas += sa_group.sas
-      end
+      # Find all ContactLinks that involve any combination of the above entities.
+      t = ContactLink.arel_table
 
-      instrument_sa_array = instrument_sas.to_a
+      cond = %w(contact_id event_id instrument_id).zip([cs, es, is]).map do |k, ids|
+        t[k].in(ids).or(t[k].eq(nil))
+      end.inject(&:and)
 
-      event_sa_groups.each do |sa_group|
-        sa_group.remove_activities(instrument_sa_array)
-      end
-
-      [instrument_sa_groups, event_sa_groups]
+      ContactLink.includes([:contact, :instrument, {:event => :participant}]).where(cond)
     end
 
-    class SAGroup < Struct.new(:psc_participant, :object, :sas)
-      def add_activities(sas)
-        self.sas |= sas
-      end
+    ##
+    # Just enough configuration for OperationalImporterPscSync.
+    #
+    # @private
+    class ImportConfiguration
+      attr_reader :log
+      attr_reader :shell
 
-      def remove_activities(sas)
-        self.sas -= sas
-      end
-
-      def reject_unchanged
-        desired_sa_state = object.desired_sa_state
-
-        sas.reject! { |sa| sa.current_state == desired_sa_state }
-      end
-
-      def update
-        packet = {}
-        desired_sa_state = object.desired_sa_state
-        end_date = object.sa_end_date
-        reason = object.sa_state_change_reason
-
-        sas.each do |sa|
-          packet[sa.id] = { 'date' => end_date, 'reason' => reason, 'state' => desired_sa_state }
-        end
-
-        psc_participant.update_scheduled_activity_states(packet)
-      end
-    end
-
-    class Prerequisites
-      include Aker::Cas::ConfigurationHelper
-
-      attr_reader :configuration
-      attr_reader :logger
-
-      def initialize(configuration, logger)
-        @configuration = configuration
-        @logger = logger
-      end
-
-      def satisfied?
-        cas_configured?.tap do |ok|
-          logger.warn "Prerequisites for PSC sync failed; sync will not run" if !ok
-        end
-      end
-
-      def cas_configured?
-        ok = cas_url
-
-        logger.warn "CAS URL not configured" if !cas_url
-
-        ok
+      def initialize(logger)
+        @log = logger
+        @shell = NcsNavigator::Warehouse::UpdatingShell::Quiet.new
       end
     end
   end

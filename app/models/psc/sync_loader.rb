@@ -23,6 +23,22 @@ module Psc
       redis.sadd(sync_key['participants'], participant.public_id)
     end
 
+    def cached_participant_ids
+      redis.smembers(sync_key['participants'])
+    end
+
+    def cached_event_ids
+      prefix = sync_key['event', '']
+
+      redis.keys(sync_key['event', '*']).map { |k| k.sub(prefix, '') }
+    end
+
+    def cached_contact_link_ids
+      prefix = sync_key['link_contact', '']
+
+      redis.keys(sync_key['link_contact', '*']).map { |k| k.sub(prefix, '') }
+    end
+
     def cache_event(event, participant)
       ekey = sync_key['event', event.public_id]
       lkey = sync_key['p', participant.public_id, 'events']

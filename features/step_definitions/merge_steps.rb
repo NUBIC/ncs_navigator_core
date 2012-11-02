@@ -17,19 +17,15 @@ Before '@merge' do
     def_delegators :browser, *Rack::Test::Methods::METHODS
   end
 
-  # We're not concerned with the Cases -> PSC sync for most merge scenarios, so
-  # just make it always succeed.  Scenarios that do care about that can fix
-  # this up.
-  Merge.psc_sync_strategy = Class.new(OpenStruct) do
-    def run
-      true
-    end
-  end
-
   # Write merge log data to a logger that we control.  (It's nice to see the
   # merge log when things go wrong.)
   @logdev = StringIO.new
   Merge.log_device = @logdev
+
+  # Turn off PSC sync.
+  def Merge.sync_with_psc?
+    false
+  end
 
   # Givens establish context that needs to persist between steps.
   @context = {}
