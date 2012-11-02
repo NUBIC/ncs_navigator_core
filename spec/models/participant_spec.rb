@@ -745,6 +745,7 @@ describe Participant do
 
           participant.person = person
           participant.save!
+          participant.stub!(:eligible?).and_return(true)
 
           Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
           participant.events.reload
@@ -1405,5 +1406,79 @@ describe Participant do
     end
 
   end
+
+  context "confirming participant eligibility" do
+    describe "#eligible?" do
+
+      before(:each) do
+        @part = Factory(:participant)
+        @pers = Factory(:person)
+        pplk = Factory(:participant_person_link, :person_id => @pers.id, :participant_id => @part.id)
+
+        survey = create_pbs_eligibility_screener_survey_with_eligibility_questions
+        survey_section = survey.sections.first
+        response_set, instrument = prepare_instrument(@pers, @part, survey)
+
+        survey_section.questions.each do |q|
+          case q.data_export_identifier
+          when "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          when "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PROVIDER_OFFICE_ON_FRAME"
+            answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "2" }.first
+            Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => response_set.id)
+          end
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 5
+      end
+
+      it "is the participant eligible?" do
+        @part.eligible?.should == true
+      end
+
+      describe "#participant_age_eligible?" do
+        it "returns whether participant is age-eligible" do
+          @part.participant_age_eligible?(@pers).should == true
+        end
+      end
+
+      describe "#participant_psu_county_eligible?" do
+        it "returns whether participant lives in eligible PSU" do
+          @part.participant_psu_county_eligible?(@pers).should == true
+        end
+
+      end
+
+      describe "#participant_pregnant?" do
+        it "returns whether participant is pregnant" do
+          @part.participant_pregnant?(@pers).should == true
+        end
+      end
+
+      describe "#participant_first_visit?" do
+        it "is this the participants first visit to this provider?" do
+          @part.participant_first_visit?(@pers).should == true
+        end
+      end
+
+      describe "#participant_no_preceding_providers_in_frame?" do
+        it "have any of the providers been in-frame" do
+          @part.participant_no_preceding_providers_in_frame?(@pers).should == true
+        end
+      end
+    end
+  end
+
 end
 

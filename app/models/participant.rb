@@ -486,8 +486,8 @@ class Participant < ActiveRecord::Base
       #set_state_for_event_type(event) if event.event_type_code != 32
       if self.pending_events.blank?
         update_state_to_next_event(event)
-        resp = Event.schedule_and_create_placeholder(psc, self) 
-      end  
+        resp = Event.schedule_and_create_placeholder(psc, self)
+      end
     end
     resp
   end
@@ -496,27 +496,27 @@ class Participant < ActiveRecord::Base
   def update_state_to_next_event(event)
 
     case event.event_type.local_code
-    when 4, 5, 6, 9, 29, 34  
+    when 4, 5, 6, 9, 29, 34
       # Pregnancy Screener Events or PBS Eligibility Screener
       assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
 
-    when 10 
+    when 10
       # Informed Consent
       low_intensity_consent! if can_low_intensity_consent?
-      
+
     when 33
-      # Lo I Quex 
+      # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
-    
+
     when 32
       #Low to High Conversion
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
       high_intensity_conversion!
-    
+
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
-    
+
       if known_to_be_pregnant?
         if low_intensity? &&
          can_impregnate_low? &&
@@ -534,15 +534,15 @@ class Participant < ActiveRecord::Base
       # Pre-Pregnancy
       non_pregnant_informed_consent! if can_non_pregnant_informed_consent?
       follow! if can_follow?
-    
+
     when 13, 14
-      # Pregnancy Visit 1 
+      # Pregnancy Visit 1
       pregnancy_one_visit! if can_pregnancy_one_visit?
-    
+
     when 15, 16
-      # Pregnancy Visit 2  
+      # Pregnancy Visit 2
       pregnancy_two_visit! if can_pregnancy_two_visit?
-    
+
     when 18, 23, 24, 25, 26, 27, 28, 30, 31, 36, 37, 38
       # Birth and Post-natal
       if low_intensity?
@@ -552,7 +552,7 @@ class Participant < ActiveRecord::Base
       end
     end
 
-  end  
+  end
 
   ##
   # Display text from the NcsCode list PARTICIPANT_TYPE_CL1
@@ -1041,6 +1041,57 @@ class Participant < ActiveRecord::Base
     enroll_status
     enroll_date
 
+  end
+
+  def eligible?
+    eligible = []
+
+    person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
+
+    eligibility_determination = [:participant_age_eligible?,
+                                 :participant_psu_county_eligible?,
+                                 :participant_pregnant?,
+                                 :participant_first_visit?,
+                                 :participant_no_preceding_providers_in_frame?]
+    eligible = eligibility_determination.each { |ed| self.send ed, person }
+
+    eligible.any? { |criteria| criteria == false } ? false : true
+  end
+
+  def participant_age_eligible?(person)
+    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG").first
+    r = rsps.answer.reference_identifier if rsps != nil
+    return false if r == nil
+    r == "1" ? true : false
+  end
+
+  def participant_psu_county_eligible?(person)
+    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM").first
+    r = rsps.answer.reference_identifier if rsps != nil
+    return false if r == nil
+    r == "1" ? true : false
+  end
+
+  def participant_pregnant?(person)
+    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT").first
+    r = rsps.answer.reference_identifier if rsps != nil
+    return false if r == nil
+    r == "1" ? true : false
+  end
+
+  def participant_first_visit?(person)
+    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT").first
+    r = rsps.answer.reference_identifier if rsps != nil
+    return false if r == nil
+    r == "1" ? true : false
+  end
+
+  def participant_no_preceding_providers_in_frame?(person)
+    answers = []
+    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PROVIDER_OFFICE_ON_FRAME").all
+    rsps.each { |rsp| answers << rsp.answer.reference_identifier } if rsps != nil
+    return false if rsps == nil
+    answers.any? { |a| a == "1" } ? false : true
   end
 
   private

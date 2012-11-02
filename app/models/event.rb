@@ -29,6 +29,7 @@
 #  updated_at                         :datetime
 #
 
+
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
@@ -491,6 +492,7 @@ class Event < ActiveRecord::Base
 
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
     return nil unless participant.next_scheduled_event
+    return nil unless participant.eligible?
 
     date ||= participant.next_scheduled_event.date.to_s
     resp = psc.schedule_next_segment(participant, date)
