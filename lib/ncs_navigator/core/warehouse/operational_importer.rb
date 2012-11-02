@@ -29,9 +29,7 @@ module NcsNavigator::Core::Warehouse
       @failed_associations = []
       @progress = ProgressTracker.new(wh_config)
       @sync_loader = Psc::SyncLoader.new
-      @sync_loader.sync_key = lambda do |*c|
-        [OperationalImporter.name, 'psc_sync', c].flatten.join(':')
-      end
+      @sync_loader.sync_key = OperationalImporterPscSync::KEYGEN
     end
 
     def import(*tables)

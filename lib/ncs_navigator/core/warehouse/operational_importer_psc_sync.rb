@@ -9,12 +9,21 @@ module NcsNavigator::Core::Warehouse
 
     WHODUNNIT = 'operational_importer_psc_sync'
 
-    attr_reader :psc, :wh_config
+    ##
+    # The default Redis key generator.
+    #
+    # Mostly used for namespacing.
+    KEYGEN = lambda do |*c|
+      [OperationalImporter.name, 'psc_sync', c].flatten.join(':')
+    end
+
+    attr_reader :psc, :wh_config, :sync_key
     def_delegators :wh_config, :shell, :log
 
-    def initialize(psc, wh_config)
+    def initialize(psc, wh_config, sync_key = KEYGEN)
       @psc = psc
       @wh_config = wh_config
+      @sync_key = sync_key
     end
 
     def import
@@ -23,8 +32,8 @@ module NcsNavigator::Core::Warehouse
       backup_participants
 
       i = 1
-      p_count = redis.scard(sync_key('participants'))
-      while p_id = redis.spop(sync_key('participants'))
+      p_count = redis.scard(sync_key['participants'])
+      while p_id = redis.spop(sync_key['participants'])
         shell.clear_line_and_say("PSC sync of #{p_id} (#{i}/#{p_count}): %#{SUBTASK_MSG_LEN}s" % '')
         p = participants[p_id]
         unless p
@@ -48,8 +57,9 @@ module NcsNavigator::Core::Warehouse
     end
 
     def report_about_indefinitely_deferred_events
-      unschedulable_sets = redis.keys(sync_key('p', '*', 'events_unschedulable')).
-        select { |set_key| redis.scard(set_key) > 0 }
+      unschedulable_sets = redis.keys(sync_key['p', '*', 'events_unschedulable']).
+        select { |set_key| redis.scard(set_key)
+          @sync_key = sync_key> 0 }
       unless unschedulable_sets.empty?
         shell.say_line(
           "%d participant%s had events that could not be sync'd. See log for details." %
@@ -62,7 +72,7 @@ module NcsNavigator::Core::Warehouse
           p_id = set_key.scan(/p\:([^:]+)\:events_/).first.first
           log.error("= Participant #{p_id}")
           redis.smembers(set_key).each do |event_id|
-            event_details_key = sync_key('event', event_id)
+            event_details_key = sync_key['event', event_id]
             event_details = redis.hgetall(event_details_key)
             log.error("  - Event #{event_id} #{event_details.inspect}")
           end
@@ -72,16 +82,16 @@ module NcsNavigator::Core::Warehouse
     private :report_about_indefinitely_deferred_events
 
     def reset
-      p_backup_key = sync_key('participants_backup')
+      p_backup_key = sync_key['participants_backup']
       if redis.exists p_backup_key
-        redis.sunionstore(sync_key('participants'), p_backup_key)
+        redis.sunionstore(sync_key['participants'], p_backup_key)
       end
 
       %w(
         events_deferred events_unschedulable events_closed events_order
         postnatal
       ).each do |reset_key|
-        candidates = redis.keys(sync_key('p', '*', reset_key))
+        candidates = redis.keys(sync_key['p', '*', reset_key])
         redis.del(*candidates) unless candidates.empty?
       end
 
@@ -97,15 +107,15 @@ module NcsNavigator::Core::Warehouse
       log.info("Syncing events for #{p_id} to PSC")
 
       say_subtask_message("sorting events")
-      event_order_key = sync_key('p', p_id, 'events_order')
+      event_order_key = sync_key['p', p_id, 'events_order']
       redis.sort(
-        sync_key('p', p_id, 'events'),
-        :by => sync_key('event', '*') + '->sort_key',
+        sync_key['p', p_id, 'events'],
+        :by => sync_key['event', '*'] + '->sort_key',
         :order => 'alpha',
         :store => event_order_key)
       log.debug "Determined order: #{redis.lrange(event_order_key, 0, -1).inspect}"
 
-      event_deferred_key = sync_key('p', p_id, 'events_deferred')
+      event_deferred_key = sync_key['p', p_id, 'events_deferred']
       while event_id = redis.lpop(event_order_key)
         schedule_event_if_appropriate(
           psc_participant, event_id, :defer_key => event_deferred_key)
@@ -113,21 +123,21 @@ module NcsNavigator::Core::Warehouse
 
       while event_id = redis.spop(event_deferred_key)
         schedule_event_if_appropriate(
-          psc_participant, event_id, :defer_key => sync_key('p', p_id, 'events_unschedulable'))
+          psc_participant, event_id, :defer_key => sync_key['p', p_id, 'events_unschedulable'])
       end
     end
 
     def schedule_event_if_appropriate(psc_participant, event_id, opts={})
       p_id = psc_participant.participant.p_id
 
-      event_details_key = sync_key('event', event_id)
+      event_details_key = sync_key['event', event_id]
       event_details = redis.hgetall(event_details_key)
       if event_details.empty?
         fail "Could not find event details using #{event_details_key}"
       end
 
       unless event_details['end_date'].blank?
-        redis.sadd(sync_key('p', p_id, 'events_closed'), event_id)
+        redis.sadd(sync_key['p', p_id, 'events_closed'], event_id)
       end
 
       start_date = event_details['start_date']
@@ -139,7 +149,7 @@ module NcsNavigator::Core::Warehouse
       end
 
       if event_details['event_type_label'] == 'birth'
-        redis.set(sync_key('p', p_id, 'postnatal'), 'true')
+        redis.set(sync_key['p', p_id, 'postnatal'], 'true')
       end
 
       # TODO: if still needed, update the event record to associate
@@ -164,7 +174,7 @@ module NcsNavigator::Core::Warehouse
           h[seg.parent['name'] == 'LO-Intensity' ? 'lo' : 'hi'] = seg; h
         }[event_details['recruitment_arm']]
       elsif segment_selectable_by_pre_post_natal?(possible_segments)
-        pre_or_post = redis.get(sync_key('p', p_id, 'postnatal')) ? 'post' : 'pre'
+        pre_or_post = redis.get(sync_key['p', p_id, 'postnatal']) ? 'post' : 'pre'
         selected_segment = possible_segments.inject({}) { |h, seg|
           h[seg['name'] == 'Postnatal' ? 'post' : 'pre'] = seg; h
         }[pre_or_post]
@@ -229,7 +239,7 @@ module NcsNavigator::Core::Warehouse
 
       say_subtask_message('finding link contact sets (with instruments)')
       lc_set_keys =
-        redis.keys(sync_key('p', p_id, 'link_contacts_with_instrument', '*'))
+        redis.keys(sync_key['p', p_id, 'link_contacts_with_instrument', '*'])
 
       all_sas = psc_participant.scheduled_activities(:sa_list)
 
@@ -242,7 +252,7 @@ module NcsNavigator::Core::Warehouse
           }
         },
         lambda { |link_contact_ids, scheduled_activities|
-          last_details = redis.hgetall(sync_key('link_contact', link_contact_ids.last))
+          last_details = redis.hgetall(sync_key['link_contact', link_contact_ids.last])
           if last_details['instrument_status'] == 'complete'
             say_subtask_message("marking SA for a completed instrument occurred")
             batch_update_sa_states(psc_participant, scheduled_activities, {
@@ -262,12 +272,12 @@ module NcsNavigator::Core::Warehouse
       # sort is for stable testing order
       say_subtask_message('finding link contact sets (with event only)')
       lc_set_keys =
-        redis.keys(sync_key('p', p_id, 'link_contacts_without_instrument', '*')).sort
+        redis.keys(sync_key['p', p_id, 'link_contacts_without_instrument', '*']).sort
 
       update_sa_histories_from_link_contacts(psc_participant, lc_set_keys, 'with event only',
         lambda { |psc_event, lc_details|
           psc_event[:scheduled_activities] -
-            redis.smembers(sync_key('p', p_id, 'link_contact_updated_scheduled_activities'))
+            redis.smembers(sync_key['p', p_id, 'link_contact_updated_scheduled_activities'])
         })
     end
     private :update_other_event_sa_histories
@@ -280,13 +290,13 @@ module NcsNavigator::Core::Warehouse
         say_subtask_message("beginning another link contact set (#{set_type})")
         lcs = redis.sort(
           lc_set_key,
-          :by => sync_key('link_contact', '*') + '->sort_key',
+          :by => sync_key['link_contact', '*'] + '->sort_key',
           :order => 'alpha')
 
         # each LC is guaranteed to be for the same event so we can use
         # an exemplar LC to load common pieces
-        ex_lc_details = redis.hgetall(sync_key('link_contact', lcs.first))
-        ex_event_details = redis.hgetall(sync_key('event', ex_lc_details['event_id']))
+        ex_lc_details = redis.hgetall(sync_key['link_contact', lcs.first])
+        ex_event_details = redis.hgetall(sync_key['event', ex_lc_details['event_id']])
         psc_event = find_psc_event(
           psc_participant, ex_event_details['start_date'], ex_event_details['event_type_label'])
         unless psc_event
@@ -308,7 +318,7 @@ module NcsNavigator::Core::Warehouse
             set_type
           ])
         lcs.each do |lc_id|
-          lc_details = redis.hgetall(sync_key('link_contact', lc_id))
+          lc_details = redis.hgetall(sync_key['link_contact', lc_id])
 
           batch_update_sa_states(psc_participant, sas, {
               'date' => lc_details['contact_date'],
@@ -322,7 +332,7 @@ module NcsNavigator::Core::Warehouse
         end
 
         sas.each do |sa_id|
-          redis.sadd(sync_key('p', psc_participant.participant.p_id, 'link_contact_updated_scheduled_activities'), sa_id)
+          redis.sadd(sync_key['p', psc_participant.participant.p_id, 'link_contact_updated_scheduled_activities'], sa_id)
         end
       end
     end
@@ -347,14 +357,14 @@ module NcsNavigator::Core::Warehouse
       # cache processed SAs
       all_sas = nil
 
-      while closed_event_id = redis.spop(sync_key('p', p_id, 'events_closed'))
-        if redis.sismember(sync_key('p', p_id, 'events_unschedulable'), closed_event_id)
+      while closed_event_id = redis.spop(sync_key['p', p_id, 'events_closed'])
+        if redis.sismember(sync_key['p', p_id, 'events_unschedulable'], closed_event_id)
           next
         end
 
         all_sas ||= psc_participant.scheduled_activities(:sa_content)
 
-        event_details = redis.hgetall(sync_key('event', closed_event_id))
+        event_details = redis.hgetall(sync_key['event', closed_event_id])
         psc_event = find_psc_event(
           psc_participant, event_details['start_date'], event_details['event_type_label'])
         unless psc_event
@@ -385,8 +395,8 @@ module NcsNavigator::Core::Warehouse
 
       say_subtask_message('looking for implied future events')
 
-      imported_events = redis.smembers(sync_key('p', p_id, 'events')).
-        collect { |event_id| event = redis.hgetall(sync_key('event', event_id)) }
+      imported_events = redis.smembers(sync_key['p', p_id, 'events']).
+        collect { |event_id| event = redis.hgetall(sync_key['event', event_id]) }
       latest_imported_event_date = imported_events.collect { |e| e['start_date'] }.max
 
       # this doesn't seem like the clearest way to do this
@@ -420,10 +430,6 @@ module NcsNavigator::Core::Warehouse
 
     private
 
-    def sync_key(*key_parts)
-      [OperationalImporter.name, 'psc_sync', key_parts].flatten.join(':')
-    end
-
     def redis
       Rails.application.redis
     end
@@ -440,7 +446,7 @@ module NcsNavigator::Core::Warehouse
 
     attr_reader :participants
     def init_participants_cache
-      p_ids = redis.smembers(sync_key('participants'))
+      p_ids = redis.smembers(sync_key['participants'])
       shell.clear_line_then_say(
         "Loading #{p_ids.size} participant#{'s' unless p_ids.size == 1} for PSC sync...")
 
@@ -472,8 +478,8 @@ module NcsNavigator::Core::Warehouse
     private :find_psc_event
 
     def backup_participants
-      backup_key = sync_key('participants_backup')
-      p_key = sync_key('participants')
+      backup_key = sync_key['participants_backup']
+      p_key = sync_key['participants']
       if redis.sdiff(backup_key, p_key).empty?
         redis.sunionstore(backup_key, p_key)
       else
