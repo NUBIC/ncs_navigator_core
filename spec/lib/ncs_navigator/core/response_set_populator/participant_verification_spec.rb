@@ -71,7 +71,6 @@ module NcsNavigator::Core
 
         it "is FALSE if the person is missing a part of their name" do
           person.stub!(:middle_name).and_return(nil)
-          person.middle_name.should be_nil
 
           params = { :person => person, :instrument => @instrument_pt1, :survey => survey_pt1 }
           assert_response_value(ResponseSetPopulator::Base.new(params).process,
@@ -80,7 +79,7 @@ module NcsNavigator::Core
 
         it "is TRUE if the person has a first, middle, and last name" do
           # sanity check
-          [:first_name, :middle_name, :last_name].each { |name| person.send(:name).should_not be_blank }
+          [:first_name, :middle_name, :last_name].each { |name| person.send(name).should_not be_blank }
 
           params = { :person => person, :instrument => @instrument_pt1, :survey => survey_pt1 }
           assert_response_value(ResponseSetPopulator::Base.new(params).process,
@@ -171,7 +170,7 @@ module NcsNavigator::Core
       describe "prepopulated_person_dob_previously_collected" do
 
         it "is TRUE if the person has a valid dob" do
-          person.stub(:person_dob_date).and_return(Date.today)
+          person.stub(:person_dob_date).and_return(Date.new(2001,1,1))
 
           params = { :person => person, :instrument => @instrument_pt1, :survey => survey_pt1 }
           assert_response_value(ResponseSetPopulator::Base.new(params).process,
@@ -180,7 +179,7 @@ module NcsNavigator::Core
 
         it "is TRUE if the person has responded previously" do
           take_survey(survey_pt1, @response_set_pt1) do |a|
-            a.date "PARTICIPANT_VERIF.PERSON_DOB", Date.today
+            a.date "PARTICIPANT_VERIF.PERSON_DOB", Date.new(2001,1,1)
           end
 
           params = { :person => person, :instrument => @instrument_pt1, :survey => survey_pt1 }
@@ -330,7 +329,7 @@ module NcsNavigator::Core
         end
 
         it "is FALSE if the child (participant) dob is known" do
-          Person.any_instance.stub(:person_dob_date).and_return(Date.today)
+          Person.any_instance.stub(:person_dob_date).and_return(Date.new(2001,1,1))
           child_person.person_dob_date.should_not be_nil
 
           params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
@@ -343,7 +342,7 @@ module NcsNavigator::Core
           Person.any_instance.stub(:last_name).and_return(nil)
 
           take_survey(survey_pt2, @response_set_pt2) do |a|
-            a.date "PARTICIPANT_VERIF.CHILD_DOB", Date.today
+            a.date "PARTICIPANT_VERIF.CHILD_DOB", Date.new(2001,1,1)
           end
 
           params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
@@ -472,6 +471,205 @@ module NcsNavigator::Core
         end
 
       end
+
+      describe "prepopulated_should_show_resp_pcare" do
+
+        it "is TRUE if there is no response for RESP_PCARE" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_resp_pcare", "TRUE")
+        end
+
+        it "is TRUE if the person has responded refused previously" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.refused "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_resp_pcare", "TRUE")
+        end
+
+        it "is TRUE if the person has responded don't know previously" do
+          Person.any_instance.stub(:sex_code).and_return(-4)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_resp_pcare", "TRUE")
+        end
+
+        it "is FALSE if there is a valid response for RESP_PCARE" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_should_show_resp_pcare", "FALSE")
+        end
+
+      end
+
+      describe "prepopulated_resp_pcare_equals_one_in_previous_survey" do
+        it "is FALSE if there is no previous response" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_resp_pcare_equals_one_in_previous_survey", "FALSE")
+        end
+
+        it "is TRUE if there is only one previous response with a value of one" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
+        end
+
+        it "is TRUE if there is any one previous response with a value of one" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.dont_know "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.RESP_PCARE"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_resp_pcare_equals_one_in_previous_survey", "TRUE")
+        end
+      end
+
+      describe "prepopulated_pcare_rel_previously_collected" do
+
+        it "is FALSE if there is no previous response for PCARE_REL" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_pcare_rel_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for PCARE_REL" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.choice "PARTICIPANT_VERIF.PCARE_REL", mock(NcsCode, :local_code => 1)
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_pcare_rel_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_ocare_child_previously_collected_and_equals_one" do
+        it "is FALSE if there is no previous response" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_child_previously_collected_and_equals_one", "FALSE")
+        end
+
+        it "is TRUE if there is any one previous response with a value of one" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.dont_know "PARTICIPANT_VERIF.OCARE_CHILD"
+          end
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_child_previously_collected_and_equals_one", "TRUE")
+        end
+      end
+
+      describe "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected" do
+
+        it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not collected" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
+        end
+
+
+        it "is FALSE if the person has NOT previously responded OCARE_CHILD = 1 && other caregiver name not valid" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+            a.dont_know "PARTICIPANT_VERIF.O_FNAME"
+            a.dont_know "PARTICIPANT_VERIF.O_MNAME"
+            a.dont_know "PARTICIPANT_VERIF.O_LNAME"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if the person has previously responded OCARE_CHILD = 1 && other caregiver name collected" do
+          Person.any_instance.stub(:first_name).and_return(nil)
+          Person.any_instance.stub(:last_name).and_return(nil)
+
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.yes "PARTICIPANT_VERIF.OCARE_CHILD"
+            a.str "PARTICIPANT_VERIF.O_FNAME", "ofname"
+            a.str "PARTICIPANT_VERIF.O_MNAME", "omname"
+            a.str "PARTICIPANT_VERIF.O_LNAME", "olname"
+          end
+
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_ocare_rel_previously_collected" do
+
+        it "is FALSE if there is no previous response for OCARE_REL" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_rel_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for OCARE_REL" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.choice "PARTICIPANT_VERIF.OCARE_REL", mock(NcsCode, :local_code => 1)
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_ocare_rel_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_child_time_previously_collected" do
+
+        it "is FALSE if there is no previous response for CHILD_TIME" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_child_time_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for CHILD_TIME" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.choice "PARTICIPANT_VERIF.CHILD_TIME", mock(NcsCode, :local_code => 1)
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_child_time_previously_collected", "TRUE")
+        end
+
+      end
+
 
     end
 

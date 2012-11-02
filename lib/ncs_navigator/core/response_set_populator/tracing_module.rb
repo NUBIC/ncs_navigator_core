@@ -82,7 +82,6 @@ module NcsNavigator::Core::ResponseSetPopulator
                   when "prepopulated_valid_driver_license_provided"
                     has_answered_driver_license?(question)
                   else
-                    # TODO: handle other prepopulated fields
                     nil
                   end
 
@@ -102,8 +101,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     #       30 MONTH AND MODE = CAPI OR PAPI, GO TO PLAN_MOVE.
     #    False
     def should_show_address?(question)
-      ri = ( contact.try(:via_telephone?) && event.try(:postnatal?) ) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, (contact.try(:via_telephone?) && event.try(:postnatal?)))
     end
 
     # PROGRAMMER INSTRUCTIONS:
@@ -115,8 +113,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     #   False
     #   - ALLOW INTERVIEWER TO MAKE CORRECTIONS OR ADD NEW ADDRESS INFORMATION.
     def has_address?(question)
-      ri =  person.primary_address.to_s.blank? ? "false" : "true"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, !person.primary_address.to_s.blank?)
     end
 
     #  PROGRAMMER INSTRUCTIONS:
@@ -124,8 +121,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     #    -  IF HOME_PHONE_CONFIRM = 1, -1, OR -7, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING HOME_PHONE.
     #    -  OTHERWISE, IF HOME_PHONE_CONFIRM =2 OR -2, GO TO HOME_PHONE.
     def has_home_phone?(question)
-      ri =  person.primary_home_phone.nil? ? "false" : "true"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, !person.primary_home_phone.nil?)
     end
 
     #  PROGRAMMER INSTRUCTIONS:
@@ -136,8 +132,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     #    -  IF CELL_PHONE_CONFIRM = 2 OR -2, GO TO CELL_PHONE.
     #    -  OTHERWISE, GO TO CELL_PHONE_2.
     def has_valid_cell_phone?(question)
-      ri =  person.primary_cell_phone.nil? ? "false" : "true"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, !person.primary_cell_phone.nil?)
     end
 
     #  PROGRAMMER INSTRUCTIONS:
@@ -179,15 +174,13 @@ module NcsNavigator::Core::ResponseSetPopulator
     #    -  OTHERWISE, IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, 3 MONTH, 9 MONTH, 18 MONTH, 24 MONTH, 30 MONTH, OR
     #       36 MONTH, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING EMAIL_QUEST.
     def should_show_email_for_tracing?(question)
-      event_type_code = event.try(:event_type_code).to_i
       # If event is Birth, PV1, PV2, 6M, 12M
-      ri = [18, 13, 15, 24, 27].include?(event_type_code) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      ri = [18, 13, 15, 24, 27].include?(event.try(:event_type_code))
+      answer_for(question, ri)
     end
 
     def has_email?(question)
-      ri =  person.primary_email.nil? ? "false" : "true"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, !person.primary_email.nil?)
     end
 
     #  PROGRAMMER INSTRUCTIONS:
@@ -207,30 +200,27 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     # IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH
     def should_show_contact?(question)
-      event_type_code = event.try(:event_type_code).to_i
-      ri = [34, 13, 15, 24, 27].include?(event_type_code) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      ri = [34, 13, 15, 24, 27].include?(event.try(:event_type_code))
+      answer_for(question, ri)
     end
 
     # IF EVENT_TYPE = BIRTH
     def is_event_birth?(question)
-      ri = (event.try(:event_type_code).to_i == 18) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, (event.try(:event_type_code).to_i == 18))
     end
 
     # - VALID CONTACT INFORMATION PROVIDED FOR THREE RELATIVES OR FRIENDS PREVIOUSLY FOR (R_FNAME)/(R_MNAME)/(R_LNAME)
     def are_all_contacts_provided?(question)
-      ri = "true"
+      ri = true
       [1,2,3].each do |i|
-        ri = "false" if person.responses_for("TRACING_INT.CONTACT_RELATE_#{i}").blank?
+        ri = false if person.responses_for("TRACING_INT.CONTACT_RELATE_#{i}").blank?
       end
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, ri)
     end
 
     # IF EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING
     def is_event_pbs_participant_eligibility_screening?(question)
-      ri = (event.try(:event_type_code).to_i == 34) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, (event.try(:event_type_code).to_i == 34))
     end
 
     def has_answered_prev_city?(question)
@@ -241,10 +231,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       has_answered_question?(question, "TRACING_INT.DR_LICENSE_NUM")
     end
 
-
     def has_answered_question?(question, data_export_identifier)
-      ri = person.responses_for(data_export_identifier).blank? ? "false" : "true"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, !person.responses_for(data_export_identifier).blank?)
     end
     private :has_answered_question?
 
