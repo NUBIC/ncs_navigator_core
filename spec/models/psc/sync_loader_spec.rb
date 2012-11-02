@@ -2,13 +2,16 @@ require 'spec_helper'
 
 module Psc
   describe SyncLoader do
-    let(:loader) { SyncLoader.new }
+    let(:sync_key) do
+      lambda { |*c| "test:#{c.join(':')}" }
+    end
+
+    let(:loader) { SyncLoader.new(sync_key) }
     let(:redis) { Rails.application.redis }
 
     before do
       redis.flushdb
 
-      loader.sync_key = lambda { |*c| "test:#{c.join(':')}" }
       loader.redis = redis
     end
 
