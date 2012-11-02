@@ -14,15 +14,15 @@
 ActiveRecord::Schema.define(:version => 20121008201831) do
 
   create_table "addresses", :force => true do |t|
-    t.integer  "psu_code",                                 :null => false
-    t.string   "address_id",                :limit => 36,  :null => false
+    t.integer  "psu_code",                                                :null => false
+    t.string   "address_id",                :limit => 36,                 :null => false
     t.integer  "person_id"
     t.integer  "dwelling_unit_id"
-    t.integer  "address_rank_code",                        :null => false
+    t.integer  "address_rank_code",                                       :null => false
     t.string   "address_rank_other"
-    t.integer  "address_info_source_code",                 :null => false
+    t.integer  "address_info_source_code",                                :null => false
     t.string   "address_info_source_other"
-    t.integer  "address_info_mode_code",                   :null => false
+    t.integer  "address_info_mode_code",                                  :null => false
     t.string   "address_info_mode_other"
     t.date     "address_info_date"
     t.date     "address_info_update"
@@ -30,15 +30,15 @@ ActiveRecord::Schema.define(:version => 20121008201831) do
     t.date     "address_start_date_date"
     t.string   "address_end_date",          :limit => 10
     t.date     "address_end_date_date"
-    t.integer  "address_type_code",                        :null => false
+    t.integer  "address_type_code",                                       :null => false
     t.string   "address_type_other"
-    t.integer  "address_description_code",                 :null => false
+    t.integer  "address_description_code",                                :null => false
     t.string   "address_description_other"
     t.string   "address_one",               :limit => 100
     t.string   "address_two",               :limit => 100
     t.string   "unit",                      :limit => 10
     t.string   "city",                      :limit => 50
-    t.integer  "state_code",                               :null => false
+    t.integer  "state_code",                                              :null => false
     t.string   "zip",                       :limit => 5
     t.string   "zip4",                      :limit => 4
     t.text     "address_comment"
@@ -185,20 +185,20 @@ ActiveRecord::Schema.define(:version => 20121008201831) do
   end
 
   create_table "emails", :force => true do |t|
-    t.integer  "psu_code",                               :null => false
-    t.string   "email_id",                :limit => 36,  :null => false
+    t.integer  "psu_code",                                              :null => false
+    t.string   "email_id",                :limit => 36,                 :null => false
     t.integer  "person_id"
     t.string   "email",                   :limit => 100
-    t.integer  "email_rank_code",                        :null => false
+    t.integer  "email_rank_code",                                       :null => false
     t.string   "email_rank_other"
-    t.integer  "email_info_source_code",                 :null => false
+    t.integer  "email_info_source_code",                                :null => false
     t.string   "email_info_source_other"
     t.date     "email_info_date"
     t.date     "email_info_update"
-    t.integer  "email_type_code",                        :null => false
+    t.integer  "email_type_code",                                       :null => false
     t.string   "email_type_other"
-    t.integer  "email_share_code",                       :null => false
-    t.integer  "email_active_code",                      :null => false
+    t.integer  "email_share_code",                                      :null => false
+    t.integer  "email_active_code",                                     :null => false
     t.text     "email_comment"
     t.string   "email_start_date",        :limit => 10
     t.date     "email_start_date_date"
@@ -805,11 +805,11 @@ ActiveRecord::Schema.define(:version => 20121008201831) do
   end
 
   create_table "ppg_details", :force => true do |t|
-    t.integer  "psu_code",                          :null => false
-    t.string   "ppg_details_id",      :limit => 36, :null => false
+    t.integer  "psu_code",                                         :null => false
+    t.string   "ppg_details_id",      :limit => 36,                :null => false
     t.integer  "participant_id"
-    t.integer  "ppg_pid_status_code",               :null => false
-    t.integer  "ppg_first_code",                    :null => false
+    t.integer  "ppg_pid_status_code",                              :null => false
+    t.integer  "ppg_first_code",                                   :null => false
     t.string   "orig_due_date",       :limit => 10
     t.string   "due_date_2",          :limit => 10
     t.string   "due_date_3",          :limit => 10
@@ -1423,23 +1423,23 @@ ActiveRecord::Schema.define(:version => 20121008201831) do
   add_index "surveys", ["access_code", "survey_version"], :name => "surveys_access_code_survey_version_idx", :unique => true
 
   create_table "telephones", :force => true do |t|
-    t.integer  "psu_code",                              :null => false
-    t.string   "phone_id",                :limit => 36, :null => false
+    t.integer  "psu_code",                                             :null => false
+    t.string   "phone_id",                :limit => 36,                :null => false
     t.integer  "person_id"
-    t.integer  "phone_info_source_code",                :null => false
+    t.integer  "phone_info_source_code",                               :null => false
     t.string   "phone_info_source_other"
     t.date     "phone_info_date"
     t.date     "phone_info_update"
     t.string   "phone_nbr",               :limit => 10
     t.string   "phone_ext",               :limit => 5
-    t.integer  "phone_type_code",                       :null => false
+    t.integer  "phone_type_code",                                      :null => false
     t.string   "phone_type_other"
-    t.integer  "phone_rank_code",                       :null => false
+    t.integer  "phone_rank_code",                                      :null => false
     t.string   "phone_rank_other"
-    t.integer  "phone_landline_code",                   :null => false
-    t.integer  "phone_share_code",                      :null => false
-    t.integer  "cell_permission_code",                  :null => false
-    t.integer  "text_permission_code",                  :null => false
+    t.integer  "phone_landline_code",                                  :null => false
+    t.integer  "phone_share_code",                                     :null => false
+    t.integer  "cell_permission_code",                                 :null => false
+    t.integer  "text_permission_code",                                 :null => false
     t.text     "phone_comment"
     t.string   "phone_start_date",        :limit => 10
     t.date     "phone_start_date_date"

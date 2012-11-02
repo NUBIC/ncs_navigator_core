@@ -245,4 +245,42 @@ module PbsEligibilityScreener
     survey
   end
 
+  def create_pbs_eligibility_screener_survey_with_eligibility_questions
+    survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3.0-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Eligibility
+    q = Factory(:question, :reference_identifier => "AGE_ELIG", :data_export_identifier => "PBS_ELIG_SCREENER.AGE_ELIG", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "RESPONDENT IS AGE-ELIGIBLE", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "RESPONDENT IS UNDER AGE 18", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "AGE ELIGIBILITY IS UNKNOWN", :response_class => "answer", :reference_identifier => "-6")
+
+    q = Factory(:question, :reference_identifier => "PSU_ELIG_CONFIRM", :data_export_identifier => "PBS_ELIG_SCREENER.PSU_ELIG_CONFIRM", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "LIVES IN [COUNTY]", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "DOES NOT LIVE IN [COUNTY]", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "[COUNTY] ELIGIBILITY IS UNKNOWN", :response_class => "answer", :reference_identifier => "-6")
+
+    q = Factory(:question, :reference_identifier => "PREGNANT", :data_export_identifier => "PBS_ELIG_SCREENER.PREGNANT", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO, NO ADDITIONAL INFORMATION PROVIDED (IF VOLUNTEERED BY RESONDENT)", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "NO, RECENTLY LOST PREGNANCY (MISCARRIAGE/ABORTION)", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "NO, RECENTLY GAVE BIRTH", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "NO, UNABLE TO HAVE CHILDREN (HYSTERECTOMY, TUBAL LIGATION)", :response_class => "answer", :reference_identifier => "5")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "-1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "-2")
+
+    q = Factory(:question, :reference_identifier => "FIRST_VISIT", :data_export_identifier => "PBS_ELIG_SCREENER.FIRST_VISIT", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "-1")
+    a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "-2")
+
+    q = Factory(:question, :reference_identifier => "PROVIDER_OFFICE_ON_FRAME", :data_export_identifier => "PBS_ELIG_SCREENER.PROVIDER_OFFICE_ON_FRAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "PROVIDER OFFICE FOUND ON THE FRAME LIST (INELIGIBLE)", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "CANNOT DETERMINE IF PROVIDER'S OFFICE IS ON FRAME LIST (E.G. INCONSISTENT OR INCOMPLETE INFORMATION)", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "PROVIDER OFFICE NOT FOUND ON FRAME LIST", :response_class => "answer", :reference_identifier => "3")
+
+    survey
+  end
+
 end
