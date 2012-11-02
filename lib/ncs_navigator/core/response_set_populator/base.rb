@@ -10,19 +10,14 @@ module NcsNavigator::Core::ResponseSetPopulator
     attr_accessor :instrument
     attr_accessor :contact_link
 
-    def initialize(*args)
-      if args.length == 1 && args.first.respond_to?(:each_pair)
-        super()
-
-        args.first.each { |k, v| send("#{k}=", v) }
-      else
-        super
-      end
-
+    def initialize(person, instrument, survey, contact_link = nil)
+      @person = person
+      @instrument = instrument
+      @survey = survey
+      @contact_link = contact_link
       [:person, :instrument, :survey].each do |attr|
         raise InitializationError.new("No #{attr} provided") if send("#{attr}").blank?
       end
-
     end
 
     def event
@@ -43,21 +38,12 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def process
-      Base.populator_for(survey).new(to_params).populate
+      Base.populator_for(survey).new(person, instrument, survey, contact_link).populate
     end
 
     def self.populator_for(survey)
       populator = POPULATORS.find { |instrument, handler| instrument =~ survey.title }
       populator ? populator[1] : TracingModule
-    end
-
-    def to_params
-      {
-        :person => person,
-        :survey => survey,
-        :instrument => instrument,
-        :contact_link => contact_link
-      }
     end
 
     def find_question_for_reference_identifier(reference_identifier)

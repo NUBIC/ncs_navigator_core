@@ -27,8 +27,8 @@ module NcsNavigator::Core
             @contact = Factory(:contact, :contact_type => in_person)
             @contact_link = Factory(:contact_link, :person => @person, :contact => @contact)
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_mode_of_contact", "CAPI")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+            assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CAPI")
           end
         end
 
@@ -38,8 +38,8 @@ module NcsNavigator::Core
             @contact = Factory(:contact, :contact_type => telephone)
             @contact_link = Factory(:contact_link, :person => @person, :contact => @contact)
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_mode_of_contact", "CATI")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+            assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CATI")
           end
         end
 
@@ -50,24 +50,24 @@ module NcsNavigator::Core
           event = Factory(:event, :event_type_code => 18) # Birth
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_event_type_birth", "TRUE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_is_event_type_birth", "TRUE")
         end
 
         it "should NOT be birth event if EVENT_TYPE is not BIRTH" do
           event = Factory(:event, :event_type_code => 13) # NOT Birth
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_event_type_birth", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_is_event_type_birth", "FALSE")
         end
 
         it "should be PBS Eligibility Screener if EVENT_TYPE = PBS ELIGIBILITY SCREENING" do
           event = Factory(:event, :event_type_code => 34) # Eligibility Screener
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_event_type_pbs_participant_eligibility_screening", "TRUE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_is_event_type_pbs_participant_eligibility_screening", "TRUE")
 
         end
 
@@ -75,8 +75,8 @@ module NcsNavigator::Core
           event = Factory(:event, :event_type_code => 13) # NOT Eligibility Screener
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_event_type_pbs_participant_eligibility_screening", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_is_event_type_pbs_participant_eligibility_screening", "FALSE")
         end
       end
 
@@ -88,8 +88,8 @@ module NcsNavigator::Core
           @contact = Factory(:contact, :contact_type => telephone)
           @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_should_show_address_for_tracing", "TRUE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_should_show_address_for_tracing", "TRUE")
         end
 
         it "should NOT show if the contact is not CATI" do
@@ -98,8 +98,8 @@ module NcsNavigator::Core
           @contact = Factory(:contact, :contact_type => in_person)
           @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_should_show_address_for_tracing", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_should_show_address_for_tracing", "FALSE")
         end
 
         it "should NOT show if the event is pre-natal" do
@@ -108,22 +108,22 @@ module NcsNavigator::Core
           @contact = Factory(:contact, :contact_type => telephone)
           @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_should_show_address_for_tracing", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_should_show_address_for_tracing", "FALSE")
         end
 
         describe "with a known address" do
           it "knows that the person has a primary address" do
             Factory(:address, :person => @person, :address_rank_code => 1)
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_address_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_address_provided", "TRUE")
           end
         end
 
         describe "without an address" do
           it "knows that the person does not have an address" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_address_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_address_provided", "FALSE")
           end
         end
 
@@ -135,16 +135,16 @@ module NcsNavigator::Core
           it "knows that the person has a primary home phone" do
             Factory(:telephone, :person => @person, :phone_rank_code => 1, :phone_type_code => Telephone.home_phone_type.to_i)
             @person.primary_home_phone.should_not be_nil
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_home_phone_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_home_phone_provided", "TRUE")
           end
         end
 
         describe "without a home phone" do
           it "knows that the person does not have a primary home phone" do
             @person.primary_home_phone.should be_nil
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_home_phone_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_home_phone_provided", "FALSE")
           end
         end
 
@@ -152,24 +152,24 @@ module NcsNavigator::Core
           it "knows that the person has a primary cell phone" do
             Factory(:telephone, :person => @person, :phone_rank_code => 1, :phone_type_code => Telephone.cell_phone_type.to_i)
             @person.primary_cell_phone.should_not be_nil
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_provided", "TRUE")
           end
         end
 
         describe "without a cell phone" do
           it "knows that the person does not have a primary cell phone" do
             @person.primary_cell_phone.should be_nil
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_provided", "FALSE")
           end
         end
 
         describe "CELL_PHONE_2" do
 
           it "should not be provided if the question has not previously been answered" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_2_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_2_provided", "FALSE")
           end
 
           it "should be provided if the question had previously been answered" do
@@ -178,8 +178,8 @@ module NcsNavigator::Core
               a.dont_know "TRACING_INT.CELL_PHONE_2"
             end
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_2_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_2_provided", "TRUE")
           end
 
         end
@@ -187,8 +187,8 @@ module NcsNavigator::Core
         describe "CELL_PHONE_3" do
 
           it "should not be provided if the question has not previously been answered" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_3_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_3_provided", "FALSE")
           end
 
           it "should be provided if the question had previously been answered" do
@@ -197,8 +197,8 @@ module NcsNavigator::Core
               a.dont_know "TRACING_INT.CELL_PHONE_3"
             end
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_3_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_3_provided", "TRUE")
           end
 
         end
@@ -206,8 +206,8 @@ module NcsNavigator::Core
         describe "CELL_PHONE_4" do
 
           it "should not be provided if the question has not previously been answered" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_4_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_4_provided", "FALSE")
           end
 
           it "should be provided if the question had previously been answered" do
@@ -216,8 +216,8 @@ module NcsNavigator::Core
               a.dont_know "TRACING_INT.CELL_PHONE_4"
             end
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_cell_phone_4_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_cell_phone_4_provided", "TRUE")
           end
 
         end
@@ -230,32 +230,32 @@ module NcsNavigator::Core
           event = Factory(:event, :event_type_code => 18) # Birth
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_should_show_email_for_tracing", "TRUE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_should_show_email_for_tracing", "TRUE")
         end
 
         describe "with a known email" do
           it "knows that the person has a primary email" do
             Factory(:email, :person => @person, :email_rank_code => 1)
             @person.primary_email.should_not be_nil
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_email_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_email_provided", "TRUE")
           end
         end
 
         describe "without an email" do
           it "knows that the person does not have a primary email" do
             @person.primary_email.should be_nil
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_email_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_email_provided", "FALSE")
           end
         end
 
         describe "EMAIL_APPT" do
 
           it "should not be provided if the question has not previously been answered" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_email_appt_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_email_appt_provided", "FALSE")
           end
 
           it "should be provided if the question had previously been answered" do
@@ -264,8 +264,8 @@ module NcsNavigator::Core
               a.dont_know "TRACING_INT.EMAIL_APPT"
             end
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_email_appt_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_email_appt_provided", "TRUE")
           end
 
         end
@@ -273,8 +273,8 @@ module NcsNavigator::Core
         describe "EMAIL_QUEST" do
 
           it "should not be provided if the question has not previously been answered" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_email_questionnaire_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_email_questionnaire_provided", "FALSE")
           end
 
           it "should be provided if the question had previously been answered" do
@@ -283,8 +283,8 @@ module NcsNavigator::Core
               a.dont_know "TRACING_INT.EMAIL_QUEST"
             end
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_email_questionnaire_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_email_questionnaire_provided", "TRUE")
           end
 
         end
@@ -298,17 +298,16 @@ module NcsNavigator::Core
           event = Factory(:event, :event_type_code => 13) # PV1
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_should_show_contact_for_tracing", "TRUE")
-
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_should_show_contact_for_tracing", "TRUE")
         end
 
         it "should NOT show contact for tracing if EVENT_TYPE is not PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH" do
           event = Factory(:event, :event_type_code => 18) # Birth
           @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey, :contact_link => @contact_link }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_should_show_contact_for_tracing", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          assert_response_value(rsp.populate, "prepopulated_should_show_contact_for_tracing", "FALSE")
         end
 
 
@@ -326,13 +325,13 @@ module NcsNavigator::Core
             end
 
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_contact_for_all_provided", "TRUE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_contact_for_all_provided", "TRUE")
           end
 
           it "should know that NOT all contacts have been provided if no contacts have previously been given" do
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
           end
 
           it "should know that NOT all contacts have been provided if one contact has previously been given" do
@@ -341,8 +340,8 @@ module NcsNavigator::Core
             take_survey(@survey, @response_set) do |a|
               a.choice "TRACING_INT.CONTACT_RELATE_1", mother
             end
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
           end
 
           it "should know that NOT all contacts have been provided if two contacts have previously been given" do
@@ -354,8 +353,8 @@ module NcsNavigator::Core
               a.choice "TRACING_INT.CONTACT_RELATE_2", friend
             end
 
-            params = { :person => @person, :instrument => @instrument, :survey => @survey }
-            assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+            assert_response_value(rsp.populate, "prepopulated_is_valid_contact_for_all_provided", "FALSE")
           end
         end
       end
@@ -363,8 +362,8 @@ module NcsNavigator::Core
       describe "PREV_CITY" do
 
         it "should not be provided if the question has not previously been answered" do
-          params = { :person => @person, :instrument => @instrument, :survey => @survey }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_prev_city_provided", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+          assert_response_value(rsp.populate, "prepopulated_is_prev_city_provided", "FALSE")
         end
 
         it "should be provided if the question had previously been answered" do
@@ -373,8 +372,8 @@ module NcsNavigator::Core
             a.dont_know "TRACING_INT.PREV_CITY"
           end
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_is_prev_city_provided", "TRUE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+          assert_response_value(rsp.populate, "prepopulated_is_prev_city_provided", "TRUE")
         end
 
       end
@@ -382,8 +381,8 @@ module NcsNavigator::Core
       describe "DR_LICENSE_NUM" do
 
         it "should not be provided if the question has not previously been answered" do
-          params = { :person => @person, :instrument => @instrument, :survey => @survey }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_valid_driver_license_provided", "FALSE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+          assert_response_value(rsp.populate, "prepopulated_valid_driver_license_provided", "FALSE")
         end
 
         it "should be provided if the question had previously been answered" do
@@ -392,8 +391,8 @@ module NcsNavigator::Core
             a.dont_know "TRACING_INT.DR_LICENSE_NUM"
           end
 
-          params = { :person => @person, :instrument => @instrument, :survey => @survey }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_valid_driver_license_provided", "TRUE")
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey)
+          assert_response_value(rsp.populate, "prepopulated_valid_driver_license_provided", "TRUE")
         end
 
       end

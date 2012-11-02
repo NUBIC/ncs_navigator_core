@@ -27,9 +27,8 @@ module NcsNavigator::Core
       end
 
       it "sets prepopulated_ppg_status" do
-        params = { :person => @person, :instrument => @instrument, :survey => @survey }
-        rsp = ResponseSetPopulator::Base.new(params)
-        rs = rsp.process
+        rsp = ResponseSetPopulator::LowIntensity.new(@person, @instrument, @survey)
+        rs = rsp.populate
         rs.responses.should_not be_empty
         rs.responses.first.to_s.should == @participant.ppg_status.local_code.to_s
         rs.should == @response_set

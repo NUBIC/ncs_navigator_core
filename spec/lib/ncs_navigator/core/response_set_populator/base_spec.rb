@@ -23,26 +23,22 @@ module NcsNavigator::Core
       describe "#new" do
 
         it "throws an exception if there is no person" do
-          params = { :person => nil, :instrument => instrument, :survey => survey }
-          lambda { ResponseSetPopulator::Base.new(params) }.
+          lambda { ResponseSetPopulator::Base.new(nil, instrument, survey) }.
             should raise_error(ResponseSetPopulator::InitializationError, 'No person provided')
         end
 
         it "throws an exception if there is no instrument" do
-          params = { :person => person, :instrument => nil, :survey => survey }
-          lambda { ResponseSetPopulator::Base.new(params) }.
+          lambda { ResponseSetPopulator::Base.new(person, nil, survey) }.
             should raise_error(ResponseSetPopulator::InitializationError, 'No instrument provided')
         end
 
         it "throws an exception if there is no survey" do
-          params = { :person => person, :instrument => instrument, :survey => nil }
-          lambda { ResponseSetPopulator::Base.new(params) }.
+          lambda { ResponseSetPopulator::Base.new(person, instrument, nil) }.
             should raise_error(ResponseSetPopulator::InitializationError, 'No survey provided')
         end
 
         it "creates a new object with the required parameters" do
-          params = { :person => person, :instrument => instrument, :survey => survey }
-          rsp = ResponseSetPopulator::Base.new(params)
+          rsp = ResponseSetPopulator::Base.new(person, instrument, survey)
           rsp.should_not be_nil
           rsp.person.should == person
           rsp.instrument.should == instrument
@@ -51,8 +47,7 @@ module NcsNavigator::Core
 
         describe "with a contact link" do
           it "accepts contact link as an optional parameters" do
-            params = { :person => person, :instrument => instrument, :survey => survey, :contact_link => contact_link }
-            rsp = ResponseSetPopulator::Base.new(params)
+            rsp = ResponseSetPopulator::Base.new(person, instrument, survey, contact_link)
             rsp.should_not be_nil
             rsp.person.should == person
             rsp.instrument.should == instrument
@@ -61,8 +56,7 @@ module NcsNavigator::Core
           end
 
           it "extracts the contact and event from the contact_link" do
-            params = { :person => person, :instrument => instrument, :survey => survey, :contact_link => contact_link }
-            rsp = ResponseSetPopulator::Base.new(params)
+            rsp = ResponseSetPopulator::Base.new(person, instrument, survey, contact_link)
             rsp.should_not be_nil
             rsp.contact_link.should == contact_link
             rsp.event.should == contact_link.event

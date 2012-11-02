@@ -46,8 +46,8 @@ module NcsNavigator::Core
             a.choice "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
           end
 
-          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
-          assert_response_value(ResponseSetPopulator::Base.new(params).process, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+          assert_response_value(ResponseSetPopulator::Birth.new(person, @instrument_pt2, survey_pt2).populate,
+            "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
         end
 
       end
@@ -82,9 +82,8 @@ module NcsNavigator::Core
           contact = Factory(:contact, :contact_type => in_person)
           contact_link = Factory(:contact_link, :person => person, :contact => contact)
 
-          params = { :person => person, :instrument => @instrument, :survey => survey, :contact_link => contact_link }
-          rsp = ResponseSetPopulator::Base.new(params)
-          rs = rsp.process
+          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, contact_link)
+          rs = rsp.populate
           rs.responses.should_not be_empty
           rs.should == @response_set
           rs.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
@@ -100,8 +99,8 @@ module NcsNavigator::Core
           contact_link = Factory(:contact_link, :person => person, :contact => contact)
 
           params = { :person => person, :instrument => @instrument, :survey => survey, :contact_link => contact_link }
-          rsp = ResponseSetPopulator::Base.new(params)
-          rs = rsp.process
+          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, contact_link)
+          rs = rsp.populate
           rs.responses.should_not be_empty
           rs.should == @response_set
           rs.responses.first.question.reference_identifier.should == "prepopulated_mode_of_contact"
