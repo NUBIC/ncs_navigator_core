@@ -670,6 +670,44 @@ module NcsNavigator::Core
 
       end
 
+      describe "prepopulated_child_secondary_address_variables_previously_collected" do
+
+        it "is FALSE if there is no previous response for S_ADDRESS_1" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_child_secondary_address_variables_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for S_ADDRESS_1" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.str "PARTICIPANT_VERIF.S_ADDRESS_1", "caddr1"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_child_secondary_address_variables_previously_collected", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_sa_phone_previously_collected" do
+
+        it "is FALSE if there is no previous response for SA_PHONE" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_sa_phone_previously_collected", "FALSE")
+        end
+
+        it "is TRUE if there is a previous response for SA_PHONE" do
+          take_survey(survey_pt2, @response_set_pt2) do |a|
+            a.str "PARTICIPANT_VERIF.SA_PHONE", "867-5309"
+          end
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          assert_response_value(ResponseSetPopulator::Base.new(params).process,
+            "prepopulated_sa_phone_previously_collected", "TRUE")
+        end
+
+      end
+
 
     end
 

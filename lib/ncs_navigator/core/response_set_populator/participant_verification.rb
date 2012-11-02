@@ -22,11 +22,11 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_ocare_child_equal_one_and_other_caregiver_name_previously_collected",
         "prepopulated_ocare_rel_previously_collected",
         "prepopulated_child_time_previously_collected",
-        # "prepopulated_child_primary_address_variables_previously_collected",
-        # "prepopulated_pa_phone_previously_collected",
-        # "prepopulated_should_show_secondary_address_questions",
-        # "prepopulated_child_secondary_address_variables_previously_collected",
-        # "prepopulated_sa_phone_previously_collected",
+        "prepopulated_child_primary_address_variables_previously_collected",
+        "prepopulated_pa_phone_previously_collected",
+        "prepopulated_should_show_secondary_address_questions",
+        "prepopulated_child_secondary_address_variables_previously_collected",
+        "prepopulated_sa_phone_previously_collected",
       ]
     end
 
@@ -82,12 +82,16 @@ module NcsNavigator::Core::ResponseSetPopulator
                     ocare_rel_previously_collected?(question)
                   when "prepopulated_child_time_previously_collected"
                     child_time_previously_collected?(question)
-                  # when "prepopulated_child_primary_address_variables_previously_collected"
-                  # when "prepopulated_pa_phone_previously_collected"
-                  # when "prepopulated_should_show_secondary_address_questions"
-                  # when "prepopulated_child_secondary_address_variables_previously_collected"
-                  # when "prepopulated_sa_phone_previously_collected"
-
+                  when "prepopulated_child_primary_address_variables_previously_collected"
+                    child_primary_address_variables_previously_collected?(question)
+                  when "prepopulated_pa_phone_previously_collected"
+                    pa_phone_previously_collected?(question)
+                  when "prepopulated_should_show_secondary_address_questions"
+                    should_show_secondary_address_questions?(question)
+                  when "prepopulated_child_secondary_address_variables_previously_collected"
+                    child_secondary_address_variables_previously_collected?(question)
+                  when "prepopulated_sa_phone_previously_collected"
+                    sa_phone_previously_collected?(question)
                   else
                     nil
                   end
@@ -311,6 +315,60 @@ module NcsNavigator::Core::ResponseSetPopulator
     def child_time_previously_collected?(question)
       answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.CHILD_TIME"))
     end
+
+    # PROGRAMMER INSTRUCTIONS:
+    # - IF CHILD_TIME COLLECTED PREVIOUSLY AND CHILD_TIME = 1, -1, OR -2 FOR MOST RECENT INTERVIEW, DISPLAY FIRST OCCURRENCE OF “still.”
+    # - IF CHILD_TIME COLLECTED PREVIOUSLY AND CHILD_TIME = 2 FOR MOST RECENT INTERVIEW, DISPLAY SECOND OCCURRENCE OF “still.”
+    # - IF CHILD PRIMARY ADDRESS VARIABLES COLLECTED PREVIOUSLY FOR C_FNAME AND VALID RESPONSE PROVIDED, GO TO CHILD_PRIMARY_ADDRESS_CONFIRM_NEW.
+    # - OTHERWISE, IF CHILD PRIMARY ADDRESS VARIABLES NOT COLLECTED PREVIOUSLY FOR C_FNAME OR VALID RESPONSE NOT PROVIDED, GO TO CHILD PRIMARY ADDRESS VARIABLES.
+    def child_primary_address_variables_previously_collected?(question)
+      ri = !participant.person.primary_address.to_s.blank? || valid_response_exists?("PARTICIPANT_VERIF.C_ADDRESS_1")
+      answer_for(question, ri)
+    end
+
+    # PROGRAMMER INSTRUCTIONS:
+    # - IF PA_PHONE COLLECTED DURING PREVIOUS INTERVIEW AND VALID PHONE NUMBER PROVIDED,
+    #   GO TO PROGRAMMER INSTRUCTIONS FOLLOWING PA_PHONE.
+    # - OTHERWISE, GO PA_PHONE.
+    def pa_phone_previously_collected?(question)
+      answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.PA_PHONE"))
+    end
+
+    # PROGRAMMER INSTRUCTIONS:
+    #   - IF CHILD_TIME = 1, -1, OR -2 AND:
+    #     - CHILD_NUM = 1, OR
+    #     - IF CHILD_NUM > 1, AND CHILD_QNUM = CHILD_NUM
+    #   - GO TO TIME_STAMP_PV_ET.
+    #     - IF CHILD_NUM > 1, AND CHILD_QNUM < CHILD_NUM, GO TO SAME_CONTACT_MULT_CHILD.
+    #   - OTHERWISE, GO TO PV059.
+    def should_show_secondary_address_questions?(question)
+      # TODO: determine what this needs to return
+    end
+
+    # PROGRAMMER INSTRUCTIONS:
+    #   - IF CHILD SECONDARY ADDRESS VARIABLES = -7, AND
+    #     - IF CHILD_TIME = 1, -1, OR -2, AND
+    #     - IF CHILD_NUM = 1, OR
+    #     - IF CHILD_NUM > 1, AND CHILD_QNUM = CHILD_NUM
+    #   - GO TO TIME_STAMP_PV_ET.
+    #     - OTHERWISE, IF CHILD_NUM > 1, AND CHILD_QNUM < CHILD_NUM, GO TO SAME_CONTACT_MULT_CHILD.
+    #   - OTHERWISE, IF CHILD SECONDARY ADDRESS VARIABLES FOR CURRENT INTERVIEW ≠ -7, AND
+    #     - IF SA_PHONE COLLECTED DURING PREVIOUS INTERVIEW AND VALID PHONE NUMBER PROVIDED, GO TO SA_PHONE_CONFIRM.
+    #     - IF SA_PHONE NOT COLLECTED DURING PREVIOUS INTERVIEW OR VALID PHONE NUMBER NOT PROVIDED, GO TO SA_PHONE.
+    def child_secondary_address_variables_previously_collected?(question)
+      answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.S_ADDRESS_1"))
+    end
+
+    # PROGRAMMER INSTRUCTIONS:
+    #   - PRELOAD SECONDARY PHONE NUMBER FROM MOST RECENT INTERVIEW.
+    #   - IF SA_PHONE_CONFIRM =1 AND
+    #     - IF CHILD_NUM = 1, GO TO TIME_STAMP_PV_ET.
+    #     - IF CHILD_QNUM > 1, GO TO PROGRAMMER INSTRUCTIONS FOLLOWING SA_PHONE.
+    #   - OTHERWISE, GO TO SA_PHONE.
+    def sa_phone_previously_collected?(question)
+      answer_for(question, valid_response_exists?("PARTICIPANT_VERIF.SA_PHONE"))
+    end
+
 
   end
 end

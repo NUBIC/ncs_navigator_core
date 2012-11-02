@@ -293,6 +293,51 @@ module ParticipantVerification
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
+    # prepopulated_child_primary_address_variables_previously_collected
+    q = Factory(:question, :reference_identifier => "prepopulated_child_primary_address_variables_previously_collected", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # Address One
+    q = Factory(:question, :reference_identifier => "C_ADDRESS_1", :data_export_identifier => "PARTICIPANT_VERIF.C_ADDRESS_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # prepopulated_pa_phone_previously_collected
+    q = Factory(:question, :reference_identifier => "prepopulated_pa_phone_previously_collected", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # PA_PHONE
+    q = Factory(:question, :reference_identifier => "PA_PHONE", :data_export_identifier => "PARTICIPANT_VERIF.PA_PHONE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Phone", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # TODO: prepopulated_should_show_secondary_address_questions
+
+    # prepopulated_child_secondary_address_variables_previously_collected
+    q = Factory(:question, :reference_identifier => "prepopulated_child_secondary_address_variables_previously_collected", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # 2ndary Address One
+    q = Factory(:question, :reference_identifier => "C_ADDRESS_1", :data_export_identifier => "PARTICIPANT_VERIF.S_ADDRESS_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # prepopulated_sa_phone_previously_collected
+    q = Factory(:question, :reference_identifier => "prepopulated_sa_phone_previously_collected", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # SA_PHONE
+    q = Factory(:question, :reference_identifier => "SA_PHONE", :data_export_identifier => "PARTICIPANT_VERIF.SA_PHONE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Phone", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
     survey
   end
