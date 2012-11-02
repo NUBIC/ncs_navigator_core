@@ -168,6 +168,10 @@ class Event < ActiveRecord::Base
     result
   end
 
+  def label
+    event_type.to_s.downcase.squeeze(' ').gsub(' ', '_')
+  end
+
   def strip_time_whitespace
     self.event_start_time.strip! if self.event_start_time
     self.event_end_time.strip! if self.event_end_time
@@ -440,9 +444,7 @@ class Event < ActiveRecord::Base
   end
 
   def implied_by?(label, date)
-    et = event_type.to_s.downcase.gsub("  ", " ").gsub(" ", "_")
-
-    et == label && event_start_date.to_s == date
+    self.label == label && event_start_date.to_s == date
   end
 
   def set_event_disposition_category(contact)

@@ -16,6 +16,7 @@ module Field
     attr_reader :logger
     attr_reader :events
     attr_reader :instruments
+    attr_reader :participants
     attr_reader :psc_participants
 
     def initialize
@@ -31,9 +32,11 @@ module Field
 
       login_to_psc
 
-      # Build {PscParticipant} objects that correspond to the participants in
-      # the fieldwork.
-      resolve_psc_participants
+      # Find all participants referenced in the superposition.
+      find_participants
+
+      # Register the participants that need to be registered.
+      register_participants
 
       # Resolve SAs that correspond to instruments and events in the
       # fieldwork.
@@ -75,12 +78,14 @@ module Field
       groups.each(&:update)
     end
 
-    def resolve_psc_participants
+    def find_participants
       @events = superposition.current_events
       @instruments = superposition.current_instruments
+      @participants = superposition.current_participants
 
-      build_psc_participants_from(events)
-      build_psc_participants_from(instruments)
+      build_psc_participants_from(events) { |o| o.participant }
+      build_psc_participants_from(instruments) { |o| o.participant }
+      build_psc_participants_from(participants) { |o| o }
     end
 
     def login_to_psc
@@ -97,7 +102,7 @@ module Field
     # @private
     def build_psc_participants_from(list)
       list.each do |obj|
-        p = obj.participant
+        p = yield obj
 
         unless psc_participants.has_key?(p.id)
           psc_participants[p.id] = PscParticipant.new(psc, p)
