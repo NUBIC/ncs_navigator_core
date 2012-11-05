@@ -94,6 +94,7 @@ class Person < ActiveRecord::Base
 
   has_many :person_provider_links
   has_many :providers, :through => :person_provider_links
+  has_many :sampled_persons_ineligibilities
 
   validates :title,       :length => { :maximum => 5 },  :allow_blank => true
   validates :person_dob,  :length => { :is => 10 },      :allow_blank => true
