@@ -107,20 +107,15 @@ module NcsNavigator::Core::ResponseSetPopulator
     # - IF WORKING= 1, AND WORK_NAME PREVIOUSLY COLLECTED AND VALID RESPONSE PROVIDED, GO TO WORK_NAME_CONFIRM.
     # - IF WORKING = 1, AND WORK_NAME NOT PREVIOUSLY COLLECTED OR VALID RESPONSE NOT PROVIDED, GO TO WORK_NAME.
     def is_work_name_previously_collected_and_valid?(question)
-      most_recent_response = person.responses_for("PREG_VISIT_1_3.WORK_NAME").last
-      ri = response_exists_and_is_valid?(most_recent_response.to_s)
-      answer_for(question, ri)
+      answer_for(question, valid_response_exists?("PREG_VISIT_1_3.WORK_NAME", :last))
     end
 
     # - IF WORK_ADDRESS_VARIABLES NOT COLLECTED PREVIOUSLY OR VALID WORK ADDRESS NOT PROVIDED, GO TO WORK_ADDRESS_VARIABLES.
     # - IF WORK_ADDRESS_VARIABLES COLLECTED PREVIOUSLY AND VALID WORK ADDRESS PROVIDED, GO TO WORK_ADDRESS_VARIABLES_CONFIRM.
     #   OTHERWISE, GO TO TIME_STAMP_EM_ET.
     def is_work_address_previously_collected_and_valid?(question)
-      most_recent_response = person.responses_for("PREG_VISIT_1_3.WORK_ADDRESS_1").last
-      ri = response_exists_and_is_valid?(most_recent_response.to_s)
-      answer_for(question, ri)
+      answer_for(question, valid_response_exists?("PREG_VISIT_1_3.WORK_ADDRESS_1", :last))
     end
-
 
     def is_first_pv1?
       pv1_contacts = person.contact_links.select do |cl|
@@ -128,18 +123,6 @@ module NcsNavigator::Core::ResponseSetPopulator
       end.map(&:contact).uniq
       pv1_contacts.count == 0
     end
-
-    def response_exists_and_is_valid?(resp)
-      resp = resp.upcase
-      if !resp.blank? &&
-          resp != "REFUSED" &&
-          resp != "DON'T KNOW"
-        true
-      else
-        false
-      end
-    end
-    private :response_exists_and_is_valid?
 
   end
 end
