@@ -1044,6 +1044,10 @@ class Participant < ActiveRecord::Base
   end
 
   def eligible?
+    NcsNavigatorCore.recruitment_strategy.pbs? ? eligible_for_pbs? : !ineligible?
+  end
+
+  def eligible_for_pbs?
     eligible = []
 
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
@@ -1053,38 +1057,37 @@ class Participant < ActiveRecord::Base
                                  :participant_pregnant?,
                                  :participant_first_visit?,
                                  :participant_no_preceding_providers_in_frame?]
-    eligible = eligibility_determination.each { |ed| self.send ed, person }
-
-    eligible.any? { |criteria| criteria == false } ? false : true
+    eligibility_determination.all? { |ed| self.send(ed, person) }
   end
 
   def participant_age_eligible?(person)
-    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG").first
-    r = rsps.answer.reference_identifier if rsps != nil
-    return false if r == nil
-    r == "1" ? true : false
+    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG")
   end
 
   def participant_psu_county_eligible?(person)
-    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM").first
-    r = rsps.answer.reference_identifier if rsps != nil
-    return false if r == nil
-    r == "1" ? true : false
+    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM")
   end
 
   def participant_pregnant?(person)
-    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT").first
-    r = rsps.answer.reference_identifier if rsps != nil
-    return false if r == nil
-    r == "1" ? true : false
+    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT")
   end
 
   def participant_first_visit?(person)
-    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT").first
-    r = rsps.answer.reference_identifier if rsps != nil
-    return false if r == nil
-    r == "1" ? true : false
+    eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT")
   end
+
+  ##
+  # If the reference_identifier for the response associated with the
+  # given data_export_identifier is "1" (true) then return true
+  # otherwise false
+  # @param[Person]
+  # @param[String] data_export_identifier for question
+  # @return[Boolean]
+  def eligible_for?(person, data_export_identifier)
+    most_recent_response = person.responses_for(data_export_identifier).last
+    most_recent_response.try(:answer).try(:reference_identifier) == "1"
+  end
+  private :eligible_for?
 
   def participant_no_preceding_providers_in_frame?(person)
     answers = []
@@ -1093,6 +1096,11 @@ class Participant < ActiveRecord::Base
     return false if rsps == nil
     answers.any? { |a| a == "1" } ? false : true
   end
+
+  def ineligible?(date = Date.today)
+    ppg_status(date).try(:local_code).to_i > 4
+    end
+
 
   private
 
@@ -1183,10 +1191,6 @@ class Participant < ActiveRecord::Base
       status_codes = [3,4]
       status_codes << 2 if consented_to_high_intensity_arm? || following_high_intensity? || pre_pregnancy?
       status_codes.include?(ppg_status.local_code)
-    end
-
-    def ineligible?(date = Date.today)
-      ppg_status(date).try(:local_code).to_i > 4
     end
 
     def pregnant_or_trying?(date = Date.today)
