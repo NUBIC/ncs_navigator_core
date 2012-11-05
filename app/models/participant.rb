@@ -1080,7 +1080,7 @@ class Participant < ActiveRecord::Base
   # If the reference_identifier for the response associated with the
   # given data_export_identifier is "1" (true) then return true
   # otherwise false
-  # @param[Person]
+  # @param[Person, nil] Person the person associated with the participant
   # @param[String] data_export_identifier for question
   # @return[Boolean]
   def eligible_for?(person, data_export_identifier)
