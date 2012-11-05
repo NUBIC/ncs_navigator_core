@@ -531,7 +531,8 @@ class Event < ActiveRecord::Base
     rescue
       # NOOP - do not set unparsable date
     end
-    Event.create(:participant => participant, :psu_code => participant.psu_code, :event_start_date => date,
+    Event.create(:participant => participant, :psu_code => participant.psu_code,
+                 :event_start_date => date, :event_start_time => Time.now.strftime("%H:%M"),
                  :scheduled_study_segment_identifier => study_segment_identifier, :event_type_code => event_type_code)
   end
 
