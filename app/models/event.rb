@@ -29,6 +29,7 @@
 #  updated_at                         :datetime
 #
 
+
 # An Event is a set of one or more scheduled or unscheduled, partially executed or completely executed
 # data collection activities with a single subject. The subject may be a Household or a Participant.
 # All activities in an Event have the same subject.
@@ -166,6 +167,10 @@ class Event < ActiveRecord::Base
     result = "#{event_end_date} #{event_end_time}"
     result = "N/A" if result.blank?
     result
+  end
+
+  def label
+    event_type.to_s.downcase.squeeze(' ').gsub(' ', '_')
   end
 
   def strip_time_whitespace
@@ -333,17 +338,21 @@ class Event < ActiveRecord::Base
     if event_disposition_category && event_disposition
       case event_disposition_category.local_code
       when 1 # Household Enumeration
-        (540..545) === event_disposition
+        (40..45) === event_disposition || (540..545) === event_disposition
       when 2 # Pregnancy Screener
-        (560..565) === event_disposition
+        (60..65) === event_disposition || (560..565) === event_disposition
       when 3 # General Study
-        (560..562) === event_disposition
+        (60..62) === event_disposition || (560..562) === event_disposition
       when 4 # Mailed Back SAQ
-        (550..556) === event_disposition
+        (50..56) === event_disposition || (550..556) === event_disposition
       when 5 # Telephone Interview
-        (590..595) === event_disposition
+        (90..95) === event_disposition || (590..595) === event_disposition
       when 6 # Internet Survey
-        (540..546) === event_disposition
+        (40..46) === event_disposition || (540..546) === event_disposition
+      when 7 # Provider Recruitment
+        570 == event_disposition || 70 == event_disposition
+      when 8 # PBS Eligibility Screening
+        (80..91) === event_disposition || (580..591) === event_disposition
       else
         false
       end
@@ -436,9 +445,7 @@ class Event < ActiveRecord::Base
   end
 
   def implied_by?(label, date)
-    et = event_type.to_s.downcase.gsub("  ", " ").gsub(" ", "_")
-
-    et == label && event_start_date.to_s == date
+    self.label == label && event_start_date.to_s == date
   end
 
   def set_event_disposition_category(contact)
@@ -491,6 +498,7 @@ class Event < ActiveRecord::Base
 
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
     return nil unless participant.next_scheduled_event
+    return nil unless participant.eligible?
 
     date ||= participant.next_scheduled_event.date.to_s
     resp = psc.schedule_next_segment(participant, date)

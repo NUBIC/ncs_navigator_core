@@ -111,6 +111,8 @@ class Person < ActiveRecord::Base
 
   accepts_nested_attributes_for :person_provider_links, :allow_destroy => true
 
+  delegate :mother, :children, :to => :participant
+
   before_save do
     self.age = self.computed_age if self.age.blank?
   end
@@ -163,6 +165,14 @@ class Person < ActiveRecord::Base
     else
       self.first_name = full_name
     end
+  end
+
+  def full_name_exists?
+    !first_name.blank? && !middle_name.blank? && !last_name.blank?
+  end
+
+  def only_middle_name_missing?
+    !first_name.blank? && middle_name.blank? && !last_name.blank?
   end
 
   ##
@@ -505,6 +515,18 @@ class Person < ActiveRecord::Base
   def primary_contacts(collection, code_key)
     yield collection.select { |c| c.send(code_key) == 1 }
   end
+
+  ##
+  # Determine if this person is a child to another person
+  # and if so if this is the first child
+  # @return [Boolean]
+  def first_child?
+    if mother = participant.try(:mother)
+      return mother.children.first == self
+    end
+    false
+  end
+  alias :is_first_child? :first_child?
 
   private
 

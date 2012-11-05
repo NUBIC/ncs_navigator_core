@@ -10,19 +10,14 @@ module NcsNavigator::Core::ResponseSetPopulator
     attr_accessor :instrument
     attr_accessor :contact_link
 
-    def initialize(*args)
-      if args.length == 1 && args.first.respond_to?(:each_pair)
-        super()
-
-        args.first.each { |k, v| send("#{k}=", v) }
-      else
-        super
-      end
-
+    def initialize(person, instrument, survey, contact_link = nil)
+      @person = person
+      @instrument = instrument
+      @survey = survey
+      @contact_link = contact_link
       [:person, :instrument, :survey].each do |attr|
         raise InitializationError.new("No #{attr} provided") if send("#{attr}").blank?
       end
-
     end
 
     def event
@@ -33,27 +28,22 @@ module NcsNavigator::Core::ResponseSetPopulator
       @contact ||= self.contact_link.contact if self.contact_link
     end
 
+    def participant
+      @participant ||= self.instrument.response_sets.last.try(:participant)
+    end
+
     # To be implemented by subclasses
     def reference_identifiers
       []
     end
 
     def process
-      Base.populator_for(survey).new(to_params).populate
+      Base.populator_for(survey).new(person, instrument, survey, contact_link).populate
     end
 
     def self.populator_for(survey)
       populator = POPULATORS.find { |instrument, handler| instrument =~ survey.title }
       populator ? populator[1] : TracingModule
-    end
-
-    def to_params
-      {
-        :person => person,
-        :survey => survey,
-        :instrument => instrument,
-        :contact_link => contact_link
-      }
     end
 
     def find_question_for_reference_identifier(reference_identifier)
@@ -78,11 +68,28 @@ module NcsNavigator::Core::ResponseSetPopulator
       end
     end
 
+    def valid_response_exists?(data_export_identifier, which_response = :first)
+      result = false
+      if response = person.responses_for(data_export_identifier).send(which_response)
+        reference_identifier = response.try(:answer).try(:reference_identifier).to_s
+        result = true unless %w(neg_1 neg_2).include?(reference_identifier)
+      end
+      result
+    end
+
     def prepopulated_mode_of_contact(question)
       # If In-Person use 'capi' otherwise use 'cati'
       # TODO: how to determine 'papi' ?
-      ri = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
-      answer = question.answers.select { |a| a.reference_identifier == ri }.first
+      reference_identifier = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
+      question.answers.select { |a| a.reference_identifier == reference_identifier }.first
+    end
+
+    # Find the answer with the matching reference identifier for question
+    # @param [Question]
+    # @param [String] reference_identifier matching answer
+    # @return [Answer]
+    def answer_for(question, ri)
+      question.answers.select { |a| a.reference_identifier == ri.to_s }.first
     end
 
   end

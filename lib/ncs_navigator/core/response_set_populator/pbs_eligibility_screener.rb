@@ -44,7 +44,6 @@ module NcsNavigator::Core::ResponseSetPopulator
                   when "NAME_PRACTICE"
                     person.provider.name_practice if person.provider
                   else
-                    # TODO: handle other prepopulated fields
                     nil
                   end
 

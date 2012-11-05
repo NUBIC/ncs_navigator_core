@@ -447,6 +447,12 @@ module NcsNavigator::Core::Mustache
       "[SECONDARY_PHONE_NUMBER]"
     end
 
+    # Used in Participant Verification 3.0, return correct either correct name
+    # or correct name and birth date if birth date has not been previously collected
+    def correct_name_and_birth_date
+        "[CORRECT_NAME_AND_BIRTH_DATE]"
+    end
+
     def choose_date_range_for_birth_instrument
       if date_of_preg_visit_2
         return "between #{date_of_preg_visit_2} and #{c_dob}"

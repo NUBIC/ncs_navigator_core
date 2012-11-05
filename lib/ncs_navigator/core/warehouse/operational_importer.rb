@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/core/warehouse'
 
 require 'forwardable'
@@ -29,6 +28,10 @@ module NcsNavigator::Core::Warehouse
       @public_id_indexes = {}
       @failed_associations = []
       @progress = ProgressTracker.new(wh_config)
+      @sync_loader = Psc::SyncLoader.new
+      @sync_loader.sync_key = lambda do |*c|
+        [OperationalImporter.name, 'psc_sync', c].flatten.join(':')
+      end
     end
 
     def import(*tables)
@@ -116,7 +119,7 @@ module NcsNavigator::Core::Warehouse
             participant = Participant.where(:p_id => p_id).first
 
             for_psc = (participant.being_followed && participant.p_type_code != 6)
-            Rails.application.redis.sadd(sync_key('participants'), participant.public_id) if for_psc
+            @sync_loader.cache_participant(participant) if for_psc
 
             # caches
             core_instruments = {}
@@ -129,7 +132,7 @@ module NcsNavigator::Core::Warehouse
                 participant.set_state_for_event_type(core_event)
               end
 
-              cache_event_for_psc_sync(participant, core_event) if for_psc
+              @sync_loader.cache_event(core_event, participant) if for_psc
 
               save_core_record(core_event)
 
@@ -145,9 +148,11 @@ module NcsNavigator::Core::Warehouse
                   contact_id = core_contact_link.contact_id
                   core_contact = (core_contacts[contact_id] ||= Contact.find(contact_id))
 
-                  cache_link_contact_for_psc_sync(
-                    participant, core_event, core_contact_link, core_contact,
-                    core_instruments[core_contact_link.instrument_id])
+                  @sync_loader.cache_contact_link(core_contact_link,
+                                                  core_contact,
+                                                  core_instruments[core_contact_link.instrument_id],
+                                                  core_event,
+                                                  participant)
                 end
                 save_core_record(core_contact_link)
               end
@@ -173,65 +178,6 @@ module NcsNavigator::Core::Warehouse
         results.first > 0
       else
         true
-      end
-    end
-
-    def sync_key(*key_parts)
-      [self.class.name, 'psc_sync', key_parts].flatten.join(':')
-    end
-
-    def cache_event_for_psc_sync(participant, core_event)
-      return unless core_event.changed?
-
-      Rails.application.redis.tap do |r|
-        r.hmset(sync_key('event', core_event.public_id),
-          'status', core_event.new_record? ? 'new' : 'changed',
-          'event_id', core_event.public_id,
-          'start_date', core_event.event_start_date,
-          'end_date', core_event.event_end_date,
-          'event_type_code', core_event.event_type_code,
-          'event_type_label', core_event.event_type.display_text.downcase.strip.gsub(/\s+/, '_'),
-          'recruitment_arm', participant.low_intensity? ? 'lo' : 'hi',
-          'sort_key', [core_event.event_start_date, '%03d' % core_event.event_type_code].join(':')
-        )
-        r.sadd(sync_key('p', participant.public_id, 'events'), core_event.public_id)
-      end
-    end
-
-    def cache_link_contact_for_psc_sync(participant, core_event, core_contact_link, core_contact, core_instrument)
-      instrument_type_code = core_instrument.try(:instrument_type_code)
-
-      link_contact_fields = [
-        'status', core_contact_link.new_record? ? 'new' : 'changed',
-        'contact_link_id', core_contact_link.public_id,
-        'event_id', core_event.public_id,
-        'contact_id', core_contact.public_id,
-        'contact_date', core_contact.contact_date,
-        'sort_key', [
-          core_event.public_id,
-          core_contact.contact_date,
-          ('%03d' % instrument_type_code if instrument_type_code)].compact.join(':')
-      ]
-
-      if instrument_type_code
-        link_contact_fields << 'instrument_id' << core_instrument.instrument_id
-        link_contact_fields << 'instrument_type' << instrument_type_code
-        link_contact_fields << 'instrument_status' <<
-          core_instrument.instrument_status.display_text.downcase
-      end
-
-      collection_key =
-        if core_contact_link.instrument_id
-          sync_key('p', participant.public_id,
-            'link_contacts_with_instrument', core_instrument.instrument_id)
-        else
-          sync_key('p', participant.public_id,
-            'link_contacts_without_instrument', core_event.event_id)
-        end
-
-      Rails.application.redis.tap do |r|
-        r.hmset(sync_key('link_contact', core_contact_link.public_id), *link_contact_fields)
-        r.sadd(collection_key, core_contact_link.public_id)
       end
     end
 

@@ -46,7 +46,6 @@ module NcsNavigator::Core::ResponseSetPopulator
                   when "prepopulated_is_work_address_previously_collected_and_valid"
                     is_work_address_previously_collected_and_valid?(question)
                   else
-                    # TODO: handle other prepopulated fields
                     nil
                   end
           build_response_for_value(response_type, response_set, question, answer, nil)
@@ -61,8 +60,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     # - IF SUBSEQUENT PREGANCY VISIT 1 INTERVIEW, GO TO WEIGHT.
     #   false
     def should_show_height?(question)
-      ri = is_first_pv1? ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, is_first_pv1?)
     end
 
     # PROGRAMMER INSTRUCTIONS:
@@ -72,11 +70,11 @@ module NcsNavigator::Core::ResponseSetPopulator
     # - IF SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW:
     # -   GO TO RECENT_MOVE
     def should_show_recent_move_for_preg_visit_one?(question)
-      ri = "true"
+      ri = true
       if is_first_pv1?
-        ri = (person.responses_for("PRE_PREG.OWN_HOME").size > 0) ? "true" : "false"
+        ri = (person.responses_for("PRE_PREG.OWN_HOME").size > 0)
       end
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, ri)
     end
 
     # PROGRAMMER INSTRUCTIONS:
@@ -93,37 +91,31 @@ module NcsNavigator::Core::ResponseSetPopulator
     # -   IF RECENT_MOVE DURING THIS EVENT IS “1” GO TO AGE_HOME AND CONTINUE THROUGH REST OF SECTION
     # -   IF RECENT_MOVE DURING THIS EVENT IS ‘2,' -1,' OR ‘--2', GO TO HC018.
     def is_first_pregnancy_visit_one?(question)
-      ri = is_first_pv1? ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, is_first_pv1?)
     end
 
     def is_pre_pregnancy_information_available_and_recent_move_coded_as_one?(question)
-      ri = "false"
+      ri = false
       if is_first_pv1?
         most_recent_response = person.responses_for("PRE_PREG.RECENT_MOVE").last
-        ri = (most_recent_response.try(:answer).try(:reference_identifier).to_i == 1) ? "true" : "false"
+        ri = (most_recent_response.try(:answer).try(:reference_identifier).to_i == 1)
       end
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, ri)
     end
 
     # PROGRAMMER INSTRUCTIONS:
     # - IF WORKING= 1, AND WORK_NAME PREVIOUSLY COLLECTED AND VALID RESPONSE PROVIDED, GO TO WORK_NAME_CONFIRM.
     # - IF WORKING = 1, AND WORK_NAME NOT PREVIOUSLY COLLECTED OR VALID RESPONSE NOT PROVIDED, GO TO WORK_NAME.
     def is_work_name_previously_collected_and_valid?(question)
-      most_recent_response = person.responses_for("PREG_VISIT_1_3.WORK_NAME").last
-      ri = response_exists_and_is_valid?(most_recent_response.to_s) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, valid_response_exists?("PREG_VISIT_1_3.WORK_NAME", :last))
     end
 
     # - IF WORK_ADDRESS_VARIABLES NOT COLLECTED PREVIOUSLY OR VALID WORK ADDRESS NOT PROVIDED, GO TO WORK_ADDRESS_VARIABLES.
     # - IF WORK_ADDRESS_VARIABLES COLLECTED PREVIOUSLY AND VALID WORK ADDRESS PROVIDED, GO TO WORK_ADDRESS_VARIABLES_CONFIRM.
     #   OTHERWISE, GO TO TIME_STAMP_EM_ET.
     def is_work_address_previously_collected_and_valid?(question)
-      most_recent_response = person.responses_for("PREG_VISIT_1_3.WORK_ADDRESS_1").last
-      ri = response_exists_and_is_valid?(most_recent_response.to_s) ? "true" : "false"
-      question.answers.select { |a| a.reference_identifier == ri }.first
+      answer_for(question, valid_response_exists?("PREG_VISIT_1_3.WORK_ADDRESS_1", :last))
     end
-
 
     def is_first_pv1?
       pv1_contacts = person.contact_links.select do |cl|
@@ -131,18 +123,6 @@ module NcsNavigator::Core::ResponseSetPopulator
       end.map(&:contact).uniq
       pv1_contacts.count == 0
     end
-
-    def response_exists_and_is_valid?(resp)
-      resp = resp.upcase
-      if !resp.blank? &&
-          resp != "REFUSED" &&
-          resp != "DON'T KNOW"
-        true
-      else
-        false
-      end
-    end
-    private :response_exists_and_is_valid?
 
   end
 end

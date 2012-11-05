@@ -125,7 +125,7 @@ describe Event do
       ordered_event_array[3].should == m3
 
     end
-    
+
   end
 
   context "as mdes record" do
@@ -547,12 +547,19 @@ describe Event do
         Event.schedule_and_create_placeholder(psc, part).should be_nil
       end
 
+      it "returns nil if participant is not eligible" do
+        part = Factory(:high_intensity_ppg1_participant)
+        part.stub!(:eligible?).and_return(false)
+        Event.schedule_and_create_placeholder(psc, part).should be_nil
+      end
+
       it "creates events as for ppg followup activities" do
 
         PatientStudyCalendar.stub!(:extract_scheduled_study_segment_identifier).
           and_return("a5fd83f9-e2ca-4481-8ce3-70406dfbcddc")
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
+        participant.stub!(:eligible?).and_return(true)
 
         VCR.use_cassette('psc/schedule_and_create_placeholder') do
 
@@ -585,6 +592,7 @@ describe Event do
         part.events << Factory(:event, :participant => part,
                                 :event_start_date => Date.today, :event_end_date => Date.today,
                                 :event_type => NcsCode.pregnancy_screener)
+        part.stub!(:eligible?).and_return(true)
 
         part.next_scheduled_event.event.
           should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
@@ -634,6 +642,7 @@ describe Event do
           participant.save!
 
           participant.events.should be_empty
+          participant.stub!(:eligible?).and_return(true)
           Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
           participant.events.reload
           participant.events.should_not be_empty
@@ -848,4 +857,20 @@ describe Event do
 
   end
 
+  describe '#label' do
+    let(:event) { Event.new(:event_type => et) }
+    let(:et) { NcsCode.new }
+
+    it 'turns Foo Bar into foo_bar' do
+      et.display_text = 'Foo Bar'
+
+      event.label.should == 'foo_bar'
+    end
+
+    it 'squeezes spaces' do
+      et.display_text = 'Foo    Bar'
+
+      event.label.should == 'foo_bar'
+    end
+  end
 end

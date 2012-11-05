@@ -128,7 +128,7 @@ module BirthVisit
   end
 
   def create_birth_part_one_survey_with_prepopulated_fields_for_part_two
-    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-two")
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-one")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
     # BIRTH_DELIVER
@@ -152,6 +152,25 @@ module BirthVisit
   end
 
 
+  def create_pv1_with_fields_for_birth_prepopulation
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHI_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhi-m3-0-v3-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Work Name
+    q = Factory(:question, :reference_identifier => "work_name", :data_export_identifier => "PREG_VISIT_1_3.WORK_NAME", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Work Name", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    # Work Address
+    q = Factory(:question, :reference_identifier => "work_address", :data_export_identifier => "PREG_VISIT_1_3.WORK_ADDRESS_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+    a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
+
+    survey
+  end
+
   def create_birth_part_two_survey_with_prepopulated_fields_from_part_one
     survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_TWO", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-two")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
@@ -172,6 +191,26 @@ module BirthVisit
     q = Factory(:question, :reference_identifier => "prepopulated_multiple_from_birth_visit_part_one", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "YES", :response_class => "answer", :reference_identifier => "yes")
     a = Factory(:answer, :question_id => q.id, :text => "NO", :response_class => "answer", :reference_identifier => "no")
+
+    # prepopulated_is_valid_work_name_provided
+    q = Factory(:question, :reference_identifier => "prepopulated_is_valid_work_name_provided", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_valid_work_address_provided
+    q = Factory(:question, :reference_identifier => "prepopulated_is_valid_work_address_provided", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_pv_one_complete
+    q = Factory(:question, :reference_identifier => "prepopulated_is_pv_one_complete", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
+
+    # prepopulated_is_pv_two_complete
+    q = Factory(:question, :reference_identifier => "prepopulated_is_pv_two_complete", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE", :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE", :response_class => "answer", :reference_identifier => "false")
 
     survey
   end

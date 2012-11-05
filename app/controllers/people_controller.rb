@@ -138,11 +138,14 @@ class PeopleController < ApplicationController
 
     # start instrument
     instrument = Instrument.start(person, participant, instrument_survey, current_survey, event)
-    instrument.save!
 
     # prepopulate response_set
-    # TODO: pre-populate the response set
-    # NcsNavigator::Core::ResponseSetPopulator::Base.process(person, instrument, current_survey, cl)
+    # FIXME: put this in the Instrument.start method
+    populator = NcsNavigator::Core::ResponseSetPopulator::Base.new(person, instrument, current_survey, cl)
+    populator.process
+
+    # persist instrument and newly prepopulated response_set
+    instrument.save!
 
     # add instrument to contact link
     link = instrument.link_to(person, cl.contact, event, current_staff_id)

@@ -21,6 +21,7 @@
 require 'ncs_navigator/core'
 
 require 'case'
+require 'facets/hash/weave'
 require 'forwardable'
 require 'set'
 
