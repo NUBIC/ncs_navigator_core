@@ -18,9 +18,10 @@ module NcsNavigator::Core
       let(:person) { Factory(:person) }
       let(:survey_pt1) { create_birth_part_one_survey_with_prepopulated_fields_for_part_two }
       let(:survey_pt2) { create_birth_part_two_survey_with_prepopulated_fields_from_part_one }
+      let(:participant) { Factory(:participant) }
+      let(:pv1_survey) { create_pv1_with_fields_for_birth_prepopulation }
 
       before(:each) do
-        participant = Factory(:participant)
         participant.person = person
         participant.save!
 
@@ -30,13 +31,17 @@ module NcsNavigator::Core
         # Yes this should be the same instrument - bypassing the PSC reference connection for now
         @response_set_pt2, @instrument_pt2 = prepare_instrument(person, participant, survey_pt2)
         @response_set_pt2.responses.should be_empty
+
+        @rsp = ResponseSetPopulator::Birth.new(person, @instrument_pt2, survey_pt2)
       end
 
       describe "BIRTH_DELIVER" do
 
         it "response should not exist if the question has not previously been answered" do
           params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
-          responses = @response_set_pt2.responses.select { |r| r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one" }
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_birth_deliver_from_birth_visit_part_one"
+          end
           responses.should be_empty
         end
 
@@ -46,18 +51,148 @@ module NcsNavigator::Core
             a.choice "BIRTH_VISIT_3.BIRTH_DELIVER", some_other_place
           end
 
-          assert_response_value(ResponseSetPopulator::Birth.new(person, @instrument_pt2, survey_pt2).populate,
-            "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
+          assert_response_value(@rsp.populate, "prepopulated_birth_deliver_from_birth_visit_part_one", "SOME OTHER PLACE")
         end
 
       end
 
       describe "RELEASE" do
 
+        it "response should not exist if the question has not previously been answered" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_release_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
+
+        it "should be set to the response from part_one" do
+          take_survey(survey_pt1, @response_set_pt1) do |a|
+            a.yes "BIRTH_VISIT_3.RELEASE"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_release_from_birth_visit_part_one", "YES")
+        end
+
       end
 
       describe "MULTIPLE" do
+        it "response should not exist if the question has not previously been answered" do
+          params = { :person => person, :instrument => @instrument_pt2, :survey => survey_pt2 }
+          responses = @response_set_pt2.responses.select do |r|
+            r.question.reference_identifier == "prepopulated_multiple_from_birth_visit_part_one"
+          end
+          responses.should be_empty
+        end
 
+        it "should be set to the response from part_one" do
+          take_survey(survey_pt1, @response_set_pt1) do |a|
+            a.no "BIRTH_VISIT_3.MULTIPLE"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_multiple_from_birth_visit_part_one", "NO")
+        end
+
+      end
+
+      describe "prepopulated_is_valid_work_name_provided" do
+
+        it "should be FALSE if work name was not previously answered" do
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
+        end
+
+        it "should be FALSE if work name was previously answered as refused" do
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.refused "PREG_VISIT_1_3.WORK_NAME"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
+        end
+
+        it "should be FALSE if work name was previously answered as don't know" do
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.dont_know "PREG_VISIT_1_3.WORK_NAME"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "FALSE")
+        end
+
+        it "should be TRUE if work name was previously answered" do
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.str "PREG_VISIT_1_3.WORK_NAME", "work_name"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_name_provided", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_is_valid_work_address_provided" do
+
+        it "should be FALSE if work address was not previously answered" do
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
+        end
+
+        it "should be FALSE if work address was previously answered as refused" do
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.refused "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
+        end
+
+        it "should be FALSE if work address was previously answered as don't know" do
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.dont_know "PREG_VISIT_1_3.WORK_ADDRESS_1"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "FALSE")
+        end
+
+        it "should be TRUE if work address was previously answered" do
+          pv1_response_set, pv1_instrument = prepare_instrument(person, participant, pv1_survey)
+
+          take_survey(pv1_survey, pv1_response_set) do |a|
+            a.str "PREG_VISIT_1_3.WORK_ADDRESS_1", "work_address"
+          end
+
+          assert_response_value(@rsp.populate, "prepopulated_is_valid_work_address_provided", "TRUE")
+        end
+
+      end
+
+      describe "prepopulated_is_pv_one_complete" do
+        it "should be TRUE if the pv1 event was completed" do
+          Participant.any_instance.stub(:completed_event?).and_return(true)
+          assert_response_value(@rsp.populate, "prepopulated_is_pv_one_complete", "TRUE")
+        end
+
+        it "should be FALSE if the pv1 event was NOT completed" do
+          Participant.any_instance.stub(:completed_event?).and_return(false)
+          assert_response_value(@rsp.populate, "prepopulated_is_pv_one_complete", "FALSE")
+        end
+      end
+
+      describe "prepopulated_is_pv_two_complete" do
+        it "should be TRUE if the pv2 event was completed" do
+          Participant.any_instance.stub(:completed_event?).and_return(true)
+          assert_response_value(@rsp.populate, "prepopulated_is_pv_two_complete", "TRUE")
+        end
+
+        it "should be FALSE if the pv2 event was NOT completed" do
+          Participant.any_instance.stub(:completed_event?).and_return(false)
+          assert_response_value(@rsp.populate, "prepopulated_is_pv_two_complete", "FALSE")
+        end
       end
 
     end
