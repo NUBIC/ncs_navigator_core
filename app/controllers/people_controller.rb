@@ -140,8 +140,9 @@ class PeopleController < ApplicationController
     instrument = Instrument.start(person, participant, instrument_survey, current_survey, event)
 
     # prepopulate response_set
-    base_params = { :person => person, :instrument => instrument, :survey => current_survey, :contact_link => cl }
-    NcsNavigator::Core::ResponseSetPopulator::Base.new(base_params).process
+    # FIXME: put this in the Instrument.start method
+    populator = NcsNavigator::Core::ResponseSetPopulator::Base.new(person, instrument, current_survey, cl)
+    populator.process
 
     # persist instrument and newly prepopulated response_set
     instrument.save!
