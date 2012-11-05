@@ -14,8 +14,10 @@
   .page_section
     %h3
       Edit Instrument Records
-    .edit_instrument
-      = link_to "Edit #{@instrument}", edit_instrument_path, :class => "edit_link icon_link"
+    - @contact_link.contact.contact_links.each do |contact_link|
+      - if instr = contact_link.instrument
+        .edit_instrument
+          = link_to "Edit #{instr}", edit_instrument_path(instr), :class => "edit_link icon_link"
 
 .page_section
   %h3
