@@ -54,6 +54,9 @@ class PeopleController < ApplicationController
                                           :provider => @provider,
                                           :person   => @person,
                                           :sampled_person_code => 1)
+      @person.sampled_persons_ineligibilities.build(:psu_code => @psu_code, 
+                                                    :person => @person,
+                                                    :provider => @provider)
     end
 
     respond_to do |format|

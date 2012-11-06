@@ -110,6 +110,7 @@ class Person < ActiveRecord::Base
   accepts_nested_attributes_for :emails, :allow_destroy => true
 
   accepts_nested_attributes_for :person_provider_links, :allow_destroy => true
+  accepts_nested_attributes_for :sampled_persons_ineligibilities, :allow_destroy => true
 
   delegate :mother, :children, :to => :participant
 

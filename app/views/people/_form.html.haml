@@ -20,49 +20,125 @@
 
     - if @participant
       .participant_relationship
-      = label_tag "name","Select Relationship to  #{@participant.person}"
+      = label_tag "name","Select Relationship to #{@participant.person}"
       %br
       = select_tag("relationship_code",options_for_select( NcsCode.ncs_code_lookup(:relationship_code)), { :prompt => "-- Select Relationship to Participant -- " })
+      
+    - if @provider.nil?
+      
+      = render "shared/ncs_code_select", { :f => f, :code => :prefix_code, :label_text => "Prefix" }
 
-    = render "shared/ncs_code_select", { :f => f, :code => :prefix_code, :label_text => "Prefix" }
+      %p
+        = f.label :first_name, "First Name"
+        %br
+        = f.text_field :first_name
 
-    %p
+      %p
+        = f.label :middle_name, "Middle Name"
+        %br
+        = f.text_field :middle_name
+
+      %p
+        = f.label :last_name, "Last Name"
+        %br
+        = f.text_field :last_name
+
+      %p
+        = f.label :maiden_name, "Maiden Name"
+        %br
+        = f.text_field :maiden_name
+
+      = render "shared/ncs_code_select", { :f => f, :code => :suffix_code, :label_text => "Suffix" }
+
+      %p
+        = f.label :title, "Title"
+        %br
+        = f.text_field :title
+
+      = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
+
+      %p
+        = f.label :age, "Age"
+        %br
+        = f.text_field :age
+
+      = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
+
+      %p
+        = f.label :person_dob_date, "Date Of Birth"
+        %br
+        = f.text_field :person_dob_date, :class => "datepicker"
+        = f.label :person_dob_modifier_refused, "Refused"
+        = f.radio_button :person_dob_modifier, :refused
+        = f.label :person_dob_modifier_unknown, "Unknown"
+        = f.radio_button :person_dob_modifier, :unknown
+
+      = render "shared/ncs_code_select", { :f => f, :code => :deceased_code, :label_text => "Deceased" }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :ethnic_group_code, :label_text => "Ethnic Group" }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :language_code, :label_text => "Language", :other => :language_other }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :marital_status_code, :label_text => "Marital Status", :other => :marital_status_other }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :preferred_contact_method_code, :label_text => "Preferred Contact Method", :other => :preferred_contact_method_other }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :planned_move_code, :label_text => "Planned Move" }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :move_info_code, :label_text => "Move Info" }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :when_move_code, :label_text => "When Move" }
+
+      %p
+        = f.label :date_move_date, "Moving Date"
+        %br
+        = f.text_field :date_move_date, :class => "datepicker"
+        = f.label :date_move_modifier_refused, "Refused"
+        = f.radio_button :date_move_modifier, :refused
+        = f.label :date_move_modifier_unknown, "Unknown"
+        = f.radio_button :date_move_modifier, :unknown
+        = f.label :date_move_modifier_not_applicable, "Not Applicable"
+        = f.radio_button :date_move_modifier, :not_applicable
+
+      = render "shared/ncs_code_select", { :f => f, :code => :p_tracing_code, :label_text => "Tracing" }
+
+      = render "shared/ncs_code_select", { :f => f, :code => :p_info_source_code, :label_text => "Info Source", :other => :p_info_source_other }
+
+      %p
+        = f.label :p_info_date, "Info Date"
+        %br
+        = f.text_field :p_info_date, :class => "datepicker"
+
+      %p
+        = f.label :p_info_update, "Info Update"
+        %br
+        = f.text_field :p_info_update, :class => "datepicker"
+
+      %p
+        = f.label :person_comment, "Comment"
+        %br
+        = f.text_area :person_comment
+
+    - if @provider
+      
+      %p
       = f.label :first_name, "First Name"
       %br
       = f.text_field :first_name
 
-    %p
-      = f.label :middle_name, "Middle Name"
-      %br
-      = f.text_field :middle_name
+      %p
+        = f.label :middle_name, "Middle Name"
+        %br
+        = f.text_field :middle_name
 
-    %p
-      = f.label :last_name, "Last Name"
-      %br
-      = f.text_field :last_name
+      %p
+        = f.label :last_name, "Last Name"
+        %br
+        = f.text_field :last_name
 
-    %p
-      = f.label :maiden_name, "Maiden Name"
-      %br
-      = f.text_field :maiden_name
+      = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }  
 
-    = render "shared/ncs_code_select", { :f => f, :code => :suffix_code, :label_text => "Suffix" }
-
-    %p
-      = f.label :title, "Title"
-      %br
-      = f.text_field :title
-
-    = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }
-
-    %p
-      = f.label :age, "Age"
-      %br
-      = f.text_field :age
-
-    = render "shared/ncs_code_select", { :f => f, :code => :age_range_code, :label_text => "Age Range" }
-
-    %p
+      %p
       = f.label :person_dob_date, "Date Of Birth"
       %br
       = f.text_field :person_dob_date, :class => "datepicker"
@@ -71,57 +147,12 @@
       = f.label :person_dob_modifier_unknown, "Unknown"
       = f.radio_button :person_dob_modifier, :unknown
 
-    = render "shared/ncs_code_select", { :f => f, :code => :deceased_code, :label_text => "Deceased" }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :ethnic_group_code, :label_text => "Ethnic Group" }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :language_code, :label_text => "Language", :other => :language_other }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :marital_status_code, :label_text => "Marital Status", :other => :marital_status_other }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :preferred_contact_method_code, :label_text => "Preferred Contact Method", :other => :preferred_contact_method_other }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :planned_move_code, :label_text => "Planned Move" }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :move_info_code, :label_text => "Move Info" }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :when_move_code, :label_text => "When Move" }
-
-    %p
-      = f.label :date_move_date, "Moving Date"
       %br
-      = f.text_field :date_move_date, :class => "datepicker"
-      = f.label :date_move_modifier_refused, "Refused"
-      = f.radio_button :date_move_modifier, :refused
-      = f.label :date_move_modifier_unknown, "Unknown"
-      = f.radio_button :date_move_modifier, :unknown
-      = f.label :date_move_modifier_not_applicable, "Not Applicable"
-      = f.radio_button :date_move_modifier, :not_applicable
-
-    = render "shared/ncs_code_select", { :f => f, :code => :p_tracing_code, :label_text => "Tracing" }
-
-    = render "shared/ncs_code_select", { :f => f, :code => :p_info_source_code, :label_text => "Info Source", :other => :p_info_source_other }
-
-    %p
-      = f.label :p_info_date, "Info Date"
-      %br
-      = f.text_field :p_info_date, :class => "datepicker"
-
-    %p
-      = f.label :p_info_update, "Info Update"
-      %br
-      = f.text_field :p_info_update, :class => "datepicker"
-
-    %p
-      = f.label :person_comment, "Comment"
-      %br
-      = f.text_area :person_comment
-
-    - if @provider
       .provider_association
         %b
           Fields for provider association
         %br
+        
         = f.fields_for :person_provider_links do |builder|
           - next if builder.object.provider != @provider
           = builder.hidden_field :provider_id
@@ -131,10 +162,10 @@
             { :f => builder, :code => :is_active_code, :label_text => "Is active?" }
 
           = render "shared/ncs_code_select",
-            { :f => builder, :code => :pre_screening_status_code, :label_text => "Pre-Screening Status" }
+            { :f => builder, :code => :pre_screening_status_code, :label_text => "Pre-Screening Status", :html_attrs => { :class => "required pre_screening_status_selector" } }
 
           = render "shared/ncs_code_select",
-            { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?" }
+            { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?", :html_attrs => { :class => "required sampled_person_code_selector" } }
 
           %p
             = builder.label :date_first_visit, "Date of First Visit"
@@ -142,7 +173,31 @@
             = builder.text_field :date_first_visit, :class => "datepicker"
 
           = render "shared/ncs_code_select",
-            { :f => builder, :code => :provider_intro_outcome_code, :label_text => "Outcome of Provider Introduction", :other => :provider_intro_outcome_other }
+            { :f => builder, :code => :provider_intro_outcome_code, :label_text => "Outcome of Provider Introduction", :other => :provider_intro_outcome_other }  
+        
+
+        .sampled_persons_ineligibility
+          %b
+            Fields for Sampled Persons Ineligibility
+          %br
+
+          = f.fields_for :sampled_persons_ineligibilities do |builder|
+            = builder.hidden_field :provider_id
+            = builder.hidden_field :person_id
+          
+            = render "shared/ncs_code_select",
+              { :f => builder, :code => :county_of_residence_code, :label_text => "Does sample woman reside in sample PSU/county?" } 
+
+            = render "shared/ncs_code_select",
+              { :f => builder, :code => :pregnancy_eligible_code, :label_text => "Is sampled woman pregnant?" }  
+
+            = render "shared/ncs_code_select",
+              { :f => builder, :code => :first_prenatal_visit_code, :label_text => "Is this the first prenatal visit for the sampled woman?" }    
+
+            = render "shared/ncs_code_select",
+              { :f => builder, :code => :ineligible_by_code, :label_text => "Who determined sampled woman is ineligible?" }   
+
+          
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
@@ -164,4 +219,4 @@
                          "#person_p_info_source_other");
     wire_up_select_other("#person_person_provider_links_attributes_0_provider_intro_outcome_code",
                          "#person_person_provider_links_attributes_0_provider_intro_outcome_other");
-  });
+  }); 
