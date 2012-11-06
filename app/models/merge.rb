@@ -146,6 +146,8 @@ class Merge < ActiveRecord::Base
         superposition.prepare_for_sync(self)
         superposition.sync_with_psc
         update_attribute(:synced_at, Time.now)
+      else
+        true
       end
     rescue Exception => e
       logger.fatal { "#{e.class.name}: #{e.message}" }
