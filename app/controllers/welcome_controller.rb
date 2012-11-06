@@ -100,7 +100,8 @@ class WelcomeController < ApplicationController
         # create a placeholder event for each date
         dates.uniq.each do |dt|
           Event.create( :participant => participant, :psu_code => participant.psu_code,
-                        :event_start_date => dt, :event_type => event_type)
+                        :event_start_date => dt, :event_start_time => Time.now.strftime("%H:%M"),
+                        :event_type => event_type)
 
         end
       end

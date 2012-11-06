@@ -238,7 +238,7 @@ module NcsNavigator::Core::Warehouse
           instrument_filename = InstrumentEventMap.
             instrument_map_value_for_code(lc_details['instrument_type'].to_i, 'filename').downcase
           psc_event[:scheduled_activities].select { |event_sa_id|
-            all_sas[event_sa_id]['labels'] =~ /\binstrument:#{instrument_filename}\b/
+            all_sas[event_sa_id]['labels'] =~ /\binstrument:\d+\.\d+:#{instrument_filename}\b/
           }
         },
         lambda { |link_contact_ids, scheduled_activities|

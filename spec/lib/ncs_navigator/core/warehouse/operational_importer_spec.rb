@@ -739,10 +739,6 @@ module NcsNavigator::Core::Warehouse
         create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'fred_p', :enroll_status => '1')
       }
-      let!(:fred_p_ppg1) {
-        create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
-          :p => fred_p, :ppg_first => '1')
-      }
       let(:ginger_p) {
         create_warehouse_record_with_defaults(wh_config.model(:Participant),
           :p_id => 'ginger_p', :enroll_status => '2')
@@ -1162,6 +1158,13 @@ module NcsNavigator::Core::Warehouse
         describe 'PSC sync records' do
           let(:redis) { Rails.application.redis }
           let(:ns) { 'NcsNavigator::Core::Warehouse::OperationalImporter' }
+
+          # Only followed participants get PSC records; make fred_p followed
+          # via the ever-pregnant criterion.
+          let!(:fred_p_ppg1) {
+            create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
+              :p => fred_p, :ppg_first => '1')
+          }
 
           before do
             keys = redis.keys('*')

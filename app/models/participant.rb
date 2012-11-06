@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: participants
 #
@@ -423,7 +422,7 @@ class Participant < ActiveRecord::Base
   #
   # @return [String]
   def next_study_segment
-    return nil if ineligible?
+    return nil if !has_eligible_ppg_status?
     low_intensity? ? next_low_intensity_study_segment : next_high_intensity_study_segment
   end
 
@@ -1044,7 +1043,7 @@ class Participant < ActiveRecord::Base
   end
 
   def eligible?
-    NcsNavigatorCore.recruitment_strategy.pbs? ? eligible_for_pbs? : !ineligible?
+    NcsNavigatorCore.recruitment_strategy.pbs? ? eligible_for_pbs? : has_eligible_ppg_status?
   end
 
   def eligible_for_pbs?
@@ -1097,9 +1096,9 @@ class Participant < ActiveRecord::Base
     answers.any? { |a| a == "1" } ? false : true
   end
 
-  def ineligible?(date = Date.today)
-    ppg_status(date).try(:local_code).to_i > 4
-    end
+  def has_eligible_ppg_status?(date = Date.today)
+    ppg_status(date).try(:local_code).to_i < 5
+  end
 
   def create_sampled_person_ineligbility_record
     SampledPersonsIneligibility.create!(:person_id => self.person.id)
@@ -1173,7 +1172,7 @@ class Participant < ActiveRecord::Base
     end
 
     def lo_intensity_follow_up
-      return nil if ineligible?
+      return nil if !has_eligible_ppg_status?
       if can_consent?
         if has_completed_low_intensity_data_collection?
           PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP

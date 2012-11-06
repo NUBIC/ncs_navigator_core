@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: participants
 #
@@ -1523,17 +1522,17 @@ describe Participant do
       @part = Factory(:participant)
     end
 
-    describe "#ineligible?" do
-      it "for Two-Tier recruitment strategy, returns false for PPG statuses 1-4" do
+    describe "#has_eligible_ppg_status?" do
+      it "for Two-Tier recruitment strategy, returns true for PPG statuses 1-4" do
         status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
         Factory(:ppg_status_history, :participant => @part, :ppg_status => status)
-        @part.ineligible?.should be_false
+        @part.has_eligible_ppg_status?.should be_true
       end
 
-      it "for Two-Tier recruitment strategy, returns true for PPG statuses 5-6" do
+      it "for Two-Tier recruitment strategy, returns false for PPG statuses 5-6" do
         status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 6)
         Factory(:ppg_status_history, :participant => @part, :ppg_status => status)
-        @part.ineligible?.should be_true
+        @part.has_eligible_ppg_status?.should be_false
       end
     end
   end
