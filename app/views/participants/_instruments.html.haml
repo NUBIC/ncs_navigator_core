@@ -12,8 +12,7 @@
       - @person.instruments.uniq.each do |instrument|
         %tr{ :class => cycle('even_record', 'odd_record') }
           %td
-            -#= link_to "#{instrument.event}", edit_instrument_contact_link_path(instrument.contact_link), :class => "edit_link icon_link"
-            = link_to "#{instrument.event}", edit_instrument_path(instrument), :class => "edit_link icon_link"
+            = link_to instrument_name(instrument.survey.title), edit_instrument_path(instrument), :class => "edit_link icon_link"
           %td
             - instrument.response_sets.each do |rs|
               .response_set

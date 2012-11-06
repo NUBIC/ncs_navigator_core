@@ -47,6 +47,11 @@ module ApplicationHelper
     (id.length < 16) ? content_tag(:td, id) : content_tag(:td, truncate(id, :length => 16), :title => id)
   end
 
+  def instrument_name(title)
+    name = InstrumentEventMap.instrument_map_value_for_filename(title, 'name')
+    name.nil? ? title : name
+  end
+
   ##
   # Takes MDES formatted phone number (XXXYYYZZZZ)
   # and parses into area code, exchange, and line number
