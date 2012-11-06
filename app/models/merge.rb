@@ -144,13 +144,10 @@ class Merge < ActiveRecord::Base
       # Sync PSC unless we're told to not do so.
       if self.class.sync_with_psc?
         superposition.prepare_for_sync(self)
-        synced = superposition.sync_with_psc
-        return false if !synced
+        superposition.sync_with_psc
+        update_attribute(:synced_at, Time.now)
       end
-
-      # We're done.
-      update_attribute(:synced_at, Time.now)
-    rescue => e
+    rescue Exception => e
       logger.fatal { "#{e.class.name}: #{e.message}" }
       logger.fatal { e.backtrace.join("\n") }
 

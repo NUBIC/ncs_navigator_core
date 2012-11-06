@@ -130,38 +130,6 @@ module Field
 
         sp.sync_with_psc
       end
-
-      describe 'if OperationalImporterPscSync#import does not raise' do
-        it 'returns true' do
-          sp.psc_importer.stub!(:import)
-
-          sp.sync_with_psc.should be_true
-        end
-      end
-
-      describe 'if OperationalImporterPscSync#import raises' do
-        it 'returns false' do
-          sp.psc_importer.stub!(:import).and_raise
-
-          sp.sync_with_psc.should be_false
-        end
-
-        it 'records the exception in the log' do
-          sp.psc_importer.stub!(:import).and_raise('whoops')
-          sp.sync_with_psc
-
-          log.should =~ /OperationalImporterPscSync raised [^:]+: whoops/i
-        end
-
-        it 'records the exception stack trace' do
-          sp.psc_importer.stub!(:import).and_raise('whoops')
-          sp.sync_with_psc
-
-          # Checking whether or not the method name shows up in the log isn't
-          # _that_ good of an assertion, but it's good enough for now.
-          log.should =~ /sync_with_psc/
-        end
-      end
     end
   end
 end

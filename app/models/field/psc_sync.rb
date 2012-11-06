@@ -88,17 +88,16 @@ module Field
       end
     end
 
+    # Runs {OperationalImporterPscSync#import}.
+    #
+    # On error, {OperationalImporterPscSync#import} raises exceptions; this
+    # method just lets them bubble up the stack.  A normal return from this
+    # method signifies sync success.
+    #
+    # @return void
     def sync_with_psc
       load_for_sync
-
-      begin
-        psc_importer.import
-        true
-      rescue Exception => e
-        logger.fatal { "OperationalImporterPscSync raised #{e.class}: #{e.message}" }
-        logger.fatal { e.backtrace.join("\n") }
-        false
-      end
+      psc_importer.import
     end
 
     ##
