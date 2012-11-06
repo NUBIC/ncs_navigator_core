@@ -1048,30 +1048,29 @@ class Participant < ActiveRecord::Base
 
   def eligible_for_pbs?
     eligible = []
-
     person = ParticipantPersonLink.where(:participant_id => self.id, :relationship_code => 1).first.person
 
-    eligibility_determination = [:participant_age_eligible?,
-                                 :participant_psu_county_eligible?,
-                                 :participant_pregnant?,
-                                 :participant_first_visit?,
-                                 :participant_no_preceding_providers_in_frame?]
+    eligibility_determination = [:age_eligible?,
+                                 :psu_county_eligible?,
+                                 :pbs_pregnant?,
+                                 :first_visit?,
+                                 :no_preceding_providers_in_frame?]
     eligibility_determination.all? { |ed| self.send(ed, person) }
   end
 
-  def participant_age_eligible?(person)
+  def age_eligible?(person)
     eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG")
   end
 
-  def participant_psu_county_eligible?(person)
+  def psu_county_eligible?(person)
     eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM")
   end
 
-  def participant_pregnant?(person)
+  def pbs_pregnant?(person)
     eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT")
   end
 
-  def participant_first_visit?(person)
+  def first_visit?(person)
     eligible_for?(person, "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT")
   end
 
@@ -1088,11 +1087,11 @@ class Participant < ActiveRecord::Base
   end
   private :eligible_for?
 
-  def participant_no_preceding_providers_in_frame?(person)
+  def no_preceding_providers_in_frame?(person)
     answers = []
     rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PROVIDER_OFFICE_ON_FRAME").all
     rsps.each { |rsp| answers << rsp.answer.reference_identifier } if rsps != nil
-    return false if rsps == nil
+    return true if rsps == nil
     answers.any? { |a| a == "1" } ? false : true
   end
 
