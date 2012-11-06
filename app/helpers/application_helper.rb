@@ -47,9 +47,10 @@ module ApplicationHelper
     (id.length < 16) ? content_tag(:td, id) : content_tag(:td, truncate(id, :length => 16), :title => id)
   end
 
-  def instrument_name(title)
+  def instrument_name(title, default = nil)
+    default ||= title
     name = InstrumentEventMap.instrument_map_value_for_filename(title, 'name')
-    name.nil? ? title : name
+    name.nil? ? default : name
   end
 
   ##
