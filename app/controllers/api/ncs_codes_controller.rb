@@ -1,16 +1,7 @@
-class Api::NcsCodesController < ApplicationController
-  respond_to :json
-
+class Api::NcsCodesController < ApiController
   def index
-    client_id = request.headers['X-Client-ID']
-
-    if client_id.blank?
-      render(:nothing => true, :status => :bad_request) and return
-    end
-
     if stale?(:last_modified => NcsCode.last_modified)
-      render :json => NcsCode.all,
-             :serializer => NcsCodeCollectionSerializer
+      render :json => NcsCode.all, :serializer => NcsCodeCollectionSerializer
     end
   end
 end
