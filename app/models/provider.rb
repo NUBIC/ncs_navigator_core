@@ -88,6 +88,10 @@ class Provider < ActiveRecord::Base
 
   after_save :open_recruitment
 
+  def self.last_modified
+    maximum(:updated_at)
+  end
+
   def to_s
     self.name_practice.to_s
   end
