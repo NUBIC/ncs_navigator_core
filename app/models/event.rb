@@ -57,6 +57,7 @@ class Event < ActiveRecord::Base
   validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
   before_validation :strip_time_whitespace
+  before_create :set_start_time
 
   POSTNATAL_EVENTS = [
     18, # Birth
@@ -178,6 +179,13 @@ class Event < ActiveRecord::Base
     self.event_end_time.strip! if self.event_end_time
   end
   private :strip_time_whitespace
+
+  def set_start_time
+    if self.event_start_time.blank?
+      self.event_start_time = Time.now.strftime("%H:%M")
+    end
+  end
+  private :set_start_time
 
   ##
   # Returns the event_end_date if it exists and is a valid date
@@ -532,8 +540,8 @@ class Event < ActiveRecord::Base
       # NOOP - do not set unparsable date
     end
     Event.create(:participant => participant, :psu_code => participant.psu_code,
-                 :event_start_date => date, :event_start_time => Time.now.strftime("%H:%M"),
-                 :scheduled_study_segment_identifier => study_segment_identifier, :event_type_code => event_type_code)
+                 :event_start_date => date, :event_type_code => event_type_code,
+                 :scheduled_study_segment_identifier => study_segment_identifier)
   end
 
   ##
