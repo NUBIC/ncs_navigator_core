@@ -342,10 +342,6 @@ module NcsNavigator::Core::Mustache
 
     def child_primary_address
       "[CHILD'S PRIMARY ADDRESS]"
-      about_person.blank? ? "[CHILD'S PRIMARY ADDRESS]" : about_person.def primary_address
-        
-      end
-      
     end
 
     def child_secondary_address
@@ -384,32 +380,28 @@ module NcsNavigator::Core::Mustache
       "[DATE OF VISIT]"
     end
 
-    #Nataliya's comment, make sense to remove this method and call local_study_affiliate in mustache instead. Leaving it as is now
     def institution
-      local_study_affiliate
+      "[INSTITUTION]"
     end
 
     def practice_name
-      responses_for("PBS_ELIG_SCREENER.PRACTICE_NAME").last.try(:answer).to_s
+      "[PRACTICE_NAME]"
     end
 
     def county
-      NcsCode.for_list_name_and_local_code("PSU_CL1", NcsNavigatorCore.psu)
+      "[COUNTY]"
     end
 
     def birthing_place
-      responses_for("BIRTH_VISIT_3.BIRTH_DELIVER").last.try(:answer).to_s
+      "[Hospital/Birthing center/Other place]"
     end
 
     def birthing_place_upcase
-      birthing_place.upcase
+      "[HOSPITAL/BIRTHING CENTER/OTHER PLACE]"
     end
 
     # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
     # participant may have visited
-    
-    # Nataliya's comment - this should not be part of the context!
-    
     def his_her
       "[his_her]"
     end
@@ -418,44 +410,22 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "stomach, back and side" : "stomachs, backs and sides"
     end
 
-    def participant
-       @response_set.participant
-    end
-
     def date_of_preg_visit_1
-      participant.completed_events(13).map{|e| e.event_end_date}.sort.last
+      "[DATE OF PREGNANCY VISIT 1]"
     end
 
     def date_of_preg_visit_2
-      participant.completed_events(15).map{|e| e.event_end_date}.sort.last
-    end
-    
-    # For PART_TWO_BIRTH_3_0 Medical History handle:
-    # • IF PV2 VISIT FOR CURRENT PREGNANCY SET TO COMPLETE, PRELOAD DATE OF PV2 VISIT.
-    # • IF PV1 VISIT FOR CURRENT PREGNANCY SET TO COMPLETE, BUT PV2 VISIT NOT SET TO COMPLETE, PRELOAD DATE OF PV1 VISIT.
-    def date_of_last_pv_visit
-      result = "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
-      if not date_of_preg_visit_2.blank?
-        result = date_of_preg_visit_2
-        if not date_of_preg_visit_1.blank?
-          result = date_of_preg_visit_1
-        end
-      end
-      result
+      "[DATE OF PREGNANCY VISIT 2]"
     end
 
-    # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE
     def event_type
-       event_type = @response_set.instrument.event.to_s
-       event_type = "[EVENT_TYPE]" if event_type.blank?
-       event_type
+      "[EVENT_TYPE]"
     end
 
     def event_type_upcase
-      event_type.upcase
+      "[EVENT_TYPE]"
     end
 
-    #Nataliya's comment - not used anywhere
     def and_birth_date
       "and birth date"
     end
@@ -465,17 +435,14 @@ module NcsNavigator::Core::Mustache
       "[ARE_YOU_OR_IS_GUARDIAN_NAME]"
     end
 
-    #Nataliya's comment - not used anywhere
     def primary_address
       "[PRIMARY_ADDRESS]"
     end
 
-    #Nataliya's comment = what is this for? We have already is_are - is this upcase??? Only have lower case method in instruments.
-    def is_are_upcase
-      is_are.upcase
+    def is_are
+      "[IS_ARE]"
     end
 
-    #Nataliya's comment - not found anywhere
     def secondary_phone_number
       "[SECONDARY_PHONE_NUMBER]"
     end
@@ -483,16 +450,7 @@ module NcsNavigator::Core::Mustache
     # Used in Participant Verification 3.0, return correct either correct name
     # or correct name and birth date if birth date has not been previously collected
     def correct_name_and_birth_date
-      result = "[CORRECT_NAME_AND_BIRTH_DATE]"
-      if not about_person.blank? 
-        if not about_person.first_name.blank?
-          result = "correct name"
-        end
-        if not about_person.person_dob.blank?
-          result = result + " and birth date"
-        end
-      end
-      result
+        "[CORRECT_NAME_AND_BIRTH_DATE]"
     end
 
     def choose_date_range_for_birth_instrument
@@ -544,6 +502,13 @@ module NcsNavigator::Core::Mustache
     def schip_name
       "[STATE CHILD HEALTH INSURANCE PROGRAM NAME]"
     end
+
+    # TODO
+    def event_type
+      # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE
+      "[EVENT_TYPE]"
+    end
+
   end
 
 end
