@@ -7,5 +7,5 @@ require 'sidekiq/testing'
 
 # Isolates tests.
 Before do
-  NcsNavigator::Core::Fieldwork::MergeWorker.jobs.clear
+  NcsNavigator::Core::Field::MergeWorker.jobs.clear
 end

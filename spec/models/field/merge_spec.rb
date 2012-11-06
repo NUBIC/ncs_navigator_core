@@ -25,7 +25,7 @@ require 'json'
 
 require File.expand_path('../shared_merge_behaviors', __FILE__)
 
-SCHEMA = NcsNavigator::Core::Fieldwork::Validator.new.expanded_schema
+SCHEMA = NcsNavigator::Core::Field::Validator.new.expanded_schema
 
 module Field
   describe Merge do

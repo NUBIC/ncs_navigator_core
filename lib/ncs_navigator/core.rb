@@ -5,7 +5,7 @@ module NcsNavigator
     autoload :VERSION,                  'ncs_navigator/core/version'
 
     autoload :Configuration,            'ncs_navigator/core/configuration'
-    autoload :Fieldwork,                'ncs_navigator/core/fieldwork'
+    autoload :Field,                    'ncs_navigator/core/field'
     autoload :HasPublicId,              'ncs_navigator/core/has_public_id'
     autoload :Mdes,                     'ncs_navigator/core/mdes'
     autoload :MdesCodeListLoader,       'ncs_navigator/core/mdes_code_list_loader'

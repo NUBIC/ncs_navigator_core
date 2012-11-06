@@ -117,7 +117,7 @@ Given /^I complete the fieldwork set$/ do |table|
 end
 
 When /^the merge runs$/ do
-  ok = NcsNavigator::Core::Fieldwork::MergeWorker.jobs.all? do |job|
+  ok = NcsNavigator::Core::Field::MergeWorker.jobs.all? do |job|
     job['class'].constantize.new.perform(*job['args'])
   end
 

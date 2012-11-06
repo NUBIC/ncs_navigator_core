@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-module NcsNavigator::Core::Fieldwork
+module NcsNavigator::Core::Field
   describe MergeWorker do
     class Counter
       attr_accessor :invocations

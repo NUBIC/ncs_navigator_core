@@ -4,7 +4,7 @@
 require 'ncs_navigator/core'
 require 'sidekiq/worker'
 
-module NcsNavigator::Core::Fieldwork
+module NcsNavigator::Core::Field
   ##
   # Merges fieldwork sets.
   #

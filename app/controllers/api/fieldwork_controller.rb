@@ -32,7 +32,7 @@ class Api::FieldworkController < ApplicationController
       request.body.rewind
     end
 
-    NcsNavigator::Core::Fieldwork::MergeWorker.perform_async(m.id)
+    NcsNavigator::Core::Field::MergeWorker.perform_async(m.id)
     headers['Location'] = api_merge_path(m.id)
     render :json => { 'ok' => true }, :status => :accepted
   end

@@ -250,7 +250,7 @@ class Merge < ActiveRecord::Base
   # (At present, this will generate schema errors, but that's acceptable: the
   # lack of an object is arguably a violation.)
   def schema_violations
-    validator = NcsNavigator::Core::Fieldwork::Validator.new
+    validator = NcsNavigator::Core::Field::Validator.new
 
     {
       :original_data => validator.fully_validate(JSON.parse(original_data || '{}')),

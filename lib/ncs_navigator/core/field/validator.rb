@@ -5,7 +5,7 @@ require 'ncs_navigator/core'
 require 'thread'
 require 'uri'
 
-module NcsNavigator::Core::Fieldwork
+module NcsNavigator::Core::Field
   ##
   # A JSON::Validator facade for fieldwork JSON that sets up links to
   # referenced schemata.
