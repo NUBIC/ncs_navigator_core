@@ -151,8 +151,8 @@ class Merge < ActiveRecord::Base
       # We're done.
       update_attribute(:synced_at, Time.now)
     rescue => e
-      logger.fatal "#{e.class.name}: #{e.message}"
-      e.backtrace.each { |l| logger.fatal(l) }
+      logger.fatal { "#{e.class.name}: #{e.message}" }
+      logger.fatal { e.backtrace.join("\n") }
 
       update_attribute(:crashed_at, Time.now) rescue nil
 
