@@ -1,3 +1,35 @@
+# == Schema Information
+#
+# Table name: instruments
+#
+#  created_at               :datetime
+#  data_problem_code        :integer          not null
+#  event_id                 :integer
+#  id                       :integer          not null, primary key
+#  instrument_breakoff_code :integer          not null
+#  instrument_comment       :text
+#  instrument_end_date      :date
+#  instrument_end_time      :string(255)
+#  instrument_id            :string(36)       not null
+#  instrument_method_code   :integer          not null
+#  instrument_mode_code     :integer          not null
+#  instrument_mode_other    :string(255)
+#  instrument_repeat_key    :integer          default(0), not null
+#  instrument_start_date    :date
+#  instrument_start_time    :string(255)
+#  instrument_status_code   :integer          not null
+#  instrument_type_code     :integer          not null
+#  instrument_type_other    :string(255)
+#  instrument_version       :string(36)       not null
+#  lock_version             :integer          default(0)
+#  person_id                :integer
+#  psu_code                 :integer          not null
+#  supervisor_review_code   :integer          not null
+#  survey_id                :integer
+#  transaction_type         :string(255)
+#  updated_at               :datetime
+#
+
 require 'spec_helper'
 
 module Field::Adapters

@@ -1,4 +1,18 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+#
+# Table name: specimens
+#
+#  created_at             :datetime
+#  data_export_identifier :string(255)
+#  id                     :integer          not null, primary key
+#  instrument_id          :integer
+#  response_set_id        :integer
+#  specimen_id            :string(36)       not null
+#  specimen_pickup_id     :integer
+#  updated_at             :datetime
+#
+
 
 
 require 'spec_helper'

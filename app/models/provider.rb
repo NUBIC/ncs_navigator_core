@@ -66,6 +66,7 @@ class Provider < ActiveRecord::Base
 
   has_many :person_provider_links
   has_many :people, :through => :person_provider_links
+  has_many :sampled_persons_ineligibilities
 
   belongs_to :institution
 
