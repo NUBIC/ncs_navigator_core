@@ -10,12 +10,12 @@
 #  is_active_code               :integer          not null
 #  person_id                    :integer
 #  person_provider_id           :string(36)       not null
-#  pre_screening_status_code    :integer          not null
+#  pre_screening_status_code    :integer
 #  provider_id                  :integer
 #  provider_intro_outcome_code  :integer          not null
 #  provider_intro_outcome_other :string(255)
 #  psu_code                     :integer          not null
-#  sampled_person_code          :integer          not null
+#  sampled_person_code          :integer
 #  transaction_type             :string(36)
 #  updated_at                   :datetime
 #
