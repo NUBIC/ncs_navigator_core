@@ -84,6 +84,36 @@ describe Event do
     end
   end
 
+  describe ".event_start_time" do
+
+    it "is set on create if nil" do
+      e = Factory(:event, :event_start_time => nil, :event_start_date => Date.today)
+      e.event_start_time.should_not be_nil
+    end
+
+    it "is NOT set on create if start_date is nil" do
+      e = Factory(:event, :event_start_time => nil, :event_start_date => nil)
+      e.event_start_time.should be_nil
+    end
+
+
+    it "takes a string" do
+      e = Factory(:event)
+      e.event_start_time = '00:00'
+      e.save!
+      e.event_start_time.should == '00:00'
+    end
+
+    it "takes Time" do
+      now = Time.now
+      e = Factory(:event)
+      e.event_start_time = now
+      e.save!
+      e.event_start_time.should == now.strftime('%H:%M')
+    end
+
+  end
+
   describe ".import_sort_date" do
 
     it "returns the event start date if the event end date is null" do
