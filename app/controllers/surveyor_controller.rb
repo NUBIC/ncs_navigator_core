@@ -68,11 +68,17 @@ class SurveyorController < ApplicationController
 
   private
 
-    # TODO: ensure that the state transitions are based on the responses in the response set
-    #       and that the disposition of the instrument was completed
-    def update_participant_based_on_survey(response_set)
-      if participant = response_set.participant
-        participant.update_state_after_survey(response_set, psc)
-      end
+  # TODO: ensure that the state transitions are based on the responses in the response set
+  #       and that the disposition of the instrument was completed
+  def update_participant_based_on_survey(response_set)
+    participant = response_set.participant
+
+    if participant
+      participant.update_state_after_survey(response_set, psc)
     end
+
+    if participant && !participant.eligible? && response_set.survey.title =~ /PBSamplingScreen/
+      participant.create_sampled_person_ineligbility_record
+    end
+  end
 end
