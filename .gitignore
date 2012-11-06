@@ -35,3 +35,7 @@ surveys
 
 # Pow local configuration
 .powenv*
+
+# Redis dataset snapshots and transaction logs
+dump.rdb
+appendonly.aof
