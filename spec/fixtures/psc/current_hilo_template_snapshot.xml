@@ -179,8 +179,9 @@
           </planned-activity>
           <planned-activity id="8f7b2974-7cd6-4e14-887c-56d96f632608" day="1">
             <label id="e70557c8-be9d-410e-aa07-1e3e257a094b" name="event:pregnancy_visit_1"/>
-            <label id="22c03641-eb29-4ecd-a468-be278e28d512" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="81d26b6b-70f0-4bd3-b3f4-3d596e434a44" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="8c962df9-e1bc-4e7d-82d3-2283a0b48b1a" name="order:00_01"/>
+            <label id="7871e31a-f302-4a6b-87dd-bb68b0185eb3" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
         </period>
@@ -292,8 +293,9 @@
           </planned-activity>
           <planned-activity id="152543e8-313e-43bf-9125-432893b19e70" day="1">
             <label id="554dffd8-7b76-4c44-82a7-c3163912be22" name="event:pregnancy_visit_2"/>
-            <label id="f997f075-6c0f-4895-8a91-2dbccb75cd8e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="5399f09e-b8e3-475f-8dcd-2a4c9114b902" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="f7306409-9fed-4127-aed4-7429f457ae68" name="order:00_01"/>
+            <label id="5d8ef26a-a491-4d35-9c76-bab8793a70ee" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
         </period>
@@ -631,8 +633,9 @@
           </planned-activity>
           <planned-activity id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924" day="1">
             <label id="20e13856-81ae-410c-ac1d-41aedf2c4ad6" name="event:birth"/>
-            <label id="f2a885a7-a443-40ef-a8ab-d71f16a7934e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="c55daeec-8823-4af6-bc66-2280cbe5c239" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <label id="d42a7eaf-3137-4469-8bc6-7c5fd7193fd9" name="order:00_01"/>
+            <label id="5f3df1ab-390d-40eb-8cce-cf5b6fa13b3f" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
           <planned-activity id="cdff78b4-ff7b-401d-be81-b61c7bbbcbf4" day="1">
@@ -640,6 +643,14 @@
             <label id="8ff56b2d-7d14-43dd-9199-216d2e438ba0" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
             <label id="6bbd2c95-f3ad-4b8d-9197-08340976eb0a" name="order:90_01"/>
             <activity-reference code="TM" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="4da55c5e-e925-45c1-bf30-75e6a8139acf" details="Participant Verification for the Child" day="1">
+            <label id="bd3b14b2-8198-49ab-81bf-5e403182e19c" name="event:birth"/>
+            <label id="4fb12ae4-a5d7-4c68-854d-a8d03628b6d6" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="ce5adabf-c781-46f9-8c9b-cdb9bd9a3b50" name="order:00_02"/>
+            <label id="7997d28b-28b2-49a5-aa11-946616547d2c" name="participant_type:child"/>
+            <label id="97c24245-0d63-4d19-9906-b8c89e2e40ae" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <activity-reference code="PVI2" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
@@ -696,6 +707,7 @@
       <activity name="18-Month Mother Interview Part Two" code="18MMI2" description="18-Month Mother Interview Part Two" type="Instrument"/>
       <activity name="18-Month Mother Interview Part Three" code="18MMI3" description="18-Month Mother Interview Part Three" type="Instrument"/>
       <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Participant Verification Instrument Part Two" code="PVI2" description="Participant Verification Instrument Part Two" type="Instrument"/>
       <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
       <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
