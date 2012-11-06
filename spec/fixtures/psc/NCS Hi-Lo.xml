@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-10-16T14:05:35.24Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-11-05T14:31:27.270Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 24" date="2012-11-05" mandatory="true" released-date="2012-11-05T14:31:27.270Z" updated-date="2012-11-05T14:09:54.603Z" previous-amendment-key="2012-10-16~Rev 23">
+    <planned-activity-delta id="875d4b0d-5009-42ff-8e4c-7c25497d6415" node-id="8f7b2974-7cd6-4e14-887c-56d96f632608">
+      <property-change id="f5be5a7c-4062-45be-90f9-07f3a6943bc6" property-name="day" old-value="1" new-value="1"/>
+      <remove id="aabe7448-fa37-487f-99b8-9dab7ffdd676" child-id="22c03641-eb29-4ecd-a468-be278e28d512"/>
+      <add id="fa4b42d6-f54f-4b25-b2c6-b8a79cadd1a8">
+        <label id="81d26b6b-70f0-4bd3-b3f4-3d596e434a44" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+      </add>
+      <add id="d5656580-46e4-4824-b0b3-34a070079238">
+        <label id="7871e31a-f302-4a6b-87dd-bb68b0185eb3" name="participant_type:mother"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="653044ec-bd02-45b0-95b7-e5af9b663dae" node-id="152543e8-313e-43bf-9125-432893b19e70">
+      <property-change id="628a8140-128b-44db-9591-f770866f2e48" property-name="day" old-value="1" new-value="1"/>
+      <remove id="faa89c27-87a3-4c84-8b9b-de92e60a6f08" child-id="f997f075-6c0f-4895-8a91-2dbccb75cd8e"/>
+      <add id="f6b2e8c5-2196-45cd-92dc-d726d8d92b87">
+        <label id="5399f09e-b8e3-475f-8dcd-2a4c9114b902" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+      </add>
+      <add id="86fe1d18-9c48-4b30-a4a3-0a07fce94b5e">
+        <label id="5d8ef26a-a491-4d35-9c76-bab8793a70ee" name="participant_type:mother"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="30c14bdc-9dbc-4c41-afe6-55517ae303b1" node-id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924">
+      <property-change id="1bb625f0-9497-4972-8bf5-5ac013cca7d0" property-name="day" old-value="1" new-value="1"/>
+      <remove id="0f1e9b20-5266-4073-b652-ce2017d3e046" child-id="f2a885a7-a443-40ef-a8ab-d71f16a7934e"/>
+      <add id="f5c4b48e-c387-430c-879e-bd1c07405259">
+        <label id="c55daeec-8823-4af6-bc66-2280cbe5c239" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+      </add>
+      <add id="bc43b84d-d5d6-4925-b4de-f45ae6235a04">
+        <label id="5f3df1ab-390d-40eb-8cce-cf5b6fa13b3f" name="participant_type:mother"/>
+      </add>
+    </planned-activity-delta>
+    <period-delta id="92bd9765-f805-4272-985e-de2e7cb913ae" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
+      <add id="fcaf94ea-7fc8-4495-acc2-823ea942641e">
+        <planned-activity id="4da55c5e-e925-45c1-bf30-75e6a8139acf" details="Participant Verification for the Child" day="1">
+          <label id="bd3b14b2-8198-49ab-81bf-5e403182e19c" name="event:birth"/>
+          <label id="4fb12ae4-a5d7-4c68-854d-a8d03628b6d6" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="ce5adabf-c781-46f9-8c9b-cdb9bd9a3b50" name="order:00_02"/>
+          <label id="7997d28b-28b2-49a5-aa11-946616547d2c" name="participant_type:child"/>
+          <label id="97c24245-0d63-4d19-9906-b8c89e2e40ae" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+  </amendment>
   <amendment name="Rev 23" date="2012-10-16" mandatory="true" released-date="2012-10-16T14:05:35.24Z" updated-date="2012-10-16T14:03:46.912Z" previous-amendment-key="2012-10-16~Rev 22">
     <period-delta id="99aae6ba-1095-423e-82db-273ac33f9692" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
       <add id="dbcc4209-32c4-45df-be6b-d11dc63a786c">
@@ -2841,6 +2885,7 @@
       <activity name="18-Month Mother Interview Part Two" code="18MMI2" description="18-Month Mother Interview Part Two" type="Instrument"/>
       <activity name="18-Month Mother Interview Part Three" code="18MMI3" description="18-Month Mother Interview Part Three" type="Instrument"/>
       <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="Participant Verification Instrument Part Two" code="PVI2" description="Participant Verification Instrument Part Two" type="Instrument"/>
       <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
       <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>

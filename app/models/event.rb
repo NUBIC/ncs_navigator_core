@@ -180,12 +180,26 @@ class Event < ActiveRecord::Base
   end
   private :strip_time_whitespace
 
+  # Set event start time to now if blank and start date exists
   def set_start_time
-    if self.event_start_time.blank?
-      self.event_start_time = Time.now.strftime("%H:%M")
+    if self.event_start_time.blank? && !self.event_start_date.blank?
+      self.event_start_time = Time.now
     end
   end
   private :set_start_time
+
+  def event_start_time=(t)
+    self['event_start_time'] = format_event_time(t)
+  end
+
+  def event_end_time=(t)
+    self['event_end_time'] = format_event_time(t)
+  end
+
+  def format_event_time(t)
+    t.respond_to?(:strftime) ? t.strftime('%H:%M') : t
+  end
+  private :format_event_time
 
   ##
   # Returns the event_end_date if it exists and is a valid date
