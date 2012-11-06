@@ -315,6 +315,7 @@ class NcsCode < ActiveRecord::Base
     :pre_screening_status_code      => 'SCREENING_STATUS_CL1',
 
     ### sampled_person_ineligibility
+    :age_eligible_code              => 'CONFIRM_TYPE_CL3',
     :county_of_residence_code       => 'CONFIRM_TYPE_CL3',
     :pregnancy_eligible_code        => 'CONFIRM_TYPE_CL3',
     :first_prenatal_visit_code      => 'CONFIRM_TYPE_CL3',

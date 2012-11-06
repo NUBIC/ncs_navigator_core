@@ -136,16 +136,12 @@
         %br
         = f.text_field :last_name
 
-      = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" }  
-
+      = render "shared/ncs_code_select", { :f => f, :code => :sex_code, :label_text => "Sex" , :default_value => '2' }  
+      
       %p
       = f.label :person_dob_date, "Date Of Birth"
       %br
       = f.text_field :person_dob_date, :class => "datepicker"
-      = f.label :person_dob_modifier_refused, "Refused"
-      = f.radio_button :person_dob_modifier, :refused
-      = f.label :person_dob_modifier_unknown, "Unknown"
-      = f.radio_button :person_dob_modifier, :unknown
 
       %br
       .provider_association
@@ -165,7 +161,7 @@
             { :f => builder, :code => :pre_screening_status_code, :label_text => "Pre-Screening Status", :html_attrs => { :class => "required pre_screening_status_selector" } }
 
           = render "shared/ncs_code_select",
-            { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?", :html_attrs => { :class => "required sampled_person_code_selector" } }
+            { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?", :default_value => "Select Sampled Person", :html_attrs => { :class => "required sampled_person_code_selector" } }
 
           %p
             = builder.label :date_first_visit, "Date of First Visit"
@@ -184,9 +180,12 @@
           = f.fields_for :sampled_persons_ineligibilities do |builder|
             = builder.hidden_field :provider_id
             = builder.hidden_field :person_id
+
+            = render "shared/ncs_code_select",
+              { :f => builder, :code => :age_eligible_code, :label_text => "Is sampled woman age eligible?" } 
           
             = render "shared/ncs_code_select",
-              { :f => builder, :code => :county_of_residence_code, :label_text => "Does sample woman reside in sample PSU/county?" } 
+              { :f => builder, :code => :county_of_residence_code, :label_text => "Does sampled woman reside in sample PSU/county?" } 
 
             = render "shared/ncs_code_select",
               { :f => builder, :code => :pregnancy_eligible_code, :label_text => "Is sampled woman pregnant?" }  
