@@ -1452,65 +1452,70 @@ describe Participant do
         @part.eligible?.should be_true
       end
 
-      describe "#participant_age_eligible?" do
+      describe "#age_eligible?" do
         it "returns whether participant is age-eligible" do
-          @part.participant_age_eligible?(@pers).should be_true
+          @part.should be_age_eligible(@pers)
         end
 
         it "returns false if participant is not age eligible" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.AGE_ELIG", @not_age_eligible }
-          @part.participant_age_eligible?(@pers).should be_false
+          @part.should_not be_age_eligible(@pers)
         end
       end
 
-      describe "#participant_psu_county_eligible?" do
+      describe "#psu_county_eligible?" do
         it "returns whether participant lives in eligible PSU" do
-          @part.participant_psu_county_eligible?(@pers).should be_true
+          @part.should be_psu_county_eligible(@pers)
         end
 
         it "returns false if participant coes not live in an eligible PSU" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @does_not_live_in_county }
-          @part.participant_psu_county_eligible?(@pers).should be_false
+          @part.should_not be_psu_county_eligible(@pers)
         end
       end
 
-      describe "#participant_pregnant?" do
+      describe "#pbs_pregnant?" do
         it "returns whether participant is pregnant" do
-          @part.participant_pregnant?(@pers).should be_true
+          @part.should be_pbs_pregnant(@pers)
         end
 
         it "returns false if they are not pregnant" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", @not_pregnant }
-          @part.participant_pregnant?(@pers).should be_false
+          @part.should_not be_pbs_pregnant(@pers)
         end
       end
 
-      describe "#participant_first_visit?" do
+      describe "#first_visit?" do
         it "is this the participants first visit to this provider?" do
-          @part.participant_first_visit?(@pers).should be_true
+          @part.should be_first_visit(@pers)
         end
 
         it "returns false if its not the participant's first visit" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.FIRST_VISIT", @not_first_visit }
-          @part.participant_first_visit?(@pers).should be_false
+          @part.should_not be_first_visit(@pers)
         end
       end
 
-      describe "#participant_no_preceding_providers_in_frame?" do
+      describe "#no_preceding_providers_in_frame?" do
         it "have any of the providers been in-frame" do
-          @part.participant_no_preceding_providers_in_frame?(@pers).should be_true
+          @part.should be_no_preceding_providers_in_frame(@pers)
         end
 
         it "returns false if there was a former provider in frame" do
           take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PROVIDER_OFFICE_ON_FRAME", @provider_in_frame }
-          @part.participant_no_preceding_providers_in_frame?(@pers).should be_false
+          @part.should_not be_no_preceding_providers_in_frame(@pers)
+        end
+
+        it "defaults to true if there are no responses as to whether a former provider was in frame" do
+          Response.delete_all
+          @part.should be_no_preceding_providers_in_frame(@pers)
         end
       end
 
       it "returns false if ineligible" do
         take_survey(@survey, @response_set) { |a| a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PSU_ELIG_CONFIRM", @does_not_live_in_county }
-        @part.participant_psu_county_eligible?(@pers).should be_false
-        @part.eligible?.should be_false
+        @part.should_not be_psu_county_eligible(@pers)
+        @part.should_not be_eligible
       end
     end
   end
@@ -1523,16 +1528,21 @@ describe Participant do
     end
 
     describe "#has_eligible_ppg_status?" do
-      it "for Two-Tier recruitment strategy, returns true for PPG statuses 1-4" do
-        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 2)
-        Factory(:ppg_status_history, :participant => @part, :ppg_status => status)
-        @part.has_eligible_ppg_status?.should be_true
-      end
-
-      it "for Two-Tier recruitment strategy, returns false for PPG statuses 5-6" do
-        status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", 6)
-        Factory(:ppg_status_history, :participant => @part, :ppg_status => status)
-        @part.has_eligible_ppg_status?.should be_false
+      describe "for Two Tier" do
+        it "returns true for PPG statuses 1 through 4" do
+          (1..4).each do |ppg_status|
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", ppg_status)
+            Factory(:ppg_status_history, :participant => @part, :ppg_status => status)
+            @part.should have_eligible_ppg_status
+          end
+        end
+        it "returns false for PPG statuses 5 and 6" do
+          (5..6).each do |ppg_status|
+            status = NcsCode.for_list_name_and_local_code("PPG_STATUS_CL1", ppg_status)
+            Factory(:ppg_status_history, :participant => @part, :ppg_status => status)
+            @part.should_not have_eligible_ppg_status
+          end
+        end
       end
     end
   end
