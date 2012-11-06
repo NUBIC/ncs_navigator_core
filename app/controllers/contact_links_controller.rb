@@ -91,13 +91,14 @@ class ContactLinksController < ApplicationController
   end
 
   def decision_page
-    @contact_link = ContactLink.find(params[:id])
-    @person       = @contact_link.person
-    @instrument   = @contact_link.instrument
-    @event        = @contact_link.event
-    @participant  = @event.participant if @event
-    @response_set = @instrument.response_set if @instrument
-    @survey       = @response_set.survey if @response_set
+    @contact_link  = ContactLink.find(params[:id])
+    @person        = @contact_link.person
+    @instrument    = @contact_link.instrument
+    @event         = @contact_link.event
+    @participant   = @event.participant if @event
+    @response_set  = @instrument.response_set if @instrument
+    @survey        = @response_set.survey if @response_set
+    @contact_links = ContactLink.where(:contact_id => @contact_link.contact_id)
 
     @activity_plan        = psc.build_activity_plan(@participant)
     @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
@@ -142,7 +143,7 @@ class ContactLinksController < ApplicationController
     end
 
   end
-  
+
   private
 
     def set_time_and_dates(include_instrument = false)
