@@ -477,36 +477,102 @@ module NcsNavigator::Core::Mustache
           instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
         end
       end
-      
+
       describe ".lets_talk_about_baby" do
         it "return 'Let’s talk about your baby.' if single birth" do
           create_single_birth
           instrument_context.lets_talk_about_baby.should == "Let’s talk about your baby."
         end
-        
-        it "returns 'First let’s talk about your first twin birth.' if twins" do
-          pending
+
+        it "returns 'First, let’s talk about your first higher order birth.' if first loop and more than 3 children" do
           create_multiple_birth
-          create_multiple_num("2")
-          
+
           mom = @response_set.person
           child = @response_set.participant
-                    
+
           mom.participant.p_type_code = 1 # 1 age eligilble woman
           mom.participant.save!
-          
+
           person_child = child.person
           child.p_type_code = 6
           child.save!
-          
+
           Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
           Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
-
           mom.participant_person_links.reload
           child.participant_person_links.reload
-          
-          instrument_context.lets_talk_about_baby.should == "Let’s talk about your baby."
+
+          instrument_context.lets_talk_about_baby.should == "First, let’s talk about your first higher order birth."
         end
+
+        it "returns 'First let’s talk about your first twin birth.' if first loop and 2 children" do
+          create_multiple_birth
+          set_multiple_num("2")
+
+          mom = @response_set.person
+          child = @response_set.participant
+
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = child.person
+          child.p_type_code = 6
+          child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
+          mom.participant_person_links.reload
+          child.participant_person_links.reload
+
+          instrument_context.lets_talk_about_baby.should == "First let’s talk about your first twin birth."
+        end
+        it "returns 'First let’s talk about your first triplet birth.' if first loop and 2 children" do
+          create_multiple_birth
+          set_multiple_num("3")
+
+          mom = @response_set.person
+          child = @response_set.participant
+
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = child.person
+          child.p_type_code = 6
+          child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
+          mom.participant_person_links.reload
+          child.participant_person_links.reload
+
+          instrument_context.lets_talk_about_baby.should == "First let’s talk about your first triplet birth."
+        end
+
+        it "return 'Now let’s talk about your next baby.' if second loop" do
+          pending
+          create_multiple_birth
+          # need to set second loop
+
+          mom = @response_set.person
+          child1 = @response_set.participant
+          child2 = @response_set.participant
+
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child1 = child1.person
+          child1.p_type_code = 6
+          child1.save!
+
+          Factory(:participant_person_link, :person => person_child1, :participant => mom.participant, :relationship_code => 8) # 8 Child
+          Factory(:participant_person_link, :person => mom, :participant => child1, :relationship_code => 2)
+
+          mom.participant_person_links.reload
+          child1.participant_person_links.reload
+          instrument_context.lets_talk_about_baby.should == "Now let’s talk about your next baby."
+
+        end
+
       end
 
     end
@@ -685,7 +751,7 @@ module NcsNavigator::Core::Mustache
       end
 
       describe "overall sentance call for 'in the past', 'ever' and 'since'" do
-        # Have you {ever} been told by a doctor or other health care provider that you had asthma {since 
+        # Have you {ever} been told by a doctor or other health care provider that you had asthma {since
         #   {DATE OF FIRST PREGNANCY VISIT 1 INTERVIEW}}/{since {DATE OF MOST RECENT SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW}}
         it "returns ever and in the past for new pv1" do
           str = "Have you"
@@ -986,8 +1052,8 @@ module NcsNavigator::Core::Mustache
         a.choice(multiple_gestation, @twin)
       end
     end
-    
-    def create_multiple_num mult_num
+
+    def set_multiple_num mult_num
       take_survey(@survey, @response_set) do |a|
         a.str multiple_num, mult_num
       end
@@ -1019,7 +1085,7 @@ module NcsNavigator::Core::Mustache
         a.str baby_fname, first_name
       end
     end
-    
+
 
     def setup_survey_instrument(survey)
       @survey = survey

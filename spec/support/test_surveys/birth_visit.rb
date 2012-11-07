@@ -25,6 +25,10 @@ module BirthVisit
     a = Factory(:answer, :question_id => q.id, :text => "Yes", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "No", :response_class => "answer", :reference_identifier => "2")
 
+    # Multiple Num
+    q = Factory(:question, :reference_identifier => "MULTIPLE_NUM", :data_export_identifier => "BIRTH_VISIT_2.MULTIPLE_NUM", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Multiple Number", :response_class => "string")
+
     survey
   end
 

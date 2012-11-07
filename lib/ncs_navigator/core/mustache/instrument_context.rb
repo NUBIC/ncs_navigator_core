@@ -431,7 +431,7 @@ module NcsNavigator::Core::Mustache
       if single_birth?
         result = "Let’s talk about your baby."
       else
-        multiple_num = response_for("BIRTH_VISIT_3.MULTIPLE_NUM")
+        multiple_num = response_for("#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM")
         if about_person.first_child?
           if ((multiple_num.eql? ("2")) || (multiple_num.eql?("02")))
             result = "First let’s talk about your first twin birth."
@@ -444,6 +444,7 @@ module NcsNavigator::Core::Mustache
           result = "Now let’s talk about your next baby."
         end
       end
+      result
     end
 
     # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
