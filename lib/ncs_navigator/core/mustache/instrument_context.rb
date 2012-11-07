@@ -385,7 +385,7 @@ module NcsNavigator::Core::Mustache
 
     def work_address
       default = "[WORK ADDRESS]"
-      result = person.blank? ? default : person.work_address
+      result = about_person.blank? ? default : about_person.work_address
       result.blank? ? default : result
     end
 
@@ -421,7 +421,7 @@ module NcsNavigator::Core::Mustache
 
     # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
     # participant may have visited
-    
+
     # Nataliya's comment - this should not be part of the context
     def his_her
       "[his_her]"
@@ -442,7 +442,7 @@ module NcsNavigator::Core::Mustache
     def date_of_preg_visit_2
       participant.completed_events(15).map{|e| e.event_end_date}.sort.last
     end
-        
+
     # For PART_TWO_BIRTH_3_0 Medical History handle:
     # • IF PV2 VISIT FOR CURRENT PREGNANCY SET TO COMPLETE, PRELOAD DATE OF PV2 VISIT.
     # • IF PV1 VISIT FOR CURRENT PREGNANCY SET TO COMPLETE, BUT PV2 VISIT NOT SET TO COMPLETE, PRELOAD DATE OF PV1 VISIT.
@@ -505,7 +505,7 @@ module NcsNavigator::Core::Mustache
         end
       end
       result
-    end        
+    end
 
     def choose_date_range_for_birth_instrument
       if date_of_preg_visit_2
