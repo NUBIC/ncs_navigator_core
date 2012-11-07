@@ -27,6 +27,7 @@ class SampledPersonsIneligibility < ActiveRecord::Base
   ncs_coded_attribute :age_eligible,            'CONFIRM_TYPE_CL3'
   ncs_coded_attribute :county_of_residence,     'CONFIRM_TYPE_CL3'
   ncs_coded_attribute :first_prenatal_visit,    'CONFIRM_TYPE_CL3'
+  ncs_coded_attribute :pregnancy_eligible,      'CONFIRM_TYPE_CL3'
   ncs_coded_attribute :ineligible_by,           'INELIG_SOURCE_CL1'
 
   belongs_to :provider
@@ -38,6 +39,7 @@ class SampledPersonsIneligibility < ActiveRecord::Base
     spi.age_eligible_code = participant.age_eligible?(person) ? 1 : 2
     spi.county_of_residence_code = participant.psu_county_eligible?(person) ? 1 : 2
     spi.first_prenatal_visit_code = participant.first_visit?(person) ? 1 : 2
+    spi.pregnancy_eligible_code = participant.pbs_pregnant?(person) ? 1 : 2
     spi.save!
   end
 
