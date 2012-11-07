@@ -447,6 +447,35 @@ module NcsNavigator::Core::Mustache
       result
     end
 
+    # For Birth_INT_3.0
+    # • IF MULTIPLE = 2 AND VALID RESPONSE PROVIDED FOR C_FNAME AND EITHER RELEASE=1 OR BIRTH_DELIVER = 3, DISPLAY “Does C_FNAME”.
+    # • IF MULTIPLE = 2 AND VALID RESPONSE NOT PROVIDED FOR C_FNAME = AND EITHER RELEASE=1 OR BIRTH_DELIVER = 3, DISPLAY “Does your baby”.
+    # • IF MULTIPLE = 1 AND EITHER RELEASE=1 OR BIRTH_DELIVER = 3, DISPLAY “Do your babies”.
+    # • IF MULTIPLE = 2 AND RELEASE = 2 AND VALID RESPONSE PROVIDED FOR C_FNAME, DISPLAY “When C_FNAME leaves the” .
+    # • IF MULTIPLE = 2 AND RELEASE = 2 AND VALID RESPONSE NOT PROVIDED FOR C_FNAME, DISPLAY “When your baby leaves the”.
+    # • IF MULTIPLE = 1 AND RELEASE = 2, DISPLAY “your babies leave”.
+    # • IF MULTIPLE = 1, DISPLAY “they”.
+    def do_when_will_live_with_you
+      result = "When [BABY NAME/your baby] leaves/your babies leave the hospital, will [he/she/they] live with you?"
+      released = response_for("BIRTH_VISIT_3.RELEASE") #a_1 "YES" a_2 "NO"
+      birth_deliver = response_for("BIRTH_VISIT_3.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
+      if single_birth? #MULTIPLE = 2
+        if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
+          result = "Does " + child_first_name_your_baby
+        end
+        if released.upcase.eql? "NO"
+          result = "When " + child_first_name_your_baby + " leavel the"
+        end
+      else
+        if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
+          result = "Do your babies"
+        end
+        if released.upcase.eql? "NO"
+          result = "When your babies leave the"
+        end
+      end
+      result
+    end
     # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
     # participant may have visited
 

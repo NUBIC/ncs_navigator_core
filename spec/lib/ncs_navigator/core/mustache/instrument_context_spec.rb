@@ -478,8 +478,27 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".do_when_will_live_with_you" do
+        it "returns generic sentence when no conditions met" do
+          instrument_context.do_when_will_live_with_you == "When [BABY NAME/your baby] leaves/your babies leave the hospital, will [he/she/they] live with you?"
+        end
+        it "returns 'Does' and name or baby if sinle birth, released is 'yes' and delivered 'at home'"  do
+          pending
+        end
+        it "returns 'When' and 'name or baby' if sinle birth, released is 'no'"  do
+          pending
+        end
+        it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
+          pending
+        end
+        it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
+          pending
+        end
+
+      end
+
       describe ".lets_talk_about_baby" do
-        it "return 'Let’s talk about your baby.' if single birth" do
+        it "returns 'Let’s talk about your baby.' if single birth" do
           create_single_birth
           instrument_context.lets_talk_about_baby.should == "Let’s talk about your baby."
         end
