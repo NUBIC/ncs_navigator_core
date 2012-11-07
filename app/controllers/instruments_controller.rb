@@ -11,15 +11,7 @@ class InstrumentsController < ApplicationController
     @person       = @instrument.person
     @participant  = @person.participant
     @response_set = @instrument.response_set
-    @survey       = @response_set.survey 
-    #if @response_set
-    #set_instrument_time_and_date(@contact_link.contact)
-
-    #@instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
-    #@instrument.set_instrument_breakoff(@response_set)
-    #if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
-    #  @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
-    #end
+    @survey       = @response_set.survey
   end
 
   ##
@@ -43,6 +35,5 @@ class InstrumentsController < ApplicationController
   end
 
 end
-   
 
-  
+
