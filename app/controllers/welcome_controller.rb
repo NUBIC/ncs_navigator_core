@@ -66,16 +66,20 @@ class WelcomeController < ApplicationController
 
   def start_pbs_eligibility_screener_instrument
     person = Person.find(params[:person_id])
-    participant = Participant.create(:psu_code => @psu_code)
-    participant.person = person
-    participant.save!
-    resp = psc.assign_subject(participant)
-    if resp && resp.status.to_i < 299
-
-      create_pbs_eligibility_screener_event_record(participant)
-      redirect_to new_person_contact_path(person)
+    if person.sampled_ineligible?
+      flash[:warning] = "Person is ineligible - cannot start eligibility screener"
+      redirect_to request.referer
     else
-      destroy_participant_and_redirect(participant, resp, false)
+      participant = Participant.create(:psu_code => @psu_code)
+      participant.person = person
+      participant.save!
+      resp = psc.assign_subject(participant)
+      if resp && resp.status.to_i < 299
+        create_pbs_eligibility_screener_event_record(participant)
+        redirect_to new_person_contact_path(person)
+      else
+        destroy_participant_and_redirect(participant, resp, false)
+      end
     end
   end
 
