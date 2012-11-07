@@ -1100,7 +1100,14 @@ class Participant < ActiveRecord::Base
   end
 
   def create_sampled_person_ineligbility_record
-    SampledPersonsIneligibility.create!(:person_id => self.person.id)
+    age_elig_code = self.age_eligible?(:person) ? 1 : 2
+    county_of_residence_code = self.psu_county_eligible?(:person) ? 1 : 2
+    first_prenatal_visit_code = self.first_visit?(:person) ? 1 : 2
+    SampledPersonsIneligibility.create!(:person_id => self.person.id,
+                                        :provider_id => self.person.provider,
+                                        :age_elig_code => self.age_elig_code,
+                                        :county_of_residence_code => self.county_of_residence_code,
+                                        :first_prenatal_visit_code => self.first_prenatal_visit_code)
   end
 
   private
