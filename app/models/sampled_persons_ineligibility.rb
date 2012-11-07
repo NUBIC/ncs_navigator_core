@@ -40,4 +40,5 @@ class SampledPersonsIneligibility < ActiveRecord::Base
     spi.first_prenatal_visit_code = participant.first_visit?(person) ? 1 : 2
     spi.save!
   end
+
 end

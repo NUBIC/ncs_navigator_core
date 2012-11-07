@@ -25,6 +25,8 @@ module PbsListsHelper
         link_to "View Participant Record", participant_path(person.participant),
           :class => "show_link icon_link"
       end
+    elsif person.sampled_ineligible?
+      "Sampled Person is ineligible"
     else
       link_to "Administer Eligibility Screener",
         start_pbs_eligibility_screener_instrument_path(:person_id => person.id),

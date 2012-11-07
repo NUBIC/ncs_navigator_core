@@ -450,6 +450,13 @@ class Person < ActiveRecord::Base
   end
 
   ##
+  # Returns true if sampled_persons_ineligibilities
+  # exist for this person
+  def sampled_ineligible?
+    sampled_persons_ineligibilities.count > 0
+  end
+
+  ##
   # Returns all DwellingUnits associated with the person's household units
   # @return[Array<DwellingUnit]
   def dwelling_units

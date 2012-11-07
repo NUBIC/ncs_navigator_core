@@ -53,8 +53,8 @@ class PeopleController < ApplicationController
       @person.person_provider_links.build(:psu_code => @psu_code,
                                           :provider => @provider,
                                           :person   => @person,
-                                          :sampled_person_code => 1)
-      @person.sampled_persons_ineligibilities.build(:psu_code => @psu_code, 
+                                          :is_active_code => 1)
+      @person.sampled_persons_ineligibilities.build(:psu_code => @psu_code,
                                                     :person => @person,
                                                     :provider => @provider)
     end
@@ -68,6 +68,8 @@ class PeopleController < ApplicationController
   # POST /people
   # POST /people.json
   def create
+    filter_sampled_persons_ineligibilties
+
     @person = Person.new(params[:person])
     @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
 
@@ -94,6 +96,20 @@ class PeopleController < ApplicationController
         format.json { render :json => @person.errors }
       end
     end
+  end
+
+  def filter_sampled_persons_ineligibilties
+    if spi_attrs = params[:person]["sampled_persons_ineligibilities_attributes"]
+      if first_spi_attr = spi_attrs["0"]
+        if first_spi_attr["age_eligible_code"].blank? &&
+           first_spi_attr["county_of_residence_code"].blank? &&
+           first_spi_attr["first_prenatal_visit_code"].blank? &&
+           first_spi_attr["pregnancy_eligible_code"].blank?
+          params[:person].delete("sampled_persons_ineligibilities_attributes")
+        end
+      end
+    end
+
   end
 
   # GET /people/1/edit
