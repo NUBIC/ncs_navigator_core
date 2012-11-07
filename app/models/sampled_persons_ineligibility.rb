@@ -32,4 +32,12 @@ class SampledPersonsIneligibility < ActiveRecord::Base
   belongs_to :provider
   belongs_to :person
 
+  def self.create_from_participant!(participant)
+    person = participant.person
+    spi = new(:person => person, :provider => person.provider)
+    spi.age_eligible_code = participant.age_eligible?(person) ? 1 : 2
+    spi.county_of_residence_code = participant.psu_county_eligible?(person) ? 1 : 2
+    spi.first_prenatal_visit_code = participant.first_visit?(person) ? 1 : 2
+    spi.save!
+  end
 end

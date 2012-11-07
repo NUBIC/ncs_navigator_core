@@ -179,9 +179,8 @@ Factory.define :sampled_persons_ineligibility do |spi|
   spi.association :person, :factory => :person
   spi.association :provider, :factory => :provider
   spi.psu_code                   2000030
-  spi.age_eligible_code          1 
+  spi.age_eligible_code          1
   spi.county_of_residence_code   1
   spi.first_prenatal_visit_code  1
   spi.ineligible_by_code          1
-
 end

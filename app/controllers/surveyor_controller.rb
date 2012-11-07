@@ -78,7 +78,7 @@ class SurveyorController < ApplicationController
     end
 
     if participant && !participant.eligible? && response_set.survey.title =~ /PBSamplingScreen/
-      participant.create_sampled_person_ineligbility_record
+      SampledPersonsIneligbility.create_from_participant!(participant)
     end
   end
 end

@@ -88,7 +88,7 @@ describe SampledPersonsIneligibility do
 
     it "should create a record" do
       SampledPersonsIneligibility.count.should == 0
-      @part.create_sampled_person_ineligbility_record
+      SampledPersonsIneligibility.create_from_participant!(@part)
       SampledPersonsIneligibility.count.should == 1
     end
   end
