@@ -83,7 +83,7 @@
                 = link_to "Contacts", contact_links_path, :class => "search_link icon_link"
               %li
                 = link_to "Events", events_path, :class => "search_link icon_link"
-              - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
+              - if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR) && !recruitment_strategy.pbs?
                 %li
                   = link_to "Dwelling Units", dwelling_units_path, :class => "list_link icon_link"
                 %li
