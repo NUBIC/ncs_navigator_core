@@ -104,6 +104,24 @@ $(document).ready(function() {
   $("input[type='text'].timepicker").live('focus',
     function() { $(this).timepicker({}) });
 
+  // phone format
+  jQuery("input[type='text'].phone").mask("(999) 999-9999");
+
+  // two-digit limiter with '_' as the placeholder
+  jQuery("input[type='text'].two_digit_underscore").mask("99", { placeholder: "_" });
+
+  // four-digit limiter with '_' as the placeholder
+  jQuery("input[type='text'].four_digit_underscore").mask("9999", { placeholder: "_" });
+
+  // five-digit limiter with '_' as the placeholder
+  jQuery("input[type='text'].five_digit_underscore").mask("99999", { placeholder: "_" });
+
+  // two-digit limiter with 'D' as the placeholder
+  jQuery("input[type='text'].two_digit_day").mask("99", { placeholder: "D" });
+
+  // four-digit limiter with 'Y' as the placeholder
+  jQuery("input[type='text'].four_digit_year").mask("9999", { placeholder: "Y" });
+
   $('.mdes_documentation_link').click(function(event) {
     var definition = $(this).next('.mdes_definition').val();
     var title = $(this).next('.mdes_definition').attr('title');
