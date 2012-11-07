@@ -37,3 +37,4 @@ Feature: NCS code retrieval
     And the response body contains the MDES version
     And the response body contains the MDES specification version
     And the response body contains NCS codes
+    And the response body satisfies the NCS codes schema
