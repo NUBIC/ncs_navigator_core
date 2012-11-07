@@ -1099,10 +1099,6 @@ class Participant < ActiveRecord::Base
     ppg_status(date).try(:local_code).to_i < 5
   end
 
-  def create_sampled_person_ineligbility_record
-    SampledPersonsIneligibility.create!(:person_id => self.person.id)
-  end
-
   private
 
     def relationships(code)
