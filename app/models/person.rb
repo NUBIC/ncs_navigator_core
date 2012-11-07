@@ -110,6 +110,7 @@ class Person < ActiveRecord::Base
   accepts_nested_attributes_for :emails, :allow_destroy => true
 
   accepts_nested_attributes_for :person_provider_links, :allow_destroy => true
+  accepts_nested_attributes_for :sampled_persons_ineligibilities, :allow_destroy => true
 
   delegate :mother, :children, :to => :participant
 
@@ -497,10 +498,36 @@ class Person < ActiveRecord::Base
   end
 
   ##
+  # Returns the secondary phone for this person, or nil if no such phone
+  # record exists.
+  def secondary_phone
+    telephones.select{ |t| t.phone_rank_code == 2 }.first
+  end
+
+  ##
+  # Returns the primary work address for this person, or nil if no such
+  # phone record exists.
+  def primary_work_address
+    work_address_type = Address.work_address_type.to_i
+
+    primary_contacts(addresses, :address_type) do |ts|
+      ts.detect { |t| t.address_type == work_address_type }
+    end
+  end
+
+
+  ##
   # Returns the primary address for this person, or nil if no such address
   # record exists.
   def primary_address
     primary_contacts(addresses, :address_rank_code, &:first)
+  end
+
+  ##
+  # Returns the secondary address for this person, or nil if no such address
+  # record exists.
+  def secondary_address
+    addresses.select{ |a| a.address_rank_code == 2 }.first
   end
 
   ##

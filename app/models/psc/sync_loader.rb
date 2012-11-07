@@ -1,24 +1,42 @@
 module Psc
   class SyncLoader
     ##
-    # A procedure to wrap a Redis key with job-specific information.
-    #
-    # This is used to isolate one sync job from other jobs and identify
-    # all keys associated with a job.
-    attr_accessor :sync_key
-
-    ##
     # Redis connection.
     #
     # Defaults to Rails.application.redis.
     attr_accessor :redis
 
-    def initialize
+    ##
+    # A procedure to wrap a Redis key with job-specific information.
+    #
+    # This is used to isolate one sync job from other jobs and identify
+    # all keys associated with a job.
+    attr_reader :sync_key
+
+    def initialize(sync_key)
+      @sync_key = sync_key
+
       self.redis = Rails.application.redis
     end
 
     def cache_participant(participant)
       redis.sadd(sync_key['participants'], participant.public_id)
+    end
+
+    def cached_participant_ids
+      redis.smembers(sync_key['participants'])
+    end
+
+    def cached_event_ids
+      prefix = sync_key['event', '']
+
+      redis.keys(sync_key['event', '*']).map { |k| k.sub(prefix, '') }
+    end
+
+    def cached_contact_link_ids
+      prefix = sync_key['link_contact', '']
+
+      redis.keys(sync_key['link_contact', '*']).map { |k| k.sub(prefix, '') }
     end
 
     def cache_event(event, participant)

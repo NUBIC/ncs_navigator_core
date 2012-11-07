@@ -1,0 +1,217 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://cas.example.edu:443/cas/login?service=https://cas-cli.example.edu
+    body: 
+    headers:
+      user-agent:
+      - Mechanize/2.1.1 Ruby/1.9.3p286 (http://github.com/tenderlove/mechanize/)
+      accept-encoding:
+      - gzip,deflate,identity
+      accept-charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      accept-language:
+      - en-us,en;q=0.5
+      host:
+      - cas.example.edu
+      connection:
+      - keep-alive
+      keep-alive:
+      - 300
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Mon, 05 Nov 2012 18:51:04 GMT
+      pragma:
+      - no-cache
+      expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      cache-control:
+      - no-cache
+      - no-store
+      set-cookie:
+      - JSESSIONID=6FD9F743AD984999EAEFC32F1E1E38E3; Path=/cas; Secure
+      content-type:
+      - text/html;charset=UTF-8
+      content-length:
+      - '4815'
+      keep-alive:
+      - timeout=5, max=100
+    body: ! "\n\n\n\n\n\n\n\n\n\n\n\n\n\n<!DOCTYPE html>\n<html xmlns=\"http://www.w3.org/1999/xhtml\"
+      lang=\"en\">\n<head>\n    <title>NUBIC Central Authentication Service</title>\n\n
+      \   <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:light,regular'
+      rel='stylesheet' type='text/css'>\n\n    <link href=\"css/nubic-cas.css;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3\"
+      media=\"screen, projection\" rel=\"stylesheet\" type=\"text/css\" />\n    <!--[if
+      IE]>\n        <link href=\"css/nubic-cas-ie.css;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3\"
+      media=\"screen, projection\" rel=\"stylesheet\" type=\"text/css\" />\n    <![endif]-->\n\n
+      \   <script type=\"text/javascript\" src='https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>\n
+      \   <script type=\"text/javascript\" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>\n
+      \   <script type=\"text/javascript\" src=\"/cas/js/cas.js;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3\"></script>\n
+      \   <link rel=\"icon\" href=\"/cas/favicon.ico;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3\"
+      type=\"image/x-icon\" />\n</head>\n<body id=\"cas\" class=\"bp \">\n<div id=\"everything-but-the-footer\">\n
+      \   <div id=\"header-swath\" class=\"swath\">\n        <div id=\"header\">\n
+      \           <h1 id=\"app-name\"><strong>NUBIC</strong> Central Login</h1>\n
+      \       </div>\n    </div>\n    <div id=\"main-content\">\n<div id=\"login-fields\">\n
+      \   <form id=\"credentials\" class=\"bp\" action=\"/cas/login;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3?service=https%3A%2F%2Fcas-cli.example.edu\"
+      method=\"post\">\n        \n        <h2>Log in for access to <strong>NUBIC</strong>
+      applications</h2>\n        <label for=\"username\">NU <span class=\"accesskey\">N</span>etID</label>\n
+      \       <input id=\"username\" name=\"username\" class=\"required\" tabindex=\"1\"
+      accesskey=\"n\" type=\"text\" value=\"\" autocomplete=\"off\"/>\n        <p
+      class=\"info\">\n            If you don't have an NU NetID, please use your
+      NUBIC username\n            (usually an e-mail address).\n        </p>\n        <label
+      for=\"password\"><span class=\"accesskey\">P</span>assword</label>\n        <input
+      id=\"password\" name=\"password\" class=\"required\" tabindex=\"2\" accesskey=\"p\"
+      type=\"password\" value=\"\" autocomplete=\"off\"/>\n        <input id=\"warn\"
+      name=\"warn\" value=\"true\" tabindex=\"3\" accesskey=\"w\" type=\"checkbox\"
+      />\n        <label id=\"warn-label\" for=\"warn\"><span class=\"accesskey\">W</span>arn
+      me before logging me into other sites.</label>\n        <div id=\"login-buttons\">\n
+      \           <input type=\"hidden\" name=\"lt\" value=\"e1s1\" />\n\n            <input
+      name=\"submit\" accesskey=\"l\" value=\"Log in\" tabindex=\"4\" type=\"submit\"
+      />\n            <input name=\"reset\" accesskey=\"c\" value=\"Clear\" tabindex=\"5\"
+      type=\"reset\" />\n        </div>\n    </form>\n</div>\n\n<div id=\"sidebar\">\n
+      \   <p>\n        Welcome to the common login page for many of\n        the applications
+      provided by the\n        <strong>Northwestern University Biomedical Informatics
+      Center</strong>.\n    <p>\n        If you try to access the secured portions
+      of NOTIS,\n        eNOTIS, or many other NUBIC applications, you'll wind\n        up
+      here first. Log in and you'll be sent back to the\n        application you came
+      from with your credentials safely\n        verified.\n    <p>\n        When
+      you move between applications which use\n        this common login page, you
+      won't have to log in to\n        each one separately (unless you check the \"warn
+      me\"\n        box below the password field).\n    <p>\n        For security
+      reasons, please log out and exit your web browser when\n        you are done
+      accessing services that require authentication.\n</div>\n\n            </div>
+      \ <!-- #main-content -->\n            <div id=\"everything-but-the-footer-end\"></div>\n
+      \       </div> <!-- #everything-but-the-footer -->\n        <div id=\"footer-swath\"
+      class=\"swath\">\n            <div id=\"footer\">\n                <div id=\"nu-logo\">\n
+      \                   <img src=\"/cas/images/nu-logo.png;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3\"
+      alt=\"Northwestern University\">\n                </div>\n                <div
+      class=\"content\">\n                    <p>\n                        A service
+      of the <a href=\"http://www.nucats.northwestern.edu/clinical-research-resources/data-collection-biomedical-informatics-and-nubic/bioinformatics-overview.html\">Northwestern
+      University Biomedical Informatics Center</a>.\n                    </p>\n                    <!--\n
+      \                   <p>\n                        Powered by the <a href=\"http://www.jasig.org/cas\">Jasig
+      Central Authentication Service</a>.\n                    </p>\n                    -->\n
+      \               </div>\n                <div id=\"nubic-logo\">\n                    <img
+      src=\"images/nubic-logo.png;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3\" alt=\"Northwestern
+      University Biomedical Informatics Center\">\n                </div>\n            </div>\n
+      \       </div>\n    </body>\n</html>\n\n"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://cas.example.edu:443/cas/login;jsessionid=6FD9F743AD984999EAEFC32F1E1E38E3?service=https://cas-cli.example.edu
+    body: username=ncs_navigator_cases&password=wrong&lt=e1s1
+    headers:
+      user-agent:
+      - Mechanize/2.1.1 Ruby/1.9.3p286 (http://github.com/tenderlove/mechanize/)
+      accept-encoding:
+      - gzip,deflate,identity
+      accept-charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      accept-language:
+      - en-us,en;q=0.5
+      cookie:
+      - JSESSIONID=6FD9F743AD984999EAEFC32F1E1E38E3
+      host:
+      - cas.example.edu
+      referer:
+      - !ruby/object:URI::HTTPS
+        scheme: https
+        user: 
+        password: 
+        host: cas.example.edu
+        port: 443
+        path: /cas/login
+        query: service=https%3A%2F%2Fcas-cli.example.edu
+        opaque: 
+        registry: 
+        fragment: 
+        parser: 
+      content-type:
+      - application/x-www-form-urlencoded
+      content-length:
+      - '51'
+      connection:
+      - keep-alive
+      keep-alive:
+      - 300
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Mon, 05 Nov 2012 18:51:04 GMT
+      pragma:
+      - no-cache
+      expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      cache-control:
+      - no-cache
+      - no-store
+      content-type:
+      - text/html;charset=UTF-8
+      content-length:
+      - '4597'
+      keep-alive:
+      - timeout=5, max=100
+    body: ! "\n\n\n\n\n\n\n\n\n\n\n\n\n\n<!DOCTYPE html>\n<html xmlns=\"http://www.w3.org/1999/xhtml\"
+      lang=\"en\">\n<head>\n    <title>NUBIC Central Authentication Service</title>\n\n
+      \   <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:light,regular'
+      rel='stylesheet' type='text/css'>\n\n    <link href=\"css/nubic-cas.css\" media=\"screen,
+      projection\" rel=\"stylesheet\" type=\"text/css\" />\n    <!--[if IE]>\n        <link
+      href=\"css/nubic-cas-ie.css\" media=\"screen, projection\" rel=\"stylesheet\"
+      type=\"text/css\" />\n    <![endif]-->\n\n    <script type=\"text/javascript\"
+      src='https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>\n
+      \   <script type=\"text/javascript\" src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>\n
+      \   <script type=\"text/javascript\" src=\"/cas/js/cas.js\"></script>\n    <link
+      rel=\"icon\" href=\"/cas/favicon.ico\" type=\"image/x-icon\" />\n</head>\n<body
+      id=\"cas\" class=\"bp \">\n<div id=\"everything-but-the-footer\">\n    <div
+      id=\"header-swath\" class=\"swath\">\n        <div id=\"header\">\n            <h1
+      id=\"app-name\"><strong>NUBIC</strong> Central Login</h1>\n        </div>\n
+      \   </div>\n    <div id=\"main-content\">\n<div id=\"login-fields\">\n    <form
+      id=\"credentials\" class=\"bp\" action=\"/cas/login?service=https%3A%2F%2Fcas-cli.example.edu\"
+      method=\"post\">\n        <div id=\"status\" class=\"errors\">The username and
+      password you provided do not match.</div>\n        <h2>Log in for access to
+      <strong>NUBIC</strong> applications</h2>\n        <label for=\"username\">NU
+      <span class=\"accesskey\">N</span>etID</label>\n        <input id=\"username\"
+      name=\"username\" class=\"required\" tabindex=\"1\" accesskey=\"n\" type=\"text\"
+      value=\"\" autocomplete=\"off\"/>\n        <p class=\"info\">\n            If
+      you don't have an NU NetID, please use your NUBIC username\n            (usually
+      an e-mail address).\n        </p>\n        <label for=\"password\"><span class=\"accesskey\">P</span>assword</label>\n
+      \       <input id=\"password\" name=\"password\" class=\"required\" tabindex=\"2\"
+      accesskey=\"p\" type=\"password\" value=\"\" autocomplete=\"off\"/>\n        <input
+      id=\"warn\" name=\"warn\" value=\"true\" tabindex=\"3\" accesskey=\"w\" type=\"checkbox\"
+      />\n        <label id=\"warn-label\" for=\"warn\"><span class=\"accesskey\">W</span>arn
+      me before logging me into other sites.</label>\n        <div id=\"login-buttons\">\n
+      \           <input type=\"hidden\" name=\"lt\" value=\"e1s2\" />\n\n            <input
+      name=\"submit\" accesskey=\"l\" value=\"Log in\" tabindex=\"4\" type=\"submit\"
+      />\n            <input name=\"reset\" accesskey=\"c\" value=\"Clear\" tabindex=\"5\"
+      type=\"reset\" />\n        </div>\n    </form>\n</div>\n\n<div id=\"sidebar\">\n
+      \   <p>\n        Welcome to the common login page for many of\n        the applications
+      provided by the\n        <strong>Northwestern University Biomedical Informatics
+      Center</strong>.\n    <p>\n        If you try to access the secured portions
+      of NOTIS,\n        eNOTIS, or many other NUBIC applications, you'll wind\n        up
+      here first. Log in and you'll be sent back to the\n        application you came
+      from with your credentials safely\n        verified.\n    <p>\n        When
+      you move between applications which use\n        this common login page, you
+      won't have to log in to\n        each one separately (unless you check the \"warn
+      me\"\n        box below the password field).\n    <p>\n        For security
+      reasons, please log out and exit your web browser when\n        you are done
+      accessing services that require authentication.\n</div>\n\n            </div>
+      \ <!-- #main-content -->\n            <div id=\"everything-but-the-footer-end\"></div>\n
+      \       </div> <!-- #everything-but-the-footer -->\n        <div id=\"footer-swath\"
+      class=\"swath\">\n            <div id=\"footer\">\n                <div id=\"nu-logo\">\n
+      \                   <img src=\"/cas/images/nu-logo.png\" alt=\"Northwestern
+      University\">\n                </div>\n                <div class=\"content\">\n
+      \                   <p>\n                        A service of the <a href=\"http://www.nucats.northwestern.edu/clinical-research-resources/data-collection-biomedical-informatics-and-nubic/bioinformatics-overview.html\">Northwestern
+      University Biomedical Informatics Center</a>.\n                    </p>\n                    <!--\n
+      \                   <p>\n                        Powered by the <a href=\"http://www.jasig.org/cas\">Jasig
+      Central Authentication Service</a>.\n                    </p>\n                    -->\n
+      \               </div>\n                <div id=\"nubic-logo\">\n                    <img
+      src=\"images/nubic-logo.png\" alt=\"Northwestern University Biomedical Informatics
+      Center\">\n                </div>\n            </div>\n        </div>\n    </body>\n</html>\n\n"
+    http_version: '1.1'

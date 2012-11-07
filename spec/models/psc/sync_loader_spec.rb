@@ -2,47 +2,58 @@ require 'spec_helper'
 
 module Psc
   describe SyncLoader do
-    let(:loader) { SyncLoader.new }
+    let(:sync_key) do
+      lambda { |*c| "test:#{c.join(':')}" }
+    end
+
+    let(:loader) { SyncLoader.new(sync_key) }
     let(:redis) { Rails.application.redis }
 
     before do
       redis.flushdb
 
-      loader.sync_key = lambda { |*c| "test:#{c.join(':')}" }
       loader.redis = redis
     end
 
-    describe '#cache_participant' do
-      let(:p) { Participant.new(:p_id => 'foo') }
+    let(:p) { Participant.new(:p_id => 'p') }
+    let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => 1) }
+    let(:e) do
+      Event.new(:event_id => 'e',
+                :event_start_date => '2000-01-01',
+                :event_end_date => '2000-02-01',
+                :event_type => et)
+    end
 
+    let(:is) { NcsCode.new(:display_text => 'Foobar') }
+
+    let(:i) do
+      Instrument.new(:instrument_id => 'i',
+                     :instrument_type_code => 1,
+                     :instrument_status => is)
+    end
+
+    let(:c) { Contact.new(:contact_id => 'c', :contact_date => '2000-01-01') }
+    let(:cl) { ContactLink.new(:contact_link_id => 'cl') }
+
+    describe '#cache_participant' do
       it "records the participant's public ID" do
         loader.cache_participant(p)
 
-        redis.sismember('test:participants', 'foo').should be_true
+        redis.sismember('test:participants', 'p').should be_true
       end
     end
 
     describe '#cache_event' do
-      let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => 1) }
-      let(:p) { Participant.new(:p_id => 'bar') }
-
-      let(:e) do
-        Event.new(:event_id => 'foo',
-                  :event_start_date => '2000-01-01',
-                  :event_end_date => '2000-02-01',
-                  :event_type => et)
-      end
-
       let(:cached_event) do
         loader.cache_event(e, p)
 
-        redis.hgetall('test:event:foo')
+        redis.hgetall('test:event:e')
       end
 
       it 'links the event and participant' do
         loader.cache_event(e, p)
 
-        redis.sismember('test:p:bar:events', 'foo').should be_true
+        redis.sismember('test:p:p:events', 'e').should be_true
       end
 
       describe 'if the event is new' do
@@ -66,7 +77,7 @@ module Psc
       end
 
       it "records the event's public ID" do
-        cached_event['event_id'].should == 'foo'
+        cached_event['event_id'].should == 'e'
       end
 
       it "records the event's start date" do
@@ -111,12 +122,6 @@ module Psc
     end
 
     describe '#cache_contact_link' do
-      let(:cl) { ContactLink.new(:contact_link_id => 'cl') }
-      let(:c) { Contact.new(:contact_id => 'c', :contact_date => '2000-01-01') }
-      let(:i) { nil }
-      let(:e) { Event.new(:event_id => 'e') }
-      let(:p) { Participant.new(:p_id => 'p') }
-
       def cache_contact_link
         loader.cache_contact_link(cl, c, i, e, p)
       end
@@ -164,14 +169,6 @@ module Psc
       end
 
       describe 'if an instrument is present' do
-        let(:is) { NcsCode.new(:display_text => 'Foobar') }
-
-        let(:i) do
-          Instrument.new(:instrument_id => 'i',
-                         :instrument_type_code => 1,
-                         :instrument_status => is)
-        end
-
         it 'generates a sort key using the instrument type code' do
           cached_link['sort_key'].should == 'e:2000-01-01:001'
         end
@@ -196,6 +193,8 @@ module Psc
       end
 
       describe 'if an instrument is not present' do
+        let(:i) { nil }
+
         it "generates a sort key for the link" do
           cached_link['sort_key'].should == 'e:2000-01-01'
         end
@@ -205,6 +204,36 @@ module Psc
 
           redis.sismember('test:p:p:link_contacts_without_instrument:e', cl.public_id).should be_true
         end
+      end
+    end
+
+    describe '#cached_participant_ids' do
+      before do
+        loader.cache_participant(p)
+      end
+
+      it 'returns public IDs of cached participants' do
+        loader.cached_participant_ids.should == ['p']
+      end
+    end
+
+    describe '#cached_events' do
+      before do
+        loader.cache_event(e, p)
+      end
+
+      it 'returns public IDs of cached events' do
+        loader.cached_event_ids.should == ['e']
+      end
+    end
+
+    describe '#cached_contact links' do
+      before do
+        loader.cache_contact_link(cl, c, i, e, p)
+      end
+
+      it 'returns public IDs of cached contact links' do
+        loader.cached_contact_link_ids.should == ['cl']
       end
     end
   end

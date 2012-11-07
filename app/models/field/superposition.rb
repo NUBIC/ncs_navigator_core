@@ -79,6 +79,7 @@ module Field
   # {NcsNavigator::Core::Fieldwork::Adapters}.
   class Superposition
     include Field::Merge
+    include Field::PscSync
 
     attr_accessor :contacts
     attr_accessor :events
@@ -154,16 +155,12 @@ module Field
       self.question_response_sets = res
     end
 
-    def current_events
-      events.map { |_, state| state[:current].target }
-    end
-
-    def current_instruments
-      instruments.map { |_, state| state[:current].target }
-    end
-
-    def current_participants
-      participants.map { |_, state| state[:current].target }
+    %w(contacts events instruments participants).each do |collection|
+      class_eval <<-END
+        def current_#{collection}
+          #{collection}.map { |_, state| state[:current].target }
+        end
+      END
     end
 
     def set_state(state, data)
