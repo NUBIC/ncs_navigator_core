@@ -18,13 +18,50 @@ module NcsNavigator::Core::Mdes
       include NcsNavigator::Core::HasPublicId
     end
 
-    module ClassMethods
+    ##
+    # @private
+    # The random number generator used for :human_readable public IDs.
+    # It is shared across all MdesRecord classes and so must be public,
+    # but it isn't part of the public API for this class.
+    def self.prng
+      reseed_random unless @prng
+      @prng
+    end
 
+    ##
+    # @private
+    # (Re)initialize the random number generator used for :human_readable
+    # public IDs. Intended for testing only.
+    def self.reseed_random(seed=nil)
+      @prng =
+        if seed
+          Random.new(seed)
+        else
+          Random.new
+        end
+    end
+
+    module ClassMethods
       def acts_as_mdes_record(options = {})
         send :include, InstanceMethods
         cattr_accessor :public_id_field
+        cattr_accessor :public_id_kind
+        cattr_accessor :public_id_generator
         cattr_accessor :date_fields
+
         self.public_id_field = (options[:public_id_field] || :uuid)
+        self.public_id_kind  = (options[:public_id_kind]  || :uuid)
+
+        self.public_id_generator =
+          case public_id_kind
+          when :uuid
+            UuidPublicIdGenerator
+          when :human_readable
+            HumanReadablePublicIdGenerator.new(self, public_id_field)
+          else
+            fail "Unsupported public_id_kind #{public_id_kind.inspect}."
+          end
+
         if options[:date_fields]
           self.date_fields = options[:date_fields]
           options[:date_fields].each do |df|
@@ -75,10 +112,61 @@ module NcsNavigator::Core::Mdes
       end
     end
 
-    module InstanceMethods
+    ##
+    # @private
+    class UuidPublicIdGenerator
+      def self.generate
+        UUIDTools::UUID.random_create.to_s
+      end
+    end
 
+    ##
+    # @private
+    class HumanReadablePublicIdGenerator
+      # These characters are selected to be easy to distinguish when written
+      # down, regardless of case. (E.g., 0 and O are omitted because they are
+      # similar as is the set 1, L, I.)
+      CHARS = %w(2 3 4 5 6 7 8 9 a b c d e f h k r s t w x y z)
+      # Pattern is like SSN because it seems like that rhythm might be familiar.
+      PATTERN = [3, 2, 4]
+
+      def initialize(model_class, public_id_field)
+        @model_class = model_class
+        @public_id_field = public_id_field
+      end
+
+      def generate
+        id = new_id
+        until @model_class.where(@public_id_field => id).count == 0
+          id = new_id
+        end
+        id
+      end
+
+      private
+
+      def new_id
+        PATTERN.collect { |segment_length|
+          to_chars(
+            MdesRecord.prng.rand(CHARS.size ** segment_length),
+            segment_length
+          )
+        }.join('-')
+      end
+
+      def to_chars(i, size)
+        converted = ''
+        while i > 0
+          converted << CHARS[i % CHARS.size]
+          i /= CHARS.size
+        end
+        ("%#{size}s" % converted).gsub(' ', CHARS[0])
+      end
+    end
+
+    module InstanceMethods
       def set_public_id
-        self.send("#{self.public_id_field}=", UUIDTools::UUID.random_create.to_s) if self.uuid.blank?
+        self.send("#{self.public_id_field}=", public_id_generator.generate) if self.public_id.blank?
       end
 
       def public_id
