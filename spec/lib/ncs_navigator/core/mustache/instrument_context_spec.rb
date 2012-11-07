@@ -422,6 +422,61 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".child_children" do
+        it "returns 'child' if single birth" do
+          create_single_birth
+          instrument_context.child_children.should == "Child"
+        end
+
+        it "returns 'children' if multiple birth" do
+          create_multiple_birth
+          instrument_context.child_children.should == "Children"
+        end
+      end
+
+      describe ".birthing_place" do
+
+        it "returns 'Hospital' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
+          InstrumentContext.any_instance.stub(:response_for).and_return('Hospital')
+          instrument_context.birthing_place.should == 'Hospital'
+        end
+
+        it "returns 'Birthing center' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
+          InstrumentContext.any_instance.stub(:response_for).and_return('Birthing center')
+          instrument_context.birthing_place.should == 'Birthing center'
+        end
+
+        it "returns 'Other place' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
+          InstrumentContext.any_instance.stub(:response_for).and_return('Other place')
+          instrument_context.birthing_place.should == 'Other place'
+        end
+
+        it "return nil if no reponse for BIRTH_VISIT_3.BIRTH_DELIVER" do
+          InstrumentContext.any_instance.stub(:response_for).and_return(nil)
+          instrument_context.birthing_place.should be_nil
+        end
+      end
+
+      describe ".work_place_name" do
+
+        it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
+          pending "need to add an event_type"
+          InstrumentContext.any_instance.stub(:response_for).and_return('My Work Name Entry for PV2')
+          instrument_context.work_place_name.should == 'My Work Name Entry for PV2'
+        end
+
+        it "returns work name as the most recent response for BIRTH_VISIT_3.WORK_NAME" do
+          pending "need to add an event_type"
+          InstrumentContext.any_instance.stub(:response_for).and_return('My Work Name Entry for Birth')
+          instrument_context.work_place_name.should == 'My Work Name Entry for Birth'
+        end
+
+        it "return '[PARTICIPANTS WORKPLACE NAME]' if no reponse for WORK_NAME is provided" do
+          InstrumentContext.any_instance.stub(:response_for).and_return(nil)
+          instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
+        end
+      end
+
     end
 
     context "for a pregnancy visit one saq" do
@@ -535,12 +590,6 @@ module NcsNavigator::Core::Mustache
 
       end
 
-      describe ".at_this_visit_or_at" do
-        it "returns \"At this visit or at / At\"" do
-          instrument_context.at_this_visit_or_at.should == "At this visit or at / At"
-        end
-      end
-
       describe ".work_place_name" do
         it "returns the name of the participant's workplace" do
           pending
@@ -608,6 +657,152 @@ module NcsNavigator::Core::Mustache
         end
       end
     end
+
+    context "participant verification instrument" do
+
+      let(:instrument_context) { InstrumentContext.new }
+
+      describe ".participant_parent_caregiver_name" do
+
+        it "returns the most recent response for PARTICIPANT_VERIF.NAME_CONFIRM" do
+          InstrumentContext.any_instance.stub(:response_for).and_return('The Given Name')
+          instrument_context.participant_parent_caregiver_name.should == 'The Given Name'
+        end
+
+        it "returns [Participant/Parent/Caregiver Name] if no reponse for NAME_CONFIRM" do
+          InstrumentContext.any_instance.stub(:response_for).and_return(nil)
+          instrument_context.participant_parent_caregiver_name.should == '[Participant/Parent/Caregiver Name]'
+        end
+
+      end
+
+      describe ".child_primary_address" do
+        it "returns '[CHILD'S PRIMARY ADDRESS]' if the child has no primary address" do
+          person = mock_model(Person, :primary_address => nil)
+          participant = mock_model(Participant, :person => person)
+          rs = mock_model(ResponseSet, :participant => participant)
+          InstrumentContext.new(rs).child_primary_address.should == "[CHILD'S PRIMARY ADDRESS]"
+        end
+
+        it "returns the primary address" do
+           address = mock_model(Address, :to_s => "123 Easy Street")
+           person = mock_model(Person, :primary_address => address)
+           participant = mock_model(Participant, :person => person)
+           rs = mock_model(ResponseSet, :participant => participant)
+           InstrumentContext.new(rs).child_primary_address.should == "#{address.to_s}"
+        end
+      end
+
+      describe ".child_secondary_address" do
+        it "returns '[CHILD'S SECONDARY ADDRESS]' if the child has no secondary address" do
+          person = mock_model(Person, :secondary_address => nil)
+          participant = mock_model(Participant, :person => person)
+          rs = mock_model(ResponseSet, :participant => participant)
+          InstrumentContext.new(rs).child_secondary_address.should == "[CHILD'S SECONDARY ADDRESS]"
+        end
+
+        it "returns the secondary address" do
+           address = mock_model(Address, :to_s => "123 Easy Street")
+           person = mock_model(Person, :secondary_address => address)
+           participant = mock_model(Participant, :person => person)
+           rs = mock_model(ResponseSet, :participant => participant)
+           InstrumentContext.new(rs).child_secondary_address.should == "#{address.to_s}"
+        end
+      end
+
+      describe ".child_secondary_number" do
+        it "returns '[SECONDARY PHONE NUMBER]' if the child has no secondary phone" do
+          person = mock_model(Person, :secondary_phone => nil)
+          participant = mock_model(Participant, :person => person)
+          rs = mock_model(ResponseSet, :participant => participant)
+          InstrumentContext.new(rs).child_secondary_number.should == "[SECONDARY PHONE NUMBER]"
+        end
+
+        it "returns the secondary number" do
+           phone = mock_model(Telephone, :to_s => "555-555-5555")
+           person = mock_model(Person, :secondary_phone => phone)
+           participant = mock_model(Participant, :person => person)
+           rs = mock_model(ResponseSet, :participant => participant)
+           InstrumentContext.new(rs).child_secondary_number.should == "#{phone.to_s}"
+        end
+      end
+
+      describe ".date_of_preg_visit_1" do
+
+        it "returns the most recent event end date for pv1" do
+          date = Date.today
+          event = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_preg_visit_1.should == date
+        end
+
+        it "returns nil if there are no completed pv1 events" do
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_preg_visit_1.should be_nil
+        end
+
+      end
+
+      describe ".date_of_preg_visit_2" do
+
+        it "returns the most recent event end date for pv2" do
+          date = Date.today
+          event = mock_model(Event, :event_type_code => 15, :event_end_date => date, :closed? => true)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_preg_visit_2.should == date
+        end
+
+        it "returns nil if there are no completed pv1 events" do
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_preg_visit_2.should be_nil
+        end
+
+      end
+
+      describe ".date_of_last_pv_visit" do
+
+        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no completed events for pv1 and pv2" do
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
+
+        end
+
+        it "returns the end date for pv1" do
+          date = Date.today
+          event_pv1 = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true)
+          event_pv2 = mock_model(Event, :event_type_code => 15, :event_end_date => date, :closed? => false)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event_pv1, event_pv2])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_last_pv_visit.should == date
+        end
+
+        it "returns the end date for pv2" do
+          date = Date.today
+          event_pv1 = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => false)
+          event_pv2 = mock_model(Event, :event_type_code => 15, :event_end_date => date, :closed? => true)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event_pv1, event_pv2])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).date_of_last_pv_visit.should == date
+        end
+
+
+      end
+
+
+    end
+
 
     describe "choose_date_range_for_birth_instrument" do
       it "returns proper range depending on whether PregVisit1 or 2 have been administered" do

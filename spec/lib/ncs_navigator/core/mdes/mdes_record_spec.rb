@@ -18,6 +18,11 @@ module NcsNavigator::Core::Mdes
     acts_as_mdes_record :public_id_field => :bar_id, :date_fields => [:start_date]
   end
 
+  class Baz < ActiveRecord::Base
+    include MdesRecord
+    acts_as_mdes_record :public_id_field => :baz_id, :public_id_kind => :human_readable
+  end
+
   describe MdesRecord do
     before do
       ActiveRecord::Schema.define do
@@ -37,6 +42,11 @@ module NcsNavigator::Core::Mdes
             t.date :start_date_date
             t.string :start_date
           end
+
+          create_table :bazs, :force => true do |t|
+            t.string :name
+            t.string :baz_id
+          end
         end
       end
     end
@@ -46,6 +56,7 @@ module NcsNavigator::Core::Mdes
         suppress_messages do
           drop_table :foos
           drop_table :bars
+          drop_table :bazs
         end
       end
     end
@@ -62,6 +73,16 @@ module NcsNavigator::Core::Mdes
 
       it 'is set from the :public_id_field option' do
         Bar.public_id_field.should == :bar_id
+      end
+    end
+
+    describe '.public_id_kind' do
+      it 'defaults to :uuid' do
+        Foo.public_id_kind.should == :uuid
+      end
+
+      it 'is set from the :public_id_kind option' do
+        Baz.public_id_kind.should == :human_readable
       end
     end
 
@@ -92,12 +113,37 @@ module NcsNavigator::Core::Mdes
         end
       end
 
-      it 'defaults to a UUID if not set' do
-        Bar.create.public_id.length.should == 36
-      end
+      describe 'creation by kind' do
+        describe ':uuid' do
+          it 'defaults to a UUID if not set' do
+            Bar.create.public_id.length.should == 36
+          end
 
-      it 'defaults to a random UUID if not set' do
-        Bar.create.public_id.should_not == Bar.create.public_id
+          it 'defaults to a random UUID if not set' do
+            Bar.create.public_id.should_not == Bar.create.public_id
+          end
+        end
+
+        describe ':human_readable' do
+          it 'defaults to a nine-character dash-separated string' do
+            expected_char_class = '[2-9abcdefhkrstwxyz]'
+            Baz.create.public_id.should =~
+            /^#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
+          end
+
+          it 'defaults to a random human readble ID string' do
+            [Baz.create.public_id, Baz.create.public_id, Baz.create.public_id].uniq.size.should == 3
+          end
+
+          it 'gets a new ID when there is a collision' do
+            MdesRecord.reseed_random(0)
+            b1 = Baz.create!
+            MdesRecord.reseed_random(0)
+            b2 = Baz.create!
+
+            b1.public_id.should_not == b2.public_id
+          end
+        end
       end
     end
 
