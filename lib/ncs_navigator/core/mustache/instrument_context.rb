@@ -419,6 +419,33 @@ module NcsNavigator::Core::Mustache
       birthing_place.upcase
     end
 
+    # For Birth_INT_3.0
+    # • IF MULTIPLE = 1 AND MULTIPLE_NUM = 2 AND FIRST LOOP, DISPLAY: “First let’s talk about your first twin birth.”
+    # • IF MULTIPLE = 1 AND MULTIPLE_NUM = 3 AND FIRST LOOP, DISPLAY: “First let’s talk about your first triplet birth.”
+    # • IF MULTIPLE = 1 AND MULTIPLE_NUM ≥ 4 AND FIRST LOOP, DISPLAY: “First, let’s talk about your first higher order birth.”
+    # • IF MULTIPLE = 1 AND MULTIPLE_NUM = 2 AND SECOND LOOP, OR
+    # • IF MULTIPLE = 1 AND MULTIPLE_NUM ≥ 3 AND SECOND OR HIGHER LOOP, DISPLAY: “Now let’s talk about your next baby.”
+    # • IF MULTIPLE =2, DISPLAY: “Let’s talk about your baby.”
+    def lets_talk_about_baby
+      result = ""
+      if single_birth?
+        result = "Let’s talk about your baby."
+      else
+        multiple_num = response_for("BIRTH_VISIT_3.MULTIPLE_NUM")
+        if about_person.first_child?
+          if ((multiple_num.eql? ("2")) || (multiple_num.eql?("02")))
+            result = "First let’s talk about your first twin birth."
+          elsif ((multiple_num.eql? "3") || (multiple_num.eql? "03"))
+            result = "First let’s talk about your first triplet birth."
+          else
+            result = "First, let’s talk about your first higher order birth."
+          end
+        else
+          result = "Now let’s talk about your next baby."
+        end
+      end
+    end
+
     # Used in PBSamplingScreener 3.0, in reference to the gender of a provider the
     # participant may have visited
 
@@ -441,6 +468,18 @@ module NcsNavigator::Core::Mustache
 
     def date_of_preg_visit_2
       participant.completed_events(15).map{|e| e.event_end_date}.sort.last
+    end
+
+    def in_the_past
+      participant.completed_events(13).blank? ? "in the past" : ""
+    end
+
+    def since
+      participant.completed_events(13).blank? ? "" : "since"
+    end
+
+    def ever
+      participant.completed_events(13).blank? ? "ever" : ""
     end
 
     # For PART_TWO_BIRTH_3_0 Medical History handle:
@@ -495,18 +534,21 @@ module NcsNavigator::Core::Mustache
     # Used in Participant Verification 3.0, return correct either correct name
     # or correct name and birth date if birth date has not been previously collected
     def correct_name_and_birth_date
-      result = "[CORRECT_NAME_AND_BIRTH_DATE]"
-      if not about_person.blank?
-        if not about_person.first_name.blank?
-          result = "correct name"
-        end
-        if not about_person.person_dob.blank?
-          result = result + " and birth date"
-        end
+      result = '[CORRECT_NAME_AND_BIRTH_DATE]'
+
+      if about_person.try(:first_name)
+        result = 'correct name'
       end
+
+      if about_person.try(:person_dob)
+        result += ' and birth date'
+      end
+
       result
     end
 
+    #Nataliya's comment - this method should be eliminated. date_of_last_pv_visit should be used
+    #The rest should be done with dependencies in the instruments, like in Birth
     def choose_date_range_for_birth_instrument
       if date_of_preg_visit_2
         return "between #{date_of_preg_visit_2} and #{c_dob}"
@@ -517,6 +559,8 @@ module NcsNavigator::Core::Mustache
       end
     end
 
+    #Nataliya's comment - this method should be eliminated. date_of_last_pv_visit should be used
+    #The rest should be done with dependencies in the instruments, like in Birth
     def choose_date_range_for_birth_instrument_variation_1
       if date_of_preg_visit_2
         return "At this visit or at any time between #{date_of_preg_visit_2} and #{c_dob}"

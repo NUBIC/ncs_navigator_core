@@ -16,6 +16,7 @@ module NcsNavigator::Core::Mustache
     let(:multiple)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE" }
 
     let(:multiple_gestation) { "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
+    let(:multiple_num)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM" }
 
     context "without a response set" do
 
@@ -476,6 +477,37 @@ module NcsNavigator::Core::Mustache
           instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
         end
       end
+      
+      describe ".lets_talk_about_baby" do
+        it "return 'Let’s talk about your baby.' if single birth" do
+          create_single_birth
+          instrument_context.lets_talk_about_baby.should == "Let’s talk about your baby."
+        end
+        
+        it "returns 'First let’s talk about your first twin birth.' if twins" do
+          pending
+          create_multiple_birth
+          create_multiple_num("2")
+          
+          mom = @response_set.person
+          child = @response_set.participant
+                    
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+          
+          person_child = child.person
+          child.p_type_code = 6
+          child.save!
+          
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+          Factory(:participant_person_link, :person => mom, :participant => child, :relationship_code => 2)
+
+          mom.participant_person_links.reload
+          child.participant_person_links.reload
+          
+          instrument_context.lets_talk_about_baby.should == "Let’s talk about your baby."
+        end
+      end
 
     end
 
@@ -586,6 +618,68 @@ module NcsNavigator::Core::Mustache
         it "returns '[UNKNOWN]' if the person_dob is nil" do
           Person.any_instance.stub(:person_dob).and_return(nil)
           instrument_context.p_dob.should == '[UNKNOWN]'
+        end
+
+      end
+
+      describe ".in_the_past" do
+
+        it "returns 'in the past' if no pv1 is ever complete" do
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).in_the_past.should == "in the past"
+
+        end
+
+        it "returns empty string if pv1 was completed" do
+          event = mock_model(Event, :event_type_code => 13, :closed? => true)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).in_the_past.should == ""
+
+        end
+
+      end
+
+      describe ".since" do
+
+        it "returns empty string if no pv1 is ever complete" do
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).since.should == ""
+        end
+
+        it "returns 'since' if pv1 was completed" do
+          event = mock_model(Event, :event_type_code => 13, :closed? => true)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).since.should == "since"
+
+        end
+
+      end
+
+      describe ".ever" do
+
+        it "returns 'ever' if no pv1 is ever complete" do
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).ever.should == "ever"
+
+        end
+
+        it "returns empty string if pv1 was completed" do
+          event = mock_model(Event, :event_type_code => 13, :closed? => true)
+          person = mock_model(Person)
+          participant = mock_model(Participant, :completed_events => [event])
+          rs = mock_model(ResponseSet, :person => person, :participant => participant)
+          InstrumentContext.new(rs).ever.should == ""
+
         end
 
       end
@@ -727,6 +821,7 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+
       describe ".date_of_preg_visit_1" do
 
         it "returns the most recent event end date for pv1" do
@@ -865,6 +960,12 @@ module NcsNavigator::Core::Mustache
         a.choice(multiple_gestation, @twin)
       end
     end
+    
+    def create_multiple_num mult_num
+      take_survey(@survey, @response_set) do |a|
+        a.str multiple_num, mult_num
+      end
+    end
 
     def create_triplet_gestation
       @triplet = NcsCode.for_list_name_and_local_code("GESTATION_TYPE_CL1", 3)
@@ -892,6 +993,7 @@ module NcsNavigator::Core::Mustache
         a.str baby_fname, first_name
       end
     end
+    
 
     def setup_survey_instrument(survey)
       @survey = survey
