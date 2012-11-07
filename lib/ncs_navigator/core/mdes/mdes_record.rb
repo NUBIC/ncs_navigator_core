@@ -137,6 +137,11 @@ module NcsNavigator::Core::Mdes
 
       def generate
         id = new_id
+        # This mechanism will not handle the case where two transactions
+        # simultaneously create and commit the same ID. That is so vanishingly
+        # unlikely that it doesn't warrant addressing at this time. If it needs
+        # to be made less likely, we can always add another character to the
+        # IDs.
         until @model_class.where(@public_id_field => id).count == 0
           id = new_id
         end
