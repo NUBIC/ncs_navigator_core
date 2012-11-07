@@ -17,6 +17,12 @@ module NcsNavigator::Core::Field
     SCHEMA_ROOT = "#{Rails.root}/vendor/ncs_navigator_schema"
 
     ##
+    # The validator's primary use is validating fieldwork data, which makes
+    # this a convenient default.  However, there's no reason why other schemas
+    # can't be used.
+    FIELDWORK_SCHEMA = JSON.parse(File.read("#{SCHEMA_ROOT}/fieldwork_schema.json")).freeze
+
+    ##
     # For JSON::Validator.
     #
     # @see https://github.com/hoxworth/json-schema/issues/24
@@ -29,11 +35,9 @@ module NcsNavigator::Core::Field
     # information from the filesystem for each call.  JSON::Validator#validate
     # -- an _instance_ method -- resets referenced schema data, which is
     # stored at _class_ level.  (Sigh.)
-    def fully_validate(data)
+    def fully_validate(data, root_schema = FIELDWORK_SCHEMA)
       LOCK.synchronize do
         with_referenced_schemas do
-          root_schema = JSON.parse(File.read("#{SCHEMA_ROOT}/fieldwork_schema.json"))
-
           JSON::Validator.fully_validate(root_schema, data)
         end
       end
@@ -41,7 +45,7 @@ module NcsNavigator::Core::Field
 
     ##
     # Expands all references in the fieldwork schema.  Used in the merge tests.
-    def expanded_schema
+    def expanded_schema(root_schema = FIELDWORK_SCHEMA.dup)
       LOCK.synchronize do
         with_referenced_schemas do
           schemas = JSON::Validator.schemas.dup
@@ -69,8 +73,6 @@ module NcsNavigator::Core::Field
 
             schema
           end
-
-          root_schema = JSON.parse(File.read("#{SCHEMA_ROOT}/fieldwork_schema.json"))
 
           rewrite[root_schema]
         end

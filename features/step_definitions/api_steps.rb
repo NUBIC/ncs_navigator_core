@@ -127,3 +127,20 @@ Then /^the response contains a reference to itself$/ do
 
   JSON.parse(last_response.body).should == JSON.parse(original_set)
 end
+
+Then /^the response body satisfies the (.+) schema$/ do |schema|
+  fn = case schema
+       when 'providers'; 'providers_schema.json'
+       when 'NCS codes'; 'ncs_codes_schema.json'
+       else raise %Q{Cannot map "#{schema}" to a schema filename}
+       end
+
+  fp = File.expand_path("../../../vendor/ncs_navigator_schema/#{fn}", __FILE__)
+
+  schema = JSON.parse(File.read(fp))
+  actual = JSON.parse(last_response.body)
+
+  errors = NcsNavigator::Core::Field::Validator.new.fully_validate(actual, schema)
+
+  errors.should be_empty
+end
