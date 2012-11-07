@@ -456,22 +456,22 @@ module NcsNavigator::Core::Mustache
     # • IF MULTIPLE = 1 AND RELEASE = 2, DISPLAY “your babies leave”.
     # • IF MULTIPLE = 1, DISPLAY “they”.
     def do_when_will_live_with_you
-      result = "When [BABY NAME/your baby] leaves/your babies leave the hospital, will [he/she/they] live with you?"
+      result = "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?",
       released = response_for("BIRTH_VISIT_3.RELEASE") #a_1 "YES" a_2 "NO"
       birth_deliver = response_for("BIRTH_VISIT_3.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
       if single_birth? #MULTIPLE = 2
         if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
-          result = "Does " + child_first_name_your_baby
+          result = "Does " + child_first_name_your_baby + " live with you?"
         end
         if released.upcase.eql? "NO"
-          result = "When " + child_first_name_your_baby + " leavel the"
+          result = "When " + child_first_name_your_baby + " leaves the " + birthing_place + " will " + he_she_they + " live with you?"
         end
       else
         if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
-          result = "Do your babies"
+          result = "Do your babies live with you?"
         end
         if released.upcase.eql? "NO"
-          result = "When your babies leave the"
+          result = "When your babies leave the "+ birthing_place + " will " + he_she_they + " live with you?"
         end
       end
       result
