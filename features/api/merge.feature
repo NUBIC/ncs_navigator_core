@@ -63,6 +63,32 @@ Feature: Merging data from field clients
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
 
+  @wip
+  Scenario: New contacts can be linked to new events without instruments
+    When I complete the fieldwork set
+      | start_date          | 2005-07-01                       |
+      | end_date            | 2005-07-30                       |
+      | client_id           | 1234567890                       |
+      | with                | new_without_instruments.json.erb |
+    And the merge runs
+    And I go to the participant page
+
+    Then I should see "Bessie Smith"
+
+    # event name
+    And I should see "Pregnancy Visit 2"
+
+    # event start and end times
+    And I should see "13:30"
+    And I should see "13:35"
+
+    # event start and end dates
+    And I should see "2005-07-17"
+    And I should see "2005-07-18"
+
+    # event disposition
+    And I should see "Participant cognitively unable to provide informed consent/complete interview"
+
   Scenario: The field client may create response sets
     Given the participant
       | person/first_name | Bessie              |
