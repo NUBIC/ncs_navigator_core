@@ -37,6 +37,10 @@ describe ApplicationHelper do
         helper.instrument_name('UNKNOWN', 'DEFAULT').should == 'DEFAULT'
       end
 
+      it 'returns the parameter if default blank' do
+        helper.instrument_name('UNKNOWN', '').should == 'UNKNOWN'
+      end
+
       it 'returns the parameter if no default provided' do
         helper.instrument_name('UNKNOWN').should == 'UNKNOWN'
       end

@@ -48,7 +48,7 @@ module ApplicationHelper
   end
 
   def instrument_name(title, default = nil)
-    default ||= title
+    default = title if default.blank? # check if nil (not given) or empty string
     name = InstrumentEventMap.instrument_map_value_for_filename(title, 'name')
     name.nil? ? default : name
   end
