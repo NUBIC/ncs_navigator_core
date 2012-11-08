@@ -161,6 +161,11 @@
           = render "shared/ncs_code_select",
             { :f => builder, :code => :sampled_person_code, :label_text => "Sampled Person?", :html_attrs => { :class => "required sampled_person_code_selector" } }
 
+          %p
+          = builder.label :date_first_visit, "Date of First Visit"  
+          %br
+          = builder.text_field :date_first_visit, :class => "datepicker"  
+
           = render "shared/ncs_code_select",
             { :f => builder, :code => :provider_intro_outcome_code, :label_text => "Outcome of Provider Introduction", :other => :provider_intro_outcome_other }
 
