@@ -515,10 +515,10 @@ class Person < ActiveRecord::Base
   # Returns the primary work address for this person, or nil if no such
   # phone record exists.
   def primary_work_address
-    work_address_type = Address.work_address_type.to_i
+    work_address_type_code = Address.work_address_type.to_i
 
-    primary_contacts(addresses, :address_type) do |ts|
-      ts.detect { |t| t.address_type == work_address_type }
+    primary_contacts(addresses, :address_rank_code) do |ts|
+      ts.detect { |t| t.address_type_code == work_address_type_code }
     end
   end
 

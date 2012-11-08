@@ -803,14 +803,25 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".work_address" do
-        let(:person) { mock_model(Person) }
-        let(:participant) { mock_model(Participant, :person => person) }
-        let(:rs) { mock_model(ResponseSet, :person => person, :participant => participant) }
+        let(:person) { Factory(:person) }
+        let(:participant) { Factory(:participant) }
+        let(:rs) { Factory(:response_set, :person => person, :participant => participant) }
         let(:context) { InstrumentContext.new(rs) }
 
+        before do
+          participant.person = person; participant.save!
+        end
+
+        it "returns the [WORK ADDRESS] if primary_work_address is blank" do
+          person.primary_work_address.to_s.should be_blank
+          context.work_address.should eq "[WORK ADDRESS]"
+        end
+
         it "returns the participant's workplace address" do
-          person.stub(:primary_work_address => "work_address")
-          context.work_address.should eq "work_address"
+          primary = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
+          work_address = Factory(:address, :address_rank => primary, :address_type => Address.work_address_type, :person => person)
+          person.primary_work_address.should_not be_nil
+          context.work_address.should eq person.primary_work_address.to_s
         end
       end
 
