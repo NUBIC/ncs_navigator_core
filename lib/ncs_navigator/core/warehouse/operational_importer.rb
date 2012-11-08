@@ -28,8 +28,7 @@ module NcsNavigator::Core::Warehouse
       @public_id_indexes = {}
       @failed_associations = []
       @progress = ProgressTracker.new(wh_config)
-      @sync_loader = Psc::SyncLoader.new
-      @sync_loader.sync_key = OperationalImporterPscSync::KEYGEN
+      @sync_loader = Psc::SyncLoader.new(OperationalImporterPscSync::KEYGEN)
     end
 
     def import(*tables)
