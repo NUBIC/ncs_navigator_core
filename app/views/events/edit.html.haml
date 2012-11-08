@@ -22,7 +22,7 @@
 
     %p
       = f.submit "Submit", :disable_with => 'Submitting...'
-      - if person && @contact_link && continuable?(@event)
+      - if person && @contact_link && continuable?(@event) && participant.eligible?
         %p
           = "- OR -"
         %p
