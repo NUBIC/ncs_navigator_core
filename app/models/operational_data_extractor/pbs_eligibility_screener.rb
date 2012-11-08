@@ -213,8 +213,7 @@ class OperationalDataExtractor::PbsEligibilityScreener
     end
 
     def due_date_response(response_set, date_question)
-      dt = date_string(response_set, date_question)
-      unless dt.blank?
+      if dt = date_string(response_set, date_question)
         begin
           OperationalDataExtractor::Base.determine_due_date(
             "#{date_question}_DD",

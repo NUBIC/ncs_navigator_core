@@ -392,7 +392,60 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       person  = Person.find(@person.id)
       participant = person.participant
       participant.due_date.should == due_date
+    end
 
+    it "does not set the due date if the format of the month is not two digits" do
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", "February"
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "01"
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525"
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 4
+
+      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should be_nil
+    end
+
+    it "does not set the due date if the format of the day is not two digits" do
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", "02"
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "First"
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525"
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 4
+
+      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should be_nil
+    end
+
+    it "does not set the due date if the format of the year is not four digits" do
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", "02"
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "02"
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525 CE"
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 4
+
+      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should be_nil
     end
 
     # # CALCULATE DUE DATE FROM THE FIRST DATE OF LAST MENSTRUAL PERIOD AND SET ORIG_DUE_DATE = DATE_PERIOD + 280 DAYS
