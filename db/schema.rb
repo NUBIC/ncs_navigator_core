@@ -779,8 +779,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.string   "transaction_type",             :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sampled_person_code"
-    t.integer  "pre_screening_status_code"
+    t.integer  "sampled_person_code",                        :null => false
+    t.integer  "pre_screening_status_code",                  :null => false
     t.string   "date_first_visit"
     t.date     "date_first_visit_date"
   end
