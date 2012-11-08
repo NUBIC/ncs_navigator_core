@@ -18,8 +18,6 @@
 #  updated_at          :datetime
 #
 
-
-
 require 'patient_study_calendar'
 require 'uuidtools'
 
@@ -128,4 +126,3 @@ class Fieldwork < ActiveRecord::Base
     report.save_models and self.original_data = report.to_json
   end
 end
-

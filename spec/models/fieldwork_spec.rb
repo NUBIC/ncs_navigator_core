@@ -18,8 +18,6 @@
 #  updated_at          :datetime
 #
 
-
-
 require 'spec_helper'
 
 describe Fieldwork do
@@ -253,4 +251,3 @@ describe Fieldwork do
   end
 
 end
-
