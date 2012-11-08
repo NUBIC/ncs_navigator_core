@@ -52,24 +52,50 @@ Before '~@api' do
   end
 end
 
-When /^I PUT ([^\s]+) with$/ do |url, payload|
-  put url, payload
+# We cannot write this in Gherkin:
+#
+#     When I PUT /api/v1/fieldwork/foo with
+#     """
+#     { ... }
+#     """
+#     with headers
+#       | foo | bar |
+#
+# because steps cannot accept both a string and table.  Therefore, we break it
+# up into multiple steps.
+When /^the payload(?: is)?$/ do |string|
+  @payload = string
+end
+
+When /^I PUT the payload to ([^\s]+)$/ do |url|
+  put url, @payload
+end
+
+When /^I PUT the payload to ([^\s]+) with$/ do |url, table|
+  params, headers = params_and_headers_from_table(table)
+  headers.each { |k, v| header(k, v) }
+
+  put url, @payload, params
 end
 
 When /^I POST ([^\s]+) with$/ do |url, table|
   header 'Content-Type', 'application/x-www-form-urlencoded'
 
-  post url, table.hashes.first
+  params, headers = params_and_headers_from_table(table)
+  headers.each { |k, v| header(k, v) }
+
+  post url, params
 end
 
 When /^I GET ([^\s]+)$/ do |url|
   get url
 end
 
-When /^I GET ([^\s]+) with headers$/ do |url, headers|
-  headers.rows_hash.each { |k, v| header(k, v) }
+When /^I GET ([^\s]+) with$/ do |url, table|
+  params, headers = params_and_headers_from_table(table)
+  headers.each { |k, v| header(k, v) }
 
-  get url
+  get url, params
 end
 
 When /^I GET the referenced location$/ do
@@ -89,21 +115,19 @@ Then /^the response status is (\d+)$/ do |status|
 end
 
 Then /^the response body satisfies$/ do |table|
-  body = JSON.parse(last_response.body)
   actual = [['key', 'value']]
 
   table.hashes.each do |hash|
-    actual << [hash['key'], body[hash['key']]]
+    actual << [hash['key'], json[hash['key']]]
   end
 
   table.diff!(actual)
 end
 
 Then /^the response body matches$/ do |string|
-  actual = JSON.parse(last_response.body)
   expected = JSON.parse(string)
 
-  actual.diff(expected).should == {}
+  json.diff(expected).should == {}
 end
 
 Then /^the referenced entity is a fieldwork set$/ do
@@ -125,7 +149,7 @@ Then /^the response contains a reference to itself$/ do
 
   get location
 
-  JSON.parse(last_response.body).should == JSON.parse(original_set)
+  json.should == JSON.parse(original_set)
 end
 
 Then /^the response body satisfies the (.+) schema$/ do |schema|
@@ -138,9 +162,7 @@ Then /^the response body satisfies the (.+) schema$/ do |schema|
   fp = File.expand_path("../../../vendor/ncs_navigator_schema/#{fn}", __FILE__)
 
   schema = JSON.parse(File.read(fp))
-  actual = JSON.parse(last_response.body)
-
-  errors = NcsNavigator::Core::Field::Validator.new.fully_validate(actual, schema)
+  errors = NcsNavigator::Core::Field::Validator.new.fully_validate(json, schema)
 
   errors.should be_empty
 end

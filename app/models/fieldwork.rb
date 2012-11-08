@@ -85,24 +85,12 @@ class Fieldwork < ActiveRecord::Base
   # The constructed fieldwork set will be associated with other unpersisted
   # model objects that will be saved once the fieldwork set is saved.
   #
-  # The following parameters are required:
-  #
-  # * `:start_date`: the start date
-  # * `:end_date`: the end date
-  # * `:client_id`: the ID of the field client
-  #
   # This method stores logs about the PSC -> Core entity mapping process in
   # {#generation_log}.
-  #
-  # @param Hash params fieldwork parameters
-  # @param PatientStudyCalendar psc a PSC client instance
-  # @param staff_id the name of the user running this process;
-  #   should usually be the value of ApplicationController#current_staff_id
-  # @return [Fieldwork]
-  def self.from_psc(params, psc, staff_id, current_username)
-    sd = params[:start_date]
-    ed = params[:end_date]
-    cid = params[:client_id]
+  def self.from_psc(start_date, end_date, client_id, psc, staff_id, current_username)
+    sd = start_date
+    ed = end_date
+    cid = client_id
 
     new(:start_date => sd, :end_date => ed, :client_id => cid).tap do |f|
       sio = StringIO.new

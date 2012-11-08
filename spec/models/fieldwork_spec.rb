@@ -64,15 +64,11 @@ describe Fieldwork do
   end
 
   describe '.from_psc' do
-    let(:params) do
-      {
-        :start_date => '2012-02-01',
-        :end_date => '2012-03-01',
-        :client_id => '123456789'
-      }
-    end
+    let(:start_date) { '2012-02-01' }
+    let(:end_date) { '2012-03-01' }
+    let(:client_id) { '1234567890' }
 
-    let(:fieldwork) { Fieldwork.from_psc(params, stub, 'test', 'test') }
+    let(:fieldwork) { Fieldwork.from_psc(start_date, end_date, client_id, stub, 'test', 'test') }
 
     before do
       Field::ScheduledActivityReport.stub!(:from_psc => Field::ScheduledActivityReport.new)
@@ -92,7 +88,7 @@ describe Fieldwork do
       end
 
       it 'contains the given client ID' do
-        fieldwork.client_id.should == params[:client_id]
+        fieldwork.client_id.should == client_id
       end
 
       it 'contains the given start date' do

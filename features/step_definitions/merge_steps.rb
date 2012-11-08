@@ -95,8 +95,9 @@ Given /^I complete the fieldwork set$/ do |table|
 
   steps %Q{
     When I POST /api/v1/fieldwork.json with
-      | start_date            | end_date            | client_id            |
-      | #{data['start_date']} | #{data['end_date']} | #{data['client_id']} |
+      | start_date         | #{data['start_date']} |
+      | end_date           | #{data['end_date']}   |
+      | header:X-Client-ID | #{data['client_id']}  |
     Then the response status is 200
   }
 
