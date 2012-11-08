@@ -64,10 +64,24 @@ module Field::Adapters
     end
 
     class ModelAdapter < Field::ModelAdapter
+      include ContactLinkConstruction
+
       attr_accessors ATTRIBUTES
 
       def participant_public_id
         source.try(:p_id)
+      end
+
+      def contact_public_id
+        source.try(:ancestors).try(:[], :contact).try(:contact_id)
+      end
+
+      def event_public_id
+        event_id
+      end
+
+      def person_public_id
+        source.try(:ancestors).try(:[], :contact).try(:person_id)
       end
 
       def pending_prerequisites
