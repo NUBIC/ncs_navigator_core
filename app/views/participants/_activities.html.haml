@@ -20,6 +20,6 @@
                 = a.date
               %span{ :title => a.current_state, :class => "#{a.current_state}_link" }
                 &nbsp;
-              = link_to a.activity_name, psc_assignment_path(@participant.person.public_id), :class => "icon_link external_link"
+              = a.activity_name
       - else
         Subject does not have a schedule matching pending events
