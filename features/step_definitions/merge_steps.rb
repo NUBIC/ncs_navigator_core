@@ -118,7 +118,9 @@ end
 
 When /^the merge runs$/ do
   ok = NcsNavigator::Core::Field::MergeWorker.jobs.all? do |job|
-    job['class'].constantize.new.perform(*job['args'])
+    job_cls = job['class']
+    job_cls = (job_cls.class == String) ? job_cls.constantize : job_cls
+    job_cls.new.perform(*job['args'])
   end
 
   if !ok
