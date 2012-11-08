@@ -117,13 +117,9 @@ Given /^I complete the fieldwork set$/ do |table|
 end
 
 When /^the merge runs$/ do
-  ok = NcsNavigator::Core::Field::MergeWorker.jobs.all? do |job|
-    job_cls = job['class']
-    job_cls = (job_cls.class == String) ? job_cls.constantize : job_cls
-    job_cls.new.perform(*job['args'])
-  end
+  NcsNavigator::Core::Field::MergeWorker.drain
 
-  if !ok
+  if @logdev.string =~ /error|fatal/i
     puts @logdev.string
     raise 'Merge failed; see above log'
   end
