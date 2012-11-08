@@ -10,20 +10,6 @@ describe ProvidersController do
 
     def valid_attributes
       {
-        #  provider_type_code         :integer         not null
-        #  provider_type_other        :string(255)
-        #  provider_ncs_role_code     :integer         not null
-        #  provider_ncs_role_other    :string(255)
-        #  practice_info_code         :integer         not null
-        #  practice_patient_load_code :integer         not null
-        #  practice_size_code         :integer         not null
-        #  public_practice_code       :integer         not null
-        #  provider_info_source_code  :integer         not null
-        #  provider_info_source_other :string(255)
-        #  provider_info_date         :date
-        #  provider_info_update       :date
-        #  provider_comment           :text
-        #  list_subsampling_code      :integer
         :name_practice            => "Practice Name",
         :proportion_weeks_sampled => 3,
         :proportion_days_sampled  => 3,
@@ -193,7 +179,8 @@ describe ProvidersController do
         describe "with json request" do
           it "forms json with updated @provider id" do
             put :update, :id => provider.id, :provider => {}, :format => 'json'
-            response.body.should eq provider.to_json
+            expected_json = JSON.parse(ProviderSerializer.new(provider).to_json({}))
+            JSON.parse(response.body).should eq expected_json
           end
         end
       end
@@ -212,7 +199,6 @@ describe ProvidersController do
             response.should render_template("edit")
           end
         end
-
       end
     end
 
@@ -366,7 +352,7 @@ describe ProvidersController do
           it "sets provider recruitment event end date if the provider has all provider_logistics complete" do
             provider.should_not be_nil
             pbs_list_id = provider.pbs_list.id
-            Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person), 
+            Factory(:contact_link, :event => Factory(:event, :event_type_code => 22), :person => Factory(:person),
             :contact => Factory(:contact, :contact_disposition => 70, :contact_date_date => Date.new(2012, 05, 12)), :provider => provider)
             put :process_recruited, :id => provider.id, :contact_id => contact.id,
               :provider => { :id => provider.id,
