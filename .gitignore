@@ -39,3 +39,6 @@ surveys
 # Redis dataset snapshots and transaction logs
 dump.rdb
 appendonly.aof
+
+# Ignore mime-types dir
+mime-types
