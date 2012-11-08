@@ -385,7 +385,7 @@ module NcsNavigator::Core::Mustache
 
     def work_address
       default = "[WORK ADDRESS]"
-      result = about_person.blank? ? default : about_person.work_address
+      result = about_person.blank? ? default : about_person.primary_work_address.to_s
       result.blank? ? default : result
     end
 

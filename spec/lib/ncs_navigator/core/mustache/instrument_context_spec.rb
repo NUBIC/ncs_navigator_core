@@ -770,26 +770,27 @@ module NcsNavigator::Core::Mustache
       end
 
       describe "overall sentance call for 'in the past', 'ever' and 'since'" do
+
+        let(:date) { Date.today }
+        let(:person) { mock_model(Person) }
+        let(:participant) { mock_model(Participant, :person => person) }
+        let(:rs) { mock_model(ResponseSet, :person => person, :participant => participant) }
+        let(:context) { InstrumentContext.new(rs) }
+        let(:event) { mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true) }
+
         # Have you {ever} been told by a doctor or other health care provider that you had asthma {since
         #   {DATE OF FIRST PREGNANCY VISIT 1 INTERVIEW}}/{since {DATE OF MOST RECENT SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW}}
         it "returns ever and in the past for new pv1" do
           str = "Have you"
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          context = InstrumentContext.new(rs)
+          participant.stub(:completed_events => [])
           str = str + " " + context.ever + " been told by a doctor or other health care provider that you had asthma" + context.since + " " + context.date_of_preg_visit_1.to_s
           str.strip.should == "Have you ever been told by a doctor or other health care provider that you had asthma"
         end
 
         it "returns since and date when completed pv1" do
           str = "Have you "
-          date = Date.today
-          event = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          context = InstrumentContext.new(rs)
+          participant.stub(:completed_events => [event])
+
           str = str + context.ever + "been told by a doctor or other health care provider that you had asthma " + context.since + " " + context.date_of_preg_visit_1.to_s
           str.should == "Have you been told by a doctor or other health care provider that you had asthma since "+ date.to_s
         end
@@ -802,8 +803,14 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".work_address" do
+        let(:person) { mock_model(Person) }
+        let(:participant) { mock_model(Participant, :person => person) }
+        let(:rs) { mock_model(ResponseSet, :person => person, :participant => participant) }
+        let(:context) { InstrumentContext.new(rs) }
+
         it "returns the participant's workplace address" do
-          pending
+          person.stub(:primary_work_address => "work_address")
+          context.work_address.should eq "work_address"
         end
       end
 
