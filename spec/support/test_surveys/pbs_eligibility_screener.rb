@@ -162,7 +162,18 @@ module PbsEligibilityScreener
 
     # Due Date
     q = Factory(:question, :reference_identifier => "ORIG_DUE_DATE_MM", :data_export_identifier => "PBS_ELIG_SCREENER.ORIG_DUE_DATE_MM", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Due Date MM", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "01", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "02", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "03", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "04", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "05", :response_class => "answer", :reference_identifier => "5")
+    a = Factory(:answer, :question_id => q.id, :text => "06", :response_class => "answer", :reference_identifier => "6")
+    a = Factory(:answer, :question_id => q.id, :text => "07", :response_class => "answer", :reference_identifier => "7")
+    a = Factory(:answer, :question_id => q.id, :text => "08", :response_class => "answer", :reference_identifier => "8")
+    a = Factory(:answer, :question_id => q.id, :text => "09", :response_class => "answer", :reference_identifier => "9")
+    a = Factory(:answer, :question_id => q.id, :text => "10", :response_class => "answer", :reference_identifier => "10")
+    a = Factory(:answer, :question_id => q.id, :text => "11", :response_class => "answer", :reference_identifier => "11")
+    a = Factory(:answer, :question_id => q.id, :text => "12", :response_class => "answer", :reference_identifier => "12")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 
@@ -179,7 +190,18 @@ module PbsEligibilityScreener
 
     # Date Last Period
     q = Factory(:question, :reference_identifier => "DATE_PERIOD_MM", :data_export_identifier => "PBS_ELIG_SCREENER.DATE_PERIOD_MM", :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "Date Last Period MM", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "01", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "02", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "03", :response_class => "answer", :reference_identifier => "3")
+    a = Factory(:answer, :question_id => q.id, :text => "04", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "05", :response_class => "answer", :reference_identifier => "5")
+    a = Factory(:answer, :question_id => q.id, :text => "06", :response_class => "answer", :reference_identifier => "6")
+    a = Factory(:answer, :question_id => q.id, :text => "07", :response_class => "answer", :reference_identifier => "7")
+    a = Factory(:answer, :question_id => q.id, :text => "08", :response_class => "answer", :reference_identifier => "8")
+    a = Factory(:answer, :question_id => q.id, :text => "09", :response_class => "answer", :reference_identifier => "9")
+    a = Factory(:answer, :question_id => q.id, :text => "10", :response_class => "answer", :reference_identifier => "10")
+    a = Factory(:answer, :question_id => q.id, :text => "11", :response_class => "answer", :reference_identifier => "11")
+    a = Factory(:answer, :question_id => q.id, :text => "12", :response_class => "answer", :reference_identifier => "12")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
     a = Factory(:answer, :question_id => q.id, :text => "Don't know", :response_class => "answer", :reference_identifier => "neg_2")
 

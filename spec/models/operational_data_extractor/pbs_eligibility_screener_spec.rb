@@ -379,7 +379,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       due_date = Date.parse("2012-02-29")
       take_survey(@survey, @response_set) do |a|
         a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", due_date.month
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => due_date.month)
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", due_date.day
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", due_date.year
       end
@@ -394,28 +394,10 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       participant.due_date.should == due_date
     end
 
-    it "does not set the due date if the format of the month is not two digits" do
-      take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", "February"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "01"
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525"
-      end
-
-      @response_set.responses.reload
-      @response_set.responses.size.should == 4
-
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
-
-      person  = Person.find(@person.id)
-      participant = person.participant
-      participant.due_date.should be_nil
-    end
-
     it "does not set the due date if the format of the day is not two digits" do
       take_survey(@survey, @response_set) do |a|
         a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", "02"
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => 2)
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "First"
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525"
       end
@@ -433,7 +415,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     it "does not set the due date if the format of the year is not four digits" do
       take_survey(@survey, @response_set) do |a|
         a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", "02"
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", mock_model(NcsCode, :local_code => 2)
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", "02"
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", "2525 CE"
       end
@@ -459,7 +441,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
         a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
         a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
 
-        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", last_period.month
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
         a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
       end
