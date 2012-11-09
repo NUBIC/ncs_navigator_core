@@ -574,6 +574,53 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".choose_date_range_for_birth_instrument_variation_1" do
+        it "returns the proper range if PV1 have been administered" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+
+          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
+          
+        end
+        it "returns the proper range if PV2 have been administered" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+
+          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
+          
+        end
+        it "returns the PV2 date if both PV1 and PV2 were administered" do
+          date_pv1 = 1.months.ago
+          date_pv2 = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+          
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
+
+          @participant.events.reload
+
+          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date_pv2.to_s + ' and ' + instrument_context.c_dob.to_s
+
+        end
+
+        it "returns 'At any time in your pregnancy' if no PV1 or PV2 have been administered" do
+          instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At any time in your pregnancy'
+
+        end
+
+
+      end
+
       describe ".choose_date_range_for_birth_instrument" do
 
         it "returns proper range if PregVisit1 have been administered" do
@@ -674,7 +721,7 @@ module NcsNavigator::Core::Mustache
           @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
           @response_set.instrument.event = Factory(:event, :event_type_code => 15, :participant => @participant)
           @participant.events.reload
-          instrument_context.date_of_preg_visit_1.should == date
+          instrument_context.date_of_last_pv_visit.should == date
         end
 
         it "returns the end date for pv2" do
@@ -684,7 +731,7 @@ module NcsNavigator::Core::Mustache
           @response_set.instrument.event = Factory(:event, :event_type_code => 13, :participant => @participant)
           @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
           @participant.events.reload
-          instrument_context.date_of_preg_visit_1.should == date
+          instrument_context.date_of_last_pv_visit.should == date
 
         end
 
@@ -942,18 +989,6 @@ module NcsNavigator::Core::Mustache
           pending
         end
       end
-
-      describe ".date_of_preg_visit_1" do
-        it "returns the date the PregVisit1 instrument was last administered" do
-          pending
-        end
-      end
-
-      describe ".date_of_preg_visit_2" do
-        it "returns the date the PregVisit2 instrument was last administered" do
-          pending
-        end
-      end
     end
 
     context "participant verification instrument" do
@@ -1025,7 +1060,6 @@ module NcsNavigator::Core::Mustache
         end
       end
 
-
     end
 
     context "for a work_place_name method" do
@@ -1079,9 +1113,26 @@ module NcsNavigator::Core::Mustache
     end
 
     describe "c_fname_or_the_child" do
-      it "returns child's first name or 'the child" do
-        pending
+      before(:each) do
+        setup_survey_instrument(create_pv2_and_birth_with_work_name)
       end
+      let(:instrument_context) { InstrumentContext.new(@response_set) }
+
+      it "returns child's first name " do
+        
+        @participant  = @response_set.participant
+        @person = @participant.person
+        @person.first_name = "Masha"
+        instrument_context.c_fname_or_the_child.should == "Masha"
+      end
+      
+      it "returns 'the Child' if no first name is provided" do
+        @participant  = @response_set.participant
+        @person = @participant.person
+        @person.first_name = nil
+        instrument_context.c_fname_or_the_child.should == "the Child"
+      end
+
     end
 
     describe "are_you_or_is_guardian_name" do
