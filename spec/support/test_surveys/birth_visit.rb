@@ -106,6 +106,29 @@ module BirthVisit
     q = Factory(:question, :reference_identifier => "MAIL_ZIP4", :data_export_identifier => "BIRTH_VISIT_2.MAIL_ZIP4", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
 
+    # Work address one
+    q = Factory(:question, :reference_identifier => "WORK_ADDRESS_1", :data_export_identifier => "BIRTH_VISIT_3.WORK_ADDRESS1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
+    # Work address two
+    q = Factory(:question, :reference_identifier => "WORK_ADDRESS_2", :data_export_identifier => "BIRTH_VISIT_3.WORK_ADDRESS2", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
+    # Work unit
+    q = Factory(:question, :reference_identifier => "WORK_UNIT", :data_export_identifier => "BIRTH_VISIT_3.WORK_UNIT", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
+    # Work city
+    q = Factory(:question, :reference_identifier => "WORK_CITY", :data_export_identifier => "BIRTH_VISIT_3.WORK_CITY", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
+    # Work state
+    q = Factory(:question, :reference_identifier => "WORK_STATE", :data_export_identifier => "BIRTH_VISIT_3.WORK_STATE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
+    a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
+    # Work zip
+    q = Factory(:question, :reference_identifier => "WORK_ZIP", :data_export_identifier => "BIRTH_VISIT_3.WORK_ZIP", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+    # Work plus 4
+    q = Factory(:question, :reference_identifier => "WORK_ZIP4", :data_export_identifier => "BIRTH_VISIT_3.WORK_ZIP4", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "plus 4", :response_class => "string")
+
     # Email
     q = Factory(:question, :reference_identifier => "EMAIL", :data_export_identifier => "BIRTH_VISIT_2.EMAIL", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Email", :response_class => "string")
