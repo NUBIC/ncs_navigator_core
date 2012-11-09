@@ -347,12 +347,14 @@ describe Participant do
         participant.next_scheduled_event.date.should == 271.days.from_now.to_date
       end
 
+
       describe "having a due date before the next scheduled event date" do
 
         let(:status) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
 
         before(:each) do
-          Factory(:ppg_detail, :participant => participant, :ppg_first => status, :orig_due_date => 24.days.from_now.to_date)
+          @due_date = 24.days.from_now.to_date
+          Factory(:ppg_detail, :participant => participant, :ppg_first => status, :orig_due_date => @due_date)
         end
 
         describe "without a known contact" do
@@ -383,7 +385,7 @@ describe Participant do
 
           describe "where the contact is greater than 60 days before the due date" do
             it "schedules the Pregnancy Visit 2 event" do
-              contact = Factory(:contact, :contact_date_date => 60.days.ago.to_date)
+              contact = Factory(:contact, :contact_date_date => 61.days.ago.to_date)
               contact_link = Factory(:contact_link, :contact => contact, :person => participant.person)
 
               participant.pregnant_informed_consent!
