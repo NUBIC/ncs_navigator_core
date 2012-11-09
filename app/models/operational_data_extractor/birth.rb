@@ -3,10 +3,11 @@
 
 class OperationalDataExtractor::Birth
 
-  BABY_NAME_PREFIX    = "BIRTH_VISIT_BABY_NAME_2"
-  BIRTH_VISIT_PREFIX  = "BIRTH_VISIT_2"
-  BABY_NAME_LI_PREFIX = "BIRTH_VISIT_LI_BABY_NAME"
-  BIRTH_LI_PREFIX     = "BIRTH_VISIT_LI"
+  BABY_NAME_PREFIX     = "BIRTH_VISIT_BABY_NAME_2"
+  BIRTH_VISIT_PREFIX   = "BIRTH_VISIT_2"
+  BABY_NAME_LI_PREFIX  = "BIRTH_VISIT_LI_BABY_NAME"
+  BIRTH_LI_PREFIX      = "BIRTH_VISIT_LI"
+  BIRTH_VISIT_3_PREFIX = "BIRTH_VISIT_3"
 
   CHILD_PERSON_MAP = {
     "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
@@ -44,6 +45,16 @@ class OperationalDataExtractor::Birth
     "#{BIRTH_LI_PREFIX}.MAIL_STATE"      => "state_code",
     "#{BIRTH_LI_PREFIX}.MAIL_ZIP"        => "zip",
     "#{BIRTH_LI_PREFIX}.MAIL_ZIP4"       => "zip4"
+  }
+
+  WORK_ADDRESS_MAP = {
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1"   => "address_one",
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2"   => "address_two",
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_UNIT"       => "unit",
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_CITY"       => "city",
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_STATE"      => "state_code",
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_ZIP"        => "zip",
+    "#{BIRTH_VISIT_3_PREFIX}.WORK_ZIP4"       => "zip4",
   }
 
   TELEPHONE_MAP = {
@@ -97,7 +108,10 @@ class OperationalDataExtractor::Birth
       cell_phone   = nil
       phone        = nil
       mail_address = nil
+      work_address = nil
 
+
+      work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.work_address_type, :address_rank => primary_rank)
       mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type, :address_rank => primary_rank)
       home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu, :phone_rank => primary_rank)
       cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu, :phone_rank => primary_rank)
@@ -131,6 +145,17 @@ class OperationalDataExtractor::Birth
                                          :address_type => Address.mailing_address_type, :response_set => response_set)
             end
             OperationalDataExtractor::Base.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
+          end
+        end
+
+        if WORK_ADDRESS_MAP.has_key?(data_export_identifier)
+          unless value.blank?
+            work_address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.work_address_type.local_code).first
+            if work_address.nil?
+              work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
+                                         :address_type => Address.work_address_type, :response_set => response_set)
+            end
+            OperationalDataExtractor::Base.set_value(work_address, WORK_ADDRESS_MAP[data_export_identifier], value)
           end
         end
 
@@ -192,6 +217,11 @@ class OperationalDataExtractor::Birth
       if mail_address && !mail_address.to_s.blank?
         person.addresses.each { |a| a.demote_primary_rank_to_secondary }
         mail_address.save!
+      end
+
+      if work_address && !work_address.to_s.blank?
+        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
+        work_address.save!
       end
 
       if (cell_phone && !cell_phone.phone_nbr.blank?) ||
