@@ -120,6 +120,36 @@ describe OperationalDataExtractor::Birth do
       address.address_rank_code.should == 1
     end
 
+    it "extracts work address data" do
+
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+
+      @person.addresses.size.should == 0
+
+      response_set, instrument = prepare_instrument(@person, @participant, @survey)
+
+      take_survey(@survey, response_set) do |a|
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '123 Easy St.'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      OperationalDataExtractor::Birth.extract_data(response_set)
+
+      person  = Person.find(@person.id)
+      person.addresses.size.should == 1
+      address = person.addresses.first
+      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+      address.address_rank_code.should == 1
+    end
+
     it "extracts telephone operational data" do
       response_set, instrument = prepare_instrument(@person, @participant, @survey)
       @person.telephones.size.should == 0
