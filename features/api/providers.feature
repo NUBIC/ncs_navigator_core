@@ -8,8 +8,8 @@ Feature: Provider retrieval
     Given there exists a provider
 
   Scenario: GET /api/v1/providers requires authentication
-    When I GET /api/v1/providers with headers
-      | X-Client-ID | foo |
+    When I GET /api/v1/providers with
+      | header:X-Client-ID | foo |
 
     Then the response status is 401
 
@@ -24,17 +24,17 @@ Feature: Provider retrieval
     Given an authenticated user
     And the providers were last modified on "01/01/2000 00:00:00 GMT"
 
-    When I GET /api/v1/providers with headers
-      | X-Client-ID        | foo                           |
-      | If-Modified-Since  | Mon, 01 Oct 2012 00:00:00 GMT |
+    When I GET /api/v1/providers with
+      | header:X-Client-ID        | foo                           |
+      | header:If-Modified-Since  | Mon, 01 Oct 2012 00:00:00 GMT |
 
     Then the response status is 304
 
   Scenario: GET /api/v1/providers returns all providers
     Given an authenticated user
 
-    When I GET /api/v1/providers with headers
-      | X-Client-ID        | foo |
+    When I GET /api/v1/providers with
+      | header:X-Client-ID | foo |
 
     Then the response status is 200
     And the response body contains providers

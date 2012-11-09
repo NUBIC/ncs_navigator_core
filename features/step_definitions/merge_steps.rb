@@ -95,8 +95,9 @@ Given /^I complete the fieldwork set$/ do |table|
 
   steps %Q{
     When I POST /api/v1/fieldwork.json with
-      | start_date            | end_date            | client_id            |
-      | #{data['start_date']} | #{data['end_date']} | #{data['client_id']} |
+      | start_date         | #{data['start_date']} |
+      | end_date           | #{data['end_date']}   |
+      | header:X-Client-ID | #{data['client_id']}  |
     Then the response status is 200
   }
 
@@ -117,13 +118,9 @@ Given /^I complete the fieldwork set$/ do |table|
 end
 
 When /^the merge runs$/ do
-  ok = NcsNavigator::Core::Field::MergeWorker.jobs.all? do |job|
-    job_cls = job['class']
-    job_cls = (job_cls.class == String) ? job_cls.constantize : job_cls
-    job_cls.new.perform(*job['args'])
-  end
+  NcsNavigator::Core::Field::MergeWorker.drain
 
-  if !ok
+  if @logdev.string =~ /error|fatal/i
     puts @logdev.string
     raise 'Merge failed; see above log'
   end

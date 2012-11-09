@@ -233,7 +233,7 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "LOCATION#", :response_class => "string", :reference_identifier => "provider_id")
 
     # NAME PRACTICE
-    q = Factory(:question, :reference_identifier => "NAME_PRACTICE", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "prepopulated_name_practice", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "NAME OF PRACTICE", :response_class => "string", :reference_identifier => "name_practice")
 
     # prepopulated mode of contact

@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-
-class Api::FieldworkController < ApplicationController
-  respond_to :json
-
-  before_filter :require_client_id, :only => [:create, :update]
-
+class Api::FieldworkController < ApiController
   def create
-    unless %w(client_id end_date start_date).all? { |k| params.has_key?(k) }
+    unless %w(end_date start_date).all? { |k| params.has_key?(k) }
       render :nothing => true, :status => :bad_request and return
     end
 
-    fw = Fieldwork.from_psc(params, psc, current_staff_id, current_username).tap(&:save!)
+    fw = Fieldwork.from_psc(params[:start_date],
+                            params[:end_date],
+                            client_id,
+                            psc,
+                            current_staff_id,
+                            current_username)
+
+    fw.save!
 
     respond_to do |wants|
       wants.json do
@@ -27,7 +29,7 @@ class Api::FieldworkController < ApplicationController
     begin
       m = fw.merges.create!(:proposed_data => request.body.read,
                             :staff_id => current_staff_id,
-                            :client_id => params[:client_id])
+                            :client_id => client_id)
     ensure
       request.body.rewind
     end
@@ -41,11 +43,5 @@ class Api::FieldworkController < ApplicationController
     fw = Fieldwork.find_by_fieldwork_id(params['id'])
 
     respond_with fw
-  end
-
-  def require_client_id
-    if params[:client_id].blank?
-      render :nothing => true, :status => :bad_request
-    end
   end
 end

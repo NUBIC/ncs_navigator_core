@@ -7,34 +7,37 @@ Feature: Fieldwork check-out and check-in
   Scenario: PUT /api/v1/fieldwork/:uuid accepts data from clients
     Given an authenticated user
 
-    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
+    When the payload is
     """
     {
         "contacts": [],
         "participants": []
     }
     """
+    And I PUT the payload to /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+      | header:X-Client-ID | 1234567890 |
 
     Then the response status is 202
 
   Scenario: PUT /api/v1/fieldwork/:uuid requires authentication
-    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
+    Given the payload
     """
     {
         "contacts": [],
         "participants": []
     }
     """
+
+    When I PUT the payload to /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+      | header:X-Client-ID | 1234567890 |
 
     Then the response status is 401
 
   Scenario: GET /api/v1/fieldwork/:uuid returns the latest PUT
     Given an authenticated user
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
-    """
-    {}
-    """
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
+    And a fieldwork packet for "cf651bcf-ca1d-45ec-87c7-38cb995271df"
+
+    When the payload is
     """
     {
         "contacts": [
@@ -45,8 +48,9 @@ Feature: Fieldwork check-out and check-in
         "participants": []
     }
     """
-
-    When I GET /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df
+    And I PUT the payload to /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+      | header:X-Client-ID | 1234567890 |
+    And I GET /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df
 
     Then the response status is 200
     And the response body matches
@@ -63,12 +67,14 @@ Feature: Fieldwork check-out and check-in
 
   Scenario: PUT /api/v1/fieldwork/:uuid returns a URL to check the merge
     Given an authenticated user
-    And I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df?client_id=foo with
+
+    When the payload is
     """
     {}
     """
-
-    When I GET the referenced location
+    And I PUT the payload to /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+      | header:X-Client-ID | 1234567890 |
+    And I GET the referenced location
 
     Then the response status is 200
     And the response body matches
@@ -78,17 +84,19 @@ Feature: Fieldwork check-out and check-in
 
   Scenario: PUT /api/v1/fieldwork/:uuid requires a client ID
     Given an authenticated user
-    When I PUT /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df with
+    And the payload
     """
     {}
     """
+    When I PUT the payload to /api/v1/fieldwork/cf651bcf-ca1d-45ec-87c7-38cb995271df
 
     Then the response status is 400
 
   Scenario: POST /api/v1/fieldwork requires authentication
     When I POST /api/v1/fieldwork with
-      | start_date | end_date   | client_id |
-      | 2012-01-01 | 2012-02-01 | 123456789 |
+      | start_date         | 2012-01-01 |
+      | end_date           | 2012-02-01 |
+      | header:X-Client-ID | 1234567890 |
 
     Then the response status is 401
 
@@ -96,16 +104,16 @@ Feature: Fieldwork check-out and check-in
     Given an authenticated user
 
     When I POST /api/v1/fieldwork with
-      | end_date   | client_id |
-      | 2012-02-01 | 123456789 |
+      | start_date | 2012-01-01 |
+      | end_date   | 2012-02-01 |
     Then the response status is 400
 
     When I POST /api/v1/fieldwork with
-      | start_date | client_id |
-      | 2012-02-01 | 123456789 |
+      | start_date         | 2012-01-01 |
+      | header:X-Client-ID | 1234567890 |
     Then the response status is 400
 
     When I POST /api/v1/fieldwork with
-      | end_date   | start_date |
-      | 2012-01-01 | 2012-02-01 |
+      | end_date           | 2012-01-01 |
+      | header:X-Client-ID | 1234567890 |
     Then the response status is 400

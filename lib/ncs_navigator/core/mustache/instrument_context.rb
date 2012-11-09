@@ -374,10 +374,10 @@ module NcsNavigator::Core::Mustache
 
     def work_place_name
       result = "[PARTICIPANTS WORKPLACE NAME]"
-      if (event_type == 15)
+      if (event_type_code == 15)
         result = response_for("PREG_VISIT_2_3.WORK_NAME")
       end
-      if (event_type == 18)
+      if (event_type_code == 18)
         result = response_for("BIRTH_VISIT_3.WORK_NAME")
       end
       result
@@ -524,6 +524,10 @@ module NcsNavigator::Core::Mustache
         end
       end
       result
+    end
+
+    def event_type_code
+      @response_set.instrument.event.event_type_code
     end
 
     # IF EVENT_TYPE = PREGNANCY VISIT 1, PREGNANCY VISIT 2, OR FATHER, PRELOAD EVENT_TYPE

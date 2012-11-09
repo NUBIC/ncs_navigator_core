@@ -4,19 +4,25 @@ Given /^the sync attempts$/ do |table|
     id = sync['id']
     status = sync['status']
 
-    steps %Q{
-      When I PUT /api/v1/fieldwork/#{id}?client_id=foo with
-      """
-      {}
-      """
-      Then the response status is 202
-    }
+    step %Q{a fieldwork packet for "#{id}"}
 
     # Munge status.
     fw = Fieldwork.find_by_fieldwork_id(id)
 
     fw.update_attribute(:latest_merge_status, status)
   end
+end
+
+Given /^a fieldwork packet for "([^"]*)"$/ do |id|
+  steps %Q{
+    Given the payload
+    """
+    {}
+    """
+    When I PUT the payload to /api/v1/fieldwork/#{id} with
+      | header:X-Client-ID | foo |
+    Then the response status is 202
+  }
 end
 
 Given /^merging "([^"]*)" caused conflicts$/ do |fw_id, table|

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
-class Api::MergesController < ApplicationController
-  respond_to :json
-
+class Api::MergesController < ApiController
   def show
     respond_with Merge.find(params['id'])
   end

@@ -458,26 +458,6 @@ module NcsNavigator::Core::Mustache
         end
       end
 
-      describe ".work_place_name" do
-
-        it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
-          pending "need to add an event_type"
-          InstrumentContext.any_instance.stub(:response_for).and_return('My Work Name Entry for PV2')
-          instrument_context.work_place_name.should == 'My Work Name Entry for PV2'
-        end
-
-        it "returns work name as the most recent response for BIRTH_VISIT_3.WORK_NAME" do
-          pending "need to add an event_type"
-          InstrumentContext.any_instance.stub(:response_for).and_return('My Work Name Entry for Birth')
-          instrument_context.work_place_name.should == 'My Work Name Entry for Birth'
-        end
-
-        it "return '[PARTICIPANTS WORKPLACE NAME]' if no reponse for WORK_NAME is provided" do
-          InstrumentContext.any_instance.stub(:response_for).and_return(nil)
-          instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
-        end
-      end
-
       describe ".do_when_will_live_with_you" do
         it "returns generic sentence when no conditions met" do
           instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
@@ -796,12 +776,6 @@ module NcsNavigator::Core::Mustache
         end
       end
 
-      describe ".work_place_name" do
-        it "returns the name of the participant's workplace" do
-          pending
-        end
-      end
-
       describe ".work_address" do
         let(:person) { Factory(:person) }
         let(:participant) { Factory(:participant) }
@@ -1027,6 +1001,49 @@ module NcsNavigator::Core::Mustache
 
     end
 
+    context "for a work_place_name method" do
+      describe ".work_place_name_for_pv2" do
+      
+        before(:each) do
+          setup_survey_instrument(create_pv2_and_birth_with_work_name)
+        end
+
+        let(:instrument_context) { InstrumentContext.new(@response_set) }
+        let(:work_name) { "PREG_VISIT_2_3.WORK_NAME" }
+        
+        it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
+          take_survey(@survey, @response_set) do |a|
+            a.str work_name, 'NWU'
+          end
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15)
+          instrument_context.work_place_name.should == 'NWU'
+        end
+      end
+
+      describe ".work_place_name_for_birth" do
+      
+        before(:each) do
+          setup_survey_instrument(create_pv2_and_birth_with_work_name)
+        end
+
+        let(:instrument_context) { InstrumentContext.new(@response_set) }
+        let(:work_name) { "BIRTH_VISIT_3.WORK_NAME" }
+        
+
+        it "returns work name as the most recent response for BIRTH_VISIT_3.WORK_NAME" do
+          take_survey(@survey, @response_set) do |a|
+            a.str work_name, 'NUBIC'
+          end
+          @response_set.instrument.event = Factory(:event, :event_type_code => 18)
+          instrument_context.work_place_name.should == 'NUBIC'
+        end
+
+        it "return '[PARTICIPANTS WORKPLACE NAME]' if no reponse for WORK_NAME is provided" do
+          @response_set.instrument.event = Factory(:event)
+          instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
+        end
+      end
+    end
 
     describe "choose_date_range_for_birth_instrument" do
       it "returns proper range depending on whether PregVisit1 or 2 have been administered" do
