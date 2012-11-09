@@ -87,7 +87,7 @@ module NcsNavigator::Core
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
           rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          assert_response_value(rsp.populate, "NAME_PRACTICE", "provider name of practice")
+          assert_response_value(rsp.populate, "prepopulated_name_practice", "provider name of practice")
         end
 
         it "uses the first known provider to prepopulate" do
@@ -98,7 +98,7 @@ module NcsNavigator::Core
           person_provider_link = Factory(:person_provider_link, :person => @person, :provider => provider)
 
           rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
-          assert_response_value(rsp.populate, "NAME_PRACTICE", "provider name of practice")
+          assert_response_value(rsp.populate, "prepopulated_name_practice", "provider name of practice")
         end
 
       end

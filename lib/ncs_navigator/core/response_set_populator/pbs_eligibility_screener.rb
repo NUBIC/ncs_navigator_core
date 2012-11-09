@@ -10,7 +10,7 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_psu_id",
         "prepopulated_practice_num",
         "prepopulated_provider_id",
-        "NAME_PRACTICE"
+        "prepopulated_name_practice"
       ]
     end
 
@@ -41,7 +41,7 @@ module NcsNavigator::Core::ResponseSetPopulator
                     person.provider.pbs_list.try(:practice_num) if person.provider
                   when "prepopulated_provider_id"
                     person.provider.public_id if person.provider
-                  when "NAME_PRACTICE"
+                  when "prepopulated_name_practice"
                     person.provider.name_practice if person.provider
                   else
                     nil
