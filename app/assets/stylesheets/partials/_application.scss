@@ -100,6 +100,14 @@ label.error {
   padding: 5px;
 }
 
+.error_dialog {
+  text-align: center;
+  h1 {
+    color: maroon;
+    font-size: 1.5em;
+  }
+}
+
 select.important_field,
 input.important_field {
   border: 2px solid maroon;
