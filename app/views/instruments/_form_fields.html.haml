@@ -1,5 +1,5 @@
 .column-container
-   
+
   .column
   %br
     = render "shared/ncs_code_select", { :f => f, :code => :instrument_status_code, :label_text => "Instrument Status", :notify_marker => true }
@@ -25,8 +25,8 @@
       %br
       = f.text_field :instrument_end_time, :class => "timepicker"
 
-
-  .hidden
+  - cls = (controller_name == 'instruments' && action_name == 'edit') ? "all_fields" : "hidden"
+  %div{ :class => cls}
     = render "shared/ncs_code_select", { :f => f, :code => :instrument_type_code, :label_text => "Instrument Type", :other => :instrument_type_other }
 
     %p
@@ -39,7 +39,7 @@
       %span{ :class => "help_icon" }
       = render "instruments/instrument_repeat_key_tooltip"
     %p
-      = f.text_field :instrument_repeat_key 
+      = f.text_field :instrument_repeat_key
 
     = render "shared/ncs_code_select", { :f => f, :code => :instrument_mode_code, :label_text => "Instrument Mode", :other => :instrument_mode_other }
 

@@ -228,4 +228,9 @@ $(document).ready(function() {
     }
   });
 
+  // instrument
+  $(".new_instrument").validate();
+  $(".edit_instrument").validate();
+
+
 });
