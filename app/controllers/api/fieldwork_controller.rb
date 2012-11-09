@@ -15,12 +15,7 @@ class Api::FieldworkController < ApiController
 
     fw.save!
 
-    respond_to do |wants|
-      wants.json do
-        headers['Location'] = api_fieldwork_path(fw.fieldwork_id)
-        render :json => fw
-      end
-    end
+    respond_with fw, :location => api_fieldwork_path(fw.fieldwork_id)
   end
 
   def update
@@ -35,8 +30,8 @@ class Api::FieldworkController < ApiController
     end
 
     NcsNavigator::Core::Field::MergeWorker.perform_async(m.id)
-    headers['Location'] = api_merge_path(m.id)
-    render :json => { 'ok' => true }, :status => :accepted
+
+    respond_with({ 'ok' => true }, :status => :accepted, :location => api_merge_path(m.id))
   end
 
   def show

@@ -98,7 +98,7 @@ Given /^I complete the fieldwork set$/ do |table|
       | start_date         | #{data['start_date']} |
       | end_date           | #{data['end_date']}   |
       | header:X-Client-ID | #{data['client_id']}  |
-    Then the response status is 200
+    Then the response status is 201
   }
 
   @context.update(
