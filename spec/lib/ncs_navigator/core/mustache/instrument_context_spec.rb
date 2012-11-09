@@ -574,6 +574,196 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".choose_date_range_for_birth_instrument" do
+
+        it "returns proper range if PregVisit1 have been administered" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+
+          instrument_context.choose_date_range_for_birth_instrument.should == 'between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
+        end
+
+        it "returns proper range if PregVisit2 have been administered" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+
+          instrument_context.choose_date_range_for_birth_instrument.should == 'between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
+        end
+
+        it "returns the PV2 date if both PV1 and PV2 were administered" do
+          date_pv1 = 1.months.ago
+          date_pv2 = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
+          @participant.events.reload
+
+          instrument_context.choose_date_range_for_birth_instrument.should == 'between ' + date_pv2.to_s + ' and ' + instrument_context.c_dob.to_s
+
+        end
+
+        it "returns 'before' dob if no PV1 or PV2 have been administered" do
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @person.person_dob = 1.years.ago
+          instrument_context.choose_date_range_for_birth_instrument.should == 'before ' + instrument_context.c_dob.to_s
+
+        end
+
+      end
+
+      describe ".date_of_preg_visit_1" do
+
+        it "returns the most recent event end date for pv1" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+          instrument_context.date_of_preg_visit_1.should == date
+
+        end
+
+        it "returns nil if there are no completed pv1 events" do
+          instrument_context.date_of_preg_visit_1.should be_nil
+        end
+
+      end
+
+      describe ".date_of_preg_visit_2" do
+
+        it "returns the most recent event end date for pv2" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+          instrument_context.date_of_preg_visit_2.should == date
+        end
+
+        it "returns nil if there are no completed pv1 events" do
+          instrument_context.date_of_preg_visit_2.should be_nil
+        end
+
+      end
+
+      describe ".date_of_last_pv_visit" do
+
+        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no completed events for pv1 and pv2" do
+          @participant  = @response_set.participant
+          @person = @participant.person
+          instrument_context.date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
+
+        end
+
+        it "returns the end date for pv1" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :participant => @participant)
+          @participant.events.reload
+          instrument_context.date_of_preg_visit_1.should == date
+        end
+
+        it "returns the end date for pv2" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_type_code => 13, :participant => @participant)
+          @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
+          @participant.events.reload
+          instrument_context.date_of_preg_visit_1.should == date
+
+        end
+
+      end
+
+      describe "overall sentence call for 'in the past', 'ever' and 'since'" do
+        # Have you {ever} been told by a doctor or other health care provider that you had asthma {since
+        #   {DATE OF FIRST PREGNANCY VISIT 1 INTERVIEW}}/{since {DATE OF MOST RECENT SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW}}
+        it "returns ever and in the past for new pv1" do
+          str = "Have you " + instrument_context.ever + " been told by a doctor or other health care provider that you had asthma" + instrument_context.since + " " +
+          instrument_context.date_of_preg_visit_1.to_s
+          str.strip.should == "Have you ever been told by a doctor or other health care provider that you had asthma"
+        end
+
+        it "returns since and date when completed pv1" do
+          date = Date.today
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_end_date => date, :event_type_code => 13, :participant => @participant)
+          @participant.events.reload
+          str = "Have you " + instrument_context.ever + "been told by a doctor or other health care provider that you had asthma " + instrument_context.since + " " +
+          instrument_context.date_of_preg_visit_1.to_s
+          str.should == "Have you been told by a doctor or other health care provider that you had asthma since "+ date.to_s
+        end
+      end
+
+      describe ".in_the_past" do
+
+        it "returns 'in the past' if no pv1 is ever complete" do
+          instrument_context.in_the_past.should == "in the past"
+
+        end
+
+        it "returns empty string if pv1 was completed" do
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_end_date => Date.today, :event_type_code => 13, :participant => @participant)
+          @participant.events.reload
+          instrument_context.in_the_past.should == ""
+
+        end
+
+      end
+
+      describe ".since" do
+
+        it "returns empty string if no pv1 is ever complete" do
+          instrument_context.since.should == ""
+        end
+
+        it "returns 'since' if pv1 was completed" do
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_end_date => Date.today, :event_type_code => 13, :participant => @participant)
+          @participant.events.reload
+          instrument_context.since.should == "since"
+
+        end
+
+      end
+
+      describe ".ever" do
+
+        it "returns 'ever' if no pv1 is ever complete" do
+          instrument_context.ever.should == "ever"
+        end
+
+        it "returns empty string if pv1 was completed" do
+          @participant  = @response_set.participant
+          @person = @participant.person
+          @response_set.instrument.event = Factory(:event, :event_end_date => Date.today, :event_type_code => 13, :participant => @participant)
+          @participant.events.reload
+
+          instrument_context.ever.should == ""
+
+        end
+
+      end
+
     end
 
     context "for a pregnancy visit one saq" do
@@ -685,95 +875,6 @@ module NcsNavigator::Core::Mustache
           instrument_context.p_dob.should == '[UNKNOWN]'
         end
 
-      end
-
-      describe ".in_the_past" do
-
-        it "returns 'in the past' if no pv1 is ever complete" do
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).in_the_past.should == "in the past"
-
-        end
-
-        it "returns empty string if pv1 was completed" do
-          event = mock_model(Event, :event_type_code => 13, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).in_the_past.should == ""
-
-        end
-
-      end
-
-      describe ".since" do
-
-        it "returns empty string if no pv1 is ever complete" do
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).since.should == ""
-        end
-
-        it "returns 'since' if pv1 was completed" do
-          event = mock_model(Event, :event_type_code => 13, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).since.should == "since"
-
-        end
-
-      end
-
-      describe ".ever" do
-
-        it "returns 'ever' if no pv1 is ever complete" do
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).ever.should == "ever"
-
-        end
-
-        it "returns empty string if pv1 was completed" do
-          event = mock_model(Event, :event_type_code => 13, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).ever.should == ""
-
-        end
-
-      end
-
-      describe "overall sentance call for 'in the past', 'ever' and 'since'" do
-
-        let(:date) { Date.today }
-        let(:person) { mock_model(Person) }
-        let(:participant) { mock_model(Participant, :person => person) }
-        let(:rs) { mock_model(ResponseSet, :person => person, :participant => participant) }
-        let(:context) { InstrumentContext.new(rs) }
-        let(:event) { mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true) }
-
-        # Have you {ever} been told by a doctor or other health care provider that you had asthma {since
-        #   {DATE OF FIRST PREGNANCY VISIT 1 INTERVIEW}}/{since {DATE OF MOST RECENT SUBSEQUENT PREGNANCY VISIT 1 INTERVIEW}}
-        it "returns ever and in the past for new pv1" do
-          str = "Have you"
-          participant.stub(:completed_events => [])
-          str = str + " " + context.ever + " been told by a doctor or other health care provider that you had asthma" + context.since + " " + context.date_of_preg_visit_1.to_s
-          str.strip.should == "Have you ever been told by a doctor or other health care provider that you had asthma"
-        end
-
-        it "returns since and date when completed pv1" do
-          str = "Have you "
-          participant.stub(:completed_events => [event])
-
-          str = str + context.ever + "been told by a doctor or other health care provider that you had asthma " + context.since + " " + context.date_of_preg_visit_1.to_s
-          str.should == "Have you been told by a doctor or other health care provider that you had asthma since "+ date.to_s
-        end
       end
 
       describe ".work_address" do
@@ -925,92 +1026,18 @@ module NcsNavigator::Core::Mustache
       end
 
 
-      describe ".date_of_preg_visit_1" do
-
-        it "returns the most recent event end date for pv1" do
-          date = Date.today
-          event = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_preg_visit_1.should == date
-        end
-
-        it "returns nil if there are no completed pv1 events" do
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_preg_visit_1.should be_nil
-        end
-
-      end
-
-      describe ".date_of_preg_visit_2" do
-
-        it "returns the most recent event end date for pv2" do
-          date = Date.today
-          event = mock_model(Event, :event_type_code => 15, :event_end_date => date, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_preg_visit_2.should == date
-        end
-
-        it "returns nil if there are no completed pv1 events" do
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_preg_visit_2.should be_nil
-        end
-
-      end
-
-      describe ".date_of_last_pv_visit" do
-
-        it "returnt '[DATE OF PV1 VISIT/DATE OF PV2 VISIT]' if there are no completed events for pv1 and pv2" do
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_last_pv_visit.should == "[DATE OF PV1 VISIT/DATE OF PV2 VISIT]"
-
-        end
-
-        it "returns the end date for pv1" do
-          date = Date.today
-          event_pv1 = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => true)
-          event_pv2 = mock_model(Event, :event_type_code => 15, :event_end_date => date, :closed? => false)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event_pv1, event_pv2])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_last_pv_visit.should == date
-        end
-
-        it "returns the end date for pv2" do
-          date = Date.today
-          event_pv1 = mock_model(Event, :event_type_code => 13, :event_end_date => date, :closed? => false)
-          event_pv2 = mock_model(Event, :event_type_code => 15, :event_end_date => date, :closed? => true)
-          person = mock_model(Person)
-          participant = mock_model(Participant, :completed_events => [event_pv1, event_pv2])
-          rs = mock_model(ResponseSet, :person => person, :participant => participant)
-          InstrumentContext.new(rs).date_of_last_pv_visit.should == date
-        end
-
-
-      end
-
-
     end
 
     context "for a work_place_name method" do
       describe ".work_place_name_for_pv2" do
-      
+
         before(:each) do
           setup_survey_instrument(create_pv2_and_birth_with_work_name)
         end
 
         let(:instrument_context) { InstrumentContext.new(@response_set) }
         let(:work_name) { "PREG_VISIT_2_3.WORK_NAME" }
-        
+
         it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
           take_survey(@survey, @response_set) do |a|
             a.str work_name, 'NWU'
@@ -1021,14 +1048,14 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".work_place_name_for_birth" do
-      
+
         before(:each) do
           setup_survey_instrument(create_pv2_and_birth_with_work_name)
         end
 
         let(:instrument_context) { InstrumentContext.new(@response_set) }
         let(:work_name) { "BIRTH_VISIT_3.WORK_NAME" }
-        
+
 
         it "returns work name as the most recent response for BIRTH_VISIT_3.WORK_NAME" do
           take_survey(@survey, @response_set) do |a|
@@ -1042,12 +1069,6 @@ module NcsNavigator::Core::Mustache
           @response_set.instrument.event = Factory(:event)
           instrument_context.work_place_name.should == '[PARTICIPANTS WORKPLACE NAME]'
         end
-      end
-    end
-
-    describe "choose_date_range_for_birth_instrument" do
-      it "returns proper range depending on whether PregVisit1 or 2 have been administered" do
-        pending
       end
     end
 
