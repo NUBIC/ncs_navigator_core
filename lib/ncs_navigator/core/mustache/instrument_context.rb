@@ -365,7 +365,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def c_fname_or_the_child
-      about_person.blank? ? "the Child" : about_person.first_name
+      (about_person.blank? || about_person.first_name.blank?) ? "the Child" : about_person.first_name
     end
 
     def c_dob
