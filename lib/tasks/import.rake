@@ -32,12 +32,28 @@ namespace :import do
     t.user = cas_cli.authenticate(username, password)
   end
 
+  task :find_participants_for_psc => :environment do |t|
+    class << t; attr_accessor :participants; end
+
+    # Expected participants for PSC are those 1) actively followed and 2) not children.
+    t.participants = Participant.includes(:participant_person_links => [:person], :events => [:event_type]).
+      where('being_followed = ? AND p_type_code != ?', true, 6)
+  end
+
+  task :set_whodunnit => :environment do
+    PaperTrail.whodunnit = 'import rake tasks'
+  end
+
   def import_wh_config
     task('import:warehouse_setup').config
   end
 
   def user_for_psc
     task('import:psc_setup').user
+  end
+
+  def expected_participants_for_psc
+    task('import:find_participants_for_psc').participants
   end
 
   desc 'Import all data'
@@ -91,14 +107,11 @@ namespace :import do
   end
 
   desc 'Check for imported participants which are not in PSC'
-  task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment] do
+  task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment, :find_participants_for_psc] do
     require 'ncs_navigator/core'
     psc = PatientStudyCalendar.new(user_for_psc)
 
-    # Expected participants for PSC are those 1) actively followed and 2) not children.
-    expected_ps = Participant.includes(:participant_person_links => [:person]).
-      where('being_followed = ? AND p_type_code != ?', true, 6)
-    missing_ps = expected_ps.reject { |p|
+    missing_ps = expected_participants_for_psc.reject { |p|
       psc.is_registered?(p).tap do |result|
         $stderr.write(result ? '.' : '!')
         $stderr.flush
@@ -107,7 +120,7 @@ namespace :import do
     $stderr.puts
 
     if missing_ps.empty?
-      $stderr.puts "All #{expected_ps.size} expected participant#{'s' unless expected_ps.size == 1} present."
+      $stderr.puts "All #{expected_participants_for_psc.size} expected participant#{'s' unless expected_participants_for_psc.size == 1} present."
     else
       $stderr.puts "The following participant#{'s' unless missing_ps.size == 1} expected but not present:"
       missing_ps.each do |p|
@@ -132,18 +145,34 @@ namespace :import do
     pass.import
   end
 
-  desc 'Schedules upcoming events for participants'
-  task :schedule_participant_events => [:psc_setup, :environment]  do
-    days_out = ENV['DAYS_OUT'] || 14
-
-    participants = Participant.select { |p| p.pending_events.blank? && !p.events.blank? }.
-      select { |p| p.person }
-
+  desc 'Schedule upcoming events for followed participants if needed'
+  task :schedule_participant_events => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
     psc = PatientStudyCalendar.new(user_for_psc)
 
-    participants.each do |p|
+    ps_to_advance = expected_participants_for_psc.select { |p| p.pending_events.empty? }
+
+    $stderr.puts "#{ps_to_advance.size} of #{expected_participants_for_psc.size} followed participants need pending events."
+
+    ps_to_advance.each_with_index do |p, i|
+      $stderr.print("\rAdvancing #{i + 1}/#{ps_to_advance.size} to next state...")
+      Rails.logger.info("Advancing imported case #{p.p_id} to next state")
+
+      last_event = Event.sort(p.events).reverse.sort_by { |e| e.event_start_date }.last
+
+      Rails.logger.info("- Currently #{p.state.inspect}")
+      Rails.logger.info("- Updating based on #{last_event.event_type} on #{last_event.event_start_date}")
+      p.update_state_to_next_event(last_event)
+      Rails.logger.info("- Updated to #{p.state.inspect}")
+
+      Rails.logger.info("- Scheduling in PSC...")
       Event.schedule_and_create_placeholder(psc, p)
+      p.events.reload # for next log statement
+      Rails.logger.info("- PSC scheduling completed. Pending events are now #{p.pending_events.collect { |e| e.event_type.to_s }.inspect}")
+      if p.pending_events.empty?
+        $stderr.puts("\n#{p.p_id} still has no pending events! Its last event was #{last_event.event_type} (#{last_event.event_type.local_code}) on #{last_event.event_start_date} (#{last_event.event_id}). Its current state is #{p.state.inspect}.")
+      end
     end
+    $stderr.puts("\rAdvanced #{ps_to_advance.size} case(s) to next state.")
   end
 
   desc 'Re-schedule events that are pending (i.e. w/out an event_end_date)'
