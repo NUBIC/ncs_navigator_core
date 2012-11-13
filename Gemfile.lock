@@ -33,6 +33,13 @@ GIT
     database_cleaner (0.7.2)
 
 GIT
+  remote: https://github.com/NUBIC/ncs_mdes.git
+  revision: a9c1ef89f8a9ee5003c110e280c02efc14770da9
+  specs:
+    ncs_mdes (0.10.1.pre)
+      nokogiri (~> 1.4)
+
+GIT
   remote: https://github.com/NUBIC/ncs_navigator_configuration.git
   revision: 2f2ba5428786f4e1bd38313a74a1888ce73977bf
   specs:
@@ -298,8 +305,6 @@ GEM
     multi_json (1.3.7)
     multipart-post (1.1.5)
     mustache (0.99.4)
-    ncs_mdes (0.10.0)
-      nokogiri (~> 1.4)
     ncs_navigator_authority (0.0.2)
       aker (~> 3.0)
       faraday (~> 0.7.5)
@@ -499,7 +504,7 @@ DEPENDENCIES
   json-schema
   launchy
   mustache
-  ncs_mdes (>= 0.10.0)
+  ncs_mdes (>= 0.10.0)!
   ncs_mdes_warehouse!
   ncs_navigator_authority
   ncs_navigator_configuration!

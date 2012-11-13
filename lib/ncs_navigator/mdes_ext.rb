@@ -4,6 +4,18 @@
 require 'ncs_navigator/mdes'
 
 module NcsNavigator::Mdes
+  class DispositionCode
+    include ActiveModel::Serialization
+
+    def attributes
+      ATTRIBUTES.each_with_object({}) { |attr, h| h[attr] = send(attr) }
+    end
+
+    def read_attribute_for_serialization(attr)
+      send(attr)
+    end
+  end
+
   class TransmissionTable
     ##
     # A list starting with this table and tracing back to its primary
