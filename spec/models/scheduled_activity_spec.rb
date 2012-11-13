@@ -22,6 +22,19 @@ describe ScheduledActivity do
     end
   end
 
+  describe "occurred?" do
+    let(:sa) { ScheduledActivity.new(attrs) }
+
+    it "should be true if current_state is 'occurred'" do
+      sa.current_state = "occurred"
+      sa.should be_occurred
+    end
+
+    it "should be false if current_state is other than'occurred'" do
+      sa.should_not be_occurred
+    end
+  end
+
   describe ".consent_activity?" do
     it "is true if the ScheduledActivity.activity_type includes the word Consent" do
       ScheduledActivity.new(:activity_type => "Consent").should be_consent_activity

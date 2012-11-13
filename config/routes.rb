@@ -58,6 +58,7 @@ NcsNavigatorCore::Application.routes.draw do
       get :edit_instrument
       put :finalize_instrument
       get :decision_page
+      get :saq_instrument
     end
     resources :instruments, :except => [:index, :destroy]
     resources :events, :except => [:index, :destroy]

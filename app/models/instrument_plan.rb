@@ -1,6 +1,6 @@
 class InstrumentPlan
 
-  attr_accessor :scheduled_activities
+  attr_accessor :scheduled_activities, :occurred_activities
 
   def self.from_schedule(schedule = nil)
     raise "No parameter supplied to build plan" if schedule.blank?
@@ -12,6 +12,7 @@ class InstrumentPlan
   # Creates a new instance of the InstrumentPlan
   def initialize(activities = [])
     @scheduled_activities = activities
+    @occurred_activities = []
   end
 
   def populate_from_schedule(schedule)
@@ -28,6 +29,7 @@ class InstrumentPlan
     activities(schedule).each do |activity|
       sa = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
       @scheduled_activities << sa if sa.scheduled?
+      @occurred_activities << sa if sa.occurred?
     end
   end
 
@@ -130,6 +132,16 @@ class InstrumentPlan
   def activities_for_event(event = nil)
     event = event.downcase.gsub(" ", "_") if event
     event.nil? ? @scheduled_activities : @scheduled_activities.select{ |sa| sa.event == event }
+  end
+
+  ##
+  # Returns all OccurredActivities for the given event
+  #
+  # @param [String] - the event
+  # @return [Array<ScheduledActivity>]
+  def occurred_activities_for_event(event = nil)
+    event = event.downcase.gsub(" ", "_") if event
+    event.nil? ? @occurred_activities : @occurred_activities.select{ |oa| oa.event == event }
   end
 
   ##

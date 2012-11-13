@@ -27,6 +27,18 @@ describe InstrumentPlan do
         end
       end
 
+      describe ".occurred_activities_for_event" do
+        it "returns all the occurred_activities for the particular event if event is specified" do
+          occurred_activities = InstrumentPlan.from_schedule(participant_plan).occurred_activities_for_event("pregnancy_visit_1")
+          occurred_activities.size.should  == 2
+        end
+
+        it "returns all the occurred_activities for the participant schedule if event is not specified" do
+          occurred_activities = InstrumentPlan.from_schedule(participant_plan).occurred_activities_for_event()
+          occurred_activities.size.should  == 3
+        end
+      end
+
       describe ".instruments" do
 
         let(:plan) { InstrumentPlan.from_schedule(participant_plan) }
@@ -472,6 +484,38 @@ describe InstrumentPlan do
   def participant_plan
     {
       'days' => {
+        '2010-12-01' => {
+          'activities' => [
+            {
+              'id' => '51',
+              'activity' => { 'name' => 'Pregnancy Visit 1 Interview', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'occurred' },
+              'labels' => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 order:01_01 participant_type:mother'
+            },
+            {
+              'id' => '52',
+              'activity' => { 'name' => 'Pregnancy Visit 1 SAQ', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'occurred' },
+              'labels' => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0 order:02_01 participant_type:mother '
+            }
+          ]
+        },
+        '2010-12-15' => {
+          'activities' => [
+            {
+              'id' => '53',
+              'activity' => { 'name' => 'Pregnancy Visit 2 Interview', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-15',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'occurred' },
+              'labels' => 'event:pregnancy_visit_2 instrument:2.0:ins_que_pregvisit2_int_ehpbhi_p2_v2.0 order:01_01 participant_type:mother'
+            }
+          ]
+        },
         '2011-01-01' => {
           'activities' => [
             {
