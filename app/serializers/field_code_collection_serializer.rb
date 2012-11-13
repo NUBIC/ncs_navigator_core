@@ -1,5 +1,5 @@
 class FieldCodeCollectionSerializer < ActiveModel::Serializer
-  has_many :disposition_codes
+  has_many :disposition_codes, :serializer => DispositionCodeSerializer
   has_many :ncs_codes
 
   root false
