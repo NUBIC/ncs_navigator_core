@@ -52,7 +52,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :remove_from_active_followup
     end
     resources :participant_consents, :except => [:index, :destroy] do
-      member do
+      collection do
         get :new_child
         post :create_child
       end

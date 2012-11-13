@@ -64,12 +64,6 @@ class ParticipantConsentsController < ApplicationController
   # PUT /participant_consents/1.json
   def update
     @participant_consent = ParticipantConsent.find(params[:id])
-    if params[:contact_link_id]
-      @contact_link = ContactLink.find(params[:contact_link_id])
-      redirect_action = decision_page_contact_link_path(@contact_link)
-    else
-      redirect_action = person_path(@participant_consent.participant.person)
-    end
 
     respond_to do |format|
       if @participant_consent.update_attributes(params[:participant_consent])
@@ -87,12 +81,11 @@ class ParticipantConsentsController < ApplicationController
 
   # GET /participant_consents/new_child
   def new_child
-    @participant = Participant.new
     @child_guardian = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
     @contact = @contact_link.contact
-    @participant_consent = ParticipantConsent.new(:participant => @participant,
-                                                  :contact => @contact,
+    @participant_consent = ParticipantConsent.new(:contact => @contact,
+                                                  :psu => @child_guardian.psu,
                                                   :consent_form_type_code => 6, # Consent for the child’s participation
                                                   :consent_date => Date.today)
 
@@ -160,6 +153,16 @@ class ParticipantConsentsController < ApplicationController
       else
         participant.unenroll!(psc, "Consent withdrawn") unless participant.unenrolled?
       end
+    end
+
+    def redirect_action
+      if params[:contact_link_id]
+        @contact_link = ContactLink.find(params[:contact_link_id])
+        decision_page_contact_link_path(@contact_link)
+      else
+        person_path(@participant_consent.participant.person)
+      end
+
     end
 
 end

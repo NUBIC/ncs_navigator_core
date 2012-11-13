@@ -3,15 +3,20 @@
   = render "shared/low_intensity_consent_script" if @participant.low_intensity?
 
   = form_for(@participant_consent, :html => {:autocomplete => "off"}) do |f|
-    = render "shared/custom_error_messages", :object => f.object
+    %fieldset{ :class => 'participant_consent' }
+      %legend
+        Participant Consent
 
-    = f.hidden_field :psu_code
-    = f.hidden_field :participant_id
-    = f.hidden_field :contact_id
-    = hidden_field_tag :contact_link_id, @contact_link.id if @contact_link
+      = render "shared/custom_error_messages", :object => f.object
 
-    - f.object.consent_form_type_code = -4 # ensure phase one consent
-    = render "shared/ncs_code_select", { :f => f, :code => :consent_type_code,  :label_text => "Consent Type" }
-    = render "shared/ncs_code_select", { :f => f, :code => :consent_given_code, :label_text => "Consent Given" }
+      = f.hidden_field :psu_code
+      = f.hidden_field :participant_id
+      = f.hidden_field :contact_id
+      = hidden_field_tag :contact_link_id, @contact_link.id if @contact_link
+
+      - f.object.consent_form_type_code = -4 # ensure phase one consent
+      = f.hidden_field :consent_form_type_code
+      = render "shared/ncs_code_select", { :f => f, :code => :consent_type_code,  :label_text => "Consent Type" }
+      = render "shared/ncs_code_select", { :f => f, :code => :consent_given_code, :label_text => "Consent Given" }
 
     = render "common_form_fields", :f => f

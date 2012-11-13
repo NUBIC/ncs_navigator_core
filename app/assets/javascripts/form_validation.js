@@ -1,7 +1,16 @@
 $(document).ready(function() {
 
   // participant
-
+  $(".new_participant_consent").validate({
+    rules: {
+      'person[first_name]': {
+        maxlength: 30
+      },
+      'person[last_name]': {
+        maxlength: 30
+      }
+    }
+  })
 
   // person
   $(".new_person").validate({

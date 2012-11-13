@@ -642,6 +642,10 @@ class Participant < ActiveRecord::Base
     dt
   end
 
+  def child_participant?
+    self.p_type_code == 6
+  end
+
   ##
   # Only Participants who are Pregnant or Trying to become pregnant
   # should be presented with the consent form, otherwise they should be ineligible
