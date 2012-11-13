@@ -191,7 +191,7 @@ NcsNavigatorCore::Application.routes.draw do
     scope '/v1' do
       resources :fieldwork, :only => [:create, :update, :show]
       resources :merges
-      resources :ncs_codes, :only => :index
+      resources :code_lists, :only => :index
       resources :providers, :only => :index
 
       match '/system-status', :to => 'status#show'
