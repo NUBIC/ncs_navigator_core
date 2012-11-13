@@ -19,7 +19,7 @@ Given /^a fieldwork packet for "([^"]*)"$/ do |id|
     """
     {}
     """
-    When I PUT the payload to /api/v1/fieldwork/#{id} with
+    When I PUT the payload to /api/v1/fieldwork/#{id}.json with
       | header:X-Client-ID | foo |
     Then the response status is 202
   }
