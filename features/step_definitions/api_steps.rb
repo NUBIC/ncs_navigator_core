@@ -155,14 +155,16 @@ end
 Then /^the response body satisfies the (.+) schema$/ do |schema|
   fn = case schema
        when 'providers'; 'providers_schema.json'
-       when 'NCS codes'; 'ncs_codes_schema.json'
+       when 'code lists'; 'code_lists_schema.json'
        else raise %Q{Cannot map "#{schema}" to a schema filename}
        end
 
   fp = File.expand_path("../../../vendor/ncs_navigator_schema/#{fn}", __FILE__)
 
-  schema = JSON.parse(File.read(fp))
-  errors = NcsNavigator::Core::Field::Validator.new.fully_validate(json, schema)
+  v = NcsNavigator::Core::Field::Validator.new
+
+  schema = v.expanded_schema(JSON.parse(File.read(fp)))
+  errors = v.fully_validate(json, schema)
 
   errors.should be_empty
 end

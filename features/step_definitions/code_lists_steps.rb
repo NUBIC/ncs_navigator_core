@@ -14,3 +14,7 @@ end
 Then /^the response body contains NCS codes$/ do
   json['ncs_codes'].should_not be_blank
 end
+
+Then /^the response body contains MDES disposition codes$/ do
+  json['disposition_codes'].should_not be_blank
+end

@@ -27,7 +27,16 @@ Feature: Code lists retrieval
 
     Then the response status is 304
 
-  Scenario: GET /api/v1/code_lists returns all NCS codes
+  Scenario: GET /api/v1/code_lists satisfies its schema
+    Given an authenticated user
+
+    When I GET /api/v1/code_lists with
+      | header:X-Client-ID | foo |
+
+    Then the response status is 200
+    And the response body satisfies the code lists schema
+
+  Scenario: GET /api/v1/code_lists returns MDES version information
     Given an authenticated user
 
     When I GET /api/v1/code_lists with
@@ -36,5 +45,20 @@ Feature: Code lists retrieval
     Then the response status is 200
     And the response body contains the MDES version
     And the response body contains the MDES specification version
+
+  Scenario: GET /api/v1/code_lists returns all NCS codes
+    Given an authenticated user
+
+    When I GET /api/v1/code_lists with
+      | header:X-Client-ID | foo |
+
     And the response body contains NCS codes
-    And the response body satisfies the NCS codes schema
+
+  Scenario: GET /api/v1/code_lists returns all MDES disposition codes
+    Given an authenticated user
+
+    When I GET /api/v1/code_lists with
+      | header:X-Client-ID | foo |
+
+    Then the response status is 200
+    And the response body contains MDES disposition codes
