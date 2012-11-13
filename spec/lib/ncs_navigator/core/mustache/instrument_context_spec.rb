@@ -59,6 +59,17 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".institution" do
+        it "returns the name of the institution involved in the study" do
+          instrument_context.institution.should == sc_config["study_center_name"]
+        end
+      end
+
+      describe ".county" do
+        it "returns the county associated with the study" do
+          instrument_context.county.should == "Cook County, IL (Wave 1)"
+        end
+      end
     end
 
     context "setting the current_user" do
@@ -437,19 +448,34 @@ module NcsNavigator::Core::Mustache
 
       describe ".birthing_place" do
 
+        before(:each) do
+          setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple)
+          NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
+        end
+        let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
+
         it "returns 'Hospital' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          InstrumentContext.any_instance.stub(:response_for).and_return('Hospital')
-          instrument_context.birthing_place.should == 'Hospital'
+          take_survey(@survey, @response_set) do |a|
+            at_home = mock(NcsCode, :local_code => 1)
+            a.choice birth_deliver, at_home
+          end
+          instrument_context.birthing_place.should == 'hospital'
         end
 
         it "returns 'Birthing center' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          InstrumentContext.any_instance.stub(:response_for).and_return('Birthing center')
-          instrument_context.birthing_place.should == 'Birthing center'
+          take_survey(@survey, @response_set) do |a|
+            at_home = mock(NcsCode, :local_code => 2)
+            a.choice birth_deliver, at_home
+          end
+          instrument_context.birthing_place.should == 'birthing center'
         end
 
         it "returns 'Other place' as the most recent response for BIRTH_VISIT_3.BIRTH_DELIVER" do
-          InstrumentContext.any_instance.stub(:response_for).and_return('Other place')
-          instrument_context.birthing_place.should == 'Other place'
+          take_survey(@survey, @response_set) do |a|
+            at_home = mock(NcsCode, :local_code => -5)
+            a.choice birth_deliver, at_home
+          end
+          instrument_context.birthing_place.should == 'other place'
         end
 
         it "return nil if no reponse for BIRTH_VISIT_3.BIRTH_DELIVER" do
@@ -458,21 +484,63 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".stomach_back_side" do
+        it "returns singular version if single pregnancy" do
+          create_single_birth
+          instrument_context.stomach_back_side.should == "stomach, back and side"
+        end
+        it "returns plural version if multiple pregnancy" do
+          create_multiple_birth
+          instrument_context.stomach_back_side.should == "stomachs, backs and sides"
+        end
+      end
+
       describe ".do_when_will_live_with_you" do
+
+        before(:each) do
+          setup_survey_instrument(create_birth_3_0_with_release_and_birth_deliver_and_mulitiple)
+          NcsNavigatorCore.mdes_version.stub(:number).and_return("3.0")
+        end
+
+        let(:birth_deliver) { "BIRTH_VISIT_3.BIRTH_DELIVER" }
+        let(:release) { "BIRTH_VISIT_3.RELEASE" }
+        let(:multiple) {"BIRTH_VISIT_3.MULTIPLE"}
+
         it "returns generic sentence when no conditions met" do
           instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
         end
+
         it "returns 'Does' and name or baby if sinle birth, released is 'yes' and delivered 'at home'"  do
-          pending
+          take_survey(@survey, @response_set) do |a|
+            a.yes release
+            at_home = mock(NcsCode, :local_code => 3)
+            a.choice birth_deliver, at_home
+          end
+          create_single_birth
+          instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
         end
         it "returns 'When' and 'name or baby' if sinle birth, released is 'no'"  do
-          pending
+          take_survey(@survey, @response_set) do |a|
+            a.no release
+          end
+          create_single_birth
+          instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
         end
         it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
-          pending
+          take_survey(@survey, @response_set) do |a|
+            a.yes release
+            at_home = mock(NcsCode, :local_code => 3)
+            a.choice birth_deliver, at_home
+          end
+          create_multiple_birth
+          instrument_context.do_when_will_live_with_you.should == "Do your babies live with you?"
         end
         it "returns 'When your babies leave the' if multiple birth, and released is 'no'"  do
-          pending
+          take_survey(@survey, @response_set) do |a|
+            a.no release
+          end
+          create_multiple_birth
+          instrument_context.do_when_will_live_with_you.should == "When your babies leave the "+ instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
         end
 
       end
@@ -576,34 +644,35 @@ module NcsNavigator::Core::Mustache
 
       describe ".choose_date_range_for_birth_instrument_variation_1" do
         it "returns the proper range if PV1 have been administered" do
-          date = Date.today
+          date = Date.new(2012, 11, 13)
           @participant  = @response_set.participant
           @person = @participant.person
-          @person.person_dob = 1.years.ago
+          @person.person_dob = Date.new(date.year-1, date.month, date.day)
           @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date, :participant => @participant)
           @participant.events.reload
 
           instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
-          
+
         end
         it "returns the proper range if PV2 have been administered" do
-          date = Date.today
+          date = Date.new(2012, 11, 13)
           @participant  = @response_set.participant
           @person = @participant.person
-          @person.person_dob = 1.years.ago
+          @person.person_dob = Date.new(date.year-1, date.month, date.day)
           @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date, :participant => @participant)
           @participant.events.reload
 
           instrument_context.choose_date_range_for_birth_instrument_variation_1.should == 'At this visit or at any time between ' + date.to_s + ' and ' + instrument_context.c_dob.to_s
-          
+
         end
         it "returns the PV2 date if both PV1 and PV2 were administered" do
-          date_pv1 = 1.months.ago
-          date_pv2 = Date.today
+          date = Date.new(2012, 11, 13)
+          date_pv1 = Date.new(date.year, date.month-1, date.day)
+          date_pv2 = date
           @participant  = @response_set.participant
           @person = @participant.person
-          @person.person_dob = 1.years.ago
-          
+          @person.person_dob = Date.new(date.year-1, date.month, date.day)
+
           @response_set.instrument.event = Factory(:event, :event_type_code => 13, :event_end_date => date_pv1, :participant => @participant)
           @response_set.instrument.event = Factory(:event, :event_type_code => 15, :event_end_date => date_pv2, :participant => @participant)
 
@@ -948,47 +1017,46 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".visit_today" do
-        it "returns 'Is your visit today' if MODE = CAPI or PAPI" do
+        it "returns 'Is your visit today' if this visit is the first visit with provider" do
           pending
         end
 
-        it "returns 'Was your visit today' if MODE = CATI"  do
-          pending
-        end
-      end
-
-      describe ".institution" do
-        it "returned the name of the institution involved in the study" do
+        it "returns 'Was your visit today' if this visit is not the first visit with provider"  do
           pending
         end
       end
 
       describe ".practice_name" do
+        let(:person) { Factory(:person) }
+        let(:participant) { Factory(:participant) }
+
+        let(:provider) {Factory(:provider, :name_practice => "Children's Practice")}
+        let(:person_provider_link) {Factory(:person_provider_link, :provider => provider, :person => person)}
+        let(:rs) { Factory(:response_set, :person => person, :participant => participant) }
+        let(:context) { InstrumentContext.new(rs) }
+
+        before do
+          participant.person = person_provider_link.person
+        end
+
         it "returns the practice associated with the study" do
-          pending
+          context.practice_name.should == "Children's Practice"
+        end
+
+        it "returns '[PRACTICE_NAME]' if person doesn't exist" do
+          participant.person = nil
+          context.practice_name.should == "[PRACTICE_NAME]"
+        end
+
+        it "returns '[PRACTICE_NAME]' if practice doesn't exist" do
+          person =  Factory(:person)
+          participant = Factory(:participant)
+          rs = Factory(:response_set, :person => person, :participant => participant)
+          context = InstrumentContext.new(rs)
+          context.practice_name.should == "[PRACTICE_NAME]"
         end
       end
 
-      describe ".county" do
-        it "returns the county associated with the study" do
-          pending
-        end
-      end
-
-      describe ".birthing_place" do
-        it "returns the type of facility where the child was birthed" do
-          pending
-        end
-      end
-
-      describe ".stomach_back_side" do
-        it "returns singular version if single pregnancy" do
-          pending
-        end
-        it "returns plural version if multiple pregnancy" do
-          pending
-        end
-      end
     end
 
     context "participant verification instrument" do
@@ -1106,12 +1174,6 @@ module NcsNavigator::Core::Mustache
       end
     end
 
-    describe "choose_date_range_for_birth_instrument_variation_1" do
-      it "returns proper range statement depending on whether PregVisit1 or 2 have been administered" do
-        pending
-      end
-    end
-
     describe "c_fname_or_the_child" do
       before(:each) do
         setup_survey_instrument(create_pv2_and_birth_with_work_name)
@@ -1119,17 +1181,22 @@ module NcsNavigator::Core::Mustache
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       it "returns child's first name " do
-        
+
         @participant  = @response_set.participant
         @person = @participant.person
         @person.first_name = "Masha"
         instrument_context.c_fname_or_the_child.should == "Masha"
       end
-      
+
       it "returns 'the Child' if no first name is provided" do
         @participant  = @response_set.participant
         @person = @participant.person
         @person.first_name = nil
+        instrument_context.c_fname_or_the_child.should == "the Child"
+      end
+
+      it "returns 'the Child' if no participant exists" do
+        @response_set.participant  = nil
         instrument_context.c_fname_or_the_child.should == "the Child"
       end
 
@@ -1140,15 +1207,6 @@ module NcsNavigator::Core::Mustache
         pending
       end
       it "returns 'is [GUARDIAN_NAME]' if respondent name != guardian name" do
-        pending
-      end
-    end
-
-    describe "still" do
-      it "returns 'still' if CHILD_TIME = 1, -1 or -2" do
-        pending
-      end
-      it "returns nothing if CHILD_TIME = 2 or does not exist" do
         pending
       end
     end

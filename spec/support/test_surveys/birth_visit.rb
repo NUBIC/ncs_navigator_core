@@ -253,5 +253,29 @@ module BirthVisit
       a_neg_1 "Refused"
     QUESTIONS
   end
-
+  
+  def create_birth_3_0_with_release_and_birth_deliver_and_mulitiple
+    load_survey_questions_string(<<-QUESTIONS)
+      q_BIRTH_DELIVER 'text',
+      :data_export_identifier => "BIRTH_VISIT_3.BIRTH_DELIVER",
+      :pick => :one
+      a_1 "HOSPITAL"
+      a_2 "BIRTHING CENTER"
+      a_3 "AT HOME"
+      a_neg_5 "SOME OTHER PLACE"
+    
+      q_RELEASE 'text',
+      :data_export_identifier => "BIRTH_VISIT_3.RELEASE",
+      :pick => :one
+      a_1 "YES"
+      a_2 "NO"
+      
+      q_MULTIPLE 'text',
+      :data_export_identifier => "BIRTH_VISIT_3.MULTIPLE",
+      :pick => :one
+      a_1 "YES"
+      a_2 "NO"
+    QUESTIONS
+  end
+  
 end

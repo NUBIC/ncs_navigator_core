@@ -142,6 +142,12 @@ class ScheduledActivity
   end
 
   ##
+  # True if current_state == occurred
+  def occurred?
+    @current_state == Psc::ScheduledActivity::OCCURRED
+  end
+
+  ##
   # Return a copy of this ScheduledActivity
   #
   # @return ScheduledActivity

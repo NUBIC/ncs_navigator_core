@@ -156,6 +156,7 @@ module NcsNavigator::Core::Mustache
 
     # BABY_NAME_PREFIX    = "BIRTH_VISIT_BABY_NAME_2"
     # BIRTH_VISIT_PREFIX  = "BIRTH_VISIT_2"
+    # BIRTH_VISIT_3_PREFIX = "BIRTH_VISIT_3"
     # BABY_NAME_LI_PREFIX = "BIRTH_VISIT_LI_BABY_NAME"
     # BIRTH_LI_PREFIX     = "BIRTH_VISIT_LI"
 
@@ -166,7 +167,11 @@ module NcsNavigator::Core::Mustache
       when /_Birth_INT_LI_/
         OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
       else
-        OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
+        if NcsNavigatorCore.mdes_version.number == "3.0"
+          OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX
+        else
+          OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX
+        end
       end
     end
 
@@ -404,15 +409,19 @@ module NcsNavigator::Core::Mustache
     end
 
     def practice_name
-      response_for("PBS_ELIG_SCREENER.PRACTICE_NAME")
+      about_person.blank? || about_person.provider.blank? ? '[PRACTICE_NAME]' : about_person.provider.try(:name_practice)
     end
 
     def county
-      NcsCode.for_list_name_and_local_code("PSU_CL1", NcsNavigatorCore.psu)
+      NcsCode.for_list_name_and_local_code("PSU_CL1", NcsNavigatorCore.psu).to_s
     end
 
+    # IF BIRTH_DELIVER = 1, DISPLAY “HOSPITAL” THROUGHOUT THE INSTRUMENT.
+    # IF BIRTH_DELIVER = 2, DISPLAY “BIRTHING CENTER” THROUGHOUT THE INSTRUMENT.
+    # IF BIRTH_DELIVER = -5, DISPLAY “OTHER PLACE” THROUGHOUT THE INSTRUMENT.
     def birthing_place
-      response_for("BIRTH_VISIT_3.BIRTH_DELIVER")
+      result = response_for("BIRTH_VISIT_3.BIRTH_DELIVER")
+      result.blank? ? result : result.downcase.gsub(/some\s+/i, '')
     end
 
     def birthing_place_upcase

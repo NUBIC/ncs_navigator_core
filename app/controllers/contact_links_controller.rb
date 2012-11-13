@@ -88,6 +88,8 @@ class ContactLinksController < ApplicationController
     @activity_plan        = psc.build_activity_plan(@participant)
     @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
     @current_activity     = @activities_for_event.first
+    @occurred_activities  = @activity_plan.occurred_activities_for_event(@event.to_s) if @event
+    @saq_activity         = @occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
   end
 
   def decision_page
@@ -144,6 +146,23 @@ class ContactLinksController < ApplicationController
 
   end
 
+  def saq_instrument
+    @contact_link = ContactLink.find(params[:id])
+    person       = @contact_link.person
+    participant  = person.participant if person
+    event        = @contact_link.event
+
+    activity_plan        = psc.build_activity_plan(participant)
+    occurred_activities  = activity_plan.occurred_activities_for_event(event.to_s) if event
+    saq_activity         = occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
+    survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(saq_activity.instrument))
+    rescheduled_activity(saq_activity)
+    redirect_to start_instrument_person_path(person, :participant_id => participant.id,
+                                               :references_survey_access_code => saq_activity.references.to_s,
+                                               :survey_access_code => survey.access_code,
+                                               :contact_link_id => @contact_link.id)
+  end
+
   private
 
     def set_time_and_dates(include_instrument = false)
@@ -185,6 +204,14 @@ class ContactLinksController < ApplicationController
         set_disposition_group_for_event
       else
         set_disposition_group_for_contact_link
+      end
+    end
+
+    def rescheduled_activity(activity)
+      if activity
+        reason = "Re-scheduled activity for closed event"
+        psc.update_activity_state(activity.activity_id, @contact_link.person.participant,
+                                  Psc::ScheduledActivity::SCHEDULED, @contact_link.contact.contact_date_date, reason)
       end
     end
 
