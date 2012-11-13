@@ -111,6 +111,8 @@ class ParticipantConsentsController < ApplicationController
     @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.new(params[:participant_consent])
     @participant_consent.participant = child_participant
+    @participant_consent.person_who_consented = @child_guardian.person
+    @participant_consent.contact = @contact_link.contact
 
     respond_to do |format|
       if @participant_consent.save

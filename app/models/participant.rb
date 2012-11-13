@@ -386,7 +386,7 @@ class Participant < ActiveRecord::Base
   # @param[Hash]
   # @return[Participant]
   def create_child_person_and_participant!(person_attrs)
-    create_child_participant(Person.create(person_attrs))
+    create_child_participant!(Person.create(person_attrs))
   end
 
   ##

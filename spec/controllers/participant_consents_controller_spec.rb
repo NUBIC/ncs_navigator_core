@@ -34,6 +34,7 @@ describe ParticipantConsentsController do
       login(user_login)
       mother.person = mother_person
       mother.save!
+      mother.children.should be_blank
     end
 
     describe "GET new" do
@@ -90,6 +91,11 @@ describe ParticipantConsentsController do
               :participant_consent => valid_attributes,
               :person => { :first_name => "fn", :last_name => "ln"}
           }.to change(ParticipantConsent, :count).by(1)
+          consent = ParticipantConsent.last
+          consent.person_who_consented.should == mother.person
+          consent.participant.should_not == mother
+          consent.participant.should == Participant.last
+          consent.contact.should == contact_link.contact
         end
 
         it "creates a new Person" do
@@ -134,16 +140,6 @@ describe ParticipantConsentsController do
           child.participant.should_not be_blank
           # check child participant relationship to mother
           child.participant.mother.should == mother_person
-        end
-
-        it "creates a new ContactLink" do
-          pending
-          expect {
-            post :create_child,
-              :contact_link_id => contact_link.id, :participant_id => mother.id,
-              :participant_consent => valid_attributes,
-              :person => { :first_name => "fn", :last_name => "ln"}
-          }.to change(ContactLink, :count).by(1)
         end
 
         it "creates a new Event" do

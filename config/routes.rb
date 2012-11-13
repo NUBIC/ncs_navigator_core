@@ -72,10 +72,6 @@ NcsNavigatorCore::Application.routes.draw do
       get :new_child
       post :create_child
     end
-    member do
-      get :edit_child
-      put :update_child
-    end
   end
   resources :participant_visit_records
   resources :participant_visit_consents
