@@ -231,11 +231,11 @@ class OperationalDataExtractor::PostNatal
 
       contact1 = Person.new
       contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
-      contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant)
+      contact1relationship = ParticipantPersonLink.new(:participant => participant, :person => contact1)
 
       contact2 = Person.new
       contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
-      contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant)
+      contact2relationship = ParticipantPersonLink.new(:participant => participant, :person => contact2)
 
       response_set.responses.each do |r|
         value = OperationalDataExtractor::Base.response_value(r)
@@ -299,7 +299,7 @@ class OperationalDataExtractor::PostNatal
             unless value.blank?
               contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_1_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact1relationship.nil?
-                contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
+                contact1relationship = ParticipantPersonLink.new(:participant => participant, :person => contact1,
                                                                  :psu => person.psu, :response_set => response_set)
               end
               value = OperationalDataExtractor::Base.contact_to_person_relationship(value)
@@ -345,7 +345,7 @@ class OperationalDataExtractor::PostNatal
             unless value.blank?
               contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id).where(CONTACT_2_RELATIONSHIP_MAP[data_export_identifier].to_sym => value.to_s).first
               if contact2relationship.nil?
-                contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
+                contact2relationship = ParticipantPersonLink.new(:participant => participant, :person => contact2,
                                                                  :psu => person.psu, :response_set => response_set)
               end
               value = OperationalDataExtractor::Base.contact_to_person_relationship(value)

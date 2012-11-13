@@ -396,14 +396,15 @@ class Participant < ActiveRecord::Base
   # @param[Hash]
   # @return[Participant]
   def create_child_participant!(child)
-    child_participant = Participant.create(:psu_code => NcsNavigatorCore.psu, :p_type_code => 6) # 6 - NCS Child
+    # 6 - NCS Child - Participant Type
+    child_participant = Participant.create(:psu_code => NcsNavigatorCore.psu, :p_type_code => 6)
     child_participant.person = child
     child_participant.save!
 
-    # 2 - Mother, associating child with its mother
-    ParticipantPersonLink.create(:person_id => self.person.id, :participant_id => child_participant.id, :relationship_code => 2)
-    # 8 - Child, associating child with this participant
-    ParticipantPersonLink.create(:person_id => child.id, :participant_id => self.id, :relationship_code => 8)
+    # 2 - Mother, associating child participant with its mother - ParticipantPersonRelationship
+    ParticipantPersonLink.create(:participant_id => child_participant.id, :person_id => self.person.id, :relationship_code => 2)
+    # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
+    ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
 
     child_participant
   end

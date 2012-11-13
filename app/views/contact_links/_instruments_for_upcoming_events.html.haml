@@ -18,10 +18,10 @@
       %br
       (If there is a Consent link in the list, you should obtain consent before proceeding.)
 
-  - no_consent = true
+  - no_consent_event_exists = true
 
   - if @event.to_s.include?("Consent")
-    - no_consent = false
+    - no_consent_event_exists = false
 
   - if @person.participant.blank?
     .person_not_participant
@@ -35,5 +35,5 @@
     - else
       = render "consent_or_empty", :contact_link => @contact_link
 
-  - if no_consent
+  - if no_consent_event_exists
     = render "unscheduled_consents", :person => @person, :contact_link => @contact_link
