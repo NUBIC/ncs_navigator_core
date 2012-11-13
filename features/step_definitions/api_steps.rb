@@ -166,5 +166,8 @@ Then /^the response body satisfies the (.+) schema$/ do |schema|
   schema = v.expanded_schema(JSON.parse(File.read(fp)))
   errors = v.fully_validate(json, schema)
 
-  errors.should be_empty
+  if !errors.empty?
+    puts errors.inspect
+    raise "Response body should have conformed to the schema defined by #{fn}"
+  end
 end
