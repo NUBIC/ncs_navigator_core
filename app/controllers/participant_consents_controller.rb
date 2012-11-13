@@ -85,6 +85,47 @@ class ParticipantConsentsController < ApplicationController
     end
   end
 
+  # GET /participant_consents/new_child
+  def new_child
+    @participant = Participant.new
+    @child_guardian = Participant.find(params[:participant_id])
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    @contact = @contact_link.contact
+    @participant_consent = ParticipantConsent.new(:participant => @participant,
+                                                  :contact => @contact,
+                                                  :consent_form_type_code => 6, # Consent for the child’s participation
+                                                  :consent_date => Date.today)
+
+    build_participant_consent_samples
+
+    respond_to do |format|
+      format.html # new.html.erb
+    end
+  end
+
+  # POST /participant_consents/create_child
+  def create_child
+    @child_guardian = Participant.find(params[:participant_id])
+    child_participant = @child_guardian.create_child_participant!(params[:person])
+
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    @participant_consent = ParticipantConsent.new(params[:participant_consent])
+    @participant_consent.participant = child_participant
+
+    respond_to do |format|
+      if @participant_consent.save
+
+        update_enrollment_status
+
+        format.html { redirect_to decision_page_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
+        format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
+      else
+        format.html { render :action => "new" }
+        format.json { render :json => @participant_consent.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   private
 
     def build_participant_consent_samples

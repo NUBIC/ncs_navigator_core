@@ -379,6 +379,20 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # Given attributes for the child person record
+  # create the child Person record, the child Participant record
+  # and associate it with this Participant
+  # @param[Hash]
+  # @return[Participant]
+  def create_child_participant!(person_attrs)
+    person = Person.create(person_attrs)
+    participant = Participant.create(:psu_code => NcsNavigatorCore.psu)
+    participant.person = person
+    participant.save!
+    participant
+  end
+
+  ##
   # The current pregnancy probability group status for this participant.
   #
   # This is determined either by the first assigned status from the ppg_details relationship
