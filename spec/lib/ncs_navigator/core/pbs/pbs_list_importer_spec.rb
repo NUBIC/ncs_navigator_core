@@ -61,6 +61,27 @@ module NcsNavigator::Core::Pbs
 
     end
 
+    context "with existing PbsList records" do
+
+      describe ".import_data" do
+
+        before(:each) do
+          @provider = Factory(:provider, :provider_id => '76', :psu_code => '20000030')
+          @pbs_list = Factory(:pbs_list, :pbs_list_id => '12', :psu_code => '20000030',
+            :provider => @provider, :substitute_provider => nil)
+          PbsList.count.should == 1
+          Provider.count.should == 1
+          PbsListImporter.import_data(File.open("#{Rails.root}/spec/fixtures/data/pbs_list.csv"))
+        end
+
+        it "does not create any new PbsList records" do
+          PbsList.count.should == 1
+        end
+
+      end
+
+    end
+
     context "provider address" do
       describe ".import_data" do
         it "creates an Address record associated with the Provider" do

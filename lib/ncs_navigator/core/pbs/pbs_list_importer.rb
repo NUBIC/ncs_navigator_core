@@ -8,7 +8,8 @@ class PbsListImporter
       provider = Provider.find_or_create_by_provider_id_and_psu_code(row[:provider_id], row[:psu_id])
       provider.update_attribute(:name_practice, row[:name_practice]) unless row[:name_practice].blank?
 
-      pbs_list = PbsList.new(:psu_code => row[:psu_id], :provider => provider, :pbs_list_id => row[:pbs_list_id])
+      pbs_list = PbsList.find_or_create_by_pbs_list_id_and_provider_id_and_psu_code(
+        row[:pbs_list_id], provider.id, row[:psu_id])
 
       populate_pbs_list_attributes(pbs_list, row)
       populate_pbs_list_ncs_coded_attributes(pbs_list, row)

@@ -52,7 +52,9 @@ input[disabled='disabled'] {
   @include rounded-corners(.5em);
   fieldset {
     @include rounded-corners(.5em);
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
+    margin: 0 0 0.5em 0;
+    padding: 0.75em;
     legend {
       font-weight: normal;
     }

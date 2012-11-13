@@ -101,7 +101,7 @@
         = f.label :date_move_modifier_not_applicable, "Not Applicable"
         = f.radio_button :date_move_modifier, :not_applicable
 
-      = render "shared/ncs_code_select", { :f => f, :code => :p_tracing_code, :label_text => "Tracing" }
+      = render "shared/ncs_code_select", { :f => f, :code => :p_tracing_code, :label_text => "Missing Tracing Data" }
 
       = render "shared/ncs_code_select", { :f => f, :code => :p_info_source_code, :label_text => "Info Source", :other => :p_info_source_other }
 

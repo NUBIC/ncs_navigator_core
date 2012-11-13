@@ -51,6 +51,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :unenroll
       put :remove_from_active_followup
     end
+    resources :participant_consents, :except => [:index, :destroy]
   end
   resources :contact_links do
     member do
@@ -65,9 +66,18 @@ NcsNavigatorCore::Application.routes.draw do
     resources :contacts, :except => [:index, :destroy]
   end
 
-  resources :instruments, :except => [:index, :destroy]    
+  resources :instruments, :except => [:index, :destroy]
   resources :non_interview_reports, :except => [:index, :destroy, :show]
-  resources :participant_consents
+  resources :participant_consents do
+    collection do
+      get :new_child
+      post :create_child
+    end
+    member do
+      get :edit_child
+      put :update_child
+    end
+  end
   resources :participant_visit_records
   resources :participant_visit_consents
   resources :institutions

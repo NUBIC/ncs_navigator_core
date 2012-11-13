@@ -5,8 +5,6 @@ module Psc
   # Given a collection of {ScheduledActivity} objects, groups them by event
   # label and activity ID, and generates a corresponding set of
   # {Psc::InstrumentPlan} objects.
-  #
-  # Plans are grouped by [person, event, instrument].
   class InstrumentPlanCollection
     extend Forwardable
     include Enumerable
@@ -16,6 +14,8 @@ module Psc
     attr_reader :activities
     attr_reader :groups
 
+    ##
+    # Generate a collection for a list of {Psc::ScheduledActivity} objects.
     def self.for(activities)
       new(activities).tap(&:calculate)
     end
@@ -25,10 +25,14 @@ module Psc
       @plans = []
     end
 
+    ##
+    # Add a {Psc::ScheduledActivity} to the collection.
     def add_activity(a)
       activities << a
     end
 
+    ##
+    # Group activities by their contact and event labels.
     def group
       @groups = {}
 
@@ -39,6 +43,12 @@ module Psc
       end
     end
 
+    ##
+    # For each group calculated by {#group}, generates a {Psc::InstrumentPlan}
+    # for the activities in that group.
+    #
+    # This method also orders instruments in each of the resulting plans, using
+    # {Psc::InstrumentPlan#order}.
     def calculate
       @plans = []
 
@@ -52,6 +62,14 @@ module Psc
     end
 
     ##
+    # Given a list of activities, creates a {Psc::InstrumentPlan} for the
+    # instruments implied by each activity.
+    #
+    # Embedded in this method is a distinction between activities that define
+    # _root instruments_ and those that do not: a root instrument is an
+    # instrument that does not reference any other instruments.  This method
+    # returns one plan per root.
+    #
     # @private
     def plans_for_group(activities)
       plans = {}

@@ -19,9 +19,13 @@ module ParticipantsHelper
     consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code)
     if participant.consented?(consent_type)
       consent = participant.consent_for_type(consent_type)
-      link_to consent_type_text, edit_participant_consent_path(consent, :contact_link_id => contact_link.id), :class => "edit_link icon_link"
+      link_to consent_type_text, edit_participant_participant_consent_path(participant, consent,
+        {:contact_link_id => contact_link.id}),
+      :class => "edit_link icon_link"
     else
-      link_to consent_type_text, new_participant_consent_path(:participant_id => participant.id, :contact_link_id => contact_link.id, :consent_type_code => consent_type_code), :class => "add_link icon_link"
+      link_to consent_type_text, new_participant_participant_consent_path(participant,
+        {:contact_link_id => contact_link.id, :consent_type_code => consent_type_code}),
+        :class => "add_link icon_link"
     end
   end
 
