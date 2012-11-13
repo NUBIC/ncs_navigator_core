@@ -205,7 +205,6 @@ class OperationalDataExtractor::Birth
 
       if child
         child.save!
-        ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8) # 8 Child
         OperationalDataExtractor::Base.make_child_participant(child, person)
       end
 

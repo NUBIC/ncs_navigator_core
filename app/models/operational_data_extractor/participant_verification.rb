@@ -150,8 +150,6 @@ class OperationalDataExtractor::ParticipantVerification
 
       if child
         child.save!
-        # 8 - Child
-        ParticipantPersonLink.create(:person_id => child.id, :participant_id => participant.id, :relationship_code => 8)
         OperationalDataExtractor::Base.make_child_participant(child, person)
 
         if child_phone && !child_phone.phone_nbr.blank?
