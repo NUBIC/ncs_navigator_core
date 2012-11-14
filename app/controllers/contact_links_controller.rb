@@ -111,25 +111,14 @@ class ContactLinksController < ApplicationController
   # Displays the form for the Instrument record associated with the given ContactLink
   # Posts the form to the finalize_instrument path
   def edit_instrument
-    @contact_link = ContactLink.find(params[:id])
-    @person       = @contact_link.person
-    @instrument   = @contact_link.instrument
-    @response_set = @instrument.response_set
-    @survey       = @response_set.survey if @response_set
-    set_instrument_time_and_date(@contact_link.contact)
-
-    @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
-    @instrument.set_instrument_breakoff(@response_set)
-    if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
-      @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
-    end
+    setup_instrument_variables
   end
 
   ##
   # Updates the Instrument record for the given ContactLink
   # Afterwards redirects the user to the /contact_links/:id/decision_page
   def finalize_instrument
-    edit_instrument
+    setup_instrument_variables
     respond_to do |format|
       if @contact_link.instrument.update_attributes(params[:instrument])
 
@@ -144,6 +133,22 @@ class ContactLinksController < ApplicationController
     end
 
   end
+
+  def setup_instrument_variables
+    @contact_link = ContactLink.find(params[:id])
+    @person       = @contact_link.person
+    @instrument   = @contact_link.instrument
+    @response_set = @instrument.response_set
+    @survey       = @response_set.survey if @response_set
+    set_instrument_time_and_date(@contact_link.contact)
+
+    @instrument.instrument_repeat_key = @person.instrument_repeat_key(@instrument.survey)
+    @instrument.set_instrument_breakoff(@response_set)
+    if @instrument.instrument_type.blank? || @instrument.instrument_type_code <= 0
+      @instrument.instrument_type = InstrumentEventMap.instrument_type(@survey.try(:title))
+    end
+    
+  end  
 
   def saq_instrument
     @contact_link = ContactLink.find(params[:id])
