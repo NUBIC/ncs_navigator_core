@@ -46,5 +46,9 @@ module NcsNavigator::Core::Mdes
     def specification
       @specification ||= NcsNavigator::Mdes(number)
     end
+
+    def specification=(spec)
+      @specification = spec
+    end
   end
 end
