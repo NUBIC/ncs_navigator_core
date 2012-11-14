@@ -2,6 +2,15 @@ Given /^the NCS codes were last modified on "([^"]*)"$/ do |datetime|
   NcsCode.update_all(:updated_at => Time.parse(datetime))
 end
 
+Given /^the MDES disposition codes were last modified on "([^"]*)"$/ do |datetime|
+  raise "@tmpdir not set" unless @tmpdir
+
+  fn = "#{@tmpdir}/test_disposition_codes.yml"
+  touch fn, :mtime => Time.parse(datetime)
+
+  NcsNavigatorCore.configuration.mdes.source_documents.disposition_codes = fn
+end
+
 Then /^the response body contains the MDES version$/ do
   json['mdes_version'].should == NcsNavigatorCore.configuration.mdes.version
 end

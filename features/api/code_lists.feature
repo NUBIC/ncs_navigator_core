@@ -1,4 +1,4 @@
-@api
+@api @mdes @tmpdir
 Feature: Code lists retrieval
   In order to keep field workers abreast of MDES changes
   The field client application
@@ -20,6 +20,7 @@ Feature: Code lists retrieval
   Scenario: GET /api/v1/code_lists checks If-Modified-Since
     Given an authenticated user
     And the NCS codes were last modified on "01/01/2000 00:00:00 GMT"
+    And the MDES disposition codes were last modified on "01/01/2000 00:00:00 GMT"
 
     When I GET /api/v1/code_lists with
       | header:X-Client-ID       | foo                           |
