@@ -127,8 +127,7 @@ class ContactLinksController < ApplicationController
   # Updates the Instrument record for the given ContactLink
   # Afterwards redirects the user to the /contact_links/:id/decision_page
   def finalize_instrument
-    @contact_link = ContactLink.find(params[:id])
-
+    edit_instrument
     respond_to do |format|
       if @contact_link.instrument.update_attributes(params[:instrument])
 
