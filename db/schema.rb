@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121105174457) do
+ActiveRecord::Schema.define(:version => 20121114214280) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -73,6 +73,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.string   "api_id"
     t.string   "display_type"
   end
+
+  add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
 
   create_table "contact_links", :force => true do |t|
     t.integer  "psu_code",                       :null => false
@@ -1077,6 +1079,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.string   "api_id"
   end
 
+  add_index "question_groups", ["api_id"], :name => "uq_question_groups_api_id", :unique => true
+
   create_table "questions", :force => true do |t|
     t.integer  "survey_section_id"
     t.integer  "question_group_id"
@@ -1099,6 +1103,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.integer  "correct_answer_id"
     t.string   "api_id"
   end
+
+  add_index "questions", ["api_id"], :name => "uq_questions_api_id", :unique => true
 
   create_table "refusal_non_interview_reports", :force => true do |t|
     t.integer  "psu_code",                              :null => false
@@ -1126,6 +1132,7 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
+  add_index "response_sets", ["api_id"], :name => "uq_response_sets_api_id", :unique => true
 
   create_table "responses", :force => true do |t|
     t.integer  "response_set_id",                                 :null => false
@@ -1148,6 +1155,7 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.integer  "lock_version",                     :default => 0
   end
 
+  add_index "responses", ["api_id"], :name => "uq_responses_api_id", :unique => true
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
 
   create_table "sample_receipt_confirmations", :force => true do |t|
@@ -1436,6 +1444,7 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
   end
 
   add_index "surveys", ["access_code", "survey_version"], :name => "surveys_access_code_survey_version_idx", :unique => true
+  add_index "surveys", ["api_id"], :name => "uq_surveys_api_id", :unique => true
 
   create_table "telephones", :force => true do |t|
     t.integer  "psu_code",                                             :null => false
