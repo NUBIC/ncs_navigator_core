@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
-
 require 'ncs_navigator/mdes'
 
 module NcsNavigator::Mdes
   class DispositionCode
     include ActiveModel::Serialization
+
+    def self.last_modified
+      fn = NcsNavigatorCore.configuration.mdes.source_documents.disposition_codes
+
+      File.stat(fn).mtime if File.exist?(fn)
+    end
 
     def attributes
       ATTRIBUTES.each_with_object({}) { |attr, h| h[attr] = send(attr) }

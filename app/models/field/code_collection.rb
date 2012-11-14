@@ -9,7 +9,7 @@ module Field
     attr_reader :ncs_codes
 
     def last_modified
-      [NcsCode.last_modified].max
+      [DispositionCode.last_modified, NcsCode.last_modified].compact.max
     end
 
     def load_codes
