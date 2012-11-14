@@ -10,6 +10,9 @@ begin
     desc 'Run CI build minus warehouse specs'
     task :core => [:rails_env, 'ci:redis:start_then_stop_at_exit', :spec_core, :cucumber]
 
+    desc 'Run CI build minus warehouse specs and redis'
+    task :core_no_redis => [:rails_env, :spec_core, :cucumber]
+
     desc 'Run CI build for warehouse only'
     task :warehouse => [:rails_env, 'ci:redis:start_then_stop_at_exit', :spec_warehouse]
 

@@ -1123,6 +1123,7 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
+    t.integer  "event_id"
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true

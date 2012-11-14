@@ -81,6 +81,7 @@ class ParticipantConsentsController < ApplicationController
 
   # GET /participant_consents/new_child
   def new_child
+    @participant = Participant.new
     @child_guardian = Participant.find(params[:participant_id])
     @contact_link = ContactLink.find(params[:contact_link_id])
     @contact = @contact_link.contact
