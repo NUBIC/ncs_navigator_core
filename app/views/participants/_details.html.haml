@@ -23,5 +23,9 @@
     = event.nil? ? "Unknown" : "#{nil_safe(displayable_next_scheduled_event(event.event))} - #{nil_safe(event.date)}"
   %p
     %b
+      Enrolled:
+    = @participant.enrolled?
+  %p
+    %b
       Actively Being Followed:
     = @participant.being_followed

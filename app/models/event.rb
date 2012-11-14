@@ -280,6 +280,22 @@ class Event < ActiveRecord::Base
     POSTNATAL_EVENTS.include? event_type_code
   end
 
+  def pregnancy_visit_1?
+    self.event_type_code == 13
+  end
+  alias :pv1? :pregnancy_visit_1?
+  alias :pregnancy_visit1? :pregnancy_visit_1?
+
+  def pregnancy_visit_2?
+    self.event_type_code == 15
+  end
+  alias :pv2? :pregnancy_visit_2?
+  alias :pregnancy_visit2? :pregnancy_visit_2?
+
+  def birth?
+    self.event_type_code == 18
+  end
+
   ##
   # Returns the (zero-based) number of times the event
   # participant has performed this event
