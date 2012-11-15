@@ -17,13 +17,16 @@ describe OperationalDataExtractor::ParticipantVerification do
       @participant.person = @person
       Factory(:ppg_detail, :participant => @participant)
 
+      @child_participant = @participant.create_child_person_and_participant!(
+        {:first_name => "child_fname", :last_name => "child_lname"})
+
       @participant.participant_person_links.size.should == 1
       @participant.save!
     end
 
-    it "creates a new person (Child) record and associates it with the participant" do
+    it "updates the person (Child) record" do
       survey = create_participant_verification_survey
-      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
@@ -36,27 +39,31 @@ describe OperationalDataExtractor::ParticipantVerification do
 
       OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
 
-      person  = Person.find(@person.id)
-      participant = person.participant
+      mother = Person.find(@person.id)
+      participant = mother.participant
       participant.participant_person_links.size.should == 2
       participant.children.should_not be_nil
+
       child = participant.children.first
+      child.should == @child_participant.person
+
       child.first_name.should == "Baby"
       child.last_name.should == "James"
       child.person_dob.should == '2013-01-01'
 
       child.participant.should_not be_nil
-      child.participant.mother.should == person
+      child.participant.should == @child_participant
+      child.participant.mother.should == mother
       child.participant.mother.participant.should == participant
       child.participant.p_type.should == @child_type
-      person.participant.children.should include(child)
+      participant.children.should include(child)
     end
 
     it "creates an address record and associates it with the child" do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       survey = create_participant_verification_survey
-      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
@@ -88,7 +95,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       survey = create_participant_verification_survey
-      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
@@ -121,7 +128,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       survey = create_participant_verification_survey
-      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'
@@ -148,7 +155,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       survey = create_participant_verification_survey
-      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.C_FNAME", 'Baby'

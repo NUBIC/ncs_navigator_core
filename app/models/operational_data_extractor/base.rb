@@ -103,10 +103,6 @@ class OperationalDataExtractor::Base
       end
     end
 
-    def make_child_participant(child, mother)
-      mother.participant.create_child_participant!(child)
-    end
-
     # PREG_SCREEN_HI_2.ORIG_DUE_DATE
     # PREG_VISIT_LI_2.DUE_DATE
     # PPG_CATI.PPG_DUE_DATE_1
