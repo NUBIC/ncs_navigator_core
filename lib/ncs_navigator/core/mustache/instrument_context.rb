@@ -413,7 +413,8 @@ module NcsNavigator::Core::Mustache
     end
 
     def county
-      NcsCode.for_list_name_and_local_code("PSU_CL1", NcsNavigatorCore.psu).to_s
+      county_from_psu = NcsCode.for_list_name_and_local_code("PSU_CL1", NcsNavigatorCore.psu)
+      NcsCode.filter_out_wave_number_from_psu(county_from_psu)
     end
 
     # IF BIRTH_DELIVER = 1, DISPLAY “HOSPITAL” THROUGHOUT THE INSTRUMENT.

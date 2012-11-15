@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121105174457) do
+ActiveRecord::Schema.define(:version => 20121114231201) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -74,6 +74,11 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.string   "display_type"
   end
 
+  add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
+  add_index "answers", ["display_order"], :name => "idx_answers_display_order"
+  add_index "answers", ["question_id"], :name => "idx_answers_question_id"
+  add_index "answers", ["reference_identifier"], :name => "idx_answers_reference_identifier"
+
   create_table "contact_links", :force => true do |t|
     t.integer  "psu_code",                       :null => false
     t.string   "contact_link_id",  :limit => 36, :null => false
@@ -124,6 +129,9 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.datetime "updated_at"
   end
 
+  add_index "dependencies", ["question_group_id"], :name => "idx_dependencies_question_group_id"
+  add_index "dependencies", ["question_id"], :name => "idx_dependencies_question_id"
+
   create_table "dependency_conditions", :force => true do |t|
     t.integer  "dependency_id"
     t.string   "rule_key"
@@ -140,6 +148,10 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "dependency_conditions", ["answer_id"], :name => "idx_dependency_conditions_answer_id"
+  add_index "dependency_conditions", ["dependency_id"], :name => "idx_dependency_conditions_dependency_id"
+  add_index "dependency_conditions", ["question_id"], :name => "idx_dependency_conditions_question_id"
 
   create_table "dwelling_household_links", :force => true do |t|
     t.integer  "psu_code",                        :null => false
@@ -1077,6 +1089,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.string   "api_id"
   end
 
+  add_index "question_groups", ["api_id"], :name => "uq_question_groups_api_id", :unique => true
+
   create_table "questions", :force => true do |t|
     t.integer  "survey_section_id"
     t.integer  "question_group_id"
@@ -1099,6 +1113,12 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.integer  "correct_answer_id"
     t.string   "api_id"
   end
+
+  add_index "questions", ["api_id"], :name => "uq_questions_api_id", :unique => true
+  add_index "questions", ["display_order"], :name => "idx_questions_display_order"
+  add_index "questions", ["question_group_id"], :name => "idx_questions_question_group_id"
+  add_index "questions", ["reference_identifier"], :name => "idx_questions_reference_identifier"
+  add_index "questions", ["survey_section_id"], :name => "idx_questions_survey_section_id"
 
   create_table "refusal_non_interview_reports", :force => true do |t|
     t.integer  "psu_code",                              :null => false
@@ -1126,6 +1146,11 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
+  add_index "response_sets", ["api_id"], :name => "uq_response_sets_api_id", :unique => true
+  add_index "response_sets", ["instrument_id"], :name => "idx_response_sets_instrument_id"
+  add_index "response_sets", ["participant_id"], :name => "idx_response_sets_participant_id"
+  add_index "response_sets", ["survey_id"], :name => "idx_response_sets_survey_id"
+  add_index "response_sets", ["user_id"], :name => "idx_response_sets_user_id"
 
   create_table "responses", :force => true do |t|
     t.integer  "response_set_id",                                 :null => false
@@ -1148,6 +1173,10 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.integer  "lock_version",                     :default => 0
   end
 
+  add_index "responses", ["answer_id"], :name => "idx_responses_answer_id"
+  add_index "responses", ["api_id"], :name => "uq_responses_api_id", :unique => true
+  add_index "responses", ["question_id"], :name => "idx_responses_question_id"
+  add_index "responses", ["response_set_id"], :name => "idx_responses_response_set_id"
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
 
   create_table "sample_receipt_confirmations", :force => true do |t|
@@ -1416,6 +1445,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
     t.datetime "updated_at"
   end
 
+  add_index "survey_sections", ["display_order"], :name => "idx_survey_sections_display_order"
+
   create_table "surveys", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -1436,6 +1467,8 @@ ActiveRecord::Schema.define(:version => 20121105174457) do
   end
 
   add_index "surveys", ["access_code", "survey_version"], :name => "surveys_access_code_survey_version_idx", :unique => true
+  add_index "surveys", ["api_id"], :name => "uq_surveys_api_id", :unique => true
+  add_index "surveys", ["display_order"], :name => "idx_surveys_display_order"
 
   create_table "telephones", :force => true do |t|
     t.integer  "psu_code",                                             :null => false
