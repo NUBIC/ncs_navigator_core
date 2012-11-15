@@ -58,8 +58,7 @@ module NcsNavigator::Core::Warehouse
 
     def report_about_indefinitely_deferred_events
       unschedulable_sets = redis.keys(sync_key['p', '*', 'events_unschedulable']).
-        select { |set_key| redis.scard(set_key)
-          @sync_key = sync_key> 0 }
+        select { |set_key| redis.scard(set_key) > 0 }
       unless unschedulable_sets.empty?
         shell.say_line(
           "%d participant%s had events that could not be sync'd. See log for details." %
