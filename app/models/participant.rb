@@ -848,7 +848,9 @@ class Participant < ActiveRecord::Base
   end
 
   def last_contact
-    Contact.joins(:contact_links).joins("left outer join events on events.id = contact_links.event_id").where("events.participant_id = ?", self.id).order("contact_date desc").first
+    Contact.joins(:contact_links).joins("
+      left outer join events on events.id = contact_links.event_id").where(
+      "events.participant_id = ?", self.id).order("contact_date desc").first
   end
 
   ##
