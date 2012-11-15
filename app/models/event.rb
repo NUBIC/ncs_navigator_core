@@ -553,11 +553,6 @@ class Event < ActiveRecord::Base
           "Not configured to run expanded phase 2 instruments.")
       end
 
-      unless NcsNavigatorCore.mdes.version.blank?
-        psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
-          "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
-      end
-
     end
 
     resp
