@@ -6,7 +6,7 @@ module Field
     root false
 
     def attributes
-      {}.tap do |h|
+      super.tap do |h|
         h['mdes_version'] = NcsNavigatorCore.configuration.mdes.version
         h['mdes_specification_version'] = NcsNavigatorCore.configuration.mdes.specification_version
       end
