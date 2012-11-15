@@ -84,12 +84,13 @@ class ContactLinksController < ApplicationController
     @person       = @contact_link.person
     @participant  = @person.participant if @person
     @event        = @contact_link.event
-
-    @activity_plan        = psc.build_activity_plan(@participant)
-    @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
-    @current_activity     = @activities_for_event.first
-    @occurred_activities  = @activity_plan.occurred_activities_for_event(@event.to_s) if @event
-    @saq_activity         = @occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
+    if @participant && @event
+      @activity_plan        = psc.build_activity_plan(@participant)
+      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+      @current_activity     = @activities_for_event.first
+      @occurred_activities  = @activity_plan.occurred_activities_for_event(@event.to_s)
+      @saq_activity         = @occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
+    end
   end
 
   def decision_page
@@ -155,16 +156,30 @@ class ContactLinksController < ApplicationController
     person       = @contact_link.person
     participant  = person.participant if person
     event        = @contact_link.event
-
-    activity_plan        = psc.build_activity_plan(participant)
-    occurred_activities  = activity_plan.occurred_activities_for_event(event.to_s) if event
-    saq_activity         = occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
-    survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(saq_activity.instrument))
-    rescheduled_activity(saq_activity)
-    redirect_to start_instrument_person_path(person, :participant_id => participant.id,
-                                               :references_survey_access_code => saq_activity.references.to_s,
-                                               :survey_access_code => survey.access_code,
-                                               :contact_link_id => @contact_link.id)
+    if event && participant
+      activity_plan        = psc.build_activity_plan(participant)
+      occurred_activities  = activity_plan.occurred_activities_for_event(event.to_s)
+      saq_activity         = occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
+      if saq_activity
+        survey = Survey.most_recent_for_access_code(Survey.to_normalized_string(saq_activity.instrument))
+        if survey
+          rescheduled_activity(saq_activity)
+          redirect_to start_instrument_person_path(person, :participant_id => participant.id,
+                                                     :references_survey_access_code => saq_activity.references.to_s,
+                                                     :survey_access_code => survey.access_code,
+                                                     :contact_link_id => @contact_link.id)
+        else
+          Rails.logger.error "saq_instrument precondition failed: survey for #{saq_activity.activity_name} not found."
+          redirect_to(decision_page_contact_link_path(@contact_link))
+        end
+      else
+        Rails.logger.error "saq_instrument precondition failed: SAQ activity for the #{event} for contact link #{@contact_link.id} is nil."
+        redirect_to(decision_page_contact_link_path(@contact_link))
+      end
+    else
+      Rails.logger.error "saq_instrument precondition failed: participant or event for contact link #{@contact_link.id} is nil."
+      redirect_to(decision_page_contact_link_path(@contact_link))
+    end
   end
 
   private
