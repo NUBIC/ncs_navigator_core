@@ -147,13 +147,14 @@ class InstrumentPlan
   ##
   # Given a response_set, determine if this is the final
   # part of a multi-part survey.
-  # This should be true if there are as many response_sets
+  # This should be true if there are as many (or more) response_sets
   # for this survey as there are scheduled survey parts.
   #
   # @return Boolean
   def final_survey_part?(response_set)
-    scheduled_activities_for_survey(response_set.survey.title).size ==
-      response_set.instrument.response_sets.size
+    expected = scheduled_activities_for_survey(response_set.survey.title).size
+    actual   = response_set.instrument.response_sets.size
+    expected <= actual
   end
 
   ##
@@ -213,7 +214,7 @@ class InstrumentPlan
     result = {}
     sas.each do |sa|
       result[sa.survey_title] ||= []
-      result[sa.survey_title] << sa
+      result[sa.survey_title] << sa unless sa.has_non_matching_mdes_version_instrument?
     end
     result
   end
