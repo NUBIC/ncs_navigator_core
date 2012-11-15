@@ -174,9 +174,6 @@ class ScheduledActivity
   end
 
   def has_non_matching_mdes_version_instrument?
-    Rails.logger.info("~~~ has_non_matching_mdes_version_instrument")
-    Rails.logger.info("~~~ labels.include?(Instrument::INSTRUMENT_LABEL_MARKER) = #{labels.include?(Instrument::INSTRUMENT_LABEL_MARKER)}")
-    Rails.logger.info("~~~ instrument = #{instrument} blank? #{instrument.blank?}")
     labels.include?(Instrument::INSTRUMENT_LABEL_MARKER) && instrument.blank?
   end
 
