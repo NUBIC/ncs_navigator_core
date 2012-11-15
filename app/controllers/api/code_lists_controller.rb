@@ -4,7 +4,7 @@ class Api::CodeListsController < ApiController
 
     if stale?(:last_modified => cc.last_modified)
       cc.load_codes
-      respond_with cc, :serializer => FieldCodeCollectionSerializer
+      respond_with cc, :serializer => Field::CodeCollectionSerializer
     end
   end
 end
