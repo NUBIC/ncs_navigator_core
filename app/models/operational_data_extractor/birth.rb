@@ -102,7 +102,10 @@ class OperationalDataExtractor::Birth
 
       primary_rank = OperationalDataExtractor::Base.primary_rank
 
-      child        = nil
+      # For surveys that update the child - the participant on the response_set
+      # should be the child participant and thus the person being updated is the
+      # child participant.person
+      child          = participant.person
       email        = nil
       home_phone   = nil
       cell_phone   = nil
@@ -129,10 +132,6 @@ class OperationalDataExtractor::Birth
 
         if CHILD_PERSON_MAP.has_key?(data_export_identifier)
           unless value.blank?
-
-            if child.nil?
-              child = Person.new(:psu => person.psu)
-            end
             OperationalDataExtractor::Base.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
           end
         end
@@ -205,7 +204,6 @@ class OperationalDataExtractor::Birth
 
       if child
         child.save!
-        OperationalDataExtractor::Base.make_child_participant(child, person)
       end
 
       if email && !email.email.blank?
