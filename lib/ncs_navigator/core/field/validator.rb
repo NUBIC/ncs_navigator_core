@@ -44,39 +44,49 @@ module NcsNavigator::Core::Field
     end
 
     ##
-    # Expands all references in the fieldwork schema.  Used in the merge tests.
+    # Expands all references in a schema.  Used in the merge tests.
     def expanded_schema(root_schema = FIELDWORK_SCHEMA.dup)
       LOCK.synchronize do
         with_referenced_schemas do
           schemas = JSON::Validator.schemas.dup
-
-          rewrite = lambda do |schema|
-            if Hash === schema
-              schema.each do |k, v|
-                if Hash === v
-                  if v['$ref']
-                    schema.update(k => rewrite[schemas[v['$ref']].schema])
-                  end
-
-                  if v['extends'] && v['extends']['$ref']
-                    ref = v['extends']['$ref']
-                    v.delete('extends')
-                    orig = v.dup
-
-                    v.deep_merge!(rewrite[schemas[ref]].schema)
-                  end
-                end
-
-                rewrite[v]
-              end
-            end
-
-            schema
-          end
-
-          rewrite[root_schema]
+          rewrite(root_schema, schemas)
         end
       end
+    end
+
+    def rewrite(schema, schemas)
+      if Hash === schema
+        resolve_extends(schema, schemas)
+        resolve_refs(schema, schemas)
+
+        schema.each do |k, v|
+          schema.update(k => rewrite(v, schemas))
+        end
+      end
+
+      schema
+    end
+
+    def resolve_refs(schema, schemas)
+      return unless (ref = schema['$ref'])
+
+      resolved = schemas[ref].schema
+
+      schema.delete('$ref')
+      schema.deep_merge!(rewrite(resolved, schemas))
+    end
+
+    def resolve_extends(schema, schemas)
+      return unless (extends = schema['extends'])
+
+      resolved = [extends].flatten.map do |schema|
+        if ref = schema['$ref']
+          resolve_refs(schema, schemas)
+        end
+      end.compact.inject(&:deep_merge)
+
+      schema.delete('extends')
+      schema.deep_merge!(rewrite(resolved, schemas))
     end
 
     ##
