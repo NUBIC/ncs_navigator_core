@@ -69,5 +69,38 @@ describe NcsCode do
       end
     end
   end
+
+  context "Filter text" do
+    before do
+      code1 = NcsCode.new(:display_text => 'Los Angeles County, CA (Wave 3)', :local_code => 1)
+      code2 = NcsCode.new(:display_text => 'Harris County, TX (Wave 2)', :local_code => 2)
+      code3 = NcsCode.new(:display_text => 'Cook County, IL (Wave 1)', :local_code => 3)
+      @code_display_texts = [code1.display_text, code2.display_text, code3.display_text ]
+    end
+
+    describe "#filter_text" do
+      it "activates psu_code filter" do
+        display_text = @code_display_texts[0]
+        NcsCode.filter_text(:psu_code, display_text).should ==
+          NcsCode.filter_out_wave_number_from_psu(display_text)
+      end
+    end
+
+    describe "#filter_out_wave_number_from_psu_code" do
+
+      it "removes the wave part from the PSU" do
+        filtered = []
+        @code_display_texts.each { |display_text| filtered << NcsCode.filter_out_wave_number_from_psu(display_text) }
+        filtered.should == ['Los Angeles County, CA','Harris County, TX', 'Cook County, IL']
+      end
+
+      it "does not modify a PSU that does not contain a wave number" do
+        code = NcsCode.new(:display_text => 'Philadelphia County, PA', :local_code => 4)
+        NcsCode.filter_out_wave_number_from_psu(code.display_text).should == 'Philadelphia County, PA'
+      end
+
+    end
+  end
+
 end
 

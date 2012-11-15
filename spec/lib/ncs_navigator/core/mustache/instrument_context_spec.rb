@@ -67,7 +67,15 @@ module NcsNavigator::Core::Mustache
 
       describe ".county" do
         it "returns the county associated with the study" do
-          instrument_context.county.should == "Cook County, IL (Wave 1)"
+          expected_county = "Cook County, IL"
+          actual_county   = "#{expected_county} (Wave 1)"
+          NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => actual_county))
+          instrument_context.county.should == expected_county
+        end
+
+        it "handles nil" do
+          NcsCode.stub(:for_list_name_and_local_code).and_return(nil)
+          instrument_context.county.should == ""
         end
       end
     end
