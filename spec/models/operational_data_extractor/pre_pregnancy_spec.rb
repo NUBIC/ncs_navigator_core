@@ -33,7 +33,7 @@ describe OperationalDataExtractor::PrePregnancy do
     response_set.responses.reload
     response_set.responses.size.should == 4
 
-    OperationalDataExtractor::PrePregnancy.extract_data(response_set)
+    OperationalDataExtractor::PrePregnancy.new(response_set).extract_data
 
     person = Person.find(person.id)
     person.first_name.should == "Jo"
@@ -68,7 +68,7 @@ describe OperationalDataExtractor::PrePregnancy do
     response_set.responses.reload
     response_set.responses.size.should == 3
 
-    OperationalDataExtractor::PrePregnancy.extract_data(response_set)
+    OperationalDataExtractor::PrePregnancy.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.telephones.size.should == 1
@@ -99,7 +99,7 @@ describe OperationalDataExtractor::PrePregnancy do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PrePregnancy.extract_data(response_set)
+    OperationalDataExtractor::PrePregnancy.new(response_set).extract_data
 
     person = Person.find(person.id)
     person.emails.size.should == 2
@@ -159,7 +159,7 @@ describe OperationalDataExtractor::PrePregnancy do
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      OperationalDataExtractor::PrePregnancy.extract_data(@response_set)
+      OperationalDataExtractor::PrePregnancy.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -196,7 +196,7 @@ describe OperationalDataExtractor::PrePregnancy do
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      OperationalDataExtractor::PrePregnancy.extract_data(@response_set)
+      OperationalDataExtractor::PrePregnancy.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -224,7 +224,7 @@ describe OperationalDataExtractor::PrePregnancy do
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      OperationalDataExtractor::PrePregnancy.extract_data(@response_set)
+      OperationalDataExtractor::PrePregnancy.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -247,7 +247,7 @@ describe OperationalDataExtractor::PrePregnancy do
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      OperationalDataExtractor::PrePregnancy.extract_data(@response_set)
+      OperationalDataExtractor::PrePregnancy.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant

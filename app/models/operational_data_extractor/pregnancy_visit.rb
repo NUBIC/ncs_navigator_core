@@ -489,7 +489,6 @@ module OperationalDataExtractor
         end
       end
 
-
       DUE_DATE_DETERMINER_MAP.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)

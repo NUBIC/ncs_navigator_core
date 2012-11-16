@@ -34,7 +34,7 @@ describe OperationalDataExtractor::PpgFollowUp do
       @response_set.responses.reload
       @response_set.responses.size.should == 2
 
-      OperationalDataExtractor::PpgFollowUp.extract_data(@response_set)
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -53,7 +53,7 @@ describe OperationalDataExtractor::PpgFollowUp do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::PpgFollowUp.extract_data(@response_set)
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -72,7 +72,7 @@ describe OperationalDataExtractor::PpgFollowUp do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::PpgFollowUp.extract_data(@response_set)
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -91,7 +91,7 @@ describe OperationalDataExtractor::PpgFollowUp do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::PpgFollowUp.extract_data(@response_set)
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -110,7 +110,7 @@ describe OperationalDataExtractor::PpgFollowUp do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::PpgFollowUp.extract_data(@response_set)
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -129,7 +129,7 @@ describe OperationalDataExtractor::PpgFollowUp do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::PpgFollowUp.extract_data(@response_set)
+      OperationalDataExtractor::PpgFollowUp.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -167,7 +167,7 @@ describe OperationalDataExtractor::PpgFollowUp do
     response_set.responses.reload
     response_set.responses.size.should == 2
 
-    OperationalDataExtractor::PpgFollowUp.extract_data(response_set)
+    OperationalDataExtractor::PpgFollowUp.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.telephones.size.should == 1
@@ -206,7 +206,7 @@ describe OperationalDataExtractor::PpgFollowUp do
     response_set.responses.reload
     response_set.responses.size.should == 5
 
-    OperationalDataExtractor::PpgFollowUp.extract_data(response_set)
+    OperationalDataExtractor::PpgFollowUp.new(response_set).extract_data
 
     person  = Person.find(person.id)
 

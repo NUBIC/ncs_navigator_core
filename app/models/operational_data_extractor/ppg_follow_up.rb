@@ -1,65 +1,78 @@
 # -*- coding: utf-8 -*-
 
+module OperationalDataExtractor
+  class PpgFollowUp < Base
 
-class OperationalDataExtractor::PpgFollowUp
+    INTERVIEW_PREFIX = "PPG_CATI"
+    SAQ_PREFIX       = "PPG_SAQ"
 
-  INTERVIEW_PREFIX = "PPG_CATI"
-  SAQ_PREFIX       = "PPG_SAQ"
+    TELEPHONE_MAP = {
+      "#{INTERVIEW_PREFIX}.PHONE_NBR"       => "phone_nbr",
+      "#{INTERVIEW_PREFIX}.PHONE_TYPE"      => "phone_type_code",
+    }
 
-  TELEPHONE_MAP = {
-    "#{INTERVIEW_PREFIX}.PHONE_NBR"       => "phone_nbr",
-    "#{INTERVIEW_PREFIX}.PHONE_TYPE"      => "phone_type_code",
-  }
+    HOME_PHONE_MAP = {
+      "#{SAQ_PREFIX}.HOME_PHONE"            => "phone_nbr"
+    }
 
-  HOME_PHONE_MAP = {
-    "#{SAQ_PREFIX}.HOME_PHONE"            => "phone_nbr"
-  }
+    WORK_PHONE_MAP = {
+      "#{SAQ_PREFIX}.WORK_PHONE"            => "phone_nbr"
+    }
 
-  WORK_PHONE_MAP = {
-    "#{SAQ_PREFIX}.WORK_PHONE"            => "phone_nbr"
-  }
+    OTHER_PHONE_MAP = {
+      "#{SAQ_PREFIX}.OTHER_PHONE"           => "phone_nbr"
+    }
 
-  OTHER_PHONE_MAP = {
-    "#{SAQ_PREFIX}.OTHER_PHONE"           => "phone_nbr"
-  }
+    CELL_PHONE_MAP = {
+      "#{INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+      "#{INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+      "#{INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr",
+      "#{SAQ_PREFIX}.CELL_PHONE"            => "phone_nbr",
+    }
 
-  CELL_PHONE_MAP = {
-    "#{INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
-    "#{INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
-    "#{INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr",
-    "#{SAQ_PREFIX}.CELL_PHONE"            => "phone_nbr",
-  }
+    EMAIL_MAP = {
+      "#{SAQ_PREFIX}.EMAIL"                 => "email",
+      "#{SAQ_PREFIX}.EMAIL_TYPE"            => "email_type_code"
+    }
 
-  EMAIL_MAP = {
-    "#{SAQ_PREFIX}.EMAIL"                 => "email",
-    "#{SAQ_PREFIX}.EMAIL_TYPE"            => "email_type_code"
-  }
+    PPG_STATUS_MAP = {
+      "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
+      "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1"  => "orig_due_date",
+      "#{INTERVIEW_PREFIX}.TRYING"          => "ppg_status_code",
+      "#{INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_status_code",
+      "#{SAQ_PREFIX}.PREGNANT"              => "ppg_status_code",
+      "#{SAQ_PREFIX}.PPG_DUE_DATE"          => "orig_due_date",
+      "#{SAQ_PREFIX}.TRYING"                => "ppg_status_code",
+      "#{SAQ_PREFIX}.MED_UNABLE"            => "ppg_status_code"
+    }
 
-  PPG_STATUS_MAP = {
-    "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
-    "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1"  => "orig_due_date",
-    "#{INTERVIEW_PREFIX}.TRYING"          => "ppg_status_code",
-    "#{INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_status_code",
-    "#{SAQ_PREFIX}.PREGNANT"              => "ppg_status_code",
-    "#{SAQ_PREFIX}.PPG_DUE_DATE"          => "orig_due_date",
-    "#{SAQ_PREFIX}.TRYING"                => "ppg_status_code",
-    "#{SAQ_PREFIX}.MED_UNABLE"            => "ppg_status_code"
-  }
+    DUE_DATE_DETERMINER_MAP = {
+      "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
+      "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
+      "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
+      "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
+    }
 
-  DUE_DATE_DETERMINER_MAP = {
-    "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
-    "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
-    "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
-    "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
-  }
+    def initialize(response_set)
+      super(response_set)
+    end
 
-  class << self
+    def maps
+      [
+        TELEPHONE_MAP,
+        HOME_PHONE_MAP,
+        WORK_PHONE_MAP,
+        OTHER_PHONE_MAP,
+        CELL_PHONE_MAP,
+        EMAIL_MAP,
+        PPG_STATUS_MAP,
+        DUE_DATE_DETERMINER_MAP
+      ]
+    end
 
-    def extract_data(response_set)
+    def extract_data
       person = response_set.person
       participant = response_set.participant
-
-      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       ppg_status_history = nil
       home_phone         = nil
@@ -69,113 +82,112 @@ class OperationalDataExtractor::PpgFollowUp
       phone              = nil
       email              = nil
 
-      response_set.responses.each do |r|
-        value = OperationalDataExtractor::Base.response_value(r)
-
-        data_export_identifier = r.question.data_export_identifier
-
-        if TELEPHONE_MAP.has_key?(data_export_identifier)
+      TELEPHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            phone ||= Telephone.where(:response_set_id => response_set.id).first
-            if phone.nil?
-              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
+            phone ||= get_telephone(response_set, person)
+            set_value(phone, attribute, value)
           end
         end
+      end
 
-        if HOME_PHONE_MAP.has_key?(data_export_identifier)
+      HOME_PHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
-            if home_phone.nil?
-              home_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
+            home_phone ||= get_telephone(response_set, person, Telephone.home_phone_type)
+            set_value(home_phone, attribute, value)
           end
         end
+      end
 
-        if CELL_PHONE_MAP.has_key?(data_export_identifier)
+      CELL_PHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
-            if cell_phone.nil?
-              cell_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
+            set_value(cell_phone, attribute, value)
           end
         end
+      end
 
-        if OTHER_PHONE_MAP.has_key?(data_export_identifier)
+      OTHER_PHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            other_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.other_phone_type.local_code).last
-            if other_phone.nil?
-              other_phone = Telephone.new(:person => person, :psu => person.psu,
-                                          :phone_type => Telephone.other_phone_type, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(other_phone, OTHER_PHONE_MAP[data_export_identifier], value)
+            other_phone ||= get_telephone(response_set, person, Telephone.other_phone_type)
+            set_value(other_phone, attribute, value)
           end
         end
+      end
 
-        if WORK_PHONE_MAP.has_key?(data_export_identifier)
+      WORK_PHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            work_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.work_phone_type.local_code).last
-            if work_phone.nil?
-              work_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.work_phone_type, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(work_phone, WORK_PHONE_MAP[data_export_identifier], value)
+            work_phone ||= get_telephone(response_set, person, Telephone.work_phone_type)
+            set_value(work_phone, attribute, value)
           end
         end
+      end
 
-        if EMAIL_MAP.has_key?(data_export_identifier)
+      EMAIL_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            email ||= Email.where(:response_set_id => response_set.id).first
-            if email.nil?
-              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
+            email ||= get_email(response_set, person)
+            set_value(email, attribute, value)
+          end
+        end
+      end
+
+
+      PPG_STATUS_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+
+            ppg_status_history ||= PpgStatusHistory.where(:response_set_id => response_set.id).first
+            if ppg_status_history.nil?
+              ppg_status_history = PpgStatusHistory.new(:participant => participant,
+                :psu => participant.psu, :response_set => response_set)
             end
-            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
+
+            case key
+            when "#{INTERVIEW_PREFIX}.PREGNANT", "#{SAQ_PREFIX}.PREGNANT"
+              # Do not set status code if answer to PREGNANT is "No" or "Refused" or "Don't Know"
+              # TRYING response will set the status in this case
+              ppg_status_history.send("#{attribute}=", value) unless [2, -1, -2].include?(value)
+            when "#{INTERVIEW_PREFIX}.TRYING", "#{SAQ_PREFIX}.TRYING"
+
+              value = 4 if value == 2 # "No" response means that the status is "Not Trying" - i.e. 4
+              value = 2 if value == 1 # "Yes" response means that the status is "Trying" - i.e. 2
+
+              ppg_status_history.send("#{attribute}=", value)
+            when "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{SAQ_PREFIX}.MED_UNABLE"
+              value = 5 if value == 1 # "Yes" response means that the status is "Unable to become pregnant" - i.e. 5
+              ppg_status_history.send("#{attribute}=", value)
+            end
+
+            if (key == "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1" || key == "#{SAQ_PREFIX}.PPG_DUE_DATE") && !value.blank?
+              participant.ppg_details.first.update_due_date(value, :orig_due_date)
+            end
+
           end
         end
+      end
 
-        # TODO: do not hard code ppg code
-        if PPG_STATUS_MAP.has_key?(data_export_identifier)
-
-          ppg_status_history ||= PpgStatusHistory.where(:response_set_id => response_set.id).first
-          if ppg_status_history.nil?
-            ppg_status_history = PpgStatusHistory.new(:participant => participant, :psu => participant.psu, :response_set => response_set)
-          end
-
-          case data_export_identifier
-          when "#{INTERVIEW_PREFIX}.PREGNANT", "#{SAQ_PREFIX}.PREGNANT"
-            # Do not set status code if answer to PREGNANT is "No" or "Refused" or "Don't Know"
-            # TRYING response will set the status in this case
-            ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value) unless [2, -1, -2].include?(value)
-          when "#{INTERVIEW_PREFIX}.TRYING", "#{SAQ_PREFIX}.TRYING"
-
-            value = 4 if value == 2 # "No" response means that the status is "Not Trying" - i.e. 4
-            value = 2 if value == 1 # "Yes" response means that the status is "Trying" - i.e. 2
-
-            ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value)
-          when "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{SAQ_PREFIX}.MED_UNABLE"
-            value = 5 if value == 1 # "Yes" response means that the status is "Unable to become pregnant" - i.e. 5
-            ppg_status_history.send("#{PPG_STATUS_MAP[data_export_identifier]}=", value)
-          end
-
-          if (data_export_identifier == "#{INTERVIEW_PREFIX}.PPG_DUE_DATE_1" || data_export_identifier == "#{SAQ_PREFIX}.PPG_DUE_DATE") && !value.blank?
-            participant.ppg_details.first.update_due_date(value, :orig_due_date)
+      DUE_DATE_DETERMINER_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          if due_date = determine_due_date(attribute, r)
+            participant.ppg_details.first.update_due_date(due_date, :orig_due_date)
           end
         end
-
-        if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
-          due_date = OperationalDataExtractor::Base.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
-          participant.ppg_details.first.update_due_date(due_date, :orig_due_date) if due_date
-        end
-
       end
 
       if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
-        OperationalDataExtractor::Base.set_participant_type(participant, ppg_status_history.ppg_status_code)
+        set_participant_type(participant, ppg_status_history.ppg_status_code)
         ppg_status_history.save!
       end
 
