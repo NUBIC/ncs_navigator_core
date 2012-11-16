@@ -48,7 +48,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+      OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
       person = Person.find(@person.id)
       person.first_name.should == "Jo"
@@ -81,7 +81,7 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
         person = Person.find(@person.id)
         person.person_dob.should == Date.parse(entered_dob).to_s
@@ -102,7 +102,7 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
         person = Person.find(@person.id)
         person.person_dob.class.should == String
@@ -147,7 +147,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set.responses.reload
     response_set.responses.size.should == 7
 
-    OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
     person = Person.find(person.id)
     person.addresses.size.should == 1
@@ -183,7 +183,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set.responses.reload
     response_set.responses.size.should == 7
 
-    OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.addresses.size.should == 1
@@ -228,7 +228,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+      OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.telephones.size.should == 3
@@ -253,7 +253,7 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
         person  = Person.find(@person.id)
         person.telephones.size.should == 1
@@ -275,7 +275,7 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
         person  = Person.find(@person.id)
         person.telephones.size.should == 1
@@ -297,7 +297,7 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
         person  = Person.find(@person.id)
         person.telephones.size.should == 1
@@ -319,7 +319,7 @@ describe OperationalDataExtractor::PregnancyScreener do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
         person  = Person.find(@person.id)
         person.telephones.size.should == 1
@@ -354,7 +354,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set.responses.reload
     response_set.responses.size.should == 2
 
-    OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.emails.size.should == 1
@@ -398,7 +398,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set.responses.reload
     response_set.responses.size.should == 2
 
-    OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     participant = person.participant
@@ -431,7 +431,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     participant = person.participant
@@ -462,7 +462,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PregnancyScreener.extract_data(response_set)
+    OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     participant = person.participant
@@ -505,7 +505,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 2
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -527,7 +527,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -550,7 +550,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 4
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -573,7 +573,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 5
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -598,7 +598,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 6
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -619,7 +619,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 6
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -639,7 +639,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 6
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -659,7 +659,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 6
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -679,7 +679,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 6
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -711,7 +711,8 @@ describe OperationalDataExtractor::PregnancyScreener do
 
     describe "#known_keys" do
       it "collects all the keys for the ODE maps" do
-        OperationalDataExtractor::PregnancyScreener.known_keys.size.should == 47
+        ode = OperationalDataExtractor::PregnancyScreener.new(@response_set)
+        ode.known_keys.size.should == 47
       end
     end
 
@@ -728,7 +729,8 @@ describe OperationalDataExtractor::PregnancyScreener do
 
         @response_set.responses.reload
 
-        dei_hsh = OperationalDataExtractor::PregnancyScreener.data_export_identifier_indexed_responses(@response_set.responses)
+        ode = OperationalDataExtractor::PregnancyScreener.new(@response_set)
+        dei_hsh = ode.data_export_identifier_indexed_responses
 
         dei_hsh.size.should == 5
         dei_hsh["#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG"].integer_value.should == months_pregnant
@@ -750,7 +752,7 @@ describe OperationalDataExtractor::PregnancyScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 5
 
-      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant

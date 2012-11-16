@@ -1,38 +1,24 @@
 # -*- coding: utf-8 -*-
 
 
-class OperationalDataExtractor::Base
-  EXTRACTORS = [
-    [/_ParticipantVerif_/,  OperationalDataExtractor::ParticipantVerification],
-    [/_Tracing_/,           OperationalDataExtractor::TracingModule],
-    [/_PBSamplingScreen_/,  OperationalDataExtractor::PbsEligibilityScreener],
-    [/_PregScreen_/,        OperationalDataExtractor::PregnancyScreener],
-    [/_PPGFollUp_/,         OperationalDataExtractor::PpgFollowUp],
-    [/_PrePreg_/,           OperationalDataExtractor::PrePregnancy],
-    [/_PregVisit/,          OperationalDataExtractor::PregnancyVisit],
-    [/_LIPregNotPreg/,      OperationalDataExtractor::LowIntensityPregnancyVisit],
-    [/_Birth/,              OperationalDataExtractor::Birth],
-    [/_AdultBlood_/,        OperationalDataExtractor::Specimen],
-    [/_AdultUrine_/,        OperationalDataExtractor::Specimen],
-    [/_CordBlood_/,         OperationalDataExtractor::Specimen],
-    [/_TapWater/,           OperationalDataExtractor::Sample],
-    [/_VacBagDust/,         OperationalDataExtractor::Sample],
-    [/_3MMother/,           OperationalDataExtractor::PostNatal],
-    [/_6MMother/,           OperationalDataExtractor::PostNatal],
-    [/_9MMother/,           OperationalDataExtractor::PostNatal],
-    [/_12MMother/,          OperationalDataExtractor::PostNatal],
-    [/_18MMother/,          OperationalDataExtractor::PostNatal],
-    [/_24MMother/,          OperationalDataExtractor::PostNatal],
-  ]
+module OperationalDataExtractor
+  class Base
 
-  class << self
-    def process(response_set)
-      extractor_for(response_set).extract_data(response_set)
+    attr_accessor :response_set
+
+    class << self
+      def process(response_set)
+        extractor_for(response_set).extract_data
+      end
+
+      def extractor_for(response_set)
+        extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
+        extractor ? extractor[1].new(response_set) : OperationalDataExtractor::PregnancyScreener.new(response_set)
+      end
     end
 
-    def extractor_for(response_set)
-      extractor = EXTRACTORS.find { |instrument, handler| instrument =~ response_set.survey.title }
-      extractor ? extractor[1] : OperationalDataExtractor::PregnancyScreener
+    def initialize(response_set)
+      @response_set = response_set
     end
 
     def response_value(response)
@@ -282,6 +268,113 @@ class OperationalDataExtractor::Base
       log_path
     end
 
-  end
+    def known_keys
+      @known_keys ||= get_keys_from_maps
+    end
 
+    def get_keys_from_maps
+      maps.collect { |m| m.keys }.flatten
+    end
+
+    def maps
+      # To be implemented by subclass
+      []
+    end
+
+    def data_export_identifier_indexed_responses
+      @indexed_responses ||= collect_data_export_identifier_indexed_responses
+    end
+
+    def collect_data_export_identifier_indexed_responses
+      result = Hash.new
+      response_set.responses.each do |r|
+        dei = r.question.data_export_identifier
+        result[dei] = r if known_keys.include?(dei)
+      end
+      result
+    end
+
+    def get_address(response_set, person, address_type)
+      address = Address.where(:response_set_id => response_set.id,
+                              :address_type_code => address_type.local_code).first
+      if address.nil?
+        address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
+                              :address_type => address_type, :response_set => response_set,
+                              :address_rank => primary_rank)
+      end
+      address
+    end
+
+    def get_telephone(response_set, person, phone_type = nil)
+      criteria = Hash.new
+      criteria[:response_set_id] = response_set.id
+      criteria[:phone_type_code] = phone_type.local_code if phone_type
+      phone = Telephone.where(criteria).last
+      if phone.nil?
+        phone = Telephone.new(:person => person, :psu => person.psu,
+                              :response_set => response_set,
+                              :phone_rank => primary_rank)
+        phone.phone_type = phone_type if phone_type
+      end
+      phone
+    end
+
+    def get_secondary_telephone(response_set, person, phone_type = nil)
+      criteria = Hash.new
+      criteria[:response_set_id] = response_set.id
+      criteria[:phone_rank_code] = secondary_rank.local_code
+      criteria[:phone_type_code] = phone_type.local_code if phone_type
+      phone = Telephone.where(criteria).last
+      if phone.nil?
+        phone = Telephone.new(:person => person, :psu => person.psu,
+                              :response_set => response_set,
+                              :phone_rank => secondary_rank)
+        phone.phone_type = phone_type if phone_type
+      end
+      phone
+    end
+
+
+    def get_email(response_set, person)
+      email = Email.where(:response_set_id => response_set.id).first
+      if email.nil?
+        email = Email.new(:person => person, :psu => person.psu,
+                          :response_set => response_set,
+                          :email_rank => primary_rank)
+      end
+      email
+    end
+
+    def get_ppg_detail(response_set, participant)
+      ppg_detail = PpgDetail.where(:response_set_id => response_set.id).first
+      if ppg_detail.nil?
+        ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu,
+                                   :response_set => response_set)
+      end
+      ppg_detail
+    end
+
+    def ppg_detail_value(prefix, key, value)
+      result = value
+      case key
+      when "#{prefix}.PREGNANT"
+        result = value
+      when "#{prefix}.TRYING"
+        case value
+        when 1 # when Yes to Trying - set ppg_first_code to 2 - Trying
+          result = 2
+        when 2 # when No to Trying - set ppg_first_code to 4 - Not Trying
+          result = 4
+        else  # Otherwise Recent Loss, Not Trying, Unable match ppg_first_code
+          result = value
+        end
+      when "#{prefix}.HYSTER", "#{prefix}.OVARIES", "#{prefix}.TUBES_TIED", "#{prefix}.MENOPAUSE", "#{prefix}.MED_UNABLE", "#{prefix}.MED_UNABLE_OTH"
+        result = 5 if value == 1 # If yes to any set the ppg_first_code to 5 - Unable to become pregnant
+      else
+        result = value
+      end
+      result
+    end
+
+  end
 end

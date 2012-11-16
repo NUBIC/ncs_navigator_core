@@ -39,7 +39,7 @@ describe OperationalDataExtractor::Base do
         survey = create_pregnancy_screener_survey_with_ppg_detail_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::PregnancyScreener
+        handler.class.should == OperationalDataExtractor::PregnancyScreener
       end
     end
 
@@ -48,7 +48,7 @@ describe OperationalDataExtractor::Base do
         survey = create_follow_up_survey_with_ppg_status_history_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::PpgFollowUp
+        handler.class.should == OperationalDataExtractor::PpgFollowUp
       end
     end
 
@@ -57,7 +57,7 @@ describe OperationalDataExtractor::Base do
         survey = create_pre_pregnancy_survey_with_person_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::PrePregnancy
+        handler.class.should == OperationalDataExtractor::PrePregnancy
       end
     end
 
@@ -66,7 +66,7 @@ describe OperationalDataExtractor::Base do
         survey = create_pregnancy_visit_1_survey_with_person_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::PregnancyVisit
+        handler.class.should == OperationalDataExtractor::PregnancyVisit
       end
     end
 
@@ -75,7 +75,7 @@ describe OperationalDataExtractor::Base do
         survey = create_birth_survey_with_child_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::Birth
+        handler.class.should == OperationalDataExtractor::Birth
       end
     end
 
@@ -84,7 +84,7 @@ describe OperationalDataExtractor::Base do
         survey = create_li_pregnancy_screener_survey_with_ppg_status_history_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::LowIntensityPregnancyVisit
+        handler.class.should == OperationalDataExtractor::LowIntensityPregnancyVisit
       end
     end
 
@@ -93,7 +93,7 @@ describe OperationalDataExtractor::Base do
         survey = create_adult_blood_survey_with_specimen_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::Specimen
+        handler.class.should == OperationalDataExtractor::Specimen
       end
     end
 
@@ -102,7 +102,7 @@ describe OperationalDataExtractor::Base do
         survey = create_adult_urine_survey_with_specimen_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::Specimen
+        handler.class.should == OperationalDataExtractor::Specimen
       end
     end
 
@@ -111,7 +111,7 @@ describe OperationalDataExtractor::Base do
         survey = create_cord_blood_survey_with_specimen_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::Specimen
+        handler.class.should == OperationalDataExtractor::Specimen
       end
     end
 
@@ -120,7 +120,7 @@ describe OperationalDataExtractor::Base do
         survey = create_tap_water_survey_with_sample_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::Sample
+        handler.class.should == OperationalDataExtractor::Sample
       end
     end
 
@@ -129,7 +129,7 @@ describe OperationalDataExtractor::Base do
         survey = create_vacuum_bag_dust_survey_with_sample_operational_data
         response_set, instrument = prepare_instrument(person, participant, survey)
         handler = OperationalDataExtractor::Base.extractor_for(response_set)
-        handler.should == OperationalDataExtractor::Sample
+        handler.class.should == OperationalDataExtractor::Sample
       end
     end
 

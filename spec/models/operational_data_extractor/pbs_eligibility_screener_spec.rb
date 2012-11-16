@@ -42,7 +42,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
       person = Person.find(@person.id)
       person.first_name.should == "Jo"
@@ -79,7 +79,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
       person = Person.find(@person.id)
       person.first_name.should be_nil
@@ -117,7 +117,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
       person = Person.find(person.id)
       person.addresses.size.should == 1
@@ -148,7 +148,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
       person = Person.find(person.id)
       person.addresses.size.should == 1
@@ -179,7 +179,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
       person = Person.find(person.id)
       person.addresses.size.should == 1
@@ -220,16 +220,17 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       response_set.responses.reload
       response_set.responses.size.should == 6
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.telephones.size.should == 2
       person.telephones.each do |t|
         t.phone_type.should_not be_nil
         t.phone_nbr[0,6].should == "312555"
-        t.phone_rank_code.should == 1
       end
 
+      person.telephones.first.phone_rank_code.should == 1
+      person.telephones.last.phone_rank_code.should == 2
     end
   end
 
@@ -250,7 +251,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+    OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.emails.size.should == 1
@@ -280,7 +281,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+    OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     participant = person.participant
@@ -312,7 +313,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+    OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     participant = person.participant
@@ -343,7 +344,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PbsEligibilityScreener.extract_data(response_set)
+    OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
 
     person  = Person.find(person.id)
     participant = person.participant
@@ -387,7 +388,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 4
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -405,7 +406,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 4
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -423,7 +424,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 4
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -449,7 +450,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -477,7 +478,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 8
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -504,7 +505,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 9
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -533,7 +534,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 10
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -558,7 +559,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 10
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -582,7 +583,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 10
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -606,7 +607,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 10
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -630,7 +631,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       @response_set.responses.reload
       @response_set.responses.size.should == 10
 
-      OperationalDataExtractor::PbsEligibilityScreener.extract_data(@response_set)
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -638,5 +639,93 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     end
 
   end
+
+  context "ensuring that the ODE processes regardless of response_set response ordering" do
+
+    let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+    let(:neg_1) { stub(:local_code => 'neg_1') }
+    let(:neg_2) { stub(:local_code => 'neg_2') }
+    let(:tri1) { stub(:local_code => '1') }
+    let(:tri2) { stub(:local_code => '2') }
+    let(:tri3) { stub(:local_code => '3') }
+
+    before(:each) do
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
+
+      @survey = create_pbs_eligibility_screener_survey_to_determine_due_date
+
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+      @response_set.save!
+    end
+
+    describe "#known_keys" do
+      it "collects all the keys for the ODE maps" do
+        ode = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+        ode.known_keys.size.should == 35
+      end
+    end
+
+    describe "#data_export_identifier_indexed_responses" do
+      it "collects all the responses and maps them to their associated data_export_identifier" do
+        last_period = 2.weeks.ago
+
+        take_survey(@survey, @response_set) do |a|
+          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
+          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
+
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+        end
+
+
+
+        @response_set.responses.reload
+
+        ode = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+        dei_hsh = ode.data_export_identifier_indexed_responses
+
+        dei_hsh.size.should == 7
+        dei_hsh["#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD"].string_value.should == last_period.day.to_s
+        dei_hsh["#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT"].answer.reference_identifier.should == "1"
+      end
+    end
+
+    it "calculates the due date based on the date of the last menstrual period" do
+
+      last_period = 20.weeks.ago
+
+      take_survey(@survey, @response_set) do |a|
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_YY", last_period.year
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_MM", mock(NcsCode, :local_code => last_period.month)
+        a.str "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.DATE_PERIOD_DD", last_period.day
+
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD", neg_2
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM", neg_2
+        a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY", neg_2
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 7
+
+      OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == (last_period + 280.days).to_date
+
+    end
+
+
+  end
+
 
 end

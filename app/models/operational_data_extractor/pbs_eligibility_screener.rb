@@ -1,86 +1,107 @@
 # -*- coding: utf-8 -*-
 
+module OperationalDataExtractor
+  class PbsEligibilityScreener < Base
 
-class OperationalDataExtractor::PbsEligibilityScreener
+    # TODO: extract contact information (language/interpreter used)
+    # TODO: is address the HOME address? if so, set address_type
 
-  # TODO: extract contact information (language/interpreter used)
-  # TODO: is address the HOME address? if so, set address_type
+    INTERVIEW_PREFIX = "PBS_ELIG_SCREENER"
 
-  INTERVIEW_PREFIX = "PBS_ELIG_SCREENER"
+    ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
+    CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW"
+    CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW_OTH"
+    INTERPRET             = "#{INTERVIEW_PREFIX}.INTERPRET"
+    CONTACT_INTERPRET     = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET"
+    CONTACT_INTERPRET_OTH = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH"
 
-  ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
-  CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW"
-  CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW_OTH"
-  INTERPRET             = "#{INTERVIEW_PREFIX}.INTERPRET"
-  CONTACT_INTERPRET     = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET"
-  CONTACT_INTERPRET_OTH = "#{INTERVIEW_PREFIX}.CONTACT_INTERPRET_OTH"
+    PERSON_MAP = {
+      "#{INTERVIEW_PREFIX}.R_FNAME"             => "first_name",
+      "#{INTERVIEW_PREFIX}.R_MNAME"             => "middle_name",
+      "#{INTERVIEW_PREFIX}.R_LNAME"             => "last_name",
+      "#{INTERVIEW_PREFIX}.PERSON_DOB"          => "person_dob",
+      "#{INTERVIEW_PREFIX}.ETHNIC_ORIGIN"       => "ethnic_group_code",
+      "#{INTERVIEW_PREFIX}.PERSON_LANG_NEW"     => "language_new_code",
+      "#{INTERVIEW_PREFIX}.PERSON_LANG_NEW_OTH" => "language_new_other"
+    }
 
-  PERSON_MAP = {
-    "#{INTERVIEW_PREFIX}.R_FNAME"             => "first_name",
-    "#{INTERVIEW_PREFIX}.R_MNAME"             => "middle_name",
-    "#{INTERVIEW_PREFIX}.R_LNAME"             => "last_name",
-    "#{INTERVIEW_PREFIX}.PERSON_DOB"          => "person_dob",
-    "#{INTERVIEW_PREFIX}.ETHNIC_ORIGIN"       => "ethnic_group_code",
-    "#{INTERVIEW_PREFIX}.PERSON_LANG_NEW"     => "language_new_code",
-    "#{INTERVIEW_PREFIX}.PERSON_LANG_NEW_OTH" => "language_new_other"
-  }
+    AGE_RANGE_MAP = {
+      "#{INTERVIEW_PREFIX}.AGE_RANGE_PBS"   => "age_range_code",
+    }
 
-  AGE_RANGE_MAP = {
-    "#{INTERVIEW_PREFIX}.AGE_RANGE_PBS"   => "age_range_code",
-  }
+    PERSON_RACE_MAP = {
+      "#{INTERVIEW_PREFIX}.RACE_NEW"         => "race_code",
+      "#{INTERVIEW_PREFIX}.RACE_NEW_OTH"     => "race_other",
+    }
 
-  PERSON_RACE_MAP = {
-    "#{INTERVIEW_PREFIX}.RACE_NEW"         => "race_code",
-    "#{INTERVIEW_PREFIX}.RACE_NEW_OTH"     => "race_other",
-  }
+    PARTICIPANT_MAP = {
+      "#{INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
+    }
 
-  PARTICIPANT_MAP = {
-    "#{INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
-  }
+    ADDRESS_MAP = {
+      "#{INTERVIEW_PREFIX}.ADDRESS_1"       => "address_one",
+      "#{INTERVIEW_PREFIX}.ADDRESS_2"       => "address_two",
+      "#{INTERVIEW_PREFIX}.UNIT"            => "unit",
+      "#{INTERVIEW_PREFIX}.CITY"            => "city",
+      "#{INTERVIEW_PREFIX}.STATE"           => "state_code",
+      "#{INTERVIEW_PREFIX}.ZIP"             => "zip",
+      "#{INTERVIEW_PREFIX}.ZIP4"            => "zip4"
+    }
 
-  ADDRESS_MAP = {
-    "#{INTERVIEW_PREFIX}.ADDRESS_1"       => "address_one",
-    "#{INTERVIEW_PREFIX}.ADDRESS_2"       => "address_two",
-    "#{INTERVIEW_PREFIX}.UNIT"            => "unit",
-    "#{INTERVIEW_PREFIX}.CITY"            => "city",
-    "#{INTERVIEW_PREFIX}.STATE"           => "state_code",
-    "#{INTERVIEW_PREFIX}.ZIP"             => "zip",
-    "#{INTERVIEW_PREFIX}.ZIP4"            => "zip4"
-  }
+    TELEPHONE_MAP1 = {
+      "#{INTERVIEW_PREFIX}.R_PHONE_1"         => "phone_nbr",
+      "#{INTERVIEW_PREFIX}.R_PHONE_TYPE1"     => "phone_type_code",
+      "#{INTERVIEW_PREFIX}.R_PHONE_TYPE1_OTH" => "phone_type_other",
+    }
 
-  TELEPHONE_MAP1 = {
-    "#{INTERVIEW_PREFIX}.R_PHONE_1"         => "phone_nbr",
-    "#{INTERVIEW_PREFIX}.R_PHONE_TYPE1"     => "phone_type_code",
-    "#{INTERVIEW_PREFIX}.R_PHONE_TYPE1_OTH" => "phone_type_other",
-  }
+    TELEPHONE_MAP2 = {
+      "#{INTERVIEW_PREFIX}.R_PHONE_2"         => "phone_nbr",
+      "#{INTERVIEW_PREFIX}.R_PHONE_TYPE2"     => "phone_type_code",
+      "#{INTERVIEW_PREFIX}.R_PHONE_TYPE2_OTH" => "phone_type_other",
+    }
 
-  TELEPHONE_MAP2 = {
-    "#{INTERVIEW_PREFIX}.R_PHONE_2"         => "phone_nbr",
-    "#{INTERVIEW_PREFIX}.R_PHONE_TYPE2"     => "phone_type_code",
-    "#{INTERVIEW_PREFIX}.R_PHONE_TYPE2_OTH" => "phone_type_other",
-  }
+    EMAIL_MAP = {
+      "#{INTERVIEW_PREFIX}.R_EMAIL"         => "email",
+    }
 
-  EMAIL_MAP = {
-    "#{INTERVIEW_PREFIX}.R_EMAIL"           => "email",
-  }
+    PPG_DETAILS_MAP = {
+      "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_first_code",
+    }
 
-  PPG_DETAILS_MAP = {
-    "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_first_code",
-  }
+    DUE_DATE_DETERMINER_MAP = {
+      "#{INTERVIEW_PREFIX}.TRIMESTER"          => "TRIMESTER",
+      "#{INTERVIEW_PREFIX}.MONTH_PREG"         => "MONTH_PREG",
+      "#{INTERVIEW_PREFIX}.WEEKS_PREG"         => "WEEKS_PREG",
+      "#{INTERVIEW_PREFIX}.DATE_PERIOD_DD"     => "DATE_PERIOD_DD",
+      "#{INTERVIEW_PREFIX}.DATE_PERIOD_MM"     => "DATE_PERIOD_MM",
+      "#{INTERVIEW_PREFIX}.DATE_PERIOD_YY"     => "DATE_PERIOD_YY",
+      "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE_DD"   => "ORIG_DUE_DATE_DD",
+      "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE_MM"   => "ORIG_DUE_DATE_MM",
+      "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY"   => "ORIG_DUE_DATE_YY",
+    }
 
-  DUE_DATE_DETERMINER_MAP = {
-    "#{INTERVIEW_PREFIX}.WEEKS_PREG"         => "WEEKS_PREG",
-    "#{INTERVIEW_PREFIX}.MONTH_PREG"         => "MONTH_PREG",
-    "#{INTERVIEW_PREFIX}.TRIMESTER"          => "TRIMESTER",
-  }
+    def maps
+      [
+        PERSON_MAP,
+        AGE_RANGE_MAP,
+        PERSON_RACE_MAP,
+        PARTICIPANT_MAP,
+        ADDRESS_MAP,
+        TELEPHONE_MAP1,
+        TELEPHONE_MAP2,
+        EMAIL_MAP,
+        PPG_DETAILS_MAP,
+        DUE_DATE_DETERMINER_MAP
+      ]
+    end
 
-  class << self
+    def initialize(response_set)
+      super(response_set)
+    end
 
-    def extract_data(response_set)
+    def extract_data
       person = response_set.person
       participant = response_set.participant
-
-      primary_rank = OperationalDataExtractor::Base.primary_rank
 
       ppg_detail   = nil
       email        = nil
@@ -88,19 +109,25 @@ class OperationalDataExtractor::PbsEligibilityScreener
       phone2       = nil
       address      = nil
 
-      response_set.responses.each do |r|
-
-        value = OperationalDataExtractor::Base.response_value(r)
-        data_export_identifier = r.question.data_export_identifier
-
-        if PERSON_MAP.has_key?(data_export_identifier)
-          OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
+      PERSON_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          set_value(person, attribute, response_value(r))
         end
+      end
 
-        # AGE_RANGE_CL8 in instrument - AGE_RANGE_CL1 in person
-        # So if it is 1 then 1 otherwise set to -6 unknown because of the code list mismatch
-        if AGE_RANGE_MAP.has_key?(data_export_identifier)
-          val = case value
+      if participant
+        PARTICIPANT_MAP.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            set_value(participant, attribute, response_value(r))
+          end
+        end
+      end
+
+      # AGE_RANGE_CL8 in instrument - AGE_RANGE_CL1 in person
+      # So if it is 1 then 1 otherwise set to -6 unknown because of the code list mismatch
+      AGE_RANGE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          val = case response_value(r)
                 when 1
                   1
                 when -1
@@ -108,80 +135,81 @@ class OperationalDataExtractor::PbsEligibilityScreener
                 else
                   -6
                 end
-          person.send("#{AGE_RANGE_MAP[data_export_identifier]}=", val)
+          person.send("#{attribute}=", val)
         end
-
-        if PARTICIPANT_MAP.has_key?(data_export_identifier)
-          participant.send("#{PARTICIPANT_MAP[data_export_identifier]}=", value) unless participant.blank?
-        end
-
-        if ADDRESS_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.home_address_type.local_code).first
-            if address.nil?
-              address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                    :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(address, ADDRESS_MAP[data_export_identifier], value)
-          end
-        end
-
-        if TELEPHONE_MAP1.has_key?(data_export_identifier)
-          unless value.blank?
-            phone1 ||= Telephone.where(:response_set_id => response_set.id).first
-            if phone1.nil?
-              phone1 = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(phone1, TELEPHONE_MAP1[data_export_identifier], value)
-          end
-        end
-
-        if TELEPHONE_MAP2.has_key?(data_export_identifier)
-          unless value.blank?
-            phone2 ||= Telephone.where(:response_set_id => response_set.id).first
-            if phone2.nil?
-              phone2 = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(phone2, TELEPHONE_MAP2[data_export_identifier], value)
-          end
-        end
-
-        if EMAIL_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            email ||= Email.where(:response_set_id => response_set.id).first
-            if email.nil?
-              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
-          end
-        end
-
-        # TODO: do not hard code ppg code
-        if PPG_DETAILS_MAP.has_key?(data_export_identifier)
-
-          ppg_detail ||= PpgDetail.where(:response_set_id => response_set.id).first
-          if ppg_detail.nil?
-            ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu, :response_set => response_set)
-          end
-          OperationalDataExtractor::Base.set_value(ppg_detail, PPG_DETAILS_MAP[data_export_identifier], value)
-        end
-
-        if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
-          due_date = OperationalDataExtractor::Base.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
-          ppg_detail.orig_due_date = due_date if ppg_detail && due_date
-        end
-
       end
 
-      if ppg_detail
-        if due_date = calculated_due_date(response_set)
-          ppg_detail.orig_due_date = due_date
-        elsif ppg_detail.orig_due_date.blank? && participant.known_to_be_pregnant?
-          due_date = (Date.today + 280.days) - (140.days)
-          ppg_detail.orig_due_date = due_date.strftime('%Y-%m-%d')
+      ADDRESS_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            address ||= get_address(response_set, person, Address.home_address_type)
+            set_value(address, attribute, value)
+          end
         end
-        OperationalDataExtractor::Base.set_participant_type(participant, ppg_detail.ppg_first_code)
-        ppg_detail.save!
+      end
+
+      TELEPHONE_MAP1.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            phone1 ||= get_telephone(response_set, person)
+            set_value(phone1, attribute, value)
+          end
+        end
+      end
+
+      TELEPHONE_MAP2.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            phone2 ||= get_secondary_telephone(response_set, person)
+            set_value(phone2, attribute, value)
+          end
+        end
+      end
+
+      EMAIL_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            email ||= get_email(response_set, person)
+            set_value(email, attribute, value)
+          end
+        end
+      end
+
+      if participant
+        PPG_DETAILS_MAP.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            value = response_value(r)
+            unless value.blank?
+              ppg_detail ||= get_ppg_detail(response_set, participant)
+              ppg_detail.send("#{attribute}=", ppg_detail_value(INTERVIEW_PREFIX, key, value))
+            end
+          end
+        end
+
+        if ppg_detail
+          DUE_DATE_DETERMINER_MAP.each do |key, attribute|
+            if r = data_export_identifier_indexed_responses[key]
+              if due_date = determine_due_date(attribute, r)
+                ppg_detail.orig_due_date = due_date
+              end
+            end
+          end
+
+          if due_date = calculated_due_date(response_set)
+            ppg_detail.orig_due_date = due_date
+          elsif ppg_detail.orig_due_date.blank? && participant.known_to_be_pregnant?
+            due_date = (Date.today + 280.days) - (140.days)
+            ppg_detail.orig_due_date = due_date.strftime('%Y-%m-%d')
+          end
+          set_participant_type(participant, ppg_detail.ppg_first_code)
+          ppg_detail.save!
+
+        end
+
       end
 
       if email && !email.email.blank?
@@ -215,10 +243,11 @@ class OperationalDataExtractor::PbsEligibilityScreener
     def due_date_response(response_set, date_question)
       if dt = date_string(response_set, date_question)
         begin
-          OperationalDataExtractor::Base.determine_due_date(
+          determine_due_date(
             "#{date_question}_DD",
             response_for(response_set, "#{INTERVIEW_PREFIX}.#{date_question}_DD"),
-            Date.parse(dt))
+            Date.parse(dt)
+          )
         rescue
           #NOOP - unparseable date
         end
@@ -228,9 +257,10 @@ class OperationalDataExtractor::PbsEligibilityScreener
     def date_string(response_set, str)
       dt = []
       ['YY', 'MM', 'DD'].each do |date_part|
-        r = response_for(response_set, "#{INTERVIEW_PREFIX}.#{str}_#{date_part}")
-        val = OperationalDataExtractor::Base.response_value(r) if r
-        dt << val if val.to_i > 0
+        if r = response_for(response_set, "#{INTERVIEW_PREFIX}.#{str}_#{date_part}")
+          val = response_value(r)
+          dt << val if val.to_i > 0
+        end
       end
       dt.join("-")
     end
@@ -241,5 +271,4 @@ class OperationalDataExtractor::PbsEligibilityScreener
     end
 
   end
-
 end
