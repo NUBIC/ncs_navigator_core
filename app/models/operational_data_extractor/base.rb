@@ -294,26 +294,30 @@ module OperationalDataExtractor
       result
     end
 
-    def get_address(response_set, person, address_type)
-      address = Address.where(:response_set_id => response_set.id,
-                              :address_type_code => address_type.local_code).first
+    def get_address(response_set, person, address_type, address_rank = primary_rank)
+      criteria = Hash.new
+      criteria[:response_set_id] = response_set.id
+      criteria[:address_type_code] = address_type.local_code
+      criteria[:address_rank_code] = address_rank.local_code
+      address = Address.where(criteria).first
       if address.nil?
-        address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                              :address_type => address_type, :response_set => response_set,
-                              :address_rank => primary_rank)
+        address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
+                              :psu => person.psu, :response_set => response_set,
+                              :address_type => address_type, :address_rank => address_rank)
       end
       address
     end
 
-    def get_telephone(response_set, person, phone_type = nil)
+    def get_telephone(response_set, person, phone_type = nil, phone_rank = primary_rank)
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
       criteria[:phone_type_code] = phone_type.local_code if phone_type
+      criteria[:phone_rank_code] = phone_rank.local_code if phone_rank
       phone = Telephone.where(criteria).last
       if phone.nil?
         phone = Telephone.new(:person => person, :psu => person.psu,
                               :response_set => response_set,
-                              :phone_rank => primary_rank)
+                              :phone_rank => phone_rank)
         phone.phone_type = phone_type if phone_type
       end
       phone
