@@ -187,4 +187,12 @@ namespace :import do
       psc.schedule_pending_event(event, Psc::ScheduledActivity::SCHEDULED, date, reason)
     end
   end
+
+  desc 'Import an EROC'
+  task :eroc, [:eroc_csv] => [:environment, :set_whodunnit] do |t, args|
+    require 'ncs_navigator/core'
+
+    fail 'Please specify the path to the EROC csv' unless args[:eroc_csv]
+    NcsNavigator::Core::RecordOfContactImporter.import_data(File.open args[:eroc_csv])
+  end
 end
