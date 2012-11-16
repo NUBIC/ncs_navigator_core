@@ -40,7 +40,7 @@ describe OperationalDataExtractor::Sample do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::Sample.extract_data(response_set)
+        OperationalDataExtractor::Sample.new(response_set).extract_data
 
         samples = Sample.where(:instrument_id => instrument.id).all
         samples.should_not be_blank
@@ -74,7 +74,7 @@ describe OperationalDataExtractor::Sample do
         response_set.responses.reload
         response_set.responses.size.should == 3
 
-        OperationalDataExtractor::Sample.extract_data(response_set)
+        OperationalDataExtractor::Sample.new(response_set).extract_data
 
         instrument.samples.reload
         instrument.samples.count.should == 3
@@ -101,7 +101,7 @@ describe OperationalDataExtractor::Sample do
         response_set.responses.reload
         response_set.responses.size.should == 2
 
-        OperationalDataExtractor::Sample.extract_data(response_set)
+        OperationalDataExtractor::Sample.new(response_set).extract_data
 
         instrument.samples.reload
         instrument.samples.count.should == 2
@@ -125,7 +125,7 @@ describe OperationalDataExtractor::Sample do
         response_set.responses.reload
         response_set.responses.size.should == 5
 
-        OperationalDataExtractor::Sample.extract_data(response_set)
+        OperationalDataExtractor::Sample.new(response_set).extract_data
 
         instrument.samples.reload
         instrument.samples.count.should == 3
@@ -150,7 +150,7 @@ describe OperationalDataExtractor::Sample do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::Sample.extract_data(response_set)
+        OperationalDataExtractor::Sample.new(response_set).extract_data
 
         instrument.samples.reload
         instrument.samples.count.should == 1
@@ -187,7 +187,7 @@ describe OperationalDataExtractor::Sample do
         response_set.responses.reload
         response_set.responses.size.should == 3
 
-        OperationalDataExtractor::Sample.extract_data(response_set)
+        OperationalDataExtractor::Sample.new(response_set).extract_data
 
         instrument.samples.reload
         instrument.samples.count.should == 3

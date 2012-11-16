@@ -38,7 +38,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         specimens = Specimen.where(:instrument_id => instrument.id).all
         specimens.should_not be_blank
@@ -78,7 +78,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 6
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         instrument.specimens.reload
         instrument.specimens.count.should == 6
@@ -103,7 +103,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         instrument.specimens.reload
         instrument.specimens.count.should == 1
@@ -135,7 +135,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 4
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         instrument.specimens.reload
         instrument.specimens.count.should == 4
@@ -166,7 +166,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 10
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         instrument.specimens.reload
         instrument.specimens.count.should == 6
@@ -198,7 +198,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 3
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         instrument.specimens.reload
         instrument.specimens.count.should == 3
@@ -223,7 +223,7 @@ describe OperationalDataExtractor::Specimen do
         response_set.responses.reload
         response_set.responses.size.should == 1
 
-        OperationalDataExtractor::Specimen.extract_data(response_set)
+        OperationalDataExtractor::Specimen.new(response_set).extract_data
 
         instrument.specimens.reload
         instrument.specimens.count.should == 1
