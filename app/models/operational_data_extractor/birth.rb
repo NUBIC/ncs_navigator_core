@@ -1,111 +1,125 @@
 # -*- coding: utf-8 -*-
 
+module OperationalDataExtractor
+  class Birth < Base
 
-class OperationalDataExtractor::Birth
+    BABY_NAME_PREFIX     = "BIRTH_VISIT_BABY_NAME_2"
+    BIRTH_VISIT_PREFIX   = "BIRTH_VISIT_2"
+    BABY_NAME_LI_PREFIX  = "BIRTH_VISIT_LI_BABY_NAME"
+    BIRTH_LI_PREFIX      = "BIRTH_VISIT_LI"
+    BIRTH_VISIT_3_PREFIX = "BIRTH_VISIT_3"
 
-  BABY_NAME_PREFIX     = "BIRTH_VISIT_BABY_NAME_2"
-  BIRTH_VISIT_PREFIX   = "BIRTH_VISIT_2"
-  BABY_NAME_LI_PREFIX  = "BIRTH_VISIT_LI_BABY_NAME"
-  BIRTH_LI_PREFIX      = "BIRTH_VISIT_LI"
-  BIRTH_VISIT_3_PREFIX = "BIRTH_VISIT_3"
+    CHILD_PERSON_MAP = {
+      "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
+      "#{BABY_NAME_PREFIX}.BABY_MNAME"        => "middle_name",
+      "#{BABY_NAME_PREFIX}.BABY_LNAME"        => "last_name",
+      "#{BABY_NAME_PREFIX}.BABY_SEX"          => "sex_code",
 
-  CHILD_PERSON_MAP = {
-    "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
-    "#{BABY_NAME_PREFIX}.BABY_MNAME"        => "middle_name",
-    "#{BABY_NAME_PREFIX}.BABY_LNAME"        => "last_name",
-    "#{BABY_NAME_PREFIX}.BABY_SEX"          => "sex_code",
+      "#{BABY_NAME_LI_PREFIX}.BABY_FNAME"      => "first_name",
+      "#{BABY_NAME_LI_PREFIX}.BABY_MNAME"      => "middle_name",
+      "#{BABY_NAME_LI_PREFIX}.BABY_LNAME"      => "last_name",
+      "#{BABY_NAME_LI_PREFIX}.BABY_SEX"        => "sex_code",
+    }
 
-    "#{BABY_NAME_LI_PREFIX}.BABY_FNAME"      => "first_name",
-    "#{BABY_NAME_LI_PREFIX}.BABY_MNAME"      => "middle_name",
-    "#{BABY_NAME_LI_PREFIX}.BABY_LNAME"      => "last_name",
-    "#{BABY_NAME_LI_PREFIX}.BABY_SEX"        => "sex_code",
-  }
+    PERSON_MAP = {
+      "#{BIRTH_VISIT_PREFIX}.R_FNAME"         => "first_name",
+      "#{BIRTH_VISIT_PREFIX}.R_LNAME"         => "last_name",
 
-  PERSON_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.R_FNAME"         => "first_name",
-    "#{BIRTH_VISIT_PREFIX}.R_LNAME"         => "last_name",
+      "#{BIRTH_LI_PREFIX}.R_FNAME"         => "first_name",
+      "#{BIRTH_LI_PREFIX}.R_LNAME"         => "last_name",
+    }
 
-    "#{BIRTH_LI_PREFIX}.R_FNAME"         => "first_name",
-    "#{BIRTH_LI_PREFIX}.R_LNAME"         => "last_name",
-  }
+    MAIL_ADDRESS_MAP = {
+      "#{BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1"   => "address_one",
+      "#{BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2"   => "address_two",
+      "#{BIRTH_VISIT_PREFIX}.MAIL_UNIT"       => "unit",
+      "#{BIRTH_VISIT_PREFIX}.MAIL_CITY"       => "city",
+      "#{BIRTH_VISIT_PREFIX}.MAIL_STATE"      => "state_code",
+      "#{BIRTH_VISIT_PREFIX}.MAIL_ZIP"        => "zip",
+      "#{BIRTH_VISIT_PREFIX}.MAIL_ZIP4"       => "zip4",
 
-  MAIL_ADDRESS_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1"   => "address_one",
-    "#{BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2"   => "address_two",
-    "#{BIRTH_VISIT_PREFIX}.MAIL_UNIT"       => "unit",
-    "#{BIRTH_VISIT_PREFIX}.MAIL_CITY"       => "city",
-    "#{BIRTH_VISIT_PREFIX}.MAIL_STATE"      => "state_code",
-    "#{BIRTH_VISIT_PREFIX}.MAIL_ZIP"        => "zip",
-    "#{BIRTH_VISIT_PREFIX}.MAIL_ZIP4"       => "zip4",
+      "#{BIRTH_LI_PREFIX}.MAIL_ADDRESS1"   => "address_one",
+      "#{BIRTH_LI_PREFIX}.MAIL_ADDRESS2"   => "address_two",
+      "#{BIRTH_LI_PREFIX}.MAIL_UNIT"       => "unit",
+      "#{BIRTH_LI_PREFIX}.MAIL_CITY"       => "city",
+      "#{BIRTH_LI_PREFIX}.MAIL_STATE"      => "state_code",
+      "#{BIRTH_LI_PREFIX}.MAIL_ZIP"        => "zip",
+      "#{BIRTH_LI_PREFIX}.MAIL_ZIP4"       => "zip4"
+    }
 
-    "#{BIRTH_LI_PREFIX}.MAIL_ADDRESS1"   => "address_one",
-    "#{BIRTH_LI_PREFIX}.MAIL_ADDRESS2"   => "address_two",
-    "#{BIRTH_LI_PREFIX}.MAIL_UNIT"       => "unit",
-    "#{BIRTH_LI_PREFIX}.MAIL_CITY"       => "city",
-    "#{BIRTH_LI_PREFIX}.MAIL_STATE"      => "state_code",
-    "#{BIRTH_LI_PREFIX}.MAIL_ZIP"        => "zip",
-    "#{BIRTH_LI_PREFIX}.MAIL_ZIP4"       => "zip4"
-  }
+    WORK_ADDRESS_MAP = {
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1"   => "address_one",
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2"   => "address_two",
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_UNIT"       => "unit",
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_CITY"       => "city",
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_STATE"      => "state_code",
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_ZIP"        => "zip",
+      "#{BIRTH_VISIT_3_PREFIX}.WORK_ZIP4"       => "zip4",
+    }
 
-  WORK_ADDRESS_MAP = {
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1"   => "address_one",
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2"   => "address_two",
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_UNIT"       => "unit",
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_CITY"       => "city",
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_STATE"      => "state_code",
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_ZIP"        => "zip",
-    "#{BIRTH_VISIT_3_PREFIX}.WORK_ZIP4"       => "zip4",
-  }
+    TELEPHONE_MAP = {
+      "#{BIRTH_VISIT_PREFIX}.PHONE_NBR"       => "phone_nbr",
+      "#{BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
+      "#{BIRTH_VISIT_PREFIX}.PHONE_TYPE"      => "phone_type_code",
+      "#{BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
 
-  TELEPHONE_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.PHONE_NBR"       => "phone_nbr",
-    "#{BIRTH_VISIT_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
-    "#{BIRTH_VISIT_PREFIX}.PHONE_TYPE"      => "phone_type_code",
-    "#{BIRTH_VISIT_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
+      "#{BIRTH_LI_PREFIX}.PHONE_NBR"       => "phone_nbr",
+      "#{BIRTH_LI_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
+      "#{BIRTH_LI_PREFIX}.PHONE_TYPE"      => "phone_type_code",
+      "#{BIRTH_LI_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
+    }
 
-    "#{BIRTH_LI_PREFIX}.PHONE_NBR"       => "phone_nbr",
-    "#{BIRTH_LI_PREFIX}.PHONE_NBR_OTH"   => "phone_nbr",
-    "#{BIRTH_LI_PREFIX}.PHONE_TYPE"      => "phone_type_code",
-    "#{BIRTH_LI_PREFIX}.PHONE_TYPE_OTH"  => "phone_type_other",
-  }
+    HOME_PHONE_MAP = {
+      "#{BIRTH_VISIT_PREFIX}.HOME_PHONE"      => "phone_nbr",
 
-  HOME_PHONE_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.HOME_PHONE"      => "phone_nbr",
+      "#{BIRTH_LI_PREFIX}.HOME_PHONE"      => "phone_nbr"
+    }
 
-    "#{BIRTH_LI_PREFIX}.HOME_PHONE"      => "phone_nbr"
-  }
+    CELL_PHONE_MAP = {
+      "#{BIRTH_VISIT_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+      "#{BIRTH_VISIT_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+      "#{BIRTH_VISIT_PREFIX}.CELL_PHONE"      => "phone_nbr",
 
-  CELL_PHONE_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
-    "#{BIRTH_VISIT_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
-    "#{BIRTH_VISIT_PREFIX}.CELL_PHONE"      => "phone_nbr",
+      "#{BIRTH_LI_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+      "#{BIRTH_LI_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+      "#{BIRTH_LI_PREFIX}.CELL_PHONE"      => "phone_nbr"
+    }
 
-    "#{BIRTH_LI_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
-    "#{BIRTH_LI_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
-    "#{BIRTH_LI_PREFIX}.CELL_PHONE"      => "phone_nbr"
-  }
+    EMAIL_MAP = {
+      "#{BIRTH_VISIT_PREFIX}.EMAIL"           => "email",
+      "#{BIRTH_VISIT_PREFIX}.EMAIL_TYPE"      => "email_type_code",
 
-  EMAIL_MAP = {
-    "#{BIRTH_VISIT_PREFIX}.EMAIL"           => "email",
-    "#{BIRTH_VISIT_PREFIX}.EMAIL_TYPE"      => "email_type_code",
+      "#{BIRTH_LI_PREFIX}.EMAIL"           => "email",
+      "#{BIRTH_LI_PREFIX}.EMAIL_TYPE"      => "email_type_code"
+    }
 
-    "#{BIRTH_LI_PREFIX}.EMAIL"           => "email",
-    "#{BIRTH_LI_PREFIX}.EMAIL_TYPE"      => "email_type_code"
-  }
+    def initialize(response_set)
+      super(response_set)
+    end
 
-  class << self
 
-    def extract_data(response_set)
+    def maps
+      [
+        CHILD_PERSON_MAP,
+        PERSON_MAP,
+        MAIL_ADDRESS_MAP,
+        WORK_ADDRESS_MAP,
+        TELEPHONE_MAP,
+        HOME_PHONE_MAP,
+        CELL_PHONE_MAP,
+        EMAIL_MAP,
+      ]
+    end
+
+    def extract_data
 
       person = response_set.person
       participant = response_set.participant
 
-      primary_rank = OperationalDataExtractor::Base.primary_rank
-
       # For surveys that update the child - the participant on the response_set
       # should be the child participant and thus the person being updated is the
       # child participant.person
-      child          = participant.person
+      child        = participant.person
       email        = nil
       home_phone   = nil
       cell_phone   = nil
@@ -113,93 +127,76 @@ class OperationalDataExtractor::Birth
       mail_address = nil
       work_address = nil
 
-
-      work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.work_address_type, :address_rank => primary_rank)
-      mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu, :address_type => Address.mailing_address_type, :address_rank => primary_rank)
-      home_phone = Telephone.new(:person => person, :phone_type => Telephone.home_phone_type, :psu => person.psu, :phone_rank => primary_rank)
-      cell_phone = Telephone.new(:person => person, :phone_type => Telephone.cell_phone_type, :psu => person.psu, :phone_rank => primary_rank)
-      phone = Telephone.new(:person => person, :psu => person.psu, :phone_rank => primary_rank)
-      email = Email.new(:person => person, :psu => person.psu, :email_rank => primary_rank)
-
-      response_set.responses.each do |r|
-
-        value = OperationalDataExtractor::Base.response_value(r)
-        data_export_identifier = r.question.data_export_identifier
-
-        if PERSON_MAP.has_key?(data_export_identifier)
-          OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
+      PERSON_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          set_value(person, attribute, response_value(r))
         end
+      end
 
-        if CHILD_PERSON_MAP.has_key?(data_export_identifier)
+      CHILD_PERSON_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          set_value(child, attribute, response_value(r))
+        end
+      end
+
+      MAIL_ADDRESS_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            OperationalDataExtractor::Base.set_value(child, CHILD_PERSON_MAP[data_export_identifier], value)
+            mail_address ||= get_address(response_set, person, Address.mailing_address_type)
+            set_value(mail_address, attribute, value)
           end
         end
+      end
 
-        if MAIL_ADDRESS_MAP.has_key?(data_export_identifier)
+      WORK_ADDRESS_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            mail_address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.mailing_address_type.local_code).first
-            if mail_address.nil?
-              mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                         :address_type => Address.mailing_address_type, :response_set => response_set)
-            end
-            OperationalDataExtractor::Base.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
+            work_address ||= get_address(response_set, person, Address.mailing_address_type)
+            set_value(work_address, attribute, value)
           end
         end
+      end
 
-        if WORK_ADDRESS_MAP.has_key?(data_export_identifier)
+      TELEPHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            work_address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.work_address_type.local_code).first
-            if work_address.nil?
-              work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                         :address_type => Address.work_address_type, :response_set => response_set)
-            end
-            OperationalDataExtractor::Base.set_value(work_address, WORK_ADDRESS_MAP[data_export_identifier], value)
+            phone ||= get_telephone(response_set, person)
+            set_value(phone, attribute, value)
           end
         end
+      end
 
-        if TELEPHONE_MAP.has_key?(data_export_identifier)
+      HOME_PHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            phone ||= Telephone.where(:response_set_id => response_set.id).first
-            if phone.nil?
-              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set)
-            end
-            OperationalDataExtractor::Base.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
+            home_phone ||= get_telephone(response_set, person, Telephone.home_phone_type)
+            set_value(home_phone, attribute, value)
           end
         end
+      end
 
-        if HOME_PHONE_MAP.has_key?(data_export_identifier)
+      CELL_PHONE_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
-            if home_phone.nil?
-              home_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.home_phone_type, :response_set => response_set)
-            end
-            OperationalDataExtractor::Base.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
+            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
+            set_value(cell_phone, attribute, value)
           end
         end
+      end
 
-        if CELL_PHONE_MAP.has_key?(data_export_identifier)
+      EMAIL_MAP.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
           unless value.blank?
-            cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
-            if cell_phone.nil?
-              cell_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set)
-            end
-            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
+            email ||= get_email(response_set, person)
+            set_value(email, attribute, value)
           end
         end
-
-        if EMAIL_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            email ||= Email.where(:response_set_id => response_set.id).first
-            if email.nil?
-              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set)
-            end
-            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
-          end
-        end
-
       end
 
       if child
@@ -244,7 +241,5 @@ class OperationalDataExtractor::Birth
 
     end
 
-
   end
-
 end

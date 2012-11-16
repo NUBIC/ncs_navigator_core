@@ -38,7 +38,7 @@ describe OperationalDataExtractor::Birth do
       response_set.responses.reload
       response_set.responses.size.should == 4
 
-      OperationalDataExtractor::Birth.extract_data(response_set)
+      OperationalDataExtractor::Birth.new(response_set).extract_data
 
       mother = Person.find(@person.id)
       participant = mother.participant
@@ -90,9 +90,9 @@ describe OperationalDataExtractor::Birth do
       response_set.responses.reload
       response_set.responses.size.should == 2
 
-      OperationalDataExtractor::Birth.extract_data(response_set)
+      OperationalDataExtractor::Birth.new(response_set).extract_data
 
-      person = Person.find(@person.id)
+      person = Person.find(@participant.person.id)
       person.first_name.should == "Jocelyn"
       person.last_name.should == "Goldsmith"
     end
@@ -118,7 +118,7 @@ describe OperationalDataExtractor::Birth do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::Birth.extract_data(response_set)
+      OperationalDataExtractor::Birth.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -148,7 +148,7 @@ describe OperationalDataExtractor::Birth do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::Birth.extract_data(response_set)
+      OperationalDataExtractor::Birth.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -175,7 +175,7 @@ describe OperationalDataExtractor::Birth do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::Birth.extract_data(response_set)
+      OperationalDataExtractor::Birth.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.telephones.size.should == 3
@@ -203,7 +203,7 @@ describe OperationalDataExtractor::Birth do
       response_set.responses.reload
       response_set.responses.size.should == 2
 
-      OperationalDataExtractor::Birth.extract_data(response_set)
+      OperationalDataExtractor::Birth.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.emails.size.should == 2
