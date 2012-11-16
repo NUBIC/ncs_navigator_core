@@ -122,13 +122,6 @@ after 'deploy:finalize_update',
   'deploy:setup_import_directories',
   'deploy:create_surveys_symlink'
 
-namespace :db do
-  desc "Backup Database"
-  task :backup, :roles => :app do
-    run "cd '#{current_release}' && rake RAILS_ENV=#{rails_env} db:backup"
-  end
-end
-
 namespace :config do
   desc "Copy configurable images to /public/assets/images folder"
   task :images, :roles => :app do
