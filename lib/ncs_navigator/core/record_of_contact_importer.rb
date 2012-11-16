@@ -1,4 +1,4 @@
-class RecordOfContactImporter
+class NcsNavigator::Core::RecordOfContactImporter
 
   def self.import_data(contact_record_file)
     Rails.application.csv_impl.parse(contact_record_file, :headers => true, :header_converters => :symbol) do |row|
