@@ -31,7 +31,7 @@ describe OperationalDataExtractor::PregnancyVisit do
     response_set.responses.reload
     response_set.responses.size.should == 4
 
-    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
     person = Person.find(person.id)
     person.first_name.should == "Jo"
@@ -96,7 +96,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       response_set.responses.reload
       response_set.responses.size.should == 10
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -134,7 +134,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -170,7 +170,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -198,7 +198,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -221,7 +221,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 3
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -257,7 +257,7 @@ describe OperationalDataExtractor::PregnancyVisit do
     response_set.responses.reload
     response_set.responses.size.should == 3
 
-    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.telephones.size.should == 2
@@ -290,7 +290,7 @@ describe OperationalDataExtractor::PregnancyVisit do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
     person = Person.find(person.id)
     person.emails.size.should == 1
@@ -322,7 +322,7 @@ describe OperationalDataExtractor::PregnancyVisit do
     response_set.responses.reload
     response_set.responses.size.should == 6
 
-    OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+    OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.addresses.size.should == 1
@@ -368,7 +368,7 @@ describe OperationalDataExtractor::PregnancyVisit do
         @response_set.responses.reload
         @response_set.responses.size.should == 4
 
-        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -390,7 +390,7 @@ describe OperationalDataExtractor::PregnancyVisit do
         @response_set.responses.reload
         @response_set.responses.size.should == 5
 
-        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -407,7 +407,7 @@ describe OperationalDataExtractor::PregnancyVisit do
         @response_set.responses.reload
         @response_set.responses.size.should == 2
 
-        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -432,7 +432,7 @@ describe OperationalDataExtractor::PregnancyVisit do
         @response_set.responses.reload
         @response_set.responses.size.should == 2
 
-        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -449,7 +449,7 @@ describe OperationalDataExtractor::PregnancyVisit do
         @response_set.responses.reload
         @response_set.responses.size.should == 2
 
-        OperationalDataExtractor::PregnancyVisit.extract_data(@response_set)
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
 
         person  = Person.find(@person.id)
         participant = person.participant
@@ -483,7 +483,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       response_set.responses.reload
       response_set.responses.size.should == 5
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -509,7 +509,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -534,7 +534,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       response_set.responses.reload
       response_set.responses.size.should == 5
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -560,7 +560,7 @@ describe OperationalDataExtractor::PregnancyVisit do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+      OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
@@ -587,13 +587,14 @@ describe OperationalDataExtractor::PregnancyVisit do
       response_set.responses.reload
       response_set.responses.size.should == 7
 
-      OperationalDataExtractor::PregnancyVisit.extract_data(response_set)
+      ode = OperationalDataExtractor::PregnancyVisit.new(response_set)
+      ode.extract_data
 
       person  = Person.find(@person.id)
       person.addresses.size.should == 1
       address = person.addresses.first
       address.address_type.should == Address.work_address_type
-      address.address_rank.should == OperationalDataExtractor::Base.duplicate_rank
+      address.address_rank.should == ode.duplicate_rank
       address.to_s.should == "123 Confirm Work Way 3333 Chicago, ILLINOIS 65432-1234"
     end
   end
