@@ -22,9 +22,9 @@ redis_ci_warehouse:
   port: <%= ENV['CI_REDIS_PORT'] %>
 
 <%= bcdb.staging       :ncsdb_staging, :ncs_navigator_core %>
-<%= bcdb.psc_staging   :ncsdb_staging, :ncs_navigator_psc %>
+<%= bcdb.psc_staging   :ncsdb_staging, :psc %>
 <%= bcdb.redis_staging :ncsredis_staging, :ncs_navigator_core %>
 
 <%= bcdb.production       :ncsdb_prod, :ncs_navigator_core %>
-<%= bcdb.psc_production   :ncsdb_prod, :ncs_navigator_psc %>
+<%= bcdb.psc_production   :ncsdb_prod, :psc %>
 <%= bcdb.redis_production :ncsredis_prod, :ncs_navigator_core %>
