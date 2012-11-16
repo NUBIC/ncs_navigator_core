@@ -12,7 +12,7 @@ describe OperationalDataExtractor::PostNatal do
       @child_person = Factory(:person)
       @child_participant = Factory(:participant)
       @child_participant.person = @child_person
-      @link = Factory(:participant_person_link, :participant => @child_participant, :person => @child_person )
+      @child_participant.save!
       @survey = create_six_month_mother_int_mother_detail_survey_with_operational_data
     end
 
@@ -29,13 +29,13 @@ describe OperationalDataExtractor::PostNatal do
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      OperationalDataExtractor::PostNatal.extract_data(response_set)
+      OperationalDataExtractor::PostNatal.new(response_set).extract_data
 
-      Person.where(:id => @child_person.id)
+      person = Participant.where(:id => @child_participant.id).first.person
 
-      Person.where(:id => @child_person.id).first.first_name.should == "Jo"
-      Person.where(:id => @child_person.id).first.last_name.should == "Stafford"
-      Person.where(:id => @child_person.id).first.person_dob.should == "2012-01-01"
+      person.first_name.should == "Jo"
+      person.last_name.should == "Stafford"
+      person.person_dob.should == "2012-01-01"
     end
 
   end
@@ -61,7 +61,7 @@ describe OperationalDataExtractor::PostNatal do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::PostNatal.extract_data(@response_set)
+      OperationalDataExtractor::PostNatal.new(@response_set).extract_data
 
       Person.where(:response_set_id == @response_set.id).first.emails.first.email.should == "email@dev.null"
     end
@@ -91,7 +91,7 @@ describe OperationalDataExtractor::PostNatal do
       @response_set.responses.reload
       @response_set.responses.size.should == 4
 
-      OperationalDataExtractor::PostNatal.extract_data(@response_set)
+      OperationalDataExtractor::PostNatal.new(@response_set).extract_data
 
       Person.where(:response_set_id == @response_set.id).first.telephones.first.phone_nbr.should == '3125557890'
     end
@@ -137,7 +137,7 @@ describe OperationalDataExtractor::PostNatal do
       @response_set.responses.reload
       @response_set.responses.size.should == 11
 
-      OperationalDataExtractor::PostNatal.extract_data(@response_set)
+      OperationalDataExtractor::PostNatal.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
