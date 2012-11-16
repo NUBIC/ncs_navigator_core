@@ -97,6 +97,21 @@ namespace :deploy do
     run cmds.join(' && ')
   end
 
+  desc 'Set up shared path for database backups'
+  task :setup_backup_directories do
+    shared_import  = File.join(shared_path,     'db/backups')
+    release_import = File.join(current_release, 'db/backups')
+    cmds = [
+      "mkdir -p '#{shared_import}'",
+      # Only chmod if owned; this is the only case in which chmod is
+      # allowed. Will be owned if just created, which is the important
+      # case.
+      "if [ -O '#{shared_import}' ]; then chmod g+w '#{shared_import}'; fi",
+      "if [ ! -e '#{release_import}' ]; then ln -s '#{shared_import}' '#{release_import}'; fi"
+    ]
+    run cmds.join(' && ')
+  end
+
   desc "Link to surveys if they've been deployed"
   task :create_surveys_symlink do
     shared_surveys  = File.join(shared_path,     'surveys')
@@ -120,6 +135,7 @@ end
 after 'deploy:finalize_update',
   'config:images',
   'deploy:setup_import_directories',
+  'deploy:setup_backup_directories',
   'deploy:create_surveys_symlink'
 
 namespace :config do

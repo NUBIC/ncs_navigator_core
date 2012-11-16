@@ -3,7 +3,10 @@
   bcdb = Bcdatabase.load
 %>
 
-<%= bcdb.development :local_postgresql, :ncs_navigator_core %>
+# The psc_* configurations are used for PSC maintenance tasks such as backups.
+
+<%= bcdb.development       :local_postgresql, :ncs_navigator_core %>
+<%= bcdb.psc_development   :local_postgresql, :ncs_navigator_psc %>
 <%= bcdb.redis_development :local_redis, :ncs_navigator_core %>
 
 <%= bcdb.test :local_postgresql, :ncs_navigator_core_test %>
@@ -18,8 +21,10 @@ redis_ci:
 redis_ci_warehouse:
   port: <%= ENV['CI_REDIS_PORT'] %>
 
-<%= bcdb.staging :ncsdb_staging, :ncs_navigator_core %>
+<%= bcdb.staging       :ncsdb_staging, :ncs_navigator_core %>
+<%= bcdb.psc_staging   :ncsdb_staging, :ncs_navigator_psc %>
 <%= bcdb.redis_staging :ncsredis_staging, :ncs_navigator_core %>
 
-<%= bcdb.production :ncsdb_prod, :ncs_navigator_core %>
+<%= bcdb.production       :ncsdb_prod, :ncs_navigator_core %>
+<%= bcdb.psc_production   :ncsdb_prod, :ncs_navigator_psc %>
 <%= bcdb.redis_production :ncsredis_prod, :ncs_navigator_core %>

@@ -2,6 +2,7 @@
 .bundle
 .sass-cache
 db/*.sqlite3
+db/backups
 importer_passthrough
 log
 tmp
