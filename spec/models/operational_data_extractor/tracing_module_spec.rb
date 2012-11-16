@@ -30,7 +30,7 @@ describe OperationalDataExtractor::TracingModule do
     response_set.responses.reload
     response_set.responses.size.should == 7
 
-    OperationalDataExtractor::TracingModule.extract_data(response_set)
+    OperationalDataExtractor::TracingModule.new(response_set).extract_data
 
     person = Person.find(person.id)
     person.addresses.size.should == 1
@@ -65,7 +65,7 @@ describe OperationalDataExtractor::TracingModule do
     response_set.responses.reload
     response_set.responses.size.should == 7
 
-    OperationalDataExtractor::TracingModule.extract_data(response_set)
+    OperationalDataExtractor::TracingModule.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.addresses.size.should == 1
@@ -102,7 +102,7 @@ describe OperationalDataExtractor::TracingModule do
       response_set.responses.reload
       response_set.responses.size.should == 4
 
-      OperationalDataExtractor::TracingModule.extract_data(response_set)
+      OperationalDataExtractor::TracingModule.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       person.telephones.size.should == 2
@@ -133,7 +133,7 @@ describe OperationalDataExtractor::TracingModule do
     response_set.responses.reload
     response_set.responses.size.should == 1
 
-    OperationalDataExtractor::TracingModule.extract_data(response_set)
+    OperationalDataExtractor::TracingModule.new(response_set).extract_data
 
     person  = Person.find(person.id)
     person.emails.size.should == 1
@@ -193,7 +193,7 @@ describe OperationalDataExtractor::TracingModule do
       @response_set.responses.reload
       @response_set.responses.size.should == 12
 
-      OperationalDataExtractor::TracingModule.extract_data(@response_set)
+      OperationalDataExtractor::TracingModule.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -232,7 +232,7 @@ describe OperationalDataExtractor::TracingModule do
       @response_set.responses.reload
       @response_set.responses.size.should == 14
 
-      OperationalDataExtractor::TracingModule.extract_data(@response_set)
+      OperationalDataExtractor::TracingModule.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -271,7 +271,7 @@ describe OperationalDataExtractor::TracingModule do
       @response_set.responses.reload
       @response_set.responses.size.should == 14
 
-      OperationalDataExtractor::TracingModule.extract_data(@response_set)
+      OperationalDataExtractor::TracingModule.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
