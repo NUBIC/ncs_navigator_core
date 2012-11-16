@@ -224,34 +224,34 @@ module OperationalDataExtractor
       @duplicate_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 4)
     end
 
-    def set_value(obj, attr, value)
+    def set_value(obj, attribute, value)
       if value.blank?
-        log_error(obj, "#{attr} not set because value is blank.")
-      elsif attr.include?('_code')
-        obj.send("#{attr}=", value)
+        log_error(obj, "#{attribute} not set because value is blank.")
+      elsif attribute.include?('_code')
+        obj.send("#{attribute}=", value)
       else
-        validate_and_set(obj, attr, value)
+        validate_and_set(obj, attribute, value)
       end
     end
 
     ##
     # Do not set if not an NCS Code attribute and value is negative
     # or if the value is not valid
-    def validate_and_set(obj, attr, value)
+    def validate_and_set(obj, attribute, value)
       if value.to_i >= 0
-        obj.send("#{attr}=", value)
-        validators = obj.class.validators_on( attr )
+        obj.send("#{attribute}=", value)
+        validators = obj.class.validators_on(attribute)
         if !validators.empty?
           validators.each { |v| v.validate obj }
 
           unless obj.errors.full_messages.blank?
-            obj.send("#{attr}=", nil)
-            log_error(obj, "#{attr} not set because #{obj.errors.full_messages.to_sentence}.")
+            obj.send("#{attribute}=", nil)
+            log_error(obj, "#{attribute} not set because #{obj.errors.full_messages.to_sentence}.")
             obj.errors.clear
           end
         end
       else
-        log_error(obj, "#{attr} not set because #{value} is negative.")
+        log_error(obj, "#{attribute} not set because #{value} is negative.")
       end
     end
 
