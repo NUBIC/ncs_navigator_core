@@ -85,14 +85,110 @@ class OperationalDataExtractor::PregnancyScreener
   }
 
   DUE_DATE_DETERMINER_MAP = {
-    "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "ORIG_DUE_DATE",
-    "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
-    "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
-    "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
     "#{INTERVIEW_PREFIX}.TRIMESTER"       => "TRIMESTER",
+    "#{INTERVIEW_PREFIX}.MONTH_PREG"      => "MONTH_PREG",
+    "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
+    "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
+    "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "ORIG_DUE_DATE",
   }
 
+  MAPS = [
+    PERSON_MAP,
+    PARTICIPANT_MAP,
+    ADDRESS_MAP,
+    MAIL_ADDRESS_MAP,
+    TELEPHONE_MAP,
+    HOME_PHONE_MAP,
+    CELL_PHONE_MAP,
+    EMAIL_MAP,
+    PPG_DETAILS_MAP,
+    DUE_DATE_DETERMINER_MAP
+  ]
+
   class << self
+
+    def known_keys
+      @known_keys ||= get_keys_from_maps
+    end
+
+    def get_keys_from_maps
+      MAPS.collect { |m| m.keys }.flatten
+    end
+
+    def data_export_identifier_indexed_responses(responses)
+      result = Hash.new
+      responses.each do |r|
+        dei = r.question.data_export_identifier
+        result[dei] = r if known_keys.include?(dei)
+      end
+      result
+    end
+
+    def get_address(response_set, person, address_type)
+      address = Address.where(:response_set_id => response_set.id,
+                              :address_type_code => address_type.local_code).first
+      if address.nil?
+        address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
+                              :address_type => address_type, :response_set => response_set,
+                              :address_rank => OperationalDataExtractor::Base.primary_rank)
+      end
+      address
+    end
+
+    def get_telephone(response_set, person, phone_type = nil)
+      criteria = Hash.new
+      criteria[:response_set_id] = response_set.id
+      criteria[:phone_type_code] = phone_type.local_code if phone_type
+      phone = Telephone.where(criteria).last
+      if phone.nil?
+        phone = Telephone.new(:person => person, :psu => person.psu,
+                              :response_set => response_set,
+                              :phone_rank => OperationalDataExtractor::Base.primary_rank)
+        phone.phone_type = phone_type if phone_type
+      end
+      phone
+    end
+
+    def get_email(response_set, person)
+      email = Email.where(:response_set_id => response_set.id).first
+      if email.nil?
+        email = Email.new(:person => person, :psu => person.psu,
+                          :response_set => response_set,
+                          :email_rank => OperationalDataExtractor::Base.primary_rank)
+      end
+      email
+    end
+
+    def get_ppg_detail(response_set, participant)
+      ppg_detail = PpgDetail.where(:response_set_id => response_set.id).first
+      if ppg_detail.nil?
+        ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu,
+                                   :response_set => response_set)
+      end
+      ppg_detail
+    end
+
+    def ppg_detail_value(key, value)
+      result = value
+      case key
+      when "#{INTERVIEW_PREFIX}.PREGNANT"
+        result = value
+      when "#{INTERVIEW_PREFIX}.TRYING"
+        case value
+        when 1 # when Yes to Trying - set ppg_first_code to 2 - Trying
+          result = 2
+        when 2 # when No to Trying - set ppg_first_code to 4 - Not Trying
+          result = 4
+        else  # Otherwise Recent Loss, Not Trying, Unable match ppg_first_code
+          result = value
+        end
+      when "#{INTERVIEW_PREFIX}.HYSTER", "#{INTERVIEW_PREFIX}.OVARIES", "#{INTERVIEW_PREFIX}.TUBES_TIED", "#{INTERVIEW_PREFIX}.MENOPAUSE", "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"
+        result = 5 if value == 1 # If yes to any set the ppg_first_code to 5 - Unable to become pregnant
+      else
+        result = value
+      end
+      result
+    end
 
     def extract_data(response_set)
       person = response_set.person
@@ -108,120 +204,111 @@ class OperationalDataExtractor::PregnancyScreener
       mail_address = nil
       address      = nil
 
-      response_set.responses.each do |r|
+      indexed_responses = data_export_identifier_indexed_responses(response_set.responses)
 
-        value = OperationalDataExtractor::Base.response_value(r)
-        data_export_identifier = r.question.data_export_identifier
-
-        if PERSON_MAP.has_key?(data_export_identifier)
-          OperationalDataExtractor::Base.set_value(person, PERSON_MAP[data_export_identifier], value)
-        end
-
-        if PARTICIPANT_MAP.has_key?(data_export_identifier) && !participant.blank?
-          OperationalDataExtractor::Base.set_value(participant, PARTICIPANT_MAP[data_export_identifier], value)
-        end
-
-        if ADDRESS_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.home_address_type.local_code).first
-            if address.nil?
-              address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                    :address_type => Address.home_address_type, :response_set => response_set, :address_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(address, ADDRESS_MAP[data_export_identifier], value)
-          end
-        end
-
-        if MAIL_ADDRESS_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            mail_address ||= Address.where(:response_set_id => response_set.id).where(:address_type_code => Address.mailing_address_type.local_code).first
-            if mail_address.nil?
-              mail_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new, :psu => person.psu,
-                                         :address_type => Address.mailing_address_type, :response_set => response_set, :address_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(mail_address, MAIL_ADDRESS_MAP[data_export_identifier], value)
-          end
-        end
-
-        if TELEPHONE_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            phone ||= Telephone.where(:response_set_id => response_set.id).first
-            if phone.nil?
-              phone = Telephone.new(:person => person, :psu => person.psu, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(phone, TELEPHONE_MAP[data_export_identifier], value)
-          end
-        end
-
-        if HOME_PHONE_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            home_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.home_phone_type.local_code).last
-            if home_phone.nil?
-              home_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.home_phone_type, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(home_phone, HOME_PHONE_MAP[data_export_identifier], value)
-          end
-        end
-
-        if CELL_PHONE_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            cell_phone ||= Telephone.where(:response_set_id => response_set.id).where(:phone_type_code => Telephone.cell_phone_type.local_code).last
-            if cell_phone.nil?
-              cell_phone = Telephone.new(:person => person, :psu => person.psu,
-                                         :phone_type => Telephone.cell_phone_type, :response_set => response_set, :phone_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(cell_phone, CELL_PHONE_MAP[data_export_identifier], value)
-          end
-        end
-
-        if EMAIL_MAP.has_key?(data_export_identifier)
-          unless value.blank?
-            email ||= Email.where(:response_set_id => response_set.id).first
-            if email.nil?
-              email = Email.new(:person => person, :psu => person.psu, :response_set => response_set, :email_rank => primary_rank)
-            end
-            OperationalDataExtractor::Base.set_value(email, EMAIL_MAP[data_export_identifier], value)
-          end
-        end
-
-        # TODO: do not hard code ppg code
-        if PPG_DETAILS_MAP.has_key?(data_export_identifier)
-
-          ppg_detail ||= PpgDetail.where(:response_set_id => response_set.id).first
-          if ppg_detail.nil?
-            ppg_detail = PpgDetail.new(:participant => participant, :psu => participant.psu, :response_set => response_set)
-          end
-
-          case data_export_identifier
-          when "#{INTERVIEW_PREFIX}.PREGNANT"
-            ppg_detail_value = value
-          when "#{INTERVIEW_PREFIX}.TRYING"
-            case value
-            when 1 # when Yes to Trying - set ppg_first_code to 2 - Trying
-              ppg_detail_value = 2
-            when 2 # when No to Trying - set ppg_first_code to 4 - Not Trying
-              ppg_detail_value = 4
-            else  # Otherwise Recent Loss, Not Trying, Unable match ppg_first_code
-              ppg_detail_value = value
-            end
-          when "#{INTERVIEW_PREFIX}.HYSTER", "#{INTERVIEW_PREFIX}.OVARIES", "#{INTERVIEW_PREFIX}.TUBES_TIED", "#{INTERVIEW_PREFIX}.MENOPAUSE", "#{INTERVIEW_PREFIX}.MED_UNABLE", "#{INTERVIEW_PREFIX}.MED_UNABLE_OTH"
-            ppg_detail_value = 5 if value == 1 # If yes to any set the ppg_first_code to 5 - Unable to become pregnant
-          else
-            ppg_detail_value = value
-          end
-          ppg_detail.send("#{PPG_DETAILS_MAP[data_export_identifier]}=", ppg_detail_value)
-        end
-
-        if DUE_DATE_DETERMINER_MAP.has_key?(data_export_identifier)
-          due_date = OperationalDataExtractor::Base.determine_due_date(DUE_DATE_DETERMINER_MAP[data_export_identifier], r)
-          ppg_detail.orig_due_date = due_date if due_date
+      PERSON_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          OperationalDataExtractor::Base.set_value(person, attribute,
+            OperationalDataExtractor::Base.response_value(r))
         end
       end
 
-      if ppg_detail && !ppg_detail.ppg_first_code.blank?
-        OperationalDataExtractor::Base.set_participant_type(participant, ppg_detail.ppg_first_code)
-        ppg_detail.save!
+      if participant
+        PARTICIPANT_MAP.each do |key, attribute|
+          if r = indexed_responses[key]
+            OperationalDataExtractor::Base.set_value(participant, attribute,
+              OperationalDataExtractor::Base.response_value(r))
+          end
+        end
+      end
+
+      ADDRESS_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          value = OperationalDataExtractor::Base.response_value(r)
+          unless value.blank?
+            address ||= get_address(response_set, person, Address.home_address_type)
+            OperationalDataExtractor::Base.set_value(address, attribute, value)
+          end
+        end
+      end
+
+      MAIL_ADDRESS_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          value = OperationalDataExtractor::Base.response_value(r)
+          unless value.blank?
+            mail_address ||= get_address(response_set, person, Address.mailing_address_type)
+            OperationalDataExtractor::Base.set_value(mail_address, attribute, value)
+          end
+        end
+      end
+
+      TELEPHONE_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          value = OperationalDataExtractor::Base.response_value(r)
+          unless value.blank?
+            phone ||= get_telephone(response_set, person)
+            OperationalDataExtractor::Base.set_value(phone, attribute, value)
+          end
+        end
+      end
+
+      HOME_PHONE_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          value = OperationalDataExtractor::Base.response_value(r)
+          unless value.blank?
+            home_phone ||= get_telephone(response_set, person, Telephone.home_phone_type)
+            OperationalDataExtractor::Base.set_value(home_phone, attribute, value)
+          end
+        end
+      end
+
+      CELL_PHONE_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          value = OperationalDataExtractor::Base.response_value(r)
+          unless value.blank?
+            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
+            OperationalDataExtractor::Base.set_value(cell_phone, attribute, value)
+          end
+        end
+      end
+
+      EMAIL_MAP.each do |key, attribute|
+        if r = indexed_responses[key]
+          value = OperationalDataExtractor::Base.response_value(r)
+          unless value.blank?
+            email ||= get_email(response_set, person)
+            OperationalDataExtractor::Base.set_value(email, attribute, value)
+          end
+        end
+      end
+
+      if participant
+        PPG_DETAILS_MAP.each do |key, attribute|
+          if r = indexed_responses[key]
+            value = OperationalDataExtractor::Base.response_value(r)
+            unless value.blank?
+              ppg_detail ||= get_ppg_detail(response_set, participant)
+              ppg_detail.send("#{attribute}=", ppg_detail_value(key, value))
+            end
+          end
+        end
+
+        if ppg_detail
+          DUE_DATE_DETERMINER_MAP.each do |key, attribute|
+            if r = indexed_responses[key]
+              if due_date = OperationalDataExtractor::Base.determine_due_date(attribute, r)
+                ppg_detail.orig_due_date = due_date
+              end
+            end
+          end
+
+          unless ppg_detail.ppg_first_code.blank?
+            OperationalDataExtractor::Base.set_participant_type(participant, ppg_detail.ppg_first_code)
+            ppg_detail.save!
+          end
+
+        end
+
       end
 
       if email && !email.email.blank?

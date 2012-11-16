@@ -688,4 +688,76 @@ describe OperationalDataExtractor::PregnancyScreener do
 
   end
 
+  context "ensuring that the ODE processes regardless of response_set response ordering" do
+
+    let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
+    let(:neg_1) { stub(:local_code => 'neg_1') }
+    let(:neg_2) { stub(:local_code => 'neg_2') }
+    let(:tri1) { stub(:local_code => '1') }
+    let(:tri2) { stub(:local_code => '2') }
+    let(:tri3) { stub(:local_code => '3') }
+
+    before(:each) do
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @participant.person = @person
+      @participant.save!
+
+      @survey = create_pregnancy_screener_survey_to_determine_due_date
+
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+      @response_set.save!
+    end
+
+    describe "#known_keys" do
+      it "collects all the keys for the ODE maps" do
+        OperationalDataExtractor::PregnancyScreener.known_keys.size.should == 47
+      end
+    end
+
+    describe "#data_export_identifier_indexed_responses" do
+      it "collects all the responses and maps them to their associated data_export_identifier" do
+        months_pregnant = 2
+        take_survey(@survey, @response_set) do |a|
+          a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
+          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+          a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+        end
+
+        @response_set.responses.reload
+
+        dei_hsh = OperationalDataExtractor::PregnancyScreener.data_export_identifier_indexed_responses(@response_set.responses)
+
+        dei_hsh.size.should == 5
+        dei_hsh["#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG"].integer_value.should == months_pregnant
+        dei_hsh["#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT"].answer.reference_identifier.should == "1"
+      end
+    end
+
+    it "calculates the due date based on the number of months pregnant" do
+      months_pregnant = 4
+
+      take_survey(@survey, @response_set) do |a|
+        a.int "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.MONTH_PREG", months_pregnant
+        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.DATE_PERIOD", neg_2
+        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.PREGNANT", ppg1
+        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.WEEKS_PREG", neg_2
+        a.choice "#{OperationalDataExtractor::PregnancyScreener::INTERVIEW_PREFIX}.ORIG_DUE_DATE", neg_2
+      end
+
+      @response_set.responses.reload
+      @response_set.responses.size.should == 5
+
+      OperationalDataExtractor::PregnancyScreener.extract_data(@response_set)
+
+      person  = Person.find(@person.id)
+      participant = person.participant
+      participant.due_date.should == ((Date.today + 280.days) - ((months_pregnant * 30) - 15)).to_date
+
+    end
+
+  end
+
 end
