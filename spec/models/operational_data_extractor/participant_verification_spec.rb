@@ -37,7 +37,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       mother = Person.find(@person.id)
       participant = mother.participant
@@ -80,7 +80,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -112,7 +112,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set.responses.reload
       response_set.responses.size.should == 8
 
-      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -139,7 +139,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -166,7 +166,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set.responses.reload
       response_set.responses.size.should == 3
 
-      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -205,7 +205,7 @@ describe OperationalDataExtractor::ParticipantVerification do
       response_set.responses.reload
       response_set.responses.size.should == 5
 
-      OperationalDataExtractor::ParticipantVerification.extract_data(response_set)
+      OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
       person = Person.find(@person.id)
       person.first_name.should == "Jo"
