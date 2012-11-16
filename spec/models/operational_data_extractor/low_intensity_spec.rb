@@ -44,7 +44,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 2
 
-      OperationalDataExtractor::LowIntensityPregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -64,7 +64,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 2
 
-      OperationalDataExtractor::LowIntensityPregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -83,7 +83,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::LowIntensityPregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -102,7 +102,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::LowIntensityPregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -121,7 +121,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::LowIntensityPregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
@@ -140,7 +140,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       @response_set.responses.reload
       @response_set.responses.size.should == 1
 
-      OperationalDataExtractor::LowIntensityPregnancyVisit.extract_data(@response_set)
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(@response_set).extract_data
 
       person  = Person.find(@person.id)
       participant = person.participant
