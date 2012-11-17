@@ -2,7 +2,8 @@ require 'spec_helper'
 
 module Psc
   describe InstrumentPlanCollection do
-    let(:coll) { InstrumentPlanCollection.new }
+    let(:list) { [] }
+    let(:coll) { InstrumentPlanCollection.new(list) }
 
     let(:sa1) { stub }
     let(:sa2) { stub }
@@ -13,8 +14,8 @@ module Psc
 
     describe '#group' do
       before do
-        coll.add_activity(sa1)
-        coll.add_activity(sa2)
+        list << sa1
+        list << sa2
 
         sa1.stub!(:contact => c1, :event => e1)
         sa2.stub!(:contact => c2, :event => e2)
@@ -54,9 +55,9 @@ module Psc
 
           before do
             # Activities are added out-of-order to test sorting.
-            coll.add_activity(sa2)
-            coll.add_activity(sa1)
-            coll.add_activity(sa3)
+            list << sa2
+            list << sa1
+            list << sa3
 
             coll.calculate
           end
