@@ -1,25 +1,14 @@
 # -*- coding: utf-8 -*-
 
-require 'set'
-
 module Psc
   ##
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
+    include ModelDerivation
+
     ##
     # Logger.  Defaults to Rails.logger.
     attr_accessor :logger
-
-    # These are collections of entities implied by the report.  They're
-    # intermediate representations of entities; see below for more information.
-
-    attr_reader :contact_links
-    attr_reader :contacts
-    attr_reader :events
-    attr_reader :instruments
-    attr_reader :instrument_plans
-    attr_reader :people
-    attr_reader :surveys
 
     ##
     # Filters used in generating the report.
@@ -58,70 +47,10 @@ module Psc
 
       @filters = filters
       @activities = coll
-
-      @contact_links = Set.new
-      @contacts = Set.new
-      @events = Set.new
-      @instruments = Set.new
-      @instrument_plans = Set.new
-      @people = Set.new
-      @surveys = Set.new
     end
 
-    ##
-    # Generates intermediate representations of Cases entities from the report.
     def process
-      logger.info 'Mapping started'
-
-      reset_derivations
-
-      activities.each do |activity|
-        add_derived_entities_from_activity(activity)
-      end
-
-      log_derivations
-
-      plans = InstrumentPlanCollection.for(activities)
-
-      plans.each do |plan|
-        add_derived_entities_from_plan(plan)
-      end
-
-      logger.info 'Mapping complete'
-    end
-
-    def reset_derivations
-      derivation_collections.each(&:clear)
-    end
-
-    def log_derivations
-      return unless logger.level == ::Logger::DEBUG
-
-      derivation_collections.each do |dc|
-        dc.each do |entity|
-          logger.debug { "Derived #{entity.inspect} from PSC schedule" }
-        end
-      end
-    end
-
-    def derivation_collections
-      [contact_links, contacts, events, instruments, instrument_plans, people, surveys]
-    end
-
-    def add_derived_entities_from_activity(activity)
-      activity.derive_implied_entities
-
-      people << activity.person
-      contacts << activity.contact
-      events << activity.event
-      contact_links << activity.contact_link
-    end
-
-    def add_derived_entities_from_plan(plan)
-      instruments << plan.root
-      instrument_plans << plan
-
-      plan.surveys.each { |s| surveys << s }
+      derive_models
     end
   end
 end
