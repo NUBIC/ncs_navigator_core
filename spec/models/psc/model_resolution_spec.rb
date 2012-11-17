@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'set'
 
-require File.expand_path('../../example_data', __FILE__)
+require File.expand_path('../example_data', __FILE__)
 
 module Psc
   describe ModelResolution do
@@ -10,7 +10,10 @@ module Psc
     let(:report) { ScheduledActivityReport.from_json(data) }
 
     before do
+      report.extend(ModelDerivation)
       report.extend(ModelResolution)
+
+      report.derive_models
     end
 
     describe '#reify_models' do

@@ -20,8 +20,8 @@ module Psc
     ]
 
     ##
-    # Maps implied objects (i.e. ScheduledActivity::Implications::*) to
-    # entities from Cases' database.
+    # Maps implied objects (i.e. Psc::ImpliedEntities::*) to entities from
+    # Cases' database.
     def resolutions
       @resolutions ||= {}
     end

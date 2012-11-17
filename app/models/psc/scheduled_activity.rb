@@ -206,7 +206,7 @@ module Psc
     end
 
     def derive_implied_entities
-      im = Implications
+      im = ImpliedEntities
 
       @person = im::Person.new(person_id)
       @contact = im::Contact.new(activity_date, person)
@@ -294,59 +294,6 @@ module Psc
     # @private
     def downcased_state
       current_state.to_s.downcase
-    end
-
-    module Implications
-      module Fingerprint
-        def fingerprint
-          concat = self.class.members.map do |m|
-            m.respond_to?(:fingerprint) ? m.fingerprint : m.to_s
-          end.join('')
-
-          @fingerprint ||= Digest::SHA1.hexdigest(concat)
-        end
-      end
-
-      ##
-      # {ContactLink} representation.
-      class ContactLink < Struct.new(:person, :contact, :event, :instrument)
-      end
-
-      ##
-      # Representation of a {Contact} from an SA report.
-      class Contact < Struct.new(:scheduled_date, :person)
-        include Fingerprint
-      end
-
-      ##
-      # {Event} representation.
-      class Event < Struct.new(:label, :ideal_date, :contact, :person)
-        include Fingerprint
-      end
-
-      ##
-      # {Instrument} representation.
-      class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
-        include Fingerprint
-      end
-
-      ##
-      # {Person} representation.
-      class Person < Struct.new(:person_id)
-        include Fingerprint
-      end
-
-      ##
-      # {Survey} representation.
-      class Survey < Struct.new(:access_code, :participant_type, :order)
-        include Fingerprint
-      end
-
-      ##
-      # A survey reference.
-      class SurveyReference < Struct.new(:access_code)
-        include Fingerprint
-      end
     end
   end
 end
