@@ -26,12 +26,6 @@ module Psc
     end
 
     ##
-    # Add a {Psc::ScheduledActivity} to the collection.
-    def add_activity(a)
-      activities << a
-    end
-
-    ##
     # Group activities by their contact and event labels.
     def group
       @groups = {}
