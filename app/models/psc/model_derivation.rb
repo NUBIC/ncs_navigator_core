@@ -50,13 +50,13 @@ module Psc
         add_derived_entities_from_activity(activity)
       end
 
-      log_derivations
-
       plans = InstrumentPlanCollection.for(activities)
 
       plans.each do |plan|
         add_derived_entities_from_plan(plan)
       end
+
+      log_derivations
 
       logger.info 'Derivation complete'
     end

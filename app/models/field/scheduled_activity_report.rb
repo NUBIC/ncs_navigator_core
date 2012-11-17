@@ -1,9 +1,15 @@
 require 'ncs_navigator/core'
 
 module Field
-  class ScheduledActivityReport < ::Psc::ScheduledActivityReport
-    include ::Psc::ScheduledActivityReport::EntityResolution
+  class ScheduledActivityReport < Psc::ScheduledActivityReport
     include Adoption
+    include Psc::ModelDerivation
+    include Psc::ModelResolution
+
+    def process
+      super
+      reify_models
+    end
 
     def as_json(options = nil)
       {

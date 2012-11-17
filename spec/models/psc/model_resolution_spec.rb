@@ -3,17 +3,17 @@ require 'set'
 
 require File.expand_path('../../example_data', __FILE__)
 
-class Psc::ScheduledActivityReport
-  describe EntityResolution do
+module Psc
+  describe ModelResolution do
     include_context 'example data'
 
-    let(:report) { ::Psc::ScheduledActivityReport.from_json(data) }
+    let(:report) { ScheduledActivityReport.from_json(data) }
 
     before do
-      report.extend(EntityResolution)
+      report.extend(ModelResolution)
     end
 
-    describe '#process' do
+    describe '#reify_models' do
       let(:sio) { StringIO.new }
       let(:log) { sio.string }
       let(:staff_id) { 'fa542082-c96f-4886-a6bc-cc9a546d787a' }
@@ -29,7 +29,7 @@ class Psc::ScheduledActivityReport
         end
 
         it 'raises an error' do
-          lambda { report.process }.should raise_error
+          lambda { report.reify_models }.should raise_error
         end
       end
 
@@ -37,13 +37,13 @@ class Psc::ScheduledActivityReport
         it 'finds people in Cases' do
           p = Factory(:person, :person_id => person_id)
 
-          report.process
+          report.reify_models
 
           report.resolutions.values.should include(p)
         end
 
         it 'logs an error if a person cannot be found' do
-          report.process
+          report.reify_models
 
           log.should =~ /cannot map \{person ID = #{person_id}\} to a person/i
         end
@@ -53,13 +53,13 @@ class Psc::ScheduledActivityReport
         it 'finds surveys in Cases' do
           s = Factory(:survey, :access_code => 'ins-que-lipregnotpreg-int-li-p2-v2-0')
 
-          report.process
+          report.reify_models
 
           report.resolutions.values.should include(s)
         end
 
         it 'logs an error if a survey cannot be found' do
-          report.process
+          report.reify_models
 
           log.should =~ /cannot map \{access code = ins_que_lipregnotpreg_int_li_p2_v2\.0\} to a survey/i
         end
@@ -82,14 +82,14 @@ class Psc::ScheduledActivityReport
           et2 = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', 10)
           e2 = Factory(:event, :participant => pa, :event_start_date => ideal_date, :event_type => et2)
 
-          report.process
+          report.reify_models
 
           report.resolutions.values.should include(e1)
           report.resolutions.values.should include(e2)
         end
 
         it 'logs an error if an event cannot be found' do
-          report.process
+          report.reify_models
 
           log.should =~ /cannot map \{event label = low_intensity_data_collection, ideal date = #{ideal_date}, participant = #{pa.p_id}\} to an event/i
           log.should =~ /cannot map \{event label = informed_consent, ideal date = #{ideal_date}, participant = #{pa.p_id}\} to an event/i
@@ -118,7 +118,7 @@ class Psc::ScheduledActivityReport
           let!(:s) { Factory(:survey, :access_code => 'ins-que-lipregnotpreg-int-li-p2-v2-0', :title => instrument_pregnotpreg) }
 
           it 'starts an instrument' do
-            report.process
+            report.reify_models
 
             instrument = report.resolutions.values.detect { |v| ::Instrument === v }
             instrument.should_not be_nil
@@ -130,7 +130,7 @@ class Psc::ScheduledActivityReport
             end
 
             before do
-              report.process
+              report.reify_models
             end
 
             it 'is a new record' do
@@ -163,7 +163,7 @@ class Psc::ScheduledActivityReport
           end
 
           it 'reuses that contact' do
-            report.process
+            report.reify_models
 
             report.resolutions.values.should include(c)
           end
@@ -171,7 +171,7 @@ class Psc::ScheduledActivityReport
 
         describe 'if there does not exist a contact for the scheduled date, person, and staff ID' do
           it 'starts a new contact' do
-            report.process
+            report.reify_models
 
             contact = report.resolutions.values.detect { |v| Contact === v }
             contact.should_not be_nil
@@ -183,7 +183,7 @@ class Psc::ScheduledActivityReport
             end
 
             before do
-              report.process
+              report.reify_models
             end
 
             it 'is a new record' do
@@ -208,7 +208,7 @@ class Psc::ScheduledActivityReport
             end
 
             it 'reuses that link' do
-              report.process
+              report.reify_models
 
               report.resolutions.values.should include(cl)
             end
@@ -216,7 +216,7 @@ class Psc::ScheduledActivityReport
 
           describe 'if a link does not exist' do
             it 'builds links' do
-              report.process
+              report.reify_models
 
               cl = report.resolutions.values.detect { |v| ::ContactLink === v }
               cl.should_not be_nil
@@ -228,7 +228,7 @@ class Psc::ScheduledActivityReport
               end
 
               before do
-                report.process
+                report.reify_models
               end
 
               it 'contains staff ID' do
@@ -280,8 +280,7 @@ class Psc::ScheduledActivityReport
 
           report.logger = ::Logger.new(sio)
           report.staff_id = staff_id
-          report.process
-
+          report.reify_models
         end
 
         it 'saves generated models' do
