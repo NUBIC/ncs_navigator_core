@@ -1,14 +1,14 @@
 require 'ostruct'
 require 'set'
 
-class Psc::ScheduledActivityReport
+module Psc
   ##
   # Resolves entities implied by the PSC scheduled activity report to entities
   # in Cases' database.
   #
   # For contacts and instruments that do not yet exist in Cases, builds those
   # entities via #{Contact.start} and #{Instrument.start}.
-  module EntityResolution
+  module ModelResolution
     attr_accessor :staff_id
 
     PERSON_EAGER_LOADING = [
@@ -27,15 +27,12 @@ class Psc::ScheduledActivityReport
     end
 
     ##
-    # Finds or builds model objects that correspond to the entities derived by
-    # #process.
+    # Finds or builds model objects.
     #
     # Resolution and construction of contact links requires a staff ID, so
     # #staff_id must be set before invoking this method.
-    def process
+    def reify_models
       raise 'Model resolution requires #staff_id to be set' unless staff_id
-
-      super
 
       resolutions.clear
 
