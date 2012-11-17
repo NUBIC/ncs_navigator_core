@@ -8,7 +8,7 @@ module Psc
   # is RECOMMENDED that you keep scheduled_activity_contexts open in a split
   # pane while reading these examples.
   describe ScheduledActivity do
-    I = ScheduledActivity::Implications
+    IE = Psc::ImpliedEntities
 
     let(:empty_sa) { ScheduledActivity.new }
 
@@ -168,22 +168,22 @@ module Psc
       it 'derives a person' do
         sa.derive_implied_entities
 
-        sa.person.should == I::Person.new(sa.person_id)
+        sa.person.should == IE::Person.new(sa.person_id)
       end
 
       it 'derives a contact' do
         sa.derive_implied_entities
 
-        sa.contact.should == I::Contact.new(sa.activity_date, sa.person)
+        sa.contact.should == IE::Contact.new(sa.activity_date, sa.person)
       end
 
       it 'derives an event' do
         sa.derive_implied_entities
 
-        sa.event.should == I::Event.new(sa.event_label,
-                                        sa.ideal_date,
-                                        sa.contact,
-                                        sa.person)
+        sa.event.should == IE::Event.new(sa.event_label,
+                                         sa.ideal_date,
+                                         sa.contact,
+                                         sa.person)
       end
 
       describe 'if the activity does not have a references label' do
@@ -194,12 +194,11 @@ module Psc
         end
 
         it 'derives an instrument' do
-          sa.instrument.should == I::Instrument.new(sa.survey,
-                                                    sa.referenced_survey,
-                                                    sa.activity_name,
-                                                    sa.event,
-                                                    sa.person)
-
+          sa.instrument.should == IE::Instrument.new(sa.survey,
+                                                     sa.referenced_survey,
+                                                     sa.activity_name,
+                                                     sa.event,
+                                                     sa.person)
         end
       end
 
@@ -230,22 +229,22 @@ module Psc
       it 'derives a survey' do
         sa.derive_implied_entities
 
-        sa.survey.should == I::Survey.new(sa.instrument_label, sa.participant_type_label, sa.order_label)
+        sa.survey.should == IE::Survey.new(sa.instrument_label, sa.participant_type_label, sa.order_label)
       end
 
       it 'derives a referenced survey' do
         sa.derive_implied_entities
 
-        sa.referenced_survey.should == I::SurveyReference.new(sa.references_label)
+        sa.referenced_survey.should == IE::SurveyReference.new(sa.references_label)
       end
 
       it 'derives a contact link' do
         sa.derive_implied_entities
 
-        sa.contact_link.should == I::ContactLink.new(sa.person,
-                                                     sa.contact,
-                                                     sa.event,
-                                                     sa.instrument)
+        sa.contact_link.should == IE::ContactLink.new(sa.person,
+                                                      sa.contact,
+                                                      sa.event,
+                                                      sa.instrument)
       end
     end
 

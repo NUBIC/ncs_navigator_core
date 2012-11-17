@@ -4,8 +4,6 @@ module Psc
   ##
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
-    include ModelDerivation
-
     ##
     # Logger.  Defaults to Rails.logger.
     attr_accessor :logger
@@ -47,10 +45,6 @@ module Psc
 
       @filters = filters
       @activities = coll
-    end
-
-    def process
-      derive_models
     end
   end
 end

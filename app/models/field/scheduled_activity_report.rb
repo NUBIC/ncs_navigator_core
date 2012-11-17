@@ -8,7 +8,7 @@ module Field
     include ReportSerialization
 
     def process
-      super
+      derive_models
       reify_models
     end
   end
