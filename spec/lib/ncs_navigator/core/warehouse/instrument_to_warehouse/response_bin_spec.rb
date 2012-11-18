@@ -50,7 +50,7 @@ module NcsNavigator::Core::Warehouse::InstrumentToWarehouse
       Survey.mdes_reset!
     end
 
-    def create_response_for(question, response_set)
+    def create_response_for(question, response_set, response_attributes={})
       q = case question
           when String
             questions = response_set.survey.sections.collect(&:questions).flatten
@@ -59,7 +59,7 @@ module NcsNavigator::Core::Warehouse::InstrumentToWarehouse
             question
           end
 
-      response_set.responses.build(:question => q).tap { |r|
+      response_set.responses.build({:question => q}.merge(response_attributes)).tap { |r|
         if block_given?
           yield r
 
@@ -89,31 +89,36 @@ module NcsNavigator::Core::Warehouse::InstrumentToWarehouse
       let(:bin) {
         ResponseBin.new(
           participant1,
-          'pv1_household_frogs',
+          'twelve_mth_mother_renovate_room',
           {}, # DC
           nil
         )
       }
 
       it 'will not accept a response for a different participant' do
-        bin.will_accept?(Response.new(:response_set => response_set_for_p2)).
+        bin.will_accept?(create_response_for('RENOVATE_ROOM', response_set_for_p2)).
           should be_false
       end
 
       it 'will not accept a response from a different response group' do
-        bin.will_accept?(Response.new(:response_group => '2')).
+        bin.will_accept?(create_response_for('RENOVATE_ROOM', response_set_for_p1, :response_group => '2')).
           should be_false
       end
 
       it 'will not accept a second response for the same question' do
-        bin.responses << create_response_for('RENOVATE', response_set_for_p1)
+        bin << create_response_for('RENOVATE_ROOM', response_set_for_p1)
 
+        bin.will_accept?(create_response_for('RENOVATE_ROOM', response_set_for_p1)).
+          should be_false
+      end
+
+      it 'will not accept a response for a different MDES table' do
         bin.will_accept?(create_response_for('RENOVATE', response_set_for_p1)).
           should be_false
       end
 
       it 'will accept a response which meets all the other criteria' do
-        bin.responses << create_response_for('RENOVATE', response_set_for_p1)
+        bin << create_response_for('RENOVATE_ROOM_OTH', response_set_for_p1)
 
         bin.will_accept?(create_response_for('RENOVATE_ROOM', response_set_for_p1)).
           should be_true

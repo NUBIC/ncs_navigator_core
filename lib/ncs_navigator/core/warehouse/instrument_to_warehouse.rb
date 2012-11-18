@@ -54,20 +54,10 @@ module NcsNavigator::Core::Warehouse
     # @return [Array<ResponseBin>]
     def response_bins
       @response_bins ||= begin
-        by_ident = responses.inject({}) { |h, r|
-          table_ident = mdes_table_map.find { |table_ident, table_contents|
-            table_contents[:variables].detect { |var_name, var_mapping|
-              var_mapping[:questions] && var_mapping[:questions].include?(r.question)
-            }
-          }.try(:first)
-          if table_ident
-            h[table_ident] ||= []
-            wh_partition_response(r, table_ident, h[table_ident])
-          end
-          h
-        }
+        bins = []
+        responses.each { |r| wh_partition_response(r, bins) }
 
-        by_ident.values.flatten.sort { |binA, binB|
+        bins.sort { |binA, binB|
           a = binA.table_content[:primary]
           b = binB.table_content[:primary]
           if a
@@ -85,7 +75,9 @@ module NcsNavigator::Core::Warehouse
     # it.
     #
     # @return [void]
-    def wh_partition_response(response, table_ident, bins)
+    def wh_partition_response(response, bins)
+      return unless ResponseBin.should_be_binned?(response)
+
       should_be_in_same_bin_as = [
         corresponding_same_table_other_for_coded(response),
         corresponding_same_table_coded_for_other(response)
@@ -103,10 +95,7 @@ module NcsNavigator::Core::Warehouse
       elsif bins.last && bins.last.empty?
         bins.last << response
       else
-        bins << ResponseBin.new(
-          response.response_set.participant,
-          table_ident, mdes_table_map[table_ident],
-          response.response_group, [response])
+        bins << ResponseBin.create_from_response(response, mdes_table_map)
       end
     end
 
@@ -185,6 +174,40 @@ module NcsNavigator::Core::Warehouse
 
       extend Forwardable
       def_delegators :responses, :each, :empty?
+      def_delegators self, :table_ident_for_response
+
+      class << self
+        def should_be_binned?(response)
+          # i.e., it should only be binned if it has an MDES table
+          table_ident_for_response(response)
+        end
+
+        def table_ident_for_response(response)
+          response.response_set.survey.mdes_table_map.find { |table_ident, table_contents|
+            table_contents[:variables].detect { |var_name, var_mapping|
+              var_mapping[:questions] && var_mapping[:questions].include?(response.question)
+            }
+          }.try(:first)
+        end
+
+        # N.b.: the full cross-instrument merged mdes_table_map is needed here
+        # (v.s. just the map for this response's source survey as is used in
+        # table_ident_for_response). This is because, while the response's table
+        # _ident_ can be completely determined from its one question, it is
+        # possible for the full content of an MDES table to be based on
+        # questions from multiple surveys. ResponseBin needs both the table
+        # ident and content.
+        def create_from_response(response, mdes_table_map)
+          table_ident = table_ident_for_response(response)
+          return nil unless table_ident
+
+          new(
+            response.response_set.participant,
+            table_ident, mdes_table_map[table_ident],
+            response.response_group, [response]
+          )
+        end
+      end
 
       # not a struct because structs can't mix in enumerable usefully
       attr_reader :participant, :table_identifier, :table_content, :response_group, :responses
@@ -198,10 +221,12 @@ module NcsNavigator::Core::Warehouse
       end
 
       def will_accept?(response)
-        # bins are per-repeat
-        self.response_group == response.response_group &&
-        # bins are per-participant
-        self.participant.p_id == response.response_set.participant.p_id &&
+        # Bins are per-repeat
+        (self.response_group == response.response_group) &&
+        # and are per-participant
+        (self.participant.p_id == response.response_set.participant.p_id) &&
+        # and are per-MDES table
+        (self.table_identifier == table_ident_for_response(response)) &&
         # and must have only one response per question
         self.none? { |r| r.question == response.question }
       end
@@ -309,6 +334,7 @@ module NcsNavigator::Core::Warehouse
       def apply_response_values(record)
         each do |r|
           variable_name = variable_name_for_question(r.question)
+          fail "No variable for #{r.question.reference_identifier} (#{r.question.data_export_identifier.inspect})" unless variable_name
           record.send("#{variable_name}=", r.reportable_value)
         end
       end
