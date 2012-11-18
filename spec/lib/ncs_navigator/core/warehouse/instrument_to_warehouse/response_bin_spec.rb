@@ -46,6 +46,12 @@ module NcsNavigator::Core::Warehouse::InstrumentToWarehouse
       DSL
     }
 
+    let(:participant1) { Factory(:participant, :p_id => 'P1') }
+    let(:participant2) { Factory(:participant, :p_id => 'P2') }
+
+    let(:response_set_for_p1) { Factory(:response_set, :participant => participant1, :survey => survey_with_other) }
+    let(:response_set_for_p2) { Factory(:response_set, :participant => participant2, :survey => survey_with_other) }
+
     before do
       Survey.mdes_reset!
     end
@@ -80,12 +86,6 @@ module NcsNavigator::Core::Warehouse::InstrumentToWarehouse
     end
 
     describe '#will_accept?' do
-      let(:participant1) { Factory(:participant, :p_id => 'P1') }
-      let(:participant2) { Factory(:participant, :p_id => 'P2') }
-
-      let(:response_set_for_p1) { Factory(:response_set, :participant => participant1, :survey => survey_with_other) }
-      let(:response_set_for_p2) { Factory(:response_set, :participant => participant2, :survey => survey_with_other) }
-
       let(:bin) {
         ResponseBin.new(
           participant1,
@@ -120,8 +120,158 @@ module NcsNavigator::Core::Warehouse::InstrumentToWarehouse
       it 'will accept a response which meets all the other criteria' do
         bin << create_response_for('RENOVATE_ROOM_OTH', response_set_for_p1)
 
-        bin.will_accept?(create_response_for('RENOVATE_ROOM', response_set_for_p1)).
+        acceptable_response = create_response_for('RENOVATE_ROOM', response_set_for_p1) { |r|
+          r.answer = r.question.answers.find_by_reference_identifier('neg_5') 
+        }
+
+        bin.will_accept?(acceptable_response).
           should be_true
+      end
+
+      describe 'considering "other" pairs' do
+        let!(:other_value_response) {
+          create_response_for('RENOVATE_ROOM_OTH', response_set_for_p1) { |r|
+            r.string_value = 'Observatory'
+          }
+        }
+
+        let!(:coded_as_other_response) {
+          create_response_for('RENOVATE_ROOM', response_set_for_p1) { |r|
+            r.answer = r.question.answers.find_by_reference_identifier('neg_5')
+          }
+        }
+
+        let!(:coded_as_not_other_response) {
+          create_response_for('RENOVATE_ROOM', response_set_for_p1) { |r|
+            r.answer = r.question.answers.find_by_reference_identifier('6')
+          }
+        }
+
+        describe 'with response for the coded question' do
+          describe 'when the bin contains the "other" value response' do
+            before do
+              bin << other_value_response
+            end
+
+            it 'will accept the coded "other" response' do
+              bin.will_accept?(coded_as_other_response).should be_true
+            end
+
+            it 'will not accept a coded non-other response' do
+              bin.will_accept?(coded_as_not_other_response).should be_false
+            end
+          end
+
+          describe 'when the bin does not contain the "other" value response' do
+            it 'will accept a coded other response' do
+              bin.will_accept?(other_value_response).should be_true
+            end
+
+            it 'will accept the coded "other" response' do
+              bin.will_accept?(coded_as_other_response).should be_true
+            end
+
+            it 'will accept a coded non-other response' do
+              bin.will_accept?(coded_as_not_other_response).should be_true
+            end
+          end
+        end
+
+        describe 'with a response for the value question' do
+          it 'will accept the other value response when it contains the other coded response' do
+            bin << coded_as_other_response
+
+            bin.will_accept?(other_value_response).should be_true
+          end
+
+          it 'will not accept the other value when it contains the a non-other coded response' do
+            bin << coded_as_not_other_response
+
+            bin.will_accept?(other_value_response).should be_false
+          end
+
+          it 'will accept an other value when it does not contain a corresponding coded response at all' do
+            bin.will_accept?(other_value_response).should be_true
+          end
+        end
+      end
+    end
+
+    describe '#must_have?' do
+      let(:bin) {
+        ResponseBin.new(
+          participant1,
+          'twelve_mth_mother_renovate_room',
+          {}, # DC
+          nil
+        )
+      }
+
+      it 'is false for some random response' do
+        bin.must_have?(create_response_for('RENOVATE_ROOM', response_set_for_p1)).
+          should be_false
+      end
+
+      describe 'considering "other" pairs' do
+        let!(:other_value_response) {
+          create_response_for('RENOVATE_ROOM_OTH', response_set_for_p1) { |r|
+            r.string_value = 'Observatory'
+          }
+        }
+
+        let!(:coded_as_other_response) {
+          create_response_for('RENOVATE_ROOM', response_set_for_p1) { |r|
+            r.answer = r.question.answers.find_by_reference_identifier('neg_5')
+          }
+        }
+
+        let!(:coded_as_not_other_response) {
+          create_response_for('RENOVATE_ROOM', response_set_for_p1) { |r|
+            r.answer = r.question.answers.find_by_reference_identifier('6')
+          }
+        }
+
+        describe 'when it contains a coded other response' do
+          before do
+            bin << coded_as_other_response
+          end
+
+          it 'must have the other value response' do
+            bin.must_have?(other_value_response).should be_true
+          end
+
+          it 'must not have the other value response' do
+            bin.must_have?(coded_as_not_other_response).should be_false
+          end
+        end
+
+        describe 'when it contains a coded non-other response' do
+          before do
+            bin << coded_as_not_other_response
+          end
+
+          it 'must not have the other value response' do
+            bin.must_have?(other_value_response).should be_false
+          end
+
+          it 'must not have the other coded value response' do
+            bin.must_have?(coded_as_other_response).should be_false
+          end
+        end
+
+        describe 'when it contains an other value' do
+          before do
+            bin << other_value_response
+          end
+
+          it 'must have the other coded response' do
+            bin.must_have?(coded_as_other_response).should be_true
+          end
+
+          it 'must not have the a non-other coded response' do
+            bin.must_have?(coded_as_not_other_response).should be_false
+          end
+        end
       end
     end
   end
