@@ -41,6 +41,7 @@ class NcsNavigator::Core::RecordOfContactImporter
 
       event = get_event_record(row, participant)
       save_or_report_problems(event, i)
+      @last_event = event
 
       contact = get_contact_record(row, event, person)
       save_or_report_problems(contact, i)
@@ -77,7 +78,12 @@ class NcsNavigator::Core::RecordOfContactImporter
   end
 
   def get_event_record(row, participant)
-    start_date = Date.parse(row[:event_start_date])
+    start_date =
+      if row[:event_start_date]
+        start_date = Date.parse(row[:event_start_date])
+      elsif @last_event
+        @last_event.event_start_date
+      end
 
     event = Event.where(:participant_id => participant.id,
                         :event_type_code => row[:event_type],
@@ -92,6 +98,8 @@ class NcsNavigator::Core::RecordOfContactImporter
     event.disposition                     = row[:disposition] unless row[:disposition].blank?
     event.event_disposition_category_code = row[:event_disposition_category] unless row[:event_disposition_category].blank?
     event.event_start_time                = row[:event_start_time] unless row[:event_start_time].blank?
+    event.event_end_date                  = row[:event_end_date] unless row[:event_end_date].blank?
+    event.event_end_time                  = row[:event_end_time] unless row[:event_end_time].blank?
     event.event_breakoff_code             = row[:event_breakoff] unless row[:event_breakoff].blank?
     event.event_comment                   = row[:event_comment] unless row[:event_comment].blank?
     event

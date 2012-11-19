@@ -10,10 +10,6 @@ module NcsNavigator::Core
 
     let(:reference_csv) { Rails.root + 'spec/fixtures/data/ROC_Code_lists_and_Dispositions.csv' }
 
-    let(:csv_io) {
-      reference_csv.open
-    }
-
     let(:csv_header) {
       reference_csv.readlines.first
     }
@@ -40,12 +36,35 @@ module NcsNavigator::Core
       }
     end
 
+    let(:csv_io) {
+      created_file.open
+    }
+
+    let(:created_file) {
+      Rails.root + 'tmp' + 'a.csv'
+    }
+
+    let!(:exemplar_participant) { Factory(:participant, :p_id => exemplar_row[:participant_id]) }
+
+    def make_a_csv(*rows)
+      created_file.open('w') do |f|
+        f.write csv_header
+        rows.each do |row|
+          f.write row
+        end
+      end
+    end
+
     def create_csv_row_text(value_map)
       create_csv_row(value_map).to_csv
     end
 
     describe "#import_data" do
       describe 'basic behavior' do
+        let(:csv_io) {
+          reference_csv.open
+        }
+
         before(:each) do
           # create Participants and a particular participant for an exisiting record
           [11111111, 22222222, 11112222, 22221111, 33333333].each { |id| Participant.create :p_id => id }
@@ -104,35 +123,50 @@ module NcsNavigator::Core
         end
       end
 
-      describe 'with bad data' do
-        let(:csv_io) {
-          created_file.open
-        }
+      describe 'with consecutive contacts for the same event, omitting the start date on subsequent rows' do
+        before do
+          make_a_csv(
+            create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+            create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-11'),
+            create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
+            create_csv_row_text(:event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
+          )
 
-        let(:created_file) {
-          Rails.root + 'tmp' + 'a.csv'
-        }
-
-        let!(:participant) { Factory(:participant, :p_id => exemplar_row[:participant_id]) }
-
-        def make_bad_csv(*rows)
-          created_file.open('w') do |f|
-            f.write csv_header
-            rows.each do |row|
-              f.write row
-            end
-          end
+          importer.import_data
         end
 
+        let(:event) { Event.where(:event_start_date => '2010-07-06').first }
+
+        it 'creates only one event' do
+          Event.where(:event_start_date => '2010-07-06').count.should == 1
+        end
+
+        it 'links all the contacts to the same event record' do
+          event.contact_links.collect(&:contact).collect(&:contact_date).sort.should ==
+            %w(2010-07-06 2010-07-11 2010-07-20)
+        end
+
+        it 'preserves the event start date from the first row' do
+          Event.all.collect(&:event_start_date).sort.should == [
+            Date.new(2010, 7, 6), Date.new(2010, 9, 3)
+          ]
+        end
+
+        it 'takes the event end date from the last row' do
+          event.event_end_date.should == Date.new(2010, 7, 22)
+        end
+      end
+
+      describe 'with bad data' do
         it 'fails for an unknown participant' do
-          make_bad_csv create_csv_row_text(:participant_id => 'No')
+          make_a_csv create_csv_row_text(:participant_id => 'No')
 
           expect { importer.import_data }.to raise_error /Error on row 1. Unknown participant "No"/
         end
 
         describe 'for event' do
           it 'does not accept a record which does not pass AR validations' do
-            make_bad_csv create_csv_row_text(:event_start_time => 'top-o-the-morn')
+            make_a_csv create_csv_row_text(:event_start_time => 'top-o-the-morn')
 
             expect { importer.import_data }.to raise_error /Error on row 1. Invalid Event: Event start time is invalid/
           end
@@ -140,7 +174,7 @@ module NcsNavigator::Core
 
         describe 'for contact' do
           it 'does not accept a record which does not pass AR validations' do
-            make_bad_csv create_csv_row_text(:contact_start_time => 'top-o-the-morn')
+            make_a_csv create_csv_row_text(:contact_start_time => 'top-o-the-morn')
 
             expect { importer.import_data }.to raise_error /Error on row 1. Invalid Contact: Contact start time is invalid/
           end
@@ -148,7 +182,7 @@ module NcsNavigator::Core
 
         describe 'for contact link' do
           it 'does not accept a record which does not pass AR validations' do
-            make_bad_csv create_csv_row_text(:staff_id => nil)
+            make_a_csv create_csv_row_text(:staff_id => nil)
 
             expect { importer.import_data }.to raise_error /Error on row 1. Invalid ContactLink: Staff can't be blank./
           end
@@ -156,7 +190,7 @@ module NcsNavigator::Core
 
         describe 'in more than one type of record' do
           it 'reports them all' do
-            make_bad_csv(
+            make_a_csv(
               create_csv_row_text(:contact_start_time => 'top-o-the-morn', :event_start_time => 'dusk')
             )
             expect { importer.import_data }.to raise_error /Error on row 1. Invalid Event. Event start time is invalid.*Contact start time is invalid/m
@@ -165,7 +199,7 @@ module NcsNavigator::Core
 
         describe 'in more than one row' do
           it 'reports them all' do
-            make_bad_csv(
+            make_a_csv(
               create_csv_row_text(:contact_start_time => 'top-o-the-morn'),
               create_csv_row_text(:event_start_time => 'dusk')
             )
@@ -176,7 +210,7 @@ module NcsNavigator::Core
         describe 'for another exception' do
           it 'reports a useful error' do
             ParticipantPersonLink.stub!(:create!).and_raise "I refuse"
-            make_bad_csv create_csv_row_text(:person_id => 'a new one', :relationship => '5')
+            make_a_csv create_csv_row_text(:person_id => 'a new one', :relationship => '5')
 
             expect { importer.import_data }.to raise_error /Error on row 1. RuntimeError: I refuse.*record_of_contact_importer/m
           end
