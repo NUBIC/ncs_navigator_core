@@ -2,43 +2,17 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://demo-ncscas.nubic.northwestern.edu:443/cas/proxy?pgt=TGT-1423-skP1xagpZWaOQgQ12HwkfXWka63MZnfewxRW7mNVJfBDtrlkL4-cas&targetService=https://demo-navcal.nubic.northwestern.edu/auth/cas_security_check
+    uri: https://ncsn-psc.local/api/v1/studies/NCS%20Hi-Lo/template/current/schedule-preview.json?segment%5B0%5D=ca65bbbb-7e47-4f71-a4f0-071e7f73f380&segment%5B1%5D=6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8&start_date%5B0%5D=2000-01-01&start_date%5B1%5D=2000-01-01
     body:
     headers:
+      accept:
+      - '*/*'
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      date:
-      - Mon, 19 Nov 2012 06:58:18 GMT
-      pragma:
-      - no-cache
-      expires:
-      - Thu, 01 Jan 1970 00:00:00 GMT
-      cache-control:
-      - no-cache
-      - no-store
-      content-type:
-      - text/plain;charset=ISO-8859-1
-      content-language:
-      - en-US
-      content-length:
-      - '194'
-    body: ! "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>\n\t<cas:proxySuccess>\n\t\t<cas:proxyTicket>ST-8931-vohIcCiSnSYhOXEA9cTN-cas</cas:proxyTicket>\n\t</cas:proxySuccess>\n</cas:serviceResponse>"
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://demo-navcal.nubic.northwestern.edu:443/api/v1/studies/NCS+Hi-Lo/template/current/schedule-preview.json?segment%5B0%5D=6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8&segment%5B1%5D=ca65bbbb-7e47-4f71-a4f0-071e7f73f380&start_date%5B0%5D=2012-11-19&start_date%5B1%5D=2012-11-19
-    body:
-    headers:
       authorization:
-      - psc_token ST-8931-vohIcCiSnSYhOXEA9cTN-cas
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      - psc_token PT-cas-ticket
+      user-agent:
+      - Ruby
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
@@ -60,70 +34,344 @@
       - application/json
       transfer-encoding:
       - chunked
-    body: ! '{"days":{"2012-11-19":{"activities":[{"study":"NCS Hi-Lo","study_segment":"HI-Intensity:
-      Pregnancy Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Biospecimen Adult Blood Instrument","type":"Biospecimen"},"labels":"collection:biological
-      event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0
-      order:10_01 participant_type:mother","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Biospecimen Adult Urine Instrument","type":"Biospecimen"},"labels":"collection:biological
-      event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0
-      order:11_01 participant_type:mother","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Pregnant Woman Informed Consent","type":"Consent"},"labels":"event:informed_consent","formatted_plan_day":"Day
-      1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Environmental Tap Water Pesticides Technician
-      Collect Instrument","type":"Environment"},"labels":"collection:environmental
-      event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0
-      order:20_01 participant_type:mother","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Environmental Tap Water Pharmaceuticals
-      Technician Collect Instrument","type":"Environment"},"labels":"collection:environmental
-      event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0
-      order:21_01 participant_type:mother","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Environmental Vacuum Bag Dust Technician
-      Collect Instrument","type":"Environment"},"labels":"collection:environmental
-      event:pregnancy_visit_1 instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0
-      order:22_01 participant_type:mother","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"conditional","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Birth Visit Information Sheet","type":"Information
-      Sheet"},"condition":"if this is only visit before birth of baby","labels":"event:pregnancy_visit_1","formatted_plan_day":"Day
-      1","state_history":[{"name":"conditional","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Pregnancy Visit 1 Information Sheet","type":"Information
-      Sheet"},"labels":"event:pregnancy_visit_1","formatted_plan_day":"Day 1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Pregnancy Health Care Log","type":"Instrument"},"labels":"event:pregnancy_visit_1","formatted_plan_day":"Day
-      1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"LO-Intensity: Pregnancy
-      Screener","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Pregnancy Screener Interview","type":"Instrument"},"labels":"event:pregnancy_screener
-      instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0","formatted_plan_day":"Day
-      1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Pregnancy Visit 1 Interview","type":"Instrument"},"labels":"event:pregnancy_visit_1
-      instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 order:01_01 participant_type:mother","formatted_plan_day":"Day
-      1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]},{"study":"NCS Hi-Lo","study_segment":"HI-Intensity: Pregnancy
-      Visit 1","ideal_date":"2012-11-19","plan_day":"1","current_state":{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"},"activity":{"name":"Pregnancy Visit 1 SAQ","type":"Instrument"},"labels":"event:pregnancy_visit_1
-      instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0 order:02_01 participant_type:mother","formatted_plan_day":"Day
-      1","state_history":[{"name":"scheduled","date":"2012-11-19","reason":"Initialized
-      from template"}]}]}},"study_segments":[{"name":"HI-Intensity: Pregnancy Visit
-      1","range":{"start_date":"2012-11-19","stop_date":"2012-11-19"},"planned":{"segment":{"id":"ca65bbbb-7e47-4f71-a4f0-071e7f73f380","name":"Pregnancy
-      Visit 1"},"epoch":{"id":"7955eab9-f505-45d2-9c79-eeaa19cf5382","name":"HI-Intensity"},"study":{"assigned_identifier":"NCS
-      Hi-Lo"}}},{"name":"LO-Intensity: Pregnancy Screener","range":{"start_date":"2012-11-19","stop_date":"2012-11-19"},"planned":{"segment":{"id":"6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8","name":"Pregnancy
-      Screener"},"epoch":{"id":"73f6c858-4069-411a-8d82-c9d558c07d68","name":"LO-Intensity"},"study":{"assigned_identifier":"NCS
-      Hi-Lo"}}}]}'
+    body: |-
+      {
+          "days": {
+              "2012-11-19": {
+                  "activities": [
+                      {
+                          "activity": {
+                              "name": "Biospecimen Adult Blood Instrument",
+                              "type": "Biospecimen"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0 order:10_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Biospecimen Adult Urine Instrument",
+                              "type": "Biospecimen"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 order:11_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Pregnant Woman Informed Consent",
+                              "type": "Consent"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:informed_consent",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Environmental Tap Water Pesticides Technician Collect Instrument",
+                              "type": "Environment"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0 order:20_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Environmental Tap Water Pharmaceuticals Technician Collect Instrument",
+                              "type": "Environment"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0 order:21_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Environmental Vacuum Bag Dust Technician Collect Instrument",
+                              "type": "Environment"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0 order:22_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Birth Visit Information Sheet",
+                              "type": "Information Sheet"
+                          },
+                          "condition": "if this is only visit before birth of baby",
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "conditional",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:pregnancy_visit_1",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "conditional",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Pregnancy Visit 1 Information Sheet",
+                              "type": "Information Sheet"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:pregnancy_visit_1",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Pregnancy Health Care Log",
+                              "type": "Instrument"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:pregnancy_visit_1",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Pregnancy Screener Interview",
+                              "type": "Instrument"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:pregnancy_screener instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "LO-Intensity: Pregnancy Screener"
+                      },
+                      {
+                          "activity": {
+                              "name": "Pregnancy Visit 1 Interview",
+                              "type": "Instrument"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0 order:01_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      },
+                      {
+                          "activity": {
+                              "name": "Pregnancy Visit 1 SAQ",
+                              "type": "Instrument"
+                          },
+                          "current_state": {
+                              "date": "2012-11-19",
+                              "name": "scheduled",
+                              "reason": "Initialized from template"
+                          },
+                          "formatted_plan_day": "Day 1",
+                          "ideal_date": "2012-11-19",
+                          "labels": "event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0 order:02_01 participant_type:mother",
+                          "plan_day": "1",
+                          "state_history": [
+                              {
+                                  "date": "2012-11-19",
+                                  "name": "scheduled",
+                                  "reason": "Initialized from template"
+                              }
+                          ],
+                          "study": "NCS Hi-Lo",
+                          "study_segment": "HI-Intensity: Pregnancy Visit 1"
+                      }
+                  ]
+              }
+          },
+          "study_segments": [
+              {
+                  "name": "HI-Intensity: Pregnancy Visit 1",
+                  "planned": {
+                      "epoch": {
+                          "id": "7955eab9-f505-45d2-9c79-eeaa19cf5382",
+                          "name": "HI-Intensity"
+                      },
+                      "segment": {
+                          "id": "ca65bbbb-7e47-4f71-a4f0-071e7f73f380",
+                          "name": "Pregnancy Visit 1"
+                      },
+                      "study": {
+                          "assigned_identifier": "NCS Hi-Lo"
+                      }
+                  },
+                  "range": {
+                      "start_date": "2012-11-19",
+                      "stop_date": "2012-11-19"
+                  }
+              },
+              {
+                  "name": "LO-Intensity: Pregnancy Screener",
+                  "planned": {
+                      "epoch": {
+                          "id": "73f6c858-4069-411a-8d82-c9d558c07d68",
+                          "name": "LO-Intensity"
+                      },
+                      "segment": {
+                          "id": "6caf9143-bfb0-47e4-b1e4-ccc810a4cbc8",
+                          "name": "Pregnancy Screener"
+                      },
+                      "study": {
+                          "assigned_identifier": "NCS Hi-Lo"
+                      }
+                  },
+                  "range": {
+                      "start_date": "2000-01-01",
+                      "stop_date": "2000-01-01"
+                  }
+              }
+          ]
+      }
     http_version: '1.1'
