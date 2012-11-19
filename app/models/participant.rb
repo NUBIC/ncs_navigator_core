@@ -621,7 +621,7 @@ class Participant < ActiveRecord::Base
   end
 
   def due_date_is_greater_than_follow_up_interval
-    due_date && due_date > get_date_to_schedule_next_event_from_contact_link
+    due_date && due_date > follow_up_interval.from_now.to_date
   end
 
   ##
