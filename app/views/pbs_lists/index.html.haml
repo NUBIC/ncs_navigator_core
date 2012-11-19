@@ -50,8 +50,13 @@
             - unless provider.contacts.blank?
               - cls = "icon_link"
               - if pbs.pr_recruitment_status_code.to_i == 1
-                - cls += pbs.provider.recruitment_logistics_complete? ? " star_link" : " notification_icon"
-              = link_to pbs.pr_recruitment_status.to_s, path, { :class => cls }
+                - if pbs.provider.recruitment_logistics_complete?
+                  - cls += " star_link"
+                  - ttl = "Provider Logistics Complete"
+                - else
+                  - cls += " notification_icon"
+                  - ttl = "Needs to complete Provider Logistics"
+              = link_to pbs.pr_recruitment_status.to_s, path, { :class => cls, :title => ttl }
 
   .links
     %br

@@ -115,12 +115,6 @@ class Provider < ActiveRecord::Base
     self.events.where(:event_type_code => PROVIDER_RECRUIMENT_EVENT_TYPE_CODE).last
   end
 
-  def can_recruit?
-    if original_provider? || substitute_provider?
-      pbs_list.recruitment_ended? ? false : true
-    end
-  end
-
   def original_provider?
     self.pbs_list.try(:in_sample_code) == 1
   end
@@ -135,8 +129,7 @@ class Provider < ActiveRecord::Base
   end
 
   def recruited?
-    (self.can_recruit? || self.pbs_list.try(:provider_recruited?)) &&
-      !self.refused_to_participate?
+    self.pbs_list.try(:provider_recruited?) && !self.refused_to_participate?
   end
 
   ##
@@ -155,13 +148,8 @@ class Provider < ActiveRecord::Base
   # if any of the provider logistics are not complete or
   # there are no provider recruited contacts
   def open_recruitment
-    if self.pbs_list && (!recruitment_logistics_complete? || has_no_provider_recruited_contacts?)
-      self.pbs_list.update_attribute(:pr_recruitment_end_date, nil)
-      if self.has_no_provider_recruited_contacts?
-        self.pbs_list.update_attribute(:pr_recruitment_status_code, 3)
-      end
-      event = self.provider_recruitment_event
-      event.update_attribute(:event_end_date, nil) if event
+    if self.pbs_list && has_no_provider_recruited_contacts?
+      self.pbs_list.update_attribute(:pr_recruitment_status_code, 3)
     end
   end
 

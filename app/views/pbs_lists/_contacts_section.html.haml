@@ -21,7 +21,7 @@
           Report Issue
         %th{:id => "staff_table_header_right_end"}
           Delete
-      - @provider.contact_links.each do |link|
+      - @contact_links.each do |link|
         - contact = link.contact
         - cls = cycle('even_record', 'odd_record')
         %tr{ :class => cls }

@@ -32,6 +32,7 @@ class PbsListsController < ApplicationController
     @pbs_list = PbsList.find(params[:id])
     @provider = @pbs_list.provider
     @staff = []
+    @contact_links = @provider.contact_links.sort_by{ |cl| [cl.contact.contact_date, cl.created_at] }.reverse
     PersonnelProviderLink.where(:provider_id => @provider).all.each { |ppl| @staff << ppl.person }
     respond_to do |format|
       format.html
@@ -45,7 +46,10 @@ class PbsListsController < ApplicationController
     respond_to do |format|
       if @pbs_list.update_attributes(params[:pbs_list])
         flash[:notice] = 'PBS List Record was successfully updated.'
-        format.html { redirect_to(edit_pbs_list_path(@pbs_list)) }
+
+        redirect_path = params["redirect_to"].blank? ? edit_pbs_list_path(@pbs_list) : params["redirect_to"]
+
+        format.html { redirect_to(redirect_path) }
         format.json  { render :json => @pbs_list }
       else
         format.html { render :action => "edit" }

@@ -1,0 +1,27 @@
+#provider_recruitment_status
+  %span{ :id => "provider_recruitment_status_header" }
+    Status
+
+.page_section.provider_status
+  = form_for @pbs_list do |f|
+    = hidden_field_tag :redirect_to, pbs_list_path(@pbs_list)
+
+    = render "shared/ncs_code_select", { :f => f, :code => :pr_recruitment_status_code, :label_text => "Provider Recruitment Status" }
+
+    %p
+      = f.label :pr_recruitment_start_date, "Recruitment Start Date"
+      %br
+      = f.text_field :pr_recruitment_start_date, :class => "datepicker"
+
+    %p
+      = f.label :pr_cooperation_date, "Provider Co-operation Date"
+      %br
+      = f.text_field :pr_cooperation_date, :class => "datepicker"
+
+    %p
+      = f.label :pr_recruitment_end_date, "Recruitment End Date"
+      %br
+      = f.text_field :pr_recruitment_end_date, :class => "datepicker"
+
+    %p
+      = f.submit "Update Provider Recruitment Fields", :disable_with => 'Submitting...'
