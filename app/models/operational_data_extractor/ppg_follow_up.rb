@@ -191,37 +191,23 @@ module OperationalDataExtractor
         ppg_status_history.save!
       end
 
-      if email && !email.email.blank?
+      unless email.try(:email).blank?
         person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
       end
 
-      if (home_phone && !home_phone.phone_nbr.blank?) ||
-         (cell_phone && !cell_phone.phone_nbr.blank?) ||
-         (work_phone && !work_phone.phone_nbr.blank?) ||
-         (other_phone && !other_phone.phone_nbr.blank?) ||
-         (phone && !phone.phone_nbr.blank?)
+      if !cell_phone.try(:phone_nbr).blank? ||
+         !home_phone.try(:phone_nbr).blank? ||
+         !work_phone.try(:phone_nbr).blank? ||
+         !other_phone.try(:phone_nbr).blank? ||
+         !phone.try(:phone_nbr).blank?
         person.telephones.each { |t| t.demote_primary_rank_to_secondary }
-      end
 
-      if home_phone && !home_phone.phone_nbr.blank?
-        home_phone.save!
-      end
-
-      if cell_phone && !cell_phone.phone_nbr.blank?
-        cell_phone.save!
-      end
-
-      if work_phone && !work_phone.phone_nbr.blank?
-        work_phone.save!
-      end
-
-      if other_phone && !other_phone.phone_nbr.blank?
-        other_phone.save!
-      end
-
-      if phone && !phone.phone_nbr.blank?
-        phone.save!
+        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
+        home_phone.save! unless home_phone.try(:phone_nbr).blank?
+        work_phone.save! unless work_phone.try(:phone_nbr).blank?
+        other_phone.save! unless other_phone.try(:phone_nbr).blank?
+        phone.save! unless phone.try(:phone_nbr).blank?
       end
 
       participant.save!

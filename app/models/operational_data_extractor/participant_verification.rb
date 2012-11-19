@@ -153,22 +153,10 @@ module OperationalDataExtractor
       if child
         child.save!
 
-        if child_phone && !child_phone.phone_nbr.blank?
-          child_phone.save!
-        end
-
-        if child_phone2 && !child_phone2.phone_nbr.blank?
-          child_phone2.save!
-        end
-
-        if child_address && !child_address.to_s.blank?
-          child_address.save!
-        end
-
-        if child_address2 && !child_address2.to_s.blank?
-          child_address2.save!
-        end
-
+        child_phone.save! unless child_phone.try(:phone_nbr).blank?
+        child_phone2.save! unless child_phone2.try(:phone_nbr).blank?
+        child_address.save! unless child_address.to_s.blank?
+        child_address2.save! unless child_address2.to_s.blank?
       end
 
       person.save!

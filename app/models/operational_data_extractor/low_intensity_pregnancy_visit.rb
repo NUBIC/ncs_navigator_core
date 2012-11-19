@@ -76,9 +76,7 @@ module OperationalDataExtractor
         ppg_status_history.save!
       end
 
-      if birth_address && !birth_address.to_s.blank?
-        birth_address.save!
-      end
+      birth_address.save! unless birth_address.to_s.blank?
 
       participant.save!
       person.save!

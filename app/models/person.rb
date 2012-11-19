@@ -522,6 +522,16 @@ class Person < ActiveRecord::Base
     end
   end
 
+  ##
+  # Returns the primary mailing address for this person, or nil if no such
+  # phone record exists.
+  def primary_mailing_address
+    mailing_address_type_code = Address.mailing_address_type.to_i
+
+    primary_contacts(addresses, :address_rank_code) do |ts|
+      ts.detect { |t| t.address_type_code == mailing_address_type_code }
+    end
+  end
 
   ##
   # Returns the primary address for this person, or nil if no such address

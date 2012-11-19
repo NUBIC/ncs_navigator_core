@@ -212,21 +212,10 @@ module OperationalDataExtractor
 
       end
 
-      if email && !email.email.blank?
-        email.save!
-      end
-
-      if phone1 && !phone1.phone_nbr.blank?
-        phone1.save!
-      end
-
-      if phone2 && !phone2.phone_nbr.blank?
-        phone2.save!
-      end
-
-      if address && !address.to_s.blank?
-        address.save!
-      end
+      email.save! unless email.try(:email).blank?
+      phone1.save! unless phone1.try(:phone_nbr).blank?
+      phone2.save! unless phone2.try(:phone_nbr).blank?
+      address.save! unless address.to_s.blank?
 
       participant.save!
       person.save!

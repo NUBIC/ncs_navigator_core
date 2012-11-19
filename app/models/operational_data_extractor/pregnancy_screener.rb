@@ -226,28 +226,27 @@ module OperationalDataExtractor
 
       end
 
-      if email && !email.email.blank?
+      unless email.try(:email).blank?
+        person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
       end
 
-      if home_phone && !home_phone.phone_nbr.blank?
-        home_phone.save!
+      if !mail_address.to_s.blank? || !address.to_s.blank?
+
+        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
+
+        mail_address.save! unless mail_address.to_s.blank?
+        address.save! unless address.to_s.blank?
       end
 
-      if cell_phone && !cell_phone.phone_nbr.blank?
-        cell_phone.save!
-      end
+      if !cell_phone.try(:phone_nbr).blank? ||
+         !home_phone.try(:phone_nbr).blank? ||
+         !phone.try(:phone_nbr).blank?
+        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
 
-      if phone && !phone.phone_nbr.blank?
-        phone.save!
-      end
-
-      if mail_address && !mail_address.to_s.blank?
-        mail_address.save!
-      end
-
-      if address && !address.to_s.blank?
-        address.save!
+        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
+        home_phone.save! unless home_phone.try(:phone_nbr).blank?
+        phone.save! unless phone.try(:phone_nbr).blank?
       end
 
       participant.save!

@@ -255,15 +255,17 @@ module OperationalDataExtractor
       contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
       contact2relationship = ParticipantPersonLink.new(:participant => participant, :person => contact2)
 
-      CHILD_PERSON_NAME_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(child, attribute, response_value(r))
+      if child
+        CHILD_PERSON_NAME_MAP.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            set_value(child, attribute, response_value(r))
+          end
         end
-      end
 
-      CHILD_PERSON_DATE_OF_BIRTH_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(child, attribute, response_value(r))
+        CHILD_PERSON_DATE_OF_BIRTH_MAP.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            set_value(child, attribute, response_value(r))
+          end
         end
       end
 
@@ -303,7 +305,7 @@ module OperationalDataExtractor
           value = response_value(r)
           unless value.blank?
             contact1 ||= Person.where(:response_set_id => response_set.id,
-                                      attribute.to_sym => value.to_s).first
+                                      attribute => value.to_s).first
             if contact1.nil?
               contact1 = Person.new(:psu => person.psu, :response_set => response_set)
             end
@@ -319,7 +321,7 @@ module OperationalDataExtractor
             value = response_value(r)
             unless value.blank?
               contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
-                                                                    attribute.to_sym => value.to_s).first
+                                                                    attribute => value.to_s).first
               if contact1relationship.nil?
                 contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -334,7 +336,7 @@ module OperationalDataExtractor
             value = response_value(r)
             unless value.blank?
               contact1address ||= Address.where(:response_set_id => response_set.id,
-                                                 attribute.to_sym => value.to_s).first
+                                                 attribute => value.to_s).first
               if contact1address.nil?
                 contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new,
                                               :psu => person.psu, :response_set => response_set,
@@ -350,7 +352,7 @@ module OperationalDataExtractor
             value = response_value(r)
             unless value.blank?
               contact1phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute.to_sym => value.to_s).first
+                                                attribute => value.to_s).first
               if contact1phone.nil?
                 contact1phone = Telephone.new(:person => contact1, :psu => person.psu,
                                               :response_set => response_set, :phone_rank => primary_rank)
@@ -366,7 +368,7 @@ module OperationalDataExtractor
           value = response_value(r)
           unless value.blank?
             contact2 ||= Person.where(:response_set_id => response_set.id,
-                                      attribute.to_sym => value.to_s).first
+                                      attribute => value.to_s).first
             if contact2.nil?
               contact2 = Person.new(:psu => person.psu, :response_set => response_set)
             end
@@ -382,7 +384,7 @@ module OperationalDataExtractor
             value = response_value(r)
             unless value.blank?
               contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
-                                                                    attribute.to_sym => value.to_s).first
+                                                                    attribute => value.to_s).first
               if contact2relationship.nil?
                 contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
                                                                  :psu => person.psu, :response_set => response_set)
@@ -397,7 +399,7 @@ module OperationalDataExtractor
             value = response_value(r)
             unless value.blank?
               contact2address ||= Address.where(:response_set_id => response_set.id,
-                                                 attribute.to_sym => value.to_s).first
+                                                 attribute => value.to_s).first
               if contact2address.nil?
                 contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new,
                                               :psu => person.psu, :response_set => response_set,
@@ -413,7 +415,7 @@ module OperationalDataExtractor
             value = response_value(r)
             unless value.blank?
               contact2phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute.to_sym => value.to_s).first
+                                                attribute => value.to_s).first
               if contact2phone.nil?
                 contact2phone = Telephone.new(:person => contact2, :psu => person.psu,
                                               :response_set => response_set, :phone_rank => primary_rank)
@@ -452,13 +454,8 @@ module OperationalDataExtractor
         contact2relationship.save!
       end
 
-      if email && !email.email.blank?
-        email.save!
-      end
-
-      if cell_phone && !cell_phone.phone_nbr.blank?
-        cell_phone.save!
-      end
+      email.save! unless email.try(:email).blank?
+      cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
 
       child.save! if child
       participant.save!

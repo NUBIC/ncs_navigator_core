@@ -97,64 +97,103 @@ describe OperationalDataExtractor::Birth do
       person.last_name.should == "Goldsmith"
     end
 
-    it "extracts mailing address data" do
+    context "addresses" do
+      let(:state) { NcsCode.for_list_name_and_local_code("STATE_CL1", 14) }
 
-      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      it "extracts mailing address data" do
 
-      @person.addresses.size.should == 0
+        @person.addresses.size.should == 0
 
-      response_set, instrument = prepare_instrument(@person, @participant, @survey)
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
+        take_survey(@survey, response_set) do |a|
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 7
+
+        OperationalDataExtractor::Birth.new(response_set).extract_data
+
+        person  = Person.find(@person.id)
+        person.addresses.size.should == 1
+        address = person.addresses.first
+        address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+        address.address_rank_code.should == 1
       end
 
-      response_set.responses.reload
-      response_set.responses.size.should == 7
+      it "extracts work address data" do
 
-      OperationalDataExtractor::Birth.new(response_set).extract_data
+        @person.addresses.size.should == 0
 
-      person  = Person.find(@person.id)
-      person.addresses.size.should == 1
-      address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
-      address.address_rank_code.should == 1
-    end
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
 
-    it "extracts work address data" do
+        take_survey(@survey, response_set) do |a|
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '123 Easy St.'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
+        end
 
-      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+        response_set.responses.reload
+        response_set.responses.size.should == 7
 
-      @person.addresses.size.should == 0
+        OperationalDataExtractor::Birth.new(response_set).extract_data
 
-      response_set, instrument = prepare_instrument(@person, @participant, @survey)
-
-      take_survey(@survey, response_set) do |a|
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '123 Easy St.'
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
-        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
+        person  = Person.find(@person.id)
+        person.addresses.size.should == 1
+        address = person.addresses.first
+        address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+        address.address_rank_code.should == 1
       end
 
-      response_set.responses.reload
-      response_set.responses.size.should == 7
+      it "should create as many addresses as needed" do
 
-      OperationalDataExtractor::Birth.new(response_set).extract_data
+        @person.addresses.size.should == 0
 
-      person  = Person.find(@person.id)
-      person.addresses.size.should == 1
-      address = person.addresses.first
-      address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
-      address.address_rank_code.should == 1
+        response_set, instrument = prepare_instrument(@person, @participant, @survey)
+
+        take_survey(@survey, response_set) do |a|
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS1", '123 Easy St.'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ADDRESS2", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_UNIT", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_CITY", 'Chicago'
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_STATE", state
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP", '65432'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MAIL_ZIP4", '1234'
+
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS1", '312 Hard St.'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ADDRESS2", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_UNIT", ''
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_CITY", 'Chicago'
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_STATE", state
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP", '65432'
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.WORK_ZIP4", '1234'
+        end
+
+        response_set.responses.reload
+        response_set.responses.size.should == 14
+
+        OperationalDataExtractor::Birth.new(response_set).extract_data
+
+        person  = Person.find(@person.id)
+        person.addresses.size.should == 2
+
+        puts person.addresses.map{|a| [a.address_rank_code, a.address_type_code, a.to_s]}.inspect
+
+        person.primary_mailing_address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
+        person.primary_work_address.to_s.should == "312 Hard St. Chicago, ILLINOIS 65432-1234"
+      end
+
     end
 
     it "extracts telephone operational data" do

@@ -133,9 +133,11 @@ module OperationalDataExtractor
         end
       end
 
-      CHILD_PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(child, attribute, response_value(r))
+      if child
+        CHILD_PERSON_MAP.each do |key, attribute|
+          if r = data_export_identifier_indexed_responses[key]
+            set_value(child, attribute, response_value(r))
+          end
         end
       end
 
@@ -153,7 +155,7 @@ module OperationalDataExtractor
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            work_address ||= get_address(response_set, person, Address.mailing_address_type)
+            work_address ||= get_address(response_set, person, Address.work_address_type)
             set_value(work_address, attribute, value)
           end
         end
@@ -199,43 +201,30 @@ module OperationalDataExtractor
         end
       end
 
-      if child
-        child.save!
-      end
-
-      if email && !email.email.blank?
+      unless email.try(:email).blank?
         person.emails.each { |e| e.demote_primary_rank_to_secondary }
         email.save!
       end
 
-      if mail_address && !mail_address.to_s.blank?
+      if !mail_address.to_s.blank? || !work_address.to_s.blank?
+
         person.addresses.each { |a| a.demote_primary_rank_to_secondary }
-        mail_address.save!
+
+        mail_address.save! unless mail_address.to_s.blank?
+        work_address.save! unless work_address.to_s.blank?
       end
 
-      if work_address && !work_address.to_s.blank?
-        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
-        work_address.save!
-      end
-
-      if (cell_phone && !cell_phone.phone_nbr.blank?) ||
-         (home_phone && !home_phone.phone_nbr.blank?) ||
-         (phone && !phone.phone_nbr.blank?)
+      if !cell_phone.try(:phone_nbr).blank? ||
+         !home_phone.try(:phone_nbr).blank? ||
+         !phone.try(:phone_nbr).blank?
         person.telephones.each { |t| t.demote_primary_rank_to_secondary }
+
+        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
+        home_phone.save! unless home_phone.try(:phone_nbr).blank?
+        phone.save! unless phone.try(:phone_nbr).blank?
       end
 
-      if cell_phone && !cell_phone.phone_nbr.blank?
-        cell_phone.save!
-      end
-
-      if home_phone && !home_phone.phone_nbr.blank?
-        home_phone.save!
-      end
-
-      if phone && !phone.phone_nbr.blank?
-        phone.save!
-      end
-
+      child.save! if child
       participant.save!
       person.save!
 

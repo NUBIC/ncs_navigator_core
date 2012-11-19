@@ -131,7 +131,7 @@ describe OperationalDataExtractor::Sample do
         instrument.samples.count.should == 3
 
         sample_ids.each do |sample_id|
-          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
+          instrument.samples.where(:sample_id => sample_id).count.should == 1
         end
 
       end

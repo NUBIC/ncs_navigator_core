@@ -2,9 +2,9 @@
 %fieldset{ :class => 'participant_consent_withdrawl hidden' }
   %legend
     Withdrawl
-  = render "shared/ncs_code_select", { :f => f, :code => :consent_withdraw_code,        :label_text => "Withdrawn Consent" }
+  = render "shared/ncs_code_select", { :f => f, :code => :consent_withdraw_code, :label_text => "Withdrawn Consent" }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :consent_withdraw_type_code,   :label_text => "Withdrawn Consent Type" }
+  = render "shared/ncs_code_select", { :f => f, :code => :consent_withdraw_type_code, :label_text => "Withdrawn Consent Type" }
 
   = render "shared/ncs_code_select", { :f => f, :code => :consent_withdraw_reason_code, :label_text => "Withdrawn Consent Reason" }
 
@@ -13,7 +13,7 @@
     %br
     = f.text_field :consent_withdraw_date, :class => "date"
 
-  = render "shared/ncs_code_select", { :f => f, :code => :who_wthdrw_consent_code,          :label_text => "Who Withdrew Consent" }
+  = render "shared/ncs_code_select", { :f => f, :code => :who_wthdrw_consent_code, :label_text => "Who Withdrew Consent" }
 
 %fieldset{ :class => 'participant_consent_meta' }
   %legend
@@ -33,13 +33,13 @@
     %br
     = f.text_field :consent_expiration, :class => "date"
 
-  = render "shared/ncs_code_select", { :f => f, :code => :who_consented_code,           :label_text => "Who Consented" }
+  = render "shared/ncs_code_select", { :f => f, :code => :who_consented_code, :label_text => "Who Consented" }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :consent_language_code,            :label_text => "Language", :other => :consent_language_other }
+  = render "shared/ncs_code_select", { :f => f, :code => :consent_language_code, :label_text => "Language", :other => :consent_language_other }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :consent_translate_code,           :label_text => "Consent Translated" }
+  = render "shared/ncs_code_select", { :f => f, :code => :consent_translate_code, :label_text => "Consent Translated" }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :reconsideration_script_use_code,  :label_text => "Reconsideration Script Use" }
+  = render "shared/ncs_code_select", { :f => f, :code => :reconsideration_script_use_code, :label_text => "Reconsideration Script Use" }
 
   %p
     = f.label :consent_comments, "Comment"

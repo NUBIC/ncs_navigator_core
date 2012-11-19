@@ -172,7 +172,7 @@ describe OperationalDataExtractor::Specimen do
         instrument.specimens.count.should == 6
 
         update_specimen_ids.each do |specimen_id|
-          instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
+          instrument.specimens.where(:specimen_id => specimen_id).count.should == 1
         end
 
       end
