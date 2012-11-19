@@ -172,6 +172,15 @@ module NcsNavigator::Core
             expect { importer.import_data }.to raise_error /Error on row 1. Invalid Contact. Contact start time is invalid.*Error on row 2. Invalid Event: Event start time is invalid/m
           end
         end
+
+        describe 'for another exception' do
+          it 'reports a useful error' do
+            ParticipantPersonLink.stub!(:create!).and_raise "I refuse"
+            make_bad_csv create_csv_row_text(:person_id => 'a new one', :relationship => '5')
+
+            expect { importer.import_data }.to raise_error /Error on row 1. RuntimeError: I refuse.*record_of_contact_importer/m
+          end
+        end
       end
     end
 

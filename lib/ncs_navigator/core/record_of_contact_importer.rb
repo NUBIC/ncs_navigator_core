@@ -9,31 +9,39 @@ class NcsNavigator::Core::RecordOfContactImporter
     Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol).each_with_index do |row, i|
       next if row.header_row?
 
-      if participant = Participant.where(:p_id => row[:participant_id]).first
-        person = get_person_record(row)
-
-        should_create_ppl = person.new_record? && !row[:relationship].blank?
-        person.save!
-
-        ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => row[:relationship]) if should_create_ppl
-
-        event = get_event_record(row, participant)
-        save_or_report_problems(event, i)
-
-        contact = get_contact_record(row, event, person)
-        save_or_report_problems(contact, i)
-
-        if contact.valid? && event.valid? # reduce double reporting
-          contact_link = get_contact_link_record(row, event, person, contact)
-          save_or_report_problems(contact_link, i)
-        end
-      else
-        add_error(i, "Unknown participant #{row[:participant_id].inspect}.")
+      begin
+        import_row(row, i)
+      rescue => e
+        add_error(i, "#{e.class}: #{e}.\n  #{e.backtrace.join("\n  ")}")
       end
     end
 
     unless @errors.empty?
       fail @errors.collect(&:to_s).join("\n")
+    end
+  end
+
+  def import_row(row, i)
+    if participant = Participant.where(:p_id => row[:participant_id]).first
+      person = get_person_record(row)
+
+      should_create_ppl = person.new_record? && !row[:relationship].blank?
+      person.save!
+
+      ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => row[:relationship]) if should_create_ppl
+
+      event = get_event_record(row, participant)
+      save_or_report_problems(event, i)
+
+      contact = get_contact_record(row, event, person)
+      save_or_report_problems(contact, i)
+
+      if contact.valid? && event.valid? # reduce double reporting
+        contact_link = get_contact_link_record(row, event, person, contact)
+        save_or_report_problems(contact_link, i)
+      end
+    else
+      add_error(i, "Unknown participant #{row[:participant_id].inspect}.")
     end
   end
 
