@@ -9,6 +9,10 @@ require 'database_cleaner'
 
 require File.expand_path('../active_record_query_profiler', __FILE__)
 
+# I would prefer to put this just in the affected spec(s), but that's too late.
+# Workaround for https://github.com/NUBIC/surveyor/issues/381
+require 'fastercsv' # Counterintuitive!
+
 # --- Instructions ---
 # Sort the contents of this file into a Spork.prefork and a Spork.each_run
 # block.

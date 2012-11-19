@@ -2,10 +2,11 @@ class NcsNavigator::Core::RecordOfContactImporter
 
   def initialize(eroc_io)
     @eroc_io = eroc_io
+    @errors = []
   end
 
   def import_data
-    Rails.application.csv_impl.parse(@eroc_io, :headers => true, :header_converters => :symbol) do |row|
+    Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol).each_with_index do |row, i|
       next if row.header_row?
 
       if participant = Participant.where(:p_id => row[:participant_id]).first
@@ -17,38 +18,37 @@ class NcsNavigator::Core::RecordOfContactImporter
         ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => row[:relationship]) if should_create_ppl
 
         event = get_event_record(row, participant)
-        event.save!
+        save_or_report_problems(event, i)
 
         contact = get_contact_record(row, event, person)
-        contact.save!
+        save_or_report_problems(contact, i)
 
-        contact_link = get_contact_link_record(row, event, person, contact)
-
-        if contact_link.valid?
-          contact_link.save!
-        else
-          File.open(contact_link_import_error_log, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] contact_link record invalid for - #{row_collecter(row).join(',')} - #{contact_link.errors.map(&:to_s)}\n") }
+        if contact.valid? && event.valid? # reduce double reporting
+          contact_link = get_contact_link_record(row, event, person, contact)
+          save_or_report_problems(contact_link, i)
         end
       else
-        File.open(contact_link_missing_participant_log, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] contact_link record error: -> participant [#{row[:participant_id]}] missing in row - #{row_collecter(row).join(',')}\n") }
+        add_error(i, "Unknown participant #{row[:participant_id].inspect}.")
       end
+    end
+
+    unless @errors.empty?
+      fail @errors.collect(&:to_s).join("\n")
     end
   end
 
-  def contact_link_import_error_log
-    dir = "#{Rails.root}/log/contact_link_import_error_logs"
-    FileUtils.makedirs(dir) unless File.exists?(dir)
-    log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_import_errors.log"
-    File.open(log_path, 'w') {|f| f.write("[#{Time.now.to_s(:db)}] \n\n") } unless File.exists?(log_path)
-    log_path
+  def add_error(row_index, message)
+    @errors << Error.new(row_index + 1, message)
   end
 
-  def contact_link_missing_participant_log
-    dir = "#{Rails.root}/log/contact_link_missing_participant_logs"
-    FileUtils.makedirs(dir) unless File.exists?(dir)
-    log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_missing_participant.log"
-    File.open(log_path, 'w') {|f| f.write("[#{Time.now.to_s(:db)}] \n\n") } unless File.exists?(log_path)
-    log_path
+  def save_or_report_problems(instance, row_index)
+    if instance.save
+      true
+    else
+      instance.errors.full_messages.each do |message|
+        add_error(row_index, "Invalid #{instance.class}: #{message}.")
+      end
+    end
   end
 
   def get_person_record(row)
@@ -127,5 +127,11 @@ class NcsNavigator::Core::RecordOfContactImporter
     offending_row = []
     row.headers.each{ |h| offending_row << row[h] }
     offending_row
+  end
+
+  class Error < Struct.new(:row_number, :message)
+    def to_s
+      "Error on row #{row_number}. #{message}"
+    end
   end
 end
