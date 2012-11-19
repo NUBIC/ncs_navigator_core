@@ -67,13 +67,9 @@ $(document).ready(function() {
   $("input[type='text'].datetime").live('focus',
     function() {
       $(this).datetimepicker( {
-      	showSecond: true,
-      	showMillisec: false,
-      	timeFormat: 'hh:mm:ss',
-      	dateFormat: 'yy-mm-dd',
-      	changeMonth: true,
-      	changeYear: true,
-      	yearRange: '1920:2020'
+        controlType: 'select',
+        timeFormat: 'hh:mm:ss',
+        dateFormat: 'yy-mm-dd'
       } )
     }
   );
@@ -99,10 +95,16 @@ $(document).ready(function() {
   );
 
   $("input[type='text'].time").live('focus',
-    function() { $(this).timepicker({}) });
+    function() { $(this).timepicker({
+      controlType: 'select'
+    })
+  });
 
   $("input[type='text'].timepicker").live('focus',
-    function() { $(this).timepicker({}) });
+    function() { $(this).timepicker({
+      controlType: 'select'
+    })
+  });
 
   // phone format
   jQuery("input[type='text'].phone").mask("(999) 999-9999");
