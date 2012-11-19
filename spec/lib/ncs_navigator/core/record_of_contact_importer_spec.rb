@@ -12,6 +12,16 @@ module NcsNavigator::Core
       File.open("#{Rails.root}/spec/fixtures/data/ROC_Code_lists_and_Dispositions.csv")
     }
 
+    def get_first_data_row_from_csv(csv)
+      return_value = nil
+      f = File.open("#{Rails.root}/spec/fixtures/data/#{csv}.csv")
+      Rails.application.csv_impl.parse(f, :headers => true, :header_converters => :symbol) do |row|
+        next if row.header_row?
+        return_value = row
+      end
+      return_value
+    end
+
     describe "#import_data" do
 
       before(:each) do
