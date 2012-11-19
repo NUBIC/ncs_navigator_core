@@ -134,7 +134,10 @@ class Fieldwork < ActiveRecord::Base
     return true unless report
 
     doc = report.as_json
-    doc.update(event_templates.as_json) if event_templates
+
+    if event_templates
+      doc.update(event_templates.as_json)
+    end
 
     self.original_data = doc.to_json
   end
