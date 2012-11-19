@@ -122,13 +122,23 @@ describe PatientStudyCalendar do
     let(:date) { Date.parse('2000-01-01') }
 
     around do |example|
-      VCR.use_cassette('psc/schedule_preview') { example.call }
+      use_template_snapshot_cassette do
+        VCR.use_cassette('psc/schedule_preview') { example.call }
+      end
     end
 
-    it 'retrieves a preview for the given start date and segments' do
-      pending 'segment name -> UUID mapping'
+    it 'retrieves a preview for the given start date and study segments' do
+      study_segments = [
+        PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1,
+        PatientStudyCalendar::LOW_INTENSITY_PREGNANCY_SCREENER
+      ]
 
-      preview = subject.schedule_preview(date, segments)
+      preview = subject.schedule_preview(date, study_segments)
+
+      # This is all VCRed, so testing body contents is pretty pointless.
+      # Assuming nothing was raised and we don't get back a blank object, we're
+      # likely fine.
+      preview.should_not be_blank
     end
   end
 

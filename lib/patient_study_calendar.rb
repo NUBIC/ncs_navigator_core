@@ -407,6 +407,16 @@ class PatientStudyCalendar
     get(path)
   end
 
+  def schedule_preview(date, study_segments)
+    uuids = segment_uuids(study_segments)
+
+    q = uuids.values.zip([date].cycle).map.with_index do |(segment_id, date), i|
+      "segment[#{i}]=#{segment_id}&start_date[#{i}]=#{date}"
+    end.join('&')
+
+    get("studies/#{URI.escape(study_identifier)}/template/current/schedule-preview.json?#{q}")
+  end
+
   def assignment_identifier(participant)
     get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
   end
