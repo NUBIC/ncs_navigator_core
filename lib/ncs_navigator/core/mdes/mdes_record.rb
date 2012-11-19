@@ -110,6 +110,10 @@ module NcsNavigator::Core::Mdes
           :class_name => 'NcsCode',
           :primary_key => :local_code)
       end
+
+      def code_list
+        NcsCode.where(:list_name => list_name)
+      end
     end
 
     ##

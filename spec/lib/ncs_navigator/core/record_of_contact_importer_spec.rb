@@ -157,6 +157,45 @@ module NcsNavigator::Core
         end
       end
 
+      describe 'with MDES code list values' do
+        [
+          [Event, :event_type,                 '5', '-15'],
+          [Event, :event_breakoff,             '1', 'jazz'],
+          [Event, :event_disposition_category, '1', '-0'],
+
+          [Contact, :contact_type,      '3', 'E'],
+          [Contact, :contact_language,  '6', 'E'],
+          [Contact, :contact_interpret, '2', 'E'],
+          [Contact, :contact_location,  '3', 'E'],
+          [Contact, :contact_private,   '1', 'E'],
+          [Contact, :who_contacted,     '3', 'E'],
+        ].each do |model, coded_attribute, good_value, bad_value|
+          describe "#{model}##{coded_attribute}" do
+            it 'can use a code of the form {code}-{label}' do
+              make_a_csv create_csv_row_text(coded_attribute => "#{good_value}-Foo!")
+              importer.import_data
+
+              model.first.send(coded_attribute).local_code.should == good_value.to_i
+            end
+
+            it 'can use a code of the form {code}' do
+              make_a_csv create_csv_row_text(coded_attribute => good_value)
+              importer.import_data
+
+              model.first.send(coded_attribute).local_code.should == good_value.to_i
+            end
+
+            it 'fails for a bad value' do
+              make_a_csv create_csv_row_text(coded_attribute => bad_value)
+
+              expect { importer.import_data }.to raise_error(
+                /Error on row 1. Unknown code value for #{model}##{coded_attribute}: #{bad_value}/
+              )
+            end
+          end
+        end
+      end
+
       describe 'with bad data' do
         it 'fails for an unknown participant' do
           make_a_csv create_csv_row_text(:participant_id => 'No')

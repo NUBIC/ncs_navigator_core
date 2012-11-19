@@ -34,16 +34,17 @@ class NcsNavigator::Core::RecordOfContactImporter
     if participant = Participant.where(:p_id => row[:participant_id]).first
       person = get_person_record(row)
 
-      should_create_ppl = person.new_record? && !row[:relationship].blank?
+      relationship = extract_coded_value(ParticipantPersonLink, :relationship, row, i)
+      should_create_ppl = person.new_record? && relationship
       person.save!
 
-      ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => row[:relationship]) if should_create_ppl
+      ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => relationship) if should_create_ppl
 
-      event = get_event_record(row, participant)
+      event = get_event_record(row, participant, i)
       save_or_report_problems(event, i)
       @last_event = event
 
-      contact = get_contact_record(row, event, person)
+      contact = get_contact_record(row, event, person, i)
       save_or_report_problems(contact, i)
 
       if contact.valid? && event.valid? # reduce double reporting
@@ -69,6 +70,30 @@ class NcsNavigator::Core::RecordOfContactImporter
     end
   end
 
+  def extract_coded_value(model, coded_attribute, row, row_index)
+    if row[coded_attribute]
+      value = row[coded_attribute] =~ /^\d+/ ? row[coded_attribute].to_i : row[coded_attribute]
+      if legal_codes(model, coded_attribute).include?(value)
+        value
+      else
+        add_error(row_index, "Unknown code value for #{model}##{coded_attribute}: #{value}")
+        nil
+      end
+    end
+  end
+  private :extract_coded_value
+
+  def apply_coded_value(instance, coded_attribute, row, row_index)
+    value = extract_coded_value(instance.class, coded_attribute, row, row_index)
+    instance.send("#{coded_attribute}_code=", value) if value
+  end
+
+  def legal_codes(model, coded_attribute)
+    @legal_codes ||= {}
+    @legal_codes["#{model}##{coded_attribute}"] ||= model.ncs_coded_attributes[coded_attribute].code_list.collect(&:local_code)
+  end
+  private :legal_codes
+
   def get_person_record(row)
     person = Person.where(:person_id => row[:person_id]).first
     person = Person.new(:person_id => row[:person_id]) if person.blank?
@@ -77,7 +102,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     person
   end
 
-  def get_event_record(row, participant)
+  def get_event_record(row, participant, row_index)
     start_date =
       if row[:event_start_date]
         start_date = Date.parse(row[:event_start_date])
@@ -85,27 +110,29 @@ class NcsNavigator::Core::RecordOfContactImporter
         @last_event.event_start_date
       end
 
+    event_type = extract_coded_value(Event, :event_type, row, row_index)
+
     event = Event.where(:participant_id => participant.id,
-                        :event_type_code => row[:event_type],
+                        :event_type_code => event_type,
                         :event_start_date => start_date).first
 
     event = Event.new(:participant_id => participant.id,
-                      :event_type_code => row[:event_type],
+                      :event_type_code => event_type,
                       :event_start_date => start_date) if event.blank?
 
     event.participant                     = participant
     event.event_type_other                = row[:event_type_other] unless row[:event_type_other].blank?
     event.disposition                     = row[:disposition] unless row[:disposition].blank?
-    event.event_disposition_category_code = row[:event_disposition_category] unless row[:event_disposition_category].blank?
+    apply_coded_value(event, :event_disposition_category, row, row_index)
     event.event_start_time                = row[:event_start_time] unless row[:event_start_time].blank?
     event.event_end_date                  = row[:event_end_date] unless row[:event_end_date].blank?
     event.event_end_time                  = row[:event_end_time] unless row[:event_end_time].blank?
-    event.event_breakoff_code             = row[:event_breakoff] unless row[:event_breakoff].blank?
+    apply_coded_value(event, :event_breakoff, row, row_index)
     event.event_comment                   = row[:event_comment] unless row[:event_comment].blank?
     event
   end
 
-  def get_contact_record(row, event, person)
+  def get_contact_record(row, event, person, row_index)
     contact_date = Date.parse(row[:contact_date])
     pre_existing_contact = nil
 
@@ -120,19 +147,19 @@ class NcsNavigator::Core::RecordOfContactImporter
 
     contact.psu_code                = row[:psu_code] unless row[:psu_code].blank?
     contact.contact_disposition     = row[:contact_disposition] unless row[:contact_disposition].blank?
-    contact.contact_type_code       = row[:contact_type] unless row[:contact_type].blank?
+    apply_coded_value(contact, :contact_type, row, row_index)
     contact.contact_type_other      = row[:contact_type_pther] unless row[:contact_type_pther].blank?
     contact.contact_date            = row[:contact_date] unless row[:contact_date].blank?
     contact.contact_start_time      = row[:contact_start_time] unless row[:contact_start_time].blank?
     contact.contact_end_time        = row[:contact_end_time] unless row[:contact_end_time].blank?
-    contact.language_code           = row[:language] unless row[:language].blank?
-    contact.language_other          = row[:language_other] unless row[:language_other].blank?
-    contact.interpret_code          = row[:interpret] unless row[:interpret].blank?
-    contact.interpret_other         = row[:interpret_other] unless row[:interpret_other].blank?
-    contact.location_code           = row[:location] unless row[:location].blank?
-    contact.location_other          = row[:location_other] unless row[:location_other].blank?
-    contact.contact_private_code    = row[:contact_private] unless row[:contact_private].blank?
-    contact.who_contacted_code      = row[:who_contacted] unless row[:who_contacted].blank?
+    apply_coded_value(contact, :contact_language, row, row_index)
+    contact.contact_language_other  = row[:contact_language_other] unless row[:contact_language_other].blank?
+    apply_coded_value(contact, :contact_interpret, row, row_index)
+    contact.contact_interpret_other = row[:contact_interpret_other] unless row[:contact_interpret_other].blank?
+    apply_coded_value(contact, :contact_location, row, row_index)
+    contact.contact_location_other  = row[:contact_location_other] unless row[:contact_location_other].blank?
+    apply_coded_value(contact, :contact_private, row, row_index)
+    apply_coded_value(contact, :who_contacted, row, row_index)
     contact.contact_comment         = row[:contact_comment] unless row[:contact_comment].blank?
     contact
   end
