@@ -161,14 +161,14 @@ module NcsNavigator::Core
         [
           [Event, :event_type,                 '5', '-15'],
           [Event, :event_breakoff,             '1', 'jazz'],
-          [Event, :event_disposition_category, '1', '-0'],
+          [Event, :event_disposition_category, '1', '-10'],
 
-          [Contact, :contact_type,      '3', 'E'],
-          [Contact, :contact_language,  '6', 'E'],
-          [Contact, :contact_interpret, '2', 'E'],
-          [Contact, :contact_location,  '3', 'E'],
-          [Contact, :contact_private,   '1', 'E'],
-          [Contact, :who_contacted,     '3', 'E'],
+          [Contact, :contact_type,      '-5', 'E'],
+          [Contact, :contact_language,   '6', 'E'],
+          [Contact, :contact_interpret,  '2', 'E'],
+          [Contact, :contact_location,   '3', 'E'],
+          [Contact, :contact_private,    '1', 'E'],
+          [Contact, :who_contacted,      '3', 'E'],
         ].each do |model, coded_attribute, good_value, bad_value|
           describe "#{model}##{coded_attribute}" do
             it 'can use a code of the form {code}-{label}' do

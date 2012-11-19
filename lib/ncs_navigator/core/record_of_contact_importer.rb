@@ -76,7 +76,7 @@ class NcsNavigator::Core::RecordOfContactImporter
 
   def extract_coded_value(model, coded_attribute, row, row_index)
     if row[coded_attribute]
-      value = row[coded_attribute] =~ /^\d+/ ? row[coded_attribute].to_i : row[coded_attribute]
+      value = row[coded_attribute] =~ /^[-\d]+/ ? row[coded_attribute].to_i : row[coded_attribute]
       if legal_codes(model, coded_attribute).include?(value)
         value
       else
