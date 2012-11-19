@@ -24,8 +24,10 @@ require 'uuidtools'
 class Fieldwork < ActiveRecord::Base
   has_many :merges, :inverse_of => :fieldwork
 
+  # This order is important.  Don't change it unless you've got a good reason.
   before_create :set_default_id
-  before_save :serialize_report
+  before_save :persist_report_models
+  before_save :serialize_fieldwork_set
 
   attr_accessible :client_id
   attr_accessible :end_date
@@ -39,18 +41,20 @@ class Fieldwork < ActiveRecord::Base
   # An ephemeral attribute that, if set, should point to a
   # {ScheduledActivityReport}.
   #
-  # When this is set on a Fieldwork instance FW and FW is saved, the following
-  # actions occur in a before_save hook on FW:
+  # When this and {#event_templates} are set, the JSON for this set is
+  # regenerated.
   #
-  # 1) All new entities associated with the report are saved.
-  # 2) FW's original_data attribute is set to a Fieldwork-specific JSON
-  #    representation of the report.
-  #
-  # For more information on said representation, see the fieldwork schema in
-  # the ncs_navigator_schema repository.
-  #
-  # @see https://github.com/NUBIC/ncs_navigator_schema
+  # @private
   attr_accessor :report
+
+  ##
+  # An ephemeral attribute that, if set, should point to a
+  # {Field::EventTemplateCollection}.
+  #
+  # When this and {#report} are set, the JSON for this set is regenerated.
+  #
+  # @private
+  attr_accessor :event_templates
 
   ##
   # Retrieves a fieldwork set by ID.  If no fieldwork set by that ID can be
@@ -120,9 +124,18 @@ class Fieldwork < ActiveRecord::Base
     JSON.parse(latest_proposed_data || original_data)
   end
 
-  def serialize_report
+  def persist_report_models
     return true unless report
 
-    report.save_models and self.original_data = report.to_json
+    report.save_models
+  end
+
+  def serialize_fieldwork_set
+    return true unless report
+
+    doc = report.as_json
+    doc.update(event_templates.as_json) if event_templates
+
+    self.original_data = doc.to_json
   end
 end
