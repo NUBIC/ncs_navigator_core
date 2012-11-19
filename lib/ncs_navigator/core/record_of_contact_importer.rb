@@ -42,7 +42,11 @@ class NcsNavigator::Core::RecordOfContactImporter
 
       event = get_event_record(row, participant, i)
       save_or_report_problems(event, i)
-      @last_event = event
+      if !@last_event || event.id != @last_event.id
+        # n.b.: implicit assumption is that events are in order
+        participant.set_state_for_event_type(event)
+        @last_event = event
+      end
 
       contact = get_contact_record(row, event, person, i)
       save_or_report_problems(contact, i)
