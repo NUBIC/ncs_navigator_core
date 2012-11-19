@@ -1,7 +1,11 @@
 class NcsNavigator::Core::RecordOfContactImporter
 
-  def self.import_data(contact_record_file)
-    Rails.application.csv_impl.parse(contact_record_file, :headers => true, :header_converters => :symbol) do |row|
+  def initialize(eroc_io)
+    @eroc_io = eroc_io
+  end
+
+  def import_data
+    Rails.application.csv_impl.parse(@eroc_io, :headers => true, :header_converters => :symbol) do |row|
       next if row.header_row?
 
       if participant = Participant.where(:p_id => row[:participant_id]).first
@@ -31,7 +35,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     end
   end
 
-  def self.contact_link_import_error_log
+  def contact_link_import_error_log
     dir = "#{Rails.root}/log/contact_link_import_error_logs"
     FileUtils.makedirs(dir) unless File.exists?(dir)
     log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_import_errors.log"
@@ -39,7 +43,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     log_path
   end
 
-  def self.contact_link_missing_participant_log
+  def contact_link_missing_participant_log
     dir = "#{Rails.root}/log/contact_link_missing_participant_logs"
     FileUtils.makedirs(dir) unless File.exists?(dir)
     log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_missing_participant.log"
@@ -47,7 +51,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     log_path
   end
 
-  def self.get_person_record(row)
+  def get_person_record(row)
     person = Person.where(:person_id => row[:person_id]).first
     person = Person.new(:person_id => row[:person_id]) if person.blank?
     person.first_name = row[:person_first_name] unless row[:person_first_name].blank?
@@ -55,7 +59,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     person
   end
 
-  def self.get_event_record(row, participant)
+  def get_event_record(row, participant)
     start_date = Date.parse(row[:event_start_date])
 
     event = Event.where(:participant_id => participant.id,
@@ -76,7 +80,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     event
   end
 
-  def self.get_contact_record(row, event, person)
+  def get_contact_record(row, event, person)
     contact_date = Date.parse(row[:contact_date])
     pre_existing_contact = nil
 
@@ -108,7 +112,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact
   end
 
-  def self.get_contact_link_record(row, event, person, contact)
+  def get_contact_link_record(row, event, person, contact)
     contact_link = ContactLink.where(:person_id => person.id, :event_id => event.id, :contact_id => contact.id).first
     contact_link = ContactLink.new(:person => person, :event => event, :contact => contact) if contact_link.blank?
 
@@ -119,7 +123,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact_link
   end
 
-  def self.row_collecter(row)
+  def row_collecter(row)
     offending_row = []
     row.headers.each{ |h| offending_row << row[h] }
     offending_row
