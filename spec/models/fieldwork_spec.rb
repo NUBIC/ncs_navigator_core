@@ -190,6 +190,8 @@ describe Fieldwork do
 
       before do
         subject.report = report
+
+        report.derive_models
       end
 
       it "saves all report entities" do
