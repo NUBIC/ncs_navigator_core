@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   protected
 
     def psc
-      @psc ||= PatientStudyCalendar.new(current_user)
+      @psc ||= PatientStudyCalendar.new(current_user, NcsNavigatorCore.psc_logger)
     end
 
     def recruitment_strategy

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+require 'logger'
 require 'spec_helper'
+require 'stringio'
 require 'webmock/rspec'
 
 describe PatientStudyCalendar do
@@ -8,13 +10,17 @@ describe PatientStudyCalendar do
     File.expand_path(File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))
   }
 
+  let(:logio) { StringIO.new }
+  let(:logger) { Logger.new(logio) }
+  let(:log) { logio.string }
+
   before(:each) do
     psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     @uri  = psc_config["uri"]
     @user = mock(:username => "dude", :cas_proxy_ticket => "PT-cas-ticket")
   end
 
-  subject { PatientStudyCalendar.new(@user) }
+  subject { PatientStudyCalendar.new(@user, logger) }
 
   def psc_url(*parts)
     [
