@@ -1,53 +1,65 @@
 class NcsNavigator::Core::RecordOfContactImporter
 
-  def self.import_data(contact_record_file)
-    Rails.application.csv_impl.parse(contact_record_file, :headers => true, :header_converters => :symbol) do |row|
+  def initialize(eroc_io)
+    @eroc_io = eroc_io
+    @errors = []
+  end
+
+  def import_data
+    Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol).each_with_index do |row, i|
       next if row.header_row?
 
-      if participant = Participant.where(:p_id => row[:participant_id]).first
-        person = get_person_record(row)
+      begin
+        import_row(row, i)
+      rescue => e
+        add_error(i, "#{e.class}: #{e}.\n  #{e.backtrace.join("\n  ")}")
+      end
+    end
 
-        should_create_ppl = person.new_record? && !row[:relationship].blank?
-        person.save!
+    unless @errors.empty?
+      fail @errors.collect(&:to_s).join("\n")
+    end
+  end
 
-        ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => row[:relationship]) if should_create_ppl
+  def import_row(row, i)
+    if participant = Participant.where(:p_id => row[:participant_id]).first
+      person = get_person_record(row)
 
-        event = get_event_record(row, participant)
-        event.save!
+      should_create_ppl = person.new_record? && !row[:relationship].blank?
+      person.save!
 
-        contact = get_contact_record(row, event, person)
-        contact.save!
+      ParticipantPersonLink.create!(:person => person, :participant => participant, :relationship_code => row[:relationship]) if should_create_ppl
 
+      event = get_event_record(row, participant)
+      save_or_report_problems(event, i)
+
+      contact = get_contact_record(row, event, person)
+      save_or_report_problems(contact, i)
+
+      if contact.valid? && event.valid? # reduce double reporting
         contact_link = get_contact_link_record(row, event, person, contact)
+        save_or_report_problems(contact_link, i)
+      end
+    else
+      add_error(i, "Unknown participant #{row[:participant_id].inspect}.")
+    end
+  end
 
-        if contact_link.valid?
-          contact_link.save!
-        else
-          File.open(contact_link_import_error_log, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] contact_link record invalid for - #{row_collecter(row).join(',')} - #{contact_link.errors.map(&:to_s)}\n") }
-        end
-      else
-        File.open(contact_link_missing_participant_log, 'a') { |f| f.write("[#{Time.now.to_s(:db)}] contact_link record error: -> participant [#{row[:participant_id]}] missing in row - #{row_collecter(row).join(',')}\n") }
+  def add_error(row_index, message)
+    @errors << Error.new(row_index + 1, message)
+  end
+
+  def save_or_report_problems(instance, row_index)
+    if instance.save
+      true
+    else
+      instance.errors.full_messages.each do |message|
+        add_error(row_index, "Invalid #{instance.class}: #{message}.")
       end
     end
   end
 
-  def self.contact_link_import_error_log
-    dir = "#{Rails.root}/log/contact_link_import_error_logs"
-    FileUtils.makedirs(dir) unless File.exists?(dir)
-    log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_import_errors.log"
-    File.open(log_path, 'w') {|f| f.write("[#{Time.now.to_s(:db)}] \n\n") } unless File.exists?(log_path)
-    log_path
-  end
-
-  def self.contact_link_missing_participant_log
-    dir = "#{Rails.root}/log/contact_link_missing_participant_logs"
-    FileUtils.makedirs(dir) unless File.exists?(dir)
-    log_path = "#{dir}/#{Date.today.strftime('%Y%m%d')}_missing_participant.log"
-    File.open(log_path, 'w') {|f| f.write("[#{Time.now.to_s(:db)}] \n\n") } unless File.exists?(log_path)
-    log_path
-  end
-
-  def self.get_person_record(row)
+  def get_person_record(row)
     person = Person.where(:person_id => row[:person_id]).first
     person = Person.new(:person_id => row[:person_id]) if person.blank?
     person.first_name = row[:person_first_name] unless row[:person_first_name].blank?
@@ -55,7 +67,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     person
   end
 
-  def self.get_event_record(row, participant)
+  def get_event_record(row, participant)
     start_date = Date.parse(row[:event_start_date])
 
     event = Event.where(:participant_id => participant.id,
@@ -76,7 +88,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     event
   end
 
-  def self.get_contact_record(row, event, person)
+  def get_contact_record(row, event, person)
     contact_date = Date.parse(row[:contact_date])
     pre_existing_contact = nil
 
@@ -108,7 +120,7 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact
   end
 
-  def self.get_contact_link_record(row, event, person, contact)
+  def get_contact_link_record(row, event, person, contact)
     contact_link = ContactLink.where(:person_id => person.id, :event_id => event.id, :contact_id => contact.id).first
     contact_link = ContactLink.new(:person => person, :event => event, :contact => contact) if contact_link.blank?
 
@@ -119,9 +131,15 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact_link
   end
 
-  def self.row_collecter(row)
+  def row_collecter(row)
     offending_row = []
     row.headers.each{ |h| offending_row << row[h] }
     offending_row
+  end
+
+  class Error < Struct.new(:row_number, :message)
+    def to_s
+      "Error on row #{row_number}. #{message}"
+    end
   end
 end

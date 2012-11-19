@@ -361,17 +361,6 @@ class NcsCode < ActiveRecord::Base
     sort_list(list, list_name)
   end
 
-  def self.filter_text(attribute_name, display_text)
-    [
-      [:psu_code, :filter_out_wave_number_from_psu]
-    ].each do |model_ncs_code_attribute_name, filter_method|
-      if attribute_name == model_ncs_code_attribute_name
-        display_text = NcsCode.send(filter_method, display_text)
-      end
-    end
-    display_text
-  end
-
   def self.sort_list(list, list_name)
     positives = list.select{ |pos| pos[1] >= 0 }
     negatives = list.select{ |neg| neg[1] < 0 }
@@ -436,13 +425,6 @@ class NcsCode < ActiveRecord::Base
   # Used to determine if participant should be screened
   def self.pbs_eligibility_screener
     for_list_name_and_local_code('EVENT_TYPE_CL1', 34)
-  end
-
-  ##
-  # @param[String | NcsCode]
-  # @return[String]
-  def self.filter_out_wave_number_from_psu(display_text)
-    display_text.to_s.gsub(/\(.+\)/, '').strip
   end
 
   def to_s

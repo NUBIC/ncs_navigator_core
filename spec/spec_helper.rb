@@ -9,6 +9,10 @@ require 'database_cleaner'
 
 require File.expand_path('../active_record_query_profiler', __FILE__)
 
+# I would prefer to put this just in the affected spec(s), but that's too late.
+# Workaround for https://github.com/NUBIC/surveyor/issues/381
+require 'fastercsv' # Counterintuitive!
+
 # --- Instructions ---
 # Sort the contents of this file into a Spork.prefork and a Spork.each_run
 # block.
@@ -207,18 +211,6 @@ Spork.prefork do
 
     let(:psc) { PatientStudyCalendar.new(@user) }
 
-  end
-
-  #NcsNavigator::Core::RecordOfContactImporter
-
-  def get_first_data_row_from_csv(csv)
-    return_value = nil
-    f = File.open("#{Rails.root}/spec/fixtures/data/#{csv}.csv")
-    Rails.application.csv_impl.parse(f, :headers => true, :header_converters => :symbol) do |row|
-      next if row.header_row?
-      return_value = row
-    end
-    return_value
   end
 
 end

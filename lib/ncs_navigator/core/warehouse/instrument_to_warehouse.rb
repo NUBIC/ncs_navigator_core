@@ -54,20 +54,10 @@ module NcsNavigator::Core::Warehouse
     # @return [Array<ResponseBin>]
     def response_bins
       @response_bins ||= begin
-        by_ident = responses.inject({}) { |h, r|
-          table_ident = mdes_table_map.find { |table_ident, table_contents|
-            table_contents[:variables].detect { |var_name, var_mapping|
-              var_mapping[:questions] && var_mapping[:questions].include?(r.question)
-            }
-          }.try(:first)
-          if table_ident
-            h[table_ident] ||= []
-            wh_partition_response(r, table_ident, h[table_ident])
-          end
-          h
-        }
+        bins = []
+        responses.each { |r| wh_partition_response(r, bins) }
 
-        by_ident.values.flatten.sort { |binA, binB|
+        bins.sort { |binA, binB|
           a = binA.table_content[:primary]
           b = binB.table_content[:primary]
           if a
@@ -85,56 +75,19 @@ module NcsNavigator::Core::Warehouse
     # it.
     #
     # @return [void]
-    def wh_partition_response(response, table_ident, bins)
-      should_be_in_same_bin_as = [
-        corresponding_same_table_other_for_coded(response),
-        corresponding_same_table_coded_for_other(response)
-      ].compact.first
+    def wh_partition_response(response, bins)
+      return unless ResponseBin.should_be_binned?(response)
 
       target_bin =
-        if should_be_in_same_bin_as
-          bins.find { |bin| bin.detect { |r| r == should_be_in_same_bin_as } }
-        else
-          bins.find { |bin| bin.will_accept?(response) }
-        end
+        bins.find { |bin| bin.must_have?(response) } ||
+        bins.find { |bin| bin.will_accept?(response) }
 
       if target_bin
         target_bin << response
       elsif bins.last && bins.last.empty?
         bins.last << response
       else
-        bins << ResponseBin.new(
-          response.response_set.participant,
-          table_ident, mdes_table_map[table_ident],
-          response.response_group, [response])
-      end
-    end
-
-    ##
-    # If this response is a coded question where the coded is "other"
-    # (-5), finds the response (if any) which contains the
-    # corresponding "other" text, IFF the corresponding "other" text
-    # is in the same MDES table as the coded question.
-    #
-    # @see MdesInstrumentSurvey#mdes_other_pairs
-    def corresponding_same_table_other_for_coded(response)
-      if response.answer.reference_identifier == 'neg_5'
-        other_q = response.response_set.survey.mdes_other_pairs.
-          find { |pair| pair[:coded] == response.question }.try(:[], :other)
-        if other_q
-          response.response_set.responses.find_by_question_id(other_q.id)
-        end
-      end
-    end
-
-    ##
-    # Performs the converse of {#corresponding_same_table_other_for_coded}.
-    def corresponding_same_table_coded_for_other(response)
-      coded_q = response.response_set.survey.mdes_other_pairs.
-        find { |pair| pair[:other] == response.question }.try(:[], :coded)
-      if coded_q
-        response.response_set.responses.find_all_by_question_id(coded_q.id).
-          find { |res| res.answer.reference_identifier == 'neg_5' }
+        bins << ResponseBin.create_from_response(response, mdes_table_map)
       end
     end
 
@@ -185,29 +138,143 @@ module NcsNavigator::Core::Warehouse
 
       extend Forwardable
       def_delegators :responses, :each, :empty?
+      def_delegators self, :table_ident_for_response
+
+      class << self
+        def should_be_binned?(response)
+          # i.e., it should only be binned if it has an MDES table
+          table_ident_for_response(response)
+        end
+
+        def table_ident_for_response(response)
+          response.response_set.survey.mdes_table_map.find { |table_ident, table_contents|
+            table_contents[:variables].detect { |var_name, var_mapping|
+              var_mapping[:questions] && var_mapping[:questions].include?(response.question)
+            }
+          }.try(:first)
+        end
+
+        # N.b.: the full cross-instrument merged mdes_table_map is needed here
+        # (v.s. just the map for this response's source survey as is used in
+        # table_ident_for_response). This is because, while the response's table
+        # _ident_ can be completely determined from its one question, it is
+        # possible for the full content of an MDES table to be based on
+        # questions from multiple surveys. ResponseBin needs both the table
+        # ident and content.
+        def create_from_response(response, mdes_table_map)
+          table_ident = table_ident_for_response(response)
+          return nil unless table_ident
+
+          new(
+            response.response_set.participant,
+            table_ident, mdes_table_map[table_ident],
+            response.response_group
+          ).tap { |bin| bin << response }
+        end
+      end
 
       # not a struct because structs can't mix in enumerable usefully
       attr_reader :participant, :table_identifier, :table_content, :response_group, :responses
 
-      def initialize(participant, table_ident, table_content, response_group, responses=[])
+      def initialize(participant, table_ident, table_content, response_group)
         @participant = participant
         @table_identifier = table_ident
         @table_content = table_content
         @response_group = response_group
-        @responses = responses
+        @responses = []
+      end
+
+      ##### BUILDING THE BIN
+
+      def must_have?(response)
+        other_pairs.any? { |other_pair| other_pair.must_have?(response) } &&
+        will_accept?(response)
       end
 
       def will_accept?(response)
-        # bins are per-repeat
-        self.response_group == response.response_group &&
-        # bins are per-participant
-        self.participant.p_id == response.response_set.participant.p_id &&
+        # Bins are per-repeat
+        (self.response_group == response.response_group) &&
+        # and are per-participant
+        (self.participant.p_id == response.response_set.participant.p_id) &&
+        # and are per-MDES table
+        (self.table_identifier == table_ident_for_response(response)) &&
         # and must have only one response per question
-        self.none? { |r| r.question == response.question }
+        self.none? { |r| r.question == response.question } &&
+        # and must be acceptable according to the "other" question pairs present
+        other_pairs.none? { |other_pair| other_pair.vetos?(response) }
       end
 
       def <<(response)
+        record_other_pair_for(response)
         self.responses << response
+      end
+
+      def other_pairs
+        @other_pairs ||= []
+      end
+
+      def record_other_pair_for(response)
+        pair, half_name, q = response.response_set.survey.mdes_other_pairs.
+          collect { |pair| [pair, pair.find { |half_name, q| q == response.question }].flatten }.
+          select { |pair, half_name, q| half_name }.first
+
+        # only handle same-table others; TODO: parent-table others (if any) need handling outside the bin
+        return unless (q && [:coded, :other].include?(half_name))
+
+        existing_pair = other_pairs.find { |other_pair| other_pair.q(half_name) == q }
+        if existing_pair
+          if existing_pair.response(half_name)
+            fail "Attempting to replace one half of a recorded other pair.\nExisting pair: #{existing_pair.inspect}.\nNew response: #{response.question.reference_identifier}=#{response.try(:answer).try(:reference_identifier)}."
+          end
+          existing_pair.send("#{half_name}_response=", response)
+        else
+          other_pairs << OtherPair.create(pair, response, half_name)
+        end
+      end
+
+      class OtherPair
+        attr_accessor :coded_q, :coded_response, :other_q, :other_response
+
+        def self.create(mdes_other_pair, response, half_response_from)
+          new.tap do |p|
+            p.coded_q = mdes_other_pair[:coded]
+            p.other_q = mdes_other_pair[:other]
+
+            p.send("#{half_response_from}_response=", response)
+          end
+        end
+
+        def q(half)
+          send("#{half}_q")
+        end
+
+        def response(half)
+          send("#{half}_response")
+        end
+
+        def must_have?(response)
+          response.question == other_q || (response.question == coded_q && coded_as_other?(response))
+        end
+
+        def vetos?(response)
+          (coded_response && response.question == other_q && !coded_as_other?(coded_response)) ||
+          (other_response && response.question == coded_q && !coded_as_other?(response))
+        end
+
+        def coded_as_other?(response)
+          response.answer.try(:reference_identifier) == 'neg_5'
+        end
+
+        def inspect
+          "Coded Question: %s; Coded Response: %s (%s); Other Question: %s; Other Response: %s (%s)" % [
+            coded_q.try(:reference_identifier).inspect,
+            coded_response.try(:answer).try(:reference_identifier).inspect,
+            coded_response.try(:id).inspect,
+            other_q.try(:reference_identifier).inspect,
+            other_response.try(:answer).try(:reference_identifier).inspect,
+            other_response.try(:id).inspect
+          ]
+        end
       end
 
       ##### RESPONSE ANALYSIS
@@ -309,6 +376,7 @@ module NcsNavigator::Core::Warehouse
       def apply_response_values(record)
         each do |r|
           variable_name = variable_name_for_question(r.question)
+          fail "No variable for #{r.question.reference_identifier} (#{r.question.data_export_identifier.inspect})" unless variable_name
           record.send("#{variable_name}=", r.reportable_value)
         end
       end

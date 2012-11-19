@@ -66,14 +66,19 @@ module NcsNavigator::Core::Mustache
       end
 
       describe ".county" do
-        it "returns the county associated with the study" do
-          expected_county = "Cook County, IL"
-          actual_county   = "#{expected_county} (Wave 1)"
-          NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => actual_county))
-          instrument_context.county.should == expected_county
+        it "returns the county without the wave number, if the raw county name contains text referring to a wave number" do
+          unfiltered_county   = "Cook County, IL (Wave 1)"
+          NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => unfiltered_county))
+          instrument_context.county.should == "Cook County, IL"
         end
 
-        it "handles nil" do
+        it "does not modify county names that do not contain a wave number" do
+          unfiltered_county   = "Los Angeles County, CA"
+          NcsCode.stub(:for_list_name_and_local_code).and_return(mock(NcsCode, :to_s => unfiltered_county))
+          instrument_context.county.should == "Los Angeles County, CA"
+        end
+
+        it "displays an empty string when county name returns nil" do
           NcsCode.stub(:for_list_name_and_local_code).and_return(nil)
           instrument_context.county.should == ""
         end

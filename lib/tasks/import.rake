@@ -193,6 +193,6 @@ namespace :import do
     require 'ncs_navigator/core'
 
     fail 'Please specify the path to the EROC csv' unless args[:eroc_csv]
-    NcsNavigator::Core::RecordOfContactImporter.import_data(File.open args[:eroc_csv])
+    NcsNavigator::Core::RecordOfContactImporter.new(File.open args[:eroc_csv]).import_data
   end
 end
