@@ -25,7 +25,6 @@ class PatientStudyCalendar
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
   CHILD                 = "Child"
 
-
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
@@ -310,7 +309,6 @@ class PatientStudyCalendar
   def build_activity_plan(participant)
     InstrumentPlan.from_schedule(schedules(participant))
   end
-
 
   ##
   # Gets information about all activities for a participant
