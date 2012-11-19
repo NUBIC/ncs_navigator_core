@@ -124,20 +124,5 @@ module NcsNavigator::Core
 
       end
     end
-
-    context ".contact_link_missing_participant_log" do
-
-      it "prints a log if the participant in the records does not exist in the database"  do
-        contents = []
-        f = File.open("#{Rails.root}/log/contact_link_missing_participant_logs/test_missing_participant.log", 'r') do |infile|
-          while(line = infile.gets)
-            contents << line
-          end
-        end
-        contents.should include("[2012-06-29 16:27:26] contact_link record error: -> participant [33332222] missing in row - 2000058,60,1,,4/11/2012,17:00,17:40,1,,,,1,,1,1,,33332222,24,,60,3,4/11/2012,17:40,2,,96539006,33332222,,,\n")
-      end
-
-    end
   end
-
 end
