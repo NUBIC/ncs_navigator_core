@@ -145,7 +145,6 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact = pre_existing_contact unless pre_existing_contact.nil?
     contact = Contact.new() if contact.blank?
 
-    contact.psu_code                = row[:psu_code] unless row[:psu_code].blank?
     contact.contact_disposition     = row[:contact_disposition] unless row[:contact_disposition].blank?
     apply_coded_value(contact, :contact_type, row, row_index)
     contact.contact_type_other      = row[:contact_type_pther] unless row[:contact_type_pther].blank?
@@ -169,8 +168,6 @@ class NcsNavigator::Core::RecordOfContactImporter
     contact_link = ContactLink.new(:person => person, :event => event, :contact => contact) if contact_link.blank?
 
     contact_link.staff_id = row[:staff_id] unless row[:staff_id].blank?
-    psu = row[:psu_id].blank? ? contact.psu_code : row[:psu_id]
-    contact_link.psu_code = psu
 
     contact_link
   end
