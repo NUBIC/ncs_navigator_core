@@ -1,12 +1,17 @@
 class NcsNavigator::Core::RecordOfContactImporter
 
-  def initialize(eroc_io)
+  def initialize(eroc_io, options={})
     @eroc_io = eroc_io
     @errors = []
+    @quiet = options.delete(:quiet)
+  end
+
+  def csv
+    @csv ||= Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol)
   end
 
   def import_data
-    Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol).each_with_index do |row, i|
+    csv.each_with_index do |row, i|
       next if row.header_row?
 
       begin
@@ -14,7 +19,11 @@ class NcsNavigator::Core::RecordOfContactImporter
       rescue => e
         add_error(i, "#{e.class}: #{e}.\n  #{e.backtrace.join("\n  ")}")
       end
+
+      print_status row_progress_message(i)
     end
+    print_status "\nRow importing complete.\n"
+
 
     unless @errors.empty?
       fail @errors.collect(&:to_s).join("\n")
@@ -135,6 +144,18 @@ class NcsNavigator::Core::RecordOfContactImporter
     offending_row = []
     row.headers.each{ |h| offending_row << row[h] }
     offending_row
+  end
+
+  def row_progress_message(row_index)
+    msg = "\r#{row_index + 1}/#{csv.size} processed"
+    unless @errors.empty?
+      msg << " | #{@errors.size} error#{'s' if @errors.size != 1}"
+    end
+    msg
+  end
+
+  def print_status(message)
+    $stderr.print message unless @quiet
   end
 
   class Error < Struct.new(:row_number, :message)

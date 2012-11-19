@@ -5,7 +5,7 @@ require 'spec_helper'
 module NcsNavigator::Core
   describe RecordOfContactImporter do
     let(:importer) {
-      RecordOfContactImporter.new(csv_io)
+      RecordOfContactImporter.new(csv_io, :quiet => true)
     }
 
     let(:reference_csv) { Rails.root + 'spec/fixtures/data/ROC_Code_lists_and_Dispositions.csv' }
