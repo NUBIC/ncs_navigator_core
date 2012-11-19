@@ -118,6 +118,20 @@ describe PatientStudyCalendar do
     end
   end
 
+  describe '#schedule_preview' do
+    let(:date) { Date.parse('2000-01-01') }
+
+    around do |example|
+      VCR.use_cassette('psc/schedule_preview') { example.call }
+    end
+
+    it 'retrieves a preview for the given start date and segments' do
+      pending 'segment name -> UUID mapping'
+
+      preview = subject.schedule_preview(date, segments)
+    end
+  end
+
   it "gets the psc segment name from the mdes event type code" do
     [
       ["Pregnancy Screener", "Pregnancy Screener"],
