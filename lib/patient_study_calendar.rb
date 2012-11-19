@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-
 require 'forwardable'
+require 'logger'
 require 'psc_error'
 require 'psc_participant'
 
@@ -47,6 +47,7 @@ class PatientStudyCalendar
   INFORMED_CONSENT = "Informed Consent"
   SKIPPED_EVENT_TYPES = [INFORMED_CONSENT]
 
+  attr_accessor :logger
   attr_accessor :user
   attr_accessor :registered_participants
 
@@ -55,9 +56,10 @@ class PatientStudyCalendar
   ##
   # User object who was authenticated using CAS
   # @param [Aker::User]
-  def initialize(user)
+  def initialize(user, logger = stderr_logger)
     self.user = user || fake_user
     self.registered_participants = RegisteredParticipantList.new(self)
+    self.logger = logger
   end
 
   def fake_user
@@ -72,13 +74,13 @@ class PatientStudyCalendar
   end
   alias :connection :get_connection
 
-  require 'logger'
   def log
-    @@log ||= begin
-                logfile = File.open(Rails.root.join('log', 'psc.log'), 'a')
-                logfile.sync = true
-                Logger.new(logfile)
-              end
+    ActiveSupport::Deprecation.warn("#{self.class.name}#log is deprecated.  Use #{self.class.name}#logger instead.")
+    logger
+  end
+
+  def stderr_logger
+    ::Logger.new($stderr)
   end
 
   # TODO: put into configuration

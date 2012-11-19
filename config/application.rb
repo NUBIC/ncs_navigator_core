@@ -82,6 +82,10 @@ module NcsNavigatorCore
     # require needs to wait until Rails has set up the load path
     require 'ncs_navigator/core'
 
+    # Logger used by the {PatientStudyCalendar} instances built by
+    # {ApplicationController#psc}.
+    attr_accessor :psc_logger
+
     extend Forwardable
 
     # All of the configuration methods were moved to
