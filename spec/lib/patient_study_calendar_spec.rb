@@ -132,6 +132,62 @@ describe PatientStudyCalendar do
     end
   end
 
+  describe '#segment_uuids' do
+    around do |example|
+      use_template_snapshot_cassette { example.call }
+    end
+
+    it 'returns the UUID for study segments' do
+      segments = [
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP,
+        PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
+      ]
+
+      subject.segment_uuids(segments).should == {
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP => '6a141368-5229-4262-b3c5-45212520ec76',
+        PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1 => 'ca65bbbb-7e47-4f71-a4f0-071e7f73f380'
+      }
+    end
+
+    it 'differentiates study segments by epoch' do
+      segments = [
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP,
+        PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP
+      ]
+
+      subject.segment_uuids(segments).should == {
+        PatientStudyCalendar::LOW_INTENSITY_PPG_FOLLOW_UP => '6a141368-5229-4262-b3c5-45212520ec76',
+        PatientStudyCalendar::HIGH_INTENSITY_PPG_FOLLOW_UP => 'a7068506-37db-4fe2-80ca-88f6d518b1e1'
+      }
+    end
+
+    it 'does not return unresolvable labels in the mapping' do
+      segments = [
+        'Nothing: foo'
+      ]
+
+      subject.segment_uuids(segments).should_not have_key('Nothing: foo')
+    end
+
+    it 'does not return labels without epochs' do
+      segments = [
+        'foo'
+      ]
+
+      subject.segment_uuids(segments).should_not have_key('foo')
+    end
+
+    it 'logs unresolvable labels' do
+      segments = [
+        'foo'
+      ]
+
+      subject.segment_uuids(segments)
+
+      log.should =~ /cannot resolve id for segment label "foo"/i
+    end
+  end
+
   it "gets the psc segment name from the mdes event type code" do
     [
       ["Pregnancy Screener", "Pregnancy Screener"],

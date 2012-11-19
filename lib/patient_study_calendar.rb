@@ -160,6 +160,41 @@ class PatientStudyCalendar
   end
 
   ##
+  # Given a list of labels of the form EPOCH: SEGMENT, returns a label =>
+  # segment uuid mapping.  Labels that cannot be resolved will not appear in
+  # the mapping.
+  #
+  # If there are two study segments in a given epoch that have the same name,
+  # the UUID of the first encountered segment will be chosen.
+  def segment_uuids(segment_labels)
+    segs = segments
+
+    segment_labels.each_with_object({}) do |label, hash|
+      epoch_name, segment_name = label.split(':', 2).map(&:strip)
+
+      # This could be done in one XPath query if we had intersect.  However:
+      #
+      # 1. intersect is an XPath 2.0 operator,
+      # 2. Nokogiri uses libxml2's XPath implementation,
+      # 3. libxml2 will never support XPath 2.0.
+      #
+      # @see https://mail.gnome.org/archives/xml/2007-February/msg00077.html
+      epoch_query = %Q{ancestor::psc:epoch[@name="#{epoch_name}"]}
+      segment_query = %Q{psc:study-segment[@name="#{segment_name}"]}
+
+      segment = segs.xpath(epoch_query, Psc.xml_namespace).
+        xpath(segment_query, Psc.xml_namespace).first
+
+      if !segment
+        log.warn(%Q{Cannot resolve ID for segment label "#{label}"})
+        next
+      end
+
+      hash[label] = segment['id']
+    end
+  end
+
+  ##
   # True if the participant is known to psc by the participant public_id.
   # @return [Boolean]
   def is_registered?(participant)
