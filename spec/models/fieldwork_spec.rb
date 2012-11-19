@@ -236,6 +236,18 @@ describe Fieldwork do
         it 'has an "instrument_plans" key' do
           json.should have_key('instrument_plans')
         end
+
+        describe 'with event templates' do
+          before do
+            subject.event_templates = Field::EventTemplateCollection.new
+
+            subject.save
+          end
+
+          it 'has an "event_templates" key' do
+            json.should have_key('event_templates')
+          end
+        end
       end
     end
 
