@@ -6,16 +6,7 @@ module PbsListsHelper
   end
 
   def active_provider_recruitment_link(pbs)
-    if pbs.recruitment_ended?
-      txt = 'Enter Post Recruitment Contact'
-    elsif pbs.provider_recruited?
-      txt = 'Complete Provider Recruitment Logistics'
-    elsif pbs.recruitment_started?
-      txt = 'Continue Provider Recruitment'
-    else
-      txt = 'Start Provider Recruitment'
-    end
-    link_to txt, recruit_provider_pbs_list_path(pbs)
+    link_to 'Enter Recruitment Contact', recruit_provider_pbs_list_path(pbs)
   end
 
   def pbs_eligibility_screener_link(person)

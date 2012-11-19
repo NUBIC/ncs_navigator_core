@@ -7,7 +7,7 @@
     = link_to 'Edit Provider Info', edit_provider_path(@provider),
         { :title => "Edit Information for #{@provider}" }
 
-  - if @provider.recruited? && @provider.recruitment_logistics_complete?
+  - if @provider.recruited? # && @provider.recruitment_logistics_complete?
     %span{ :class => "blue_button" }
       = link_to 'View Provider Patients', provider_path(@provider),
           { :title => "Add, Edit, or View Patients at #{@provider}" }

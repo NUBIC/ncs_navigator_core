@@ -6,23 +6,22 @@
 
 = render "/pbs_lists/contacts_section"
 
-- if permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
-  - if event = @provider.provider_recruitment_event
-    .provider_recruitment_event
-      %span{ :class => "green_button" }
-        = link_to "Edit Provider Recruitment Event Record", edit_event_path(event)
-
+.recruit_button
+  %span{ :class => "green_button" }
+    = provider_recruitment_link(@pbs_list)
 
 = render "/pbs_lists/recruitment_status_form"
 
 = render "/pbs_lists/provider_logistics_section"
 
-.recruit_button
-  %span{ :class => "green_button" }
-    = provider_recruitment_link(@pbs_list)
-
 - if !@provider.contact_links.empty? && permit?(Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::STAFF_SUPERVISOR)
   .substitute_link
+
+    - if event = @provider.provider_recruitment_event
+      .provider_recruitment_event
+        %span{ :class => "green_button" }
+          = link_to "Edit Provider Recruitment Event Record", edit_event_path(event)
+
     %span{ :class => "red_button" }
       = link_to 'Assign Substitute Provider Due to Refusal to Participate',
           refused_provider_path(@provider),
