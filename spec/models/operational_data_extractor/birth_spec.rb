@@ -188,8 +188,6 @@ describe OperationalDataExtractor::Birth do
         person  = Person.find(@person.id)
         person.addresses.size.should == 2
 
-        puts person.addresses.map{|a| [a.address_rank_code, a.address_type_code, a.to_s]}.inspect
-
         person.primary_mailing_address.to_s.should == "123 Easy St. Chicago, ILLINOIS 65432-1234"
         person.primary_work_address.to_s.should == "312 Hard St. Chicago, ILLINOIS 65432-1234"
       end
