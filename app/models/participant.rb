@@ -381,32 +381,15 @@ class Participant < ActiveRecord::Base
   ##
   # Given attributes for the child person record
   # create the child Person record, the child Participant record
-  # and associate it with this Participant through ParticipantPersonLink
-  # cf. create_child_participant!
+  # and associate it with this Participant
   # @param[Hash]
   # @return[Participant]
-  def create_child_person_and_participant!(person_attrs)
-    create_child_participant!(Person.create(person_attrs))
-  end
-
-  ##
-  # Given the child person record
-  # create the child Participant record
-  # and associate it with this Participant through ParticipantPersonLink
-  # @param[Hash]
-  # @return[Participant]
-  def create_child_participant!(child)
-    # 6 - NCS Child - Participant Type
-    child_participant = Participant.create(:psu_code => NcsNavigatorCore.psu, :p_type_code => 6)
-    child_participant.person = child
-    child_participant.save!
-
-    # 2 - Mother, associating child participant with its mother - ParticipantPersonRelationship
-    ParticipantPersonLink.create(:participant_id => child_participant.id, :person_id => self.person.id, :relationship_code => 2)
-    # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
-    ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
-
-    child_participant
+  def create_child_participant!(person_attrs)
+    person = Person.create(person_attrs)
+    participant = Participant.create(:psu_code => NcsNavigatorCore.psu)
+    participant.person = person
+    participant.save!
+    participant
   end
 
   ##
@@ -624,7 +607,7 @@ class Participant < ActiveRecord::Base
   end
 
   def due_date_is_greater_than_follow_up_interval
-    due_date && due_date > follow_up_interval.from_now.to_date
+    due_date && due_date > get_date_to_schedule_next_event_from_contact_link
   end
 
   ##
@@ -640,10 +623,6 @@ class Participant < ActiveRecord::Base
       end
     end
     dt
-  end
-
-  def child_participant?
-    self.p_type_code == 6
   end
 
   ##
@@ -848,9 +827,7 @@ class Participant < ActiveRecord::Base
   end
 
   def last_contact
-    Contact.joins(:contact_links).joins("
-      left outer join events on events.id = contact_links.event_id").where(
-      "events.participant_id = ?", self.id).order("contact_date desc").first
+    Contact.joins(:contact_links).joins("left outer join events on events.id = contact_links.event_id").where("events.participant_id = ?", self.id).order("contact_date desc").first
   end
 
   ##
