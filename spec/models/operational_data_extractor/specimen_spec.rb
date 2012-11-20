@@ -112,7 +112,6 @@ describe OperationalDataExtractor::Specimen do
           instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
 
-
       end
 
       it "updates existing records instead of creating new ones" do
@@ -144,7 +143,6 @@ describe OperationalDataExtractor::Specimen do
           instrument.specimens.where(:specimen_id => specimen_id).first.should_not be_nil
         end
 
-
         update_specimen_ids = [
           "AA999999-SS10",
           "AA999999-RD10",
@@ -171,9 +169,7 @@ describe OperationalDataExtractor::Specimen do
         instrument.specimens.reload
         instrument.specimens.count.should == 6
 
-        update_specimen_ids.each do |specimen_id|
-          instrument.specimens.where(:specimen_id => specimen_id).count.should == 1
-        end
+        instrument.specimens.collect(&:specimen_id).sort.should == update_specimen_ids.sort
 
       end
 

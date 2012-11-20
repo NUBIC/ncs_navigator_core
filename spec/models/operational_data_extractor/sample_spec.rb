@@ -79,10 +79,8 @@ describe OperationalDataExtractor::Sample do
         instrument.samples.reload
         instrument.samples.count.should == 3
 
-        sample_ids.each do |sample_id|
-          instrument.samples.where(:sample_id => sample_id).first.should_not be_nil
-        end
 
+        instrument.samples.collect(&:sample_id).sort.should == sample_ids.sort
       end
 
       it "updates existing records instead of creating new ones" do
@@ -130,9 +128,7 @@ describe OperationalDataExtractor::Sample do
         instrument.samples.reload
         instrument.samples.count.should == 3
 
-        sample_ids.each do |sample_id|
-          instrument.samples.where(:sample_id => sample_id).count.should == 1
-        end
+        instrument.samples.collect(&:sample_id).sort.should == sample_ids.sort
 
       end
 

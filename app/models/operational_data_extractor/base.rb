@@ -287,11 +287,15 @@ module OperationalDataExtractor
 
     def collect_data_export_identifier_indexed_responses
       result = Hash.new
-      response_set.responses.each do |r|
+      sorted_responses.each do |r|
         dei = r.question.data_export_identifier
         result[dei] = r if known_keys.include?(dei)
       end
       result
+    end
+
+    def sorted_responses
+      response_set.responses.sort_by { |r| r.created_at }
     end
 
     def get_address(response_set, person, address_type, address_rank = primary_rank)
