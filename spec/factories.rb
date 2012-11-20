@@ -168,11 +168,12 @@ Factory.define :legacy_instrument_data_value do |val|
 end
 
 Factory.define :fieldwork do |f|
-  f.start_date  { Date.today }
-  f.end_date    { Date.today + 7 }
-  f.client_id   { '1234567890' }
+  f.start_date     { Date.today }
+  f.end_date       { Date.today + 7 }
+  f.client_id      { '1234567890' }
+  f.staff_id       { 'foo' }
+  f.generated_for  { 'nobody' }
 end
-
 
 Factory.define :sampled_persons_ineligibility do |spi|
 

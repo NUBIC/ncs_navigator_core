@@ -18,16 +18,22 @@
 #  updated_at          :datetime
 #
 
-require 'patient_study_calendar'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
+  include Field::ModelResolution
+  include Field::Serialization
+
   has_many :merges, :inverse_of => :fieldwork
 
-  # This order is important.  Don't change it unless you've got a good reason.
+  # This callback order is important.  Don't change it unless you've got a good
+  # reason.
   before_create :set_default_id
-  before_save :persist_report_models
-  before_save :serialize_fieldwork_set
+
+  with_options(:if => :collections_changed?) do |fw|
+    fw.before_save :reify_and_save_implied_models
+    fw.before_save :cache_serialized_representation
+  end
 
   attr_accessible :client_id
   attr_accessible :end_date
@@ -35,26 +41,27 @@ class Fieldwork < ActiveRecord::Base
 
   validates_presence_of :client_id
   validates_presence_of :end_date
+  validates_presence_of :generated_for
+  validates_presence_of :staff_id
   validates_presence_of :start_date
 
-  ##
-  # An ephemeral attribute that, if set, should point to a
-  # {ScheduledActivityReport}.
-  #
-  # When this and {#event_templates} are set, the JSON for this set is
-  # regenerated.
-  #
-  # @private
-  attr_accessor :report
+  attr_accessor :logger
 
   ##
-  # An ephemeral attribute that, if set, should point to a
-  # {Field::EventTemplateCollection}.
-  #
-  # When this and {#report} are set, the JSON for this set is regenerated.
-  #
-  # @private
-  attr_accessor :event_templates
+  # Collections of entities modified when populating a fieldwork set.
+  COLLECTIONS = %w(contact_links contacts events instruments instrument_plans people surveys)
+
+  ##
+  # Collections are saved to this record.  The JSON for this set is regenerated
+  # when they change.
+  COLLECTIONS.each { |c| serialize c }
+
+  ##
+  # This looks nicer in specs.  Other external references to fieldwork
+  # collections might also find it useful.
+  def self.collections
+    COLLECTIONS
+  end
 
   ##
   # Retrieves a fieldwork set by ID.  If no fieldwork set by that ID can be
@@ -81,31 +88,49 @@ class Fieldwork < ActiveRecord::Base
   end
 
   ##
-  # Retrieves scheduled activities from PSC for a given closed date interval
-  # and builds a fieldwork set from that data.
+  # Populates this fieldwork set using data from PSC.
   #
-  # The constructed fieldwork set will be associated with other unpersisted
-  # model objects that will be saved once the fieldwork set is saved.
+  # This method sets the following attributes on the fieldwork set:
   #
-  # This method stores logs about the PSC -> Core entity mapping process in
-  # {#generation_log}.
-  def self.from_psc(start_date, end_date, client_id, psc, staff_id, current_username)
-    sd = start_date
-    ed = end_date
-    cid = client_id
+  # * {#contact_links}
+  # * {#contacts}
+  # * {#events}
+  # * {#instrument_plans}
+  # * {#instruments}
+  # * {#people}
+  # * {#surveys}
+  #
+  # Those collections are later used by {#reify_models} and {#as_json}.
+  def populate_from_psc(psc)
+    ensure_logger
 
-    new(:start_date => sd, :end_date => ed, :client_id => cid).tap do |f|
-      sio = StringIO.new
-      report = Field::ScheduledActivityReport.from_psc(psc, :start_date => sd, :end_date => ed, :state => Psc::ScheduledActivity::SCHEDULED, :current_user => current_username)
-      report.logger = ::Logger.new(sio).tap { |l| l.formatter = ::Logger::Formatter.new }
-      report.staff_id = staff_id
-
-      report.process
-
-      f.generation_log = sio.string
-      f.report = report
-      f.staff_id = staff_id
+    begin
+      add_scheduled_activity_report_data(psc)
+    ensure
+      store_log
     end
+  end
+
+  def add_scheduled_activity_report_data(psc)
+    params = {
+      :current_user => generated_for,
+      :end_date => end_date,
+      :start_date => start_date,
+      :state => Psc::ScheduledActivity::SCHEDULED
+    }
+
+    report = Field::ScheduledActivityReport.from_psc(psc, params)
+
+    report.logger = logger
+    report.process
+
+    COLLECTIONS.each do |c|
+      send("#{c}=", report.send(c))
+    end
+  end
+
+  def collections_changed?
+    COLLECTIONS.any? { |c| send("#{c}_changed?") }
   end
 
   def set_default_id
@@ -121,24 +146,54 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def as_json(options = nil)
-    JSON.parse(latest_proposed_data || original_data)
-  end
+    cached = latest_proposed_data || original_data
 
-  def persist_report_models
-    return true unless report
-
-    report.save_models
-  end
-
-  def serialize_fieldwork_set
-    return true unless report
-
-    doc = report.as_json
-
-    if event_templates
-      doc.update(event_templates.as_json)
+    if cached
+      JSON.parse(cached)
+    else
+      default_collections_to_empty
+      super
     end
+  end
 
-    self.original_data = doc.to_json
+  def reify_and_save_implied_models
+    begin
+      prepare_to_save_implications
+      reify_models
+      save_models
+    ensure
+      store_log
+    end
+  end
+
+  def default_collections_to_empty
+    COLLECTIONS.each do |c|
+      send("#{c}=", []) unless send(c)
+    end
+  end
+
+  def prepare_to_save_implications
+    # All collections must be enumerable, so make them that way if they aren't.
+    default_collections_to_empty
+
+    # We need to make sure we have a logger.
+    ensure_logger
+  end
+
+  def cache_serialized_representation
+    self.original_data = to_json
+  end
+
+  def ensure_logger
+    return if @sio && @logger
+
+    @sio = StringIO.new
+    @logger = Logger.new(@sio).tap do |l|
+      l.formatter = Logger::Formatter.new
+    end
+  end
+
+  def store_log
+    self.generation_log = @sio.string
   end
 end

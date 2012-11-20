@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 shared_context 'example data' do
-  let(:data) { JSON.parse(File.read(File.expand_path('../ex1.json', __FILE__))) }
+  let(:data_fn) { File.expand_path('../../../fixtures/psc/scheduled_activity_report.json', __FILE__) }
+  let(:data) { JSON.parse(File.read(data_fn)) }
 
   let(:activity_name) { 'Low-Intensity Interview' }
   let(:event_data_collection) { 'event:low_intensity_data_collection' }

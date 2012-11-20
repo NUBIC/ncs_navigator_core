@@ -61,44 +61,6 @@ describe Fieldwork do
     end
   end
 
-  describe '.from_psc' do
-    let(:start_date) { '2012-02-01' }
-    let(:end_date) { '2012-03-01' }
-    let(:client_id) { '1234567890' }
-
-    let(:fieldwork) { Fieldwork.from_psc(start_date, end_date, client_id, stub, 'test', 'test') }
-
-    before do
-      Field::ScheduledActivityReport.stub!(:from_psc => Field::ScheduledActivityReport.new)
-    end
-
-    it 'sets #staff_id' do
-      fieldwork.staff_id.should == 'test'
-    end
-
-    it 'logs to #generation_log' do
-      fieldwork.generation_log.should_not be_empty
-    end
-
-    describe 'return value' do
-      it 'is unpersisted' do
-        fieldwork.should_not be_persisted
-      end
-
-      it 'contains the given client ID' do
-        fieldwork.client_id.should == client_id
-      end
-
-      it 'contains the given start date' do
-        fieldwork.start_date.should == Date.new(2012, 02, 01)
-      end
-
-      it 'contains the given end date' do
-        fieldwork.end_date.should == Date.new(2012, 03, 01)
-      end
-    end
-  end
-
   describe '#fieldwork_id' do
     it 'is initially nil' do
       subject.fieldwork_id.should be_nil
@@ -184,76 +146,64 @@ describe Fieldwork do
     end
   end
 
+  describe '#collections_changed?' do
+    it 'returns false if no collections changed' do
+      subject.collections_changed?.should be_false
+    end
+
+    Fieldwork.collections.each do |c|
+      describe "if ##{c} changed" do
+        it 'returns true' do
+          subject.send("#{c}=", [])
+
+          subject.collections_changed?.should be_true
+        end
+      end
+    end
+  end
+
   describe 'before save' do
-    describe 'if #report is not nil' do
-      let(:report) { Field::ScheduledActivityReport.new }
+    before do
+      subject.logger = ::Logger.new(nil)
+    end
 
+    describe 'if collections were changed' do
       before do
-        subject.report = report
-
-        report.derive_models
+        subject.stub!(:collections_changed? => true)
       end
 
-      it "saves all report entities" do
-        report.should_receive(:save_models)
+      it 'builds models from those collections' do
+        subject.should_receive(:reify_models)
 
         subject.save
       end
 
-      it "sets #original_data" do
-        report.stub!(:save_models => true)
+      it 'saves built models' do
+        subject.should_receive(:save_models)
 
+        subject.save
+      end
+
+      it 'sets #original_data' do
         subject.save
 
         subject.original_data.should_not be_nil
       end
 
-      describe 'if report entities cannot be saved' do
-        it 'aborts the save' do
-          report.stub!(:save_models => false)
-
-          lambda { subject.save! }.should raise_error(ActiveRecord::RecordNotSaved)
-        end
-      end
-
-      describe 'the JSON in #original_data' do
-        let(:json) { JSON.parse(subject.original_data) }
-
+      describe 'if built models cannot be saved' do
         before do
-          report.stub!(:save_models => true)
-
-          subject.save
+          subject.stub!(:save_models => false)
         end
 
-        it 'has a "contacts" key' do
-          json.should have_key('contacts')
-        end
-
-        it 'has a "participants" key' do
-          json.should have_key('participants')
-        end
-
-        it 'has an "instrument_plans" key' do
-          json.should have_key('instrument_plans')
-        end
-
-        describe 'with event templates' do
-          before do
-            subject.event_templates = Field::EventTemplateCollection.new
-
-            subject.save
-          end
-
-          it 'has an "event_templates" key' do
-            json.should have_key('event_templates')
-          end
+        it 'aborts the save' do
+          lambda { subject.save! }.should raise_error(ActiveRecord::RecordNotSaved)
         end
       end
     end
 
-    describe 'if #report is nil' do
+    describe 'if collections were not changed' do
       before do
-        subject.report = nil
+        subject.stub!(:collections_changed? => false)
       end
 
       it 'does not modify #original_data' do
@@ -263,5 +213,4 @@ describe Fieldwork do
       end
     end
   end
-
 end

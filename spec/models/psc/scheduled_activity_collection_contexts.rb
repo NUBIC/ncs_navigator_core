@@ -2,7 +2,7 @@ require 'spec_helper'
 
 shared_context 'collection from report' do
   let(:source) do
-    f = File.read(File.expand_path('../ex1.json', __FILE__))
+    f = File.read(File.expand_path('../../../fixtures/psc/scheduled_activity_report.json', __FILE__))
 
     JSON.parse(f)
   end

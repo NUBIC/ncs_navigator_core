@@ -92,6 +92,17 @@ Feature: Fieldwork check-out and check-in
 
     Then the response status is 400
 
+  Scenario: POST /api/v1/fieldwork returns a fieldwork set
+    Given an authenticated user
+
+    When I POST /api/v1/fieldwork with
+      | start_date         | 2005-07-01 |
+      | end_date           | 2005-07-30 |
+      | header:X-Client-ID | 1234567890 |
+
+    Then the response status is 201
+    And the response body satisfies the fieldwork schema
+
   Scenario: POST /api/v1/fieldwork requires authentication
     When I POST /api/v1/fieldwork with
       | start_date         | 2012-01-01 |

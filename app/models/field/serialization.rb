@@ -1,9 +1,11 @@
 module Field
   ##
-  # JSON serialization for {ScheduledActivityReport}.
+  # JSON serialization for {Fieldwork}.
   #
   # FIXME: This should probably be a set of ActiveModel::Serializers.
-  module ReportSerialization
+  module Serialization
+    include Adoption
+
     def as_json(options = nil)
       {
         'contacts' => contacts_as_json(options),

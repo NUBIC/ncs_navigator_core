@@ -6,13 +6,14 @@ class Api::FieldworkController < ApiController
       render :nothing => true, :status => :bad_request and return
     end
 
-    fw = Fieldwork.from_psc(params[:start_date],
-                            params[:end_date],
-                            client_id,
-                            psc,
-                            current_staff_id,
-                            current_username)
+    fw = Fieldwork.new(:client_id => client_id,
+                       :end_date => params[:end_date],
+                       :start_date => params[:start_date])
 
+    fw.generated_for = current_username
+    fw.staff_id = current_staff_id
+
+    fw.populate_from_psc(psc)
     fw.save!
 
     respond_with fw, :location => api_fieldwork_path(fw.fieldwork_id)

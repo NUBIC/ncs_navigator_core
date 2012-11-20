@@ -3,16 +3,19 @@ require 'set'
 
 require File.expand_path('../example_data', __FILE__)
 
-module Psc
+module Field
   describe ModelResolution do
     include_context 'example data'
 
-    let(:report) { ScheduledActivityReport.from_json(data) }
+    class TestReport < ScheduledActivityReport
+      attr_accessor :staff_id
+
+      include ModelResolution
+    end
+
+    let(:report) { TestReport.from_json(data) }
 
     before do
-      report.extend(ModelDerivation)
-      report.extend(ModelResolution)
-
       report.derive_models
     end
 
