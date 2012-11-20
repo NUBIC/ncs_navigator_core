@@ -4,6 +4,7 @@ require 'ncs_navigator/configuration'
 
 class ContactsController < ApplicationController
   before_filter :set_event_id
+  before_filter :set_staff_list
 
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR,
     :only => [:destroy]
@@ -226,15 +227,29 @@ class ContactsController < ApplicationController
       @event_id = params[:event_id]
     end
 
+    def set_staff_list
+      @current_staff_id = current_staff_id
+      begin
+        if usrs = NcsNavigator::Authorization::Core::Authority.new.find_users
+          @staff_list = usrs.map{ |u| [u.full_name, u.identifiers[:staff_id]] }
+        end
+      rescue
+        # NOOP - will not show proxy list and will default to current logged in user
+      end
+    end
+
     def find_or_create_contact_link
       link = ContactLink.where("contact_id = ? AND person_id = ? AND event_id = ?",
                                 @contact, @person, @event).first
+
+      staff_id = params["staff_id"].blank? ? current_staff_id : params["staff_id"]
+
       if link.blank?
         link = ContactLink.create(:contact => @contact,
                                   :person => @person,
                                   :event => @event,
                                   :provider => @provider,
-                                  :staff_id => current_staff_id,
+                                  :staff_id => staff_id,
                                   :psu_code => NcsNavigatorCore.psu_code)
       end
       link

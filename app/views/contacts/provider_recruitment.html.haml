@@ -31,6 +31,12 @@
           = f.label :contact_end_time, "Contact End Time"
         = f.text_field :contact_end_time, :class => "required timepicker"
 
+      - if @staff_list
+        %p
+          %span{ :class => "date_label" }
+            = label_tag :staff_id, "Who Made Contact?"
+          = select_tag :staff_id, options_for_select(@staff_list, :selected => @current_staff_id), :class => "required"
+
       .person_contacted
         Who did you contact?
         %div{ :id => "staff_line_items" }
