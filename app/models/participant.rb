@@ -682,10 +682,9 @@ class Participant < ActiveRecord::Base
   def consent_for_type(consent_type)
     current_consent = nil
     cs = consents_for_type(consent_type)
+    current_consent = cs.first
     if cs.size > 1
       cs.each { |c| current_consent = c if c.phase_two? }
-    else
-      current_consent = cs.first
     end
     current_consent
   end
