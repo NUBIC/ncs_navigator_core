@@ -18,6 +18,7 @@
 #  updated_at          :datetime
 #
 
+require 'celluloid'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
@@ -105,10 +106,15 @@ class Fieldwork < ActiveRecord::Base
     ensure_logger
 
     begin
-      add_scheduled_activity_report_data(psc)
+      t1 = Celluloid::Future.new { add_event_template_data(psc) }
+      t2 = Celluloid::Future.new { add_scheduled_activity_report_data(psc) }
+      ok = [t1, t2].all?(&:value)
     ensure
       store_log
     end
+  end
+
+  def add_event_template_data(psc)
   end
 
   def add_scheduled_activity_report_data(psc)
