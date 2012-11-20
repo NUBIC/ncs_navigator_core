@@ -1,17 +1,78 @@
-require File.expand_path('../../psc/example_data', __FILE__)
+require 'spec_helper'
 
 module Field
-  describe ScheduledActivityReport do
-    let(:report) { Field::ScheduledActivityReport.new }
+  describe Serialization do
+    let(:fw) { Fieldwork.new }
 
-    describe '#to_json' do
-      let(:json) { JSON.parse(report.to_json) }
+    shared_context 'has a person' do
+      let(:person) { Factory(:person) }
+      let(:person_ir) { stub }
 
       before do
-        report.staff_id = 'test'
-
-        report.process
+        fw.people << person_ir
+        fw.resolutions[person_ir] = person
       end
+    end
+
+    shared_context 'has a contact' do
+      include_context 'has a person'
+
+      let(:contacts) { json['contacts'] }
+      let(:contact) { Factory(:contact) }
+      let(:contact_ir) { stub(:person => person_ir) }
+
+      before do
+        fw.contacts << contact_ir
+        fw.resolutions[contact_ir] = contact
+      end
+    end
+
+    shared_context 'has an event' do
+      include_context 'has a contact'
+
+      let(:events) { json['contacts'][0]['events'] }
+      let(:event) { Factory(:event) }
+      let(:event_ir) { stub(:contact => contact_ir, :person => person_ir) }
+
+      before do
+        fw.events << event_ir
+        fw.resolutions[event_ir] = event
+      end
+    end
+
+    shared_context 'has an instrument' do
+      include_context 'has an event'
+
+      let(:instruments) { json['contacts'][0]['events'][0]['instruments'] }
+      let(:instrument) { Factory(:instrument, :survey => survey, :response_sets => response_sets) }
+      let(:response_sets) { [Factory(:response_set)] }
+      let(:survey) { Factory(:survey) }
+
+      let(:survey_ir) { stub(:participant_type => 'child') }
+
+      let(:instrument_ir) do
+        stub(:event => event_ir, :person => person_ir, :survey => survey_ir, :name => 'An instrument')
+      end
+
+      let(:instrument_plan_ir) do
+        stub(:root => instrument_ir, :surveys => [survey_ir], :id => 'foo')
+      end
+
+      before do
+        fw.surveys << survey_ir
+        fw.instruments << instrument_ir
+        fw.instrument_plans << instrument_plan_ir
+        fw.resolutions[survey_ir] = survey
+        fw.resolutions[instrument_ir] = instrument
+      end
+    end
+
+    describe '#to_json' do
+      before do
+        fw.default_collections_to_empty
+      end
+
+      let(:json) { JSON.parse(fw.to_json) }
 
       describe 'return value' do
         it 'has a "contacts" key' do
@@ -24,29 +85,6 @@ module Field
 
         it 'has a "participants" key' do
           json.should have_key('participants')
-        end
-
-        shared_context 'has a person' do
-          let(:person) { Factory(:person) }
-          let(:person_ir) { stub }
-
-          before do
-            report.people << person_ir
-            report.resolutions[person_ir] = person
-          end
-        end
-
-        shared_context 'has a contact' do
-          include_context 'has a person'
-
-          let(:contacts) { json['contacts'] }
-          let(:contact) { Factory(:contact) }
-          let(:contact_ir) { stub(:person => person_ir) }
-
-          before do
-            report.contacts << contact_ir
-            report.resolutions[contact_ir] = contact
-          end
         end
 
         describe 'contacts' do
@@ -121,19 +159,6 @@ module Field
           end
         end
 
-        shared_context 'has an event' do
-          include_context 'has a contact'
-
-          let(:events) { json['contacts'][0]['events'] }
-          let(:event) { Factory(:event) }
-          let(:event_ir) { stub(:contact => contact_ir, :person => person_ir) }
-
-          before do
-            report.events << event_ir
-            report.resolutions[event_ir] = event
-          end
-        end
-
         describe 'contacts.events' do
           include_context 'has a contact'
 
@@ -185,33 +210,6 @@ module Field
             it 'sets #/0/p_id' do
               events[0]['p_id'].should == event.participant.public_id
             end
-          end
-        end
-
-        shared_context 'has an instrument' do
-          include_context 'has an event'
-
-          let(:instruments) { json['contacts'][0]['events'][0]['instruments'] }
-          let(:instrument) { Factory(:instrument, :survey => survey, :response_sets => response_sets) }
-          let(:response_sets) { [Factory(:response_set)] }
-          let(:survey) { Factory(:survey) }
-
-          let(:survey_ir) { stub(:participant_type => 'child') }
-
-          let(:instrument_ir) do
-            stub(:event => event_ir, :person => person_ir, :survey => survey_ir, :name => 'An instrument')
-          end
-
-          let(:instrument_plan_ir) do
-            stub(:root => instrument_ir, :surveys => [survey_ir], :id => 'foo')
-          end
-
-          before do
-            report.surveys << survey_ir
-            report.instruments << instrument_ir
-            report.instrument_plans << instrument_plan_ir
-            report.resolutions[survey_ir] = survey
-            report.resolutions[instrument_ir] = instrument
           end
         end
 

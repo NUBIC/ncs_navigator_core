@@ -1,16 +1,14 @@
 require 'ostruct'
 require 'set'
 
-module Psc
+module Field
   ##
-  # Resolves entities implied by the PSC scheduled activity report to entities
-  # in Cases' database.
+  # Resolves entities derived by {Psc::ModelDerivation#derive_models} to
+  # entities in Cases' database.
   #
   # For contacts and instruments that do not yet exist in Cases, builds those
   # entities via #{Contact.start} and #{Instrument.start}.
   module ModelResolution
-    attr_accessor :staff_id
-
     PERSON_EAGER_LOADING = [
       # ::Contact.start
       :contacts,

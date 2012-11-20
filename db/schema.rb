@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121114231201) do
+ActiveRecord::Schema.define(:version => 20121119234608) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -276,6 +276,14 @@ ActiveRecord::Schema.define(:version => 20121114231201) do
     t.string   "latest_merge_status"
     t.integer  "latest_merge_id"
     t.string   "staff_id"
+    t.string   "generated_for"
+    t.text     "contact_links"
+    t.text     "contacts"
+    t.text     "events"
+    t.text     "instruments"
+    t.text     "instrument_plans"
+    t.text     "people"
+    t.text     "surveys"
   end
 
   add_index "fieldworks", ["fieldwork_id"], :name => "index_fieldworks_on_fieldwork_id", :unique => true
@@ -1143,7 +1151,6 @@ ActiveRecord::Schema.define(:version => 20121114231201) do
     t.integer  "instrument_id"
     t.string   "api_id"
     t.integer  "participant_id"
-    t.integer  "event_id"
   end
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
