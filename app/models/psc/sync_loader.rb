@@ -40,6 +40,8 @@ module Psc
     end
 
     def cache_event(event, participant)
+      return unless event.event_type_code > 0
+
       ekey = sync_key['event', event.public_id]
       lkey = sync_key['p', participant.public_id, 'events']
 

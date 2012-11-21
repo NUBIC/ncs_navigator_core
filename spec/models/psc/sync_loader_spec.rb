@@ -119,6 +119,12 @@ module Psc
       it 'generates a sort key for the event' do
         cached_event['sort_key'].should == '2000-01-01:001'
       end
+
+      it 'ignores events without a concrete type' do
+        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => -5)
+
+        cached_event.should be_empty
+      end
     end
 
     describe '#cache_contact_link' do
