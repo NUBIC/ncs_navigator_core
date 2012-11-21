@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 namespace :import do
   task :warehouse_setup do |t|
     class << t; attr_accessor :config; end
@@ -52,6 +54,10 @@ namespace :import do
     task('import:psc_setup').user
   end
 
+  def psc
+    PatientStudyCalendar.new(user_for_psc, NcsNavigatorCore.psc_logger)
+  end
+
   def expected_participants_for_psc
     task('import:find_participants_for_psc').participants
   end
@@ -91,7 +97,6 @@ namespace :import do
   desc 'Synchronize PSC to the data imported by import:operational'
   task :operational_psc => [:psc_setup, :warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
     importer.import
@@ -100,7 +105,6 @@ namespace :import do
   desc 'Reset the PSC sync caches so that the PSC sync can be retried. (You should wipe the subject info in PSC also.)'
   task 'operational_psc:reset' => [:psc_setup, :warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
     importer.reset
@@ -109,7 +113,6 @@ namespace :import do
   desc 'Check for imported participants which are not in PSC'
   task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment, :find_participants_for_psc] do
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     missing_ps = expected_participants_for_psc.reject { |p|
       psc.is_registered?(p).tap do |result|
@@ -147,8 +150,6 @@ namespace :import do
 
   desc 'Schedule upcoming events for followed participants if needed'
   task :schedule_participant_events => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    psc = PatientStudyCalendar.new(user_for_psc)
-
     ps_to_advance = expected_participants_for_psc.select { |p| p.pending_events.empty? }
 
     $stderr.puts "#{ps_to_advance.size} of #{expected_participants_for_psc.size} followed participants need pending events."
@@ -180,7 +181,6 @@ namespace :import do
     date = 4.days.from_now.to_date
 
     events = Event.where("participant_id is not null and event_end_date is null and event_type_code <> 29").all
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     events.each do |event|
       reason = "Import task: Rescheduling pending event [#{event.event_id}] #{event.event_type} to #{date}."
@@ -189,10 +189,42 @@ namespace :import do
   end
 
   desc 'Import an EROC'
-  task :eroc, [:eroc_csv] => [:environment, :set_whodunnit] do |t, args|
+  task :eroc, [:eroc_csv] => [:psc_setup, :warehouse_setup, :environment, :set_whodunnit] do |t, args|
+    fail 'Please specify the path to the EROC csv' unless args[:eroc_csv]
+
     require 'ncs_navigator/core'
 
-    fail 'Please specify the path to the EROC csv' unless args[:eroc_csv]
-    NcsNavigator::Core::RecordOfContactImporter.new(File.open args[:eroc_csv]).import_data
+    options = {}
+    unless ENV['NO_PSC']
+      options[:psc] = psc
+      options[:wh_config] = import_wh_config
+    end
+
+    importer = NcsNavigator::Core::RecordOfContactImporter.new(
+      File.open(args[:eroc_csv]),
+      options
+    )
+
+    unless importer.import_data
+      fail importer.errors.join("\n")
+    end
+  end
+
+  desc 'Looks for participants with "extra" events'
+  task :find_extra_events => :environment do
+    Participant.includes(:events).each do |p|
+      problematic_event_sets = p.events.
+        select { |e| Event.participant_one_time_only_event_type_codes.include?(e.event_type_code) }.
+        each_with_object({}) { |event, idx| (idx[event.event_type_code] ||= []) << event }.
+        select { |type, events| events.size > 1 }.
+        collect { |type, events| events }
+
+      unless problematic_event_sets.empty?
+        puts "Participant #{p.public_id} has extra events for one-time-only type#{'s' if problematic_event_sets.size != 1}:"
+        problematic_event_sets.each do |events|
+          puts "* #{events.first.event_type.display_text}: #{events.collect(&:event_start_date).join(' | ')}"
+        end
+      end
+    end
   end
 end

@@ -59,6 +59,11 @@ module NcsNavigator::Core
       create_csv_row(value_map).to_csv
     end
 
+    def expect_import_to_have_error(regexp)
+      importer.import_data
+      importer.errors.join("\n").should =~ regexp
+    end
+
     describe "#import_data" do
       describe 'basic behavior' do
         let(:csv_io) {
@@ -123,37 +128,79 @@ module NcsNavigator::Core
         end
       end
 
-      describe 'with consecutive contacts for the same event, omitting the start date on subsequent rows' do
-        before do
-          make_a_csv(
-            create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
-            create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-11'),
-            create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
-            create_csv_row_text(:event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
-          )
+      describe 'handling consecutive contacts' do
+        describe 'for the same participant and event type, omitting the start date on subsequent rows' do
+          before do
+            make_a_csv(
+              create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-11'),
+              create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
+              create_csv_row_text(:event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
+            )
 
-          importer.import_data
+            importer.import_data
+          end
+
+          let(:event) { Event.where(:event_start_date => '2010-07-06').first }
+
+          it 'creates only one event' do
+            Event.where(:event_start_date => '2010-07-06').count.should == 1
+          end
+
+          it 'links all the contacts to the same event record' do
+            event.contact_links.collect(&:contact).collect(&:contact_date).sort.should ==
+              %w(2010-07-06 2010-07-11 2010-07-20)
+          end
+
+          it 'preserves the event start date from the first row' do
+            Event.all.collect(&:event_start_date).sort.should == [
+              Date.new(2010, 7, 6), Date.new(2010, 9, 3)
+            ]
+          end
+
+          it 'takes the event end date from the last row' do
+            event.event_end_date.should == Date.new(2010, 7, 22)
+          end
         end
 
-        let(:event) { Event.where(:event_start_date => '2010-07-06').first }
+        describe 'when it is a new event (by event type) but it is missing the event start date' do
+          before do
+            make_a_csv(
+              create_csv_row_text(:event_type => '15', :event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:event_type => '14', :event_start_date => nil, :contact_date => '2010-07-11'),
+            )
+          end
 
-        it 'creates only one event' do
-          Event.where(:event_start_date => '2010-07-06').count.should == 1
+          it 'is an error' do
+            expect_import_to_have_error(
+              /Error on row 2. Contact for new event \(event type 15 -> 14\) but no event start date./
+            )
+          end
         end
 
-        it 'links all the contacts to the same event record' do
-          event.contact_links.collect(&:contact).collect(&:contact_date).sort.should ==
-            %w(2010-07-06 2010-07-11 2010-07-20)
-        end
+        describe 'when it is a new event (by participant) but it is missing the event start date' do
+          let!(:another_participant) { Factory(:participant, :p_id => 'another') }
 
-        it 'preserves the event start date from the first row' do
-          Event.all.collect(&:event_start_date).sort.should == [
-            Date.new(2010, 7, 6), Date.new(2010, 9, 3)
-          ]
-        end
+          before do
+            make_a_csv(
+              create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:participant_id => 'another', :event_start_date => nil, :contact_date => '2010-07-11'),
+              create_csv_row_text(:participant_id => 'another', :event_start_date => nil, :contact_date => '2010-07-14'),
+            )
+          end
 
-        it 'takes the event end date from the last row' do
-          event.event_end_date.should == Date.new(2010, 7, 22)
+          it 'is an error' do
+            expect_import_to_have_error(
+              /Error on row 2. Contact for new event \(participant #{exemplar_participant.p_id} -> another\) but no event start date./
+            )
+          end
+
+          it 'only creates one event for the rows with missing event' do
+            importer.import_data
+
+            Event.where(:participant_id => another_participant).collect { |e| e.event_start_date }.
+              should == [Date.new(2010, 7, 11)]
+          end
         end
       end
 
@@ -188,7 +235,7 @@ module NcsNavigator::Core
             it 'fails for a bad value' do
               make_a_csv create_csv_row_text(coded_attribute => bad_value)
 
-              expect { importer.import_data }.to raise_error(
+              expect_import_to_have_error(
                 /Error on row 1. Unknown code value for #{model}##{coded_attribute}: #{bad_value}/
               )
             end
@@ -200,14 +247,14 @@ module NcsNavigator::Core
         it 'fails for an unknown participant' do
           make_a_csv create_csv_row_text(:participant_id => 'No')
 
-          expect { importer.import_data }.to raise_error /Error on row 1. Unknown participant "No"/
+          expect_import_to_have_error /Error on row 1. Unknown participant "No"/
         end
 
         describe 'for event' do
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:event_start_time => 'top-o-the-morn')
 
-            expect { importer.import_data }.to raise_error /Error on row 1. Invalid Event: Event start time is invalid/
+            expect_import_to_have_error /Error on row 1. Invalid Event: Event start time is invalid/
           end
         end
 
@@ -215,7 +262,7 @@ module NcsNavigator::Core
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:contact_start_time => 'top-o-the-morn')
 
-            expect { importer.import_data }.to raise_error /Error on row 1. Invalid Contact: Contact start time is invalid/
+            expect_import_to_have_error /Error on row 1. Invalid Contact: Contact start time is invalid/
           end
         end
 
@@ -223,7 +270,7 @@ module NcsNavigator::Core
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:staff_id => nil)
 
-            expect { importer.import_data }.to raise_error /Error on row 1. Invalid ContactLink: Staff can't be blank./
+            expect_import_to_have_error /Error on row 1. Invalid ContactLink: Staff can't be blank./
           end
         end
 
@@ -232,7 +279,7 @@ module NcsNavigator::Core
             make_a_csv(
               create_csv_row_text(:contact_start_time => 'top-o-the-morn', :event_start_time => 'dusk')
             )
-            expect { importer.import_data }.to raise_error /Error on row 1. Invalid Event. Event start time is invalid.*Contact start time is invalid/m
+            expect_import_to_have_error /Error on row 1. Invalid Event. Event start time is invalid.*Contact start time is invalid/m
           end
         end
 
@@ -242,7 +289,7 @@ module NcsNavigator::Core
               create_csv_row_text(:contact_start_time => 'top-o-the-morn'),
               create_csv_row_text(:event_start_time => 'dusk')
             )
-            expect { importer.import_data }.to raise_error /Error on row 1. Invalid Contact. Contact start time is invalid.*Error on row 2. Invalid Event: Event start time is invalid/m
+            expect_import_to_have_error /Error on row 1. Invalid Contact. Contact start time is invalid.*Error on row 2. Invalid Event: Event start time is invalid/m
           end
         end
 
@@ -251,7 +298,7 @@ module NcsNavigator::Core
             ParticipantPersonLink.stub!(:create!).and_raise "I refuse"
             make_a_csv create_csv_row_text(:person_id => 'a new one', :relationship => '5')
 
-            expect { importer.import_data }.to raise_error /Error on row 1. RuntimeError: I refuse.*record_of_contact_importer/m
+            expect_import_to_have_error /Error on row 1. RuntimeError: I refuse.*record_of_contact_importer/m
           end
         end
       end

@@ -460,6 +460,8 @@ module NcsNavigator::Core::Warehouse
     def find_psc_event(psc_participant_or_scheduled_events, start_date, event_type_label)
       fail 'Cannot find a PSC event without a start date' unless start_date
 
+      event_type_code = NcsCode.find_event_by_lbl(event_type_label).local_code
+
       scheduled_events = case psc_participant_or_scheduled_events
                          when Array
                            psc_participant_or_scheduled_events
@@ -469,10 +471,15 @@ module NcsNavigator::Core::Warehouse
                          end
 
       start_date_d = Date.parse(start_date)
-      acceptable_match_range = ((start_date_d - 14) .. (start_date_d + 14))
+      acceptable_match_predicate =
+        if Event.participant_one_time_only_event_type_codes.include?(event_type_code.to_i)
+          lambda { |d| true }
+        else
+          lambda { |d| ((start_date_d - 14) .. (start_date_d + 14)).include?(d) }
+        end
       scheduled_events.
         select { |psc_event| psc_event[:event_type_label] == event_type_label }.
-        find { |psc_event| acceptable_match_range.include?(Date.parse(psc_event[:start_date])) }
+        find { |psc_event| acceptable_match_predicate[Date.parse(psc_event[:start_date])] }
     end
     private :find_psc_event
 

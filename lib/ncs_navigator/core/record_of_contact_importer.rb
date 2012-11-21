@@ -1,15 +1,22 @@
 class NcsNavigator::Core::RecordOfContactImporter
-
   def initialize(eroc_io, options={})
     @eroc_io = eroc_io
     @errors = []
     @quiet = options.delete(:quiet)
+
+    psc = options.delete(:psc)
+    if psc
+      import_config = options.delete(:wh_config) or fail ":wh_config is required when :psc is specified"
+      @psc_sync = PscSync.new(psc, import_config)
+    end
   end
 
   def csv
     @csv ||= Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol)
   end
 
+  ##
+  # @return [Array<String>] error
   def import_data
     csv.each_with_index do |row, i|
       next if row.header_row?
@@ -24,14 +31,21 @@ class NcsNavigator::Core::RecordOfContactImporter
     end
     print_status "\nRow importing complete.\n"
 
-
-    unless @errors.empty?
-      fail @errors.collect(&:to_s).join("\n")
+    if @psc_sync
+      @psc_sync.sync!
     end
+
+    @errors.empty?
+  end
+
+  def errors
+    @errors.collect(&:to_s)
   end
 
   def import_row(row, i)
     if participant = Participant.where(:p_id => row[:participant_id]).first
+      register_for_psc_sync(:participant, participant)
+
       person = get_person_record(row)
 
       relationship = extract_coded_value(ParticipantPersonLink, :relationship, row, i)
@@ -42,6 +56,8 @@ class NcsNavigator::Core::RecordOfContactImporter
 
       event = get_event_record(row, participant, i)
       save_or_report_problems(event, i)
+      register_for_psc_sync(:event, event)
+
       if !@last_event || event.id != @last_event.id
         # n.b.: implicit assumption is that events are in order
         participant.set_state_for_event_type(event)
@@ -54,6 +70,7 @@ class NcsNavigator::Core::RecordOfContactImporter
       if contact.valid? && event.valid? # reduce double reporting
         contact_link = get_contact_link_record(row, event, person, contact)
         save_or_report_problems(contact_link, i)
+        register_for_psc_sync(:contact_link, contact_link)
       end
     else
       add_error(i, "Unknown participant #{row[:participant_id].inspect}.")
@@ -72,6 +89,12 @@ class NcsNavigator::Core::RecordOfContactImporter
         add_error(row_index, "Invalid #{instance.class}: #{message}.")
       end
     end
+  end
+
+  def register_for_psc_sync(type, instance)
+    return unless @psc_sync
+
+    @psc_sync.send("seen_#{type}", instance)
   end
 
   def extract_coded_value(model, coded_attribute, row, row_index)
@@ -107,14 +130,9 @@ class NcsNavigator::Core::RecordOfContactImporter
   end
 
   def get_event_record(row, participant, row_index)
-    start_date =
-      if row[:event_start_date]
-        start_date = Date.parse(row[:event_start_date])
-      elsif @last_event
-        @last_event.event_start_date
-      end
-
     event_type = extract_coded_value(Event, :event_type, row, row_index)
+
+    start_date = determine_event_start_date(row, event_type, @last_event, row_index)
 
     event = Event.where(:participant_id => participant.id,
                         :event_type_code => event_type,
@@ -135,6 +153,28 @@ class NcsNavigator::Core::RecordOfContactImporter
     event.event_comment                   = row[:event_comment] unless row[:event_comment].blank?
     event
   end
+
+  def determine_event_start_date(row, row_event_type, last_event, row_index)
+    not_same_as_last_event_reason =
+      if !last_event
+        'first row'
+      elsif last_event.event_type_code != row_event_type
+        "event type #{last_event.event_type_code} -> #{row_event_type}"
+      elsif last_event.participant.p_id != row[:participant_id]
+        "participant #{last_event.participant.p_id} -> #{row[:participant_id]}"
+      end
+    same_as_last_event = !not_same_as_last_event_reason
+
+    if row[:event_start_date]
+      Date.parse(row[:event_start_date])
+    elsif same_as_last_event
+      last_event.event_start_date
+    else
+      add_error(row_index, "Contact for new event (#{not_same_as_last_event_reason}) but no event start date.")
+      Date.parse(row[:contact_date])
+    end
+  end
+  private :determine_event_start_date
 
   def get_contact_record(row, event, person, row_index)
     contact_date = Date.parse(row[:contact_date])
@@ -197,6 +237,63 @@ class NcsNavigator::Core::RecordOfContactImporter
   class Error < Struct.new(:row_number, :message)
     def to_s
       "Error on row #{row_number}. #{message}"
+    end
+  end
+
+  class PscSync
+    attr_reader :participants, :events, :contact_links,
+                :psc, :wh_config
+
+    def initialize(psc, wh_config)
+      @psc = psc
+      @wh_config = wh_config
+
+      # These are maps keyed by public ID for two reasons:
+      # * Deduplication. Some records will be referenced from more than one row.
+      # * Last state capture. The object cached here will be copied by value
+      #   for the PSC sync. We want to capture the latest (i.e. "current") state
+      #   for the object.
+      @participants = {}
+      @events = {}
+      @contact_links = {}
+    end
+
+    def keygen
+      @keygen ||= lambda do |*c|
+        ['eroc', c].flatten.join(':')
+      end
+    end
+
+    def seen_participant(participant)
+      participants[participant.public_id] = participant
+    end
+
+    def seen_event(event)
+      events[event.public_id] = event
+    end
+
+    def seen_contact_link(contact_link)
+      contact_links[contact_link.public_id] = contact_link
+    end
+
+    def sync!
+      wh_config.shell.say_line("Preparing records for PSC sync...")
+
+      sync_loader = Psc::SyncLoader.new(keygen)
+
+      participants.values.each do |p|
+        sync_loader.cache_participant(p)
+      end
+
+      events.values.each do |e|
+        sync_loader.cache_event(e, e.participant)
+      end
+
+      contact_links.values.each do |cl|
+        sync_loader.cache_contact_link(cl, cl.contact, cl.instrument, cl.event, cl.participant)
+      end
+
+      NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(@psc, @wh_config, keygen).import
     end
   end
 end
