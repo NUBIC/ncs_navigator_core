@@ -119,6 +119,8 @@ class Event < ActiveRecord::Base
      2, # Two Tier Enumeration
     22, # Provider-Based Recruitment
      3, # Ongoing Tracking of Dwelling Units
+    34, # PBS Participant Eligibility Screening
+    35, # PBS Frame SAQ
      4, # Pregnancy Screening - Provider Group
      5, # Pregnancy Screening – High Intensity  Group
      6, # Pregnancy Screening – Low Intensity Group
@@ -148,6 +150,9 @@ class Event < ActiveRecord::Base
     28, # 12 Month Mother Interview SAQ
     30, # 18 Month
     31, # 24 Month
+    36, # 30 Month
+    37, # 36 Month
+    38, # 42 Month
     -5, # Other
     -4  # Missing in Error
   ]

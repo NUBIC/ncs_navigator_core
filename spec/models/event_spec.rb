@@ -352,9 +352,8 @@ describe Event do
       Event::TYPE_ORDER.collect(&:class).uniq.should == [Fixnum]
     end
 
-    # TODO: don't hard-code the count
     it 'has an item for every event type' do
-      Event::TYPE_ORDER.size.should == 35
+      Event::TYPE_ORDER.size.should == NcsCode.where(:list_name => 'EVENT_TYPE_CL1').count
     end
   end
 
