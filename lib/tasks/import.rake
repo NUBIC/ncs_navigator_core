@@ -193,11 +193,16 @@ namespace :import do
     fail 'Please specify the path to the EROC csv' unless args[:eroc_csv]
 
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
+
+    options = {}
+    unless ENV['NO_PSC']
+      options[:psc] = PatientStudyCalendar.new(user_for_psc)
+      options[:wh_config] = import_wh_config
+    end
 
     NcsNavigator::Core::RecordOfContactImporter.new(
       File.open(args[:eroc_csv]),
-      :psc => psc, :wh_config => import_wh_config
+      options
     ).import_data
   end
 end
