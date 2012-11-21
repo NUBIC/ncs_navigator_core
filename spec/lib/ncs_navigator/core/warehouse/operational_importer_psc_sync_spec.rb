@@ -16,7 +16,8 @@ module NcsNavigator::Core::Warehouse
       :hi_child => '072db970-d32a-4006-83b0-3f0240833894',
       :lo_birth => '53318f20-d21f-452e-a8e8-3f2ed6bb6c93',
       :lo_ppg_12 => '76025607-f7aa-41e1-8ce9-29e0793cd6d4',
-      :lo_postnatal => 'd0faf572-4208-4a43-adc6-5748f80ac321'
+      :lo_postnatal => 'd0faf572-4208-4a43-adc6-5748f80ac321',
+      :lo_hi_conversion => '34d4638b-6f7f-4801-881d-db242d6f7ee5'
     }
 
     let(:redis) { Rails.application.redis }
@@ -322,68 +323,115 @@ module NcsNavigator::Core::Warehouse
       end
 
       describe 'when the event already has scheduled activities' do
-        shared_examples_for 'a new event' do
-          before do
-            psc_participant.stub!(:scheduled_events).and_return([{
-                  :event_type_label => 'pregnancy_visit_1',
-                  :start_date => start_date,
-                  :scheduled_activities => ['dc']
-                }])
-          end
+        before do
+          psc_participant.stub!(:scheduled_events).and_return([{
+                :event_type_label => event_type_label,
+                :start_date => start_date,
+                :scheduled_activities => ['dc']
+              }])
 
+          add_event_hash('e1', '2010-01-11',
+            :event_type_label => event_type_label)
+        end
+
+        shared_examples_for 'a new event' do
           it 'schedules a new segment' do
             psc_participant.should_receive(:append_study_segment).
-              with('2010-01-11', SEGMENT_IDS[:pv1])
+              with('2010-01-11', candidate_segment)
 
             importer.schedule_events(psc_participant)
           end
         end
 
         shared_examples_for 'an already scheduled event' do
-          before do
-            psc_participant.stub!(:scheduled_events).and_return([{
-                  :event_type_label => 'pregnancy_visit_1',
-                  :start_date => start_date,
-                  :scheduled_activities => ['dc']
-                }])
-          end
-
           it 'does not schedule a new segment' do
             psc_participant.should_not_receive(:append_study_segment).
-              with('2010-01-11', SEGMENT_IDS[:pv1])
+              with('2010-01-11', candidate_segment)
 
             importer.schedule_events(psc_participant)
           end
         end
 
-        describe 'and the activity ideal date is 15 days before the event start date' do
-          let(:start_date) { '2009-12-27' }
+        describe 'and the event type is repeatable' do
+          let(:event_type_label) { 'low_to_high_conversion' }
+          let(:candidate_segment) { SEGMENT_IDS[:lo_hi_conversion] }
 
-          it_behaves_like 'a new event'
+          describe 'and the activity ideal date is 15 days before the event start date' do
+            let(:start_date) { '2009-12-27' }
+
+            it_behaves_like 'a new event'
+          end
+
+          describe 'and the activity ideal date is 14 days before the event start date' do
+            let(:start_date) { '2009-12-28' }
+
+            it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'and the activity ideal date is the same as the event start date' do
+            let(:start_date) { '2010-01-11' }
+
+            it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'and the activity ideal date is 14 days after the event start date' do
+            let(:start_date) { '2010-01-25' }
+
+            it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'and the activity ideal date is 15 days after the event start date' do
+            let(:start_date) { '2010-01-26' }
+
+            it_behaves_like 'a new event'
+          end
         end
 
-        describe 'and the activity ideal date is 14 days before the event start date' do
-          let(:start_date) { '2009-12-28' }
+        describe 'and the event type is not repeatable' do
+          let(:event_type_label) { 'pregnancy_visit_1' }
+          let(:candidate_segment) { SEGMENT_IDS[:pv1] }
 
-          it_behaves_like 'an already scheduled event'
-        end
+          describe 'and the activity ideal date is far before before the event start date' do
+            let(:start_date) { '1906-12-27' }
 
-        describe 'and the activity ideal date is the same as the event start date' do
-          let(:start_date) { '2010-01-11' }
+            it_behaves_like 'an already scheduled event'
+          end
 
-          it_behaves_like 'an already scheduled event'
-        end
+          describe 'and the activity ideal date is 15 days before the event start date' do
+            let(:start_date) { '2009-12-27' }
 
-        describe 'and the activity ideal date is 14 days after the event start date' do
-          let(:start_date) { '2010-01-25' }
+            it_behaves_like 'an already scheduled event'
+          end
 
-          it_behaves_like 'an already scheduled event'
-        end
+          describe 'and the activity ideal date is 14 days before the event start date' do
+            let(:start_date) { '2009-12-28' }
 
-        describe 'and the activity ideal date is 15 days after the event start date' do
-          let(:start_date) { '2010-01-26' }
+            it_behaves_like 'an already scheduled event'
+          end
 
-          it_behaves_like 'a new event'
+          describe 'and the activity ideal date is the same as the event start date' do
+            let(:start_date) { '2010-01-11' }
+
+            it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'and the activity ideal date is 14 days after the event start date' do
+            let(:start_date) { '2010-01-25' }
+
+            it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'and the activity ideal date is 15 days after the event start date' do
+            let(:start_date) { '2010-01-26' }
+
+            it_behaves_like 'an already scheduled event'
+          end
+
+          describe 'and the activity ideal date is far beyond the event start date' do
+            let(:start_date) { '2525-01-26' }
+
+            it_behaves_like 'an already scheduled event'
+          end
         end
       end
 
