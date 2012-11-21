@@ -228,48 +228,60 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      person = response_set.person
-      participant = response_set.participant
-
-      # For surveys that update the child - the participant on the response_set
-      # should be the child participant and thus the person being updated is the
-      # child participant.person
-      child = participant.person
-
-      info_source = NcsCode.for_list_name_and_local_code("INFORMATION_SOURCE_CL2", 1)
-      type_email = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
-      email_share = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
-      email_active =  NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
-
       email = nil
       cell_phone = nil
 
-      contact1 = Person.new
+      contact1 = nil
       contact1phone = nil
-      contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
-      contact1relationship = ParticipantPersonLink.new(:participant => participant, :person => contact1)
+      contact1address = nil
+      contact1relationship = nil
 
-      contact2 = Person.new
+      contact2 = nil
       contact2phone = nil
-      contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new, :address_rank => primary_rank)
-      contact2relationship = ParticipantPersonLink.new(:participant => participant, :person => contact2)
+      contact2address = nil
+      contact2relationship = nil
 
       if child
-        CHILD_PERSON_NAME_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            set_value(child, attribute, response_value(r))
-          end
-        end
-
-        CHILD_PERSON_DATE_OF_BIRTH_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            set_value(child, attribute, response_value(r))
-          end
-        end
+        process_child(CHILD_PERSON_NAME_MAP)
+        process_child_dob(CHILD_PERSON_DATE_OF_BIRTH_MAP)
+        child.save!
       end
 
-      EMAIL_MAP.each do |key, attribute|
+      email = process_email(EMAIL_MAP)
+      cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
+
+      if contact1 = process_contact(CONTACT_1_PERSON_MAP)
+        contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
+        contact1address = process_address(contact1, CONTACT_1_ADDRESS_MAP)
+        contact1phone = process_telephone(contact1, CONTACT_1_PHONE_MAP)
+      end
+
+      if contact2 = process_contact(CONTACT_2_PERSON_MAP)
+        contact2relationship = process_contact_relationship(contact2, CONTACT_2_RELATIONSHIP_MAP)
+        contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP)
+        contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
+      end
+
+      finalize_contact(contact1, contact1relationship, contact1address, contact1phone)
+      finalize_contact(contact2, contact2relationship, contact2address, contact2phone)
+
+      finalize_email(email)
+      finalize_telephones(cell_phone)
+
+      child.save! if child
+      participant.save!
+      person.save!
+    end
+
+    # overridden method
+    def process_email(map)
+      info_source  = NcsCode.for_list_name_and_local_code("INFORMATION_SOURCE_CL2", 1)
+      type_email   = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
+      email_share  = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 2)
+      email_active = NcsCode.for_list_name_and_local_code('CONFIRM_TYPE_CL2', 1)
+
+      email = nil
+      map.each do |key, attribute|
 
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
@@ -289,177 +301,7 @@ module OperationalDataExtractor
           set_value(email, attribute, response_value(r))
         end
       end
-
-      CELL_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
-            set_value(cell_phone, attribute, value)
-          end
-        end
-      end
-
-      CONTACT_1_PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            contact1 ||= Person.where(:response_set_id => response_set.id,
-                                      attribute => value.to_s).first
-            if contact1.nil?
-              contact1 = Person.new(:psu => person.psu, :response_set => response_set)
-            end
-            set_value(contact1, attribute, value)
-          end
-        end
-      end
-
-      if contact1
-
-        CONTACT_1_RELATIONSHIP_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
-                                                                    attribute => value.to_s).first
-              if contact1relationship.nil?
-                contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
-                                                                 :psu => person.psu, :response_set => response_set)
-              end
-              set_value(contact1relationship, attribute, contact_to_person_relationship(value))
-            end
-          end
-        end
-
-        CONTACT_1_ADDRESS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact1address ||= Address.where(:response_set_id => response_set.id,
-                                                 attribute => value.to_s).first
-              if contact1address.nil?
-                contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new,
-                                              :psu => person.psu, :response_set => response_set,
-                                              :address_rank => primary_rank)
-              end
-              set_value(contact1address, attribute, value)
-            end
-          end
-        end
-
-        CONTACT_1_PHONE_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact1phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute => value.to_s).first
-              if contact1phone.nil?
-                contact1phone = Telephone.new(:person => contact1, :psu => person.psu,
-                                              :response_set => response_set, :phone_rank => primary_rank)
-              end
-              set_value(contact1phone, attribute, value)
-            end
-          end
-        end
-      end
-
-      CONTACT_2_PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            contact2 ||= Person.where(:response_set_id => response_set.id,
-                                      attribute => value.to_s).first
-            if contact2.nil?
-              contact2 = Person.new(:psu => person.psu, :response_set => response_set)
-            end
-            set_value(contact2, attribute, value)
-          end
-        end
-      end
-
-      if contact2
-
-        CONTACT_2_RELATIONSHIP_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
-                                                                    attribute => value.to_s).first
-              if contact2relationship.nil?
-                contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
-                                                                 :psu => person.psu, :response_set => response_set)
-              end
-              set_value(contact2relationship, attribute, contact_to_person_relationship(value))
-            end
-          end
-        end
-
-        CONTACT_2_ADDRESS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact2address ||= Address.where(:response_set_id => response_set.id,
-                                                 attribute => value.to_s).first
-              if contact2address.nil?
-                contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new,
-                                              :psu => person.psu, :response_set => response_set,
-                                              :address_rank => primary_rank)
-              end
-              set_value(contact2address, attribute, value)
-            end
-          end
-        end
-
-        CONTACT_2_PHONE_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact2phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute => value.to_s).first
-              if contact2phone.nil?
-                contact2phone = Telephone.new(:person => contact2, :psu => person.psu,
-                                              :response_set => response_set, :phone_rank => primary_rank)
-              end
-              set_value(contact2phone, attribute, value)
-            end
-          end
-        end
-      end
-
-      if contact1 && contact1relationship && !contact1.to_s.blank? && !contact1relationship.relationship_code.blank?
-        if contact1address && !contact1address.to_s.blank?
-          contact1address.save!
-        end
-        if contact1phone && !contact1phone.phone_nbr.blank?
-          contact1phone.save!
-        end
-        contact1.save!
-        contact1relationship.person_id = contact1.id
-        contact1relationship.participant_id = participant.id
-        contact1relationship.save!
-      end
-
-      if contact2 && contact2relationship && !contact2.to_s.blank? && !contact2relationship.relationship_code.blank?
-        if contact2address && !contact2address.to_s.blank?
-          contact2address.person = contact2
-          contact2address.save!
-        end
-        if contact2phone && !contact2phone.phone_nbr.blank?
-          contact2phone.person = contact2
-          contact2phone.save!
-        end
-        contact2.save!
-        contact2relationship.person_id = contact2.id
-        contact2relationship.participant_id = participant.id
-        contact2relationship.save!
-      end
-
-      email.save! unless email.try(:email).blank?
-      cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
-
-      child.save! if child
-      participant.save!
-      person.save!
+      email
     end
   end
 end

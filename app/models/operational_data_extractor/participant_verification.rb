@@ -84,79 +84,28 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      person = response_set.person
-      participant = response_set.participant
-
-      # For surveys that update the child - the participant on the response_set
-      # should be the child participant and thus the person being updated is the
-      # child participant.person
-      child          = participant.person
       child_phone    = nil
       child_phone2   = nil
       child_address  = nil
       child_address2 = nil
 
-      PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(person, attribute, response_value(r))
-        end
-      end
+      process_person(PERSON_MAP)
 
       if child
-        CHILD_PERSON_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            set_value(child, attribute, response_value(r))
-          end
-        end
 
-        CHILD_ADDRESS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              child_address ||= get_address(response_set, child, Address.home_address_type, primary_rank)
-              set_value(child_address, attribute, value)
-            end
-          end
-        end
+        process_child(CHILD_PERSON_MAP)
 
-        CHILD_ADDRESS_2_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              child_address2 ||= get_address(response_set, child, Address.home_address_type, secondary_rank)
-              set_value(child_address2, attribute, value)
-            end
-          end
-        end
+        child_address  = process_address(child, CHILD_ADDRESS_MAP, Address.home_address_type, primary_rank)
+        child_address2 = process_address(child, CHILD_ADDRESS_2_MAP, Address.home_address_type, secondary_rank)
 
-        CHILD_PHONE_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              child_phone ||= get_telephone(response_set, child, Telephone.home_phone_type, primary_rank)
-              set_value(child_phone, attribute, value)
-            end
-          end
-        end
+        child_phone    = process_telephone(child, CHILD_PHONE_MAP, Telephone.home_phone_type, primary_rank)
+        child_phone2   = process_telephone(child, CHILD_PHONE_2_MAP, Telephone.home_phone_type, secondary_rank)
 
-        CHILD_PHONE_2_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              child_phone2 ||= get_telephone(response_set, child, Telephone.home_phone_type, secondary_rank)
-              set_value(child_phone2, attribute, value)
-            end
-          end
-        end
-      end
+        finalize_addresses(child_address, child_address2)
+        finalize_telephones(child_phone, child_phone2)
 
-      if child
         child.save!
 
-        child_phone.save! unless child_phone.try(:phone_nbr).blank?
-        child_phone2.save! unless child_phone2.try(:phone_nbr).blank?
-        child_address.save! unless child_address.to_s.blank?
-        child_address2.save! unless child_address2.to_s.blank?
       end
 
       person.save!

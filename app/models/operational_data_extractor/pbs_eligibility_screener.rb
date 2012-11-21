@@ -100,8 +100,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      person = response_set.person
-      participant = response_set.participant
 
       ppg_detail   = nil
       email        = nil
@@ -109,19 +107,8 @@ module OperationalDataExtractor
       phone2       = nil
       address      = nil
 
-      PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(person, attribute, response_value(r))
-        end
-      end
-
-      if participant
-        PARTICIPANT_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            set_value(participant, attribute, response_value(r))
-          end
-        end
-      end
+      process_person(PERSON_MAP)
+      process_participant(PARTICIPANT_MAP)
 
       # AGE_RANGE_CL8 in instrument - AGE_RANGE_CL1 in person
       # So if it is 1 then 1 otherwise set to -6 unknown because of the code list mismatch
@@ -139,56 +126,15 @@ module OperationalDataExtractor
         end
       end
 
-      ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            address ||= get_address(response_set, person, Address.home_address_type)
-            set_value(address, attribute, value)
-          end
-        end
-      end
+      address = process_address(person, ADDRESS_MAP, Address.home_address_type)
 
-      TELEPHONE_MAP1.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            phone1 ||= get_telephone(response_set, person)
-            set_value(phone1, attribute, value)
-          end
-        end
-      end
+      phone1  = process_telephone(person, TELEPHONE_MAP1, nil, primary_rank)
+      phone2  = process_telephone(person, TELEPHONE_MAP2, nil, secondary_rank)
 
-      TELEPHONE_MAP2.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            phone2 ||= get_secondary_telephone(response_set, person)
-            set_value(phone2, attribute, value)
-          end
-        end
-      end
-
-      EMAIL_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            email ||= get_email(response_set, person)
-            set_value(email, attribute, value)
-          end
-        end
-      end
+      email   = process_email(EMAIL_MAP)
 
       if participant
-        PPG_DETAILS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              ppg_detail ||= get_ppg_detail(response_set, participant)
-              ppg_detail.send("#{attribute}=", ppg_detail_value(INTERVIEW_PREFIX, key, value))
-            end
-          end
-        end
+        ppg_detail = process_ppg_details(participant, PPG_DETAILS_MAP, INTERVIEW_PREFIX)
 
         if ppg_detail
           DUE_DATE_DETERMINER_MAP.each do |key, attribute|
@@ -212,12 +158,11 @@ module OperationalDataExtractor
 
       end
 
-      email.save! unless email.try(:email).blank?
-      phone1.save! unless phone1.try(:phone_nbr).blank?
-      phone2.save! unless phone2.try(:phone_nbr).blank?
-      address.save! unless address.to_s.blank?
+      finalize_email(email)
+      finalize_addresses(address)
+      finalize_telephones(phone1, phone2)
 
-      participant.save!
+      participant.save! if participant
       person.save!
     end
 

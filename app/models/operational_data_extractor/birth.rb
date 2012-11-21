@@ -113,13 +113,6 @@ module OperationalDataExtractor
 
     def extract_data
 
-      person = response_set.person
-      participant = response_set.participant
-
-      # For surveys that update the child - the participant on the response_set
-      # should be the child participant and thus the person being updated is the
-      # child participant.person
-      child        = participant.person
       email        = nil
       home_phone   = nil
       cell_phone   = nil
@@ -127,102 +120,22 @@ module OperationalDataExtractor
       mail_address = nil
       work_address = nil
 
-      PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(person, attribute, response_value(r))
-        end
-      end
+      process_person(PERSON_MAP)
 
-      if child
-        CHILD_PERSON_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            set_value(child, attribute, response_value(r))
-          end
-        end
-      end
+      child = process_child(CHILD_PERSON_MAP)
 
-      MAIL_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            mail_address ||= get_address(response_set, person, Address.mailing_address_type)
-            set_value(mail_address, attribute, value)
-          end
-        end
-      end
+      mail_address = process_address(person, MAIL_ADDRESS_MAP, Address.mailing_address_type)
+      work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
 
-      WORK_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            work_address ||= get_address(response_set, person, Address.work_address_type)
-            set_value(work_address, attribute, value)
-          end
-        end
-      end
+      phone        = process_telephone(person, TELEPHONE_MAP)
+      home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
+      cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
 
-      TELEPHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            phone ||= get_telephone(response_set, person)
-            set_value(phone, attribute, value)
-          end
-        end
-      end
+      email        = process_email(EMAIL_MAP)
 
-      HOME_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            home_phone ||= get_telephone(response_set, person, Telephone.home_phone_type)
-            set_value(home_phone, attribute, value)
-          end
-        end
-      end
-
-      CELL_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
-            set_value(cell_phone, attribute, value)
-          end
-        end
-      end
-
-      EMAIL_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            email ||= get_email(response_set, person)
-            set_value(email, attribute, value)
-          end
-        end
-      end
-
-      unless email.try(:email).blank?
-        person.emails.each { |e| e.demote_primary_rank_to_secondary }
-        email.save!
-      end
-
-      if !mail_address.to_s.blank? || !work_address.to_s.blank?
-
-        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
-
-        mail_address.save! unless mail_address.to_s.blank?
-        work_address.save! unless work_address.to_s.blank?
-      end
-
-      if !cell_phone.try(:phone_nbr).blank? ||
-         !home_phone.try(:phone_nbr).blank? ||
-         !phone.try(:phone_nbr).blank?
-        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
-
-        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
-        home_phone.save! unless home_phone.try(:phone_nbr).blank?
-        phone.save! unless phone.try(:phone_nbr).blank?
-      end
+      finalize_email(email)
+      finalize_addresses(mail_address, work_address)
+      finalize_telephones(cell_phone, home_phone, phone)
 
       child.save! if child
       participant.save!

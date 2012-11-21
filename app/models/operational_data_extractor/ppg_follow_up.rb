@@ -71,8 +71,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      person = response_set.person
-      participant = response_set.participant
 
       ppg_status_history = nil
       home_phone         = nil
@@ -82,68 +80,31 @@ module OperationalDataExtractor
       phone              = nil
       email              = nil
 
-      TELEPHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            phone ||= get_telephone(response_set, person)
-            set_value(phone, attribute, value)
-          end
-        end
-      end
+      phone        = process_telephone(person, TELEPHONE_MAP)
+      home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
+      cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
 
-      HOME_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            home_phone ||= get_telephone(response_set, person, Telephone.home_phone_type)
-            set_value(home_phone, attribute, value)
-          end
-        end
-      end
+      work_phone   = process_telephone(person, WORK_PHONE_MAP, Telephone.work_phone_type)
+      other_phone  = process_telephone(person, OTHER_PHONE_MAP, Telephone.other_phone_type)
 
-      CELL_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
-            set_value(cell_phone, attribute, value)
-          end
-        end
-      end
+      email        = process_email(EMAIL_MAP)
 
-      OTHER_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            other_phone ||= get_telephone(response_set, person, Telephone.other_phone_type)
-            set_value(other_phone, attribute, value)
-          end
-        end
-      end
+      ppg_status_history = process_status_history(PPG_STATUS_MAP)
 
-      WORK_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            work_phone ||= get_telephone(response_set, person, Telephone.work_phone_type)
-            set_value(work_phone, attribute, value)
-          end
-        end
-      end
+      set_due_date(DUE_DATE_DETERMINER_MAP, :orig_due_date)
 
-      EMAIL_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            email ||= get_email(response_set, person)
-            set_value(email, attribute, value)
-          end
-        end
-      end
+      finalize_ppg_status_history(ppg_status_history)
 
+      finalize_email(email)
+      finalize_telephones(cell_phone, home_phone, work_phone, other_phone, phone)
 
-      PPG_STATUS_MAP.each do |key, attribute|
+      participant.save!
+      person.save!
+    end
+
+    def process_status_history(map)
+      ppg_status_history = nil
+      map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
@@ -177,42 +138,20 @@ module OperationalDataExtractor
           end
         end
       end
+      ppg_status_history
+    end
+    private :process_status_history
 
-      DUE_DATE_DETERMINER_MAP.each do |key, attribute|
+    def set_due_date(map, attribute)
+      map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           if due_date = determine_due_date(attribute, r)
-            participant.ppg_details.first.update_due_date(due_date, :orig_due_date)
+            participant.ppg_details.first.update_due_date(due_date, attribute)
           end
         end
       end
-
-      if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
-        set_participant_type(participant, ppg_status_history.ppg_status_code)
-        ppg_status_history.save!
-      end
-
-      unless email.try(:email).blank?
-        person.emails.each { |e| e.demote_primary_rank_to_secondary }
-        email.save!
-      end
-
-      if !cell_phone.try(:phone_nbr).blank? ||
-         !home_phone.try(:phone_nbr).blank? ||
-         !work_phone.try(:phone_nbr).blank? ||
-         !other_phone.try(:phone_nbr).blank? ||
-         !phone.try(:phone_nbr).blank?
-        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
-
-        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
-        home_phone.save! unless home_phone.try(:phone_nbr).blank?
-        work_phone.save! unless work_phone.try(:phone_nbr).blank?
-        other_phone.save! unless other_phone.try(:phone_nbr).blank?
-        phone.save! unless phone.try(:phone_nbr).blank?
-      end
-
-      participant.save!
-      person.save!
     end
+    private :set_due_date
 
   end
 end

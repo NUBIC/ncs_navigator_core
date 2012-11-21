@@ -141,12 +141,7 @@ describe OperationalDataExtractor::ParticipantVerification do
 
       OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
-      person  = Person.find(@person.id)
-      participant = person.participant
-      participant.participant_person_links.size.should == 2
-      participant.children.should_not be_nil
-      child = participant.children.first
-
+      child = Person.find(@child_participant.person.id)
       child.telephones.should_not be_empty
       child.primary_home_phone.to_s.should == '3125551212'
     end
@@ -168,12 +163,7 @@ describe OperationalDataExtractor::ParticipantVerification do
 
       OperationalDataExtractor::ParticipantVerification.new(response_set).extract_data
 
-      person  = Person.find(@person.id)
-      participant = person.participant
-      participant.participant_person_links.size.should == 2
-      participant.children.should_not be_nil
-      child = participant.children.first
-
+      child = Person.find(@child_participant.person.id)
       child.telephones.should_not be_empty
       child.primary_home_phone.to_s.should be_blank
       child.telephones.first.to_s.should == '3125554444'

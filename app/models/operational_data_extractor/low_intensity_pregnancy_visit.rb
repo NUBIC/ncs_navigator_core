@@ -31,22 +31,11 @@ module OperationalDataExtractor
 
 
     def extract_data
-      person = response_set.person
-      participant = response_set.participant
 
       ppg_status_history = nil
       birth_address = nil
 
-
-      BIRTH_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            birth_address ||= get_address(response_set, person)
-            birth_address(address, attribute, value)
-          end
-        end
-      end
+      birth_address = process_birth_address(BIRTH_ADDRESS_MAP)
 
       PPG_STATUS_MAP.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]

@@ -112,8 +112,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      person = response_set.person
-      participant = response_set.participant
 
       ppg_detail   = nil
       email        = nil
@@ -123,135 +121,43 @@ module OperationalDataExtractor
       mail_address = nil
       address      = nil
 
-      PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(person, attribute, response_value(r))
-        end
-      end
+      process_person(PERSON_MAP)
+      process_participant(PARTICIPANT_MAP)
+
+      address      = process_address(person, ADDRESS_MAP, Address.home_address_type)
+      mail_address = process_address(person, MAIL_ADDRESS_MAP, Address.mailing_address_type)
+      phone        = process_telephone(person, TELEPHONE_MAP)
+      home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
+      cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
+      email        = process_email(EMAIL_MAP)
 
       if participant
-        PARTICIPANT_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            set_value(participant, attribute, response_value(r))
-          end
-        end
+        ppg_detail = process_ppg_details(participant, PPG_DETAILS_MAP, INTERVIEW_PREFIX)
+        process_due_date(ppg_detail, DUE_DATE_DETERMINER_MAP) if ppg_detail
       end
 
-      ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            address ||= get_address(response_set, person, Address.home_address_type)
-            set_value(address, attribute, value)
-          end
-        end
-      end
-
-      MAIL_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            mail_address ||= get_address(response_set, person, Address.mailing_address_type)
-            set_value(mail_address, attribute, value)
-          end
-        end
-      end
-
-      TELEPHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            phone ||= get_telephone(response_set, person)
-            set_value(phone, attribute, value)
-          end
-        end
-      end
-
-      HOME_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            home_phone ||= get_telephone(response_set, person, Telephone.home_phone_type)
-            set_value(home_phone, attribute, value)
-          end
-        end
-      end
-
-      CELL_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
-            set_value(cell_phone, attribute, value)
-          end
-        end
-      end
-
-      EMAIL_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            email ||= get_email(response_set, person)
-            set_value(email, attribute, value)
-          end
-        end
-      end
-
-      if participant
-        PPG_DETAILS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              ppg_detail ||= get_ppg_detail(response_set, participant)
-              ppg_detail.send("#{attribute}=", ppg_detail_value(INTERVIEW_PREFIX, key, value))
-            end
-          end
-        end
-
-        if ppg_detail
-          DUE_DATE_DETERMINER_MAP.each do |key, attribute|
-            if r = data_export_identifier_indexed_responses[key]
-              if due_date = determine_due_date(attribute, r)
-                ppg_detail.orig_due_date = due_date
-              end
-            end
-          end
-
-          unless ppg_detail.ppg_first_code.blank?
-            set_participant_type(participant, ppg_detail.ppg_first_code)
-            ppg_detail.save!
-          end
-
-        end
-
-      end
-
-      unless email.try(:email).blank?
-        person.emails.each { |e| e.demote_primary_rank_to_secondary }
-        email.save!
-      end
-
-      if !mail_address.to_s.blank? || !address.to_s.blank?
-
-        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
-
-        mail_address.save! unless mail_address.to_s.blank?
-        address.save! unless address.to_s.blank?
-      end
-
-      if !cell_phone.try(:phone_nbr).blank? ||
-         !home_phone.try(:phone_nbr).blank? ||
-         !phone.try(:phone_nbr).blank?
-        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
-
-        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
-        home_phone.save! unless home_phone.try(:phone_nbr).blank?
-        phone.save! unless phone.try(:phone_nbr).blank?
-      end
+      finalize_email(email)
+      finalize_addresses(mail_address, address)
+      finalize_telephones(cell_phone, home_phone, phone)
 
       participant.save!
       person.save!
     end
+
+    def process_due_date(ppg_detail, map)
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          if due_date = determine_due_date(attribute, r)
+            ppg_detail.orig_due_date = due_date
+          end
+        end
+      end
+      unless ppg_detail.ppg_first_code.blank?
+        set_participant_type(participant, ppg_detail.ppg_first_code)
+        ppg_detail.save!
+      end
+    end
+    private :process_due_date
 
   end
 end

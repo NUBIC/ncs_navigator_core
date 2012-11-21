@@ -298,10 +298,25 @@ module OperationalDataExtractor
       response_set.responses.sort_by { |r| r.created_at }
     end
 
-    def get_address(response_set, person, address_type, address_rank = primary_rank)
+    def person
+      response_set.person
+    end
+
+    def participant
+      response_set.participant
+    end
+
+    # For surveys that update the child - the participant on the response_set
+    # should be the child participant and thus the person being updated is the
+    # child participant.person
+    def child
+      participant.person
+    end
+
+    def get_address(response_set, person, address_type = nil, address_rank = primary_rank)
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
-      criteria[:address_type_code] = address_type.local_code
+      criteria[:address_type_code] = address_type.local_code if address_type
       criteria[:address_rank_code] = address_rank.local_code
       address = Address.where(criteria).first
       if address.nil?
@@ -315,8 +330,8 @@ module OperationalDataExtractor
     def get_telephone(response_set, person, phone_type = nil, phone_rank = primary_rank)
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
+      criteria[:phone_rank_code] = phone_rank.local_code
       criteria[:phone_type_code] = phone_type.local_code if phone_type
-      criteria[:phone_rank_code] = phone_rank.local_code if phone_rank
       phone = Telephone.where(criteria).last
       if phone.nil?
         phone = Telephone.new(:person => person, :psu => person.psu,
@@ -326,22 +341,6 @@ module OperationalDataExtractor
       end
       phone
     end
-
-    def get_secondary_telephone(response_set, person, phone_type = nil)
-      criteria = Hash.new
-      criteria[:response_set_id] = response_set.id
-      criteria[:phone_rank_code] = secondary_rank.local_code
-      criteria[:phone_type_code] = phone_type.local_code if phone_type
-      phone = Telephone.where(criteria).last
-      if phone.nil?
-        phone = Telephone.new(:person => person, :psu => person.psu,
-                              :response_set => response_set,
-                              :phone_rank => secondary_rank)
-        phone.phone_type = phone_type if phone_type
-      end
-      phone
-    end
-
 
     def get_email(response_set, person)
       email = Email.where(:response_set_id => response_set.id).first
@@ -382,6 +381,261 @@ module OperationalDataExtractor
         result = value
       end
       result
+    end
+
+    def process_person(map)
+      set_value_during_process(map, person)
+    end
+
+    def set_value_during_process(map, owner)
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          set_value(owner, attribute, response_value(r))
+        end
+      end
+    end
+    private :set_value_during_process
+
+    def process_participant(map)
+      set_value_during_process(map, participant) if participant
+    end
+
+    def process_ppg_details(owner, map, prefix)
+      ppg_detail = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            ppg_detail ||= get_ppg_detail(response_set, owner)
+            ppg_detail.send("#{attribute}=", ppg_detail_value(prefix, key, value))
+          end
+        end
+      end
+      ppg_detail
+    end
+
+    def process_ppg_status(map)
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            participant.ppg_details.first.update_due_date(value, get_due_date_attribute(key))
+          end
+        end
+      end
+    end
+
+    def process_child(map)
+      set_value_during_process(map, child) if child
+      child
+    end
+
+    def process_child_dob(map)
+      set_value_during_process(map, child) if child
+    end
+
+    def process_father(map)
+      father = nil
+      relationship = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            if attribute == "full_name"
+              full_name = value.split
+              if full_name.size >= 2
+                last_name = full_name.last
+                first_name = full_name[0, (full_name.size - 1) ].join(" ")
+                father ||= Person.where(:response_set_id => response_set.id,
+                                        :first_name => first_name,
+                                        :last_name => last_name).first
+              else
+                father ||= Person.where(:response_set_id => response_set.id,
+                                        :first_name => value.to_s).first
+              end
+            else
+              father ||= Person.where(:response_set_id => response_set.id,
+                                      attribute => value.to_s).first
+            end
+
+            if father.nil?
+              father = Person.new(:psu => person.psu, :response_set => response_set)
+              # TODO: determine the default relationship for Father when creating father esp. when child has not been born
+              # 7 Partner/Significant Other
+              relationship = ParticipantPersonLink.new(:person => father,
+                :participant => participant, :relationship_code => 7)
+            end
+
+            set_value(father, attribute, value)
+          end
+        end
+      end
+      [father, relationship]
+    end
+
+    def process_contact(map)
+      contact = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            contact ||= Person.where(:response_set_id => response_set.id,
+                                      attribute => value.to_s).first
+            if contact.nil?
+              contact = Person.new(:psu => person.psu, :response_set => response_set)
+            end
+            set_value(contact, attribute, value)
+          end
+        end
+      end
+      contact
+    end
+
+    def process_contact_relationship(owner, map)
+      relationship = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
+                                                                  attribute => value.to_s).first
+            if relationship.nil?
+              relationship = ParticipantPersonLink.new(:person => owner, :participant => participant,
+                                                               :psu => person.psu, :response_set => response_set)
+            end
+            set_value(relationship, attribute, contact_to_person_relationship(value))
+          end
+        end
+      end
+      relationship
+    end
+
+    # TODO: Create Institution for birth address
+    #       and associate Institution with Person
+    def process_birth_address(map)
+      birth_address = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            birth_address ||= get_address(response_set, person)
+            set_value(birth_address, attribute, value)
+          end
+        end
+      end
+      birth_address
+    end
+
+    def process_address(owner, map, address_type = nil, address_rank = primary_rank)
+      address = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            address ||= get_address(response_set, owner, address_type, address_rank)
+            set_value(address, attribute, value)
+          end
+        end
+      end
+      address
+    end
+
+    def finalize_addresses(*addresses)
+      if any_address_changes?(addresses)
+        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
+
+        addresses.each { |a| a.save! unless a.to_s.blank? }
+      end
+    end
+
+    def any_address_changes?(addresses)
+      addresses.detect{ |a| !a.to_s.blank? }
+    end
+
+    def process_telephone(owner, map, phone_type = nil, phone_rank = primary_rank)
+      phone = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            phone ||= get_telephone(response_set, owner, phone_type, phone_rank)
+            set_value(phone, attribute, value)
+          end
+        end
+      end
+      phone
+    end
+
+    def finalize_telephones(*telephones)
+      if any_telephone_changes?(telephones)
+        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
+
+        telephones.each { |t| t.save! unless t.try(:phone_nbr).blank? }
+      end
+    end
+
+    def any_telephone_changes?(telephones)
+      telephones.detect{ |t| !t.try(:phone_nbr).blank? }
+    end
+
+    def process_email(map)
+      email = nil
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            email ||= get_email(response_set, person)
+            set_value(email, attribute, value)
+          end
+        end
+      end
+      email
+    end
+
+    def finalize_ppg_status_history(ppg_status_history)
+      if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
+        set_participant_type(participant, ppg_status_history.ppg_status_code)
+        ppg_status_history.save!
+      end
+    end
+
+    def finalize_email(email)
+      unless email.try(:email).blank?
+        person.emails.each { |e| e.demote_primary_rank_to_secondary }
+        email.save!
+      end
+    end
+
+    def finalize_contact(contact, relationship, address, telephone, alt_phone = nil)
+      if contact && relationship &&
+        !contact.to_s.blank? && !relationship.relationship_code.blank?
+
+        address.save! unless address.to_s.blank?
+        telephone.save! unless telephone.try(:phone_nbr).blank?
+        alt_phone.save! unless alt_phone.try(:phone_nbr).blank?
+
+        contact.save!
+        relationship.person_id = contact.id
+        relationship.participant_id = participant.id
+        relationship.save!
+      end
+    end
+
+    def finalize_father(father, relationship, address, phone)
+      if father
+        if address && !address.to_s.blank?
+          address.person = father
+          address.save!
+        end
+        if phone && !phone.phone_nbr.blank?
+          phone.person = father
+          phone.save!
+        end
+        father.save!
+        relationship.person_id = father.id
+        relationship.participant_id = participant.id
+        relationship.save!
+      end
     end
 
   end

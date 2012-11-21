@@ -217,8 +217,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      person = response_set.person
-      participant = response_set.participant
 
       cell_phone           = nil
       email                = nil
@@ -238,378 +236,47 @@ module OperationalDataExtractor
       work_address         = nil
       confirm_work_address = nil
 
-      PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          set_value(person, attribute, response_value(r))
-        end
+      process_person(PERSON_MAP)
+      process_ppg_status(PPG_STATUS_MAP)
+      cell_phone = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
+      email = process_email(EMAIL_MAP)
+      birth_address = process_birth_address(BIRTH_ADDRESS_MAP)
+
+      work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
+      confirm_work_address = process_address(person, CONFIRM_WORK_ADDRESS_MAP, Address.work_address_type, duplicate_rank)
+
+      if contact1 = process_contact(CONTACT_1_PERSON_MAP)
+        contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
+        contact1address = process_address(contact1, CONTACT_1_ADDRESS_MAP)
+        contact1phone = process_telephone(contact1, CONTACT_1_PHONE_MAP)
       end
 
-      PPG_STATUS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            participant.ppg_details.first.update_due_date(value, get_due_date_attribute(key))
-          end
-        end
+      if contact2 = process_contact(CONTACT_2_PERSON_MAP)
+        contact2relationship = process_contact_relationship(contact2, CONTACT_2_RELATIONSHIP_MAP)
+        contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP)
+        contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
       end
 
-      CELL_PHONE_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            cell_phone ||= get_telephone(response_set, person, Telephone.cell_phone_type)
-            set_value(cell_phone, attribute, value)
-          end
-        end
-      end
+      finalize_contact(contact1, contact1relationship, contact1address, contact1phone)
+      finalize_contact(contact2, contact2relationship, contact2address, contact2phone)
 
-      EMAIL_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            email ||= get_email(response_set, person)
-            set_value(email, attribute, value)
-          end
-        end
-      end
-
-      BIRTH_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-
-            birth_address ||= Address.where(:response_set_id => response_set.id,
-                                            attribute => value.to_s).first
-            if birth_address.nil?
-              birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
-                                          :psu => person.psu, :response_set => response_set)
-            end
-
-            set_value(birth_address, attribute, value)
-          end
-        end
-      end
-
-
-      CONTACT_1_PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            contact1 ||= Person.where(:response_set_id => response_set.id,
-                                      attribute => value.to_s).first
-            if contact1.nil?
-              contact1 = Person.new(:psu => person.psu, :response_set => response_set)
-            end
-            set_value(contact1, attribute, value)
-          end
-        end
-      end
-
-      if contact1
-
-        CONTACT_1_RELATIONSHIP_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact1relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
-                                                                    attribute => value.to_s).first
-              if contact1relationship.nil?
-                contact1relationship = ParticipantPersonLink.new(:person => contact1, :participant => participant,
-                                                                 :psu => person.psu, :response_set => response_set)
-              end
-              set_value(contact1relationship, attribute, contact_to_person_relationship(value))
-            end
-          end
-        end
-
-        CONTACT_1_ADDRESS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact1address ||= Address.where(:response_set_id => response_set.id,
-                                                 attribute => value.to_s).first
-              if contact1address.nil?
-                contact1address = Address.new(:person => contact1, :dwelling_unit => DwellingUnit.new,
-                                              :psu => person.psu, :response_set => response_set,
-                                              :address_rank => primary_rank)
-              end
-              set_value(contact1address, attribute, value)
-            end
-          end
-        end
-
-        CONTACT_1_PHONE_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact1phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute => value.to_s).first
-              if contact1phone.nil?
-                contact1phone = Telephone.new(:person => contact1, :psu => person.psu,
-                                              :response_set => response_set, :phone_rank => primary_rank)
-              end
-              set_value(contact1phone, attribute, value)
-            end
-          end
-        end
-
-      end
-
-      CONTACT_2_PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-            contact2 ||= Person.where(:response_set_id => response_set.id,
-                                      attribute => value.to_s).first
-            if contact2.nil?
-              contact2 = Person.new(:psu => person.psu, :response_set => response_set)
-            end
-            set_value(contact2, attribute, value)
-          end
-        end
-      end
-
-      if contact2
-
-        CONTACT_2_RELATIONSHIP_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact2relationship ||= ParticipantPersonLink.where(:response_set_id => response_set.id,
-                                                                    attribute => value.to_s).first
-              if contact2relationship.nil?
-                contact2relationship = ParticipantPersonLink.new(:person => contact2, :participant => participant,
-                                                                 :psu => person.psu, :response_set => response_set)
-              end
-              set_value(contact2relationship, attribute, contact_to_person_relationship(value))
-            end
-          end
-        end
-
-        CONTACT_2_ADDRESS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact2address ||= Address.where(:response_set_id => response_set.id,
-                                                 attribute => value.to_s).first
-              if contact2address.nil?
-                contact2address = Address.new(:person => contact2, :dwelling_unit => DwellingUnit.new,
-                                              :psu => person.psu, :response_set => response_set,
-                                              :address_rank => primary_rank)
-              end
-              set_value(contact2address, attribute, value)
-            end
-          end
-        end
-
-        CONTACT_2_PHONE_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              contact2phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute => value.to_s).first
-              if contact2phone.nil?
-                contact2phone = Telephone.new(:person => contact2, :psu => person.psu,
-                                              :response_set => response_set, :phone_rank => primary_rank)
-              end
-              set_value(contact2phone, attribute, value)
-            end
-          end
-        end
-
-      end
-
-      FATHER_PERSON_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-
-            if attribute == "full_name"
-              full_name = value.split
-              if full_name.size >= 2
-                last_name = full_name.last
-                first_name = full_name[0, (full_name.size - 1) ].join(" ")
-                father ||= Person.where(:response_set_id => response_set.id,
-                                        :first_name => first_name,
-                                        :last_name => last_name).first
-              else
-                father ||= Person.where(:response_set_id => response_set.id,
-                                        :first_name => value.to_s).first
-              end
-            else
-              father ||= Person.where(:response_set_id => response_set.id,
-                                      attribute => value.to_s).first
-            end
-
-            if father.nil?
-              father = Person.new(:psu => person.psu, :response_set => response_set)
-              # TODO: determine the default relationship for Father when creating father esp. when child has not been born
-              # 7 Partner/Significant Other
-              father_relationship = ParticipantPersonLink.new(:person => father, :participant => participant, :relationship_code => 7)
-            end
-
-            set_value(father, attribute, value)
-          end
-        end
-      end
-
+      father, father_relationship = process_father(FATHER_PERSON_MAP)
       if father
-
-        FATHER_ADDRESS_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-
-              father_address ||= Address.where(:response_set_id => response_set.id,
-                                                attribute => value.to_s).first
-              if father_address.nil?
-                father_address = Address.new(:person => father, :dwelling_unit => DwellingUnit.new,
-                  :psu => person.psu, :response_set => response_set, :address_rank => primary_rank)
-              end
-
-              set_value(father_address, attribute, value)
-            end
-          end
-        end
-
-        FATHER_PHONE_MAP.each do |key, attribute|
-          if r = data_export_identifier_indexed_responses[key]
-            value = response_value(r)
-            unless value.blank?
-              father_phone ||= Telephone.where(:response_set_id => response_set.id,
-                                                attribute => value.to_s).first
-              if father_phone.nil?
-                father_phone = Telephone.new(:person => father, :psu => person.psu,
-                  :response_set => response_set, :phone_rank => primary_rank)
-              end
-
-              set_value(father_phone, attribute, value)
-            end
-          end
-        end
+        father_address = process_address(father, FATHER_ADDRESS_MAP)
+        father_phone = process_telephone(father, FATHER_PHONE_MAP)
       end
 
-      DUE_DATE_DETERMINER_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
+      set_due_date(DUE_DATE_DETERMINER_MAP)
 
-          unless value.blank?
-            dt = nil
-            begin
-              dt = Date.parse(value)
-            rescue
-              # NOOP - date is unparseable
-            end
+      finalize_father(father, father_relationship, father_address, father_phone)
 
-            if dt
-              if due_date = determine_due_date(attribute, r, dt)
-                due_date_attr = get_due_date_attribute(key)
-                participant.ppg_details.first.update_due_date(
-                  due_date, due_date_attr)
-              end
-            end
-          end
-        end
-      end
+      finalize_contact(contact1, contact1relationship, contact1address, contact1phone)
+      finalize_contact(contact2, contact2relationship, contact2address, contact2phone)
 
-      WORK_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
+      finalize_email(email)
 
-            work_address ||= Address.where(:response_set_id => response_set.id,
-                                            attribute => value.to_s).first
-            if work_address.nil?
-              work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
-                                          :psu => person.psu, :response_set => response_set,
-                                          :address_type => Address.work_address_type)
-            end
-
-            set_value(work_address, attribute, value)
-          end
-        end
-      end
-
-      CONFIRM_WORK_ADDRESS_MAP.each do |key, attribute|
-        if r = data_export_identifier_indexed_responses[key]
-          value = response_value(r)
-          unless value.blank?
-
-            confirm_work_address ||= Address.where(:response_set_id => response_set.id,
-                                            attribute => value.to_s).first
-            if confirm_work_address.nil?
-              confirm_work_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
-                                          :psu => person.psu, :response_set => response_set,
-                                          :address_type => Address.work_address_type,
-                                          :address_rank => duplicate_rank)
-            end
-
-            set_value(confirm_work_address, attribute, value)
-          end
-        end
-      end
-
-      if father
-        if father_address && !father_address.to_s.blank?
-          father_address.person = father
-          father_address.save!
-        end
-        if father_phone && !father_phone.phone_nbr.blank?
-          father_phone.person = father
-          father_phone.save!
-        end
-        father.save!
-        father_relationship.person_id = father.id
-        father_relationship.participant_id = participant.id
-        father_relationship.save!
-      end
-
-      if contact1 && contact1relationship && !contact1.to_s.blank? && !contact1relationship.relationship_code.blank?
-        if contact1address && !contact1address.to_s.blank?
-          contact1address.save!
-        end
-        if contact1phone && !contact1phone.phone_nbr.blank?
-          contact1phone.save!
-        end
-        contact1.save!
-        contact1relationship.person_id = contact1.id
-        contact1relationship.participant_id = participant.id
-        contact1relationship.save!
-      end
-
-      if contact2 && contact2relationship && !contact2.to_s.blank? && !contact2relationship.relationship_code.blank?
-        if contact2address && !contact2address.to_s.blank?
-          contact2address.person = contact2
-          contact2address.save!
-        end
-        if contact2phone && !contact2phone.phone_nbr.blank?
-          contact2phone.person = contact2
-          contact2phone.save!
-        end
-        contact2.save!
-        contact2relationship.person_id = contact2.id
-        contact2relationship.participant_id = participant.id
-        contact2relationship.save!
-      end
-
-      unless email.try(:email).blank?
-        person.emails.each { |e| e.demote_primary_rank_to_secondary }
-        email.save!
-      end
-
-      if !work_address.to_s.blank? || !birth_address.to_s.blank? || !confirm_work_address.to_s.blank?
-        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
-
-        work_address.save! unless work_address.to_s.blank?
-        birth_address.save! unless birth_address.to_s.blank?
-        confirm_work_address.save! unless confirm_work_address.to_s.blank?
-      end
-
-      if !cell_phone.try(:phone_nbr).blank?
-        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
-
-        cell_phone.save! unless cell_phone.try(:phone_nbr).blank?
-      end
+      finalize_addresses(birth_address, work_address, confirm_work_address)
+      finalize_telephones(cell_phone)
 
       if due_date = calculated_due_date(response_set)
         participant.ppg_details.first.update_due_date(due_date)
@@ -656,6 +323,31 @@ module OperationalDataExtractor
     def get_due_date_attribute(data_export_identifier)
       (data_export_identifier.include?(PREGNANCY_VISIT_2_INTERVIEW_PREFIX) || data_export_identifier.include?(PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX)) ? :due_date_3 : :due_date_2
     end
-  end
 
+    def set_due_date(map)
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+
+          unless value.blank?
+            dt = nil
+            begin
+              dt = Date.parse(value)
+            rescue
+              # NOOP - date is unparseable
+            end
+
+            if dt
+              if due_date = determine_due_date(attribute, r, dt)
+                due_date_attr = get_due_date_attribute(key)
+                participant.ppg_details.first.update_due_date(
+                  due_date, due_date_attr)
+              end
+            end
+          end
+        end
+      end
+    end
+    private :set_due_date
+  end
 end
