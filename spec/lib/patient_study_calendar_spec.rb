@@ -122,8 +122,10 @@ describe PatientStudyCalendar do
     let(:date) { Date.parse('2000-01-01') }
 
     around do |example|
+      snapshot_fn = File.expand_path('../../fixtures/psc/schedule_preview.json', __FILE__)
+
       use_template_snapshot_cassette do
-        VCR.use_cassette('psc/schedule_preview') { example.call }
+        VCR.use_cassette('psc/schedule_preview', :erb => { :snapshot_file => snapshot_fn }) { example.call }
       end
     end
 
