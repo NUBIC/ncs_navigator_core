@@ -40,7 +40,7 @@ module Psc
     end
 
     def cache_event(event, participant)
-      return unless event.event_type_code > 0
+      return unless should_cache_event?(event)
 
       ekey = sync_key['event', event.public_id]
       lkey = sync_key['p', participant.public_id, 'events']
@@ -61,6 +61,8 @@ module Psc
     end
 
     def cache_contact_link(contact_link, contact, instrument, event, participant)
+      return unless should_cache_event?(event)
+
       lkey = sync_key['link_contact', contact_link.public_id]
 
       instrument_type_code = instrument.try(:instrument_type_code)
@@ -94,6 +96,11 @@ module Psc
         r.sadd(sync_key[*link_key], contact_link.public_id)
       end
     end
+
+    def should_cache_event?(event)
+      event.event_type_code > 0
+    end
+    private :should_cache_event?
 
     ##
     # @private

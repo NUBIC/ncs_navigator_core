@@ -211,6 +211,12 @@ module Psc
           redis.sismember('test:p:p:link_contacts_without_instrument:e', cl.public_id).should be_true
         end
       end
+
+      it 'ignores links for events without a concrete type' do
+        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => -5)
+
+        cached_link.should be_empty
+      end
     end
 
     describe '#cached_participant_ids' do
