@@ -19,6 +19,7 @@
 #
 
 require 'celluloid'
+require 'thread'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
@@ -105,6 +106,8 @@ class Fieldwork < ActiveRecord::Base
   def populate_from_psc(psc)
     ensure_logger
 
+    @coll_lock = Mutex.new
+
     begin
       t1 = Celluloid::Future.new { add_event_template_data(psc) }
       t2 = Celluloid::Future.new { add_scheduled_activity_report_data(psc) }
@@ -129,8 +132,8 @@ class Fieldwork < ActiveRecord::Base
     report.populate_from_psc(psc, params)
     report.derive_models
 
-    COLLECTIONS.each do |c|
-      send("#{c}=", report.send(c))
+    @coll_lock.synchronize do
+      COLLECTIONS.each { |c| send(c).push *report.send(c) }
     end
   end
 
