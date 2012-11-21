@@ -390,6 +390,42 @@ describe Event do
 
   end
 
+  describe "type categories" do
+    # Take care with these specs to make sure they can run regardless of MDES version.
+    describe 'in relation to participants' do
+      let(:all_real_event_type_codes) {
+        NcsCode.where("list_name = 'EVENT_TYPE_CL1' AND local_code > 0").collect(&:local_code)
+      }
+
+      it 'knows which event types are not related a specific participant' do
+        Event.non_participant_event_type_codes.should_not be_empty
+      end
+
+      it 'knows which participant event types should occur only once' do
+        Event.participant_one_time_only_event_type_codes.should_not be_empty
+      end
+
+      it 'knows which participant event types can be repeated' do
+        Event.participant_repeatable_event_type_codes.should_not be_empty
+      end
+
+      it 'only puts each event type code into one of these categories' do
+        (Event.non_participant_event_type_codes & Event.participant_one_time_only_event_type_codes).should == []
+        (Event.non_participant_event_type_codes & Event.participant_repeatable_event_type_codes).should == []
+        (Event.participant_repeatable_event_type_codes & Event.participant_one_time_only_event_type_codes).should == []
+      end
+
+      it 'puts all real event types into one of these categories' do
+        uncategorized_codes = all_real_event_type_codes -
+          Event.participant_one_time_only_event_type_codes -
+          Event.participant_repeatable_event_type_codes -
+          Event.non_participant_event_type_codes
+
+        uncategorized_codes.should == []
+      end
+    end
+  end
+
   context "time format" do
     let(:record) { Factory(:event) }
 

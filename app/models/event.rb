@@ -69,6 +69,9 @@ class Event < ActiveRecord::Base
     28, # 12 Month Mother Interview SAQ
     30, # 18 Month
     31, # 24 Month
+    36, # 30 Month
+    37, # 36 Month
+    38, # 42 Month
   ]
 
   PRE_PARTICIPANT_EVENTS = [
@@ -81,6 +84,29 @@ class Event < ActiveRecord::Base
      6, # Pregnancy Screening – Low Intensity Group
      9, # Pregnancy Screening - Household Enumeration Group
     29, # Pregnancy Screener
+    34, # PBS Participant Eligibility Screening
+    35, # PBS Frame SAQ
+  ]
+
+  PARTICIPANT_ONE_TIME_EVENTS = POSTNATAL_EVENTS + [
+    13, # Pregnancy Visit  1
+    14, # Pregnancy Visit #1 SAQ
+    15, # Pregnancy Visit  2
+    16, # Pregnancy Visit #2 SAQ
+    17, # Pregnancy Visit - Low Intensity Group
+  ]
+
+  PARTICIPANT_REPEATABLE_EVENTS = [
+    10, # Informed Consent
+    33, # Low Intensity Data Collection
+    32, # Low to High Conversion
+     7, # Pregnancy Probability
+     8, # PPG Follow-Up by Mailed SAQ
+    11, # Pre-Pregnancy Visit
+    12, # Pre-Pregnancy Visit SAQ
+    19, # Father
+    20, # Father Visit SAQ
+    21, # Validation
   ]
 
   ##
@@ -278,6 +304,27 @@ class Event < ActiveRecord::Base
   # @return [Boolean]
   def postnatal?
     POSTNATAL_EVENTS.include? event_type_code
+  end
+
+  ##
+  # @return [Array<Fixnum>] the event type codes for events which are not related
+  #   to a specific participant
+  def self.non_participant_event_type_codes
+    PRE_PARTICIPANT_EVENTS
+  end
+
+  ##
+  # @return [Array<Fixnum>] the event type codes for events which are expected
+  #   to be executed at most once per participant.
+  def self.participant_one_time_only_event_type_codes
+    PARTICIPANT_ONE_TIME_EVENTS
+  end
+
+  ##
+  # @return [Array<Fixnum>] the event type codes for events which may be
+  #   executed more than once per participant.
+  def self.participant_repeatable_event_type_codes
+    PARTICIPANT_REPEATABLE_EVENTS
   end
 
   def pregnancy_visit_1?
