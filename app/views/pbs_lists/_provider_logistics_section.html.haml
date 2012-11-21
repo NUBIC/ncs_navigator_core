@@ -4,7 +4,8 @@
 
 - if @provider.provider_logistics.empty?
   #provider_logistics
-    No provider_logistics exist for this provider.
+    %span{ :class => "green_button" }
+      = link_to "Add Provider Logistic", recruited_provider_path(@provider)
 - else
   #provider_logistics
     %table{ :id => 'provider_logistics_line_items', :class => "records" }
