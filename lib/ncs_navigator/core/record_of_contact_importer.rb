@@ -15,6 +15,8 @@ class NcsNavigator::Core::RecordOfContactImporter
     @csv ||= Rails.application.csv_impl.read(@eroc_io, :headers => true, :header_converters => :symbol)
   end
 
+  ##
+  # @return [Array<String>] error
   def import_data
     csv.each_with_index do |row, i|
       next if row.header_row?
@@ -33,9 +35,11 @@ class NcsNavigator::Core::RecordOfContactImporter
       @psc_sync.sync!
     end
 
-    unless @errors.empty?
-      fail @errors.collect(&:to_s).join("\n")
-    end
+    @errors.empty?
+  end
+
+  def errors
+    @errors.collect(&:to_s)
   end
 
   def import_row(row, i)

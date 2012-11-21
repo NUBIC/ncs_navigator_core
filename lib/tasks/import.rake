@@ -200,9 +200,13 @@ namespace :import do
       options[:wh_config] = import_wh_config
     end
 
-    NcsNavigator::Core::RecordOfContactImporter.new(
+    importer = NcsNavigator::Core::RecordOfContactImporter.new(
       File.open(args[:eroc_csv]),
       options
-    ).import_data
+    )
+
+    unless importer.import_data
+      fail importer.errors.join("\n")
+    end
   end
 end
