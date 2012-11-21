@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 namespace :import do
   task :warehouse_setup do |t|
     class << t; attr_accessor :config; end
@@ -205,6 +207,24 @@ namespace :import do
 
     unless importer.import_data
       fail importer.errors.join("\n")
+    end
+  end
+
+  desc 'Looks for participants with "extra" events'
+  task :find_extra_events => :environment do
+    Participant.includes(:events).each do |p|
+      problematic_event_sets = p.events.
+        select { |e| Event.participant_one_time_only_event_type_codes.include?(e.event_type_code) }.
+        each_with_object({}) { |event, idx| (idx[event.event_type_code] ||= []) << event }.
+        select { |type, events| events.size > 1 }.
+        collect { |type, events| events }
+
+      unless problematic_event_sets.empty?
+        puts "Participant #{p.public_id} has extra events for one-time-only type#{'s' if problematic_event_sets.size != 1}:"
+        problematic_event_sets.each do |events|
+          puts "* #{events.first.event_type.display_text}: #{events.collect(&:event_start_date).join(' | ')}"
+        end
+      end
     end
   end
 end
