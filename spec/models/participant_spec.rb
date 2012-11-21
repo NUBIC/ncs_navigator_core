@@ -35,6 +35,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/custom_recruitment_strategy', __FILE__)
+
 describe Participant do
 
   it "creates a new instance given valid attributes" do
@@ -79,9 +81,12 @@ describe Participant do
   end
 
   context "in the pbs protocol" do
+    include_context 'custom recruitment strategy'
+
+    let(:recruitment_strategy) { ProviderBasedSubsample.new }
+
     before do
       NcsNavigatorCore.stub(:recruitment_type_id).and_return(5)
-      NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
     end
 
     it "creates a participant in the high_intensity arm" do
@@ -1415,10 +1420,12 @@ describe Participant do
     include SurveyCompletion
 
     describe "#eligible?" do
+      include_context 'custom recruitment strategy'
+
+      let(:recruitment_strategy) { ProviderBasedSubsample.new }
 
       before(:each) do
         NcsNavigatorCore.stub!(:recruitment_type_id).and_return(5)
-        NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
 
         # Givens
         @part = Factory(:participant)
@@ -1526,9 +1533,12 @@ describe Participant do
   end
 
   context "confirming participant eligibility for non-PBS" do
+    include_context 'custom recruitment strategy'
+
+    let(:recruitment_strategy) { TwoTier.new }
+
     before do
       NcsNavigatorCore.stub!(:recruitment_type_id).and_return(3)
-      NcsNavigatorCore.stub!(:recruitment_strategy).and_return(TwoTier)
       @part = Factory(:participant)
     end
 

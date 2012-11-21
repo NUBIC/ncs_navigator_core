@@ -21,7 +21,7 @@ describe ParticipantsHelper do
       describe "non two-tier recruitment strategy" do
 
         before do
-          helper.stub!(:recruitment_strategy).and_return(ProviderBased)
+          helper.stub!(:recruitment_strategy => ProviderBased.new)
         end
 
         it "returns upcoming_events.to_s for a lo I participant" do
@@ -43,7 +43,7 @@ describe ParticipantsHelper do
       describe "two-tier recruitment strategy" do
 
         before do
-          helper.stub!(:recruitment_strategy).and_return(TwoTier)
+          helper.stub!(:recruitment_strategy => TwoTier.new)
         end
 
         it "returns Lo I: + upcoming_events.to_s for a lo I participant" do
@@ -70,7 +70,7 @@ describe ParticipantsHelper do
       describe "non two-tier recruitment strategy" do
 
         before do
-          helper.stub!(:recruitment_strategy).and_return(ProviderBased)
+          helper.stub!(:recruitment_strategy => ProviderBased.new)
         end
 
         it "returns next_scheduled_event.to_s for a lo I participant" do
@@ -86,7 +86,7 @@ describe ParticipantsHelper do
       describe "two-tier recruitment strategy" do
 
         before do
-          helper.stub!(:recruitment_strategy).and_return(TwoTier)
+          helper.stub!(:recruitment_strategy => TwoTier.new)
         end
 
         it "returns Lo I: + event.to_s for a lo I participant" do

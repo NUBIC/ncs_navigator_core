@@ -3,6 +3,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/custom_recruitment_strategy', __FILE__)
+
 describe Participant do
   context "a new participant" do
 
@@ -18,6 +20,9 @@ describe Participant do
   end
 
   context "for the PBS protocol" do
+    include_context 'custom recruitment strategy'
+
+    let(:recruitment_strategy) { ProviderBasedSubsample.new }
 
     context "who has not completed the PBS Eligibility Screener event" do
 
@@ -25,8 +30,6 @@ describe Participant do
       let(:person) { Factory(:person) }
 
       before(:each) do
-        NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
-
         participant.person = person
       end
 

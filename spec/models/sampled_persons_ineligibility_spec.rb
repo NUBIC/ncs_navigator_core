@@ -19,6 +19,8 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/custom_recruitment_strategy', __FILE__)
+
 describe SampledPersonsIneligibility do
 
   it "should create a new instance given valid attributes" do
@@ -58,9 +60,12 @@ describe SampledPersonsIneligibility do
   context "record creation" do
     include SurveyCompletion
 
+    include_context 'custom recruitment strategy'
+
+    let(:recruitment_strategy) { ProviderBasedSubsample.new }
+
     before(:each) do
       NcsNavigatorCore.stub!(:recruitment_type_id).and_return(5)
-      NcsNavigatorCore.stub!(:recruitment_strategy).and_return(ProviderBasedSubsample)
 
       # Givens
       @part = Factory(:participant)
