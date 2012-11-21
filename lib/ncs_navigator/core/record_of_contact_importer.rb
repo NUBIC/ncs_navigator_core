@@ -126,14 +126,9 @@ class NcsNavigator::Core::RecordOfContactImporter
   end
 
   def get_event_record(row, participant, row_index)
-    start_date =
-      if row[:event_start_date]
-        start_date = Date.parse(row[:event_start_date])
-      elsif @last_event
-        @last_event.event_start_date
-      end
-
     event_type = extract_coded_value(Event, :event_type, row, row_index)
+
+    start_date = determine_event_start_date(row, event_type, @last_event, row_index)
 
     event = Event.where(:participant_id => participant.id,
                         :event_type_code => event_type,
@@ -154,6 +149,28 @@ class NcsNavigator::Core::RecordOfContactImporter
     event.event_comment                   = row[:event_comment] unless row[:event_comment].blank?
     event
   end
+
+  def determine_event_start_date(row, row_event_type, last_event, row_index)
+    not_same_as_last_event_reason =
+      if !last_event
+        'no last event'
+      elsif last_event.event_type_code != row_event_type
+        'event type different'
+      elsif last_event.participant.p_id != row[:participant_id]
+        'participant different'
+      end
+    same_as_last_event = !not_same_as_last_event_reason
+
+    if row[:event_start_date]
+      Date.parse(row[:event_start_date])
+    elsif same_as_last_event
+      last_event.event_start_date
+    else
+      add_error(row_index, "Contact for new event (#{not_same_as_last_event_reason}) but no event start date.")
+      Date.parse(row[:contact_date])
+    end
+  end
+  private :determine_event_start_date
 
   def get_contact_record(row, event, person, row_index)
     contact_date = Date.parse(row[:contact_date])

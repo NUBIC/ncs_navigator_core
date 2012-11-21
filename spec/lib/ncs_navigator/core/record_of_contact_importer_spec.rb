@@ -123,37 +123,71 @@ module NcsNavigator::Core
         end
       end
 
-      describe 'with consecutive contacts for the same event, omitting the start date on subsequent rows' do
-        before do
-          make_a_csv(
-            create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
-            create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-11'),
-            create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
-            create_csv_row_text(:event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
-          )
+      describe 'handling consecutive contacts' do
+        describe 'for the same participant and event type, omitting the start date on subsequent rows' do
+          before do
+            make_a_csv(
+              create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-11'),
+              create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
+              create_csv_row_text(:event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
+            )
 
-          importer.import_data
+            importer.import_data
+          end
+
+          let(:event) { Event.where(:event_start_date => '2010-07-06').first }
+
+          it 'creates only one event' do
+            Event.where(:event_start_date => '2010-07-06').count.should == 1
+          end
+
+          it 'links all the contacts to the same event record' do
+            event.contact_links.collect(&:contact).collect(&:contact_date).sort.should ==
+              %w(2010-07-06 2010-07-11 2010-07-20)
+          end
+
+          it 'preserves the event start date from the first row' do
+            Event.all.collect(&:event_start_date).sort.should == [
+              Date.new(2010, 7, 6), Date.new(2010, 9, 3)
+            ]
+          end
+
+          it 'takes the event end date from the last row' do
+            event.event_end_date.should == Date.new(2010, 7, 22)
+          end
         end
 
-        let(:event) { Event.where(:event_start_date => '2010-07-06').first }
+        describe 'when it is a new event (by event type) but it is missing the event start date' do
+          before do
+            make_a_csv(
+              create_csv_row_text(:event_type => '15', :event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:event_type => '14', :event_start_date => nil, :contact_date => '2010-07-11'),
+            )
+          end
 
-        it 'creates only one event' do
-          Event.where(:event_start_date => '2010-07-06').count.should == 1
+          it 'is an error' do
+            expect { importer.import_data }.to raise_error(
+              /Error on row 2. Contact for new event \(event type different\) but no event start date./
+            )
+          end
         end
 
-        it 'links all the contacts to the same event record' do
-          event.contact_links.collect(&:contact).collect(&:contact_date).sort.should ==
-            %w(2010-07-06 2010-07-11 2010-07-20)
-        end
+        describe 'when it is a new event (by participant) but it is missing the event start date' do
+          let!(:another_participant) { Factory(:participant, :p_id => 'another') }
 
-        it 'preserves the event start date from the first row' do
-          Event.all.collect(&:event_start_date).sort.should == [
-            Date.new(2010, 7, 6), Date.new(2010, 9, 3)
-          ]
-        end
+          before do
+            make_a_csv(
+              create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:participant_id => 'another', :event_start_date => nil, :contact_date => '2010-07-11'),
+            )
+          end
 
-        it 'takes the event end date from the last row' do
-          event.event_end_date.should == Date.new(2010, 7, 22)
+          it 'is an error' do
+            expect { importer.import_data }.to raise_error(
+              /Error on row 2. Contact for new event \(participant different\) but no event start date./
+            )
+          end
         end
       end
 
