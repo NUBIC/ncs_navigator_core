@@ -1,17 +1,14 @@
-require 'logger'
 require 'spec_helper'
-require 'stringio'
 
+require File.expand_path('../../../shared/models/logger', __FILE__)
 require File.expand_path('../superposition_with_test_data', __FILE__)
 
 module Field
   describe PscSync do
     include_context 'superposition with test data'
+    include_context 'logger'
 
     let(:merge) { ::Merge.new }
-    let(:io) { StringIO.new }
-    let(:log) { io.string }
-    let(:logger) { Logger.new(io) }
 
     before do
       superposition.extend(PscSync)
