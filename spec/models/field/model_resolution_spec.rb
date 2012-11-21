@@ -2,10 +2,12 @@ require 'spec_helper'
 require 'set'
 
 require File.expand_path('../example_data', __FILE__)
+require File.expand_path('../../../shared/models/logger', __FILE__)
 
 module Field
   describe ModelResolution do
     include_context 'example data'
+    include_context 'logger'
 
     class TestReport < ScheduledActivityReport
       attr_accessor :staff_id
@@ -20,12 +22,9 @@ module Field
     end
 
     describe '#reify_models' do
-      let(:sio) { StringIO.new }
-      let(:log) { sio.string }
       let(:staff_id) { 'fa542082-c96f-4886-a6bc-cc9a546d787a' }
 
       before do
-        report.logger = ::Logger.new(sio)
         report.staff_id = staff_id
       end
 
@@ -263,8 +262,6 @@ module Field
     end
 
     describe '#save_models' do
-      let(:sio) { StringIO.new }
-      let(:log) { sio.string }
       let(:staff_id) { 'fa542082-c96f-4886-a6bc-cc9a546d787a' }
 
       describe 'on success' do
@@ -284,7 +281,6 @@ module Field
           p.participant = pa
           p.save!
 
-          report.logger = ::Logger.new(sio)
           report.staff_id = staff_id
           report.reify_models
         end
