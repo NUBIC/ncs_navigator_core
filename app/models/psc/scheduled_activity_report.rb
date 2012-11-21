@@ -5,11 +5,12 @@ module Psc
   # Wraps PSC's scheduled activities report.
   class ScheduledActivityReport
     ##
-    # Logger.  Defaults to Rails.logger.
-    attr_accessor :logger
+    # The logger.
+    attr_reader :logger
 
     ##
-    # Filters used in generating the report.
+    # Filters used in generating the report, if any.  Usually set by
+    # {#populate_from_report}.
     #
     # @return Hash
     attr_reader :filters
@@ -17,6 +18,10 @@ module Psc
     ##
     # The backing ScheduledActivityCollection.
     attr_reader :activities
+
+    def initialize(logger)
+      @logger = logger
+    end
 
     ##
     # Builds a ScheduledActivityReport from PSC data.
@@ -26,25 +31,26 @@ module Psc
     #
     # @param [#scheduled_activities_report] psc a PSC client
     # @param Hash filters report filters
-    def self.from_psc(psc, filters)
+    def populate_from_psc(psc, filters)
       data = psc.scheduled_activities_report(filters)
 
-      from_json(data)
+      populate_from_report(data)
     end
 
     ##
-    # Builds a ScheduledActivityReport from parsed JSON data.
-    def self.from_json(data)
-      coll = ScheduledActivityCollection.from_report(data)
-
-      new(coll, data['filters'])
+    # Populates this report from scheduled activity report data.
+    def populate_from_report(data)
+      @activities = ScheduledActivityCollection.from_report(data)
+      @filters = data['filters']
     end
 
-    def initialize(coll = ScheduledActivityCollection.new, filters = {})
-      self.logger = Rails.logger
-
-      @filters = filters
-      @activities = coll
+    ##
+    # Populates this report from participant schedule data.
+    #
+    # This also includes data such as schedule previews; see i.e.
+    # {Field::EventTemplateGenerator} for an example use.
+    def populate_from_schedule(data)
+      @activities = ScheduledActivityCollection.from_schedule(data)
     end
   end
 end

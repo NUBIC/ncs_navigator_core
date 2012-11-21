@@ -15,7 +15,11 @@ module Field
       include ModelResolution
     end
 
-    let(:report) { TestReport.from_json(data) }
+    let(:report) do
+      TestReport.new(logger).tap do |r|
+        r.populate_from_report(data)
+      end
+    end
 
     before do
       report.derive_models

@@ -125,9 +125,8 @@ class Fieldwork < ActiveRecord::Base
       :state => Psc::ScheduledActivity::SCHEDULED
     }
 
-    report = Field::ScheduledActivityReport.from_psc(psc, params)
-
-    report.logger = logger
+    report = Field::ScheduledActivityReport.new(logger)
+    report.populate_from_psc(psc, params)
     report.process
 
     COLLECTIONS.each do |c|
