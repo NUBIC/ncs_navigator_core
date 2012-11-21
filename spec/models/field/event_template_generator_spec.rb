@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 require File.expand_path('../../../shared/models/logger', __FILE__)
+require File.expand_path('../../../shared/custom_recruitment_strategy', __FILE__)
 
 module Field
   describe EventTemplateGenerator do
@@ -10,9 +11,9 @@ module Field
 
     describe '#templates' do
       describe 'for PBS' do
-        before do
-          NcsNavigatorCore.recruitment_strategy = ProviderBasedSubsample.new
-        end
+        include_context 'custom recruitment strategy'
+
+        let(:recruitment_strategy) { ProviderBasedSubsample.new }
 
         it 'returns Pregnancy Visit 1' do
           etg.templates.should include(PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1)

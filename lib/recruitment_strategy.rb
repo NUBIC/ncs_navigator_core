@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+require 'patient_study_calendar'
+
 ##
 # From Cases' point of view, a recruitment strategy is usually just a name and
 # does not require special treatment.
@@ -37,6 +40,14 @@ module RecruitmentStrategy
     false
   end
 
+  ##
+  # The event templates that will be made available to field clients.
+  #
+  # These should be names of study segments in PSC.  See e.g.
+  # {PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1}.
+  def field_event_templates
+    []
+  end
 end
 
 class TwoTier
@@ -64,5 +75,12 @@ class ProviderBasedSubsample
 
   def pbs?
     true
+  end
+
+  def field_event_templates
+    [
+      PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1,
+      PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER
+    ]
   end
 end
