@@ -127,7 +127,7 @@ class Fieldwork < ActiveRecord::Base
 
     report = Field::ScheduledActivityReport.new(logger)
     report.populate_from_psc(psc, params)
-    report.process
+    report.derive_models
 
     COLLECTIONS.each do |c|
       send("#{c}=", report.send(c))
