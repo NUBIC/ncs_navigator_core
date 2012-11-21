@@ -52,6 +52,10 @@ namespace :import do
     task('import:psc_setup').user
   end
 
+  def psc
+    PatientStudyCalendar.new(user_for_psc, NcsNavigatorCore.psc_logger)
+  end
+
   def expected_participants_for_psc
     task('import:find_participants_for_psc').participants
   end
@@ -91,7 +95,6 @@ namespace :import do
   desc 'Synchronize PSC to the data imported by import:operational'
   task :operational_psc => [:psc_setup, :warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
     importer.import
@@ -100,7 +103,6 @@ namespace :import do
   desc 'Reset the PSC sync caches so that the PSC sync can be retried. (You should wipe the subject info in PSC also.)'
   task 'operational_psc:reset' => [:psc_setup, :warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     importer = NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(psc, import_wh_config)
     importer.reset
@@ -109,7 +111,6 @@ namespace :import do
   desc 'Check for imported participants which are not in PSC'
   task 'operational_psc:check' => [:psc_setup, :warehouse_setup, :environment, :find_participants_for_psc] do
     require 'ncs_navigator/core'
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     missing_ps = expected_participants_for_psc.reject { |p|
       psc.is_registered?(p).tap do |result|
@@ -147,8 +148,6 @@ namespace :import do
 
   desc 'Schedule upcoming events for followed participants if needed'
   task :schedule_participant_events => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
-    psc = PatientStudyCalendar.new(user_for_psc)
-
     ps_to_advance = expected_participants_for_psc.select { |p| p.pending_events.empty? }
 
     $stderr.puts "#{ps_to_advance.size} of #{expected_participants_for_psc.size} followed participants need pending events."
@@ -180,7 +179,6 @@ namespace :import do
     date = 4.days.from_now.to_date
 
     events = Event.where("participant_id is not null and event_end_date is null and event_type_code <> 29").all
-    psc = PatientStudyCalendar.new(user_for_psc)
 
     events.each do |event|
       reason = "Import task: Rescheduling pending event [#{event.event_id}] #{event.event_type} to #{date}."
@@ -196,7 +194,7 @@ namespace :import do
 
     options = {}
     unless ENV['NO_PSC']
-      options[:psc] = PatientStudyCalendar.new(user_for_psc)
+      options[:psc] = psc
       options[:wh_config] = import_wh_config
     end
 
