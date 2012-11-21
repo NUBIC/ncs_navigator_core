@@ -157,11 +157,11 @@ class NcsNavigator::Core::RecordOfContactImporter
   def determine_event_start_date(row, row_event_type, last_event, row_index)
     not_same_as_last_event_reason =
       if !last_event
-        'no last event'
+        'first row'
       elsif last_event.event_type_code != row_event_type
-        'event type different'
+        "event type #{last_event.event_type_code} -> #{row_event_type}"
       elsif last_event.participant.p_id != row[:participant_id]
-        'participant different'
+        "participant #{last_event.participant.p_id} -> #{row[:participant_id]}"
       end
     same_as_last_event = !not_same_as_last_event_reason
 

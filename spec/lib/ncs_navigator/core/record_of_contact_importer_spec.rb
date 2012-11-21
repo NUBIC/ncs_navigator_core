@@ -173,7 +173,7 @@ module NcsNavigator::Core
 
           it 'is an error' do
             expect_import_to_have_error(
-              /Error on row 2. Contact for new event \(event type different\) but no event start date./
+              /Error on row 2. Contact for new event \(event type 15 -> 14\) but no event start date./
             )
           end
         end
@@ -185,13 +185,21 @@ module NcsNavigator::Core
             make_a_csv(
               create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
               create_csv_row_text(:participant_id => 'another', :event_start_date => nil, :contact_date => '2010-07-11'),
+              create_csv_row_text(:participant_id => 'another', :event_start_date => nil, :contact_date => '2010-07-14'),
             )
           end
 
           it 'is an error' do
             expect_import_to_have_error(
-              /Error on row 2. Contact for new event \(participant different\) but no event start date./
+              /Error on row 2. Contact for new event \(participant #{exemplar_participant.p_id} -> another\) but no event start date./
             )
+          end
+
+          it 'only creates one event for the rows with missing event' do
+            importer.import_data
+
+            Event.where(:participant_id => another_participant).collect { |e| e.event_start_date }.
+              should == [Date.new(2010, 7, 11)]
           end
         end
       end
