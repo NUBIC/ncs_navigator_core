@@ -86,6 +86,13 @@ module NcsNavigatorCore
     # {ApplicationController#psc}.
     attr_accessor :psc_logger
 
+    ##
+    # The recruitment strategy used by this Cases instance.
+    #
+    # Settable for testing.  In a production environment, this shouldn't be
+    # changed after initialization.
+    attr_accessor :recruitment_strategy
+
     extend Forwardable
 
     # All of the configuration methods were moved to
@@ -97,11 +104,6 @@ module NcsNavigatorCore
 
     def configuration
       NcsNavigator::Core::Configuration.instance
-    end
-
-    def recruitment_strategy
-      @recruitment_strategy ||= RecruitmentStrategy.recruitment_type_strategy(
-                                  NcsNavigator::Core::Configuration.instance.recruitment_type_id)
     end
   end
 end
