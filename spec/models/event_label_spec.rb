@@ -37,7 +37,7 @@ describe EventLabel do
 
   describe '#ncs_code' do
     let!(:code) do
-      NcsCode.create!(:display_text => 'Foo PBS', :local_code => 42, :list_name => 'EVENT_TYPE_CL1')
+      NcsCode.create!(:display_text => 'Foo PBS', :local_code => -42, :list_name => 'EVENT_TYPE_CL1')
     end
 
     it 'resolves the label to an NCS code' do
