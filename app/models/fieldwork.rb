@@ -118,6 +118,15 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def add_event_template_data(psc)
+    etg = Field::EventTemplateGenerator.new(logger)
+    etg.populate_from_psc(psc, start_date, etg.templates)
+    etg.derive_models
+
+    @coll_lock.synchronize do
+      self.event_templates += etg.event_templates
+      self.instrument_plans += etg.instrument_plans
+      self.surveys += etg.surveys
+    end
   end
 
   def add_scheduled_activity_report_data(psc)
