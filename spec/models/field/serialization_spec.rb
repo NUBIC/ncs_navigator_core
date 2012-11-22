@@ -67,6 +67,37 @@ module Field
       end
     end
 
+    shared_context 'has an event template' do
+      let(:et) { EventTemplate.new(event_ir) }
+      let(:event_ir) { Psc::ImpliedEntities::Event.new('foo_bar') }
+      let(:event_templates) { json['event_templates'] }
+
+      before do
+        NcsCode.create!(:display_text => 'Foo Bar', :local_code => -42, :list_name => 'EVENT_TYPE_CL1')
+
+        fw.event_templates << et
+      end
+    end
+
+    shared_context 'has an event template with an instrument' do
+      include_context 'has an event template'
+
+      let(:instrument_ir) { Psc::ImpliedEntities::Instrument.new('2.0:foo-bar', nil, 'Foo Bar Instrument') }
+      let(:instruments) { event_templates[0]['instruments'] }
+      let(:instrument_plan_ir) do
+        stub(:root => instrument_ir, :surveys => [], :id => 'foo')
+      end
+
+      before do
+        # We need all of this to resolve the instrument's type code from its label
+        NcsCode.create!(:display_text => 'Foo Bar', :local_code => -43, :list_name => 'INSTRUMENT_TYPE_CL1')
+        Factory(:survey, :access_code => 'foo-bar', :title => 'Foo Bar')
+
+        fw.instrument_plans << instrument_plan_ir
+        et.instruments << instrument_ir
+      end
+    end
+
     describe '#to_json' do
       before do
         fw.default_collections_to_empty
@@ -246,6 +277,38 @@ module Field
             it 'sets #/0/response_sets/0 to a non-blank value' do
               instruments[0]['response_sets'][0].should_not be_blank
             end
+          end
+        end
+
+        describe 'event_templates' do
+          include_context 'has an event template'
+
+          it 'sets #/0/event_type_code' do
+            event_templates[0]['event_type_code'].should == -42
+          end
+
+          it 'sets #/0/name' do
+            event_templates[0]['name'].should == 'Foo Bar'
+          end
+        end
+
+        describe 'event_templates.instruments' do
+          include_context 'has an event template with an instrument'
+
+          it 'sets #/0/instrument_plan_id' do
+            instruments[0]['instrument_plan_id'].should == 'foo'
+          end
+
+          it 'sets #/0/instrument_type_code' do
+            instruments[0]['instrument_type_code'].should == -43
+          end
+
+          it 'sets #/0/instrument_version' do
+            instruments[0]['instrument_version'].should == '2.0'
+          end
+
+          it 'sets #/0/name' do
+            instruments[0]['name'].should == 'Foo Bar Instrument'
           end
         end
 
