@@ -14,5 +14,11 @@ describe NcsCodeCollection do
     it 'indexes codes by local code' do
       table['PSU_CL1'][-4].should == NcsCode.where(:list_name => 'PSU_CL1', :local_code => -4).first
     end
+
+    it 'can index codes by display text' do
+      table = collection.table(:display_text)
+
+      table['PSU_CL1']['Missing in Error'].should == NcsCode.where(:list_name => 'PSU_CL1', :display_text => 'Missing in Error').first
+    end
   end
 end

@@ -11,8 +11,8 @@ class NcsCodeCollection
   end
 
   ##
-  # Builds a (list_name, local_code) => NcsCode mapping from the given query.
-  def table
+  # Builds a (list_name, key) => NcsCode mapping from the given query.
+  def table(key = :local_code)
     table = {}
 
     @query.each do |ncs_code|
@@ -22,7 +22,7 @@ class NcsCodeCollection
         table[ln] = {}
       end
 
-      table[ln][ncs_code.local_code] = ncs_code
+      table[ln][ncs_code.send(key)] = ncs_code
     end
 
     table
