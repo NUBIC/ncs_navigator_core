@@ -16,6 +16,10 @@ module Psc
       it 'creates one ScheduledActivity per report row' do
         report.length.should == 2
       end
+
+      it 'returns an empty collection when given nil' do
+        ScheduledActivityCollection.from_report(nil).should be_instance_of(ScheduledActivityCollection)
+      end
     end
 
     describe '.from_schedule' do
@@ -25,6 +29,10 @@ module Psc
 
       it 'creates one ScheduledActivity per activity set' do
         report.length.should == 6
+      end
+
+      it 'returns an empty collection when given nil' do
+        ScheduledActivityCollection.from_schedule(nil).should be_instance_of(ScheduledActivityCollection)
       end
     end
   end
