@@ -393,20 +393,7 @@ class NcsCode < ActiveRecord::Base
   end
 
   def self.find_event_by_lbl(lbl)
-    # handle dash condition
-    dash_idx = lbl.index "-"
-    pbs_idx  = lbl.index "pbs"
-    txt = lbl.gsub("_", " ").titleize
-    txt = txt.insert(dash_idx, "-").gsub("- ", "-") if dash_idx
-    txt = txt.gsub("Pbs", "PBS") if pbs_idx
-
-    # handle lowercase condition
-    [" To ", " In "].each do |should_downcase|
-      lc_idx = txt.index should_downcase
-      txt = txt.gsub(should_downcase, should_downcase.downcase) if lc_idx
-    end
-
-    for_list_name_and_display_text('EVENT_TYPE_CL1', txt)
+    EventLabel.new(lbl).ncs_code
   end
 
   # Special case helper method to get EVENT_TYPE_CL1 for Low Intensity Data Collection
