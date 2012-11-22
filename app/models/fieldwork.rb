@@ -19,6 +19,7 @@
 #
 
 require 'celluloid'
+require 'set'
 require 'thread'
 require 'uuidtools'
 
@@ -51,7 +52,16 @@ class Fieldwork < ActiveRecord::Base
 
   ##
   # Collections of entities modified when populating a fieldwork set.
-  COLLECTIONS = %w(contact_links contacts events instruments instrument_plans people surveys)
+  COLLECTIONS = %w(
+    contact_links
+    contacts
+    event_templates
+    events
+    instrument_plans
+    instruments
+    people
+    surveys
+  )
 
   ##
   # Collections are saved to this record.  The JSON for this set is regenerated
@@ -104,7 +114,7 @@ class Fieldwork < ActiveRecord::Base
   #
   # Those collections are later used by {#reify_models} and {#as_json}.
   def populate_from_psc(psc)
-    ensure_logger
+    prepare_for_population
 
     @coll_lock = Mutex.new
 
@@ -142,7 +152,13 @@ class Fieldwork < ActiveRecord::Base
     report.derive_models
 
     @coll_lock.synchronize do
-      COLLECTIONS.each { |c| send(c).push *report.send(c) }
+      self.contact_links += report.contact_links
+      self.contacts += report.contacts
+      self.events += report.events
+      self.instrument_plans += report.instrument_plans
+      self.instruments += report.instruments
+      self.people += report.people
+      self.surveys += report.surveys
     end
   end
 
@@ -175,7 +191,6 @@ class Fieldwork < ActiveRecord::Base
 
   def reify_and_save_implied_models
     begin
-      prepare_to_save_implications
       reify_models
       save_models
     ensure
@@ -185,11 +200,11 @@ class Fieldwork < ActiveRecord::Base
 
   def default_collections_to_empty
     COLLECTIONS.each do |c|
-      send("#{c}=", []) unless send(c)
+      send("#{c}=", Set.new) unless send(c)
     end
   end
 
-  def prepare_to_save_implications
+  def prepare_for_population
     # All collections must be enumerable, so make them that way if they aren't.
     default_collections_to_empty
 
