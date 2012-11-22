@@ -1,11 +1,14 @@
 require 'set'
 require 'spec_helper'
 
+require File.expand_path('../../../shared/models/logger', __FILE__)
 require File.expand_path('../report_without_child_instruments', __FILE__)
 require File.expand_path('../report_with_child_instruments', __FILE__)
 
 module Psc
   describe ModelDerivation do
+    include_context 'logger'
+
     IE = Psc::ImpliedEntities
 
     # ------------------------------------------------------------------------
@@ -46,9 +49,10 @@ module Psc
 
     # ------------------------------------------------------------------------
 
-    let(:report) { ScheduledActivityReport.from_json(data) }
+    let(:report) { ScheduledActivityReport.new(logger) }
 
     before do
+      report.populate_from_report(data)
       report.extend(ModelDerivation)
       report.derive_models
     end

@@ -4,6 +4,8 @@ require File.expand_path('../../../shared/models/logger', __FILE__)
 
 module Psc
   describe ScheduledActivityReport do
+    include_context 'logger'
+
     let(:report) { ScheduledActivityReport.new(logger) }
 
     describe '#populate_from_psc' do
