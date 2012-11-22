@@ -7,8 +7,11 @@ module Field
     include Adoption
 
     def as_json(options = nil)
+      map_instruments_to_plans
+
       {
         'contacts' => contacts_as_json(options),
+        'event_templates' => event_templates_as_json(options),
         'instrument_plans' => instrument_plans_as_json(options),
         'participants' => participants_as_json(options)
       }
@@ -51,8 +54,6 @@ module Field
     ##
     # @private
     def instruments_as_json(event, person, options)
-      map_instruments_to_plans
-
       instruments.select { |i| i.event == event && i.person == person }.map do |i|
         mi = m i
         plan = plan_for(i)
@@ -74,6 +75,42 @@ module Field
         { 'instrument_plan_id' => p.id,
           'instrument_templates' => instrument_templates_as_json(p, options)
         }
+      end
+    end
+
+    ##
+    # @private
+    def event_templates_as_json(options)
+      codes = NcsCode.for_attributes('instrument_type_code', 'event_type_code').
+        table(:display_text)
+
+      event_codes = codes['EVENT_TYPE_CL1']
+
+      event_templates.map do |et|
+        l = EventLabel.new(et.event.label)
+
+        { 'event_type_code' => l.ncs_code(event_codes).local_code,
+          'name' => l.display_text,
+          'instruments' => event_template_instruments_as_json(et.instruments, options)
+        }
+      end
+    end
+
+    ##
+    # @private
+    def event_template_instruments_as_json(instruments, options)
+      instruments.map do |i|
+        plan = plan_for(i)
+        label = InstrumentLabel.new(i.survey)
+        code = label.ncs_code
+
+        if plan && code
+          { 'instrument_plan_id' => plan.id,
+            'instrument_type_code' => code.local_code,
+            'instrument_version' => label.version,
+            'name' => i.name
+          }
+        end
       end
     end
 
