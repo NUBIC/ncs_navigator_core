@@ -26,21 +26,26 @@ module Psc
 
     ##
     # Instantiates a collection from a scheduled activity report.
+    # If given nil, returns an empty collection.
     #
     # @see PatientStudyCalendar#scheduled_activities_report
     def self.from_report(report)
-      return if report.nil?
       new.tap do |c|
+        break c if report.nil?
+
         report['rows'].each { |r| c.add_from_report(r) }
       end
     end
 
     ##
     # Instantiates a collection from a participant schedule.
+    # If given nil, returns an empty collection.
     #
     # @see PatientStudyCalendar#schedules
     def self.from_schedule(schedule)
       new.tap do |c|
+        break c if schedule.nil?
+
         schedule['days'].values.each do |d|
           d['activities'].each { |a| c.add_from_schedule(a) }
         end
