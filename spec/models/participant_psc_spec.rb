@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/custom_recruitment_strategy', __FILE__)
@@ -131,7 +130,6 @@ describe Participant do
             participant.next_scheduled_event.date.should == 6.months.from_now.to_date
           end
         end
-
 
         it "is NOT eligible to be moved in the high intensity arm if NOT in tsu" do
           du = Factory(:dwelling_unit, :ssu_id => 'ssu', :tsu_id => nil)
@@ -349,7 +347,6 @@ describe Participant do
         participant.next_scheduled_event.event.should == participant.next_study_segment
         participant.next_scheduled_event.date.should == 271.days.from_now.to_date
       end
-
 
       describe "having a due date before the next scheduled event date" do
 

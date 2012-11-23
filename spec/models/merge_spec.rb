@@ -285,4 +285,3 @@ describe Merge do
     end
   end
 end
-
