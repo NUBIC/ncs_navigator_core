@@ -55,7 +55,7 @@ class PatientStudyCalendar
   ##
   # User object who was authenticated using CAS
   # @param [Aker::User]
-  def initialize(user, logger = stderr_logger)
+  def initialize(user, logger = NcsNavigatorCore.psc_logger)
     self.user = user || fake_user
     self.registered_participants = RegisteredParticipantList.new(self)
     self.logger = logger
@@ -76,10 +76,6 @@ class PatientStudyCalendar
   def log
     ActiveSupport::Deprecation.warn("#{self.class.name}#log is deprecated.  Use #{self.class.name}#logger instead.")
     logger
-  end
-
-  def stderr_logger
-    ::Logger.new($stderr)
   end
 
   # TODO: put into configuration
