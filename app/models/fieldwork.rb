@@ -190,6 +190,8 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def reify_and_save_implied_models
+    prepare_for_population
+
     begin
       reify_models
       save_models
