@@ -216,7 +216,12 @@ describe Merge do
     ##
     # The smallest possible valid fieldwork object.
     let(:valid) do
-      { 'contacts' => [], 'participants' => [], 'instrument_plans' => [] }
+      {
+        'contacts' => [],
+        'event_templates' => [],
+        'instrument_plans' => [],
+        'participants' => []
+      }
     end
 
     let(:invalid) do
