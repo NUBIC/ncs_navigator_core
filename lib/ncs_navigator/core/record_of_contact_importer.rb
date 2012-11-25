@@ -131,16 +131,9 @@ class NcsNavigator::Core::RecordOfContactImporter
 
   def get_event_record(row, participant, row_index)
     event_type = extract_coded_value(Event, :event_type, row, row_index)
-
     start_date = determine_event_start_date(row, event_type, @last_event, row_index)
 
-    event = Event.where(:participant_id => participant.id,
-                        :event_type_code => event_type,
-                        :event_start_date => start_date).first
-
-    event = Event.new(:participant_id => participant.id,
-                      :event_type_code => event_type,
-                      :event_start_date => start_date) if event.blank?
+    event = find_or_create_event(participant, event_type, start_date)
 
     event.participant                     = participant
     event.event_type_other                = row[:event_type_other] unless row[:event_type_other].blank?
@@ -175,6 +168,24 @@ class NcsNavigator::Core::RecordOfContactImporter
     end
   end
   private :determine_event_start_date
+
+  def find_or_create_event(participant, event_type, start_date)
+    existing_event_criteria = {
+      :participant_id => participant.id, :event_type_code => event_type
+    }
+    unless Event.participant_one_time_only_event_type_codes.include?(event_type)
+      existing_event_criteria[:event_start_date] = start_date
+    end
+
+    existing_event = Event.where(existing_event_criteria).first
+
+    if existing_event
+      existing_event
+    else
+      Event.create!(existing_event_criteria.merge(:event_start_date => start_date))
+    end
+  end
+  private :find_or_create_event
 
   def get_contact_record(row, event, person, row_index)
     contact_date = Date.parse(row[:contact_date])

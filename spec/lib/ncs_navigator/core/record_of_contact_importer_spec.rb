@@ -132,10 +132,10 @@ module NcsNavigator::Core
         describe 'for the same participant and event type, omitting the start date on subsequent rows' do
           before do
             make_a_csv(
-              create_csv_row_text(:event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
-              create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-11'),
-              create_csv_row_text(:event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
-              create_csv_row_text(:event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
+              create_csv_row_text(:event_type => 32, :event_start_date => '2010-07-06', :contact_date => '2010-07-06'),
+              create_csv_row_text(:event_type => 32, :event_start_date => nil, :contact_date => '2010-07-11'),
+              create_csv_row_text(:event_type => 32, :event_start_date => nil, :contact_date => '2010-07-20', :event_end_date => '2010-07-22'),
+              create_csv_row_text(:event_type => 32, :event_start_date => '2010-09-03', :contact_date => '2010-09-03', :event_end_date => '2010-09-03')
             )
 
             importer.import_data
@@ -176,6 +176,18 @@ module NcsNavigator::Core
               /Error on row 2. Contact for new event \(event type 15 -> 14\) but no event start date./
             )
           end
+
+          it 'creates a new event' do
+            importer.import_data
+
+            Event.all.collect(&:event_type_code).sort.should == [14, 15]
+          end
+
+          it 'uses the first contact date as the event start date' do
+            importer.import_data
+
+            Event.where(:event_type_code => 14).first.event_start_date.should == Date.new(2010, 7, 11)
+          end
         end
 
         describe 'when it is a new event (by participant) but it is missing the event start date' do
@@ -195,11 +207,144 @@ module NcsNavigator::Core
             )
           end
 
-          it 'only creates one event for the rows with missing event' do
+          it 'only creates one event for the rows with missing event start date, using the contact date for the first contact as the event start date' do
             importer.import_data
 
             Event.where(:participant_id => another_participant).collect { |e| e.event_start_date }.
               should == [Date.new(2010, 7, 11)]
+          end
+        end
+      end
+
+      describe 'resolving events' do
+        let!(:existing_event) {
+          Factory(:event,
+            :event_start_date => Date.parse(existing_start_date),
+            :event_type_code => event_type_code,
+            :participant => exemplar_participant)
+        }
+
+        let(:existing_start_date) { '2011-11-11' }
+
+        let(:sole_contact_link) {
+          importer.import_data
+          ContactLink.count.should == 1
+          ContactLink.first
+        }
+
+        describe 'when the event type is repeatable' do
+          let(:event_type_code) { 32 }
+
+          describe 'and there is an existing event event matching on type, participant, and start date' do
+            before do
+              make_a_csv(
+                create_csv_row_text(
+                  :event_start_date => existing_start_date,
+                  :event_type => event_type_code)
+              )
+            end
+
+            it 'uses the existing event' do
+              sole_contact_link.event_id.should == existing_event.id
+            end
+          end
+
+          describe 'and there is an existing event with the same type and participant' do
+            describe 'and the start date is not specified' do
+              before do
+                make_a_csv(
+                  create_csv_row_text(
+                    :event_start_date => nil,
+                    :event_type => event_type_code,
+                    :contact_date => '2011-11-15')
+                )
+              end
+
+              it 'creates a new event' do
+                sole_contact_link.event_id.should_not == existing_event.id
+              end
+
+              it 'uses the event start date for the event start date' do
+                sole_contact_link.event.event_start_date.should == Date.new(2011, 11, 15)
+              end
+            end
+
+            describe 'and the start date does not match the existing event' do
+              before do
+                make_a_csv(
+                  create_csv_row_text(
+                    :event_start_date => '2011-11-01',
+                    :event_type => event_type_code,
+                    :contact_date => '2011-11-15')
+                )
+              end
+
+              it 'creates a new event' do
+                sole_contact_link.event_id.should_not == existing_event.id
+              end
+
+              it 'uses the event start date for the event start date' do
+                sole_contact_link.event.event_start_date.should == Date.new(2011, 11, 1)
+              end
+            end
+          end
+        end
+
+        describe 'when the event type is one-time-only' do
+          let(:event_type_code) { 13 }
+
+          describe 'and there is an existing event event matching on type, participant, and start date' do
+            before do
+              make_a_csv(
+                create_csv_row_text(
+                  :event_start_date => existing_start_date,
+                  :event_type => event_type_code)
+              )
+            end
+
+            it 'uses the existing event' do
+              sole_contact_link.event_id.should == existing_event.id
+            end
+          end
+
+          describe 'and there is an existing event with the same type and participant' do
+            describe 'and the start date is not specified' do
+              before do
+                make_a_csv(
+                  create_csv_row_text(
+                    :event_start_date => nil,
+                    :event_type => event_type_code,
+                    :contact_date => '2011-11-15')
+                )
+              end
+
+              it 'uses the existing event' do
+                sole_contact_link.event_id.should == existing_event.id
+              end
+
+              it 'does not change the event start date' do
+                sole_contact_link.event.event_start_date.should == Date.new(2011, 11, 11)
+              end
+            end
+
+            describe 'and the start date does not match the existing event' do
+              before do
+                make_a_csv(
+                  create_csv_row_text(
+                    :event_start_date => '2011-11-01',
+                    :event_type => event_type_code,
+                    :contact_date => '2011-11-15')
+                )
+              end
+
+              it 'uses the existing event' do
+                sole_contact_link.event_id.should == existing_event.id
+              end
+
+              it 'does not change the event start date' do
+                sole_contact_link.event.event_start_date.should == Date.new(2011, 11, 11)
+              end
+            end
           end
         end
       end
