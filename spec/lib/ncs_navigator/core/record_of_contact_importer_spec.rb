@@ -395,6 +395,14 @@ module NcsNavigator::Core
           expect_import_to_have_error /Error on row 1. Unknown participant "No"/
         end
 
+        it 'fails for a child participant' do
+          child = Factory(:participant, :p_type_code => 6, :p_id => 'kiddo')
+
+          make_a_csv create_csv_row_text(:participant_id => child.p_id)
+
+          expect_import_to_have_error /Error on row 1. Cannot record a contact for a child participant \("kiddo"\)\./
+        end
+
         describe 'for event' do
           it 'does not accept a record which does not pass AR validations' do
             make_a_csv create_csv_row_text(:event_start_time => 'top-o-the-morn')

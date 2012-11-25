@@ -43,7 +43,7 @@ class NcsNavigator::Core::RecordOfContactImporter
   end
 
   def import_row(row, i)
-    if participant = Participant.where(:p_id => row[:participant_id]).first
+    if participant = find_participant_or_add_error(row[:participant_id], i)
       register_for_psc_sync(:participant, participant)
 
       person = get_person_record(row)
@@ -72,8 +72,6 @@ class NcsNavigator::Core::RecordOfContactImporter
         save_or_report_problems(contact_link, i)
         register_for_psc_sync(:contact_link, contact_link)
       end
-    else
-      add_error(i, "Unknown participant #{row[:participant_id].inspect}.")
     end
   end
 
@@ -90,6 +88,23 @@ class NcsNavigator::Core::RecordOfContactImporter
       end
     end
   end
+
+  def find_participant_or_add_error(p_id, row_index)
+    participant = Participant.where(:p_id => p_id).first
+    unless participant
+      add_error(row_index, "Unknown participant #{p_id.inspect}.")
+      return nil
+    end
+
+    # Child
+    if participant.p_type_code == 6
+      add_error(row_index, "Cannot record a contact for a child participant (#{p_id.inspect}).")
+      return nil;
+    end
+
+    participant
+  end
+  private :find_participant_or_add_error
 
   def register_for_psc_sync(type, instance)
     return unless @psc_sync
