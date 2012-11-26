@@ -188,8 +188,13 @@ namespace :import do
     end
   end
 
+  eroc_deps = [:environment, :set_whodunnit]
+  unless ENV['NO_PSC']
+    eroc_deps = [:psc_setup, :warehouse_setup] + eroc_deps
+  end
+
   desc 'Import an EROC'
-  task :eroc, [:eroc_csv] => [:psc_setup, :warehouse_setup, :environment, :set_whodunnit] do |t, args|
+  task :eroc, [:eroc_csv] => eroc_deps do |t, args|
     fail 'Please specify the path to the EROC csv' unless args[:eroc_csv]
 
     require 'ncs_navigator/core'
