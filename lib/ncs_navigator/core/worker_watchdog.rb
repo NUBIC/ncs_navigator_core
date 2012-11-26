@@ -1,3 +1,6 @@
+require 'celluloid'
+require 'sidekiq/worker'
+
 module NcsNavigator::Core
   ##
   # The worker watchdog consists of four parts:
@@ -37,6 +40,35 @@ module NcsNavigator::Core
     # alive.
     def watchdog_periodicity
       worker_watchdog_threshold / 2
+    end
+
+    ##
+    # Issues watchdog jobs.  Started in an initializer.
+    class Timer
+      include Celluloid
+      include WorkerWatchdog
+
+      def initialize
+        async.issue_checks
+      end
+
+      def issue_checks
+        loop do
+          Worker.perform_async
+          sleep watchdog_periodicity
+        end
+      end
+    end
+
+    ##
+    # Responds to watchdog jobs.
+    class Worker
+      include Sidekiq::Worker
+      include WorkerWatchdog
+
+      def perform
+        Rails.application.redis.set(worker_watchdog_key, Time.now.to_i)
+      end
     end
   end
 end
