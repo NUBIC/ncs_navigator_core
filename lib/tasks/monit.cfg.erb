@@ -4,5 +4,6 @@
 check process sidekiq
   with pidfile <%= pid %>
   start program = "<%= Rails.root.join('script/sidekiq.sh') %> start '<%= Rails.env %>' '<%= pid %>' '<%= log %>'"
+    as uid ncs_navigator_core
   stop program = "<%= Rails.root.join('script/sidekiq.sh') %> stop '<%= Rails.env %>' '<%= pid %>' '<%= log %>'"
   group ncs_navigator_core
