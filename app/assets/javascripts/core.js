@@ -88,6 +88,7 @@ $(document).ready(function() {
     controlType: 'select'
   });
 
+  $(".required").after("<span class='required_marker'>*</span>");
 
   // phone format
   $("input[type='text'].phone").mask("(999) 999-9999");

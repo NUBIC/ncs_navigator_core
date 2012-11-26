@@ -83,6 +83,11 @@ input[disabled='disabled'] {
   clear: both;
 }
 
+.required_marker {
+  color: maroon;
+  padding: 0 0.5em;
+}
+
 span.warning,
 span.required {
   font-weight: bold;
