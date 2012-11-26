@@ -74,6 +74,20 @@ class SurveyorController < ApplicationController
     ctxt
   end
 
+  ##
+  # Overrides the parent version to add retrying for optimistic locking errors.
+  def load_and_update_response_set_with_retries(remaining=2)
+    begin
+      super
+    rescue ActiveRecord::StaleObjectError => e
+      if remaining > 0
+        load_and_update_response_set_with_retries(remaining - 1)
+      else
+        raise e
+      end
+    end
+  end
+
   private
 
   # TODO: ensure that the state transitions are based on the responses in the response set

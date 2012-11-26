@@ -87,5 +87,71 @@ describe SurveyorController do
 
   end
 
+  describe 'PUT one set of responses' do
+    describe 'when there is an exception' do
+      # Test setup copied from surveyor's surveyor_controller_spec, mostly.
 
+      let(:survey_code) { 'XYZ' }
+      let!(:survey) { Factory(:survey, :title => survey_code, :access_code => survey_code) }
+
+      let(:response_set_code) { 'PDQ' }
+      let!(:response_set) { Factory(:response_set, :access_code => response_set_code, :survey => survey) }
+
+      let(:responses_ui_hash) { {} }
+
+      let(:params) {
+        {
+          :survey_code => survey_code,
+          :response_set_code => response_set_code,
+          :r => responses_ui_hash.empty? ? nil : responses_ui_hash
+        }
+      }
+
+      def do_put
+        xhr :put, :update, params
+      end
+
+      def a_ui_response(hash)
+        { 'api_id' => 'something' }.merge(hash)
+      end
+
+      before do
+        responses_ui_hash['11'] = a_ui_response('answer_id' => '56', 'question_id' => '9')
+
+        ResponseSet.stub!(:find_by_access_code).and_return(response_set)
+      end
+
+      it 'retries the update on an optimistic locking failure' do
+        response_set.should_receive(:update_from_ui_hash).ordered.
+          with(responses_ui_hash).and_raise(ActiveRecord::StaleObjectError)
+        response_set.should_receive(:update_from_ui_hash).ordered.
+          with(responses_ui_hash)
+
+        lambda { do_put }.should_not raise_error
+      end
+
+      it 'retries the update on a constraint violation' do
+        response_set.should_receive(:update_from_ui_hash).ordered.
+          with(responses_ui_hash).and_raise(ActiveRecord::StatementInvalid)
+        response_set.should_receive(:update_from_ui_hash).ordered.
+          with(responses_ui_hash)
+
+        lambda { do_put }.should_not raise_error
+      end
+
+      it 'only retries three times' do
+        response_set.should_receive(:update_from_ui_hash).exactly(3).times.
+          with(responses_ui_hash).and_raise(ActiveRecord::StaleObjectError)
+
+        lambda { do_put }.should raise_error(ActiveRecord::StaleObjectError)
+      end
+
+      it 'does not retry for other errors' do
+        response_set.should_receive(:update_from_ui_hash).once.
+          with(responses_ui_hash).and_raise('Bad news')
+
+        lambda { do_put }.should raise_error('Bad news')
+      end
+    end
+  end
 end
