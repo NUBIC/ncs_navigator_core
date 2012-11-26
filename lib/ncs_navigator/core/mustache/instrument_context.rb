@@ -53,7 +53,7 @@ module NcsNavigator::Core::Mustache
     def p_cell_phone
       cell_phone = "[CELL PHONE NUMBER]"
       if person = @response_set.try(:person)
-        cell_phone = person.primary_cell_phone if person.primary_cell_phone
+        cell_phone = format_phone_number(person.primary_cell_phone) if person.primary_cell_phone
       end
       cell_phone
     end
@@ -61,7 +61,7 @@ module NcsNavigator::Core::Mustache
     def p_home_phone
       home_phone = "[HOME PHONE NUMBER]"
       if person = @response_set.try(:person)
-        home_phone = person.primary_home_phone if person.primary_home_phone
+        home_phone = format_phone_number(person.primary_home_phone) if person.primary_home_phone
       end
       home_phone
     end
@@ -72,10 +72,16 @@ module NcsNavigator::Core::Mustache
         cell_phone = p_cell_phone
 
         result = nil
-        result = cell_phone unless cell_phone == "[CELL PHONE NUMBER]"
-        result = home_phone unless home_phone == "[HOME PHONE NUMBER]"
+        result = format_phone_number(cell_phone) unless cell_phone == "[CELL PHONE NUMBER]"
+        result = format_phone_number(home_phone) unless home_phone == "[HOME PHONE NUMBER]"
         result
       end
+    end
+
+    def format_phone_number(nbr)
+      nbr = nbr.to_s
+      return nbr if nbr.length != 10
+      nbr.insert(3, "-").insert(7, "-")
     end
 
     def p_email_address
@@ -365,7 +371,7 @@ module NcsNavigator::Core::Mustache
 
     def child_secondary_number
       default = "[SECONDARY PHONE NUMBER]"
-      result = about_person.blank? ? default : about_person.secondary_phone.to_s
+      result = about_person.blank? ? default : format_phone_number(about_person.secondary_phone.to_s)
       result.blank? ? default : result
     end
 
@@ -380,7 +386,7 @@ module NcsNavigator::Core::Mustache
     def work_place_name
       default = "[PARTICIPANTS WORKPLACE NAME]"
       result = response_for("PREG_VISIT_1_3.WORK_NAME")
-      if result.blank? 
+      if result.blank?
         result = response_for("PREG_VISIT_2_3.WORK_NAME")
       end
       result.blank? ? default : result
