@@ -35,6 +35,8 @@ end
 set :deploy_to, bcconf["deploy_to"]
 set :deploy_via, :remote_cache
 
+set :monit_config_path, '/etc/monit.d'
+
 task :set_roles do
   role :app, app_server
   role :web, app_server
@@ -73,6 +75,12 @@ namespace :deploy do
   [:start, :stop].each do |t|
     desc "#{t} task is a no-op with mod_rails"
     task t, :roles => :app do ; end
+  end
+
+  desc "Deploy Monit configuration for Cases"
+  task :monit do
+    path = "#{monit_config_path}/cases.conf"
+    sudo "umask 0077 && rake monit:config:generate > '#{path}' && chown root '#{path}'"
   end
 
   desc "Fix permissions"
