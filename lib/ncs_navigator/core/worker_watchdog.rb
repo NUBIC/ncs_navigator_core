@@ -10,7 +10,7 @@ module NcsNavigator::Core
     ##
     # The key containing last time a watchdog job completed.
     def worker_watchdog_key
-      'cases_worker_watchdog_last_checkin'
+      "nubic:ncs_navigator_core:worker_watchdog_#{Rails.env}:last_checkin"
     end
 
     ##
