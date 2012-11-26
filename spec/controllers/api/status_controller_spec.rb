@@ -1,4 +1,4 @@
-equire 'spec_helper'
+require 'spec_helper'
 
 describe Api::StatusController do
   describe '#show' do
