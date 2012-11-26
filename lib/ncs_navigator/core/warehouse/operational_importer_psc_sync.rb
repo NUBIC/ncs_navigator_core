@@ -413,12 +413,17 @@ module NcsNavigator::Core::Warehouse
 
         begin
           PaperTrail.whodunnit = WHODUNNIT
-          Event.create_placeholder_record(
-            psc_participant.participant,
-            implied_event[:start_date],
-            event_type.local_code,
-            nil # skip scheduled segment id because it is no longer used
-            )
+          existing_count = psc_participant.participant.events.where(
+            :event_type_code => event_type.local_code, :event_start_date => implied_event[:start_date]).count
+
+          if existing_count == 0
+            Event.create_placeholder_record(
+              psc_participant.participant,
+              implied_event[:start_date],
+              event_type.local_code,
+              nil # skip scheduled segment id because it is no longer used
+              )
+          end
         ensure
           PaperTrail.whodunnit = nil
         end

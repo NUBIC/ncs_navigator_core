@@ -866,6 +866,10 @@ module NcsNavigator::Core::Warehouse
 
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
 
+        # 6 month already exists
+        Factory(:event, :participant => participant,
+          :event_type_code => 24, :event_start_date => Date.new(2011, 3, 16))
+
         with_versioning { importer.create_placeholders_for_implied_events(psc_participant) }
       end
 
@@ -887,6 +891,11 @@ module NcsNavigator::Core::Warehouse
         # 3 month
         participant.events.where(:event_type_code => 23).first.
           event_start_date.to_s.should == '2010-12-31'
+      end
+
+      it 'does not create placeholders for PSC events that already exist in Cases' do
+        # 6 month
+        participant.events.where(:event_type_code => 24).count.should == 1
       end
 
       it 'audits the new events as coming from the PSC sync' do
