@@ -44,7 +44,7 @@ class ParticipantsController < ApplicationController
   ##
   # GET /participants/:id
   def show
-    @participant = Participant.find(params[:id])
+    load_participant
     @person = @participant.person
     @participant_activity_plan = psc.build_activity_plan(@participant)
 
@@ -65,7 +65,7 @@ class ParticipantsController < ApplicationController
   # POST /participant/:id/register_with_psc
   # POST /participant:id/register_with_psc.json
   def register_with_psc
-    @participant = Participant.find(params[:id])
+    load_participant
     resp = psc.assign_subject(@participant)
 
     url = edit_participant_path(@participant)
@@ -102,7 +102,7 @@ class ParticipantsController < ApplicationController
   # POST /participant/:id/schedule_next_event_with_psc
   # POST /participant:id/schedule_next_event_with_psc.json
   def schedule_next_event_with_psc
-    @participant = Participant.find(params[:id])
+    load_participant
 
     url = edit_participant_path(@participant)
     url = params[:redirect_to] unless params[:redirect_to].blank?
@@ -143,7 +143,7 @@ class ParticipantsController < ApplicationController
   #
   # GET /participants/:id/schedule
   def schedule
-    @participant = Participant.find(params[:id])
+    load_participant
     @subject_schedules = psc.schedules(@participant)
   end
 
@@ -186,11 +186,11 @@ class ParticipantsController < ApplicationController
 
   # GET /participants/1/edit
   def edit
-    @participant = Participant.find(params[:id])
+    load_participant
   end
 
   def update
-    @participant = Participant.find(params[:id])
+    load_participant
 
     respond_to do |format|
       if @participant.update_attributes(params[:participant])
@@ -204,11 +204,11 @@ class ParticipantsController < ApplicationController
   end
 
   def edit_arm
-    @participant = Participant.find(params[:id])
+    load_participant
   end
 
   def update_arm
-    @participant = Participant.find(params[:id])
+    load_participant
 
     mark_pending_event_activities_canceled(@participant)
     if @participant.switch_arm
@@ -233,11 +233,11 @@ class ParticipantsController < ApplicationController
   end
 
   def edit_ppg_status
-    @participant = Participant.find(params[:id])
+    load_participant
   end
 
   def update_ppg_status
-    @participant = Participant.find(params[:id])
+    load_participant
     respond_to do |format|
       if @participant.update_attributes(params[:participant])
         format.html { redirect_to(participant_path(@participant), :notice => 'Participant PPG Status was successfully updated.') }
@@ -250,12 +250,12 @@ class ParticipantsController < ApplicationController
   end
 
   def mark_event_out_of_window
-    @participant = Participant.find(params[:id])
+    load_participant
     @person = @participant.person
   end
 
   def process_mark_event_out_of_window
-    @participant = Participant.find(params[:id])
+    load_participant
     event = Event.find(params[:event_id])
     resp = @participant.mark_event_out_of_window(psc, event)
     if resp && resp.success?
@@ -267,7 +267,7 @@ class ParticipantsController < ApplicationController
   end
 
   def enroll
-    @participant = Participant.find(params[:id])
+    load_participant
     @participant.enroll!
 
     url = participant_path(@participant)
@@ -277,7 +277,7 @@ class ParticipantsController < ApplicationController
   end
 
   def unenroll
-    @participant = Participant.find(params[:id])
+    load_participant
     @participant.unenroll!(psc, params[:enrollment_status_comment])
 
     url = participant_path(@participant)
@@ -287,7 +287,7 @@ class ParticipantsController < ApplicationController
   end
 
   def remove_from_active_followup
-    @participant = Participant.find(params[:id])
+    load_participant
     @participant.unenroll!(psc, params[:enrollment_status_comment])
 
     url = participant_path(@participant)
@@ -301,14 +301,14 @@ class ParticipantsController < ApplicationController
   # state in case of issues
   def correct_workflow
     @low_intensity_states = [["registered", "Registered"], ["in_pregnancy_probability_group", "In Pregnancy Probii"]]
-    @participant = Participant.find(params[:id])
+    load_participant
   end
 
   ##
   # Simple action to move participant from one state to the next
   # PUT /participants/1/process_update_state
   def process_update_state
-    @participant = Participant.find(params[:id])
+    load_participant
     @participant.state = params[:new_state]
     @participant.high_intensity = true if params[:new_state] == "moved_to_high_intensity_arm"
     @participant.save!
@@ -319,14 +319,14 @@ class ParticipantsController < ApplicationController
   ##
   # Show changes
   def versions
-    @participant = Participant.find(params[:id])
+    load_participant
     if params[:export]
       send_data(@participant.export_versions, :filename => "#{@participant.public_id}.csv")
     end
   end
 
   def update_psc
-    @participant = Participant.find(params[:id])
+    load_participant
     psc.update_subject(@participant)
     flash[:notice] = "Participant information was sent to PSC."
     redirect_to participant_path(@participant)
@@ -338,6 +338,14 @@ class ParticipantsController < ApplicationController
       participant.pending_events.each do |e|
         e.cancel_activities(psc)
       end
+    end
+
+    def load_participant
+      return unless params[:id]
+      @participant =
+        Participant.find_by_id(params[:id]) ||
+        Participant.find_by_p_id(params[:id]) ||
+        raise(ActiveRecord::RecordNotFound, "Couldn't find Participant with id=#{params[:id]} or p_id=#{params[:id]}")
     end
 
 end
