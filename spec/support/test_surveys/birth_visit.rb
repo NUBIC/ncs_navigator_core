@@ -244,11 +244,11 @@ module BirthVisit
   
   def create_pv2_and_birth_with_work_name
     load_survey_questions_string(<<-QUESTIONS)
-      q_WORK_NAME 'text', :data_export_identifier => "PREG_VISIT_2_3.WORK_NAME", :pick => :one
+      q_WORK_NAME 'text', :data_export_identifier => "PREG_VISIT_1_3.WORK_NAME", :pick => :one
       a_string "Work Name", :string
       a_neg_1 "Refused"
       
-      q_WORK_NAME_BIRTH 'text', :data_export_identifier => "BIRTH_VISIT_3.WORK_NAME", :pick => :one
+      q_WORK_NAME_BIRTH 'text', :data_export_identifier => "PREG_VISIT_2_3.WORK_NAME", :pick => :one
       a_string "Work Name", :string
       a_neg_1 "Refused"
     QUESTIONS
