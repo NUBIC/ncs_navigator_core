@@ -1,4 +1,4 @@
-require 'spec_helper'
+equire 'spec_helper'
 
 describe Api::StatusController do
   describe '#show' do
@@ -8,16 +8,6 @@ describe Api::StatusController do
       get :show
 
       response.code.should == '200'
-    end
-
-    describe 'if the database connection is up' do
-      it 'returns db = true' do
-        body['db'].should be_true
-      end
-
-      it 'returns 200' do
-        response.code.should == '200'
-      end
     end
   end
 end

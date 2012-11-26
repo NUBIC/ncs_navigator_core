@@ -1,14 +1,10 @@
 class Api::StatusController < ActionController::Base
+  include NcsNavigator::Core::StatusChecks
+
   def show
-    # Check database connection
-    db_ok = begin
-              !ActiveRecord::Base.connection.execute('SELECT 1').nil?
-            rescue Exception
-              false
-            end
+    report = Report.new
+    report.run
 
-    ok = db_ok
-
-    render :json => { 'db' => db_ok }, :status => ok ? :ok : :internal_server_error
+    render :json => report.to_json, :status => report.failed? ? :internal_server_error : :ok
   end
 end
