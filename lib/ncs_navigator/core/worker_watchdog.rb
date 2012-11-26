@@ -17,7 +17,7 @@ module NcsNavigator::Core
     # If the workers haven't checked in within this many seconds, consider
     # them dead.
     def worker_watchdog_threshold
-      120
+      60
     end
 
     ##
