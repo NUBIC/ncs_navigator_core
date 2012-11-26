@@ -1151,13 +1151,13 @@ module NcsNavigator::Core::Mustache
         end
 
         let(:instrument_context) { InstrumentContext.new(@response_set) }
-        let(:work_name) { "PREG_VISIT_2_3.WORK_NAME" }
+        let(:work_name) { "PREG_VISIT_1_3.WORK_NAME" }
 
-        it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
+        it "returns work name as the most recent response for PREG_VISIT_1_3.WORK_NAME" do
           take_survey(@survey, @response_set) do |a|
             a.str work_name, 'NWU'
           end
-          @response_set.instrument.event = Factory(:event, :event_type_code => 15)
+          # @response_set.instrument.event = Factory(:event, :event_type_code => 15)
           instrument_context.work_place_name.should == 'NWU'
         end
       end
@@ -1169,14 +1169,14 @@ module NcsNavigator::Core::Mustache
         end
 
         let(:instrument_context) { InstrumentContext.new(@response_set) }
-        let(:work_name) { "BIRTH_VISIT_3.WORK_NAME" }
+        let(:work_name) { "PREG_VISIT_2_3.WORK_NAME" }
 
 
-        it "returns work name as the most recent response for BIRTH_VISIT_3.WORK_NAME" do
+        it "returns work name as the most recent response for PREG_VISIT_2_3.WORK_NAME" do
           take_survey(@survey, @response_set) do |a|
             a.str work_name, 'NUBIC'
           end
-          @response_set.instrument.event = Factory(:event, :event_type_code => 18)
+          # @response_set.instrument.event = Factory(:event, :event_type_code => 18)
           instrument_context.work_place_name.should == 'NUBIC'
         end
 

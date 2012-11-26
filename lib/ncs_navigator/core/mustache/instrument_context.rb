@@ -378,14 +378,12 @@ module NcsNavigator::Core::Mustache
     end
 
     def work_place_name
-      result = "[PARTICIPANTS WORKPLACE NAME]"
-      if (event_type_code == 15)
+      default = "[PARTICIPANTS WORKPLACE NAME]"
+      result = response_for("PREG_VISIT_1_3.WORK_NAME")
+      if result.blank? 
         result = response_for("PREG_VISIT_2_3.WORK_NAME")
       end
-      if (event_type_code == 18)
-        result = response_for("BIRTH_VISIT_3.WORK_NAME")
-      end
-      result
+      result.blank? ? default : result
     end
 
     def work_address
