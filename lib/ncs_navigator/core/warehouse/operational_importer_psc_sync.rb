@@ -403,7 +403,7 @@ module NcsNavigator::Core::Warehouse
         imported_events.find { |imported_event|
           find_psc_event([psc_event], imported_event['start_date'], imported_event['event_type_label'])
         }
-      }.reject { |psc_event| psc_event[:start_date] < latest_imported_event_date }.
+      }.reject { |psc_event| latest_imported_event_date && (psc_event[:start_date] < latest_imported_event_date) }.
         reject { |psc_event| psc_event[:event_type_label] == 'informed_consent' }
 
       scheduled_events.each do |implied_event|

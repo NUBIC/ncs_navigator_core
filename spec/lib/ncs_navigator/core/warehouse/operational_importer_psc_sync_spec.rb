@@ -173,6 +173,13 @@ module NcsNavigator::Core::Warehouse
         importer.import
         redis.smembers("#{ns}:psc_sync:participants_backup").sort.should == ['another', p_id]
       end
+
+      it 'does not die if a participant has no events to sync' do
+        redis.del "#{ns}:psc_sync:p:#{p_id}:events"
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+
+        expect { importer.import }.to_not raise_error
+      end
     end
 
     describe '#reset' do
