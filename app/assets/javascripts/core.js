@@ -64,65 +64,48 @@ jQuery.fn.exists = function(){return jQuery(this).length>0;}
 
 $(document).ready(function() {
 
-  $("input[type='text'].datetime").live('focus',
-    function() {
-      $(this).datetimepicker( {
-        controlType: 'select',
-        timeFormat: 'hh:mm:ss',
-        dateFormat: 'yy-mm-dd'
-      } )
-    }
-  );
-  $("input[type='text'].date").live('focus',
-    function() {
-      $(this).datepicker( {
-      	dateFormat: 'yy-mm-dd',
-      	changeMonth: true,
-      	changeYear: true,
-      	yearRange: '1920:2020'
-      } )
-    }
-  );
-  $("input[type='text'].datepicker").live('focus',
-    function() {
-      $(this).datepicker( {
-      	dateFormat: 'yy-mm-dd',
-      	changeMonth: true,
-      	changeYear: true,
-      	yearRange: '1920:2020'
-      } )
-    }
-  );
-
-  $("input[type='text'].time").live('focus',
-    function() { $(this).timepicker({
-      controlType: 'select'
-    })
+  $("input[type='text'].datetime").datetimepicker({
+    controlType: 'select',
+    timeFormat: 'hh:mm:ss',
+    dateFormat: 'yy-mm-dd'
+  });
+  $("input[type='text'].date").datepicker({
+    dateFormat: 'yy-mm-dd',
+    changeMonth: true,
+    changeYear: true,
+    yearRange: '1920:2020'
+  });
+  $("input[type='text'].datepicker").datepicker({
+    dateFormat: 'yy-mm-dd',
+    changeMonth: true,
+    changeYear: true,
+    yearRange: '1920:2020'
+  });
+  $("input[type='text'].time").timepicker({
+    controlType: 'select'
+  });
+  $("input[type='text'].timepicker").timepicker({
+    controlType: 'select'
   });
 
-  $("input[type='text'].timepicker").live('focus',
-    function() { $(this).timepicker({
-      controlType: 'select'
-    })
-  });
 
   // phone format
-  jQuery("input[type='text'].phone").mask("(999) 999-9999");
+  $("input[type='text'].phone").mask("(999) 999-9999");
 
   // two-digit limiter with '_' as the placeholder
-  jQuery("input[type='text'].two_digit_underscore").mask("99", { placeholder: "_" });
+  $("input[type='text'].two_digit_underscore").mask("99", { placeholder: "_" });
 
   // four-digit limiter with '_' as the placeholder
-  jQuery("input[type='text'].four_digit_underscore").mask("9999", { placeholder: "_" });
+  $("input[type='text'].four_digit_underscore").mask("9999", { placeholder: "_" });
 
   // five-digit limiter with '_' as the placeholder
-  jQuery("input[type='text'].five_digit_underscore").mask("99999", { placeholder: "_" });
+  $("input[type='text'].five_digit_underscore").mask("99999", { placeholder: "_" });
 
   // two-digit limiter with 'D' as the placeholder
-  jQuery("input[type='text'].two_digit_day").mask("99", { placeholder: "D" });
+  $("input[type='text'].two_digit_day").mask("99", { placeholder: "D" });
 
   // four-digit limiter with 'Y' as the placeholder
-  jQuery("input[type='text'].four_digit_year").mask("9999", { placeholder: "Y" });
+  $("input[type='text'].four_digit_year").mask("9999", { placeholder: "Y" });
 
   $('.mdes_documentation_link').click(function(event) {
     var definition = $(this).next('.mdes_definition').val();
