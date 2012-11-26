@@ -15,7 +15,6 @@ class SurveyorController < ApplicationController
 
     contact_link = @response_set.instrument.contact_link
 
-
     if @activity_plan.final_survey_part?(@response_set) || params[:breakoff]
       # mark all scheduled activities associated with survey as occurred
       @activity_plan.scheduled_activities_for_survey(@response_set.survey.title).each do |a|
@@ -53,9 +52,9 @@ class SurveyorController < ApplicationController
     core_participant = @response_set.participant
     if core_participant
       if core_participant.p_type_code == 6
-        @participant        = core_participant.mother.participant
+        @participant = core_participant.mother.participant
       else
-        @participant        = core_participant
+        @participant = core_participant
       end
     end
     @instrument           = @response_set.instrument
@@ -80,14 +79,11 @@ class SurveyorController < ApplicationController
   # TODO: ensure that the state transitions are based on the responses in the response set
   #       and that the disposition of the instrument was completed
   def update_participant_based_on_survey(response_set)
-    participant = response_set.participant
-
-    if participant
+    if participant = response_set.participant
       participant.update_state_after_survey(response_set, psc)
-    end
-
-    if participant && !participant.eligible? && response_set.survey.title =~ /PBSamplingScreen/
-      SampledPersonsIneligibility.create_from_participant!(participant)
+      if !participant.eligible? && response_set.survey.title =~ /PBSamplingScreen/
+        SampledPersonsIneligibility.create_from_participant!(participant)
+      end
     end
   end
 end
