@@ -305,6 +305,12 @@ class NcsNavigator::Core::RecordOfContactImporter
     def sync!
       wh_config.shell.say_line("Preparing records for PSC sync...")
 
+      # Wipe previously loaded values
+      Rails.application.redis.tap do |r|
+        keys = r.keys(keygen['*'])
+        r.del(*keys) unless keys.empty?
+      end
+
       sync_loader = Psc::SyncLoader.new(keygen)
 
       participants.values.each do |p|
