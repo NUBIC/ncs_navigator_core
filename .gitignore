@@ -5,6 +5,7 @@ db/*.sqlite3
 db/backups
 importer_passthrough
 log
+*.log
 tmp
 *.patch
 *.tar
