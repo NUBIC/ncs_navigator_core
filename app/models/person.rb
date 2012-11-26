@@ -566,7 +566,9 @@ class Person < ActiveRecord::Base
   # @return [Boolean]
   def first_child?
     if mother = participant.try(:mother)
-      return mother.children.first == self
+      if mother.participant?
+        return mother.children.first == self
+      end
     end
     false
   end

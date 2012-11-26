@@ -554,12 +554,17 @@ describe Person do
 
   describe ".first_child?" do
 
+    let(:grandmother) { Factory(:person) }
     let(:mother) { Factory(:person) }
     let(:first_child) { Factory(:person) }
     let(:second_child) { Factory(:person) }
     let(:participant) { Factory(:participant) }
 
     before(:each) do
+      # the mother participant has a mother relationship
+      Factory(:participant_person_link, :participant => participant, :person => grandmother, :relationship_code => 2)
+      participant.mother.should == grandmother
+
       participant.person = mother
       participant.save!
     end
