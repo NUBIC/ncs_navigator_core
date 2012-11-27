@@ -35,7 +35,7 @@ end
 set :deploy_to, bcconf["deploy_to"]
 set :deploy_via, :remote_cache
 
-set :monit_config_path, '/etc/monit.d'
+set :monit_config_path, '/etc/monit/conf.d'
 
 task :set_roles do
   role :app, app_server
