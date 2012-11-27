@@ -7,7 +7,7 @@ describe Api::StatusController do
     it 'does not require authentication' do
       get :show
 
-      response.code.should == '200'
+      response.code.should_not == '401'
     end
   end
 end
