@@ -2874,7 +2874,7 @@
       <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
       <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
-      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview" type="Instrument"/>
       <activity name="Pregnancy Probability Group Instrument CATI" code="CATI" description="Pregnancy Probability Group Instrument CATI" type="Instrument"/>
       <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
       <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
@@ -2889,9 +2889,9 @@
       <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
       <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
       <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
-      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview" type="Instrument"/>
       <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
-      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview" type="Instrument"/>
       <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
       <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
       <activity name="24-Month Mother Interview Part One" code="24MMI1" description="24-Month Mother Interview Part One" type="Instrument"/>
@@ -2907,13 +2907,13 @@
       <activity name="24-Month Mother Interview Mother Habits" code="24MMI MH" description="24-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
       <activity name="Participant Verification Instrument" code="PVI" description="Participant Verification Instrument" type="Instrument"/>
       <activity name="9-Month Mother Phone Interview" code="9MMPI" description="9-Month Mother Phone Interview" type="Instrument"/>
-      <activity name="Birth Interview" code="BI" description="Birth Interview Part One" type="Instrument"/>
+      <activity name="Birth Interview" code="BI" description="Birth Interview" type="Instrument"/>
       <activity name="Birth Interview Baby Name" code="BI BN" description="Birth Interview Baby Name - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother Interview Mother Mold" code="24MMI MM" description="24-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview Baby Name" code="LIBI BN" description="Low-Intensity Birth Interview Baby Name - Child Loop" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview" code="LIBI" description="Low-Intensity Birth Interview" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up Interview" code="PPGFUI" description="Pregnancy Probability Group Follow-Up Interview" type="Instrument"/>
-      <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview Part One" type="Instrument"/>
+      <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview" type="Instrument"/>
       <activity name="18-Month Mother SAQ" code="18MMSAQ" description="18-Month Mother SAQ" type="Instrument"/>
       <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
       <activity name="Child Consent" code="CC" description="Child Consent" type="Consent"/>
