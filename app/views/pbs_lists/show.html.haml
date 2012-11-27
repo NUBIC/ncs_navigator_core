@@ -22,10 +22,11 @@
         %span{ :class => "green_button" }
           = link_to "Edit Provider Recruitment Event Record", edit_event_path(event)
 
-    %span{ :class => "red_button" }
-      = link_to 'Assign Substitute Provider Due to Refusal to Participate',
-          refused_provider_path(@provider),
-          :confirm => "Are you certain you would like to assign a substitute provider?"
+    - if @pbs_list.pr_recruitment_status_code == 2
+      %span{ :class => "red_button" }
+        = link_to 'Assign Substitute Provider Due to Refusal to Participate',
+            refused_provider_path(@provider),
+            :confirm => "Are you certain you would like to assign a substitute provider?"
 
 :javascript
   $(function () {
