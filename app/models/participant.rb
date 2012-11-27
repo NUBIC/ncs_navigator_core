@@ -621,10 +621,11 @@ class Participant < ActiveRecord::Base
   end
 
   def due_date_is_greater_than_follow_up_interval
-      c = Contact.joins(:contact_links).joins("left outer join events on events.id = contact_links.event_id").where("events.participant_id = ?", self.id).order("contact_date desc").first
-      most_recent_date = c.contact_date_date unless c.contact_date_date.nil?
-      due_date && due_date > follow_up_interval.since(most_recent_date)
-    end
+    c = most_recent_contact
+    # sanity check - contact date should not be nil but if it is use today
+    most_recent_date = c.contact_date_date.nil? ? Date.today : c.contact_date_date
+    due_date && due_date > follow_up_interval.since(most_recent_date)
+  end
 
   ##
   # The known due date for the pregnant participant, used to schedule the Birth Visit
@@ -846,10 +847,13 @@ class Participant < ActiveRecord::Base
   end
 
   def last_contact
-    Contact.joins(:contact_links).joins(
-      "left outer join events on events.id = contact_links.event_id").where(
-      "events.participant_id = ?", self.id).order("contact_date desc").first
+    Contact.joins(:contact_links).
+      joins("left outer join events on events.id = contact_links.event_id").
+      where("events.participant_id = ?", self.id).
+      order("contact_date desc").
+      first
   end
+  alias :most_recent_contact :last_contact
 
   ##
   # True if participant is known to live in Tertiary Sampling Unit
