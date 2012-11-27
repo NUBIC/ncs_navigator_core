@@ -54,8 +54,8 @@ module NcsNavigator::Core
 
       def issue_checks
         loop do
-          Worker.perform_async
           sleep watchdog_periodicity
+          Worker.perform_async
         end
       end
     end
