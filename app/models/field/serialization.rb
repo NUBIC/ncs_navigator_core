@@ -101,7 +101,7 @@ module Field
     def event_template_instruments_as_json(instruments, options)
       instruments.map do |i|
         plan = plan_for(i)
-        label = InstrumentLabel.new(i.survey)
+        label = InstrumentLabel.new(i.survey.access_code)
         code = label.ncs_code
 
         if plan && code

@@ -82,7 +82,8 @@ module Field
     shared_context 'has an event template with an instrument' do
       include_context 'has an event template'
 
-      let(:instrument_ir) { Psc::ImpliedEntities::Instrument.new('2.0:foo-bar', nil, 'Foo Bar Instrument') }
+      let(:survey_ir) { Psc::ImpliedEntities::Survey.new('2.0:foo-bar') }
+      let(:instrument_ir) { Psc::ImpliedEntities::Instrument.new(survey_ir, nil, 'Foo Bar Instrument') }
       let(:instruments) { event_templates[0]['instruments'] }
       let(:instrument_plan_ir) do
         stub(:root => instrument_ir, :surveys => [], :id => 'foo')
