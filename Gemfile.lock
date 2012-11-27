@@ -305,7 +305,7 @@ GEM
     multi_json (1.3.7)
     multipart-post (1.1.5)
     mustache (0.99.4)
-    ncs_navigator_authority (1.1.0)
+    ncs_navigator_authority (1.1.1)
       aker (~> 3.0)
       faraday (~> 0.7.5)
       faraday-stack (~> 0.1.3)
