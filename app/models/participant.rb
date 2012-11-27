@@ -407,6 +407,13 @@ class Participant < ActiveRecord::Base
   end
 
   ##
+  # True if the participant has children
+  # @return[Boolean]
+  def has_children?
+    !self.children.blank?
+  end
+
+  ##
   # The current pregnancy probability group status for this participant.
   #
   # This is determined either by the first assigned status from the ppg_details relationship

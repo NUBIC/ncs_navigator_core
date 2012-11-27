@@ -497,6 +497,28 @@ describe Participant do
 
   end
 
+  describe "#has_children?" do
+
+    it "is false if the participant has no children" do
+      participant = Factory(:participant)
+      participant.children.should be_empty
+      participant.has_children?.should be_false
+    end
+
+    it "is true if the participant has children" do
+      person = Factory(:person)
+      participant = Factory(:participant)
+      participant.person = person
+      participant.save!
+
+      participant.create_child_person_and_participant!({:first_name => "cfname", :last_name => "clname"})
+      participant.participant_person_links.reload
+      participant.children.should_not be_empty
+      participant.has_children?.should be_true
+    end
+
+  end
+
   context "when determining schedule" do
 
     describe "a participant who has had a recent pregnancy loss (PPG 3)" do
