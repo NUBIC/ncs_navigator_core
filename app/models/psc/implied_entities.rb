@@ -8,7 +8,9 @@ module Psc
     module Fingerprint
       def fingerprint
         concat = self.class.members.map do |m|
-          m.respond_to?(:fingerprint) ? m.fingerprint : m.to_s
+          v = send(m)
+
+          v.respond_to?(:fingerprint) ? v.fingerprint : v.to_s
         end.join('')
 
         @fingerprint ||= Digest::SHA1.hexdigest(concat)
