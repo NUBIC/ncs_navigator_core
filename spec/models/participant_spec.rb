@@ -969,7 +969,9 @@ describe Participant do
         participant.events << Factory(:event, :participant => participant,
                                         :event_start_date => Date.today, :event_end_date => Date.today,
                                         :event_type => NcsCode.pregnancy_screener)
-
+        contact = Factory(:contact, :contact_date_date => Date.today)
+        event = Factory(:event, :participant => participant)
+        contact_link = Factory(:contact_link, :contact => contact, :event => event)
         Factory(:ppg_status_history, :participant => participant, :ppg_status => status3, :ppg_status_date => '2011-01-01' )
         participant.assign_to_pregnancy_probability_group!
         participant.should be_in_pregnancy_probability_group

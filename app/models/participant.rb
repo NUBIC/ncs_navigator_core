@@ -621,8 +621,10 @@ class Participant < ActiveRecord::Base
   end
 
   def due_date_is_greater_than_follow_up_interval
-    due_date && due_date > follow_up_interval.from_now.to_date
-  end
+      c = Contact.joins(:contact_links).joins("left outer join events on events.id = contact_links.event_id").where("events.participant_id = ?", self.id).order("contact_date desc").first
+      most_recent_date = c.contact_date_date unless c.contact_date_date.nil?
+      due_date && due_date > follow_up_interval.since(most_recent_date)
+    end
 
   ##
   # The known due date for the pregnant participant, used to schedule the Birth Visit

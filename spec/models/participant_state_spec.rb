@@ -96,6 +96,7 @@ describe Participant do
                         participant.events << lo_i_quex
                         participant }
     let(:survey) { Factory(:survey, :title => "_LIPregNotPreg_") }
+    let(:instrument) { Factory(:instrument, :survey => survey , :person => participant.person)}
     let(:response_set) { Factory(:response_set, :survey => survey, :person => participant.person) }
 
     describe "in ppg 2 (trying)" do
@@ -112,7 +113,9 @@ describe Participant do
 
       it "should be following low intensity if the due_date > 6 mos" do
         due_date = 8.months.from_now
-
+        contact = Factory(:contact, :contact_date_date => Date.today)
+        event = Factory(:event, :participant => participant)
+        Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime('%Y-%m-%d'))
 
         participant.should be_in_pregnancy_probability_group
@@ -123,9 +126,10 @@ describe Participant do
 
       it "should be pregnant if the due_date < 6 mos" do
         due_date = 4.months.from_now
-
+        contact = Factory(:contact, :contact_date_date => Date.today)
+        event = Factory(:event, :participant => participant)
+        Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime("%Y-%m-%d"))
-
         participant.should be_in_pregnancy_probability_group
         participant.update_state_after_survey(response_set, psc)
 

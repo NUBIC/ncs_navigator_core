@@ -69,6 +69,9 @@ describe Participant do
         let(:person) { Factory(:person) }
 
         before(:each) do
+          contact = Factory(:contact, :contact_date_date => Date.today)
+          event = Factory(:event, :participant => participant)
+          contact_link = Factory(:contact_link, :contact => contact, :event => event)
           participant.person = person
           participant.events << Factory(:event, :participant => participant,
                               :event_start_date => Date.today, :event_end_date => Date.today,
