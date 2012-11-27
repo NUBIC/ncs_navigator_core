@@ -2,6 +2,6 @@
 
 module NcsNavigator
   module Core
-    VERSION='1.3.4.pre'
+    VERSION='1.3.4'
   end
 end
