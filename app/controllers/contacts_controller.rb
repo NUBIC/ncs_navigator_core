@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'ncs_navigator/configuration'
-
+require 'ncs_navigator/authorization'
 class ContactsController < ApplicationController
   before_filter :set_event_id
   before_filter :set_staff_list
