@@ -35,7 +35,7 @@ end
 set :deploy_to, bcconf["deploy_to"]
 set :deploy_via, :remote_cache
 
-set :monit_config_path, '/etc/monit.d'
+set :monit_config_path, '/etc/monit/conf.d'
 
 task :set_roles do
   role :app, app_server
@@ -78,9 +78,13 @@ namespace :deploy do
   end
 
   desc "Deploy Monit configuration for Cases"
-  task :monit do
-    path = "#{monit_config_path}/cases.conf"
-    sudo "umask 0077 && rake monit:config:generate > '#{path}' && chown root '#{path}'"
+  task :monit, :roles => :app do
+    require 'securerandom'
+    target = "#{monit_config_path}/cases.conf"
+    tmp = "/tmp/#{::SecureRandom.urlsafe_base64}"
+
+    run %Q{sh -c "umask 0077 && cd #{current_path} && bundle exec rake monit:config:generate > #{tmp}"}
+    sudo %Q{sh -c "mv #{tmp} #{target} && chown root #{target}"}
   end
 
   desc "Fix permissions"
