@@ -162,6 +162,14 @@ module NcsNavigator::Core::Mustache
           rs = mock_model(ResponseSet, :person => person)
           InstrumentContext.new(rs).p_phone_number.should == home_phone
         end
+
+        it "formats the phone number" do
+          actual   = "3125555656"
+          expected = "312-555-5656"
+          person = mock_model(Person, :primary_home_phone => actual, :primary_cell_phone => nil)
+          rs = mock_model(ResponseSet, :person => person)
+          InstrumentContext.new(rs).p_phone_number.should == expected
+        end
       end
 
     end

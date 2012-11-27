@@ -1,14 +1,9 @@
-<% PID_FILE = File.join(pwd, 'tmp', 'pids', 'sidekiq.pid') %>
-
-<% 
-  ( env = [] ) << "RAILS_ENV=#{Rails.env}"
-  cd = "cd #{pwd}"
-  sidekiq = "bundle exec sidekiq -P #{PID_FILE}"
-  command = [env, cd, sidekiq].flatten.join(' && ')
-%>
+<% pid = Rails.root.join('tmp/pids/sidekiq.pid') %>
+<% log = Rails.root.join("log/sidekiq_#{Rails.env}.log") %>
 
 check process sidekiq
-  with pidfile <%= PID_FILE %>
-  start program = "/bin/bash -c '<%= command %>'" with timeout 90 seconds
-  stop program = "/bin/bash -c 'kill -s TERM `cat <%= PID_FILE %>`'" with timeout 90 seconds
+  with pidfile <%= pid %>
+  start program = "<%= Rails.root.join('script/sidekiq.sh') %> start '<%= Rails.env %>' '<%= pid %>' '<%= log %>'"
+    as uid ncs_navigator_core
+  stop program = "<%= Rails.root.join('script/sidekiq.sh') %> stop '<%= Rails.env %>' '<%= pid %>' '<%= log %>'"
   group ncs_navigator_core

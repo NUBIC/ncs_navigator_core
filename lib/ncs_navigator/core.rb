@@ -14,9 +14,11 @@ module NcsNavigator
     autoload :Pbs,                      'ncs_navigator/core/pbs'
     autoload :Psc,                      'ncs_navigator/core/psc'
     autoload :RecordOfContactImporter,  'ncs_navigator/core/record_of_contact_importer'
-    autoload :Surveyor,                 'ncs_navigator/core/surveyor'
     autoload :RedisConfiguration,       'ncs_navigator/core/redis_configuration'
-    autoload :Warehouse,                'ncs_navigator/core/warehouse'
     autoload :ResponseSetPopulator,     'ncs_navigator/core/response_set_populator'
+    autoload :StatusChecks,             'ncs_navigator/core/status_checks'
+    autoload :Surveyor,                 'ncs_navigator/core/surveyor'
+    autoload :Warehouse,                'ncs_navigator/core/warehouse'
+    autoload :WorkerWatchdog,           'ncs_navigator/core/worker_watchdog'
   end
 end

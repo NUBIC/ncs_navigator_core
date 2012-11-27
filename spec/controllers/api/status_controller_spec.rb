@@ -9,15 +9,5 @@ describe Api::StatusController do
 
       response.code.should == '200'
     end
-
-    describe 'if the database connection is up' do
-      it 'returns db = true' do
-        body['db'].should be_true
-      end
-
-      it 'returns 200' do
-        response.code.should == '200'
-      end
-    end
   end
 end
