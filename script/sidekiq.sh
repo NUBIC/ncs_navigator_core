@@ -11,7 +11,8 @@ function start {
 	set -x
 	. ~/.bashrc
 
-	cd $2 && exec bundle exec sidekiq -e $1 -P $3 >> $4 2>&1
+	BUNDLE_GEMFILE=$2/Gemfile
+	exec bundle exec sidekiq -e $1 -P $3 >> $4 2>&1
 }
 
 # Sends TERM to the PID in the specified pidfile.
