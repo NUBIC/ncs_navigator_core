@@ -409,7 +409,9 @@ module NcsNavigator::Core::Mustache
 
     #Nataliya's comment, make sense to remove this method and call local_study_affiliate in mustache instead. Leaving it as is now
     def institution
-      local_study_affiliate
+      default = "[INSTITUTION]"
+      result = local_study_affiliate
+      result.blank? ? default : result
     end
 
     def practice_name

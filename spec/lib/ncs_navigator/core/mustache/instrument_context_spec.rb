@@ -63,6 +63,10 @@ module NcsNavigator::Core::Mustache
         it "returns the name of the institution involved in the study" do
           instrument_context.institution.should == sc_config["study_center_name"]
         end
+        it "returns [INSTITUTION] if study_center is not configured" do
+          sc_config["study_center_name"] = nil
+          instrument_context.institution.should == '[INSTITUTION]'
+        end
       end
 
       describe ".county" do
