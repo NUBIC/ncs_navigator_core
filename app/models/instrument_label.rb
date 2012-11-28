@@ -33,6 +33,6 @@ class InstrumentLabel
   def ncs_code
     s = Survey.most_recent_for_access_code(access_code)
 
-    NcsCode.for_attributes('instrument_type_code').where(:display_text => s.try(:title)).first
+    InstrumentEventMap.instrument_type(s.try(:title))
   end
 end
