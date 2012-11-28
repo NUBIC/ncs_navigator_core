@@ -44,7 +44,7 @@ describe ContactsController do
         before(:each) do
           Contact.stub(:new).and_return(mock_contact)
           params = {:participant => @participant, :event_type => @preg_screen_event,
-                    :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.today}
+                    :psu_code => NcsNavigatorCore.psu_code, :event_start_date => Date.parse("2525-02-01")}
           @event = Factory(:event, params)
           Event.stub(:new).with(params).and_return(@event)
           Event.stub(:schedule_and_create_placeholder).and_return(nil)
@@ -86,12 +86,13 @@ describe ContactsController do
         it "creates a new contact link and event when continuing to next event" do
           Event.stub(:schedule_and_create_placeholder).and_return(nil)
 
+          date = Date.parse("2525-02-01")
           @contact = Factory(:contact)
           event = Factory(:event, :participant => @participant,
-                          :event_start_date => Date.today, :event_end_date => Date.today,
+                          :event_start_date => date, :event_end_date => date,
                           :event_type => NcsCode.pregnancy_screener)
           event2 = Factory(:event, :participant => @participant,
-                          :event_start_date => Date.today, :event_end_date => nil,
+                          :event_start_date => date, :event_end_date => nil,
                           :event_type => @ppg12_event)
           contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
           @person.upcoming_events.to_s.should include("Pregnancy Screener")
@@ -143,13 +144,14 @@ describe ContactsController do
 
 
     context "for a low_intensity_ppg2_participant" do
+      let(:date) { Date.parse("2525-02-01") }
       before(:each) do
         login(user_login)
         @person      = Factory(:person)
         @participant = Factory(:low_intensity_ppg2_participant)
         @participant.person = @person
         @event = Factory(:event, :participant => @participant,
-                        :event_start_date => Date.today, :event_end_date => Date.today,
+                        :event_start_date => date, :event_end_date => date,
                         :event_type => NcsCode.pregnancy_screener)
         @participant.events << @event
         @participant.save!
@@ -165,7 +167,7 @@ describe ContactsController do
             :participant => @participant,
             :event_type => NcsCode.low_intensity_data_collection,
             :psu_code => NcsNavigatorCore.psu_code,
-            :event_start_date => Date.today
+            :event_start_date => date
           }
           @event33 = Factory(:event, expected_params)
           @participant.events << @event33
@@ -233,7 +235,7 @@ describe ContactsController do
 
         def contact_attrs
           {
-            :contact_date => Date.today,
+            :contact_date => '2525-03-03',
             :contact_start_time => "11:22",
             :contact_end_time => "11:27",
           }

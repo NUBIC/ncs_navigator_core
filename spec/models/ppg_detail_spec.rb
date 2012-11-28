@@ -53,18 +53,20 @@ describe PpgDetail do
       ppg = Factory(:ppg_detail, :orig_due_date => nil, :due_date_2 => nil, :due_date_3 => nil)
       ppg.due_date.should be_nil
 
-      dt = 9.months.from_now.strftime("%Y%m%d")
+      date = Date.parse("2525-01-09")
+
+      dt = 9.months.since(date).strftime("%Y%m%d")
       ppg.update_due_date(dt)
       ppg.due_date.should == dt
       ppg.orig_due_date.should == dt
 
-      dt2 = 8.months.from_now.strftime("%Y%m%d")
+      dt2 = 8.months.since(date).strftime("%Y%m%d")
       ppg.update_due_date(dt2)
       ppg.orig_due_date.should == dt
       ppg.due_date_2.should == dt2
       ppg.due_date.should == dt2
 
-      dt3 = 7.months.from_now.strftime("%Y%m%d")
+      dt3 = 7.months.since(date).strftime("%Y%m%d")
       ppg.update_due_date(dt3)
       ppg.orig_due_date.should == dt
       ppg.due_date_2.should == dt2

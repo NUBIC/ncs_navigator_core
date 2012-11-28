@@ -243,8 +243,9 @@ describe Participant do
 
       describe "a high intensity participant" do
         it "moves to the high intensity pregnancy_one state" do
+          date = Date.parse("2525-01-01")
           Factory(:ppg_detail, :participant => participant, :ppg_first => status1,
-                  :orig_due_date => 4.months.from_now.strftime("%m/%d/%Y"))
+                  :orig_due_date => 4.months.since(date).strftime("%m/%d/%Y"))
 
           participant.should be_converted_high_intensity
           participant.update_state_after_survey(response_set, psc)
