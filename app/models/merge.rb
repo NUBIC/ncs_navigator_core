@@ -28,6 +28,8 @@ require 'stringio'
 # proposed data and metadata such as the merge status, log, and conflict
 # report.
 class Merge < ActiveRecord::Base
+  include NcsNavigator::Core::Field
+
   belongs_to :fieldwork, :inverse_of => :merges
 
   composed_of :conflict_report, :mapping => %w(conflict_report to_json),
@@ -108,8 +110,7 @@ class Merge < ActiveRecord::Base
   # into a state where commands will be ignored.  In this case, the error
   # flag will not be set and the merge will timeout.
   def run
-    logdev = self.class.log_device || StringIO.new
-
+    logdev = LogDevice.new(self.class.log_device || StringIO.new)
     logger = ::Logger.new(logdev).tap { |l| l.formatter = ::Logger::Formatter.new }
     logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
@@ -157,7 +158,7 @@ class Merge < ActiveRecord::Base
 
       raise e
     ensure
-      logdev.rewind rescue nil
+      logdev.rewind
       update_attribute(:log, logdev.read)
     end
   end

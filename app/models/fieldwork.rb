@@ -20,12 +20,14 @@
 
 require 'celluloid'
 require 'set'
+require 'stringio'
 require 'thread'
 require 'uuidtools'
 
 class Fieldwork < ActiveRecord::Base
   include Field::ModelResolution
   include Field::Serialization
+  include NcsNavigator::Core::Field
 
   has_many :merges, :inverse_of => :fieldwork
 
@@ -219,15 +221,16 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def ensure_logger
-    return if @sio && @logger
+    return if @logdev && @logger
 
-    @sio = StringIO.new
-    @logger = Logger.new(@sio).tap do |l|
+    @logdev = LogDevice.new(StringIO.new)
+    @logger = Logger.new(@logdev).tap do |l|
       l.formatter = Logger::Formatter.new
     end
   end
 
   def store_log
-    self.generation_log = @sio.string
+    @logdev.rewind
+    self.generation_log = @logdev.read
   end
 end
