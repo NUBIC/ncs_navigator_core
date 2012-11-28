@@ -8,6 +8,9 @@ $(document).ready(function() {
       },
       'person[last_name]': {
         maxlength: 30
+      },
+      'participant_consent[consent_version]': {
+        maxlength: 9
       }
     }
   })

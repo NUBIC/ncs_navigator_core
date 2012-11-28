@@ -45,6 +45,10 @@ class ParticipantConsentsController < ApplicationController
     @contact_link = ContactLink.find(params[:contact_link_id])
     @participant_consent = ParticipantConsent.new(params[:participant_consent])
 
+    @consent_type_code = @participant_consent.consent_type_code
+    @participant  = @participant_consent.participant
+    @contact = @contact_link.contact
+
     respond_to do |format|
       if @participant_consent.save
 
@@ -64,6 +68,9 @@ class ParticipantConsentsController < ApplicationController
   # PUT /participant_consents/1.json
   def update
     @participant_consent = ParticipantConsent.find(params[:id])
+    @contact_link = ContactLink.find(params[:contact_link_id]) unless params[:contact_link_id].blank?
+    @participant = @participant_consent.participant
+    @contact = @participant_consent.contact
 
     respond_to do |format|
       if @participant_consent.update_attributes(params[:participant_consent])
