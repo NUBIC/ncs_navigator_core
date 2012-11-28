@@ -173,6 +173,31 @@ module OperationalDataExtractor
 
     end
 
+    def due_date_response(response_set, date_question, prefix)
+      if dt = date_string(response_set, date_question, prefix)
+        begin
+          determine_due_date(
+            "#{date_question}_DD",
+            response_for(response_set, "#{prefix}.#{date_question}_DD"),
+            Date.parse(dt)
+          )
+        rescue
+          #NOOP - unparseable date
+        end
+      end
+    end
+
+    def date_string(response_set, str, prefix)
+      dt = []
+      ['YY', 'MM', 'DD'].each do |date_part|
+        if r = response_for(response_set, "#{prefix}.#{str}_#{date_part}")
+          val = response_value(r)
+          dt << val if val.to_i > 0
+        end
+      end
+      dt.join("-")
+    end
+
     def determine_value_from_response(response)
       value = case response.answer.response_class
               when "integer"

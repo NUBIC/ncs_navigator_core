@@ -169,34 +169,9 @@ module OperationalDataExtractor
     def calculated_due_date(response_set)
       # try due date first
       ret = nil
-      ret = due_date_response(response_set, "ORIG_DUE_DATE")
-      ret = due_date_response(response_set, "DATE_PERIOD") unless ret
+      ret = due_date_response(response_set, "ORIG_DUE_DATE", INTERVIEW_PREFIX)
+      ret = due_date_response(response_set, "DATE_PERIOD", INTERVIEW_PREFIX) unless ret
       ret
-    end
-
-    def due_date_response(response_set, date_question)
-      if dt = date_string(response_set, date_question)
-        begin
-          determine_due_date(
-            "#{date_question}_DD",
-            response_for(response_set, "#{INTERVIEW_PREFIX}.#{date_question}_DD"),
-            Date.parse(dt)
-          )
-        rescue
-          #NOOP - unparseable date
-        end
-      end
-    end
-
-    def date_string(response_set, str)
-      dt = []
-      ['YY', 'MM', 'DD'].each do |date_part|
-        if r = response_for(response_set, "#{INTERVIEW_PREFIX}.#{str}_#{date_part}")
-          val = response_value(r)
-          dt << val if val.to_i > 0
-        end
-      end
-      dt.join("-")
     end
 
     def response_for(response_set, data_export_identifier)
