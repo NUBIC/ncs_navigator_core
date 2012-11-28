@@ -99,17 +99,26 @@ module Field
     ##
     # @private
     def event_template_instruments_as_json(instruments, options)
-      instruments.map do |i|
+      instruments.each_with_object([]) do |i, result|
         plan = plan_for(i)
         label = InstrumentLabel.new(i.survey.access_code)
         code = label.ncs_code
 
         if plan && code
-          { 'instrument_plan_id' => plan.id,
+          result << {
+            'instrument_plan_id' => plan.id,
             'instrument_type_code' => code.local_code,
             'instrument_version' => label.version,
             'name' => i.name
           }
+        else
+          if !plan
+            logger.warn "Plan for instrument <#{i.survey.access_code}> could not be found"
+          end
+
+          if !code
+            logger.warn "NcsCode for instrument <#{i.survey.access_code}> could not be found"
+          end
         end
       end
     end

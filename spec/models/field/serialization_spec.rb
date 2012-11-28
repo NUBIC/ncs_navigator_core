@@ -1,8 +1,16 @@
 require 'spec_helper'
 
+require File.expand_path('../../../shared/models/logger', __FILE__)
+
 module Field
   describe Serialization do
+    include_context 'logger'
+
     let(:fw) { Fieldwork.new }
+
+    before do
+      fw.logger = logger
+    end
 
     shared_context 'has a person' do
       let(:person) { Factory(:person) }
@@ -89,9 +97,12 @@ module Field
         stub(:root => instrument_ir, :surveys => [], :id => 'foo')
       end
 
+      let!(:code) do
+        NcsCode.create!(:display_text => 'Foo Bar', :local_code => -43, :list_name => 'INSTRUMENT_TYPE_CL1')
+      end
+
       before do
         # We need all of this to resolve the instrument's type code from its label
-        NcsCode.create!(:display_text => 'Foo Bar', :local_code => -43, :list_name => 'INSTRUMENT_TYPE_CL1')
         Factory(:survey, :access_code => 'foo-bar', :title => 'Foo Bar')
 
         fw.instrument_plans << instrument_plan_ir
@@ -310,6 +321,38 @@ module Field
 
           it 'sets #/0/name' do
             instruments[0]['name'].should == 'Foo Bar Instrument'
+          end
+
+          describe 'if a plan for the instrument cannot be found' do
+            before do
+              fw.instrument_plans = []
+
+              fw.to_json
+            end
+
+            it 'issues a warning' do
+              log.should =~ /plan for instrument <#{survey_ir.access_code}> could not be found/i
+            end
+
+            it 'does not include the unresolvable instrument' do
+              instruments.should be_empty
+            end
+          end
+
+          describe 'if a code for the instrument cannot be found' do
+            before do
+              code.destroy
+            end
+
+            it 'issues a warning' do
+              fw.to_json
+
+              log.should =~ /NcsCode for instrument <#{survey_ir.access_code}> could not be found/i
+            end
+
+            it 'does not include the unresolvable instrument' do
+              instruments.should be_empty
+            end
           end
         end
 
