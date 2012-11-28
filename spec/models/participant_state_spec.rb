@@ -112,8 +112,9 @@ describe Participant do
     describe "in ppg 1 (pregnant)" do
 
       it "should be following low intensity if the due_date > 6 mos" do
-        due_date = 8.months.from_now
-        contact = Factory(:contact, :contact_date_date => Date.today)
+        contact_date = Date.parse("2000-01-01")
+        due_date = 8.months.since(contact_date)
+        contact = Factory(:contact, :contact_date_date => contact_date)
         event = Factory(:event, :participant => participant)
         Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime('%Y-%m-%d'))
@@ -122,23 +123,11 @@ describe Participant do
         participant.update_state_after_survey(response_set, psc)
         participant.should be_following_low_intensity
       end
-
-      it "should be following low intensity if the contact date date is nil" do
-        due_date = 8.months.from_now
-        contact = Factory(:contact, :contact_date_date => nil)
-        event = Factory(:event, :participant => participant)
-        Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
-        Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime('%Y-%m-%d'))
-
-        participant.should be_in_pregnancy_probability_group
-        participant.update_state_after_survey(response_set, psc)
-        participant.should be_following_low_intensity
-      end
-
 
       it "should be pregnant if the due_date < 6 mos" do
-        due_date = 4.months.from_now
-        contact = Factory(:contact, :contact_date_date => Date.today)
+        contact_date = Date.parse("2000-01-01")
+        due_date = 4.months.since(contact_date)
+        contact = Factory(:contact, :contact_date_date => contact_date)
         event = Factory(:event, :participant => participant)
         Factory(:contact_link, :contact => contact, :instrument => instrument,:event => event)
         Factory(:ppg_detail, :participant => participant, :ppg_first => status1, :orig_due_date => due_date.strftime("%Y-%m-%d"))

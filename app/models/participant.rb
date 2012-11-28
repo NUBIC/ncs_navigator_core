@@ -280,7 +280,7 @@ class Participant < ActiveRecord::Base
     if known_to_be_pregnant?
       if low_intensity? &&
          can_impregnate_low? &&
-         !due_date_is_greater_than_follow_up_interval
+         !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
         impregnate_low!
       end
 
@@ -545,9 +545,10 @@ class Participant < ActiveRecord::Base
       follow! if can_follow? && high_intensity?
 
       if known_to_be_pregnant?
+        date = event.event_end_date.blank? ? event.event_start_date : event.event_end_date
         if low_intensity? &&
          can_impregnate_low? &&
-         !due_date_is_greater_than_follow_up_interval
+         !due_date_is_greater_than_follow_up_interval(date)
          impregnate_low!
         end
 
@@ -620,11 +621,8 @@ class Participant < ActiveRecord::Base
     end
   end
 
-  def due_date_is_greater_than_follow_up_interval
-    c = most_recent_contact
-    # sanity check - contact date should not be nil but if it is use today
-    most_recent_date = c.contact_date_date.nil? ? Date.today : c.contact_date_date
-    due_date && due_date > follow_up_interval.since(most_recent_date)
+  def due_date_is_greater_than_follow_up_interval(date)
+    due_date && due_date > follow_up_interval.since(date)
   end
 
   ##
@@ -1154,7 +1152,7 @@ class Participant < ActiveRecord::Base
       elsif postnatal?
         PatientStudyCalendar::LOW_INTENSITY_POSTNATAL
       elsif pregnant?
-        if due_date && !due_date_is_greater_than_follow_up_interval
+        if due_date && !due_date_is_greater_than_follow_up_interval(most_recent_contact.contact_date_date)
           PatientStudyCalendar::LOW_INTENSITY_BIRTH_VISIT_INTERVIEW
         else
           lo_intensity_follow_up
