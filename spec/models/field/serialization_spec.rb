@@ -102,8 +102,9 @@ module Field
       end
 
       before do
-        # We need all of this to resolve the instrument's type code from its label
-        Factory(:survey, :access_code => 'foo-bar', :title => 'Foo Bar')
+        # This bizarre setup is needed to resolve the instrument's type code to
+        # its label.  Globals.  *sigh*
+        InstrumentEventMap.stub!(:instrument_type => code)
 
         fw.instrument_plans << instrument_plan_ir
         et.instruments << instrument_ir
@@ -341,7 +342,7 @@ module Field
 
           describe 'if a code for the instrument cannot be found' do
             before do
-              code.destroy
+              InstrumentEventMap.stub!(:instrument_type => nil)
             end
 
             it 'issues a warning' do
