@@ -109,7 +109,10 @@ module NcsNavigator::Core
     end
 
     def machine_account_credentials
-      ['ncs_navigator_cases', suite_configuration.core_machine_account_password]
+      [
+        suite_configuration.core_machine_account_username,
+        suite_configuration.core_machine_account_password
+      ]
     end
   end
 end
