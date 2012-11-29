@@ -225,7 +225,7 @@ class Fieldwork < ActiveRecord::Base
 
     @logdev = LogDevice.new(StringIO.new)
     @logger = Logger.new(@logdev).tap do |l|
-      l.formatter = Logger::Formatter.new
+      l.formatter = LogFormatter.new(self)
     end
   end
 

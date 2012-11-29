@@ -111,7 +111,7 @@ class Merge < ActiveRecord::Base
   # flag will not be set and the merge will timeout.
   def run
     logdev = LogDevice.new(self.class.log_device || StringIO.new)
-    logger = ::Logger.new(logdev).tap { |l| l.formatter = ::Logger::Formatter.new }
+    logger = ::Logger.new(logdev).tap { |l| l.formatter = LogFormatter.new(self) }
     logger.level = ::Logger.const_get(NcsNavigatorCore.sync_log_level)
 
     begin
