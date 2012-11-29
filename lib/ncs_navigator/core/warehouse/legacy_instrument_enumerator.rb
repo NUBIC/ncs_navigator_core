@@ -26,6 +26,7 @@ module NcsNavigator::Core::Warehouse
         FROM legacy_instrument_data_records rec
           INNER JOIN child_records ch ON rec.id = ch.child_record_id
           LEFT JOIN legacy_instrument_data_values val ON rec.id=val.legacy_instrument_data_record_id
+        WHERE val.value IS NOT NULL
         GROUP BY rec.mdes_table_name, rec.public_id, ch.depth
         ORDER BY ch.depth ASC
       SQL

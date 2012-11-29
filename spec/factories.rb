@@ -159,6 +159,12 @@ Factory.define :legacy_instrument_data_record do |rec|
   rec.public_id       'IMP-42'
 end
 
+Factory.define :legacy_instrument_data_record_with_value, :parent => :legacy_instrument_data_record do |rec|
+  rec.after_create do |with_value|
+    Factory(:legacy_instrument_data_value, :legacy_instrument_data_record => with_value)
+  end
+end
+
 Factory.define :legacy_instrument_data_value do |val|
   val.association :legacy_instrument_data_record,
     :factory => :legacy_instrument_data_record

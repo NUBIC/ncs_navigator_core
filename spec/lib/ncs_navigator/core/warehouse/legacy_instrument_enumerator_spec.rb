@@ -37,15 +37,15 @@ module NcsNavigator::Core::Warehouse
     end
 
     it 'creates one warehouse record per legacy record' do
-      Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'IMP-01')
-      Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'IMP-02')
+      Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'birth_visit', :public_id => 'IMP-01')
+      Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'birth_visit', :public_id => 'IMP-02')
 
       results.collect { |rec| rec.key.first }.sort.should == %w(IMP-01 IMP-02)
     end
 
     it 'creates warehouse records according to the legacy record table' do
-      Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'IMP-01')
-      Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit_li', :public_id => 'IMP-01')
+      Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'birth_visit', :public_id => 'IMP-01')
+      Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'birth_visit_li', :public_id => 'IMP-01')
 
       results.collect { |rec| rec.class.name.demodulize }.sort.should == %w(BirthVisit BirthVisitLi)
     end
@@ -53,14 +53,15 @@ module NcsNavigator::Core::Warehouse
     describe 'with values' do
       let(:bv1_result) { results.find { |r| r.key.first == 'BV1' } }
 
+      let!(:bv1) { Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'BV1') }
+      let!(:bv2) { Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'BV2') }
+
       before do
-        bv1 = Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'BV1')
         Factory(:legacy_instrument_data_value, :legacy_instrument_data_record_id => bv1.to_param,
           :mdes_variable_name => 'event_id', :value => 'the event for BV1')
         Factory(:legacy_instrument_data_value, :legacy_instrument_data_record_id => bv1.to_param,
           :mdes_variable_name => 'live_mom', :value => '2')
 
-        bv2 = Factory(:legacy_instrument_data_record, :mdes_table_name => 'birth_visit', :public_id => 'BV2')
         Factory(:legacy_instrument_data_value, :legacy_instrument_data_record_id => bv2.to_param,
           :mdes_variable_name => 'event_id', :value => 'an event of BV2')
       end
@@ -75,15 +76,33 @@ module NcsNavigator::Core::Warehouse
       it 'applies all the values for each record' do
         [bv1_result.event_id, bv1_result.live_mom].should == ['the event for BV1', '2']
       end
+
+      describe 'including nil values' do
+        before do
+          Factory(:legacy_instrument_data_value, :legacy_instrument_data_record_id => bv1.to_param,
+            :mdes_variable_name => 'live_oth', :value => nil)
+        end
+
+        it 'applies the values to the correct records' do
+          results.collect { |r| [r.key.first, r.event_id] }.sort.should == [
+            ['BV1', 'the event for BV1'],
+            ['BV2', 'an event of BV2']
+          ]
+        end
+
+        it 'applies all the values for each record' do
+          [bv1_result.event_id, bv1_result.live_mom, bv1_result.live_oth].should == ['the event for BV1', '2', nil]
+        end
+      end
     end
 
     it 'processes the legacy records parents-first' do
-      parent = Factory(:legacy_instrument_data_record, :mdes_table_name => 'eighteen_mth_mother', :public_id => 'PARENT-01')
-      child = Factory(:legacy_instrument_data_record, :mdes_table_name => 'eighteen_mth_mother_habits',
+      parent = Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'eighteen_mth_mother', :public_id => 'PARENT-01')
+      child = Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'eighteen_mth_mother_habits',
         :public_id => 'CHILD-01', :parent_record_id => parent.to_param)
-      grandchild = Factory(:legacy_instrument_data_record, :mdes_table_name => 'eighteen_mth_mother_cond',
+      grandchild = Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'eighteen_mth_mother_cond',
         :public_id => 'GCHILD-01', :parent_record_id => child.to_param)
-      child2 = Factory(:legacy_instrument_data_record, :mdes_table_name => 'eighteen_mth_mother_habits',
+      child2 = Factory(:legacy_instrument_data_record_with_value, :mdes_table_name => 'eighteen_mth_mother_habits',
         :public_id => 'CHILD-02', :parent_record_id => parent.to_param)
 
       # PostgreSQL returns records earliest-last-update-first by default, so this
