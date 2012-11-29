@@ -143,6 +143,11 @@ module NcsNavigator::Core::Warehouse
           legacy_rec_for(habit1).values.select { |v| v.mdes_variable_name == 'eighteen_mth_mother' }.
             should be_empty
         end
+
+        it 'does not store variable-value pairs where the value would be nil' do
+          legacy_rec_for(root1).values.select { |v| v.mdes_variable_name == 'time_stamp_1' }.
+            should == []
+        end
       end
 
       describe 'when updating' do
@@ -181,6 +186,8 @@ module NcsNavigator::Core::Warehouse
             existing_legacy_record.values.create!(
               :mdes_variable_name => 'p_id', :value => 'D12')
             existing_legacy_record.values.create!(
+              :mdes_variable_name => 'event_id', :value => 'EID')
+            existing_legacy_record.values.create!(
               :mdes_variable_name => 'obstreperousness', :value => '4.6')
 
             importer.import
@@ -194,6 +201,11 @@ module NcsNavigator::Core::Warehouse
           it 'removes a value if there is no attribute matching the existing value' do
             existing_legacy_record.reload.values.
               select { |v| v.mdes_variable_name == 'obstreperousness' }.should == []
+          end
+
+          it 'removes a value if the value is set to null' do
+            existing_legacy_record.reload.values.select { |v| v.mdes_variable_name == 'event_id' }.
+              should == []
           end
         end
       end

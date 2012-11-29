@@ -118,7 +118,7 @@ module NcsNavigator::Core::Warehouse
     private :create_or_update_instrument_data_for_instrument_record
 
     def create_or_update_instrument_values_for_instrument_record(wh_record, legacy_record)
-      incoming_names = wh_record.attributes.keys
+      incoming_names = wh_record.attributes.reject { |k, v| v.nil? }.collect { |k, v| k }
       existing_names = legacy_record.values.collect(&:mdes_variable_name)
 
       new_names = (incoming_names - existing_names)
