@@ -8,6 +8,10 @@
     = "#{@event}"
   %p
     There is only one Instrument associated with the Pregnancy Screener Event
+- elsif @event.postnatal? && !@event.participant.has_children?
+  .important
+    Child participation is required in order to continue.
+  = render "parental_permission_for_child_participation", :event => @event, :contact_link => @contact_link
 - else
   %h3
     = "Instruments for #{@event}"

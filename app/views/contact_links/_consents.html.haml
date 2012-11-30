@@ -1,4 +1,4 @@
-- if participant = @person.participant
+- if participant = @event.participant
   - consent = participant.low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
   .consent_link
     = determine_participant_consent_path(consent.local_code, consent.to_s, participant, @contact_link)
@@ -6,23 +6,4 @@
       %span{ :class => "consented" }
         Participant has consented.
 
-  - if @event.pv1? || @event.pv2? || @event.birth?
-    %h3
-      Parental Permission for Child Participation
-    .child_participation
-      = link_to "Create Child Participation Consent",
-        new_child_participant_participant_consents_path(participant, {:contact_link_id => @contact_link.id}),
-        :class => "add_link icon_link",
-        :confirm => "Are you certain you would like to create a child participant record?"
-
-      - participant.children.each do |child|
-        .child
-          - if child_participant = child.participant
-            - if child_consent = child_participant.consent_for_type(ParticipantConsent.child_consent_type_code)
-              = link_to "Edit Consent for #{child} Participant",
-                edit_participant_participant_consent_path(child_participant, child_consent, {:contact_link_id => @contact_link.id}),
-                :class => "edit_link icon_link"
-            - else
-              = child.to_s
-          - else
-            = child.to_s
+  = render "parental_permission_for_child_participation", :event => @event, :contact_link => @contact_link
