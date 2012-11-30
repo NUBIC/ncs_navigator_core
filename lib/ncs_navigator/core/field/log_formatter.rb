@@ -19,7 +19,7 @@ module NcsNavigator::Core::Field
 
     ##
     # The log message format.
-    FORMAT = "%s %d %16s (0x%0#{MAXLEN}x) %07s -- : %s\n"
+    FORMAT = "%s %6d %16s (0x%0#{MAXLEN}x) %07s -- : %s\n"
 
     ##
     # @param [ActiveRecord::Base] model the model that owns the logger
