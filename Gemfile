@@ -12,6 +12,7 @@ gem 'chronic'
 gem 'comma'
 gem 'fastercsv', :platform => :ruby_18
 gem 'haml', '~> 3.1'
+gem 'lograge'
 gem 'pg'
 gem 'ncs_navigator_authority'
 

@@ -63,6 +63,9 @@ NcsNavigatorCore::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
+  # Saner logging for aggregators
+  config.lograge.enabled = true
+
   config.aker do
     api_mode :cas_proxy
     authorities :cas, Aker::Authority::NcsNavigatorAuthority
