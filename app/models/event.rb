@@ -57,7 +57,7 @@ class Event < ActiveRecord::Base
   validates_format_of :event_end_time,   :with => mdes_time_pattern, :allow_blank => true
 
   before_validation :strip_time_whitespace
-  before_create :set_start_time
+  before_create :set_start_time, :set_event_disposition_category_code
 
   POSTNATAL_EVENTS = [
     18, # Birth
@@ -218,6 +218,11 @@ class Event < ActiveRecord::Base
     end
   end
   private :set_start_time
+
+  def set_event_disposition_category_code
+    self.event_disposition_category_code = self.event_disposition_category_code || -4
+  end
+  private :set_event_disposition_category_code
 
   def event_start_time=(t)
     self['event_start_time'] = format_event_time(t)
