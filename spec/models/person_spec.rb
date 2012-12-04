@@ -121,11 +121,16 @@ describe Person do
 
   context "as mdes record" do
 
-    it "sets the public_id to a uuid" do
-      pers = Factory(:person)
-      pers.public_id.should_not be_nil
-      pers.person_id.should == pers.public_id
-      pers.person_id.length.should == 36
+    describe 'the public ID' do
+      let(:person) { Factory(:person) }
+
+      it 'is a human-readable ID with 12 ID chars' do
+        person.public_id.should =~ /^\w{4}-\w{4}-\w{4}$/
+      end
+
+      it 'is named person_id' do
+        person.public_id.should == person.person_id
+      end
     end
 
     it "uses the ncs_code 'Missing in Error' for all required ncs codes" do
