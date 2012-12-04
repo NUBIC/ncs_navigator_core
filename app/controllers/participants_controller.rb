@@ -18,6 +18,7 @@ class ParticipantsController < ApplicationController
 
     params[:q] ||= {}
     params[:q][:participant_person_links_relationship_code_eq] = 1
+    params[:q][:being_followed_true] = 1
 
     @q = Participant.search(params[:q])
     # @q.sorts = 'last_name asc' if @q.sorts.empty?
