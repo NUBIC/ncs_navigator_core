@@ -557,7 +557,7 @@ module OperationalDataExtractor
       birth_address
     end
 
-    def process_address(owner, map, address_type = nil, address_rank = primary_rank)
+    def process_address(owner, map, address_type, address_rank = primary_rank)
       address = nil
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
