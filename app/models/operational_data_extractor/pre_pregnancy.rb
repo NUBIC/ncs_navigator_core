@@ -112,13 +112,13 @@ module OperationalDataExtractor
 
       if contact1 = process_contact(CONTACT_1_PERSON_MAP)
         contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
-        contact1address = process_address(contact1, CONTACT_1_ADDRESS_MAP)
+        contact1address = process_address(contact1, CONTACT_1_ADDRESS_MAP, Address.home_address_type)
         contact1phone = process_telephone(contact1, CONTACT_1_PHONE_MAP)
       end
 
       if contact2 = process_contact(CONTACT_2_PERSON_MAP)
         contact2relationship = process_contact_relationship(contact2, CONTACT_2_RELATIONSHIP_MAP)
-        contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP)
+        contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP, Address.home_address_type)
         contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
       end
 
