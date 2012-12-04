@@ -163,6 +163,10 @@ class ProvidersController < ApplicationController
         format.html { redirect_to(post_staff_redirect_path) }
         format.json { render :json => { :id => @staff.id, :provider_id => @provider.id, :errors => [] }, :status => :ok }
       else
+
+        @telephone = Telephone.new(:person => @staff) if @telephone.nil?
+        @email = Email.new(:person => @staff) if @email.nil?
+
         format.html { render :action => "new_staff" }
       end
     end
@@ -205,6 +209,10 @@ class ProvidersController < ApplicationController
         format.html { redirect_to(post_staff_redirect_path) }
         format.json { render :json => { :id => @staff.id, :provider_id => @provider.id, :errors => [] }, :status => :ok }
       else
+
+        @telephone = Telephone.new(:person => @staff) if @telephone.nil?
+        @email = Email.new(:person => @staff) if @email.nil?
+
         format.html { render :action => "new_staff" }
       end
     end

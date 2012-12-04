@@ -42,7 +42,8 @@ class Participant < ActiveRecord::Base
 
   include NcsNavigator::Core::Mdes::MdesRecord
 
-  acts_as_mdes_record :public_id_field => :p_id, :public_id_kind => :human_readable
+  acts_as_mdes_record :public_id_field => :p_id,
+    :public_id_generator => NcsNavigator::Core::Mdes::HumanReadablePublicIdGenerator.new
 
   ncs_coded_attribute :psu,                 'PSU_CL1'
   ncs_coded_attribute :p_type,              'PARTICIPANT_TYPE_CL1'

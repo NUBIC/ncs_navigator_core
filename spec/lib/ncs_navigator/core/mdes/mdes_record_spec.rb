@@ -20,7 +20,8 @@ module NcsNavigator::Core::Mdes
 
   class Baz < ActiveRecord::Base
     include MdesRecord
-    acts_as_mdes_record :public_id_field => :baz_id, :public_id_kind => :human_readable
+    acts_as_mdes_record :public_id_field => :baz_id,
+      :public_id_generator => HumanReadablePublicIdGenerator.new
   end
 
   describe MdesRecord do
@@ -76,13 +77,23 @@ module NcsNavigator::Core::Mdes
       end
     end
 
-    describe '.public_id_kind' do
-      it 'defaults to :uuid' do
-        Foo.public_id_kind.should == :uuid
+    describe '.public_id_generator' do
+      it 'has a default' do
+        Foo.public_id_generator.should respond_to(:generate)
       end
 
-      it 'is set from the :public_id_kind option' do
-        Baz.public_id_kind.should == :human_readable
+      it 'is set from the :public_id_generator option' do
+        Baz.public_id_generator.should be_a(HumanReadablePublicIdGenerator)
+      end
+
+      describe 'configuring' do
+        it 'gives the generator the model class if it accepts it' do
+          Baz.public_id_generator.model_class.should == Baz
+        end
+
+        it 'gives the generator the public ID field if it accepts it' do
+          Baz.public_id_generator.public_id_field.should == :baz_id
+        end
       end
     end
 
@@ -113,35 +124,22 @@ module NcsNavigator::Core::Mdes
         end
       end
 
-      describe 'creation by kind' do
-        describe ':uuid' do
-          it 'defaults to a UUID if not set' do
+      describe 'generation' do
+        describe 'by default' do
+          it 'is a UUID if not set' do
             Bar.create.public_id.length.should == 36
           end
 
-          it 'defaults to a random UUID if not set' do
+          it 'is a random UUID if not set' do
             Bar.create.public_id.should_not == Bar.create.public_id
           end
         end
 
-        describe ':human_readable' do
-          it 'defaults to a nine-character dash-separated string' do
+        describe 'with a generator' do
+          it 'uses the generator if the ID is not set' do
             expected_char_class = '[2-9abcdefhkrstwxyz]'
             Baz.create.public_id.should =~
-            /^#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
-          end
-
-          it 'defaults to a random human readble ID string' do
-            [Baz.create.public_id, Baz.create.public_id, Baz.create.public_id].uniq.size.should == 3
-          end
-
-          it 'gets a new ID when there is a collision' do
-            MdesRecord.reseed_random(0)
-            b1 = Baz.create!
-            MdesRecord.reseed_random(0)
-            b2 = Baz.create!
-
-            b1.public_id.should_not == b2.public_id
+              /^#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
           end
         end
       end

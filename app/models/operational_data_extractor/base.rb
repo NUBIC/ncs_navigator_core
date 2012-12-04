@@ -249,6 +249,10 @@ module OperationalDataExtractor
       @duplicate_rank ||= NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 4)
     end
 
+    def address_other_type
+      @address_other_type ||= NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', -5)
+    end
+
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
@@ -323,6 +327,7 @@ module OperationalDataExtractor
       response_set.responses.sort_by { |r| r.created_at }
     end
 
+
     def person
       response_set.person
     end
@@ -338,10 +343,10 @@ module OperationalDataExtractor
       participant.person
     end
 
-    def get_address(response_set, person, address_type = nil, address_rank = primary_rank)
+    def get_address(response_set, person, address_type, address_rank = primary_rank)
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
-      criteria[:address_type_code] = address_type.local_code if address_type
+      criteria[:address_type_code] = address_type.local_code
       criteria[:address_rank_code] = address_rank.local_code
       address = Address.where(criteria).first
       if address.nil?
@@ -543,7 +548,8 @@ module OperationalDataExtractor
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            birth_address ||= get_address(response_set, person)
+            birth_address ||= get_address(response_set, person, address_other_type)
+            birth_address.address_type_other = "Birth"
             set_value(birth_address, attribute, value)
           end
         end
@@ -567,14 +573,20 @@ module OperationalDataExtractor
 
     def finalize_addresses(*addresses)
       if any_address_changes?(addresses)
-        person.addresses.each { |a| a.demote_primary_rank_to_secondary }
-
-        addresses.each { |a| a.save! unless a.to_s.blank? }
+        changed_addresses = which_addresses_changed(addresses).flatten
+        changed_addresses.each do |change_addrs|
+          person.addresses.each { |a| a.demote_primary_rank_to_secondary(change_addrs.address_type_code) }
+        end
+        addresses.flatten.each { |a| a.save! unless a.to_s.blank? }
       end
     end
 
     def any_address_changes?(addresses)
       addresses.detect{ |a| !a.to_s.blank? }
+    end
+
+    def which_addresses_changed(addresses)
+      addresses.find_all{ |a| !a.to_s.blank? }
     end
 
     def process_telephone(owner, map, phone_type = nil, phone_rank = primary_rank)

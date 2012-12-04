@@ -137,8 +137,6 @@ describe Address do
       obj = Address.first
       obj.address_rank.local_code.should == -4
       obj.address_info_source.local_code.should == -4
-      obj.address_info_mode.local_code.should == -4
-      obj.address_type.local_code.should == -4
       obj.address_description.local_code.should == -4
       obj.state.local_code.should == -4
     end
@@ -180,6 +178,41 @@ describe Address do
       addr = Address.last
       addr.address_end_date.should == '9666-96-96'
       addr.address_start_date.should be_nil
+    end
+
+  end
+
+  describe "#demote_primary_rank_to_seconday" do
+
+    before(:each) do
+      @primary_address = Factory(:address)
+      @duplicate_address = Factory(:address, :address_rank_code => 4)
+      @business_address = Factory(:address, :address_type_code => 2)
+      @school_address = Factory(:address, :address_type_code => 3)
+    end
+
+    it "changes the rank from primary to seconday" do
+      @primary_address.address_rank_code.should == 1
+      @primary_address.demote_primary_rank_to_secondary(@primary_address.address_type_code)
+      @primary_address.address_rank_code.should == 2
+    end
+
+    it "does nothing if rank is not primary" do
+      @duplicate_address.address_rank_code.should == 4
+      @duplicate_address.demote_primary_rank_to_secondary(@duplicate_address.address_type_code)
+      @duplicate_address.address_rank_code.should == 4
+    end
+
+    it "only changes rank if address is the same type" do
+      @business_address.address_rank_code.should == 1
+      @business_address.demote_primary_rank_to_secondary(@business_address.address_type_code)
+      @business_address.address_rank_code.should == 2
+    end
+
+    it "does not change rank if address is a different type" do
+      @business_address.address_rank_code.should == 1
+      @business_address.demote_primary_rank_to_secondary(@school_address.address_type_code)
+      @business_address.address_rank_code.should == 1
     end
 
   end

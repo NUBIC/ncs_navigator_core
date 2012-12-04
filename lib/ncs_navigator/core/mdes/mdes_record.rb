@@ -18,29 +18,6 @@ module NcsNavigator::Core::Mdes
       include NcsNavigator::Core::HasPublicId
     end
 
-    ##
-    # @private
-    # The random number generator used for :human_readable public IDs.
-    # It is shared across all MdesRecord classes and so must be public,
-    # but it isn't part of the public API for this class.
-    def self.prng
-      reseed_random unless @prng
-      @prng
-    end
-
-    ##
-    # @private
-    # (Re)initialize the random number generator used for :human_readable
-    # public IDs. Intended for testing only.
-    def self.reseed_random(seed=nil)
-      @prng =
-        if seed
-          Random.new(seed)
-        else
-          Random.new
-        end
-    end
-
     module ClassMethods
       def acts_as_mdes_record(options = {})
         send :include, InstanceMethods
@@ -50,17 +27,14 @@ module NcsNavigator::Core::Mdes
         cattr_accessor :date_fields
 
         self.public_id_field = (options[:public_id_field] || :uuid)
-        self.public_id_kind  = (options[:public_id_kind]  || :uuid)
 
-        self.public_id_generator =
-          case public_id_kind
-          when :uuid
-            UuidPublicIdGenerator
-          when :human_readable
-            HumanReadablePublicIdGenerator.new(self, public_id_field)
-          else
-            fail "Unsupported public_id_kind #{public_id_kind.inspect}."
-          end
+        self.public_id_generator = if options[:public_id_generator]
+                                     options[:public_id_generator]
+                                   else
+                                     UuidPublicIdGenerator
+                                   end
+
+        set_up_and_verify_public_id_generator
 
         if options[:date_fields]
           self.date_fields = options[:date_fields]
@@ -87,6 +61,24 @@ module NcsNavigator::Core::Mdes
         as = attrs.blank? ? ncs_coded_attributes.keys : attrs
 
         includes(as)
+      end
+
+      private
+
+      def set_up_and_verify_public_id_generator
+        unless self.public_id_generator.respond_to?(:generate)
+          fail "Specified public_id_generator #{self.public_id_generator.inspect} does not respond to :generate."
+        end
+
+        {
+          :model_class => self,
+          :public_id_field => self.public_id_field
+        }.each do |possible_attr, value|
+          setter = "#{possible_attr}="
+          if self.public_id_generator.respond_to?(setter)
+            self.public_id_generator.send(setter, value)
+          end
+        end
       end
     end
 
@@ -121,55 +113,6 @@ module NcsNavigator::Core::Mdes
     class UuidPublicIdGenerator
       def self.generate
         UUIDTools::UUID.random_create.to_s
-      end
-    end
-
-    ##
-    # @private
-    class HumanReadablePublicIdGenerator
-      # These characters are selected to be easy to distinguish when written
-      # down, regardless of case. (E.g., 0 and O are omitted because they are
-      # similar as is the set 1, L, I.)
-      CHARS = %w(2 3 4 5 6 7 8 9 a b c d e f h k r s t w x y z)
-      # Pattern is like SSN because it seems like that rhythm might be familiar.
-      PATTERN = [3, 2, 4]
-
-      def initialize(model_class, public_id_field)
-        @model_class = model_class
-        @public_id_field = public_id_field
-      end
-
-      def generate
-        id = new_id
-        # This mechanism will not handle the case where two transactions
-        # simultaneously create and commit the same ID. That is so vanishingly
-        # unlikely that it doesn't warrant addressing at this time. If it needs
-        # to be made less likely, we can always add another character to the
-        # IDs.
-        until @model_class.where(@public_id_field => id).count == 0
-          id = new_id
-        end
-        id
-      end
-
-      private
-
-      def new_id
-        PATTERN.collect { |segment_length|
-          to_chars(
-            MdesRecord.prng.rand(CHARS.size ** segment_length),
-            segment_length
-          )
-        }.join('-')
-      end
-
-      def to_chars(i, size)
-        converted = ''
-        while i > 0
-          converted << CHARS[i % CHARS.size]
-          i /= CHARS.size
-        end
-        ("%#{size}s" % converted).gsub(' ', CHARS[0])
       end
     end
 
