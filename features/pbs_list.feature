@@ -1,7 +1,7 @@
 Feature: Upload PBS List records from a .csv file
    In order to create new PBS List in the database
    As an authenticated user
-   I want to be able to upload a CSV file with the PBS List data data
+   I want to be able to upload a CSV file with the PBS List data
 
 Background:
   Given I am using PBS recruitment
