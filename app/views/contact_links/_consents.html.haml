@@ -1,3 +1,4 @@
+
 - if participant = @event.participant
   - consent = participant.low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
   .consent_link

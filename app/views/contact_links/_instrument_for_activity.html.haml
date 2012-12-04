@@ -14,8 +14,10 @@
     %div{ :class => "instrument", :title => survey.title}
       %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
         = activity.activity_name
-- elsif activity.activity_name.include?("Consent")
+  = debug activity
+- elsif activity.consent_activity?
   = render "consents"
+  = debug activity
 - else
   .unknown_instrument
     = activity.activity_name
