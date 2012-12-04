@@ -332,20 +332,36 @@ class Event < ActiveRecord::Base
     PARTICIPANT_REPEATABLE_EVENTS
   end
 
+  def self.pregnancy_visit_1_code
+    13
+  end
+
+  def self.pregnancy_visit_2_code
+    15
+  end
+
+  def self.birth_code
+    18
+  end
+
+  def self.informed_consent_code
+    10
+  end
+
   def pregnancy_visit_1?
-    self.event_type_code == 13
+    self.event_type_code == self.pregnancy_visit_1_code
   end
   alias :pv1? :pregnancy_visit_1?
   alias :pregnancy_visit1? :pregnancy_visit_1?
 
   def pregnancy_visit_2?
-    self.event_type_code == 15
+    self.event_type_code == self.pregnancy_visit_2_code
   end
   alias :pv2? :pregnancy_visit_2?
   alias :pregnancy_visit2? :pregnancy_visit_2?
 
   def birth?
-    self.event_type_code == 18
+    self.event_type_code == self.birth_code
   end
 
   ##

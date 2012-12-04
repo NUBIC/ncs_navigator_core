@@ -713,14 +713,14 @@ class Participant < ActiveRecord::Base
   # Returns true if participant enroll status is 'Yes' (i.e. local_code == 1)
   # @return [Boolean]
   def enrolled?
-    enroll_status.try(:local_code) == 1
+    enroll_status.try(:local_code) == NcsCode::YES
   end
 
   ##
   # Returns true if participant enroll status is 'No' (i.e. local_code == 2)
   # @return [Boolean]
   def unenrolled?
-    enroll_status.try(:local_code) == 2
+    enroll_status.try(:local_code) == NcsCode::NO
   end
 
   ##

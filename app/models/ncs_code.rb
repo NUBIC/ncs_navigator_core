@@ -16,6 +16,9 @@ class NcsCode < ActiveRecord::Base
 
   validates_presence_of :list_name, :display_text, :local_code
 
+  YES = 1
+  NO  = 2
+
   ATTRIBUTE_MAPPING = {
 
     ### person
