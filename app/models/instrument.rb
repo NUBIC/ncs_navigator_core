@@ -61,7 +61,7 @@ class Instrument < ActiveRecord::Base
   validates_presence_of :instrument_version
   validates_presence_of :instrument_repeat_key
 
-  before_create :set_default_codes
+  before_create :set_default_codes, :set_instrument_version
 
   INSTRUMENT_LABEL_MARKER = "instrument:"
   COLLECTION_LABEL_MARKER = "collection:"
@@ -340,6 +340,10 @@ class Instrument < ActiveRecord::Base
     QUERY
   end
 
+  def determine_instrument_version_from_survey_title
+    survey.title ? survey.title[/V(\d+(\.\d)?)$/,1] : nil
+  end
+
   private
 
     ##
@@ -354,5 +358,12 @@ class Instrument < ActiveRecord::Base
           self.send("#{asso}=", val) if val
         end
       end
+    end
+
+    ##
+    # This will set the instrument version based on the survey title if one doesn't
+    # already exist.
+    def set_instrument_version
+      self.instrument_version = self.instrument_version || self.determine_instrument_version_from_survey_title
     end
 end
