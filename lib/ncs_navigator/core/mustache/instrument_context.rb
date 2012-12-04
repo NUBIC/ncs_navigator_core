@@ -348,6 +348,10 @@ module NcsNavigator::Core::Mustache
       child_first_name("the child")
     end
 
+    def child_first_name_your_child
+      child_first_name("your child")
+    end
+
     def child_first_name_your_baby
       child_first_name("your baby")
     end
@@ -382,6 +386,13 @@ module NcsNavigator::Core::Mustache
     def c_dob
       about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
     end
+
+    def age_of_child_in_months(today = Date.today)
+      return "[AGE OF CHILD IN MONTHS]" if about_person.blank?        
+      dob = Date.parse(about_person.person_dob)
+      result = (today.year*12 + today.month) - (dob.year*12 + dob.month)
+      dob.day > today.day ? (result-1) : result
+    end  
 
     def work_place_name
       default = "[PARTICIPANTS WORKPLACE NAME]"

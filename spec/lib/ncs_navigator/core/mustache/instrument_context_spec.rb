@@ -535,7 +535,7 @@ module NcsNavigator::Core::Mustache
           instrument_context.do_when_will_live_with_you == "[Does [C_FNAME/your baby]]/[Do your babies]/[When [C_FNAME/your babies] leave the]/[When your baby leaves the] [hospital/ birthing center/ other place] will [he/she/they] live with you?"
         end
 
-        it "returns 'Does' and name or baby if sinle birth, released is 'yes' and delivered 'at home'"  do
+        it "returns 'Does' and name or baby if single birth, released is 'yes' and delivered 'at home'"  do
           take_survey(@survey, @response_set) do |a|
             a.yes release
             at_home = mock(NcsCode, :local_code => 3)
@@ -544,7 +544,7 @@ module NcsNavigator::Core::Mustache
           create_single_birth
           instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
         end
-        it "returns 'When' and 'name or baby' if sinle birth, released is 'no'"  do
+        it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
           take_survey(@survey, @response_set) do |a|
             a.no release
           end
@@ -1235,6 +1235,70 @@ module NcsNavigator::Core::Mustache
         pending
       end
     end
+
+    
+    describe "age_of_child_in_months" do
+
+      let(:instrument_context) { InstrumentContext.new }
+
+      it "returns a default message if unable to calculate" do
+        rs = Factory(:response_set, :person => nil)
+        context = InstrumentContext.new(rs)
+        context.about_person.should be_nil
+        context.age_of_child_in_months.should == "[AGE OF CHILD IN MONTHS]"
+      end
+      
+      it "returns the child's age in months" do
+        dob = Date.parse("2012-01-01")
+        today = Date.parse("2012-12-25")
+
+        person =  Factory(:person, :person_dob => dob)
+        participant = Factory(:participant)
+        participant.person = person 
+        person.save!
+
+        rs = Factory(:response_set, :participant => participant)
+        context = InstrumentContext.new(rs)
+        context.about_person.should_not be_nil
+        context.age_of_child_in_months(today).should == (today.year*12 + today.month) - (dob.year*12 + dob.month) 
+      end
+    
+      context "if dob is greater than today" do
+        it "returns the child's age in months" do
+          dob = Date.parse("2012-10-31")
+          today = Date.parse("2012-12-25")
+
+          person =  Factory(:person, :person_dob => dob)
+          participant = Factory(:participant)
+          participant.person = person 
+          person.save!
+
+          rs = Factory(:response_set, :participant => participant)
+          context = InstrumentContext.new(rs)
+          context.about_person.should_not be_nil
+          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1  
+        end  
+      end  
+
+      context "different years" do
+        it "returns the child's age in months" do
+          dob = Date.parse("2012-10-31")
+          today = Date.parse("2013-12-14")
+
+          person =  Factory(:person, :person_dob => dob)
+          participant = Factory(:participant)
+          participant.person = person 
+          person.save!
+
+          rs = Factory(:response_set, :participant => participant)
+          context = InstrumentContext.new(rs)
+          context.about_person.should_not be_nil
+          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1 
+        end
+      end
+
+    end  
+
 
     def create_single_birth
       take_survey(@survey, @response_set) do |a|
