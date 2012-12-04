@@ -28,7 +28,7 @@ class InstrumentPlan
   def parse_schedule(schedule)
     activities(schedule).each do |activity|
       sa = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
-      @scheduled_activities << sa if sa.scheduled?
+      @scheduled_activities << sa if sa.scheduled? || sa.conditional?
       @occurred_activities << sa if sa.occurred?
     end
   end
