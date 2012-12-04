@@ -182,6 +182,110 @@ describe OperationalDataExtractor::Base do
         person.telephones.should == phones
         person.telephones.first.phone_nbr.should == "3125556789"
       end
+    end
+  end
+
+  context "processing addresses" do
+
+    before do
+      @person = Factory(:person)
+      @rs = Factory(:response_set)
+      @rs.person = @person
+      @ode = OperationalDataExtractor::Base.new(@rs)
+    end
+
+    describe "#finalize_addresses" do
+      before do
+        @existing_business_address = Factory(:address, :address_rank_code => 1, :address_type_code => 2)
+        @existing_school_address   = Factory(:address, :address_rank_code => 1, :address_type_code => 3)
+        @new_business_address = Factory(:address, :address_rank_code => 4, :address_type_code => 2)
+        @new_school_address   = Factory(:address, :address_rank_code => 4, :address_type_code => 3)
+        @new_addresses = [ @new_business_address, @new_school_address]
+        @person.addresses = [@existing_business_address, @existing_school_address]
+      end
+
+      it "demotes exisiting address in favor of new addresses of the same type" do
+        @ode.finalize_addresses(@new_addresses)
+        @existing_business_address.address_rank_code.should == 2
+        @existing_school_address.address_rank_code.should   == 2
+      end
+    end
+
+    describe "#which_addresses_changed" do
+      before do
+        @unchanged_address = Factory(:address, :state_code => -4)
+        @changed_business_address = Factory(:address, :address_rank_code => 4, :address_type_code => 2)
+        @changed_school_address   = Factory(:address, :address_rank_code => 4, :address_type_code => 3)
+        @addresses = [@unchanged_address, @changed_business_address, @changed_school_address]
+      end
+
+      it "filters out a set of addresses with changed information" do
+        @ode.which_addresses_changed(@addresses).should include(@changed_business_address, @changed_school_address)
+        @ode.which_addresses_changed(@addresses).should_not include(@unchanged_address)
+      end
+
+      describe "process_birth_address" do
+
+        before do
+          @map = OperationalDataExtractor::PbsEligibilityScreener::ADDRESS_MAP
+          @participant = Factory(:participant)
+          @survey = create_pbs_eligibility_screener_survey_with_address_operational_data
+          @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+
+          question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.ADDRESS_1")
+          answer = Factory(:answer, :response_class => "string")
+          address1_response = Factory(:response, :string_value => "1708 Sunbeam Ct", :question => question, :answer => answer, :response_set => @response_set)
+
+          question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.CITY")
+          answer = Factory(:answer, :response_class => "string")
+          city_response = Factory(:response, :string_value => "Virginia Beach", :question => question, :answer => answer, :response_set => @response_set)
+
+          question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.ZIP")
+          answer = Factory(:answer, :response_class => "string")
+          zip_response = Factory(:response, :string_value => "23456", :question => question, :answer => answer, :response_set => @response_set)
+
+          @response_set.responses << address1_response << city_response << zip_response
+          @ode2 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+        end
+
+        it "creates birth address record" do
+          birth_address = @ode2.process_birth_address(@map)
+          birth_address.class.should == Address
+          birth_address.address_rank_code.should == 1
+          birth_address.address_type_code.should == -5
+          birth_address.address_one.should == "1708 Sunbeam Ct"
+          birth_address.city.should == "Virginia Beach"
+          birth_address.zip.should == "23456"
+          birth_address.address_type_other.should == "Birth"
+        end
+      end
+
+      describe "get_address" do
+
+        before do
+          @person = Factory(:person)
+          @response_set = Factory(:response_set)
+          @code_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
+          @address = Factory(:address,
+                             :person => @person,
+                             :response_set => @response_set,
+                             :address_rank_code => 1,
+                             :address_type_code => @code_address_type.local_code)
+
+          @ode2 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+        end
+
+        it "fetches an existing address record" do
+          @ode2.get_address(@response_set, @person, @code_address_type).should == @address
+        end
+
+        it "creates a new record if it can't find an existing record" do
+          @address = nil
+          new_address = @ode2.get_address(@response_set, @person, @code_address_type)
+          new_address.should_not == @address
+          new_address.class.should == Address
+        end
+      end
 
     end
 
