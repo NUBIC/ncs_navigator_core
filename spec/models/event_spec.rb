@@ -114,6 +114,13 @@ describe Event do
 
   end
 
+  describe "#event_disposition_category_code" do
+    it "is set on create if nil" do
+      e = Factory(:event, :event_disposition_category_code => nil)
+      e.event_disposition_category_code.should_not be_nil
+    end
+  end
+
   describe ".import_sort_date" do
 
     it "returns the event start date if the event end date is null" do
