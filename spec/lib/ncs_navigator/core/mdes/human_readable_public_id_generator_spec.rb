@@ -8,17 +8,46 @@ module NcsNavigator::Core::Mdes
   end
 
   describe HumanReadablePublicIdGenerator do
-    describe 'ID generation' do
-      let(:generator) { HumanReadablePublicIdGenerator.new }
-
-      it 'follows the pattern {3}-{2}-{4}' do
-        expected_char_class = '[2-9abcdefhkrstwxyz]'
-        generator.generate.should =~
-          /^#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
+    describe '#initialize' do
+      it 'reports an unknown option' do
+        expect { HumanReadablePublicIdGenerator.new(:blazo => 'frob') }.
+          to raise_error(/Unknown option :blazo/)
       end
 
-      it 'gives a different ID each time' do
-        (0..99).collect { generator.generate }.uniq.size.should == 100
+      it 'reports unknown options' do
+        expect { HumanReadablePublicIdGenerator.new(:blazo => 'frob', :bank => 'quux') }.
+          to raise_error(/Unknown options :blazo, :bank/)
+      end
+    end
+
+    describe 'ID generation' do
+      let(:expected_char_class) { '[2-9abcdefhkrstwxyz]' }
+
+      let(:generator) { HumanReadablePublicIdGenerator.new(options) }
+      let(:options) { {} }
+
+      describe 'by default' do
+        it 'follows the pattern {3}-{2}-{4}' do
+          generator.generate.should =~
+            /^#{expected_char_class}{3}-#{expected_char_class}{2}-#{expected_char_class}{4}$/
+        end
+
+        it 'gives a different ID each time' do
+          (0..99).collect { generator.generate }.uniq.size.should == 100
+        end
+      end
+
+      describe 'with :pattern' do
+        let(:options) { { :pattern => [7, 1, 9, 1] } }
+
+        it 'follows the specified pattern' do
+          generator.generate.should =~
+            /^#{expected_char_class}{7}-#{expected_char_class}-#{expected_char_class}{9}-#{expected_char_class}$/
+        end
+
+        it 'gives a different ID each time' do
+          (0..99).collect { generator.generate }.uniq.size.should == 100
+        end
       end
     end
 

@@ -18,9 +18,20 @@ module NcsNavigator::Core::Mdes
     # similar as is the set 1, L, I.)
     CHARS = %w(2 3 4 5 6 7 8 9 a b c d e f h k r s t w x y z)
     # Pattern is like SSN because it seems like that rhythm might be familiar.
-    PATTERN = [3, 2, 4]
+    DEFAULT_PATTERN = [3, 2, 4]
 
     attr_accessor :model_class, :public_id_field
+
+    ##
+    # @param options
+    # @option options :pattern [Array<Fixnum>]
+    def initialize(options={})
+      @pattern = options.delete(:pattern) || DEFAULT_PATTERN
+
+      unless options.empty?
+        fail "Unknown option#{'s' if options.size != 1} #{options.keys.map(&:inspect).join(', ')}."
+      end
+    end
 
     def generate
       id = new_id
@@ -40,7 +51,7 @@ module NcsNavigator::Core::Mdes
     private
 
     def new_id
-      PATTERN.collect { |segment_length|
+      @pattern.collect { |segment_length|
         to_chars(
           prng.rand(CHARS.size ** segment_length),
           segment_length
