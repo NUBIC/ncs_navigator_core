@@ -28,6 +28,10 @@ class Response < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::HasPublicId
   include Surveyor::Models::ResponseMethods
 
+  ##
+  # Used by {#value=} to recognize datetimes.
+  ISO8601_HHMM_FORMAT = /\A\s*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}([+-]\d{4}|Z)\s*\Z/
+
   def self.default_scope; end
 
   def self.with_answers_and_questions
@@ -57,7 +61,10 @@ class Response < ActiveRecord::Base
   def value=(val)
     case val
     when String
-      self.datetime_value = Chronic.parse(val)
+      if val =~ ISO8601_HHMM_FORMAT
+        self.datetime_value = Time.parse(val)
+      end
+
       self.string_value = val
     when Integer
       self.integer_value = val

@@ -98,11 +98,11 @@ describe Response do
         subject.value = val
       end
 
-      describe 'if the string can be interpreted as a datetime' do
-        let(:val) { '4/19/2012 13:33' }
+      describe 'given an ISO8601 datetime' do
+        let(:val) { '2012-12-04T16:51-0600' }
 
         it 'sets #datetime_value' do
-          subject.datetime_value.should == Chronic.parse(val)
+          subject.datetime_value.should == Time.parse('2012-12-04T16:51:00-0600')
         end
       end
 
