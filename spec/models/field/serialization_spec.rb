@@ -297,8 +297,6 @@ module Field
           include_context 'has an instrument'
 
           it 'sets #/0/response_sets/0/person_id' do
-            puts instruments.inspect
-
             instruments[0]['response_sets'][0].should have_key('person_id')
           end
 
