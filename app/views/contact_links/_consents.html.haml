@@ -1,9 +1,9 @@
 
+- current_activity ||= false
 - if participant = @event.participant
-  - consent = participant.low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
   .consent_link
-    = determine_participant_consent_path(consent.local_code, consent.to_s, participant, @contact_link)
-    - if participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent.local_code))
+    = determine_participant_consent_path(participant, @contact_link, current_activity)
+    - if participant.consented?(NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_for(participant).local_code))
       %span{ :class => "consented" }
         Participant has consented.
 
