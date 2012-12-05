@@ -293,6 +293,20 @@ module Field
           end
         end
 
+        describe 'events.templates.response_sets' do
+          include_context 'has an instrument'
+
+          it 'sets #/0/response_sets/0/person_id' do
+            puts instruments.inspect
+
+            instruments[0]['response_sets'][0].should have_key('person_id')
+          end
+
+          it 'sets #/0/response_sets/0/p_id' do
+            instruments[0]['response_sets'][0].should have_key('p_id')
+          end
+        end
+
         describe 'event_templates' do
           include_context 'has an event template'
 
