@@ -193,11 +193,17 @@ module Field
       p = state[:proposed]
 
       case [o.blank?, c.blank?, p.blank?]
-      when [true,     true,     false]; state[:current] = p.to_model
+      when [true,     true,     false]; accept_proposed(p, entity, id, state)
       when [true,     false,    false]; resolve(o, c, p, entity, id)
-      when [false,    true,     false]; conflicts.add(entity, id, :self, o, c, p)
+      when [false,    true,     false]; add_conflict(entity, id, :self, o, c, p)
       when [false,    false,    false]; resolve(o, c, p, entity, id)
       end
+    end
+
+    def accept_proposed(proposed, entity, id, state)
+      logger.debug { "Trivally accepted proposed data for #{entity} #{id}" }
+
+      state[:current] = proposed.to_model
     end
 
     def resolve(o, c, p, entity, id)
@@ -244,8 +250,7 @@ module Field
       result = collapse(o, c, p)
 
       if result == :conflict
-        logger.warn { "Detected conflict: [o, c, p] = #{[o, c, p].inspect}" }
-        conflicts.add(entity, id, attr, o, c, p)
+        add_conflict(entity, id, attr, o, c, p)
       else
         logger.debug { "Collapsed [o, c, p] = #{[o, c, p].inspect} to #{result.inspect}" }
         yield result
@@ -266,6 +271,16 @@ module Field
       when S[o, c, c];     c
       when S[o, c, p];     :conflict
       end
+    end
+
+    ##
+    # Adds and logs conflicts.
+    #
+    # @private
+    def add_conflict(entity, id, attr, o, c, p)
+      logger.warn { "Detected conflict on #{entity} #{attr}: [o, c, p] = #{[o, c, p].inspect}" }
+
+      conflicts.add(entity, id, attr, o, c, p)
     end
 
     ##
