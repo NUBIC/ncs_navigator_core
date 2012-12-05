@@ -72,5 +72,39 @@ describe Email do
       obj.email_active.local_code.should == -4
     end
   end
+
+  describe "#demote_primary_rank_to_seconday" do
+
+    before(:each) do
+      @primary_email = Factory(:email)
+      @duplicate_email = Factory(:email, :email_rank_code => 4)
+      @business_email = Factory(:email, :email_type_code => 2)
+      @school_email = Factory(:email, :email_type_code => 3)
+    end
+
+    it "changes the rank from primary to seconday" do
+      @primary_email.email_rank_code.should == 1
+      @primary_email.demote_primary_rank_to_secondary(@primary_email.email_type_code)
+      @primary_email.email_rank_code.should == 2
+    end
+
+    it "does nothing if rank is not primary" do
+      @duplicate_email.email_rank_code.should == 4
+      @duplicate_email.demote_primary_rank_to_secondary(@duplicate_email.email_type_code)
+      @duplicate_email.email_rank_code.should == 4
+    end
+
+    it "only changes rank if email is the same type" do
+      @business_email.email_rank_code.should == 1
+      @business_email.demote_primary_rank_to_secondary(@business_email.email_type_code)
+      @business_email.email_rank_code.should == 2
+    end
+
+    it "does not change rank if email is a different type" do
+      @business_email.email_rank_code.should == 1
+      @business_email.demote_primary_rank_to_secondary(@school_email.email_type_code)
+      @business_email.email_rank_code.should == 1
+    end
+  end
 end
 

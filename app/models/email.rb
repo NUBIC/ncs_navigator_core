@@ -53,12 +53,11 @@ class Email < ActiveRecord::Base
 
   ##
   # Updates the rank to secondary if current rank is primary
-  def demote_primary_rank_to_secondary
+  def demote_primary_rank_to_secondary(email_type)
     return unless self.email_rank_code == 1
     secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
-    if !secondary_rank.blank?
-      self.email_rank = secondary_rank
-      self.save
+    if !secondary_rank.blank? && email_type == self.email_type_code
+      self.update_attribute(:email_rank, secondary_rank)
     end
   end
 

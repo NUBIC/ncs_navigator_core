@@ -204,7 +204,7 @@ describe OperationalDataExtractor::Base do
         @person.addresses = [@existing_business_address, @existing_school_address]
       end
 
-      it "demotes exisiting address in favor of new addresses of the same type" do
+      it "demotes existing address in favor of new addresses of the same type" do
         @ode.finalize_addresses(@new_addresses)
         @existing_business_address.address_rank_code.should == 2
         @existing_school_address.address_rank_code.should   == 2
@@ -224,7 +224,7 @@ describe OperationalDataExtractor::Base do
         @ode.which_addresses_changed(@addresses).should_not include(@unchanged_address)
       end
 
-      describe "process_birth_address" do
+      describe "#process_birth_address" do
 
         before do
           @map = OperationalDataExtractor::PbsEligibilityScreener::ADDRESS_MAP
@@ -260,7 +260,7 @@ describe OperationalDataExtractor::Base do
         end
       end
 
-      describe "get_address" do
+      describe "#get_address" do
 
         before do
           @person = Factory(:person)
@@ -287,6 +287,76 @@ describe OperationalDataExtractor::Base do
         end
       end
 
+    end
+
+  end
+
+  context "processing emails" do
+
+    before do
+      @person = Factory(:person)
+      @survey = create_pbs_eligibility_screener_survey_with_email_operational_data
+      @participant = Factory(:participant)
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+      @personal_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
+      @work_email_type_code = NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 2)
+      @existing_work_email = Factory(  :email,
+                                       :email => "existing_email@email.com",
+                                       :person => @person,
+                                       :response_set => @response_set,
+                                       :email_rank_code => 1,
+                                       :email_type_code => @work_email_type_code.local_code)
+
+      @ode3 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+    end
+
+    describe "#finalize_email" do
+      before do
+        @new_work_email          = Factory(:email,:email => "new_email@email.com",
+                                           :email_rank_code => 4, :email_type_code => 2)
+      end
+
+      it "demotes existing email addresses in favor of new email addresses of the same type" do
+        @ode3.finalize_email(@new_work_email)
+        @existing_work_email.email_rank_code.should == 1
+        updated_work_email = Email.find(@existing_work_email.id)
+        updated_work_email.email_rank_code.should == 2
+      end
+
+    end
+
+    describe "#process_email" do
+
+      before do
+        @map = OperationalDataExtractor::PbsEligibilityScreener::EMAIL_MAP
+
+        question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_EMAIL")
+        answer = Factory(:answer, :response_class => "string")
+        email_response = Factory(:response, :string_value => "some_email_address@email.com", :question => question, :answer => answer, :response_set => @response_set)
+
+        @response_set.responses << email_response
+      end
+
+      it "updates an email record if update data is available" do
+        email = @ode3.process_email(@map)
+        email.email.should == "some_email_address@email.com"
+      end
+
+    end
+
+    describe "#get_email" do
+
+      it "retrieves an email record if one exists" do
+        @ode3.get_email(@response_set, @person, @work_email_type_code).should == @existing_work_email
+      end
+
+      it "creates a new email record if one does not exist " do
+        existing_email = @ode3.get_email(@response_set, @person, @work_email_type_code)
+        existing_email.should == @existing_work_email
+        new_email = @ode3.get_email(@response_set, @person, @personal_email_type_code)
+        new_email.should_not == @existing_work_email
+        new_email.class.should == Email
+      end
     end
 
   end

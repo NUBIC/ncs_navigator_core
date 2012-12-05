@@ -253,6 +253,10 @@ module OperationalDataExtractor
       @address_other_type ||= NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', -5)
     end
 
+    def personal_email_type
+      @personal_email_type ||= NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
+    end
+
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
@@ -372,8 +376,8 @@ module OperationalDataExtractor
       phone
     end
 
-    def get_email(response_set, person)
-      email = Email.where(:response_set_id => response_set.id).first
+    def get_email(response_set, person, email_type)
+      email = Email.where(:response_set_id => response_set.id, :email_type_code => email_type.local_code).first
       if email.nil?
         email = Email.new(:person => person, :psu => person.psu,
                           :response_set => response_set,
@@ -615,13 +619,13 @@ module OperationalDataExtractor
       telephones.detect{ |t| !t.try(:phone_nbr).blank? }
     end
 
-    def process_email(map)
+    def process_email(map, email_type = personal_email_type)
       email = nil
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            email ||= get_email(response_set, person)
+            email ||= get_email(response_set, person, email_type)
             set_value(email, attribute, value)
           end
         end
@@ -638,7 +642,7 @@ module OperationalDataExtractor
 
     def finalize_email(email)
       unless email.try(:email).blank?
-        person.emails.each { |e| e.demote_primary_rank_to_secondary }
+        person.emails.each { |e| e.demote_primary_rank_to_secondary(email.email_type_code) }
         email.save!
       end
     end
