@@ -4,6 +4,7 @@ module Field::Adapters
       attr_accessors %w(
         completed_at
         p_id
+        person_id
         instrument_id
         survey_id
         uuid
@@ -27,6 +28,7 @@ module Field::Adapters
 
         { ::Instrument => [instrument_public_id],
           ::Participant => [participant_public_id],
+          ::Person => [person_public_id],
           ::Survey => [survey_public_id]
         }
       end
@@ -39,12 +41,16 @@ module Field::Adapters
         source.try(:p_id)
       end
 
+      def person_public_id
+        source.try(:person_id)
+      end
+
       def survey_public_id
         source.try(:survey_id)
       end
 
       def ensure_prerequisites(map)
-        try_to_set(map, :instrument, :participant, :survey)
+        try_to_set(map, :instrument, :participant, :person, :survey)
       end
     end
   end

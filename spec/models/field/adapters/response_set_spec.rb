@@ -52,11 +52,17 @@ module Field::Adapters
         adapter.pending_prerequisites[::Participant].should == ['bar']
       end
 
+      it 'returns the person public ID' do
+        ha.person_id = 'baz'
+
+        adapter.pending_prerequisites[::Person].should == ['baz']
+      end
+
       it 'returns the instrument public ID' do
-        ia = Instrument::HashAdapter.new('instrument_id' =>  'baz')
+        ia = Instrument::HashAdapter.new('instrument_id' =>  'qux')
         ha.ancestors = { :instrument => ia }
 
-        adapter.pending_prerequisites[::Instrument].should == ['baz']
+        adapter.pending_prerequisites[::Instrument].should == ['qux']
       end
     end
 
@@ -66,14 +72,16 @@ module Field::Adapters
         Field::IdMap.new({
           ::Survey => { 'foo' => 1 },
           ::Participant => { 'bar' => 2 },
-          ::Instrument => { 'baz' => 3 }
+          ::Person => { 'baz' => 3 },
+          ::Instrument => { 'qux' => 4 },
         })
       end
 
       before do
-        ia = Instrument::HashAdapter.new('instrument_id' => 'baz')
+        ia = Instrument::HashAdapter.new('instrument_id' => 'qux')
         ha.survey_id = 'foo'
         ha.p_id = 'bar'
+        ha.person_id = 'baz'
         ha.ancestors = { :instrument => ia }
 
         adapter.source = ha
@@ -91,13 +99,19 @@ module Field::Adapters
         rs.participant_id.should == 2
       end
 
+      it 'sets user_id from person_id' do
+        adapter.ensure_prerequisites(map)
+
+        rs.user_id.should == 3
+      end
+
       it 'sets instrument_id' do
         adapter.ensure_prerequisites(map)
 
-        rs.instrument_id.should == 3
+        rs.instrument_id.should == 4
       end
 
-      it 'returns true if instrument_id, p_id, and survey_id were resolved' do
+      it 'returns true if instrument_id, p_id, person_id, and survey_id were resolved' do
         adapter.ensure_prerequisites(map).should be_true
       end
 
@@ -109,6 +123,12 @@ module Field::Adapters
 
       it 'returns false if p_id was not resolved' do
         ha.p_id = 'bogus'
+
+        adapter.ensure_prerequisites(map).should be_false
+      end
+
+      it 'returns false if person_id was not resolved' do
+        ha.person_id = 'bogus'
 
         adapter.ensure_prerequisites(map).should be_false
       end
