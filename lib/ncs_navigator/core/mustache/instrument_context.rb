@@ -359,6 +359,11 @@ module NcsNavigator::Core::Mustache
     def child_first_name(txt)
       about_person.blank? ? txt : about_person.first_name
     end
+
+    def child_first_name_through_participant(txt)
+      participant.children.blank? ? txt : participant.children.map{|c| c.first_name}.join(',')
+    end
+
     private :child_first_name
 
     def child_primary_address
@@ -387,12 +392,16 @@ module NcsNavigator::Core::Mustache
       about_person.blank? ? "[CHILD'S DATE OF BIRTH]" : about_person.person_dob
     end
 
+    def c_dob_through_participant
+      participant.children.blank? ? "CHILD'S DATE OF BIRTH]" : participant.children.first.person_dob
+    end
+
     def age_of_child_in_months(today = Date.today)
-      return "[AGE OF CHILD IN MONTHS]" if about_person.blank?        
+      return "[AGE OF CHILD IN MONTHS]" if about_person.blank?
       dob = Date.parse(about_person.person_dob)
       result = (today.year*12 + today.month) - (dob.year*12 + dob.month)
       dob.day > today.day ? (result-1) : result
-    end  
+    end
 
     def work_place_name
       default = "[PARTICIPANTS WORKPLACE NAME]"
@@ -492,10 +501,10 @@ module NcsNavigator::Core::Mustache
       birth_deliver = response_for("BIRTH_VISIT_3.BIRTH_DELIVER") #a_1 "HOSPITAL" a_2 "BIRTHING CENTER" a_3 "AT HOME" a_neg_5 "SOME OTHER PLACE"
       if single_birth? #MULTIPLE = 2
         if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))
-          result = "Does " + child_first_name_your_baby + " live with you?"
+          result = "Does " + child_first_name_through_participant("your baby") + " live with you?"
         end
         if released.upcase.eql? "NO"
-          result = "When " + child_first_name_your_baby + " leaves the " + birthing_place + " will " + he_she_they + " live with you?"
+          result = "When " + child_first_name_through_participant("your baby") + " leaves the " + birthing_place + " will " + he_she_they + " live with you?"
         end
       else
         if ((released.upcase.eql? "YES") || (birth_deliver.upcase.eql? "AT HOME"))

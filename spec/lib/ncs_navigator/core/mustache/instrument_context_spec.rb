@@ -520,6 +520,28 @@ module NcsNavigator::Core::Mustache
         end
       end
 
+      describe ".c_dob_through_participant" do
+        it "returns 'child's date of birth' if first loop and more than 3 children" do
+          create_multiple_birth
+
+          mom = @response_set.person
+
+          mom.person_dob = "05/06/1980"
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person, :person_dob => "09/15/2012")
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
+
+          instrument_context.c_dob_through_participant.should == "09/15/2012"
+        end
+
+
+      end
       describe ".do_when_will_live_with_you" do
 
         before(:each) do
@@ -541,14 +563,34 @@ module NcsNavigator::Core::Mustache
             at_home = mock(NcsCode, :local_code => 3)
             a.choice birth_deliver, at_home
           end
-          create_single_birth
+          mom = @response_set.person
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person)
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
           instrument_context.do_when_will_live_with_you.should == "Does " + instrument_context.child_first_name_your_baby + " live with you?"
         end
         it "returns 'When' and 'name or baby' if single birth, released is 'no'"  do
           take_survey(@survey, @response_set) do |a|
             a.no release
           end
-          create_single_birth
+          mom = @response_set.person
+
+          mom.person_dob = "05/06/1980"
+          mom.participant.p_type_code = 1 # 1 age eligilble woman
+          mom.participant.save!
+
+          person_child = Factory(:person, :person_dob => "09/15/2012")
+          person_child.save!
+
+          Factory(:participant_person_link, :person => person_child, :participant => mom.participant, :relationship_code => 8) # 8 Child
+
+          mom.participant_person_links.reload
           instrument_context.do_when_will_live_with_you.should == "When " + instrument_context.child_first_name_your_baby + " leaves the " + instrument_context.birthing_place + " will " + instrument_context.he_she_they + " live with you?"
         end
         it "returns 'Do your babies' if multiple birth, released is 'yes' and delivered 'at home'"  do
@@ -1236,7 +1278,7 @@ module NcsNavigator::Core::Mustache
       end
     end
 
-    
+
     describe "age_of_child_in_months" do
 
       let(:instrument_context) { InstrumentContext.new }
@@ -1247,22 +1289,22 @@ module NcsNavigator::Core::Mustache
         context.about_person.should be_nil
         context.age_of_child_in_months.should == "[AGE OF CHILD IN MONTHS]"
       end
-      
+
       it "returns the child's age in months" do
         dob = Date.parse("2012-01-01")
         today = Date.parse("2012-12-25")
 
         person =  Factory(:person, :person_dob => dob)
         participant = Factory(:participant)
-        participant.person = person 
+        participant.person = person
         person.save!
 
         rs = Factory(:response_set, :participant => participant)
         context = InstrumentContext.new(rs)
         context.about_person.should_not be_nil
-        context.age_of_child_in_months(today).should == (today.year*12 + today.month) - (dob.year*12 + dob.month) 
+        context.age_of_child_in_months(today).should == (today.year*12 + today.month) - (dob.year*12 + dob.month)
       end
-    
+
       context "if dob is greater than today" do
         it "returns the child's age in months" do
           dob = Date.parse("2012-10-31")
@@ -1270,15 +1312,15 @@ module NcsNavigator::Core::Mustache
 
           person =  Factory(:person, :person_dob => dob)
           participant = Factory(:participant)
-          participant.person = person 
+          participant.person = person
           person.save!
 
           rs = Factory(:response_set, :participant => participant)
           context = InstrumentContext.new(rs)
           context.about_person.should_not be_nil
-          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1  
-        end  
-      end  
+          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1
+        end
+      end
 
       context "different years" do
         it "returns the child's age in months" do
@@ -1287,17 +1329,17 @@ module NcsNavigator::Core::Mustache
 
           person =  Factory(:person, :person_dob => dob)
           participant = Factory(:participant)
-          participant.person = person 
+          participant.person = person
           person.save!
 
           rs = Factory(:response_set, :participant => participant)
           context = InstrumentContext.new(rs)
           context.about_person.should_not be_nil
-          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1 
+          context.age_of_child_in_months(today).should == ((today.year*12 + today.month) - (dob.year*12 + dob.month)) -1
         end
       end
 
-    end  
+    end
 
 
     def create_single_birth
