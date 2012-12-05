@@ -761,24 +761,4 @@ describe Instrument do
       instrument.sa_state_change_reason.should == 'Synchronized from Cases'
     end
   end
-
-  describe '#instrument_version' do
-    let(:survey) {Survey.new}
-    let(:instrument) {Instrument.new(:survey => survey)}
-
-    it 'has instrument_version' do
-      survey.title = "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.2"
-      instrument.determine_instrument_version_from_survey_title.should == "1.2"
-    end
-
-    it 'has instrument_version when whole number' do
-      survey.title = "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1"
-      instrument.determine_instrument_version_from_survey_title.should == "1"
-    end
-
-    it 'has no instrument_version' do
-      survey.title = "V's Bad Title"
-      instrument.determine_instrument_version_from_survey_title.should be_nil
-    end
-  end
 end
