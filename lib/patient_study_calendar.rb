@@ -74,7 +74,7 @@ class PatientStudyCalendar
   alias :connection :get_connection
 
   def log
-    ActiveSupport::Deprecation.warn("#{self.class.name}#log is deprecated.  Use #{self.class.name}#logger instead.")
+    ActiveSupport::Deprecation.warn("#{self.class.name}#log is deprecated.  Use #{self.class.name}#logger instead.", caller(1))
     logger
   end
 
