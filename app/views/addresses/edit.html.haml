@@ -4,6 +4,10 @@
   = form_for(@address, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
+    %p
+      #edit_dwelling_unit
+        = link_to 'Edit Dwelling Unit', edit_dwelling_unit_path(@address.dwelling_unit), :class => "edit_link icon_link" if @address.dwelling_unit
+
     = render "/addresses/form_fields", :f => f
 
     %p
