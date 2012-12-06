@@ -349,19 +349,23 @@ class Event < ActiveRecord::Base
   end
 
   def pregnancy_visit_1?
-    self.event_type_code == self.pregnancy_visit_1_code
+    self.event_type_code == Event.pregnancy_visit_1_code
   end
   alias :pv1? :pregnancy_visit_1?
   alias :pregnancy_visit1? :pregnancy_visit_1?
 
   def pregnancy_visit_2?
-    self.event_type_code == self.pregnancy_visit_2_code
+    self.event_type_code == Event.pregnancy_visit_2_code
   end
   alias :pv2? :pregnancy_visit_2?
   alias :pregnancy_visit2? :pregnancy_visit_2?
 
   def birth?
-    self.event_type_code == self.birth_code
+    self.event_type_code == Event.birth_code
+  end
+
+  def informed_consent?
+    self.event_type_code == Event.informed_consent_code
   end
 
   ##
@@ -648,6 +652,39 @@ class Event < ActiveRecord::Base
     return nil if part.blank?
     part.gsub(label_marker, "")
   end
+
+
+  ##
+  # If this event has an associated Informed Consent Event
+  # during the same contact then update that Event's attributes
+  # with this one
+  def update_associated_informed_consent_event
+    if ic = associated_informed_consent_event
+      [ :event_disposition_category_code,
+        :event_disposition,
+        :event_start_date,
+        :event_start_time,
+        :event_end_date,
+        :event_end_time
+      ].each do |a|
+        ic.send("#{a}=", self.send(a)) if ic.send(a).blank? || ic.send(a) == -4
+      end
+      ic.save!
+    end
+  end
+
+  ##
+  # Finds the first Informed Consent (10) event that was created
+  # during the same contact as this event.
+  # @return[Event]
+  def associated_informed_consent_event
+    Event.joins(:contact_links).
+          where(:participant_id => participant_id,
+                :event_type_code => Event.informed_consent_code).
+          where("contact_links.contact_id in (?)", contacts.map(&:id)).
+          readonly(false).first
+  end
+  private :associated_informed_consent_event
 
   comma do
 

@@ -938,4 +938,59 @@ describe Event do
       event.label.should == 'foo_bar'
     end
   end
+
+  describe ".update_associated_informed_consent_event" do
+
+    let(:contact) { Factory(:contact) }
+    let(:participant) { Factory(:participant) }
+    let!(:pv1_event) { Factory(:event, :event_type_code => Event.pregnancy_visit_1_code, :participant => participant) }
+    let!(:ic_event) { Factory(:event, :event_type_code => Event.informed_consent_code, :participant => participant) }
+    let!(:pv1_contact_link) { Factory(:contact_link, :contact => contact, :event => pv1_event) }
+    let!(:ic_contact_link) { Factory(:contact_link, :contact => contact, :event => ic_event) }
+
+    before do
+      dt = Date.parse("2525-01-01")
+      @expected_values = [
+        [:event_disposition_category_code, 3],
+        [:event_disposition, 60],
+        [:event_start_date, dt],
+        [:event_start_time, "11:11"],
+        [:event_end_date, dt],
+        [:event_end_time, "12:12"]
+      ]
+      @expected_values.each do |a, v|
+        pv1_event.send("#{a}=", v)
+        ic_event.send("#{a}=", nil)
+      end
+      pv1_event.save!
+      ic_event.save!
+    end
+
+    it "updates the associated Informed Consent event" do
+      pv1_event.update_associated_informed_consent_event
+      updated_ic_event = Event.find(ic_event.id)
+      @expected_values.each do |a, v|
+        updated_ic_event.send(a).should == v
+      end
+    end
+
+    it "does not override existing valid attributes" do
+      other_date = Date.parse("2020-12-25")
+      midnight = "00:00"
+      ic_event.event_start_date = other_date
+      ic_event.event_start_time = midnight
+      ic_event.event_end_date = other_date
+      ic_event.event_end_time = midnight
+      ic_event.save!
+
+      pv1_event.update_associated_informed_consent_event
+      updated_ic_event = Event.find(ic_event.id)
+
+      updated_ic_event.event_start_date.should == other_date
+      updated_ic_event.event_start_time.should == midnight
+      updated_ic_event.event_end_date.should == other_date
+      updated_ic_event.event_end_time.should == midnight
+    end
+
+  end
 end
