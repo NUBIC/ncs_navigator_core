@@ -195,10 +195,8 @@ class ParticipantConsentsController < ApplicationController
     # @param[Contact]
     # @return[Boolean]
     def should_create_informed_consent_record?(participant, contact)
-      events = Event.where(:participant_id => participant.id,
-                           :event_type_code => Event.informed_consent_code).all
-      return true if events.empty?
-      events.collect(&:contacts).flatten.include?(contact) ? false : true
+      rel = Event.where(:participant_id => participant.id, :event_type_code => Event.informed_consent_code)
+      rel.count == 0 || !rel.joins(:contacts).exists?('contacts.id' => contact.id)
     end
     private :should_create_informed_consent_record?
 
