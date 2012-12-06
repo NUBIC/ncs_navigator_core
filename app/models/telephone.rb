@@ -117,7 +117,7 @@ class Telephone < ActiveRecord::Base
 
   def self.unique_telephones(telephones)
     unique = []
-    telephones.group_by(&:phone_nbr).each { |group, phone_numbers| unique << phone_numbers.first }
+    telephones.group_by(&:phone_nbr).each { |group, phone_numbers| unique << phone_numbers.first unless phone_numbers.first.phone_nbr.blank? }
     unique
   end
 

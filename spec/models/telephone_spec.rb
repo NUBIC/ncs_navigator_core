@@ -215,6 +215,13 @@ describe Telephone do
       Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b]
     end
 
+    it "a blank telephone record does not break it" do
+      @blank_phone = Factory(:telephone)
+
+      @phones << @blank_phone
+      Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b]
+    end
+
   end
 end
 

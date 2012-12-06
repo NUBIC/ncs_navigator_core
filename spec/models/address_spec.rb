@@ -271,6 +271,13 @@ describe Address do
       Address.unique_addresses(@addresses).should == [@address_a, @address_b]
     end
 
+    it "a blank address does not break it" do
+      @blank_address = Factory(:address)
+
+      @addresses << @blank_address
+      Address.unique_addresses(@addresses).should == [@address_a, @address_b]
+    end
+
   end
 end
 

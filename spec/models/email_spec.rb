@@ -150,6 +150,13 @@ describe Email do
       Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b]
     end
 
+    it "a blank email address does not break it" do
+      @blank_email_address = Factory(:email)
+
+      @email_addresses << @blank_email_address
+      Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b]
+    end
+
   end
 end
 
