@@ -232,4 +232,22 @@ namespace :import do
       end
     end
   end
+
+  namespace :followed do
+    desc "Report any mismatches between followedness in the CSV and in Cases"
+    task :check, [:followed_csv] do |t, args|
+      fail 'Please specify the path to the expected-followed csv' unless args[:followed_csv]
+      require 'ncs_navigator/core'
+
+      NcsNavigator::Core::FollowedParticipantChecker(args[:followed_csv]).report
+    end
+
+    desc "Force Cases to match the followedness data in the CSV"
+    task :update, [:followed_csv] do |t, args|
+      fail 'Please specify the path to the expected-followed csv' unless args[:followed_csv]
+      require 'ncs_navigator/core'
+
+      NcsNavigator::Core::FollowedParticipantChecker(args[:followed_csv]).update!
+    end
+  end
 end
