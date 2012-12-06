@@ -112,7 +112,7 @@ module NcsNavigator::Core
       else
         differences.each do |code, p_ids|
           out.puts MESSAGES[code]
-          p_ids.each do |p_id|
+          p_ids.sort.each do |p_id|
             out.puts "* #{p_id}"
           end
         end
