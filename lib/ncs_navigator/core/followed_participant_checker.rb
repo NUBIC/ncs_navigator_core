@@ -46,7 +46,7 @@ module NcsNavigator::Core
     private :load_expected_participants
 
     def cases_followed_participants
-      @cases_followed_participants ||= Participant.where(:being_followed => true).all
+      @cases_followed_participants ||= Participant.where("being_followed = true AND p_type_code != 6").all
     end
 
     def differences
