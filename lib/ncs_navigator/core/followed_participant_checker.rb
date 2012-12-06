@@ -64,6 +64,8 @@ module NcsNavigator::Core
       }
 
       pairs.each_with_object({}) { |(expected, cases), diff|
+        next if expected && !expected.errors.empty?
+
         if expected && cases
           if cases.being_followed
             # No problems
@@ -96,6 +98,15 @@ module NcsNavigator::Core
     # Prints a human-readable report about mismatches between the current
     # followed participants and the contents of the CSV.
     def report(out=$stderr)
+      errors = expected_participants.collect(&:errors).flatten
+      unless errors.empty?
+        out.puts "CSV Errors:"
+        errors.each do |error|
+          out.puts "* #{error}"
+        end
+        out.puts
+      end
+
       if differences.empty?
         out.puts "Everything matches exactly."
       else

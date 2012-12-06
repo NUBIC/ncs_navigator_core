@@ -90,13 +90,15 @@ module NcsNavigator::Core
             %w(HH Hi),
             %w(HL HI),
             %w(LL lo),
-            %w(LH lO)
+            %w(LH lO),
+            %w(E),
           )
 
           Factory(:participant, :high_intensity => true,  :p_id => 'HH')
           Factory(:participant, :high_intensity => false, :p_id => 'HL')
           Factory(:participant, :high_intensity => true,  :p_id => 'LH')
           Factory(:participant, :high_intensity => false, :p_id => 'LL')
+          Factory(:participant, :high_intensity => false, :p_id => 'E')
         end
 
         it 'knows when a participant is Hi in the CSV but Lo in Cases' do
@@ -114,6 +116,10 @@ module NcsNavigator::Core
         it 'does not report a participant that is Lo in both' do
           checker.differences.values.flatten.should_not include('LL')
         end
+
+        it 'does not report a participant that is missing intensity' do
+          checker.differences.values.flatten.should_not include('E')
+        end
       end
     end
 
@@ -128,7 +134,8 @@ module NcsNavigator::Core
           %w(G  Lo),
           %w(E  Lo),
           %w(HL Hi),
-          %w(LH Lo)
+          %w(LH Lo),
+          %w(W)
         )
 
         Factory(:participant, :p_id => 'G',  :being_followed => true)
@@ -136,6 +143,7 @@ module NcsNavigator::Core
         Factory(:participant, :p_id => 'N',  :being_followed => true)
         Factory(:participant, :p_id => 'HL', :being_followed => true, :high_intensity => false)
         Factory(:participant, :p_id => 'LH', :being_followed => true, :high_intensity => true)
+        Factory(:participant, :p_id => 'W',  :being_followed => true, :high_intensity => false)
 
         with_versioning do
           checker.update!
@@ -160,6 +168,10 @@ module NcsNavigator::Core
 
       it 'leaves other participants alone' do
         p('G').versions.collect(&:event).should_not include('update')
+      end
+
+      it 'does not update participants with errors' do
+        p('W').versions.collect(&:event).should_not include('update')
       end
 
       it 'audits changes as coming from this checker' do
