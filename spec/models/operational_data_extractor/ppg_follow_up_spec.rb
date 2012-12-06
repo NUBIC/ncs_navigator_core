@@ -220,7 +220,7 @@ describe OperationalDataExtractor::PpgFollowUp do
     person = Person.find(person.id)
     person.emails.size.should == 2
     person.emails.first.email.should == "asdf@asdf.asdf"
-    person.emails.first.email_rank_code.should == 2
+    person.emails.first.email_rank_code.should == 1
 
     person.emails.last.email.should == "email@dev.null"
     person.emails.last.email_rank_code.should == 1
