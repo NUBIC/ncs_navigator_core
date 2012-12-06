@@ -18,6 +18,8 @@
       - if instr = contact_link.instrument
         .edit_instrument
           = link_to "Edit #{instr}", edit_instrument_path(instr), :class => "edit_link icon_link"
+      - elsif contact_link.event.try(:informed_consent?)
+        = render "consents"
 
 .page_section
   %h3
