@@ -248,7 +248,7 @@ describe OperationalDataExtractor::Base do
           @ode2 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
         end
 
-        it "creates birth address record" do
+        it "creates birth address record from the responses of a birth instrument" do
           birth_address = @ode2.process_birth_address(@map)
           birth_address.class.should == Address
           birth_address.address_rank_code.should == 1
@@ -337,7 +337,7 @@ describe OperationalDataExtractor::Base do
         @response_set.responses << email_response
       end
 
-      it "updates an email record if update data is available" do
+      it "creates an email record from the responses of am instrument" do
         email = @ode3.process_email(@map)
         email.email.should == "some_email_address@email.com"
       end
@@ -361,4 +361,94 @@ describe OperationalDataExtractor::Base do
 
   end
 
+  context "processing telephones" do
+
+    before do
+      @person = Factory(:person)
+      @survey = create_pbs_eligibility_screener_survey_with_telephone_operational_data
+      @participant = Factory(:participant)
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+      @home_phone_type_code = NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 1)
+      @work_phone_type_code = NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 2)
+      @existing_home_phone = Factory(  :telephone,
+                                       :phone_nbr => "666-666-6666",
+                                       :person => @person,
+                                       :response_set => @response_set,
+                                       :phone_rank_code => 1,
+                                       :phone_type_code => @home_phone_type_code.local_code)
+      @existing_work_phone = Factory(  :telephone,
+                                       :phone_nbr => "555-555-5555",
+                                       :person => @person,
+                                       :response_set => @response_set,
+                                       :phone_rank_code => 1,
+                                       :phone_type_code => @work_phone_type_code.local_code)
+      @ode3 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+    end
+
+    describe "#finalize_telephones" do
+      before do
+        @new_work_phone = Factory(:telephone, :phone_nbr => "888-888-8888", :phone_rank_code => 4, :phone_type_code => 2)
+      end
+
+      it "demotes existing telephone records in favor of new telephone records of the same type" do
+        @existing_work_phone.phone_rank_code.should == 1
+        @ode3.finalize_telephones(@new_work_phone)
+        updated_work_phone = Telephone.find(@existing_work_phone.id)
+        updated_work_phone.phone_rank_code.should == 2
+      end
+
+    end
+
+    describe "#which_telephones_changed" do
+      before do
+        @unchanged_phone = Factory(:telephone, :phone_rank_code => 4, :phone_type_code => 1)
+        @changed_home_phone = Factory(:telephone, :phone_nbr => "123-123-1234", :phone_rank_code => 4, :phone_type_code => 1)
+        @changed_work_phone = Factory(:telephone, :phone_nbr => "999-999-9999", :phone_rank_code => 4, :phone_type_code => 2)
+        @phones = [@unchanged_phone, @changed_home_phone, @changed_work_phone]
+      end
+
+      it "filters out a set of addresses with changed information" do
+        @ode3.which_telephones_changed(@phones).should include(@changed_work_phone, @changed_home_phone)
+        @ode3.which_telephones_changed(@phones).should_not include(@unchanged_unchanged_phone)
+      end
+    end
+
+    describe "#process_telephone" do
+
+      before do
+        @map = OperationalDataExtractor::PbsEligibilityScreener::TELEPHONE_MAP1
+
+        question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_1")
+        answer = Factory(:answer, :response_class => "string")
+        phone_number_response = Factory(:response, :string_value => "484-484-4848", :question => question, :answer => answer, :response_set => @response_set)
+        question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.R_PHONE_TYPE1")
+        answer = Factory(:answer, :response_class => "string")
+        phone_type_response = Factory(:response, :string_value => "Home", :question => question, :answer => answer, :response_set => @response_set)
+
+        @response_set.responses << phone_number_response << phone_type_response
+      end
+
+      it "creates a phone record from the responses of an instrument" do
+        phone = @ode3.process_telephone(@person, @map)
+        phone.phone_nbr.should == "4844844848"
+      end
+
+    end
+
+    describe "#get_telephone" do
+
+      it "retrieves an phone record if one exists" do
+        @ode3.get_telephone(@response_set, @person, @work_phone_type_code).should == @existing_work_phone
+      end
+
+      it "creates a new phone record if one does not exist " do
+        existing_phone = @ode3.get_telephone(@response_set, @person, @work_phone_type_code)
+        existing_phone.should == @existing_work_phone
+        new_phone = @ode3.get_telephone(@response_set, @person, @home_phone_type_code)
+        new_phone.should_not == @existing_work_phone
+        new_phone.class.should == Telephone
+      end
+    end
+
+  end
 end

@@ -257,6 +257,10 @@ module OperationalDataExtractor
       @personal_email_type ||= NcsCode.for_list_name_and_local_code('EMAIL_TYPE_CL1', 1)
     end
 
+    def home_phone_type
+      @home_phone_type ||= NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 1)
+    end
+
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
@@ -561,7 +565,7 @@ module OperationalDataExtractor
       birth_address
     end
 
-    def process_address(owner, map, address_type, address_rank = primary_rank)
+    def process_address(owner, map, address_type = address_other_tyoe, address_rank = primary_rank)
       address = nil
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -593,7 +597,7 @@ module OperationalDataExtractor
       addresses.find_all{ |a| !a.to_s.blank? }
     end
 
-    def process_telephone(owner, map, phone_type = nil, phone_rank = primary_rank)
+    def process_telephone(owner, map, phone_type = home_phone_type, phone_rank = primary_rank)
       phone = nil
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -609,14 +613,20 @@ module OperationalDataExtractor
 
     def finalize_telephones(*telephones)
       if any_telephone_changes?(telephones)
-        person.telephones.each { |t| t.demote_primary_rank_to_secondary }
-
-        telephones.each { |t| t.save! unless t.try(:phone_nbr).blank? }
+        changed_phones = which_telephones_changed(telephones).flatten
+        changed_phones.each do |phone|
+          person.telephones.each { |t| t.demote_primary_rank_to_secondary(phone.phone_type_code) }
+        end
+        telephones.flatten.each { |t| t.save! unless t.try(:phone_nbr).blank? }
       end
     end
 
     def any_telephone_changes?(telephones)
       telephones.detect{ |t| !t.try(:phone_nbr).blank? }
+    end
+
+    def which_telephones_changed(telephones)
+      telephones.find_all{ |t| !t.try(:phone_nbr).blank? }
     end
 
     def process_email(map, email_type = personal_email_type)

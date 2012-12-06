@@ -106,10 +106,10 @@ class Telephone < ActiveRecord::Base
 
   ##
   # Updates the rank to secondary if current rank is primary
-  def demote_primary_rank_to_secondary
+  def demote_primary_rank_to_secondary(phone_type)
     return unless self.phone_rank_code == 1
     secondary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 2)
-    if !secondary_rank.blank?
+    if !secondary_rank.blank? && phone_type == self.phone_type_code
       self.phone_rank = secondary_rank
       self.save
     end

@@ -137,5 +137,39 @@ describe Telephone do
       end
     end
   end
+
+  describe "#demote_primary_rank_to_seconday" do
+
+    before(:each) do
+      @primary_phone = Factory(:telephone)
+      @duplicate_phone = Factory(:telephone, :phone_rank_code => 4)
+      @business_phone = Factory(:telephone, :phone_type_code => 2)
+      @school_phone = Factory(:telephone, :phone_type_code => 3)
+    end
+
+    it "changes the rank from primary to seconday" do
+      @primary_phone.phone_rank_code.should == 1
+      @primary_phone.demote_primary_rank_to_secondary(@primary_phone.phone_type_code)
+      @primary_phone.phone_rank_code.should == 2
+    end
+
+    it "does nothing if rank is not primary" do
+      @duplicate_phone.phone_rank_code.should == 4
+      @duplicate_phone.demote_primary_rank_to_secondary(@duplicate_phone.phone_type_code)
+      @duplicate_phone.phone_rank_code.should == 4
+    end
+
+    it "only changes rank if phone is the same type" do
+      @business_phone.phone_rank_code.should == 1
+      @business_phone.demote_primary_rank_to_secondary(@business_phone.phone_type_code)
+      @business_phone.phone_rank_code.should == 2
+    end
+
+    it "does not change rank if phone is a different type" do
+      @business_phone.phone_rank_code.should == 1
+      @business_phone.demote_primary_rank_to_secondary(@school_phone.phone_type_code)
+      @business_phone.phone_rank_code.should == 1
+    end
+  end
 end
 
