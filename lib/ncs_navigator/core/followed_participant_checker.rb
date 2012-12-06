@@ -10,8 +10,18 @@ module NcsNavigator::Core
   # `intensity` column containing "Hi" or "Lo" for each participant.
   # If `intensity` is missing, it will assume all participants should be "Hi".
   class FollowedParticipantChecker
-    def initialize(csv_io)
-      @csv_io = csv_io
+    MESSAGES = {
+      :expected_followed     => 'Expected to be followed but not followed in Cases',
+      :expected_not_followed => 'Unexpectedly followed in Cases',
+      :expected_low          => 'Expected to be Low but is High in Cases',
+      :expected_high         => 'Expected to be High but is Low in Cases',
+      :missing_from_cases    => 'Completely missing from Cases'
+    }
+
+    def initialize(csv_filename, options={})
+      @csv_filename = csv_filename.to_s
+
+      @quiet = options.delete(:quiet)
     end
 
     def expected_participants
@@ -19,17 +29,19 @@ module NcsNavigator::Core
     end
 
     def load_expected_participants
-      csv = Rails.application.csv_impl.new(@csv_io, :headers => true, :header_converters => :symbol)
-      rows = csv.read
+      File.open(@csv_filename) do |csv_io|
+        csv = Rails.application.csv_impl.new(csv_io, :headers => true, :header_converters => :symbol)
+        rows = csv.read
 
-      intensity_expected = csv.headers.include?(:intensity)
+        intensity_expected = csv.headers.include?(:intensity)
 
-      rows.collect { |row|
-        ExpectedParticipant.new.tap { |p|
-          p.p_id = row[:p_id]
-          p.set_intensity(row, intensity_expected)
+        rows.collect { |row|
+          ExpectedParticipant.new.tap { |p|
+            p.p_id = row[:p_id]
+            p.set_intensity(row, intensity_expected)
+          }
         }
-      }
+      end
     end
     private :load_expected_participants
 
@@ -56,20 +68,20 @@ module NcsNavigator::Core
           if cases.being_followed
             # No problems
           else
-            register_difference(diff, 'Expected to be followed but not followed in Cases', expected.p_id)
+            register_difference(diff, :expected_followed, expected.p_id)
           end
 
           if cases.intensity == expected.intensity
             # No problems
           elsif expected.intensity == :low
-            register_difference(diff, 'Expected to be Low but is High in Cases', expected.p_id)
+            register_difference(diff, :expected_low, expected.p_id)
           else
-            register_difference(diff, 'Expected to be High but is Low in Cases', expected.p_id)
+            register_difference(diff, :expected_high, expected.p_id)
           end
         elsif expected
-          register_difference(diff, 'Completely missing from Cases', expected.p_id)
+          register_difference(diff, :missing_from_cases, expected.p_id)
         elsif cases
-          register_difference(diff, 'Unexpectedly followed in Cases', cases.p_id)
+          register_difference(diff, :expected_not_followed, cases.p_id)
         end
       }
     end
@@ -87,8 +99,8 @@ module NcsNavigator::Core
       if differences.empty?
         out.puts "Everything matches exactly."
       else
-        differences.each do |message, p_ids|
-          out.puts message
+        differences.each do |code, p_ids|
+          out.puts MESSAGES[code]
           p_ids.each do |p_id|
             out.puts "* #{p_id}"
           end
@@ -96,10 +108,51 @@ module NcsNavigator::Core
       end
     end
 
+    UPDATERS = {
+      :expected_followed => lambda { |participant|
+        participant.tap { |p| p.being_followed = true }.save!
+      },
+      :expected_not_followed => lambda { |participant|
+        participant.tap { |p| p.being_followed = false }.save!
+      },
+      :expected_low => lambda { |participant|
+        participant.tap { |p| p.high_intensity = false }.save!
+      },
+      :expected_high => lambda { |participant|
+        participant.tap { |p| p.high_intensity = true }.save!
+      },
+    }
+
     ##
     # Changes any mismatched participants to the followedness/state given in
     # the CSV.
     def update!
+      count = differences.values.flatten.size
+      done = 0
+
+      start_whodunnit = PaperTrail.whodunnit
+      begin
+        PaperTrail.whodunnit = "FollowedParticipantChecker(#{File.basename @csv_filename})"
+
+        UPDATERS.each do |code, updater|
+          next unless differences[code]
+
+          differences[code].each do |p_id|
+            done += 1
+            console_say "\rProcessing #{done}/#{count} correction#{'s' unless count == 1}."
+
+            updater[ Participant.where(:p_id => p_id).first ]
+          end
+        end
+      ensure
+        PaperTrail.whodunnit = start_whodunnit
+      end
+
+      console_say "\rCompleted #{count} correction#{'s' unless count == 1}.          \n"
+    end
+
+    def console_say(s)
+      $stderr.write(s) unless @quiet
     end
 
     class ExpectedParticipant

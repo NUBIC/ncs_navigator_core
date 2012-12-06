@@ -4,7 +4,7 @@ module NcsNavigator::Core
   describe FollowedParticipantChecker do
     let(:csv_filename) { Rails.root + 'tmp' + 'fpc-test.csv' }
 
-    let(:checker) { FollowedParticipantChecker.new(csv_filename.open) }
+    let(:checker) { FollowedParticipantChecker.new(csv_filename, :quiet => true) }
 
     def create_csv(*lines)
       csv_filename.open('w') do |f|
@@ -68,15 +68,15 @@ module NcsNavigator::Core
       end
 
       it 'knows when a participant in the CSV is completely missing from Cases' do
-        checker.differences['Completely missing from Cases'].should == %w(O)
+        checker.differences[:missing_from_cases].should == %w(O)
       end
 
       it 'knows when a participant in the CSV is not being followed in Cases' do
-        checker.differences['Expected to be followed but not followed in Cases'].should == %w(N)
+        checker.differences[:expected_followed].should == %w(N)
       end
 
       it 'knows when a participant being followed in Cases is not in the CSV' do
-        checker.differences['Unexpectedly followed in Cases'].should == %w(Q)
+        checker.differences[:expected_not_followed].should == %w(Q)
       end
 
       it 'does not report anything about a matching participant' do
@@ -100,11 +100,11 @@ module NcsNavigator::Core
         end
 
         it 'knows when a participant is Hi in the CSV but Lo in Cases' do
-          checker.differences['Expected to be High but is Low in Cases'].should == %w(HL)
+          checker.differences[:expected_high].should == %w(HL)
         end
 
         it 'knows when a participant is Lo in the CSV but Hi in Cases' do
-          checker.differences['Expected to be Low but is High in Cases'].should == %w(LH)
+          checker.differences[:expected_low].should == %w(LH)
         end
 
         it 'does not report a participant that is Hi in both' do
@@ -114,6 +114,57 @@ module NcsNavigator::Core
         it 'does not report a participant that is Lo in both' do
           checker.differences.values.flatten.should_not include('LL')
         end
+      end
+    end
+
+    describe '#update!' do
+      def p(p_id)
+        Participant.where(:p_id => p_id).first
+      end
+
+      before do
+        create_csv(
+          %w(p_id intensity),
+          %w(G  Lo),
+          %w(E  Lo),
+          %w(HL Hi),
+          %w(LH Lo)
+        )
+
+        Factory(:participant, :p_id => 'G',  :being_followed => true)
+        Factory(:participant, :p_id => 'E',  :being_followed => false)
+        Factory(:participant, :p_id => 'N',  :being_followed => true)
+        Factory(:participant, :p_id => 'HL', :being_followed => true, :high_intensity => false)
+        Factory(:participant, :p_id => 'LH', :being_followed => true, :high_intensity => true)
+
+        with_versioning do
+          checker.update!
+        end
+      end
+
+      it 'changes an expected-but-not-followed participant to followed' do
+        p('E').being_followed.should be_true
+      end
+
+      it 'changes a not-expected-but-followed participant to not followed' do
+        p('N').being_followed.should be_false
+      end
+
+      it 'changes an expected-but-not-high participant to high' do
+        p('HL').should_not be_low_intensity
+      end
+
+      it 'changes an expected-but-not-low participant to low' do
+        p('LH').should be_low_intensity
+      end
+
+      it 'leaves other participants alone' do
+        p('G').versions.collect(&:event).should_not include('update')
+      end
+
+      it 'audits changes as coming from this checker' do
+        p('E').versions.where(:event => 'update').first.whodunnit.
+          should == "FollowedParticipantChecker(#{csv_filename.basename.to_s})"
       end
     end
   end
