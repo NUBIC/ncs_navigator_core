@@ -7,6 +7,7 @@ module NcsNavigator
     autoload :Configuration,            'ncs_navigator/core/configuration'
     autoload :Field,                    'ncs_navigator/core/field'
     autoload :HasPublicId,              'ncs_navigator/core/has_public_id'
+    autoload :FollowedParticipantChecker, 'ncs_navigator/core/followed_participant_checker'
     autoload :Mdes,                     'ncs_navigator/core/mdes'
     autoload :MdesCodeListLoader,       'ncs_navigator/core/mdes_code_list_loader'
     autoload :MdesInstrumentSurvey,     'ncs_navigator/core/mdes_instrument_survey'

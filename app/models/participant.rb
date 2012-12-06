@@ -836,6 +836,12 @@ class Participant < ActiveRecord::Base
     !high_intensity
   end
 
+  ##
+  # @return [:high, :low]
+  def intensity
+    high_intensity ? :high : :low
+  end
+
   def add_to_high_intensity_protocol
     switch_arm(true)
   end

@@ -1367,6 +1367,16 @@ describe Participant do
 
   end
 
+  describe '#intensity' do
+    it 'is :high when high' do
+      Factory(:participant, :high_intensity => true).intensity.should == :high
+    end
+
+    it 'is :low when low' do
+      Factory(:participant, :high_intensity => false).intensity.should == :low
+    end
+  end
+
   context "removing a participant from the study" do
 
     let(:participant) { Factory(:participant) }
