@@ -106,5 +106,50 @@ describe Email do
       @business_email.email_rank_code.should == 1
     end
   end
+
+  describe "#unique_email_addresses" do
+
+    before do
+      @email_address_a = Factory( :email,
+                                  :email_rank_code => 1,
+                                  :email_type_code => 1,
+                                  :email => "sjohnson@email.com")
+
+      @email_duplicate_1_address_a = Factory( :email,
+                                              :email_rank_code => 1,
+                                              :email_type_code => 1,
+                                              :email => "sjohnson@email.com")
+
+      @email_duplicate_2_address_a = Factory( :email,
+                                              :email_rank_code => 1,
+                                              :email_type_code => 1,
+                                              :email => "sjohnson@email.com")
+      @email_address_b = Factory( :email,
+                                  :email_rank_code => 1,
+                                  :email_type_code => 1,
+                                  :email => "david_billings@email.com")
+
+      @email_duplicate_1_address_b = Factory( :email,
+                                              :email_rank_code => 1,
+                                              :email_type_code => 1,
+                                              :email => "david_billings@email.com")
+
+      @email_duplicate_2_address_b = Factory( :email,
+                                              :email_rank_code => 1,
+                                              :email_type_code => 1,
+                                              :email => "david_billings@email.com")
+      @email_addresses = [@email_address_a,
+                          @email_duplicate_1_address_a,
+                          @email_duplicate_2_address_a,
+                          @email_address_b,
+                          @email_duplicate_1_address_b,
+                          @email_duplicate_2_address_b]
+    end
+
+    it "returns a set of unique email addresses" do
+      Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b]
+    end
+
+  end
 end
 

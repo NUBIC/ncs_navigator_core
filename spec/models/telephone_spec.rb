@@ -171,5 +171,50 @@ describe Telephone do
       @business_phone.phone_rank_code.should == 1
     end
   end
+
+  describe "#unique_telephones" do
+
+    before do
+      @phone_a = Factory( :telephone,
+                          :phone_rank_code => 1,
+                          :phone_type_code => 1,
+                          :phone_nbr => "876-545-3322")
+
+      @phone_duplicate_1_a = Factory( :telephone,
+                                      :phone_rank_code => 1,
+                                      :phone_type_code => 1,
+                                      :phone_nbr => "876-545-3322")
+
+      @phone_duplicate_2_a = Factory( :telephone,
+                                      :phone_rank_code => 1,
+                                      :phone_type_code => 1,
+                                      :phone_nbr => "876-545-3322")
+      @phone_b = Factory( :telephone,
+                          :phone_rank_code => 1,
+                          :phone_type_code => 2,
+                          :phone_nbr => "242-654-4543")
+
+      @phone_duplicate_1_b = Factory( :telephone,
+                                      :phone_rank_code => 1,
+                                      :phone_type_code => 2,
+                                      :phone_nbr => "242-654-4543")
+
+      @phone_duplicate_2_b = Factory( :telephone,
+                                      :phone_rank_code => 1,
+                                      :phone_type_code => 2,
+                                      :phone_nbr => "242-654-4543")
+      @phones = [ @phone_a,
+                  @phone_duplicate_1_a,
+                  @phone_duplicate_2_a,
+                  @phone_b,
+                  @phone_duplicate_1_b,
+                  @phone_duplicate_2_b]
+    end
+
+    it "returns a set of unique phone es" do
+      Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b]
+    end
+
+  end
 end
 

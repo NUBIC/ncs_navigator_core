@@ -61,5 +61,11 @@ class Email < ActiveRecord::Base
     end
   end
 
+  def self.unique_email_addresses(email_addresses)
+    unique = []
+    email_addresses.group_by(&:email).each { |group, email_addresses| unique << email_addresses.first }
+    unique
+  end
+
 end
 

@@ -118,5 +118,11 @@ class Address < ActiveRecord::Base
     end
   end
 
+  def self.unique_addresses(addresses)
+    unique = []
+    addresses.group_by(&:address_one).each { |group, addresses| unique << addresses.first }
+    unique
+  end
+
 end
 

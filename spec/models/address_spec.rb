@@ -216,5 +216,61 @@ describe Address do
     end
 
   end
+
+  describe "unique_addresses" do
+    before do
+      @address_a = Factory( :address,
+                            :address_rank_code => 1,
+                            :address_type_code => 1,
+                            :address_one => "123 America Street",
+                            :city => "Anytown",
+                            :state_code => 23)
+
+      @duplicate_1_address_a = Factory( :address,
+                                        :address_rank_code => 1,
+                                        :address_type_code => 1,
+                                        :address_one => "123 America Street",
+                                        :city => "Anytown",
+                                        :state_code => 23)
+
+      @duplicate_2_address_a = Factory( :address,
+                                        :address_rank_code => 1,
+                                        :address_type_code => 1,
+                                        :address_one => "123 America Street",
+                                        :city => "Anytown",
+                                        :state_code => 23)
+      @address_b = Factory( :address,
+                            :address_rank_code => 1,
+                            :address_type_code => 2,
+                            :address_one => "654 Elm Avenue",
+                            :city => "Shelbyville",
+                            :state_code => 15)
+
+      @duplicate_1_address_b = Factory( :address,
+                                        :address_rank_code => 1,
+                                        :address_type_code => 2,
+                                        :address_one => "654 Elm Avenue",
+                                        :city => "Shelbyville",
+                                        :state_code => 15)
+
+      @duplicate_2_address_b = Factory( :address,
+                                        :address_rank_code => 1,
+                                        :address_type_code => 2,
+                                        :address_one => "654 Elm Avenue",
+                                        :city => "Shelbyville",
+                                        :state_code => 15)
+      @addresses = [@address_a,
+                    @duplicate_1_address_a,
+                    @duplicate_2_address_a,
+                    @address_b,
+                    @duplicate_1_address_b,
+                    @duplicate_2_address_b]
+    end
+
+    it "returns a set of unique addresses" do
+      Address.unique_addresses(@addresses).should == [@address_a, @address_b]
+    end
+
+  end
 end
 
