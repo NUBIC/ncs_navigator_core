@@ -336,7 +336,7 @@ module Field
 
       let(:contact) { Factory(:contact) }
       let(:event) { Factory(:event) }
-      let(:response_set) { Factory(:response_set, :instrument => instrument, :participant => participant) }
+      let(:response_set) { Factory(:response_set, :instrument => instrument, :participant => participant, :person => person) }
       let(:instrument) { Factory(:instrument) }
       let(:person) { Factory(:person) }
       let(:participant) { Factory(:participant) }
