@@ -145,14 +145,16 @@ module NcsNavigator::Core
       begin
         PaperTrail.whodunnit = "FollowedParticipantChecker(#{File.basename @csv_filename})"
 
-        UPDATERS.each do |code, updater|
-          next unless differences[code]
+        Participant.transaction do
+          UPDATERS.each do |code, updater|
+            next unless differences[code]
 
-          differences[code].each do |p_id|
-            done += 1
-            console_say "\rProcessing #{done}/#{count} correction#{'s' unless count == 1}."
+            differences[code].each do |p_id|
+              done += 1
+              console_say "\rProcessing #{done}/#{count} correction#{'s' unless count == 1}."
 
-            updater[ Participant.where(:p_id => p_id).first ]
+              updater[ Participant.where(:p_id => p_id).first ]
+            end
           end
         end
       ensure
