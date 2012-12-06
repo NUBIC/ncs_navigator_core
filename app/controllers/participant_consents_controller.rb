@@ -171,14 +171,16 @@ class ParticipantConsentsController < ApplicationController
     def create_informed_consent_event(participant, contact_link)
       contact = contact_link.contact
       if should_create_informed_consent_record?(participant, contact)
-        comment = "Informed Consent Event record created from ParticipantConsent record"
-        event = Event.create(:participant => participant,
-                             :event_type_code => Event.informed_consent_code,
-                             :event_breakoff_code => NcsCode::NO,
-                             :event_comment => comment,
-                             :event_repeat_key => 0)
-        ContactLink.create(:event => event, :contact => contact,
-                           :person => contact_link.person, :staff_id => contact_link.staff_id)
+        ActiveRecord::Base.transaction do
+          comment = "Informed Consent Event record created from ParticipantConsent record"
+          event = Event.create(:participant => participant,
+                               :event_type_code => Event.informed_consent_code,
+                               :event_breakoff_code => NcsCode::NO,
+                               :event_comment => comment,
+                               :event_repeat_key => 0)
+          ContactLink.create(:event => event, :contact => contact,
+                             :person => contact_link.person, :staff_id => contact_link.staff_id)
+        end
       end
     end
 
