@@ -752,6 +752,7 @@ class PatientStudyCalendar
       response.send response_section
     rescue Exception => e
       log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during GET request to #{path}"
+      log.error e.backtrace.join("\n")
       raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
