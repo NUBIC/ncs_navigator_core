@@ -1,7 +1,5 @@
 - participant = event.participant
 - if event.pv1? || event.pv2? || event.birth?
-  %h3
-    Parental Permission for Child Participation
   .child_participation
     = link_to "Create Child Participation Consent",
       new_child_participant_participant_consents_path(participant, {:contact_link_id => contact_link.id}),

@@ -54,6 +54,7 @@ class ParticipantConsentsController < ApplicationController
 
         mark_activity_occurred
         update_enrollment_status
+        create_informed_consent_event(@participant, @contact_link)
 
         format.html { redirect_to decision_page_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
@@ -162,6 +163,44 @@ class ParticipantConsentsController < ApplicationController
         participant.unenroll!(psc, "Consent withdrawn") unless participant.unenrolled?
       end
     end
+
+    ##
+    # Creates an Informed Consent Event for the given participant and contact_link
+    # @param[Participant]
+    # @param[ContactLink]
+    def create_informed_consent_event(participant, contact_link)
+      contact = contact_link.contact
+      if should_create_informed_consent_record?(participant, contact)
+        ActiveRecord::Base.transaction do
+          comment = "Informed Consent Event record created from ParticipantConsent record"
+          event = Event.create(:participant => participant,
+                               :event_type_code => Event.informed_consent_code,
+                               :event_breakoff_code => NcsCode::NO,
+                               :event_comment => comment,
+                               :event_repeat_key => 0)
+          ContactLink.create(:event => event, :contact => contact,
+                             :person => contact_link.person, :staff_id => contact_link.staff_id)
+        end
+      end
+    end
+
+    ##
+    # Return true if there are no Informed Consent Events associated with
+    # the given Participant.
+    #
+    # If there are Informed Consent Events associated with the participant
+    # return true if none are associated with the given Contact.
+    #
+    # Create one Informed Consent for the Participant per Contact
+    #
+    # @param[Participant]
+    # @param[Contact]
+    # @return[Boolean]
+    def should_create_informed_consent_record?(participant, contact)
+      rel = Event.where(:participant_id => participant.id, :event_type_code => Event.informed_consent_code)
+      rel.count == 0 || !rel.joins(:contacts).exists?('contacts.id' => contact.id)
+    end
+    private :should_create_informed_consent_record?
 
     def redirect_action
       if params[:contact_link_id]

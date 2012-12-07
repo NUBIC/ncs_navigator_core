@@ -18,7 +18,7 @@ Lo Intensity Data Collection - 33
 ---------------------------------
 
 # Low Intensity Informed Consent
-event:informed_consent
+event:low_intensity_data_collection participant_type:mother
 
 event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0 order:01_01 participant_type:mother
 
@@ -41,7 +41,7 @@ collection:biological event:pre-pregnancy_visit instrument:2.0:ins_bio_adultbloo
 collection:biological event:pre-pregnancy_visit instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 order:11_01 participant_type:mother
 
 # Non-Pregnant Woman Informed Consent
-event:informed_consent
+event:pre-pregnancy_visit participant_type:mother
 
 # Pre-Pregnancy Visit Information Sheet
 event:pre-pregnancy_visit
@@ -60,7 +60,10 @@ collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adultblood_
 collection:biological event:pregnancy_visit_1 instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 order:11_01 participant_type:mother
 
 # Pregnant Woman Informed Consent
-event:informed_consent
+event:pregnancy_visit_1 order:00_99 participant_type:mother
+
+# Child Participation Informed Consent
+event:pregnancy_visit_1 order:90_99 participant_type:child
 
 collection:environmental event:pregnancy_visit_1 instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0 order:20_01 participant_type:mother
 
@@ -104,6 +107,9 @@ event:pregnancy_visit_2
 # Pregnancy Health Care Log
 event:pregnancy_visit_2
 
+# Child Participation Informed Consent
+event:pregnancy_visit_2 order:90_99 participant_type:child
+
 event:pregnancy_visit_2 instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
 
 event:pregnancy_visit_2 instrument:2.0:ins_que_pregvisit2_int_ehpbhi_p2_v2.0 instrument:3.0:ins_que_pregvisit2_int_ehpbhipbs_m3.0_v3.0 order:01_01 participant_type:mother
@@ -133,7 +139,7 @@ Father - 19
 -----------
 
 # Father Informed Consent
-event:informed_consent
+event:father event_type:informed_consent participant_type:father
 
 # Father Visit Information Sheet
 event:father
@@ -151,6 +157,9 @@ event:birth instrument:2.0:ins_que_birth_int_li_p2_v1.0_birth_visit_li_baby_name
 
 event:birth instrument:2.0:ins_que_birth_int_li_p2_v1.0_part_two mode:low_intensity_birth order:01_03 participant_type:mother references:2.0:ins_que_birth_int_li_p2_v1.0_part_one
 
+# Child Participation Informed Consent
+event:birth order:00_99 participant_type:child
+
 
 
 Birth - 18
@@ -163,6 +172,9 @@ event:birth
 
 # Infant Health Care Log
 event:birth
+
+# Child Participation Informed Consent
+event:birth order:00_00 participant_type:child
 
 event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one order:01_01 participant_type:mother
 

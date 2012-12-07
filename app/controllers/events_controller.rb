@@ -50,6 +50,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.update_attributes(params[:event])
         mark_activity_occurred
+        @event.update_associated_informed_consent_event
 
         notice = 'Event was successfully updated.'
 

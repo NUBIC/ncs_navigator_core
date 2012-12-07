@@ -7,6 +7,20 @@ describe ParticipantsController do
     login(admin_login)
   end
 
+  describe 'GET :index' do
+
+    it "defaults being_followed_true to 1" do
+      get :index
+      assigns[:q].being_followed_true.should be_true
+    end
+
+    it "does not override user select of being_followed_true" do
+      get :index, :q => { :being_followed_true => 0 }
+      assigns[:q].being_followed_true.should_not be_true
+    end
+
+  end
+
   describe 'GET :show' do
     describe ':id resolution' do
       let!(:p1) { Factory(:participant, :id => 9000, :p_id => '4500', :person => Factory(:person, :person_id => 'A')) }

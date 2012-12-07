@@ -19,13 +19,6 @@
   - if initial_instrument_for_contact
     .instructional_note
       Choose the Instrument from the list below to administer for this contact.
-      %br
-      (If there is a Consent link in the list, you should obtain consent before proceeding.)
-
-  - no_consent_event_exists = true
-
-  - if @event.to_s.include?("Consent")
-    - no_consent_event_exists = false
 
   - if @person.participant.blank?
     .person_not_participant
@@ -38,6 +31,3 @@
         = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
     - else
       = render "consent_or_empty", :contact_link => @contact_link
-
-  - if no_consent_event_exists
-    = render "unscheduled_consents", :person => @person, :contact_link => @contact_link
