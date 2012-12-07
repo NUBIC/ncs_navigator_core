@@ -42,8 +42,8 @@ namespace :import do
       where('being_followed = ? AND p_type_code != ?', true, 6)
   end
 
-  task :set_whodunnit => :environment do
-    PaperTrail.whodunnit = 'import rake tasks'
+  task :set_whodunnit do
+    PaperTrail.whodunnit = ['rake', ARGV].flatten.join(' ')
   end
 
   def import_wh_config
