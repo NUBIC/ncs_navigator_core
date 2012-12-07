@@ -107,7 +107,7 @@ describe Email do
     end
   end
 
-  describe "#unique_email_addresses" do
+  context "filtering email addresses based on uniqueness and rank" do
 
     before do
       @email_address_a = Factory( :email,
@@ -126,37 +126,60 @@ describe Email do
                                               :email => "sjohnson@email.com")
       @email_address_b = Factory( :email,
                                   :email_rank_code => 1,
-                                  :email_type_code => 1,
+                                  :email_type_code => 2,
                                   :email => "david_billings@email.com")
 
       @email_duplicate_1_address_b = Factory( :email,
                                               :email_rank_code => 1,
-                                              :email_type_code => 1,
+                                              :email_type_code => 2,
                                               :email => "david_billings@email.com")
 
       @email_duplicate_2_address_b = Factory( :email,
                                               :email_rank_code => 1,
-                                              :email_type_code => 1,
+                                              :email_type_code => 2,
                                               :email => "david_billings@email.com")
+
+      @secondary_personal_type_email_address = Factory( :email,
+                                                        :email_rank_code => 2,
+                                                        :email_type_code => 1,
+                                                        :email => "dbillings@email.com")
+
+      @secondary_work_type_email_address = Factory( :email,
+                                              :email_rank_code => 2,
+                                              :email_type_code => 2,
+                                              :email => "johnson_siding@email.com")
       @email_addresses = [@email_address_a,
                           @email_duplicate_1_address_a,
                           @email_duplicate_2_address_a,
                           @email_address_b,
                           @email_duplicate_1_address_b,
-                          @email_duplicate_2_address_b]
+                          @email_duplicate_2_address_b,
+                          @secondary_personal_type_email_address,
+                          @secondary_work_type_email_address]
+
+      @uniquified_email_addresses = Email.unique_email_addresses(@email_addresses)
     end
 
-    it "returns a set of unique email addresses" do
-      Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b]
+    describe "#unique_email_addresses" do
+      it "returns a set of unique email addresses" do
+        Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b, @secondary_personal_type_email_address, @secondary_work_type_email_address]
+      end
+
+      it "a blank email address does not break it" do
+        @blank_email_address = Factory(:email)
+
+        @email_addresses << @blank_email_address
+        Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b, @secondary_personal_type_email_address, @secondary_work_type_email_address]
+      end
     end
 
-    it "a blank email address does not break it" do
-      @blank_email_address = Factory(:email)
+    describe "#highest_ranking_email_address" do
 
-      @email_addresses << @blank_email_address
-      Email.unique_email_addresses(@email_addresses).should == [@email_address_a, @email_address_b]
+      it "returns single entries of highest rank(primary, secondary, duplicate, other) for a given type" do
+        Email.highest_ranking_email_address(@uniquified_email_addresses).should == [@email_address_a, @email_address_b]
+      end
     end
 
   end
-end
 
+end

@@ -121,5 +121,12 @@ class Telephone < ActiveRecord::Base
     unique
   end
 
-end
+  def self.highest_ranking_phone(phones)
+    highest_ranking = []
+    gt = lambda { |new_rank, old_rank| ranks = [1, 2, -5, 4, -4]; ranks.index(new_rank) < ranks.index(old_rank) }
+    highest_ranking_hash = phones.each_with_object({}) { |phone, h| c = h[phone.phone_type_code]; h[phone.phone_type_code] = phone if !c || gt[phone.phone_rank_code, c.phone_rank_code] }
+    highest_ranking_hash.each_value { |phone| highest_ranking << phone }
+    highest_ranking
+  end
 
+end

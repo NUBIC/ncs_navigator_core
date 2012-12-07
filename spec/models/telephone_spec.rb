@@ -172,7 +172,7 @@ describe Telephone do
     end
   end
 
-  describe "#unique_telephones" do
+  context "filtering addresses based on uniqueness and rank" do
 
     before do
       @phone_a = Factory( :telephone,
@@ -203,25 +203,47 @@ describe Telephone do
                                       :phone_rank_code => 1,
                                       :phone_type_code => 2,
                                       :phone_nbr => "242-654-4543")
+
+      @secondary_home_phone = Factory( :telephone,
+                                       :phone_rank_code => 2,
+                                       :phone_type_code => 1,
+                                       :phone_nbr => "434-554-3221")
+
+      @secondary_work_phone = Factory( :telephone,
+                                       :phone_rank_code => 2,
+                                       :phone_type_code => 1,
+                                       :phone_nbr => "745-543-2342")
       @phones = [ @phone_a,
                   @phone_duplicate_1_a,
                   @phone_duplicate_2_a,
                   @phone_b,
                   @phone_duplicate_1_b,
-                  @phone_duplicate_2_b]
+                  @phone_duplicate_2_b,
+                  @secondary_home_phone,
+                  @secondary_work_phone]
+
+      @uniquified_phones = Telephone.unique_telephones(@phones)
     end
 
-    it "returns a set of unique phone es" do
-      Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b]
+    describe "#unique_telephones" do
+      it "returns a set of unique phone es" do
+        Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b, @secondary_home_phone, @secondary_work_phone]
+      end
+
+      it "a blank telephone record does not break it" do
+        @blank_phone = Factory(:telephone)
+
+        @phones << @blank_phone
+        Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b, @secondary_home_phone, @secondary_work_phone]
+      end
     end
 
-    it "a blank telephone record does not break it" do
-      @blank_phone = Factory(:telephone)
+    describe "#highest_ranking_phone" do
 
-      @phones << @blank_phone
-      Telephone.unique_telephones(@phones).should == [@phone_a, @phone_b]
+      it "returns single entries of highest rank(primary, secondary, duplicate, other) for a given type" do
+        Telephone.highest_ranking_phone(@uniquified_phones).should == [@phone_a, @phone_b]
+      end
     end
 
   end
 end
-

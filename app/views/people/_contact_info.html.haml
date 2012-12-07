@@ -4,7 +4,7 @@
       Telephone
       = link_to 'Add', new_person_telephone_path(@person), :class => "add_link icon_link"
     %br
-    - Telephone.unique_telephones(@person.telephones).each do |t|
+    - Telephone.highest_ranking_phone(Telephone.unique_telephones(@person.telephones)).each do |t|
       .contact_info
         %span.type
           = t.phone_type
@@ -15,7 +15,7 @@
       Email
       = link_to 'Add', new_person_email_path(@person), :class => "add_link icon_link"
     %br
-    - Email.unique_email_addresses(@person.emails).each do |e|
+    - Email.highest_ranking_email_address(Email.unique_email_addresses(@person.emails)).each do |e|
       .contact_info
         %span.type
           = e.email_type
@@ -26,7 +26,7 @@
       Address
       = link_to 'Add', new_address_path(:person_id => @person.id), :class => "add_link icon_link"
     %br
-    - Address.unique_addresses(@person.addresses).each do |a|
+    - Address.highest_ranking_address(Address.unique_addresses(@person.addresses)).each do |a|
       .contact_info
         %span.type
           #address_title
