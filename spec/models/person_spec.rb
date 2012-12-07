@@ -341,8 +341,6 @@ describe Person do
   context "with a response set" do
 
     before(:each) do
-      InstrumentEventMap.stub!(:version).and_return("1.0")
-      InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
       @pers = Factory(:person)
       @part = Factory(:participant)
       @survey = create_test_survey_for_person
@@ -416,8 +414,6 @@ describe Person do
     context "repeating the instrument" do
 
       before(:each) do
-        InstrumentEventMap.stub!(:version).and_return("1.0")
-        InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
         @person = Factory(:person)
         @participant = Factory(:participant)
         @survey = create_test_survey_for_person
@@ -442,8 +438,6 @@ describe Person do
     context "setting default instrument values" do
 
       before(:each) do
-        InstrumentEventMap.stub!(:version).and_return("1.0")
-        InstrumentEventMap.stub!(:instrument_type).and_return(NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', 1))
         @person = Factory(:person)
         @survey = create_test_survey_for_person
         @participant = Factory(:participant)

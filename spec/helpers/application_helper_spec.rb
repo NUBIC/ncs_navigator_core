@@ -26,27 +26,6 @@ describe ApplicationHelper do
         helper.blank_safe(nil, "n/a").should == "n/a"
       end
     end
-
-    describe ".instrument_name" do
-
-      it "returns the human readable instrument name" do
-        helper.instrument_name('INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0').should == 'Pregnancy Visit 1 Interview'
-      end
-
-      it 'accepts a default if human readable name not found' do
-        helper.instrument_name('UNKNOWN', 'DEFAULT').should == 'DEFAULT'
-      end
-
-      it 'returns the parameter if default blank' do
-        helper.instrument_name('UNKNOWN', '').should == 'UNKNOWN'
-      end
-
-      it 'returns the parameter if no default provided' do
-        helper.instrument_name('UNKNOWN').should == 'UNKNOWN'
-      end
-
-    end
-
   end
 
   context "limiting continue" do
