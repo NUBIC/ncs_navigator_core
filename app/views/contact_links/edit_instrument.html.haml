@@ -6,7 +6,7 @@
       has completed
     - else
       has taken
-    = instrument_name(@survey.title)
+    = @survey.description
 
 .page_section
   = form_for(@contact_link, :url => finalize_instrument_contact_link_path(@contact_link), :html => {:autocomplete => "off"}) do |f|

@@ -10,9 +10,9 @@
     = render '/surveyor/section_menu' # unless @sections.size < 3
 
     .survey_header
-      = "#{@event.to_s} Instrument for #{@response_set.participant.person.to_s}"
-      .instrument
-        = @activities_for_event.select{ |a| a.instrument == @survey.title.downcase }.first.try(:activity_name)
+      = "#{@response_set.survey.description} for #{@response_set.participant.person.to_s}"
+      .event
+        = @event.to_s
 
     = render 'partials/dependents' unless @dependents.empty?
     - if false #@response_set.no_responses_for_section?(@section) # cache if response_set has no responses for current section

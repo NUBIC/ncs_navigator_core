@@ -401,8 +401,8 @@ class Person < ActiveRecord::Base
   # @return [ResponseSet]
   def build_instrument(survey)
     Instrument.new(:psu_code => NcsNavigatorCore.psu,
-      :instrument_version => Instrument.determine_version(survey.title),
-      :instrument_type => InstrumentEventMap.instrument_type(survey.title),
+      :instrument_version => survey.instrument_version,
+      :instrument_type => NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', survey.instrument_type),
       :instrument_repeat_key => instrument_repeat_key(survey),
       :person => self,
       :survey => survey)
