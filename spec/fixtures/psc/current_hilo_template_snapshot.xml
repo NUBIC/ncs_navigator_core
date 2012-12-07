@@ -14,7 +14,8 @@
       <study-segment id="76025607-f7aa-41e1-8ce9-29e0793cd6d4" name="PPG 1 and 2">
         <period id="19c0ffb1-78b3-4634-adde-bc32a5cec9dd" name="Consent and Questionnaire" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="2b68bb5c-edde-4510-81c8-b962704bc968" day="1">
-            <label id="1eb2883c-edfb-4deb-a718-864ef9887dae" name="event:informed_consent"/>
+            <label id="78e66462-a58e-42b6-a56b-2630cbb70ecd" name="event:low_intensity_data_collection"/>
+            <label id="d43abe4b-e4bf-482e-9886-8a0121127511" name="participant_type:mother"/>
             <activity-reference code="LIC" source="NCS"/>
           </planned-activity>
           <planned-activity id="bbb8de5c-a025-4b4c-b7d2-577a96551263" day="1">
@@ -72,6 +73,12 @@
             <label id="ad7ddcda-14d3-49c1-9665-efa0aec715fd" name="references:2.0:ins_que_birth_int_li_p2_v1.0_part_one"/>
             <activity-reference code="LIBI BN" source="NCS"/>
           </planned-activity>
+          <planned-activity id="2690f0c5-936f-49cb-8be2-e02e832d6105" day="1">
+            <label id="a7dd8e8e-7918-491d-8bd5-ec3fa6b52a76" name="event:birth"/>
+            <label id="6a33d2d8-b9a9-4c70-ba94-9d048a02aec1" name="order:00_99"/>
+            <label id="7baebd3b-c1cf-4b08-a807-fffa7629f6c7" name="participant_type:child"/>
+            <activity-reference code="CC" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="34d4638b-6f7f-4801-881d-db242d6f7ee5" name="Low to High Conversion">
@@ -101,7 +108,9 @@
       <study-segment id="ca65bbbb-7e47-4f71-a4f0-071e7f73f380" name="Pregnancy Visit 1">
         <period id="c849fb47-1917-47d3-aacd-74331aa46ed8" name="Pregnancy Visit 1" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="3a9323d6-7435-49ec-9f99-722a3c7b9be4" day="1">
-            <label id="c834ba38-3b32-494e-8ae5-99b186214632" name="event:informed_consent"/>
+            <label id="dda0af19-4fd5-47a2-8daa-f980e0aca650" name="event:pregnancy_visit_1"/>
+            <label id="8551b0d8-6a3d-4e7a-ac16-b7660ee6e110" name="order:00_99"/>
+            <label id="9affc7c4-8061-4cc0-865b-71b6fa69480a" name="participant_type:mother"/>
             <activity-reference code="IC" source="NCS"/>
           </planned-activity>
           <planned-activity id="5ea073b8-6c3d-4ad2-acd2-7095cb760bf9" day="1">
@@ -184,12 +193,19 @@
             <label id="7871e31a-f302-4a6b-87dd-bb68b0185eb3" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
+          <planned-activity id="e40443d8-b9d0-47d1-a676-10417a0d5179" day="1" condition="If Participant will not have PV2 event">
+            <label id="63ef45e4-2828-4e23-b2b5-27f1113288e9" name="event:pregnancy_visit_1"/>
+            <label id="b3db5234-374c-4e53-b7ba-b9cc36a9a333" name="order:90_99"/>
+            <label id="7538819f-55f8-4bd4-98e3-76ca655850cc" name="participant_type:child"/>
+            <activity-reference code="CC" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624" name="Pre-Pregnancy Visit">
         <period id="2d298ba8-d832-4414-83bf-a5128eb54d96" name="Pre-Pregnancy" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="52c7cd03-c066-468f-967c-6022601c608d" day="1">
-            <label id="50a5530c-1b51-49e9-a720-6c3feca78da1" name="event:informed_consent"/>
+            <label id="9b1e987d-6b83-41a7-8366-fac14f4b4d4f" name="event:pre-pregnancy_visit"/>
+            <label id="2c436567-c28e-4de4-8370-2f211240fe63" name="participant_type:mother"/>
             <activity-reference code="IC (non)" source="NCS"/>
           </planned-activity>
           <planned-activity id="3300cff6-43d5-42fb-b143-b36d91438a50" day="1">
@@ -298,6 +314,12 @@
             <label id="5d8ef26a-a491-4d35-9c76-bab8793a70ee" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
+          <planned-activity id="46ce7427-6039-4393-89f5-9ed5a8b39826" day="1">
+            <label id="fc6f5a4d-1fed-411f-8cd9-8fd85e108a2e" name="event:pregnancy_visit_2"/>
+            <label id="2106f704-1216-48eb-90a1-6906a7a7f04a" name="order:90_99"/>
+            <label id="05e698c4-f08c-469b-b830-14457caee0c7" name="participant_type:child"/>
+            <activity-reference code="CC" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="645376f4-5ca1-49e8-a31a-8f1030059348" name="Child Consent">
@@ -311,7 +333,8 @@
       <study-segment id="a6af42b4-6aec-4c63-a8d3-8b59474da940" name="Father Consent and Interview">
         <period id="e526bc74-f474-4544-85d2-ced85b6d16f0" name="Father Consent and Interview" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
           <planned-activity id="4e33bea0-cefa-4132-bd1b-5179eec993d9" day="1">
-            <label id="3ce40ce5-609f-4e53-ace9-11e3a3880abd" name="event:informed_consent"/>
+            <label id="e5ce3323-227e-413c-8dc5-1b8cfd684d70" name="event:father"/>
+            <label id="c2a2bc38-7fcd-40a8-850b-f3e30ab0a2b4" name="participant_type:father"/>
             <activity-reference code="FC" source="NCS"/>
           </planned-activity>
           <planned-activity id="a7f71d09-59d1-474a-8414-3fdb6c15eb2c" day="1">
@@ -651,6 +674,12 @@
             <label id="7997d28b-28b2-49a5-aa11-946616547d2c" name="participant_type:child"/>
             <label id="97c24245-0d63-4d19-9906-b8c89e2e40ae" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <activity-reference code="PVI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="86134b47-52d3-4b44-8373-3095287a5214" day="1" condition="If child participation consent does not yet exist">
+            <label id="c8cbe50b-4bcd-4033-a43a-6aaa129b867f" name="event:birth"/>
+            <label id="521fb623-ea97-4398-bc60-5bae7977bacc" name="order:00_00"/>
+            <label id="1e1467d3-765d-4172-a2ca-e70ad8a82cef" name="participant_type:child"/>
+            <activity-reference code="CC" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
