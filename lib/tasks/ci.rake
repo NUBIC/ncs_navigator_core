@@ -16,7 +16,7 @@ begin
     desc 'Run CI build for warehouse only'
     task :warehouse => [:rails_env, 'ci:redis:start_then_stop_at_exit', :spec_warehouse]
 
-    task :setup => ['log:clear', :navigator_configuration, 'db:migrate']
+    task :setup => [:clear_log, :navigator_configuration, 'db:migrate']
 
     # CI tasks should be run through the ci-exec.sh script.
     # If they are accidentally run directly, we want to
@@ -32,6 +32,17 @@ begin
       require 'ncs_navigator/configuration'
       NcsNavigator.configuration = NcsNavigator::Configuration.new(
         File.expand_path('../../../spec/navigator.ini', __FILE__))
+    end
+
+    desc "Completely clears the log directory"
+    # Needed because the Rails built-in log:clear does not 1) traverse subdirs
+    # and 2) actually remove files. Actually removing files reduces clutter in
+    # the archived CI builds — it makes it true that archived logs for a build
+    # are only the logs produced when running that specific build.
+    task :clear_log do
+      (Rails.root + 'log').each_child do |sub|
+        rm_rf sub.to_s
+      end
     end
 
     task :spec_setup do
