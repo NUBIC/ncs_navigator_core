@@ -130,6 +130,16 @@ describe Merge do
         subject.merged_at = Time.now
       end
 
+      describe 'and there was an exception' do
+        before do
+          subject.crashed_at = Time.now
+        end
+
+        it 'is "error"' do
+          subject.status.should == 'error'
+        end
+      end
+
       describe 'and there are no conflicts' do
         before do
           subject.stub!(:conflicted? => false)
