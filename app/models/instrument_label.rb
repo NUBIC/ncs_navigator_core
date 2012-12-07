@@ -31,8 +31,8 @@ class InstrumentLabel
   # 3. find the NCS instrument type code whose display text matches the
   #    survey's title
   def ncs_code
-    s = Survey.most_recent_for_access_code(access_code)
-
-    InstrumentEventMap.instrument_type(s.try(:title))
+    if s = Survey.most_recent_for_access_code(access_code)
+      NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', s.instrument_type)
+    end
   end
 end

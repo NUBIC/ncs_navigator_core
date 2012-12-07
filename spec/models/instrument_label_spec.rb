@@ -35,18 +35,14 @@ describe InstrumentLabel do
     end
 
     before do
-      Factory(:survey, :access_code => 'foo-bar', :title => 'Foo Bar')
+      Factory(:survey, :access_code => 'foo-bar', :title => 'Foo Bar', :instrument_type => -42)
     end
 
     it 'returns the NCS code for the instrument' do
-      InstrumentEventMap.should_receive(:instrument_type).with('Foo Bar').and_return(code)
-
       il('foo-bar').ncs_code.should == code
     end
 
     it 'returns nil if no code can be found' do
-      InstrumentEventMap.stub!(:instrument_type => nil)
-
       il('wrong').ncs_code.should be_nil
     end
   end
