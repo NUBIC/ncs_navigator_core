@@ -29,6 +29,7 @@ Feature: Obtaining participant consent
     Then I should see "Participant consent was successfully created."
     And I should be on the decision_page_contact_link page
 
+  @wip
   Scenario: Obtaining high intensity consent
     And an authenticated user
     And a registered unconsented high intensity trying participant
@@ -42,6 +43,7 @@ Feature: Obtaining participant consent
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"
+    Then show me the page
     And I should see "General consent"
     # And I should see "Consent to collect biospecimens"
     # And I should see "Consent to collect environmental samples"
