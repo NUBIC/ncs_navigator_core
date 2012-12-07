@@ -99,7 +99,6 @@ class InstrumentEventMap
     results = []
     INSTRUMENT_EVENT_CONFIG.each do |ie|
       filename = ie["filename"]
-      next if should_skip(filename)
 
       case NcsNavigatorCore.recruitment_type_id
       when 5
