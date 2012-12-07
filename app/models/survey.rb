@@ -30,6 +30,8 @@ class Survey < ActiveRecord::Base
   include NcsNavigator::Core::Surveyor::HasPublicId
   include NcsNavigator::Core::MdesInstrumentSurvey
 
+  attr_accessible :instrument_version, :instrument_type
+
   def self.most_recent_for_title(title)
     Survey.most_recent_for_access_code(Survey.to_normalized_string(title))
   end

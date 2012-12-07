@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121119234608) do
+ActiveRecord::Schema.define(:version => 20121207160255) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -800,8 +800,8 @@ ActiveRecord::Schema.define(:version => 20121119234608) do
     t.string   "transaction_type",             :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sampled_person_code",                        :null => false
-    t.integer  "pre_screening_status_code",                  :null => false
+    t.integer  "sampled_person_code"
+    t.integer  "pre_screening_status_code"
     t.string   "date_first_visit"
     t.date     "date_first_visit_date"
   end
@@ -1472,7 +1472,9 @@ ActiveRecord::Schema.define(:version => 20121119234608) do
     t.datetime "updated_at"
     t.integer  "display_order"
     t.string   "api_id"
-    t.integer  "survey_version",         :default => 0
+    t.integer  "survey_version",                       :default => 0
+    t.string   "instrument_version",     :limit => 36
+    t.integer  "instrument_type"
   end
 
   add_index "surveys", ["access_code", "survey_version"], :name => "surveys_access_code_survey_version_idx", :unique => true
