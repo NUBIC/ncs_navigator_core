@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
 function usage {
-	echo "Usage: $0 start|stop rails_env pidfile logfile"
+	echo "Usage: $0 start|stop|restart rails_env pidfile logfile"
 	exit 1
 }
 
 # Starts Sidekiq.
 # Assumes loading the user's bashrc is sufficient to get things going.
 function start {
-	set -x
 	. ~/.bashrc
 
 	cd $2 && exec bundle exec sidekiq -e $1 -P $3 >> $4 2>&1
@@ -17,6 +16,24 @@ function start {
 # Sends TERM to the PID in the specified pidfile.
 function stop {
 	kill -TERM `cat $1`
+}
+
+# Waits for the PID in the specified pidfile to not exist.
+# Assumes that the user running this script has permissions to send signal 0 to
+# the process.
+function wait_for_stop {
+	pid=`cat $1`
+
+	while kill -0 $pid; do
+		sleep 1
+	done
+}
+
+# Sends TERM, removes the pidfile, starts up Sidekiq again.
+function restart {
+	stop $3
+	wait_for_stop $3
+	start $1 $2 $3 $4
 }
 
 # Seriously, you'd think this would be a built-in.
@@ -39,6 +56,9 @@ case $action in
 		;;
 	stop)
 		stop $pidfile
+		;;
+	restart)
+		restart $env $APP_DIR $pidfile $logfile
 		;;
 	*)
 		usage
