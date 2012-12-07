@@ -153,6 +153,16 @@ describe Merge do
           it 'is "merged"' do
             subject.status.should == 'merged'
           end
+
+          describe 'and the data is not synced' do
+            before do
+              subject.synced_at = nil
+            end
+
+            it 'is "syncing"' do
+              subject.status.should == 'syncing'
+            end
+          end
         end
       end
 
@@ -163,28 +173,6 @@ describe Merge do
 
         it 'is "conflict"' do
           subject.status.should == 'conflict'
-        end
-      end
-    end
-
-    describe 'if merged_at is not nil' do
-      before do
-        subject.merged_at = Time.now
-      end
-
-      describe 'and there are no conflicts' do
-        before do
-          subject.stub!(:conflicted? => false)
-        end
-
-        describe 'and the data is not synced' do
-          before do
-            subject.synced_at = nil
-          end
-
-          it 'is "syncing"' do
-            subject.status.should == 'syncing'
-          end
         end
       end
     end
