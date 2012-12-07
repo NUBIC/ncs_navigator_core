@@ -14,19 +14,28 @@ module ParticipantsHelper
     "#{NcsNavigator.configuration.psc_uri}pages/subject?assignment=#{assignment_id}"
   end
 
-  def determine_participant_consent_path(consent_type_code, consent_type_text, participant, contact_link)
-    return nil if should_hide_consent?(consent_type_text)
-    consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent_type_code)
+  def consent_type_for(participant)
+    participant.low_intensity? ? ParticipantConsent.low_intensity_consent_type_code : ParticipantConsent.general_consent_type_code
+  end
+
+  def determine_participant_consent_path(participant, contact_link, current_activity = false)
+    consent = consent_type_for(participant)
+    return nil if should_hide_consent?(consent.to_s)
+
+    consent_type = NcsCode.for_attribute_name_and_local_code(:consent_type_code, consent.local_code)
     if participant.consented?(consent_type)
-      consent = participant.consent_for_type(consent_type)
-      link_to consent_type_text, edit_participant_participant_consent_path(participant, consent,
-        {:contact_link_id => contact_link.id}),
-      :class => "edit_link icon_link"
+      cls = current_activity ? "star_link icon_link" : "edit_link icon_link"
+
+      path = edit_participant_participant_consent_path(participant,
+               participant.consent_for_type(consent_type),
+               {:contact_link_id => contact_link.id})
     else
-      link_to consent_type_text, new_participant_participant_consent_path(participant,
-        {:contact_link_id => contact_link.id, :consent_type_code => consent_type_code}),
-        :class => "add_link icon_link"
+      cls = current_activity ? "star_link icon_link" : "add_link icon_link"
+
+      path = new_participant_participant_consent_path(participant,
+               {:contact_link_id => contact_link.id, :consent_type_code => consent.local_code})
     end
+    link_to "Informed Consent", path, :class => cls
   end
 
   def should_hide_consent?(consent_type_text)

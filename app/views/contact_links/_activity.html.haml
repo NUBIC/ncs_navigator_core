@@ -1,0 +1,15 @@
+- if contact_link.contact.instrument_survey_titles.include?(survey.title)
+  %div{ :class => "known_instrument", :title => survey.title}
+    = activity.activity_name
+- elsif @current_activity == activity
+  %div{ :class => "instrument", :title => survey.title}
+    = link_to activity.activity_name,
+        start_instrument_person_path(person, :participant_id => activity.participant.id,
+                                             :references_survey_access_code => activity.references.to_s,
+                                             :survey_access_code => survey.access_code,
+                                             :contact_link_id => contact_link.id),
+        :class => "star_link icon_link"
+- else
+  %div{ :class => "instrument", :title => survey.title}
+    %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
+      = activity.activity_name
