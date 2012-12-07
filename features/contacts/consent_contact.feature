@@ -19,15 +19,15 @@ Feature: Obtaining participant consent
     And I should see "Bessie Smith"
     # And I should see "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
     And I should see "Low Intensity Data Collection"
-    And I should see "Low Intensity Consent"
-    When I follow "Low Intensity Consent"
+    And I should see "Informed Consent"
+    When I follow "Informed Consent"
     Then I should be on the new participant consent page
     And I should see "Consent Type"
     And I should not see the "participant_consent_consent_type_code" text field
     When I select "Yes" from "Consent Given"
     And I press "Submit"
     Then I should see "Participant consent was successfully created."
-    And I should be on the decision_page_contact_link page
+    And I should be on the post-consent decision_page_contact_link page
 
   @wip
   Scenario: Obtaining high intensity consent
@@ -43,16 +43,15 @@ Feature: Obtaining participant consent
     Then I should see "Contact was successfully created."
     And I should be on the select_instrument_contact_link page
     And I should see "Bessie Smith"
-    Then show me the page
-    And I should see "General consent"
+    And I should see "Informed consent"
     # And I should see "Consent to collect biospecimens"
     # And I should see "Consent to collect environmental samples"
     # And I should see "Consent to collect genetic material"
     # And I should see "Consent to collect birth samples"
     # And I should see "Consent for the child’s participation"
-    When I follow "General consent"
+    When I follow "Informed consent"
     Then I should be on the new participant consent page
     When I select "Yes" from "Consent Given"
     And I press "Submit"
     Then I should see "Participant consent was successfully created."
-    And I should be on the decision_page_contact_link page
+    And I should be on the post-consent decision_page_contact_link page

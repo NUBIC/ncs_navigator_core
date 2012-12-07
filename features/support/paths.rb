@@ -85,6 +85,9 @@ module NavigationHelpers
     when /^the decision_page_contact_link page$/
       decision_page_contact_link_path(ContactLink.last)
 
+    when /^the post-consent decision_page_contact_link page$/
+      decision_page_contact_link_path(ContactLink.first)
+
     when /^the edit_instrument_contact_link page$/
       edit_instrument_contact_link_path(ContactLink.last)
 
