@@ -46,7 +46,7 @@ module NcsNavigator::Core
     private :load_expected_participants
 
     def cases_followed_participants
-      @cases_followed_participants ||= Participant.where(:being_followed => true).all
+      @cases_followed_participants ||= Participant.where("being_followed = true AND p_type_code != 6").all
     end
 
     def differences
@@ -112,7 +112,7 @@ module NcsNavigator::Core
       else
         differences.each do |code, p_ids|
           out.puts MESSAGES[code]
-          p_ids.each do |p_id|
+          p_ids.sort.each do |p_id|
             out.puts "* #{p_id}"
           end
         end
@@ -145,14 +145,16 @@ module NcsNavigator::Core
       begin
         PaperTrail.whodunnit = "FollowedParticipantChecker(#{File.basename @csv_filename})"
 
-        UPDATERS.each do |code, updater|
-          next unless differences[code]
+        Participant.transaction do
+          UPDATERS.each do |code, updater|
+            next unless differences[code]
 
-          differences[code].each do |p_id|
-            done += 1
-            console_say "\rProcessing #{done}/#{count} correction#{'s' unless count == 1}."
+            differences[code].each do |p_id|
+              done += 1
+              console_say "\rProcessing #{done}/#{count} correction#{'s' unless count == 1}."
 
-            updater[ Participant.where(:p_id => p_id).first ]
+              updater[ Participant.where(:p_id => p_id).first ]
+            end
           end
         end
       ensure

@@ -163,7 +163,8 @@ module Field
       collections = [participants, people,
                      contacts, events, instruments,
                      response_sets,
-                     question_response_sets
+                     question_response_sets,
+                     response_sets
                     ].map { |c| current_for(c).compact }
 
       ActiveRecord::Base.transaction do

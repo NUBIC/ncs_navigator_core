@@ -65,6 +65,7 @@ module NcsNavigator::Core
         Factory(:participant, :p_id => 'N', :high_intensity => true, :being_followed => false)
         # O not present
         Factory(:participant, :p_id => 'Q', :high_intensity => true, :being_followed => true)
+        Factory(:participant, :p_id => 'C', :high_intensity => true, :being_followed => true, :p_type_code => 6)
       end
 
       it 'knows when a participant in the CSV is completely missing from Cases' do
@@ -81,6 +82,10 @@ module NcsNavigator::Core
 
       it 'does not report anything about a matching participant' do
         checker.differences.values.flatten.should_not include('M')
+      end
+
+      it 'does not report children as unexpectedly followed' do
+        checker.differences[:expected_not_followed].should_not include('C')
       end
 
       describe 'with an intensity column' do
