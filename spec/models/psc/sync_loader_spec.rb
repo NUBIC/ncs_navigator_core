@@ -123,7 +123,7 @@ module Psc
 
     describe '#cache_contact_link' do
       def cache_contact_link
-        loader.cache_contact_link(cl, c, nil, e, p)
+        loader.cache_contact_link(cl, c, e, p)
       end
 
       let(:cached_link) do
@@ -207,7 +207,7 @@ module Psc
 
     describe '#cached_contact links' do
       before do
-        loader.cache_contact_link(cl, c, nil, e, p)
+        loader.cache_contact_link(cl, c, e, p)
       end
 
       it 'returns public IDs of cached contact links' do

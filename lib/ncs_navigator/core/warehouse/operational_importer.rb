@@ -119,7 +119,6 @@ module NcsNavigator::Core::Warehouse
             @sync_loader.cache_participant(participant) if for_psc
 
             # caches
-            core_instruments = {}
             core_contacts = {}
 
             events_and_links.each do |event_and_links|
@@ -136,7 +135,6 @@ module NcsNavigator::Core::Warehouse
               (event_and_links[:instruments] || []).each do |mdes_i|
                 core_i = apply_mdes_record_to_core(Instrument, mdes_i)
                 save_core_record(core_i)
-                core_instruments[core_i.id] = core_i
               end
 
               (event_and_links[:link_contacts] || []).each do |mdes_lc|
@@ -147,7 +145,6 @@ module NcsNavigator::Core::Warehouse
 
                   @sync_loader.cache_contact_link(core_contact_link,
                                                   core_contact,
-                                                  core_instruments[core_contact_link.instrument_id],
                                                   core_event,
                                                   participant)
                 end

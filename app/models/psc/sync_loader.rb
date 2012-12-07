@@ -60,7 +60,7 @@ module Psc
       redis.sadd(lkey, event.public_id)
     end
 
-    def cache_contact_link(contact_link, contact, instrument, event, participant)
+    def cache_contact_link(contact_link, contact, event, participant)
       return unless should_cache_event?(event)
 
       lkey = sync_key['link_contact', contact_link.public_id]

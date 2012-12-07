@@ -322,7 +322,7 @@ class NcsNavigator::Core::RecordOfContactImporter
       end
 
       contact_links.values.each do |cl|
-        sync_loader.cache_contact_link(cl, cl.contact, cl.instrument, cl.event, cl.participant)
+        sync_loader.cache_contact_link(cl, cl.contact, cl.event, cl.participant)
       end
 
       NcsNavigator::Core::Warehouse::OperationalImporterPscSync.new(@psc, @wh_config, keygen).import
