@@ -15,10 +15,10 @@ module Psc
       loader.redis = redis
     end
 
-    let(:p) { Participant.new(:p_id => 'p') }
+    let(:p) { Participant.new(:p_id => 'P') }
     let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => 1) }
     let(:e) do
-      Event.new(:event_id => 'e',
+      Event.new(:event_id => 'E',
                 :event_start_date => '2000-01-01',
                 :event_end_date => '2000-02-01',
                 :event_type => et)
@@ -27,19 +27,19 @@ module Psc
     let(:is) { NcsCode.new(:display_text => 'Foobar') }
 
     let(:i) do
-      Instrument.new(:instrument_id => 'i',
+      Instrument.new(:instrument_id => 'I',
                      :instrument_type_code => 1,
                      :instrument_status => is)
     end
 
-    let(:c) { Contact.new(:contact_id => 'c', :contact_date => '2000-01-01') }
-    let(:cl) { ContactLink.new(:contact_link_id => 'cl') }
+    let(:c) { Contact.new(:contact_id => 'C', :contact_date => '2000-01-01') }
+    let(:cl) { ContactLink.new(:contact_link_id => 'CL') }
 
     describe '#cache_participant' do
       it "records the participant's public ID" do
         loader.cache_participant(p)
 
-        redis.sismember('test:participants', 'p').should be_true
+        redis.sismember('test:participants', 'P').should be_true
       end
     end
 
@@ -47,13 +47,13 @@ module Psc
       let(:cached_event) do
         loader.cache_event(e, p)
 
-        redis.hgetall('test:event:e')
+        redis.hgetall('test:event:E')
       end
 
       it 'links the event and participant' do
         loader.cache_event(e, p)
 
-        redis.sismember('test:p:p:events', 'e').should be_true
+        redis.sismember('test:p:P:events', 'E').should be_true
       end
 
       describe 'if the event is new' do
@@ -77,7 +77,7 @@ module Psc
       end
 
       it "records the event's public ID" do
-        cached_event['event_id'].should == 'e'
+        cached_event['event_id'].should == 'E'
       end
 
       it "records the event's start date" do
@@ -135,7 +135,7 @@ module Psc
       let(:cached_link) do
         cache_contact_link
 
-        redis.hgetall('test:link_contact:cl')
+        redis.hgetall('test:link_contact:CL')
       end
 
       describe 'if the contact link is new' do
@@ -159,15 +159,15 @@ module Psc
       end
 
       it "records the contact link's public ID" do
-        cached_link['contact_link_id'].should == 'cl'
+        cached_link['contact_link_id'].should == 'CL'
       end
 
       it "records the event's public ID" do
-        cached_link['event_id'].should == 'e'
+        cached_link['event_id'].should == 'E'
       end
 
       it "records the contact's public ID" do
-        cached_link['contact_id'].should == 'c'
+        cached_link['contact_id'].should == 'C'
       end
 
       it "records the contact's date" do
@@ -176,11 +176,11 @@ module Psc
 
       describe 'if an instrument is present' do
         it 'generates a sort key using the instrument type code' do
-          cached_link['sort_key'].should == 'e:2000-01-01:001'
+          cached_link['sort_key'].should == 'E:2000-01-01:001'
         end
 
         it "records the instrument's public ID" do
-          cached_link['instrument_id'].should == 'i'
+          cached_link['instrument_id'].should == 'I'
         end
 
         it "records the instrument's type code" do
@@ -194,7 +194,7 @@ module Psc
         it 'links the link to the participant and instrument' do
           cache_contact_link
 
-          redis.sismember('test:p:p:link_contacts_with_instrument:i', cl.public_id).should be_true
+          redis.sismember('test:p:P:link_contacts_with_instrument:I', cl.public_id).should be_true
         end
       end
 
@@ -202,13 +202,13 @@ module Psc
         let(:i) { nil }
 
         it "generates a sort key for the link" do
-          cached_link['sort_key'].should == 'e:2000-01-01'
+          cached_link['sort_key'].should == 'E:2000-01-01'
         end
 
         it 'links the link to the participant and event' do
           cache_contact_link
 
-          redis.sismember('test:p:p:link_contacts_without_instrument:e', cl.public_id).should be_true
+          redis.sismember('test:p:P:link_contacts_without_instrument:E', cl.public_id).should be_true
         end
       end
 
@@ -225,7 +225,7 @@ module Psc
       end
 
       it 'returns public IDs of cached participants' do
-        loader.cached_participant_ids.should == ['p']
+        loader.cached_participant_ids.should == ['P']
       end
     end
 
@@ -235,7 +235,7 @@ module Psc
       end
 
       it 'returns public IDs of cached events' do
-        loader.cached_event_ids.should == ['e']
+        loader.cached_event_ids.should == ['E']
       end
     end
 
@@ -245,7 +245,7 @@ module Psc
       end
 
       it 'returns public IDs of cached contact links' do
-        loader.cached_contact_link_ids.should == ['cl']
+        loader.cached_contact_link_ids.should == ['CL']
       end
     end
   end
