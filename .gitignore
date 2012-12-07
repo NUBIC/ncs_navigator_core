@@ -33,7 +33,11 @@ doc/notes
 doc/contact_event_workflow.pdf
 
 # Surveys are in a separate project
-surveys
+surveys/*.rb
+surveys/mc
+surveys/mc2
+surveys/prev
+surveys/README.md
 
 # Pow local configuration
 .powenv*
