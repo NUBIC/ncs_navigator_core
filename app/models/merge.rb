@@ -188,7 +188,7 @@ class Merge < ActiveRecord::Base
     when S[Case::Any,  N[nil],    nil,        nil,        N[true],     Case::Any ]; 'syncing'
     when S[Case::Any,  N[nil],    nil,        N[nil],     N[true],     Case::Any ]; 'merged'
     when S[Case::Any,  N[nil],    nil,        Case::Any,  true,        Case::Any ]; 'conflict'
-    when S[N[nil],     nil,       N[nil],     Case::Any,  Case::Any,   Case::Any ]; 'error'
+    when S[Case::Any,  Case::Any, N[nil],     Case::Any,  Case::Any,   Case::Any ]; 'error'
     end
   end
 

@@ -173,7 +173,7 @@ class Event < ActiveRecord::Base
   # cf. event_type belongs_to association
   # @return [String]
   def to_s
-    event_type.to_s
+    (event_type_code == -5 && !event_type_other.blank?) ? event_type.to_s << " - " << event_type_other : event_type.to_s
   end
 
   ##

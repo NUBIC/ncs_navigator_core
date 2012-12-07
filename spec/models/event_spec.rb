@@ -60,6 +60,33 @@ describe Event do
     end
   end
 
+  describe 'to_s' do
+    subject { Factory(:event) }
+    it 'should use the event_type display_text' do
+      subject.to_s.should == subject.event_type.display_text
+    end
+
+    describe 'if event_type is Other' do
+      before(:each) do
+        subject.event_type_code = -5
+      end
+
+      it 'should use the event_type display_text if event_type_other is nil' do
+        subject.to_s.should == "Other"
+      end
+
+      it 'should use the event_type display_text if event_type_other is empty string' do
+        subject.event_type_other = ""
+        subject.to_s.should == "Other"
+      end
+
+      it 'should append the event_type_other value to event_type display_text if event_type_other is not blank' do
+        subject.event_type_other = "Event ABC"
+        subject.to_s.should == "Other - Event ABC"
+      end
+    end
+  end
+
   describe '#closed?' do
     subject { Factory(:event) }
 
