@@ -65,9 +65,7 @@ module Psc
 
       lkey = sync_key['link_contact', contact_link.public_id]
 
-      instrument_type_code = instrument.try(:instrument_type_code)
       sort_key = "#{event.public_id}:#{contact.contact_date}"
-      sort_key << ":#{'%03d' % instrument_type_code.to_s}" if instrument_type_code
 
       redis.pipelined do |r|
         r.hmset(lkey,
@@ -78,20 +76,8 @@ module Psc
                 'contact_date', contact.contact_date,
                 'sort_key', sort_key)
 
-        if instrument
-          r.hmset(lkey,
-                  'instrument_type', instrument_type_code,
-                  'instrument_id', instrument.public_id,
-                  'instrument_status', instrument_status(instrument))
-        end
-
-        link_key = if instrument
-                    ['p', participant.public_id,
-                      'link_contacts_with_instrument', instrument.public_id]
-                   else
-                     ['p', participant.public_id,
-                       'link_contacts_without_instrument', event.public_id]
-                   end
+        link_key = ['p', participant.public_id,
+                    'link_contacts', event.public_id]
 
         r.sadd(sync_key[*link_key], contact_link.public_id)
       end

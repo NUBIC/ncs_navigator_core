@@ -26,12 +26,6 @@ module Psc
 
     let(:is) { NcsCode.new(:display_text => 'Foobar') }
 
-    let(:i) do
-      Instrument.new(:instrument_id => 'I',
-                     :instrument_type_code => 1,
-                     :instrument_status => is)
-    end
-
     let(:c) { Contact.new(:contact_id => 'C', :contact_date => '2000-01-01') }
     let(:cl) { ContactLink.new(:contact_link_id => 'CL') }
 
@@ -129,7 +123,7 @@ module Psc
 
     describe '#cache_contact_link' do
       def cache_contact_link
-        loader.cache_contact_link(cl, c, i, e, p)
+        loader.cache_contact_link(cl, c, nil, e, p)
       end
 
       let(:cached_link) do
@@ -174,42 +168,14 @@ module Psc
         cached_link['contact_date'].should == '2000-01-01'
       end
 
-      describe 'if an instrument is present' do
-        it 'generates a sort key using the instrument type code' do
-          cached_link['sort_key'].should == 'E:2000-01-01:001'
-        end
-
-        it "records the instrument's public ID" do
-          cached_link['instrument_id'].should == 'I'
-        end
-
-        it "records the instrument's type code" do
-          cached_link['instrument_type'].should == '1'
-        end
-
-        it "records the text of the instrument's status" do
-          cached_link['instrument_status'].should == 'foobar'
-        end
-
-        it 'links the link to the participant and instrument' do
-          cache_contact_link
-
-          redis.sismember('test:p:P:link_contacts_with_instrument:I', cl.public_id).should be_true
-        end
+      it "generates a sort key for the link" do
+        cached_link['sort_key'].should == 'E:2000-01-01'
       end
 
-      describe 'if an instrument is not present' do
-        let(:i) { nil }
+      it 'links the contact to the participant and event' do
+        cache_contact_link
 
-        it "generates a sort key for the link" do
-          cached_link['sort_key'].should == 'E:2000-01-01'
-        end
-
-        it 'links the link to the participant and event' do
-          cache_contact_link
-
-          redis.sismember('test:p:P:link_contacts_without_instrument:E', cl.public_id).should be_true
-        end
+        redis.sismember('test:p:P:link_contacts:E', cl.public_id).should be_true
       end
 
       it 'ignores links for events without a concrete type' do
@@ -241,7 +207,7 @@ module Psc
 
     describe '#cached_contact links' do
       before do
-        loader.cache_contact_link(cl, c, i, e, p)
+        loader.cache_contact_link(cl, c, nil, e, p)
       end
 
       it 'returns public IDs of cached contact links' do
