@@ -469,6 +469,14 @@ module NcsNavigator::Core::Warehouse
           let(:unschedulable_key) { "#{ns}:psc_sync:p:#{p_id}:events_unschedulable" }
 
           before do
+            # Since informed consent was removed from the template as a separate
+            # event as part of #2709, there are no practical examples of events
+            # with ambiguous segment mappings.
+            #
+            # Since it's the sort of thing that could come back, however, I
+            # don't want to remove the code that handles it.
+            pending 'No practical examples of this'
+
             add_event_hash('e2', '2010-01-11',
               :sort_key => '2010-01-11:010',
               :event_type_label => 'informed_consent')
