@@ -229,64 +229,26 @@ module NcsNavigator::Core::Warehouse
     ###### CONTACT LINK SA HISTORY UPDATES
 
     def update_sa_histories(psc_participant)
-      update_instrument_sa_histories(psc_participant)
-      update_other_event_sa_histories(psc_participant)
-    end
-
-    def update_instrument_sa_histories(psc_participant)
-      p_id = psc_participant.participant.p_id
-
-      say_subtask_message('finding link contact sets (with instruments)')
-      lc_set_keys =
-        redis.keys(sync_key['p', p_id, 'link_contacts_with_instrument', '*'])
-
-      all_sas = psc_participant.scheduled_activities(:sa_list)
-
-      update_sa_histories_from_link_contacts(psc_participant, lc_set_keys, 'with instruments',
-        lambda { |psc_event, lc_details|
-          instrument_filename = InstrumentEventMap.
-            instrument_map_value_for_code(lc_details['instrument_type'].to_i, 'filename').downcase
-          psc_event[:scheduled_activities].select { |event_sa_id|
-            all_sas[event_sa_id]['labels'] =~ /\binstrument:\d+\.\d+:#{instrument_filename}\b/
-          }
-        },
-        lambda { |link_contact_ids, scheduled_activities|
-          last_details = redis.hgetall(sync_key['link_contact', link_contact_ids.last])
-          if last_details['instrument_status'] == 'complete'
-            say_subtask_message("marking SA for a completed instrument occurred")
-            batch_update_sa_states(psc_participant, scheduled_activities, {
-                'date' => last_details['contact_date'],
-                'reason' => "Imported completed instrument #{last_details['instrument_id']}.",
-                'state' => 'occurred'
-              })
-          end
-        })
-
-    end
-    private :update_instrument_sa_histories
-
-    def update_other_event_sa_histories(psc_participant)
       p_id = psc_participant.participant.p_id
 
       # sort is for stable testing order
-      say_subtask_message('finding link contact sets (with event only)')
+      say_subtask_message('finding link contact sets')
       lc_set_keys =
-        redis.keys(sync_key['p', p_id, 'link_contacts_without_instrument', '*']).sort
+        redis.keys(sync_key['p', p_id, 'link_contacts', '*']).sort
 
-      update_sa_histories_from_link_contacts(psc_participant, lc_set_keys, 'with event only',
+      update_sa_histories_from_link_contacts(psc_participant, lc_set_keys,
         lambda { |psc_event, lc_details|
           psc_event[:scheduled_activities] -
             redis.smembers(sync_key['p', p_id, 'link_contact_updated_scheduled_activities'])
         })
     end
-    private :update_other_event_sa_histories
 
     def update_sa_histories_from_link_contacts(
-        psc_participant, link_contact_set_keys, set_type,
+        psc_participant, link_contact_set_keys,
         scheduled_activity_selector, link_contact_set_post_processor=nil
     )
       while lc_set_key = link_contact_set_keys.shift
-        say_subtask_message("beginning another link contact set (#{set_type})")
+        say_subtask_message("beginning another link contact set")
         lcs = redis.sort(
           lc_set_key,
           :by => sync_key['link_contact', '*'] + '->sort_key',
@@ -305,16 +267,15 @@ module NcsNavigator::Core::Warehouse
 
         sas = scheduled_activity_selector.call(psc_event, ex_lc_details)
         if sas.empty?
-          log.warn("Found no scheduled activities for LC set #{set_type}\n" <<
+          log.warn("Found no scheduled activities for LC set\n" <<
             "- event #{ex_event_details.inspect}\n" <<
             "- example LC #{ex_lc_details.inspect}\n" <<
             "- LC IDs #{lcs.inspect}")
         end
 
-        say_subtask_message('Updating %d SA%s for a set with %d LC%s (%s)' % [
+        say_subtask_message('Updating %d SA%s for a set with %d LC%s' % [
             sas.size, ('s' if sas.size != 1),
             lcs.size, ('s' if lcs.size != 1),
-            set_type
           ])
         lcs.each do |lc_id|
           lc_details = redis.hgetall(sync_key['link_contact', lc_id])

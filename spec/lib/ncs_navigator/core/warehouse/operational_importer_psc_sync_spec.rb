@@ -105,7 +105,7 @@ module NcsNavigator::Core::Warehouse
 
         add_link_contact_hash('e1_lc2', 'e1', '2010-01-12')
         redis.sadd(
-          "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:1.0:e1",
+          "#{ns}:psc_sync:p:#{p_id}:link_contacts:1.0:e1",
           'e1_lc2')
       end
 
@@ -558,15 +558,6 @@ module NcsNavigator::Core::Warehouse
         add_link_contact_hash('e1_lc2', 'e1', '2010-01-12')
         add_link_contact_hash('e1_lc3', 'e1', '2010-01-18')
 
-        instrument_props = {
-          :instrument_id => 'e1_i1',
-          :instrument_status => 'partial',
-          :instrument_type => '9'
-        }
-        add_link_contact_hash('e1_lc1i', 'e1', '2010-01-11', instrument_props)
-        add_link_contact_hash('e1_lc2i', 'e1', '2010-01-12', instrument_props)
-        add_link_contact_hash('e1_lc3i', 'e1', '2010-01-18', instrument_props)
-
         add_event_hash('e2', '2010-04-01',
           :event_type_label => 'pregnancy_visit_2')
         add_link_contact_hash('e2_lc4', 'e2', '2010-04-04')
@@ -574,6 +565,19 @@ module NcsNavigator::Core::Warehouse
         psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
         psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
         psc_participant.stub!(:update_scheduled_activity_states)
+
+        {
+          'e1' => %w(e1_lc3 e1_lc2 e1_lc1),
+          'e2' => %w(e2_lc4)
+        }.each do |event_id, lc_ids|
+          lc_ids.each do |lc_id|
+            redis.sadd(
+              "#{ns}:psc_sync:p:#{p_id}:link_contacts:#{event_id}",
+              lc_id)
+          end
+        end
+
+        redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities", 'sa3')
       end
 
       let(:scheduled_events) {
@@ -612,124 +616,24 @@ module NcsNavigator::Core::Warehouse
         }
       }
 
-      describe 'for contact links with instruments' do
-        before do
-          %w(e1_lc1i e1_lc3i e1_lc2i).each do |lc_id|
-            redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contacts_with_instrument:1.0:e1_i1", lc_id)
-          end
-        end
+      it 'batch updates all SAs at each LC' do
+        psc_participant.should_receive(:update_scheduled_activity_states).with(
+          'sa1' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1.', 'state' => 'scheduled' },
+          'sa4' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1.', 'state' => 'scheduled' }
+          ).ordered
+        psc_participant.should_receive(:update_scheduled_activity_states).with(
+          'sa1' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2.', 'state' => 'scheduled' },
+          'sa4' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2.', 'state' => 'scheduled' }
+          ).ordered
+        psc_participant.should_receive(:update_scheduled_activity_states).with(
+          'sa1' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3.', 'state' => 'scheduled' },
+          'sa4' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3.', 'state' => 'scheduled' }
+          ).ordered
+        psc_participant.should_receive(:update_scheduled_activity_states).with(
+          'sa2' => { 'date' => '2010-04-04', 'reason' => 'Imported new contact link e2_lc4.', 'state' => 'scheduled' }
+          ).ordered
 
-        it 'uses the sa_list only' do
-          psc_participant.should_receive(:scheduled_activities).at_least(:once).with(:sa_list)
-          psc_participant.should_not_receive(:scheduled_activities).with(:sa_activities)
-          psc_participant.should_not_receive(:scheduled_activities).with
-
-          importer.update_sa_histories(psc_participant)
-        end
-
-        describe 'when a matching SA exists' do
-          it 'updates the SA once for each LC in order' do
-            psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i.', 'state' => 'scheduled' }).
-              ordered
-            psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2i.', 'state' => 'scheduled' }).
-              ordered
-            psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3i.', 'state' => 'scheduled' }).
-              ordered
-
-            importer.update_sa_histories(psc_participant)
-          end
-
-          it 'closes the SA when completed' do
-            %w(e1_lc1i e1_lc2i e1_lc3i).each do |lc_id|
-              redis.hset("#{ns}:psc_sync:link_contact:#{lc_id}", 'instrument_status', 'complete')
-            end
-
-            psc_participant.should_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-18', 'reason' => 'Imported completed instrument e1_i1.', 'state' => 'occurred' })
-
-            importer.update_sa_histories(psc_participant)
-          end
-
-          it 'records the SA as handled' do
-            importer.update_sa_histories(psc_participant)
-
-            redis.smembers("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities").
-              should == %w(sa3)
-          end
-        end
-
-        describe 'when no matching SA exists' do
-          before do
-            scheduled_activities['sa3']['labels'] = 'event:pregnancy_visit_1'
-          end
-
-          it 'does not update the SA' do
-            psc_participant.should_not_receive(:update_scheduled_activity_states).with(
-              'sa3' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1i.', 'state' => 'scheduled' }
-            )
-
-            importer.update_sa_histories(psc_participant)
-          end
-
-          it 'does not issue an empty update to PSC' do
-            psc_participant.should_not_receive(:update_scheduled_activity_states).with({})
-
-            importer.update_sa_histories(psc_participant)
-          end
-
-          it 'does not record the SA as handled' do
-            redis.smembers("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities").
-              should == []
-          end
-        end
-      end
-
-      describe 'for contact links without instruments' do
-        before do
-          {
-            'e1' => %w(e1_lc3 e1_lc2 e1_lc1),
-            'e2' => %w(e2_lc4)
-          }.each do |event_id, lc_ids|
-            lc_ids.each do |lc_id|
-              redis.sadd(
-                "#{ns}:psc_sync:p:#{p_id}:link_contacts_without_instrument:#{event_id}",
-                lc_id)
-            end
-          end
-
-          redis.sadd("#{ns}:psc_sync:p:#{p_id}:link_contact_updated_scheduled_activities", 'sa3')
-        end
-
-        it 'uses the sa_list only' do
-          psc_participant.should_receive(:scheduled_activities).at_least(:once).with(:sa_list)
-          psc_participant.should_not_receive(:scheduled_activities).with(:sa_activities)
-          psc_participant.should_not_receive(:scheduled_activities).with # nothing
-
-          importer.update_sa_histories(psc_participant)
-        end
-
-        it 'batch updates all SAs at each LC' do
-          psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa1' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1.', 'state' => 'scheduled' },
-            'sa4' => { 'date' => '2010-01-11', 'reason' => 'Imported new contact link e1_lc1.', 'state' => 'scheduled' }
-            ).ordered
-          psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa1' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2.', 'state' => 'scheduled' },
-            'sa4' => { 'date' => '2010-01-12', 'reason' => 'Imported new contact link e1_lc2.', 'state' => 'scheduled' }
-            ).ordered
-          psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa1' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3.', 'state' => 'scheduled' },
-            'sa4' => { 'date' => '2010-01-18', 'reason' => 'Imported new contact link e1_lc3.', 'state' => 'scheduled' }
-            ).ordered
-          psc_participant.should_receive(:update_scheduled_activity_states).with(
-            'sa2' => { 'date' => '2010-04-04', 'reason' => 'Imported new contact link e2_lc4.', 'state' => 'scheduled' }
-            ).ordered
-
-          importer.update_sa_histories(psc_participant)
-        end
+        importer.update_sa_histories(psc_participant)
       end
     end
 
