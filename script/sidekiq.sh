@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage {
-	echo "Usage: $0 start|stop|restart rails_env pidfile logfile"
+	echo "Usage: $0 start|stop|restart rails_env pidfile logfile concurrency_level"
 	exit 1
 }
 
@@ -10,7 +10,7 @@ function usage {
 function start {
 	. ~/.bashrc
 
-	cd $2 && exec bundle exec sidekiq -e $1 -P $3 >> $4 2>&1
+	cd $2 && exec bundle exec sidekiq -e $1 -c $5 -P $3 >> $4 2>&1
 }
 
 # Sends TERM to the PID in the specified pidfile.
@@ -33,7 +33,7 @@ function wait_for_stop {
 function restart {
 	stop $3
 	wait_for_stop $3
-	start $1 $2 $3 $4
+	start $1 $2 $3 $4 $5
 }
 
 # Seriously, you'd think this would be a built-in.
@@ -45,6 +45,11 @@ action=$1
 env=$2
 pidfile=$3
 logfile=$4
+concurrency=$5
+
+if [ ! $concurrency ]; then
+	concurrency=10
+fi
 
 if [ ! $action -a $env -a $pidfile -a $logfile ]; then
 	usage
@@ -52,13 +57,13 @@ fi
 
 case $action in
 	start)
-		start $env $APP_DIR $pidfile $logfile
+		start $env $APP_DIR $pidfile $logfile $concurrency
 		;;
 	stop)
 		stop $pidfile
 		;;
 	restart)
-		restart $env $APP_DIR $pidfile $logfile
+		restart $env $APP_DIR $pidfile $logfile $concurrency
 		;;
 	*)
 		usage
