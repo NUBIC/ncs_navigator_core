@@ -165,7 +165,7 @@ Spork.prefork do
 
   def load_survey_questions_string(questions_dsl)
     load_survey_string <<-SURVEY
-      survey "Test Survey" do
+      survey "Test Survey", :description => 'Tester', :instrument_version => '1.8', :instrument_type => 3 do
         section "A" do
           #{questions_dsl}
         end
