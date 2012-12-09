@@ -2,6 +2,8 @@
 
 require 'forwardable'
 require 'logger'
+require 'ncs_navigator/core/psc/logger'
+require 'ncs_navigator/core/psc/retry'
 require 'psc_error'
 require 'psc_participant'
 
