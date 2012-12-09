@@ -60,9 +60,10 @@ end
 
 Given /^the survey$/ do |table|
   data = table.rows_hash
+  version = data['instrument_version']
 
   str = %Q{
-survey '#{data['title']}' do
+survey '#{data['title']}', :instrument_version => '#{version}' do
   section 'Questions' do
     q 'Question 1'
     a_1 :string

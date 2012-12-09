@@ -30,7 +30,8 @@ Feature: Merging data from field clients
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2005-07-15                           |
     And the survey
-      | title | pregnancy_survey_v1.0 |
+      | title              | pregnancy_survey_v1.0 |
+      | instrument_version | 1.0                   |
     And I complete the fieldwork set
       | start_date | 2005-07-01         |
       | end_date   | 2005-07-30         |
@@ -99,7 +100,8 @@ Feature: Merging data from field clients
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2005-07-15                           |
     And the survey
-      | title | pregnancy_survey_v1.0 |
+      | title              | pregnancy_survey_v1.0 |
+      | instrument_version | 1.0                   |
     And I complete the fieldwork set
       | start_date | 2005-07-01                 |
       | end_date   | 2005-07-30                 |
@@ -116,7 +118,8 @@ Feature: Merging data from field clients
 
   Scenario: New contacts can be associated with new people
     Given the survey
-      | title | pregnancy_survey_v1.0 |
+      | title              | pregnancy_survey_v1.0 |
+      | instrument_version | 1.0                   |
     And I complete the fieldwork set
       | start_date | 2005-07-01              |
       | end_date   | 2005-07-30              |
