@@ -170,7 +170,7 @@ module Field
         collections.map { |c| save_collection(c) }.all?.tap do |ok|
           if ok
             logger.debug { "Re-saving response sets" }
-            current_for(response_sets).each { |rs| rs.target.reload.save }
+            current_for(response_sets).select { |rs| rs }.each { |rs| rs.target.reload.save }
             logger.info { 'Merge saved' }
           else
             logger.fatal { 'Errors raised during save; rolling back' }
