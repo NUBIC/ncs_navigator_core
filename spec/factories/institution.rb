@@ -16,3 +16,11 @@ Factory.define :institution do |i|
   i.institute_unit_code         1
   i.institute_unit_other        nil
 end
+
+Factory.define :institution_person_link do |link|
+  link.association :person,  :factory => :person
+  link.association :institution, :factory => :institution
+  link.psu_code                   2000030
+  link.is_active_code             1
+  link.institute_relation_code    1
+end
