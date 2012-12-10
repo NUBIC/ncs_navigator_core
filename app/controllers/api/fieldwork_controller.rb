@@ -24,8 +24,9 @@ class Api::FieldworkController < ApiController
 
     begin
       m = fw.merges.create!(:proposed_data => request.body.read,
+                            :client_id => client_id,
                             :staff_id => current_staff_id,
-                            :client_id => client_id)
+                            :username => current_username)
     ensure
       request.body.rewind
     end
