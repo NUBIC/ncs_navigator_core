@@ -2,8 +2,10 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::RedisConfiguration
-  def redis
-    @redis ||= redis_connection
+  attr_reader :redis
+
+  def establish_redis_connection
+    @redis = redis_connection
   end
 
   ##
