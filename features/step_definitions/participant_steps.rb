@@ -5,12 +5,20 @@ Given /^a participant exists with a person$/ do
   person = Factory(:person)
   participant = Factory(:participant)
   participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+  Factory(:contact_link, :contact => Factory(:contact, :contact_date_date => Date.parse("2000-01-01")),
+                         :event => Factory(:event, :participant => participant),
+                         :person => participant.person,
+                         :instrument => nil)
 end
 
 Given /^a high intensity participant exists with a person$/ do
   person = Factory(:person)
   participant = Factory(:participant, :high_intensity => true)
   participant.participant_person_links.create(:relationship_code => 1, :psu => participant.psu, :person => person)
+  Factory(:contact_link, :contact => Factory(:contact, :contact_date_date => Date.parse("2000-01-01")),
+                         :event => Factory(:event, :participant => participant),
+                         :person => person,
+                         :instrument => nil)
 end
 
 Given /^a pregnancy_visit_1 pending event$/ do

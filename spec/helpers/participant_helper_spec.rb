@@ -61,9 +61,13 @@ describe ParticipantsHelper do
 
       let(:next_scheduled_lo_i_event) {
         lo_i_participant2.person = Factory(:person)
+        Factory(:contact_link, :person => lo_i_participant2.person, :event => Factory( :event, :participant => lo_i_participant2),
+                :contact => Factory(:contact, :contact_date_date => Date.new(2012, 02, 01)))
         lo_i_participant2.next_scheduled_event.event }
       let(:next_scheduled_hi_i_event) {
         hi_i_participant2.person = Factory(:person)
+        Factory(:contact_link, :person => lo_i_participant2.person, :event => Factory( :event, :participant => hi_i_participant2),
+        :contact => Factory(:contact, :contact_date_date => Date.new(2012, 02, 01)))
         hi_i_participant2.next_scheduled_event.event }
 
       describe "non two-tier recruitment strategy" do

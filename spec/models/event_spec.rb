@@ -657,13 +657,13 @@ describe Event do
 
           participant.person = person
           participant.save!
+          Factory(:contact_link, :contact => Factory(:contact, :contact_date_date => Date.parse("2000-01-01")),
+          :event => Factory(:event, :participant => participant), :person => participant.person)
 
-          participant.events.should be_empty
           Event.schedule_and_create_placeholder(psc, participant, date)
           participant.events.reload
-          participant.events.should_not be_empty
-          participant.events.size.should == 2
-          participant.events.each do |e|
+          participant.events.size.should == 3
+          participant.events.select { |item| item.event_type_code != 1 }.each do |e|
             e.scheduled_study_segment_identifier.should == scheduled_study_segment_identifier
             e.event_start_date.to_s.should == date
           end
@@ -732,14 +732,14 @@ describe Event do
 
           participant.person = person
           participant.save!
+          Factory(:contact_link, :contact => Factory(:contact, :contact_date_date => Date.parse("2000-01-01")),
+          :event => Factory(:event, :participant => participant), :person => participant.person)
 
-          participant.events.should be_empty
           participant.stub!(:eligible?).and_return(true)
           Event.schedule_and_create_placeholder(psc, participant, "2012-08-09")
           participant.events.reload
-          participant.events.should_not be_empty
-          participant.events.size.should == 7
-          participant.events.first.event_type.to_s.should == "Birth"
+          participant.events.size.should == 8
+          participant.events.second.event_type.to_s.should == "Birth"
           participant.events.last.event_type.to_s.should == "24 Month"
         end
       end

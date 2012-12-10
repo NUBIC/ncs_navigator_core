@@ -1279,22 +1279,12 @@ class Participant < ActiveRecord::Base
       end
     end
 
-    ##
-    # if person and contacts exist, use most recent contact link contact date if it exists
-    # otherwise use the created at attribute for the contact link
-    # else use today's date.
-    # @return [Date]
     def get_date_to_schedule_next_event_from_contact_link
-      # contact_links are delegated to person and ordered by created_at DESC
-      if person && most_recent_contact_link = contact_links.first
-        result = most_recent_contact_link.created_at.to_date
-        if most_recent_contact_link.contact && most_recent_contact_link.contact.contact_date_date
-          result = most_recent_contact_link.contact.contact_date_date
-        end
+      if last_contact
+        last_contact.contact_date_date
       else
-        result = Date.today
+        fail 'Could not decide the next scheduled event date without the contact.'
       end
-      result
     end
 
     def next_event_is_birth?
