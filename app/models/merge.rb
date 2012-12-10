@@ -40,6 +40,7 @@ class Merge < ActiveRecord::Base
 
   validates_presence_of :client_id
   validates_presence_of :staff_id
+  validates_presence_of :username
 
   S = Case::Struct.new(:started_at, :merged_at, :crashed_at, :synced_at, :conflicted?, :timed_out?)
   N = Case::Not

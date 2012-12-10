@@ -21,10 +21,11 @@ require 'spec_helper'
 describe Merge do
   let!(:fw) { Factory(:fieldwork) }
 
-  subject { fw.merges.build(:client_id => 'bar', :staff_id => 'foo') }
+  subject { fw.merges.build(:client_id => 'bar', :staff_id => 'foo', :username => 'baz') }
 
   it { should validate_presence_of(:client_id) }
   it { should validate_presence_of(:staff_id) }
+  it { should validate_presence_of(:username) }
 
   describe '#run' do
     it 'saves the merge log' do
