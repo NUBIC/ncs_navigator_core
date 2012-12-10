@@ -575,6 +575,23 @@ class Person < ActiveRecord::Base
   end
   alias :is_first_child? :first_child?
 
+  def unique_contact_mode_entries(contact_mode_entries)
+    unique = []
+    filter_criteria = contact_mode_entries.first.filter_criteria
+    contact_mode_entries.group_by(&filter_criteria).each { |group, entries| unique << entries.first unless entries.first.send(filter_criteria).blank? }
+    unique
+  end
+
+  def highest_ranking_contact_mode_entry(contact_mode_entries)
+    highest_ranking = []
+    type_code = contact_mode_entries.first.type_code
+    rank_code = contact_mode_entries.first.rank_code
+    gt = lambda { |new_rank, old_rank| ranks = [1, 2, -5, 4, -4]; ranks.index(new_rank) < ranks.index(old_rank) }
+    highest_ranking_hash = contact_mode_entries.each_with_object({}) { |entries, h| c = h[entries.send(type_code)]; h[entries.send(type_code)] = entries if !c || gt[entries.send(rank_code), c.send(rank_code)] }
+    highest_ranking_hash.each_value { |entry| highest_ranking << entry }
+    highest_ranking
+  end
+
   private
 
     def dob
@@ -589,4 +606,3 @@ class PersonResponse
   attr_accessor :response_class, :text, :short_text, :reference_identifier
   attr_accessor :datetime_value, :integer_value, :float_value, :text_value, :string_value
 end
-

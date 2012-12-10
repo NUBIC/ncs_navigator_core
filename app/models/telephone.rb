@@ -115,18 +115,16 @@ class Telephone < ActiveRecord::Base
     end
   end
 
-  def self.unique_telephones(telephones)
-    unique = []
-    telephones.group_by(&:phone_nbr).each { |group, phone_numbers| unique << phone_numbers.first unless phone_numbers.first.phone_nbr.blank? }
-    unique
+  def filter_criteria
+    :phone_nbr
   end
 
-  def self.highest_ranking_phone(phones)
-    highest_ranking = []
-    gt = lambda { |new_rank, old_rank| ranks = [1, 2, -5, 4, -4]; ranks.index(new_rank) < ranks.index(old_rank) }
-    highest_ranking_hash = phones.each_with_object({}) { |phone, h| c = h[phone.phone_type_code]; h[phone.phone_type_code] = phone if !c || gt[phone.phone_rank_code, c.phone_rank_code] }
-    highest_ranking_hash.each_value { |phone| highest_ranking << phone }
-    highest_ranking
+  def type_code
+    :phone_type_code
+  end
+
+  def rank_code
+    :phone_rank_code
   end
 
 end

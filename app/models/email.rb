@@ -61,18 +61,16 @@ class Email < ActiveRecord::Base
     end
   end
 
-  def self.unique_email_addresses(email_addresses)
-    unique = []
-    email_addresses.group_by(&:email).each { |group, email_addresses| unique << email_addresses.first unless email_addresses.first.email.blank? }
-    unique
+  def filter_criteria
+    :email
   end
 
-  def self.highest_ranking_email_address(email_addresses)
-    highest_ranking = []
-    gt = lambda { |new_rank, old_rank| ranks = [1, 2, -5, 4, -4]; ranks.index(new_rank) < ranks.index(old_rank) }
-    highest_ranking_hash = email_addresses.each_with_object({}) { |e_addr, h| c = h[e_addr.email_type_code]; h[e_addr.email_type_code] = e_addr if !c || gt[e_addr.email_rank_code, c.email_rank_code] }
-    highest_ranking_hash.each_value { |e_addr| highest_ranking << e_addr }
-    highest_ranking
+  def type_code
+    :email_type_code
+  end
+
+  def rank_code
+    :email_rank_code
   end
 
 end

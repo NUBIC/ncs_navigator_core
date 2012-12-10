@@ -118,18 +118,16 @@ class Address < ActiveRecord::Base
     end
   end
 
-  def self.unique_addresses(addresses)
-    unique = []
-    addresses.group_by(&:address_one).each { |group, addresses| unique << addresses.first unless addresses.first.address_one.blank? }
-    unique
+  def filter_criteria
+    :address_one
   end
 
-  def self.highest_ranking_address(addresses)
-    highest_ranking = []
-    gt = lambda { |new_rank, old_rank| ranks = [1, 2, -5, 4, -4]; ranks.index(new_rank) < ranks.index(old_rank) }
-    highest_ranking_hash = addresses.each_with_object({}) { |addr, h| c = h[addr.address_type_code]; h[addr.address_type_code] = addr if !c || gt[addr.address_rank_code, c.address_rank_code] }
-    highest_ranking_hash.each_value { |addr| highest_ranking << addr }
-    highest_ranking
+  def type_code
+    :address_type_code
+  end
+
+  def rank_code
+    :address_rank_code
   end
 
 end
