@@ -147,20 +147,4 @@ describe 'PSC template' do
     end
   end
 
-  describe 'instrument label set' do
-    let(:prefix) { %r{^instrument:} }
-
-    let(:instruments_named_in_labels) {
-      all_labels.select { |l| l =~ prefix }.collect { |n| n.sub(prefix, '') }.uniq
-    }
-
-    let(:instruments_from_map) {
-      INSTRUMENT_EVENT_CONFIG.collect { |ie| ie['filename'].downcase }.uniq
-    }
-
-    it 'covers only mapped instruments' do
-      pending '#2450'
-      (instruments_named_in_labels - instruments_from_map).uniq.should == []
-    end
-  end
 end

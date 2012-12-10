@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121207160255) do
+ActiveRecord::Schema.define(:version => 20121207225204) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -319,6 +319,19 @@ ActiveRecord::Schema.define(:version => 20121207160255) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "being_processed",                            :default => false
+  end
+
+  create_table "institution_person_links", :force => true do |t|
+    t.string   "psu_code",                 :limit => 36, :null => false
+    t.string   "person_institute_id",      :limit => 36, :null => false
+    t.integer  "person_id",                              :null => false
+    t.integer  "institution_id",                         :null => false
+    t.integer  "is_active_code",                         :null => false
+    t.integer  "institute_relation_code",                :null => false
+    t.string   "institute_relation_other"
+    t.string   "transaction_type",         :limit => 36
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "institutions", :force => true do |t|
@@ -800,8 +813,8 @@ ActiveRecord::Schema.define(:version => 20121207160255) do
     t.string   "transaction_type",             :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sampled_person_code"
-    t.integer  "pre_screening_status_code"
+    t.integer  "sampled_person_code",                        :null => false
+    t.integer  "pre_screening_status_code",                  :null => false
     t.string   "date_first_visit"
     t.date     "date_first_visit_date"
   end

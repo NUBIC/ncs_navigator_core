@@ -34,9 +34,7 @@ doc/contact_event_workflow.pdf
 
 # Surveys are in a separate project
 surveys/*.rb
-surveys/mc
-surveys/mc2
-surveys/prev
+local_surveys
 surveys/README.md
 
 # Pow local configuration
