@@ -63,5 +63,9 @@ module Psc
     def add_from_schedule(row)
       @arr << ScheduledActivity.from_schedule(row)
     end
+
+    def reject!(&block)
+      @arr.reject!(&block)
+    end
   end
 end

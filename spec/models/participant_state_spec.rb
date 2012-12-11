@@ -300,6 +300,16 @@ describe Participant do
         participant.should be_pending
       end
 
+      describe "given any Household Event" do
+        it "should not change the participant state" do
+          participant.low_intensity_state = 'in_pregnancy_probability_group'
+          participant.should be_in_pregnancy_probability_group
+          event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 1).first)
+          participant.set_state_for_event_type(event)
+          participant.should be_in_pregnancy_probability_group
+        end
+      end
+
       describe "given any Pregnancy Screener event" do
         it "should be in the in_pregnancy_probability_group state for Pregnancy Screener" do
           event = Factory(:event, :event_type => NcsCode.where("list_name = 'EVENT_TYPE_CL1' and local_code = ?", 29).first)

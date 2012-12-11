@@ -1051,7 +1051,7 @@ class Participant < ActiveRecord::Base
       end
     when 32
       enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-    when 17, 19, 21, -5
+    when 17, 19, 21, 1, -5
       # Do not correspond to states in state machine
     else
       fail "Unhandled event type for participant state #{event.event_type.local_code.inspect}"

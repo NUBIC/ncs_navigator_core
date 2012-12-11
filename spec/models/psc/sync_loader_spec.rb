@@ -16,7 +16,7 @@ module Psc
     end
 
     let(:p) { Participant.new(:p_id => 'P') }
-    let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => 1) }
+    let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => 2) }
     let(:e) do
       Event.new(:event_id => 'E',
                 :event_start_date => '2000-01-01',
@@ -83,7 +83,7 @@ module Psc
       end
 
       it "records the event's type code" do
-        cached_event['event_type_code'].should == '1'
+        cached_event['event_type_code'].should == '2'
       end
 
       it "records the event's type label" do
@@ -111,11 +111,23 @@ module Psc
       end
 
       it 'generates a sort key for the event' do
-        cached_event['sort_key'].should == '2000-01-01:001'
+        cached_event['sort_key'].should == '2000-01-01:002'
       end
 
       it 'ignores events without a concrete type' do
         e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => -5)
+
+        cached_event.should be_empty
+      end
+
+      it 'ignores events with event type "1" which is "Household Enumeration"' do
+        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => 1)
+
+        cached_event.should be_empty
+      end
+
+      it 'ignores events with event type "21" which is "Validation"' do
+        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => 21)
 
         cached_event.should be_empty
       end

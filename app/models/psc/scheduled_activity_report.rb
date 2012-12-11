@@ -23,6 +23,13 @@ module Psc
       @logger = logger
     end
 
+    def initialize_copy(source)
+      super
+
+      @filters = source.filters.dup if source.filters
+      @activities = source.activities.dup if source.activities
+    end
+
     ##
     # Builds a ScheduledActivityReport from PSC data.
     #
@@ -51,6 +58,14 @@ module Psc
     # {Field::EventTemplateGenerator} for an example use.
     def populate_from_schedule(data)
       @activities = ScheduledActivityCollection.from_schedule(data)
+    end
+
+    ##
+    # Excludes activities involving specimen collection.
+    #
+    # @return void
+    def without_collection!
+      activities.reject!(&:specimen_collection?)
     end
   end
 end

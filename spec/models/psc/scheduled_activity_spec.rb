@@ -76,6 +76,16 @@ module Psc
       it_reads_label 'order',             '01_02'
       it_reads_label 'participant_type',  'child'
       it_reads_label 'references',        'ins_que_birth_int_ehpbhi_p2_v2.0'
+
+      describe '#specimen_collection?' do
+        it 'returns true for activities with a collection label' do
+          sa.should be_specimen_collection
+        end
+
+        it 'returns false for activities without a collection label' do
+          empty_sa.should_not be_specimen_collection
+        end
+      end
     end
 
     shared_examples_for 'an activity state reader' do
