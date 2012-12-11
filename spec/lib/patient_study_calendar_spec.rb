@@ -38,6 +38,18 @@ describe PatientStudyCalendar do
     end
   end
 
+  describe '#responsible_user' do
+    it 'defaults to user.username' do
+      subject.responsible_user.should == 'dude'
+    end
+
+    it 'is settable' do
+      subject.responsible_user = 'someone-else'
+
+      subject.responsible_user.should == 'someone-else'
+    end
+  end
+
   it "connects to the running instance of PSC configured in by the NcsNavigator::Configuration" do
     cnx = subject.get_connection
     cnx.should_not be_nil

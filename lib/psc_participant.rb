@@ -68,7 +68,7 @@ class PscParticipant
     registration_message = Psc.xml('registration',
       'date' => start_date,
       'desired-assignment-id' => assignment_identifier,
-      'subject-coordinator-name' => psc.user.username,
+      'subject-coordinator-name' => psc.responsible_user,
       'first-study-segment-id' => segment_id
     ) do |reg|
       reg.subject(subject_attributes(:xml))

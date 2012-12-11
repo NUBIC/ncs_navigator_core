@@ -116,6 +116,8 @@ describe PscParticipant do
 
       context do
         before do
+          psc.responsible_user = 'foobar'
+
           stub_request(:post, assignments_path).to_return(:status => 201)
           subject.valid.keys.each { |k| subject.valid[k] = true }
           subject.register!('2011-03-07', 'dc')
@@ -136,9 +138,9 @@ describe PscParticipant do
             with(&psc_xml_matching('/psc:registration/@desired-assignment-id', person_id))
         end
 
-        it 'registers using the current user as the manager' do
+        it 'registers using the responsible user as the manager' do
           WebMock.should have_requested(:post, assignments_path).
-            with(&psc_xml_matching('/psc:registration/@subject-coordinator-name', 'alice'))
+            with(&psc_xml_matching('/psc:registration/@subject-coordinator-name', 'foobar'))
         end
 
         {

@@ -63,6 +63,21 @@ class PatientStudyCalendar
     self.logger = logger
   end
 
+  ##
+  # The user who will act as subject coordinator; defaults to user.username.
+  # Can be changed if participants are being registered on behalf of another
+  # user (i.e. in the Field -> Cases merge process).
+  #
+  # @see #build_subject_assignment_request
+  # @see Psc::Participant#register!
+  def responsible_user
+    @responsible_user || user.username
+  end
+
+  def responsible_user=(username)
+    @responsible_user = username
+  end
+
   def fake_user
     if ENV['PSC_USERNAME_PASSWORD']
       Struct.new(:username).new(ENV['PSC_USERNAME_PASSWORD'].split(',').first)
@@ -581,7 +596,7 @@ class PatientStudyCalendar
                     "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd",
                     "first-study-segment-id" => segment_id,
                     "date" => date,
-                    "subject-coordinator-name" => user.username,
+                    "subject-coordinator-name" => responsible_user,
                     "desired-assignment-id" => psc_assignment_id(participant)) {
       xm.subject(subject_attributes)
     }
