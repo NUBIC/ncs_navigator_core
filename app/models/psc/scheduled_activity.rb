@@ -105,7 +105,13 @@ module Psc
   # collection
   # ----------
   #
-  # TODO
+  # If present, this activity involves specimen collection.  Acceptable values
+  # are "biological" and "environmental".
+  #
+  # Biological collections involve obtaining specimens from a biological entity
+  # (i.e. person); environmental collections involve obtaining specimens from
+  # the environment inhabited by a biological entity.
+  #
   #
   # mode
   # ----
@@ -281,6 +287,10 @@ module Psc
 
       class_eval str, __FILE__, __LINE__
     end
+
+    ##
+    # True if this activity involves specimen collection, false otherwise.
+    alias_method :specimen_collection?, :collection_label
 
     ##
     # @private
