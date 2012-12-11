@@ -183,7 +183,7 @@ module Field
         possible = p_model.contact_links.select { |cl| cl.staff_id == staff_id }.map(&:contact)
         accepted = possible.detect { |c| c.contact_date_date == date }
 
-        resolutions[contact] = accepted || ::Contact.start(p_model, :contact_date => contact.scheduled_date)
+        resolutions[contact] = accepted || ::Contact.start(p_model, :contact_date => contact.scheduled_date, :worked => false)
       end
     end
 

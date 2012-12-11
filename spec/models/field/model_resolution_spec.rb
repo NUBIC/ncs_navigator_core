@@ -178,6 +178,20 @@ module Field
           end
         end
 
+        describe 'if there exists an unworked contact for the scheduled date, person, and staff ID' do
+          let!(:c) { Factory(:contact, :contact_date => scheduled_date, :worked => false) }
+
+          before do
+            Factory(:contact_link, :contact => c, :person => p, :staff_id => staff_id)
+          end
+
+          it 'reuses that contact' do
+            report.reify_models
+
+            report.resolutions.values.should include(c)
+          end
+        end
+
         describe 'if there does not exist a contact for the scheduled date, person, and staff ID' do
           it 'starts a new contact' do
             report.reify_models
@@ -197,6 +211,10 @@ module Field
 
             it 'is a new record' do
               contact.should be_new_record
+            end
+
+            it 'is unworked' do
+              contact.should_not be_worked
             end
           end
         end
