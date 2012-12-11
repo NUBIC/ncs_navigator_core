@@ -81,7 +81,7 @@ class Participant < ActiveRecord::Base
 
   scope :upcoming_births, joins(:ppg_details).where("ppg_details.orig_due_date > '#{Date.today.to_s(:db)}' or ppg_details.due_date_2 > '#{Date.today.to_s(:db)}' or ppg_details.due_date_3 > '#{Date.today.to_s(:db)}'")
 
-  delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
+  delegate :age, :first_name, :last_name, :person_dob, :gender, :upcoming_events, :contacts, :contact_links, :current_contact_link, :instruments, :start_instrument, :started_survey, :instrument_for, :to => :person
 
   after_create :set_initial_state_for_recruitment_strategy
 
@@ -468,7 +468,7 @@ class Participant < ActiveRecord::Base
   #
   # @return [ScheduledEvent]
   def next_scheduled_event
-    return nil if next_study_segment.blank?
+    return nil if next_study_segment.blank? || contacts.blank?
     ScheduledEvent.new(:date => next_scheduled_event_date, :event => upcoming_events.first)
   end
 

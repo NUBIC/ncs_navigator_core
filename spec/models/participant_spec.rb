@@ -1613,5 +1613,20 @@ describe Participant do
       end
     end
   end
+
+  describe ".next_scheduled_event" do
+
+    it "returns nil if the participant has no contacts" do
+      Participant.any_instance.stub(:contacts).and_return([])
+      Factory(:participant).next_scheduled_event.should be_nil
+    end
+
+    it "returns nil if the participant has no next_study_segment" do
+      Factory(:low_intensity_ppg6_participant).next_scheduled_event.should be_nil
+    end
+
+    it "returns the next scheduled event"
+  end
+
 end
 
