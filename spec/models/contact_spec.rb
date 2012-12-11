@@ -82,6 +82,22 @@ describe Contact do
     end
   end
 
+  describe '#worked' do
+    it 'defaults to true' do
+      c = Contact.create!
+      
+      c.should be_worked
+    end
+  end
+
+  describe 'default scope' do
+    it 'omits contacts that have not been worked' do
+      c = Factory(:contact, :worked => false)
+
+      Contact.all.should_not include(c)
+    end
+  end
+
   it "knows when it is 'closed'" do
     c = Factory(:contact)
     c.should_not be_closed

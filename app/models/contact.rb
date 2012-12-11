@@ -32,13 +32,25 @@
 #  who_contacted_other     :string(255)
 #
 
-
-
-
 # Staff makes Contact with a Person pursuant to a protocol – either one
 # of the recruitment schemas or a Study assessment protocol.
 # The scope of a Contact may include one or more Events, one or more
 # Instruments in an Event and one or more Specimens that some Instruments collect.
+# 
+#
+# Default scope
+# -------------
+#
+# A Contact, by default, is marked as worked.  This means that the Contact
+# represents a staff member making contact -- or at least attempting contact --
+# with a {Person}.
+#
+# Contacts may, in some cases, be marked as not-worked.  In this case, they're
+# planned and might not occur.  The canonical generator of such contacts is the
+# fieldwork generation process.
+#
+# Most of Cases is only concerned with (and indeed expects) worked contacts,
+# hence the scope.
 class Contact < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :contact_id, :date_fields => [:contact_date]
@@ -68,6 +80,8 @@ class Contact < ActiveRecord::Base
 
   validates :contact_date,     :length => { :is => 10 }, :allow_blank => true
   validates :contact_distance, :length => { :maximum => 6 }, :allow_blank => true, :numericality => true
+
+  default_scope where(:worked => true)
 
   ##
   # Start a contact and prepopulate properties based on the person contacted
