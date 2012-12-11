@@ -80,7 +80,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     def prepopulated_mode_of_contact(question)
       # If In-Person use 'capi' otherwise use 'cati'
       # TODO: how to determine 'papi' ?
-      reference_identifier = contact.try(:contact_type_code) == 1 ? "capi" : "cati"
+      reference_identifier = contact.try(:contact_type_code) == 3 ? "cati" : "capi"
       question.answers.select { |a| a.reference_identifier == reference_identifier }.first
     end
 
