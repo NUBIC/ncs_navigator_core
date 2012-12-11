@@ -48,6 +48,8 @@ class PatientStudyCalendar
   INFORMED_CONSENT = "Informed Consent"
   SKIPPED_EVENT_TYPES = [INFORMED_CONSENT]
 
+  attr_reader :psc_client
+
   attr_accessor :logger
   attr_accessor :user
   attr_accessor :registered_participants
@@ -61,6 +63,8 @@ class PatientStudyCalendar
     self.user = user || fake_user
     self.registered_participants = RegisteredParticipantList.new(self)
     self.logger = logger
+
+    build_client
   end
 
   ##
@@ -109,8 +113,8 @@ class PatientStudyCalendar
     "NCS"
   end
 
-  def psc_client
-    @psc_client ||= Psc::Client.new(uri, :authenticator => create_authenticator) do |builder|
+  def build_client
+    @psc_client = Psc::Client.new(uri, :authenticator => create_authenticator) do |builder|
       builder.use NcsNavigator::Core::Psc::Retry
       builder.use NcsNavigator::Core::Psc::Logger, log
     end
@@ -908,7 +912,7 @@ class PatientStudyCalendar
     end
 
     def psc_config
-      @psc_config ||= NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
+      NcsNavigator.configuration.instance_variable_get("@application_sections")["PSC"]
     end
   end
 
