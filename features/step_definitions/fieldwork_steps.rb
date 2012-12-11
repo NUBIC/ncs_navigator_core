@@ -36,7 +36,7 @@ Given /^merging "([^"]*)" caused conflicts$/ do |fw_id, table|
     report.add(entity, public_id, h['attribute'], h['original'], h['current'], h['proposed'])
   end
 
-  fw.merges.create!(:conflict_report => report, :staff_id => 'foo', :client_id => 'bar')
+  fw.merges.create!(:conflict_report => report, :staff_id => 'foo', :client_id => 'bar', :username => 'baz')
 end
 
 # NB: These Then-steps rely on Capybara's #all returning elements in a
