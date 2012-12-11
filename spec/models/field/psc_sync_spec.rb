@@ -27,7 +27,21 @@ module Field
       VCR.use_cassette('cas/machine_account_success') { yield }
     end
 
+    before do
+      sp.responsible_user = 'foobar'
+    end
+
     describe '#login_to_psc' do
+      describe 'if #responsible_user is not set' do
+        before do
+          sp.responsible_user = nil
+        end
+
+        it 'raises an error' do
+          lambda { sp.login_to_psc }.should raise_error
+        end
+      end
+
       describe 'on success' do
         around do |example|
           with_cas_success { example.run }
@@ -37,6 +51,10 @@ module Field
           NcsNavigatorCore.suite_configuration.stub!(:core_machine_account_password => 'ncs_navigator_cases')
 
           sp.login_to_psc.should be_instance_of(PatientStudyCalendar)
+        end
+
+        it 'sets the responsible user for PSC' do
+          sp.login_to_psc.responsible_user.should == 'foobar'
         end
       end
 

@@ -33,6 +33,12 @@ module Field
     attr_accessor :psc_importer
 
     ##
+    # The username for whom these changes are being synced.
+    #
+    # @see PatientStudyCalendar#responsible_user
+    attr_accessor :responsible_user
+
+    ##
     # A procedure that generates Redis keys.  Set by {#prepare_for_sync}.
     attr_accessor :keygen
 
@@ -45,14 +51,21 @@ module Field
     ##
     # Logs into PSC using Cases' machine account.  Returns a
     # {PatientStudyCalendar} instance on success, raises an error on failure.
+    #
+    # {#responsible_user} must be set before invoking this method.  If
+    # {#responsible_user} is nil, this method will raise an error.
     def login_to_psc
+      raise "responsible_user is not set" unless responsible_user
+
       cas_cli = Aker::CasCli.new(aker_configuration)
       username, password = NcsNavigatorCore.machine_account_credentials
       user = cas_cli.authenticate(username, password)
 
       raise "Authentication as #{username} failed" unless user
 
-      PatientStudyCalendar.new(user)
+      PatientStudyCalendar.new(user).tap do |psc|
+        psc.responsible_user = responsible_user
+      end
     end
 
     ##
