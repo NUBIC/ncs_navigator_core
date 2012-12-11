@@ -70,6 +70,23 @@ module Psc
       end
     end
 
+    describe '#dup' do
+      let(:data_file) { File.expand_path('../../../fixtures/psc/scheduled_activity_report.json', __FILE__) }
+      let(:data) { JSON.parse(File.read(data_file)) }
+
+      before do
+        report.populate_from_report(data)
+      end
+
+      it 'dups filters' do
+        report.dup.filters.object_id.should_not == report.filters.object_id
+      end
+
+      it 'dups activities' do
+        report.dup.activities.object_id.should_not == report.activities.object_id
+      end
+    end
+
     describe '#without_collection!' do
       let(:data_file) { File.expand_path('../../../fixtures/psc/scheduled_activity_report_with_collection.json', __FILE__) }
       let(:data) { JSON.parse(File.read(data_file)) }

@@ -23,6 +23,13 @@ module Psc
       @logger = logger
     end
 
+    def initialize_copy(source)
+      super
+
+      @filters = source.filters.dup if source.filters
+      @activities = source.activities.dup if source.activities
+    end
+
     ##
     # Builds a ScheduledActivityReport from PSC data.
     #
