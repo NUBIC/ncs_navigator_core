@@ -372,6 +372,10 @@ module NcsNavigator::Core::Mustache
       child_first_name("your child")
     end
 
+    def child_first_name_your_child_upcase
+      child_first_name("your child").upcase
+    end
+
     def child_first_name_your_baby
       child_first_name("your baby")
     end

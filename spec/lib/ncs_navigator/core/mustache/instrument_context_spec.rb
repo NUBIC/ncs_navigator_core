@@ -1307,6 +1307,23 @@ module NcsNavigator::Core::Mustache
       it "returns 'the children' if a multiple birth"
     end
 
+    describe ".child_first_name_your_child" do
+
+      it "returns the child's first name"
+
+      it "returns 'your child' if the child has no first name"
+
+    end
+
+    describe ".child_first_name_your_child_upcase" do
+
+      it "returns the child's first name in uppercase"
+
+      it "returns 'YOUR CHILD' if the child has no first name"
+
+    end
+
+
     describe "c_fname_or_the_child" do
       before(:each) do
         setup_survey_instrument(create_pv2_and_birth_with_work_name)
