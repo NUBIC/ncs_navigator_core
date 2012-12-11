@@ -52,5 +52,36 @@ module Psc
         report.activities.should_not be_nil
       end
     end
+
+    describe '#populate_from_report' do
+      let(:data_file) { File.expand_path('../../../fixtures/psc/scheduled_activity_report.json', __FILE__) }
+      let(:data) { JSON.parse(File.read(data_file)) }
+
+      before do
+        report.populate_from_report(data)
+      end
+
+      it 'sets filters' do
+        report.filters.should_not be_nil
+      end
+
+      it 'sets activities' do
+        report.activities.should_not be_nil
+      end
+    end
+
+    describe '#without_collection!' do
+      let(:data_file) { File.expand_path('../../../fixtures/psc/scheduled_activity_report_with_collection.json', __FILE__) }
+      let(:data) { JSON.parse(File.read(data_file)) }
+
+      before do
+        report.populate_from_report(data)
+        report.without_collection!
+      end
+
+      it 'keeps non-collection activities' do
+        report.activities.length.should == 1
+      end
+    end
   end
 end

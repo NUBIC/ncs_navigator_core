@@ -52,5 +52,13 @@ module Psc
     def populate_from_schedule(data)
       @activities = ScheduledActivityCollection.from_schedule(data)
     end
+
+    ##
+    # Excludes activities involving specimen collection.
+    #
+    # @return void
+    def without_collection!
+      activities.reject!(&:specimen_collection?)
+    end
   end
 end
