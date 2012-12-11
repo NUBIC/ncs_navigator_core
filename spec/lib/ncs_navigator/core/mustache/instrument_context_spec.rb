@@ -459,17 +459,67 @@ module NcsNavigator::Core::Mustache
 
       end
 
+      describe ".he_she_upcase" do
+
+        it "returns 'HE' if male" do
+          create_male_response
+          instrument_context.he_she_upcase.should == "HE"
+        end
+
+        it "returns 'SHE' if female" do
+          create_female_response
+          instrument_context.he_she_upcase.should == "SHE"
+        end
+
+        it "returns 'HE/SHE' if no sex response" do
+          instrument_context.he_she_upcase.should == "HE/SHE"
+        end
+
+      end
+
+      describe ".he_she_the_child" do
+
+        it "returns 'he' if male" do
+          create_male_response
+          instrument_context.he_she_the_child.should == "he"
+        end
+
+        it "returns 'she' if female" do
+          create_female_response
+          instrument_context.he_she_the_child.should == "she"
+        end
+
+        it "returns 'the child' if no sex response" do
+          instrument_context.he_she_the_child.should == "the child"
+        end
+
+      end
+
+
       describe ".child_children" do
-        it "returns 'child' if single birth" do
+        it "returns 'Child' if single birth" do
           create_single_birth
           instrument_context.child_children.should == "Child"
         end
 
-        it "returns 'children' if multiple birth" do
+        it "returns 'Children' if multiple birth" do
           create_multiple_birth
           instrument_context.child_children.should == "Children"
         end
       end
+
+      describe ".child_children_downcast" do
+        it "returns 'child' if single birth" do
+          create_single_birth
+          instrument_context.child_children_downcast.should == "child"
+        end
+
+        it "returns 'children' if multiple birth" do
+          create_multiple_birth
+          instrument_context.child_children_downcast.should == "children"
+        end
+      end
+
 
       describe ".birthing_place" do
 
@@ -803,6 +853,13 @@ module NcsNavigator::Core::Mustache
           instrument_context.choose_date_range_for_birth_instrument.should == 'before ' + instrument_context.c_dob.to_s
 
         end
+
+      end
+
+      describe ".date_of_last_interview" do
+
+        # TODO: cf. INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0 for logic
+        it "returns the date of the last interview"
 
       end
 
@@ -1241,6 +1298,15 @@ module NcsNavigator::Core::Mustache
       end
     end
 
+    describe ".child_first_name_the_child_the_children" do
+
+      it "returns the child's first name"
+
+      it "returns 'the child' if the child has no first name"
+
+      it "returns 'the children' if a multiple birth"
+    end
+
     describe "c_fname_or_the_child" do
       before(:each) do
         setup_survey_instrument(create_pv2_and_birth_with_work_name)
@@ -1341,6 +1407,15 @@ module NcsNavigator::Core::Mustache
 
     end
 
+
+    describe ".was_were" do
+
+      # TODO: look at INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO to determine logic for this
+      it "returns 'was/were'" do
+        pending
+      end
+
+    end
 
     def create_single_birth
       take_survey(@survey, @response_set) do |a|

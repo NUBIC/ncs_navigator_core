@@ -263,6 +263,10 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "Is" : "Are"
     end
 
+    def was_were
+      "was/were"
+    end
+
     # {do/does}
     def do_does_downcase
       do_does.downcase
@@ -283,6 +287,14 @@ module NcsNavigator::Core::Mustache
       baby_sex(baby_sex_response)
     end
 
+    def he_she_upcase
+      he_she.upcase
+    end
+
+    def he_she_the_child
+      baby_sex(baby_sex_response, "the child")
+    end
+
     def baby_sex_possessive(gender)
       case gender
       when "male"
@@ -296,14 +308,14 @@ module NcsNavigator::Core::Mustache
     private :baby_sex_possessive
 
 
-    def baby_sex(gender)
+    def baby_sex(gender, default = "he/she")
       case gender
       when "male"
         "he"
       when "female"
         "she"
       else
-        "he/she"
+        default
       end
     end
     private :baby_sex
@@ -332,6 +344,10 @@ module NcsNavigator::Core::Mustache
       single_birth? ? "Child" : "Children"
     end
 
+    def child_children_downcast
+      child_children.downcase
+    end
+
     def about_person
       @response_set.participant.try(:person)
     end
@@ -346,6 +362,10 @@ module NcsNavigator::Core::Mustache
 
     def child_first_name_the_child
       child_first_name("the child")
+    end
+
+    def child_first_name_the_child_the_children
+      single_birth? ? child_first_name_the_child : "the children"
     end
 
     def child_first_name_your_child
@@ -564,6 +584,10 @@ module NcsNavigator::Core::Mustache
         end
       end
       result
+    end
+
+    def date_of_last_interview
+      "[DATE OF LAST INTERVIEW]"
     end
 
     def event_type_code
