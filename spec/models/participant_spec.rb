@@ -641,6 +641,9 @@ describe Participant do
                                           :event_type => NcsCode.pregnancy_screener)
           @participant.events << @event
           @participant.save!
+
+          Factory(:contact_link, :event => @event, :person => @person,
+                  :contact => Factory(:contact, :contact_date => "2000-12-25"))
         end
 
         it "next event should be PV1" do
@@ -648,7 +651,7 @@ describe Participant do
         end
 
         context "next event date" do
-          it "should be after 60 days from the last contact date if contacts" do
+          it "should be after 60 days from the last contact date" do
             Factory(:contact_link, :person => @person, :event => @event, :contact => Factory(:contact, :contact_date_date => date))
             @participant.next_scheduled_event.date.should == date + 60.days
           end
@@ -663,14 +666,11 @@ describe Participant do
               @participant.due_date.should == due_date
             end
 
-            it "should be after 60 days from the contact date if contacts" do
+            it "should be after 60 days from the contact date" do
               Factory(:contact_link, :person => @person, :event => @event, :contact => Factory(:contact, :contact_date_date => contact_date))
               @participant.next_scheduled_event.date.should == contact_date + 60.days
             end
 
-            it "should be after 60 days from participant's created_at date if no contacts" do
-              @participant.next_scheduled_event.date.should == date + 60.days
-            end
           end
         end
       end
@@ -688,6 +688,9 @@ describe Participant do
                                           :event_type => NcsCode.pregnancy_screener)
           @participant.events << @event
           @participant.save!
+
+          Factory(:contact_link, :event => @event, :person => @person,
+                  :contact => Factory(:contact, :contact_date => "2000-12-25"))
         end
 
         it "next event should be PV2" do
@@ -695,13 +698,9 @@ describe Participant do
         end
 
         context "next event date" do
-          it "should be after 60 days from the contact date if contacts" do
+          it "should be after 60 days from the contact date" do
             Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact, :contact_date => '2012-01-01'))
             @participant.next_scheduled_event.date.should == Date.new(2012, 03, 01)
-          end
-
-          it "should be after 60 days from participant's created_at date if no contacts" do
-            @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
           end
 
           context "with due_date" do
@@ -711,13 +710,9 @@ describe Participant do
               @participant.due_date.should == Date.new(2012, 10, 01)
             end
 
-            it "should be after 60 days from the contact date if contacts" do
+            it "should be after 60 days from the contact date" do
               Factory(:contact_link, :person => @participant.person, :event => @event, :contact => Factory(:contact, :contact_date => '2012-01-01'))
               @participant.next_scheduled_event.date.should == Date.new(2012, 03, 01)
-            end
-
-            it "should be after 60 days from participant's created_at date if no contacts" do
-              @participant.next_scheduled_event.date.should == Date.new(2012, 04, 01)
             end
           end
         end
@@ -736,6 +731,9 @@ describe Participant do
                                           :event_type => NcsCode.pregnancy_screener)
           @participant.events << @event
           @participant.pregnancy_two_visit
+
+          Factory(:contact_link, :event => @event, :person => @person,
+              :contact => Factory(:contact, :contact_date => "2000-12-25"))
         end
 
         it "next event should be birth" do
@@ -750,6 +748,7 @@ describe Participant do
           end
 
           it 'fails if no contacts' do
+            Participant.any_instance.stub(:last_contact).and_return(nil)
             expect { @participant.next_scheduled_event.date }.should raise_error(/Could not decide the next scheduled event date without the contact./)
           end
 
@@ -766,7 +765,6 @@ describe Participant do
           end
         end
       end
-
     end
 
   end
@@ -1612,6 +1610,27 @@ describe Participant do
         end
       end
     end
+  end
+
+  describe ".contacts" do
+
+    it "returns the participant contacts through the event not the participant.person.contacts" do
+
+      contact_person = Factory(:person)
+      person = Factory(:person)
+      participant = Factory(:participant)
+      participant.person = person
+      participant.save!
+      event = Factory(:event, :participant => participant)
+      contact = Factory(:contact)
+      contact_link = Factory(:contact_link, :contact => contact, :event => event, :person => contact_person)
+
+      participant.contacts.should == [contact]
+      participant.person.contacts.should be_empty
+      contact_person.contacts.should == participant.contacts
+
+    end
+
   end
 
   describe ".next_scheduled_event" do
