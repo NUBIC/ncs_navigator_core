@@ -64,9 +64,17 @@ module Field
     # Uses schedule data from PSC to derive event templates and related models:
     # events, instruments, instrument plans, and surveys.
     def derive_models
+      filter_schedule
       scheduled_activity_report.derive_models
-
       build_event_templates
+    end
+
+    ##
+    # Removes activities in accordance with Cases' configuration.
+    def filter_schedule
+      if !NcsNavigatorCore.configuration.with_specimens?
+        scheduled_activity_report.without_collection!
+      end
     end
 
     ##

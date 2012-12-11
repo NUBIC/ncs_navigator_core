@@ -56,43 +56,85 @@ module Field
 
       before do
         etg.populate_from_psc(psc, date, activities)
-        etg.derive_models
       end
 
-      it 'builds event templates' do
-        # At the time this test was written, these were the events in the test data file:
+      describe 'if Cases is set for specimen collection' do
+        before do
+          NcsNavigatorCore.configuration.stub!(:with_specimens? => true)
+
+          etg.derive_models
+        end
+
+        it 'builds event templates' do
+          # At the time this test was written, these were the events in the test data file:
+          #
+          # spec/fixtures/psc$ ruby -e 'puts $stdin.read.scan(/event:\w+/).sort.uniq' < schedule_preview.json
+          # event:informed_consent
+          # event:pregnancy_screener
+          # event:pregnancy_visit_1
+          #
+          # Update this test if you change the test data.
+          etg.event_templates.length.should == 3
+        end
+
+        # The test data file has no references, so the most we're going to look
+        # for here is "is it non-nil?"
         #
-        # spec/fixtures/psc$ ruby -e 'puts $stdin.read.scan(/event:\w+/).sort.uniq' < schedule_preview.json
-        # event:informed_consent
-        # event:pregnancy_screener
-        # event:pregnancy_visit_1
+        # FIXME: This example is a bit worthless and should be fixed with better
+        # test datasets.
+        it 'builds instrument plans' do
+          etg.instrument_plans.should_not be_nil
+        end
+
+        # As above:
         #
-        # Update this test if you change the test data.
-        etg.event_templates.length.should == 3
+        # $ ruby -e 'puts $stdin.read.scan(/instrument:[^\s]+/).sort.uniq' < schedule_preview.json
+        # instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0
+        # instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0
+        # instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0
+        # instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0
+        # instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0
+        # instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0",
+        # instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0
+        # instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0
+        it 'builds surveys' do
+          etg.surveys.length.should == 8
+        end
       end
 
-      # The test data file has no references, so the most we're going to look
-      # for here is "is it non-nil?"
-      #
-      # FIXME: This example is a bit worthless and should be fixed with better
-      # test datasets.
-      it 'builds instrument plans' do
-        etg.instrument_plans.should_not be_nil
-      end
+      describe 'if Cases is not set for specimen collection' do
+        before do
+          NcsNavigatorCore.configuration.stub!(:with_specimens? => false)
 
-      # As above:
-      #
-      # $ ruby -e 'puts $stdin.read.scan(/instrument:[^\s]+/).sort.uniq' < schedule_preview.json
-      # instrument:2.0:ins_bio_adultblood_dci_ehpbhi_p2_v1.0
-      # instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0
-      # instrument:2.0:ins_env_tapwaterpesttechcollect_dci_ehpbhi_p2_v1.0
-      # instrument:2.0:ins_env_tapwaterpharmtechcollect_dci_ehpbhi_p2_v1.0
-      # instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0
-      # instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0",
-      # instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0
-      # instrument:2.0:ins_que_pregvisit1_saq_ehpbhi_p2_v2.0
-      it 'builds surveys' do
-        etg.surveys.length.should == 8
+          etg.derive_models
+        end
+
+        # All event templates should still exist, even if they don't have any
+        # instruments.
+        it 'builds event templates' do
+          etg.event_templates.length.should == 3
+        end
+
+        # There's five collection instruments in the sample data set, so we
+        # expect three to remain post-filter.
+        it 'does not build collection-related surveys' do
+          etg.surveys.length.should == 3
+        end
+
+        # So we can filter surveys; that's good.  Instrument references from
+        # event templates should also be fine.
+        it 'does not insert unresolvable surveys in event templates' do
+          instruments = etg.event_templates.map(&:instruments).flatten
+
+          instruments.all? { |i| etg.surveys.include?(i.survey) }.should be_true
+        end
+
+        # Ditto on instrument plans.
+        it 'does not insert unresolvable surveys in instrument plans' do
+          surveys = etg.instrument_plans.map(&:surveys).flatten
+
+          surveys.all? { |s| etg.surveys.include?(s) }.should be_true
+        end
       end
     end
   end
