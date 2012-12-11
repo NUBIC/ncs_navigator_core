@@ -465,19 +465,15 @@ class Participant < ActiveRecord::Base
   ##
   # The next event for the participant with the date and the event name.
   # Returns nil if Participant does not have a next_study_segment (i.e. Not Registered with PSC)
+  # or if the Participant has no contacts.
+  #
+  # (Note that contacts returns an ActiveRecord::Relation and here we all .empty? on that relation
+  #  to determine if there are any contacts for this participant)
   #
   # @return [ScheduledEvent]
   def next_scheduled_event
-    return nil if next_study_segment.blank? || contacts.blank?
+    return nil if next_study_segment.blank? || contacts.empty?
     ScheduledEvent.new(:date => next_scheduled_event_date, :event => upcoming_events.first)
-  end
-
-  ##
-  # Returns the contacts for this participant
-  # Participant -> Event -> ContactLink -> Contact
-  # @return[Array<Contact>]
-  def contacts
-    events.map(&:contact_links).flatten.map(&:contact)
   end
 
   ##
@@ -867,13 +863,20 @@ class Participant < ActiveRecord::Base
   end
 
   def last_contact
-    Contact.joins(:contact_links).
-      joins("left outer join events on events.id = contact_links.event_id").
-      where("events.participant_id = ?", self.id).
-      order("contact_date desc").
-      first
+    contacts.order("contact_date desc").first
   end
   alias :most_recent_contact :last_contact
+
+  ##
+  # Returns the contacts for this participant
+  # Participant -> Event -> ContactLink -> Contact
+  #
+  # @return[ActiveRecord::Relation]
+  def contacts
+    Contact.joins(:contact_links).
+      joins("left outer join events on events.id = contact_links.event_id").
+      where("events.participant_id = ?", self.id)
+  end
 
   ##
   # True if participant is known to live in Tertiary Sampling Unit

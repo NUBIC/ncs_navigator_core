@@ -449,6 +449,28 @@ describe Participant do
   end
 
   context "contacts" do
+
+    describe ".contacts" do
+
+      it "returns the participant contacts through the event not the participant.person.contacts" do
+
+        contact_person = Factory(:person)
+        person = Factory(:person)
+        participant = Factory(:participant)
+        participant.person = person
+        participant.save!
+        event = Factory(:event, :participant => participant)
+        contact = Factory(:contact)
+        contact_link = Factory(:contact_link, :contact => contact, :event => event, :person => contact_person)
+
+        participant.contacts.should == [contact]
+        participant.person.contacts.should be_empty
+        contact_person.contacts.should == participant.contacts
+
+      end
+
+    end
+
     describe "#last_contact" do
 
       before(:each) do
@@ -1610,27 +1632,6 @@ describe Participant do
         end
       end
     end
-  end
-
-  describe ".contacts" do
-
-    it "returns the participant contacts through the event not the participant.person.contacts" do
-
-      contact_person = Factory(:person)
-      person = Factory(:person)
-      participant = Factory(:participant)
-      participant.person = person
-      participant.save!
-      event = Factory(:event, :participant => participant)
-      contact = Factory(:contact)
-      contact_link = Factory(:contact_link, :contact => contact, :event => event, :person => contact_person)
-
-      participant.contacts.should == [contact]
-      participant.person.contacts.should be_empty
-      contact_person.contacts.should == participant.contacts
-
-    end
-
   end
 
   describe ".next_scheduled_event" do
