@@ -1,8 +1,11 @@
 abort 'This script must be run in test' unless Rails.env.test?
 
-require 'irb'
+require 'celluloid'
 require 'database_cleaner'
+require 'irb'
+require 'logger'
 require 'ncs_navigator/core/mdes_code_list_loader'
+require 'surveyor/parser'
 
 def fw(json)
   Fieldwork.new.tap do |fw|
@@ -24,16 +27,32 @@ def m(json, fw)
                     :username => 'test')
 end
 
-puts 'Cleaning database'
-DatabaseCleaner.strategy = :truncation
-DatabaseCleaner.clean
+LOG = Logger.new($stderr)
 
-puts 'Loading code lists'
-NcsNavigatorCore.mdes_version = '3.1'
-NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
+class SurveyLoader
+  include Celluloid
 
-puts 'Loading surveys'
-# TODO
+  def load_survey(fn)
+    LOG.info "Loading survey: #{File.basename(fn)}"
+    Surveyor::Parser.new.parse(File.read(fn))
+  end
+end
+
+s = SurveyLoader.pool(:size => 4)
+
+# Loading data just makes a mess in the log, so turn logging off for that bit
+Rails.logger.silence do
+  LOG.info 'Cleaning database'
+  DatabaseCleaner.strategy = :truncation
+  DatabaseCleaner.clean
+
+  LOG.info 'Loading code lists'
+  NcsNavigatorCore.mdes_version = '3.1'
+  NcsNavigator::Core::MdesCodeListLoader.new.load_from_yaml
+
+  surveys = Dir["#{Rails.root}/{internal_surveys,surveys}/**/*.rb"]
+  surveys.map { |fn| s.future(:load_survey, fn) }.all?(&:value)
+end
 
 puts <<-END
 Use fw(json) to load a fieldwork set from a JSON object.
