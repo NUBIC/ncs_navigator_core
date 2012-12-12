@@ -118,6 +118,10 @@ class Address < ActiveRecord::Base
     end
   end
 
+  def zip_code
+    zip4.blank? ? zip.to_s : zip.to_s + '-' + zip4.to_s
+  end
+
   def filter_criteria
     :address_one
   end
