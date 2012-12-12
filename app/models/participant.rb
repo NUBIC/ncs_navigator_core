@@ -1276,10 +1276,22 @@ class Participant < ActiveRecord::Base
       high_intensity && ["in_high_intensity_arm"].include?(state)
     end
 
+    ##
+    # If we should not wait anytime before the next
+    # event return the most recent contact date,
+    # otherwise determine from which date to schedule
+    # the next event and add the amount of time to wait
+    # to that
+    #
+    # @return[Date]
     def next_scheduled_event_date
       (interval == 0) ? get_date_to_schedule_next_event_from_contact_link : (date_used_to_schedule_next_event.to_date + interval)
     end
 
+    ##
+    # Determine the date from which to scheduled the next event.
+    #
+    # @return[Date]
     def date_used_to_schedule_next_event
       if due_date && next_event_is_birth?
         due_date
@@ -1290,6 +1302,9 @@ class Participant < ActiveRecord::Base
       end
     end
 
+    ##
+    # The date from the most_recent_contact/last_contact.
+    # @return[Date]
     def get_date_to_schedule_next_event_from_contact_link
       if last_contact
         last_contact.contact_date_date

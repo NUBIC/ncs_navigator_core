@@ -679,12 +679,17 @@ describe Event do
         psc.stub!(:template_snapshot).and_return(Nokogiri::XML(File.read(
               File.expand_path('../../fixtures/psc/current_hilo_template_snapshot.xml', __FILE__))))
 
+        date = Date.today
         part = Factory(:high_intensity_pregnancy_one_participant)
         part.person = Factory(:person)
-        part.events << Factory(:event, :participant => part,
-                                :event_start_date => Date.today, :event_end_date => Date.today,
+        event = Factory(:event, :participant => part,
+                                :event_start_date => date, :event_end_date => date,
                                 :event_type => NcsCode.pregnancy_screener)
+        part.events << event
         part.stub!(:eligible?).and_return(true)
+
+        Factory(:contact_link, :event => event, :person => part.person,
+                               :contact => Factory(:contact, :contact_date_date => date))
 
         part.next_scheduled_event.event.
           should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
