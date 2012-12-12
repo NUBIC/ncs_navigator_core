@@ -83,10 +83,11 @@ module Psc
       end
     end
 
+    ##
+    # @private
     def should_cache_event?(event)
       event.event_type_code > 1 && event.event_type_code != 21
     end
-    private :should_cache_event?
 
     ##
     # @private
