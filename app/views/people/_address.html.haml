@@ -1,12 +1,13 @@
-= a.address_one
-%br
-- unless a.address_two.blank?
-  = a.address_two
+%a{:href => edit_address_path(a)}
+  = a.address_one
   %br
-- unless a.unit.blank?
-  = a.unit
+  - unless a.address_two.blank?
+    = a.address_two
+    %br
+  - unless a.unit.blank?
+    = a.unit
+    %br
+  = a.city + ","
+  = a.state
   %br
-= a.city + ","
-= a.state
-%br
-= a.zip_code
+  = a.zip_code
