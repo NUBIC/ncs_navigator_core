@@ -106,6 +106,26 @@ describe Response do
         end
       end
 
+      describe 'given a date in the form YYYY-MM-DD' do
+        let(:val) { '2012-12-04' }
+
+        it 'roundtrips to JSON' do
+          subject.answer = Factory(:answer, :response_class => 'date')
+
+          subject.json_value.should == '2012-12-04'
+        end
+      end
+
+      describe 'given a time in the form HH:MM' do
+        let(:val) { '12:00' }
+
+        it 'roundtrips to JSON' do
+          subject.answer = Factory(:answer, :response_class => 'time')
+
+          subject.json_value.should == '12:00'
+        end
+      end
+
       it 'sets #string_value' do
         subject.string_value.should == val
       end

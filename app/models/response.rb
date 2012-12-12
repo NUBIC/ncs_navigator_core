@@ -29,8 +29,10 @@ class Response < ActiveRecord::Base
   include Surveyor::Models::ResponseMethods
 
   ##
-  # Used by {#value=} to recognize datetimes.
+  # Used by {#value=} to recognize datetimes, dates, and times.
   ISO8601_HHMM_FORMAT = /\A\s*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}([+-]\d{4}|Z)\s*\Z/
+  DATE_FORMAT = /\A\s*\d{4}-\d{2}-\d{2}\s*\Z/
+  TIME_FORMAT = /\A\s*\d{2}:\d{2}\s*\Z/
 
   def self.default_scope; end
 
@@ -61,8 +63,18 @@ class Response < ActiveRecord::Base
   def value=(val)
     case val
     when String
+      # This is pretty crazy.
+      #
+      # See
+      # https://github.com/NUBIC/surveyor/blob/0a4424ce6b732d111954354ec9c1c7e21d6ebc9b/lib/surveyor/models/response_methods.rb#L92-L103
+      # for Surveyor expectations on presenting dates, times, and datetimes as
+      # JSON.
       if val =~ ISO8601_HHMM_FORMAT
         self.datetime_value = Time.parse(val)
+      elsif val =~ DATE_FORMAT
+        self.date_value = val
+      elsif val =~ TIME_FORMAT
+        self.time_value = val
       end
 
       self.string_value = val
