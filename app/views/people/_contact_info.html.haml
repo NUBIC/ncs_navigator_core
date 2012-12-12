@@ -1,36 +1,30 @@
 .page_section
   .telephones
-    %b
+    %dt
       Telephone
       = link_to 'Add', new_person_telephone_path(@person), :class => "add_link icon_link"
-    %br
-    - @person.highest_ranking_contact_mode_entry(@person.unique_contact_mode_entries(@person.telephones)).each do |t|
+    - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.telephones)).each do |t|
       .contact_info
-        %span.type
+        %dd
           = t.phone_type
-        %span.value
           = link_to phone_number_formatter(t.phone_nbr), edit_person_telephone_path(@person, t)
   .emails
-    %b
+    %dt
       Email
       = link_to 'Add', new_person_email_path(@person), :class => "add_link icon_link"
-    %br
-    - @person.highest_ranking_contact_mode_entry(@person.unique_contact_mode_entries(@person.emails)).each do |e|
+    - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.emails)).each do |e|
       .contact_info
-        %span.type
+        %dd
           = e.email_type
-        %span.value
           = link_to e.email, edit_person_email_path(@person, e)
   .addresses
-    %b
+    %dt
       Address
       = link_to 'Add', new_address_path(:person_id => @person.id), :class => "add_link icon_link"
-    %br
-    - @person.highest_ranking_contact_mode_entry(@person.unique_contact_mode_entries(@person.addresses)).each do |a|
+    - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.addresses)).each do |a|
       .contact_info
-        %span.type
+        %dd
           #address_title
             = a.address_type
-        .address
-          = link_to raw(a.to_s("<br />")), edit_address_path(a)
-      %br
+          = render :partial => 'address', :locals => { :a => a }
+          = link_to 'Edit', edit_address_path(a), :class => "edit_link icon_link"
