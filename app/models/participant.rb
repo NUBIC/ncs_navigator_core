@@ -547,11 +547,6 @@ class Participant < ActiveRecord::Base
       # Lo I Quex
       follow_low_intensity! if can_follow_low_intensity?
 
-    when 32
-      #Low to High Conversion
-      enroll_in_high_intensity_arm! if can_enroll_in_high_intensity_arm?
-      high_intensity_conversion!
-
     when 7,8
       # Pregnancy Probability
       follow! if can_follow? && high_intensity?
