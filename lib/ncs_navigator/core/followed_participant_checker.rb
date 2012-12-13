@@ -125,13 +125,7 @@ module NcsNavigator::Core
       },
       :expected_not_followed => lambda { |participant|
         participant.tap { |p| p.being_followed = false }.save!
-      },
-      :expected_low => lambda { |participant|
-        participant.tap { |p| p.high_intensity = false }.save!
-      },
-      :expected_high => lambda { |participant|
-        participant.tap { |p| p.high_intensity = true }.save!
-      },
+      }
     }
 
     ##
