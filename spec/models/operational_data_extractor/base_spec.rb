@@ -4,6 +4,7 @@
 require 'spec_helper'
 
 describe OperationalDataExtractor::Base do
+  include SurveyCompletion
 
   it "sets up the test properly" do
 
@@ -448,6 +449,91 @@ describe OperationalDataExtractor::Base do
         new_phone.should_not == @existing_work_phone
         new_phone.class.should == Telephone
       end
+    end
+
+  end
+
+  context "processing institution" do
+
+    let(:hospital_type_location)          { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
+
+    before do
+      @map = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
+
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+
+      @valid_response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+      @invalid_response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+
+
+      take_survey(@survey, @valid_response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital_type_location
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", 'St.Fake Hospital'
+      end
+
+      take_survey(@survey, @invalid_response_set) do |a|
+        a.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", 'St.Fake Hospital'
+      end
+
+      @valid_response_set.save!
+      @invalid_response_set.save!
+
+      @ode1 = OperationalDataExtractor::PregnancyVisit.new(@valid_response_set)
+      @ode2 = OperationalDataExtractor::PregnancyVisit.new(@invalid_response_set)
+    end
+    describe "#institution_responses_valid?" do
+
+      it "determines if newly-created institution is valid" do
+        invalid_institution1 = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => nil)
+        invalid_institution2 = Factory(:institution, :institute_name => nil,             :institute_type_code => 1)
+        invalid_institution3 = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => -2)
+        valid_institution    = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => 1)
+        @ode1.institution_responses_valid?(invalid_institution1).should == false
+        @ode1.institution_responses_valid?(invalid_institution2).should == false
+        @ode1.institution_responses_valid?(invalid_institution3).should == false
+        @ode1.institution_responses_valid?(valid_institution).should == true
+      end
+    end
+
+    describe "#process_insititution" do
+
+      it "creates an institution instance when there are valid responses to the institution-related questions" do
+        @ode1.process_institution(@map).class.should == Institution
+      end
+
+      it "creates an nil instance when there are invalid responses to the institution-related questions" do
+        @ode2.process_institution(@map).class.should == NilClass
+      end
+
+    end
+
+    describe "#finalize_institution" do
+
+      it "creates a institution-person link if an institution is created" do
+        InstitutionPersonLink.count.should == 0
+        institute = @ode1.process_institution(@map)
+        @ode1.finalize_institution(institute)
+        InstitutionPersonLink.count.should == 1
+      end
+
+      it "does not create an institution-person link if the institution was not created" do
+        InstitutionPersonLink.count.should == 0
+        institute = @ode2.process_institution(@map)
+        @ode2.finalize_institution(institute)
+        InstitutionPersonLink.count.should == 0
+
+      end
+
+      it "creates a birth institution record" do
+        Institution.count.should == 0
+        institute = @ode1.process_institution(@map)
+        @ode1.finalize_institution(institute)
+        Institution.count.should == 1
+      end
+
     end
 
   end

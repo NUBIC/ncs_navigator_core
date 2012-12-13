@@ -182,9 +182,14 @@ module OperationalDataExtractor
     }
 
     DUE_DATE_DETERMINER_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD" => "DATE_PERIOD",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD"   => "DATE_PERIOD",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD" => "DATE_PERIOD",
-      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE" => "DUE_DATE",
+      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE"    => "DUE_DATE",
+    }
+
+    INSTITUTION_MAP = {
+      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
+      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name"
     }
 
     def initialize(response_set)
@@ -212,7 +217,8 @@ module OperationalDataExtractor
         WORK_ADDRESS_MAP,
         CONFIRM_WORK_ADDRESS_MAP,
         FATHER_PHONE_MAP,
-        DUE_DATE_DETERMINER_MAP
+        DUE_DATE_DETERMINER_MAP,
+        INSTITUTION_MAP
       ]
     end
 
@@ -235,6 +241,7 @@ module OperationalDataExtractor
       father_relationship  = nil
       work_address         = nil
       confirm_work_address = nil
+      institution          = nil
 
       process_person(PERSON_MAP)
       process_ppg_status(PPG_STATUS_MAP)
@@ -244,6 +251,7 @@ module OperationalDataExtractor
 
       work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
       confirm_work_address = process_address(person, CONFIRM_WORK_ADDRESS_MAP, Address.work_address_type, duplicate_rank)
+      insitution = process_institution(INSTITUTION_MAP)
 
       if contact1 = process_contact(CONTACT_1_PERSON_MAP)
         contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
@@ -277,6 +285,7 @@ module OperationalDataExtractor
 
       finalize_addresses(birth_address, work_address, confirm_work_address)
       finalize_telephones(cell_phone)
+      finalize_institution(institution)
 
       if due_date = calculated_due_date(response_set)
         participant.ppg_details.first.update_due_date(due_date)

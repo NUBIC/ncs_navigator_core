@@ -643,6 +643,32 @@ module OperationalDataExtractor
       email
     end
 
+    def institution_responses_valid?(institution)
+      !institution.institute_name.nil? && !institution.institute_type_code.nil? && institution.institute_type_code > 0
+    end
+
+    def process_institution(map)
+      institution = Institution.new
+      map.each do |key, attribute|
+        r = data_export_identifier_indexed_responses[key]
+        value = response_value(r)
+        set_value(institution, attribute, value)
+      end
+      return institution if institution_responses_valid?(institution)
+      nil
+    end
+
+    def finalize_institution(institute)
+      unless institute.nil?
+        ipl = InstitutionPersonLink.new
+        ipl.person = person
+        ipl.institution = institute
+        ipl.save!
+
+        institute.save!
+      end
+    end
+
     def finalize_ppg_status_history(ppg_status_history)
       if ppg_status_history && !ppg_status_history.ppg_status_code.blank?
         set_participant_type(participant, ppg_status_history.ppg_status_code)
