@@ -280,11 +280,8 @@ describe OperationalDataExtractor::PregnancyVisit do
     participant = Factory(:participant)
     Factory(:telephone, :person => person, :phone_type_code => 3)
 
-    person.telephones.size.should == 1
-
     survey = create_pregnancy_visit_1_survey_with_telephone_operational_data
     response_set, instrument = prepare_instrument(person, participant, survey)
-    response_set.save!
 
     take_survey(survey, response_set) do |a|
       a.yes "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"
@@ -292,13 +289,13 @@ describe OperationalDataExtractor::PregnancyVisit do
       a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE", '3125557890'
     end
 
-    response_set.responses.reload
-    response_set.responses.size.should == 3
+    response_set.save!
+    response_set.responses.count.should == 3
 
     OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
     person  = Person.find(person.id)
-    person.telephones.size.should == 2
+    person.telephones.count.should == 2
     person.telephones.first.phone_rank_code.should == 2
 
     telephone = person.telephones.last

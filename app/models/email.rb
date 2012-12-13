@@ -61,5 +61,16 @@ class Email < ActiveRecord::Base
     end
   end
 
-end
+  def filter_criteria
+    :email
+  end
 
+  def type_code
+    :email_type_code
+  end
+
+  def rank_code
+    :email_rank_code
+  end
+
+end

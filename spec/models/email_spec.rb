@@ -106,5 +106,5 @@ describe Email do
       @business_email.email_rank_code.should == 1
     end
   end
-end
 
+end

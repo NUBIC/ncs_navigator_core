@@ -4,6 +4,10 @@ body {
   background-color: $base_bg !important;
 }
 
+dt {
+  font-weight: bold;
+}
+
 .developer_note {
   font-size: 0.7em;
   font-style: italic;
@@ -198,10 +202,7 @@ form {
   p {
     margin-bottom: .25em;
   }
-  h3 {
-    padding-top: 10px;
-    margin-bottom: 0.5em;
-  }
+
   form {
     margin-bottom: 1em;
   }

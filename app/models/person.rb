@@ -589,4 +589,3 @@ class PersonResponse
   attr_accessor :response_class, :text, :short_text, :reference_identifier
   attr_accessor :datetime_value, :integer_value, :float_value, :text_value, :string_value
 end
-
