@@ -1,8 +1,11 @@
 - title "Edit Address"
+.span-4.push-19.last
+  = link_to 'Edit Dwelling Unit', edit_dwelling_unit_path(@address.dwelling_unit), :class => "edit_link icon_link" if @address.dwelling_unit
 
 .page_section
   = form_for(@address, :html => {:autocomplete => "off"}) do |f|
     = render "shared/custom_error_messages", :object => f.object
+
 
     = render "/addresses/form_fields", :f => f
 

@@ -171,5 +171,5 @@ describe Telephone do
       @business_phone.phone_rank_code.should == 1
     end
   end
-end
 
+end

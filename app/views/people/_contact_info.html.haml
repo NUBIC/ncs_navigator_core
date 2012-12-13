@@ -1,47 +1,29 @@
 .page_section
   .telephones
-    %b
-      Telephones
-    %br
-    - @person.telephones.each do |t|
+    %dt
+      Telephone
+      = link_to 'Add', new_person_telephone_path(@person), :class => "add_link icon_link"
+    - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.telephones)).each do |t|
       .contact_info
-        %span.rank
-          = t.phone_rank
-        %span.type
+        %dd
           = t.phone_type
-        %span.value
-          = phone_number_formatter(t.phone_nbr)
-        = link_to 'Edit', edit_person_telephone_path(@person, t), :class => "edit_link icon_link"
-      %br
-    = link_to 'Add New Telephone', new_person_telephone_path(@person), :class => "add_link icon_link"
+          = link_to phone_number_formatter(t.phone_nbr), edit_person_telephone_path(@person, t)
   .emails
-    %b
-      Emails
-    %br
-    - @person.emails.each do |e|
+    %dt
+      Email
+      = link_to 'Add', new_person_email_path(@person), :class => "add_link icon_link"
+    - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.emails)).each do |e|
       .contact_info
-        %span.rank
-          = e.email_rank
-        %span.type
+        %dd
           = e.email_type
-        %span.value
-          = e.email
-        = link_to 'Edit', edit_person_email_path(@person, e), :class => "edit_link icon_link"
-      %br
-    = link_to 'Add New Email', new_person_email_path(@person), :class => "add_link icon_link"
+          = link_to e.email, edit_person_email_path(@person, e)
   .addresses
-    %b
-      Addresses
-    %br
-    - @person.addresses.each do |a|
+    %dt
+      Address
+      = link_to 'Add', new_address_path(:person_id => @person.id), :class => "add_link icon_link"
+    - highest_ranking_contact_mode_entry(unique_contact_mode_entries(@person.addresses)).each do |a|
       .contact_info
-        %span.rank
-          = a.address_rank
-        %span.type
-          = a.address_type
-        = link_to 'Edit', edit_address_path(a), :class => "edit_link icon_link"
-        = link_to 'Dwelling Unit', edit_dwelling_unit_path(a.dwelling_unit), :class => "edit_link icon_link" if a.dwelling_unit
-        .address
-          = raw(a.to_s("<br />"))
-      %br
-    = link_to 'Add New Address', new_address_path(:person_id => @person.id), :class => "add_link icon_link"
+        %dd
+          #address_title
+            = a.address_type
+          = render :partial => 'address', :locals => { :a => a }

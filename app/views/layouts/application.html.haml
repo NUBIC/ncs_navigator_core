@@ -19,7 +19,7 @@
         #app_name
           = link_to "NCS Navigator Cases", root_path
         - if show_title?
-          #page_title
+          %h1#page_title
             = yield(:title)
       #main
         - flash.each do |message_type, message|
@@ -29,5 +29,5 @@
           = yield
       #footer
         = render 'partials/footer'
-    .hidden#current_request= request.fullpath   
-        
+    .hidden#current_request= request.fullpath
+

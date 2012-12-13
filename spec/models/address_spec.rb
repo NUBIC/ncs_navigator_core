@@ -216,5 +216,22 @@ describe Address do
     end
 
   end
-end
 
+  describe "zip_code" do
+    before do
+      @address_with_full_zip = Factory(:address, :zip => 23456, :zip4 => 1234)
+      @address_without_zip4  = Factory(:address, :zip => 34567)
+    end
+
+    it "returns the full, hyphenated zip code if both the zip and zip4 are present" do
+      @address_with_full_zip.zip_code.should == '23456-1234'
+    end
+
+    it "returns only the five-digit zip if the zip4 is not present" do
+      @address_without_zip4.zip_code.should == '34567'
+
+    end
+
+  end
+
+end
