@@ -794,7 +794,7 @@ module NcsNavigator::Core::Warehouse
           :event_id => 'f_e3',
           :participant => fred_p,
           :event_disp => 4,
-          :event_type => code_for_event_type('Informed Consent'),
+          :event_type => code_for_event_type('Pregnancy Visit 1'),
           :event_start_date => '2010-09-03')
       }
       let(:f_e1) {
@@ -1233,11 +1233,11 @@ module NcsNavigator::Core::Warehouse
               end
 
               it 'has the event type code' do
-                event_hash['event_type_code'].should == '10'
+                event_hash['event_type_code'].should == '13'
               end
 
               it 'has the event type label' do
-                event_hash['event_type_label'].should == 'informed_consent'
+                event_hash['event_type_label'].should == 'pregnancy_visit_1'
               end
 
               it 'knows whether the person is hi or lo' do
@@ -1245,7 +1245,7 @@ module NcsNavigator::Core::Warehouse
               end
 
               it 'has the sort key' do
-                event_hash['sort_key'].should == '2010-09-03:010'
+                event_hash['sort_key'].should == '2010-09-03:013'
               end
             end
 
