@@ -654,8 +654,7 @@ module OperationalDataExtractor
         value = response_value(r)
         set_value(institution, attribute, value)
       end
-      return institution if institution_responses_valid?(institution)
-      nil
+      institution if institution_responses_valid?(institution)
     end
 
     def finalize_institution(institute)

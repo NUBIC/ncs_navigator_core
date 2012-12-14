@@ -200,7 +200,7 @@ module PregnancyVisitOne
     survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhipbs-m3-0-v3-0_test")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
-    # Insitution Type
+    # Institution Type
     q = Factory(:question, :reference_identifier => "BIRTH_PLAN", :data_export_identifier => "PREG_VISIT_1_3.BIRTH_PLAN", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "In a hospital,", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")

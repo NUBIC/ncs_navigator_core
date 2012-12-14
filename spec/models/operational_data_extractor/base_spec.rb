@@ -484,21 +484,33 @@ describe OperationalDataExtractor::Base do
       @ode1 = OperationalDataExtractor::PregnancyVisit.new(@valid_response_set)
       @ode2 = OperationalDataExtractor::PregnancyVisit.new(@invalid_response_set)
     end
+
     describe "#institution_responses_valid?" do
 
-      it "determines if newly-created institution is valid" do
-        invalid_institution1 = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => nil)
-        invalid_institution2 = Factory(:institution, :institute_name => nil,             :institute_type_code => 1)
-        invalid_institution3 = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => -2)
-        valid_institution    = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => 1)
-        @ode1.institution_responses_valid?(invalid_institution1).should == false
-        @ode1.institution_responses_valid?(invalid_institution2).should == false
-        @ode1.institution_responses_valid?(invalid_institution3).should == false
-        @ode1.institution_responses_valid?(valid_institution).should == true
+      it "an institution is invalid if it doesn't have a name" do
+        invalid_institution = Factory(:institution, :institute_name => nil, :institute_type_code => 1)
+        @ode1.institution_responses_valid?(invalid_institution).should be_false
       end
+
+      it "an institution is invalid if it doesn't have a type" do
+        invalid_institution = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => nil)
+        @ode1.institution_responses_valid?(invalid_institution).should be_false
+
+      end
+
+      it "an institution is invalid if its type is negative(i.e. 'Don't Know' or 'Refused')" do
+        invalid_institution = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => -2)
+        @ode1.institution_responses_valid?(invalid_institution).should  be_false
+      end
+
+      it "an institution is valid if it has a valid type and a valid name" do
+        valid_institution    = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => 1)
+        @ode1.institution_responses_valid?(valid_institution).should be_true
+      end
+
     end
 
-    describe "#process_insititution" do
+    describe "#process_institution" do
 
       it "creates an institution instance when there are valid responses to the institution-related questions" do
         @ode1.process_institution(@map).class.should == Institution
