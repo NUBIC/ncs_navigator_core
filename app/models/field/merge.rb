@@ -203,7 +203,7 @@ module Field
     end
 
     def accept_proposed(proposed, entity, id, state)
-      logger.debug { "Trivally accepted proposed data for #{entity} #{id}" }
+      logger.debug { "Trivially accepted proposed data for #{entity} #{id}" }
 
       state[:current] = proposed.to_model
     end
