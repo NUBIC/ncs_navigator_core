@@ -45,23 +45,21 @@ module NcsNavigator::Core
           rsp.survey.should == survey
         end
 
-        describe "with a contact link" do
-          it "accepts contact link as an optional parameters" do
-            rsp = ResponseSetPopulator::Base.new(person, instrument, survey, contact_link)
-            rsp.should_not be_nil
-            rsp.person.should == person
-            rsp.instrument.should == instrument
-            rsp.survey.should == survey
-            rsp.contact_link.should == contact_link
+        describe "with a mode" do
+          it "accepts mode as an optional parameters" do
+            rsp = ResponseSetPopulator::Base.new(person, instrument, survey, :mode => Instrument.cati)
+            rsp.mode.should == Instrument.cati
+            rsp.mode_to_text.should == 'cati'
           end
 
-          it "extracts the contact and event from the contact_link" do
-            rsp = ResponseSetPopulator::Base.new(person, instrument, survey, contact_link)
-            rsp.should_not be_nil
-            rsp.contact_link.should == contact_link
-            rsp.event.should == contact_link.event
-            rsp.contact.should == contact_link.contact
+          it "defaults mode to 'capi'" do
+            rsp = ResponseSetPopulator::Base.new(person, instrument, survey)
+            rsp.mode.should == Instrument.capi
+            rsp.mode_to_text.should == 'capi'
           end
+        end
+
+        describe "with an event" do
         end
 
       end
@@ -95,6 +93,21 @@ module NcsNavigator::Core
           end
         end
 
+      end
+
+      describe "#mode_to_text" do
+        it "returns 'capi' when given mode is not specified" do
+          ResponseSetPopulator::Base.new(person, instrument, survey).mode_to_text.should == "capi"
+        end
+        it "returns 'capi' when given Instrument.capi" do
+          ResponseSetPopulator::Base.new(person, instrument, survey, :mode => Instrument.capi).mode_to_text.should == "capi"
+        end
+        it "returns 'cati' when given Instrument.cati" do
+          ResponseSetPopulator::Base.new(person, instrument, survey, :mode => Instrument.cati).mode_to_text.should == "cati"
+        end
+        it "returns 'papi' when given Instrument.papi" do
+          ResponseSetPopulator::Base.new(person, instrument, survey, :mode => Instrument.papi).mode_to_text.should == "papi"
+        end
       end
     end
   end

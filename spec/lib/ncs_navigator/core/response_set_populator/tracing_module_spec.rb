@@ -23,22 +23,14 @@ module NcsNavigator::Core
       describe "for a contact that is" do
         describe "in person" do
           it "prepopulated_mode_of_contact is set to CAPI" do
-            in_person = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1)
-            @contact = Factory(:contact, :contact_type => in_person)
-            @contact_link = Factory(:contact_link, :person => @person, :contact => @contact)
-
-            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :mode => Instrument.capi)
             assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CAPI")
           end
         end
 
         describe "via telephone" do
           it "prepopulated_mode_of_contact is set to CATI" do
-            telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
-            @contact = Factory(:contact, :contact_type => telephone)
-            @contact_link = Factory(:contact_link, :person => @person, :contact => @contact)
-
-            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+            rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :mode => Instrument.cati)
             assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CATI")
           end
         end
@@ -48,34 +40,26 @@ module NcsNavigator::Core
       describe "event type" do
         it "should be birth event if EVENT_TYPE = BIRTH" do
           event = Factory(:event, :event_type_code => 18) # Birth
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_event_type_birth", "TRUE")
         end
 
         it "should NOT be birth event if EVENT_TYPE is not BIRTH" do
           event = Factory(:event, :event_type_code => 13) # NOT Birth
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_event_type_birth", "FALSE")
         end
 
         it "should be PBS Eligibility Screener if EVENT_TYPE = PBS ELIGIBILITY SCREENING" do
           event = Factory(:event, :event_type_code => 34) # Eligibility Screener
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_event_type_pbs_participant_eligibility_screening", "TRUE")
 
         end
 
         it "should NOT be PBS Eligibility Screener if EVENT_TYPE is not PBS ELIGIBILITY SCREENING" do
           event = Factory(:event, :event_type_code => 13) # NOT Eligibility Screener
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_event_type_pbs_participant_eligibility_screening", "FALSE")
         end
       end
@@ -84,31 +68,19 @@ module NcsNavigator::Core
 
         it "should show if the contact is CATI and the event is post-natal" do
           event = Factory(:event, :event_type_code => 18) # Birth is also post-natal
-          telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
-          @contact = Factory(:contact, :contact_type => telephone)
-          @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :mode => Instrument.cati, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_address_for_tracing", "TRUE")
         end
 
         it "should NOT show if the contact is not CATI" do
           event = Factory(:event, :event_type_code => 18) # Birth is also post-natal
-          in_person = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1)
-          @contact = Factory(:contact, :contact_type => in_person)
-          @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :mode => Instrument.capi, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_address_for_tracing", "FALSE")
         end
 
         it "should NOT show if the event is pre-natal" do
           event = Factory(:event, :event_type_code => 34) # Eligibility Screener is pre-natal
-          telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
-          @contact = Factory(:contact, :contact_type => telephone)
-          @contact_link = Factory(:contact_link, :person => @person, :contact => @contact, :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :mode => Instrument.cati, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_address_for_tracing", "FALSE")
         end
 
@@ -228,9 +200,7 @@ module NcsNavigator::Core
 
         it "should show email questions if EVENT_TYPE = BIRTH, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH" do
           event = Factory(:event, :event_type_code => 18) # Birth
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_email_for_tracing", "TRUE")
         end
 
@@ -296,17 +266,13 @@ module NcsNavigator::Core
 
         it "should show contact for tracing if EVENT_TYPE = PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH" do
           event = Factory(:event, :event_type_code => 13) # PV1
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_contact_for_tracing", "TRUE")
         end
 
         it "should NOT show contact for tracing if EVENT_TYPE is not PBS PARTICIPANT ELIGIBILITY SCREENING, PREGNANCY VISIT 1, PREGNANCY VISIT 2, 6 MONTH, OR 12 MONTH" do
           event = Factory(:event, :event_type_code => 18) # Birth
-          @contact_link = Factory(:contact_link, :person => @person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, @contact_link)
+          rsp = ResponseSetPopulator::TracingModule.new(@person, @instrument, @survey, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_contact_for_tracing", "FALSE")
         end
 

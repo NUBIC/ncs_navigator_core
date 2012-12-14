@@ -238,12 +238,12 @@ module NcsNavigator::Core
           end
 
           it "prepopulated_should_show_height should be FALSE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, @contact_link2)
+            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :event => pv1_event)
             assert_response_value(rsp.populate, "prepopulated_should_show_height", "FALSE")
           end
 
           it "prepopulated_should_show_recent_move_for_preg_visit_one should be TRUE" do
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, @contact_link2)
+            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :event => pv1_event)
             assert_response_value(rsp.populate,
               "prepopulated_should_show_recent_move_for_preg_visit_one", "TRUE")
           end
@@ -259,20 +259,14 @@ module NcsNavigator::Core
 
         describe "in person" do
           it "prepopulated_mode_of_contact is set to CAPI" do
-            contact = Factory(:contact, :contact_type => in_person)
-            contact_link = Factory(:contact_link, :person => person, :contact => contact)
-
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, contact_link)
+            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :mode => Instrument.capi)
             assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CAPI")
           end
         end
 
         describe "via telephone" do
           it "prepopulated_mode_of_contact is set to CATI" do
-            contact = Factory(:contact, :contact_type => telephone)
-            contact_link = Factory(:contact_link, :person => person, :contact => contact)
-
-            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, contact_link)
+            rsp = ResponseSetPopulator::PregnancyVisit.new(person, @instrument, survey, :mode => Instrument.cati)
             assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CATI")
           end
         end

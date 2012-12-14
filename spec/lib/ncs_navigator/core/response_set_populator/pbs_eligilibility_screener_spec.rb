@@ -22,11 +22,7 @@ module NcsNavigator::Core
       describe "contact type" do
         describe "in person" do
           it "sets prepopulated_mode_of_contact to CAPI" do
-            in_person = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1)
-            contact = Factory(:contact, :contact_type => in_person)
-            contact_link = Factory(:contact_link, :person => @person, :contact => contact)
-
-            rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, contact_link)
+            rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, :mode => Instrument.capi)
             rs = rsp.populate
             rs.responses.should_not be_empty
             rs.should == @response_set
@@ -36,11 +32,7 @@ module NcsNavigator::Core
 
         describe "telephone" do
           it "sets prepopulated_mode_of_contact to CATI" do
-            telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
-            @contact = Factory(:contact, :contact_type => telephone)
-            @contact_link = Factory(:contact_link, :person => @person, :contact => @contact)
-
-            rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, @contact_link)
+            rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, :mode => Instrument.cati)
             assert_response_value(rsp.populate, "prepopulated_mode_of_contact", "CATI")
           end
         end
@@ -48,7 +40,7 @@ module NcsNavigator::Core
 
       it "sets the psu id" do
         NcsNavigatorCore.stub(:psu).and_return("the_psu")
-        rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey, @contact_link)
+        rsp = ResponseSetPopulator::PbsEligibilityScreener.new(@person, @instrument, @survey)
         assert_response_value(rsp.populate, "prepopulated_psu_id", "the_psu")
       end
 

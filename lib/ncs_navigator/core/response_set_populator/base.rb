@@ -8,24 +8,22 @@ module NcsNavigator::Core::ResponseSetPopulator
     attr_accessor :person
     attr_accessor :survey
     attr_accessor :instrument
-    attr_accessor :contact_link
+    attr_accessor :mode
+    attr_accessor :event
 
-    def initialize(person, instrument, survey, contact_link = nil)
-      @person = person
+    def initialize(person, instrument, survey, options = {})
+      default_options = {
+        :mode => Instrument.capi,
+        :event => nil
+      }.merge!(options)
+      @person     = person
       @instrument = instrument
-      @survey = survey
-      @contact_link = contact_link
+      @survey     = survey
+      @mode       = default_options[:mode]
+      @event      = default_options[:event]
       [:person, :instrument, :survey].each do |attr|
         raise InitializationError.new("No #{attr} provided") if send("#{attr}").blank?
       end
-    end
-
-    def event
-      @event ||= self.contact_link.event if self.contact_link
-    end
-
-    def contact
-      @contact ||= self.contact_link.contact if self.contact_link
     end
 
     def participant
@@ -38,7 +36,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def process
-      Base.populator_for(survey).new(person, instrument, survey, contact_link).populate
+      Base.populator_for(survey).new(person, instrument, survey, event, contact).populate
     end
 
     def self.populator_for(survey)
@@ -77,11 +75,28 @@ module NcsNavigator::Core::ResponseSetPopulator
       result
     end
 
+    ##
+    # Determine if the mode of contact is CATI, CAPI, or PAPI
+    # @return[Answer]
     def prepopulated_mode_of_contact(question)
-      # If In-Person use 'capi' otherwise use 'cati'
-      # TODO: how to determine 'papi' ?
-      reference_identifier = contact.try(:contact_type_code) == 3 ? "cati" : "capi"
-      question.answers.select { |a| a.reference_identifier == reference_identifier }.first
+      question.answers.select { |a| a.reference_identifier == mode_to_text }.first
+    end
+
+    ##
+    # Translate the mode (an Integer) to a String. Used to determine
+    # the Answer set in prepopulated_mode_of_contact
+    # @return[String]
+    def mode_to_text
+      case mode
+      when Instrument.papi
+        'papi'
+      when Instrument.cati
+        'cati'
+      when Instrument.capi
+        'capi'
+      else
+        'capi'
+      end
     end
 
     # Find the answer with the matching reference identifier for question

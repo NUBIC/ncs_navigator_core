@@ -101,7 +101,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     #       30 MONTH AND MODE = CAPI OR PAPI, GO TO PLAN_MOVE.
     #    False
     def should_show_address?(question)
-      answer_for(question, (contact.try(:via_telephone?) && event.try(:postnatal?)))
+      answer_for(question, mode == Instrument.cati && event.try(:postnatal?))
     end
 
     # PROGRAMMER INSTRUCTIONS:
