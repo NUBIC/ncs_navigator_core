@@ -1026,7 +1026,7 @@ module NcsNavigator::Core::Warehouse
 
           # TODO: this is a way crappy test
           it 'orders by the earliest set date date followed by the type, except for lo-hi conversion which goes by last date' do
-            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e3 f_e1 f_e4 f_e5)
+            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e1 f_e3 f_e4 f_e5)
           end
 
           it 'includes events without link_contact' do
@@ -1042,7 +1042,7 @@ module NcsNavigator::Core::Warehouse
           }
 
           let(:expected_states) {
-            %w(pending registered in_pregnancy_probability_group consented_low_intensity following_low_intensity following_low_intensity)
+            %w(pending registered in_pregnancy_probability_group following_low_intensity following_low_intensity)
           }
 
           context do
