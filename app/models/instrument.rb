@@ -272,6 +272,27 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # From INSTRUMENT_ADMIN_MODE_CL1
+  # @return[Integer]
+  def self.capi
+    1
+  end
+
+  ##
+  # From INSTRUMENT_ADMIN_MODE_CL1
+  # @return[Integer]
+  def self.cati
+    2
+  end
+
+  ##
+  # From INSTRUMENT_ADMIN_MODE_CL1
+  # @return[Integer]
+  def self.papi
+    3
+  end
+
+  ##
   # Given a label from PSC or surveyor access code determine the instrument version
   # Defaults to 1.0 if there is no label or access code
   # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0

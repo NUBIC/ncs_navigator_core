@@ -62,6 +62,24 @@ describe Instrument do
     ins.to_s.should == ins.instrument_type.to_s
   end
 
+  describe ".capi" do
+    it "returns the appropriate INSTRUMENT_ADMIN_MODE_CL1 value" do
+      Instrument.capi.should == 1
+    end
+  end
+
+  describe ".cati" do
+    it "returns the appropriate INSTRUMENT_ADMIN_MODE_CL1 value" do
+      Instrument.cati.should == 2
+    end
+  end
+
+  describe ".papi" do
+    it "returns the appropriate INSTRUMENT_ADMIN_MODE_CL1 value" do
+      Instrument.papi.should == 3
+    end
+  end
+
   it { should belong_to(:psu) }
   it { should belong_to(:event) }
   it { should belong_to(:instrument_type) }
