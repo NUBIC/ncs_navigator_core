@@ -54,6 +54,11 @@ Rails.logger.silence do
   surveys.map { |fn| s.future(:load_survey, fn) }.all?(&:value)
 end
 
+# Turn off PSC sync -- we aren't going to need it
+def Merge.sync_with_psc?
+  false
+end
+
 puts <<-END
 Use fw(json) to load a fieldwork set from a JSON object.
 Use m(json, fw) to create a merge object.
