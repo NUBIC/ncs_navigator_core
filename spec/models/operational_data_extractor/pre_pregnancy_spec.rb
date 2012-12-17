@@ -85,7 +85,7 @@ describe OperationalDataExtractor::PrePregnancy do
     participant = Factory(:participant)
     person.telephones.size.should == 0
 
-    email = Factory(:email, :email => "asdf@asdf.asdf", :person => person)
+    email = Factory(:email, :email => "asdf@asdf.asdf", :email_type_code => 1, :person => person)
 
     survey = create_pre_pregnancy_survey_with_email_operational_data
     response_set, instrument = prepare_instrument(person, participant, survey)
@@ -102,12 +102,24 @@ describe OperationalDataExtractor::PrePregnancy do
     OperationalDataExtractor::PrePregnancy.new(response_set).extract_data
 
     person = Person.find(person.id)
-    person.emails.size.should == 2
-    person.emails.first.email.should == "asdf@asdf.asdf"
-    person.emails.first.email_rank_code.should == 1
 
-    person.emails.last.email.should == "email@dev.null"
-    person.emails.last.email_rank_code.should == 1
+    extracted_emails = person.emails.all
+    extracted_emails.size == 2
+
+    extracted_email_addresses = []
+    extracted_emails.each { |email| extracted_email_addresses << email.email }
+
+    extracted_email_addresses.should include("asdf@asdf.asdf")
+    extracted_email_addresses.should include("email@dev.null")
+
+    existing_email = extracted_emails.detect  { |e| e.email == "asdf@asdf.asdf" }
+    extracted_email = extracted_emails.detect { |e| e.email == "email@dev.null" }
+
+    # when an email of the same type of an existing primary email address, the existing address is demoted to secondary rank (2) and
+    # newly extracted email has the primary rank (1)
+
+    existing_email.email_rank_code.should == 2
+    extracted_email.email_rank_code.should == 1
   end
 
   context "extracting contact information from the survey responses" do
