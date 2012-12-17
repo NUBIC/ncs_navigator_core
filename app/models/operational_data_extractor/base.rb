@@ -433,6 +433,7 @@ module OperationalDataExtractor
         end
       end
     end
+
     private :set_value_during_process
 
     def process_participant(map)
@@ -549,21 +550,20 @@ module OperationalDataExtractor
       relationship
     end
 
-    # TODO: Create Institution for birth address
-    #       and associate Institution with Person
-    def process_birth_address(map)
+    def process_birth_institution_and_address(birth_address_map, institution_map)
       birth_address = nil
-      map.each do |key, attribute|
+      institution = process_institution(institution_map)
+
+      birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            birth_address ||= get_address(response_set, person, address_other_type)
             birth_address.address_type_other = "Birth"
             set_value(birth_address, attribute, value)
           end
         end
       end
-      birth_address
+      [birth_address, institution]
     end
 
     def process_address(owner, map, address_type = address_other_tyoe, address_rank = primary_rank)
@@ -642,6 +642,28 @@ module OperationalDataExtractor
         end
       end
       email
+    end
+
+    def process_institution(map)
+      institution = Institution.new
+      map.each do |key, attribute|
+        r = data_export_identifier_indexed_responses[key]
+        value = response_value(r)
+        set_value(institution, attribute, value)
+      end
+      institution
+    end
+
+    def finalize_institution_with_birth_address(birth_address, institute)
+      institute.address = birth_address
+      unless institute.nil?
+        ipl = InstitutionPersonLink.new
+        ipl.person = participant.person
+        ipl.institution = institute
+        ipl.save!
+
+        institute.save!
+      end
     end
 
     def finalize_ppg_status_history(ppg_status_history)

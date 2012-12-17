@@ -4,6 +4,7 @@
 require 'spec_helper'
 
 describe OperationalDataExtractor::Base do
+  include SurveyCompletion
 
   it "sets up the test properly" do
 
@@ -448,6 +449,68 @@ describe OperationalDataExtractor::Base do
         new_phone.should_not == @existing_work_phone
         new_phone.class.should == Telephone
       end
+    end
+
+  end
+
+  context "processing institution" do
+
+    let(:hospital_type_location)          { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
+
+    before do
+      @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+      @institution_map   = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
+
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+
+      @valid_response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+
+      take_survey(@survey, @valid_response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital_type_location
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", 'St.Fake Hospital'
+      end
+
+      @valid_response_set.save!
+
+      @ode1 = OperationalDataExtractor::PregnancyVisit.new(@valid_response_set)
+    end
+
+    describe "#process_birth_institution_and_address" do
+
+      it "creates an institution instance when there are valid responses to the institution-related questions" do
+        birth_address_and_institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
+        #birth_address_and_institution[0].class.should == Address
+        birth_address_and_institution[1].class.should == Institution
+      end
+
+    end
+
+    describe "#finalize_institution" do
+
+      it "creates a institution-person link if an institution is created" do
+        InstitutionPersonLink.count.should == 0
+        institute = @ode1.process_institution(@map)
+        @ode1.finalize_institution(institute)
+        InstitutionPersonLink.count.should == 1
+      end
+
+      it "does not create an institution-person link if the institution was not created" do
+        InstitutionPersonLink.count.should == 0
+        institute = @ode2.process_institution(@map)
+        @ode2.finalize_institution(institute)
+        InstitutionPersonLink.count.should == 0
+
+      end
+
+      it "creates a birth institution record" do
+        Institution.count.should == 0
+        institute = @ode1.process_institution(@map)
+        @ode1.finalize_institution(institute)
+        Institution.count.should == 1
+      end
+
     end
 
   end
