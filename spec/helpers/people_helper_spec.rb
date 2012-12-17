@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe PeopleHelper do
-  context "filtering email addresses based on uniqueness and rank" do
+  context "filtering addresses based on uniqueness and rank" do
     before do
       @person = Factory(:person)
 
@@ -78,6 +78,15 @@ describe PeopleHelper do
       it "returns a set of unique addresses" do
         helper.unique_contact_mode_entries(@addresses).should == [@address_a, @address_b, @secondary_home_type_address, @secondary_business_type_address]
       end
+
+      it "returns an empty set if contact entries is nil" do
+        helper.unique_contact_mode_entries(nil).should == []
+      end
+
+      it "returns an empty set if contact entries is a set of nils" do
+        helper.unique_contact_mode_entries([nil, nil, nil]).should == []
+      end
+
     end
 
     describe "#highest_ranking_contact_mode_entry" do
@@ -85,6 +94,15 @@ describe PeopleHelper do
       it "returns single entries of highest rank(primary, secondary, duplicate, other) for a given type" do
         helper.highest_ranking_contact_mode_entry(@uniquified_addresses).should == [@address_a, @address_b]
       end
+
+      it "returns an empty set if contact entries is nil" do
+        helper.highest_ranking_contact_mode_entry(nil).should == []
+      end
+
+      it "returns an empty set if contact entries is a set of nils" do
+        helper.highest_ranking_contact_mode_entry([nil, nil, nil]).should == []
+      end
+
     end
 
   end
