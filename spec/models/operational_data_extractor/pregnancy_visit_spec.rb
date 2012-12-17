@@ -634,4 +634,47 @@ describe OperationalDataExtractor::PregnancyVisit do
     end
   end
 
+  context "setting instrument administration mode" do
+
+    let(:person) { Factory(:person) }
+    let(:survey) { create_pregnancy_visit_survey_with_prepopulated_fields }
+
+    before(:each) do
+      @participant = Factory(:participant)
+      @participant.person = person
+      @participant.save!
+
+      @response_set, @instrument = prepare_instrument(person, @participant, survey)
+    end
+
+    it "sets the mode to CAPI" do
+      take_survey(survey, @response_set) do |a|
+        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
+      end
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.capi
+    end
+
+    it "sets the mode to CATI" do
+      take_survey(survey, @response_set) do |a|
+        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
+      end
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
+    end
+
+    it "defaults to CATI" do
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
+    end
+
+    it "sets the mode to PAPI" do
+      take_survey(survey, @response_set) do |a|
+        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
+      end
+      OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
+    end
+
+  end
 end

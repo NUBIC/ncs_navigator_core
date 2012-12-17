@@ -6,6 +6,9 @@ require 'spec_helper'
 describe OperationalDataExtractor::ParticipantVerification do
   include SurveyCompletion
 
+  let(:state) { NcsCode.for_list_name_and_local_code("STATE_CL1", 14) }
+  let(:survey) { create_participant_verification_survey }
+
   context "child records" do
     before(:each) do
       @male   = NcsCode.for_list_name_and_local_code("GENDER_CL1", 1)
@@ -25,7 +28,6 @@ describe OperationalDataExtractor::ParticipantVerification do
     end
 
     it "updates the person (Child) record" do
-      survey = create_participant_verification_survey
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
@@ -60,9 +62,6 @@ describe OperationalDataExtractor::ParticipantVerification do
     end
 
     it "creates an address record and associates it with the child" do
-      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-
-      survey = create_participant_verification_survey
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
@@ -92,9 +91,6 @@ describe OperationalDataExtractor::ParticipantVerification do
     end
 
     it "creates a 2ndary address record and associates it with the child" do
-      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-
-      survey = create_participant_verification_survey
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
@@ -125,9 +121,6 @@ describe OperationalDataExtractor::ParticipantVerification do
     end
 
     it "creates a telephone record and associates it with the child" do
-      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-
-      survey = create_participant_verification_survey
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
@@ -147,9 +140,6 @@ describe OperationalDataExtractor::ParticipantVerification do
     end
 
     it "creates a 2ndary telephone record and associates it with the child" do
-      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-
-      survey = create_participant_verification_survey
       response_set, instrument = prepare_instrument(@person, @child_participant, survey)
 
       take_survey(survey, response_set) do |a|
@@ -177,14 +167,13 @@ describe OperationalDataExtractor::ParticipantVerification do
       @person = Factory(:person, :first_name => nil, :last_name => nil, :middle_name => nil, :person_dob => nil)
       @participant = Factory(:participant)
       @participant.person = @person
-      @survey = create_participant_verification_survey
     end
 
     it "extracts person operational data from the survey responses" do
-      response_set, instrument = prepare_instrument(@person, @participant, @survey)
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
       response_set.save!
 
-      take_survey(@survey, response_set) do |a|
+      take_survey(survey, response_set) do |a|
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_FNAME", 'Jo'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_MNAME", 'Anna'
         a.str "#{OperationalDataExtractor::ParticipantVerification::INTERVIEW_PREFIX}.R_LNAME", 'Stafford'
@@ -204,5 +193,48 @@ describe OperationalDataExtractor::ParticipantVerification do
       person.maiden_name.should == "Hitler"
       person.person_dob.should == "1981-01-01"
     end
+  end
+
+  context "setting instrument administration mode" do
+
+    let(:person) { Factory(:person) }
+
+    before(:each) do
+      @participant = Factory(:participant)
+      @participant.person = person
+      @participant.save!
+
+      @response_set, @instrument = prepare_instrument(person, @participant, survey)
+    end
+
+    it "sets the mode to CAPI" do
+      take_survey(survey, @response_set) do |a|
+        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "capi")
+      end
+      OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.capi
+    end
+
+    it "sets the mode to CATI" do
+      take_survey(survey, @response_set) do |a|
+        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "cati")
+      end
+      OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
+    end
+
+    it "defaults to CATI" do
+      OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.cati
+    end
+
+    it "sets the mode to PAPI" do
+      take_survey(survey, @response_set) do |a|
+        a.choice "prepopulated_mode_of_contact", mock(NcsCode, :local_code => "papi")
+      end
+      OperationalDataExtractor::ParticipantVerification.new(@response_set).extract_data
+      Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
+    end
+
   end
 end

@@ -187,6 +187,10 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE" => "DUE_DATE",
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -212,7 +216,8 @@ module OperationalDataExtractor
         WORK_ADDRESS_MAP,
         CONFIRM_WORK_ADDRESS_MAP,
         FATHER_PHONE_MAP,
-        DUE_DATE_DETERMINER_MAP
+        DUE_DATE_DETERMINER_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -281,6 +286,8 @@ module OperationalDataExtractor
       if due_date = calculated_due_date(response_set)
         participant.ppg_details.first.update_due_date(due_date)
       end
+
+      update_instrument_mode
 
       participant.save!
       person.save!

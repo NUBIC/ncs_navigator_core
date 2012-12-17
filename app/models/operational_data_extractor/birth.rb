@@ -93,6 +93,10 @@ module OperationalDataExtractor
       "#{BIRTH_LI_PREFIX}.EMAIL_TYPE"      => "email_type_code"
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -108,6 +112,7 @@ module OperationalDataExtractor
         HOME_PHONE_MAP,
         CELL_PHONE_MAP,
         EMAIL_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -136,6 +141,8 @@ module OperationalDataExtractor
       finalize_email(email)
       finalize_addresses(mail_address, work_address)
       finalize_telephones(cell_phone, home_phone, phone)
+
+      update_instrument_mode
 
       child.save! if child
       participant.save!

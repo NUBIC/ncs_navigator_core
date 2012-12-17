@@ -135,6 +135,10 @@ module OperationalDataExtractor
       "#{TRACING_MODULE_PREFIX}.CONTACT_PHONE2_TYPE_3_OTH" => "phone_type_other",
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -161,6 +165,7 @@ module OperationalDataExtractor
         CONTACT_3_ADDRESS_MAP,
         CONTACT_3_PHONE_MAP,
         CONTACT_3_PHONE_2_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -224,6 +229,8 @@ module OperationalDataExtractor
       finalize_email(email)
       finalize_addresses(address, new_address)
       finalize_telephones(cell_phone, home_phone)
+
+      update_instrument_mode
 
       participant.save!
       person.save!

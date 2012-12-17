@@ -146,7 +146,7 @@ module BirthVisit
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
     # prepopulated mode of contact
-    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :data_export_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
     a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
     a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")
@@ -241,19 +241,19 @@ module BirthVisit
 
     survey
   end
-  
+
   def create_pv2_and_birth_with_work_name
     load_survey_questions_string(<<-QUESTIONS)
       q_WORK_NAME 'text', :data_export_identifier => "PREG_VISIT_1_3.WORK_NAME", :pick => :one
       a_string "Work Name", :string
       a_neg_1 "Refused"
-      
+
       q_WORK_NAME_BIRTH 'text', :data_export_identifier => "PREG_VISIT_2_3.WORK_NAME", :pick => :one
       a_string "Work Name", :string
       a_neg_1 "Refused"
     QUESTIONS
   end
-  
+
   def create_birth_3_0_with_release_and_birth_deliver_and_mulitiple
     load_survey_questions_string(<<-QUESTIONS)
       q_BIRTH_DELIVER 'text',
@@ -263,13 +263,13 @@ module BirthVisit
       a_2 "BIRTHING CENTER"
       a_3 "AT HOME"
       a_neg_5 "SOME OTHER PLACE"
-    
+
       q_RELEASE 'text',
       :data_export_identifier => "BIRTH_VISIT_3.RELEASE",
       :pick => :one
       a_1 "YES"
       a_2 "NO"
-      
+
       q_MULTIPLE 'text',
       :data_export_identifier => "BIRTH_VISIT_3.MULTIPLE",
       :pick => :one
@@ -277,5 +277,5 @@ module BirthVisit
       a_2 "NO"
     QUESTIONS
   end
-  
+
 end

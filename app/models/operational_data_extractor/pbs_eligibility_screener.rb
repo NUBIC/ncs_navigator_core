@@ -80,6 +80,10 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE_YY"   => "ORIG_DUE_DATE_YY",
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def maps
       [
         PERSON_MAP,
@@ -91,7 +95,8 @@ module OperationalDataExtractor
         TELEPHONE_MAP2,
         EMAIL_MAP,
         PPG_DETAILS_MAP,
-        DUE_DATE_DETERMINER_MAP
+        DUE_DATE_DETERMINER_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -161,6 +166,8 @@ module OperationalDataExtractor
       finalize_email(email)
       finalize_addresses(address)
       finalize_telephones(phone1, phone2)
+
+      update_instrument_mode
 
       participant.save! if participant
       person.save!
