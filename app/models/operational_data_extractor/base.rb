@@ -385,6 +385,7 @@ module OperationalDataExtractor
       if email.nil?
         email = Email.new(:person => person, :psu => person.psu,
                           :response_set => response_set,
+                          :email_type => email_type,
                           :email_rank => primary_rank)
       end
       email

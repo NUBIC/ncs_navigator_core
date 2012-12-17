@@ -218,13 +218,24 @@ describe OperationalDataExtractor::PpgFollowUp do
     end
 
     person = Person.find(person.id)
-    person.emails.size.should == 2
-    person.emails.first.email.should == "asdf@asdf.asdf"
-    person.emails.first.email_rank_code.should == 1
 
-    person.emails.last.email.should == "email@dev.null"
-    person.emails.last.email_rank_code.should == 1
-    person.emails.last.email_type.local_code.should == -4
+    extracted_emails = person.emails.all
+    extracted_emails.size == 2
+
+    extracted_email_addresses = []
+    extracted_emails.each { |email| extracted_email_addresses << email.email }
+
+    extracted_email_addresses.should include("asdf@asdf.asdf")
+    extracted_email_addresses.should include("email@dev.null")
+
+    existing_email = extracted_emails.detect  { |e| e.email == "asdf@asdf.asdf" }
+    extracted_email = extracted_emails.detect { |e| e.email == "email@dev.null" }
+
+    # when an email of the same type of an existing primary email address, the existing address is demoted to secondary rank (2) and
+    # newly extracted email has the primary rank (1)
+
+    existing_email.email_rank_code.should == 2
+    extracted_email.email_rank_code.should == 1
 
   end
 
