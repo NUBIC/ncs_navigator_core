@@ -36,7 +36,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def process
-      Base.populator_for(survey).new(person, instrument, survey, event, contact).populate
+      Base.populator_for(survey).new(person, instrument, survey, :event => event, :mode => mode).populate
     end
 
     def self.populator_for(survey)
