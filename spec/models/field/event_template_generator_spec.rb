@@ -137,5 +137,89 @@ module Field
         end
       end
     end
+
+    shared_context 'response templates' do
+      let(:templates) do
+        YAML.load <<-END
+pregnancy_visit_1:
+  foo:
+    - qref: bar
+      aref: baz
+      value: 1
+  qux:
+    - qref: quux
+      aref: grault
+garply:
+  waldo:
+    - qref: fred
+      aref: plugh
+        END
+      end
+
+      let!(:s1) { Factory(:survey, :title => 'foo') }
+      let!(:s2) { Factory(:survey, :title => 'qux') }
+    end
+
+    describe '#build_response_templates' do
+      include_context 'PSC mock'
+      include_context 'response templates'
+
+      before do
+        etg.populate_from_psc(psc, date, activities)
+        etg.derive_models
+        etg.build_response_templates(templates)
+      end
+
+      # As mentioned above, we have the following events in the test data file:
+      #
+      # event:informed_consent
+      # event:pregnancy_screener
+      # event:pregnancy_visit_1
+      #
+      # The test data establishes response templates only for the last event,
+      # so we expect one set of templates.
+      it 'loads response templates for mentioned events' do
+        etg.response_templates['pregnancy_visit_1'].should_not be_nil
+      end
+
+      it 'does not load events not in the selected template' do
+        etg.response_templates['garply'].should be_nil
+      end
+
+      it 'resolves survey titles to API IDs' do
+        ids = etg.response_templates['pregnancy_visit_1'].map { |rt| rt.survey_id }.uniq
+
+        Set.new(ids).should == Set.new([s1.api_id, s2.api_id])
+      end
+
+      it 'builds one template per (survey, q, a) triple' do
+        etg.response_templates['pregnancy_visit_1'].length.should == 2
+      end
+    end
+
+    describe '#assign_response_templates' do
+      include_context 'PSC mock'
+      include_context 'response templates'
+
+      before do
+        etg.populate_from_psc(psc, date, activities)
+        etg.derive_models
+        etg.build_response_templates(templates)
+        etg.assign_response_templates
+      end
+
+      it 'assigns templates for Pregnancy Visit 1 to events with label pregnancy_visit_1' do
+        template = etg.event_templates.detect { |et| et.event.label == 'pregnancy_visit_1' }
+
+        # the example data gives us two templates, one per survey
+        template.response_templates.length.should == 2
+      end
+
+      it 'assigns an empty collection for events without response templates' do
+        template = etg.event_templates.detect { |et| et.event.label == 'informed_consent' }
+
+        template.response_templates.length.should == 0
+      end
+    end
   end
 end
