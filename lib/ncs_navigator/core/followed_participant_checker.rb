@@ -28,6 +28,10 @@ module NcsNavigator::Core
       @expected_participants ||= load_expected_participants
     end
 
+    def expected_p_ids
+      expected_participants.collect(&:p_id)
+    end
+
     def load_expected_participants
       File.open(@csv_filename) do |csv_io|
         csv = Rails.application.csv_impl.new(csv_io, :headers => true, :header_converters => :symbol)

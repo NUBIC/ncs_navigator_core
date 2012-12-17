@@ -52,6 +52,20 @@ module NcsNavigator::Core
       end
     end
 
+    describe '#expected_p_ids' do
+      before do
+        create_csv(
+          %w(p_id),
+          %w(A132),
+          %w(B262)
+        )
+      end
+
+      it 'reads the p_ids from the CSV' do
+        checker.expected_p_ids.sort.should == %w(A132 B262)
+      end
+    end
+
     describe '#differences' do
       before do
         create_csv(

@@ -72,7 +72,16 @@ namespace :import do
   desc 'Import operational data'
   task :operational => [:warehouse_setup, :environment] do
     require 'ncs_navigator/core'
-    importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(import_wh_config)
+
+    importer_options = {}
+
+    if ENV['FOLLOWED_CSV']
+      followed = NcsNavigator::Core::FollowedParticipantChecker.new(ENV['FOLLOWED_CSV'])
+      importer_options[:followed_p_ids] = followed.expected_p_ids
+    end
+
+    importer = NcsNavigator::Core::Warehouse::OperationalImporter.new(
+      import_wh_config, importer_options)
 
     tables = case
              when ENV['TABLES']
