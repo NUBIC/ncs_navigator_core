@@ -91,7 +91,8 @@ module Field
 
         { 'event_type_code' => l.ncs_code(event_codes).local_code,
           'name' => l.display_text,
-          'instruments' => event_template_instruments_as_json(et.instruments, options)
+          'instruments' => event_template_instruments_as_json(et.instruments, options),
+          'response_templates' => event_template_responses_as_json(et.response_templates, options)
         }
       end
     end
@@ -120,6 +121,18 @@ module Field
             logger.warn "NcsCode for instrument <#{i.survey.access_code}> could not be found"
           end
         end
+      end
+    end
+
+    ##
+    # @private
+    def event_template_responses_as_json(templates, options)
+      templates.map do |t|
+        { 'aref' => t.aref,
+          'qref' => t.qref,
+          'survey_id' => t.survey_id,
+          'value' => t.value
+        }
       end
     end
 

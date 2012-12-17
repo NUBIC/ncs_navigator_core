@@ -111,6 +111,17 @@ module Field
       end
     end
 
+    shared_context 'has an event template with a response template' do
+      include_context 'has an event template'
+
+      let(:rt) { ResponseTemplate.new('foo', 'bar', 'baz', 'qux')  }
+      let(:templates) { event_templates[0]['response_templates'] }
+
+      before do
+        et.response_templates << rt
+      end
+    end
+
     describe '#to_json' do
       before do
         fw.default_collections_to_empty
@@ -366,6 +377,26 @@ module Field
             it 'does not include the unresolvable instrument' do
               instruments.should be_empty
             end
+          end
+        end
+
+        describe 'event_templates.response_templates' do
+          include_context 'has an event template with a response template'
+
+          it 'sets the answer reference' do
+            templates[0]['aref'].should == 'foo'
+          end
+
+          it 'sets the question reference' do
+            templates[0]['qref'].should == 'bar'
+          end
+
+          it 'sets the survey ID' do
+            templates[0]['survey_id'].should == 'baz'
+          end
+
+          it 'sets the value' do
+            templates[0]['value'].should == 'qux'
           end
         end
 
