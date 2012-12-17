@@ -86,9 +86,7 @@ survey "INS_QUE_etc_v1.1" do
     a_neg_5 "Other"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_RENOVATE, "==", :a_1
-
+    
     q_RENOVATE_ROOM_OTH "Other room",
     :pick => :one,
     :data_export_identifier=>"TWELVE_MTH_MOTHER_RENOVATE_ROOM.RENOVATE_ROOM_OTH"
@@ -120,9 +118,7 @@ survey "INS_QUE_etc_v1.1" do
     a_neg_5 "Other"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule=>"A"
-    condition_A :q_pets, "==", :a_1
-
+    
     q_pet_type_oth "Other types of pets", :pick=>:one, :data_export_identifier=>"PREG_VISIT_1_PET_TYPE_2.PET_TYPE_OTH"
     a_1 "Specify", :string
     a_neg_1 "Refused"
@@ -144,9 +140,7 @@ survey "INS_QUE_etc_v1.1" do
     a_neg_5 "Other"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_AGE_ELIG, "!=", :a_2
-
+    
     q_TUBE_COMMENTS_TUBE_TYPE_1_VISIT_1 "Blood tube collection comments",
     :pick => :any,
     :data_export_identifier=>"SPEC_BLOOD_TUBE_COMMENTS[tube_type=1].TUBE_COMMENTS"
@@ -189,9 +183,7 @@ survey "INS_QUE_etc_v1.1" do
     a_1 "Supplies missing from kit"
     a_2 "Ran out of time"
     a_neg_5 "Other"
-    dependency :rule=>"A"
-    condition_A :q_TWQ_BLANK_COLLECT, "==", :a_2
-
+    
     q_REAS_TWQ_BL_N_COLLECTED_OTH "Other reason the twq blank sample was not collected",
     :data_export_identifier=>"TAP_WATER_TWQ.REAS_TWQ_BL_N_COLLECTED_OTH"
     a "Specify:", :string
@@ -219,9 +211,7 @@ survey "INS_QUE_etc_v1.1" do
     a_neg_5 "Other"
     a_neg_1 "Refused"
     a_neg_2 "Don't know"
-    dependency :rule => "A"
-    condition_A :q_hh_nonenglish, "==", :a_1
-
+    
     q_hh_nonenglish_2_oth "Other languages that are spoken in your home",
     :pick=>:one,
     :data_export_identifier=>"PREG_VISIT_1_NONENGLISH2_2.HH_NONENGLISH2_OTH"
@@ -341,7 +331,7 @@ INSTR
               a_neg_1 "Refused"
               a_neg_2 "Don't know"
 
-            q_r_fname "Last name",
+            q_r_lname "Last name",
               :pick=>:one,
               :data_export_identifier=>"PRE_PREG.R_LNAME"
               a :string
