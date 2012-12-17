@@ -86,7 +86,7 @@ module Psc
     ##
     # @private
     def should_cache_event?(event)
-      event.event_type_code > 1 && event.event_type_code != 21
+      Event::EVENTS_FOR_PSC.include?(event.event_type_code)
     end
 
     ##

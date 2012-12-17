@@ -15,8 +15,11 @@ module Psc
       loader.redis = redis
     end
 
+    let(:a_psc_event_type) { 13 }
+    let(:a_non_psc_event_type) { 1 }
+
     let(:p) { Participant.new(:p_id => 'P') }
-    let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => 2) }
+    let(:et) { NcsCode.new(:display_text => 'Foo Bar', :local_code => a_psc_event_type) }
     let(:e) do
       Event.new(:event_id => 'E',
                 :event_start_date => '2000-01-01',
@@ -83,7 +86,7 @@ module Psc
       end
 
       it "records the event's type code" do
-        cached_event['event_type_code'].should == '2'
+        cached_event['event_type_code'].should == '13'
       end
 
       it "records the event's type label" do
@@ -111,23 +114,11 @@ module Psc
       end
 
       it 'generates a sort key for the event' do
-        cached_event['sort_key'].should == '2000-01-01:002'
+        cached_event['sort_key'].should == '2000-01-01:013'
       end
 
-      it 'ignores events without a concrete type' do
-        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => -5)
-
-        cached_event.should be_empty
-      end
-
-      it 'ignores events with event type "1" which is "Household Enumeration"' do
-        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => 1)
-
-        cached_event.should be_empty
-      end
-
-      it 'ignores events with event type "21" which is "Validation"' do
-        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => 21)
+      it 'ignores events that cannot be represented in PSC' do
+        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => a_non_psc_event_type)
 
         cached_event.should be_empty
       end
@@ -190,8 +181,8 @@ module Psc
         redis.sismember('test:p:P:link_contacts:E', cl.public_id).should be_true
       end
 
-      it 'ignores links for events without a concrete type' do
-        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => -5)
+      it 'ignores links for events that cannot be represented in PSC' do
+        e.event_type = NcsCode.new(:display_text => 'Quux', :local_code => a_non_psc_event_type)
 
         cached_link.should be_empty
       end

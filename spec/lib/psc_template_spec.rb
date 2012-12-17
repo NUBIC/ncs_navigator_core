@@ -38,6 +38,10 @@ describe 'PSC template' do
       all_labels.select { |l| l =~ prefix }.collect { |n| n.sub(prefix, '') }
     }
 
+    let(:event_codes_for_labels) {
+      events_named_in_labels.uniq.collect { |l| EventLabel.new(l).ncs_code }
+    }
+
     let(:event_types_from_mdes) {
       NcsNavigatorCore.mdes.types.
         find { |t| t.name == 'event_type_cl1' }.
@@ -74,6 +78,16 @@ describe 'PSC template' do
 
     it 'covers only known event types' do
       (events_named_in_labels - event_types_from_mdes).uniq.should == []
+    end
+
+    it 'contains exactly the event types listed in Event::EVENTS_FOR_PSC' do
+      # Event type 10 (informed consent) is not included in EVENTS_FOR_PSC
+      # because the fact that there's still an informed consent event in the
+      # template is because #2709 is incomplete. This subtraction can be removed
+      # once #2709 is done.
+      syncable = event_codes_for_labels.collect(&:local_code) - [10]
+
+      syncable.sort.should == Event::EVENTS_FOR_PSC.sort
     end
 
     it 'schedules any given event type only once per day per segment' do
