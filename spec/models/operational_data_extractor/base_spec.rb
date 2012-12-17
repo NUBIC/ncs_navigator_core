@@ -458,66 +458,31 @@ describe OperationalDataExtractor::Base do
     let(:hospital_type_location)          { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
 
     before do
-      @map = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
+      @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+      @institution_map   = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
 
       @person = Factory(:person)
       @participant = Factory(:participant)
       @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
 
       @valid_response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-      @invalid_response_set, @instrument = prepare_instrument(@person, @participant, @survey)
-
 
       take_survey(@survey, @valid_response_set) do |a|
         a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital_type_location
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", 'St.Fake Hospital'
       end
 
-      take_survey(@survey, @invalid_response_set) do |a|
-        a.refused "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"
-        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", 'St.Fake Hospital'
-      end
-
       @valid_response_set.save!
-      @invalid_response_set.save!
 
       @ode1 = OperationalDataExtractor::PregnancyVisit.new(@valid_response_set)
-      @ode2 = OperationalDataExtractor::PregnancyVisit.new(@invalid_response_set)
     end
 
-    describe "#institution_responses_valid?" do
-
-      it "an institution is invalid if it doesn't have a name" do
-        invalid_institution = Factory(:institution, :institute_name => nil, :institute_type_code => 1)
-        @ode1.institution_responses_valid?(invalid_institution).should be_false
-      end
-
-      it "an institution is invalid if it doesn't have a type" do
-        invalid_institution = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => nil)
-        @ode1.institution_responses_valid?(invalid_institution).should be_false
-
-      end
-
-      it "an institution is invalid if its type is negative(i.e. 'Don't Know' or 'Refused')" do
-        invalid_institution = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => -2)
-        @ode1.institution_responses_valid?(invalid_institution).should  be_false
-      end
-
-      it "an institution is valid if it has a valid type and a valid name" do
-        valid_institution    = Factory(:institution, :institute_name => 'The Institute', :institute_type_code => 1)
-        @ode1.institution_responses_valid?(valid_institution).should be_true
-      end
-
-    end
-
-    describe "#process_institution" do
+    describe "#process_birth_institution_and_address" do
 
       it "creates an institution instance when there are valid responses to the institution-related questions" do
-        @ode1.process_institution(@map).class.should == Institution
-      end
-
-      it "creates an nil instance when there are invalid responses to the institution-related questions" do
-        @ode2.process_institution(@map).class.should == NilClass
+        birth_address_and_institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
+        #birth_address_and_institution[0].class.should == Address
+        birth_address_and_institution[1].class.should == Institution
       end
 
     end

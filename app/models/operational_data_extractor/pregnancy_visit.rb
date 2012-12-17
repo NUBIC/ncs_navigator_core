@@ -247,11 +247,10 @@ module OperationalDataExtractor
       process_ppg_status(PPG_STATUS_MAP)
       cell_phone = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
       email = process_email(EMAIL_MAP)
-      birth_address = process_birth_address(BIRTH_ADDRESS_MAP)
+      birth_address, institution = process_birth_institution_and_address(BIRTH_ADDRESS_MAP,INSTITUTION_MAP)
 
       work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
       confirm_work_address = process_address(person, CONFIRM_WORK_ADDRESS_MAP, Address.work_address_type, duplicate_rank)
-      insitution = process_institution(INSTITUTION_MAP)
 
       if contact1 = process_contact(CONTACT_1_PERSON_MAP)
         contact1relationship = process_contact_relationship(contact1, CONTACT_1_RELATIONSHIP_MAP)
@@ -285,7 +284,7 @@ module OperationalDataExtractor
 
       finalize_addresses(birth_address, work_address, confirm_work_address)
       finalize_telephones(cell_phone)
-      finalize_institution(institution)
+      finalize_institution_with_birth_address(birth_address, institution)
 
       if due_date = calculated_due_date(response_set)
         participant.ppg_details.first.update_due_date(due_date)
