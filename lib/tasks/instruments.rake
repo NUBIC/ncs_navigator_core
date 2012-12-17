@@ -165,4 +165,38 @@ namespace :instruments do
       puts table
     end
   end
+
+  desc 'List all prepopulated questions are not known to ResponseSetPrepopulators'
+  task :check_prepopulation => :environment do
+    # Gather all questions that are marked 'prepopulated'
+    prepopulated_question_ids = []
+    prepopulated_question_ids_for_surveys = {}
+    Survey.most_recent_for_each_title.each do |survey|
+      survey.sections_with_questions.each do |section|
+        section.questions.each do |q|
+          prepopulated_question_ids_for_surveys[q.reference_identifier] = survey.title if q.reference_identifier.to_s.include? "prepopulated"
+        end
+      end
+    end
+    prepopulated_question_ids = prepopulated_question_ids_for_surveys.keys.uniq
+
+    puts "# of questions that are marked 'prepopulated' = #{prepopulated_question_ids.size}"
+
+    # get questions known to ResponseSetPrepopulators
+    known_prepopulated_question_ids = []
+    NcsNavigator::Core::ResponseSetPopulator::Base.subclasses.each do |sc|
+      known_prepopulated_question_ids << sc.new(Person.new, Instrument.new, Survey.new).reference_identifiers
+    end
+    known_prepopulated_question_ids = known_prepopulated_question_ids.flatten.uniq
+
+    puts "# of 'prepopulated' questions known to ResponseSetPrepopulators = #{known_prepopulated_question_ids.size}"
+
+    # which prepopulated questions are not handled by the ResponseSetPrepopulators
+    difference = prepopulated_question_ids - known_prepopulated_question_ids
+
+    # output the unhandled questions and in which surveys they are
+    difference.each_with_index do |unhandled, i|
+      puts "#{i + 1}) #{prepopulated_question_ids_for_surveys[unhandled]}\n    - #{unhandled}"
+    end
+  end
 end
