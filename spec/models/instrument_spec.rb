@@ -116,14 +116,18 @@ describe Instrument do
       describe 'if there is no response set for the (person, survey) pair' do
         it 'returns the result of Person#start_instrument' do
           person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
-
           Instrument.start(person, mother, nil, survey, event).should == inst
         end
 
         it "sets the instrument's event to event" do
           inst = Instrument.start(person, mother, nil, survey, event)
-
           inst.event.should == event
+        end
+
+        it "creates a response_set for the instrument" do
+          inst = Instrument.start(person, mother, nil, survey, event)
+          inst.response_set.should_not be_nil
+          inst.response_set.responses.should be_empty
         end
       end
 
@@ -212,6 +216,34 @@ describe Instrument do
         end
       end
     end
+
+    context "prepopulation" do
+
+      let(:birth_survey_with_prepopulated_fields) { create_birth_survey_with_prepopulated_mode_of_contact }
+      let(:instrument) { Instrument.start(person, mother, nil, birth_survey_with_prepopulated_fields, event) }
+
+      it "prepopulates the response set associated with the Instrument" do
+        instrument.response_set.should_not be_nil
+        responses = instrument.response_set.responses
+        responses.should_not be_empty
+
+        prepopulated_response = responses.first
+        prepopulated_response.question.reference_identifier.should == "prepopulated_mode_of_contact"
+        prepopulated_response.to_s.should == "CAPI"
+      end
+
+      it "does not persist the prepopulated responses" do
+        instrument.response_set.should be_new_record
+        instrument.response_set.responses.first.should be_new_record
+      end
+
+    end
+
+    it "does not persist the Instrument record" do
+      inst = Instrument.start(person, mother, nil, survey, event)
+      inst.should be_new_record
+    end
+
   end
 
   describe '#response_set' do
