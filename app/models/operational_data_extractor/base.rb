@@ -646,24 +646,43 @@ module OperationalDataExtractor
     def process_institution(map)
       institution = Institution.new
       map.each do |key, attribute|
-        r = data_export_identifier_indexed_responses[key]
-        value = response_value(r)
-        set_value(institution, attribute, value)
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            set_value(institution, attribute, value)
+          end
+        end
       end
       institution
     end
 
     def finalize_institution_with_birth_address(birth_address, institute)
-      institute.addresses << birth_address
-      unless institute.nil?
-        ipl = InstitutionPersonLink.new
-        ipl.person = participant.person
-        ipl.institution = institute
-        ipl.save!
 
+      institute.addresses << birth_address unless address_empty?(birth_address)
+
+      ipl = InstitutionPersonLink.new
+      ipl.person = participant.person
+      ipl.institution = institute
+
+      unless institution_empty?(institute) && address_empty?(birth_address)
+        ipl.save!
         birth_address.save!
         institute.save!
       end
+    end
+
+    def address_empty?(address)
+      address_contents = []
+      address_components = [:address_one, :address_two, :unit, :city, :state_code, :zip, :zip4]
+      address_components.each { |ac| address_contents << address.send(ac) }
+      address_contents.all? { |ac| ac == -4 || ac.nil? }
+    end
+
+    def institution_empty?(institution)
+      institution_contents = []
+      institution_components = [:institute_name, :institute_type]
+      institution_components.each { |ic| institution_contents << institution.send(ic) }
+      institution_contents.all? { |ic| ic == -4 || ic.nil? }
     end
 
     def finalize_ppg_status_history(ppg_status_history)

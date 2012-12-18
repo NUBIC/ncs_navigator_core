@@ -464,7 +464,7 @@ describe OperationalDataExtractor::Base do
 
   end
 
-  context "processing institution" do
+  context "processing birth institution and address" do
 
     let(:hospital_type_location) { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
 
@@ -493,6 +493,34 @@ describe OperationalDataExtractor::Base do
 
       @ode1 = OperationalDataExtractor::PregnancyVisit.new(@response_set)
       @birth_address, @institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
+    end
+
+    describe "#address_empty?" do
+
+      it "should return true if all the survey-derived components of an address are empty" do
+        address = Address.new
+        @ode1.address_empty?(address).should be_true
+      end
+
+      it "should return false if any survey-derived components of an address are not empty" do
+        address = Factory(:address, :address_one => "123 Something Street")
+        @ode1.address_empty?(address).should be_false
+      end
+
+    end
+
+    describe "#institution_empty?" do
+
+      it "should return true if all the survey-derived components of an institution are empty" do
+        institution = Institution.new
+        @ode1.institution_empty?(institution).should be_true
+      end
+
+      it "should return false if any survey-derived components of an institution are not empty" do
+        institution = Factory(:institution, :institute_name => "FAKE INSTITUTION")
+        @ode1.institution_empty?(institution).should be_false
+      end
+
     end
 
     describe "#finalize_institution_with_birth_address" do
