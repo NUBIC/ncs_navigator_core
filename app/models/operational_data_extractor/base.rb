@@ -550,7 +550,7 @@ module OperationalDataExtractor
     end
 
     def process_birth_institution_and_address(birth_address_map, institution_map)
-      birth_address = nil
+      birth_address = Address.new(:address_rank_code => 1, :address_type_code => -5)
       institution = process_institution(institution_map)
 
       birth_address_map.each do |key, attribute|
@@ -654,13 +654,14 @@ module OperationalDataExtractor
     end
 
     def finalize_institution_with_birth_address(birth_address, institute)
-      institute.address = birth_address
+      institute.addresses << birth_address
       unless institute.nil?
         ipl = InstitutionPersonLink.new
         ipl.person = participant.person
         ipl.institution = institute
         ipl.save!
 
+        birth_address.save!
         institute.save!
       end
     end

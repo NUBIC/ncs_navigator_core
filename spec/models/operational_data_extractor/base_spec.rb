@@ -225,40 +225,51 @@ describe OperationalDataExtractor::Base do
         @ode.which_addresses_changed(@addresses).should_not include(@unchanged_address)
       end
 
-      describe "#process_birth_address" do
+      describe "#process_birth_institution_and_address" do
 
         before do
-          @map = OperationalDataExtractor::PbsEligibilityScreener::ADDRESS_MAP
+          @institution_map   = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
+          @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
+
           @participant = Factory(:participant)
-          @survey = create_pbs_eligibility_screener_survey_with_address_operational_data
+          @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
           @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
-          question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.ADDRESS_1")
-          answer = Factory(:answer, :response_class => "string")
-          address1_response = Factory(:response, :string_value => "1708 Sunbeam Ct", :question => question, :answer => answer, :response_set => @response_set)
+          hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+          state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-          question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.CITY")
-          answer = Factory(:answer, :response_class => "string")
-          city_response = Factory(:response, :string_value => "Virginia Beach", :question => question, :answer => answer, :response_set => @response_set)
+          take_survey(@survey, @response_set) do |a|
+            a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
+            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
+            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+            a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
+            a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
+          end
+          @response_set.save!
 
-          question = Factory(:question, :data_export_identifier => "PBS_ELIG_SCREENER.ZIP")
-          answer = Factory(:answer, :response_class => "string")
-          zip_response = Factory(:response, :string_value => "23456", :question => question, :answer => answer, :response_set => @response_set)
-
-          @response_set.responses << address1_response << city_response << zip_response
-          @ode2 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+          @ode2 = OperationalDataExtractor::PregnancyVisit.new(@response_set)
         end
 
-        it "creates birth address record from the responses of a birth instrument" do
-          birth_address = @ode2.process_birth_address(@map)
+        it "populates birth address record from instrument responses" do
+          birth_address_and_institution = @ode2.process_birth_institution_and_address(@birth_address_map, @institution_map)
+          birth_address = birth_address_and_institution[0]
           birth_address.class.should == Address
           birth_address.address_rank_code.should == 1
           birth_address.address_type_code.should == -5
-          birth_address.address_one.should == "1708 Sunbeam Ct"
-          birth_address.city.should == "Virginia Beach"
-          birth_address.zip.should == "23456"
+          birth_address.address_one.should == "123 Any Street"
+          birth_address.city.should == "Springfield"
+          birth_address.zip.should == "65445"
           birth_address.address_type_other.should == "Birth"
         end
+
+        it "returns a created institution" do
+          birth_address_and_institution = @ode2.process_birth_institution_and_address(@birth_address_map, @institution_map)
+          institution = birth_address_and_institution[1]
+          institution.class.should == Institution
+          institution.institute_name.should == "FAKE HOSPITAL MEMORIAL"
+        end
+
       end
 
       describe "#get_address" do
@@ -455,60 +466,48 @@ describe OperationalDataExtractor::Base do
 
   context "processing institution" do
 
-    let(:hospital_type_location)          { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
+    let(:hospital_type_location) { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
 
     before do
-      @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
       @institution_map   = OperationalDataExtractor::PregnancyVisit::INSTITUTION_MAP
+      @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
 
       @person = Factory(:person)
       @participant = Factory(:participant)
+      @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
       @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
+      @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
-      @valid_response_set, @instrument = prepare_instrument(@person, @participant, @survey)
+      hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+      state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
-      take_survey(@survey, @valid_response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital_type_location
-        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", 'St.Fake Hospital'
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE", state
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE", "65445"
       end
+      @response_set.save!
 
-      @valid_response_set.save!
-
-      @ode1 = OperationalDataExtractor::PregnancyVisit.new(@valid_response_set)
+      @ode1 = OperationalDataExtractor::PregnancyVisit.new(@response_set)
+      @birth_address, @institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
     end
 
-    describe "#process_birth_institution_and_address" do
+    describe "#finalize_institution_with_birth_address" do
 
-      it "creates an institution instance when there are valid responses to the institution-related questions" do
-        birth_address_and_institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
-        #birth_address_and_institution[0].class.should == Address
-        birth_address_and_institution[1].class.should == Institution
-      end
-
-    end
-
-    describe "#finalize_institution" do
-
-      it "creates a institution-person link if an institution is created" do
+      it "creates a institution-person link" do
         InstitutionPersonLink.count.should == 0
-        institute = @ode1.process_institution(@map)
-        @ode1.finalize_institution(institute)
+        @ode1.finalize_institution_with_birth_address(@birth_address, @institution)
         InstitutionPersonLink.count.should == 1
-      end
-
-      it "does not create an institution-person link if the institution was not created" do
-        InstitutionPersonLink.count.should == 0
-        institute = @ode2.process_institution(@map)
-        @ode2.finalize_institution(institute)
-        InstitutionPersonLink.count.should == 0
-
       end
 
       it "creates a birth institution record" do
         Institution.count.should == 0
-        institute = @ode1.process_institution(@map)
-        @ode1.finalize_institution(institute)
+        @ode1.finalize_institution_with_birth_address(@birth_address, @institution)
         Institution.count.should == 1
+        @institution.addresses.should include(@birth_address)
       end
 
     end

@@ -188,8 +188,14 @@ module OperationalDataExtractor
     }
 
     INSTITUTION_MAP = {
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
-      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name"
+      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
+      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
+      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name"
     }
 
     def initialize(response_set)
