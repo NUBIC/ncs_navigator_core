@@ -2,152 +2,257 @@
 
 module OperationalDataExtractor
   class PregnancyVisit < Base
+    PREGNANCY_VISIT_1_INTERVIEW_PREFIX    = "PREG_VISIT_1"
+    PREGNANCY_VISIT_2_INTERVIEW_PREFIX    = "PREG_VISIT_2"
+    PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX  = "PREG_VISIT_1_2"
+    PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX  = "PREG_VISIT_2_2"
+    PREGNANCY_VISIT_1_SAQ_2_PREFIX        = "PREG_VISIT_1_SAQ_2"
+    PREGNANCY_VISIT_1_SAQ_3_PREFIX        = "PREG_VISIT_1_SAQ_3"
+    PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX  = "PREG_VISIT_1_3"
+    PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX  = "PREG_VISIT_2_3"
+    PREGNANCY_VISIT_LI_INTERVIEW_PREFIX   = "PREG_VISIT_LI"
+    PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
 
-    PREGNANCY_VISIT_1_INTERVIEW_PREFIX = "PREG_VISIT_1_2"
-    PREGNANCY_VISIT_2_INTERVIEW_PREFIX = "PREG_VISIT_2_2"
-    PREGNANCY_VISIT_1_SAQ_PREFIX       = "PREG_VISIT_1_SAQ_2"
-    PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX = "PREG_VISIT_1_3"
-    PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX = "PREG_VISIT_2_3"
 
     PERSON_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"           => "first_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_LNAME"           => "last_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.PERSON_DOB"        => "person_dob",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.R_FNAME"           => "first_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.R_LNAME"           => "last_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.PERSON_DOB"        => "person_dob",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.R_FNAME"         => "first_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.R_LNAME"         => "last_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.PERSON_DOB"      => "person_dob",
     }
 
     PARTICIPANT_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.AGE_ELIG"          => "pid_age_eligibility_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.AGE_ELIG"          => "pid_age_eligibility_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
     }
 
     PPG_STATUS_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DUE_DATE"          => "orig_due_date",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.DUE_DATE"          => "orig_due_date",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
     }
 
     CELL_PHONE_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr"
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_2"      => "cell_permission_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE_4"      => "text_permission_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CELL_PHONE"        => "phone_nbr",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CELL_PHONE_2"      => "cell_permission_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CELL_PHONE_4"      => "text_permission_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CELL_PHONE"        => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CELL_PHONE_2"    => "cell_permission_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CELL_PHONE_4"    => "text_permission_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CELL_PHONE"      => "phone_nbr"
     }
 
     EMAIL_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL"           => "email",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL_TYPE"      => "email_type_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.EMAIL"           => "email",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.EMAIL_TYPE"      => "email_type_code"
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.EMAIL"             => "email",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.EMAIL"             => "email",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.EMAIL"           => "email",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.EMAIL"           => "email",
     }
 
     CONTACT_1_PERSON_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"     => "first_name",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_1"     => "last_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_FNAME_1"     => "first_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_LNAME_1"     => "last_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"       => "first_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_1"       => "first_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_LNAME_1"       => "last_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_LNAME_1"       => "last_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_FNAME_1"     => "first_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_LNAME_1"     => "last_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_FNAME_1"     => "first_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_LNAME_1"     => "last_name",
     }
 
     CONTACT_1_RELATIONSHIP_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1"    => "relationship_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE1_OTH" => "relationship_other",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE_1"    => "relationship_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE1_OTH" => "relationship_other",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_1"      => "relationship_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE1_OTH"   => "relationship_other",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE_1"      => "relationship_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE1_OTH"   => "relationship_other",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_RELATE_1"    => "relationship_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_RELATE1_OTH" => "relationship_other",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_RELATE_1"    => "relationship_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_RELATE1_OTH" => "relationship_other",
     }
 
     CONTACT_1_ADDRESS_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_1"          => "address_one",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_1"          => "address_two",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR1_1"           => "address_one",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR2_1"           => "address_two",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_1"            => "unit",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_1"            => "city",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_1"           => "state_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_1"             => "zip",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIPCODE_1"         => "zip",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_1"            => "zip4",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR_1_1"          => "address_one",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR_2_1"          => "address_two",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR1_1"           => "address_one",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR2_1"           => "address_two",
       "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_UNIT_1"            => "unit",
       "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_CITY_1"            => "city",
       "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_STATE_1"           => "state_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIP_1"             => "zip",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIPCODE_1"         => "zip",
       "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIP4_1"            => "zip4",
+
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ADDR_1_1"          => "address_one",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ADDR_2_1"          => "address_two",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_UNIT_1"            => "unit",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_CITY_1"            => "city",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_STATE_1"           => "state_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ZIPCODE_1"             => "zip",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ZIP4_1"            => "zip4",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ADDR_1_1"          => "address_one",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ADDR_2_1"          => "address_two",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_UNIT_1"            => "unit",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_CITY_1"            => "city",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_STATE_1"           => "state_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ZIPCODE_1"         => "zip",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ZIP4_1"            => "zip4",
     }
 
     CONTACT_1_PHONE_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_1"     => "phone_nbr",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_PHONE_1"     => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_1"       => "phone_nbr",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_PHONE_1"       => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_PHONE_1"     => "phone_nbr",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_PHONE_1"     => "phone_nbr",
     }
 
     CONTACT_2_PERSON_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2"     => "first_name",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_2"     => "last_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_FNAME_2"     => "first_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_LNAME_2"     => "last_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_FNAME_2"       => "first_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_LNAME_2"       => "last_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_FNAME_2"       => "first_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_LNAME_2"       => "last_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_FNAME_2"     => "first_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_LNAME_2"     => "last_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_FNAME_2"     => "first_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_LNAME_2"     => "last_name",
     }
 
     CONTACT_2_RELATIONSHIP_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_2"    => "relationship_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE2_OTH" => "relationship_other",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE_2"    => "relationship_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE2_OTH" => "relationship_other",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE_2"      => "relationship_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_RELATE2_OTH"   => "relationship_other",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE_2"      => "relationship_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_RELATE2_OTH"   => "relationship_other",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_RELATE_2"    => "relationship_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_RELATE2_OTH" => "relationship_other",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_RELATE_2"    => "relationship_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_RELATE2_OTH" => "relationship_other",
     }
 
     CONTACT_2_ADDRESS_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_2"          => "address_one",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_2"          => "address_two",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_2"            => "unit",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_2"            => "city",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_2"           => "state_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP_2"             => "zip",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_2"            => "zip4",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR_1_2"          => "address_one",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR_2_2"          => "address_two",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_UNIT_2"            => "unit",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_CITY_2"            => "city",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_STATE_2"           => "state_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIP_2"             => "zip",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIP4_2"            => "zip4",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_1_2"            => "address_one",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ADDR_2_2"            => "address_two",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_UNIT_2"              => "unit",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_CITY_2"              => "city",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_STATE_2"             => "state_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIPCODE_2"           => "zip",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.C_ZIP4_2"              => "zip4",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR_1_2"            => "address_one",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ADDR_2_2"            => "address_two",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_UNIT_2"              => "unit",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_CITY_2"              => "city",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_STATE_2"             => "state_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIPCODE_2"           => "zip",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.C_ZIP4_2"              => "zip4",
+
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ADDR_1_2"          => "address_one",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ADDR_2_2"          => "address_two",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_UNIT_2"            => "unit",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_CITY_2"            => "city",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_STATE_2"           => "state_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ZIPCODE_2"         => "zip",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.C_ZIP4_2"            => "zip4",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ADDR_1_2"          => "address_one",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ADDR_2_2"          => "address_two",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_UNIT_2"            => "unit",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_CITY_2"            => "city",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_STATE_2"           => "state_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ZIPCODE_2"         => "zip",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.C_ZIP4_2"            => "zip4",
     }
 
     CONTACT_2_PHONE_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.CONTACT_PHONE_2"       => "phone_nbr",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.CONTACT_PHONE_2"       => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
     }
 
     BIRTH_ADDRESS_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_UNIT"              => "unit",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDRESS_1"         => "address_one",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDRESS_2"         => "address_two",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY"              => "city",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE"             => "state_code",
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.B_ADDRESS_1"       => "address_one",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.B_ADDRESS_2"       => "address_two",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.B_CITY"            => "city",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1"       => "address_one",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_2"       => "address_two",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY"            => "city",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.B_ADDRESS_1"         => "address_one",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.B_ADDRESS_2"         => "address_two",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.B_CITY"              => "city",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.B_STATE"             => "state_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.B_ADDRESS_1"       => "address_one",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.B_ADDRESS_2"       => "address_two",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.B_CITY"            => "city",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_1"       => "address_one",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_2"       => "address_two",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY"            => "city",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDRESS_1"        => "address_one",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDRESS_2"        => "address_two",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_CITY"             => "city",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_STATE"            => "state_code",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ZIPCODE"          => "zip",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1"      => "address_one",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2"      => "address_two",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY"           => "city",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE"          => "state_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE"        => "zip",
     }
 
     FATHER_PERSON_MAP = {
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_NAME"       => "full_name",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.FATHER_AGE"        => "age",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.FATHER_NAME"       => "full_name",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.FATHER_AGE"        => "age",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.FATHER_NAME"       => "full_name",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.FATHER_AGE"        => "age",
     }
 
     FATHER_ADDRESS_MAP = {
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_1"          => "address_one",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ADDR_2"          => "address_two",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_UNIT"            => "unit",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_CITY"            => "city",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_STATE"           => "state_code",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIPCODE"         => "zip",
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_ZIP4"            => "zip4",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_ADDR1_2"           => "address_one",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_ADDR_2_2"          => "address_two",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_UNIT_2"            => "unit",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_CITY_2"            => "city",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_STATE_2"           => "state_code",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_ZIPCODE_2"         => "zip",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_ZIP4_2"            => "zip4",
+
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_ADDR1_3"           => "address_one",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_ADDR_2_3"          => "address_two",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_UNIT_3"            => "unit",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_CITY_3"            => "city",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_STATE_3"           => "state_code",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_ZIPCODE_3"         => "zip",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_ZIP4_3"            => "zip4",
     }
 
     WORK_ADDRESS_MAP = {
@@ -178,24 +283,36 @@ module OperationalDataExtractor
     }
 
     FATHER_PHONE_MAP = {
-      "#{PREGNANCY_VISIT_1_SAQ_PREFIX}.F_PHONE"           => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_SAQ_2_PREFIX}.F_PHONE"           => "phone_nbr",
+      "#{PREGNANCY_VISIT_1_SAQ_3_PREFIX}.F_PHONE"           => "phone_nbr",
     }
 
     DUE_DATE_DETERMINER_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD"   => "DATE_PERIOD",
-      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD" => "DATE_PERIOD",
-      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE"    => "DUE_DATE",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.DATE_PERIOD"   => "DATE_PERIOD",
+      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD"   => "DATE_PERIOD",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.DATE_PERIOD"    => "DATE_PERIOD",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DATE_PERIOD"  => "DATE_PERIOD",
+      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE"      => "DUE_DATE",
     }
 
     INSTITUTION_MAP = {
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLAN"          => "institute_type_code",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLAN"          => "institute_type_code",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLACE"         => "institute_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLACE"         => "institute_name",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
+      "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
+      "#{PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
-      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name"
+      "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.BIRTH_PLAN"         => "institute_type_code",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.BIRTH_PLACE"        => "institute_name",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN"       => "institute_type_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE"      => "institute_name"
     }
 
     def initialize(response_set)
@@ -315,7 +432,7 @@ module OperationalDataExtractor
     end
 
     def get_due_date_attribute(data_export_identifier)
-      (data_export_identifier.include?(PREGNANCY_VISIT_2_INTERVIEW_PREFIX) || data_export_identifier.include?(PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX)) ? :due_date_3 : :due_date_2
+      (data_export_identifier.include?(PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX) || data_export_identifier.include?(PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX)) ? :due_date_3 : :due_date_2
     end
 
     def set_due_date(map)
