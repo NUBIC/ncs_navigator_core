@@ -336,39 +336,6 @@ describe OperationalDataExtractor::PregnancyVisit do
     person.emails.first.email_rank_code.should == 1
   end
 
-  it "extracts birth address operational data from the survey responses" do
-
-    state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
-
-    person = Factory(:person)
-    person.addresses.size.should == 0
-
-    participant = Factory(:participant)
-    survey = create_pregnancy_visit_survey_with_birth_address_operational_data
-    response_set, instrument = prepare_instrument(person, participant, survey)
-    response_set.save!
-
-    take_survey(survey, response_set) do |a|
-      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_1", '123 Hospital Way'
-      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ADDR_2", ''
-      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_UNIT", ''
-      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
-      a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_STATE", state
-      a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
-    end
-
-    response_set.responses.reload
-    response_set.responses.size.should == 6
-
-    OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
-
-    person  = Person.find(person.id)
-    person.addresses.size.should == 1
-    address = person.addresses.first
-    address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
-
-  end
-
   context "determining the due date of a pregnant woman" do
 
     let(:ppg1) { NcsCode.for_list_name_and_local_code("PPG_STATUS_CL2", 1) }
@@ -500,17 +467,21 @@ describe OperationalDataExtractor::PregnancyVisit do
 
     before(:each) do
       @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
       @person = Factory(:person)
       @person.addresses.size.should == 0
       @participant = Factory(:participant)
+      part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
     end
 
-    it "for birth address for PBS PV1" do
-      survey = create_pbs_pregnancy_visit_1_with_birth_address_operational_data
+    it "for birth address, with institution,for PBS PV1" do
+      survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
       response_set, instrument = prepare_instrument(@person, @participant, survey)
       response_set.save!
 
       take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
@@ -519,13 +490,13 @@ describe OperationalDataExtractor::PregnancyVisit do
       end
 
       response_set.responses.reload
-      response_set.responses.size.should == 5
+      response_set.responses.size.should == 7
 
       OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
-      person.addresses.size.should == 1
-      address = person.addresses.first
+      @participant.person.institutions.first.addresses.size.should == 1
+      address = @participant.person.institutions.first.addresses.first
       address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
     end
 
@@ -556,12 +527,14 @@ describe OperationalDataExtractor::PregnancyVisit do
       address.to_s.should == "123 Work Way 3333 Chicago, ILLINOIS 65432-1234"
     end
 
-    it "for birth address for PBS PV2" do
+    it "for birth address, with institution,for PBS PV2" do
       survey = create_pbs_pregnancy_visit_2_with_birth_address_operational_data
       response_set, instrument = prepare_instrument(@person, @participant, survey)
       response_set.save!
 
       take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
@@ -570,13 +543,13 @@ describe OperationalDataExtractor::PregnancyVisit do
       end
 
       response_set.responses.reload
-      response_set.responses.size.should == 5
+      response_set.responses.size.should == 7
 
       OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
       person  = Person.find(@person.id)
-      person.addresses.size.should == 1
-      address = person.addresses.first
+      @participant.person.institutions.first.addresses.size.should == 1
+      address = @participant.person.institutions.first.addresses.first
       address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
     end
 
