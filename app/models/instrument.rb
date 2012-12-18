@@ -73,8 +73,8 @@ class Instrument < ActiveRecord::Base
   # Responses if the current_survey should have responses set prior
   # to Instrument administration.
   #
-  # cf. Person.start_instrument
-  # cf. NcsNavigator::Core::ResponseSetPopulator::Base.process
+  # @see Person.start_instrument
+  # @see NcsNavigator::Core::ResponseSetPopulator::Base.process
   #
   # @param [Person]  - person
   #                  - the person taking the survey
@@ -92,7 +92,7 @@ class Instrument < ActiveRecord::Base
   # @return[Instrument]
   def self.start(person, participant, instrument_survey, current_survey, event, mode = Instrument.capi)
     ins = build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
-    Instrument.prepopulate_response_set(person, ins, current_survey, event, mode)
+    ins.prepopulate_response_set(person, current_survey, event, mode)
     ins
   end
 
@@ -108,9 +108,9 @@ class Instrument < ActiveRecord::Base
   # @return[Instrument]
   def self.build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
     if (instrument_survey.blank? || instrument_survey == current_survey)
-      Instrument.start_initial_instrument(person, participant, current_survey, event)
+      start_initial_instrument(person, participant, current_survey, event)
     else
-      Instrument.continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
+      continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
     end
   end
 
@@ -148,9 +148,9 @@ class Instrument < ActiveRecord::Base
 
   ##
   # Run the Instrument and ResponseSet through the ResponseSetPopulator process
-  def self.prepopulate_response_set(person, ins, current_survey, event, mode)
+  def prepopulate_response_set(person, current_survey, event, mode)
     NcsNavigator::Core::ResponseSetPopulator::Base.new(
-      person, ins, current_survey, { :event => event, :mode => mode }).process
+      person, self, current_survey, { :event => event, :mode => mode }).process
   end
 
   ##

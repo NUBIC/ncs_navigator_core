@@ -119,15 +119,21 @@ describe Instrument do
           Instrument.start(person, mother, nil, survey, event).should == inst
         end
 
-        it "sets the instrument's event to event" do
-          inst = Instrument.start(person, mother, nil, survey, event)
-          inst.event.should == event
-        end
+        context 'calling Instrument.start' do
 
-        it "creates a response_set for the instrument" do
-          inst = Instrument.start(person, mother, nil, survey, event)
-          inst.response_set.should_not be_nil
-          inst.response_set.responses.should be_empty
+          let(:instrument) { Instrument.start(person, mother, nil, survey, event) }
+
+          it "sets the instrument's event to event" do
+            instrument.event.should == event
+          end
+
+          it "creates a response_set for the instrument" do
+            instrument.response_set.should_not be_nil
+          end
+
+          it "creates a responses for the instrument" do
+            instrument.response_set.responses.should be_empty
+          end
         end
       end
 
@@ -143,13 +149,11 @@ describe Instrument do
 
           it 'returns the result of Person#start_instrument' do
             person.should_receive(:start_instrument).with(survey, mother).and_return(inst)
-
             Instrument.start(person, mother, nil, survey, event).should == inst
           end
 
           it "sets the instrument's event to event" do
             inst = Instrument.start(person, mother, nil, survey, event)
-
             inst.event.should == event
           end
         end
@@ -232,8 +236,11 @@ describe Instrument do
         prepopulated_response.to_s.should == "CAPI"
       end
 
-      it "does not persist the prepopulated responses" do
+      it "does not persist the prepopulated response set" do
         instrument.response_set.should be_new_record
+      end
+
+      it "does not persist the prepopulated responses" do
         instrument.response_set.responses.first.should be_new_record
       end
 
