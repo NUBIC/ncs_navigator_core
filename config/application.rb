@@ -116,3 +116,4 @@ require 'ncs_navigator/core'
 require 'ncs_navigator/mdes_ext'
 
 require 'ncs_navigator/core/redis_configuration'
+require 'ncs_navigator/core/sidekiq_configuration'
