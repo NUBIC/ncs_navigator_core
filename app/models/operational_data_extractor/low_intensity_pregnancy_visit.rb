@@ -3,22 +3,41 @@
 module OperationalDataExtractor
   class LowIntensityPregnancyVisit < Base
 
-    INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
+    PREGNANCY_VISIT_LI_INTERVIEW_PREFIX   = "PREG_VISIT_LI"
+    PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
 
     BIRTH_ADDRESS_MAP = {
-      "#{INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
-      "#{INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
-      "#{INTERVIEW_PREFIX}.B_UNIT"              => "unit",
-      "#{INTERVIEW_PREFIX}.B_CITY"              => "city",
-      "#{INTERVIEW_PREFIX}.B_STATE"             => "state_code",
-      "#{INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_UNIT"              => "unit",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_CITY"              => "city",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_STATE"             => "state_code",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
+
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_UNIT"              => "unit",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY"              => "city",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE"             => "state_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
     }
 
     PPG_STATUS_MAP = {
-      "#{INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
-      "#{INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
-      "#{INTERVIEW_PREFIX}.TRYING"          => "ppg_status_code",
-      "#{INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_status_code"
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.TRYING"          => "ppg_status_code",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_status_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT"        => "ppg_status_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DUE_DATE"        => "orig_due_date",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.TRYING"          => "ppg_status_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.MED_UNABLE"      => "ppg_status_code"
+    }
+
+    INSTITUTION_MAP = {
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.BIRTH_PLAN"         => "institute_type_code",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.BIRTH_PLACE"        => "institute_name",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN"       => "institute_type_code",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE"      => "institute_name"
     }
 
     def initialize(response_set)
@@ -26,7 +45,7 @@ module OperationalDataExtractor
     end
 
     def maps
-      [ BIRTH_ADDRESS_MAP, PPG_STATUS_MAP ]
+      [ BIRTH_ADDRESS_MAP, PPG_STATUS_MAP, INSTITUTION_MAP ]
     end
 
 
@@ -34,8 +53,11 @@ module OperationalDataExtractor
 
       ppg_status_history = nil
       birth_address = nil
+      institution          = nil
 
-      birth_address = process_birth_address(BIRTH_ADDRESS_MAP)
+      birth_address, institution = process_birth_institution_and_address(BIRTH_ADDRESS_MAP, INSTITUTION_MAP)
+
+      finalize_institution_with_birth_address(birth_address, institution)
 
       PPG_STATUS_MAP.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -49,11 +71,11 @@ module OperationalDataExtractor
             end
 
             case key
-            when "#{INTERVIEW_PREFIX}.PREGNANT"
+            when "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT"
               set_value(ppg_status_history, attribute, value)
             end
 
-            if (key == "#{INTERVIEW_PREFIX}.DUE_DATE") && !value.blank?
+            if (key == "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DUE_DATE") && !value.blank?
               participant.ppg_details.first.update_due_date(value, :due_date_2)
             end
           end

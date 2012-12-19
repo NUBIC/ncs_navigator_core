@@ -10,8 +10,6 @@ module OperationalDataExtractor
     PREGNANCY_VISIT_1_SAQ_3_PREFIX        = "PREG_VISIT_1_SAQ_3"
     PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX  = "PREG_VISIT_1_3"
     PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX  = "PREG_VISIT_2_3"
-    PREGNANCY_VISIT_LI_INTERVIEW_PREFIX   = "PREG_VISIT_LI"
-    PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
 
 
     PERSON_MAP = {
@@ -218,16 +216,6 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_CITY"            => "city",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_STATE"           => "state_code",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.B_ZIPCODE"         => "zip",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDRESS_1"        => "address_one",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDRESS_2"        => "address_two",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_CITY"             => "city",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_STATE"            => "state_code",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ZIPCODE"          => "zip",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1"      => "address_one",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2"      => "address_two",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY"           => "city",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE"          => "state_code",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE"        => "zip",
     }
 
     FATHER_PERSON_MAP = {
@@ -291,15 +279,13 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
       "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.DATE_PERIOD"   => "DATE_PERIOD",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.DATE_PERIOD"   => "DATE_PERIOD",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.DATE_PERIOD"    => "DATE_PERIOD",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DATE_PERIOD"  => "DATE_PERIOD",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.DUE_DATE"      => "DUE_DATE",
     }
 
     INSTITUTION_MAP = {
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLAN"          => "institute_type_code",
-      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLAN"          => "institute_type_code",
-      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLACE"         => "institute_name",
+      "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.BIRTH_PLACE"         => "institute_name",
+      "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLAN"          => "institute_type_code",
       "#{PREGNANCY_VISIT_2_INTERVIEW_PREFIX}.BIRTH_PLACE"         => "institute_name",
       "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
       "#{PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
@@ -309,10 +295,6 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLAN"        => "institute_type_code",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.BIRTH_PLAN"         => "institute_type_code",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.BIRTH_PLACE"        => "institute_name",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN"       => "institute_type_code",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE"      => "institute_name"
     }
 
     def initialize(response_set)
@@ -370,7 +352,7 @@ module OperationalDataExtractor
       process_ppg_status(PPG_STATUS_MAP)
       cell_phone = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
       email = process_email(EMAIL_MAP)
-      birth_address, institution = process_birth_institution_and_address(BIRTH_ADDRESS_MAP,INSTITUTION_MAP)
+      birth_address, institution = process_birth_institution_and_address(BIRTH_ADDRESS_MAP, INSTITUTION_MAP)
 
       work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
       confirm_work_address = process_address(person, CONFIRM_WORK_ADDRESS_MAP, Address.work_address_type, duplicate_rank)

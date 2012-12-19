@@ -73,7 +73,7 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Contact 1 Zip
-    q = Factory(:question, :reference_identifier => "C_ZIP_1", :data_export_identifier => "PREG_VISIT_1_2.C_ZIP_1", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "C_ZIPCODE_1", :data_export_identifier => "PREG_VISIT_1_2.C_ZIPCODE_1", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
     # Contact 1 plus 4
     q = Factory(:question, :reference_identifier => "C_ZIP4_1", :data_export_identifier => "PREG_VISIT_1_2.C_ZIP4_1", :survey_section_id => survey_section.id)
@@ -117,7 +117,7 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Contact 2 Zip
-    q = Factory(:question, :reference_identifier => "C_ZIP_2", :data_export_identifier => "PREG_VISIT_1_2.C_ZIP_2", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "C_ZIPCODE_2", :data_export_identifier => "PREG_VISIT_1_2.C_ZIPCODE_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
     # Contact 2 plus 4
     q = Factory(:question, :reference_identifier => "C_ZIP4_2", :data_export_identifier => "PREG_VISIT_1_2.C_ZIP4_2", :survey_section_id => survey_section.id)
@@ -190,7 +190,7 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Zip
-    q = Factory(:question, :reference_identifier => "B_ZIP", :data_export_identifier => "PREG_VISIT_1_2.B_ZIPCODE", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "B_ZIPCODE", :data_export_identifier => "PREG_VISIT_1_2.B_ZIPCODE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
 
     survey
@@ -224,7 +224,7 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Zip
-    q = Factory(:question, :reference_identifier => "B_ZIP", :data_export_identifier => "PREG_VISIT_1_3.B_ZIPCODE", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "B_ZIPCODE", :data_export_identifier => "PREG_VISIT_1_3.B_ZIPCODE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
 
     survey
@@ -325,26 +325,26 @@ module PregnancyVisitOne
     q = Factory(:question, :reference_identifier => "FATHER_AGE", :data_export_identifier => "PREG_VISIT_1_SAQ_2.FATHER_AGE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Father Name", :response_class => "integer")
     # Address One
-    q = Factory(:question, :reference_identifier => "F_ADDR_1", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ADDR_1", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_ADDR1_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ADDR1_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 1", :response_class => "string")
     # Address Two
-    q = Factory(:question, :reference_identifier => "F_ADDR_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ADDR_2", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_ADDR_2_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ADDR_2_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Address 2", :response_class => "string")
     # Unit
-    q = Factory(:question, :reference_identifier => "F_UNIT", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_UNIT", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_UNIT_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_UNIT_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Unit", :response_class => "string")
     # City
-    q = Factory(:question, :reference_identifier => "F_CITY", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_CITY", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_CITY_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_CITY_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "City", :response_class => "string")
     # State
-    q = Factory(:question, :reference_identifier => "F_STATE", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_STATE", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_STATE_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_STATE_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Zip
-    q = Factory(:question, :reference_identifier => "F_ZIPCODE", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ZIPCODE", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_ZIPCODE_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ZIPCODE_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
     # Zip
-    q = Factory(:question, :reference_identifier => "F_ZIP4", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ZIP4", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "F_ZIP4_2", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_ZIP4_2", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
     # Phone
     q = Factory(:question, :reference_identifier => "F_PHONE", :data_export_identifier => "PREG_VISIT_1_SAQ_2.F_PHONE", :survey_section_id => survey_section.id)
