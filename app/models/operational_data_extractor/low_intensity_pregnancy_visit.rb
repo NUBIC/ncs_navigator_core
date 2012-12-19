@@ -7,15 +7,15 @@ module OperationalDataExtractor
     PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX = "PREG_VISIT_LI_2"
 
     BIRTH_ADDRESS_MAP = {
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
-      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDRESS_1"            => "address_one",
+      "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ADDRESS_2"            => "address_two",
       "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_UNIT"              => "unit",
       "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_CITY"              => "city",
       "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_STATE"             => "state_code",
       "#{PREGNANCY_VISIT_LI_INTERVIEW_PREFIX}.B_ZIPCODE"           => "zip",
 
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDR_1"            => "address_one",
-      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDR_2"            => "address_two",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1"            => "address_one",
+      "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2"            => "address_two",
       "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_UNIT"              => "unit",
       "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY"              => "city",
       "#{PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE"             => "state_code",

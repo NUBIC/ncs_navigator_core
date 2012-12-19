@@ -494,7 +494,6 @@ describe OperationalDataExtractor::PregnancyVisit do
 
       OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
-      person  = Person.find(@person.id)
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
       address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
@@ -547,7 +546,6 @@ describe OperationalDataExtractor::PregnancyVisit do
 
       OperationalDataExtractor::PregnancyVisit.new(response_set).extract_data
 
-      person  = Person.find(@person.id)
       @participant.person.institutions.first.addresses.size.should == 1
       address = @participant.person.institutions.first.addresses.first
       address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"

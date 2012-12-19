@@ -153,4 +153,56 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
 
   end
 
+  context "creating a birth institution and address record" do
+
+    before(:each) do
+      @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+
+      survey = create_lo_i_quex_with_birth_institution_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE", @state
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(response_set).extract_data
+
+      @institute = @participant.person.institutions.first
+    end
+
+    it "extracts institution and birth address operational data" do
+      @participant.person.institutions.first.addresses.size.should == 1
+      address = @participant.person.institutions.first.addresses.first
+      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+    end
+
+    it "extracts institutional data" do
+      @institute.institute_name.should == "FAKE HOSPITAL MEMORIAL"
+    end
+
+    it "associates the institution with the birth address" do
+      @institute.addresses.first.address_one.should == '123 Hospital Way'
+    end
+
+    it "associates the birth address with the person, through an institution-person link" do
+      @participant.person.institutions.first.addresses.first.address_one.should == '123 Hospital Way'
+    end
+
+  end
+
 end
