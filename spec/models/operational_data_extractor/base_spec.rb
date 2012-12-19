@@ -495,6 +495,13 @@ describe OperationalDataExtractor::Base do
       @birth_address, @institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
     end
 
+    describe "#process_institution" do
+      it "generates an instituiton record" do
+        @ode1.process_institution(@institution_map).class.should == Institution
+        @ode1.process_institution(@institution_map).institute_name.should == "FAKE HOSPITAL MEMORIAL"
+      end
+    end
+
     describe "#address_empty?" do
 
       it "should return true if all the survey-derived components of an address are empty" do
@@ -519,6 +526,23 @@ describe OperationalDataExtractor::Base do
       it "should return false if any survey-derived components of an institution are not empty" do
         institution = Factory(:institution, :institute_name => "FAKE INSTITUTION")
         @ode1.institution_empty?(institution).should be_false
+      end
+
+    end
+
+    describe "#finalize_institution" do
+      it "links the person to the institution" do
+        institution = @ode1.process_institution(@institution_map)
+        @ode1.finalize_institution(institution)
+        @participant.person.institutions.first.should eq(institution)
+      end
+
+      it "saves the institution record" do
+        institution = @ode1.process_institution(@institution_map)
+        Institution.count.should == 0
+        @ode1.finalize_institution(institution)
+        Institution.count.should == 1
+        Institution.first.should eq(institution)
       end
 
     end

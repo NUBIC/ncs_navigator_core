@@ -656,6 +656,17 @@ module OperationalDataExtractor
       institution
     end
 
+    def finalize_institution(institute)
+      ipl = InstitutionPersonLink.new
+      ipl.person = participant.person
+      ipl.institution = institute
+
+      unless institution_empty?(institute)
+        ipl.save!
+        institute.save!
+      end
+    end
+
     def finalize_institution_with_birth_address(birth_address, institute)
 
       institute.addresses << birth_address unless address_empty?(birth_address)
