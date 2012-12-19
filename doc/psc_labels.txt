@@ -257,7 +257,7 @@ event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_
 
 event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_three order:01_05 participant_type:mother references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one
 
-event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_mold.room_mold_child order:01_06 participant_type:child references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one
+event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_mold order:01_06 participant_type:child references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one
 
 event:18_month instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_four order:01_07 participant_type:mother references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one
 
@@ -278,7 +278,7 @@ event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_m
 
 event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_three order:01_05 participant_type:mother references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one
 
-event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_mold.room_mold_child order:01_06 participant_type:child references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one
+event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_mold order:01_06 participant_type:child references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one
 
 event:24_month instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_four order:01_07 participant_type:mother references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one
 

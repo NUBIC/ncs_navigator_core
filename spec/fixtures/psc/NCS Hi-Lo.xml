@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-12-03T15:27:42.818Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2012-12-19T14:58:07.891Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 26" date="2012-12-19" mandatory="true" released-date="2012-12-19T14:58:07.891Z" updated-date="2012-12-19T14:57:37.439Z" previous-amendment-key="2012-11-27~Rev 25">
+    <planned-activity-delta id="ccdaa4d8-2d6b-4fb6-942e-43208b6a9f2f" node-id="11991a81-9666-4d09-b8f2-745e7e45e8d3">
+      <property-change id="b5771d4c-1bf9-443c-b5ef-9fb73e17cfb2" property-name="day" old-value="548" new-value="548"/>
+      <remove id="fd859bc4-caa3-46eb-9e02-37b4c589fa1e" child-id="8d2208a3-67a3-4324-8d9a-afefe002fda6"/>
+      <add id="5e2e6ef6-6316-4892-b173-3635fd233a79">
+        <label id="44c363e5-c0cd-4ec8-9ea5-dcce9956678c" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_mold"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="3047dcd8-b323-44a0-b94e-74d2e5ff247c" node-id="dadf88a4-be33-4f74-998e-0b67f3e7e39f">
+      <property-change id="62d01ac8-2cf2-4378-a780-4bb9c2397f08" property-name="day" old-value="730" new-value="730"/>
+      <remove id="961b712a-7a77-47ed-a1d4-b9ef131c02be" child-id="424061d2-c780-4510-9868-41154021a491"/>
+      <add id="1688cf1d-5144-4231-84e4-9cc6a4349b7e">
+        <label id="ee2356c2-769a-48ec-8b8c-5cfb4895e7d7" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_mold"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 25" date="2012-11-27" mandatory="true" released-date="2012-12-03T15:27:42.818Z" updated-date="2012-12-03T14:55:47.935Z" previous-amendment-key="2012-11-05~Rev 24">
     <planned-activity-delta id="2aaeb51d-b84d-40a6-b624-90d8999d628a" node-id="48da916f-60b7-4643-93f3-19a4eddf9089">
       <property-change id="b9a3cdc8-b1aa-4c26-bc66-7b2398a46dde" property-name="day" old-value="366" new-value="366"/>

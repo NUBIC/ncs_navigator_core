@@ -550,7 +550,7 @@
           </planned-activity>
           <planned-activity id="11991a81-9666-4d09-b8f2-745e7e45e8d3" details="for each child" day="548">
             <label id="bc428ce2-3c01-4007-a715-3f154c16a00a" name="event:18_month"/>
-            <label id="8d2208a3-67a3-4324-8d9a-afefe002fda6" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_mold.room_mold_child"/>
+            <label id="44c363e5-c0cd-4ec8-9ea5-dcce9956678c" name="instrument:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_eighteen_mth_mother_mold"/>
             <label id="1203ada8-267b-497b-a13e-e74b9338606a" name="order:01_06"/>
             <label id="7decd667-f931-4095-b7de-20fbd439b6bb" name="participant_type:child"/>
             <label id="f6715a70-ac30-4989-981f-4d25eb14b97a" name="references:2.0:ins_que_18mmother_int_ehpbhi_p2_v1.0_part_one"/>
@@ -598,7 +598,7 @@
           </planned-activity>
           <planned-activity id="dadf88a4-be33-4f74-998e-0b67f3e7e39f" details="for each child" day="730">
             <label id="155ec6df-19e0-4892-97cb-1b1d1ace2690" name="event:24_month"/>
-            <label id="424061d2-c780-4510-9868-41154021a491" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_mold.room_mold_child"/>
+            <label id="ee2356c2-769a-48ec-8b8c-5cfb4895e7d7" name="instrument:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_twenty_four_mth_mother_mold"/>
             <label id="bb4ef00e-9e11-449a-9d34-54c4e2825dbb" name="order:01_06"/>
             <label id="e61bb7f6-0194-4377-bd22-e753d5a822af" name="participant_type:child"/>
             <label id="ae9359f3-27fa-4df7-945f-1c812ce21ebe" name="references:2.0:ins_que_24mmother_int_ehpbhi_p2_v1.0_part_one"/>
