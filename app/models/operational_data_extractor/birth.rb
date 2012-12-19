@@ -93,6 +93,10 @@ module OperationalDataExtractor
       "#{BIRTH_LI_PREFIX}.EMAIL_TYPE"      => "email_type_code"
     }
 
+    INSTITUTION_MAP = {
+      "#{BIRTH_VISIT_3_PREFIX}.BIRTH_DELIVER"        => "institute_type_code",
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -108,6 +112,7 @@ module OperationalDataExtractor
         HOME_PHONE_MAP,
         CELL_PHONE_MAP,
         EMAIL_MAP,
+        INSTITUTION_MAP
       ]
     end
 
@@ -119,6 +124,7 @@ module OperationalDataExtractor
       phone        = nil
       mail_address = nil
       work_address = nil
+      institution  = nil
 
       process_person(PERSON_MAP)
 
@@ -132,10 +138,12 @@ module OperationalDataExtractor
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
 
       email        = process_email(EMAIL_MAP)
+      institution  = process_institution(INSTITUTION_MAP)
 
       finalize_email(email)
       finalize_addresses(mail_address, work_address)
       finalize_telephones(cell_phone, home_phone, phone)
+      finalize_institution(institution)
 
       child.save! if child
       participant.save!
