@@ -199,4 +199,56 @@ namespace :instruments do
       puts "#{i + 1}) #{prepopulated_question_ids_for_surveys[unhandled]}\n    - #{unhandled}"
     end
   end
+
+  desc 'List all Survey titles that do not have a matching PSC instrument label (and the other way too)'
+  task :check_psc_labels_match_survey_titles => :environment do
+
+    msg = "
+*****
+This only checks against your local database for the known Surveys.
+Make sure that you have loaded all Surveys locally.
+e.g. bundle exec rake setup:surveys
+*****"
+    puts msg
+
+
+    require 'rexml/document'
+    include REXML
+
+    xmlfile = File.new("#{Rails.root}/spec/fixtures/psc/NCS Hi-Lo.xml")
+    xmldoc = Document.new(xmlfile)
+
+    # Collect all instrument labels
+    raw_labels = []
+    XPath.each(xmldoc, "//label") do |l|
+      name = l.attributes["name"]
+      raw_labels << name if name.include? "instrument"
+    end
+    instrument_labels = {}
+    raw_labels.uniq!.each do |i|
+      normalized_label = Survey.to_normalized_string(i.split(':').last)
+      instrument_labels[normalized_label] = i
+    end
+
+    # Collect all known survey titles
+    raw_titles = Survey.select("title").all.map(&:title)
+    survey_titles = {}
+    raw_titles.uniq!.each do |t|
+      survey_titles[Survey.to_normalized_string(t)] = t
+    end
+
+
+    puts "\nKnown Survey Titles that do not have an Instrument label in PSC:\n"
+
+    (survey_titles.keys - instrument_labels.keys).sort.each_with_index do |survey_without_label, idx|
+      puts "#{idx+1}). #{survey_without_label}: #{survey_titles[survey_without_label]}"
+    end
+
+    puts "\nInstrument Labels in PSC that do not match a Survey:\n"
+
+    (instrument_labels.keys - survey_titles.keys).sort.each_with_index do |dangling_label, idx|
+      puts "#{idx+1}). #{dangling_label}: #{instrument_labels[dangling_label]}"
+    end
+
+  end
 end
