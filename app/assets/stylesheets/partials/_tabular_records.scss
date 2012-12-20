@@ -35,6 +35,10 @@ table.records {
   tr.odd_record {
     background-color: white;
   }
+  tr.even_record:hover,
+  tr.odd_record:hover {
+    background-color: aliceblue;
+  }
   tr.current_record {
     background-color: aliceblue;
   }
