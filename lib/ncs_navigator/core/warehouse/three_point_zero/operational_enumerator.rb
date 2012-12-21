@@ -45,8 +45,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
 
     produce_one_for_one(:people, :Person,
       :column_map => {
-        # TODO: confirm that language_code and language_other are still used in
-        #       MDES 3.0 and not replaced by language_new_code and language_new_other
         :language_code => :person_lang,
         :language_other => :person_lang_oth,
         :language_new_code => :person_lang_new,
@@ -281,7 +279,9 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     produce_one_for_one(:addresses, :Address,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
-        { :table => :dwelling_units, :public_id => :du_id }
+        { :table => :dwelling_units, :public_id => :du_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
       ],
       :column_map => {
         :address_one => :address_1,
@@ -297,6 +297,8 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     produce_one_for_one(:emails, :Email,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
       ],
       :ignored_columns => %w(
         email_start_date_date email_end_date_date response_set_id lock_version
@@ -306,6 +308,8 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     produce_one_for_one(:telephones, :Telephone,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
       ],
       :ignored_columns => %w(
         phone_start_date_date phone_end_date_date response_set_id lock_version

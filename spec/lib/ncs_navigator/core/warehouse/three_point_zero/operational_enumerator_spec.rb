@@ -402,6 +402,8 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       let(:warehouse_model) { wh_config.model(:Address) }
       let(:core_model) { Address }
       let!(:address) { Factory(:address) }
+      let(:provider) { Factory(:provider) }
+      let(:institution) { Factory(:institution) }
 
       include_examples 'one to one'
 
@@ -415,11 +417,17 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       end
 
       it 'uses the public ID for the provider' do
-        pending 'No Provider in core yet'
+        address.provider = provider
+        address.save!
+
+        results.first.provider_id.should == provider.provider_id
       end
 
       it 'uses the public ID for the institute' do
-        pending 'No Institute in core yet'
+        address.institute = institution
+        address.save!
+
+        results.first.institute_id.should == institution.institute_id
       end
 
       it 'renders address_info_date appropriately' do
@@ -446,6 +454,8 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       let(:producer_names) { [:emails] }
       let(:warehouse_model) { wh_config.model(:Email) }
       let!(:email) { Factory(:email) }
+      let(:provider) { Factory(:provider) }
+      let(:institution) { Factory(:institution) }
 
       include_examples 'one to one'
 
@@ -454,11 +464,17 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       end
 
       it 'uses the public ID for the provider' do
-        pending 'No Provider in core yet'
+        email.provider = provider
+        email.save!
+
+        results.first.provider_id.should == provider.provider_id
       end
 
       it 'uses the public ID for the institute' do
-        pending 'No Institute in core yet'
+        email.institute = institution
+        email.save!
+
+        results.first.institute_id.should == institution.institute_id
       end
 
       it 'renders email_info_date appropriately' do
@@ -476,6 +492,8 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       let(:producer_names) { [:telephones] }
       let(:warehouse_model) { wh_config.model(:Telephone) }
       let!(:telephone) { Factory(:telephone) }
+      let(:provider) { Factory(:provider) }
+      let(:institution) { Factory(:institution) }
 
       include_examples 'one to one'
 
@@ -484,11 +502,17 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       end
 
       it 'uses the public ID for the provider' do
-        pending 'No Provider in core yet'
+        telephone.provider = provider
+        telephone.save!
+
+        results.first.provider_id.should == provider.provider_id
       end
 
       it 'uses the public ID for the institute' do
-        pending 'No Institute in core yet'
+        telephone.institute = institution
+        telephone.save!
+
+        results.first.institute_id.should == institution.institute_id
       end
 
       it 'renders phone_info_date appropriately' do
