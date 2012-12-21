@@ -340,5 +340,68 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       },
       :ignored_columns => %w(date_first_visit_date)
     )
+
+    produce_one_for_one(:provider_roles, :ProviderRole,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
+    produce_one_for_one(:pbs_provider_roles, :ProviderRolePbs,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
+    produce_one_for_one(:provider_logistics, :ProviderLogistics,
+      :public_ids => [
+        { :table => :providers, :public_id => :provider_id }
+      ],
+      :column_map => {
+        :provider_logistics_code  => :provider_logistics,
+        :provider_logistics_other => :provider_logistics_oth
+      },
+      :ignored_columns => %w(completion_date comment refusal)
+    )
+
+    produce_one_for_one(:pbs_lists, :PbsList,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
+    produce_one_for_one(:non_interview_providers, :NonInterviewProvider,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :contacts, :join_column => :contact_id },
+      ],
+      :column_map => {
+        :nir_type_provider_code       => :nir_type_provider,
+        :nir_type_provider_other      => :nir_type_provider_oth,
+        :nir_closed_info_code         => :nir_closed_info,
+        :nir_closed_info_other        => :nir_closed_info_oth,
+        :perm_closure_code            => :perm_closure,
+        :who_refused_code             => :who_refused,
+        :who_refused_other            => :who_refused_oth,
+        :refuser_strength_code        => :refuser_strength,
+        :ref_action_provider_code     => :ref_action_provider,
+        :who_confirm_noprenatal_code  => :who_confirm_noprenatal,
+        :who_confirm_noprenatal_other => :who_confirm_noprenatal_oth,
+        :nir_moved_info_code          => :nir_moved_info,
+        :nir_moved_info_other         => :nir_moved_info_oth,
+        :perm_moved_code              => :perm_moved,
+      }
+    )
+
+    produce_one_for_one(:non_interview_provider_refusals, :NonInterviewProviderRefusal,
+      :public_ids => %w(non_interview_providers),
+      # :public_ids => [
+      #   { :table => :non_interview_providers, :join_column => :non_interview_provider_id },
+      # ],
+      :column_map => {
+        :refusal_reason_pbs_code  => :refusal_reason_pbs,
+        :refusal_reason_pbs_other => :refusal_reason_pbs_oth,
+      }
+    )
   end
 end

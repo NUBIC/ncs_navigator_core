@@ -889,6 +889,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     describe 'for PersonProviderLink' do
       let(:producer_names) { [:person_provider_links] }
       let(:warehouse_model) { wh_config.model(:LinkPersonProvider) }
+      let(:core_model) { PersonProviderLink }
 
       before do
         Factory(:person_provider_link)
@@ -903,7 +904,161 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       it 'uses the public ID for provider' do
         results.first.provider_id.should == Provider.first.public_id
       end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:provider_intro_outcome_code,        -5, :prov_intro_outcome, '-5'],
+          [:provider_intro_outcome_other,      'X', :prov_intro_outcome_oth],
+        ].each { |crit| verify_mapping(*crit) }
+      end
     end
+
+    describe 'for ProviderRole' do
+      let(:producer_names) { [:provider_roles] }
+      let(:warehouse_model) { wh_config.model(:ProviderRole) }
+
+      before do
+        Factory(:provider_role)
+      end
+
+      include_examples 'one to one'
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [wh_config.model(:ProviderRole)]
+      end
+
+      it 'uses the public ID for provider_role' do
+        results.first.provider_role_id.should == ProviderRole.first.public_id
+      end
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for PbsProviderRole' do
+      let(:producer_names) { [:pbs_provider_roles] }
+      let(:warehouse_model) { wh_config.model(:ProviderRolePbs) }
+
+      before do
+        Factory(:pbs_provider_role)
+      end
+
+      include_examples 'one to one'
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [wh_config.model(:ProviderRolePbs)]
+      end
+
+      it 'uses the public ID for pbs_provider_role' do
+        results.first.provider_role_pbs_id.should == PbsProviderRole.first.public_id
+      end
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for ProviderLogistic' do
+      let(:producer_names) { [:provider_logistics] }
+      let(:warehouse_model) { wh_config.model(:ProviderLogistics) }
+
+      before do
+        Factory(:provider_logistic)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for PbsList' do
+      let(:producer_names) { [:pbs_lists] }
+      let(:warehouse_model) { wh_config.model(:PbsList) }
+
+      before do
+        Factory(:pbs_list)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for NonInterviewProvider' do
+      let(:producer_names) { [:non_interview_providers] }
+      let(:warehouse_model) { wh_config.model(:NonInterviewProvider) }
+      let(:core_model) { NonInterviewProvider }
+
+      before do
+        Factory(:non_interview_provider)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+
+      it 'uses the public ID for contacts' do
+        results.first.contact_id.should == Contact.first.public_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:nir_type_provider_code,        -5, :nir_type_provider, '-5'],
+          [:nir_type_provider_other,      'X', :nir_type_provider_oth],
+          [:nir_closed_info_code,          -5, :nir_closed_info, '-5'],
+          [:nir_closed_info_other,        'X', :nir_closed_info_oth],
+          [:perm_closure_code,              1, :perm_closure, '1'],
+          [:who_refused_code,              -5, :who_refused, '-5'],
+          [:who_refused_other,            'X', :who_refused_oth],
+          [:refuser_strength_code,          1, :refuser_strength, '1'],
+          [:ref_action_provider_code,       1, :ref_action_provider, '1'],
+          [:who_confirm_noprenatal_code,   -5, :who_confirm_noprenatal, '-5'],
+          [:who_confirm_noprenatal_other, 'X', :who_confirm_noprenatal_oth],
+          [:nir_moved_info_code,           -5, :nir_moved_info, '-5'],
+          [:nir_moved_info_other,         'X', :nir_moved_info_oth],
+          [:perm_moved_code,                1, :perm_moved, '1'],
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for NonInterviewProviderRefusal' do
+      let(:producer_names) { [:non_interview_provider_refusals] }
+      let(:warehouse_model) { wh_config.model(:NonInterviewProviderRefusal) }
+      let(:core_model) { NonInterviewProviderRefusal }
+
+      before do
+        Factory(:non_interview_provider_refusal)
+      end
+
+      include_examples 'one to one'
+
+      # FIXME: The association in this model throws error
+      #        no member 'public_id_for_non_interview_providers_as_non_interview_provider_id' in struct
+      it 'uses the public ID for non_interview_provider' do
+        results.first.non_interview_provider_id.should == NonInterviewProvider.first.public_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:refusal_reason_pbs_code,        -5, :refusal_reason_pbs, '-5'],
+          [:refusal_reason_pbs_other,      'X', :refusal_reason_pbs_oth],
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
 
     describe 'ordering' do
       let(:order) { OperationalEnumerator.record_producers.collect(&:name) }

@@ -342,5 +342,11 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       :ignored_columns => %w(date_first_visit_date
         sampled_person_code pre_screening_status_code date_first_visit)
     )
+
+    produce_one_for_one(:provider_roles, :ProviderRole,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
   end
 end
