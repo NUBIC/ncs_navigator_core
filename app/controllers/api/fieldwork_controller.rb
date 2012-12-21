@@ -33,7 +33,7 @@ class Api::FieldworkController < ApiController
 
     NcsNavigator::Core::Field::MergeWorker.perform_async(m.id)
 
-    respond_with({ 'ok' => true }, :status => :accepted, :location => api_merge_path(m.id))
+    respond_with m, :location => api_merge_path(m.id)
   end
 
   def show
