@@ -135,7 +135,7 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
     )
 
     produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
-      :public_ids => %w(participants contacts)
+      :public_ids => %w(participants contacts providers)
     )
 
     produce_one_for_one(:participant_visit_consents, :ParticipantVisConsent,
@@ -313,6 +313,34 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
       :ignored_columns => %w(
         phone_start_date_date phone_end_date_date response_set_id lock_version
       )
+    )
+
+    produce_one_for_one(:institutions, :Institution)
+
+    produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :institutions, :public_id => :institute_id }
+      ],
+      :ignored_columns => %w(institute_relation_code institute_relation_other)
+    )
+
+    produce_one_for_one(:providers, :Provider,
+      :ignored_columns => %w(institution_id name_practice list_subsampling_code
+        proportion_weeks_sampled proportion_days_sampled sampling_notes)
+    )
+
+    produce_one_for_one(:person_provider_links, :LinkPersonProvider,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :public_id => :provider_id }
+      ],
+      :column_map => {
+        :provider_intro_outcome_code  => :prov_intro_outcome,
+        :provider_intro_outcome_other => :prov_intro_outcome_oth
+      },
+      :ignored_columns => %w(date_first_visit_date
+        sampled_person_code pre_screening_status_code date_first_visit)
     )
   end
 end
