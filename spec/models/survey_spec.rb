@@ -36,42 +36,16 @@ describe Survey do
     let(:o2) { Factory(:survey) }
   end
 
-  context "more than one Survey having the same title", :slow do
+  describe '#most_recent_for_access_code' do
+    let!(:s0) { Factory(:survey, :access_code => 'foo', :survey_version => 0) }
+    let!(:s1) { Factory(:survey, :access_code => 'foo', :survey_version => 1) }
 
-    before(:each) do
-      Survey.destroy_all
-      count = 0
-      Dir["#{Rails.root}/spec/fixtures/surveys/*.rb"].sort.each do |f|
-        $stdout = StringIO.new
-        Surveyor::Parser.parse File.read(f)
-        $stdout = STDOUT
-        count += 1
-      end
-
-      Survey.count.should == count
+    it "finds the most recent survey for a given access code" do
+      Survey.most_recent_for_access_code('foo').should == s1
     end
 
-    describe "#most_recent_for_access_code" do
-      it "finds the most recent survey for a given access code" do
-        title = "INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0"
-        access_code = Survey.to_normalized_string(title)
-
-        Survey.most_recent_for_access_code(access_code).should ==
-          Survey.order(:survey_version).where(:access_code => access_code).last
-      end
-      it "returns nil if code is blank" do
-        Survey.most_recent_for_access_code("").should be_nil
-      end
-    end
-
-    it 'finds all the most recent surveys' do
-      # expected = all survey titles in #{Rails.root}/spec/fixtures/surveys directory
-      expected = [
-        'INS_QUE_LIPregNotPreg_INT_LI_P2_V2.0',
-        'INS_QUE_PregVisit1_INT_EHPBHI_P2_V2.0'
-      ]
-
-      Survey.most_recent.order(:title).map(&:title).should == expected
+    it "returns nil if code is blank" do
+      Survey.most_recent_for_access_code(nil).should be_nil
     end
   end
 
