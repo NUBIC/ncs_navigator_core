@@ -125,7 +125,7 @@ describe SurveyorController do
 
       it 'retries the update on an optimistic locking failure' do
         response_set.should_receive(:update_from_ui_hash).ordered.
-          with(responses_ui_hash).and_raise(ActiveRecord::StaleObjectError)
+          with(responses_ui_hash).and_raise(ActiveRecord::StaleObjectError.new(Response.new, 'create'))
         response_set.should_receive(:update_from_ui_hash).ordered.
           with(responses_ui_hash)
 
@@ -142,10 +142,12 @@ describe SurveyorController do
       end
 
       it 'only retries three times' do
-        response_set.should_receive(:update_from_ui_hash).exactly(3).times.
-          with(responses_ui_hash).and_raise(ActiveRecord::StaleObjectError)
+        e = ActiveRecord::StaleObjectError.new(Response.new, 'create')
 
-        lambda { do_put }.should raise_error(ActiveRecord::StaleObjectError)
+        response_set.should_receive(:update_from_ui_hash).exactly(3).times.
+          with(responses_ui_hash).and_raise(e)
+
+        lambda { do_put }.should raise_error(e)
       end
 
       it 'does not retry for other errors' do

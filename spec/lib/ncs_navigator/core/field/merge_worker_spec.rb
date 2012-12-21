@@ -16,7 +16,7 @@ module NcsNavigator::Core::Field
         self.invocations += 1
 
         if invocations == 1
-          raise ActiveRecord::StaleObjectError
+          raise ActiveRecord::StaleObjectError.new(Merge.new, 'create')
         end
       end
     end
