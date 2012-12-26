@@ -118,48 +118,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       :ignored_columns => %w(contact_date_date contact_disposition lock_version)
     )
 
-    produce_one_for_one(:participant_consents, :ParticipantConsent,
-      :public_ids => [
-        :participants,
-        :contacts,
-        { :table => :people,
-          :public_id => :person_id,
-          :public_ref => :person_who_consented_id },
-        { :table => :people,
-          :public_id => :person_id,
-          :public_ref => :person_wthdrw_consent_id }
-      ]
-    )
-
-    produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
-      :public_ids => %w(participants participant_consents)
-    )
-
-    produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
-      :public_ids => %w(participants contacts providers)
-    )
-
-    produce_one_for_one(:participant_visit_consents, :ParticipantVisConsent,
-      :public_ids => [
-        :participants,
-        :contacts,
-        { :table => :people,
-          :public_id => :person_id,
-          :public_ref => :vis_person_who_consented_id }
-      ]
-    )
-
-    produce_one_for_one(:participant_visit_records, :ParticipantRvis,
-      :public_ids => [
-        :participants,
-        :contacts,
-        { :table => :people,
-          :public_id => :person_id,
-          :join_column => :rvis_person_id,
-          :public_ref => :rvis_person }
-      ]
-    )
-
     produce_one_for_one(:events, :Event,
       :public_ids => [
         { :table => :participants, :public_id => :p_id, :public_ref => :participant_id }
@@ -215,6 +173,142 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       :where => %q{
         EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
       }
+    )
+
+    produce_one_for_one(:institutions, :Institution)
+
+    produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :institutions, :public_id => :institute_id }
+      ]
+    )
+
+    produce_one_for_one(:providers, :Provider,
+      :ignored_columns => %w(institution_id)
+    )
+
+    produce_one_for_one(:person_provider_links, :LinkPersonProvider,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :public_id => :provider_id }
+      ],
+      :column_map => {
+        :provider_intro_outcome_code  => :prov_intro_outcome,
+        :provider_intro_outcome_other => :prov_intro_outcome_oth
+      },
+      :ignored_columns => %w(date_first_visit_date)
+    )
+
+    produce_one_for_one(:provider_roles, :ProviderRole,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
+    produce_one_for_one(:pbs_provider_roles, :ProviderRolePbs,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
+    produce_one_for_one(:provider_logistics, :ProviderLogistics,
+      :public_ids => [
+        { :table => :providers, :public_id => :provider_id }
+      ],
+      :column_map => {
+        :provider_logistics_code  => :provider_logistics,
+        :provider_logistics_other => :provider_logistics_oth
+      },
+      :ignored_columns => %w(completion_date comment refusal)
+    )
+
+    produce_one_for_one(:pbs_lists, :PbsList,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
+    produce_one_for_one(:addresses, :Address,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :dwelling_units, :public_id => :du_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
+      ],
+      :column_map => {
+        :address_one => :address_1,
+        :address_two => :address_2
+      },
+      :ignored_columns => %w(
+        address_start_date_date address_end_date_date
+        response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
+        lock_version
+      )
+    )
+
+    produce_one_for_one(:emails, :Email,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
+      ],
+      :ignored_columns => %w(
+        email_start_date_date email_end_date_date response_set_id lock_version
+      )
+    )
+
+    produce_one_for_one(:telephones, :Telephone,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
+      ],
+      :ignored_columns => %w(
+        phone_start_date_date phone_end_date_date response_set_id lock_version
+      )
+    )
+
+    produce_one_for_one(:participant_consents, :ParticipantConsent,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_who_consented_id },
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_wthdrw_consent_id }
+      ]
+    )
+
+    produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
+      :public_ids => %w(participants participant_consents)
+    )
+
+    produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
+      :public_ids => %w(participants contacts providers)
+    )
+
+    produce_one_for_one(:participant_visit_consents, :ParticipantVisConsent,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :vis_person_who_consented_id }
+      ]
+    )
+
+    produce_one_for_one(:participant_visit_records, :ParticipantRvis,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :join_column => :rvis_person_id,
+          :public_ref => :rvis_person }
+      ]
     )
 
     produce_one_for_one(:non_interview_reports, :NonInterviewRpt,
@@ -276,100 +370,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       ]
     )
 
-    produce_one_for_one(:addresses, :Address,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        { :table => :dwelling_units, :public_id => :du_id },
-        { :table => :providers, :join_column => :provider_id },
-        { :table => :institutions, :join_column => :institute_id },
-      ],
-      :column_map => {
-        :address_one => :address_1,
-        :address_two => :address_2
-      },
-      :ignored_columns => %w(
-        address_start_date_date address_end_date_date
-        response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
-        lock_version
-      )
-    )
-
-    produce_one_for_one(:emails, :Email,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        { :table => :providers, :join_column => :provider_id },
-        { :table => :institutions, :join_column => :institute_id },
-      ],
-      :ignored_columns => %w(
-        email_start_date_date email_end_date_date response_set_id lock_version
-      )
-    )
-
-    produce_one_for_one(:telephones, :Telephone,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        { :table => :providers, :join_column => :provider_id },
-        { :table => :institutions, :join_column => :institute_id },
-      ],
-      :ignored_columns => %w(
-        phone_start_date_date phone_end_date_date response_set_id lock_version
-      )
-    )
-
-    produce_one_for_one(:institutions, :Institution)
-
-    produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        { :table => :institutions, :public_id => :institute_id }
-      ]
-    )
-
-    produce_one_for_one(:providers, :Provider,
-      :ignored_columns => %w(institution_id)
-    )
-
-    produce_one_for_one(:person_provider_links, :LinkPersonProvider,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        { :table => :providers, :public_id => :provider_id }
-      ],
-      :column_map => {
-        :provider_intro_outcome_code  => :prov_intro_outcome,
-        :provider_intro_outcome_other => :prov_intro_outcome_oth
-      },
-      :ignored_columns => %w(date_first_visit_date)
-    )
-
-    produce_one_for_one(:provider_roles, :ProviderRole,
-      :public_ids => [
-        { :table => :providers, :join_column => :provider_id },
-      ]
-    )
-
-    produce_one_for_one(:pbs_provider_roles, :ProviderRolePbs,
-      :public_ids => [
-        { :table => :providers, :join_column => :provider_id },
-      ]
-    )
-
-    produce_one_for_one(:provider_logistics, :ProviderLogistics,
-      :public_ids => [
-        { :table => :providers, :public_id => :provider_id }
-      ],
-      :column_map => {
-        :provider_logistics_code  => :provider_logistics,
-        :provider_logistics_other => :provider_logistics_oth
-      },
-      :ignored_columns => %w(completion_date comment refusal)
-    )
-
-    produce_one_for_one(:pbs_lists, :PbsList,
-      :public_ids => [
-        { :table => :providers, :join_column => :provider_id },
-      ]
-    )
-
     produce_one_for_one(:non_interview_providers, :NonInterviewProvider,
       :public_ids => [
         { :table => :providers, :join_column => :provider_id },
@@ -393,15 +393,21 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       }
     )
 
-    produce_one_for_one(:non_interview_provider_refusals, :NonInterviewProviderRefusal,
-      :public_ids => %w(non_interview_providers),
-      # :public_ids => [
-      #   { :table => :non_interview_providers, :join_column => :non_interview_provider_id },
-      # ],
-      :column_map => {
-        :refusal_reason_pbs_code  => :refusal_reason_pbs,
-        :refusal_reason_pbs_other => :refusal_reason_pbs_oth,
-      }
-    )
+    # TODO: Task #3069
+    #       This model has a problem because the alias column is too long for postgres.
+    #       cf. http://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+    #       says that the max length for a column name is 63 bytes, the column
+    #       created by the column map in the Database Enumerator Struct is
+    #       'public_id_for_non_interview_providers_as_non_interview_provider_id' 67 characters long
+    #
+    # produce_one_for_one(:non_interview_provider_refusals, :NonInterviewProviderRefusal,
+    #   :public_ids => [
+    #     { :table => :non_interview_providers, :join_column => :non_interview_provider_id },
+    #   ],
+    #   :column_map => {
+    #     :refusal_reason_pbs_code  => :refusal_reason_pbs,
+    #     :refusal_reason_pbs_other => :refusal_reason_pbs_oth,
+    #   }
+    # )
   end
 end
