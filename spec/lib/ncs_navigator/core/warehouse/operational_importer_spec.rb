@@ -61,7 +61,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        importer.automatic_producers.size.should == 25
+        importer.automatic_producers.size.should == 30
       end
 
       [
