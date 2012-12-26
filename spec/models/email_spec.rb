@@ -48,6 +48,8 @@ describe Email do
   it { should belong_to(:email_share) }
   it { should belong_to(:email_active) }
   it { should belong_to(:response_set) }
+  it { should belong_to(:provider) }
+  it { should belong_to(:institute) }
 
   context "as mdes record" do
 

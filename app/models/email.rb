@@ -39,7 +39,8 @@ class Email < ActiveRecord::Base
 
   belongs_to :person
   belongs_to :response_set
-
+  belongs_to :provider
+  belongs_to :institute, :class_name => 'Institution', :foreign_key => :institute_id
   ncs_coded_attribute :psu,               'PSU_CL1'
   ncs_coded_attribute :email_info_source, 'INFORMATION_SOURCE_CL2'
   ncs_coded_attribute :email_type,        'EMAIL_TYPE_CL1'

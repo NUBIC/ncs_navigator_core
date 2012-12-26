@@ -6,13 +6,13 @@ require File.expand_path('../../operational_enumerator_spec_support', __FILE__)
 
 require 'ncs_navigator/core/warehouse'
 
-module NcsNavigator::Core::Warehouse::TwoPointZero
+module NcsNavigator::Core::Warehouse::ThreePointZero
   describe OperationalEnumerator, :clean_with_truncation, :slow, :warehouse do
     let(:operational_enumerator_class) { OperationalEnumerator }
 
     let(:wh_config) {
       NcsNavigator::Warehouse::Configuration.new.tap do |config|
-        config.mdes_version = '2.0'
+        config.mdes_version = '3.0'
         config.log_file = File.join(Rails.root, 'log/wh.log')
         config.set_up_logs
         config.output_level = :quiet
@@ -158,6 +158,8 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
           [:marital_status_other,           'On fire',   :maristat_oth],
           [:language_code,                        4,     :person_lang,  '4'],
           [:language_other,                 'Esperanto', :person_lang_oth],
+          [:language_new_code,                    4,     :person_lang_new,  '4'],
+          [:language_new_other,             'Pidgin',    :person_lang_new_oth],
           [:preferred_contact_method_code,        1,     :pref_contact, '1'],
           [:preferred_contact_method_other, 'Pigeon',    :pref_contact_oth],
           [:planned_move_code,                    1,     :plan_move,    '1'],
@@ -935,6 +937,135 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
         results.first.provider_id.should == Provider.first.public_id
       end
     end
+
+    describe 'for PbsProviderRole' do
+      let(:producer_names) { [:pbs_provider_roles] }
+      let(:warehouse_model) { wh_config.model(:ProviderRolePbs) }
+
+      before do
+        Factory(:pbs_provider_role)
+      end
+
+      include_examples 'one to one'
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [wh_config.model(:ProviderRolePbs)]
+      end
+
+      it 'uses the public ID for pbs_provider_role' do
+        results.first.provider_role_pbs_id.should == PbsProviderRole.first.public_id
+      end
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for ProviderLogistic' do
+      let(:producer_names) { [:provider_logistics] }
+      let(:warehouse_model) { wh_config.model(:ProviderLogistics) }
+
+      before do
+        Factory(:provider_logistic)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for PbsList' do
+      let(:producer_names) { [:pbs_lists] }
+      let(:warehouse_model) { wh_config.model(:PbsList) }
+
+      before do
+        Factory(:pbs_list)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+    end
+
+    describe 'for NonInterviewProvider' do
+      let(:producer_names) { [:non_interview_providers] }
+      let(:warehouse_model) { wh_config.model(:NonInterviewProvider) }
+      let(:core_model) { NonInterviewProvider }
+
+      before do
+        Factory(:non_interview_provider)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+
+      it 'uses the public ID for contacts' do
+        results.first.contact_id.should == Contact.first.public_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:nir_type_provider_code,        -5, :nir_type_provider, '-5'],
+          [:nir_type_provider_other,      'X', :nir_type_provider_oth],
+          [:nir_closed_info_code,          -5, :nir_closed_info, '-5'],
+          [:nir_closed_info_other,        'X', :nir_closed_info_oth],
+          [:perm_closure_code,              1, :perm_closure, '1'],
+          [:who_refused_code,              -5, :who_refused, '-5'],
+          [:who_refused_other,            'X', :who_refused_oth],
+          [:refuser_strength_code,          1, :refuser_strength, '1'],
+          [:ref_action_provider_code,       1, :ref_action_provider, '1'],
+          [:who_confirm_noprenatal_code,   -5, :who_confirm_noprenatal, '-5'],
+          [:who_confirm_noprenatal_other, 'X', :who_confirm_noprenatal_oth],
+          [:nir_moved_info_code,           -5, :nir_moved_info, '-5'],
+          [:nir_moved_info_other,         'X', :nir_moved_info_oth],
+          [:perm_moved_code,                1, :perm_moved, '1'],
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    # TODO: Task #3069
+    #       This model has a problem because the alias column is too long for postgres.
+    #       cf. http://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+    #       says that the max length for a column name is 63 bytes, the column
+    #       created by the column map in the Database Enumerator Struct is
+    #       'public_id_for_non_interview_providers_as_non_interview_provider_id' 67 characters long
+    #
+    # describe 'for NonInterviewProviderRefusal' do
+    #   let(:producer_names) { [:non_interview_provider_refusals] }
+    #   let(:warehouse_model) { wh_config.model(:NonInterviewProviderRefusal) }
+    #   let(:core_model) { NonInterviewProviderRefusal }
+    #
+    #   before do
+    #     Factory(:non_interview_provider_refusal)
+    #   end
+    #
+    #   include_examples 'one to one'
+    #
+    #   # FIXME: The association in this model throws error
+    #   #        no member 'public_id_for_non_interview_providers_as_non_interview_provider_id' in struct
+    #   it 'uses the public ID for non_interview_provider' do
+    #     results.first.non_interview_provider_id.should == NonInterviewProvider.first.public_id
+    #   end
+    #
+    #   describe 'with manually mapped variables' do
+    #     include_context 'mapping test'
+    #
+    #     [
+    #       [:refusal_reason_pbs_code,        -5, :refusal_reason_pbs, '-5'],
+    #       [:refusal_reason_pbs_other,      'X', :refusal_reason_pbs_oth],
+    #     ].each { |crit| verify_mapping(*crit) }
+    #   end
+    # end
+
 
     describe 'ordering' do
       let(:order) { OperationalEnumerator.record_producers.collect(&:name) }

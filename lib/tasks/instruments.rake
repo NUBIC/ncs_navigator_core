@@ -205,17 +205,16 @@ namespace :instruments do
 
     msg = "
 *****
-This only checks against your local database for the known Surveys.
+This only checks the current PSC template against your local database for the known Surveys.
 Make sure that you have loaded all Surveys locally.
 e.g. bundle exec rake setup:surveys
 *****"
     puts msg
 
-
     require 'rexml/document'
     include REXML
 
-    xmlfile = File.new("#{Rails.root}/spec/fixtures/psc/NCS Hi-Lo.xml")
+    xmlfile = File.new("#{Rails.root}/spec/fixtures/psc/current_hilo_template_snapshot.xml")
     xmldoc = Document.new(xmlfile)
 
     # Collect all instrument labels
@@ -236,7 +235,6 @@ e.g. bundle exec rake setup:surveys
     raw_titles.uniq!.each do |t|
       survey_titles[Survey.to_normalized_string(t)] = t
     end
-
 
     puts "\nKnown Survey Titles that do not have an Instrument label in PSC:\n"
 

@@ -314,7 +314,6 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       end
 
       it 'uses the public ID for provider' do
-        pending 'No providers yet'
         results.first.provider_id.should == Provider.first.provider_id
       end
     end
@@ -400,6 +399,8 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       let(:warehouse_model) { wh_config.model(:Address) }
       let(:core_model) { Address }
       let!(:address) { Factory(:address) }
+      let(:provider) { Factory(:provider) }
+      let(:institution) { Factory(:institution) }
 
       include_examples 'one to one'
 
@@ -413,11 +414,17 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       end
 
       it 'uses the public ID for the provider' do
-        pending 'No Provider in core yet'
+        address.provider = provider
+        address.save!
+
+        results.first.provider_id.should == provider.provider_id
       end
 
       it 'uses the public ID for the institute' do
-        pending 'No Institute in core yet'
+        address.institute = institution
+        address.save!
+
+        results.first.institute_id.should == institution.institute_id
       end
 
       it 'renders address_info_date appropriately' do
@@ -444,6 +451,8 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       let(:producer_names) { [:emails] }
       let(:warehouse_model) { wh_config.model(:Email) }
       let!(:email) { Factory(:email) }
+      let(:provider) { Factory(:provider) }
+      let(:institution) { Factory(:institution) }
 
       include_examples 'one to one'
 
@@ -452,11 +461,17 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       end
 
       it 'uses the public ID for the provider' do
-        pending 'No Provider in core yet'
+        email.provider = provider
+        email.save!
+
+        results.first.provider_id.should == provider.provider_id
       end
 
       it 'uses the public ID for the institute' do
-        pending 'No Institute in core yet'
+        email.institute = institution
+        email.save!
+
+        results.first.institute_id.should == institution.institute_id
       end
 
       it 'renders email_info_date appropriately' do
@@ -474,6 +489,8 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       let(:producer_names) { [:telephones] }
       let(:warehouse_model) { wh_config.model(:Telephone) }
       let!(:telephone) { Factory(:telephone) }
+      let(:provider) { Factory(:provider) }
+      let(:institution) { Factory(:institution) }
 
       include_examples 'one to one'
 
@@ -482,11 +499,17 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       end
 
       it 'uses the public ID for the provider' do
-        pending 'No Provider in core yet'
+        telephone.provider = provider
+        telephone.save!
+
+        results.first.provider_id.should == provider.provider_id
       end
 
       it 'uses the public ID for the institute' do
-        pending 'No Institute in core yet'
+        telephone.institute = institution
+        telephone.save!
+
+        results.first.institute_id.should == institution.institute_id
       end
 
       it 'renders phone_info_date appropriately' do
@@ -805,6 +828,111 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
 
       it 'uses the public ID for the non-interview report' do
         results.first.nir_id.should == NonInterviewReport.first.public_id
+      end
+    end
+
+    describe 'for Institution' do
+      let(:producer_names) { [:institutions] }
+      let(:warehouse_model) { wh_config.model(:Institution) }
+      let(:core_model) { Institution }
+
+      before do
+        Factory(:institution)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the institution' do
+        results.first.institute_id.should == Institution.first.public_id
+      end
+
+    end
+
+    describe 'for InstitutionPersonLink' do
+      let(:producer_names) { [:institution_person_links] }
+      let(:warehouse_model) { wh_config.model(:LinkPersonInstitute) }
+
+      before do
+        Factory(:institution_person_link)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.public_id
+      end
+
+      it 'uses the public ID for institution' do
+        results.first.institute_id.should == Institution.first.public_id
+      end
+    end
+
+    describe 'for Provider' do
+      let(:producer_names) { [:providers] }
+      let(:warehouse_model) { wh_config.model(:Provider) }
+      let(:core_model) { Provider }
+
+      before do
+        Factory(:provider)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for the provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+
+    end
+
+    describe 'for PersonProviderLink' do
+      let(:producer_names) { [:person_provider_links] }
+      let(:warehouse_model) { wh_config.model(:LinkPersonProvider) }
+      let(:core_model) { PersonProviderLink }
+
+      before do
+        Factory(:person_provider_link)
+      end
+
+      include_examples 'one to one'
+
+      it 'uses the public ID for person' do
+        results.first.person_id.should == Person.first.public_id
+      end
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
+      end
+
+      describe 'with manually mapped variables' do
+        include_context 'mapping test'
+
+        [
+          [:provider_intro_outcome_code,        -5, :prov_intro_outcome, '-5'],
+          [:provider_intro_outcome_other,      'X', :prov_intro_outcome_oth],
+        ].each { |crit| verify_mapping(*crit) }
+      end
+    end
+
+    describe 'for ProviderRole' do
+      let(:producer_names) { [:provider_roles] }
+      let(:warehouse_model) { wh_config.model(:ProviderRole) }
+
+      before do
+        Factory(:provider_role)
+      end
+
+      include_examples 'one to one'
+
+      it 'generates one per source record' do
+        results.collect(&:class).should == [wh_config.model(:ProviderRole)]
+      end
+
+      it 'uses the public ID for provider_role' do
+        results.first.provider_role_id.should == ProviderRole.first.public_id
+      end
+
+      it 'uses the public ID for provider' do
+        results.first.provider_id.should == Provider.first.public_id
       end
     end
 
