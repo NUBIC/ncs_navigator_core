@@ -22,7 +22,8 @@
             = link_to blank_safe(per.full_name), edit_provider_person_path(@provider, per),
               :class => "edit_link icon_link"
           %td
-            = pbs_eligibility_screener_link(per)
+            - if permit?(Role::FIELD_STAFF, Role::PHONE_STAFF)
+              = pbs_eligibility_screener_link(per)
 
   .links
     = link_to 'Add New Patient', new_provider_person_path(@provider), :class => "add_link icon_link"
