@@ -7,7 +7,7 @@
   - unless a.unit.blank?
     = a.unit
     %br
-  = a.city + ","
+  = a.city + "," unless a.city.blank?
   = a.state
   %br
   = a.zip_code
