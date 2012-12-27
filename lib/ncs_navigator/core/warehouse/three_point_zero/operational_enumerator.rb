@@ -163,18 +163,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       :ignored_columns => %w(person_id survey_id lock_version)
     )
 
-    produce_one_for_one(:contact_links, :LinkContact,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        :events,
-        :contacts,
-        :instruments
-      ],
-      :where => %q{
-        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
-      }
-    )
-
     produce_one_for_one(:institutions, :Institution)
 
     produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
@@ -201,21 +189,15 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     )
 
     produce_one_for_one(:provider_roles, :ProviderRole,
-      :public_ids => [
-        { :table => :providers, :join_column => :provider_id },
-      ]
+      :public_ids => %w(providers)
     )
 
     produce_one_for_one(:pbs_provider_roles, :ProviderRolePbs,
-      :public_ids => [
-        { :table => :providers, :join_column => :provider_id },
-      ]
+      :public_ids => %w(providers)
     )
 
     produce_one_for_one(:provider_logistics, :ProviderLogistics,
-      :public_ids => [
-        { :table => :providers, :public_id => :provider_id }
-      ],
+      :public_ids => %w(providers),
       :column_map => {
         :provider_logistics_code  => :provider_logistics,
         :provider_logistics_other => :provider_logistics_oth
@@ -224,10 +206,23 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     )
 
     produce_one_for_one(:pbs_lists, :PbsList,
-      :public_ids => [
-        { :table => :providers, :join_column => :provider_id },
-      ]
+      :public_ids => %w(providers)
     )
+
+
+    produce_one_for_one(:contact_links, :LinkContact,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        :providers,
+        :events,
+        :contacts,
+        :instruments
+      ],
+      :where => %q{
+        EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
+      }
+    )
+
 
     produce_one_for_one(:addresses, :Address,
       :public_ids => [

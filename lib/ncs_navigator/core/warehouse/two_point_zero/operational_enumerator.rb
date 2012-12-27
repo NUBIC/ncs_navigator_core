@@ -199,6 +199,7 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
     produce_one_for_one(:contact_links, :LinkContact,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
+        :providers,
         :events,
         :contacts,
         :instruments

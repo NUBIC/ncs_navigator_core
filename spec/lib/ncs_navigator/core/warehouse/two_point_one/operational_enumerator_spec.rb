@@ -699,7 +699,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
       end
 
       it 'uses the public ID for provider' do
-        pending 'No Provider in core yet'
+        results.first.provider_id.should == Provider.first.provider_id
       end
 
       it 'emits nothing if the associated event has no disposition' do

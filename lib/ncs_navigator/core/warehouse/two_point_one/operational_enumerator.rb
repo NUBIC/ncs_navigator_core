@@ -199,6 +199,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
     produce_one_for_one(:contact_links, :LinkContact,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
+        :providers,
         :events,
         :contacts,
         :instruments
@@ -207,7 +208,6 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
         EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
       }
     )
-
 
     produce_one_for_one(:addresses, :Address,
       :public_ids => [
