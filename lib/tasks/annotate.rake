@@ -1,7 +1,7 @@
 namespace :annotate do
   desc 'Update the model schema annotations'
   task :models do
-    sh 'bundle exec annotate --position before'
+    sh 'bundle exec annotate --sort --position before --show-migration'
   end
 end
 
