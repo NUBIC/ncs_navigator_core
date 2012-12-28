@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# == Schema Information
+#
+# Table name: institution_person_links
+#
+#  created_at               :datetime
+#  id                       :integer          not null, primary key
+#  institute_relation_code  :integer          not null
+#  institute_relation_other :string(255)
+#  institution_id           :integer          not null
+#  is_active_code           :integer          not null
+#  person_id                :integer          not null
+#  person_institute_id      :string(36)       not null
+#  psu_code                 :string(36)       not null
+#  transaction_type         :string(36)
+#  updated_at               :datetime
+#
+
 
 
 class InstitutionPersonLink < ActiveRecord::Base

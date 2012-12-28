@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: fieldworks
 #
 #  client_id           :string(255)
+#  contact_links       :text
+#  contacts            :text
 #  created_at          :datetime
 #  end_date            :date
+#  event_templates     :text
+#  events              :text
 #  fieldwork_id        :string(36)
+#  generated_for       :string(255)
 #  generation_log      :text
 #  id                  :integer          not null, primary key
+#  instrument_plans    :text
+#  instruments         :text
 #  latest_merge_id     :integer
 #  latest_merge_status :string(255)
 #  original_data       :binary
+#  people              :text
 #  staff_id            :string(255)
 #  start_date          :date
+#  surveys             :text
 #  updated_at          :datetime
 #
 

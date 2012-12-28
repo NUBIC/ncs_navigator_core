@@ -16,6 +16,7 @@
 #  started_at      :datetime
 #  synced_at       :datetime
 #  updated_at      :datetime
+#  username        :string(255)      not null
 #
 
 require 'ncs_navigator/core'

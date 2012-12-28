@@ -22,8 +22,10 @@
 #  email_type_code         :integer          not null
 #  email_type_other        :string(255)
 #  id                      :integer          not null, primary key
+#  institute_id            :integer
 #  lock_version            :integer          default(0)
 #  person_id               :integer
+#  provider_id             :integer
 #  psu_code                :integer          not null
 #  response_set_id         :integer
 #  transaction_type        :string(255)
