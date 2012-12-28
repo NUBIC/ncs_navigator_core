@@ -55,6 +55,14 @@ class Response < ActiveRecord::Base
       self.integer_value
     when 'datetime'
       self.datetime_value.iso8601[0,19]
+    when 'date'
+      self.date_value
+    when 'time'
+      self.time_value
+    when 'float'
+      self.float_value
+    when 'text'
+      self.text_value
     else
       fail "Unsupported response class in #reportable_value: #{answer.response_class}"
     end
