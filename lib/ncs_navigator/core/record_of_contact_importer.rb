@@ -44,6 +44,8 @@ class NcsNavigator::Core::RecordOfContactImporter
 
   def import_row(row, i)
     if participant = find_participant_or_add_error(row[:participant_id], i)
+      update_hilo_if_necessary(participant, row, i)
+
       register_for_psc_sync(:participant, participant)
 
       person = get_person_record(row)
@@ -105,6 +107,31 @@ class NcsNavigator::Core::RecordOfContactImporter
     participant
   end
   private :find_participant_or_add_error
+
+  def update_hilo_if_necessary(participant, row, row_index)
+    new_hilo_text = row[:hilo_change]
+    new_is_high =
+      case new_hilo_text
+      when nil
+        return
+      when /lo/i
+        false
+      when /hi/i
+        true
+      else
+        add_error(row_index, "Unhandled value for hilo_change: #{new_hilo_text.inspect}.")
+        return
+      end
+
+    # only update if changed -- switch_arm does not allow you to specify a target arm exc. for hi
+    if new_is_high ^ participant.high_intensity
+      participant.switch_arm
+    elsif new_is_high
+      add_error(row_index, "Hilo change to hi but already hi.")
+    else
+      add_error(row_index, "Hilo change to lo but already lo.")
+    end
+  end
 
   def register_for_psc_sync(type, instance)
     return unless @psc_sync
