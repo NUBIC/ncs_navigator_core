@@ -117,4 +117,13 @@ module ApplicationHelper
     event.continuable?
   end
 
+  def staff_list(user)
+    staff_id = user
+    users = NcsNavigator::Authorization::Core::Authority.new.find_users
+    staff_lists = Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
+    if !staff_id.blank? and staff_lists.has_key?(staff_id)
+      current_staff = staff_lists[staff_id]
+    end
+  end
+
 end

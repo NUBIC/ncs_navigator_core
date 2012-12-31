@@ -64,6 +64,8 @@
           = sort_link @q, "contact_contact_disposition", "Contact Disp"
         %th
           = sort_link @q, "event_event_type_code", "Event"
+        %th
+          Current Staff
 
       - @contact_links.each do |cl|
         %tr{ :class => cycle('even_record', 'odd_record') }
@@ -87,4 +89,6 @@
             = cl.contact_disposition
           %td
             = cl.event.event_type
+          %td
+            = staff_list(cl.staff_id)
   = will_paginate @contact_links
