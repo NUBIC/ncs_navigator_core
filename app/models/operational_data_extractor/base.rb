@@ -351,7 +351,7 @@ module OperationalDataExtractor
       participant.person
     end
 
-    def get_address(response_set, person, address_type, address_rank = primary_rank)
+    def get_address(response_set, person, address_type, address_rank)
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
       criteria[:address_type_code] = address_type.local_code
@@ -388,6 +388,30 @@ module OperationalDataExtractor
                           :email_rank => primary_rank)
       end
       email
+    end
+
+    def get_birth_address(response_set, person, address_type, address_rank)
+      criteria = Hash.new
+      criteria[:response_set_id] = response_set.id
+      criteria[:address_type_code] = address_type.local_code
+      criteria[:address_rank_code] = address_rank.local_code
+      criteria[:address_type_other] = "Birth"
+      birth_address = Address.where(criteria).first
+      if birth_address.nil?
+        birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
+                                    :psu => person.psu, :response_set => response_set,
+                                    :address_type => address_type, :address_rank => address_rank,
+                                    :address_type_other => "Birth")
+      end
+      birth_address
+    end
+
+    def get_institution(response_set, institute_type)
+      institution = Institution.where(:response_set_id => response_set.id, :institute_type_code => institute_type.local_code).first
+      if institution.nil?
+        institution = Institution.new( :psu => person.psu, :response_set => response_set)
+      end
+      institution
     end
 
     def get_ppg_detail(response_set, participant)
@@ -549,15 +573,14 @@ module OperationalDataExtractor
       relationship
     end
 
-    def process_birth_institution_and_address(birth_address_map, institution_map)
-      birth_address = Address.new(:address_rank_code => 1, :address_type_code => -5)
+    def process_birth_institution_and_address(birth_address_map, institution_map, address_type = address_other_type, address_rank = primary_rank)
+      birth_address = get_birth_address(response_set, participant.person, address_type,  address_rank)
       institution = process_institution(institution_map)
 
       birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            birth_address.address_type_other = "Birth"
             set_value(birth_address, attribute, value)
           end
         end
@@ -657,11 +680,10 @@ module OperationalDataExtractor
     end
 
     def finalize_institution(institute)
-      ipl = InstitutionPersonLink.new
-      ipl.person = participant.person
-      ipl.institution = institute
-
       unless institution_empty?(institute)
+        ipl = InstitutionPersonLink.new
+        ipl.person = participant.person
+        ipl.institution = institute
         ipl.save!
         institute.save!
       end

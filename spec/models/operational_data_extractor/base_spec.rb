@@ -232,6 +232,7 @@ describe OperationalDataExtractor::Base do
           @birth_address_map = OperationalDataExtractor::PregnancyVisit::BIRTH_ADDRESS_MAP
 
           @participant = Factory(:participant)
+          @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
           @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
           @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
@@ -277,6 +278,7 @@ describe OperationalDataExtractor::Base do
         before do
           @person = Factory(:person)
           @response_set = Factory(:response_set)
+          @primary_rank = NcsCode.for_list_name_and_local_code('COMMUNICATION_RANK_CL1', 1)
           @code_address_type = NcsCode.for_list_name_and_local_code('ADDRESS_CATEGORY_CL1', 2)
           @address = Factory(:address,
                              :person => @person,
@@ -288,14 +290,44 @@ describe OperationalDataExtractor::Base do
         end
 
         it "fetches an existing address record" do
-          @ode2.get_address(@response_set, @person, @code_address_type).should == @address
+          @ode2.get_address(@response_set, @person, @code_address_type, @primary_rank).should == @address
         end
 
         it "creates a new record if it can't find an existing record" do
           @address = nil
-          new_address = @ode2.get_address(@response_set, @person, @code_address_type)
+          new_address = @ode2.get_address(@response_set, @person, @code_address_type, @primary_rank)
           new_address.should_not == @address
           new_address.class.should == Address
+        end
+
+        describe "get_birth_address" do
+
+          before do
+            @person = Factory(:person)
+            @participant = Factory(:participant)
+            @part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+            @response_set = Factory(:response_set)
+            @birth_address = Factory(:address,
+                               :person => @person,
+                               :response_set => @response_set,
+                               :address_rank_code => 1,
+                               :address_type_code => @code_address_type.local_code,
+                               :address_type_other => "Birth")
+
+            @ode2 = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
+          end
+
+          it "fetches an existing address record" do
+            @ode2.get_address(@response_set, @person, @code_address_type, @primary_rank).should == @birth_address
+          end
+
+          it "creates a new record if it can't find an existing record" do
+            @birth_address = nil
+            new_address = @ode2.get_address(@response_set, @person, @code_address_type, @primary_rank)
+            new_address.should_not == @birth_address
+            new_address.class.should == Address
+          end
+
         end
       end
 
@@ -464,7 +496,7 @@ describe OperationalDataExtractor::Base do
 
   end
 
-  context "processing birth institution and address" do
+  context "processing birth institution" do
 
     let(:hospital_type_location) { NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1) }
 
@@ -478,11 +510,11 @@ describe OperationalDataExtractor::Base do
       @survey = create_pbs_pregnancy_visit_1_with_birth_institution_operational_data
       @response_set, @instrument = prepare_instrument(@person, @participant, @survey)
 
-      hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+      @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
       state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
 
       take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", hospital
+        a.choice "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_ADDRESS_1", "123 Any Street"
         a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.B_CITY", "Springfield"
@@ -493,6 +525,25 @@ describe OperationalDataExtractor::Base do
 
       @ode1 = OperationalDataExtractor::PregnancyVisit.new(@response_set)
       @birth_address, @institution = @ode1.process_birth_institution_and_address(@birth_address_map, @institution_map)
+    end
+
+    describe "#get_institution" do
+
+      it "retrieves an institution record if one exists" do
+        @existing_institution = Factory(:institution, :institute_type => @hospital, :response_set_id => @response_set.id)
+        Institution.count.should == 1
+        @ode1.get_institution(@response_set, @hospital).should eql(@existing_institution)
+        Institution.count.should == 1
+      end
+
+      it "generates a new institution record if one does not exist" do
+        @ode1.get_institution(@response_set, @hospital).class.should == Institution
+      end
+
+      it "the new record should be associated with the response set" do
+        @ode1.get_institution(@response_set, @hospital).response_set.should eq(@response_set)
+      end
+
     end
 
     describe "#process_institution" do
