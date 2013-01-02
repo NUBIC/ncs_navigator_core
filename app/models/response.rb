@@ -52,7 +52,7 @@ class Response < ActiveRecord::Base
     when 'string'
       self.string_value
     when 'integer'
-      self.integer_value
+      self.integer_value.to_s
     when 'datetime'
       self.datetime_value.iso8601[0,19]
     when 'date'
@@ -60,7 +60,7 @@ class Response < ActiveRecord::Base
     when 'time'
       self.time_value
     when 'float'
-      self.float_value
+      self.float_value.to_s
     when 'text'
       self.text_value
     else

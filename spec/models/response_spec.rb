@@ -184,7 +184,7 @@ end
         create_response(:answer => question.answers.find_by_text('Josephine'))
       }
 
-      it 'works' do
+      it 'returns the string representation of the coded value' do
         response.reportable_value.should == '1'
       end
     end
@@ -194,7 +194,7 @@ end
         create_response(:answer => question.answers.find_by_text('Refused'))
       }
 
-      it 'works' do
+      it 'returns the string representation of the coded value' do
         response.reportable_value.should == '-1'
       end
     end
@@ -207,7 +207,7 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the string value' do
         response.reportable_value.should == 'Fredricka'
       end
     end
@@ -232,8 +232,8 @@ end
         )
       }
 
-      it 'works' do
-        response.reportable_value.should == 6
+      it 'returns the string representation of the integer value' do
+        response.reportable_value.should == '6'
       end
     end
 
@@ -253,7 +253,7 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the MDES formatted string representation' do
         response.reportable_value.should == '2010-12-27T08:39:36'
       end
     end
@@ -276,7 +276,7 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the MDES formatted string representation' do
         response.reportable_value.should == '2001-12-25'
       end
 
@@ -300,7 +300,7 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the MDES formatted string representation' do
         response.reportable_value.should == '08:44'
       end
 
@@ -324,8 +324,8 @@ end
         )
       }
 
-      it 'works' do
-        response.reportable_value.should == 1.1
+      it 'returns the string representation of the float value' do
+        response.reportable_value.should == '1.1'
       end
 
     end
@@ -346,7 +346,7 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the text' do
         response.reportable_value.should == "Next Thursday at 2 o'clock"
       end
 
