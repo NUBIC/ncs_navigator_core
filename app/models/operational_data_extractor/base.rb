@@ -6,6 +6,8 @@ module OperationalDataExtractor
 
     attr_accessor :response_set
 
+    MISSING_IN_ERROR = -4
+
     class << self
       def process(response_set)
         extractor_for(response_set).extract_data
@@ -712,14 +714,14 @@ module OperationalDataExtractor
       address_contents = []
       address_components = [:address_one, :address_two, :unit, :city, :state_code, :zip, :zip4]
       address_components.each { |ac| address_contents << address.send(ac) }
-      address_contents.all? { |ac| ac == -4 || ac.nil? }
+      address_contents.all? { |ac| ac == MISSING_IN_ERROR || ac.nil? }
     end
 
     def institution_empty?(institution)
       institution_contents = []
       institution_components = [:institute_name, :institute_type]
       institution_components.each { |ic| institution_contents << institution.send(ic) }
-      institution_contents.all? { |ic| ic == -4 || ic.nil? }
+      institution_contents.all? { |ic| ic == MISSING_IN_ERROR || ic.nil? }
     end
 
     def finalize_ppg_status_history(ppg_status_history)
