@@ -261,6 +261,10 @@ module OperationalDataExtractor
       @home_phone_type ||= NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 1)
     end
 
+    def other_institute_type
+      @other_institution_type ||= NcsCode.for_list_name_and_local_code('ORGANIZATION_TYPE_CL1', -5)
+    end
+
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
@@ -575,7 +579,7 @@ module OperationalDataExtractor
 
     def process_birth_institution_and_address(birth_address_map, institution_map, address_type = address_other_type, address_rank = primary_rank)
       birth_address = get_birth_address(response_set, participant.person, address_type,  address_rank)
-      institution = process_institution(institution_map)
+      institution = process_institution(institution_map, response_set, institute_type = other_institute_type)
 
       birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -666,8 +670,8 @@ module OperationalDataExtractor
       email
     end
 
-    def process_institution(map)
-      institution = Institution.new
+    def process_institution(map, response_set, type)
+      institution = get_institution(response_set, type)
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
