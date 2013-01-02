@@ -29,6 +29,8 @@ class Institution < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :institute_id
 
+  belongs_to :response_set
+
   ncs_coded_attribute :psu,                      'PSU_CL1'
   ncs_coded_attribute :institute_type,           'ORGANIZATION_TYPE_CL1'
   ncs_coded_attribute :institute_relation,       'PERSON_ORGNZTN_FUNCTION_CL1'

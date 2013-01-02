@@ -39,6 +39,7 @@ describe Institution do
   it { should belong_to(:institute_owner) }
   it { should belong_to(:institute_unit) }
   it { should belong_to(:institute_info_source) }
+  it { should belong_to(:response_set) }
 
   it { should have_many(:addresses) }
 
