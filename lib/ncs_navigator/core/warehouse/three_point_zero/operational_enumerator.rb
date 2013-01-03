@@ -8,6 +8,7 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
   # Converts the contents of a core instance into appropriate MDES 3.0
   # model instances for MDES Warehouse.
   class OperationalEnumerator
+
     include NcsNavigator::Warehouse::Transformers::Database
 
     extend NcsNavigator::Core::Warehouse::DatabaseEnumeratorHelpers
@@ -209,7 +210,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       :public_ids => %w(providers)
     )
 
-
     produce_one_for_one(:contact_links, :LinkContact,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
@@ -222,7 +222,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
       }
     )
-
 
     produce_one_for_one(:addresses, :Address,
       :public_ids => [
@@ -296,6 +295,10 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     )
 
     produce_one_for_one(:participant_visit_records, :ParticipantRvis,
+      :selects => [
+        mdes_formatted_datetime_query('time_stamp_1'),
+        mdes_formatted_datetime_query('time_stamp_2'),
+      ],
       :public_ids => [
         :participants,
         :contacts,
@@ -303,7 +306,12 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
           :public_id => :person_id,
           :join_column => :rvis_person_id,
           :public_ref => :rvis_person }
-      ]
+      ],
+      :column_map => {
+        mdes_datetime_column_alias('time_stamp_1').to_sym => :time_stamp_1,
+        mdes_datetime_column_alias('time_stamp_2').to_sym => :time_stamp_2,
+      },
+      :ignored_columns => %w(time_stamp_1 time_stamp_2)
     )
 
     produce_one_for_one(:non_interview_reports, :NonInterviewRpt,
