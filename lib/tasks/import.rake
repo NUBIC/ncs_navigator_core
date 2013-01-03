@@ -266,4 +266,22 @@ namespace :import do
       NcsNavigator::Core::FollowedParticipantChecker.new(args[:followed_csv]).report
     end
   end
+
+  desc 'Cancel scheduled events that have no matching mdes versioned instrument in PSC for followed participants'
+  task :cancel_activities_with_non_matching_mdes_instruments => [:psc_setup, :environment, :set_whodunnit, :find_participants_for_psc]  do
+    expected_participants_for_psc.each do |part|
+      $stderr.print("Canceling activities for participant #{part.p_id}...")
+      Rails.logger.info("Canceling activities for participant #{part.p_id}")
+
+      psc.scheduled_activities(part).each do |a|
+        if a.has_non_matching_mdes_version_instrument?
+          reason ="Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}."
+          $stderr.print("Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}.")
+          Rails.logger.info("Activity #{a.activity_name} has non matching mdes versioned instrument. Canceling activity for participant #{part.p_id}."i)
+          psc.update_activity_state(a.activity_id, part, Psc::ScheduledActivity::CANCELED, Date.parse(a.ideal_date), reason)
+        end
+      end
+    end
+  end
+
 end
