@@ -66,7 +66,7 @@ module NcsNavigator::Core::Warehouse
     # Note that this is Postgres specific.
     # @return[String]
     def mdes_formatted_datetime_query(col)
-      "concat(to_char(t.#{col}, 'YYYY-MM-DD'), 'T', to_char(t.#{col} AT TIME ZONE 'UTC', 'HH24:MI:SS') ) as #{mdes_datetime_column_alias(col)}"
+      "(to_char(t.#{col}, 'YYYY-MM-DD') || 'T' || to_char(t.#{col} AT TIME ZONE 'UTC', 'HH24:MI:SS') ) as #{mdes_datetime_column_alias(col)}"
     end
 
     ##
