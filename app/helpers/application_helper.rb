@@ -20,6 +20,11 @@ module ApplicationHelper
     "Release Version #{NcsNavigator::Core::VERSION}"
   end
 
+  def application_title_text
+    txt = "NCS Navigator Cases"
+    Rails.env == "staging" ? "#{txt} [TEST]" : txt
+  end
+
   def mdes_version_is_after?(version = 3.0)
     NcsNavigatorCore.mdes.version.to_f >= version
   end
@@ -40,11 +45,6 @@ module ApplicationHelper
 
   def display_participant(participant)
     participant.person ? display_person(participant.person) : "#{participant.public_id}"
-  end
-
-  def public_identifier_row(id)
-    id = id.to_s
-    (id.length < 16) ? content_tag(:td, id) : content_tag(:td, truncate(id, :length => 16), :title => id)
   end
 
   ##

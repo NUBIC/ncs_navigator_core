@@ -346,6 +346,7 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
     describe 'for ParticipantVisitRecord' do
       let(:producer_names) { [:participant_visit_records] }
       let(:visited) { Factory(:person, :first_name => 'Ginger') }
+      let(:core_model) { ParticipantVisitRecord }
 
       before do
         Factory(:participant_visit_record, :rvis_person => visited)
@@ -365,6 +366,15 @@ module NcsNavigator::Core::Warehouse::TwoPointOne
 
       it 'uses the public ID for the contact' do
         results.first.contact_id.should == Contact.first.contact_id
+      end
+
+      describe 'with manually determined variables' do
+        include_context 'mapping test'
+
+        [
+          [:time_stamp_1, Time.local(2525, 12, 25, 11, 22, 33), :time_stamp_1, '2525-12-25T11:22:33'],
+          [:time_stamp_2, Time.local(2525, 12, 25, 1, 2, 3), :time_stamp_2, '2525-12-25T01:02:03']
+        ].each { |crit| verify_mapping(*crit) }
       end
     end
 

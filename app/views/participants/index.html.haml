@@ -70,7 +70,8 @@
             = participant.first_name
           %td
             = participant.last_name
-          = public_identifier_row(participant.p_id)
+          %td
+            = participant.p_id
           %td
             %span{ :title => participant.ppg_status.to_s }
               = "PPG #{participant.ppg_status.local_code}" unless participant.ppg_status.blank?
