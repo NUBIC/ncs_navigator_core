@@ -20,6 +20,11 @@ module ApplicationHelper
     "Release Version #{NcsNavigator::Core::VERSION}"
   end
 
+  def application_title_text
+    txt = "NCS Navigator Cases"
+    Rails.env == "staging" ? "#{txt} [TEST]" : txt
+  end
+
   def mdes_version_is_after?(version = 3.0)
     NcsNavigatorCore.mdes.version.to_f >= version
   end
