@@ -74,7 +74,7 @@ module NcsNavigator::Core::Warehouse
     # in column_map for produce_one_for_one.
     # @return[String]
     def mdes_datetime_column_alias(col)
-      "mdes_#{col}_value"
+      "mdes_datetime_value_#{col}"
     end
   end
 end
