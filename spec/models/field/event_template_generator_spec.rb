@@ -149,9 +149,6 @@ pregnancy_visit_1:
   qux:
     - qref: quux
       aref: grault
-  boo:
-     - qref: true
-       aref: false
 garply:
   waldo:
     - qref: fred
@@ -161,7 +158,6 @@ garply:
 
       let!(:s1) { Factory(:survey, :title => 'foo') }
       let!(:s2) { Factory(:survey, :title => 'qux') }
-      let!(:s3) { Factory(:survey, :title => 'boo') }
     end
 
     describe '#build_response_templates' do
@@ -193,18 +189,11 @@ garply:
       it 'resolves survey titles to API IDs' do
         ids = etg.response_templates['pregnancy_visit_1'].map { |rt| rt.survey_id }.uniq
 
-        Set.new(ids).should == Set.new([s1.api_id, s2.api_id, s3.api_id])
+        Set.new(ids).should == Set.new([s1.api_id, s2.api_id])
       end
 
       it 'builds one template per (survey, q, a) triple' do
-        etg.response_templates['pregnancy_visit_1'].length.should == 3
-      end
-
-      it 'builds qrefs and arefs as strings' do
-        etg.response_templates['pregnancy_visit_1'][2].tap do |q|
-          q.qref.should == 'true'
-          q.aref.should == 'false'
-        end
+        etg.response_templates['pregnancy_visit_1'].length.should == 2
       end
     end
 
@@ -223,7 +212,7 @@ garply:
         template = etg.event_templates.detect { |et| et.event.label == 'pregnancy_visit_1' }
 
         # the example data gives us two templates, one per survey
-        template.response_templates.length.should == 3
+        template.response_templates.length.should == 2
       end
 
       it 'assigns an empty collection for events without response templates' do
