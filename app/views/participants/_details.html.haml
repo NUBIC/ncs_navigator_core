@@ -4,7 +4,7 @@
       %b
         Due Date:
       = blank_safe(@participant.due_date, "Unknown")
-      = link_to "Edit Due Date", edit_participant_ppg_detail_path(@participant), :class => "edit_link icon_link"
+      = link_to "Edit Due Date", edit_participant_ppg_detail_path(@participant.id, @participant.ppg_details.first.id), :class => "edit_link icon_link"
 
   - if @participant.person
     %p

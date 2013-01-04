@@ -3,7 +3,7 @@
 - title lbl
 
 .page_section
-  = form_for(@ppg_detail, :url => participant_ppg_detail_path, :html => {:autocomplete => "off", :method => :put}) do |f|
+  = form_for(@ppg_detail, :url => participant_ppg_detail_path(@participant.id, @ppg_detail.id), :html => {:autocomplete => "off", :method => :put}) do |f|
     = render "shared/custom_error_messages", :object => f.object
 
     = render "/ppg_details/form_fields", :f => f
