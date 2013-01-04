@@ -184,7 +184,7 @@ end
         create_response(:answer => question.answers.find_by_text('Josephine'))
       }
 
-      it 'works' do
+      it 'returns the string representation of the coded value' do
         response.reportable_value.should == '1'
       end
     end
@@ -194,7 +194,7 @@ end
         create_response(:answer => question.answers.find_by_text('Refused'))
       }
 
-      it 'works' do
+      it 'returns the string representation of the coded value' do
         response.reportable_value.should == '-1'
       end
     end
@@ -207,7 +207,7 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the string value' do
         response.reportable_value.should == 'Fredricka'
       end
     end
@@ -232,8 +232,8 @@ end
         )
       }
 
-      it 'works' do
-        response.reportable_value.should == 6
+      it 'returns the string representation of the integer value' do
+        response.reportable_value.should == '6'
       end
     end
 
@@ -253,9 +253,104 @@ end
         )
       }
 
-      it 'works' do
+      it 'returns the MDES formatted string representation' do
         response.reportable_value.should == '2010-12-27T08:39:36'
       end
     end
+
+    describe 'with a date value' do
+
+      let(:questions_dsl) {
+        <<-DSL
+          q_ORIG_DUE_DATE "[Congratulations.] When is your baby due? ",
+          :pick => :one,
+          :data_export_identifier=>"EIGHTEEN_MTH_MOTHER.ORIG_DUE_DATE"
+          a_1 "Due date", :date, :custom_class => "date"
+        DSL
+      }
+
+      let(:response) {
+        create_response(
+          :answer => question.answers.find_by_response_class('date'),
+          :datetime_value => Time.local(2001, 12, 25)
+        )
+      }
+
+      it 'returns the MDES formatted string representation' do
+        response.reportable_value.should == '2001-12-25'
+      end
+
+    end
+
+    describe 'with a time value' do
+
+      let(:questions_dsl) {
+        <<-DSL
+          q_BEST_TTC1_1 "What would be a good time to reach her at this number?",
+            :pick => :one,
+            :data_export_identifier => "PBS_ELIG_SCREENER.BEST_TTC1_1"
+            a_time :time, :custom_class => "time"
+        DSL
+      }
+
+      let(:response) {
+        create_response(
+          :answer => question.answers.find_by_response_class('time'),
+          :datetime_value => Time.local(2001, 12, 25, 8, 44, 11)
+        )
+      }
+
+      it 'returns the MDES formatted string representation' do
+        response.reportable_value.should == '08:44'
+      end
+
+    end
+
+    describe 'with a float value' do
+
+      let(:questions_dsl) {
+        <<-DSL
+          q_BP_MID_UPPER_ARM_CIRC "UPPER ARM CIRCUMFERENCE, MEASURED AT THE MIDPOINT OF UPPER ARM (HUMERUS) LENGTH",
+          :data_export_identifier=>"CHILD_BP.BP_MID_UPPER_ARM_CIRC",
+          :pick => :one
+          a_1 :float
+        DSL
+      }
+
+      let(:response) {
+        create_response(
+          :answer => question.answers.find_by_response_class('float'),
+          :float_value => 1.1
+        )
+      }
+
+      it 'returns the string representation of the float value' do
+        response.reportable_value.should == '1.1'
+      end
+
+    end
+
+    describe 'with a text value' do
+
+      let(:questions_dsl) {
+        <<-DSL
+          q_PPG005 "When would be a good time for you?"
+          a_1 :text
+        DSL
+      }
+
+      let(:response) {
+        create_response(
+          :answer => question.answers.find_by_response_class('text'),
+          :text_value => "Next Thursday at 2 o'clock"
+        )
+      }
+
+      it 'returns the text' do
+        response.reportable_value.should == "Next Thursday at 2 o'clock"
+      end
+
+    end
+
   end
 end
