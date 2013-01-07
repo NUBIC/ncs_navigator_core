@@ -117,11 +117,12 @@ module NcsNavigator::Core::ResponseSetPopulator
       answer_for(question, valid_response_exists?("PREG_VISIT_1_3.WORK_ADDRESS_1", :last))
     end
 
+    ##
+    # True if the participant has not completed the pv1 event previously
+    # @return[Boolean]
     def is_first_pv1?
-      pv1_contacts = person.contact_links.select do |cl|
-        cl.event.try(:event_type_code) == 13
-      end.map(&:contact).uniq
-      pv1_contacts.count == 0
+      !participant.completed_event?( NcsCode.for_list_name_and_local_code(
+        'EVENT_TYPE_CL1', Event.pregnancy_visit_1_code) )
     end
 
   end

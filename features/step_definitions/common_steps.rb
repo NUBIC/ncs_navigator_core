@@ -22,12 +22,14 @@ end
 Given /^the following pregnant participants:$/ do |table|
   table.hashes.each do |hash|
     status = NcsCode.where(:list_name => "PPG_STATUS_CL1").where(:local_code => 1).first
+    detail_status = NcsCode.where(:list_name => "PPG_STATUS_CL2").where(:local_code => 1).first
 
     person = Factory(:person, hash)
     participant = Factory(:participant, :high_intensity => true, :high_intensity_state => "pregnancy_one")
     participant.person = person
     participant.save!
 
+    Factory(:ppg_detail, :participant => participant, :ppg_first => detail_status)
     Factory(:ppg_status_history, :participant => participant, :ppg_status => status)
     participant.register!
     participant.assign_to_pregnancy_probability_group!
