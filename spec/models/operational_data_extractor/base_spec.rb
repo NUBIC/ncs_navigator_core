@@ -552,34 +552,6 @@ describe OperationalDataExtractor::Base do
       end
     end
 
-    describe "#address_empty?" do
-
-      it "should return true if all the survey-derived components of an address are empty" do
-        address = Address.new
-        @pregnancy_visit_extractor.address_empty?(address).should be_true
-      end
-
-      it "should return false if any survey-derived components of an address are not empty" do
-        address = Factory(:address, :address_one => "123 Something Street")
-        @pregnancy_visit_extractor.address_empty?(address).should be_false
-      end
-
-    end
-
-    describe "#institution_empty?" do
-
-      it "should return true if all the survey-derived components of an institution are empty" do
-        institution = Institution.new
-        @pregnancy_visit_extractor.institution_empty?(institution).should be_true
-      end
-
-      it "should return false if any survey-derived components of an institution are not empty" do
-        institution = Factory(:institution, :institute_name => "FAKE INSTITUTION")
-        @pregnancy_visit_extractor.institution_empty?(institution).should be_false
-      end
-
-    end
-
     describe "#finalize_institution" do
       it "links the person to the institution" do
         institution = @pregnancy_visit_extractor.process_institution(@institution_map, @response_set, @hospital)

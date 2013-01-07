@@ -415,7 +415,7 @@ module OperationalDataExtractor
     def get_institution(response_set, institute_type)
       institution = Institution.where(:response_set_id => response_set.id, :institute_type_code => institute_type.local_code).first
       if institution.nil?
-        institution = Institution.new( :psu => person.psu, :response_set => response_set)
+        institution = Institution.new( :psu => person.psu, :institute_type_code => institute_type.local_code, :response_set => response_set)
       end
       institution
     end
@@ -579,9 +579,9 @@ module OperationalDataExtractor
       relationship
     end
 
-    def process_birth_institution_and_address(birth_address_map, institution_map, address_type = address_other_type, address_rank = primary_rank)
+    def process_birth_institution_and_address(birth_address_map, institution_map, institute_type = other_institute_type, address_type = address_other_type, address_rank = primary_rank)
       birth_address = get_birth_address(response_set, participant.person, address_type,  address_rank)
-      institution = process_institution(institution_map, response_set, institute_type = other_institute_type)
+      institution = process_institution(institution_map, response_set, institute_type)
 
       birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -672,7 +672,7 @@ module OperationalDataExtractor
       email
     end
 
-    def process_institution(map, response_set, type)
+    def process_institution(map, response_set, type = other_institute_type)
       institution = get_institution(response_set, type)
       map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
@@ -686,35 +686,23 @@ module OperationalDataExtractor
     end
 
     def finalize_institution(institute)
-      unless institution_empty?(institute)
-        ipl = InstitutionPersonLink.new
-        ipl.person = participant.person
-        ipl.institution = institute
-        ipl.save!
-        institute.save!
+      ActiveRecord::Base.transaction do
+        unless institute.blank?
+          ipl = InstitutionPersonLink.new
+          ipl.person = participant.person
+          ipl.institution = institute
+          ipl.save!
+          institute.save!
+        end
       end
     end
 
     def finalize_institution_with_birth_address(birth_address, institute)
-
-      institute.addresses << birth_address unless address_empty?(birth_address)
-
-      ipl = InstitutionPersonLink.new
-      ipl.person = participant.person
-      ipl.institution = institute
-
-      unless institution_empty?(institute) && address_empty?(birth_address)
-        ipl.save!
-        birth_address.save!
-        institute.save!
-      end
-    end
-
-    def address_empty?(address)
-      address_contents = []
-      address_components = [:address_one, :address_two, :unit, :city, :state_code, :zip, :zip4]
-      address_components.each { |ac| address_contents << address.send(ac) }
-      address_contents.all? { |ac| ac == MISSING_IN_ERROR || ac.nil? }
+      ActiveRecord::Base.transaction do
+         finalize_institution(institute)
+         birth_address.save! unless birth_address.blank?
+         institute.addresses << birth_address unless birth_address.blank?
+       end
     end
 
     def institution_empty?(institution)
