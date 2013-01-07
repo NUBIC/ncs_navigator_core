@@ -58,4 +58,19 @@ module ParticipantsHelper
     txt.to_s.gsub("#{PatientStudyCalendar::HIGH_INTENSITY}: ", '').gsub("#{PatientStudyCalendar::LOW_INTENSITY}: ", '')
   end
   private :remove_two_tier
+
+  ## "Originating Staff"
+  #  The user that initiated the participant in the system(performed the eligibility screener).
+  def participant_staff(participant)
+    if participant && participant.completed_event?(NcsNavigatorCore.recruitment_strategy.pbs? ? NcsCode.pbs_eligibility_screener : NcsCode.pregnancy_screener)
+      staff_name(originating_staff_id(participant))
+    end
+  end
+
+  def originating_staff_id(participant)
+    event = Event.where("event_type_code IN (29,34)", :participant_id => participant).select("id")
+    instrument = Instrument.where("instrument_type_code IN (5,45)", :event_id => event).select("id")
+    participant.person.contact_links.where(:event_id => event, :instrument_id => instrument).select("staff_id").first.try(:staff_id)
+  end
+
 end
