@@ -370,6 +370,10 @@ class Event < ActiveRecord::Base
     10
   end
 
+  def self.low_intensity_data_collection_code
+    33
+  end
+
   def self.pbs_eligibility_screener_code
     34
   end

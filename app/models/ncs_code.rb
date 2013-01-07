@@ -402,19 +402,19 @@ class NcsCode < ActiveRecord::Base
   # Special case helper method to get EVENT_TYPE_CL1 for Low Intensity Data Collection
   # Used to determine if participant is eligible for conversion to High Intensity Arm
   def self.low_intensity_data_collection
-    for_list_name_and_local_code('EVENT_TYPE_CL1', 33)
+    for_list_name_and_local_code('EVENT_TYPE_CL1', Event.low_intensity_data_collection_code)
   end
 
   # Special case helper method to get EVENT_TYPE_CL1 for Pregnancy Screener
   # Used to determine if participant should be screened
   def self.pregnancy_screener
-    for_list_name_and_local_code('EVENT_TYPE_CL1', 29)
+    for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_screener_code)
   end
 
   # Special case helper method to get EVENT_TYPE_CL1 for PBS Eligibility Screener
   # Used to determine if participant should be screened
   def self.pbs_eligibility_screener
-    for_list_name_and_local_code('EVENT_TYPE_CL1', 34)
+    for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pbs_eligibility_screener_code)
   end
 
   def to_s
