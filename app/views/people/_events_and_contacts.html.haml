@@ -68,8 +68,9 @@
                         - disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
                         = disp.blank? ? contact.contact_disposition : disp
                       %td
-                        - if contact.contact_date_date == Date.today && event.event_end_date.blank?
-                          = link_to "Continue Contact", decision_page_contact_link_path(cl),
+                        - if contact.open? && event.open?
+                          - link_text = contact.contact_date.blank? ? "Continue Contact" : "Continue Contact on #{contact.contact_date}"
+                          = link_to link_text, decision_page_contact_link_path(cl),
                             :class => "continue_link icon_link"
                     - unless contact.contact_comment.blank?
                       %tr{ :class => "comment_#{cls} #{cls}"  }

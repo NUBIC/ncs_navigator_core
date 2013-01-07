@@ -381,7 +381,7 @@ module PregnancyVisitOne
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
     # prepopulated mode of contact
-    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "prepopulated_mode_of_contact", :data_export_identifier => "prepopulated_mode_of_contact", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "CAPI", :response_class => "answer", :reference_identifier => "capi")
     a = Factory(:answer, :question_id => q.id, :text => "CATI", :response_class => "answer", :reference_identifier => "cati")
     a = Factory(:answer, :question_id => q.id, :text => "PAPI", :response_class => "answer", :reference_identifier => "papi")

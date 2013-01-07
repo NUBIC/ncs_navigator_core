@@ -45,7 +45,7 @@ Factory.define :participant_authorization_form do |paf|
 
   paf.association :participant, :factory => :participant
   paf.association :contact, :factory => :contact
-  # paf.association :provider, :factory => :provider
+  paf.association :provider, :factory => :provider
 
   paf.psu_code            2000030
   paf.auth_form_type_code 1

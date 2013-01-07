@@ -97,6 +97,10 @@ module OperationalDataExtractor
       "#{BIRTH_VISIT_3_PREFIX}.BIRTH_DELIVER"        => "institute_type_code",
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -112,7 +116,8 @@ module OperationalDataExtractor
         HOME_PHONE_MAP,
         CELL_PHONE_MAP,
         EMAIL_MAP,
-        INSTITUTION_MAP
+        INSTITUTION_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -144,6 +149,8 @@ module OperationalDataExtractor
       finalize_addresses(mail_address, work_address)
       finalize_telephones(cell_phone, home_phone, phone)
       finalize_institution(institution)
+
+      update_instrument_mode
 
       child.save! if child
       participant.save!

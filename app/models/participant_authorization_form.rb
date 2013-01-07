@@ -28,7 +28,7 @@ class ParticipantAuthorizationForm < ActiveRecord::Base
 
   belongs_to :participant
   belongs_to :contact
-  # belongs_to :provider
+  belongs_to :provider
 
   ncs_coded_attribute :psu,            'PSU_CL1'
   ncs_coded_attribute :auth_form_type, 'AUTH_FORM_TYPE_CL1'

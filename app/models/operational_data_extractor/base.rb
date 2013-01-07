@@ -341,6 +341,20 @@ module OperationalDataExtractor
       response_set.responses.sort_by { |r| r.created_at }
     end
 
+    def update_instrument_mode
+      if r = data_export_identifier_indexed_responses["prepopulated_mode_of_contact"]
+        v = nil
+        case r.answer.reference_identifier
+        when "capi"
+          v = Instrument.capi
+        when "cati"
+          v = Instrument.cati
+        when "papi"
+          v = Instrument.papi
+        end
+        response_set.instrument.update_attribute(:instrument_mode_code, v) unless v.blank?
+      end
+    end
 
     def person
       response_set.person
@@ -391,6 +405,7 @@ module OperationalDataExtractor
       if email.nil?
         email = Email.new(:person => person, :psu => person.psu,
                           :response_set => response_set,
+                          :email_type => email_type,
                           :email_rank => primary_rank)
       end
       email

@@ -213,11 +213,7 @@ module NcsNavigator::Core
 
       describe "in person" do
         it "sets prepopulated_mode_of_contact to CAPI" do
-          in_person = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 1)
-          contact = Factory(:contact, :contact_type => in_person)
-          contact_link = Factory(:contact_link, :person => person, :contact => contact)
-
-          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, contact_link)
+          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, :mode => Instrument.capi)
           rs = rsp.populate
           rs.responses.should_not be_empty
           rs.should == @response_set
@@ -228,13 +224,7 @@ module NcsNavigator::Core
 
       describe "telephone" do
         it "sets prepopulated_mode_of_contact to CATI" do
-
-          telephone = NcsCode.for_list_name_and_local_code('CONTACT_TYPE_CL1', 3)
-          contact = Factory(:contact, :contact_type => telephone)
-          contact_link = Factory(:contact_link, :person => person, :contact => contact)
-
-          params = { :person => person, :instrument => @instrument, :survey => survey, :contact_link => contact_link }
-          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, contact_link)
+          rsp = ResponseSetPopulator::Birth.new(person, @instrument, survey, :mode => Instrument.cati)
           rs = rsp.populate
           rs.responses.should_not be_empty
           rs.should == @response_set

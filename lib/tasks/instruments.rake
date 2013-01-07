@@ -165,4 +165,88 @@ namespace :instruments do
       puts table
     end
   end
+
+  desc 'List all prepopulated questions are not known to ResponseSetPrepopulators'
+  task :check_prepopulation => :environment do
+    # Gather all questions that are marked 'prepopulated'
+    prepopulated_question_ids = []
+    prepopulated_question_ids_for_surveys = {}
+    Survey.most_recent_for_each_title.each do |survey|
+      survey.sections_with_questions.each do |section|
+        section.questions.each do |q|
+          prepopulated_question_ids_for_surveys[q.reference_identifier] = survey.title if q.reference_identifier.to_s.include? "prepopulated"
+        end
+      end
+    end
+    prepopulated_question_ids = prepopulated_question_ids_for_surveys.keys.uniq
+
+    puts "# of questions that are marked 'prepopulated' = #{prepopulated_question_ids.size}"
+
+    # get questions known to ResponseSetPrepopulators
+    known_prepopulated_question_ids = []
+    NcsNavigator::Core::ResponseSetPopulator::Base.subclasses.each do |sc|
+      known_prepopulated_question_ids << sc.new(Person.new, Instrument.new, Survey.new).reference_identifiers
+    end
+    known_prepopulated_question_ids = known_prepopulated_question_ids.flatten.uniq
+
+    puts "# of 'prepopulated' questions known to ResponseSetPrepopulators = #{known_prepopulated_question_ids.size}"
+
+    # which prepopulated questions are not handled by the ResponseSetPrepopulators
+    difference = prepopulated_question_ids - known_prepopulated_question_ids
+
+    # output the unhandled questions and in which surveys they are
+    difference.each_with_index do |unhandled, i|
+      puts "#{i + 1}) #{prepopulated_question_ids_for_surveys[unhandled]}\n    - #{unhandled}"
+    end
+  end
+
+  desc 'List all Survey titles that do not have a matching PSC instrument label (and the other way too)'
+  task :check_psc_labels_match_survey_titles => :environment do
+
+    msg = "
+*****
+This only checks the current PSC template against your local database for the known Surveys.
+Make sure that you have loaded all Surveys locally.
+e.g. bundle exec rake setup:surveys
+*****"
+    puts msg
+
+    require 'rexml/document'
+    include REXML
+
+    xmlfile = File.new("#{Rails.root}/spec/fixtures/psc/current_hilo_template_snapshot.xml")
+    xmldoc = Document.new(xmlfile)
+
+    # Collect all instrument labels
+    raw_labels = []
+    XPath.each(xmldoc, "//label") do |l|
+      name = l.attributes["name"]
+      raw_labels << name if name.include? "instrument"
+    end
+    instrument_labels = {}
+    raw_labels.uniq!.each do |i|
+      normalized_label = Survey.to_normalized_string(i.split(':').last)
+      instrument_labels[normalized_label] = i
+    end
+
+    # Collect all known survey titles
+    raw_titles = Survey.select("title").all.map(&:title)
+    survey_titles = {}
+    raw_titles.uniq!.each do |t|
+      survey_titles[Survey.to_normalized_string(t)] = t
+    end
+
+    puts "\nKnown Survey Titles that do not have an Instrument label in PSC:\n"
+
+    (survey_titles.keys - instrument_labels.keys).sort.each_with_index do |survey_without_label, idx|
+      puts "#{idx+1}). #{survey_without_label}: #{survey_titles[survey_without_label]}"
+    end
+
+    puts "\nInstrument Labels in PSC that do not match a Survey:\n"
+
+    (instrument_labels.keys - survey_titles.keys).sort.each_with_index do |dangling_label, idx|
+      puts "#{idx+1}). #{dangling_label}: #{instrument_labels[dangling_label]}"
+    end
+
+  end
 end

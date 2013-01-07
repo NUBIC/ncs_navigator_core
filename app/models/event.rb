@@ -110,6 +110,28 @@ class Event < ActiveRecord::Base
   ]
 
   ##
+  # Event type codes that can be sync'd to PSC.
+  # psc_template_spec verifies that this list is in sync with the PSC template.
+  EVENTS_FOR_PSC = [
+    29, # Pregnancy Screener
+    34, # PBS Participant Eligibility Screening
+    33, # Low Intensity Data Collection
+     7, # Pregnancy Probability
+    11, # Pre-Pregnancy Visit
+    32, # Low to High Conversion
+    13, # Pregnancy Visit  1
+    15, # Pregnancy Visit  2
+    18, # Birth
+    19, # Father
+    23, # 3 Month
+    24, # 6 Month
+    26, # 9 Month
+    27, # 12 Month
+    30, # 18 Month
+    31, # 24 Month
+  ]
+
+  ##
   # A partial ordering of MDES event types. The ordering is such that,
   # if an event of type A and one of type B occur on the same day, A
   # precedes B IFF the event of type A would be executed before the
@@ -346,6 +368,14 @@ class Event < ActiveRecord::Base
 
   def self.informed_consent_code
     10
+  end
+
+  def self.pbs_eligibility_screener_code
+    34
+  end
+
+  def self.pregnancy_screener_code
+    29
   end
 
   def pregnancy_visit_1?
@@ -623,6 +653,11 @@ class Event < ActiveRecord::Base
       unless NcsNavigatorCore.expanded_phase_two?
         psc.cancel_collection_instruments(participant, study_segment_identifier, date,
           "Not configured to run expanded phase 2 instruments.")
+      end
+
+      unless NcsNavigatorCore.mdes.version.blank?
+        psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
+          "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
       end
 
     end

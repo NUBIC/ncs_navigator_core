@@ -108,8 +108,7 @@ Factory.define :contact_link do |cl|
   cl.association :event,      :factory => :event
   cl.association :instrument, :factory => :instrument
   cl.staff_id "staff_public_id"
-  # TODO: create the following
-  # cl.association :provider
+  cl.association :provider,   :factory => :provider
 end
 
 Factory.define :mdes_min_contact_link, :class => ContactLink do |cl|

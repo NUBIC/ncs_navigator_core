@@ -126,13 +126,18 @@ class EventsController < ApplicationController
     def redirect_path
       path = events_path
       if @event.provider_recruitment_event?
-        provider = @event.contact_links.find { |cl| !cl.provider.nil? }.provider
-        path = pbs_list_path(provider.pbs_list)
+        path = provider_recruitment_event_redirect_path
       elsif !@event.participant.nil?
         path = participant_path(@event.participant)
       end
       path
     end
+
+    def provider_recruitment_event_redirect_path
+      provider = @event.contact_links.find { |cl| !cl.provider.nil? }.try(:provider)
+      provider.nil? ? pbs_lists_path : pbs_list_path(provider.pbs_list)
+    end
+    private :provider_recruitment_event_redirect_path
 
     ##
     # Updates activities associated with this event

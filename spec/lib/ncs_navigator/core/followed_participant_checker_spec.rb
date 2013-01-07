@@ -52,6 +52,20 @@ module NcsNavigator::Core
       end
     end
 
+    describe '#expected_p_ids' do
+      before do
+        create_csv(
+          %w(p_id),
+          %w(A132),
+          %w(B262)
+        )
+      end
+
+      it 'reads the p_ids from the CSV' do
+        checker.expected_p_ids.sort.should == %w(A132 B262)
+      end
+    end
+
     describe '#differences' do
       before do
         create_csv(
@@ -163,12 +177,12 @@ module NcsNavigator::Core
         p('N').being_followed.should be_false
       end
 
-      it 'changes an expected-but-not-high participant to high' do
-        p('HL').should_not be_low_intensity
+      it 'does not change an expected-but-not-high participant to high' do
+        p('HL').should be_low_intensity
       end
 
-      it 'changes an expected-but-not-low participant to low' do
-        p('LH').should be_low_intensity
+      it 'does not change an expected-but-not-low participant to low' do
+        p('LH').should_not be_low_intensity
       end
 
       it 'leaves other participants alone' do

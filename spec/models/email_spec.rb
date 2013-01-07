@@ -22,8 +22,10 @@
 #  email_type_code         :integer          not null
 #  email_type_other        :string(255)
 #  id                      :integer          not null, primary key
+#  institute_id            :integer
 #  lock_version            :integer          default(0)
 #  person_id               :integer
+#  provider_id             :integer
 #  psu_code                :integer          not null
 #  response_set_id         :integer
 #  transaction_type        :string(255)
@@ -48,6 +50,8 @@ describe Email do
   it { should belong_to(:email_share) }
   it { should belong_to(:email_active) }
   it { should belong_to(:response_set) }
+  it { should belong_to(:provider) }
+  it { should belong_to(:institute) }
 
   context "as mdes record" do
 
@@ -106,5 +110,5 @@ describe Email do
       @business_email.email_rank_code.should == 1
     end
   end
-end
 
+end

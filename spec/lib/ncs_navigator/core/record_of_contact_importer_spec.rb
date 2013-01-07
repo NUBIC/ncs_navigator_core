@@ -388,6 +388,87 @@ module NcsNavigator::Core
         end
       end
 
+      describe 'with a hi-lo conversion' do
+        let(:updated_participant) {
+          importer.import_data
+          exemplar_participant.reload
+        }
+
+        describe 'when the participant starts in hi' do
+          before do
+            exemplar_participant.update_attributes!(:high_intensity => true)
+          end
+
+          describe 'and goes to lo' do
+            before do
+              make_a_csv create_csv_row_text(:hilo_change => 'lo')
+            end
+
+            it 'swaps the participant from hi to lo' do
+              updated_participant.high_intensity.should be_false
+            end
+
+            it 'has no errors' do
+              importer.import_data
+              importer.errors.should be_empty
+            end
+          end
+
+          describe 'and goes to hi' do
+            before do
+              make_a_csv create_csv_row_text(:hilo_change => 'hi')
+            end
+
+            it 'keeps the participant hi' do
+              updated_participant.high_intensity.should be_true
+            end
+
+            it 'reports an error' do
+              expect_import_to_have_error(
+                /Error on row 1. Hilo change to hi but already hi./
+              )
+            end
+          end
+        end
+
+        describe 'when the participant starts in lo' do
+          before do
+            exemplar_participant.update_attributes!(:high_intensity => false)
+          end
+
+          describe 'and goes to hi' do
+            before do
+              make_a_csv create_csv_row_text(:hilo_change => 'hi')
+            end
+
+            it 'swaps the participant from lo to hi' do
+              updated_participant.high_intensity.should be_true
+            end
+
+            it 'has no errors' do
+              importer.import_data
+              importer.errors.should be_empty
+            end
+          end
+
+          describe 'and goes to lo' do
+            before do
+              make_a_csv create_csv_row_text(:hilo_change => 'lo')
+            end
+
+            it 'keeps the participant lo' do
+              updated_participant.high_intensity.should be_false
+            end
+
+            it 'reports an error' do
+              expect_import_to_have_error(
+                /Error on row 1. Hilo change to lo but already lo./
+              )
+            end
+          end
+        end
+      end
+
       describe 'with bad data' do
         it 'fails for an unknown participant' do
           make_a_csv create_csv_row_text(:participant_id => 'No')

@@ -15,7 +15,7 @@ module Surveyor::Models::DependencyConditionMethods
   def to_hash(response_set)
     # all responses to associated question
     responses = question.blank? ? [] : response_set.responses.where("responses.answer_id in (?)", question.answer_ids).all
-    if self.operator.match /^count(>|>=|<|<=|=|!=)\d+$/
+    if self.operator.match( /^count(>|>=|<|<=|=|!=)\d+$/ )
       op, i = self.operator.scan(/^count(>|>=|<|<=|=|!=)(\d+)$/).flatten
       # logger.warn({rule_key.to_sym => responses.count.send(op, i.to_i)})
       return {rule_key.to_sym => (op == "!=" ? !responses.count.send("==", i.to_i) : responses.count.send(op, i.to_i))}
@@ -28,7 +28,11 @@ module Surveyor::Models::DependencyConditionMethods
       case self.operator
       when "==", "<", ">", "<=", ">="
         # logger.warn( {rule_key.to_sym => response.as(klass).send(self.operator, self.as(klass))})
-        return {rule_key.to_sym => response.as(klass).send(self.operator, self.as(klass))}
+        if resp_klass = response.as(klass)
+          return {rule_key.to_sym => resp_klass.send(self.operator, self.as(klass))}
+        else
+          return {rule_key.to_sym => false}
+        end
       when "!="
         # logger.warn( {rule_key.to_sym => !response.as(klass).send("==", self.as(klass))})
         return {rule_key.to_sym => !response.as(klass).send("==", self.as(klass))}

@@ -68,6 +68,10 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.SA_PHONE"       => "phone_nbr",
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -79,7 +83,8 @@ module OperationalDataExtractor
         CHILD_ADDRESS_MAP,
         CHILD_ADDRESS_2_MAP,
         CHILD_PHONE_MAP,
-        CHILD_PHONE_2_MAP
+        CHILD_PHONE_2_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -103,6 +108,8 @@ module OperationalDataExtractor
 
         finalize_addresses(child_address, child_address2)
         finalize_telephones(child_phone, child_phone2)
+
+        update_instrument_mode
 
         child.save!
 

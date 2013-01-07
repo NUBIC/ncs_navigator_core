@@ -68,31 +68,49 @@ class Instrument < ActiveRecord::Base
 
   ##
   # Finds or builds a record to indicate that a person has begun taking a
-  # survey on an event.
+  # survey on an event. The Instrument returned will also have an
+  # unpersisted associated ResponseSet and potentially pre-populated
+  # Responses if the current_survey should have responses set prior
+  # to Instrument administration.
   #
-  # cf. Person.start_instrument
+  # @see Person.start_instrument
+  # @see NcsNavigator::Core::ResponseSetPopulator::Base.process
   #
-  # @param [Person] - person
-  #                 - the person taking the survey
+  # @param [Person]  - person
+  #                  - the person taking the survey
   # @param [Participant] - participant
-  #                 - the participant who the survey is about
-  # @param [Survey] - instrument_survey
-  #                 - the one associated with the first of multi-part sequence or singleton survey
-  #                 - i.e. Survey with title matching PSC activity references label
-  # @param [Survey] - current_survey
-  #                 - the one part of the multi-part survey or singleton
-  #                 - i.e. Survey with title matching PSC activity instrument label
-  # @param [Event]  - the event associated with the Instrument
-  def self.start(person, participant, instrument_survey, current_survey, event)
+  #                  - the participant who the survey is about
+  # @param [Survey]  - instrument_survey
+  #                  - the one associated with the first of multi-part sequence or singleton survey
+  #                  - i.e. Survey with title matching PSC activity references label
+  # @param [Survey]  - current_survey
+  #                  - the one part of the multi-part survey or singleton
+  #                  - i.e. Survey with title matching PSC activity instrument label
+  # @param [Event]   - the event associated with the Instrument
+  # @param [Integer] - mode of Instrument administration - cf. INSTRUMENT_ADMIN_MODE_CL1
+  #                  - defaults to CAPI
+  # @return[Instrument]
+  def self.start(person, participant, instrument_survey, current_survey, event, mode = Instrument.capi)
+    ins = build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
+    ins.prepopulate_response_set(person, current_survey, event, mode)
+    ins
+  end
 
+  ##
+  # Builds a non-persistent Instrument record.
+  #
+  # If there is no referenced initial instrument_survey (that is if there is no first part of a multi-part
+  # survey) or if the first part of a multi-part survey is the same as the current survey to be administered
+  # build the first Instrument for the current_survey.
+  # Otherwise, build a new ResponseSet and associate that ResponseSet with the Instrument associated with
+  # the instrument_survey
+  #
+  # @return[Instrument]
+  def self.build_instrument_from_survey(person, participant, instrument_survey, current_survey, event, mode)
     if (instrument_survey.blank? || instrument_survey == current_survey)
-      Instrument.start_initial_instrument(person, participant, current_survey, event)
+      start_initial_instrument(person, participant, current_survey, event)
     else
-      ins = Instrument.where(:person_id => person.id,
-                             :survey_id => instrument_survey.id,
-                             :event_id => event.id).order("created_at DESC").first
-      person.start_instrument(current_survey, participant, ins)
-      ins
+      continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
     end
   end
 
@@ -101,6 +119,7 @@ class Instrument < ActiveRecord::Base
   #
   # cf. Person.start_instrument
   #
+  # @return[Instrument]
   def self.start_initial_instrument(person, participant, survey, event)
     where_clause = "response_sets.survey_id = ? AND response_sets.user_id = ? AND instruments.event_id = ?"
     rs = ResponseSet.includes(:instrument).where(where_clause, survey.id, person.id, event.id).first
@@ -110,6 +129,28 @@ class Instrument < ActiveRecord::Base
     else
       rs.instrument
     end.tap { |i| i.event = event }
+  end
+
+  ##
+  # Find the Instrument record associated with the instrument_survey (the first part of
+  # a multi-part survey) and then associate the ResponseSet for the
+  # current_survey (the subsequent part of a multi-part survey) with that Instrument record.
+  #
+  # @return[Instrument]
+  def self.continue_instrument_associated_with_survey(person, participant, instrument_survey, current_survey, event, mode)
+    ins = Instrument.where(:person_id => person.id,
+                           :survey_id => instrument_survey.id,
+                           :event_id => event.id).order("created_at DESC").first
+    person.start_instrument(current_survey, participant, ins)
+    ins.instrument_mode_code = mode
+    ins
+  end
+
+  ##
+  # Run the Instrument and ResponseSet through the ResponseSetPopulator process
+  def prepopulate_response_set(person, current_survey, event, mode)
+    NcsNavigator::Core::ResponseSetPopulator::Base.new(
+      person, self, current_survey, { :event => event, :mode => mode }).process
   end
 
   ##
@@ -269,6 +310,55 @@ class Instrument < ActiveRecord::Base
       local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1
       self.instrument_breakoff = NcsCode.for_attribute_name_and_local_code(:instrument_breakoff_code, local_code)
     end
+  end
+
+  ##
+  # From INSTRUMENT_ADMIN_MODE_CL1
+  # @return[Integer]
+  def self.capi
+    1
+  end
+
+  ##
+  # From INSTRUMENT_ADMIN_MODE_CL1
+  # @return[Integer]
+  def self.cati
+    2
+  end
+
+  ##
+  # From INSTRUMENT_ADMIN_MODE_CL1
+  # @return[Integer]
+  def self.papi
+    3
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pbs_eligibility_screener_code
+    44
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pregnancy_screener_eh_code
+    3
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pregnancy_screener_pb_code
+    4
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pregnancy_screener_hilo_code
+    5
   end
 
   ##

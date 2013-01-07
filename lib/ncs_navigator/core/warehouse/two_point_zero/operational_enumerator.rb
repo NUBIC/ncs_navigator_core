@@ -104,6 +104,40 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
       :ignored_columns => %w(response_set_id ppg_status_date_date)
     )
 
+    produce_one_for_one(:institutions, :Institution)
+
+    produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :institutions, :public_id => :institute_id }
+      ],
+      :ignored_columns => %w(institute_relation_code institute_relation_other)
+    )
+
+    produce_one_for_one(:providers, :Provider,
+      :ignored_columns => %w(institution_id name_practice list_subsampling_code
+        proportion_weeks_sampled proportion_days_sampled sampling_notes)
+    )
+
+    produce_one_for_one(:person_provider_links, :LinkPersonProvider,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :public_id => :provider_id }
+      ],
+      :column_map => {
+        :provider_intro_outcome_code  => :prov_intro_outcome,
+        :provider_intro_outcome_other => :prov_intro_outcome_oth
+      },
+      :ignored_columns => %w(date_first_visit_date
+        sampled_person_code pre_screening_status_code date_first_visit)
+    )
+
+    produce_one_for_one(:provider_roles, :ProviderRole,
+      :public_ids => [
+        { :table => :providers, :join_column => :provider_id },
+      ]
+    )
+
     produce_one_for_one(:contacts, :Contact,
       :selects => [
         "(t.contact_disposition % 500 + 500) normalized_contact_disposition"
@@ -115,48 +149,6 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
         :who_contacted_other => :who_contact_oth
       },
       :ignored_columns => %w(contact_date_date contact_disposition lock_version)
-    )
-
-    produce_one_for_one(:participant_consents, :ParticipantConsent,
-      :public_ids => [
-        :participants,
-        :contacts,
-        { :table => :people,
-          :public_id => :person_id,
-          :public_ref => :person_who_consented_id },
-        { :table => :people,
-          :public_id => :person_id,
-          :public_ref => :person_wthdrw_consent_id }
-      ]
-    )
-
-    produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
-      :public_ids => %w(participants participant_consents)
-    )
-
-    produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
-      :public_ids => %w(participants contacts)
-    )
-
-    produce_one_for_one(:participant_visit_consents, :ParticipantVisConsent,
-      :public_ids => [
-        :participants,
-        :contacts,
-        { :table => :people,
-          :public_id => :person_id,
-          :public_ref => :vis_person_who_consented_id }
-      ]
-    )
-
-    produce_one_for_one(:participant_visit_records, :ParticipantRvis,
-      :public_ids => [
-        :participants,
-        :contacts,
-        { :table => :people,
-          :public_id => :person_id,
-          :join_column => :rvis_person_id,
-          :public_ref => :rvis_person }
-      ]
     )
 
     produce_one_for_one(:events, :Event,
@@ -207,6 +199,7 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
     produce_one_for_one(:contact_links, :LinkContact,
       :public_ids => [
         { :table => :people, :join_column => :person_id },
+        :providers,
         :events,
         :contacts,
         :instruments
@@ -214,6 +207,97 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
       :where => %q{
         EXISTS(SELECT 'x' FROM events e WHERE e.id=t.event_id AND e.event_disposition IS NOT NULL)
       }
+    )
+
+    produce_one_for_one(:addresses, :Address,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :dwelling_units, :public_id => :du_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
+      ],
+      :column_map => {
+        :address_one => :address_1,
+        :address_two => :address_2
+      },
+      :ignored_columns => %w(
+        address_start_date_date address_end_date_date
+        response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
+        lock_version
+      )
+    )
+
+    produce_one_for_one(:emails, :Email,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
+      ],
+      :ignored_columns => %w(
+        email_start_date_date email_end_date_date response_set_id lock_version
+      )
+    )
+
+    produce_one_for_one(:telephones, :Telephone,
+      :public_ids => [
+        { :table => :people, :join_column => :person_id },
+        { :table => :providers, :join_column => :provider_id },
+        { :table => :institutions, :join_column => :institute_id },
+      ],
+      :ignored_columns => %w(
+        phone_start_date_date phone_end_date_date response_set_id lock_version
+      )
+    )
+
+    produce_one_for_one(:participant_consents, :ParticipantConsent,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_who_consented_id },
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :person_wthdrw_consent_id }
+      ]
+    )
+
+    produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
+      :public_ids => %w(participants participant_consents)
+    )
+
+    produce_one_for_one(:participant_authorization_forms, :ParticipantAuth,
+      :public_ids => %w(participants contacts providers)
+    )
+
+    produce_one_for_one(:participant_visit_consents, :ParticipantVisConsent,
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :public_ref => :vis_person_who_consented_id }
+      ]
+    )
+
+    produce_one_for_one(:participant_visit_records, :ParticipantRvis,
+      :selects => [
+        mdes_formatted_datetime_query('time_stamp_1'),
+        mdes_formatted_datetime_query('time_stamp_2'),
+      ],
+      :public_ids => [
+        :participants,
+        :contacts,
+        { :table => :people,
+          :public_id => :person_id,
+          :join_column => :rvis_person_id,
+          :public_ref => :rvis_person }
+      ],
+      :column_map => {
+        mdes_datetime_column_alias('time_stamp_1').to_sym => :time_stamp_1,
+        mdes_datetime_column_alias('time_stamp_2').to_sym => :time_stamp_2,
+      },
+      :ignored_columns => %w(time_stamp_1 time_stamp_2)
     )
 
     produce_one_for_one(:non_interview_reports, :NonInterviewRpt,
@@ -275,38 +359,5 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
       ]
     )
 
-    produce_one_for_one(:addresses, :Address,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-        { :table => :dwelling_units, :public_id => :du_id }
-      ],
-      :column_map => {
-        :address_one => :address_1,
-        :address_two => :address_2
-      },
-      :ignored_columns => %w(
-        address_start_date_date address_end_date_date
-        response_set_id specimen_processing_shipping_center_id sample_receipt_shipping_center_id
-        lock_version
-      )
-    )
-
-    produce_one_for_one(:emails, :Email,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-      ],
-      :ignored_columns => %w(
-        email_start_date_date email_end_date_date response_set_id lock_version
-      )
-    )
-
-    produce_one_for_one(:telephones, :Telephone,
-      :public_ids => [
-        { :table => :people, :join_column => :person_id },
-      ],
-      :ignored_columns => %w(
-        phone_start_date_date phone_end_date_date response_set_id lock_version
-      )
-    )
   end
 end

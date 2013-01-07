@@ -50,7 +50,7 @@ module NcsNavigatorCore
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    config.filter_parameters += [:password, 'CORE_SECRET']
 
     Aker.configure do
       # The authentication protocol to use for interactive access.
@@ -116,3 +116,4 @@ require 'ncs_navigator/core'
 require 'ncs_navigator/mdes_ext'
 
 require 'ncs_navigator/core/redis_configuration'
+require 'ncs_navigator/core/sidekiq_configuration'

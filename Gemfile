@@ -38,7 +38,7 @@ gem 'jquery-rails'
 gem 'json-schema'
 
 gem 'ncs_mdes', '>= 0.10.0', :git => 'https://github.com/NUBIC/ncs_mdes.git'
-gem 'surveyor', :git => 'https://github.com/NUBIC/surveyor.git', :ref => 'master'
+gem 'surveyor', :git => 'https://github.com/NUBIC/surveyor.git', :ref => '61e3c3591ddf841a62fa7be5c675f9c97334cac9' # If you change this, change the instruments project also
 gem 'psc'
 gem 'ncs_navigator_configuration', :git => 'https://github.com/NUBIC/ncs_navigator_configuration.git'
 gem 'sidekiq'
@@ -73,7 +73,7 @@ gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
 group :development, :test, :ci do
-  gem 'annotate', '~> 2.5.0.pre1'
+  gem 'annotate', '~> 2.5.0'
   gem 'rspec-rails', '2.6.1'
 
   gem 'guard'

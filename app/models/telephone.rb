@@ -43,7 +43,7 @@ class Telephone < ActiveRecord::Base
   acts_as_mdes_record :public_id_field => :phone_id, :date_fields => [:phone_start_date, :phone_end_date]
 
   belongs_to :person
-  # belongs_to :institute
+  belongs_to :institute, :class_name => 'Institution', :foreign_key => :institute_id
   belongs_to :provider
   belongs_to :response_set
 
@@ -115,5 +115,16 @@ class Telephone < ActiveRecord::Base
     end
   end
 
-end
+  def filter_criteria
+    :phone_nbr
+  end
 
+  def type_code
+    :phone_type_code
+  end
+
+  def rank_code
+    :phone_rank_code
+  end
+
+end

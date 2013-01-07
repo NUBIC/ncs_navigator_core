@@ -297,6 +297,10 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.BIRTH_PLACE"       => "institute_name",
     }
 
+    MODE_OF_CONTACT_MAP = {
+      "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -323,7 +327,8 @@ module OperationalDataExtractor
         CONFIRM_WORK_ADDRESS_MAP,
         FATHER_PHONE_MAP,
         DUE_DATE_DETERMINER_MAP,
-        INSTITUTION_MAP
+        INSTITUTION_MAP,
+        MODE_OF_CONTACT_MAP
       ]
     end
 
@@ -395,12 +400,15 @@ module OperationalDataExtractor
         participant.ppg_details.first.update_due_date(due_date)
       end
 
+      update_instrument_mode
+
       participant.save!
       person.save!
 
     end
 
-    #TODO: PBS eligibility operational data extractor has similar methods to get the  Extract methods to some common module
+    # TODO: PBS eligibility operational data extractor has similar methods to get the due date
+    #      Extract methods to some common module
     def calculated_due_date(response_set)
       # try due date first
       ret = nil

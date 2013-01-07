@@ -12,8 +12,10 @@ module NcsNavigator::Core::Warehouse
     include_context :importer_spec_warehouse
 
     let(:importer) {
-      OperationalImporter.new(wh_config)
+      OperationalImporter.new(wh_config, importer_options)
     }
+
+    let(:importer_options) { { } }
 
     let(:enumerator_class) {
       OperationalEnumerator.select_implementation(wh_config)
@@ -59,7 +61,7 @@ module NcsNavigator::Core::Warehouse
 
     describe 'strategy selection' do
       it 'handles most models automatically' do
-        importer.automatic_producers.size.should == 25
+        importer.automatic_producers.size.should == 30
       end
 
       [
@@ -510,73 +512,123 @@ module NcsNavigator::Core::Warehouse
         Participant.first.being_followed.should be_false
       end
 
-      %w(1 2 3).each do |mother_type|
-        describe "for a mother of type #{mother_type}" do
-          let(:p_type) { mother_type }
+      describe 'when automatically determined' do
+        before do
+          importer_options[:followed_p_ids] = nil
+        end
 
-          let!(:ppg_details) {
-            create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
-              :ppg_first => '2', :p => src_participant)
-          }
+        %w(1 2 3).each do |mother_type|
+          describe "for a mother of type #{mother_type}" do
+            let(:p_type) { mother_type }
 
-          let!(:ppg_status_history_current) {
-            create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
-              :p => src_participant, :ppg_status => '2', :ppg_status_date => '2011-06-04')
-          }
+            let!(:ppg_details) {
+              create_warehouse_record_with_defaults(wh_config.model(:PpgDetails),
+                :ppg_first => '2', :p => src_participant)
+            }
 
-          let(:ppg_pregnant) { '1' }
+            let!(:ppg_status_history_current) {
+              create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
+                :p => src_participant, :ppg_status => '2', :ppg_status_date => '2011-06-04')
+            }
 
-          describe 'when she is enrolled' do
+            let(:ppg_pregnant) { '1' }
+
+            describe 'when she is enrolled' do
+              let(:enroll_status) { '1' }
+
+              it 'is true when she was pregnant when originally contacted' do
+                ppg_details.ppg_first = ppg_pregnant
+                save_wh(ppg_details)
+
+                should_be_followed
+              end
+
+              it 'is true when she has a pregnancy in her status history' do
+                create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
+                  :ppg_history_id => 'Older',  :p => src_participant,
+                  :ppg_status => ppg_pregnant, :ppg_status_date => '2010-01-05')
+
+                should_be_followed
+              end
+
+              it 'is true when she is currently pregnant' do
+                ppg_status_history_current.ppg_status = ppg_pregnant
+                save_wh(ppg_status_history_current)
+
+                should_be_followed
+              end
+
+              it 'is false when she was not originally pregnant and has no pregnancies in her history' do
+                should_not_be_followed
+              end
+
+              it 'is false when she was not originally pregnant and has no status history' do
+                ppg_status_history_current.destroy
+
+                should_not_be_followed
+              end
+
+              it 'is false when she has no PPG details and no status history' do
+                ppg_status_history_current.destroy
+                ppg_details.destroy
+
+                should_not_be_followed
+              end
+            end
+
+            %w(2 -4).each do |not_enrolled_code|
+              describe "when her enroll status is #{not_enrolled_code}" do
+                let(:enroll_status) { not_enrolled_code }
+
+                it "is false" do
+                  ppg_details.ppg_first = '1'
+                  save_wh(ppg_details)
+
+                  should_not_be_followed
+                end
+              end
+            end
+          end
+        end
+
+        describe 'for a child' do
+          let(:p_type) { '6' }
+
+          describe 'when enrolled' do
             let(:enroll_status) { '1' }
 
-            it 'is true when she was pregnant when originally contacted' do
-              ppg_details.ppg_first = ppg_pregnant
-              save_wh(ppg_details)
-
+            it 'is true regardless of PPG status' do
               should_be_followed
             end
+          end
 
-            it 'is true when she has a pregnancy in her status history' do
-              create_warehouse_record_with_defaults(wh_config.model(:PpgStatusHistory),
-                :ppg_history_id => 'Older',  :p => src_participant,
-                :ppg_status => ppg_pregnant, :ppg_status_date => '2010-01-05')
+          %w(2 -4).each do |not_enrolled_code|
+            describe "when the child's enroll status is #{not_enrolled_code}" do
+              let(:enroll_status) { not_enrolled_code }
 
-              should_be_followed
+              it 'is false' do
+                should_not_be_followed
+              end
             end
+          end
+        end
 
-            it 'is true when she is currently pregnant' do
-              ppg_status_history_current.ppg_status = ppg_pregnant
-              save_wh(ppg_status_history_current)
+        describe 'for a non-followed p_type' do
+          let(:p_type) { '4' }
 
-              should_be_followed
-            end
+          describe 'when enrolled' do
+            let(:enroll_status) { '1' }
 
-            it 'is false when she was not originally pregnant and has no pregnancies in her history' do
-              should_not_be_followed
-            end
-
-            it 'is false when she was not originally pregnant and has no status history' do
-              ppg_status_history_current.destroy
-
-              should_not_be_followed
-            end
-
-            it 'is false when she has no PPG details and no status history' do
-              ppg_status_history_current.destroy
-              ppg_details.destroy
-
+            it 'is false' do
               should_not_be_followed
             end
           end
 
           %w(2 -4).each do |not_enrolled_code|
-            describe "when her enroll status is #{not_enrolled_code}" do
+            describe "when enroll status is #{not_enrolled_code}" do
               let(:enroll_status) { not_enrolled_code }
 
-              it "is false" do
-                ppg_details.ppg_first = '1'
-                save_wh(ppg_details)
-
+              it 'is false' do
                 should_not_be_followed
               end
             end
@@ -584,47 +636,33 @@ module NcsNavigator::Core::Warehouse
         end
       end
 
-      describe 'for a child' do
-        let(:p_type) { '6' }
+      describe 'when explicitly enumerated' do
+        shared_context 'explicitly enumerated followedness' do
+          it 'follows the participant when its ID is in the list' do
+            importer_options[:followed_p_ids] = ['foo', src_participant.p_id]
 
-        describe 'when enrolled' do
-          let(:enroll_status) { '1' }
-
-          it 'is true regardless of PPG status' do
             should_be_followed
           end
-        end
 
-        %w(2 -4).each do |not_enrolled_code|
-          describe "when the child's enroll status is #{not_enrolled_code}" do
-            let(:enroll_status) { not_enrolled_code }
+          it 'does not follow the participant when its ID is not in the list' do
+            importer_options[:followed_p_ids] = ['foo']
 
-            it 'is false' do
-              should_not_be_followed
-            end
-          end
-        end
-      end
-
-      describe 'for a non-followed p_type' do
-        let(:p_type) { '4' }
-
-        describe 'when enrolled' do
-          let(:enroll_status) { '1' }
-
-          it 'is false' do
             should_not_be_followed
           end
         end
 
-        %w(2 -4).each do |not_enrolled_code|
-          describe "when enroll status is #{not_enrolled_code}" do
-            let(:enroll_status) { not_enrolled_code }
+        describe 'and the heuristic would match' do
+          let(:p_type) { 6 }
+          let(:enroll_status) { 1 }
 
-            it 'is false' do
-              should_not_be_followed
-            end
-          end
+          include_context 'explicitly enumerated followedness'
+        end
+
+        describe 'and the heuristic would not match' do
+          let(:p_type) { 4 }
+          let(:enroll_status) { 2 }
+
+          include_context 'explicitly enumerated followedness'
         end
       end
     end
@@ -794,7 +832,7 @@ module NcsNavigator::Core::Warehouse
           :event_id => 'f_e3',
           :participant => fred_p,
           :event_disp => 4,
-          :event_type => code_for_event_type('Informed Consent'),
+          :event_type => code_for_event_type('Pregnancy Visit 1'),
           :event_start_date => '2010-09-03')
       }
       let(:f_e1) {
@@ -1026,7 +1064,7 @@ module NcsNavigator::Core::Warehouse
 
           # TODO: this is a way crappy test
           it 'orders by the earliest set date date followed by the type, except for lo-hi conversion which goes by last date' do
-            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e3 f_e1 f_e4 f_e5)
+            events_for('fred_p').collect(&:event_id).should == %w(f_e2 f_e1 f_e3 f_e4 f_e5)
           end
 
           it 'includes events without link_contact' do
@@ -1042,7 +1080,7 @@ module NcsNavigator::Core::Warehouse
           }
 
           let(:expected_states) {
-            %w(pending registered in_pregnancy_probability_group consented_low_intensity following_low_intensity following_low_intensity)
+            %w(pending registered in_pregnancy_probability_group following_low_intensity following_low_intensity)
           }
 
           context do
@@ -1233,11 +1271,11 @@ module NcsNavigator::Core::Warehouse
               end
 
               it 'has the event type code' do
-                event_hash['event_type_code'].should == '10'
+                event_hash['event_type_code'].should == '13'
               end
 
               it 'has the event type label' do
-                event_hash['event_type_label'].should == 'informed_consent'
+                event_hash['event_type_label'].should == 'pregnancy_visit_1'
               end
 
               it 'knows whether the person is hi or lo' do
@@ -1245,7 +1283,7 @@ module NcsNavigator::Core::Warehouse
               end
 
               it 'has the sort key' do
-                event_hash['sort_key'].should == '2010-09-03:010'
+                event_hash['sort_key'].should == '2010-09-03:013'
               end
             end
 

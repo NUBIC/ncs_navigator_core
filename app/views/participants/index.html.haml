@@ -59,8 +59,15 @@
         %th
           Current PPG Status
         %th
+          Provider
+        %th
+          Originating Staff
+        %th
+          Current Staff
+        %th
           Enrolled
         %th{ :colspan => "3" }
+
 
       - @participants.each do |participant|
         %tr{ :class => cycle('even_record', 'odd_record') }
@@ -70,10 +77,18 @@
             = participant.first_name
           %td
             = participant.last_name
-          = public_identifier_row(participant.p_id)
+          %td
+            = participant.p_id
           %td
             %span{ :title => participant.ppg_status.to_s }
               = "PPG #{participant.ppg_status.local_code}" unless participant.ppg_status.blank?
+          - if recruitment_strategy.pbs?
+            %td
+              = participant.person.provider.name_practice unless participant.person.provider.blank?
+          %td
+            = participant_staff(participant)
+          %td
+            = staff_name(current_user.identifiers[:staff_id])
           %td
             = participant.enroll_status
           %td

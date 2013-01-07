@@ -125,5 +125,20 @@ class Address < ActiveRecord::Base
     CONTENT_FIELDS.all? { |cf| v = send(cf); v.blank? || v == MISSING_IN_ERROR }
   end
 
-end
+  def zip_code
+    zip4.blank? ? zip.to_s : zip.to_s + '-' + zip4.to_s
+  end
 
+  def filter_criteria
+    :address_one
+  end
+
+  def type_code
+    :address_type_code
+  end
+
+  def rank_code
+    :address_rank_code
+  end
+
+end

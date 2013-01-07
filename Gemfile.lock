@@ -50,10 +50,10 @@ GIT
 
 GIT
   remote: https://github.com/NUBIC/surveyor.git
-  revision: 0a4424ce6b732d111954354ec9c1c7e21d6ebc9b
-  ref: master
+  revision: 61e3c3591ddf841a62fa7be5c675f9c97334cac9
+  ref: 61e3c3591ddf841a62fa7be5c675f9c97334cac9
   specs:
-    surveyor (0.23.0.pre)
+    surveyor (1.1.1.pre)
       fastercsv (~> 1.5.4)
       formtastic (~> 2.1.0)
       haml (~> 3.1.3)
@@ -110,7 +110,7 @@ GEM
     aker-rails (3.0.2)
       aker (~> 3.0)
       rails (~> 3.0, >= 3.0.4)
-    annotate (2.5.0.pre1)
+    annotate (2.5.0)
       rake
     arel (2.2.3)
     bcdatabase (1.2.1)
@@ -119,7 +119,7 @@ GEM
       i18n
       thor (~> 0.14.6)
     bcrypt-ruby (3.0.1)
-    builder (3.0.3)
+    builder (3.0.4)
     capistrano (2.12.0)
       highline
       net-scp (>= 1.0.0)
@@ -305,7 +305,7 @@ GEM
       ntlm-http (~> 0.1, >= 0.1.1)
       webrobots (~> 0.0, >= 0.0.9)
     mime-types (1.19)
-    multi_json (1.3.7)
+    multi_json (1.5.0)
     multipart-post (1.1.5)
     mustache (0.99.4)
     ncs_navigator_authority (1.1.1)
@@ -368,7 +368,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.6)
-    rake (0.9.2.2)
+    rake (10.0.3)
     ransack (0.6.0)
       actionpack (~> 3.0)
       activerecord (~> 3.0)
@@ -441,10 +441,10 @@ GEM
     thor (0.14.6)
     tilt (1.3.3)
     timers (1.0.1)
-    treetop (1.4.11)
+    treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.33)
+    tzinfo (0.3.35)
     uglifier (1.2.4)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
@@ -471,7 +471,7 @@ DEPENDENCIES
   aker (~> 3.0)
   aker-cas_cli (~> 1.0)
   aker-rails
-  annotate (~> 2.5.0.pre1)
+  annotate (~> 2.5.0)
   bcdatabase (~> 1.0)
   capistrano
   capybara

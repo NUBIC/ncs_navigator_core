@@ -31,33 +31,25 @@ module NcsNavigator::Core
 
         it "is TRUE if this is the pv1 event" do
           event = Factory(:event, :event_type_code => 13) # PV1
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
         end
 
         it "is TRUE if this is the pv2 event" do
           event = Factory(:event, :event_type_code => 15) # PV2
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
         end
 
         it "is TRUE if this is the father event" do
           event = Factory(:event, :event_type_code => 19) # Father
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "TRUE")
         end
 
         it "is FALSE if this is NOT the pv1, pv2, or father event" do
           event = Factory(:event, :event_type_code => 18) # Birth
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_is_pv1_or_pv2_or_father_for_participant_verification", "FALSE")
         end
 
@@ -111,17 +103,13 @@ module NcsNavigator::Core
 
         it "is TRUE for the PV1 event" do
           event = Factory(:event, :event_type_code => 13) # PV1
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "TRUE")
         end
 
         it "is FALSE for any event other than PV1 and Birth" do
           event = Factory(:event, :event_type_code => 15) # PV2
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
         end
 
@@ -133,9 +121,7 @@ module NcsNavigator::Core
           pv1_event.should_not be_disposition_complete
 
           event = Factory(:event, :event_type_code => 18) # Birth
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "TRUE")
         end
 
@@ -147,9 +133,7 @@ module NcsNavigator::Core
           pv1_event.should be_disposition_complete
 
           event = Factory(:event, :event_type_code => 18) # Birth
-          contact_link = Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => event)
-
-          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, contact_link)
+          rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
         end
 

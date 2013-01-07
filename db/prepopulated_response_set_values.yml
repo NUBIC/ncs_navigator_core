@@ -1,0 +1,63 @@
+# Pre-populated response set values for Field
+pbs_participant_eligibility_screening:
+  INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0:
+    - qref: prepopulated_mode_of_contact
+      aref: capi
+  INS_QUE_Tracing_INT_EHPBHILIPBS_M3.0_V1.0:
+    - qref: prepopulated_mode_of_contact
+      aref: capi
+    - qref: prepopulated_should_show_address_for_tracing
+      aref: false
+    - qref: prepopulated_is_address_provided
+      aref: false
+    - qref: prepopulated_is_home_phone_provided
+      aref: false
+    - qref: prepopulated_is_valid_cell_phone_provided
+      aref: false
+    - qref: prepopulated_is_valid_cell_phone_2_provided
+      aref: false
+    - qref: prepopulated_is_valid_cell_phone_3_provided
+      aref: false
+    - qref: prepopulated_is_valid_cell_phone_4_provided
+      aref: false
+    - qref: prepopulated_should_show_email_for_tracing
+      aref: false
+    - qref: prepopulated_is_valid_email_provided
+      aref: false
+    - qref: prepopulated_is_valid_email_appt_provided
+      aref: false
+    - qref: prepopulated_is_valid_email_questionnaire_provided
+      aref: false
+    - qref: prepopulated_should_show_contact_for_tracing
+      aref: true
+    - qref: prepopulated_is_event_type_birth
+      aref: false
+    - qref: prepopulated_is_valid_contact_for_all_provided
+      aref: false
+    - qref: prepopulated_is_event_type_pbs_participant_eligibility_screening
+      aref: true
+    - qref: prepopulated_is_prev_city_provided
+      aref: false
+    - qref: prepopulated_valid_driver_license_provided
+      aref: false
+pregnancy_visit_1:
+  INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_ONE:
+    - qref: prepopulated_is_pv1_or_pv2_or_father_for_participant_verification
+      aref: false
+    - qref: prepopulated_respondent_name_collected
+      aref: false
+    - qref: prepopulated_should_show_maiden_name_and_nicknames
+      aref: true
+    - qref: prepopulated_person_dob_previously_collected
+      aref: false
+  INS_QUE_PregVisit1_INT_EHPBHI_M3.0_V3.0:
+    - qref: prepopulated_mode_of_contact
+      aref: capi
+    - qref: prepopulated_should_show_height
+      aref: true
+    - qref: prepopulated_should_show_recent_move_for_preg_visit_one
+      aref: false
+    - qref: prepopulated_is_first_pregnancy_visit_one
+      aref: true
+    - qref: prepopulated_is_pre_pregnancy_information_available_and_recent_move_coded_as_one
+      aref: false

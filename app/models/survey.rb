@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
 #
 # Table name: surveys
 #
@@ -17,6 +16,8 @@
 #  display_order          :integer
 #  id                     :integer          not null, primary key
 #  inactive_at            :datetime
+#  instrument_type        :integer
+#  instrument_version     :string(36)
 #  reference_identifier   :string(255)
 #  survey_version         :integer          default(0)
 #  title                  :string(255)

@@ -20,6 +20,11 @@ module ApplicationHelper
     "Release Version #{NcsNavigator::Core::VERSION}"
   end
 
+  def application_title_text
+    txt = "NCS Navigator Cases"
+    Rails.env == "staging" ? "#{txt} [TEST]" : txt
+  end
+
   def mdes_version_is_after?(version = 3.0)
     NcsNavigatorCore.mdes.version.to_f >= version
   end
@@ -40,11 +45,6 @@ module ApplicationHelper
 
   def display_participant(participant)
     participant.person ? display_person(participant.person) : "#{participant.public_id}"
-  end
-
-  def public_identifier_row(id)
-    id = id.to_s
-    (id.length < 16) ? content_tag(:td, id) : content_tag(:td, truncate(id, :length => 16), :title => id)
   end
 
   ##
@@ -115,6 +115,22 @@ module ApplicationHelper
 
   def continuable?(event)
     event.continuable?
+  end
+
+## Displaying the Staff name that is associated with the Participant(Initiated the Contact)
+#  Used in the Participants,Contact_Links excel reports to display the Originating Staff and Current Staff.
+  def staff_name(staff_id)
+    return "" if staff_id.blank?
+    staff_list[staff_id]
+  end
+
+  def staff_list
+    @staff_list || build_staff_list
+  end
+
+  def build_staff_list
+    users = NcsNavigator::Authorization::Core::Authority.new.find_users
+    Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 
 end

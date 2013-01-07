@@ -156,12 +156,7 @@ class PeopleController < ApplicationController
     event = cl.event
 
     # start instrument
-    instrument = Instrument.start(person, participant, instrument_survey, current_survey, event)
-
-    # prepopulate response_set
-    # FIXME: put this in the Instrument.start method
-    populator = NcsNavigator::Core::ResponseSetPopulator::Base.new(person, instrument, current_survey, cl)
-    populator.process
+    instrument = Instrument.start(person, participant, instrument_survey, current_survey, event, Instrument.cati)
 
     # persist instrument and newly prepopulated response_set
     instrument.save!

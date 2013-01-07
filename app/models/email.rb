@@ -22,8 +22,10 @@
 #  email_type_code         :integer          not null
 #  email_type_other        :string(255)
 #  id                      :integer          not null, primary key
+#  institute_id            :integer
 #  lock_version            :integer          default(0)
 #  person_id               :integer
+#  provider_id             :integer
 #  psu_code                :integer          not null
 #  response_set_id         :integer
 #  transaction_type        :string(255)
@@ -39,7 +41,8 @@ class Email < ActiveRecord::Base
 
   belongs_to :person
   belongs_to :response_set
-
+  belongs_to :provider
+  belongs_to :institute, :class_name => 'Institution', :foreign_key => :institute_id
   ncs_coded_attribute :psu,               'PSU_CL1'
   ncs_coded_attribute :email_info_source, 'INFORMATION_SOURCE_CL2'
   ncs_coded_attribute :email_type,        'EMAIL_TYPE_CL1'
@@ -61,5 +64,16 @@ class Email < ActiveRecord::Base
     end
   end
 
-end
+  def filter_criteria
+    :email
+  end
 
+  def type_code
+    :email_type_code
+  end
+
+  def rank_code
+    :email_rank_code
+  end
+
+end

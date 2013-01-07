@@ -22,13 +22,14 @@ module NcsNavigator::Core::Warehouse
 
     def_delegators :wh_config, :shell, :log
 
-    def initialize(wh_config)
+    def initialize(wh_config, options={})
       @wh_config = wh_config
       @core_models_indexed_by_table = {}
       @public_id_indexes = {}
       @failed_associations = []
       @progress = ProgressTracker.new(wh_config)
       @sync_loader = Psc::SyncLoader.new(OperationalImporterPscSync::KEYGEN)
+      @followed_p_ids = options.delete(:followed_p_ids)
     end
 
     def import(*tables)
@@ -411,6 +412,23 @@ module NcsNavigator::Core::Warehouse
     end
 
     def set_participant_being_followed
+      if @followed_p_ids
+        set_participant_being_followed_by_ids(@followed_p_ids)
+      else
+        set_participant_being_followed_using_heuristic
+      end
+    end
+
+    def set_participant_being_followed_by_ids(p_ids)
+      ActiveRecord::Base.connection.
+        execute(<<-SQL)
+          UPDATE participants p
+          SET being_followed=true
+          WHERE p.p_id IN ('#{p_ids.join("', '")}')
+        SQL
+    end
+
+    def set_participant_being_followed_using_heuristic
       ActiveRecord::Base.connection.
         execute(<<-SQL)
           UPDATE participants p
@@ -492,6 +510,8 @@ module NcsNavigator::Core::Warehouse
           if disp
             core_record.send("#{core_attribute.sub(/^normalized_/, '')}=", disp.to_i % 500)
           end
+        elsif core_attribute =~ /^mdes_datetime_value_.*$/
+          core_record.send("#{core_attribute.sub(/^mdes_datetime_value_/, '')}=", mdes_record.send(mdes_variable))
         else
           core_record.send("#{core_attribute}=", mdes_record.send(mdes_variable))
         end
