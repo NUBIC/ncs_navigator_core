@@ -40,4 +40,11 @@ class Institution < ActiveRecord::Base
 
   has_many :addresses, :foreign_key => 'institute_id'
 
+  CONTENT_FIELDS = %w(institute_type institute_name)
+  MISSING_IN_ERROR = -4
+
+  def blank?
+    CONTENT_FIELDS.all? { |cf| v = send(cf); v.blank? || v == MISSING_IN_ERROR }
+  end
+
 end
