@@ -138,7 +138,7 @@ module OperationalDataExtractor
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
 
       email        = process_email(EMAIL_MAP)
-      institution  = process_institution(INSTITUTION_MAP)
+      institution  = process_institution(INSTITUTION_MAP, response_set)
 
       finalize_email(email)
       finalize_addresses(mail_address, work_address)
