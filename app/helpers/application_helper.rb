@@ -117,13 +117,20 @@ module ApplicationHelper
     event.continuable?
   end
 
-  def staff_list(user)
-    staff_id = user
+## Displaying the Staff name that is associated with the Participant(Initiated the Contact)
+#  Used in the Participants,Contact_Links excel reports to display the Originating Staff and Current Staff.
+  def staff_name(staff_id)
+    return "" if staff_id.blank?
+    staff_list[staff_id]
+  end
+
+  def staff_list
+    @staff_list || build_staff_list
+  end
+
+  def build_staff_list
     users = NcsNavigator::Authorization::Core::Authority.new.find_users
-    staff_lists = Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
-    if !staff_id.blank? and staff_lists.has_key?(staff_id)
-      current_staff = staff_lists[staff_id]
-    end
+    Hash[users.map{|key| [key.identifiers[:staff_id], key.full_name]}]
   end
 
 end
