@@ -71,6 +71,9 @@ class Address < ActiveRecord::Base
   validates :address_end_date,    :length => { :is => 10 },       :allow_blank => true
   validates :address_start_date,  :length => { :is => 10 },       :allow_blank => true
 
+  CONTENT_FIELDS = %w(address_one address_two unit city state_code zip zip4)
+  MISSING_IN_ERROR = -4
+
   def self.home_address_type
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 1).first
   end
@@ -116,6 +119,10 @@ class Address < ActiveRecord::Base
       self.address_rank = secondary_rank
       self.save
     end
+  end
+
+  def blank?
+    CONTENT_FIELDS.all? { |cf| v = send(cf); v.blank? || v == MISSING_IN_ERROR }
   end
 
 end
