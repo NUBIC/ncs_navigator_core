@@ -475,7 +475,8 @@
             <label id="2bb98cfe-4fa5-4258-8063-38635ce9fb0f" name="instrument:2.0:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
             <label id="c6503576-c4cf-4fc2-9d48-34fcf5a8eddb" name="instrument:2.1:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
             <label id="8e356173-8ef4-4ce3-88ac-209c20472d8c" name="instrument:2.2:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
-            <label id="c0c286df-d55e-4dc0-b2cf-150c2dc52f90" name="instrument:3.0:ins_que_24mmother_saq_ehpbhi_p2_v1.0order:02_01"/>
+            <label id="70edaff6-5669-42aa-a405-75d4bc36ebfe" name="instrument:3.0:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
+            <label id="f34c3dd7-dd98-434a-bb57-9e94598dd151" name="order:02_01"/>
             <label id="2fdbab6b-f106-4280-8de2-01c20b279c69" name="participant_type:mother"/>
             <activity-reference code="24MMSAQ" source="NCS"/>
           </planned-activity>

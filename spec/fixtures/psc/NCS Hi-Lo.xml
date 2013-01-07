@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-04T16:17:37.437Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-07T13:52:12.659Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 28" date="2013-01-07" mandatory="true" released-date="2013-01-07T13:52:12.659Z" updated-date="2013-01-07T13:51:42.477Z" previous-amendment-key="2013-01-04~Rev 27">
+    <planned-activity-delta id="4db2b876-af67-4f1b-9b4b-9aa91edf2dc9" node-id="06b1e674-3af9-45e1-ac7e-2c30843fd365">
+      <property-change id="92db1d9e-5add-4f56-843c-7545570e3929" property-name="day" old-value="730" new-value="730"/>
+      <remove id="1f02feac-2346-4f90-8858-e5f46473b0f0" child-id="c0c286df-d55e-4dc0-b2cf-150c2dc52f90"/>
+      <add id="7b437b0e-99f5-4c49-81b9-ba3dce46e4ce">
+        <label id="70edaff6-5669-42aa-a405-75d4bc36ebfe" name="instrument:3.0:ins_que_24mmother_saq_ehpbhi_p2_v1.0"/>
+      </add>
+      <add id="a38ed542-0556-4609-ab3b-2dc842f8685a">
+        <label id="f34c3dd7-dd98-434a-bb57-9e94598dd151" name="order:02_01"/>
+      </add>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 27" date="2013-01-04" mandatory="true" released-date="2013-01-04T16:17:37.437Z" updated-date="2013-01-04T16:13:28.633Z" previous-amendment-key="2012-12-19~Rev 26">
     <planned-activity-delta id="a7850cc0-a77e-42cd-9e69-2d14b7dd0286" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
       <property-change id="42818546-29bb-4f2e-84ce-097ebb4275aa" property-name="day" old-value="1" new-value="1"/>
