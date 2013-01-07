@@ -370,6 +370,14 @@ class Event < ActiveRecord::Base
     10
   end
 
+  def self.pbs_eligibility_screener_code
+    34
+  end
+
+  def self.pregnancy_screener_code
+    29
+  end
+
   def pregnancy_visit_1?
     self.event_type_code == Event.pregnancy_visit_1_code
   end

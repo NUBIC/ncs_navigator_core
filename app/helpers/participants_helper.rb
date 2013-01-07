@@ -59,18 +59,78 @@ module ParticipantsHelper
   end
   private :remove_two_tier
 
-  ## "Originating Staff"
-  #  The user that initiated the participant in the system(performed the eligibility screener).
+  ##
+  # "Originating Staff"
+  # The name of the user that initiated the participant in the system
+  # (e.g. the person who administered the eligibility screener).
+  # @param[Participant]
+  # @return[String]
   def participant_staff(participant)
-    if participant && participant.completed_event?(NcsNavigatorCore.recruitment_strategy.pbs? ? NcsCode.pbs_eligibility_screener : NcsCode.pregnancy_screener)
+    if participant && participant.completed_event?(screener_event)
       staff_name(originating_staff_id(participant))
     end
   end
 
+  ##
+  # The public identifier of the Staff member who
+  # administered the screener instrument to the Participant.
+  # @param[Participant]
+  # @return[String]
   def originating_staff_id(participant)
-    event = Event.where("event_type_code IN (29,34)", :participant_id => participant).select("id")
-    instrument = Instrument.where("instrument_type_code IN (5,45)", :event_id => event).select("id")
-    participant.person.contact_links.where(:event_id => event, :instrument_id => instrument).select("staff_id").first.try(:staff_id)
+    event = screener_event_for_participant(participant)
+    instrument = instrument_for_screener_event(event)
+    originating_staff.try(:staff_id)
   end
+  private :originating_staff_id
+
+  ##
+  # The ContactLink for the Participant, Event, and Instrument.
+  # Used to get the staff_id for the screener event.
+  # @param[Event]
+  # @param[Instrument]
+  # @return[ContactLink]
+  def originating_staff(event, instrument)
+    participant.person.contact_links.where(:event_id => event,
+        :instrument_id => instrument).select("staff_id").first
+  end
+  private :originating_staff
+
+  ##
+  # The screener event associated with the participant
+  # @param[Participant]
+  # @return[Event]
+  def screener_event_for_participant(participant)
+    event_codes = [
+      Event.pbs_eligibility_screener_code,
+      Event.pregnancy_screener_code
+    ].join(',')
+    Event.where("event_type_code IN (#{event_codes})",
+      :participant_id => participant).select("id")
+  end
+  private :screener_event_for_participant
+
+  ##
+  # The instrument used during the screener event.
+  # @param[Event]
+  # @return[Instrument]
+  def instrument_for_screener_event(event)
+    instrument_codes = [
+      Instrument.pbs_eligibility_screener_code,
+      Instrument.pregnancy_screener_eh_code,
+      Instrument.pregnancy_screener_pb_code,
+      Instrument.pregnancy_screener_hilo_code,
+    ].join(',')
+    Instrument.where("instrument_type_code IN (#{instrument_codes})",
+      :event_id => event).select("id")
+  end
+  private :instrument_for_screener_event
+
+  ##
+  # The screener event NcsCode based on Recruitment Strategy
+  # @return[NcsCode]
+  def screener_event
+    NcsNavigatorCore.recruitment_strategy.pbs? ? NcsCode.pbs_eligibility_screener : NcsCode.pregnancy_screener
+  end
+  private :screener_event
 
 end

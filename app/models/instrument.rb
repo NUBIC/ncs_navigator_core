@@ -334,6 +334,34 @@ class Instrument < ActiveRecord::Base
   end
 
   ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pbs_eligibility_screener_code
+    44
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pregnancy_screener_eh_code
+    3
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pregnancy_screener_pb_code
+    4
+  end
+
+  ##
+  # From INSTRUMENT_TYPE_CL1
+  # @return[Integer]
+  def self.pregnancy_screener_hilo_code
+    5
+  end
+
+  ##
   # Given a label from PSC or surveyor access code determine the instrument version
   # Defaults to 1.0 if there is no label or access code
   # @param [String] - e.g. ins_que_xxx_int_ehpbhi_p2_v1.0
