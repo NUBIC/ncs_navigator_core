@@ -414,7 +414,13 @@ module OperationalDataExtractor
     end
 
     def get_due_date_attribute(data_export_identifier)
-      (data_export_identifier.include?(PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX) || data_export_identifier.include?(PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX)) ? :due_date_3 : :due_date_2
+      dei = data_export_identifier
+
+      if dei.start_with?(PREGNANCY_VISIT_2_2_INTERVIEW_PREFIX) || dei.start_with?(PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX)
+        :due_date_3
+      else
+        :due_date_2
+      end
     end
 
     def set_due_date(map)

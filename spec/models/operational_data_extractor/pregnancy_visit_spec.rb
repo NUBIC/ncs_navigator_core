@@ -241,6 +241,7 @@ describe OperationalDataExtractor::PregnancyVisit do
     person = Factory(:person)
     participant = Factory(:participant)
     Factory(:telephone, :person => person)
+    Factory(:participant_person_link, :participant => participant, :person => person)
 
     person.telephones.size.should == 1
 
@@ -279,6 +280,7 @@ describe OperationalDataExtractor::PregnancyVisit do
     person = Factory(:person)
     participant = Factory(:participant)
     Factory(:telephone, :person => person, :phone_type_code => 3)
+    Factory(:participant_person_link, :participant => participant, :person => person)
 
     person.telephones.size.should == 1
 
@@ -312,14 +314,13 @@ describe OperationalDataExtractor::PregnancyVisit do
 
   it "extracts email operational data from the survey responses" do
     person = Factory(:person)
-    person.telephones.size.should == 0
-
     participant = Factory(:participant)
+    Factory(:participant_person_link, :participant => participant, :person => person)
+
     survey = create_pregnancy_visit_1_survey_with_email_operational_data
     survey_section = survey.sections.first
     response_set, instrument = prepare_instrument(person, participant, survey)
     response_set.save!
-    response_set.responses.size.should == 0
 
     take_survey(survey, response_set) do |a|
       a.str "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.EMAIL", 'email@dev.null'
@@ -605,6 +606,23 @@ describe OperationalDataExtractor::PregnancyVisit do
       address.address_type.should == Address.work_address_type
       address.address_rank.should == ode.duplicate_rank
       address.to_s.should == "123 Confirm Work Way 3333 Chicago, ILLINOIS 65432-1234"
+    end
+  end
+
+  describe "#get_due_date_attribute" do
+
+    before do
+      @ode = OperationalDataExtractor::PregnancyVisit.new(nil)
+    end
+
+    it "returns due_date_3 attribute if the survey version prefix is 2.2 or 2.3" do
+      prefix_2_3 = "PREG_VISIT_2_3"
+      @ode.get_due_date_attribute(prefix_2_3).should == :due_date_3
+    end
+
+    it "returns due_date_2 attribute if the survey version prefix is not 2.2 or 2.3" do
+      prefix_1_3 = "PREG_VISIT_1_3"
+      @ode.get_due_date_attribute(prefix_1_3).should == :due_date_2
     end
   end
 
