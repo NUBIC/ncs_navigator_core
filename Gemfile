@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.1'
+gem 'rails', '3.1.10'
 
 gem 'active_model_serializers'
 gem 'bcdatabase', '~> 1.0'
@@ -83,6 +83,7 @@ group :development, :test, :ci do
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'jasmine'
+  gem 'perftools.rb'
 
   gem 'ci_reporter'
 end
