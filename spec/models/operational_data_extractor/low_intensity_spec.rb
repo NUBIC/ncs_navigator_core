@@ -32,10 +32,10 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       survey_section = @survey.sections.first
       survey_section.questions.each do |q|
         case q.data_export_identifier
-        when "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.PREGNANT"
+        when "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT"
           answer = q.answers.select { |a| a.response_class == "answer" && a.reference_identifier == "1" }.first
           Factory(:response, :survey_section_id => survey_section.id, :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
-        when "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.DUE_DATE"
+        when "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DUE_DATE"
           answer = q.answers.select { |a| a.response_class == "date" }.first
           Factory(:response, :survey_section_id => survey_section.id, :datetime_value => "20111226", :question_id => q.id, :answer_id => answer.id, :response_set_id => @response_set.id)
         end
@@ -57,8 +57,8 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
 
     it "updates the ppg status to 1 if the person responds that they are pregnant" do
       take_survey(@survey, @response_set) do |a|
-        a.yes "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.PREGNANT"
-        a.date "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.DUE_DATE", '2011-12-25'
+        a.yes "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT"
+        a.date "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.DUE_DATE", '2011-12-25'
       end
 
       @response_set.responses.reload
@@ -77,7 +77,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
 
     it "updates the ppg status to 3 if the person responds that they recently lost their child during pregnancy" do
       take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.PREGNANT", @ppg3
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg3
       end
 
       @response_set.responses.reload
@@ -96,7 +96,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
 
     it "updates the ppg status to 2 if the person responds that they are trying" do
       take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.PREGNANT", @ppg2
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg2
       end
 
       @response_set.responses.reload
@@ -115,7 +115,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
 
     it "updates the ppg status to 4 if the person responds that they recently gave birth" do
       take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.PREGNANT", @ppg4
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg4
       end
 
       @response_set.responses.reload
@@ -134,7 +134,7 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
 
     it "updates the ppg status to 5 if the person responds that they are medically unable to become pregnant" do
       take_survey(@survey, @response_set) do |a|
-        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::INTERVIEW_PREFIX}.PREGNANT", @ppg5
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.PREGNANT", @ppg5
       end
 
       @response_set.responses.reload
@@ -149,6 +149,58 @@ describe OperationalDataExtractor::LowIntensityPregnancyVisit do
       participant.ppg_status.local_code.should == 5
       participant.due_date.should be_nil
 
+    end
+
+  end
+
+  context "creating a birth institution and address record" do
+
+    before(:each) do
+      @state = NcsCode.for_list_name_and_local_code("STATE_CL1", 14)
+      @hospital = NcsCode.for_list_name_and_local_code("ORGANIZATION_TYPE_CL1", 1)
+
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      part_person_link = Factory(:participant_person_link, :participant => @participant, :person => @person)
+
+      survey = create_lo_i_quex_with_birth_institution_operational_data
+      response_set, instrument = prepare_instrument(@person, @participant, survey)
+      response_set.save!
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLAN", @hospital
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.BIRTH_PLACE", "FAKE HOSPITAL MEMORIAL"
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_1", '123 Hospital Way'
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ADDRESS_2", ''
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_CITY", 'Chicago'
+        a.choice "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_STATE", @state
+        a.str "#{OperationalDataExtractor::LowIntensityPregnancyVisit::PREGNANCY_VISIT_LI_2_INTERVIEW_PREFIX}.B_ZIPCODE", '65432'
+      end
+
+      response_set.responses.reload
+      response_set.responses.size.should == 7
+
+      OperationalDataExtractor::LowIntensityPregnancyVisit.new(response_set).extract_data
+
+      @institute = @participant.person.institutions.first
+    end
+
+    it "extracts institution and birth address operational data" do
+      @participant.person.institutions.first.addresses.size.should == 1
+      address = @participant.person.institutions.first.addresses.first
+      address.to_s.should == "123 Hospital Way Chicago, ILLINOIS 65432"
+    end
+
+    it "extracts institutional data" do
+      @institute.institute_name.should == "FAKE HOSPITAL MEMORIAL"
+    end
+
+    it "associates the institution with the birth address" do
+      @institute.addresses.first.address_one.should == '123 Hospital Way'
+    end
+
+    it "associates the birth address with the person, through an institution-person link" do
+      @participant.person.institutions.first.addresses.first.address_one.should == '123 Hospital Way'
     end
 
   end

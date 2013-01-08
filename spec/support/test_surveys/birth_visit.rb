@@ -138,6 +138,12 @@ module BirthVisit
     a = Factory(:answer, :question_id => q.id, :text => "Work", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "Family/Shared", :response_class => "answer", :reference_identifier => "3")
 
+    # Institution
+    # Type
+    q = Factory(:question, :reference_identifier => "BIRTH_DELIVER", :data_export_identifier => "BIRTH_VISIT_3.BIRTH_DELIVER", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "In a hospital,", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "Refused", :response_class => "answer", :reference_identifier => "neg_1")
+
     survey
   end
 

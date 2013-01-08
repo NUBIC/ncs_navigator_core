@@ -31,6 +31,8 @@ class Institution < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :institute_id
 
+  belongs_to :response_set
+
   ncs_coded_attribute :psu,                      'PSU_CL1'
   ncs_coded_attribute :institute_type,           'ORGANIZATION_TYPE_CL1'
   ncs_coded_attribute :institute_relation,       'PERSON_ORGNZTN_FUNCTION_CL1'
@@ -39,5 +41,12 @@ class Institution < ActiveRecord::Base
   ncs_coded_attribute :institute_info_source,    'INFORMATION_SOURCE_CL2'
 
   has_many :addresses, :foreign_key => 'institute_id'
+
+  CONTENT_FIELDS = %w(institute_type institute_name)
+  MISSING_IN_ERROR = -4
+
+  def blank?
+    CONTENT_FIELDS.all? { |cf| v = send(cf); v.blank? || v == MISSING_IN_ERROR }
+  end
 
 end

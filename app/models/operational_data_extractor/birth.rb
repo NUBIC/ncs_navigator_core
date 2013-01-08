@@ -93,6 +93,10 @@ module OperationalDataExtractor
       "#{BIRTH_LI_PREFIX}.EMAIL_TYPE"      => "email_type_code"
     }
 
+    INSTITUTION_MAP = {
+      "#{BIRTH_VISIT_3_PREFIX}.BIRTH_DELIVER"        => "institute_type_code",
+    }
+
     MODE_OF_CONTACT_MAP = {
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
@@ -112,6 +116,7 @@ module OperationalDataExtractor
         HOME_PHONE_MAP,
         CELL_PHONE_MAP,
         EMAIL_MAP,
+        INSTITUTION_MAP,
         MODE_OF_CONTACT_MAP
       ]
     end
@@ -124,6 +129,7 @@ module OperationalDataExtractor
       phone        = nil
       mail_address = nil
       work_address = nil
+      institution  = nil
 
       process_person(PERSON_MAP)
 
@@ -137,10 +143,12 @@ module OperationalDataExtractor
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
 
       email        = process_email(EMAIL_MAP)
+      institution  = process_institution(INSTITUTION_MAP, response_set)
 
       finalize_email(email)
       finalize_addresses(mail_address, work_address)
       finalize_telephones(cell_phone, home_phone, phone)
+      finalize_institution(institution)
 
       update_instrument_mode
 

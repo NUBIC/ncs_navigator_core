@@ -164,6 +164,8 @@ class NcsCode < ActiveRecord::Base
     :who_wthdrw_consent_code        => 'AGE_STATUS_CL3',
     :consent_translate_code         => 'TRANSLATION_METHOD_CL1',
     :reconsideration_script_use_code => 'CONFIRM_TYPE_CL21',
+    :consent_reconsent_code         => 'CONFIRM_TYPE_CL2',
+    :consent_reconsent_reason_code  => 'CONSENT_RECONSENT_REASON_CL1',
 
     ### participant_visit_consent
     # :psu_code               => "PSU_CL1",             # already referenced

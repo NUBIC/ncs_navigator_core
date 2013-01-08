@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108201329) do
+ActiveRecord::Schema.define(:version => 20130108204723) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -579,32 +579,35 @@ ActiveRecord::Schema.define(:version => 20130108201329) do
   end
 
   create_table "participant_consents", :force => true do |t|
-    t.integer  "psu_code",                                      :null => false
-    t.string   "participant_consent_id",          :limit => 36, :null => false
+    t.integer  "psu_code",                                                      :null => false
+    t.string   "participant_consent_id",          :limit => 36,                 :null => false
     t.integer  "participant_id"
     t.string   "consent_version",                 :limit => 9
     t.date     "consent_expiration"
-    t.integer  "consent_type_code",                             :null => false
-    t.integer  "consent_form_type_code",                        :null => false
-    t.integer  "consent_given_code",                            :null => false
+    t.integer  "consent_type_code",                                             :null => false
+    t.integer  "consent_form_type_code",                                        :null => false
+    t.integer  "consent_given_code",                                            :null => false
     t.date     "consent_date"
-    t.integer  "consent_withdraw_code",                         :null => false
-    t.integer  "consent_withdraw_type_code",                    :null => false
-    t.integer  "consent_withdraw_reason_code",                  :null => false
+    t.integer  "consent_withdraw_code",                                         :null => false
+    t.integer  "consent_withdraw_type_code",                                    :null => false
+    t.integer  "consent_withdraw_reason_code",                                  :null => false
     t.date     "consent_withdraw_date"
-    t.integer  "consent_language_code",                         :null => false
+    t.integer  "consent_language_code",                                         :null => false
     t.string   "consent_language_other"
     t.integer  "person_who_consented_id"
-    t.integer  "who_consented_code",                            :null => false
+    t.integer  "who_consented_code",                                            :null => false
     t.integer  "person_wthdrw_consent_id"
-    t.integer  "who_wthdrw_consent_code",                       :null => false
-    t.integer  "consent_translate_code",                        :null => false
+    t.integer  "who_wthdrw_consent_code",                                       :null => false
+    t.integer  "consent_translate_code",                                        :null => false
     t.text     "consent_comments"
     t.integer  "contact_id"
-    t.integer  "reconsideration_script_use_code",               :null => false
+    t.integer  "reconsideration_script_use_code",                               :null => false
     t.string   "transaction_type",                :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "consent_reconsent_code",                        :default => -4, :null => false
+    t.integer  "consent_reconsent_reason_code",                 :default => -4, :null => false
+    t.string   "consent_reconsent_reason_other"
   end
 
   create_table "participant_high_intensity_state_transitions", :force => true do |t|

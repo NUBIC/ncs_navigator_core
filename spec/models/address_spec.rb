@@ -39,7 +39,7 @@
 #  updated_at                :datetime
 #  zip                       :string(5)
 #  zip4                      :string(4)
-#
+
 
 
 
@@ -214,7 +214,23 @@ describe Address do
       @business_address.demote_primary_rank_to_secondary(@school_address.address_type_code)
       @business_address.address_rank_code.should == 1
     end
+  end
 
+  describe "#blank?" do
+    before do
+      @blank_address = Factory(:address, :state_code => nil)
+      @address_with_only_zip_code_filled_in = Factory(:address, :state_code => nil, :zip => "23456")
+      @address_with_only_address_one_filled_in = Factory(:address, :state_code => nil, :address_one => "1213 Sycamore Ave")
+    end
+
+    it "returns true if address_one, address_two, unit, city, state, zip code, and zip+4 are all nil, blank, or missing-in-error" do
+      @blank_address.blank?.should be_true
+    end
+
+    it "returns false if any of the following are filled in: address_one, address_two, unit, city, state, zip code, and zip+4" do
+      @address_with_only_zip_code_filled_in.blank?.should be_false
+      @address_with_only_address_one_filled_in.blank?.should be_false
+    end
   end
 
   describe "zip_code" do

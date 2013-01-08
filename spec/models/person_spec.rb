@@ -99,6 +99,8 @@ describe Person do
   it { should have_many(:events).through(:contact_links) }
   it { should have_many(:participant_person_links) }
   it { should have_many(:participants).through(:participant_person_links) }
+  it { should have_many(:institution_person_links) }
+  it { should have_many(:institutions).through(:institution_person_links) }
 
   it { should have_many(:person_provider_links) }
   it { should have_many(:providers).through(:person_provider_links) }

@@ -6,6 +6,8 @@ module OperationalDataExtractor
 
     attr_accessor :response_set
 
+    MISSING_IN_ERROR = -4
+
     class << self
       def process(response_set)
         extractor_for(response_set).extract_data
@@ -261,6 +263,10 @@ module OperationalDataExtractor
       @home_phone_type ||= NcsCode.for_list_name_and_local_code('PHONE_TYPE_CL1', 1)
     end
 
+    def other_institute_type
+      @other_institution_type ||= NcsCode.for_list_name_and_local_code('ORGANIZATION_TYPE_CL1', -5)
+    end
+
     def set_value(obj, attribute, value)
       if value.blank?
         log_error(obj, "#{attribute} not set because value is blank.")
@@ -365,7 +371,7 @@ module OperationalDataExtractor
       participant.person
     end
 
-    def get_address(response_set, person, address_type, address_rank = primary_rank)
+    def get_address(response_set, person, address_type, address_rank)
       criteria = Hash.new
       criteria[:response_set_id] = response_set.id
       criteria[:address_type_code] = address_type.local_code
@@ -403,6 +409,30 @@ module OperationalDataExtractor
                           :email_rank => primary_rank)
       end
       email
+    end
+
+    def get_birth_address(response_set, person, address_type, address_rank)
+      criteria = Hash.new
+      criteria[:response_set_id] = response_set.id
+      criteria[:address_type_code] = address_type.local_code
+      criteria[:address_rank_code] = address_rank.local_code
+      criteria[:address_type_other] = "Birth"
+      birth_address = Address.where(criteria).first
+      if birth_address.nil?
+        birth_address = Address.new(:person => person, :dwelling_unit => DwellingUnit.new,
+                                    :psu => person.psu, :response_set => response_set,
+                                    :address_type => address_type, :address_rank => address_rank,
+                                    :address_type_other => "Birth")
+      end
+      birth_address
+    end
+
+    def get_institution(response_set, institute_type)
+      institution = Institution.where(:response_set_id => response_set.id, :institute_type_code => institute_type.local_code).first
+      if institution.nil?
+        institution = Institution.new( :psu => person.psu, :institute_type_code => institute_type.local_code, :response_set => response_set)
+      end
+      institution
     end
 
     def get_ppg_detail(response_set, participant)
@@ -447,6 +477,7 @@ module OperationalDataExtractor
         end
       end
     end
+
     private :set_value_during_process
 
     def process_participant(map)
@@ -563,21 +594,19 @@ module OperationalDataExtractor
       relationship
     end
 
-    # TODO: Create Institution for birth address
-    #       and associate Institution with Person
-    def process_birth_address(map)
-      birth_address = nil
-      map.each do |key, attribute|
+    def process_birth_institution_and_address(birth_address_map, institution_map, institute_type = other_institute_type, address_type = address_other_type, address_rank = primary_rank)
+      birth_address = get_birth_address(response_set, participant.person, address_type,  address_rank)
+      institution = process_institution(institution_map, response_set, institute_type)
+
+      birth_address_map.each do |key, attribute|
         if r = data_export_identifier_indexed_responses[key]
           value = response_value(r)
           unless value.blank?
-            birth_address ||= get_address(response_set, person, address_other_type)
-            birth_address.address_type_other = "Birth"
             set_value(birth_address, attribute, value)
           end
         end
       end
-      birth_address
+      [birth_address, institution]
     end
 
     def process_address(owner, map, address_type = address_other_tyoe, address_rank = primary_rank)
@@ -656,6 +685,46 @@ module OperationalDataExtractor
         end
       end
       email
+    end
+
+    def process_institution(map, response_set, type = other_institute_type)
+      institution = get_institution(response_set, type)
+      map.each do |key, attribute|
+        if r = data_export_identifier_indexed_responses[key]
+          value = response_value(r)
+          unless value.blank?
+            set_value(institution, attribute, value)
+          end
+        end
+      end
+      institution
+    end
+
+    def finalize_institution(institute)
+      ActiveRecord::Base.transaction do
+        unless institute.blank?
+          ipl = InstitutionPersonLink.new
+          ipl.person = participant.person
+          ipl.institution = institute
+          ipl.save!
+          institute.save!
+        end
+      end
+    end
+
+    def finalize_institution_with_birth_address(birth_address, institute)
+      ActiveRecord::Base.transaction do
+         finalize_institution(institute)
+         birth_address.save! unless birth_address.blank?
+         institute.addresses << birth_address unless birth_address.blank?
+       end
+    end
+
+    def institution_empty?(institution)
+      institution_contents = []
+      institution_components = [:institute_name, :institute_type]
+      institution_components.each { |ic| institution_contents << institution.send(ic) }
+      institution_contents.all? { |ic| ic == MISSING_IN_ERROR || ic.nil? }
     end
 
     def finalize_ppg_status_history(ppg_status_history)
