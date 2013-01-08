@@ -62,7 +62,6 @@ class ContactLink < ActiveRecord::Base
   alias complete? closed?
 
   def contact_disposition
-    return "" if event.blank?
     disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
     disp.blank? ? contact.contact_disposition : disp
   end
