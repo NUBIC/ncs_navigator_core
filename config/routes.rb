@@ -57,7 +57,6 @@ NcsNavigatorCore::Application.routes.draw do
         post :create_child
       end
     end
-    resources :ppg_details, :only => [:edit, :update]
   end
   resources :contact_links do
     member do

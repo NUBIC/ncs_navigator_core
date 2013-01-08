@@ -249,25 +249,7 @@ describe OperationalDataExtractor::Birth do
 
       person.emails.last.email.should == "email@dev.null"
       person.emails.last.email_rank_code.should == 1
-    end
 
-    it "extracts institution information from the survey responses" do
-
-      hospital = NcsCode.for_list_name_and_local_code("BIRTH_PLACE_PLAN_CL1", 1)
-
-      response_set, instrument = prepare_instrument(@person, @participant, @survey)
-
-      take_survey(@survey, response_set) do |a|
-        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_3_PREFIX}.BIRTH_DELIVER", hospital
-      end
-
-      response_set.save!
-      response_set.responses.size.should == 1
-
-      OperationalDataExtractor::Birth.new(response_set).extract_data
-
-      @participant.person.institutions.size.should == 1
-      @participant.person.institutions.first.institute_type.local_code.should == 1
     end
 
   end

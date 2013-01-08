@@ -94,9 +94,6 @@ class Person < ActiveRecord::Base
   has_many :participant_person_links
   has_many :participants, :through => :participant_person_links
 
-  has_many :institution_person_links
-  has_many :institutions, :through => :institution_person_links
-
   has_many :person_provider_links
   has_many :providers, :through => :person_provider_links
   has_many :sampled_persons_ineligibilities

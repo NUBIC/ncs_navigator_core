@@ -103,8 +103,9 @@ module ParticipantsHelper
     event_codes = [
       Event.pbs_eligibility_screener_code,
       Event.pregnancy_screener_code
-    ]
-    Event.where(:event_type_code => event_codes, :participant_id => participant).select("id")
+    ].join(',')
+    Event.where("event_type_code IN (#{event_codes})",
+      :participant_id => participant).select("id")
   end
   private :screener_event_for_participant
 
@@ -118,8 +119,9 @@ module ParticipantsHelper
       Instrument.pregnancy_screener_eh_code,
       Instrument.pregnancy_screener_pb_code,
       Instrument.pregnancy_screener_hilo_code,
-    ]
-    Instrument.where(:instrument_type_code => instrument_codes, :event_id => event).select("id")
+    ].join(',')
+    Instrument.where("instrument_type_code IN (#{instrument_codes})",
+      :event_id => event).select("id")
   end
   private :instrument_for_screener_event
 

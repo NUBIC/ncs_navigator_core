@@ -41,7 +41,6 @@ describe Institution do
   it { should belong_to(:institute_owner) }
   it { should belong_to(:institute_unit) }
   it { should belong_to(:institute_info_source) }
-  it { should belong_to(:response_set) }
 
   it { should have_many(:addresses) }
 
@@ -78,23 +77,5 @@ describe Institution do
     end
   end
 
-  describe "#blank?" do
-    before do
-      @blank_institution_all_fields_nil = Factory(:institution, :institute_name => nil, :institute_type => nil)
-      @blank_institution_all_fields_blank_or_missing = Factory(:institution, :institute_name => "", :institute_type_code => -4)
-      @filled_name_institution = Factory(:institution, :institute_name => "Institute Name")
-      @filled_category_institution = Factory(:institution, :institute_type_code => 1)
-    end
-
-    it "returns true if the institution's name and type are nil or if name is blank and type is missing in error" do
-      @institution_all_fields_nil.blank?.should be_true
-      @institution_all_fields_blank_or_missing.blank?.should be_true
-    end
-
-    it "returns false if category or name is filled in" do
-      @filled_name_institution.blank?.should be_false
-      @filled_category_institution.blank?.should be_false
-    end
-  end
 
 end
