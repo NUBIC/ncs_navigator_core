@@ -168,8 +168,10 @@ module NcsNavigator::Core::Mustache
 
     def multiple_birth_prefix
       case @response_set.survey.title
-      when /_PregVisit1/
-        OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
+      when /_PregVisit1_(.)*2/
+        OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX
+      when /_PregVisit1_(.)*3/
+        OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX
       when /_Birth_INT_LI_/
         OperationalDataExtractor::Birth::BIRTH_LI_PREFIX
       else
@@ -201,7 +203,8 @@ module NcsNavigator::Core::Mustache
     ##
     # true if response to MULTIPLE is no or not yet responded
     def single_birth?
-      multiple = response_for("#{multiple_birth_prefix}.#{multiple_identifier}").to_s.downcase
+      q = "#{multiple_birth_prefix}.#{multiple_identifier}"
+      multiple = response_for(q).to_s.downcase
       multiple.blank? || (multiple.eql?("no") || multiple.eql?("singleton"))
     end
 
@@ -497,7 +500,7 @@ module NcsNavigator::Core::Mustache
       else
         multiple_num = response_for("#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM")
         if about_person.first_child?
-          if ((multiple_num.eql? ("2")) || (multiple_num.eql?("02")))
+          if( multiple_num.eql?("2") || multiple_num.eql?("02") )
             result = "First let’s talk about your first twin birth."
           elsif ((multiple_num.eql? "3") || (multiple_num.eql? "03"))
             result = "First let’s talk about your first triplet birth."
