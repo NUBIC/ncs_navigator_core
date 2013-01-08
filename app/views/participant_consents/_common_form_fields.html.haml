@@ -15,6 +15,14 @@
 
   = render "shared/ncs_code_select", { :f => f, :code => :who_wthdrw_consent_code, :label_text => "Who Withdrew Consent" }
 
+%fieldset{ :class => 'participant_consent_reconsent' }
+  %legend
+    Reconsent
+
+  = render "shared/ncs_code_select", { :f => f, :code => :consent_reconsent_code, :label_text => "Is this consent a re-consent?" }
+
+  = render "shared/ncs_code_select", { :f => f, :code => :consent_reconsent_reason_code, :label_text => "Re-consent reason", :other => :consent_reconsent_reason_other }
+
 %fieldset{ :class => 'participant_consent_meta' }
   %legend
     About the Consent
@@ -48,3 +56,13 @@
 
 %p
   = f.submit "Submit", :disable_with => 'Submitting...'
+
+:javascript
+  // For the 'other' field
+  // Check on pageload
+  $(document).ready(function() {
+    wire_up_select_other("#participant_consent_consent_reconsent_reason_code",
+                         "#participant_consent_consent_reconsent_reason_other");
+    wire_up_select_other("#participant_consent_consent_language_code",
+                         "#participant_consent_consent_language_other");
+  });

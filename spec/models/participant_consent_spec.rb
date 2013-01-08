@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130108204723
 #
 # Table name: participant_consents
 #
@@ -11,6 +11,9 @@
 #  consent_given_code              :integer          not null
 #  consent_language_code           :integer          not null
 #  consent_language_other          :string(255)
+#  consent_reconsent_code          :integer          default(-4), not null
+#  consent_reconsent_reason_code   :integer          default(-4), not null
+#  consent_reconsent_reason_other  :string(255)
 #  consent_translate_code          :integer          not null
 #  consent_type_code               :integer          not null
 #  consent_version                 :string(9)
@@ -61,6 +64,8 @@ describe ParticipantConsent do
   it { should belong_to(:who_wthdrw_consent) }
   it { should belong_to(:consent_translate) }
   it { should belong_to(:reconsideration_script_use) }
+  it { should belong_to(:consent_reconsent) }
+  it { should belong_to(:consent_reconsent_reason) }
 
   it { should ensure_length_of(:consent_version).is_at_most(9) }
 
@@ -93,7 +98,8 @@ describe ParticipantConsent do
       obj.who_consented.local_code.should == -4
       obj.who_wthdrw_consent.local_code.should == -4
       obj.consent_translate.local_code.should == -4
-      obj.reconsideration_script_use.local_code.should == -4
+      obj.consent_reconsent.local_code.should == -4
+      obj.consent_reconsent_reason.local_code.should == -4
     end
   end
 

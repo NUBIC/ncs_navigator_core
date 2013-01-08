@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # == Schema Information
-# Schema version: 20120629204215
+# Schema version: 20130108204723
 #
 # Table name: participant_consents
 #
@@ -11,6 +11,9 @@
 #  consent_given_code              :integer          not null
 #  consent_language_code           :integer          not null
 #  consent_language_other          :string(255)
+#  consent_reconsent_code          :integer          default(-4), not null
+#  consent_reconsent_reason_code   :integer          default(-4), not null
+#  consent_reconsent_reason_other  :string(255)
 #  consent_translate_code          :integer          not null
 #  consent_type_code               :integer          not null
 #  consent_version                 :string(9)
@@ -62,6 +65,8 @@ class ParticipantConsent < ActiveRecord::Base
   ncs_coded_attribute :consent_translate,          'TRANSLATION_METHOD_CL1'
 
   ncs_coded_attribute :reconsideration_script_use, 'CONFIRM_TYPE_CL21'
+  ncs_coded_attribute :consent_reconsent,          'CONFIRM_TYPE_CL2'
+  ncs_coded_attribute :consent_reconsent_reason,   'CONSENT_RECONSENT_REASON_CL1'
 
   validates_length_of :consent_version, :maximum => 9
 
