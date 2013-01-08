@@ -266,6 +266,10 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     )
 
     produce_one_for_one(:participant_consents, :ParticipantConsent,
+      :selects => [
+        "-4 as consent_reconsent",
+        "-4 as consent_reconsent_reason",
+      ],
       :public_ids => [
         :participants,
         :contacts,
