@@ -64,6 +64,12 @@ module Reporting
       ids = scheduled_study_segment_identifiers.map {|i| "'#{i}'" }.join(',')
       return [] if ids.blank?
       sql = <<-SQL
+        with addrsql as
+        (select min(address_type_code) as address_type, person_id from addresses group by person_id
+        )
+        ,phonesql as
+        (select min(phone_type_code) as phone_type, person_id from telephones group by person_id
+        )
         select part.id as q_id, part.p_id, pers.first_name as q_first_name, pers.last_name as q_last_name,
          max(e.event_start_date) as q_event_date, event_code.display_text as q_event_name,
          t.phone_nbr as q_phone,
@@ -77,10 +83,16 @@ module Reporting
          left outer join addresses a on a.person_id = pers.id
          left outer join ncs_codes state_code on state_code.local_code = a.state_code
          left outer join ncs_codes event_code on event_code.local_code = e.event_type_code
+         left outer join addrsql on pers.id = addrsql.person_id
+         left outer join phonesql on pers.id = phonesql.person_id
          where ppl.relationship_code = 1
          and e.scheduled_study_segment_identifier in (#{ids})
          and state_code.list_name = 'STATE_CL1'
          and event_code.list_name = 'EVENT_TYPE_CL1'
+         and a.address_rank_code = 1
+         and a.address_type_code = addrsql.address_type
+         and t.phone_rank_code = 1
+         and t.phone_type_code = phonesql.phone_type
          group by part.id, part.p_id, pers.first_name, pers.last_name,
          e.event_start_date, event_code.display_text, t.phone_nbr,
          a.address_one, a.address_two, a.city, state_code.display_text, a.zip
