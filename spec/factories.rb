@@ -22,6 +22,8 @@ Factory.define :person do |pers|
   pers.ethnic_group_code              2
   pers.language_code                  1
   pers.language_other                 nil
+  pers.language_new_code              1
+  pers.language_new_other             nil
   pers.marital_status_code            1
   pers.marital_status_other           nil
   pers.preferred_contact_method_code  1
