@@ -104,7 +104,9 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
       :ignored_columns => %w(response_set_id ppg_status_date_date)
     )
 
-    produce_one_for_one(:institutions, :Institution)
+    produce_one_for_one(:institutions, :Institution,
+      :ignored_columns => %w(response_set_id)
+    )
 
     produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
       :public_ids => [

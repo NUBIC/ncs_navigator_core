@@ -1,4 +1,5 @@
 # == Schema Information
+# Schema version: 20121220214234
 #
 # Table name: institutions
 #
@@ -21,6 +22,7 @@
 #  institute_unit_code         :integer          not null
 #  institute_unit_other        :string(255)
 #  psu_code                    :string(36)       not null
+#  response_set_id             :integer
 #  transaction_type            :string(36)
 #  updated_at                  :datetime
 #
