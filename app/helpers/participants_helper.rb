@@ -79,7 +79,7 @@ module ParticipantsHelper
   def originating_staff_id(participant)
     event = screener_event_for_participant(participant)
     instrument = instrument_for_screener_event(event)
-    originating_staff.try(:staff_id)
+    originating_staff(participant, event, instrument).try(:staff_id)
   end
   private :originating_staff_id
 
@@ -89,8 +89,8 @@ module ParticipantsHelper
   # @param[Event]
   # @param[Instrument]
   # @return[ContactLink]
-  def originating_staff(event, instrument)
-    participant.person.contact_links.where(:event_id => event,
+  def originating_staff(participant, event, instrument)
+    participant.contact_links.where(:event_id => event,
         :instrument_id => instrument).select("staff_id").first
   end
   private :originating_staff
