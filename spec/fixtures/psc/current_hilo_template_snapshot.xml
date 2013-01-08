@@ -234,6 +234,38 @@
             <label id="7538819f-55f8-4bd4-98e3-76ca655850cc" name="participant_type:child"/>
             <activity-reference code="CC" source="NCS"/>
           </planned-activity>
+          <planned-activity id="2543d77d-d3c4-49f9-92b3-df3753a675de" day="1">
+            <label id="6d40394e-b208-4308-b903-a8c5694ba6f1" name="collection:environmental"/>
+            <label id="99214872-7c68-4432-a6a1-1d93cbbc0246" name="event:pregnancy_visit_1"/>
+            <label id="8ab06805-1647-441c-8840-cefcae8947e3" name="instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0"/>
+            <label id="798c8977-1abf-4c01-a1ff-e8184c0e4480" name="order:24_04"/>
+            <label id="aecc824e-43e1-4eca-8046-988b8b9c7b08" name="participant_type:mother"/>
+            <activity-reference code="ESKDI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="622ba200-cc5e-42ca-a513-774141eeab7e" day="1">
+            <label id="e85d2d18-6f72-44b6-bb52-ba6adc008195" name="collection:environmental"/>
+            <label id="f6b90680-fabe-4678-b1db-7b21b7c3308b" name="event:pregnancy_visit_1"/>
+            <label id="48e22bf1-f979-4633-8ff2-457535bd64d1" name="instrument:2.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0"/>
+            <label id="ccd94db0-a9be-4f6d-a401-d71eec7331de" name="order:24_02"/>
+            <label id="bc934a75-7240-46ae-a3c5-8714f5a5293d" name="participant_type:mother"/>
+            <activity-reference code="ETWPharmPCSAQS" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="0a1cbb16-b7a1-436b-8560-0ec97d73e21c" day="1">
+            <label id="49a0a741-1bfc-4803-a74d-e92d11c1fcef" name="collection:environmental"/>
+            <label id="8e7df84d-c8e5-4bdc-bee3-16ee4a3b4387" name="event:pregnancy_visit_1"/>
+            <label id="ca236937-4058-4e9e-a120-b90cc23b409c" name="instrument:2.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0"/>
+            <label id="0679fca9-0cab-4e44-be33-7d056d872411" name="order:24_01"/>
+            <label id="d1c09c0e-0662-4082-98c6-2a5a7978c4f6" name="participant_type:mother"/>
+            <activity-reference code="ETWPestPCSAQS" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="85a29718-afd3-4965-b1a6-5d509d57734f" day="1">
+            <label id="07a20625-655c-44b2-8801-d5d9aaa0f784" name="collection:environmental"/>
+            <label id="0e13b4f8-4405-4105-894e-c1dc9ac75016" name="event:pregnancy_visit_1"/>
+            <label id="802d1c74-c438-4467-a51d-738a5b19dffb" name="instrument:2.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0"/>
+            <label id="9b5e01c6-d66f-414c-8a3a-01cef6580c58" name="order:24_03"/>
+            <label id="20648ce0-d686-4844-9ff0-d05408f7791b" name="participant_type:mother"/>
+            <activity-reference code="EVBDPCSAQS" source="NCS"/>
+          </planned-activity>
         </period>
       </study-segment>
       <study-segment id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624" name="Pre-Pregnancy Visit">
@@ -908,9 +940,11 @@
     <source name="NCS">
       <activity name="18-Month Mother Interview Mother Mold" code="18MMI MM" description="18-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
       <activity name="Pregnancy Visit 1 SAQ" code="PV1SAQ" description="Pregnancy Visit 1 SAQ" type="Instrument"/>
+      <activity name="Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification" code="EVBDPCSAQS" description="Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification" type="Environment"/>
       <activity name="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" code="ETWPharmTCI" description="Environmental Tap Water Pharmaceuticals Technician Collect Instrument" type="Environment"/>
       <activity name="Father Interview" code="FI" description="Father Interview" type="Instrument"/>
       <activity name="9-Month Mother Phone Interview Mother Detail" code="9MMPI MD" description="9-Month Mother Phone Interview Mother Detail - Child Loop" type="Instrument"/>
+      <activity name="Environmental Tap Water TWQ Participant Collect SAQ Specification" code="ETWPestPCSAQS" description="Environmental Tap Water TWQ Participant Collect SAQ Specification" type="Environment"/>
       <activity name="Pregnancy Visit 2 SAQ" code="PV2SAQ" description="Pregnancy Visit 2 SAQ" type="Instrument"/>
       <activity name="18-Month Mother Interview Mother Detail" code="18MMI MD" description="18-Month Mother Interview Mother Detail - Child Loop" type="Instrument"/>
       <activity name="18-Month Mother Interview Mother Habits" code="18MMI MH" description="18-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
@@ -929,6 +963,7 @@
       <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
       <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
+      <activity name="Environmental Tap Water TWF Participant Collect SAQ Specification" code="ETWPharmPCSAQS" description="Environmental Tap Water TWF Participant Collect SAQ Specification" type="Environment"/>
       <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
       <activity name="Environmental Vacuum Bag Dust Technician Collect Instrument" code="EVBDTCI" description="Environmental Vacuum Bag Dust Technician Collect Instrument" type="Environment"/>
       <activity name="Pregnant Woman Informed Consent" code="IC" description="Pregnant Woman Informed Consent" type="Consent"/>
@@ -939,6 +974,7 @@
       <activity name="18-Month Mother Interview Part One" code="18MMI1" description="18-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Participant Verification Instrument Part Two" code="PVI2" description="Participant Verification Instrument Part Two" type="Instrument"/>
       <activity name="Non-Pregnant Woman Informed Consent" code="IC (non)" description="Non-Pregnant Woman Informed Consent" type="Consent"/>
+      <activity name="Environmental Sample Kit Distribution Instrument" code="ESKDI" description="Environmental Sample Kit Distribution Instrument" type="Environment"/>
       <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
       <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
       <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
