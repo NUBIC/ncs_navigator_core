@@ -328,6 +328,7 @@ GEM
     paper_trail (2.6.3)
       activerecord (~> 3.0)
       railties (~> 3.0)
+    perftools.rb (2.0.0)
     pg (0.13.2)
     pickle (0.4.10)
       cucumber (>= 0.8)
@@ -514,6 +515,7 @@ DEPENDENCIES
   ncs_navigator_authority
   ncs_navigator_configuration!
   paper_trail (~> 2)
+  perftools.rb
   pg
   pickle
   psc
