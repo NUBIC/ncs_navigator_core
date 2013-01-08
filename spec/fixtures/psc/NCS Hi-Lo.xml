@@ -1,7 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-08T13:52:13.920Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-08T16:27:23.806Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 31" date="2013-01-08" mandatory="true" released-date="2013-01-08T16:27:23.806Z" updated-date="2013-01-08T16:24:00.393Z" previous-amendment-key="2013-01-08~Rev 30">
+    <planned-activity-delta id="8e16a89d-ac67-4715-90ef-113d4ef9b158" node-id="cdff78b4-ff7b-401d-be81-b61c7bbbcbf4">
+      <property-change id="c4edd69b-b51c-4c92-9bce-9ba69fe9dc08" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="84693b5e-6cfc-4aac-b041-262cdea387bc" node-id="1748afe1-6ea6-40c4-b3f9-76e9fab53aa4">
+      <property-change id="ccadfccb-9d5c-43fc-a6fc-3813892c85aa" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="dd4bfea7-24cd-4cd6-a407-9293c6ae6c93" node-id="820eda18-4da1-4cdc-bee5-29973c4ba616">
+      <property-change id="a452d603-fc6e-4e58-a1de-79898b75a604" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="45011265-6e43-4182-8f22-2ee004f53fbf" node-id="8cf85596-11aa-482f-be93-f20a50bf2f6e">
+      <property-change id="5f563ca6-908f-462d-b7e6-4b48b1990de1" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8f2694ce-e3ab-42de-ad66-1f49f365d8e2" node-id="105b8ca6-a80b-4a3a-b4b0-3afe0d82d7be">
+      <property-change id="6a41deff-926e-44e8-8ec2-75dbbeadd97a" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="fd738b1b-ed78-4a0c-ba79-5de89bd0964c" node-id="40048b01-5db0-4f6a-bdff-b1612a288163">
+      <property-change id="a28cceb6-88ab-4e8d-87df-aef574a8ad0b" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="d6041375-1ca7-4661-ba98-6aa07af1320e" node-id="a837d893-40ea-4a02-8b56-1244224ecec8">
+      <property-change id="d3b31a31-8a5a-4c52-81f5-0133753a5e46" property-name="day" old-value="730" new-value="730"/>
+    </planned-activity-delta>
+    <period-delta id="4c133d04-ae8b-487c-9593-5f216799b676" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
+      <remove id="3e212472-4151-4141-9303-f45fc76c503e" child-id="820eda18-4da1-4cdc-bee5-29973c4ba616"/>
+      <remove id="34f7c60b-03f0-4b86-8a37-d1b2e8ba483a" child-id="8cf85596-11aa-482f-be93-f20a50bf2f6e"/>
+      <remove id="e82786ec-3290-428f-a80f-80c799b24781" child-id="105b8ca6-a80b-4a3a-b4b0-3afe0d82d7be"/>
+      <remove id="025adae0-eced-4739-b210-1642e55de974" child-id="40048b01-5db0-4f6a-bdff-b1612a288163"/>
+      <remove id="beb1f299-446a-432f-83c6-a450a3b3a195" child-id="a837d893-40ea-4a02-8b56-1244224ecec8"/>
+      <remove id="c9829aaf-c802-4b40-80fa-1160d7f3bf61" child-id="1748afe1-6ea6-40c4-b3f9-76e9fab53aa4"/>
+      <add id="8ddfc32a-a7cd-49de-9794-77f1f29de46b">
+        <planned-activity id="03d1aad7-bc53-446b-b4d7-940f1faa6afc" day="92">
+          <label id="79d91b2a-48d8-4551-afdb-bd2d19acf2a8" name="event:3_month"/>
+          <label id="31fe7165-ca9d-46af-b0fd-ac4d6f54d111" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="03aa4ce9-b87a-46b0-9c46-b588828e1d8a" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="e7d77d80-39a5-4066-ab2d-f316eb5054c7">
+        <planned-activity id="12c9ed5e-e261-42e4-93ef-a9baa13e0458" day="183">
+          <label id="e1ace922-6438-4d46-8713-d514703604d7" name="event:6_month"/>
+          <label id="59019705-39b9-4033-b4e2-d90d691817cf" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="498c1160-ddcb-47af-988f-3380befeaca5" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="c835cde9-ec0e-45d6-9ea7-ec89c2aa69e0">
+        <planned-activity id="8fad52ad-251c-4e99-a7ed-f613fefddbc0" day="274">
+          <label id="b70043fa-e570-4f50-b1bd-90a8f0e606c7" name="event:9_month"/>
+          <label id="04135d91-1234-4031-b583-de1f13679a2c" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="53ce3c57-d2c0-4d2d-b087-38c2ddef69e2" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="7767b15d-a9fa-40fe-8fc6-292bbb27df80">
+        <planned-activity id="7f4232b5-6229-465e-a89a-ad31ec42fa87" day="366">
+          <label id="4e63fa01-0c58-4023-9bf4-b2836db69149" name="event:12_month"/>
+          <label id="de443be9-1d7d-4f37-a31c-b8810309c18a" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="a413cffa-7f34-4aaf-814b-5a79d1405145" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="5210598a-f6ce-4df8-9291-2107d12ac0e8">
+        <planned-activity id="d6457a0a-0252-40b8-af1b-205acbeaa381" day="548">
+          <label id="e6e9553f-8b31-448e-8087-a13a36c69930" name="event:18_month"/>
+          <label id="a1344a94-c036-4182-aa12-f419857f4bc0" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="9662823c-6aee-46c1-94f9-8498c8d255e1" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="f5eab2e5-cbce-4ec4-9b59-57e0728e903e">
+        <planned-activity id="b74d7dc8-b319-4265-b788-2e6a743431eb" day="730">
+          <label id="4c071876-d0c5-4f01-b777-3ad7691cee6d" name="event:24_month"/>
+          <label id="121e59ef-126b-4c5d-a977-edd015033387" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+          <label id="359b010e-ccf7-490c-85f1-1865c84977f1" name="order:90_01"/>
+          <activity-reference code="TM" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="3dc32411-75ae-4419-9945-df9e211d992e" child-id="4d74abda-d217-4c38-9295-0acd6fddbdf2"/>
+      <remove id="79687ff3-1b7e-4f12-94e5-fa2782ed28fe" child-id="fc25bae5-d3f1-4ba8-aa0f-23cf98872eb3"/>
+      <add id="dc3074ca-70dc-49a6-bd0b-abefc02145b8">
+        <planned-activity id="179b8ca9-481d-457c-a8ed-c59c7ed9f519" day="730">
+          <label id="b6591678-db7e-4114-a2d9-0d9385bb570c" name="event:24_month"/>
+          <label id="0e10e712-0c98-4a5d-80b0-bd89c774e122" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <label id="ae8ff2dd-6f06-4bd2-87cf-e01dcad9d83a" name="order:00_01"/>
+          <label id="62dee349-cc63-42da-8338-a69044923086" name="participant_type:mother"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="18275b33-247e-46e3-b8ea-42c52258350b">
+        <planned-activity id="51c5d91d-973e-4051-ac30-a72781e9f6a3" day="730">
+          <label id="80d5b729-6bab-47ee-9979-46ccaf91f4b8" name="event:24_month"/>
+          <label id="522f0df1-5180-4494-82cd-444ab40031f7" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="f9d30eb3-4e5c-4ab5-b7c9-29522b9915e6" name="order:00_02"/>
+          <label id="092d357e-838f-4000-9902-44a10fec1f8b" name="participant_type:child"/>
+          <label id="25a0b67f-8d82-4850-a789-ab0f41291e5d" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="2174920a-9f61-4276-8af9-e381ff079c14" child-id="55f3fa8a-6d31-4d3c-8998-0c3fc9a679fa"/>
+      <remove id="dd85b791-08d4-454c-ac82-32727756a00f" child-id="d92a40dd-acea-4d8b-aa59-d862f86b7517"/>
+      <add id="0a3111bb-5e78-43ba-bf36-be4e3c5225c5">
+        <planned-activity id="8e27b6ff-723c-4c12-adde-bc23167f9355" day="548">
+          <label id="c697c697-0cf2-4250-b67b-6745b175a80d" name="event:18_month"/>
+          <label id="3b01fbab-3f7f-47bb-9fcb-5da4d903b5a3" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <label id="4ac2d638-31db-458e-b209-e6fb53c98f35" name="order:00_01"/>
+          <label id="cb889200-643b-404b-b1cc-7660420daf41" name="participant_type:mother"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="7952c233-2121-4d9d-a497-90642eb280e9">
+        <planned-activity id="b5963f8b-b721-4fd4-ab45-2da957fbcffc" day="548">
+          <label id="acc75cfb-5932-451c-8b11-e54df4153908" name="event:18_month"/>
+          <label id="18d89b8b-d837-4027-8d6c-fee57f72cb4e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="6031eefc-18f7-4328-8e21-6820c32aa2b4" name="order:00_02"/>
+          <label id="4cacebc0-7b59-4baf-ac04-5a39ee8e03c4" name="participant_type:child"/>
+          <label id="8181af3c-4fb5-439d-b655-17c0d14c6332" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="97a63b3c-9e9e-4cbf-90ad-b0c77832dce7" child-id="074f5ba1-6c4c-41fb-8fc9-7d75d64ffb60"/>
+      <remove id="74051c68-26c9-4697-93b7-89dc08ed9951" child-id="3312863f-0ca1-45e7-a41f-09cb15c2d7b2"/>
+      <add id="e35a04d2-4c0f-4e72-ad25-7c12a0c62546">
+        <planned-activity id="08cfa770-60f7-4834-9c8c-dd1aa219bd02" day="366">
+          <label id="5d1e422a-3fd0-4d85-b711-d2f2f3a53a15" name="event:12_month"/>
+          <label id="0c22e0d5-ec3c-4b25-8682-269ac1720319" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <label id="2ce59abe-f324-46d6-9587-f25611905ad8" name="order:00_01"/>
+          <label id="7fd91e77-d091-4485-8703-9c414b22388a" name="participant_type:mother"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="80710192-f9a6-41e3-bbc6-8a9a5d34ced6">
+        <planned-activity id="e99b3b7d-4a42-48c1-82cc-e621c7bb1191" day="366">
+          <label id="4aeea293-befa-428f-ad86-11f3c4853a93" name="event:12_month"/>
+          <label id="2f4ce11b-616f-48eb-a2b9-9eb47ad18ebd" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="a16752c7-b291-4fa2-86eb-676747a71263" name="order:00_02"/>
+          <label id="65cd81fe-734c-4e41-91bd-5bb256b55c2e" name="participant_type:child"/>
+          <label id="84fac35c-942b-42f3-a551-d6d2a193c1eb" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="e7f1e014-7f42-4edc-85fc-8fe74a07e4f8" child-id="bda70c5b-5a37-44bb-974e-b7826d6a1223"/>
+      <remove id="67438568-966a-4c06-afb1-45d6571d85cc" child-id="50a6d593-bf1e-4773-a466-d5dc2bf0b483"/>
+      <add id="9471ddd2-f4f9-4a4f-8960-14864e7117ad">
+        <planned-activity id="64eb76fe-cc90-4cce-b7fe-c60ccda6251c" day="274">
+          <label id="861edbc8-dd15-4631-bfbc-07de4092117e" name="event:9_month"/>
+          <label id="3bd01e0f-225d-4fe7-9ba7-c0e903d2f462" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <label id="cbbe3577-410a-4455-a217-e0e471f1e4b3" name="order:00_01"/>
+          <label id="122b1007-b3dc-4a53-aef0-788673b07df9" name="participant_type:mother"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="cc5186cf-581e-4d0a-a1ab-d8d412fa5901">
+        <planned-activity id="cc1bce3d-d808-43fe-8e99-dd315f9810b2" day="274">
+          <label id="4f965a71-214a-4127-89dc-f78c5a84d6f6" name="event:9_month"/>
+          <label id="d2bc335b-3956-4851-90db-2252e36752ac" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="b17ca806-a1b9-42ec-862e-e739bb88642f" name="order:00_02"/>
+          <label id="5de12196-0bd5-4d1f-9a62-8372582e16ca" name="participant_type:child"/>
+          <label id="8ee992b6-813b-4d12-9f6a-316f40ef9435" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="38b497ee-462b-4608-9835-5d4412892fc1" child-id="ef934b7e-6298-4b82-9a0b-6783ed16c9bb"/>
+      <remove id="017fdd2d-9dd6-4361-afdb-409e0e9597e8" child-id="270d9f07-8345-4e20-b4ba-1c91b9ca8cec"/>
+      <add id="cd0714dc-43e1-49f7-b2b6-96cc177db5bd">
+        <planned-activity id="8d5b1f92-a09f-45ee-881b-a450a9e7507d" day="183">
+          <label id="6bd61db5-0cf1-42c2-b321-03f951efdca4" name="event:6_month"/>
+          <label id="1faad017-768b-4752-8266-fd48f4678fa2" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <label id="abaf559a-8798-43ea-a688-f790679664b6" name="order:00_01"/>
+          <label id="36845c54-613a-4aa9-98a5-d9965a13dcaa" name="participant_type:mother"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="3dc8bc7f-7d21-4a25-b97b-2c4d3d1ec214">
+        <planned-activity id="216913d7-bd3d-4d85-bce0-a2d4491a1669" day="183">
+          <label id="f1606a93-b2f2-41af-92c1-b9015100ef57" name="event:6_month"/>
+          <label id="8ff80e86-d732-441b-b941-d306c640ade9" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="c2bb2da0-120e-409e-86df-9a6761df8148" name="order:00_02"/>
+          <label id="9cea734e-c829-4760-8d41-7d7ce2bcfe5a" name="participant_type:child"/>
+          <label id="dfb5da42-0fce-406b-9f29-5f6bd8a485d3" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+      <remove id="29ea01b5-1025-48b0-91aa-eeb2c7531fff" child-id="457d95b8-ed5a-4392-88a7-3a20e8d483d1"/>
+      <remove id="7c453ba1-1a71-434b-844a-7d3eed2d27fc" child-id="5f342422-8e49-474d-a1df-0c66d7948366"/>
+      <add id="43dc99b7-fb14-4bd9-8eef-543aacb77ed1">
+        <planned-activity id="39526434-02a3-41bf-8c38-e12e506397b9" day="92">
+          <label id="db9193a8-77c5-4a5f-bbdd-ee8482cbf962" name="event:3_month"/>
+          <label id="5f59b8bb-4716-442c-9418-f89dd1f7e6f4" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <label id="a28224cf-ff81-42b1-9def-24a105e78c4d" name="order:00_01"/>
+          <label id="2ff2d6c5-511f-43b4-9f63-426c32d562c4" name="participant_type:mother"/>
+          <activity-reference code="PVI" source="NCS"/>
+        </planned-activity>
+      </add>
+      <add id="d2806daa-f716-496c-93e3-cef6596599e3">
+        <planned-activity id="5a756a07-eab5-4871-bca6-41b03eb981b7" day="92">
+          <label id="03ac4224-6935-4115-a97d-6220a0216465" name="event:3_month"/>
+          <label id="1f346d40-9a14-4a69-9806-61fd1cf44929" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+          <label id="79cc980e-29e4-4cc7-bc75-4a58b9fa09f6" name="order:00_02"/>
+          <label id="b460377b-513b-4e06-a8a9-0c29b1f5d3af" name="participant_type:child"/>
+          <label id="31e97962-d5b2-4561-b5d8-7e7664ff0bea" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <activity-reference code="PVI2" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+    <planned-activity-delta id="53cfbfa4-86c0-456b-8219-dd4f7eed96fd" node-id="4da55c5e-e925-45c1-bf30-75e6a8139acf">
+      <property-change id="6fd4b10a-4536-4617-a5c3-f7b3cdeb18c7" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="366c6d58-abf6-4e73-b528-5d1f11bb4003" node-id="5f342422-8e49-474d-a1df-0c66d7948366">
+      <property-change id="e7465b04-8790-4059-bcb6-6f858461ee62" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="01b1513b-7287-49bb-8e22-b57bc5ffd325" node-id="270d9f07-8345-4e20-b4ba-1c91b9ca8cec">
+      <property-change id="0a91ab6e-94fc-4025-9175-2d4f38713abc" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="8f14250a-3012-4cc0-bea1-3cb5457a2c7e" node-id="50a6d593-bf1e-4773-a466-d5dc2bf0b483">
+      <property-change id="cc2a3065-1285-4d8a-a1fd-134af4c666b7" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="2a422295-0e48-47c3-98e7-6e3b3bb2d7e5" node-id="3312863f-0ca1-45e7-a41f-09cb15c2d7b2">
+      <property-change id="1f2a1a25-ed5c-4420-baa3-0ba81de489bd" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="5686d6d5-f3be-46c0-b4d0-0ec48c96d390" node-id="d92a40dd-acea-4d8b-aa59-d862f86b7517">
+      <property-change id="84f28d02-805e-4300-876b-cd7c0736ef82" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="62e83517-8aef-4bcd-a912-090ef928633f" node-id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924">
+      <property-change id="fa06b97e-7c96-4f3a-ada0-72269e87b2a7" property-name="day" old-value="1" new-value="1"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="4d64cbee-03d7-4c4e-9fd8-7777557a22b1" node-id="457d95b8-ed5a-4392-88a7-3a20e8d483d1">
+      <property-change id="643a0977-25e9-443a-8fbe-ace7a2b8fbbf" property-name="day" old-value="92" new-value="92"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="68e7ded8-1ac1-4c4f-8f3f-29879318bb90" node-id="ef934b7e-6298-4b82-9a0b-6783ed16c9bb">
+      <property-change id="8b498e6b-8584-48d6-a190-3078d4ebeaed" property-name="day" old-value="183" new-value="183"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="7d170ee8-ac87-430d-83bf-bc5c825c0c5d" node-id="bda70c5b-5a37-44bb-974e-b7826d6a1223">
+      <property-change id="dfdd33b4-a5b0-4246-9fac-4e5ef8f98d64" property-name="day" old-value="274" new-value="274"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="68b79357-98f7-4d9b-8e77-5b6f4efc64af" node-id="074f5ba1-6c4c-41fb-8fc9-7d75d64ffb60">
+      <property-change id="f833752b-c586-4fa7-b0cf-805c0bc10f90" property-name="day" old-value="366" new-value="366"/>
+    </planned-activity-delta>
+    <planned-activity-delta id="1a575ae5-ba68-4096-a839-b0b2b7ce930e" node-id="55f3fa8a-6d31-4d3c-8998-0c3fc9a679fa">
+      <property-change id="3082dbe2-8fe6-4b4d-9496-a8f76cc4e112" property-name="day" old-value="548" new-value="548"/>
+    </planned-activity-delta>
+  </amendment>
   <amendment name="Rev 30" date="2013-01-08" mandatory="true" released-date="2013-01-08T13:52:13.920Z" updated-date="2013-01-08T13:39:16.320Z" previous-amendment-key="2013-01-07~Rev 29">
     <planned-activity-delta id="d361e83b-0e27-4ba2-973d-b3c167084c3b" node-id="c8946f02-c7f3-4343-a32a-17c8b8249a68">
       <property-change id="4ff09d4f-6421-45e3-9913-33ffcdbeb5d3" property-name="day" old-value="1" new-value="1"/>

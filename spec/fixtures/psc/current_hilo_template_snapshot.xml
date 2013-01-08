@@ -914,131 +914,131 @@
             <label id="1e1467d3-765d-4172-a2ca-e70ad8a82cef" name="participant_type:child"/>
             <activity-reference code="CC" source="NCS"/>
           </planned-activity>
-          <planned-activity id="5f342422-8e49-474d-a1df-0c66d7948366" details="Participant Verification for the Child" day="92">
-            <label id="ff4b15ba-4f87-48db-85cd-f1894c4ed8a0" name="event:birth"/>
-            <label id="365e07ba-cf83-497e-af49-e1aa31bfe7d1" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="006f5a81-6eca-484a-872a-c81378d5d377" name="order:00_02"/>
-            <label id="ce55ef90-aa7d-44bd-b699-420a384489a2" name="participant_type:child"/>
-            <label id="eff47231-cc83-4085-8ede-436237eeabe5" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <activity-reference code="PVI2" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="457d95b8-ed5a-4392-88a7-3a20e8d483d1" day="92">
-            <label id="4ed7e8da-0981-4dfa-9e65-c0d52fc1645f" name="event:birth"/>
-            <label id="e35b3850-7d2a-42fa-bd28-3b41391e323d" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="d9d16ef8-d78e-4382-9a88-f1981609db79" name="order:00_01"/>
-            <label id="975b6ef2-08eb-4f2d-8d57-1ae82968d501" name="participant_type:mother"/>
-            <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="1748afe1-6ea6-40c4-b3f9-76e9fab53aa4" day="92">
-            <label id="c53d307d-8deb-4196-abfd-8430c57a954e" name="event:birth"/>
-            <label id="54be5a30-2ef3-4e1c-a79a-44966975e35e" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
-            <label id="8574e8a9-1c41-4051-9dfa-122e1732f107" name="order:90_01"/>
+          <planned-activity id="03d1aad7-bc53-446b-b4d7-940f1faa6afc" day="92">
+            <label id="79d91b2a-48d8-4551-afdb-bd2d19acf2a8" name="event:3_month"/>
+            <label id="31fe7165-ca9d-46af-b0fd-ac4d6f54d111" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="03aa4ce9-b87a-46b0-9c46-b588828e1d8a" name="order:90_01"/>
             <activity-reference code="TM" source="NCS"/>
           </planned-activity>
-          <planned-activity id="ef934b7e-6298-4b82-9a0b-6783ed16c9bb" day="183">
-            <label id="c8de8978-cc22-4068-b923-0d7d60d7a6e0" name="event:birth"/>
-            <label id="d41ba445-ea7a-490d-bd01-626f2f288656" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="ea1b7f14-13a3-47a1-964b-325d167afc66" name="order:00_01"/>
-            <label id="ce3d96de-3aa6-4957-af59-105bc0ff1fa9" name="participant_type:mother"/>
-            <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="270d9f07-8345-4e20-b4ba-1c91b9ca8cec" details="Participant Verification for the Child" day="183">
-            <label id="ac101664-2794-4c9e-ae79-b1411db45ae0" name="event:birth"/>
-            <label id="cac69ab0-75ee-4302-a95c-6250e6e833c4" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="96bc2e81-5e39-400d-b5c0-caf0f7dd0e59" name="order:00_02"/>
-            <label id="fe42eff7-1174-42df-a062-a2ed441f8032" name="participant_type:child"/>
-            <label id="f46cdedb-de39-4ce8-b062-9ba189c98413" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <activity-reference code="PVI2" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="820eda18-4da1-4cdc-bee5-29973c4ba616" day="183">
-            <label id="f374d3ea-2d44-4291-b8c3-6d7b5e91055a" name="event:birth"/>
-            <label id="53155ce2-74bd-44bc-b7ff-a50d1e912c18" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
-            <label id="64d92909-6bc8-4014-b3e1-b4a1436b7869" name="order:90_01"/>
+          <planned-activity id="12c9ed5e-e261-42e4-93ef-a9baa13e0458" day="183">
+            <label id="e1ace922-6438-4d46-8713-d514703604d7" name="event:6_month"/>
+            <label id="59019705-39b9-4033-b4e2-d90d691817cf" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="498c1160-ddcb-47af-988f-3380befeaca5" name="order:90_01"/>
             <activity-reference code="TM" source="NCS"/>
           </planned-activity>
-          <planned-activity id="bda70c5b-5a37-44bb-974e-b7826d6a1223" day="274">
-            <label id="0e52754d-95c3-4e96-8372-9632b7a95b98" name="event:birth"/>
-            <label id="2e76924b-7bc2-4006-88aa-a72cab8db144" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="f8990f88-0edc-4139-b12e-1a62e5b8f348" name="order:00_01"/>
-            <label id="0d9ec094-4995-4c6e-b2b5-dbb43ec30044" name="participant_type:mother"/>
-            <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="50a6d593-bf1e-4773-a466-d5dc2bf0b483" details="Participant Verification for the Child" day="274">
-            <label id="d2451bda-ca2d-4457-894b-5187b27b6040" name="event:birth"/>
-            <label id="3e956bdf-8967-4ba1-b0c5-dcc66830df56" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="ffce2e4d-f08c-4bc6-a329-47ad92b284cb" name="order:00_02"/>
-            <label id="de8c6e9d-a2dc-4e56-a3e9-37ee66159bff" name="participant_type:child"/>
-            <label id="83bd3dc3-b4af-4bbb-b405-f791415fb4e3" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <activity-reference code="PVI2" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="8cf85596-11aa-482f-be93-f20a50bf2f6e" day="274">
-            <label id="65a40ff8-3efb-4728-9998-5cad6b752198" name="event:birth"/>
-            <label id="b7559d50-9045-4c54-aeca-985c41c61acd" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
-            <label id="463e9e03-c85c-406b-a01e-1fa9b5dfe1bc" name="order:90_01"/>
+          <planned-activity id="8fad52ad-251c-4e99-a7ed-f613fefddbc0" day="274">
+            <label id="b70043fa-e570-4f50-b1bd-90a8f0e606c7" name="event:9_month"/>
+            <label id="04135d91-1234-4031-b583-de1f13679a2c" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="53ce3c57-d2c0-4d2d-b087-38c2ddef69e2" name="order:90_01"/>
             <activity-reference code="TM" source="NCS"/>
           </planned-activity>
-          <planned-activity id="074f5ba1-6c4c-41fb-8fc9-7d75d64ffb60" day="366">
-            <label id="5370e225-f7a9-4958-8e6d-fb22a969e188" name="event:birth"/>
-            <label id="206f2cb4-8cd0-46bd-a987-4a5e451ef637" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="998b492a-3ed3-4457-87d2-6cd731fe745c" name="order:00_01"/>
-            <label id="7c413614-5f0b-4892-bb7e-1d66305359f1" name="participant_type:mother"/>
-            <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="3312863f-0ca1-45e7-a41f-09cb15c2d7b2" details="Participant Verification for the Child" day="366">
-            <label id="95fbdeac-9153-4427-8d75-19da528ebacf" name="event:birth"/>
-            <label id="007a3b5f-6327-44bc-8784-1e7776adf70f" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="816c692b-3922-4d4d-82fa-1ac8b7d631f9" name="order:00_02"/>
-            <label id="d5e56f95-b0e4-4ed4-8fdc-d06149016a91" name="participant_type:child"/>
-            <label id="e4d6772d-3b81-4893-b51f-0310c1551778" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <activity-reference code="PVI2" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="105b8ca6-a80b-4a3a-b4b0-3afe0d82d7be" day="366">
-            <label id="13babd43-da2a-4a6e-ba8e-671303c3ff07" name="event:birth"/>
-            <label id="3532a7a3-8835-46c7-b2f9-80032556d797" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
-            <label id="cb0fe4e1-907a-4339-ab83-88ecf5a9bd59" name="order:90_01"/>
+          <planned-activity id="7f4232b5-6229-465e-a89a-ad31ec42fa87" day="366">
+            <label id="4e63fa01-0c58-4023-9bf4-b2836db69149" name="event:12_month"/>
+            <label id="de443be9-1d7d-4f37-a31c-b8810309c18a" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="a413cffa-7f34-4aaf-814b-5a79d1405145" name="order:90_01"/>
             <activity-reference code="TM" source="NCS"/>
           </planned-activity>
-          <planned-activity id="55f3fa8a-6d31-4d3c-8998-0c3fc9a679fa" day="548">
-            <label id="d58e73c8-d7f2-4455-91ae-94b1e5e8df92" name="event:birth"/>
-            <label id="2db5805f-31b1-4c19-935e-55e9370103bc" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="ff614b12-a7da-4e6c-bb91-afafdaff9aac" name="order:00_01"/>
-            <label id="181812d1-a0db-4068-bf2e-f77701e5198e" name="participant_type:mother"/>
-            <activity-reference code="PVI" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="d92a40dd-acea-4d8b-aa59-d862f86b7517" details="Participant Verification for the Child" day="548">
-            <label id="42238400-d75c-421a-92b8-12e0a30b9bd9" name="event:birth"/>
-            <label id="08efefd4-26e5-4449-b68f-dec0253b9daa" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="ce3deff1-2d7f-40b5-8bb3-2b12600658cc" name="order:00_02"/>
-            <label id="95d11ff7-be3b-4d1a-bdab-807e2bd24de2" name="participant_type:child"/>
-            <label id="f980511c-a246-4335-8316-1d7e0e14c4c7" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <activity-reference code="PVI2" source="NCS"/>
-          </planned-activity>
-          <planned-activity id="40048b01-5db0-4f6a-bdff-b1612a288163" day="548">
-            <label id="fd7e6c0a-52a4-4867-b702-a9dd48e0bebe" name="event:birth"/>
-            <label id="6199c7e1-dd31-4202-8cfc-b6c74d265a00" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
-            <label id="b8494604-864c-41eb-a958-8465d6e8dc4f" name="order:90_01"/>
+          <planned-activity id="d6457a0a-0252-40b8-af1b-205acbeaa381" day="548">
+            <label id="e6e9553f-8b31-448e-8087-a13a36c69930" name="event:18_month"/>
+            <label id="a1344a94-c036-4182-aa12-f419857f4bc0" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="9662823c-6aee-46c1-94f9-8498c8d255e1" name="order:90_01"/>
             <activity-reference code="TM" source="NCS"/>
           </planned-activity>
-          <planned-activity id="4d74abda-d217-4c38-9295-0acd6fddbdf2" day="730">
-            <label id="efb8634f-fde0-4632-9a08-baef5ba4adc7" name="event:birth"/>
-            <label id="3b9e6c10-cdad-46f8-b8f4-9e52d4fa5098" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
-            <label id="74ebce4c-180b-4b94-8a40-8858e01a0e17" name="order:00_01"/>
-            <label id="f0ae4756-feb7-46ed-b5d8-cbd351f20089" name="participant_type:mother"/>
+          <planned-activity id="b74d7dc8-b319-4265-b788-2e6a743431eb" day="730">
+            <label id="4c071876-d0c5-4f01-b777-3ad7691cee6d" name="event:24_month"/>
+            <label id="121e59ef-126b-4c5d-a977-edd015033387" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
+            <label id="359b010e-ccf7-490c-85f1-1865c84977f1" name="order:90_01"/>
+            <activity-reference code="TM" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="179b8ca9-481d-457c-a8ed-c59c7ed9f519" day="730">
+            <label id="b6591678-db7e-4114-a2d9-0d9385bb570c" name="event:24_month"/>
+            <label id="0e10e712-0c98-4a5d-80b0-bd89c774e122" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <label id="ae8ff2dd-6f06-4bd2-87cf-e01dcad9d83a" name="order:00_01"/>
+            <label id="62dee349-cc63-42da-8338-a69044923086" name="participant_type:mother"/>
             <activity-reference code="PVI" source="NCS"/>
           </planned-activity>
-          <planned-activity id="fc25bae5-d3f1-4ba8-aa0f-23cf98872eb3" details="Participant Verification for the Child" day="730">
-            <label id="058a6202-7db8-4125-a9b1-31836fea5b7b" name="event:birth"/>
-            <label id="a494e0d2-d78e-436b-978d-fe8d1faf265b" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
-            <label id="bc2996ee-9971-4695-aaaa-d2a14839dae4" name="order:00_02"/>
-            <label id="83e8f5b0-22dc-4ed9-be00-093647cf66b2" name="participant_type:child"/>
-            <label id="0c7dbf20-3e5f-4fd0-9708-74c75eb2abd9" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+          <planned-activity id="51c5d91d-973e-4051-ac30-a72781e9f6a3" day="730">
+            <label id="80d5b729-6bab-47ee-9979-46ccaf91f4b8" name="event:24_month"/>
+            <label id="522f0df1-5180-4494-82cd-444ab40031f7" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="f9d30eb3-4e5c-4ab5-b7c9-29522b9915e6" name="order:00_02"/>
+            <label id="092d357e-838f-4000-9902-44a10fec1f8b" name="participant_type:child"/>
+            <label id="25a0b67f-8d82-4850-a789-ab0f41291e5d" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
             <activity-reference code="PVI2" source="NCS"/>
           </planned-activity>
-          <planned-activity id="a837d893-40ea-4a02-8b56-1244224ecec8" day="730">
-            <label id="088d45f5-6d89-41f5-9c37-ab05d620042f" name="event:birth"/>
-            <label id="d3a2b692-5bad-4806-9a3a-b55b2cb57f98" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
-            <label id="d7b0dcae-bb5e-4171-86e6-e473df8a3869" name="order:90_01"/>
-            <activity-reference code="TM" source="NCS"/>
+          <planned-activity id="8e27b6ff-723c-4c12-adde-bc23167f9355" day="548">
+            <label id="c697c697-0cf2-4250-b67b-6745b175a80d" name="event:18_month"/>
+            <label id="3b01fbab-3f7f-47bb-9fcb-5da4d903b5a3" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <label id="4ac2d638-31db-458e-b209-e6fb53c98f35" name="order:00_01"/>
+            <label id="cb889200-643b-404b-b1cc-7660420daf41" name="participant_type:mother"/>
+            <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="b5963f8b-b721-4fd4-ab45-2da957fbcffc" day="548">
+            <label id="acc75cfb-5932-451c-8b11-e54df4153908" name="event:18_month"/>
+            <label id="18d89b8b-d837-4027-8d6c-fee57f72cb4e" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="6031eefc-18f7-4328-8e21-6820c32aa2b4" name="order:00_02"/>
+            <label id="4cacebc0-7b59-4baf-ac04-5a39ee8e03c4" name="participant_type:child"/>
+            <label id="8181af3c-4fb5-439d-b655-17c0d14c6332" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <activity-reference code="PVI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="08cfa770-60f7-4834-9c8c-dd1aa219bd02" day="366">
+            <label id="5d1e422a-3fd0-4d85-b711-d2f2f3a53a15" name="event:12_month"/>
+            <label id="0c22e0d5-ec3c-4b25-8682-269ac1720319" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <label id="2ce59abe-f324-46d6-9587-f25611905ad8" name="order:00_01"/>
+            <label id="7fd91e77-d091-4485-8703-9c414b22388a" name="participant_type:mother"/>
+            <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="e99b3b7d-4a42-48c1-82cc-e621c7bb1191" day="366">
+            <label id="4aeea293-befa-428f-ad86-11f3c4853a93" name="event:12_month"/>
+            <label id="2f4ce11b-616f-48eb-a2b9-9eb47ad18ebd" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="a16752c7-b291-4fa2-86eb-676747a71263" name="order:00_02"/>
+            <label id="65cd81fe-734c-4e41-91bd-5bb256b55c2e" name="participant_type:child"/>
+            <label id="84fac35c-942b-42f3-a551-d6d2a193c1eb" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <activity-reference code="PVI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="64eb76fe-cc90-4cce-b7fe-c60ccda6251c" day="274">
+            <label id="861edbc8-dd15-4631-bfbc-07de4092117e" name="event:9_month"/>
+            <label id="3bd01e0f-225d-4fe7-9ba7-c0e903d2f462" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <label id="cbbe3577-410a-4455-a217-e0e471f1e4b3" name="order:00_01"/>
+            <label id="122b1007-b3dc-4a53-aef0-788673b07df9" name="participant_type:mother"/>
+            <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="cc1bce3d-d808-43fe-8e99-dd315f9810b2" day="274">
+            <label id="4f965a71-214a-4127-89dc-f78c5a84d6f6" name="event:9_month"/>
+            <label id="d2bc335b-3956-4851-90db-2252e36752ac" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="b17ca806-a1b9-42ec-862e-e739bb88642f" name="order:00_02"/>
+            <label id="5de12196-0bd5-4d1f-9a62-8372582e16ca" name="participant_type:child"/>
+            <label id="8ee992b6-813b-4d12-9f6a-316f40ef9435" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <activity-reference code="PVI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="8d5b1f92-a09f-45ee-881b-a450a9e7507d" day="183">
+            <label id="6bd61db5-0cf1-42c2-b321-03f951efdca4" name="event:6_month"/>
+            <label id="1faad017-768b-4752-8266-fd48f4678fa2" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <label id="abaf559a-8798-43ea-a688-f790679664b6" name="order:00_01"/>
+            <label id="36845c54-613a-4aa9-98a5-d9965a13dcaa" name="participant_type:mother"/>
+            <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="216913d7-bd3d-4d85-bce0-a2d4491a1669" day="183">
+            <label id="f1606a93-b2f2-41af-92c1-b9015100ef57" name="event:6_month"/>
+            <label id="8ff80e86-d732-441b-b941-d306c640ade9" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="c2bb2da0-120e-409e-86df-9a6761df8148" name="order:00_02"/>
+            <label id="9cea734e-c829-4760-8d41-7d7ce2bcfe5a" name="participant_type:child"/>
+            <label id="dfb5da42-0fce-406b-9f29-5f6bd8a485d3" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <activity-reference code="PVI2" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="39526434-02a3-41bf-8c38-e12e506397b9" day="92">
+            <label id="db9193a8-77c5-4a5f-bbdd-ee8482cbf962" name="event:3_month"/>
+            <label id="5f59b8bb-4716-442c-9418-f89dd1f7e6f4" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <label id="a28224cf-ff81-42b1-9def-24a105e78c4d" name="order:00_01"/>
+            <label id="2ff2d6c5-511f-43b4-9f63-426c32d562c4" name="participant_type:mother"/>
+            <activity-reference code="PVI" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="5a756a07-eab5-4871-bca6-41b03eb981b7" day="92">
+            <label id="03ac4224-6935-4115-a97d-6220a0216465" name="event:3_month"/>
+            <label id="1f346d40-9a14-4a69-9806-61fd1cf44929" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+            <label id="79cc980e-29e4-4cc7-bc75-4a58b9fa09f6" name="order:00_02"/>
+            <label id="b460377b-513b-4e06-a8a9-0c29b1f5d3af" name="participant_type:child"/>
+            <label id="31e97962-d5b2-4561-b5d8-7e7664ff0bea" name="references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+            <activity-reference code="PVI2" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
