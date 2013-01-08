@@ -137,8 +137,7 @@ module NcsNavigator::Core::Mdes
       def set_missing_in_error
         self.class.reflect_on_all_associations.each do |association|
           if association.options[:class_name] == "NcsCode" && not_set?(association.name.to_sym)
-            missing_in_error_code = NcsCode.where("#{association.options[:conditions]} AND local_code = -4").first
-            self.send("#{association.name}=", missing_in_error_code)
+            self.send("#{association.name}_code=", -4)
           end
         end
       end
