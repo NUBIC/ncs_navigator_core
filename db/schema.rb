@@ -357,6 +357,7 @@ ActiveRecord::Schema.define(:version => 20121220214234) do
     t.string   "transaction_type",            :limit => 36
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "response_set_id"
   end
 
   create_table "instruments", :force => true do |t|

@@ -15,7 +15,7 @@ module NcsNavigator::Core::Mustache
     let(:baby_sex)   { "#{OperationalDataExtractor::Birth::BABY_NAME_PREFIX}.BABY_SEX" }
     let(:multiple)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE" }
 
-    let(:multiple_gestation) { "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
+    let(:multiple_gestation) { "#{OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX}.MULTIPLE_GESTATION" }
     let(:multiple_num)   { "#{OperationalDataExtractor::Birth::BIRTH_VISIT_PREFIX}.MULTIPLE_NUM" }
 
     context "without a response set" do
@@ -1038,9 +1038,9 @@ module NcsNavigator::Core::Mustache
       let(:instrument_context) { InstrumentContext.new(@response_set) }
 
       describe ".multiple_birth_prefix" do
-        it "returns OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX" do
+        it "returns OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX" do
           instrument_context.multiple_birth_prefix.should ==
-            OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_INTERVIEW_PREFIX
+            OperationalDataExtractor::PregnancyVisit::PREGNANCY_VISIT_1_2_INTERVIEW_PREFIX
         end
       end
 
@@ -1492,7 +1492,6 @@ module NcsNavigator::Core::Mustache
         a.str baby_fname, first_name
       end
     end
-
 
     def setup_survey_instrument(survey)
       @survey = survey

@@ -98,6 +98,18 @@ collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_vacbagdu
 # Environmental Sample Kit Distribution Instrument
 collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 order:23_01 participant_type:mother
 
+# Environmental Tap Water TWQ Participant Collect SAQ Specification
+collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_tapwaterpestpartcollect_saqspec_ehpbhi_m2.2_v1.0 order:24_01 participant_type:mother
+
+# Environmental Tap Water TWF Participant Collect SAQ Specification
+collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_tapwaterpharmpartcollect_saqspec_ehpbhi_m2.2_v1.0 order:24_02 participant_type:mother
+
+# Environmental Vacuum Bag Dust (VBD) Participant Collect SAQ Specification
+collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_vacbagdustpartcollect_saqspec_ehpbhi_m2.2_v1.0 order:24_03 participant_type:mother
+
+# Environmental Sample Kit Distribution Instrument
+collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 order:24_04 participant_type:mother
+
 # Birth Visit Information Sheet
 event:pregnancy_visit_1
 

@@ -222,14 +222,14 @@ module NcsNavigator::Core
         describe "the subsequent visit" do
 
           before(:each) do
-            # create two contacts for pv1
-            contact1 = Factory(:contact)
-            contact2 = Factory(:contact)
-            @contact_link1 = Factory(:contact_link, :person => person, :contact => contact1, :event => pv1_event)
-            @contact_link2 = Factory(:contact_link, :person => person, :contact => contact2, :event => pv1_event)
-            # ensure that there are two contacts for pv1
-            person.contact_links.reload
-            person.contact_links.select { |cl| cl.event.try(:event_type_code) == 13 }.size.should == 2
+            # create a completed pv1 event
+            previous_pv1 = Factory(:event, :event_type_code => Event.pregnancy_visit_1_code,
+              :event_end_date => '2025-12-25', :participant => participant)
+            previous_contact = Factory(:contact)
+            previous_contact_link = Factory(:contact_link, :person => person, :contact => previous_contact, :event => previous_pv1)
+            # ensure that the event has been completed
+            pv1_code = NcsCode.for_list_name_and_local_code('EVENT_TYPE_CL1', Event.pregnancy_visit_1_code)
+            person.participant.completed_event?(pv1_code).should be_true
           end
 
           it "prepopulated_is_first_pregnancy_visit_one should be FALSE" do

@@ -164,7 +164,9 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
       :ignored_columns => %w(person_id survey_id lock_version)
     )
 
-    produce_one_for_one(:institutions, :Institution)
+    produce_one_for_one(:institutions, :Institution,
+      :ignored_columns => %w(response_set_id)
+    )
 
     produce_one_for_one(:institution_person_links, :LinkPersonInstitute,
       :public_ids => [
@@ -264,6 +266,10 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     )
 
     produce_one_for_one(:participant_consents, :ParticipantConsent,
+      :selects => [
+        "-4 as consent_reconsent",
+        "-4 as consent_reconsent_reason",
+      ],
       :public_ids => [
         :participants,
         :contacts,
