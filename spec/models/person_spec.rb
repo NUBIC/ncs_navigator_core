@@ -150,6 +150,7 @@ describe Person do
       obj.deceased.local_code.should == -4
       obj.ethnic_group.local_code.should == -4
       obj.language.local_code.should == -4
+      obj.language_new.local_code.should == -4
       obj.marital_status.local_code.should == -4
       obj.preferred_contact_method.local_code.should == -4
       obj.planned_move.local_code.should == -4

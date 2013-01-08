@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121220214234) do
+ActiveRecord::Schema.define(:version => 20130108201329) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -442,7 +442,6 @@ ActiveRecord::Schema.define(:version => 20121220214234) do
     t.datetime "synced_at"
     t.string   "staff_id"
     t.string   "client_id"
-    t.text     "superposition"
     t.string   "username",        :null => false
   end
 
@@ -802,7 +801,7 @@ ActiveRecord::Schema.define(:version => 20121220214234) do
     t.boolean  "being_processed",                              :default => false
     t.integer  "response_set_id"
     t.string   "role"
-    t.integer  "language_new_code"
+    t.integer  "language_new_code",                                               :null => false
     t.string   "language_new_other"
     t.integer  "lock_version",                                 :default => 0
   end

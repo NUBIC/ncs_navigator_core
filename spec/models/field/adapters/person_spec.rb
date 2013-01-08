@@ -1,4 +1,5 @@
 # == Schema Information
+# Schema version: 20130108201329
 #
 # Table name: people
 #
@@ -13,7 +14,7 @@
 #  first_name                     :string(30)
 #  id                             :integer          not null, primary key
 #  language_code                  :integer          not null
-#  language_new_code              :integer
+#  language_new_code              :integer          not null
 #  language_new_other             :string(255)
 #  language_other                 :string(255)
 #  last_name                      :string(30)
