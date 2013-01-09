@@ -1649,6 +1649,26 @@ describe Participant do
   describe '#advance' do
     let!(:p) { Factory(:participant) }
     let!(:pe) { Factory(:person) }
+    let(:psc) { double }
+    let(:psc_success_resp) { stub(:success? => true, :body => 'test') }
+
+    before do
+      # Many state transitions are time-dependent, so freeze today to a known
+      # value.
+      Date.stub!(:today => Date.parse('2000-01-01'))
+
+      # There's a bunch of PSC actions done when events are scheduled.
+      # However, the only ones we care about are:
+      #
+      # * schedule_next_segment, which must return success
+      # * unique_label_ideal_date_pairs_for_scheduled_segment, which
+      #   returns data used to schedule event placeholders
+      #
+      # Every other action just needs to exist.
+      psc.stub!(:schedule_next_segment => psc_success_resp,
+                :cancel_collection_instruments => true,
+                :cancel_non_matching_mdes_version_instruments => true)
+    end
 
     describe 'in PBS' do
       around do |example|
@@ -1662,56 +1682,84 @@ describe Participant do
       end
 
       describe 'with an eligible participant' do
-        let(:pairs) do
-          [
-            ['pregnancy_visit_1', Date.today],
-            ['pregnancy_visit_2', Date.today]
-          ]
-        end
-
         before do
           p.stub!(:eligible_for_pbs? => true)
           p.person = pe
           p.save!
         end
 
-        describe 'that completed the eligiblity screener' do
+        def latest_event
+          # Participant#events imposes its own ordering, which isn't useful in
+          # this case.
+          Event.where(:participant_id => p.id).order(:created_at).last
+        end
+
+        describe 'that completed the eligibility screener' do
           let!(:e) { Factory(:event, :participant => p, :event_type_code => 34, :event_end_date => Date.parse('2000-01-01')) }
-          let(:psc) { double }
-          let(:success) { stub(:success? => true, :body => 'foo') }
+          let(:pairs) do
+            [
+              ['pregnancy_visit_1', Date.parse('2000-02-01')]
+            ]
+          end
 
           before do
             # These examples require that we be able to schedule an event.
             # Participant#next_scheduled_event requires a contact, despite the
             # name.
-            ContactLink.create!(:contact => Factory(:contact), :event => e)
+            ContactLink.create!(:contact => Factory(:contact), :event => e, :staff_id => 'test')
 
-            # There's a bunch of PSC actions done when events are scheduled.
-            # However, the only ones we care about are:
-            #
-            # * schedule_next_segment, which must return success
-            # * unique_label_ideal_date_pairs_for_scheduled_segment, which
-            #   returns data used to schedule event placeholders
-            # 
-            # Everything else just needs to exist.
-            psc.stub!(:schedule_next_segment => success,
-                      :unique_label_ideal_date_pairs_for_scheduled_segment => pairs,
-                      :cancel_collection_instruments => true,
-                      :cancel_non_matching_mdes_version_instruments => true)
+            # Supply appropriate (event label, ideal date) pairs as a PSC
+            # scheduling result.
+            psc.stub!(:unique_label_ideal_date_pairs_for_scheduled_segment => pairs)
 
             p.advance(psc)
-          end
-
-          def latest_event
-            p.events.order(:created_at).last
           end
 
           it 'schedules Pregnancy Visit 1' do
             latest_event.event_type_code.should == 13
           end
 
+          it 'schedules Pregnancy Visit 1 with the start date supplied by PSC' do
+            latest_event.event_start_date.should == Date.parse('2000-02-01')
+          end
+
           it 'schedules Pregnancy Visit 1 as an open event' do
             latest_event.event_end_date.should be_nil
+          end
+        end
+
+        describe 'that completed Pregnancy Visit 1' do
+          let!(:e) { Factory(:event, :participant => p, :event_type_code => 13, :event_end_date => Date.parse('2000-01-01')) }
+
+          let(:pairs) do
+            [
+              ['pregnancy_visit_2', Date.parse('2000-02-01')]
+            ]
+          end
+
+          describe 'and whose due date is more than 60 days from today' do
+            before do
+              # Set due date to today + 61 days.
+              p.ppg_details.create!(:orig_due_date => Date.today + 61.days)
+
+              # See eligiblity screener setup.
+              ContactLink.create!(:contact => Factory(:contact), :event => e, :staff_id => 'test')
+              psc.stub!(:unique_label_ideal_date_pairs_for_scheduled_segment => pairs)
+
+              p.advance(psc)
+            end
+
+            it 'schedules Pregnancy Visit 2' do
+              latest_event.event_type_code.should == 15
+            end
+
+            it 'schedules Pregnancy Visit 2 with the start date supplied by PSC' do
+              latest_event.event_start_date.should == Date.parse('2000-02-01')
+            end
+
+            it 'schedules Pregnancy Visit 2 as an open event' do
+              latest_event.event_end_date.should be_nil
+            end
           end
         end
       end
