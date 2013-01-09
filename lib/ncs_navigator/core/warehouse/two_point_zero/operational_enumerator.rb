@@ -261,7 +261,8 @@ module NcsNavigator::Core::Warehouse::TwoPointZero
         { :table => :people,
           :public_id => :person_id,
           :public_ref => :person_wthdrw_consent_id }
-      ]
+      ],
+      :ignored_columns => %w(consent_reconsent_code consent_reconsent_reason_code consent_reconsent_reason_other)
     )
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,

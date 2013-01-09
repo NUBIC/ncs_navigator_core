@@ -266,10 +266,6 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
     )
 
     produce_one_for_one(:participant_consents, :ParticipantConsent,
-      :selects => [
-        "-4 as consent_reconsent",
-        "-4 as consent_reconsent_reason",
-      ],
       :public_ids => [
         :participants,
         :contacts,
@@ -279,7 +275,11 @@ module NcsNavigator::Core::Warehouse::ThreePointZero
         { :table => :people,
           :public_id => :person_id,
           :public_ref => :person_wthdrw_consent_id }
-      ]
+      ],
+      :column_map => {
+        :consent_reconsent_code => :consent_reconsent,
+        :consent_reconsent_reason_other => :consent_reconsent_reason_oth
+      }
     )
 
     produce_one_for_one(:participant_consent_samples, :ParticipantConsentSample,
