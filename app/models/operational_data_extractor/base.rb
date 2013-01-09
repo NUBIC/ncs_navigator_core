@@ -700,6 +700,9 @@ module OperationalDataExtractor
       institution
     end
 
+    def process_person_race
+    end
+
     def finalize_institution(institute)
       ActiveRecord::Base.transaction do
         unless institute.blank?

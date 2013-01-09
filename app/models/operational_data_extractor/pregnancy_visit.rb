@@ -12,6 +12,8 @@ module OperationalDataExtractor
     PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX  = "PREG_VISIT_1_3"
     PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX  = "PREG_VISIT_2_3"
 
+    PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX = "PREG_VISIT_1_RACE_NEW_3"
+    PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX   = "PREG_VISIT_1_RACE_1_3"
 
     PERSON_MAP = {
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"           => "first_name",
@@ -302,6 +304,13 @@ module OperationalDataExtractor
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
 
+    PERSON_RACE_MAP = {
+      "#{PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW"        => "race_code",
+      "#{PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW_OTH"    => "race_other",
+      "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1"            => "race_code",
+      "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1_OTH"        => "race_other"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -329,7 +338,8 @@ module OperationalDataExtractor
         FATHER_PHONE_MAP,
         DUE_DATE_DETERMINER_MAP,
         INSTITUTION_MAP,
-        MODE_OF_CONTACT_MAP
+        MODE_OF_CONTACT_MAP,
+        PERSON_RACE_MAP
       ]
     end
 

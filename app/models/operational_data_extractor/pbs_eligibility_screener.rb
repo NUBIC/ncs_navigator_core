@@ -8,6 +8,9 @@ module OperationalDataExtractor
 
     INTERVIEW_PREFIX = "PBS_ELIG_SCREENER"
 
+    PBS_ELIG_SCREENER_RACE_NEW_PREFIX = "PBS_ELIG_SCREENER_RACE_NEW"
+    PBS_ELIG_SCREENER_RACE_1_PREFIX = "PBS_ELIG_SCREENER_RACE_1"
+
     ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
     CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW"
     CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW_OTH"
@@ -82,6 +85,14 @@ module OperationalDataExtractor
 
     MODE_OF_CONTACT_MAP = {
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
+    }
+    PBS_ELIG_SCREENER_RACE_NEW_PREFIX = "PBS_ELIG_SCREENER_RACE_NEW"
+
+    PERSON_MAP = {
+      "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW" => "race_code",
+      "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW_OTH" => "race_other",
+      "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1" => "race_code",
+      "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH" => "race_other"
     }
 
     def maps

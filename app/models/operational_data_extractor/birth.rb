@@ -9,6 +9,9 @@ module OperationalDataExtractor
     BIRTH_LI_PREFIX      = "BIRTH_VISIT_LI"
     BIRTH_VISIT_3_PREFIX = "BIRTH_VISIT_3"
 
+    BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX = "BIRTH_VISIT_BABY_RACE_NEW_3"
+    BIRTH_VISIT_BABY_RACE_1_3_PREFIX   = "BIRTH_VISIT_BABY_RACE_1_3"
+
     CHILD_PERSON_MAP = {
       "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
       "#{BABY_NAME_PREFIX}.BABY_MNAME"        => "middle_name",
@@ -101,6 +104,13 @@ module OperationalDataExtractor
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
 
+    PERSON_RACE_MAP = {
+      "#{BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW"     => "race_code",
+      "#{BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH" => "race_other",
+      "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1"         => "race_code",
+      "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH"     => "race_other"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -117,7 +127,8 @@ module OperationalDataExtractor
         CELL_PHONE_MAP,
         EMAIL_MAP,
         INSTITUTION_MAP,
-        MODE_OF_CONTACT_MAP
+        MODE_OF_CONTACT_MAP,
+        PERSON_RACE_MAP
       ]
     end
 

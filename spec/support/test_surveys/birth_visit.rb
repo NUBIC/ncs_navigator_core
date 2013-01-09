@@ -160,6 +160,29 @@ module BirthVisit
     survey
   end
 
+  def create_birth_survey_with_person_race_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_BIRTH_VISIT_BABY_NAME_3", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-birth-visit-baby-name-3")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Race New
+    q = Factory(:question, :reference_identifier => "BABY_RACE_NEW", :data_export_identifier => "BIRTH_VISIT_BABY_RACE_NEW_3.BABY_RACE_NEW", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "White", :response_class => "answer", :reference_identifier => "1")
+
+    # Race New Other
+    q = Factory(:question, :reference_identifier => "BABY_RACE_NEW_OTH", :data_export_identifier => "BIRTH_VISIT_BABY_RACE_NEW_3.BABY_RACE_NEW_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Chinese", :response_class => "string")
+
+    # Race One
+    q = Factory(:question, :reference_identifier => "BABY_RACE_1", :data_export_identifier => "BIRTH_VISIT_BABY_RACE_1_3.BABY_RACE_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+
+    # Race One Other
+    q = Factory(:question, :reference_identifier => "BABY_RACE_1_OTH", :data_export_identifier => "BIRTH_VISIT_BABY_RACE_1_3.BABY_RACE_1_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
+
+    survey
+  end
+
   def create_birth_part_one_survey_with_prepopulated_fields_for_part_two
     survey = Factory(:survey, :title => "INS_QUE_Birth_INT_EHPBHIPBS_M3.0_V3.0_PART_ONE", :access_code => "ins-que-birth-int-ehpbhipbs-m3-0-v3-0-part-one")
     survey_section = Factory(:survey_section, :survey_id => survey.id)

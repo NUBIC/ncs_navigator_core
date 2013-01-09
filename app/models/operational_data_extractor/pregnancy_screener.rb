@@ -8,6 +8,8 @@ module OperationalDataExtractor
 
     INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
 
+    PREG_SCREEN_HI_RACE_2 = "PREG_SCREEN_HI_RACE_2"
+
     ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
     CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG"
     CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_OTH"
@@ -90,6 +92,10 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.WEEKS_PREG"      => "WEEKS_PREG",
       "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
       "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "ORIG_DUE_DATE",
+    }
+    PERSON_RACE_MAP = {
+      "#{PREG_SCREEN_HI_RACE_2}.RACE"         => "race_code",
+      "#{PREG_SCREEN_HI_RACE_2}.RACE_OTH"     => "race_other"
     }
 
     def initialize(response_set)

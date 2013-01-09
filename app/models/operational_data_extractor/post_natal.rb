@@ -15,6 +15,8 @@ module OperationalDataExtractor
     EIGHTEEN_MONTH_MOTHER_SECTION_PREFIX = "EIGHTEEN_MTH_MOTHER"
     TWENTY_FOUR_MONTH_MOTHER_SECTION_PREFIX = "TWENTY_FOUR_MTH_MOTHER"
 
+    THREE_MONTH_MOTHER_RACE_PREFIX = "THREE_MTH_MOTHER_RACE"
+
     CHILD_PERSON_NAME_MAP = {
       "#{THREE_MONTH_CHILD_SECTION_PREFIX}.C_FNAME"       =>"first_name",
       "#{THREE_MONTH_CHILD_SECTION_PREFIX}.C_LNAME"       =>"last_name",
@@ -206,6 +208,11 @@ module OperationalDataExtractor
       "#{TWENTY_FOUR_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
     }
 
+    PERSON_RACE_MAP = {
+      "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE"  => "race_code",
+      "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH"  => "race_oth",
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -223,7 +230,8 @@ module OperationalDataExtractor
         CONTACT_2_PERSON_MAP,
         CONTACT_2_RELATIONSHIP_MAP,
         CONTACT_2_ADDRESS_MAP,
-        CONTACT_2_PHONE_MAP
+        CONTACT_2_PHONE_MAP,
+        PERSON_RACE_MAP
       ]
     end
 

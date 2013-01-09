@@ -584,4 +584,61 @@ describe OperationalDataExtractor::Base do
     end
 
   end
+
+  context "Processing PersonRace records" do
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+
+    before do
+      @person_race_map   = OperationalDataExtractor::Birth::PERSON_RACE_MAP
+
+      person = Factory(:person)
+      participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => participant, :person => person)
+      survey = create_birth_survey_with_person_race_operational_data
+      response_set, instrument = prepare_instrument(person, participant, survey)
+
+      take_survey(survey, response_set) do |a|
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH", "Chinese"
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Korean"
+      end
+
+      response_set.save!
+
+      @birth_extractor = OperationalDataExtractor::Birth.new(response_set)
+    end
+
+    describe "#process_person_race" do
+      it "generates a person_race record" do
+        pending
+      end
+    end
+
+    describe "#process_standard" do
+      it "populates a standard person_race record with responses" do
+        pending
+      end
+    end
+
+    describe "#process_new_type" do
+      it "populates a 'new' type person_race record with responses" do
+        pending
+      end
+    end
+
+    describe "#get_person_race" do
+      it "retrieves a person_race record if one exists" do
+        pending
+      end
+    end
+
+    describe "#finalize_person_race" do
+      it "saves the person_race record" do
+        pending
+      end
+    end
+  end
+
 end
