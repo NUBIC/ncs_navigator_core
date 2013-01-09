@@ -48,6 +48,21 @@ describe ContactLink do
 
   it { should validate_presence_of(:staff_id) }
 
+  describe "#contact_disposition" do
+
+    it "returns an empty string if event is blank" do
+      cl = Factory(:contact_link, :event => nil)
+      cl.contact_disposition.should == ""
+    end
+
+    # WIP - test other part of contact_disposition
+    # participant = Factory(:participant)
+    # person = Factory(:person)
+    # event = Factory(:event, :participant => participant)
+    # contact = Factory(:contact)
+
+  end
+
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
