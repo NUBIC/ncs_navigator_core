@@ -1647,6 +1647,9 @@ describe Participant do
   end
 
   describe '#advance' do
+    let!(:p) { Factory(:participant) }
+    let!(:pe) { Factory(:person) }
+
     describe 'in PBS' do
       around do |example|
         begin
@@ -1658,38 +1661,58 @@ describe Participant do
         end
       end
 
-      describe 'with an eligible participant who completed the eligibility screener' do
-        let!(:p) { Factory(:participant) }
-        let!(:pe) { Factory(:person) }
-        let!(:e) { Factory(:event, :participant => p, :event_type_code => 34, :event_end_date => Date.parse('2000-01-01')) }
-        let!(:c) { Factory(:contact) }
-        let(:psc) { double }
-        let(:events) { p.reload.events }
-        let(:success) { stub(:success? => true, :body => 'foo') }
+      describe 'with an eligible participant' do
         let(:pairs) do
-          [['pregnancy_visit_1', Date.today]]
+          [
+            ['pregnancy_visit_1', Date.today],
+            ['pregnancy_visit_2', Date.today]
+          ]
         end
 
         before do
-          psc.stub!(:schedule_next_segment => success,
-                    :unique_label_ideal_date_pairs_for_scheduled_segment => pairs,
-                    :cancel_collection_instruments => true,
-                    :cancel_non_matching_mdes_version_instruments => true)
-
           p.stub!(:eligible_for_pbs? => true)
           p.person = pe
-          ContactLink.create!(:contact => c, :event => e, :staff_id => 'foo')
           p.save!
-
-          p.advance(psc)
         end
 
-        it 'schedules Pregnancy Visit 1' do
-          events.first.event_type_code.should == 13
-        end
+        describe 'that completed the eligiblity screener' do
+          let!(:e) { Factory(:event, :participant => p, :event_type_code => 34, :event_end_date => Date.parse('2000-01-01')) }
+          let(:psc) { double }
+          let(:success) { stub(:success? => true, :body => 'foo') }
 
-        it 'schedules Pregnancy Visit 1 as an open event' do
-          events.first.event_end_date.should be_nil
+          before do
+            # These examples require that we be able to schedule an event.
+            # Participant#next_scheduled_event requires a contact, despite the
+            # name.
+            ContactLink.create!(:contact => Factory(:contact), :event => e)
+
+            # There's a bunch of PSC actions done when events are scheduled.
+            # However, the only ones we care about are:
+            #
+            # * schedule_next_segment, which must return success
+            # * unique_label_ideal_date_pairs_for_scheduled_segment, which
+            #   returns data used to schedule event placeholders
+            # 
+            # Everything else just needs to exist.
+            psc.stub!(:schedule_next_segment => success,
+                      :unique_label_ideal_date_pairs_for_scheduled_segment => pairs,
+                      :cancel_collection_instruments => true,
+                      :cancel_non_matching_mdes_version_instruments => true)
+
+            p.advance(psc)
+          end
+
+          def latest_event
+            p.events.order(:created_at).last
+          end
+
+          it 'schedules Pregnancy Visit 1' do
+            latest_event.event_type_code.should == 13
+          end
+
+          it 'schedules Pregnancy Visit 1 as an open event' do
+            latest_event.event_end_date.should be_nil
+          end
         end
       end
     end
