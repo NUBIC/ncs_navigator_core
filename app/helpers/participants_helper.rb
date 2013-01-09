@@ -60,6 +60,16 @@ module ParticipantsHelper
   private :remove_two_tier
 
   ##
+  # "Current Staff"
+  # The name of the user that is currently associated with the participant in the system
+  # @param[Participant]
+  # @return[String]
+  def current_staff(participant)
+   current_staff_id = participant.person.contact_links.last.try(:staff_id) unless participant.blank?
+   staff_name(current_staff_id)
+  end
+
+  ##
   # "Originating Staff"
   # The name of the user that initiated the participant in the system
   # (e.g. the person who administered the eligibility screener).

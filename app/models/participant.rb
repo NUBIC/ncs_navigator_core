@@ -1070,6 +1070,10 @@ class Participant < ActiveRecord::Base
     self.importer_mode_on = false
   end
 
+  def provider
+    NcsNavigatorCore.recruitment_strategy.pbs? ? self.person.provider : ""
+  end  
+
   comma do
 
     p_id 'Participant ID'
@@ -1081,6 +1085,7 @@ class Participant < ActiveRecord::Base
     person :suffix => 'Suffix'
     person :title => 'Title'
     ppg_status 'PPG Status'
+    provider 'Provider'
     person_dob 'Date of Birth'
     person :gender => 'Gender'
     person :age => 'Age'

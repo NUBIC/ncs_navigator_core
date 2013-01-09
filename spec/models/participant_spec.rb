@@ -329,6 +329,7 @@ describe Participant do
         person.suffix.to_s,
         person.title.to_s,
         participant.ppg_status.to_s,
+        participant.person.provider.to_s,
         participant.person_dob.to_s,
         participant.gender.to_s,
         person.age.to_s,
