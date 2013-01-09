@@ -31,8 +31,6 @@
 #  updated_at                :datetime
 #
 
-
-
 require 'spec_helper'
 
 require File.expand_path('../../shared/custom_recruitment_strategy', __FILE__)
@@ -1648,5 +1646,52 @@ describe Participant do
     it "returns the next scheduled event"
   end
 
-end
+  describe '#advance' do
+    describe 'in PBS' do
+      around do |example|
+        begin
+          old_strategy = NcsNavigatorCore.recruitment_strategy
+          NcsNavigatorCore.recruitment_strategy = ProviderBasedSubsample.new
+          example.call
+        ensure
+          NcsNavigatorCore.recruitment_strategy = old_strategy
+        end
+      end
 
+      describe 'with an eligible participant who completed the eligibility screener' do
+        let!(:p) { Factory(:participant) }
+        let!(:pe) { Factory(:person) }
+        let!(:e) { Factory(:event, :participant => p, :event_type_code => 34, :event_end_date => Date.parse('2000-01-01')) }
+        let!(:c) { Factory(:contact) }
+        let(:psc) { double }
+        let(:events) { p.reload.events }
+        let(:success) { stub(:success? => true, :body => 'foo') }
+        let(:pairs) do
+          [['pregnancy_visit_1', Date.today]]
+        end
+
+        before do
+          psc.stub!(:schedule_next_segment => success,
+                    :unique_label_ideal_date_pairs_for_scheduled_segment => pairs,
+                    :cancel_collection_instruments => true,
+                    :cancel_non_matching_mdes_version_instruments => true)
+
+          p.stub!(:eligible_for_pbs? => true)
+          p.person = pe
+          ContactLink.create!(:contact => c, :event => e, :staff_id => 'foo')
+          p.save!
+
+          p.advance(psc)
+        end
+
+        it 'schedules Pregnancy Visit 1' do
+          events.first.event_type_code.should == 13
+        end
+
+        it 'schedules Pregnancy Visit 1 as an open event' do
+          events.first.event_end_date.should be_nil
+        end
+      end
+    end
+  end
+end
