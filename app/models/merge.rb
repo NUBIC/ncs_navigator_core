@@ -144,10 +144,13 @@ class Merge < ActiveRecord::Base
       self.conflict_report = superposition.conflicts
       save(:validate => false)
 
-      # Sync PSC unless we're told to not do so.
       if self.class.sync_with_psc?
+        # Sync current state...
         superposition.prepare_for_sync(self)
         superposition.sync_with_psc
+
+        # ...and schedule new events.
+        superposition.advance_participant_schedules
         update_attribute(:synced_at, Time.now)
       else
         true
