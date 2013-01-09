@@ -89,7 +89,7 @@ describe ParticipantConsentsController do
           end
 
           describe "Informed Consent event" do
-            it "creates an Informed Consent Event record and associates it with the contact link" do
+            it "is created and associated with the contact link" do
               ic = Event.where(:participant_id => mother.id, :event_type_code => Event.informed_consent_code).first
               ic.should be_nil
 
@@ -98,6 +98,7 @@ describe ParticipantConsentsController do
 
               ic = Event.where(:participant_id => mother.id, :event_type_code => Event.informed_consent_code).last
               ic.should_not be_nil
+              ic.event_start_date.should_not be_blank
               ic_cl = ic.contact_links.first
               ic_cl.contact.should  == contact_link.contact
               ic_cl.staff_id.should == contact_link.staff_id

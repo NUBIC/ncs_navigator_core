@@ -177,11 +177,27 @@ class ParticipantConsentsController < ApplicationController
                                :event_type_code => Event.informed_consent_code,
                                :event_breakoff_code => NcsCode::NO,
                                :event_comment => comment,
+                               :event_start_date => determine_informed_consent_event_date(contact_link),
                                :event_repeat_key => 0)
           ContactLink.create(:event => event, :contact => contact,
                              :person => contact_link.person, :staff_id => contact_link.staff_id)
         end
       end
+    end
+
+    ##
+    # Determine a default start date for this event
+    # First check associated event, then check associated contact, then use today
+    # @param[ContactLink]
+    # @return[Date]
+    def determine_informed_consent_event_date(contact_link)
+      dt = Date.today
+      if !contact_link.contact.try(:contact_date).blank?
+        dt = contact_link.contact.try(:contact_date)
+      elsif !contact_link.event.try(:event_start_date).blank?
+        dt = contact_link.event.try(:event_start_date)
+      end
+      dt
     end
 
     ##
