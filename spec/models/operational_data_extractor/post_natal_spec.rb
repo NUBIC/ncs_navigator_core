@@ -156,4 +156,36 @@ describe OperationalDataExtractor::PostNatal do
 
   end
 
+  context "extracting race operational data" do
+
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+
+    before do
+      @person = Factory(:person)
+      participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => participant, :person => @person)
+      @survey = create_three_month_mother_int_part_two_survey_with_person_race_operational_data
+      @response_set, instrument = prepare_instrument(@person, participant, @survey)
+    end
+
+    describe "processing racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE", black_race
+          a.str "#{OperationalDataExtractor::PostNatal::THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH", "Korean"
+        end
+
+        OperationalDataExtractor::PostNatal.new(@response_set).extract_data
+      end
+
+      it "extracts racial data" do
+        extracted_person = Person.find(@person.id).races.first
+        extracted_person.race_code.should == 2
+        extracted_person.race_other.should == "Korean"
+      end
+    end
+
+  end
+
 end

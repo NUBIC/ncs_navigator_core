@@ -141,25 +141,25 @@ module OperationalDataExtractor
       mail_address = nil
       work_address = nil
       institution  = nil
+      person_race = nil
 
       process_person(PERSON_MAP)
 
-      child = process_child(CHILD_PERSON_MAP)
-
+      child        = process_child(CHILD_PERSON_MAP)
       mail_address = process_address(person, MAIL_ADDRESS_MAP, Address.mailing_address_type)
       work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
-
       phone        = process_telephone(person, TELEPHONE_MAP)
       home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
-
       email        = process_email(EMAIL_MAP)
       institution  = process_institution(INSTITUTION_MAP, response_set)
+      person_race  = process_person_race(PERSON_RACE_MAP)
 
       finalize_email(email)
       finalize_addresses(mail_address, work_address)
       finalize_telephones(cell_phone, home_phone, phone)
       finalize_institution(institution)
+      finalize_person_race(person_race)
 
       update_instrument_mode
 

@@ -664,7 +664,7 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     describe "#known_keys" do
       it "collects all the keys for the ODE maps" do
         ode = OperationalDataExtractor::PbsEligibilityScreener.new(@response_set)
-        ode.known_keys.size.should == 36
+        ode.known_keys.size.should == 42
       end
     end
 
@@ -768,5 +768,53 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
     end
 
+  end
+
+  context "extracting race operational data" do
+
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+
+    before do
+      @person = Factory(:person)
+      participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => participant, :person => @person)
+      @survey = create_pbs_eligibility_screener_survey_with_person_race_operational_data
+      @response_set, instrument = prepare_instrument(@person, participant, @survey)
+    end
+
+    describe "processing standard racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1", black_race
+          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH", "Korean"
+        end
+
+        OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+      end
+
+      it "extracts standard racial data" do
+        extracted_person = Person.find(@person.id).races.first
+        extracted_person.race_code.should == 2
+        extracted_person.race_other.should == "Korean"
+      end
+    end
+
+    describe "processing new type racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW", white_race
+          a.str "#{OperationalDataExtractor::PbsEligibilityScreener::PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW_OTH", "Chinese"
+        end
+
+        OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
+      end
+
+      it "extracts new type racial data" do
+        extracted_person = Person.find(@person.id).races.first
+        extracted_person.race_code.should == 1
+        extracted_person.race_other.should == "Chinese"
+      end
+    end
   end
 end

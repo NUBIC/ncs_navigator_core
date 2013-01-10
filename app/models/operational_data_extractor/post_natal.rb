@@ -210,7 +210,7 @@ module OperationalDataExtractor
 
     PERSON_RACE_MAP = {
       "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE"  => "race_code",
-      "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH"  => "race_oth",
+      "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH"  => "race_other",
     }
 
     def initialize(response_set)
@@ -249,6 +249,8 @@ module OperationalDataExtractor
       contact2address = nil
       contact2relationship = nil
 
+      person_race = nil
+
       if child
         process_child(CHILD_PERSON_NAME_MAP)
         process_child_dob(CHILD_PERSON_DATE_OF_BIRTH_MAP)
@@ -270,11 +272,14 @@ module OperationalDataExtractor
         contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
       end
 
+      person_race = process_person_race(PERSON_RACE_MAP)
+
       finalize_contact(contact1, contact1relationship, contact1address, contact1phone)
       finalize_contact(contact2, contact2relationship, contact2address, contact2phone)
 
       finalize_email(email)
       finalize_telephones(cell_phone)
+      finalize_person_race(person_race)
 
       child.save! if child
       participant.save!

@@ -313,6 +313,53 @@ describe OperationalDataExtractor::Birth do
       OperationalDataExtractor::Birth.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
     end
+  end
 
+  context "extracting race operational data" do
+
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+
+    before do
+      @person = Factory(:person)
+      participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => participant, :person => @person)
+      @survey = create_birth_survey_with_person_race_operational_data
+      @response_set, instrument = prepare_instrument(@person, participant, @survey)
+    end
+
+    describe "processing standard racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Korean"
+        end
+
+        OperationalDataExtractor::Birth.new(@response_set).extract_data
+      end
+
+      it "extracts standard racial data" do
+        extracted_person = Person.find(@person.id).races.first
+        extracted_person.race_code.should == 2
+        extracted_person.race_other.should == "Korean"
+      end
+    end
+
+    describe "processing new type racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+          a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH", "Chinese"
+        end
+
+        OperationalDataExtractor::Birth.new(@response_set).extract_data
+      end
+
+      it "extracts new type racial data" do
+        extracted_person = Person.find(@person.id).races.first
+        extracted_person.race_code.should == 1
+        extracted_person.race_other.should == "Chinese"
+      end
+    end
   end
 end
