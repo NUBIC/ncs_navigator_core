@@ -32,11 +32,6 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.AGE_RANGE_PBS"   => "age_range_code",
     }
 
-    PERSON_RACE_MAP = {
-      "#{INTERVIEW_PREFIX}.RACE_NEW"         => "race_code",
-      "#{INTERVIEW_PREFIX}.RACE_NEW_OTH"     => "race_other",
-    }
-
     PARTICIPANT_MAP = {
       "#{INTERVIEW_PREFIX}.AGE_ELIG"        => "pid_age_eligibility_code"
     }
@@ -86,9 +81,8 @@ module OperationalDataExtractor
     MODE_OF_CONTACT_MAP = {
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
-    PBS_ELIG_SCREENER_RACE_NEW_PREFIX = "PBS_ELIG_SCREENER_RACE_NEW"
 
-    PERSON_MAP = {
+    PERSON_RACE_MAP = {
       "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW" => "race_code",
       "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW_OTH" => "race_other",
       "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1" => "race_code",
