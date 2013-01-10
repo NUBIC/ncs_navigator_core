@@ -700,9 +700,6 @@ module OperationalDataExtractor
       institution
     end
 
-    def process_person_race
-    end
-
     def finalize_institution(institute)
       ActiveRecord::Base.transaction do
         unless institute.blank?
@@ -774,6 +771,57 @@ module OperationalDataExtractor
         relationship.participant_id = participant.id
         relationship.save!
       end
+    end
+
+    def get_person_race
+      person_race = PersonRace.where(:person_id => person).first
+      if person_race.nil?
+        person_race = PersonRace.new(:psu => person.psu, :person => person)
+      end
+      person_race
+    end
+
+    def process_person_race(person_race_map)
+      person_race = get_person_race
+
+      person_race_map.each do |key, attribute|
+        the_response = data_export_identifier_indexed_responses[key]
+        if the_response && key =~ /NEW/
+          value = response_value(the_response)
+          unless value.blank?
+            process_new_type_race(person_race, attribute, value)
+          end
+        elsif the_response && key !~ /NEW/
+          value = response_value(the_response)
+          unless value.blank?
+            process_standard_race(person_race, attribute, value)
+          end
+        end
+      end
+      person_race
+    end
+
+    def process_new_type_race(person_race, attribute, value)
+      standard_and_new_type_intersection = [-5, -1, -2, 1, 2, 3, 4]
+
+      if standard_and_new_type_intersection.include?(value) && value.class == Fixnum
+        set_value(person_race, attribute, value)
+      elsif value.class == Fixnum
+        person_race.race_code = -5
+        person_race.race_other = NcsCode.where(:list_name => "RACE_CL6", :local_code => value.to_i).first.display_text
+      else
+        person_race.race_other = value
+      end
+
+     person_race
+    end
+
+    def process_standard_race(person_race, attribute, value)
+      set_value(person_race, attribute, value)
+    end
+
+    def finalize_person_race(person_race)
+      person_race.save!
     end
 
   end

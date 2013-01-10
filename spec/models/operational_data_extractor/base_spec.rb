@@ -590,13 +590,13 @@ describe OperationalDataExtractor::Base do
     let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
 
     before do
-      @person_race_map   = OperationalDataExtractor::Birth::PERSON_RACE_MAP
+      @person_race_map = OperationalDataExtractor::Birth::PERSON_RACE_MAP
 
-      person = Factory(:person)
+      @person = Factory(:person)
       participant = Factory(:participant)
-      Factory(:participant_person_link, :participant => participant, :person => person)
+      Factory(:participant_person_link, :participant => participant, :person => @person)
       survey = create_birth_survey_with_person_race_operational_data
-      response_set, instrument = prepare_instrument(person, participant, survey)
+      response_set, instrument = prepare_instrument(@person, participant, survey)
 
       take_survey(survey, response_set) do |a|
         a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
@@ -611,32 +611,73 @@ describe OperationalDataExtractor::Base do
     end
 
     describe "#process_person_race" do
-      it "generates a person_race record" do
-        pending
+      it "returns a populated PersonRace record" do
+        @birth_extractor.process_person_race(@person_race_map).should be_instance_of(PersonRace)
       end
     end
 
-    describe "#process_standard" do
-      it "populates a standard person_race record with responses" do
-        pending
+    describe "#process_new_type_race" do
+      before do
+        @blank_person_race = Factory(:person_race, :race_code => nil)
+      end
+
+      context "when the response is part of the code list associated with the model (RACE_CL1 from MDES spreadsheet)" do
+
+        it "populates a 'new' type PersonRace race_code attribute with the code value" do
+          attribute = "race_code"
+          response = 3
+          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+          @blank_person_race.race_code.should == 3
+        end
+      end
+
+      context "when the record is not part of the code list associated with the model (RACE_CL1 from MDES spreadsheet)" do
+
+        it "populates a 'new' type PersonRace  race_code attribute with the code value for 'other' (-5)" do
+          attribute = "race_code"
+          response = 8
+          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+          @blank_person_race.race_code.should == -5
+        end
+
+        it "populates a 'new' type PersonRace  race_other attribute with the text value of the response" do
+          attribute = "race_code"
+          response = 8
+          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+          @blank_person_race.race_other.should == "Korean"
+        end
       end
     end
 
-    describe "#process_new_type" do
-      it "populates a 'new' type person_race record with responses" do
-        pending
+    describe "#process_standard_race" do
+      before do
+        @blank_person_race = Factory(:person_race, :race_code => nil)
+      end
+
+      it "populates a standard PersonRace record with responses" do
+        attribute = "race_code"
+        response = 1
+        @birth_extractor.process_standard_race(@blank_person_race, attribute, response)
+        @blank_person_race.race_code.should == 1
       end
     end
 
     describe "#get_person_race" do
-      it "retrieves a person_race record if one exists" do
-        pending
+      it "retrieves a PersonRace record if one exists" do
+        existing_person_race = Factory(:person_race, :race_code => white_race, :person => @person)
+        @birth_extractor.get_person_race.should eql(existing_person_race)
+      end
+
+      it "generates a new PersonRace record if one does not exist" do
+        @birth_extractor.get_person_race.should be_instance_of(PersonRace)
       end
     end
 
     describe "#finalize_person_race" do
-      it "saves the person_race record" do
-        pending
+      it "saves the PersonRace record" do
+        pr = PersonRace.new(:person_id => @person.id, :race_code => -5, :race_other => "Japanese")
+        @birth_extractor.finalize_person_race(pr)
+        PersonRace.count.should == 1
       end
     end
   end
