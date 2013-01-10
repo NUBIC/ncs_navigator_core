@@ -58,12 +58,9 @@
           = sort_link @q, "p_id", "Participant ID"
         %th
           Current PPG Status
-        %th
-          Provider
-        %th
-          Originating Staff
-        %th
-          Current Staff
+        - if recruitment_strategy.pbs?
+          %th
+            Provider
         %th
           Enrolled
         %th{ :colspan => "3" }
@@ -85,10 +82,6 @@
           - if recruitment_strategy.pbs?
             %td
               = participant.person.provider.name_practice unless participant.person.provider.blank?
-          %td
-            = participant_staff(participant)
-          %td
-            = staff_name(current_user.identifiers[:staff_id])
           %td
             = participant.enroll_status
           %td
