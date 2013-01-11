@@ -112,13 +112,6 @@ module OperationalDataExtractor
 
     def extract_data
 
-      ppg_detail   = nil
-      email        = nil
-      phone1       = nil
-      phone2       = nil
-      address      = nil
-      person_race  = nil
-
       process_person(PERSON_MAP)
       process_participant(PARTICIPANT_MAP)
 
@@ -185,7 +178,6 @@ module OperationalDataExtractor
 
     def calculated_due_date(response_set)
       # try due date first
-      ret = nil
       ret = due_date_response(response_set, "ORIG_DUE_DATE", INTERVIEW_PREFIX)
       ret = due_date_response(response_set, "DATE_PERIOD", INTERVIEW_PREFIX) unless ret
       ret

@@ -119,16 +119,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      ppg_detail   = nil
-      email        = nil
-      home_phone   = nil
-      cell_phone   = nil
-      phone        = nil
-      mail_address = nil
-      address      = nil
-      person_race  = nil
-
       process_person(PERSON_MAP)
       process_participant(PARTICIPANT_MAP)
 

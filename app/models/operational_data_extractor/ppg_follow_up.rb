@@ -71,15 +71,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      ppg_status_history = nil
-      home_phone         = nil
-      cell_phone         = nil
-      work_phone         = nil
-      other_phone        = nil
-      phone              = nil
-      email              = nil
-
       phone        = process_telephone(person, TELEPHONE_MAP)
       home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)

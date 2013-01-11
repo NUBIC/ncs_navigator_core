@@ -133,16 +133,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      email        = nil
-      home_phone   = nil
-      cell_phone   = nil
-      phone        = nil
-      mail_address = nil
-      work_address = nil
-      institution  = nil
-      person_race = nil
-
       process_person(PERSON_MAP)
 
       child        = process_child(CHILD_PERSON_MAP)

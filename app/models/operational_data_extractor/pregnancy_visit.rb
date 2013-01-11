@@ -344,27 +344,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      cell_phone           = nil
-      email                = nil
-      birth_address        = nil
-      contact1             = nil
-      contact1relationship = nil
-      contact1phone        = nil
-      contact1address      = nil
-      contact2             = nil
-      contact2relationship = nil
-      contact2phone        = nil
-      contact2address      = nil
-      father               = nil
-      father_phone         = nil
-      father_address       = nil
-      father_relationship  = nil
-      work_address         = nil
-      confirm_work_address = nil
-      institution          = nil
-      person_race          = nil
-
       process_person(PERSON_MAP)
       process_ppg_status(PPG_STATUS_MAP)
       cell_phone = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)

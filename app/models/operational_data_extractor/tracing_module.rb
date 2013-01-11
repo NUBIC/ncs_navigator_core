@@ -170,29 +170,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      email        = nil
-      home_phone   = nil
-      cell_phone   = nil
-      new_address  = nil
-      address      = nil
-
-      contact1             = nil
-      contact1relationship = nil
-      contact1phone        = nil
-      contact1phone2       = nil
-      contact1address      = nil
-      contact2             = nil
-      contact2relationship = nil
-      contact2phone        = nil
-      contact2phone2       = nil
-      contact2address      = nil
-      contact3             = nil
-      contact3relationship = nil
-      contact3phone        = nil
-      contact3phone2       = nil
-      contact3address      = nil
-
       address = process_address(person, ADDRESS_MAP, Address.home_address_type)
       new_address = process_address(person, NEW_ADDRESS_MAP, Address.home_address_type)
 

@@ -236,21 +236,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      email = nil
-      cell_phone = nil
-
-      contact1 = nil
-      contact1phone = nil
-      contact1address = nil
-      contact1relationship = nil
-
-      contact2 = nil
-      contact2phone = nil
-      contact2address = nil
-      contact2relationship = nil
-
-      person_race = nil
-
       if child
         process_child(CHILD_PERSON_NAME_MAP)
         process_child_dob(CHILD_PERSON_DATE_OF_BIRTH_MAP)
