@@ -15,13 +15,14 @@
 
   = render "shared/ncs_code_select", { :f => f, :code => :who_wthdrw_consent_code, :label_text => "Who Withdrew Consent" }
 
-%fieldset{ :class => 'participant_consent_reconsent' }
-  %legend
-    Reconsent
+- if mdes_version_is_after?(3.0)
+  %fieldset{ :class => 'participant_consent_reconsent' }
+    %legend
+      Reconsent
 
-  = render "shared/ncs_code_select", { :f => f, :code => :consent_reconsent_code, :label_text => "Is this consent a re-consent?" }
+    = render "shared/ncs_code_select", { :f => f, :code => :consent_reconsent_code, :label_text => "Is this consent a re-consent?" }
 
-  = render "shared/ncs_code_select", { :f => f, :code => :consent_reconsent_reason_code, :label_text => "Re-consent reason", :other => :consent_reconsent_reason_other }
+    = render "shared/ncs_code_select", { :f => f, :code => :consent_reconsent_reason_code, :label_text => "Re-consent reason", :other => :consent_reconsent_reason_other }
 
 %fieldset{ :class => 'participant_consent_meta' }
   %legend
