@@ -23,7 +23,7 @@
               :class => "edit_link icon_link"
           %td
             - if permit?(Role::FIELD_STAFF, Role::PHONE_STAFF)
-              = pbs_eligibility_screener_link(per)
+              = pbs_eligibility_screener_link(per, @provider.id)
 
   .links
     = link_to 'Add New Patient', new_provider_person_path(@provider), :class => "add_link icon_link"

@@ -18,6 +18,7 @@ class ContactsController < ApplicationController
                              :contact_date_date => Date.today,
                              :contact_start_time => Time.now.strftime("%H:%M"))
 
+    @provider_id = params[:provider_id]
     @event = event_for_person
     @requires_consent = @person.participant &&
                         @person.participant.consented? == false &&
@@ -36,7 +37,7 @@ class ContactsController < ApplicationController
     @contact = Contact.start(@person, params[:contact])
 
     @event = event_for_person
-
+    @provider = Provider.find(params[:provider_id]) if params[:provider_id]
     respond_to do |format|
       if @contact.save
         link = find_or_create_contact_link
@@ -243,7 +244,6 @@ class ContactsController < ApplicationController
                                 @contact, @person, @event).first
 
       staff_id = params["staff_id"].blank? ? current_staff_id : params["staff_id"]
-
       if link.blank?
         link = ContactLink.create(:contact => @contact,
                                   :person => @person,

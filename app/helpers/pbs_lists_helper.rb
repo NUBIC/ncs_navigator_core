@@ -9,10 +9,10 @@ module PbsListsHelper
     link_to 'Enter Recruitment Contact', recruit_provider_pbs_list_path(pbs)
   end
 
-  def pbs_eligibility_screener_link(person)
+  def pbs_eligibility_screener_link(person, provider_id = nil)
     if person.participant
       if person.participant.should_be_screened?
-        link_to "Continue Eligibility Screener", new_person_contact_path(person),
+        link_to "Continue Eligibility Screener", new_person_contact_path(person, :provider_id => provider_id),
           :class => "edit_link icon_link"
       else
         link_to "View Participant Record", participant_path(person.participant),
