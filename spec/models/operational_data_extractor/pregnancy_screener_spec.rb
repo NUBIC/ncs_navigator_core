@@ -712,7 +712,7 @@ describe OperationalDataExtractor::PregnancyScreener do
     describe "#known_keys" do
       it "collects all the keys for the ODE maps" do
         ode = OperationalDataExtractor::PregnancyScreener.new(@response_set)
-        ode.known_keys.size.should == 47
+        ode.known_keys.size.should == 49
       end
     end
 
@@ -758,6 +758,38 @@ describe OperationalDataExtractor::PregnancyScreener do
       participant = person.participant
       participant.due_date.should == ((Date.today + 280.days) - ((months_pregnant * 30) - 15)).to_date
 
+    end
+
+  end
+
+  context "extracting race operational data" do
+
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+
+    before do
+      @person = Factory(:person)
+      participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => participant, :person => @person)
+      @survey = create_pregnancy_screener_survey_with_race_operational_data
+      @response_set, instrument = prepare_instrument(@person, participant, @survey)
+    end
+
+    describe "processing racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", black_race
+          a.str "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH", "Korean"
+        end
+
+        OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
+      end
+
+      it "extracts racial data" do
+        extracted_person = Person.find(@person.id).races.first
+        extracted_person.race_code.should == 2
+        extracted_person.race_other.should == "Korean"
+      end
     end
 
   end

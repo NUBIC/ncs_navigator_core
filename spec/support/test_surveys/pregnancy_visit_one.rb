@@ -231,7 +231,7 @@ module PregnancyVisitOne
   end
 
   def create_pbs_pregnancy_visit_1_with_birth_address_operational_data
-    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhipbs-m3-0-v3-0_test")
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhipbs-m3-0-v3-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)
 
     # Address One
@@ -250,6 +250,29 @@ module PregnancyVisitOne
     # Zip
     q = Factory(:question, :reference_identifier => "B_ZIPCODE", :data_export_identifier => "PREG_VISIT_1_3.B_ZIPCODE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
+
+    survey
+  end
+
+  def create_pbs_pregnancy_visit_1_with_race_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_PregVisit1_INT_EHPBHIPBS_M3.0_V3.0", :access_code => "ins-que-pregvisit1-int-ehpbhipbs-m3-0-v3-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Race New
+    q = Factory(:question, :reference_identifier => "RACE_NEW", :data_export_identifier => "PREG_VISIT_1_RACE_NEW_3.RACE_NEW", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "White", :response_class => "answer", :reference_identifier => "1")
+
+    # Race New Other
+    q = Factory(:question, :reference_identifier => "RACE_NEW_OTH", :data_export_identifier => "PREG_VISIT_1_RACE_NEW_3.RACE_NEW_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Chinese", :response_class => "string")
+
+    # Race One
+    q = Factory(:question, :reference_identifier => "RACE_1", :data_export_identifier => "PREG_VISIT_1_RACE_1_3.RACE_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+
+    # Race One Other
+    q = Factory(:question, :reference_identifier => "RACE_1_OTH", :data_export_identifier => "PREG_VISIT_1_RACE_1_3.RACE_1_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
 
     survey
   end

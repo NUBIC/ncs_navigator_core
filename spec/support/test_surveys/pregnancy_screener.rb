@@ -170,6 +170,21 @@ module PregnancyScreener
     survey
   end
 
+  def create_pregnancy_screener_survey_with_race_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_M2.1_V2.1", :access_code => "ins-que-pregscreen-int-hili-m2-1-v2-1")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Race One
+    q = Factory(:question, :reference_identifier => "RACE", :data_export_identifier => "PREG_SCREEN_HI_RACE_2.RACE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+
+    # Race One Other
+    q = Factory(:question, :reference_identifier => "RACE_OTH", :data_export_identifier => "PREG_SCREEN_HI_RACE_2.RACE_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
+
+    survey
+  end
+
   def create_pregnancy_screener_survey_with_address_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PregScreen_INT_HILI_P2_V2.0", :access_code => "ins-que-pregscreen-int-hili-p2-v2-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)

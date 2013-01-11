@@ -363,6 +363,7 @@ module OperationalDataExtractor
       work_address         = nil
       confirm_work_address = nil
       institution          = nil
+      person_race          = nil
 
       process_person(PERSON_MAP)
       process_ppg_status(PPG_STATUS_MAP)
@@ -394,6 +395,8 @@ module OperationalDataExtractor
         father_phone = process_telephone(father, FATHER_PHONE_MAP)
       end
 
+      person_race = process_person_race(PERSON_RACE_MAP)
+
       set_due_date(DUE_DATE_DETERMINER_MAP)
 
       finalize_father(father, father_relationship, father_address, father_phone)
@@ -406,6 +409,8 @@ module OperationalDataExtractor
       finalize_addresses(birth_address, work_address, confirm_work_address)
       finalize_telephones(cell_phone)
       finalize_institution_with_birth_address(birth_address, institution)
+
+      finalize_person_race(person_race)
 
       if due_date = calculated_due_date(response_set)
         participant.ppg_details.first.update_due_date(due_date)
