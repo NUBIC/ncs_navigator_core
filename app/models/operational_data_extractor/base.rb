@@ -803,10 +803,11 @@ module OperationalDataExtractor
 
     def process_new_type_race(person_race, attribute, value)
       standard_and_new_type_intersection = [-5, -1, -2, 1, 2, 3, 4]
+      new_type_exclusive_values = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 
-      if standard_and_new_type_intersection.include?(value) && value.class == Fixnum
+      if standard_and_new_type_intersection.include?(value)
         set_value(person_race, attribute, value)
-      elsif value.class == Fixnum
+      elsif new_type_exclusive_values.include?(value)
         person_race.race_code = -5
         person_race.race_other = NcsCode.where(:list_name => "RACE_CL6", :local_code => value.to_i).first.display_text
       else
