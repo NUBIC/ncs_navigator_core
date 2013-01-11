@@ -65,6 +65,8 @@
         %th
           = sort_link @q, "event_event_type_code", "Event"
         %th
+          Instrument
+        %th
           Current Staff
 
       - @contact_links.each do |cl|
@@ -89,6 +91,8 @@
             = cl.contact_disposition
           %td
             = cl.event.event_type
+          %td
+            = cl.instrument
           %td
             = staff_name(cl.staff_id)
   = will_paginate @contact_links

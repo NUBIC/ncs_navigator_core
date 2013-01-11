@@ -76,10 +76,12 @@ class ContactLink < ActiveRecord::Base
     contact :contact_type => 'Contact Type', :contact_date_date => 'Contact Date'
     contact :contact_start_time => 'Start Time', :contact_end_time => 'End Time'
     person :first_name => 'First Name', :last_name => 'Last Name'
+    provider
     contact_disposition
     event :event_type => 'Event Type'
     event_disposition
     event :event_disposition_category => 'Event Disposition Category'
+    instrument "Intrument Type"
     contact :contact_comment => 'Contact Comment'
 
   end

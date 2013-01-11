@@ -48,21 +48,6 @@ describe ContactLink do
 
   it { should validate_presence_of(:staff_id) }
 
-  describe "#contact_disposition" do
-
-    it "returns an empty string if event is blank" do
-      cl = Factory(:contact_link, :event => nil)
-      cl.contact_disposition.should == ""
-    end
-
-    # WIP - test other part of contact_disposition
-    # participant = Factory(:participant)
-    # person = Factory(:person)
-    # event = Factory(:event, :participant => participant)
-    # contact = Factory(:contact)
-
-  end
-
   context "as mdes record" do
 
     it "sets the public_id to a uuid" do
@@ -82,5 +67,81 @@ describe ContactLink do
     link.participant.should == participant
   end
 
-end
+  describe "#contact_disposition" do
+
+    it "returns an empty string if event is blank" do
+      cl = Factory(:contact_link, :event => nil)
+      cl.contact_disposition.should == ""
+    end
+
+    describe "with the general study category" do
+
+      let(:general_study_cat) { NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3) }
+      let(:event) { Factory(:event, :event_disposition_category => general_study_cat) }
+
+      it "'Completed Consent/Interview in English' for disposition 60" do
+        contact = Factory(:contact, :contact_disposition => 60)
+        link = Factory(:contact_link, :event => event, :contact => contact)
+        link.contact_disposition.should == "Completed Consent/Interview in English"
+      end
+
+      describe "when DispositionMapper returns nil" do
+
+        describe "and the contact_disposition is nil" do
+          it "returns the contact_disposition" do
+            contact = Factory(:contact, :contact_disposition => nil)
+            link = Factory(:contact_link, :event => event, :contact => contact)
+            link.contact_disposition.should be_nil
+          end          
+        end
+
+        it "returns the contact_disposition" do
+          contact = Factory(:contact, :contact_disposition => 1234) # 1234 is not a valid disposition
+          link = Factory(:contact_link, :event => event, :contact => contact)
+          link.contact_disposition.should == 1234
+        end
+      end
+
+    end
+
+    describe "with no event_disposition_category set" do
+      it "returns the contact_disposition integer" do
+        event = Factory(:event, :event_disposition_category => nil)
+        contact = Factory(:contact, :contact_disposition => 60)
+        link = Factory(:contact_link, :event => event, :contact => contact)
+        link.contact_disposition.should == 60
+      end
+    end
+
+  end
+  
+  context "exporting as csv" do
+  
+    person = Factory(:person)
+    event = Factory(:event)
+    instrument = Factory(:instrument, :event => event)
+    contact = Factory(:contact)
+    link = Factory(:contact_link, :person => person, :event => event, :contact => contact)
+
+    it "renders in comma-separated value format" do
+
+    link.to_comma.should == [
+      link.contact.contact_type.to_s,
+      link.contact.contact_date_date.to_s,
+      link.contact.contact_start_time.to_s,
+      link.contact.contact_end_time.to_s,
+      link.person.first_name.to_s, 
+      link.person.last_name.to_s,
+      link.provider.to_s,
+      link.contact_disposition.to_s,
+      link.event.event_type.to_s,
+      link.event_disposition.to_s,
+      link.event.event_disposition_category.to_s,
+      link.instrument.to_s,
+      link.contact.contact_comment.to_s
+    ]
+    end
+
+  end
+end  
 
