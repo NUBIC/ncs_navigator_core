@@ -31,8 +31,6 @@
 #  updated_at                :datetime
 #
 
-
-
 # A Participant is a living Person who has provided Study data about her/himself or a NCS Child.
 # S/he may have been administered a variety of questionnaires or assessments, including household enumeration,
 # pregnancy screener, pregnancy questionnaire, etc. Once born, NCS-eligible babies are assigned Participant IDs.
@@ -155,7 +153,7 @@ class Participant < ActiveRecord::Base
 
   ##
   # State Machine used to manage relationship with Patient Study Calendar
-  # for the High Intensity, Enhanced Household, and Provider Based protocols
+  # for the High Intensity, Enhanced Household, Provider Based, and Provider Based Subsample protocols
   state_machine :high_intensity_state, :initial => :in_high_intensity_arm do
     store_audit_trail
     before_transition :log_state_change
@@ -166,6 +164,10 @@ class Participant < ActiveRecord::Base
 
     event :high_intensity_conversion do
       transition :in_high_intensity_arm => :converted_high_intensity
+    end
+
+    event :completed_pbs_eligibility_screener do
+      transition :converted_high_intensity => :pregnancy_one
     end
 
     event :non_pregnant_informed_consent do
@@ -414,6 +416,13 @@ class Participant < ActiveRecord::Base
     !self.children.blank?
   end
 
+  def advance(psc, event = events.last)
+    if self.pending_events.blank?
+      update_state_to_next_event(event)
+      Event.schedule_and_create_placeholder(psc, self)
+    end
+  end
+
   ##
   # The current pregnancy probability group status for this participant.
   #
@@ -518,16 +527,15 @@ class Participant < ActiveRecord::Base
   # 4. If there are no remaining pending events, schedule and create placeholder for the next event
   def mark_event_out_of_window(psc, event)
     resp = nil
+
     if event
       event.mark_out_of_window
       event.close!
       event.cancel_activities(psc, "Missed Event - Out of Window")
-      #set_state_for_event_type(event) if event.event_type_code != 32
-      if self.pending_events.blank?
-        update_state_to_next_event(event)
-        resp = Event.schedule_and_create_placeholder(psc, self)
-      end
+
+      resp = advance(psc, event)
     end
+
     resp
   end
 
@@ -537,8 +545,11 @@ class Participant < ActiveRecord::Base
     case event.event_type.local_code
     when 4, 5, 6, 9, 29, 34
       # Pregnancy Screener Events or PBS Eligibility Screener
-      assign_to_pregnancy_probability_group! if can_assign_to_pregnancy_probability_group?
-
+      if NcsNavigatorCore.recruitment_strategy.pbs?
+        completed_pbs_eligibility_screener!
+      elsif can_assign_to_pregnancy_probability_group?
+        assign_to_pregnancy_probability_group!
+      end
     when 10
       # Informed Consent
       low_intensity_consent! if can_low_intensity_consent?
@@ -1351,4 +1362,3 @@ class Participant < ActiveRecord::Base
       end
     end
 end
-
