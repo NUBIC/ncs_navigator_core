@@ -333,11 +333,11 @@ module NcsNavigator::Core::Warehouse
         end
 
         updates = psc_event[:scheduled_activities].select { |sa_id|
-          %w(scheduled conditional).include?(all_sas[sa_id]['current_state']['name'])
+          all_sas[sa_id].open?
         }.collect { |sa_id| all_sas[sa_id] }.inject({}) do |u, sa|
-          u[sa['id']] = {
+          u[sa.activity_id] = {
             'date' => event_details['end_date'],
-            'state' => sa['current_state']['name'] == 'conditional' ? 'NA' : 'canceled',
+            'state' => sa.current_state == 'conditional' ? 'NA' : 'canceled',
             'reason' => "Imported closed event #{closed_event_id}."
           }
           u
