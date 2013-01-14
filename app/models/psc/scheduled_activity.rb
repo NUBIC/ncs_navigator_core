@@ -151,6 +151,15 @@ module Psc
     OCCURRED    = 'occurred'
     SCHEDULED   = 'scheduled'
 
+    ACTIVITY_STATES = [
+      CANCELED,
+      CONDITIONAL,
+      MISSED,
+      NA,
+      OCCURRED,
+      SCHEDULED
+    ]
+
     attr_reader :contact
     attr_reader :contact_link
     attr_reader :event

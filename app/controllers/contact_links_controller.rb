@@ -182,6 +182,16 @@ class ContactLinksController < ApplicationController
     end
   end
 
+  def update_psc_for_activity
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    psc.update_activity_state(params[:activity_id],
+      @contact_link.event.participant,
+      params[:new_state],
+      @contact_link.contact.contact_date,
+      "Updated by #{current_username} through UI")
+    redirect_to request.referrer
+  end
+
   private
 
     def set_time_and_dates(include_instrument = false)

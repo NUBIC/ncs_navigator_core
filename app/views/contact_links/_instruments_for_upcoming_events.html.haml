@@ -25,9 +25,10 @@
       = blank_safe(@person.to_s)
       is not a participant. No instruments exist for non participants.
   - else
-    - if !@activities_for_event.blank?
-      - @activities_for_event.each do |sa|
-        - next unless sa.scheduled?
-        = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
-    - else
-      = render "consent_or_empty", :contact_link => @contact_link
+    .activity_list_for_event
+      - if !@activities_for_event.blank?
+        - @activities_for_event.each do |sa|
+          - next unless sa.scheduled?
+          = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
+      - else
+        = render "consent_or_empty", :contact_link => @contact_link

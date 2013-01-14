@@ -208,6 +208,8 @@ NcsNavigatorCore::Application.routes.draw do
     end
   end
 
+  match "/contact_links/update_psc_for_activity", :to => "contact_links#update_psc_for_activity", :via => [:post]
+
   match "/faq", :to => "welcome#faq", :via => [:get]
   match "/reports", :to => "reports#index", :via => [:get]
   match "/reports/index", :to => "reports#index", :via => [:get]
