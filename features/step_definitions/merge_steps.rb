@@ -67,17 +67,40 @@ Given /^the surveys$/ do |table|
     str = %Q{
       survey '#{h['title']}', :instrument_version => '#{version}' do
         section 'Questions' do
-          q 'Question 1'
+          q_1 'Question 1'
           a_1 :string
-          q 'Question 2'
+          q_2 'Question 2'
           a_1 :string
-          q 'Question 3'
+          q_3 'Question 3'
           a_1 :string
         end
       end
     }
 
     Surveyor::Parser.new.parse(str)
+  end
+end
+
+Given /^the instrument$/ do
+  @instrument = Instrument.start(@person, @p, @survey, @survey, @event, Instrument.cati)
+  @instrument.save!
+
+  link = @instrument.link_to(@person, Contact.create!, @event, 'abc')
+  link.save!
+end
+
+Given /^the responses$/ do |table|
+  responses_attrs = table.raw.inject({}) do |memo, raw| 
+    idx, k = raw[0].split('/')
+    (memo[idx] ||= {}).merge!(k => raw[1])
+    memo
+  end.values
+
+  responses_attrs.each do |r| 
+    ResponseSet.last.responses.create!(
+      :question => Question.where(:reference_identifier => r['qref']).first, 
+      :answer => Question.where(:reference_identifier => r['qref']).first.answers.where(:reference_identifier => r['aref']).first,
+      :string_value => r['string_value'])
   end
 end
 
@@ -112,7 +135,8 @@ Given /^I complete the fieldwork set$/ do |table|
     'response_set_id' => ResponseSet.last.try(:api_id),
     'survey_id' => Survey.last.try(:api_id),
     'question_ids' => Question.all.map(&:api_id),
-    'answer_ids' => Answer.all.map(&:api_id)
+    'answer_ids' => Answer.all.map(&:api_id),
+    'response_ids' => Response.all.map(&:api_id)
   )
 
   fieldwork_data = ERB.new(File.read(data_file)).result(binding)
@@ -124,7 +148,7 @@ end
 When /^the merge runs$/ do
   NcsNavigator::Core::Field::MergeWorker.drain
 
-  if @logdev.string =~ /error|fatal/i
+  if @logdev.string =~ /(error|fatal) --/i
     puts @logdev.string
     raise 'Merge failed; see above log'
   end

@@ -64,6 +64,46 @@ Feature: Merging data from field clients
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
 
+  Scenario: A new participants PV1 responses are stored when an existing participants responses exist for the same survey 
+    Given the participant
+      | person/first_name | Bessie              |
+      | person/last_name  | Smith               |
+      | person/person_id  | registered_with_psc |
+      | p_id              | abc-123-wxyz        |
+    And the event
+      | event_id         | 883d5830-91ed-4dd4-9303-903eee737082 |
+      | event_type       | Pregnancy Visit 2                    |
+      | event_start_date | 2005-07-15                           |
+    And the survey
+      | title              | pregnancy_survey_v1.0 |
+      | instrument_version | 1.0                   |
+    And the instrument
+    And the responses
+      | 0/qref         | 1   |
+      | 0/aref         | 1   |
+      | 0/string_value | Joe |
+    And I complete the fieldwork set
+      | start_date        | 2005-07-01 |
+      | end_date          | 2005-07-30 |
+      | client_id         | 1234567890 |
+      | person/first_name | Bessie     |
+      | person/last_name  | Smith      |
+      | with              | existing_and_new_participant.json.erb |
+
+    When the merge runs
+    And I go to the participant page
+    Then I should see "April Showers"
+
+    # event name
+    And I should see "Pregnancy Visit 2"
+
+    # instrument name
+    And I should see "pregnancy_survey_v1.0"
+
+    # check responses
+    When I follow "pregnancy_survey_v1.0"
+    Then the "r_1_string_value" field should contain "Joe"
+
   @wip
   Scenario: New contacts can be linked to new events without instruments
     When I complete the fieldwork set
