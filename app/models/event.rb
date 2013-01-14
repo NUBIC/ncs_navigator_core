@@ -266,13 +266,11 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # An event is 'closed' or 'completed' if its end date is set.
+  # An event is 'closed' if its end date is set.
   # @return [true, false]
   def closed?
     !open?
   end
-  alias completed? closed?
-  alias complete? closed?
 
   ##
   # An event is 'open' if its end date is NOT set.
