@@ -402,11 +402,14 @@ module NcsNavigator::Core::Warehouse
     SUBTASK_MSG_LEN = 70
 
     def say_subtask_message(message)
-      if message.size > SUBTASK_MSG_LEN
-        message = message[0, SUBTASK_MSG_LEN - 1] + '*'
-      end
+      shell_message = if message.size > SUBTASK_MSG_LEN
+                        message[0, SUBTASK_MSG_LEN - 1] + '*'
+                      else
+                        message
+                      end
+
       log.info(message)
-      shell.back_up_and_say(SUBTASK_MSG_LEN, "%-#{SUBTASK_MSG_LEN}s" % message)
+      shell.back_up_and_say(SUBTASK_MSG_LEN, "%-#{SUBTASK_MSG_LEN}s" % shell_message)
     end
 
     attr_reader :participants
