@@ -52,7 +52,7 @@
                       Disposition
                     %th
                       Continue
-                  - event.contact_links.map(&:contact).uniq.each do |contact|
+                  - event.contact_links.map(&:contact).uniq.sort_by{ |c| c.contact_date.to_s }.each do |contact|
                     - cl = contact.contact_links.last
                     - cls = cycle('even_record', 'odd_record')
                     %tr{ :class => cls }
