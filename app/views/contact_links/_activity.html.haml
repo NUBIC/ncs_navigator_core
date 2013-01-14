@@ -1,6 +1,7 @@
 - if contact_link.contact.instrument_survey_titles.include?(survey.title)
   %div{ :class => "known_instrument", :title => survey.title}
     = activity.activity_name
+  = render "activity_psc_action", :activity => activity
 - elsif @current_activity == activity
   %div{ :class => "instrument", :title => survey.title}
     = link_to activity.activity_name,
@@ -9,6 +10,7 @@
                                              :survey_access_code => survey.access_code,
                                              :contact_link_id => contact_link.id),
         :class => "star_link icon_link"
+    = render "activity_psc_action", :activity => activity
 - else
   %div{ :class => "instrument", :title => survey.title}
     %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}

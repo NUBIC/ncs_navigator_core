@@ -131,4 +131,15 @@ module ParticipantsHelper
   end
   private :screener_event
 
+  def psc_activity_options(activity)
+    opts = ""
+    Psc::ScheduledActivity::ACTIVITY_STATES.each do |a|
+      opts << "<option value=\"#{a}\""
+      opts << " selected=\"selected\"" if activity.current_state == a
+      txt = a == Psc::ScheduledActivity::NA ? "N/A" : a.titleize
+      opts << ">#{txt}</option>"
+    end
+    opts.html_safe
+  end
+
 end
