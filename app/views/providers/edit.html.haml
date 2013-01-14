@@ -8,12 +8,13 @@
     %b
       Other MDES Records associated with Provider
     %ul
-      %li
-        = link_to 'View Provider PBS List Record', pbs_list_path(@provider.pbs_list),
-          :class => "show_link icon_link"
-      %li
-        = link_to 'Edit Provider PBS List Record', edit_pbs_list_path(@provider.pbs_list),
-          :class => "edit_link icon_link"
+      - if @provider.pbs_list
+        %li
+          = link_to 'View Provider PBS List Record', pbs_list_path(@provider.pbs_list),
+            :class => "show_link icon_link"
+        %li
+          = link_to 'Edit Provider PBS List Record', edit_pbs_list_path(@provider.pbs_list),
+            :class => "edit_link icon_link"
       %li
         - if @provider.institution
           = link_to 'Edit Provider Institution Record', edit_institution_path(@provider.institution),
