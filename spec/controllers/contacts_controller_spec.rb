@@ -63,6 +63,36 @@ describe ContactsController do
         end
       end
 
+      describe "POST 'Create'" do
+
+        before(:each) do
+          Person.stub!(:find).and_return(@person)
+          @contact = Factory(:contact)
+          Contact.stub!(:start).and_return(@contact)
+          params = {:participant => @participant,:event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code,  :event_start_date => Date.parse("2525-02-01")}
+          @event = Factory(:event, params)
+          Event.stub(:event_for_person).and_return(@event)
+          @provider = Factory(:provider)
+          @staff_id = login(user_login)          
+        end
+
+        it "creates a new Contact_link if contact_link doesn't exist" do
+          if ContactLink.count == 0
+          expect{
+          post :create, contact_link: Factory.attributes_for(:contact_link, :contact => @contact, :person => @person, :event => @event, :provider=> @provider, :staff_id => @staff_id)
+          }.to change(ContactLink,:count).by(1)
+          end
+        end
+        
+        let(:contact_link) { mock_model(ContactLink, :contact_id => 1, :person_id => 2, :event_id => 3)}
+        it "does not create a new Contact_link if contact_link exists" do
+          if ContactLink.count == 1
+          Factory.build(:contact_link, :contact_id => 1, :person_id => 2, :event_id => 3).should_not be_new_record
+          end
+        end    
+
+      end
+
       describe "GET edit" do
 
         before(:each) do
@@ -138,10 +168,7 @@ describe ContactsController do
         end
       end
 
-
     end
-
-
 
     context "for a low_intensity_ppg2_participant" do
       let(:date) { Date.parse("2525-02-01") }
