@@ -239,7 +239,7 @@ describe Event do
       end
 
       it "knows if it is complete" do
-        (540..545).each do |complete_code|
+        (40..45).each do |complete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
@@ -247,7 +247,7 @@ describe Event do
       end
 
       it "knows if it is not complete" do
-        [510, 515, 546, 539].each do |incomplete_code|
+        [10, 15, 46, 39].each do |incomplete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
@@ -262,7 +262,7 @@ describe Event do
       end
 
       it "knows if it is complete" do
-        (560..565).each do |complete_code|
+        (60..65).each do |complete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
@@ -270,7 +270,7 @@ describe Event do
       end
 
       it "knows if it is not complete" do
-        [510, 515, 566, 559].each do |incomplete_code|
+        [10, 15, 66, 59].each do |incomplete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
@@ -285,7 +285,7 @@ describe Event do
       end
 
       it "knows if it is complete" do
-        (560..562).each do |complete_code|
+        (60..62).each do |complete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
@@ -293,7 +293,7 @@ describe Event do
       end
 
       it "knows if it is not complete" do
-        [510, 515, 563, 559].each do |incomplete_code|
+        [10, 15, 63, 59].each do |incomplete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
@@ -308,7 +308,7 @@ describe Event do
       end
 
       it "knows if it is complete" do
-        (550..556).each do |complete_code|
+        (50..56).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat,
             :event_disposition => complete_code)
           event.should be_disposition_complete
@@ -316,7 +316,7 @@ describe Event do
       end
 
       it "knows if it is not complete" do
-        [510, 515, 549, 557].each do |incomplete_code|
+        [10, 15, 49, 57].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat,
             :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
@@ -330,7 +330,7 @@ describe Event do
       end
 
       it "knows if it is complete" do
-        (590..595).each do |complete_code|
+        (90..95).each do |complete_code|
           event = Factory(:event, :event_disposition_category => @cat,
             :event_disposition => complete_code)
           event.should be_disposition_complete
@@ -338,7 +338,7 @@ describe Event do
       end
 
       it "knows if it is not complete" do
-        [510, 515, 589, 596].each do |incomplete_code|
+        [10, 15, 89, 96].each do |incomplete_code|
           event = Factory(:event, :event_disposition_category => @cat,
             :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
@@ -352,7 +352,7 @@ describe Event do
       end
 
       it "knows if it is complete" do
-        (540..546).each do |complete_code|
+        (40..46).each do |complete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => complete_code)
           event.should be_disposition_complete
@@ -360,7 +360,7 @@ describe Event do
       end
 
       it "knows if it is not complete" do
-        [510, 515, 539, 547].each do |incomplete_code|
+        [10, 15, 39, 47].each do |incomplete_code|
           event = Factory(:event,
             :event_disposition_category => @cat, :event_disposition => incomplete_code)
           event.should_not be_disposition_complete
