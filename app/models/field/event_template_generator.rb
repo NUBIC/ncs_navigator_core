@@ -163,7 +163,7 @@ module Field
           end
 
           refs.each do |ref|
-            h[event_label] << ResponseTemplate.new(ref['aref'].to_s, ref['qref'].to_s, survey_id, ref['value'])
+            h[event_label] << ResponseTemplate.new(ref['aref'], ref['qref'], survey_id, ref['value'])
           end
         end
       end

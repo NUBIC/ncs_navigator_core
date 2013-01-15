@@ -79,15 +79,16 @@ module NcsNavigator::Core::Warehouse
         ]
       }
 
-      let(:scheduled_activities) {
+      let(:scheduled_activities) do
         {
-          'sa1' => {
-            'id' => 'sa1',
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_1'
-          }
+          'sa1' => Psc::ScheduledActivity.new(
+            :activity_id => 'sa1',
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_1'
+          )
         }
-      }
+      end
+
 
       before do
         psc_participant.stub!(:registered?).and_return(true)
@@ -597,22 +598,22 @@ module NcsNavigator::Core::Warehouse
 
       let(:scheduled_activities) {
         {
-          'sa1' => {
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_1'
-          },
-          'sa2' => {
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_2'
-          },
-          'sa3' => {
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
-          },
-          'sa4' => {
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_1'
-          }
+          'sa1' => Psc::ScheduledActivity.new(
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_1'
+          ),
+          'sa2' => Psc::ScheduledActivity.new(
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_2'
+          ),
+          'sa3' => Psc::ScheduledActivity.new(
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
+          ),
+          'sa4' => Psc::ScheduledActivity.new(
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_1'
+          )
         }
       }
 
@@ -669,21 +670,21 @@ module NcsNavigator::Core::Warehouse
 
       let(:scheduled_activities) {
         {
-          'sa1' => {
-            'id' => 'sa1',
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_1'
-          },
-          'sa2' => {
-            'id' => 'sa2',
-            'current_state' => { 'name' => 'scheduled' },
-            'labels' => 'event:pregnancy_visit_2'
-          },
-          'sa3' => {
-            'id' => 'sa3',
-            'current_state' => { 'name' => 'occurred' },
-            'labels' => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
-          },
+          'sa1' => Psc::ScheduledActivity.new(
+            :activity_id => 'sa1',
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_1'
+          ),
+          'sa2' => Psc::ScheduledActivity.new(
+            :activity_id => 'sa2',
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_2'
+          ),
+          'sa3' => Psc::ScheduledActivity.new(
+            :activity_id => 'sa3',
+            :current_state => 'occurred',
+            :labels => 'event:pregnancy_visit_1 instrument:2.0:ins_que_pregvisit1_int_ehpbhi_p2_v2.0'
+          )
         }
       }
 
@@ -714,7 +715,7 @@ module NcsNavigator::Core::Warehouse
         'conditional' => 'NA',
       }.each do |in_state, out_state|
         it "makes a '#{in_state}' activity '#{out_state}'" do
-          scheduled_activities['sa1']['current_state']['name'] = in_state
+          scheduled_activities['sa1'].current_state = in_state
 
           psc_participant.should_receive(:update_scheduled_activity_states).once.with({
               'sa1' => {
@@ -730,7 +731,7 @@ module NcsNavigator::Core::Warehouse
 
       %w(occurred canceled missed NA).each do |closed_state|
         it "does not change the state of a '#{closed_state}' activity" do
-          scheduled_activities['sa1']['current_state']['name'] = closed_state
+          scheduled_activities['sa1'].current_state = closed_state
 
           psc_participant.should_not_receive(:update_scheduled_activity_states)
 

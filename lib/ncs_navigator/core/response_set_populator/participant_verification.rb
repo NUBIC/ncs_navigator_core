@@ -155,7 +155,7 @@ module NcsNavigator::Core::ResponseSetPopulator
         pv1_events = person.contact_links.select do |cl|
           cl.event.try(:event_type_code) == 13
         end.map(&:event).uniq
-        ri = pv1_events.last && !pv1_events.last.try(:disposition_complete?)
+        ri = pv1_events.last && !pv1_events.last.try(:completed?)
       end
       answer_for(question, ri)
     end

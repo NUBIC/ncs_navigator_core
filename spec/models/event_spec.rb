@@ -231,143 +231,48 @@ describe Event do
     end
   end
 
-  context "disposition" do
+  describe '#completed?' do
+    categories = {
+      1 => 'Household Enumeration',
+      2 => 'Pregnancy Screener',
+      3 => 'General Study',
+      4 => 'Mailed Back SAQ',
+      5 => 'Telephone Interview',
+      6 => 'Internet Survey'
+    }
 
-    describe "household enumeration" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 1)
-      end
+    table = {
+      1 => { :complete => [40, 45], :incomplete => [10, 15, 46, 39] },
+      2 => { :complete => (60..65), :incomplete => [10, 15, 66, 59] },
+      3 => { :complete => (60..62), :incomplete => [10, 15, 63, 59] },
+      4 => { :complete => (50..56), :incomplete => [10, 15, 49, 57] },
+      5 => { :complete => (90..95), :incomplete => [10, 15, 89, 96] },
+      6 => { :complete => (40..46), :incomplete => [10, 15, 39, 47] }
+    }
 
-      it "knows if it is complete" do
-        (540..545).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
+    table.each do |num, spec|
+      describe "for #{categories[num]} disposition codes" do
+        let(:category) do
+          NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', num)
         end
-      end
 
-      it "knows if it is not complete" do
-        [510, 515, 546, 539].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
+        spec[:complete].each do |code|
+          it "returns true for code #{code}" do
+            event = Event.new(:event_disposition_category => category, :event_disposition => code)
+
+            event.should be_completed
+          end
         end
-      end
 
-    end
+        spec[:incomplete].each do |code|
+          it "returns false for code #{code}" do
+            event = Event.new(:event_disposition_category => category, :event_disposition => code)
 
-    describe "pregnancy screener" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
-      end
-
-      it "knows if it is complete" do
-        (560..565).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [510, 515, 566, 559].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-
-    end
-
-    describe "general study" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
-      end
-
-      it "knows if it is complete" do
-        (560..562).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [510, 515, 563, 559].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-
-    end
-
-    describe "mailed back saq" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 4)
-      end
-
-      it "knows if it is complete" do
-        (550..556).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [510, 515, 549, 557].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
+            event.should_not be_completed
+          end
         end
       end
     end
-
-    describe "telephone interview" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 5)
-      end
-
-      it "knows if it is complete" do
-        (590..595).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [510, 515, 589, 596].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-    end
-
-    describe "internet survey" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 6)
-      end
-
-      it "knows if it is complete" do
-        (540..546).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [510, 515, 539, 547].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-    end
-
   end
 
   describe '.TYPE_ORDER' do
@@ -856,6 +761,34 @@ describe Event do
         sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'foo'),
         sa(:labels => ['event:pregnancy_visit_1'], :ideal_date => '2012-01-01', :activity_id => 'bar')
       ]
+    end
+  end
+
+  describe '#disposition_code' do
+    let(:version) { NcsNavigator::Core::Mdes::Version.new('3.1') }
+    let(:spec) { version.specification }
+    let(:code) { spec.disposition_codes.first }
+
+    describe 'example' do
+      it 'uses a non-nil code' do
+        code.should_not be_nil
+      end
+    end
+
+    around do |example|
+      begin
+        old_version = NcsNavigatorCore.mdes_version
+        NcsNavigatorCore.mdes_version = version
+        example.call
+      ensure
+        NcsNavigatorCore.mdes_version = old_version
+      end
+    end
+
+    it "returns the disposition code for the event's category and interim codes" do
+      event = Event.new(:event_disposition => code.interim_code.to_i, :event_disposition_category_code => code.category_code.to_i)
+
+      event.disposition_code.should == code
     end
   end
 

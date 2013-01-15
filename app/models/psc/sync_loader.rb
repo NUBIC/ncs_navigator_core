@@ -48,6 +48,7 @@ module Psc
       sort_key = "#{event.event_start_date}:#{'%03d' % event.event_type_code.to_s}"
 
       redis.hmset(ekey,
+                  'completed', event.completed?,
                   'end_date', event.event_end_date,
                   'event_id', event.public_id,
                   'event_type_code', event.event_type_code,

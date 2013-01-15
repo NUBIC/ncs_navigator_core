@@ -93,6 +93,12 @@ module Psc
         cached_event['event_type_label'].should == e.label
       end
 
+      it "records whether the event is completed" do
+        e.stub!(:completed? => true)
+
+        cached_event['completed'].should be_true
+      end
+
       describe 'if the participant is on the low-intensity arm' do
         before do
           p.stub!(:low_intensity? => true)

@@ -333,11 +333,11 @@ module NcsNavigator::Core::Warehouse
         end
 
         updates = psc_event[:scheduled_activities].select { |sa_id|
-          %w(scheduled conditional).include?(all_sas[sa_id]['current_state']['name'])
+          all_sas[sa_id].open?
         }.collect { |sa_id| all_sas[sa_id] }.inject({}) do |u, sa|
-          u[sa['id']] = {
+          u[sa.activity_id] = {
             'date' => event_details['end_date'],
-            'state' => sa['current_state']['name'] == 'conditional' ? 'NA' : 'canceled',
+            'state' => sa.current_state == 'conditional' ? 'NA' : 'canceled',
             'reason' => "Imported closed event #{closed_event_id}."
           }
           u
@@ -402,11 +402,14 @@ module NcsNavigator::Core::Warehouse
     SUBTASK_MSG_LEN = 70
 
     def say_subtask_message(message)
-      if message.size > SUBTASK_MSG_LEN
-        message = message[0, SUBTASK_MSG_LEN - 1] + '*'
-      end
+      shell_message = if message.size > SUBTASK_MSG_LEN
+                        message[0, SUBTASK_MSG_LEN - 1] + '*'
+                      else
+                        message
+                      end
+
       log.info(message)
-      shell.back_up_and_say(SUBTASK_MSG_LEN, "%-#{SUBTASK_MSG_LEN}s" % message)
+      shell.back_up_and_say(SUBTASK_MSG_LEN, "%-#{SUBTASK_MSG_LEN}s" % shell_message)
     end
 
     attr_reader :participants
