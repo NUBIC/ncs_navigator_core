@@ -1,4 +1,4 @@
-@merge
+@merge @fieldwork
 Feature: Merging data from field clients
   In order to collect data in the field
   Field workers
@@ -29,9 +29,9 @@ Feature: Merging data from field clients
       | event_id         | 883d5830-91ed-4dd4-9303-903eee737082 |
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2005-07-15                           |
-    And the survey
-      | title              | pregnancy_survey_v1.0 |
-      | instrument_version | 1.0                   |
+    And the surveys
+      | instrument_version | title                 |
+      | 1.0                | pregnancy_survey_v1.0 |
     And I complete the fieldwork set
       | start_date | 2005-07-01         |
       | end_date   | 2005-07-30         |
@@ -99,9 +99,9 @@ Feature: Merging data from field clients
       | event_id         | 883d5830-91ed-4dd4-9303-903eee737082 |
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2005-07-15                           |
-    And the survey
-      | title              | pregnancy_survey_v1.0 |
-      | instrument_version | 1.0                   |
+    And the surveys
+      | instrument_version | title                 |
+      | 1.0                | pregnancy_survey_v1.0 |
     And I complete the fieldwork set
       | start_date | 2005-07-01                 |
       | end_date   | 2005-07-30                 |

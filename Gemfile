@@ -95,6 +95,7 @@ group :test, :ci do
   # See https://github.com/bmabey/database_cleaner/pull/119
   gem 'database_cleaner',
     :git => 'git://github.com/rsutphin/database_cleaner.git', :branch => 'dm-pg-single-trunc'
+  gem 'hana'
   gem 'shoulda'
   gem 'factory_girl', '~> 2.6'
   gem 'simplecov', :require => false

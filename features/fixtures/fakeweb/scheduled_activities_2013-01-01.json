@@ -1,0 +1,65 @@
+{
+    "filters": {
+        "end_date": "2013-01-01",
+        "start_date": "2013-01-07",
+        "states": [
+            "Scheduled"
+        ]
+    },
+    "rows": [
+        {
+            "activity_name": "Pregnancy Probability Group Follow-Up Interview",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "c60ccc51-e5c1-4f79-8aa1-a14789a4631e",
+            "ideal_date": "2013-01-01",
+            "labels": [
+                "event:pregnancy_probability",
+                "instrument:ins_que_ppgfollup_int_ehpbhili_p2_v1.2",
+                "order:02_01"
+            ],
+            "last_change_reason": "Participant requested",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-29",
+            "scheduled_study_segment": {
+                "grid_id": "976f857d-10e6-40e1-9767-4f9eb8f239eb",
+                "start_date": "2012-02-16",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "cdabfc40-578f-4dd5-8152-c5c501fcdf10",
+                "name": "Betty Boop",
+                "person_id": "registered_with_psc"
+            }
+        },
+        {
+            "activity_name": "Pregnancy Probability Group Follow-Up SAQ",
+            "activity_status": "Scheduled",
+            "activity_type": "Instrument",
+            "grid_id": "cbcc8575-b1b9-4bd1-8a3c-51b885b903b6",
+            "ideal_date": "2013-01-01",
+            "labels": [
+                "event:pregnancy_probability",
+                "instrument:ins_que_ppgfollup_saq_ehpbhili_p2_v1.1",
+                "order:01_01"
+            ],
+            "last_change_reason": "Participant requested",
+            "responsible_user": "pfr957",
+            "scheduled_date": "2012-02-29",
+            "scheduled_study_segment": {
+                "grid_id": "976f857d-10e6-40e1-9767-4f9eb8f239eb",
+                "start_date": "2012-02-16",
+                "start_day": 1
+            },
+            "site": "GCSC",
+            "study": "NCS Hi-Lo",
+            "subject": {
+                "grid_id": "cdabfc40-578f-4dd5-8152-c5c501fcdf10",
+                "name": "Betty Boop",
+                "person_id": "registered_with_psc"
+            }
+        }
+    ]
+}

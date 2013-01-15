@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+require 'hana'
 require 'rack/test'
 
 # For API tests, it's nice to have more direct control over the HTTP request and
@@ -115,10 +116,13 @@ Then /^the response status is (\d+)$/ do |status|
 end
 
 Then /^the response body satisfies$/ do |table|
-  actual = [['key', 'value']]
+  json = JSON.parse(last_response.body)
 
-  table.hashes.each do |hash|
-    actual << [hash['key'], json[hash['key']]]
+  actual = table.raw.each.with_object([]) do |(key, value), obj|
+    ptr = Hana::Pointer.new(key)
+    val = ptr.eval(json)
+
+    obj << [key, val.to_s]
   end
 
   table.diff!(actual)

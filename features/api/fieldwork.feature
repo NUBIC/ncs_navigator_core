@@ -1,4 +1,4 @@
-@api
+@api @fieldwork
 Feature: Fieldwork check-out and check-in
   In order to keep field workers abreast of study progress
   The field client application
@@ -128,3 +128,32 @@ Feature: Fieldwork check-out and check-in
       | end_date           | 2012-01-01 |
       | header:X-Client-ID | 1234567890 |
     Then the response status is 400
+
+  @wip
+  Scenario: POST /api/v1/fieldwork returns instruments in template-prescribed order
+    This scenario relies on data in
+    features/fixtures/fakeweb/scheduled_activities_2013-01-01.json; refer to
+    the Pregnancy Probability events in that file for more information.
+
+    Given an authenticated user
+    And the participant
+      | person/first_name | Betty               |
+      | person/last_name  | Boop                |
+      | person/person_id  | registered_with_psc |
+    And the event
+      | event_id         | ce998f48-5775-4a23-86f9-4c2562f69318 |
+      | event_type       | Pregnancy Probability                |
+      | event_start_date | 2013-01-01                           |
+    And the surveys
+      | instrument_version | title                                  |
+      | 1.2                | ins_que_ppgfollup_int_ehpbhili_p2_v1.2 |
+      | 1.1                | ins_que_ppgfollup_saq_ehpbhili_p2_v1.1 |
+
+    When I POST /api/v1/fieldwork.json with
+      | start_date         | 2013-01-01 |
+      | end_date           | 2013-01-07 |
+      | header:X-Client-ID | 1234567890 |
+
+    Then the response body satisfies
+      | /contacts/0/events/0/instruments/0/name | Pregnancy Probability Group Follow-Up SAQ       |
+      | /contacts/0/events/0/instruments/1/name | Pregnancy Probability Group Follow-Up Interview |

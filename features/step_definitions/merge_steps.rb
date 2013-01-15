@@ -4,6 +4,11 @@ require 'facets/random'
 require 'ostruct'
 require 'stringio'
 
+Before '@fieldwork' do
+  # Givens establish context that needs to persist between steps.
+  @context = {}
+end
+
 # We want direct Rack::Test access, but it's not really an API-only
 # integration test.
 Before '@merge' do
@@ -26,9 +31,6 @@ Before '@merge' do
   def Merge.sync_with_psc?
     false
   end
-
-  # Givens establish context that needs to persist between steps.
-  @context = {}
 end
 
 Given /^the participant$/ do |table|
@@ -58,24 +60,25 @@ Given /^the event$/ do |table|
   @p.save!
 end
 
-Given /^the survey$/ do |table|
-  data = table.rows_hash
-  version = data['instrument_version']
+Given /^the surveys$/ do |table|
+  table.hashes.each do |h|
+    version = h['instrument_version']
 
-  str = %Q{
-survey '#{data['title']}', :instrument_version => '#{version}' do
-  section 'Questions' do
-    q 'Question 1'
-    a_1 :string
-    q 'Question 2'
-    a_1 :string
-    q 'Question 3'
-    a_1 :string
+    str = %Q{
+      survey '#{h['title']}', :instrument_version => '#{version}' do
+        section 'Questions' do
+          q 'Question 1'
+          a_1 :string
+          q 'Question 2'
+          a_1 :string
+          q 'Question 3'
+          a_1 :string
+        end
+      end
+    }
+
+    Surveyor::Parser.new.parse(str)
   end
-end
-  }
-
-  Surveyor::Parser.new.parse(str)
 end
 
 # FIXME: This is a pretty terrible hack, but Cases' current UI provides no way
