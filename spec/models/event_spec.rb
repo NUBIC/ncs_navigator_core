@@ -859,6 +859,34 @@ describe Event do
     end
   end
 
+  describe '#disposition_code' do
+    let(:version) { NcsNavigator::Core::Mdes::Version.new('3.1') }
+    let(:spec) { version.specification }
+    let(:code) { spec.disposition_codes.first }
+
+    describe 'example' do
+      it 'uses a non-nil code' do
+        code.should_not be_nil
+      end
+    end
+
+    around do |example|
+      begin
+        old_version = NcsNavigatorCore.mdes_version
+        NcsNavigatorCore.mdes_version = version
+        example.call
+      ensure
+        NcsNavigatorCore.mdes_version = old_version
+      end
+    end
+
+    it "returns the disposition code for the event's category and interim codes" do
+      event = Event.new(:event_disposition => code.interim_code.to_i, :event_disposition_category_code => code.category_code.to_i)
+
+      event.disposition_code.should == code
+    end
+  end
+
   describe '#desired_sa_state' do
     let(:event) { Event.new }
     let(:desired_sa_state) { event.desired_sa_state }
