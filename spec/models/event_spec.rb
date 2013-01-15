@@ -231,143 +231,48 @@ describe Event do
     end
   end
 
-  context "disposition" do
+  describe '#completed?' do
+    categories = {
+      1 => 'Household Enumeration',
+      2 => 'Pregnancy Screener',
+      3 => 'General Study',
+      4 => 'Mailed Back SAQ',
+      5 => 'Telephone Interview',
+      6 => 'Internet Survey'
+    }
 
-    describe "household enumeration" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 1)
-      end
+    table = {
+      1 => { :complete => [40, 45], :incomplete => [10, 15, 46, 39] },
+      2 => { :complete => (60..65), :incomplete => [10, 15, 66, 59] },
+      3 => { :complete => (60..62), :incomplete => [10, 15, 63, 59] },
+      4 => { :complete => (50..56), :incomplete => [10, 15, 49, 57] },
+      5 => { :complete => (90..95), :incomplete => [10, 15, 89, 96] },
+      6 => { :complete => (40..46), :incomplete => [10, 15, 39, 47] }
+    }
 
-      it "knows if it is complete" do
-        (40..45).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
+    table.each do |num, spec|
+      describe "for #{categories[num]} disposition codes" do
+        let(:category) do
+          NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', num)
         end
-      end
 
-      it "knows if it is not complete" do
-        [10, 15, 46, 39].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
+        spec[:complete].each do |code|
+          it "returns true for code #{code}" do
+            event = Event.new(:event_disposition_category => category, :event_disposition => code)
+
+            event.should be_completed
+          end
         end
-      end
 
-    end
+        spec[:incomplete].each do |code|
+          it "returns false for code #{code}" do
+            event = Event.new(:event_disposition_category => category, :event_disposition => code)
 
-    describe "pregnancy screener" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
-      end
-
-      it "knows if it is complete" do
-        (60..65).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [10, 15, 66, 59].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-
-    end
-
-    describe "general study" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
-      end
-
-      it "knows if it is complete" do
-        (60..62).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [10, 15, 63, 59].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-
-    end
-
-    describe "mailed back saq" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 4)
-      end
-
-      it "knows if it is complete" do
-        (50..56).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [10, 15, 49, 57].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
+            event.should_not be_completed
+          end
         end
       end
     end
-
-    describe "telephone interview" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 5)
-      end
-
-      it "knows if it is complete" do
-        (90..95).each do |complete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [10, 15, 89, 96].each do |incomplete_code|
-          event = Factory(:event, :event_disposition_category => @cat,
-            :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-    end
-
-    describe "internet survey" do
-      before(:each) do
-        @cat = NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 6)
-      end
-
-      it "knows if it is complete" do
-        (40..46).each do |complete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => complete_code)
-          event.should be_disposition_complete
-        end
-      end
-
-      it "knows if it is not complete" do
-        [10, 15, 39, 47].each do |incomplete_code|
-          event = Factory(:event,
-            :event_disposition_category => @cat, :event_disposition => incomplete_code)
-          event.should_not be_disposition_complete
-        end
-      end
-    end
-
   end
 
   describe '.TYPE_ORDER' do

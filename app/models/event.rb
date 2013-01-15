@@ -471,7 +471,7 @@ class Event < ActiveRecord::Base
 
   ##
   # Returns true if this event was succesfully completed, false otherwise.
-  def disposition_complete?
+  def completed?
     disposition_code.try(:success?)
   end
 
