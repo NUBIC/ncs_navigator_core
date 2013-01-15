@@ -147,7 +147,7 @@ module Psc
     CANCELED    = 'canceled'
     CONDITIONAL = 'conditional'
     MISSED      = 'missed'
-    NA          = 'na'
+    NA          = 'NA'
     OCCURRED    = 'occurred'
     SCHEDULED   = 'scheduled'
 

@@ -691,7 +691,7 @@ module NcsNavigator::Core::Warehouse
       it 'uses the full schedule content' do
         psc_participant.should_receive(:scheduled_activities).once.with(:sa_content)
 
-        importer.cancel_pending_activities_for_closed_events(psc_participant)
+        importer.close_pending_activities_for_closed_events(psc_participant)
       end
 
       it 'does not load the full schedule if there are no closed events' do
@@ -699,20 +699,20 @@ module NcsNavigator::Core::Warehouse
 
         psc_participant.should_not_receive(:scheduled_activities)
 
-        importer.cancel_pending_activities_for_closed_events(psc_participant)
+        importer.close_pending_activities_for_closed_events(psc_participant)
       end
 
-      it 'only cancels activities for closed events' do
+      it 'cancels activities for closed, incomplete events' do
         psc_participant.should_receive(:update_scheduled_activity_states).once do |arg|
           arg.keys.should == %w(sa1) # not sa2
         end
 
-        importer.cancel_pending_activities_for_closed_events(psc_participant)
+        importer.close_pending_activities_for_closed_events(psc_participant)
       end
 
       {
         'scheduled' => 'canceled',
-        'conditional' => 'NA',
+        'conditional' => 'NA'
       }.each do |in_state, out_state|
         it "makes a '#{in_state}' activity '#{out_state}'" do
           scheduled_activities['sa1'].current_state = in_state
@@ -725,7 +725,7 @@ module NcsNavigator::Core::Warehouse
               }
             })
 
-          importer.cancel_pending_activities_for_closed_events(psc_participant)
+          importer.close_pending_activities_for_closed_events(psc_participant)
         end
       end
 
@@ -735,7 +735,72 @@ module NcsNavigator::Core::Warehouse
 
           psc_participant.should_not_receive(:update_scheduled_activity_states)
 
-          importer.cancel_pending_activities_for_closed_events(psc_participant)
+          importer.close_pending_activities_for_closed_events(psc_participant)
+        end
+      end
+    end
+
+    describe 'for completed events' do
+      before do
+        add_event_hash('e1', '2010-01-11',
+          :event_type_label => 'pregnancy_visit_1',
+          :end_date => '2010-01-22',
+          :completed => true)
+
+        redis.sadd("#{ns}:psc_sync:p:#{p_id}:events_closed", 'e1')
+
+        psc_participant.stub!(:scheduled_events).and_return(scheduled_events)
+        psc_participant.stub!(:scheduled_activities).and_return(scheduled_activities)
+        psc_participant.stub!(:update_scheduled_activity_states)
+      end
+
+      let(:scheduled_events) {
+        [
+          {
+            :event_type_label => 'pregnancy_visit_1',
+            :start_date => '2010-01-11',
+            :scheduled_activities => %w(sa1)
+          }
+        ]
+      }
+
+      let(:scheduled_activities) {
+        {
+          'sa1' => Psc::ScheduledActivity.new(
+            :activity_id => 'sa1',
+            :current_state => 'scheduled',
+            :labels => 'event:pregnancy_visit_1'
+          )
+        }
+      }
+
+      it 'marks the corresponding activities as occurred' do
+        psc_participant.should_receive(:update_scheduled_activity_states).once.with({
+          'sa1' => {
+            'date' => '2010-01-22',
+            'reason' => 'Imported closed event e1.',
+            'state' => 'occurred'
+          }
+        })
+
+        importer.close_pending_activities_for_closed_events(psc_participant)
+      end
+
+      describe 'corresponding to conditional activities' do
+        before do
+          scheduled_activities['sa1'].current_state = 'conditional'
+        end
+
+        it 'marks the corresponding activities as occurred' do
+          psc_participant.should_receive(:update_scheduled_activity_states).once.with({
+            'sa1' => {
+              'date' => '2010-01-22',
+              'reason' => 'Imported closed event e1.',
+              'state' => 'occurred'
+            }
+          })
+
+          importer.close_pending_activities_for_closed_events(psc_participant)
         end
       end
     end

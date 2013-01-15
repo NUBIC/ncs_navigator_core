@@ -45,7 +45,7 @@ module NcsNavigator::Core::Warehouse
         psc_participant = psc.psc_participant(participants[p_id])
         schedule_events(psc_participant)
         update_sa_histories(psc_participant)
-        cancel_pending_activities_for_closed_events(psc_participant)
+        close_pending_activities_for_closed_events(psc_participant)
         create_placeholders_for_implied_events(psc_participant)
 
         i += 1
@@ -309,7 +309,7 @@ module NcsNavigator::Core::Warehouse
 
     ###### CANCEL REMAINING ACTIVITIES FOR CLOSED EVENTS
 
-    def cancel_pending_activities_for_closed_events(psc_participant)
+    def close_pending_activities_for_closed_events(psc_participant)
       p_id = psc_participant.participant.p_id
 
       say_subtask_message('examining closed events')
@@ -335,9 +335,11 @@ module NcsNavigator::Core::Warehouse
         updates = psc_event[:scheduled_activities].select { |sa_id|
           all_sas[sa_id].open?
         }.collect { |sa_id| all_sas[sa_id] }.inject({}) do |u, sa|
+          state = activity_state_for_closed_event(event_details, sa)
+
           u[sa.activity_id] = {
             'date' => event_details['end_date'],
-            'state' => sa.current_state == 'conditional' ? 'NA' : 'canceled',
+            'state' => state,
             'reason' => "Imported closed event #{closed_event_id}."
           }
           u
@@ -349,6 +351,20 @@ module NcsNavigator::Core::Warehouse
         end
       end
     end
+
+    def activity_state_for_closed_event(event_details, activity)
+      if event_details['completed']
+        Psc::ScheduledActivity::OCCURRED
+      else
+        if activity.current_state == Psc::ScheduledActivity::CONDITIONAL
+          Psc::ScheduledActivity::NA
+        else
+          Psc::ScheduledActivity::CANCELED
+        end
+      end
+    end
+
+    private :activity_state_for_closed_event
 
     def create_placeholders_for_implied_events(psc_participant)
       p_id = psc_participant.participant.p_id
