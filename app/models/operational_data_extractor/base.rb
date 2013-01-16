@@ -337,6 +337,15 @@ module OperationalDataExtractor
       result
     end
 
+    def collect_race_responses(data_export_identifier)
+      result = Array.new
+      sorted_responses.each do |r|
+        dei = r.question.data_export_identifier
+        result << r if known_keys.include?(dei) &&  dei == data_export_identifier
+      end
+      result
+    end
+
     def sorted_responses
       response_set.responses.sort_by { |r| r.created_at }
     end
@@ -773,32 +782,23 @@ module OperationalDataExtractor
       end
     end
 
-    def get_person_race
-      person_race = PersonRace.where(:person_id => person).first
-      if person_race.nil?
-        person_race = PersonRace.new(:psu => person.psu, :person => person)
-      end
-      person_race
-    end
-
     def process_person_race(person_race_map)
-      person_race = get_person_race
-
       person_race_map.each do |key, attribute|
-        the_response = data_export_identifier_indexed_responses[key]
-        if the_response && key =~ /NEW/
-          value = response_value(the_response)
-          unless value.blank?
-            process_new_type_race(person_race, attribute, value)
-          end
-        elsif the_response && key !~ /NEW/
-          value = response_value(the_response)
-          unless value.blank?
-            process_standard_race(person_race, attribute, value)
+        collect_race_responses(key).each do |r|
+          person_race = get_person_race
+          if r && key =~ /NEW/
+            value = response_value(r)
+            unless value.blank?
+              process_new_type_race(person_race, attribute, value)
+            end
+          elsif r && key !~ /NEW/
+            value = response_value(r)
+            unless value.blank?
+              process_standard_race(person_race, attribute, value)
+            end
           end
         end
       end
-      person_race
     end
 
     def process_new_type_race(person_race, attribute, value)
@@ -808,21 +808,24 @@ module OperationalDataExtractor
       if standard_and_new_type_intersection.include?(value)
         set_value(person_race, attribute, value)
       elsif new_type_exclusive_values.include?(value)
+        race_text = NcsCode.where(:list_name => "RACE_CL6", :local_code => value.to_i).first.display_text
         person_race.race_code = -5
-        person_race.race_other = NcsCode.where(:list_name => "RACE_CL6", :local_code => value.to_i).first.display_text
+        person_race.race_other = race_text
       else
         person_race.race_other = value
       end
-
-     person_race
+      person_race.save!
     end
 
     def process_standard_race(person_race, attribute, value)
       set_value(person_race, attribute, value)
+      person_race.save!
     end
 
-    def finalize_person_race(person_race)
-      person_race.save!
+    def get_person_race
+      person_race = person.races.where(:race_code => -5, :race_other => nil).first
+      person_race = person.races.build if person_race.nil?
+      person_race
     end
 
   end
