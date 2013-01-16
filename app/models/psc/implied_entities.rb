@@ -22,7 +22,11 @@ module Psc
     # Surveys.
     module Comparable
       def <=>(other)
-        order <=> other.order
+        key <=> other.key
+      end
+
+      def key
+        order || ''
       end
     end
 
