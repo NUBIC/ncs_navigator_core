@@ -114,11 +114,8 @@ module NcsNavigator::Core
         end
 
         it "is TRUE for Birth if the PV1 is not complete" do
-          pv1_event = Factory(:event, :event_type_code => 13) # PV1
+          pv1_event = Factory(:event, :event_type_code => 13)
           Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => pv1_event)
-          Event.any_instance.stub(:disposition_complete?).and_return(false)
-
-          pv1_event.should_not be_disposition_complete
 
           event = Factory(:event, :event_type_code => 18) # Birth
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
@@ -128,15 +125,16 @@ module NcsNavigator::Core
         it "is FALSE for Birth if the PV1 is complete" do
           pv1_event = Factory(:event, :event_type_code => 13) # PV1
           Factory(:contact_link, :person => person, :contact => Factory(:contact), :event => pv1_event)
-          Event.any_instance.stub(:disposition_complete?).and_return(true)
 
-          pv1_event.should be_disposition_complete
+          # See the specs for Event#completed? for more information.
+          pv1_event.event_disposition_category_code = 3
+          pv1_event.event_disposition = 60
+          pv1_event.save!
 
           event = Factory(:event, :event_type_code => 18) # Birth
           rsp = ResponseSetPopulator::ParticipantVerification.new(person, @instrument_pt1, survey_pt1, :event => event)
           assert_response_value(rsp.populate, "prepopulated_should_show_maiden_name_and_nicknames", "FALSE")
         end
-
       end
 
       describe "prepopulated_person_dob_previously_collected" do
