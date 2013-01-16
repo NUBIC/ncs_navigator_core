@@ -257,14 +257,13 @@ module OperationalDataExtractor
         contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
       end
 
-      person_race = process_person_race(PERSON_RACE_MAP)
+      process_person_race(PERSON_RACE_MAP)
 
       finalize_contact(contact1, contact1relationship, contact1address, contact1phone)
       finalize_contact(contact2, contact2relationship, contact2address, contact2phone)
 
       finalize_email(email)
       finalize_telephones(cell_phone)
-      finalize_person_race(person_race)
 
       child.save! if child
       participant.save!

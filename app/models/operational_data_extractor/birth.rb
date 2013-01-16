@@ -143,13 +143,12 @@ module OperationalDataExtractor
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
       email        = process_email(EMAIL_MAP)
       institution  = process_institution(INSTITUTION_MAP, response_set)
-      person_race  = process_person_race(PERSON_RACE_MAP)
+      process_person_race(PERSON_RACE_MAP)
 
       finalize_email(email)
       finalize_addresses(mail_address, work_address)
       finalize_telephones(cell_phone, home_phone, phone)
       finalize_institution(institution)
-      finalize_person_race(person_race)
 
       update_instrument_mode
 

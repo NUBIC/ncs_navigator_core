@@ -133,7 +133,7 @@ module OperationalDataExtractor
 
       address = process_address(person, ADDRESS_MAP, Address.home_address_type)
 
-      person_race = process_person_race(PERSON_RACE_MAP)
+      process_person_race(PERSON_RACE_MAP)
 
       phone1  = process_telephone(person, TELEPHONE_MAP1, nil, primary_rank)
       phone2  = process_telephone(person, TELEPHONE_MAP2, nil, secondary_rank)
@@ -165,7 +165,6 @@ module OperationalDataExtractor
 
       end
 
-      finalize_person_race(person_race)
       finalize_email(email)
       finalize_addresses(address)
       finalize_telephones(phone1, phone2)

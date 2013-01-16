@@ -128,7 +128,7 @@ module OperationalDataExtractor
       home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
       email        = process_email(EMAIL_MAP)
-      person_race  = process_person_race(PERSON_RACE_MAP)
+      process_person_race(PERSON_RACE_MAP)
 
       if participant
         ppg_detail = process_ppg_details(participant, PPG_DETAILS_MAP, INTERVIEW_PREFIX)
@@ -138,7 +138,6 @@ module OperationalDataExtractor
       finalize_email(email)
       finalize_addresses(mail_address, address)
       finalize_telephones(cell_phone, home_phone, phone)
-      finalize_person_race(person_race)
 
       participant.save!
       person.save!

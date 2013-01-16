@@ -766,6 +766,7 @@ describe OperationalDataExtractor::PregnancyScreener do
 
     let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
     let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+    let(:other_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", -5) }
 
     before do
       @person = Factory(:person)
@@ -779,16 +780,27 @@ describe OperationalDataExtractor::PregnancyScreener do
       before do
         take_survey(@survey, @response_set) do |a|
           a.choice "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", black_race
-          a.str "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH", "Korean"
+          a.choice "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE", other_race
+          a.str "#{OperationalDataExtractor::PregnancyScreener::PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH", "Aborigine"
         end
 
         OperationalDataExtractor::PregnancyScreener.new(@response_set).extract_data
       end
 
-      it "extracts racial data" do
-        extracted_person = Person.find(@person.id).races.first
-        extracted_person.race_code.should == 2
-        extracted_person.race_other.should == "Korean"
+      it "extracts two standard racial data" do
+        @person.races.should have(2).races
+      end
+
+      it "creates at least one race record with a specific non-other code" do
+        @person.races.map(&:race_code).should include(black_race.local_code)
+      end
+
+      it "creates at least one race record with an other code" do
+        @person.races.map(&:race_code).should include(other_race.local_code)
+      end
+
+      it "creates an other code with the text 'Aborigine'" do
+        @person.races.map(&:race_other).should include("Aborigine")
       end
     end
 
