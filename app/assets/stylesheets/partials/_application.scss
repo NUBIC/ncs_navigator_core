@@ -176,6 +176,11 @@ form {
   input[type="text"].datepicker {
     width: 7.5em;
   }
+
+  input[type="text"].time,
+  input[type="text"].timepicker {
+    width: 3em;
+  }
   input[type="text"].zip,
   input[type="text"].zip4 {
     width: 5em;

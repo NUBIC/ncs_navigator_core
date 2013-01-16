@@ -1,7 +1,7 @@
 class ScheduledActivity
   include Comparable
 
-  attr_accessor :study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels, :person_id
+  attr_accessor :study_segment, :activity_id, :current_state, :ideal_date, :date, :activity_name, :activity_type, :labels, :person_id, :time
   attr_accessor :event, :references_collection, :references, :instruments, :instrument, :order, :participant_type, :collection, :mode
 
   def initialize(attrs={})

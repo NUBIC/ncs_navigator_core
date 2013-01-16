@@ -273,7 +273,7 @@ class PatientStudyCalendar
     scheduled_activities = []
     activities.each do |activity|
       if states.nil? or states.include?(activity['current_state']['name'])
-        scheduled_activities << ScheduledActivity.new({
+        sa = ScheduledActivity.new({
           :study_segment => activity['study_segment'].to_s,
           :activity_id => activity['id'],
           :current_state => activity['current_state']['name'],
@@ -282,6 +282,10 @@ class PatientStudyCalendar
           :activity_name => activity['activity']['name'].to_s.strip,
           :activity_type => activity['activity']['type'],
           :labels => activity['labels'] })
+        if activity['current_state'].has_key?("time")
+          sa.time = activity['current_state']['time']
+        end
+        scheduled_activities << sa
       end
     end
     scheduled_activities
@@ -498,11 +502,11 @@ class PatientStudyCalendar
   # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
   # @param [Date]
   # @param [String] - reason
-  def schedule_pending_event(event, value, date, reason = nil)
+  def schedule_pending_event(event, value, date, reason = nil, time = nil)
     participant = event.participant
     if activities = activities_to_reschedule(event)
       activities.each do |activity_identifier|
-        update_activity_state(activity_identifier, participant, value, date, reason)
+        update_activity_state(activity_identifier, participant, value, date, reason, time)
       end
     else
       schedule_known_event(participant, event.event_type.to_s, date)
@@ -534,9 +538,10 @@ class PatientStudyCalendar
   # @param [String] - one of the valid enumerable state attributes for an activity in PSC
   # @param [Date] (optional)
   # @param [String] (optional) - reason for change
-  def update_activity_state(activity_identifier, participant, value, date = nil, reason = nil)
+  # @param [String] (optional) - scheduled time
+  def update_activity_state(activity_identifier, participant, value, date = nil, reason = nil, time = nil)
     post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}/activities/#{activity_identifier}",
-      build_scheduled_activity_state_request(value, date, reason))
+      build_scheduled_activity_state_request(activity_identifier, value, date, reason, time))
   end
 
   ##
@@ -710,17 +715,17 @@ class PatientStudyCalendar
   #     <xsd:attribute name="date" type="xsd:date"/>
   #     <xsd:attribute name="reason" type="xsd:string"/>
   # </xsd:complexType>
-  def build_scheduled_activity_state_request(value, date = nil, reason = nil)
+  def build_scheduled_activity_state_request(activity_identifier, value, date = nil, reason = nil, time = nil)
+    activity_hash = Hash.new
     date = date.nil? ? Date.today.strftime("%Y-%m-%d") : date
-    xm = Builder::XmlMarkup.new(:target => "")
-    xm.instruct!
-    xm.tag!("scheduled-activity-state".to_sym, {"xmlns"=>"http://bioinformatics.northwestern.edu/ns/psc",
-                                    "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                                    "xsi:schemaLocation" => "http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd",
-                                    "state" => value,
-                                    "date" => date,
-                                    "reason" => reason.to_s })
-    xm.target!
+    state = {
+      'date' => date,
+      'reason' => reason.to_s,
+      'state' => value
+    }
+    state["time"] = time if time
+    activity_hash["#{activity_identifier}"] = state
+    activity_hash
   end
 
   def get_study_segment_id(segment)

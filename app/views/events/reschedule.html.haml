@@ -11,6 +11,10 @@
         %br
         = text_field_tag :date, @date.to_s, :class => 'datepicker'
       %p
+        = label_tag :time, "Time"
+        %br
+        = text_field_tag :time, nil, :class => 'timepicker'
+      %p
         = label_tag :reason, "Reason"
         %br
         = text_area_tag :reason

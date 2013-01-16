@@ -86,8 +86,9 @@ class EventsController < ApplicationController
     if request.put?
       reason = params[:reason]
       @date = params[:date]
+      time = params[:time]
 
-      psc.schedule_pending_event(@event, Psc::ScheduledActivity::SCHEDULED, @date, reason)
+      psc.schedule_pending_event(@event, Psc::ScheduledActivity::SCHEDULED, @date, reason, time)
 
       path = @event.participant.nil? ? events_path : path = participant_path(@event.participant)
 

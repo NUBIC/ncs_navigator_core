@@ -48,6 +48,7 @@ module Psc
       it_maps 'assignment.id' => 'person_id'
       it_maps 'current_state.date' => 'activity_date'
       it_maps 'current_state.name' => 'current_state'
+      it_maps 'current_state.time' => 'time'
       it_maps 'ideal_date' => 'ideal_date'
       it_maps 'labels' => 'labels'
       it_maps 'study_segment' => 'study_segment'
