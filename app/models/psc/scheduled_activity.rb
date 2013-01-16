@@ -12,13 +12,13 @@ module Psc
     activity_date
     activity_id
     activity_name
+    activity_time
     activity_type
     current_state
     ideal_date
     labels
     person_id
     study_segment
-    activity_time
   ).map(&:to_sym)
 
   ##
@@ -184,12 +184,10 @@ module Psc
           a.activity_type = row['activity']['type']
         end
 
-        if row['current_state']
-          a.activity_date = row['current_state']['date']
-          a.current_state = row['current_state']['name']
-          if row['current_state']['time']
-            a.activity_time = row['current_state']['time']
-          end
+        if (state = row['current_state'])
+          a.activity_date = state['date']
+          a.activity_time = state['time']
+          a.current_state = state['name']
         end
 
         if row['assignment']

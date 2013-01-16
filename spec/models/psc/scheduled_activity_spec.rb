@@ -57,7 +57,7 @@ module Psc
         ScheduledActivity.from_schedule({}).should be_instance_of(ScheduledActivity)
       end
 
-      it 'returns nil for "activity_time" if there is no "current_state.time"' do
+      it 'handles empty times' do
         sa_without_time.activity_time.should be_nil
       end
     end
