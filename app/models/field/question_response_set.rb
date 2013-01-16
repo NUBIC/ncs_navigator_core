@@ -58,6 +58,13 @@ module Field
       @question_public_id
     end
 
+    ##
+    # The default Object#inspect isn't particularly useful for this class, so
+    # we define our own.
+    def inspect
+      "#<#{self.class.name} responses=#{responses.inspect}>"
+    end
+
     def pending_prerequisites
       responses.map(&:pending_prerequisites).inject({}, &:weave)
     end
@@ -170,6 +177,10 @@ module Field
 
       def resolve_model
         self.response_model = wrapped_response.to_model
+      end
+
+      def inspect
+        "#<#{self.class.name} qid=#{question_public_id} aid=#{answer_public_id} group=#{response_group} value=#{value.inspect}>"
       end
     end
   end
