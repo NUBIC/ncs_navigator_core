@@ -80,6 +80,7 @@ module Field
   class Superposition
     include Field::Merge
     include Field::PscSync
+    include Field::Scheduling
 
     attr_accessor :contacts
     attr_accessor :events
