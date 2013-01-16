@@ -59,5 +59,22 @@ module NcsNavigator::Core::Warehouse
 
       super(table_name, mdes_model, pr_opts)
     end
+
+    ##
+    # Method format datetime column in database to the desired MDES formatted
+    # string representation (YYYY-MM-DDTHH:MM:SS).
+    # Note that this is Postgres specific.
+    # @return[String]
+    def mdes_formatted_datetime_query(col)
+      "to_char(t.#{col}, 'YYYY-MM-DD\"T\"HH24:MI:SS') AS #{mdes_datetime_column_alias(col)}"
+    end
+
+    ##
+    # Datetime column alias used in mdes_formatted_datetime_query and
+    # in column_map for produce_one_for_one.
+    # @return[String]
+    def mdes_datetime_column_alias(col)
+      "mdes_#{col}_value"
+    end
   end
 end

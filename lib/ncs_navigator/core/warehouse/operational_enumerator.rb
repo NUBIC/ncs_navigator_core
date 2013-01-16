@@ -149,6 +149,10 @@ module NcsNavigator::Core::Warehouse
     )
 
     produce_one_for_one(:participant_visit_records, ParticipantRvis,
+      :selects => [
+        mdes_formatted_datetime_query('time_stamp_1'),
+        mdes_formatted_datetime_query('time_stamp_2'),
+      ],
       :public_ids => [
         :participants,
         :contacts,
@@ -156,7 +160,12 @@ module NcsNavigator::Core::Warehouse
           :public_id => :person_id,
           :join_column => :rvis_person_id,
           :public_ref => :rvis_person }
-      ]
+      ],
+      :column_map => {
+        mdes_datetime_column_alias('time_stamp_1').to_sym => :time_stamp_1,
+        mdes_datetime_column_alias('time_stamp_2').to_sym => :time_stamp_2,
+      },
+      :ignored_columns => %w(time_stamp_1 time_stamp_2)
     )
 
     produce_one_for_one(:events, Event,
