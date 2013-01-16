@@ -56,6 +56,10 @@ module Psc
       it 'handles empty hashes' do
         ScheduledActivity.from_schedule({}).should be_instance_of(ScheduledActivity)
       end
+
+      it 'returns nil for "activity_time" if there is no "current_state.time"' do
+        sa_without_time.activity_time.should be_nil
+      end
     end
 
     shared_examples_for 'a label reader' do

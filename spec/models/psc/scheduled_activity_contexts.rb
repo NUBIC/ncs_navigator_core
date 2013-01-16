@@ -86,6 +86,29 @@ shared_context 'from schedule' do
           },
           "current_state": {
               "name": "scheduled",
+              "date": "2011-01-01",
+              "time": "14:10"
+          },
+          "study_segment": "HI-Intensity: Child",
+          "id": "11",
+          "ideal_date": "2011-01-01",
+          "labels": "event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_02 participant_type:child collection:biological"
+      }
+    })
+  end
+
+  let(:row_without_time) do
+    JSON.parse(%q{
+      {
+          "activity": {
+              "name": "Birth Interview",
+              "type": "Instrument"
+          },
+          "assignment": {
+              "id": "mother"
+          },
+          "current_state": {
+              "name": "scheduled",
               "date": "2011-01-01"
           },
           "study_segment": "HI-Intensity: Child",
@@ -120,4 +143,5 @@ shared_context 'from schedule' do
 
   let(:sa) { Psc::ScheduledActivity.from_schedule(row) }
   let(:canceled_sa) { Psc::ScheduledActivity.from_schedule(canceled_row) }
+  let(:sa_without_time) { Psc::ScheduledActivity.from_schedule(row_without_time) }
 end
