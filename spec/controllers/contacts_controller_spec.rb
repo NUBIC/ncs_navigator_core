@@ -66,32 +66,22 @@ describe ContactsController do
       describe "POST 'Create'" do
 
         before(:each) do
-          Person.stub!(:find).and_return(@person)
-          @contact = Factory(:contact)
-          Contact.stub!(:start).and_return(@contact)
-          params = {:participant => @participant,:event_type => @preg_screen_event, :psu_code => NcsNavigatorCore.psu_code,  :event_start_date => Date.parse("2525-02-01")}
-          @event = Factory(:event, params)
-          Event.stub(:event_for_person).and_return(@event)
+          @event = Factory(:event)
           @provider = Factory(:provider)
-          @staff_id = login(user_login)          
+          @staff_id = "staff_id"
         end
-
+  
         it "creates a new Contact_link if contact_link doesn't exist" do
-          if ContactLink.count == 0
-          expect{
-          post :create, contact_link: Factory.attributes_for(:contact_link, :contact => @contact, :person => @person, :event => @event, :provider=> @provider, :staff_id => @staff_id)
+          expect {
+            post :create, 
+            :contact => Factory.attributes_for(:contact),
+            :person_id => @person.id, 
+            :event_id => @event.id, 
+            :provider_id => @provider.id, 
+            :staff_id => @staff_id
           }.to change(ContactLink,:count).by(1)
-          end
         end
-        
-        let(:contact_link) { mock_model(ContactLink, :contact_id => 1, :person_id => 2, :event_id => 3)}
-        it "does not create a new Contact_link if contact_link exists" do
-          if ContactLink.count == 1
-          Factory.build(:contact_link, :contact_id => 1, :person_id => 2, :event_id => 3).should_not be_new_record
-          end
-        end    
-
-      end
+      end  
 
       describe "GET edit" do
 
@@ -110,9 +100,19 @@ describe ContactsController do
           get :edit, :id => "37", :contact_link_id => @contact_link.id
           assigns[:event].id.should equal(@event.id)
         end
+
       end
 
       describe "GET edit with next_event param" do
+
+        it "redirects if no pending events exist" do
+          event = Factory(:event)
+          contact = Factory(:contact)
+          contact_link = Factory(:contact_link, :person => @person, :event => event)
+          get :edit, :id => contact.id, :contact_link_id => contact_link.id, :next_event => true
+          response.should be_redirect
+        end
+
         it "creates a new contact link and event when continuing to next event" do
           Event.stub(:schedule_and_create_placeholder).and_return(nil)
 
@@ -144,7 +144,6 @@ describe ContactsController do
           @person.contact_links.map(&:event).compact.map(&:event_type).uniq.should == [@ppg12_event, @preg_screen_event]
           @person.contact_links.map(&:contact).uniq.should == [@contact]
         end
-
       end
 
       describe "GET edit - contact end time" do
