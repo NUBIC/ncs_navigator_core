@@ -65,7 +65,7 @@ class InstrumentPlan
     result[:activity_type] = activity['activity']['type'] if activity['activity']
     result[:current_state] = activity['current_state']['name'] if activity['current_state']
     result[:date]          = activity['current_state']['date'] if activity['current_state']
-    result[:time]          = activity['current_state']['time'] if activity['current_state']['time']
+    result[:activity_time] = activity['current_state']['time'] if activity['current_state']['time']
     result[:person_id]     = activity['assignment']['id'] if activity['assignment']
     result
   end

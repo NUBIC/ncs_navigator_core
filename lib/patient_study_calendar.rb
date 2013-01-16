@@ -283,7 +283,7 @@ class PatientStudyCalendar
           :activity_type => activity['activity']['type'],
           :labels => activity['labels'] })
         if activity['current_state'].has_key?("time")
-          sa.time = activity['current_state']['time']
+          sa.activity_time = activity['current_state']['time']
         end
         scheduled_activities << sa
       end

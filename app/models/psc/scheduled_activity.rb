@@ -18,7 +18,7 @@ module Psc
     labels
     person_id
     study_segment
-    time
+    activity_time
   ).map(&:to_sym)
 
   ##
@@ -188,7 +188,7 @@ module Psc
           a.activity_date = row['current_state']['date']
           a.current_state = row['current_state']['name']
           if row['current_state']['time']
-            a.time = row['current_state']['time']
+            a.activity_time = row['current_state']['time']
           end
         end
 
