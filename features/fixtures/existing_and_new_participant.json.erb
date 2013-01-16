@@ -1,0 +1,110 @@
+{
+    "contacts": [
+        {
+            "contact_date_date": "2005-07-17",
+            "contact_id": "<%= @context['contact_id'] %>",
+            "contact_type_code": 3,
+
+            "events": [
+                {
+                    "instruments": [
+                        {
+                            "instrument_id": "<%= @context['instrument_id'] %>",
+                            "instrument_plan_id": "2dcac920-3a42-012f-785c-482a143dc94d",
+                            "instrument_repeat_key": 3,
+                            "instrument_version": "2",
+                            "name": "Pregnancy Visit 2",
+                            "response_sets": [
+                                {
+                                    "p_id": "<%= @context['participant_id'] %>",
+                                    "person_id": "<%= @context['person_id'] %>",
+                                    "responses": [
+                                        {
+                                            "answer_id": "<%= @context['answer_ids'][0] %>",
+                                            "question_id": "<%= @context['question_ids'][0] %>",
+                                            "uuid": "<%= @context['response_ids'][0] %>",
+                                            "value": "Joe"
+                                        }
+                                    ],
+                                    "survey_id": "<%= @context['survey_id'] %>",
+                                    "uuid": "<%= @context['response_set_id'] %>"
+                                }
+                            ]
+                        }
+                    ],
+                    "name": "Pregnancy Visit 2",
+                    "p_id": "<%= @context['participant_id'] %>"
+                }
+            ],
+            "person_id": "<%= @context['person_id'] %>"
+        },
+        {
+            "contact_date_date": "2005-07-18",
+            "contact_id": "5293b4cc-7774-42d1-bebb-f23c79bc7c0f",
+            "contact_type_code": 3,
+            "events": [
+                {
+                    "event_type_code": 15,
+                    "instruments": [
+                        {
+                            "instrument_id": "6e8aa29e-4487-4a6c-a3dc-383adebb535b",
+                            "instrument_plan_id": "2dcac920-3a42-012f-785c-482a143dc94d",
+                            "instrument_repeat_key": 3,
+                            "instrument_version": "2",
+                            "name": "Pregnancy Visit 2",
+                            "response_sets": [
+                                {
+                                    "p_id": "909c9d0b-dec6-40c4-b59c-57975ebd5811",
+                                    "person_id": "6bbb7330-1188-4ccf-b1f5-2576d460fbb7",
+                                    "responses": [
+                                        {
+                                            "answer_id": "<%= @context['answer_ids'][0] %>",
+                                            "question_id": "<%= @context['question_ids'][0] %>",
+                                            "uuid": "d4da4f25-88d0-4c38-a10d-4ead15fb8676",
+                                            "value": "Joe"
+                                        }
+                                    ],
+                                    "survey_id": "<%= @context['survey_id'] %>",
+                                    "uuid": "e1364825-2c77-4839-9965-0d408e218ee4"
+                                }
+                            ]
+                        }
+                    ],
+                    "name": "Pregnancy Visit 2",
+                    "p_id": "909c9d0b-dec6-40c4-b59c-57975ebd5811"
+                }
+            ],
+            "person_id": "6bbb7330-1188-4ccf-b1f5-2576d460fbb7"
+        }
+    ],
+    "event_templates": [],
+    "instrument_plans": [],
+    "participants": [
+        {
+            "p_id": "<%= @context['participant_id'] %>",
+            "persons": [
+                {
+                    "first_name": "Bessie",
+                    "last_name": "Smith",
+                    "person_id": "<%= @context['persons_id'] %>",
+                    "prefix_code": 4,
+                    "relationship_code": 1,
+                    "suffix_code": 3
+                }
+            ]
+        },
+        {
+            "p_id": "909c9d0b-dec6-40c4-b59c-57975ebd5811",
+            "persons": [
+                {
+                    "first_name": "April",
+                    "last_name": "Showers",
+                    "person_id": "6bbb7330-1188-4ccf-b1f5-2576d460fbb7",
+                    "prefix_code": 4,
+                    "relationship_code": 1,
+                    "suffix_code": 3
+                }
+            ]
+        }
+    ]
+}
