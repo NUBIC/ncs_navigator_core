@@ -159,10 +159,10 @@ describe Fieldwork do
       subject.collections_changed?.should be_false
     end
 
-    Fieldwork.collections.each do |c|
-      describe "if ##{c} changed" do
+    Fieldwork.collections.keys.each do |k|
+      describe "if ##{k} changed" do
         it 'returns true' do
-          subject.send("#{c}=", [])
+          subject.send("#{k}=", [])
 
           subject.collections_changed?.should be_true
         end

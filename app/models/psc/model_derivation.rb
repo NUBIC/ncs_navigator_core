@@ -35,10 +35,10 @@ module Psc
       @contact_links = Set.new
       @contacts = Set.new
       @events = Set.new
-      @instruments = Set.new
+      @instruments = SortedSet.new
       @instrument_plans = Set.new
       @people = Set.new
-      @surveys = Set.new
+      @surveys = SortedSet.new
     end
 
     def derive_models

@@ -234,7 +234,8 @@ module Psc
                                          referenced_survey,
                                          activity_name,
                                          event,
-                                         person)
+                                         person,
+                                         order_label)
       end
 
       @contact_link = im::ContactLink.new(person, contact, event, instrument)

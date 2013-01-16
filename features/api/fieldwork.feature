@@ -129,7 +129,6 @@ Feature: Fieldwork check-out and check-in
       | header:X-Client-ID | 1234567890 |
     Then the response status is 400
 
-  @wip
   Scenario: POST /api/v1/fieldwork returns instruments in template-prescribed order
     This scenario relies on data in
     features/fixtures/fakeweb/scheduled_activities_2013-01-01.json; refer to

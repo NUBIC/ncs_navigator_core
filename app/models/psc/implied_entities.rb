@@ -17,6 +17,15 @@ module Psc
       end
     end
 
+    ##
+    # Used for implied entities that have a partial order, i.e. Instruments and
+    # Surveys.
+    module Comparable
+      def <=>(other)
+        order <=> other.order
+      end
+    end
+
     class ContactLink < Struct.new(:person, :contact, :event, :instrument)
     end
 
@@ -28,7 +37,8 @@ module Psc
       include Fingerprint
     end
 
-    class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person)
+    class Instrument < Struct.new(:survey, :referenced_survey, :name, :event, :person, :order)
+      include Comparable
       include Fingerprint
     end
 
@@ -37,6 +47,7 @@ module Psc
     end
 
     class Survey < Struct.new(:access_code, :participant_type, :order)
+      include Comparable
       include Fingerprint
     end
 

@@ -198,7 +198,7 @@ module Psc
 
       describe 'if the activity does not have a references label' do
         before do
-          sa.labels = 'event:foo instrument:1.0:baz'
+          sa.labels = 'event:foo instrument:1.0:baz order:01_01'
 
           sa.derive_implied_entities
         end
@@ -208,7 +208,8 @@ module Psc
                                                      sa.referenced_survey,
                                                      sa.activity_name,
                                                      sa.event,
-                                                     sa.person)
+                                                     sa.person,
+                                                     sa.order_label)
         end
       end
 

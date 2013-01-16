@@ -62,21 +62,21 @@ class Fieldwork < ActiveRecord::Base
 
   ##
   # Collections of entities modified when populating a fieldwork set.
-  COLLECTIONS = %w(
-    contact_links
-    contacts
-    event_templates
-    events
-    instrument_plans
-    instruments
-    people
-    surveys
-  )
+  COLLECTIONS = {
+    contact_links:    lambda { Set.new },
+    contacts:         lambda { Set.new },
+    event_templates:  lambda { Set.new },
+    events:           lambda { Set.new },
+    instrument_plans: lambda { Set.new },
+    instruments:      lambda { SortedSet.new },
+    people:           lambda { Set.new },
+    surveys:          lambda { SortedSet.new }
+  }
 
   ##
   # Collections are saved to this record.  The JSON for this set is regenerated
   # when they change.
-  COLLECTIONS.each { |c| serialize c }
+  COLLECTIONS.keys.each { |k| serialize k }
 
   ##
   # This looks nicer in specs.  Other external references to fieldwork
@@ -173,7 +173,7 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def collections_changed?
-    COLLECTIONS.any? { |c| send("#{c}_changed?") }
+    COLLECTIONS.keys.any? { |k| send("#{k}_changed?") }
   end
 
   def set_default_id
@@ -211,8 +211,8 @@ class Fieldwork < ActiveRecord::Base
   end
 
   def default_collections_to_empty
-    COLLECTIONS.each do |c|
-      send("#{c}=", Set.new) unless send(c)
+    COLLECTIONS.each do |k, gen|
+      send("#{k}=", gen.call) unless send(k)
     end
   end
 
