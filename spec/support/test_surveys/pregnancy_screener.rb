@@ -177,10 +177,13 @@ module PregnancyScreener
     # Race One
     q = Factory(:question, :reference_identifier => "RACE", :data_export_identifier => "PREG_SCREEN_HI_RACE_2.RACE", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Other", :response_class => "answer", :reference_identifier => "neg_5")
+    a = Factory(:answer, :question_id => q.id, :text => "Asian", :response_class => "answer", :reference_identifier => "4")
 
     # Race One Other
     q = Factory(:question, :reference_identifier => "RACE_OTH", :data_export_identifier => "PREG_SCREEN_HI_RACE_2.RACE_OTH", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
 
     survey
   end
