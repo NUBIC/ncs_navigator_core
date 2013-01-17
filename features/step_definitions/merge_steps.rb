@@ -162,10 +162,15 @@ Given /^I complete the fieldwork set$/ do |table|
 end
 
 When /^the merge runs$/ do
-  NcsNavigator::Core::Field::MergeWorker.drain
+  begin
+    NcsNavigator::Core::Field::MergeWorker.drain
 
-  if @logdev.string =~ /(error|fatal)/i
+    if @logdev.string =~ /(error|fatal)/i
+      puts @logdev.string
+      raise 'Merge failed; see above log'
+    end
+  rescue => e
     puts @logdev.string
-    raise 'Merge failed; see above log'
+    raise e
   end
 end
