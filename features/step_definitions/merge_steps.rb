@@ -60,6 +60,27 @@ Given /^the event$/ do |table|
   @p.save!
 end
 
+Given /^the instrument$/ do |table|
+  data = table.rows_hash
+  p_id = data['p_id']
+  e_id = data['event_id']
+  s_title = data['survey']
+
+  p = Participant.where(:p_id => p_id).first
+  e = Event.where(:event_id => e_id).first
+  s = Survey.where(:title => s_title).first
+
+  raise "Unknown participant #{p_id}" if !p
+  raise "Unknown event #{e_id}" if !e
+  raise "Unknown survey #{s_title}" if !s
+
+  @instrument = Instrument.start(p.person, p, s, s, e, Instrument.cati)
+  @instrument.save!
+
+  link = @instrument.link_to(p, Contact.create!, e, 'test')
+  link.save!
+end
+
 Given /^the surveys$/ do |table|
   table.hashes.each do |h|
     version = h['instrument_version']
@@ -81,26 +102,21 @@ Given /^the surveys$/ do |table|
   end
 end
 
-Given /^the instrument$/ do
-  @instrument = Instrument.start(@person, @p, @survey, @survey, @event, Instrument.cati)
-  @instrument.save!
-
-  link = @instrument.link_to(@person, Contact.create!, @event, 'abc')
-  link.save!
-end
-
 Given /^the responses$/ do |table|
-  responses_attrs = table.raw.inject({}) do |memo, raw| 
-    idx, k = raw[0].split('/')
-    (memo[idx] ||= {}).merge!(k => raw[1])
-    memo
-  end.values
+  rs = @instrument.response_set
 
-  responses_attrs.each do |r| 
-    ResponseSet.last.responses.create!(
-      :question => Question.where(:reference_identifier => r['qref']).first, 
-      :answer => Question.where(:reference_identifier => r['qref']).first.answers.where(:reference_identifier => r['aref']).first,
-      :string_value => r['string_value'])
+  table.hashes.each do |h|
+    q = Question.where(:reference_identifier => h['qref']).first
+    raise "Unknown qref #{h['qref']}" unless q
+
+    a = q.answers.where(:reference_identifier => h['aref']).first
+    raise "Unknown aref #{h['aref']}" unless a
+
+    rs.responses.create!(
+      :question => q,
+      :answer => a,
+      :string_value => h['string_value']
+    )
   end
 end
 
@@ -148,7 +164,7 @@ end
 When /^the merge runs$/ do
   NcsNavigator::Core::Field::MergeWorker.drain
 
-  if @logdev.string =~ /(error|fatal) --/i
+  if @logdev.string =~ /(error|fatal)/i
     puts @logdev.string
     raise 'Merge failed; see above log'
   end

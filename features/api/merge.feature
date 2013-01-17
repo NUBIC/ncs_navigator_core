@@ -64,7 +64,8 @@ Feature: Merging data from field clients
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
 
-  Scenario: A new participants PV1 responses are stored when an existing participants responses exist for the same survey 
+  @wip
+  Scenario: Responses are merged with respect to participant
     Given the participant
       | person/first_name | Bessie              |
       | person/last_name  | Smith               |
@@ -74,24 +75,27 @@ Feature: Merging data from field clients
       | event_id         | 883d5830-91ed-4dd4-9303-903eee737082 |
       | event_type       | Pregnancy Visit 2                    |
       | event_start_date | 2005-07-15                           |
-    And the survey
-      | title              | pregnancy_survey_v1.0 |
-      | instrument_version | 1.0                   |
+    And the surveys
+      | instrument_version | title                 |
+      | 1.0                | pregnancy_survey_v1.0 |
     And the instrument
+      | survey   | pregnancy_survey_v1.0                |
+      | event_id | 883d5830-91ed-4dd4-9303-903eee737082 |
+      | p_id     | abc-123-wxyz                         |
     And the responses
-      | 0/qref         | 1   |
-      | 0/aref         | 1   |
-      | 0/string_value | Joe |
-    And I complete the fieldwork set
-      | start_date        | 2005-07-01 |
-      | end_date          | 2005-07-30 |
-      | client_id         | 1234567890 |
-      | person/first_name | Bessie     |
-      | person/last_name  | Smith      |
-      | with              | existing_and_new_participant.json.erb |
+      | qref | aref | value |
+      | 1    | 1    | "Joe" |
 
-    When the merge runs
+    When I complete the fieldwork set
+      | start_date        | 2005-07-01                            |
+      | end_date          | 2005-07-30                            |
+      | client_id         | 1234567890                            |
+      | person/first_name | Bessie                                |
+      | person/last_name  | Smith                                 |
+      | with              | existing_and_new_participant.json.erb |
+    And the merge runs
     And I go to the participant page
+
     Then I should see "April Showers"
 
     # event name
@@ -104,7 +108,6 @@ Feature: Merging data from field clients
     When I follow "pregnancy_survey_v1.0"
     Then the "r_1_string_value" field should contain "Joe"
 
-  @wip
   Scenario: New contacts can be linked to new events without instruments
     When I complete the fieldwork set
       | start_date          | 2005-07-01                       |
@@ -157,9 +160,9 @@ Feature: Merging data from field clients
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
 
   Scenario: New contacts can be associated with new people
-    Given the survey
-      | title              | pregnancy_survey_v1.0 |
-      | instrument_version | 1.0                   |
+    Given the surveys
+      | instrument_version | title                 |
+      | 1.0                | pregnancy_survey_v1.0 |
     And I complete the fieldwork set
       | start_date | 2005-07-01              |
       | end_date   | 2005-07-30              |
