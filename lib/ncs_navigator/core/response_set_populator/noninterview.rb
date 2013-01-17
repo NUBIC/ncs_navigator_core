@@ -52,22 +52,22 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def what_study_center_type?(question)
       answer_map = {
-        "OVC AND EH STUDY CENTERS" => 1,
-        "PB AND PBS STUDY CENTERS" => 2,
+        "OVC AND EH STUDY CENTER" => 1,
+        "PB AND PBS STUDY CENTER" => 2,
         "HILI STUDY CENTER" => 3
       }
 
       center_type_map = {
         # Enhanced Household Enumeration
-        1 => answer_map["OVC AND EH STUDY CENTERS"],
+        1 => answer_map["OVC AND EH STUDY CENTER"],
         # Provider-Based Recruitment
-        2 => answer_map["PB AND PBS STUDY CENTERS"],
+        2 => answer_map["PB AND PBS STUDY CENTER"],
         # Two-Tier
         3 => answer_map["HILI STUDY CENTER"],
         # Original VC
-        4 => answer_map["OVC AND EH STUDY CENTERS"],
+        4 => answer_map["OVC AND EH STUDY CENTER"],
         # Provider Based Subsample
-        5 => answer_map["PB AND PBS STUDY CENTERS"]
+        5 => answer_map["PB AND PBS STUDY CENTER"]
       }
 
       answer_for(question, center_type_map[NcsNavigatorCore.recruitment_type_id])
