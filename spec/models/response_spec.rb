@@ -199,20 +199,37 @@ end
       end
     end
 
-    describe 'with a string value' do
-      let(:response) {
-        create_response(
-          :answer => question.answers.find_by_response_class('string'),
-          :string_value => 'Fredricka'
-        )
-      }
-
-      it 'returns the string value' do
-        response.reportable_value.should == 'Fredricka'
+    shared_context 'nil-handling reportable_value type' do
+      describe 'without a value' do
+        it 'returns nil' do
+          response.reportable_value.should be_nil
+        end
       end
     end
 
-    describe 'with an integer value' do
+    describe 'with a string-valued answer' do
+      include_context 'nil-handling reportable_value type'
+
+      let(:response) {
+        create_response(
+          :answer => question.answers.find_by_response_class('string')
+        )
+      }
+
+      describe 'with a value' do
+        before do
+          response.string_value = 'Fredricka'
+        end
+
+        it 'returns the string value' do
+          response.reportable_value.should == 'Fredricka'
+        end
+      end
+    end
+
+    describe 'with an integer-valued answer' do
+      include_context 'nil-handling reportable_value type'
+
       let(:questions_dsl) {
         <<-DSL
           q_RETURN_JOB "Number",
@@ -228,16 +245,23 @@ end
       let(:response) {
         create_response(
           :answer => question.answers.find_by_response_class('integer'),
-          :integer_value => 6
         )
       }
 
-      it 'returns the string representation of the integer value' do
-        response.reportable_value.should == '6'
+      describe 'with a value' do
+        before do
+          response.integer_value = 6
+        end
+
+        it 'returns the string representation of the integer value' do
+          response.reportable_value.should == '6'
+        end
       end
     end
 
-    describe 'with a datetime value' do
+    describe 'with a datetime-valued answer' do
+      include_context 'nil-handling reportable_value type'
+
       let(:questions_dsl) {
         <<-DSL
           q_TIME_STAMP_8 "Insert date/time stamp",
@@ -249,16 +273,22 @@ end
       let(:response) {
         create_response(
           :answer => question.answers.find_by_response_class('datetime'),
-          :datetime_value => Time.local(2010, 12, 27, 8, 39, 36)
         )
       }
 
-      it 'returns the MDES formatted string representation' do
-        response.reportable_value.should == '2010-12-27T08:39:36'
+      describe 'with a value' do
+        before do
+          response.datetime_value = Time.local(2010, 12, 27, 8, 39, 36)
+        end
+
+        it 'returns the MDES formatted string representation' do
+          response.reportable_value.should == '2010-12-27T08:39:36'
+        end
       end
     end
 
-    describe 'with a date value' do
+    describe 'with a date-valued answer' do
+      include_context 'nil-handling reportable_value type'
 
       let(:questions_dsl) {
         <<-DSL
@@ -272,17 +302,22 @@ end
       let(:response) {
         create_response(
           :answer => question.answers.find_by_response_class('date'),
-          :datetime_value => Time.local(2001, 12, 25)
         )
       }
 
-      it 'returns the MDES formatted string representation' do
-        response.reportable_value.should == '2001-12-25'
-      end
+      describe 'with a value' do
+        before do
+          response.datetime_value = Time.local(2001, 12, 25)
+        end
 
+        it 'returns the MDES formatted string representation' do
+          response.reportable_value.should == '2001-12-25'
+        end
+      end
     end
 
-    describe 'with a time value' do
+    describe 'with a time-valued answer' do
+      include_context 'nil-handling reportable_value type'
 
       let(:questions_dsl) {
         <<-DSL
@@ -296,17 +331,22 @@ end
       let(:response) {
         create_response(
           :answer => question.answers.find_by_response_class('time'),
-          :datetime_value => Time.local(2001, 12, 25, 8, 44, 11)
         )
       }
 
-      it 'returns the MDES formatted string representation' do
-        response.reportable_value.should == '08:44'
-      end
+      describe 'with a value' do
+        before do
+          response.datetime_value = Time.local(2001, 12, 25, 8, 44, 11)
+        end
 
+        it 'returns the MDES formatted string representation' do
+          response.reportable_value.should == '08:44'
+        end
+      end
     end
 
-    describe 'with a float value' do
+    describe 'with a float-valued answer' do
+      include_context 'nil-handling reportable_value type'
 
       let(:questions_dsl) {
         <<-DSL
@@ -319,18 +359,23 @@ end
 
       let(:response) {
         create_response(
-          :answer => question.answers.find_by_response_class('float'),
-          :float_value => 1.1
+          :answer => question.answers.find_by_response_class('float')
         )
       }
 
-      it 'returns the string representation of the float value' do
-        response.reportable_value.should == '1.1'
-      end
+      describe 'with a value' do
+        before do
+          response.float_value = 1.1
+        end
 
+        it 'returns the string representation of the float value' do
+          response.reportable_value.should == '1.1'
+        end
+      end
     end
 
-    describe 'with a text value' do
+    describe 'with a text-valued answer' do
+      include_context 'nil-handling reportable_value type'
 
       let(:questions_dsl) {
         <<-DSL
@@ -341,15 +386,19 @@ end
 
       let(:response) {
         create_response(
-          :answer => question.answers.find_by_response_class('text'),
-          :text_value => "Next Thursday at 2 o'clock"
+          :answer => question.answers.find_by_response_class('text')
         )
       }
 
-      it 'returns the text' do
-        response.reportable_value.should == "Next Thursday at 2 o'clock"
-      end
+      describe 'with a value' do
+        before do
+          response.text_value = "Next Thursday at 2 o'clock"
+        end
 
+        it 'returns the text' do
+          response.reportable_value.should == "Next Thursday at 2 o'clock"
+        end
+      end
     end
 
   end

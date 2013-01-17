@@ -52,15 +52,15 @@ class Response < ActiveRecord::Base
     when 'string'
       self.string_value
     when 'integer'
-      self.integer_value.to_s
+      self.integer_value ? self.integer_value.to_s : nil
     when 'datetime'
-      self.datetime_value.iso8601[0,19]
+      self.datetime_value.try(:iso8601).try(:[], 0, 19)
     when 'date'
       self.date_value
     when 'time'
       self.time_value
     when 'float'
-      self.float_value.to_s
+      self.float_value ? self.float_value.to_s : nil
     when 'text'
       self.text_value
     else
