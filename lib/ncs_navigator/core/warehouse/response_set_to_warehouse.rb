@@ -7,6 +7,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Core::Warehouse
   module ResponseSetToWarehouse
     ## TODO: centralize MDES version selection
+    require 'ncs_navigator/warehouse/models/two_point_zero'
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     STATIC_RECORD_FIELD_MAPPING = {

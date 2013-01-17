@@ -9,6 +9,7 @@ require File.expand_path('../importer_warehouse_setup', __FILE__)
 
 module NcsNavigator::Core::Warehouse
   describe OperationalImporter, :clean_with_truncation, :warehouse do
+    require 'ncs_navigator/warehouse/models/two_point_zero'
     MdesModule = NcsNavigator::Warehouse::Models::TwoPointZero
 
     include_context :importer_spec_warehouse
