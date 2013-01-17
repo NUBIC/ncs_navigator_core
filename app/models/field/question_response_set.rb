@@ -106,9 +106,10 @@ module Field
     # Saves and destroys responses.
     def save(options = {})
       ActiveRecord::Base.transaction do
-        ok = all? do |r|
-          r.marked_for_destruction? ? r.destroy : r.save
-        end
+        destroy, save = partition(&:marked_for_destruction?)
+
+        ok = destroy.all?(&:destroy)
+        ok = ok && save.all?(&:save)
 
         if ok
           @changed = false

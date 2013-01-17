@@ -118,6 +118,24 @@ module Field
 
         r1.should be_destroyed
       end
+
+      it 'destroys first, saves later' do
+        # If this example doesn't go well, you'll see a constraint violation
+        # on Response#api_id.
+        #
+        # This sort of thing happens when receiving updated data for existing
+        # responses.
+        r1 = adapt_model(Factory(:response, :question => q1, :answer => a1, :api_id => 'foo'))
+        rs = Factory(:response_set)
+        r2 = adapt_model(Response.new(:question => q1, :answer => a2, :api_id => 'foo', :response_set => rs))
+
+        r1.mark_for_destruction
+
+        group << r2
+        group << r1
+
+        group.save.should be_true
+      end
     end
 
     describe '#changed?' do
