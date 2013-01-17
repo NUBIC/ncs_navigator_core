@@ -64,7 +64,6 @@ Feature: Merging data from field clients
     Then the "r_1_string_value" field should contain "Jeff January"
     And the "r_2_string_value" field should contain "04/19/2012 13:33"
 
-  @wip
   Scenario: Responses are merged with respect to participant
     Given the participant
       | person/first_name | Bessie              |
