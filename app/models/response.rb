@@ -69,9 +69,9 @@ class Response < ActiveRecord::Base
     when 'string'
       self.string_value
     when 'integer'
-      self.integer_value
+      self.integer_value ? self.integer_value.to_s : nil
     when 'datetime'
-      self.datetime_value.iso8601[0,19]
+      self.datetime_value.try(:iso8601).try(:[], 0, 19)
     else
       fail "Unsupported response class in #reportable_value: #{answer.response_class}"
     end
