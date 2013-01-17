@@ -2,7 +2,7 @@ Pregnancy Screener - 29
 -----------------------
 
 # Pregnancy Screener Interview
-event:pregnancy_screener instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0 instrument:2.1:ins_que_pregscreen_int_hili_m2.1_v2.1 instrument:2.2:ins_que_pregscreen_int_hili_m2.1_v2.1
+event:pregnancy_screener instrument:2.0:ins_que_pregscreen_int_hili_p2_v2.0 instrument:2.1:ins_que_pregscreen_int_hili_m2.1_v2.1 instrument:2.2:ins_que_pregscreen_int_hili_m2.1_v2.1 order:01_01
 
 
 
@@ -21,7 +21,7 @@ Lo Intensity Data Collection - 33
 ---------------------------------
 
 # Low Intensity Informed Consent
-event:low_intensity_data_collection participant_type:mother
+event:low_intensity_data_collection participant_type:mother order:99_99
 
 # Low-Intensity Interview (Non & Pregnant) a.k.a. Lo I Quex
 event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:2.1:ins_que_lipregnotpreg_int_li_p2_v2.0 instrument:2.2:ins_que_lipregnotpreg_int_li_p2_v2.0 order:01_01 participant_type:mother
@@ -49,10 +49,10 @@ collection:biological event:pre-pregnancy_visit instrument:2.0:ins_bio_adultbloo
 collection:biological event:pre-pregnancy_visit instrument:2.0:ins_bio_adulturine_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 instrument:2.2:ins_bio_adulturine_dci_ehpbhi_m2.1_v1.1 order:11_01 participant_type:mother
 
 # Non-Pregnant Woman Informed Consent
-event:pre-pregnancy_visit participant_type:mother
+event:pre-pregnancy_visit participant_type:mother order:95_01
 
 # Pre-Pregnancy Visit Information Sheet
-event:pre-pregnancy_visit
+event:pre-pregnancy_visit order:95_02
 
 # Pre-Pregnancy Interview
 event:pre-pregnancy_visit instrument:2.0:ins_que_prepreg_int_ehpbhi_p2_v1.1 instrument:2.1:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 instrument:2.2:ins_que_prepreg_int_ehpbhi_m2.1_v1.2 order:01_01 participant_type:mother
@@ -111,13 +111,13 @@ collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_vacbagdu
 collection:environmental event:pregnancy_visit_1 instrument:2.2:ins_env_sampledistrib_dci_ehpbhi_m2.2_v1.0 order:24_04 participant_type:mother
 
 # Birth Visit Information Sheet
-event:pregnancy_visit_1
+event:pregnancy_visit_1 order:95_01
 
 # Pregnancy Visit 1 Visit Information Sheet
-event:pregnancy_visit_1
+event:pregnancy_visit_1 order:95_02
 
 # Pregnancy Health Care Log
-event:pregnancy_visit_1
+event:pregnancy_visit_1 order:95_03
 
 # Participant Verification Questionnaire
 event:pregnancy_visit_1 instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
@@ -149,10 +149,10 @@ collection:environmental event:pregnancy_visit_2 instrument:2.0:ins_env_tapwater
 collection:environmental event:pregnancy_visit_2 instrument:2.0:ins_env_vacbagdusttechcollect_dci_ehpbhi_p2_v1.0 order:21_01 participant_type:mother
 
 # Pregnancy Visit 2 Visit Information Sheet
-event:pregnancy_visit_2
+event:pregnancy_visit_2 order:95_01
 
 # Pregnancy Health Care Log
-event:pregnancy_visit_2
+event:pregnancy_visit_2 order:95_02
 
 # Child Participation Informed Consent
 event:pregnancy_visit_2 order:90_99 participant_type:child
@@ -186,15 +186,20 @@ Postnatal - TBD
 event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0 order:01_01 participant_type:mother
 
 
+Child - 10
+-----------
+
+# Child Informed Consent
+event:informed_consent order:95_01
 
 Father - 19
 -----------
 
 # Father Informed Consent
-event:father event_type:informed_consent participant_type:father
+event:father event_type:informed_consent participant_type:father order:95_01
 
 # Father Visit Information Sheet
-event:father
+event:father order:95_02
 
 # Father Interview
 event:father instrument:2.0:ins_que_father_int_ehpbhi_p2_v1.0 instrument:2.1:ins_que_father_int_ehpbhi_m2.1_v2.0 instrument:2.2:ins_que_father_int_ehpbhi_m2.1_v2.0 order:01_01 participant_type:father
@@ -226,10 +231,10 @@ Birth - 18
 collection:biological event:birth instrument:2.0:ins_bio_cordblood_dci_ehpbhi_p2_v1.0 instrument:2.1:ins_bio_cordblood_dci_ehpbhi_m2.1_v2.0 instrument:2.2:ins_bio_cordblood_dci_ehpbhi_m2.2_v3.0 order:10_01 participant_type:child
 
 # Birth Visit Information Sheet
-event:birth
+event:birth order:95_03
 
 # Infant Health Care Log
-event:birth
+event:birth order:95_04
 
 # Child Participation Informed Consent
 event:birth order:00_00 participant_type:child
@@ -283,7 +288,7 @@ event:3_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_
 ------------
 
 # 6-Month Visit Information Sheet
-event:6_month
+event:6_month order:95_02
 
 # 6-Month Mother Interview Part 1
 event:6_month instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_6mmother_int_ehpbhi_p2_v1.1_part_one order:01_01 participant_type:mother
@@ -330,7 +335,7 @@ event:9_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_
 -------------
 
 # 12-Month Visit Information Sheet
-event:12_month
+event:12_month order:95_01
 
 # 12-Month Mother Interview Part 1
 event:12_month instrument:2.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_12mmother_int_ehpbhi_p2_v1.1_part_one order:01_01 participant_type:mother
