@@ -6,7 +6,8 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def reference_identifiers
       [
-        "prepopulated_is_declined_participation_prior_to_enrollment"
+        "prepopulated_is_declined_participation_prior_to_enrollment",
+        "prepopulated_study_center_type"
       ]
     end
 
@@ -30,6 +31,8 @@ module NcsNavigator::Core::ResponseSetPopulator
             case reference_identifier
             when "prepopulated_is_declined_participation_prior_to_enrollment"
               general_consent_given?(question)
+            when "prepopulated_study_center_type"
+              what_study_center_type?(question)
             else
               nil
             end
@@ -45,6 +48,29 @@ module NcsNavigator::Core::ResponseSetPopulator
       general_consent = NcsCode.for_list_name_and_local_code(
                                                 "CONSENT_TYPE_CL1", 1)
       answer_for(question, participant.consented?(general_consent))
+    end
+
+    def what_study_center_type?(question)
+      answer_map = {
+        "OVC AND EH STUDY CENTERS" => 1,
+        "PB AND PBS STUDY CENTERS" => 2,
+        "HILI STUDY CENTER" => 3
+      }
+
+      center_type_map = {
+        # Enhanced Household Enumeration
+        1 => answer_map["OVC AND EH STUDY CENTERS"],
+        # Provider-Based Recruitment
+        2 => answer_map["PB AND PBS STUDY CENTERS"],
+        # Two-Tier
+        3 => answer_map["HILI STUDY CENTER"],
+        # Original VC
+        4 => answer_map["OVC AND EH STUDY CENTERS"],
+        # Provider Based Subsample
+        5 => answer_map["PB AND PBS STUDY CENTERS"]
+      }
+
+      answer_for(question, center_type_map[NcsNavigatorCore.recruitment_type_id])
     end
 
   end

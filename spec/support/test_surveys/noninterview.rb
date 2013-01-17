@@ -17,6 +17,19 @@ module NonInterview
     a = Factory(:answer, :question_id => q.id, :text => "FALSE",
                 :response_class => "answer", :reference_identifier => "false")
 
+    q = Factory(:question,
+                :reference_identifier => "prepopulated_study_center_type",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id,
+                :text => "OVC AND EH STUDY CENTERS",
+                :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id,
+                :text => "PB AND PBS STUDY CENTERS",
+                :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id,
+                :text => "HILI STUDY CENTERS",
+                :response_class => "answer", :reference_identifier => "3")
+
     survey
   end
 
