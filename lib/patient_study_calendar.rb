@@ -116,7 +116,7 @@ class PatientStudyCalendar
   def build_client
     @psc_client = Psc::Client.new(uri, :authenticator => create_authenticator) do |builder|
       builder.use NcsNavigator::Core::Psc::Retry
-      builder.use NcsNavigator::Core::Psc::Logger, log
+      builder.use NcsNavigator::Core::Psc::Logger, logger
     end
   end
 
@@ -771,14 +771,14 @@ class PatientStudyCalendar
     begin
       response = connection.get(path)
       if valid_response? response
-        log.debug "DEBUG [#{Time.now.to_s(:db)}] GET to #{path} succeeded - http status #{response.status}"
+        logger.debug "DEBUG [#{Time.now.to_s(:db)}] GET to #{path} succeeded - http status #{response.status}"
       else
-        log.info "INFO  [#{Time.now.to_s(:db)}] GET to #{path} failed - http status #{response.status}"
+        logger.info "INFO  [#{Time.now.to_s(:db)}] GET to #{path} failed - http status #{response.status}"
       end
       response.send response_section
     rescue Exception => e
-      log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during GET request to #{path}"
-      log.error e.backtrace.join("\n")
+      logger.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during GET request to #{path}"
+      logger.error e.backtrace.join("\n")
       raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
@@ -793,15 +793,15 @@ class PatientStudyCalendar
     begin
       response = connection.post(path, payload, { 'Content-Length' => '1024' })
       if valid_response? response
-        log.debug "DEBUG [#{Time.now.to_s(:db)}] POST to #{path} succeeded - http status #{response.status}"
-        log.debug "      - #{response.body}"
+        logger.debug "DEBUG [#{Time.now.to_s(:db)}] POST to #{path} succeeded - http status #{response.status}"
+        logger.debug "      - #{response.body}"
       else
-        log.info "INFO  [#{Time.now.to_s(:db)}] POST to #{path} failed - http status #{response.status}"
-        log.info "      - #{response.body}"
+        logger.info "INFO  [#{Time.now.to_s(:db)}] POST to #{path} failed - http status #{response.status}"
+        logger.info "      - #{response.body}"
       end
       response
     rescue Exception => e
-      log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during POST request to #{path}"
+      logger.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during POST request to #{path}"
       raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
@@ -816,15 +816,15 @@ class PatientStudyCalendar
     begin
       response = connection.put(path, payload)
       if valid_response? response
-        log.debug "DEBUG [#{Time.now.to_s(:db)}] PUT to #{path} succeeded - http status #{response.status}"
-        log.debug "      - #{response.body}"
+        logger.debug "DEBUG [#{Time.now.to_s(:db)}] PUT to #{path} succeeded - http status #{response.status}"
+        logger.debug "      - #{response.body}"
       else
-        log.info "INFO  [#{Time.now.to_s(:db)}] PUT to #{path} failed - http status #{response.status}"
-        log.info "      - #{response.body}"
+        logger.info "INFO  [#{Time.now.to_s(:db)}] PUT to #{path} failed - http status #{response.status}"
+        logger.info "      - #{response.body}"
       end
       response
     rescue Exception => e
-      log.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during PUT request to #{path}"
+      logger.error "ERROR [#{Time.now.to_s(:db)}] Exception #{e} during PUT request to #{path}"
       raise PscError, "Patient Study Calendar is currently down. #{e}" if e.to_s.include?("Connection refused")
     end
   end
