@@ -180,7 +180,7 @@ module Field
       end
 
       def inspect
-        "#<#{self.class.name} qid=#{question_public_id} aid=#{answer_public_id} group=#{response_group} value=#{value.inspect}>"
+        "#<#{self.class.name} qid=#{question_public_id} aid=#{answer_public_id} group=#{response_group.inspect} value=#{value.inspect}>"
       end
     end
   end
