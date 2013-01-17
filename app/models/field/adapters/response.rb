@@ -33,11 +33,11 @@ module Field::Adapters
       ]
 
       def answer_public_id
-        source.try(:answer_public_id) || target.answer.try(&:api_id)
+        source.try(:answer_public_id) || target.answer.try(:api_id)
       end
 
       def question_public_id
-        source.try(:question_public_id) || target.question.try(&:api_id)
+        source.try(:question_public_id) || target.question.try(:api_id)
       end
 
       def response_set_public_id
