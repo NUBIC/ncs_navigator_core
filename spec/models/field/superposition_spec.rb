@@ -167,13 +167,29 @@ module Field
       let(:a) { Factory(:answer) }
 
       let(:hr1) { adapt_hash(:response, 'question_id' => q1.api_id) }
-      let(:mr1) { adapt_model(Response.new(:question => q1, :answer => a)) }
-      let(:hr1b) { adapt_hash(:response, 'question_id' => q1.api_id) }
-      let(:mr1b) { adapt_model(Response.new(:question => q1, :answer => a)) }
+      let(:mr1) { adapt_model(Response.new(:question => q1, :answer => a, :response_set => mrs1)) }
       let(:hr2) { adapt_hash(:response, 'question_id' => q2.api_id) }
-      let(:mr2) { adapt_model(Response.new(:question => q2, :answer => a)) }
+      let(:mr2) { adapt_model(Response.new(:question => q2, :answer => a, :response_set => mrs1)) }
+      let(:hr3) { adapt_hash(:response, 'question_id' => q1.api_id) }
+      let(:mr3) { adapt_model(Response.new(:question => q1, :answer => a, :response_set => mrs2)) }
+
+      let(:mrs1) { ResponseSet.new }
+      let(:mrs2) { ResponseSet.new }
+      let(:hrs1) { adapt_hash(:response_set, 'uuid' => 'rs1') }
+      let(:hrs2) { adapt_hash(:response_set, 'uuid' => 'rs2') }
 
       before do
+        # api_id is attr_accessible on ResponseSet, so we can't mass-assign
+        # that.
+        mrs1.api_id = 'rs1'
+        mrs2.api_id = 'rs2'
+
+        # Assign response sets to original and proposed data.
+        hr1.ancestors[:response_set] = hrs1
+        hr2.ancestors[:response_set] = hrs1
+        hr3.ancestors[:response_set] = hrs2
+
+        # Build responses.
         sp.responses = {
           'foo' => {
             :current => hr1,
@@ -181,33 +197,38 @@ module Field
             :proposed => hr1
           },
           'bar' => {
-            :current => hr1b,
-            :original => mr1b,
-            :proposed => hr1b
-          },
-          'baz' => {
             :current => hr2,
             :original => mr2,
             :proposed => hr2
+          },
+          'baz' => {
+            :current => hr3,
+            :original => mr3,
+            :proposed => hr3
           }
         }
       end
 
-      QRS = Field::QuestionResponseSet
+      it 'groups responses by question and response set IDs' do
+        qrs = Field::QuestionResponseSet
 
-      it 'groups responses by question ID' do
         sp.build_question_response_sets
 
         sp.question_response_sets.should == {
-          q1.api_id => {
-            :current =>  QRS.new(hr1, hr1b),
-            :original => QRS.new(mr1, mr1b),
-            :proposed => QRS.new(hr1, hr1b)
+          [q1.api_id, hrs1.uuid] => {
+            :current => qrs.new(hr1),
+            :original => qrs.new(mr1),
+            :proposed => qrs.new(hr1)
           },
-          q2.api_id => {
-            :current =>  QRS.new(hr2),
-            :original => QRS.new(mr2),
-            :proposed => QRS.new(hr2)
+          [q2.api_id, hrs1.uuid] => {
+            :current => qrs.new(hr2),
+            :original => qrs.new(mr2),
+            :proposed => qrs.new(hr2)
+          },
+          [q1.api_id, hrs2.uuid] => {
+            :current => qrs.new(hr3),
+            :original => qrs.new(mr3),
+            :proposed => qrs.new(hr3)
           }
         }
       end

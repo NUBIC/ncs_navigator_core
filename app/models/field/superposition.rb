@@ -137,7 +137,7 @@ module Field
         set_current_state(h, ::Instrument, 'instrument_id')
         set_current_state(h, ::Participant, 'p_id')
         set_current_state(h, ::Person, 'person_id')
-        set_current_state(h, ::Response.with_answers_and_questions, 'api_id')
+        set_current_state(h, ::Response.for_merge, 'api_id')
         set_current_state(h, ::ResponseSet, 'api_id')
       end
     end
@@ -147,9 +147,11 @@ module Field
 
       responses.each do |_, state|
         state.each do |state_name, response|
-          res[response.question_public_id] ||= {}
-          res[response.question_public_id][state_name] ||= QuestionResponseSet.new
-          res[response.question_public_id][state_name] << response
+          key = [response.question_public_id, response.response_set_public_id]
+
+          res[key] ||= {}
+          res[key][state_name] ||= QuestionResponseSet.new
+          res[key][state_name] << response
         end
       end
 

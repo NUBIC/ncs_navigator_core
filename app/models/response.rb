@@ -36,8 +36,8 @@ class Response < ActiveRecord::Base
 
   def self.default_scope; end
 
-  def self.with_answers_and_questions
-    includes(:answer, :question)
+  def self.for_merge
+    includes(:answer, :question, :response_set)
   end
 
   def source_mdes_record=(record)
