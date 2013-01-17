@@ -37,7 +37,8 @@ module Field::Adapters
       end
 
       def response_set_public_id
-        source.try(:ancestors).try(:[], :response_set).try(:uuid)
+        source.try(:ancestors).try(:[], :response_set).try(:uuid) ||
+          target.response_set.try(:api_id)
       end
 
       def pending_prerequisites

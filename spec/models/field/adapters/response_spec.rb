@@ -94,6 +94,40 @@ module Field::Adapters
       end
     end
 
+    describe '#response_set_public_id' do
+      let(:rs) { Factory(:response_set, :api_id => 'foo') }
+
+      describe 'if no response set is present' do
+        before do
+          resp.response_set = nil
+        end
+
+        it 'returns nil' do
+          adapter.response_set_public_id.should be_nil
+        end
+      end
+
+      it "returns its response set's API ID" do
+        resp.response_set = rs
+
+        adapter.response_set_public_id.should == 'foo'
+      end
+
+      describe 'if #source is set' do
+        before do
+          ha = Response::HashAdapter.new({})
+          ha.ancestors = {
+            :response_set => ResponseSet::HashAdapter.new('uuid' => 'bar')
+          }
+          adapter.source = ha
+        end
+
+        it "returns its source's response set ID" do
+          adapter.response_set_public_id.should == 'bar'
+        end
+      end
+    end
+
     describe '#pending_prerequisites' do
       describe 'if #source is not set' do
         before do
