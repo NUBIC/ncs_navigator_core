@@ -153,7 +153,8 @@ Spork.prefork do
       PregnancyVisitTwo,
       BirthVisit,
       SamplesAndSpecimens,
-      PostNatal
+      PostNatal,
+      NonInterview
     ].each { |test_survey| config.include test_survey }
 
     if ENV['PROFILE_DB']

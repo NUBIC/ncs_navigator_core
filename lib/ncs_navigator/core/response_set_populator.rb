@@ -11,6 +11,7 @@ module NcsNavigator::Core::ResponseSetPopulator
   autoload :TracingModule,            'ncs_navigator/core/response_set_populator/tracing_module'
   autoload :LowIntensity,             'ncs_navigator/core/response_set_populator/low_intensity'
   autoload :Birth,                    'ncs_navigator/core/response_set_populator/birth'
+  autoload :NonInterview,             'ncs_navigator/core/response_set_populator/noninterview'
 
   POPULATORS = [
     [/_ParticipantVerif_/,  ParticipantVerification],
@@ -21,6 +22,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_Birth_/,             Birth],
     [/_PregVisit1_/,        PregnancyVisit],
     [/_PregVisit2_/,        PregnancyVisit],
+    [/_NonInterview/,       NonInterview],
   ]
 
 end
