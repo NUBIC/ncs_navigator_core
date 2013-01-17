@@ -225,4 +225,23 @@ module Field::Adapters
       end
     end
   end
+
+  describe Response::HashAdapter do
+    describe '#response_set_public_id' do
+      let(:r) { ::Response.new }
+      let(:rs) do
+        { 'uuid' => 'foo' }
+      end
+
+      let(:adapter) { Response::HashAdapter.new(r) }
+
+      before do
+        adapter.ancestors[:response_set] = ResponseSet::HashAdapter.new(rs)
+      end
+
+      it 'returns the public ID of its response set' do
+        adapter.response_set_public_id.should == rs['uuid']
+      end
+    end
+  end
 end

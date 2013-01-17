@@ -14,6 +14,10 @@ module Field::Adapters
       alias_method :answer_public_id, :answer_id
       alias_method :question_public_id, :question_id
 
+      def response_set_public_id
+        ancestors[:response_set].uuid
+      end
+
       def model_class
         ::Response
       end
