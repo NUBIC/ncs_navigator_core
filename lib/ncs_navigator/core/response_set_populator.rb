@@ -22,7 +22,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_Birth_/,             Birth],
     [/_PregVisit1_/,        PregnancyVisit],
     [/_PregVisit2_/,        PregnancyVisit],
-    [/_NonInterview/,       NonInterview],
+    [/_NonIntRespQues_/,    NonInterview],
   ]
 
 end
