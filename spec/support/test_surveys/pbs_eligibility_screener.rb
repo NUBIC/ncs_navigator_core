@@ -297,7 +297,7 @@ module PbsEligibilityScreener
     a = Factory(:answer, :question_id => q.id, :text => "REFUSED", :response_class => "answer", :reference_identifier => "-1")
     a = Factory(:answer, :question_id => q.id, :text => "DON'T KNOW", :response_class => "answer", :reference_identifier => "-2")
 
-    q = Factory(:question, :reference_identifier => "PROVIDER_OFFICE_ON_FRAME", :data_export_identifier => "PBS_ELIG_SCREENER.PROVIDER_OFFICE_ON_FRAME", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "PROVIDER_OFFICE_ON_FRAME", :data_export_identifier => "PBS_ELIG_SCREENER_PR_OFFICE.PROVIDER_OFFICE_ON_FRAME", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "PROVIDER OFFICE FOUND ON THE FRAME LIST (INELIGIBLE)", :response_class => "answer", :reference_identifier => "1")
     a = Factory(:answer, :question_id => q.id, :text => "CANNOT DETERMINE IF PROVIDER'S OFFICE IS ON FRAME LIST (E.G. INCONSISTENT OR INCOMPLETE INFORMATION)", :response_class => "answer", :reference_identifier => "2")
     a = Factory(:answer, :question_id => q.id, :text => "PROVIDER OFFICE NOT FOUND ON FRAME LIST", :response_class => "answer", :reference_identifier => "3")

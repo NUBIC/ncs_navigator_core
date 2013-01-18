@@ -7,6 +7,7 @@ module OperationalDataExtractor
     # TODO: is address the HOME address? if so, set address_type
 
     INTERVIEW_PREFIX = "PBS_ELIG_SCREENER"
+    INTERVIEW_PREFIX_PROVIDER_OFFICE = "PBS_ELIG_SCREENER_PR_OFFICE"
 
     ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
     CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW"

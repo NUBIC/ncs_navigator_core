@@ -1159,7 +1159,7 @@ class Participant < ActiveRecord::Base
 
   def no_preceding_providers_in_frame?(person)
     answers = []
-    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX}.PROVIDER_OFFICE_ON_FRAME").all
+    rsps = person.responses_for("#{OperationalDataExtractor::PbsEligibilityScreener::INTERVIEW_PREFIX_PROVIDER_OFFICE}.PROVIDER_OFFICE_ON_FRAME").all
     rsps.each { |rsp| answers << rsp.answer.reference_identifier } if rsps != nil
     return true if rsps == nil
     answers.any? { |a| a == "1" } ? false : true
