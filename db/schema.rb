@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108204723) do
+ActiveRecord::Schema.define(:version => 20130108224850) do
 
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
@@ -804,7 +804,7 @@ ActiveRecord::Schema.define(:version => 20130108204723) do
     t.boolean  "being_processed",                              :default => false
     t.integer  "response_set_id"
     t.string   "role"
-    t.integer  "language_new_code",                                               :null => false
+    t.integer  "language_new_code",                            :default => -4,    :null => false
     t.string   "language_new_other"
     t.integer  "lock_version",                                 :default => 0
   end

@@ -15,6 +15,8 @@ class PatientStudyCalendar
   CHILD_EPOCH     = "Child"
   PBS_ELIGIBILITY = "PBS-Eligibility"
 
+  PBS_ELIGIBILITY_SCREENER = "PBS Participant Eligibility Screening"
+
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
   PPG_FOLLOW_UP         = "PPG Follow-Up"

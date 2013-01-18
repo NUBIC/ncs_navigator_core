@@ -183,8 +183,7 @@ class Event < ActiveRecord::Base
   # as another event
   CONTINUABLE = [
     PatientStudyCalendar::PREGNANCY_SCREENER,
-    PatientStudyCalendar::PBS_ELIGIBILITY,
-    "PBS Participant Eligibility Screening",
+    PatientStudyCalendar::PBS_ELIGIBILITY_SCREENER,
     PatientStudyCalendar::BIRTH_VISIT_INTERVIEW,
     PatientStudyCalendar::HI_LO_CONVERSION,
     PatientStudyCalendar::INFORMED_CONSENT
