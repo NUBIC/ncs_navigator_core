@@ -54,7 +54,7 @@ Feature: Merging data from field clients
     And I should see "2005-07-18"
 
     # event disposition
-    And I should see "Participant cognitively unable to provide informed consent/complete interview"
+    And I should see "Out of sample"
 
     # instrument name
     And I should see "pregnancy_survey_v1.0"
@@ -88,7 +88,7 @@ Feature: Merging data from field clients
     And I should see "2005-07-18"
 
     # event disposition
-    And I should see "Participant cognitively unable to provide informed consent/complete interview"
+    And I should see "Out of sample"
 
   Scenario: The field client may create response sets
     Given the participant
