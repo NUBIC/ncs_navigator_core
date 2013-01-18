@@ -139,14 +139,19 @@ module Field
     ##
     # @private
     def instrument_templates_as_json(plan, options)
+      c = NcsNavigator::Core::Surveyor::Cache.new(Rails.application.redis)
+
       plan.surveys.map do |s|
         ms = m s
 
         if ms
+          cached = c.get(ms)
+          sj = cached ? JSON.parse(cached) : ms
+
           {
             'instrument_template_id' => ms.api_id,
             'participant_type' => s.participant_type,
-            'survey' => ms,
+            'survey' => sj,
             'version' => ms.updated_at.utc
           }
         end
