@@ -63,24 +63,31 @@ module Psc
     end
 
     shared_examples_for 'a label reader' do
-      def self.it_reads_label(prefix, expected)
+      def self.it_reads_label(prefix, version, expected)
         describe "#{prefix}_label" do
-          it "returns the first label with prefix #{prefix}:" do
-            sa.send("#{prefix}_label").should == expected
+          it "returns the label with prefix #{prefix} for MDES version #{version}" do
+            sa.send("#{prefix}_label", version).should == expected
           end
 
           it 'returns nil if there is no matching label' do
-            empty_sa.send("#{prefix}_label").should be_nil
+            empty_sa.send("#{prefix}_label", version).should be_nil
           end
         end
       end
 
-      it_reads_label 'collection',        'biological'
-      it_reads_label 'event',             'birth'
-      it_reads_label 'instrument',        'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
-      it_reads_label 'order',             '01_02'
-      it_reads_label 'participant_type',  'child'
-      it_reads_label 'references',        'ins_que_birth_int_ehpbhi_p2_v2.0'
+      it_reads_label 'collection',        '2.0', 'biological'
+      it_reads_label 'event',             '2.0', 'birth'
+      it_reads_label 'instrument',        '2.0', 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+      it_reads_label 'order',             '2.0', '01_02'
+      it_reads_label 'participant_type',  '2.0', 'child'
+      it_reads_label 'references',        '2.0', 'ins_que_birth_int_ehpbhi_p2_v2.0'
+
+      it_reads_label 'collection',        '3.0', 'biological'
+      it_reads_label 'event',             '3.0', 'birth'
+      it_reads_label 'instrument',        '3.0', 'ins_que_birth_int_ehpbhi_p2_v3.0_baby_name'
+      it_reads_label 'order',             '3.0', '01_02'
+      it_reads_label 'participant_type',  '3.0', 'child'
+      it_reads_label 'references',        '3.0', 'ins_que_birth_int_ehpbhi_p2_v3.0'
 
       describe '#specimen_collection?' do
         it 'returns true for activities with a collection label' do
@@ -179,23 +186,23 @@ module Psc
       end
     end
 
-    shared_examples_for 'an entity deriver' do
+    shared_examples_for 'an entity deriver' do |mdes_version|
       it 'derives a person' do
-        sa.derive_implied_entities
+        sa.derive_implied_entities(mdes_version)
 
         sa.person.should == IE::Person.new(sa.person_id)
       end
 
       it 'derives a contact' do
-        sa.derive_implied_entities
+        sa.derive_implied_entities(mdes_version)
 
         sa.contact.should == IE::Contact.new(sa.activity_date, sa.person)
       end
 
       it 'derives an event' do
-        sa.derive_implied_entities
+        sa.derive_implied_entities(mdes_version)
 
-        sa.event.should == IE::Event.new(sa.event_label,
+        sa.event.should == IE::Event.new(sa.event_label(mdes_version),
                                          sa.ideal_date,
                                          sa.contact,
                                          sa.person)
@@ -203,9 +210,9 @@ module Psc
 
       describe 'if the activity does not have a references label' do
         before do
-          sa.labels = 'event:foo instrument:1.0:baz order:01_01'
+          sa.labels = "event:foo instrument:#{mdes_version}:baz order:01_01"
 
-          sa.derive_implied_entities
+          sa.derive_implied_entities(mdes_version)
         end
 
         it 'derives an instrument' do
@@ -214,15 +221,15 @@ module Psc
                                                      sa.activity_name,
                                                      sa.event,
                                                      sa.person,
-                                                     sa.order_label)
+                                                     sa.order_label(mdes_version))
         end
       end
 
       describe 'if the activity does not have an event label' do
         before do
-          sa.labels = 'instrument:1.0:foo'
+          sa.labels = "instrument:#{mdes_version}:foo"
 
-          sa.derive_implied_entities
+          sa.derive_implied_entities(mdes_version)
         end
 
         it 'does not derive an instrument' do
@@ -232,9 +239,9 @@ module Psc
 
       describe 'if the activity has a references label' do
         before do
-          sa.labels = 'event:foo references:bar instrument:1.0:baz'
+          sa.labels = "event:foo references:#{mdes_version}:bar instrument:#{mdes_version}:baz"
 
-          sa.derive_implied_entities
+          sa.derive_implied_entities(mdes_version)
         end
 
         it 'does not derive an instrument' do
@@ -243,19 +250,19 @@ module Psc
       end
 
       it 'derives a survey' do
-        sa.derive_implied_entities
+        sa.derive_implied_entities(mdes_version)
 
-        sa.survey.should == IE::Survey.new(sa.instrument_label, sa.participant_type_label, sa.order_label)
+        sa.survey.should == IE::Survey.new(sa.instrument_label(mdes_version), sa.participant_type_label(mdes_version), sa.order_label(mdes_version))
       end
 
       it 'derives a referenced survey' do
-        sa.derive_implied_entities
+        sa.derive_implied_entities(mdes_version)
 
-        sa.referenced_survey.should == IE::SurveyReference.new(sa.references_label)
+        sa.referenced_survey.should == IE::SurveyReference.new(sa.references_label(mdes_version))
       end
 
       it 'derives a contact link' do
-        sa.derive_implied_entities
+        sa.derive_implied_entities(mdes_version)
 
         sa.contact_link.should == IE::ContactLink.new(sa.person,
                                                       sa.contact,
@@ -269,7 +276,8 @@ module Psc
 
       it_should_behave_like 'a label reader'
       it_should_behave_like 'an activity state reader'
-      it_should_behave_like 'an entity deriver'
+      it_should_behave_like 'an entity deriver', '2.0'
+      it_should_behave_like 'an entity deriver', '3.0'
     end
 
     describe 'with a schedule row' do
@@ -277,7 +285,8 @@ module Psc
 
       it_should_behave_like 'a label reader'
       it_should_behave_like 'an activity state reader'
-      it_should_behave_like 'an entity deriver'
+      it_should_behave_like 'an entity deriver', '2.0'
+      it_should_behave_like 'an entity deriver', '3.0'
     end
 
     let(:sa) { ScheduledActivity.new }

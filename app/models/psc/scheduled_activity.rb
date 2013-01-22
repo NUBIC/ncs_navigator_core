@@ -222,22 +222,27 @@ module Psc
       @label_list ||= []
     end
 
-    def derive_implied_entities
+    def derive_implied_entities(ver = NcsNavigatorCore.mdes_version.number)
       im = ImpliedEntities
 
       @person = im::Person.new(person_id)
       @contact = im::Contact.new(activity_date, person)
 
-      if event_label
-        @event = im::Event.new(event_label, ideal_date, contact, person)
+      evl = event_label(ver)
+      inl = instrument_label(ver)
+      rfl = references_label(ver)
+      orl = order_label(ver)
+
+      if evl
+        @event = im::Event.new(evl, ideal_date, contact, person)
       end
 
-      if instrument_label
-        @survey = im::Survey.new(instrument_label, participant_type_label, order_label)
+      if inl
+        @survey = im::Survey.new(inl, participant_type_label(ver), orl)
       end
 
-      if references_label
-        @referenced_survey = im::SurveyReference.new(references_label)
+      if rfl
+        @referenced_survey = im::SurveyReference.new(rfl)
       end
 
       if event && survey && !referenced_survey
@@ -246,7 +251,7 @@ module Psc
                                          activity_name,
                                          event,
                                          person,
-                                         order_label)
+                                         orl)
       end
 
       @contact_link = im::ContactLink.new(person, contact, event, instrument)
@@ -260,6 +265,8 @@ module Psc
                     when NilClass then []
                     else v
                     end
+
+      @label_list.map! { |l| ActivityLabel.from_string(l) }
     end
 
     ##
@@ -292,8 +299,8 @@ module Psc
     # Label readers.
     %w(collection event instrument order participant_type references).each do |prefix|
       str = <<-END
-        def #{prefix}_label
-          label_with "#{prefix}:"
+        def #{prefix}_label(mdes_version)
+          label_with("#{prefix}", mdes_version)
         end
       END
 
@@ -301,15 +308,20 @@ module Psc
     end
 
     ##
-    # True if this activity involves specimen collection, false otherwise.
-    alias_method :specimen_collection?, :collection_label
+    # True if this activity involves specimen collection for a given MDES
+    # version, false otherwise.
+    def specimen_collection?(mdes_version = NcsNavigatorCore.mdes_version.number)
+      collection_label(mdes_version)
+    end
 
     ##
     # @private
-    def label_with(prefix)
-      label = @label_list.detect { |l| l.start_with?(prefix) }
+    def label_with(prefix, mdes_version)
+      l = @label_list.detect do |l|
+        l.has_prefix?(prefix) && l.for_mdes_version?(mdes_version)
+      end
 
-      label.split(':', 3).last if label
+      l.content if l
     end
 
     ##
