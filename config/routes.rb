@@ -40,6 +40,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_arm
       put :register_with_psc
       put :schedule_next_event_with_psc
+      put :schedule_informed_consent_event
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status

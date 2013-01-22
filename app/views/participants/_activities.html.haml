@@ -10,6 +10,17 @@
 
     .schedule
       - if @participant_activity_plan && !@participant.pending_events.blank?
+
+        .informed_consent
+          %b
+            Schedule Informed Consent
+          .link
+            = form_for @participant, :url => schedule_informed_consent_event_participant_path(@participant) do |f|
+              %b
+                Date
+              = text_field_tag :date, Date.today.to_s, :class => 'datepicker'
+              = f.submit "Schedule Informed Consent", :disable_with => 'Scheduling Informed Consent...'
+
         %b
           Activities for Pending Events
         .activities

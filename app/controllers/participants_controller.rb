@@ -7,7 +7,7 @@ class ParticipantsController < ApplicationController
   permit Role::SYSTEM_ADMINISTRATOR, Role::USER_ADMINISTRATOR, Role::ADMINISTRATIVE_STAFF, Role::STAFF_SUPERVISOR ,
          :only => [:edit_ppg_status, :update_ppg_status, :enroll, :unenroll, :remove_from_active_followup, :current_workflow]
 
-
+  before_filter :load_participant, :except => [:index, :in_ppg_group, :new, :create]
   ##
   # List all of the Participants in the application, paginated
   #
@@ -45,7 +45,6 @@ class ParticipantsController < ApplicationController
   ##
   # GET /participants/:id
   def show
-    load_participant
     @person = @participant.person
     @participant_activity_plan = psc.build_activity_plan(@participant)
 
@@ -66,7 +65,6 @@ class ParticipantsController < ApplicationController
   # POST /participant/:id/register_with_psc
   # POST /participant:id/register_with_psc.json
   def register_with_psc
-    load_participant
     resp = psc.assign_subject(@participant)
 
     url = edit_participant_path(@participant)
@@ -103,8 +101,6 @@ class ParticipantsController < ApplicationController
   # POST /participant/:id/schedule_next_event_with_psc
   # POST /participant:id/schedule_next_event_with_psc.json
   def schedule_next_event_with_psc
-    load_participant
-
     url = edit_participant_path(@participant)
     url = params[:redirect_to] unless params[:redirect_to].blank?
 
@@ -144,8 +140,14 @@ class ParticipantsController < ApplicationController
   #
   # GET /participants/:id/schedule
   def schedule
-    load_participant
     @subject_schedules = psc.schedules(@participant)
+  end
+
+  ##
+  # Schedule an Informed Consent segment in PSC
+  def schedule_informed_consent_event
+    Event.schedule_general_informed_consent(psc, @participant, params[:date])
+    redirect_to(participant_path(@participant), :notice => 'Informed Consent event scheduled for Participant.')
   end
 
   # GET /participants/new
@@ -187,12 +189,9 @@ class ParticipantsController < ApplicationController
 
   # GET /participants/1/edit
   def edit
-    load_participant
   end
 
   def update
-    load_participant
-
     respond_to do |format|
       if @participant.update_attributes(params[:participant])
         format.html { redirect_to(participants_path, :notice => 'Participant was successfully updated.') }
@@ -205,12 +204,9 @@ class ParticipantsController < ApplicationController
   end
 
   def edit_arm
-    load_participant
   end
 
   def update_arm
-    load_participant
-
     mark_pending_event_activities_canceled(@participant)
     if @participant.switch_arm
 
@@ -234,11 +230,9 @@ class ParticipantsController < ApplicationController
   end
 
   def edit_ppg_status
-    load_participant
   end
 
   def update_ppg_status
-    load_participant
     respond_to do |format|
       if @participant.update_attributes(params[:participant])
         format.html { redirect_to(participant_path(@participant), :notice => 'Participant PPG Status was successfully updated.') }
@@ -251,12 +245,10 @@ class ParticipantsController < ApplicationController
   end
 
   def mark_event_out_of_window
-    load_participant
     @person = @participant.person
   end
 
   def process_mark_event_out_of_window
-    load_participant
     event = Event.find(params[:event_id])
     resp = @participant.mark_event_out_of_window(psc, event)
     if resp && resp.success?
@@ -268,7 +260,6 @@ class ParticipantsController < ApplicationController
   end
 
   def enroll
-    load_participant
     @participant.enroll!
 
     url = participant_path(@participant)
@@ -278,7 +269,6 @@ class ParticipantsController < ApplicationController
   end
 
   def unenroll
-    load_participant
     @participant.unenroll!(psc, params[:enrollment_status_comment])
 
     url = participant_path(@participant)
@@ -288,7 +278,6 @@ class ParticipantsController < ApplicationController
   end
 
   def remove_from_active_followup
-    load_participant
     @participant.unenroll!(psc, params[:enrollment_status_comment])
 
     url = participant_path(@participant)
@@ -301,15 +290,13 @@ class ParticipantsController < ApplicationController
   # Page to show participant in particular state and potentially update that
   # state in case of issues
   def correct_workflow
-    @low_intensity_states = [["registered", "Registered"], ["in_pregnancy_probability_group", "In Pregnancy Probii"]]
-    load_participant
+    @low_intensity_states = [["registered", "Registered"], ["in_pregnancy_probability_group", "In Pregnancy Probibility"]]
   end
 
   ##
   # Simple action to move participant from one state to the next
   # PUT /participants/1/process_update_state
   def process_update_state
-    load_participant
     @participant.state = params[:new_state]
     @participant.high_intensity = true if params[:new_state] == "moved_to_high_intensity_arm"
     @participant.save!
@@ -320,14 +307,12 @@ class ParticipantsController < ApplicationController
   ##
   # Show changes
   def versions
-    load_participant
     if params[:export]
       send_data(@participant.export_versions, :filename => "#{@participant.public_id}.csv")
     end
   end
 
   def update_psc
-    load_participant
     psc.update_subject(@participant)
     flash[:notice] = "Participant information was sent to PSC."
     redirect_to participant_path(@participant)
