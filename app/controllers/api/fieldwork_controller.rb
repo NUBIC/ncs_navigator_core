@@ -19,6 +19,10 @@ class Api::FieldworkController < ApiController
     respond_with fw, :location => api_fieldwork_path(fw.fieldwork_id)
   end
 
+  def example
+    create
+  end
+
   def update
     fw = Fieldwork.for(params['id'], current_staff_id)
 

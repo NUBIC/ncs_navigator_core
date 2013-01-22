@@ -54,6 +54,8 @@ gem 'mustache'
 
 gem 'redis'
 
+gem 'rack-perftools_profiler', :require => 'rack/perftools_profiler'
+
 group :development do
   gem 'capistrano'
   gem 'debugger'
@@ -84,7 +86,6 @@ group :development, :test, :ci do
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'jasmine'
-  gem 'perftools.rb'
 
   gem 'ci_reporter'
 end

@@ -52,6 +52,9 @@ module NcsNavigatorCore
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password, 'CORE_SECRET']
 
+    # Custom middleware.
+    config.middleware.use ::Rack::PerftoolsProfiler, :default_printer => 'text', :bundler => true, :mode => :cputime
+
     Aker.configure do
       # The authentication protocol to use for interactive access.
       # `:form` is the default.

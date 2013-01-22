@@ -14,6 +14,6 @@ class ApiController < ApplicationController
   ##
   # Retrieves the supplied client ID.
   def client_id
-    request.headers['X-Client-ID']
+    request.headers['X-Client-ID'] || '1234567890'
   end
 end
