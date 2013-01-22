@@ -1,3 +1,18 @@
+Informed Consent - 10
+---------------------
+
+# Participant Verification Part One
+event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
+
+# Informed Consent
+event:informed_consent order:01_01 participant_type:mother
+
+# Participant Verification Part Two
+event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_01 participant_type:child references:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one
+
+# Parental Permission for Child Participation
+event:informed_consent order:01_01 participant_type:child
+
 Pregnancy Screener - 29
 -----------------------
 
