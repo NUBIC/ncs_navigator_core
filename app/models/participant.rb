@@ -615,9 +615,9 @@ class Participant < ActiveRecord::Base
   # @return [Date]
   def interval
     case
-    when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?, (can_consent? && eligible_for_low_intensity_follow_up?)
+    when pending?, registered?, newly_moved_to_high_intensity_arm?, pre_pregnancy?, (can_consent? && eligible_for_low_intensity_follow_up?), pregnancy_one?
       0
-    when pregnancy_two?, pregnancy_one?
+    when pregnancy_two?
       60.days
     when followed?, in_pregnancy_probability_group?, following_low_intensity?, postnatal?
       follow_up_interval

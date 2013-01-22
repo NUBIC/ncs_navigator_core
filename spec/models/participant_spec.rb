@@ -112,7 +112,7 @@ describe Participant do
       pr.should be_pregnancy_one
       pr.upcoming_events.should == [PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1]
       pr.next_scheduled_event.event.should == PatientStudyCalendar::HIGH_INTENSITY_PREGNANCY_VISIT_1
-      pr.next_scheduled_event.date.should == 60.days.since(date).to_date
+      pr.next_scheduled_event.date.should == date
     end
 
   end
@@ -673,9 +673,9 @@ describe Participant do
         end
 
         context "next event date" do
-          it "should be after 60 days from the last contact date" do
+          it "should be the last contact date" do
             Factory(:contact_link, :person => @person, :event => @event, :contact => Factory(:contact, :contact_date_date => date))
-            @participant.next_scheduled_event.date.should == date + 60.days
+            @participant.next_scheduled_event.date.should == date
           end
 
           context "with due_date" do
@@ -688,9 +688,10 @@ describe Participant do
               @participant.due_date.should == due_date
             end
 
-            it "should be after 60 days from the contact date" do
-              Factory(:contact_link, :person => @person, :event => @event, :contact => Factory(:contact, :contact_date_date => contact_date))
-              @participant.next_scheduled_event.date.should == contact_date + 60.days
+            it "should be the contact date" do
+              cl = Factory(:contact_link, :person => @person, :event => @event, :contact => Factory(:contact, :contact_date_date => contact_date))
+
+              @participant.next_scheduled_event.date.should == contact_date
             end
 
           end
