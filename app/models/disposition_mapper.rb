@@ -6,12 +6,12 @@ class DispositionMapper
   PROVIDER_RECRUITED = 70
   PROVIDER_REFUSED   = [46,47,48,49,50,51,52,53]
 
+  HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"   #1
+  PREGNANCY_SCREENER_EVENT    = "Pregnancy Screener Event"      #2
   GENERAL_STUDY_VISIT_EVENT   = "General Study Visit Event"     #3
-  HOUSEHOLD_ENUMERATION_EVENT = "Household Enumeration Event"   #2
-  INTERNET_SURVEY_EVENT       = "Internet Survey Event"         #6
   MAILED_BACK_SAQ_EVENT       = "Mailed Back SAQ Event"         #4
-  PREGNANCY_SCREENER_EVENT    = "Pregnancy Screener Event"      #1
   TELEPHONE_INTERVIEW_EVENT   = "Telephone Interview Event"     #5
+  INTERNET_SURVEY_EVENT       = "Internet Survey Event"         #6
   PROVIDER_RECRUITMENT_EVENT  = "Provider Recruitment"          #7
   PBS_ELIGIBILITY_EVENT       = "PBS Eligibility Screening"     #8
 
@@ -97,12 +97,80 @@ class DispositionMapper
     # Contact Type
     # In-person, Mail, Telephone, Email, Text Message, Website, Other
 
-    def disposition_text_for_event(category, code)
+    ##
+    # Determine the disposition text for the given category and
+    # disposition code
+    # @param[NcsCode] - 'EVENT_DSPSTN_CAT_CL1'
+    # @param[Integer] - the Disposition Status Code (Interim)
+    # @return[String] - the text associated with that code in that category
+    def disposition_text(category, code)
       return code if category.blank? || category.local_code.to_i < 0
       key = get_key_from_event_disposition_category(category)
       if opts = get_grouped_options[key]
         match = opts.select { |k,v| v == code }.first
         match[0] if match
+      end
+    end
+
+    ##
+    # Determine the disposition text for the given Event
+    # @see #disposition_text
+    # @param[Event] - to determine disposition category and code
+    # @return[String]
+    def disposition_text_for_event(event)
+      disposition_text(event.event_disposition_category, event.event_disposition)
+    end
+
+    ##
+    # Determine the disposition text for the given Contact for
+    # the given Event
+    # @see #disposition_text
+    # @param[Event] - to determine category (if Event determines category)
+    # @param[Contact] - to determine category and code (if Event does not determine category)
+    # @return[String] - the text associated with that code in that category
+    def disposition_text_for_contact(event, contact)
+      if category = determine_category_from_event_type(event.try(:event_type_code))
+        disposition_text(category, contact.contact_disposition)
+      else
+        if contact.contact_type_code.to_i <= 0
+          return contact.contact_disposition
+        else
+          if category = determine_category_from_contact_type(contact.contact_type_code)
+            disposition_text(category, contact.contact_disposition)
+          else
+            return contact.contact_disposition
+          end
+        end
+      end
+    end
+
+    ##
+    # Given a code from the 'CONTACT_TYPE_CL1' code list
+    # determine the associated 'EVENT_DSPSTN_CAT_CL1' and
+    # return that NcsCode
+    #
+    # CONTACT_TYPE_CL1    | EVENT_DSPSTN_CAT_CL1
+    # 1 In person         | 3 General Study Visits (including CASI SAQs)
+    # 2 Mail              | 4 Mailed Back Self Administered Questionnaires
+    # 3 Telephone         | 5 Telephone Interview Events
+    # 4 Email             | 6 Internet Survey Events
+    # 5 Text Message      | 5 Telephone Interview Events
+    # 6 Website           | 6 Internet Survey Events
+    #
+    # @param[Integer] - CONTACT_TYPE_CL1
+    # @return[NcsCode] - EVENT_DSPSTN_CAT_CL1
+    def determine_category_from_contact_type(code)
+      case code
+      when 1
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 3)
+      when 2
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 4)
+      when 3,5
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 5)
+      when 4,6
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 6)
+      else
+        nil
       end
     end
 
@@ -121,6 +189,29 @@ class DispositionMapper
       end
       result
     end
+
+    ##
+    # If the event type determines the category, return the Event
+    # Disposition Category NcsCode.
+    # Returns nil if the event type does not determine the category
+    # @param[Integer] - EVENT_TYPE_CL1
+    # @return[NcsCode] - EVENT_DSPSTN_CAT_CL1
+    def determine_category_from_event_type(event_type_code)
+      return nil if event_type_code.blank?
+      case event_type_code
+      when Event.household_enumeration_code
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 1)
+      when Event.pregnancy_screener_code
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 2)
+      when Event.provider_recruitment_code
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 7)
+      when Event.pbs_eligibility_screener_code
+        NcsCode.for_list_name_and_local_code('EVENT_DSPSTN_CAT_CL1', 8)
+      else
+        nil
+      end
+    end
+
 
   end
 
