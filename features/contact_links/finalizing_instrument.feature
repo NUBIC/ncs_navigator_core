@@ -23,7 +23,7 @@ Feature: Finalizing an instrument
   When I select "Complete" from "Instrument Status"
   And I press "Submit"
   Then I should be on the decision_page_contact_link page
-  And I should see "Administer another Instrument for this Event"
+  And I should see "Instruments and Activities"
   And I should see "Create Participant Record of Visit"
   And I should see "Enter information about the Visit"
   And I should see "Complete Contact Record"

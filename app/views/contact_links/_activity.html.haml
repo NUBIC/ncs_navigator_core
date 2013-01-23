@@ -1,7 +1,8 @@
 - if contact_link.contact.instrument_survey_titles.include?(survey.title)
   %div{ :class => "known_instrument", :title => survey.title}
-    = activity.activity_name
-  = render "activity_psc_action", :activity => activity
+    %span{ :class => 'activity_name' }
+      = activity.activity_name
+    = render "activity_psc_action", :activity => activity
 - elsif @current_activity == activity
   %div{ :class => "instrument", :title => survey.title}
     = link_to activity.activity_name,
