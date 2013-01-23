@@ -697,14 +697,13 @@ class Event < ActiveRecord::Base
 
 
   def self.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
-    start_date = nil
     begin
-      start_date = Date.parse(date)
+      date = Date.parse(date)
     rescue
       # NOOP - do not set unparsable date
     end
     Event.create(:participant => participant, :psu_code => participant.psu_code,
-                 :event_start_date => start_date, :event_type_code => event_type_code,
+                 :event_start_date => date, :event_type_code => event_type_code,
                  :scheduled_study_segment_identifier => study_segment_identifier)
   end
 
