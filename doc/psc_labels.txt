@@ -13,6 +13,8 @@ event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m
 # Parental Permission for Child Participation
 event:informed_consent order:01_01 participant_type:child
 
+
+
 Pregnancy Screener - 29
 -----------------------
 
@@ -29,6 +31,9 @@ event:pbs_participant_eligibility_screening instrument:3.0:ins_que_pbsamplingscr
 
 # Tracing Instrument
 event:pbs_participant_eligibility_screening instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:10_99
+
+# Informed Consent
+event:pbs_participant_eligibility_screening order:90_01 participant_type:mother
 
 
 
