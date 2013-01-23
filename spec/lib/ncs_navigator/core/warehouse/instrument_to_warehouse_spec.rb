@@ -11,7 +11,9 @@ module NcsNavigator::Core::Warehouse
     end
 
     let(:wh_config) {
-      NcsNavigator::Warehouse::Configuration.new
+      NcsNavigator::Warehouse::Configuration.new.tap do |config|
+        config.mdes_version = NcsNavigatorCore.mdes_version.number
+      end
     }
 
     let(:mother_participant) { Factory(:participant, :p_id => 'MP') }
@@ -67,11 +69,13 @@ module NcsNavigator::Core::Warehouse
       let(:questions_map) { questions.inject({}) { |h, q| h[q.reference_identifier] = q; h } }
 
       let(:rs_participant) { Factory(:participant) }
+      let(:rs_person) { Factory(:person) }
       let(:response_set) {
         ResponseSet.new.tap { |rs|
           rs.survey = survey
           rs.instrument = instrument
           rs.participant = rs_participant
+          rs.person = rs_person
           rs.save!
         }
       }
@@ -141,6 +145,55 @@ module NcsNavigator::Core::Warehouse
 
         it 'uses the public ID for the household unit' do
           pending 'Needs a different instrument'
+        end
+
+        context do
+          # This setup assumes MDES 3.0 or greater
+          let(:questions_dsl) {
+            <<-DSL
+              q_ADDRESS_1 "ADDRESS 1 - STREET/PO BOX",
+              :pick=>:one,
+              :data_export_identifier=>"PBS_ELIG_SCREENER.ADDRESS_1"
+              a :string
+              a_neg_1 "REFUSED"
+              a_neg_2 "DON'T KNOW"
+            DSL
+          }
+          let(:primary) { records.find { |rec| rec.class.mdes_table_name == 'pbs_elig_screener' } }
+          let(:question) { questions_map['ADDRESS_1'] }
+          let!(:response) {
+            create_response_for(question) { |r|
+              r.answer = question.answers.find_by_text('REFUSED')
+            }
+          }
+
+          it 'uses the public ID for the person' do
+            primary.person_id.should == rs_person.public_id
+          end
+
+          describe 'when there is a participant' do
+            it "uses that participant's PPG_FIRST if she has one" do
+              rs_participant.ppg_details.clear.build(:ppg_first_code => 3)
+              rs_participant.save!
+
+              primary.ppg_first.should == '3'
+            end
+
+            it "uses -4 for PPG_FIRST if the participant has no PPG_FIRST" do
+              primary.ppg_first.should == '-4'
+            end
+          end
+
+          describe 'when there is no participant' do
+            before do
+              response_set.participant = nil
+              response_set.save!
+            end
+
+            it 'uses -4 for PPG_FIRST' do
+              primary.ppg_first.should == '-4'
+            end
+          end
         end
       end
 

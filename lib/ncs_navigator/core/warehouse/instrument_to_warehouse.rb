@@ -14,6 +14,12 @@ module NcsNavigator::Core::Warehouse
       :instrument_version => 'instrument_version',
       :instrument_repeat_key => 'instrument_repeat_key',
       :instrument_type => 'instrument_type_code',
+      # This is not great, but sufficient for all the instrument data tables
+      # that contain person_id since none of them will have multiple response
+      # sets.
+      :person_id => 'response_sets.first.person.person_id',
+      # TODO: See #3193
+      :ppg_first => 'response_sets.first.participant.ppg_details.first.ppg_first_code'
     }
 
     ##
@@ -345,7 +351,12 @@ module NcsNavigator::Core::Warehouse
           STATIC_RECORD_FIELD_MAPPING.each do |record_attribute, rs_attribute|
             setter = "#{record_attribute}="
             if record.respond_to?(setter)
-              record.send(setter, resolve_nested_attribute(rs_attribute, instrument))
+              value = resolve_nested_attribute(rs_attribute, instrument)
+              if value.nil? && record.class.properties[record_attribute].required?
+                value = set_first_valid(record, record_attribute, %w(-4))
+              else
+                record.send(setter, resolve_nested_attribute(rs_attribute, instrument))
+              end
             end
           end
           fixed_values.each do |record_attribute, value|
@@ -355,7 +366,7 @@ module NcsNavigator::Core::Warehouse
               record.send(setter, value)
             end
           end
-          if record.respond_to?(:p_id=)
+          if record.respond_to?(:p_id=) && participant
             record.p_id = participant.p_id
           end
         end
