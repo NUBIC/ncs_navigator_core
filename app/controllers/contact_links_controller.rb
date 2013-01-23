@@ -88,6 +88,7 @@ class ContactLinksController < ApplicationController
       @activity_plan        = psc.build_activity_plan(@participant)
       @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
       @current_activity     = @activities_for_event.first
+      @scheduled_activities  = @activity_plan.scheduled_activities_for_event(@event.to_s)
       @occurred_activities  = @activity_plan.occurred_activities_for_event(@event.to_s)
       @saq_activity         = @occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
     end
@@ -104,7 +105,10 @@ class ContactLinksController < ApplicationController
     @contact_links = ContactLink.where(:contact_id => @contact_link.contact_id)
 
     @activity_plan        = psc.build_activity_plan(@participant)
-    @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
+    if @participant && @event
+      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+      @scheduled_activities  = @activity_plan.scheduled_activities_for_event(@event.to_s)
+    end
     @current_activity     = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
   end
 

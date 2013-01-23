@@ -62,7 +62,7 @@ class SurveyorController < ApplicationController
     @activities_for_event = []
     if @participant
       @activity_plan        = psc.build_activity_plan(@participant)
-      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+      @activities_for_event = @activity_plan.scheduled_activities_for_event(@event.to_s)
     end
   end
 
