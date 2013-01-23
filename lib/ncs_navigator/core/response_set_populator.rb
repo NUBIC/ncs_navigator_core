@@ -12,7 +12,7 @@ module NcsNavigator::Core::ResponseSetPopulator
   autoload :LowIntensity,             'ncs_navigator/core/response_set_populator/low_intensity'
   autoload :Birth,                    'ncs_navigator/core/response_set_populator/birth'
   autoload :NonInterview,             'ncs_navigator/core/response_set_populator/noninterview'
-  autoload :ChildPM,                  'ncs_navigator/core/response_set_populator/child_pm'
+  autoload :ChildAndAdHoc,                  'ncs_navigator/core/response_set_populator/child_and_adhoc'
 
   POPULATORS = [
     [/_ParticipantVerif_/,  ParticipantVerification],
@@ -24,7 +24,8 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_PregVisit1_/,        PregnancyVisit],
     [/_PregVisit2_/,        PregnancyVisit],
     [/_NonIntRespQues_/,    NonInterview],
-    [/_PM_Child/,           ChildPM],
+    [/_PM_Child/,           ChildAndAdHoc],
+    [/_BIO_Child/,          ChildAndAdHoc],
   ]
 
 end

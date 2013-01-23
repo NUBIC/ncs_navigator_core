@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module NcsNavigator::Core
 
-  describe ResponseSetPopulator::ChildPM do
+  describe ResponseSetPopulator::ChildAndAdHoc do
     include SurveyCompletion
 
     def get_response(response_set, reference_identifier)
@@ -29,16 +29,36 @@ module NcsNavigator::Core
       end
     end
 
+    def init_common_vars(survey_template)
+      @survey = send(survey_template)
+      @participant = Factory(:participant)
+      @person = Factory(:person)
+      @participant.person = @person
+      @participant.save!
+      @response_set, @instrument = prepare_instrument(@person, @participant,
+                                                    @survey)
+      @response_set.responses.should be_empty
+    end
+
     context "for child PM prepopulators"
-      def init_common_vars(survey_template)
-        @survey = send(survey_template)
-        @participant = Factory(:participant)
-        @person = Factory(:person)
-        @participant.person = @person
-        @participant.save!
-        @response_set, @instrument = prepare_instrument(@person, @participant,
-                                                      @survey)
-        @response_set.responses.should be_empty
+      describe "prepopulated_is_12_month_visit" do
+        before(:each) do
+          init_common_vars(:create_bio_child_anthr_survey_for_12_month_visit)
+        end
+
+        it "should be TRUE if EVENT_TYPE = 12_months" do
+          event = Factory(:event, :event_type_code => 27) # 12 Month
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument, @survey,
+                                                  :event => event)
+          assert_match(rsp.populate, "prepopulated_is_12_month_visit", "TRUE") 
+        end
+
+        it "should be FALSE if EVENT_TYPE = 12_months" do
+          event = Factory(:event, :event_type_code => 26) # Not 12 Months
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument, @survey,
+                                                  :event => event)
+          assert_match(rsp.populate, "prepopulated_is_12_month_visit", "FALSE") 
+        end
       end
 
       describe "prepopulated_is_6_month_event" do
@@ -48,14 +68,14 @@ module NcsNavigator::Core
 
         it "should be TRUE if EVENT_TYPE = 6_months" do
           event = Factory(:event, :event_type_code => 24) # 6 Month
-          rsp = ResponseSetPopulator::ChildPM.new(@person, @instrument, @survey,
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument, @survey,
                                                   :event => event)
           assert_match(rsp.populate, "prepopulated_is_6_month_event", "TRUE") 
         end
 
-        it "should be FASLSE if EVENT_TYPE = 6_months" do
+        it "should be FALSE if EVENT_TYPE = 6_months" do
           event = Factory(:event, :event_type_code => 26) # Not 6-Months
-          rsp = ResponseSetPopulator::ChildPM.new(@person, @instrument, @survey,
+          rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument, @survey,
                                                   :event => event)
           assert_match(rsp.populate, "prepopulated_is_6_month_event", "FALSE") 
         end
@@ -65,7 +85,7 @@ module NcsNavigator::Core
         before(:each) do
           init_common_vars(
                   :create_pm_child_bp_survey_for_upper_arm_circ_prepopulators)
-          @rsp = ResponseSetPopulator::ChildPM.new(@person, @instrument,
+          @rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
                                                    @survey)
         end
 

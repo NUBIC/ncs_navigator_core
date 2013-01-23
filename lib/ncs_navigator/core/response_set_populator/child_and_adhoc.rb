@@ -2,12 +2,13 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::ResponseSetPopulator
-  class ChildPM < Base
+  class ChildAndAdHoc < Base
 
     def reference_identifiers
       [
         "prepopulated_should_show_upper_arm_length",
-        "prepopulated_is_6_month_event"
+        "prepopulated_is_6_month_event",
+        "prepopulated_is_12_month_visit"
       ]
     end
 
@@ -37,6 +38,8 @@ module NcsNavigator::Core::ResponseSetPopulator
                 answer_for(question, false)
             when "prepopulated_is_6_month_event"
               answer_for(question, (event.try(:event_type_code).to_i == 24))
+            when "prepopulated_is_12_month_visit"
+              answer_for(question, (event.try(:event_type_code).to_i == 27))
             else
               nil
             end
