@@ -11,6 +11,27 @@ module OperationalDataExtractor
       "TAP_WATER_TWQ_SAMPLE[sample_number=1].SAMPLE_ID" => "sample_id",
       "TAP_WATER_TWQ_SAMPLE[sample_number=2].SAMPLE_ID" => "sample_id",
       "TAP_WATER_TWQ_SAMPLE[sample_number=3].SAMPLE_ID" => "sample_id",
+
+      # MDES 2.1 = are the same as 2.0
+      # Updates for MDES 2.2
+      "TAP_WATER_TWQ_2[sample_number=1].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWQ_2[sample_number=2].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWQ_2[sample_number=3].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWF_2_SAMPLE[sample_number=1].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWF_2_SAMPLE[sample_number=2].SAMPLE_ID" => "sample_id",
+      "TAP_WATER_TWF_2_SAMPLE[sample_number=3].SAMPLE_ID" => "sample_id",
+      "VACUUM_BAG_2.SAMPLE_ID" => "sample_id",
+        # New from SampleDistrib_DCI
+      "SAMPLE_DIST_SAMP[type=1].SAMPLE_ID" => "sample_id",
+      "SAMPLE_DIST_SAMP[type=2].SAMPLE_ID" => "sample_id",
+      "SAMPLE_DIST_SAMP[type=3].SAMPLE_ID" => "sample_id",
+        # New from TapWaterPestPartCollect_SAQSpec, TapWaterPharmPartCollect_SAQSpec, VacBagDustPartCollect_SAQSpec
+      "TAP_WATER_TWQ_SAQ.P_TWQ_BOTTLE_1_ID" => "sample_id",
+      "TAP_WATER_TWQ_SAQ.P_TWQ_BOTTLE_2_ID" => "sample_id",
+      "TAP_WATER_TWF_SAQ.P_TWF_BOTTLE_1_ID" => "sample_id",
+      "TAP_WATER_TWF_SAQ.P_TWF_BOTTLE_2_ID" => "sample_id",
+      "TAP_WATER_TWF_SAQ.P_TWF_BOTTLE_3_ID" => "sample_id",
+      "VACUUM_BAG_SAQ.P_VBD_BOTTLE_ID" => "sample_id",
     }
 
     def initialize(response_set)
