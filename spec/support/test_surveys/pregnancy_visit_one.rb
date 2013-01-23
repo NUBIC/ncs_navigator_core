@@ -275,7 +275,7 @@ module PregnancyVisitOne
     a = Factory(:answer, :question_id => q.id, :text => "IL", :response_class => "answer", :reference_identifier => "14")
     a = Factory(:answer, :question_id => q.id, :text => "MI", :response_class => "answer", :reference_identifier => "23")
     # Zip
-    q = Factory(:question, :reference_identifier => "WORK_ZIPCODE", :data_export_identifier => "PREG_VISIT_1_3.WORK_ZIPCODE", :survey_section_id => survey_section.id)
+    q = Factory(:question, :reference_identifier => "WORK_ZIP", :data_export_identifier => "PREG_VISIT_1_3.WORK_ZIP", :survey_section_id => survey_section.id)
     a = Factory(:answer, :question_id => q.id, :text => "Zip", :response_class => "string")
     # Zip 4
     q = Factory(:question, :reference_identifier => "WORK_ZIP4", :data_export_identifier => "PREG_VISIT_1_3.WORK_ZIP4", :survey_section_id => survey_section.id)
