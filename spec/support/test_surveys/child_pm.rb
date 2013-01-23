@@ -47,4 +47,19 @@ module ChildPM
     survey
   end
 
+  def create_pm_child_anthr_survey_for_6_month_event
+    survey = Factory(:survey,
+                     :title => "INS_PM_ChildAnthro_DCI_EHPBHI_M3.1_V1.0",
+                     :access_code => "ins_pm_childanthro_dci_ehpbhi_m3_1_v1_0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "prepopulated_is_6_month_event",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
+                :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
+                :response_class => "answer", :reference_identifier => "false")
+    survey
+  end
+
 end

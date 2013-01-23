@@ -6,7 +6,8 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def reference_identifiers
       [
-        "prepopulated_should_show_upper_arm_length"
+        "prepopulated_should_show_upper_arm_length",
+        "prepopulated_is_6_month_event"
       ]
     end
 
@@ -34,6 +35,8 @@ module NcsNavigator::Core::ResponseSetPopulator
                            prepopulate_bp_mid_upper_arm_circ(question,
                                                              response_set)) :
                 answer_for(question, false)
+            when "prepopulated_is_6_month_event"
+              answer_for(question, (event.try(:event_type_code).to_i == 24))
             else
               nil
             end

@@ -30,21 +30,45 @@ module NcsNavigator::Core
     end
 
     context "for child PM prepopulators"
-      before(:each) do
-        survey = create_pm_child_bp_survey_for_upper_arm_circ_prepopulators
+      def init_common_vars(survey_template)
+        @survey = send(survey_template)
         @participant = Factory(:participant)
         @person = Factory(:person)
         @participant.person = @person
         @participant.save!
-
-        @response_set, instrument = prepare_instrument(@person, @participant,
-                                                      survey)
+        @response_set, @instrument = prepare_instrument(@person, @participant,
+                                                      @survey)
         @response_set.responses.should be_empty
-        @rsp = ResponseSetPopulator::ChildPM.new(@participant.person,
-                                                 instrument, survey)
+      end
+
+      describe "prepopulated_is_6_month_event" do
+        before(:each) do
+          init_common_vars(:create_pm_child_anthr_survey_for_6_month_event)
+        end
+
+        it "should be TRUE if EVENT_TYPE = 6_months" do
+          event = Factory(:event, :event_type_code => 24) # 6 Month
+          rsp = ResponseSetPopulator::ChildPM.new(@person, @instrument, @survey,
+                                                  :event => event)
+          assert_match(rsp.populate, "prepopulated_is_6_month_event", "TRUE") 
+        end
+
+        it "should be FASLSE if EVENT_TYPE = 6_months" do
+          event = Factory(:event, :event_type_code => 26) # Not 6-Months
+          rsp = ResponseSetPopulator::ChildPM.new(@person, @instrument, @survey,
+                                                  :event => event)
+          assert_match(rsp.populate, "prepopulated_is_6_month_event", "FALSE") 
+        end
       end
 
       describe "prepopulated_should_show_upper_arm_length" do
+        before(:each) do
+          init_common_vars(
+                  :create_pm_child_bp_survey_for_upper_arm_circ_prepopulators)
+          @rsp = ResponseSetPopulator::ChildPM.new(@person, @instrument,
+                                                   @survey)
+        end
+
         def take_anthropo_survey(answer)
           survey = create_pm_child_anthr_survey_for_upper_arm_circ_prepopulators
           response_set, instrument = prepare_instrument(@person, @participant,
