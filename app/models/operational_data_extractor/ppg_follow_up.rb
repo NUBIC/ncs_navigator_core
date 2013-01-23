@@ -143,9 +143,9 @@ module OperationalDataExtractor
     private :process_status_history
 
     def set_due_date(map, attribute)
-      map.each do |key, attribute|
+      map.each do |key, att|
         if r = data_export_identifier_indexed_responses[key]
-          if due_date = determine_due_date(attribute, r)
+          if due_date = determine_due_date(att, r)
             participant.ppg_details.first.update_due_date(due_date, attribute)
           end
         end
