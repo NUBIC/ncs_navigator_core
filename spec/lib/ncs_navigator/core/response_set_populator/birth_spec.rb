@@ -214,17 +214,25 @@ module NcsNavigator::Core
 
       describe "prepopulated_is_p_type_fifteen" do
         it "should be TRUE if participant is of p_code 15 type" do
-          rsp = build_rsp(Factory(:participant, :p_type_code => 15))
-          assert_response_value(rsp.populate,
-                                "prepopulated_is_p_type_fifteen",
-                                "TRUE")
+          if Float(NcsNavigatorCore.mdes_version.number) >= 3.2
+            rsp = build_rsp(Factory(:participant, :p_type_code => 15))
+            assert_response_value(rsp.populate,
+                                  "prepopulated_is_p_type_fifteen",
+                                  "TRUE")
+          else
+            pending
+          end
         end
 
         it "should be FALSE if participant is not of p_code 15 type" do
-          rsp = build_rsp(Factory(:participant))
-          assert_response_value(rsp.populate,
-                                "prepopulated_is_p_type_fifteen",
-                                "FALSE")
+          if Float(NcsNavigatorCore.mdes_version.number) >= 3.2
+            rsp = build_rsp(Factory(:participant))
+            assert_response_value(rsp.populate,
+                                  "prepopulated_is_p_type_fifteen",
+                                  "FALSE")
+          else
+            pending
+          end
         end
       end
 

@@ -67,7 +67,7 @@ Spork.prefork do
   # in spec/support/ and its subdirectories.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-  NcsNavigatorCore.mdes_version = '3.2' # TODO: support with different versions
+  NcsNavigatorCore.mdes_version = '3.1' # TODO: support with different versions
 
   module TestLogins
     def user_login
