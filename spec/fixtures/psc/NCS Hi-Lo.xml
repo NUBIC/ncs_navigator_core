@@ -1,7 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-18T15:22:14.147Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-23T12:06:29.930Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
+  <amendment name="Rev 35" date="2013-01-23" mandatory="true" released-date="2013-01-23T12:06:29.930Z" updated-date="2013-01-23T11:51:18.990Z" previous-amendment-key="2013-01-23~Rev 34">
+    <planned-activity-delta id="c0af2cdd-aa4a-4ce8-8a1e-fedf39174a41" node-id="206ed626-4d1b-441c-9f77-89eda9f2a1fb">
+      <property-change id="5ddcfc05-0e1a-498d-a75c-a33aaf02ad42" property-name="day" old-value="274" new-value="274"/>
+      <remove id="a5aefb08-8d09-431c-be6a-877d85c1b0b3" child-id="c4cdd598-d8a5-4935-86dd-dfb7be87bdc6"/>
+      <remove id="00fc1d1c-b8a0-4cad-b534-33eb15df6323" child-id="533c2e59-316b-459c-afcf-ea5af72f01e2"/>
+      <remove id="770ead55-15bb-4172-b45e-75e2a3b54f87" child-id="0a06ec4b-3383-4d8a-a27b-57dfe1966f0e"/>
+      <remove id="98cb8716-0d30-4c41-9f41-3f17c436d849" child-id="9da16750-0238-4244-ace3-543fa9aa8dac"/>
+      <add id="7b8706af-55dc-4a6b-98d9-c2f58ece03b9">
+        <label id="cccb3561-c813-4041-bb9c-9f473850be47" name="references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+      <add id="9a045229-e811-4202-86b2-0513e4570c0f">
+        <label id="8ee58e92-3ac9-43fe-bd86-ec82c3262092" name="references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+      <add id="d01b0726-c39f-4991-9fd5-ff2a887b0fdd">
+        <label id="bdfb29ec-869b-4e5e-b70e-1b26eedf3ba5" name="references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+      <add id="5726c71e-e1d6-4cea-ba0f-e705b40bd94b">
+        <label id="f9ee14cf-ed67-4bf6-bfdd-532051e42a43" name="references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="aff70224-02b8-45be-b496-8945e2c0ebcd" node-id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9">
+      <property-change id="ff5ff14a-dd8f-4d47-b018-984734032c53" property-name="day" old-value="1" new-value="1"/>
+      <property-change id="fa921455-04be-4ef5-bbc0-5ddcf2cad7cf" property-name="condition" old-value="" new-value="if participant is eligible"/>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 34" date="2013-01-23" mandatory="true" released-date="2013-01-23T10:14:13.386Z" previous-amendment-key="2013-01-18~Rev 33">
+    <period-delta id="abb48ef3-25fa-4341-9c99-6f148806ec72" node-id="48b7cc23-e93d-498b-a746-f93fdf2d4a3a">
+      <add id="845195a0-618e-4256-b316-234f98c3b9c1">
+        <planned-activity id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9" day="1">
+          <label id="48ed6a3b-fcd6-40e7-8e0c-71108e9e3996" name="event:pbs_participant_eligibility_screening"/>
+          <label id="5f920896-1c4d-47a3-a408-b5cfc4ca4cca" name="order:90_01"/>
+          <label id="acfe2234-d5e4-4f27-9f05-b485e36a2067" name="participant_type:mother"/>
+          <activity-reference code="IC" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+  </amendment>
   <amendment name="Rev 33" date="2013-01-18" mandatory="true" released-date="2013-01-18T15:22:14.147Z" previous-amendment-key="2013-01-17~Rev 32">
     <planned-calendar-delta id="a4586a88-6739-4735-82f5-aa7ded27f557" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
       <add id="1b0f0301-1c9b-498d-a336-7b84ba4d782d" index="4">

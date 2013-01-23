@@ -635,10 +635,10 @@
             <label id="6ba9fbc5-a31a-4845-ac94-238d02b663f3" name="instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail"/>
             <label id="a5250c46-c1d8-4f6c-ac6d-d374bc37ea9b" name="order:01_02"/>
             <label id="d814fe81-8539-45f3-9683-3685a3228385" name="participant_type:child"/>
-            <label id="c4cdd598-d8a5-4935-86dd-dfb7be87bdc6" name="references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
-            <label id="533c2e59-316b-459c-afcf-ea5af72f01e2" name="references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
-            <label id="0a06ec4b-3383-4d8a-a27b-57dfe1966f0e" name="references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
-            <label id="9da16750-0238-4244-ace3-543fa9aa8dac" name="references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1"/>
+            <label id="cccb3561-c813-4041-bb9c-9f473850be47" name="references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <label id="8ee58e92-3ac9-43fe-bd86-ec82c3262092" name="references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <label id="bdfb29ec-869b-4e5e-b70e-1b26eedf3ba5" name="references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+            <label id="f9ee14cf-ed67-4bf6-bfdd-532051e42a43" name="references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
             <activity-reference code="9MMPI MD" source="NCS"/>
           </planned-activity>
           <planned-activity id="7de5af22-cf1d-47ea-ac9c-e23e93f8e8e0" day="366">
@@ -1074,6 +1074,12 @@
             <label id="38f9da11-92ee-454e-98f0-8bab047a6266" name="instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0"/>
             <label id="48f7884e-9c95-41a8-ac16-ad6238064c26" name="order:10_99"/>
             <activity-reference code="TM" source="NCS"/>
+          </planned-activity>
+          <planned-activity id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9" day="1" condition="if participant is eligible">
+            <label id="48ed6a3b-fcd6-40e7-8e0c-71108e9e3996" name="event:pbs_participant_eligibility_screening"/>
+            <label id="5f920896-1c4d-47a3-a408-b5cfc4ca4cca" name="order:90_01"/>
+            <label id="acfe2234-d5e4-4f27-9f05-b485e36a2067" name="participant_type:mother"/>
+            <activity-reference code="IC" source="NCS"/>
           </planned-activity>
         </period>
       </study-segment>
