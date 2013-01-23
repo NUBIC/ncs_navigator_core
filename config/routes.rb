@@ -40,6 +40,7 @@ NcsNavigatorCore::Application.routes.draw do
       put :update_arm
       put :register_with_psc
       put :schedule_next_event_with_psc
+      put :schedule_informed_consent_event
       get :schedule
       get :edit_ppg_status
       put :update_ppg_status
@@ -207,6 +208,8 @@ NcsNavigatorCore::Application.routes.draw do
       end
     end
   end
+
+  match "/contact_links/update_psc_for_activity", :to => "contact_links#update_psc_for_activity", :via => [:post]
 
   match "/faq", :to => "welcome#faq", :via => [:get]
   match "/reports", :to => "reports#index", :via => [:get]

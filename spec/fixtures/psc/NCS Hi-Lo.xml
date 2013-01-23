@@ -1,8 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-17T16:01:22.420Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
+<study xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" assigned-identifier="NCS Hi-Lo" last-modified-date="2013-01-23T12:06:29.930Z" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
   <planned-calendar id="80f00ffd-5454-4193-aca5-23f289a22e9a"/>
-  <amendment name="Rev 32" date="2013-01-17" mandatory="true" released-date="2013-01-17T16:01:22.420Z" updated-date="2013-01-17T15:58:20.77Z" previous-amendment-key="2013-01-08~Rev 31">
+  <amendment name="Rev 35" date="2013-01-23" mandatory="true" released-date="2013-01-23T12:06:29.930Z" updated-date="2013-01-23T11:51:18.990Z" previous-amendment-key="2013-01-23~Rev 34">
+    <planned-activity-delta id="c0af2cdd-aa4a-4ce8-8a1e-fedf39174a41" node-id="206ed626-4d1b-441c-9f77-89eda9f2a1fb">
+      <property-change id="5ddcfc05-0e1a-498d-a75c-a33aaf02ad42" property-name="day" old-value="274" new-value="274"/>
+      <remove id="a5aefb08-8d09-431c-be6a-877d85c1b0b3" child-id="c4cdd598-d8a5-4935-86dd-dfb7be87bdc6"/>
+      <remove id="00fc1d1c-b8a0-4cad-b534-33eb15df6323" child-id="533c2e59-316b-459c-afcf-ea5af72f01e2"/>
+      <remove id="770ead55-15bb-4172-b45e-75e2a3b54f87" child-id="0a06ec4b-3383-4d8a-a27b-57dfe1966f0e"/>
+      <remove id="98cb8716-0d30-4c41-9f41-3f17c436d849" child-id="9da16750-0238-4244-ace3-543fa9aa8dac"/>
+      <add id="7b8706af-55dc-4a6b-98d9-c2f58ece03b9">
+        <label id="cccb3561-c813-4041-bb9c-9f473850be47" name="references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+      <add id="9a045229-e811-4202-86b2-0513e4570c0f">
+        <label id="8ee58e92-3ac9-43fe-bd86-ec82c3262092" name="references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+      <add id="d01b0726-c39f-4991-9fd5-ff2a887b0fdd">
+        <label id="bdfb29ec-869b-4e5e-b70e-1b26eedf3ba5" name="references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+      <add id="5726c71e-e1d6-4cea-ba0f-e705b40bd94b">
+        <label id="f9ee14cf-ed67-4bf6-bfdd-532051e42a43" name="references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one"/>
+      </add>
+    </planned-activity-delta>
+    <planned-activity-delta id="aff70224-02b8-45be-b496-8945e2c0ebcd" node-id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9">
+      <property-change id="ff5ff14a-dd8f-4d47-b018-984734032c53" property-name="day" old-value="1" new-value="1"/>
+      <property-change id="fa921455-04be-4ef5-bbc0-5ddcf2cad7cf" property-name="condition" old-value="" new-value="if participant is eligible"/>
+    </planned-activity-delta>
+  </amendment>
+  <amendment name="Rev 34" date="2013-01-23" mandatory="true" released-date="2013-01-23T10:14:13.386Z" previous-amendment-key="2013-01-18~Rev 33">
+    <period-delta id="abb48ef3-25fa-4341-9c99-6f148806ec72" node-id="48b7cc23-e93d-498b-a746-f93fdf2d4a3a">
+      <add id="845195a0-618e-4256-b316-234f98c3b9c1">
+        <planned-activity id="f9ded0e0-2f09-41e1-9ee2-a5abec04bce9" day="1">
+          <label id="48ed6a3b-fcd6-40e7-8e0c-71108e9e3996" name="event:pbs_participant_eligibility_screening"/>
+          <label id="5f920896-1c4d-47a3-a408-b5cfc4ca4cca" name="order:90_01"/>
+          <label id="acfe2234-d5e4-4f27-9f05-b485e36a2067" name="participant_type:mother"/>
+          <activity-reference code="IC" source="NCS"/>
+        </planned-activity>
+      </add>
+    </period-delta>
+  </amendment>
+  <amendment name="Rev 33" date="2013-01-18" mandatory="true" released-date="2013-01-18T15:22:14.147Z" previous-amendment-key="2013-01-17~Rev 32">
+    <planned-calendar-delta id="a4586a88-6739-4735-82f5-aa7ded27f557" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
+      <add id="1b0f0301-1c9b-498d-a336-7b84ba4d782d" index="4">
+        <epoch id="439ad51e-5277-4f14-b786-c516909a970a" name="Informed Consent">
+          <study-segment id="183e9d42-8341-4980-ada4-3b399db57b43" name="Informed Consent">
+            <period id="1dc689b8-1798-4189-88a2-b76f23324294" name="Informed Consent" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="728c0594-dac4-4e10-8b45-b570fb5bc7ad" day="1">
+                <label id="67f8b87a-9f07-40b0-a09a-d26badf4bf64" name="event:informed_consent"/>
+                <label id="2013856d-fa58-41e2-8673-b4ea79620607" name="order:01_01"/>
+                <label id="41ea2018-499f-4f3a-b727-4d2142e89629" name="participant_type:mother"/>
+                <activity-reference code="IC" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="807edf81-f8f2-47c1-92ac-8099ca2f9575" day="1">
+                <label id="02c4b3e7-b9a1-4935-b5e7-68ab53e68589" name="event:informed_consent"/>
+                <label id="7f7d6b91-1239-4ff7-b04e-1ac455f16f7a" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+                <label id="b5739289-9505-4f69-a98e-1b69018c0237" name="order:00_01"/>
+                <label id="ef90ed9c-e18a-4922-a8a8-6b9707e3c6ce" name="participant_type:mother"/>
+                <activity-reference code="PVI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+          <study-segment id="c9bd6beb-7861-4eab-958e-cad971eb8647" name="Parental Permission for Child Participation">
+            <period id="a8bca937-cc9a-4640-bd94-6d99483ac8b5" name="Parental Permission for Child Participation" repetitions="1" start-day="1" duration-quantity="1" duration-unit="day">
+              <planned-activity id="0db6452c-93e5-4c95-ae26-b898b583d82b" day="1">
+                <label id="1033214a-401c-4063-bcec-b9392bad0143" name="event:informed_consent"/>
+                <label id="3bbf455a-d110-43fe-b532-88150be13c95" name="order:01_01"/>
+                <label id="c2d0f110-eb26-4dbb-8438-79efe05d6759" name="participant_type:child"/>
+                <activity-reference code="CC" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="f9cd1b41-a3c1-4639-ae36-dce58422b885" day="1">
+                <label id="62f7d8fe-ca30-4c47-94a4-aee60a1cca0d" name="event:informed_consent"/>
+                <label id="b632cc63-b63f-4254-b12f-a26863e4fa92" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two"/>
+                <label id="fc5b67a6-5601-4beb-b48f-35dd80d0e7e9" name="order:00_01"/>
+                <label id="092164b0-1a42-4e17-88fd-b7a7dd33e308" name="participant_type:child"/>
+                <label id="704885d2-ddb0-4ab2-ae86-695d9409f017" name="references:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+                <activity-reference code="PVI2" source="NCS"/>
+              </planned-activity>
+              <planned-activity id="7129e5dc-d47c-42e3-8359-6307a1cca055" day="1">
+                <label id="b1d6914d-9b74-45c5-b315-7d25b8c05efa" name="event:informed_consent"/>
+                <label id="e3a42305-8792-4aca-a623-3e85f8ef7074" name="instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one"/>
+                <label id="ebb503cd-72c9-4be4-b4f4-afe877adb9e5" name="order:00_01"/>
+                <label id="16794fff-b7e7-45f5-bb93-bf9bf805ef05" name="participant_type:mother"/>
+                <activity-reference code="PVI" source="NCS"/>
+              </planned-activity>
+            </period>
+          </study-segment>
+        </epoch>
+      </add>
+    </planned-calendar-delta>
+  </amendment>
+  <amendment name="Rev 32" date="2013-01-17" mandatory="true" released-date="2013-01-18T12:33:33.863Z" previous-amendment-key="2013-01-08~Rev 31">
     <planned-activity-delta id="3c95a8e8-e8b5-48cb-a81b-597b51f3b05c" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
       <property-change id="e6a68801-b7b4-421e-9e1f-6dd3ae9a24e2" property-name="day" old-value="1" new-value="1"/>
       <add id="2c12a617-aabd-4856-89d1-91f159fc7697">
@@ -328,7 +415,7 @@
       <property-change id="4c025e07-aab7-4078-ae0a-af8e033f8a8c" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 31" date="2013-01-08" mandatory="true" released-date="2013-01-08T16:27:23.806Z" updated-date="2013-01-08T16:24:00.393Z" previous-amendment-key="2013-01-08~Rev 30">
+  <amendment name="Rev 31" date="2013-01-08" mandatory="true" released-date="2013-01-18T12:33:32.283Z" previous-amendment-key="2013-01-08~Rev 30">
     <planned-activity-delta id="8e16a89d-ac67-4715-90ef-113d4ef9b158" node-id="cdff78b4-ff7b-401d-be81-b61c7bbbcbf4">
       <property-change id="c4edd69b-b51c-4c92-9bce-9ba69fe9dc08" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -569,7 +656,7 @@
       <property-change id="3082dbe2-8fe6-4b4d-9496-a8f76cc4e112" property-name="day" old-value="548" new-value="548"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 30" date="2013-01-08" mandatory="true" released-date="2013-01-08T13:52:13.920Z" updated-date="2013-01-08T13:39:16.320Z" previous-amendment-key="2013-01-07~Rev 29">
+  <amendment name="Rev 30" date="2013-01-08" mandatory="true" released-date="2013-01-18T12:33:31.263Z" previous-amendment-key="2013-01-07~Rev 29">
     <planned-activity-delta id="d361e83b-0e27-4ba2-973d-b3c167084c3b" node-id="c8946f02-c7f3-4343-a32a-17c8b8249a68">
       <property-change id="4ff09d4f-6421-45e3-9913-33ffcdbeb5d3" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -744,7 +831,7 @@
       <property-change id="19a0a786-0f25-4422-86af-c62b4b25655d" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 29" date="2013-01-07" mandatory="true" released-date="2013-01-07T17:02:13.408Z" updated-date="2013-01-07T16:54:40.934Z" previous-amendment-key="2013-01-07~Rev 28">
+  <amendment name="Rev 29" date="2013-01-07" mandatory="true" released-date="2013-01-18T12:33:30.874Z" previous-amendment-key="2013-01-07~Rev 28">
     <period-delta id="8a027e83-fa39-475f-93f2-aafd79280c58" node-id="c849fb47-1917-47d3-aacd-74331aa46ed8">
       <add id="a4bea78d-d28d-46df-903e-55d2617eb5e5">
         <planned-activity id="2543d77d-d3c4-49f9-92b3-df3753a675de" day="1">
@@ -788,7 +875,7 @@
       </add>
     </period-delta>
   </amendment>
-  <amendment name="Rev 28" date="2013-01-07" mandatory="true" released-date="2013-01-07T14:58:49.909Z" previous-amendment-key="2013-01-04~Rev 27">
+  <amendment name="Rev 28" date="2013-01-07" mandatory="true" released-date="2013-01-07T13:52:12.659Z" updated-date="2013-01-07T13:51:42.477Z" previous-amendment-key="2013-01-04~Rev 27">
     <planned-activity-delta id="4db2b876-af67-4f1b-9b4b-9aa91edf2dc9" node-id="06b1e674-3af9-45e1-ac7e-2c30843fd365">
       <property-change id="92db1d9e-5add-4f56-843c-7545570e3929" property-name="day" old-value="730" new-value="730"/>
       <remove id="1f02feac-2346-4f90-8858-e5f46473b0f0" child-id="c0c286df-d55e-4dc0-b2cf-150c2dc52f90"/>
@@ -800,7 +887,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 27" date="2013-01-04" mandatory="true" released-date="2013-01-07T14:58:47.291Z" previous-amendment-key="2012-12-19~Rev 26">
+  <amendment name="Rev 27" date="2013-01-04" mandatory="true" released-date="2013-01-04T16:17:37.437Z" updated-date="2013-01-04T16:13:28.633Z" previous-amendment-key="2012-12-19~Rev 26">
     <planned-activity-delta id="a7850cc0-a77e-42cd-9e69-2d14b7dd0286" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
       <property-change id="42818546-29bb-4f2e-84ce-097ebb4275aa" property-name="day" old-value="1" new-value="1"/>
       <add id="b403775b-299e-466c-8a02-a8f8227852df">
@@ -1672,7 +1759,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 26" date="2012-12-19" mandatory="true" released-date="2013-01-07T14:58:47.93Z" previous-amendment-key="2012-11-27~Rev 25">
+  <amendment name="Rev 26" date="2012-12-19" mandatory="true" released-date="2012-12-19T14:58:07.891Z" updated-date="2012-12-19T14:57:37.439Z" previous-amendment-key="2012-11-27~Rev 25">
     <planned-activity-delta id="ccdaa4d8-2d6b-4fb6-942e-43208b6a9f2f" node-id="11991a81-9666-4d09-b8f2-745e7e45e8d3">
       <property-change id="b5771d4c-1bf9-443c-b5ef-9fb73e17cfb2" property-name="day" old-value="548" new-value="548"/>
       <remove id="fd859bc4-caa3-46eb-9e02-37b4c589fa1e" child-id="8d2208a3-67a3-4324-8d9a-afefe002fda6"/>
@@ -1688,7 +1775,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 25" date="2012-11-27" mandatory="true" released-date="2013-01-07T14:58:46.75Z" previous-amendment-key="2012-11-05~Rev 24">
+  <amendment name="Rev 25" date="2012-11-27" mandatory="true" released-date="2012-12-03T15:27:42.818Z" updated-date="2012-12-03T14:55:47.935Z" previous-amendment-key="2012-11-05~Rev 24">
     <planned-activity-delta id="2aaeb51d-b84d-40a6-b624-90d8999d628a" node-id="48da916f-60b7-4643-93f3-19a4eddf9089">
       <property-change id="b9a3cdc8-b1aa-4c26-bc66-7b2398a46dde" property-name="day" old-value="366" new-value="366"/>
     </planned-activity-delta>
@@ -2022,7 +2109,7 @@
       </add>
     </period-delta>
   </amendment>
-  <amendment name="Rev 24" date="2012-11-05" mandatory="true" released-date="2013-01-07T14:58:45.856Z" previous-amendment-key="2012-10-16~Rev 23">
+  <amendment name="Rev 24" date="2012-11-05" mandatory="true" released-date="2012-11-05T14:31:27.270Z" updated-date="2012-11-05T14:09:54.603Z" previous-amendment-key="2012-10-16~Rev 23">
     <planned-activity-delta id="875d4b0d-5009-42ff-8e4c-7c25497d6415" node-id="8f7b2974-7cd6-4e14-887c-56d96f632608">
       <property-change id="f5be5a7c-4062-45be-90f9-07f3a6943bc6" property-name="day" old-value="1" new-value="1"/>
       <remove id="aabe7448-fa37-487f-99b8-9dab7ffdd676" child-id="22c03641-eb29-4ecd-a468-be278e28d512"/>
@@ -2066,7 +2153,7 @@
       </add>
     </period-delta>
   </amendment>
-  <amendment name="Rev 23" date="2012-10-16" mandatory="true" released-date="2013-01-07T14:58:45.769Z" previous-amendment-key="2012-10-16~Rev 22">
+  <amendment name="Rev 23" date="2012-10-16" mandatory="true" released-date="2012-10-16T14:05:35.24Z" updated-date="2012-10-16T14:03:46.912Z" previous-amendment-key="2012-10-16~Rev 22">
     <period-delta id="99aae6ba-1095-423e-82db-273ac33f9692" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
       <add id="dbcc4209-32c4-45df-be6b-d11dc63a786c">
         <planned-activity id="e8af54c1-56af-4baf-b1f2-2cf9d54b5924" day="1">
@@ -2086,7 +2173,7 @@
       </add>
     </period-delta>
   </amendment>
-  <amendment name="Rev 22" date="2012-10-16" mandatory="true" released-date="2013-01-07T14:58:45.653Z" previous-amendment-key="2012-10-15~Rev 21">
+  <amendment name="Rev 22" date="2012-10-16" mandatory="true" released-date="2012-10-16T10:06:38.839Z" updated-date="2012-10-16T10:01:21.335Z" previous-amendment-key="2012-10-15~Rev 21">
     <planned-activity-delta id="7191caea-444b-4993-80e1-f1a434fbfee9" node-id="b91da252-9133-497a-b241-375b7d71c229">
       <property-change id="4142524b-05c7-47b2-b075-7c093e2e1e7f" property-name="day" old-value="1" new-value="1"/>
       <add id="f6740253-e7f2-4933-84a2-e8f9069225bf">
@@ -2112,7 +2199,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 21" date="2012-10-15" mandatory="true" released-date="2013-01-07T14:58:45.503Z" previous-amendment-key="2012-10-12~Rev 20">
+  <amendment name="Rev 21" date="2012-10-15" mandatory="true" released-date="2012-10-15T10:51:56.806Z" updated-date="2012-10-15T10:39:46.191Z" previous-amendment-key="2012-10-12~Rev 20">
     <period-delta id="9ce90032-dee4-4ea4-86bc-d3f7e2e35674" node-id="c849fb47-1917-47d3-aacd-74331aa46ed8">
       <add id="539209c7-b34a-4f39-ae20-e0f00c9e7e07">
         <planned-activity id="8f7b2974-7cd6-4e14-887c-56d96f632608" day="1">
@@ -2154,7 +2241,7 @@
       <property-change id="c2e94d36-465a-40d8-bea6-275a8904df52" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 20" date="2012-10-12" mandatory="true" released-date="2013-01-07T14:58:45.422Z" previous-amendment-key="2012-10-12~Rev 19">
+  <amendment name="Rev 20" date="2012-10-12" mandatory="true" released-date="2012-10-12T13:06:20.130Z" updated-date="2012-10-12T13:06:12.502Z" previous-amendment-key="2012-10-12~Rev 19">
     <planned-activity-delta id="78a9b34f-a3fc-4e58-9788-c0e4d178c1f4" node-id="c8946f02-c7f3-4343-a32a-17c8b8249a68">
       <property-change id="440f21a0-43eb-4061-a187-6fdf0d93e842" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -2166,7 +2253,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 19" date="2012-10-12" mandatory="true" released-date="2013-01-07T14:58:45.312Z" previous-amendment-key="2012-10-03~Rev 18">
+  <amendment name="Rev 19" date="2012-10-12" mandatory="true" released-date="2012-10-12T10:55:00.495Z" updated-date="2012-10-12T10:45:04.797Z" previous-amendment-key="2012-10-03~Rev 18">
     <planned-activity-delta id="c535b454-0644-4f28-a5b2-5e54c3b6ac4a" node-id="cad092e0-5863-44ee-9439-506bf34c1a97">
       <property-change id="b30fbe4e-ac3e-499a-b4dc-ed40efbed5a4" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -2190,7 +2277,7 @@
       <property-change id="59e8a6b9-894d-40c0-a74b-a3ec10471287" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 18" date="2012-10-03" mandatory="true" released-date="2013-01-07T14:58:45.165Z" previous-amendment-key="2012-09-26~Rev 17">
+  <amendment name="Rev 18" date="2012-10-03" mandatory="true" released-date="2012-10-05T14:00:27.459Z" updated-date="2012-10-05T13:44:35.122Z" previous-amendment-key="2012-09-26~Rev 17">
     <planned-calendar-delta id="5a977093-b6f4-449f-9499-2d366ec1ee2c" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
       <add id="8529c6ac-149a-43fa-b4f9-be8185519d6b" index="3">
         <epoch id="4950389a-cd24-4ae0-8c3f-248732ffa093" name="PBS-Eligibility">
@@ -2229,7 +2316,7 @@
       <property-change id="971f02cc-ac4b-488b-b6f1-a37ae1764c13" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 17" date="2012-09-26" mandatory="true" released-date="2013-01-07T14:58:44.432Z" previous-amendment-key="2012-08-01~Rev 16">
+  <amendment name="Rev 17" date="2012-09-26" mandatory="true" released-date="2012-10-03T13:05:07.708Z" previous-amendment-key="2012-08-01~Rev 16">
     <planned-activity-delta id="bf31c6c6-23f1-45d9-b6fc-5c9bf9a4dcf9" node-id="32d4d5e0-36d2-4fe5-ad01-53c7cdb1d87f">
       <property-change id="59ddb2be-0185-4707-a142-1ec345f0d465" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -2405,7 +2492,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 16" date="2012-08-01" mandatory="true" released-date="2013-01-07T14:58:43.115Z" previous-amendment-key="2012-07-31~Rev 15">
+  <amendment name="Rev 16" date="2012-08-01" mandatory="true" released-date="2012-09-12T11:43:46.750Z" previous-amendment-key="2012-07-31~Rev 15">
     <planned-activity-delta id="879dfa7b-9111-49ae-9bea-1340e358bc85" node-id="2b68bb5c-edde-4510-81c8-b962704bc968">
       <property-change id="4b2a64fa-6956-440d-8b73-60178dca9972" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -2788,12 +2875,12 @@
       <property-change id="490b99bd-f053-4eae-9616-0a317eb095dc" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 15" date="2012-07-31" mandatory="true" released-date="2013-01-07T14:58:43.10Z" previous-amendment-key="2012-07-23~Rev 14">
+  <amendment name="Rev 15" date="2012-07-31" mandatory="true" released-date="2012-09-12T11:43:46.582Z" previous-amendment-key="2012-07-23~Rev 14">
     <period-delta id="452c020d-b6de-47fa-8a32-ff74a54d546e" node-id="85842db8-bec8-4eb8-84ff-fcc40aa30b02">
       <remove id="5690fc6f-eb1d-4b40-95cf-63aa3278150b" child-id="e069c79b-4551-4594-87cf-bc232cd4d623"/>
     </period-delta>
   </amendment>
-  <amendment name="Rev 14" date="2012-07-23" mandatory="true" released-date="2013-01-07T14:58:42.662Z" previous-amendment-key="2012-07-23~Rev 13">
+  <amendment name="Rev 14" date="2012-07-23" mandatory="true" released-date="2012-09-12T11:43:46.19Z" previous-amendment-key="2012-07-23~Rev 13">
     <planned-activity-delta id="2e8bf910-2426-4f26-8571-f520f08eae3f" node-id="32d4d5e0-36d2-4fe5-ad01-53c7cdb1d87f">
       <property-change id="c4b8f003-6da5-4c22-9ac0-c9989262f299" property-name="day" old-value="1" new-value="1"/>
     </planned-activity-delta>
@@ -2891,7 +2978,7 @@
       <property-change id="2d74bfe5-90e1-4350-a1da-b55d3def3e82" property-name="day" old-value="548" new-value="548"/>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 13" date="2012-07-23" mandatory="true" released-date="2013-01-07T14:58:40.523Z" previous-amendment-key="2012-03-30~Rev 8">
+  <amendment name="Rev 13" date="2012-07-23" mandatory="true" released-date="2012-09-12T11:43:42.517Z" previous-amendment-key="2012-03-30~Rev 8">
     <planned-activity-delta id="a395b42b-c5d5-4122-a97d-aa3097fd7562" node-id="6140789b-b3fe-4276-ac43-38b4d447e6e9">
       <property-change id="5b245712-de80-430a-8e6f-36d112ad49c6" property-name="day" old-value="1" new-value="1"/>
       <remove id="f018bce7-6bb6-4ee9-a0b8-e9774cee5279" child-id="eff1b533-188b-4e0e-b883-fc4caa2c15e8"/>
@@ -3506,7 +3593,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 8" date="2012-03-30" mandatory="true" released-date="2013-01-07T14:58:40.391Z" previous-amendment-key="2012-02-17~Rev 7">
+  <amendment name="Rev 8" date="2012-03-30" mandatory="true" released-date="2012-09-12T11:43:42.316Z" previous-amendment-key="2012-02-17~Rev 7">
     <epoch-delta id="72a507d0-6058-49d4-a32c-1c2a16116969" node-id="73f6c858-4069-411a-8d82-c9d558c07d68">
       <add id="ac07d12b-aa8a-4b1c-84e3-b248b63b4d7a" index="5">
         <study-segment id="d0faf572-4208-4a43-adc6-5748f80ac321" name="Postnatal">
@@ -3521,7 +3608,7 @@
       </add>
     </epoch-delta>
   </amendment>
-  <amendment name="Rev 7" date="2012-02-17" mandatory="true" released-date="2013-01-07T14:58:39.996Z" previous-amendment-key="2012-02-15~Rev 6">
+  <amendment name="Rev 7" date="2012-02-17" mandatory="true" released-date="2012-09-12T11:43:41.691Z" previous-amendment-key="2012-02-15~Rev 6">
     <planned-activity-delta id="f8386eaa-d33a-4f64-913f-e75d9cf2b496" node-id="71eff7d1-e4a3-446b-a878-ef835b368181">
       <property-change id="01d40180-7311-4304-975c-ac1906140de3" property-name="day" old-value="366" new-value="366"/>
       <remove id="52c3f331-fd0f-4274-b8fe-3aa711444a33" child-id="b0ecea76-a064-49ee-86d9-4d17f939b052"/>
@@ -3607,7 +3694,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 6" date="2012-02-15" mandatory="true" released-date="2013-01-07T14:58:39.789Z" previous-amendment-key="2012-02-15~Rev 5">
+  <amendment name="Rev 6" date="2012-02-15" mandatory="true" released-date="2012-09-12T11:43:41.359Z" previous-amendment-key="2012-02-15~Rev 5">
     <planned-activity-delta id="57468a44-93d5-4bb2-b201-0a2d64d9e629" node-id="2eab7a03-9e0b-449f-82c4-9087b705ff29">
       <property-change id="de5e66c3-944a-4be4-8c28-6cf28c30265c" property-name="day" old-value="1" new-value="1"/>
       <remove id="1d17e921-705b-483a-8f1b-5a46ca4e431e" child-id="28014a43-d786-4d06-adcd-d9fec07bb699"/>
@@ -3647,17 +3734,17 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 5" date="2012-02-15" mandatory="true" released-date="2013-01-07T14:58:39.720Z" previous-amendment-key="2012-02-08~Rev 4">
+  <amendment name="Rev 5" date="2012-02-15" mandatory="true" released-date="2012-09-12T11:43:41.262Z" previous-amendment-key="2012-02-08~Rev 4">
     <study-segment-delta id="e8209b82-d6ff-4d81-9300-98031b12eef7" node-id="b95c04d8-daa2-4a43-9a0c-cc42d4f8e624">
       <property-change id="850ac70c-92fc-42bf-aabc-a16509dd23fc" property-name="name" old-value="Pre-Pregnancy" new-value="Pre-Pregnancy Visit"/>
     </study-segment-delta>
   </amendment>
-  <amendment name="Rev 4" date="2012-02-08" mandatory="true" released-date="2013-01-07T14:58:39.665Z" previous-amendment-key="2012-02-03~Rev 3">
+  <amendment name="Rev 4" date="2012-02-08" mandatory="true" released-date="2012-09-12T11:43:41.175Z" previous-amendment-key="2012-02-03~Rev 3">
     <study-segment-delta id="def1d1a4-7823-422f-876d-f16f336d9238" node-id="76025607-f7aa-41e1-8ce9-29e0793cd6d4">
       <property-change id="637a158a-95b1-4723-a661-e49ba2c568c2" property-name="name" old-value="PPG 1 and 2 " new-value="PPG 1 and 2"/>
     </study-segment-delta>
   </amendment>
-  <amendment name="Rev 3" date="2012-02-03" mandatory="true" released-date="2013-01-07T14:58:37.670Z" previous-amendment-key="2011-12-29~Rev 2">
+  <amendment name="Rev 3" date="2012-02-03" mandatory="true" released-date="2012-09-12T11:43:37.943Z" previous-amendment-key="2011-12-29~Rev 2">
     <planned-activity-delta id="fd9b7b88-f94f-46c6-af07-2dd0343a75d4" node-id="cad092e0-5863-44ee-9439-506bf34c1a97">
       <property-change id="7bf0af6b-ac68-4d21-b859-0f873778fc66" property-name="day" old-value="1" new-value="1"/>
       <remove id="679b18aa-af79-4f71-8d01-8b03aaf26c69" child-id="1e262426-39da-4cc8-8d60-feb3a528c527"/>
@@ -4172,7 +4259,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="Rev 2" date="2011-12-29" mandatory="true" released-date="2013-01-07T14:58:37.363Z" previous-amendment-key="2011-09-16~Rev1">
+  <amendment name="Rev 2" date="2011-12-29" mandatory="true" released-date="2012-09-12T11:43:37.457Z" previous-amendment-key="2011-09-16~Rev1">
     <period-delta id="b97fcdf0-06d5-4eda-a935-a9a689fe2dcb" node-id="fa423dbe-cccb-4f36-966b-a03988aa88ba">
       <remove id="ecb08905-b25d-46eb-a050-b5cac8e02826" child-id="b8eb6fcd-6eae-4b61-840f-1c178ce985c6"/>
       <remove id="09dd8b9f-5569-42bf-9f45-43e8b67c99ad" child-id="77b3820b-05d3-4afc-a6b3-3b9e8cf0ad6f"/>
@@ -4240,7 +4327,7 @@
       </add>
     </period-delta>
   </amendment>
-  <amendment name="Rev1" date="2011-09-16" mandatory="true" released-date="2013-01-07T14:58:35.715Z" previous-amendment-key="2011-07-07~[Original]">
+  <amendment name="Rev1" date="2011-09-16" mandatory="true" released-date="2012-09-12T11:43:34.859Z" previous-amendment-key="2011-07-07~[Original]">
     <planned-activity-delta id="abe0b219-2ab6-4870-aacf-60d6de803b03" node-id="df1ceee2-0b0d-45ad-9a5d-982c15738817">
       <property-change id="41448d97-1a49-4f5b-8fcf-b09072e5caa6" property-name="day" old-value="1" new-value="1"/>
       <add id="a7e4da16-68bc-4fa6-8c16-8f703015b061">
@@ -4633,7 +4720,7 @@
       </add>
     </planned-activity-delta>
   </amendment>
-  <amendment name="[Original]" date="2011-07-07" mandatory="true" released-date="2013-01-07T14:58:35.150Z">
+  <amendment name="[Original]" date="2011-07-07" mandatory="true" released-date="2012-09-12T11:43:34.12Z">
     <planned-calendar-delta id="1d6f50a9-8a4d-46dc-8f89-aebb8c00f2f4" node-id="80f00ffd-5454-4193-aca5-23f289a22e9a">
       <add id="714bdfea-1c46-4adc-88f3-978f9a37e756" index="0">
         <epoch id="73f6c858-4069-411a-8d82-c9d558c07d68" name="LO-Intensity">
@@ -4896,7 +4983,7 @@
       <activity name="3-Month Mother Phone Interview Child Habits" code="3MMPI CH" description="3-Month Mother Phone Interview Child Habits - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother SAQ" code="24MMSAQ" description="24-Month Mother SAQ" type="Instrument"/>
       <activity name="Birth Visit Information Sheet" code="BVIS" description="Birth Visit Information Sheet" type="Information Sheet"/>
-      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview" type="Instrument"/>
+      <activity name="18-Month Mother Interview" code="18MMI" description="18-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Environmental Tap Water TWF Participant Collect SAQ Specification" code="ETWPharmPCSAQS" description="Environmental Tap Water TWF Participant Collect SAQ Specification" type="Environment"/>
       <activity name="Pregnancy Probability Group Instrument CATI" code="CATI" description="Pregnancy Probability Group Instrument CATI" type="Instrument"/>
       <activity name="Biospecimen Adult Blood Instrument" code="BABI" description="Biospecimen Adult Blood Instrument" type="Biospecimen"/>
@@ -4913,9 +5000,9 @@
       <activity name="Environmental Sample Kit Distribution Instrument" code="ESKDI" description="Environmental Sample Kit Distribution Instrument" type="Environment"/>
       <activity name="Pregnancy Health Care Log" code="PHCL" description="Pregnancy Health Care Log" type="Instrument"/>
       <activity name="PBS Eligibility Screener Interview" code="PBSESI" description="PBS Eligibility Screener Interview" type="Instrument"/>
-      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview" type="Instrument"/>
+      <activity name="3-Month Mother Phone Interview" code="3MMPI" description="3-Month Mother Phone Interview Part One" type="Instrument"/>
       <activity name="Pregnancy Screener Interview" code="PSI" description="Pregnancy Screener Interview" type="Instrument"/>
-      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview" type="Instrument"/>
+      <activity name="12-Month Mother Interview" code="12MMI" description="12-Month Mother Interview Part One" type="Instrument"/>
       <activity name="Pre-Pregnancy Visit Information Sheet" code="VIS (pre)" description="Pre-Pregnancy Visit Information Sheet" type="Information Sheet"/>
       <activity name="12-Month Mother SAQ" code="12MMSAQ" description="12-Month Mother SAQ" type="Instrument"/>
       <activity name="24-Month Mother Interview Part One" code="24MMI1" description="24-Month Mother Interview Part One" type="Instrument"/>
@@ -4931,13 +5018,13 @@
       <activity name="24-Month Mother Interview Mother Habits" code="24MMI MH" description="24-Month Mother Interview Mother Habits - Child Loop" type="Instrument"/>
       <activity name="Participant Verification Instrument" code="PVI" description="Participant Verification Instrument" type="Instrument"/>
       <activity name="9-Month Mother Phone Interview" code="9MMPI" description="9-Month Mother Phone Interview" type="Instrument"/>
-      <activity name="Birth Interview" code="BI" description="Birth Interview" type="Instrument"/>
+      <activity name="Birth Interview" code="BI" description="Birth Interview Part One" type="Instrument"/>
       <activity name="Birth Interview Baby Name" code="BI BN" description="Birth Interview Baby Name - Child Loop" type="Instrument"/>
       <activity name="24-Month Mother Interview Mother Mold" code="24MMI MM" description="24-Month Mother Interview Mother Mold - Child Loop" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview Baby Name" code="LIBI BN" description="Low-Intensity Birth Interview Baby Name - Child Loop" type="Instrument"/>
       <activity name="Low-Intensity Birth Interview" code="LIBI" description="Low-Intensity Birth Interview" type="Instrument"/>
       <activity name="Pregnancy Probability Group Follow-Up Interview" code="PPGFUI" description="Pregnancy Probability Group Follow-Up Interview" type="Instrument"/>
-      <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview" type="Instrument"/>
+      <activity name="6-Month Mother Interview" code="6MMI" description="6-Month Mother Interview Part One" type="Instrument"/>
       <activity name="18-Month Mother SAQ" code="18MMSAQ" description="18-Month Mother SAQ" type="Instrument"/>
       <activity name="Biospecimen Cord Blood Instrument" code="BCBI" description="Biospecimen Cord Blood Instrument" type="Biospecimen"/>
       <activity name="Child Consent" code="CC" description="Child Consent" type="Consent"/>

@@ -2,7 +2,12 @@
 
 %h3
   = @person
+
+%h3
+  = "Instruments and Activities for the #{@event} Event"
+
 = render 'occurred_activities'
+
 = render 'instruments_for_upcoming_events', :initial_instrument_for_contact => true
 
 .close_consent

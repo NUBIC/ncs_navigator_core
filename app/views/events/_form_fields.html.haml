@@ -8,8 +8,8 @@
     Disable Event Type
   = render "shared/ncs_code_select", { :f => f, :code => :event_type_code, :label_text => "Event Type", :other => :event_type_other, :help_text => "events/event_event_type_tooltip", :html_attrs => { :disabled => 'disabled' } }
 
-  = render "shared/disposition_code", { :f => f, :code => :event_disposition, :notify_marker => true }
   = render "shared/ncs_code_select", { :f => f, :code => :event_disposition_category_code, :label_text => "Disposition Category" }
+  = render "shared/disposition_code", { :f => f, :code => :event_disposition, :notify_marker => true }
 
   = render "shared/ncs_code_select", { :f => f, :code => :event_breakoff_code, :label_text => "Breakoff", :help_text => "events/event_breakoff_tooltip" }
 

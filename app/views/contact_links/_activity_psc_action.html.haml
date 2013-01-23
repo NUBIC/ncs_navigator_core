@@ -1,0 +1,7 @@
+.activity_psc_action
+  = form_tag "/contact_links/update_psc_for_activity", :method => :post do
+    = hidden_field_tag :activity_id, activity.activity_id
+    = hidden_field_tag :contact_link_id, @contact_link.id
+    = select_tag "new_state", psc_activity_options(activity)
+    = submit_tag "Update State in PSC",
+      :confirm => "This is a manual action to update the state of the activity bypassing the normal workflow.\nAre you certain you would like to update the state of the #{activity.activity_name} activity?"

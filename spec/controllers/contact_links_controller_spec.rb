@@ -91,13 +91,17 @@ describe ContactLinksController do
       		assigns(:activity_plan).should eq(@plan)
       	end
 
-      	it "@activities_for_event should be schedule activities for contact_link.event" do
-      		assigns(:activities_for_event).size.should == 3
-      	end
+        it "@activities_for_event should be all activities for contact_link.event" do
+          assigns(:activities_for_event).size.should == 4
+        end
 
       	it "@current_activity should be first schedule activity for contact_link.event" do
       		assigns(:current_activity).activity_name.should == "Pregnancy Visit 1 Interview"
       	end
+
+        it "@scheduled_activities should be schedule activities for contact_link.event" do
+          assigns(:scheduled_activities).size.should == 3
+        end
 
       	it "@occurred_activities should be all occurred activities for contact_link.event" do
       		assigns(:occurred_activities).size.should == 1
@@ -112,7 +116,7 @@ describe ContactLinksController do
       			contact_link = Factory(:contact_link, :person => @person, :event => Factory(:event, :event_type => NcsCode.find_event_by_lbl("birth")))
 						get :select_instrument, :id => contact_link.id
       		end
-      		
+
       		it "@activities_for_event should be empty if no schedule activities for contact_link.event" do
 						assigns(:activities_for_event).size.should == 0
       		end
@@ -209,6 +213,6 @@ describe ContactLinksController do
 	        }
         }
       }
-    end  
+    end
   end
 end

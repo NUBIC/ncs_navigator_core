@@ -59,6 +59,7 @@ body.ncs {
 
     #page_title {
       @include prepend(1);
+      font-size: 2.25em;
     }
 
     #tab_navigation {

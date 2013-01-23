@@ -10,43 +10,62 @@ require 'psc_participant'
 class PatientStudyCalendar
   extend Forwardable
 
+  # Epochs
   LOW_INTENSITY   = "LO-Intensity"
   HIGH_INTENSITY  = "HI-Intensity"
   CHILD_EPOCH     = "Child"
   PBS_ELIGIBILITY = "PBS-Eligibility"
+  INFORMED_CONSENT_EPOCH = "Informed Consent"
 
+  # PBS Segment
+  PBS_ELIGIBILITY_SCREENING = "PBS Participant Eligibility Screening"
+
+  # Lo Segments
   PREGNANCY_SCREENER    = "Pregnancy Screener"
   PPG_1_AND_2           = "PPG 1 and 2"
-  PPG_FOLLOW_UP         = "PPG Follow-Up"
-  BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
   HI_LO_CONVERSION      = "Low to High Conversion"
   POSTNATAL             = "Postnatal"
 
+  # Hi and Lo Segments (incl. EH, PB, PBS)
+  PPG_FOLLOW_UP         = "PPG Follow-Up" # Not for PBS
+  BIRTH_VISIT_INTERVIEW = "Birth Visit Interview"
+
+  # Hi Segments (incl. EH, PB, PBS)
   PRE_PREGNANCY         = "Pre-Pregnancy Visit"
   PREGNANCY_VISIT_1     = "Pregnancy Visit 1"
   PREGNANCY_VISIT_2     = "Pregnancy Visit 2"
   CHILD                 = "Child"
 
+  # Low Intensity Epoch and Segments
   LOW_INTENSITY_PREGNANCY_SCREENER    = "#{LOW_INTENSITY}: #{PREGNANCY_SCREENER}"
   LOW_INTENSITY_PPG_1_AND_2           = "#{LOW_INTENSITY}: #{PPG_1_AND_2}"
   LOW_INTENSITY_PPG_FOLLOW_UP         = "#{LOW_INTENSITY}: #{PPG_FOLLOW_UP}"
   LOW_INTENSITY_BIRTH_VISIT_INTERVIEW = "#{LOW_INTENSITY}: #{BIRTH_VISIT_INTERVIEW}"
   LOW_INTENSITY_POSTNATAL             = "#{LOW_INTENSITY}: #{POSTNATAL}"
 
+  # High Intensity Epoch and Segments
   HIGH_INTENSITY_HI_LO_CONVERSION       = "#{HIGH_INTENSITY}: #{HI_LO_CONVERSION}"
   HIGH_INTENSITY_PPG_FOLLOW_UP          = "#{HIGH_INTENSITY}: #{PPG_FOLLOW_UP}"
   HIGH_INTENSITY_PRE_PREGNANCY          = "#{HIGH_INTENSITY}: #{PRE_PREGNANCY}"
   HIGH_INTENSITY_PREGNANCY_VISIT_1      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_1}"
   HIGH_INTENSITY_PREGNANCY_VISIT_2      = "#{HIGH_INTENSITY}: #{PREGNANCY_VISIT_2}"
 
+  # PBS Eligibility Epoch and Segment
   PBS_ELIGIBILITY_SCREENER = "#{PBS_ELIGIBILITY}: #{PBS_ELIGIBILITY}"
 
+  # Birth and Post-Natal Epoch and Segment
   CHILD_CHILD = "#{CHILD_EPOCH}: #{CHILD}"
 
-  CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
-
+  # Informed Consent Segments
   INFORMED_CONSENT = "Informed Consent"
-  SKIPPED_EVENT_TYPES = [INFORMED_CONSENT]
+  PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "Parental Permission for Child Participation"
+
+  # Informed Consent Epoch and Segments
+  INFORMED_CONSENT_GENERAL_CONSENT = "#{INFORMED_CONSENT_EPOCH}: #{INFORMED_CONSENT}"
+  INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION = "#{INFORMED_CONSENT_EPOCH}: #{PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION}"
+
+  # CAS
+  CAS_SECURITY_SUFFIX = "/auth/cas_security_check"
 
   attr_reader :psc_client
 
@@ -227,9 +246,7 @@ class PatientStudyCalendar
   def assign_subject(participant, event_type = nil, date = nil)
     # move state so that the participant can tell PSC what is the next study segment to schedule
     participant.register! if participant.can_register?
-    if should_skip_event?(event_type)
-      return nil
-    elsif is_registered?(participant) || participant.next_study_segment.blank?
+    if is_registered?(participant) || participant.next_study_segment.blank?
       return nil
     else
       data = build_subject_assignment_request(participant, event_type, date)
@@ -239,10 +256,6 @@ class PatientStudyCalendar
         psc_assignment_id(participant), valid_response?(response))
       response
     end
-  end
-
-  def should_skip_event?(event_type)
-    SKIPPED_EVENT_TYPES.include? event_type
   end
 
   def schedules(participant, format = "json")
@@ -442,6 +455,16 @@ class PatientStudyCalendar
     get("studies/#{CGI.escape(study_identifier)}/sites/#{CGI.escape(site_identifier)}/subject-assignments")
   end
 
+  ##
+  # For the given Participant, ask for the next scheduled event and determine
+  # if that segment should be scheduled. If it should, create a scheduled study
+  # segment in PSC.
+  #
+  # @see Participant#next_scheduled_event
+  # @see PatientStudyCalendar#should_schedule_segment
+  #
+  # @param[Participant]
+  # @param[Date] (optional)
   def schedule_next_segment(participant, date = nil)
     return nil if participant.next_study_segment.blank?
 
@@ -449,9 +472,27 @@ class PatientStudyCalendar
     next_scheduled_event_date = date.nil? ? next_scheduled_event.date.to_s : date
 
     if should_schedule_segment(participant, next_scheduled_event.event, next_scheduled_event_date)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}",
-        build_next_scheduled_study_segment_request(next_scheduled_event.event, next_scheduled_event_date))
+      schedule_segment(participant, next_scheduled_event.event, next_scheduled_event_date)
     end
+  end
+
+  def schedule_general_informed_consent(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_GENERAL_CONSENT, date)
+  end
+
+  def schedule_parental_permission_informed_consent(participant, date = Date.today.to_s)
+    schedule_segment(participant, INFORMED_CONSENT_PARENTAL_PERMISSION_FOR_CHILD_PARTICIPATION, date)
+  end
+
+  ##
+  # Make POST request to schedule given event in PSC for given participant on the given date
+  # @see build_next_scheduled_study_segment_request
+  # @param[Participant]
+  # @param[String] - describing event in format "EPOCH: SEGMENT"
+  # @param[String] - formatted date
+  def schedule_segment(participant, event, date)
+    post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}",
+      build_next_scheduled_study_segment_request(event, date))
   end
 
   ##
@@ -480,7 +521,6 @@ class PatientStudyCalendar
   def should_schedule_segment(participant, next_scheduled_event, next_scheduled_event_date)
 
     next_scheduled_event = strip_epoch(next_scheduled_event)
-    return false if should_skip_event?(next_scheduled_event)
 
     result = true
     scheduled_activities(participant).each do |activity|
@@ -545,27 +585,27 @@ class PatientStudyCalendar
   end
 
   ##
-  # Cancels all activities labeled as collection instruments (environmental or biological)
+  # Cancels all activities as NA for those labeled as collection instruments (environmental or biological)
   # for the participant. Called when scheduling new segments.
   # @param[Participant]
   # @param[String]
   def cancel_collection_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if Instrument.collection?(a.labels)
-        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::NA, date, reason)
       end
     end
   end
 
   ##
-  # Cancels all activities that have instruments but those instruments do not match
+  # Cancels all activities as NA for those that have instruments but those instruments do not match
   # the current mdes version known to the application. Called when scheduling new segments.
   # @param[Participant]
   # @param[String]
   def cancel_non_matching_mdes_version_instruments(participant, scheduled_study_segment_identifier, date, reason)
     activities_for_scheduled_segment(participant, scheduled_study_segment_identifier).each do |a|
       if a.has_non_matching_mdes_version_instrument?
-        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::CANCELED, date, reason)
+        update_activity_state(a.activity_id, participant, Psc::ScheduledActivity::NA, date, reason)
       end
     end
   end
@@ -903,9 +943,6 @@ class PatientStudyCalendar
                 "PPG Follow-Up"
               when "Father Consent and Interview"
                 "Father"
-              when "Informed Consent"
-                "Informed Consent"
-                # Informed Consent is an event type that does not map to a segment in PSC
               else
                 event_type
               end
