@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 require File.expand_path('../../../shared/models/logger', __FILE__)
+require File.expand_path('../../psc/activity_label_helpers', __FILE__)
 
 module Field
   describe Serialization do
@@ -10,6 +11,10 @@ module Field
 
     before do
       fw.logger = logger
+    end
+
+    def al(label)
+      Psc::ActivityLabel.from_string(label)
     end
 
     shared_context 'has a person' do
@@ -49,6 +54,8 @@ module Field
     end
 
     shared_context 'has an instrument' do
+      include ActivityLabelHelpers
+
       include_context 'has an event'
 
       let(:instruments) { json['contacts'][0]['events'][0]['instruments'] }
@@ -56,7 +63,7 @@ module Field
       let(:response_sets) { [Factory(:response_set)] }
       let(:survey) { Factory(:survey) }
 
-      let(:survey_ir) { stub(:participant_type => 'child') }
+      let(:survey_ir) { stub(:participant_type => al('participant_type:child')) }
 
       let(:instrument_ir) do
         stub(:event => event_ir, :person => person_ir, :survey => survey_ir, :name => 'An instrument')
@@ -77,7 +84,7 @@ module Field
 
     shared_context 'has an event template' do
       let(:et) { EventTemplate.new(event_ir) }
-      let(:event_ir) { Psc::ImpliedEntities::Event.new('foo_bar') }
+      let(:event_ir) { Psc::ImpliedEntities::Event.new(al('event:foo_bar')) }
       let(:event_templates) { json['event_templates'] }
 
       before do
@@ -90,7 +97,7 @@ module Field
     shared_context 'has an event template with an instrument' do
       include_context 'has an event template'
 
-      let(:survey_ir) { Psc::ImpliedEntities::Survey.new('2.0:foo-bar') }
+      let(:survey_ir) { Psc::ImpliedEntities::Survey.new(al('instrument:2.0:foo-bar')) }
       let(:instrument_ir) { Psc::ImpliedEntities::Instrument.new(survey_ir, nil, 'Foo Bar Instrument') }
       let(:instruments) { event_templates[0]['instruments'] }
       let(:instrument_plan_ir) do
@@ -355,7 +362,7 @@ module Field
             end
 
             it 'issues a warning' do
-              log.should =~ /plan for instrument <#{survey_ir.access_code}> could not be found/i
+              log.should =~ /plan for instrument <#{survey_ir.access_code.content}> could not be found/i
             end
 
             it 'does not include the unresolvable instrument' do
@@ -371,7 +378,7 @@ module Field
             it 'issues a warning' do
               fw.to_json
 
-              log.should =~ /NcsCode for instrument <#{survey_ir.access_code}> could not be found/i
+              log.should =~ /NcsCode for instrument <#{survey_ir.access_code.content}> could not be found/i
             end
 
             it 'does not include the unresolvable instrument' do
@@ -418,7 +425,7 @@ module Field
           end
 
           it 'sets #/0/instrument_templates/0/participant_type' do
-            plans[0]['instrument_templates'][0]['participant_type'].should == survey_ir.participant_type
+            plans[0]['instrument_templates'][0]['participant_type'].should == survey_ir.participant_type.content
           end
 
           it 'sets #/0/instrument_templates/0/survey' do

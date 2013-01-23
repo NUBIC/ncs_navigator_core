@@ -1,8 +1,12 @@
 require 'spec_helper'
 
+require File.expand_path('../activity_label_helpers', __FILE__)
+
 shared_context 'report with child instruments' do
+  include ActivityLabelHelpers
+
   let(:data) do
-    JSON.parse(%q{
+    JSON.parse(%Q{
       {
           "filters": {
               "end_date": "2012-07-16",
@@ -21,10 +25,10 @@ shared_context 'report with child instruments' do
                   "ideal_date": "2012-07-06",
                   "labels": [
                       "event:birth",
-                      "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name",
+                      "instrument:#{mdes_version}:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name",
                       "order:01_01",
                       "participant_type:child",
-                      "references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0"
+                      "references:#{mdes_version}:ins_que_birth_int_ehpbhi_p2_v2.0"
                   ],
                   "responsible_user": "user",
                   "scheduled_date": "2012-07-10",
@@ -49,7 +53,7 @@ shared_context 'report with child instruments' do
                   "ideal_date": "2012-07-06",
                   "labels": [
                       "event:birth",
-                      "instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0",
+                      "instrument:#{mdes_version}:ins_que_birth_int_ehpbhi_p2_v2.0",
                       "participant_type:mother"
                   ],
                   "responsible_user": "user",
@@ -73,11 +77,12 @@ shared_context 'report with child instruments' do
   end
 
   let(:activity_name) { 'Birth Interview' }
-  let(:event_birth) { 'birth' }
+  let(:event_birth) { al('event:birth') }
   let(:event_labels) { [event_birth] }
   let(:ideal_date) { '2012-07-06' }
-  let(:instrument_baby_name) { 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name' }
-  let(:instrument_birth) { 'ins_que_birth_int_ehpbhi_p2_v2.0' }
+  let(:instrument_baby_name) { al("instrument:#{mdes_version}:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name") }
+  let(:instrument_birth) { al("instrument:#{mdes_version}:ins_que_birth_int_ehpbhi_p2_v2.0") }
+  let(:mdes_version) { NcsNavigatorCore.mdes_version.number }
   let(:person_id) { '2f85c94e-edbb-4cbe-b9ab-5f12c033323f' }
   let(:scheduled_date) { '2012-07-10' }
   let(:survey_labels) { [instrument_birth, instrument_baby_name] }

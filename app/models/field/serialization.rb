@@ -87,7 +87,7 @@ module Field
       event_codes = codes['EVENT_TYPE_CL1']
 
       event_templates.map do |et|
-        l = EventLabel.new(et.event.label)
+        l = EventLabel.new(et.event.label.content)
 
         { 'event_type_code' => l.ncs_code(event_codes).local_code,
           'name' => l.display_text,
@@ -102,23 +102,23 @@ module Field
     def event_template_instruments_as_json(instruments, options)
       instruments.each_with_object([]) do |i, result|
         plan = plan_for(i)
-        label = InstrumentLabel.new(i.survey.access_code)
-        code = label.ncs_code
+        l = InstrumentLabel.new(i.survey.access_code)
+        code = l.ncs_code
 
         if plan && code
           result << {
             'instrument_plan_id' => plan.id,
             'instrument_type_code' => code.local_code,
-            'instrument_version' => label.version,
+            'instrument_version' => l.mdes_version,
             'name' => i.name
           }
         else
           if !plan
-            logger.warn "Plan for instrument <#{i.survey.access_code}> could not be found"
+            logger.warn "Plan for instrument <#{l.content}> could not be found"
           end
 
           if !code
-            logger.warn "NcsCode for instrument <#{i.survey.access_code}> could not be found"
+            logger.warn "NcsCode for instrument <#{l.content}> could not be found"
           end
         end
       end
@@ -145,7 +145,7 @@ module Field
         if ms
           {
             'instrument_template_id' => ms.api_id,
-            'participant_type' => s.participant_type,
+            'participant_type' => s.participant_type.try(:content),
             'survey' => ms,
             'version' => ms.updated_at.utc
           }
@@ -223,6 +223,32 @@ module Field
         'street' => [address.address_one, address.address_two].join("\n"),
         'zip_code' => [address.zip, address.zip4].join('-')
       }
+    end
+
+    ##
+    # @private
+    class InstrumentLabel
+      extend Forwardable
+
+      def_delegators :@label, :mdes_version, :content
+
+      def initialize(label)
+        @label = label
+      end
+
+      ##
+      # Retrieving the type code for an instrument label is kind of evil.  At
+      # present, the following procedure is required:
+      #
+      # 1. interpret the instrument label as an access code
+      # 2. find the latest survey for the access code
+      # 3. find the NCS instrument type code whose display text matches the
+      #    survey's title
+      def ncs_code
+        if s = Survey.most_recent_for_access_code(content)
+          NcsCode.for_list_name_and_local_code('INSTRUMENT_TYPE_CL1', s.instrument_type)
+        end
+      end
     end
   end
 end

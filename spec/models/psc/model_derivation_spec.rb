@@ -4,6 +4,7 @@ require 'spec_helper'
 require File.expand_path('../../../shared/models/logger', __FILE__)
 require File.expand_path('../report_without_child_instruments', __FILE__)
 require File.expand_path('../report_with_child_instruments', __FILE__)
+require File.expand_path('../../psc/activity_label_helpers', __FILE__)
 
 module Psc
   describe ModelDerivation do
@@ -101,6 +102,8 @@ module Psc
     end
 
     describe 'with child instruments' do
+      include ActivityLabelHelpers
+
       include_context 'report with child instruments'
 
       it_should_behave_like 'a contact mapper'
@@ -111,7 +114,7 @@ module Psc
         person = IE::Person.new(person_id)
         contact = IE::Contact.new(scheduled_date, person)
         event = IE::Event.new(event_birth, ideal_date, contact, person)
-        survey = IE::Survey.new(instrument_birth, 'mother', nil)
+        survey = IE::Survey.new(instrument_birth, al('participant_type:mother'), nil)
 
         report.instruments.should == Set.new([
           IE::Instrument.new(survey, nil, activity_name, event, person)
@@ -122,8 +125,8 @@ module Psc
         person = IE::Person.new(person_id)
         contact = IE::Contact.new(scheduled_date, person)
         event = IE::Event.new(event_birth, ideal_date, contact, person)
-        root_survey = IE::Survey.new(instrument_birth, 'mother', nil)
-        child_survey = IE::Survey.new(instrument_baby_name, 'child', '01_01')
+        root_survey = IE::Survey.new(instrument_birth, al('participant_type:mother'), nil)
+        child_survey = IE::Survey.new(instrument_baby_name, al('participant_type:child'), al('order:01_01'))
         root_instrument = IE::Instrument.new(root_survey, nil, activity_name, event, person)
 
         expected_plan = InstrumentPlan.new(root_instrument, [root_survey, child_survey])

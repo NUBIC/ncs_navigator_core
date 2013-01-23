@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require File.expand_path('../activity_label_helpers', __FILE__)
+
 module Psc
   describe InstrumentPlanCollection do
     let(:list) { [] }
@@ -32,13 +34,15 @@ module Psc
     end
 
     describe '#calculate' do
+      include ActivityLabelHelpers
+
       describe 'for each [contact, event]' do
         let(:i1) { stub(:name => 'foo') }
-        let(:s1) { stub(:order => nil, :access_code => 'foo') }
-        let(:s2) { stub(:order => '01_02') }
-        let(:s3) { stub(:order => '01_01') }
-        let(:sr1) { stub(:access_code => 'foo') }
-        let(:sr2) { stub(:access_code => 'foo') }
+        let(:s1) { stub(:order => nil, :access_code => al('instrument:3.0:foo')) }
+        let(:s2) { stub(:order => al('order:01_02')) }
+        let(:s3) { stub(:order => al('order:01_01')) }
+        let(:sr1) { stub(:access_code => al('references:3.0:foo')) }
+        let(:sr2) { stub(:access_code => al('references:3.0:foo')) }
 
         let(:sa1) { stub }
         let(:sa2) { stub }

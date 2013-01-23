@@ -317,11 +317,9 @@ module Psc
     ##
     # @private
     def label_with(prefix, mdes_version)
-      l = @label_list.detect do |l|
+      @label_list.detect do |l|
         l.has_prefix?(prefix) && l.for_mdes_version?(mdes_version)
       end
-
-      l.content if l
     end
 
     ##

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-require File.expand_path('../../../shared/models/logger', __FILE__)
 require File.expand_path('../../../shared/custom_recruitment_strategy', __FILE__)
+require File.expand_path('../../../shared/models/logger', __FILE__)
+require File.expand_path('../../psc/activity_label_helpers', __FILE__)
 
 module Field
   describe EventTemplateGenerator do
@@ -56,6 +57,19 @@ module Field
 
       before do
         etg.populate_from_psc(psc, date, activities)
+      end
+
+      # The PSC template specifies MDES 2.0 and we can't change it without
+      # concerted effort, so for now, let's be lazy and just put the app on
+      # MDES 2.0.
+      around do |example|
+        begin
+          old_version = NcsNavigatorCore.mdes_version
+          NcsNavigatorCore.mdes_version = '2.0'
+          example.call
+        ensure
+          NcsNavigatorCore.mdes_version = old_version
+        end
       end
 
       describe 'if Cases is set for specimen collection' do
@@ -161,6 +175,8 @@ garply:
     end
 
     describe '#build_response_templates' do
+      include ActivityLabelHelpers
+
       include_context 'PSC mock'
       include_context 'response templates'
 
@@ -179,21 +195,21 @@ garply:
       # The test data establishes response templates only for the last event,
       # so we expect one set of templates.
       it 'loads response templates for mentioned events' do
-        etg.response_templates['pregnancy_visit_1'].should_not be_nil
+        etg.response_templates[al('event:pregnancy_visit_1')].should_not be_nil
       end
 
       it 'does not load events not in the selected template' do
-        etg.response_templates['garply'].should be_nil
+        etg.response_templates[al('event:garply')].should be_nil
       end
 
       it 'resolves survey titles to API IDs' do
-        ids = etg.response_templates['pregnancy_visit_1'].map { |rt| rt.survey_id }.uniq
+        ids = etg.response_templates[al('event:pregnancy_visit_1')].map { |rt| rt.survey_id }.uniq
 
         Set.new(ids).should == Set.new([s1.api_id, s2.api_id])
       end
 
       it 'builds one template per (survey, q, a) triple' do
-        etg.response_templates['pregnancy_visit_1'].length.should == 2
+        etg.response_templates[al('event:pregnancy_visit_1')].length.should == 2
       end
     end
 
@@ -209,14 +225,14 @@ garply:
       end
 
       it 'assigns templates for Pregnancy Visit 1 to events with label pregnancy_visit_1' do
-        template = etg.event_templates.detect { |et| et.event.label == 'pregnancy_visit_1' }
+        template = etg.event_templates.detect { |et| et.event.label.content == 'pregnancy_visit_1' }
 
         # the example data gives us two templates, one per survey
         template.response_templates.length.should == 2
       end
 
       it 'assigns an empty collection for events without response templates' do
-        template = etg.event_templates.detect { |et| et.event.label == 'informed_consent' }
+        template = etg.event_templates.detect { |et| et.event.label.content == 'informed_consent' }
 
         template.response_templates.length.should == 0
       end

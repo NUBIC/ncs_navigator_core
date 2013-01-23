@@ -140,7 +140,7 @@ module Field
     # @param [Hash] collection the collection of response templates to use
     def build_response_templates(collection)
       # Collect survey titles for resolution.
-      relevant = events.map { |e| [e.label, collection[e.label]] }.reject { |_, spec| !spec }.each
+      relevant = events.map { |e| [e.label, collection[e.label.content]] }.reject { |_, spec| !spec }.each
 
       titles = relevant.with_object([]) do |(_, spec), a|
         spec.each { |survey_title, _| a << survey_title }

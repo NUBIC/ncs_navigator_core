@@ -66,7 +66,8 @@ module Psc
       def self.it_reads_label(prefix, version, expected)
         describe "#{prefix}_label" do
           it "returns the label with prefix #{prefix} for MDES version #{version}" do
-            sa.send("#{prefix}_label", version).should == expected
+            sa.send("#{prefix}_label", version).should ==
+              ActivityLabel.from_string(expected)
           end
 
           it 'returns nil if there is no matching label' do
@@ -75,19 +76,19 @@ module Psc
         end
       end
 
-      it_reads_label 'collection',        '2.0', 'biological'
-      it_reads_label 'event',             '2.0', 'birth'
-      it_reads_label 'instrument',        '2.0', 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
-      it_reads_label 'order',             '2.0', '01_02'
-      it_reads_label 'participant_type',  '2.0', 'child'
-      it_reads_label 'references',        '2.0', 'ins_que_birth_int_ehpbhi_p2_v2.0'
+      it_reads_label 'collection',        '2.0', 'collection:biological'
+      it_reads_label 'event',             '2.0', 'event:birth'
+      it_reads_label 'instrument',        '2.0', 'instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_baby_name'
+      it_reads_label 'order',             '2.0', 'order:01_02'
+      it_reads_label 'participant_type',  '2.0', 'participant_type:child'
+      it_reads_label 'references',        '2.0', 'references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0'
 
-      it_reads_label 'collection',        '3.0', 'biological'
-      it_reads_label 'event',             '3.0', 'birth'
-      it_reads_label 'instrument',        '3.0', 'ins_que_birth_int_ehpbhi_p2_v3.0_baby_name'
-      it_reads_label 'order',             '3.0', '01_02'
-      it_reads_label 'participant_type',  '3.0', 'child'
-      it_reads_label 'references',        '3.0', 'ins_que_birth_int_ehpbhi_p2_v3.0'
+      it_reads_label 'collection',        '3.0', 'collection:biological'
+      it_reads_label 'event',             '3.0', 'event:birth'
+      it_reads_label 'instrument',        '3.0', 'instrument:3.0:ins_que_birth_int_ehpbhi_p2_v3.0_baby_name'
+      it_reads_label 'order',             '3.0', 'order:01_02'
+      it_reads_label 'participant_type',  '3.0', 'participant_type:child'
+      it_reads_label 'references',        '3.0', 'references:3.0:ins_que_birth_int_ehpbhi_p2_v3.0'
 
       describe '#specimen_collection?' do
         it 'returns true for activities with a collection label' do

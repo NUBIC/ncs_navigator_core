@@ -26,7 +26,7 @@ module Psc
       end
 
       def key
-        order || ''
+        order.to_s || ''
       end
     end
 

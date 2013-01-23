@@ -159,13 +159,14 @@ module Field
         next if !participant
 
         possible = participant.events
-        expected = OpenStruct.new(:labels => "event:#{event.label}", :ideal_date => event.ideal_date)
+        code = event.label.content
+        expected = OpenStruct.new(:labels => "event:#{code}", :ideal_date => event.ideal_date)
         accepted = possible.detect { |e| e.matches_activity(expected) }
 
         if accepted
           resolutions[event] = accepted
         else
-          logger.error %Q{Cannot map {event label = #{event.label}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
+          logger.error %Q{Cannot map {event label = #{code}, ideal date = #{event.ideal_date}, participant = #{participant.p_id}} to an event}
         end
       end
     end
@@ -235,10 +236,11 @@ module Field
     # @private
     def resolve_surveys
       surveys.each do |survey|
-        resolutions[survey] = ::Survey.most_recent_for_access_code(survey.access_code)
+        access_code = survey.access_code.content
+        resolutions[survey] = ::Survey.most_recent_for_access_code(access_code)
 
         if !resolutions[survey]
-          logger.error %Q{Cannot map {access code = #{survey.access_code}} to a survey}
+          logger.error %Q{Cannot map {access code = #{access_code}} to a survey}
         end
       end
     end
