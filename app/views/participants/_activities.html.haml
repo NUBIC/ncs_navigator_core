@@ -14,7 +14,7 @@
           Activities for Pending Events
         .activities
           - e = @participant.pending_events.first
-          - @participant_activity_plan.activities_for_event(e.to_s).each do |a|
+          - @participant_activity_plan.scheduled_activities_for_event(e.to_s).each do |a|
             .activity
               %span{ :class => "scheduled_date" }
                 = a.date
@@ -25,3 +25,6 @@
               = a.activity_name
       - else
         Subject does not have a schedule matching pending events
+
+    - if should_show_informed_consent_scheduling_form?(@participant)
+      = render "/participants/schedule_informed_consent"

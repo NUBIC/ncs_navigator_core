@@ -21,6 +21,7 @@ describe InstrumentPlan do
       describe ".events" do
         it "orders the events" do
           plan = InstrumentPlan.from_schedule(participant_plan)
+
           plan.events.size.should  == 3
           plan.events.first.should == 'birth'
           plan.events.last.should  == '6m'
@@ -217,11 +218,11 @@ describe InstrumentPlan do
         end
 
         it "knows all the scheduled activities for the mother and child" do
-          plan.activities_for_event('6m').size.should == 3
+          plan.scheduled_activities_for_event('6m').size.should == 3
         end
 
         it "knows the participant associated with the appropriate instrument" do
-          activities = plan.activities_for_event('6m')
+          activities = plan.scheduled_activities_for_event('6m')
           mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_6mmother_int_ehpbhi_p2_v1.1'
           mother_activity.participant.should == mother
@@ -285,7 +286,7 @@ describe InstrumentPlan do
           it "returns the first scheduled_activity that does not have a
               response_set associated with an instrument in the instrument_plan" do
 
-            plan.activities_for_event('birth').size.should == 4
+            plan.scheduled_activities_for_event('birth').size.should == 4
 
             csa = plan.current_scheduled_activity('birth')
             csa.survey_title.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
@@ -392,11 +393,11 @@ describe InstrumentPlan do
         end
 
         it "knows all the scheduled activities for the mother and child" do
-          plan.activities_for_event('birth').size.should == 4
+          plan.scheduled_activities_for_event('birth').size.should == 4
         end
 
         it "knows the participant associated with the appropriate instrument" do
-          activities = plan.activities_for_event('birth')
+          activities = plan.scheduled_activities_for_event('birth')
 
           mother_activity = activities[0]
           mother_activity.instrument.should == 'ins_que_birth_int_ehpbhi_p2_v2.0'
@@ -524,7 +525,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self'
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:mother'
             },
             {
               'id' => '2',
@@ -552,7 +553,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-04-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1'
+              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1 participant_type:mother'
             }
           ]
         },
@@ -564,7 +565,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self'
+              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:mother'
             },
             {
               'id' => '5',
@@ -593,7 +594,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-01-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:self'
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0 order:01_01 participant_type:mother'
             },
             {
               'id' => '12',
@@ -641,7 +642,7 @@ describe InstrumentPlan do
               'ideal_date' => '2011-07-01',
               'assignment' => { 'id' => 'mother'},
               'current_state' => { 'name' => 'scheduled' },
-              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:self'
+              'labels' => 'event:6m instrument:2.0:ins_que_6mmother_int_ehpbhi_p2_v1.1 order:01_01 participant_type:mother'
             },
             {
               'id' => '32',

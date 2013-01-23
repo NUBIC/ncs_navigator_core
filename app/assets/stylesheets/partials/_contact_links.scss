@@ -18,3 +18,33 @@
     margin-top: 0.5em;
   }
 }
+.activity_list_for_event {
+
+  .child_participation,
+  .consent_link,
+  .instrument {
+    a {
+      display: inline-block;
+      width: 20em;
+    }
+  }
+
+  .known_instrument,
+  .unknown_instrument {
+    span.activity_name {
+      display: inline-block;
+      width: 22em;
+      padding: 2px 2px 2px 20px;
+    }
+  }
+
+  .activity_psc_action {
+    display: inline-block;
+    input[type="submit"] {
+      font-size: 0.8em;
+    }
+    form {
+      margin-bottom: 0 !important; // overriding .containter form
+    }
+  }
+}

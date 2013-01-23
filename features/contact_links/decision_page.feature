@@ -8,7 +8,7 @@ Feature: After completing an instrument for a contact
   Given an authenticated user
   And a contact record without an associated participant visit record
   When I am on the decision_page_contact_link page
-  And I should see "Administer another Instrument for this Event"
+  And I should see "Instruments and Activities"
   And I should see "Create Participant Record of Visit"
   And I should see "Enter information about the Visit"
   And I should see "Complete Contact Record"

@@ -1,6 +1,6 @@
 class InstrumentPlan
 
-  attr_accessor :scheduled_activities, :occurred_activities
+  attr_accessor :all_activities, :scheduled_activities, :occurred_activities
 
   def self.from_schedule(schedule = nil)
     raise "No parameter supplied to build plan" if schedule.blank?
@@ -12,6 +12,7 @@ class InstrumentPlan
   # Creates a new instance of the InstrumentPlan
   def initialize(activities = [])
     @scheduled_activities = activities
+    @all_activities = []
     @occurred_activities = []
   end
 
@@ -28,6 +29,7 @@ class InstrumentPlan
   def parse_schedule(schedule)
     activities(schedule).each do |activity|
       sa = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
+      @all_activities << sa
       @scheduled_activities << sa if sa.scheduled?
       @occurred_activities << sa if sa.occurred?
     end
@@ -76,33 +78,35 @@ class InstrumentPlan
   # If the participant_type is 'child', ensure that there is an activity
   # for each child.
   def associate_scheduled_activity_with_participant
-    child_activities = []
-    @scheduled_activities.each do |sa|
-      if participant = Person.where(:person_id => sa.person_id).first.try(:participant)
-        case sa.participant_type
-        when 'mother'
-          sa.participant = participant
-        when 'child'
-          children = participant.children
-          if children.size == 1
-            sa.participant = children.first.participant
-          else
-            children.each_with_index do |child, ind|
-              cp = children[ind].participant
-              if ind == 0
-                sa.participant = cp
-              else
-                copy = sa.copy
-                copy.participant = cp
-                child_activities << copy
+    [@scheduled_activities, @all_activities].each do |coll|
+      child_activities = []
+      coll.each do |sa|
+        if participant = Person.where(:person_id => sa.person_id).first.try(:participant)
+          case sa.participant_type
+          when 'mother'
+            sa.participant = participant
+          when 'child'
+            children = participant.children
+            if children.size == 1
+              sa.participant = children.first.participant
+            else
+              children.each_with_index do |child, ind|
+                cp = children[ind].participant
+                if ind == 0
+                  sa.participant = cp
+                else
+                  copy = sa.copy
+                  copy.participant = cp
+                  child_activities << copy
+                end
               end
             end
           end
         end
       end
+      child_activities.each { |ca| coll << ca } unless child_activities.blank?
+      coll.sort!
     end
-    child_activities.each { |ca| @scheduled_activities << ca } unless child_activities.blank?
-    @scheduled_activities.sort!
   end
 
   ##
@@ -120,7 +124,7 @@ class InstrumentPlan
   #
   # @return [Array<String>]
   def instruments(event = nil)
-    activities_for_event(event).sort_by do |a|
+    scheduled_activities_for_event(event).sort_by do |a|
       [a.ideal_date, a.order.to_s]
     end.map(&:instrument).compact
   end
@@ -130,9 +134,19 @@ class InstrumentPlan
   #
   # @param [String] - the event
   # @return [Array<ScheduledActivity>]
-  def activities_for_event(event = nil)
+  def scheduled_activities_for_event(event = nil)
     event = event.downcase.gsub(" ", "_") if event
     event.nil? ? @scheduled_activities : @scheduled_activities.select{ |sa| sa.event == event }
+  end
+
+  ##
+  # Returns all Activities for the given event
+  #
+  # @param [String] - the event
+  # @return [Array<ScheduledActivity>]
+  def activities_for_event(event = nil)
+    event = event.downcase.gsub(" ", "_") if event
+    event.nil? ? @all_activities : @all_activities.select{ |sa| sa.event == event }
   end
 
   ##
@@ -182,7 +196,7 @@ class InstrumentPlan
   end
 
   def remaining_activities(event, response_set)
-    sas = activities_for_event(event)
+    sas = scheduled_activities_for_event(event)
     result = []
     if response_set.blank?
       result = sas

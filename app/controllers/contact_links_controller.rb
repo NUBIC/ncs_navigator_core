@@ -88,6 +88,7 @@ class ContactLinksController < ApplicationController
       @activity_plan        = psc.build_activity_plan(@participant)
       @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
       @current_activity     = @activities_for_event.first
+      @scheduled_activities  = @activity_plan.scheduled_activities_for_event(@event.to_s)
       @occurred_activities  = @activity_plan.occurred_activities_for_event(@event.to_s)
       @saq_activity         = @occurred_activities.find_all{|activity| activity.activity_name =~ /SAQ$/}.first
     end
@@ -104,7 +105,10 @@ class ContactLinksController < ApplicationController
     @contact_links = ContactLink.where(:contact_id => @contact_link.contact_id)
 
     @activity_plan        = psc.build_activity_plan(@participant)
-    @activities_for_event = @activity_plan.activities_for_event(@event.to_s) if @participant && @event
+    if @participant && @event
+      @activities_for_event = @activity_plan.activities_for_event(@event.to_s)
+      @scheduled_activities  = @activity_plan.scheduled_activities_for_event(@event.to_s)
+    end
     @current_activity     = @activity_plan.current_scheduled_activity(@event.to_s, @response_set)
   end
 
@@ -180,6 +184,16 @@ class ContactLinksController < ApplicationController
       Rails.logger.error "saq_instrument precondition failed: participant or event for contact link #{@contact_link.id} is nil."
       redirect_to(decision_page_contact_link_path(@contact_link))
     end
+  end
+
+  def update_psc_for_activity
+    @contact_link = ContactLink.find(params[:contact_link_id])
+    psc.update_activity_state(params[:activity_id],
+      @contact_link.event.participant,
+      params[:new_state],
+      @contact_link.contact.contact_date,
+      "Updated by #{current_username} through UI")
+    redirect_to request.referrer
   end
 
   private

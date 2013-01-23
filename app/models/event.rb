@@ -115,6 +115,7 @@ class Event < ActiveRecord::Base
   EVENTS_FOR_PSC = [
     29, # Pregnancy Screener
     34, # PBS Participant Eligibility Screening
+    10, # Informed Consent
     33, # Low Intensity Data Collection
      7, # Pregnancy Probability
     11, # Pre-Pregnancy Visit
@@ -183,8 +184,7 @@ class Event < ActiveRecord::Base
   # as another event
   CONTINUABLE = [
     PatientStudyCalendar::PREGNANCY_SCREENER,
-    PatientStudyCalendar::PBS_ELIGIBILITY,
-    "PBS Participant Eligibility Screening",
+    PatientStudyCalendar::PBS_ELIGIBILITY_SCREENING,
     PatientStudyCalendar::BIRTH_VISIT_INTERVIEW,
     PatientStudyCalendar::HI_LO_CONVERSION,
     PatientStudyCalendar::INFORMED_CONSENT
@@ -610,44 +610,91 @@ class Event < ActiveRecord::Base
 
   def set_event_breakoff(response_set)
     if response_set
-      local_code = response_set.has_responses_in_each_section_with_questions? ? 2 : 1
+      local_code = response_set.has_responses_in_each_section_with_questions? ? NcsCode::NO : NcsCode::YES
       self.event_breakoff = NcsCode.for_attribute_name_and_local_code(:event_breakoff_code, local_code)
     end
   end
 
+  ##
+  # Defer to the DispositionMapper for the disposition text for the given event_disposition.
+  # If that returns blank, simply return the Integer value
+  # @see DispositionMapper#disposition_text_for_event
+  # @return[String]
   def event_disposition_text
     disp = DispositionMapper.disposition_text_for_event(self)
     disp.blank? ? event_disposition : disp
   end
 
+  ##
+  # Get the next scheduled event and date from the Participant, and schedule that Segment
+  # in PSC. If successful, create a corresponding, pending Event record
+  #
+  # @see Participant#next_scheduled_event
+  # @see PatientStudyCalendar#schedule_next_segment
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
   def self.schedule_and_create_placeholder(psc, participant, date = nil)
     return nil unless participant.eligible?
     return nil unless participant.next_scheduled_event
 
     date ||= participant.next_scheduled_event.date.to_s
-    resp = psc.schedule_next_segment(participant, date)
 
+    resp = psc.schedule_next_segment(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # Schedule the Informed Consent General Consent Segment
+  # in PSC. If successful, create a corresponding, pending Event record
+  #
+  # @see PatientStudyCalendar#schedule_general_informed_consent
+  # @see Event#create_event_placeholder_and_cancel_activities
+  #
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date] (optional)
+  # @return[Response]
+  def self.schedule_general_informed_consent(psc, participant, date = nil)
+    resp = psc.schedule_general_informed_consent(participant, date)
+    create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
+    resp
+  end
+
+  ##
+  # After successfully scheduling the next segment for the Participant
+  # in PSC, create a corresponding Event using the scheduled ideal date as
+  # the Event#start_date and the Ncs EVENT_TYPE_CL1 code matching the PSC activity
+  # "event:" label as the event type.
+  #
+  # @see NcsCode#find_event_by_lbl
+  # @see PatientStudyCalendar#schedule_next_segment
+  # @param[PatientStudyCalendar]
+  # @param[Participant]
+  # @param[Date]
+  # @param[Response]
+  def self.create_event_placeholder_and_cancel_activities(psc, participant, date, resp)
     if resp && resp.success?
       study_segment_identifier = PatientStudyCalendar.extract_scheduled_study_segment_identifier(resp.body)
       psc.unique_label_ideal_date_pairs_for_scheduled_segment(participant, study_segment_identifier).each do |lbl, dt|
         code = NcsCode.find_event_by_lbl(lbl)
         Event.create_placeholder_record(participant, dt, code.local_code, study_segment_identifier)
       end
-
       unless NcsNavigatorCore.expanded_phase_two?
         psc.cancel_collection_instruments(participant, study_segment_identifier, date,
           "Not configured to run expanded phase 2 instruments.")
       end
-
       unless NcsNavigatorCore.mdes.version.blank?
         psc.cancel_non_matching_mdes_version_instruments(participant, study_segment_identifier, date,
           "Does not include an instrument for MDES version #{NcsNavigatorCore.mdes.version}.")
       end
-
     end
-
-    resp
   end
+
 
   def self.create_placeholder_record(participant, date, event_type_code, study_segment_identifier)
     begin

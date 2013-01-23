@@ -56,7 +56,6 @@ class WelcomeController < ApplicationController
 
     resp = psc.assign_subject(participant)
     if resp && resp.status.to_i < 299
-
       create_pregnancy_screener_event_record(participant)
       redirect_to new_person_contact_path(person)
     else

@@ -42,6 +42,10 @@ module ParticipantsHelper
     consent_type_text.include?("collect") && !NcsNavigatorCore.expanded_phase_two?
   end
 
+  def should_show_informed_consent_scheduling_form?(participant)
+    participant.eligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
+  end
+
   def upcoming_events_for(person_or_participant)
     result = person_or_participant.upcoming_events.to_sentence
     result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?
@@ -130,5 +134,16 @@ module ParticipantsHelper
     NcsNavigatorCore.recruitment_strategy.pbs? ? NcsCode.pbs_eligibility_screener : NcsCode.pregnancy_screener
   end
   private :screener_event
+
+  def psc_activity_options(activity)
+    opts = ""
+    Psc::ScheduledActivity::ACTIVITY_STATES.each do |a|
+      opts << "<option value=\"#{a}\""
+      opts << " selected=\"selected\"" if activity.current_state == a
+      txt = a == Psc::ScheduledActivity::NA ? "N/A" : a.titleize
+      opts << ">#{txt}</option>"
+    end
+    opts.html_safe
+  end
 
 end
