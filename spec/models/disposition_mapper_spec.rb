@@ -80,18 +80,124 @@ describe DispositionMapper do
       end
     end
 
-    describe "#disposition_text_for_event" do
+    describe "#disposition_text" do
 
       it "returns the given disposition code if no event disposition category given" do
-        DispositionMapper.disposition_text_for_event(nil, 55).should == 55
+        DispositionMapper.disposition_text(nil, 55).should == 55
       end
 
       it "returns the disposition text for a matching event disposition category and code" do
-        DispositionMapper.disposition_text_for_event(@general_study, 55).should == "Eligible Non-response- Other"
-        DispositionMapper.disposition_text_for_event(@general_study, 16).should == "Participant incarcerated"
+        DispositionMapper.disposition_text(@general_study, 55).should == "Eligible Non-response- Other"
+        DispositionMapper.disposition_text(@general_study, 16).should == "Participant incarcerated"
       end
 
     end
 
   end
+
+
+  context "determining disposition for a contact" do
+
+    describe "#disposition_text_for_contact" do
+
+      describe "when no event is provided" do
+
+        let(:contact_disposition) { 55 }
+
+        describe "for a mailing contact" do
+          it "returns the disposition text for the contact type" do
+            contact = Factory(:contact, :contact_type_code => Contact::MAILING_CONTACT_CODE, :contact_disposition => contact_disposition)
+            DispositionMapper.disposition_text_for_contact(nil, contact).should == "Partial with sufficient information in Other Language"
+          end
+        end
+
+        describe "for a telephone contact" do
+          it "returns the disposition text for the contact type" do
+            contact = Factory(:contact, :contact_type_code => Contact::TELEPHONE_CONTACT_CODE, :contact_disposition => contact_disposition)
+            DispositionMapper.disposition_text_for_contact(nil, contact).should == "Unknown if participant is a household resident"
+          end
+        end
+
+        describe "for an in person contact" do
+          it "returns the disposition text for the contact type" do
+            contact = Factory(:contact, :contact_type_code => Contact::IN_PERSON_CONTACT_CODE, :contact_disposition => contact_disposition)
+            DispositionMapper.disposition_text_for_contact(nil, contact).should == "Eligible Non-response- Other"
+          end
+        end
+
+        it "returns the raw disposition if contact type is missing" do
+          contact = Factory(:contact, :contact_type_code => nil, :contact_disposition => 55)
+          DispositionMapper.disposition_text_for_contact(nil, contact).should == 55
+        end
+      end
+
+      describe "when event /is/ provided" do
+
+        let(:contact_disposition) { 11 }
+
+        it "returns the disposition text if the event type determines the disposition category" do
+          event = Factory(:event, :event_type_code => Event::pbs_eligibility_screener_code)
+          contact = Factory(:contact, :contact_type_code => Contact::IN_PERSON_CONTACT_CODE, :contact_disposition => contact_disposition)
+          DispositionMapper.disposition_text_for_contact(event, contact).should == "Patient does not meet one or more of the eligibility criteria"
+        end
+
+        it "returns the disposition text based on contact type" do
+          event = Factory(:event, :event_type_code => Event::pregnancy_visit_1_code)
+          contact = Factory(:contact, :contact_type_code => Contact::IN_PERSON_CONTACT_CODE, :contact_disposition => contact_disposition)
+          DispositionMapper.disposition_text_for_contact(event, contact).should == "Participant deceased"
+        end
+
+      end
+
+    end
+
+  end
+
+
+  describe "#determine_category_from_event_type(event_type)" do
+
+    it "returns nil if given nil" do
+      DispositionMapper.determine_category_from_event_type(nil).should be_nil
+    end
+
+    it "returns NcsCode EVENT_DSPSTN_CAT_CL1 1 for a Household Enumeration Event" do
+      ncs_code = DispositionMapper.determine_category_from_event_type(
+        Event.household_enumeration_code)
+      ncs_code.list_name.should == 'EVENT_DSPSTN_CAT_CL1'
+      ncs_code.local_code.should == 1
+    end
+
+    it "returns NcsCode EVENT_DSPSTN_CAT_CL1 2 for a Pregnancy Screener Event" do
+      DispositionMapper.determine_category_from_event_type(
+        Event.pregnancy_screener_code).local_code.should == 2
+    end
+
+    it "returns NcsCode EVENT_DSPSTN_CAT_CL1 7 for a Provider Recruitment Event" do
+      DispositionMapper.determine_category_from_event_type(
+        Event.provider_recruitment_code).local_code.should == 7
+    end
+
+    it "returns NcsCode EVENT_DSPSTN_CAT_CL1 8 for a PBS Eligibility Screener Event" do
+      DispositionMapper.determine_category_from_event_type(
+        Event.pbs_eligibility_screener_code).local_code.should == 8
+    end
+
+    it "returns nil for post-natal events" do
+      DispositionMapper.determine_category_from_event_type(
+        Event.birth_code).should be_nil
+    end
+
+    it "returns nil for Participant focused events" do
+      DispositionMapper.determine_category_from_event_type(
+        Event.pregnancy_visit_1_code).should be_nil
+    end
+
+    it "returns nil for a invalid event type code" do
+      DispositionMapper.determine_category_from_event_type(
+        666).should be_nil
+    end
+
+  end
+
+
 end

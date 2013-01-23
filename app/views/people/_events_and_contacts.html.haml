@@ -31,7 +31,7 @@
                 = blank_safe(event.event_end_date)
               #span.disposition
                 - if event.event_disposition
-                  - disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
+                  - disp = DispositionMapper.disposition_text_for_event(event)
                   = disp.blank? ? "#{event.event_disposition} - #{event.event_disposition_category}" : disp
             .contact_link
               - if event.contact_links.blank?
@@ -65,8 +65,7 @@
                       %td
                         = contact.contact_end_time
                       %td
-                        - disp = DispositionMapper.disposition_text_for_event(event.event_disposition_category, contact.contact_disposition)
-                        = disp.blank? ? contact.contact_disposition : disp
+                        = DispositionMapper.disposition_text_for_contact(event, contact)
                       %td
                         - if contact.open? && event.open?
                           - link_text = contact.contact_date.blank? ? "Continue Contact" : "Continue Contact on #{contact.contact_date}"

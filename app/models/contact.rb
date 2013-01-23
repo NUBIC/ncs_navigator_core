@@ -43,8 +43,9 @@ class Contact < ActiveRecord::Base
   include NcsNavigator::Core::Mdes::MdesRecord
   acts_as_mdes_record :public_id_field => :contact_id, :date_fields => [:contact_date]
 
-  TELEPHONE_CONTACT_CODE = 3
+  IN_PERSON_CONTACT_CODE = 1
   MAILING_CONTACT_CODE   = 2
+  TELEPHONE_CONTACT_CODE = 3
 
   ncs_coded_attribute :psu,               'PSU_CL1'
   ncs_coded_attribute :contact_type,      'CONTACT_TYPE_CL1'

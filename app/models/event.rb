@@ -351,6 +351,14 @@ class Event < ActiveRecord::Base
     PARTICIPANT_REPEATABLE_EVENTS
   end
 
+  def self.household_enumeration_code
+    1
+  end
+
+  def self.informed_consent_code
+    10
+  end
+
   def self.pregnancy_visit_1_code
     13
   end
@@ -363,8 +371,12 @@ class Event < ActiveRecord::Base
     18
   end
 
-  def self.informed_consent_code
-    10
+  def self.provider_recruitment_code
+    22
+  end
+
+  def self.pregnancy_screener_code
+    29
   end
 
   def self.low_intensity_data_collection_code
@@ -373,10 +385,6 @@ class Event < ActiveRecord::Base
 
   def self.pbs_eligibility_screener_code
     34
-  end
-
-  def self.pregnancy_screener_code
-    29
   end
 
   def pregnancy_visit_1?
@@ -607,7 +615,7 @@ class Event < ActiveRecord::Base
   end
 
   def event_disposition_text
-    disp =  DispositionMapper.disposition_text_for_event(event_disposition_category, event_disposition)
+    disp = DispositionMapper.disposition_text_for_event(self)
     disp.blank? ? event_disposition : disp
   end
 

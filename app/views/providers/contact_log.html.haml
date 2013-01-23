@@ -33,8 +33,7 @@
           %td
             = contact.contact_date
           %td
-            - disp =  DispositionMapper.disposition_text_for_event(link.event.event_disposition_category, contact.contact_disposition)
-            = disp.blank? ? contact.contact_disposition : disp
+            = DispositionMapper.disposition_text_for_contact(link.event, contact)
         - unless contact.contact_comment.blank?
           %tr{ :class => "comment_#{cls} #{cls}"  }
             %td{ :colspan => 5 }

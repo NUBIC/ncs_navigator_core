@@ -21,6 +21,12 @@ survey "INS_QUE_etc_v1.1" do
       a_1 "Full draw"
       a_2 "Short draw"
       a_3 "No draw"
+
+    q_some_other_question 'How many?',
+      :pick => :one
+      a_2 'Two'
+      a_11 'Eleven'
+      a_other :string
   end
 end
 INSTR
@@ -64,6 +70,10 @@ INSTR
         it 'is not marked primary if it is not primary' do
           map['spec_blood_tube[tube_type=1]'][:primary].should be_false
         end
+      end
+
+      it 'ignores questions without appropriate data export identifiers' do
+        map.keys.size.should == 2 # not 3
       end
     end
 

@@ -33,9 +33,7 @@
           %td
             = contact.contact_type
           %td
-            - event_type = @provider.provider_recruitment_event.event_type
-            - disp = contact.contact_disposition
-            = DispositionMapper.disposition_text_for_event(event_type, disp)
+            = DispositionMapper.disposition_text_for_contact(@provider.provider_recruitment_event, contact)
           %td
             - unless contact.contact_disposition == DispositionMapper::PROVIDER_RECRUITED
               - title_text = "Was the provider unavailable, were there issues, or did the provider refuse to participate?"
