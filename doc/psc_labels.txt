@@ -339,7 +339,7 @@ event:6_month instrument:3.0:ins_que_tracing_int_ehpbhilipbs_m3.0_v1.0 order:90_
 event:9_month instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one order:01_01 participant_type:mother
 
 # 9-Month Mother Interview Mother Detail
-event:9_month instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail instrument:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail instrument:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail order:01_02 participant_type:child references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1 references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1 references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1 references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1
+event:9_month instrument:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail instrument:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail instrument:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail instrument:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_nine_mth_mother_detail order:01_02 participant_type:child references:2.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one references:2.1:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one references:2.2:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one references:3.0:ins_que_9mmother_int_ehpbhi_p2_v1.1_part_one
 
 # Participant Verification Questionnaire Part 1
 event:9_month instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother
