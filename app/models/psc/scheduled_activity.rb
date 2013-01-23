@@ -299,7 +299,7 @@ module Psc
     # Label readers.
     %w(collection event instrument order participant_type references).each do |prefix|
       str = <<-END
-        def #{prefix}_label(mdes_version)
+        def #{prefix}_label(mdes_version = NcsNavigatorCore.mdes_version.number)
           label_with("#{prefix}", mdes_version)
         end
       END
@@ -310,8 +310,8 @@ module Psc
     ##
     # True if this activity involves specimen collection for a given MDES
     # version, false otherwise.
-    def specimen_collection?(mdes_version = NcsNavigatorCore.mdes_version.number)
-      collection_label(mdes_version)
+    def specimen_collection?
+      collection_label
     end
 
     ##
