@@ -37,7 +37,7 @@ end
 gem 'jquery-rails'
 gem 'json-schema'
 
-gem 'ncs_mdes', '>= 0.10.0', :git => 'https://github.com/NUBIC/ncs_mdes.git'
+gem 'ncs_mdes', '>= 0.11.0'
 # If you change surveyor, change the instruments project also
 gem 'surveyor', '~> 1.2.0'
 gem 'psc'
@@ -67,9 +67,7 @@ group :staging, :production do
   gem 'therubyracer'
 end
 
-gem 'ncs_mdes_warehouse',
-  :git => 'git://github.com/NUBIC/ncs_mdes_warehouse.git'
-# gem 'ncs_mdes_warehouse', '~> 0.10'
+gem 'ncs_mdes_warehouse', '~> 0.10', '>= 0.10.1'
 gem 'aker-cas_cli', '~> 1.0', :require => false
 gem 'dm-ar-finders', '~> 1.2.0'
 
