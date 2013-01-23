@@ -8,7 +8,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       [
         "prepopulated_should_show_upper_arm_length",
         "prepopulated_is_6_month_event",
-        "prepopulated_is_12_month_visit"
+        "prepopulated_is_12_month_visit",
+        "prepopulated_event_type"
       ]
     end
 
@@ -40,6 +41,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, (event.try(:event_type_code).to_i == 24))
             when "prepopulated_is_12_month_visit"
               answer_for(question, (event.try(:event_type_code).to_i == 27))
+            when "prepopulated_event_type"
+              answer_for(question, check_event_type_for_con_reconsideration)
             else
               nil
             end
@@ -77,6 +80,16 @@ module NcsNavigator::Core::ResponseSetPopulator
       
     def is_arm_circ_given_in_anthropo?(question)
       valid_response_exists?("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1", :last)
+    end
+
+    def check_event_type_for_con_reconsideration
+      if [13, 14, 15, 16].include?(event.try(:event_type_code).to_i)
+        "pv"
+      elsif event.try(:event_type_code).to_i == 27
+        "twelve_mns"
+      else
+        "" 
+      end
     end
 
   end

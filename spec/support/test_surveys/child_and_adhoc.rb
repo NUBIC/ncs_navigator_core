@@ -77,4 +77,21 @@ module ChildAndAdHoc
     survey
   end
 
+  def create_con_reconsideration_for_events
+    survey = Factory(:survey,
+                     :title => "INS_CON_Reconsideration_DCI_EHPBHI_M3.1_V1.0",
+                     :access_code =>
+                               "ins_con_reconsideration_dci_ehpbhi_m3_1_v1_0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "prepopulated_event_type",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "PV1 or PV2",
+                :response_class => "answer", :reference_identifier => "pv")
+    a = Factory(:answer, :question_id => q.id, :text => "12 MONTH",
+                :response_class => "answer",
+                :reference_identifier => "twelve_mns")
+    survey
+  end
+
 end
