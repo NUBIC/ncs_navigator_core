@@ -136,6 +136,12 @@ class ScheduledActivity
   end
 
   ##
+  # True if current_state == conditional
+  def conditional?
+    @current_state == Psc::ScheduledActivity::CONDITIONAL
+  end
+
+  ##
   # True if current_state == NA
   def not_applicable?
     @current_state == Psc::ScheduledActivity::NA
