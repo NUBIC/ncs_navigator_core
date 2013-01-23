@@ -42,6 +42,10 @@ module ParticipantsHelper
     consent_type_text.include?("collect") && !NcsNavigatorCore.expanded_phase_two?
   end
 
+  def should_show_informed_consent_scheduling_form?(participant)
+    participant.eligible? && !(participant.pending_events.first.try(:event_type_code) == Event.informed_consent_code)
+  end
+
   def upcoming_events_for(person_or_participant)
     result = person_or_participant.upcoming_events.to_sentence
     result = remove_two_tier(result) unless recruitment_strategy.two_tier_knowledgable?
