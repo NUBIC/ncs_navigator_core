@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 require 'bigdecimal'
 require 'date'
 require 'facets/random'
@@ -23,7 +22,7 @@ module MergeValueGeneration
     Set.new.tap do |gen|
       while gen.length < count
         gen << if type.include?('string')
-                 if pattern == '(?:\\d+$|\\d+.\\d+$)'
+                 if pattern == "^(?:\\s*|\\d+|\\d+.\\d+)$"
                    BigDecimal.new((rand * 100).to_s)
                  elsif format.include?('date')
                    DATES.at_rand
