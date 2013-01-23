@@ -189,7 +189,8 @@ Spork.prefork do
   if Spork.using_spork?
     puts 'Preloading warehouse models & MDES tables (spork only)'
     require 'ncs_navigator/warehouse'
-    require 'ncs_navigator/warehouse/models/two_point_zero'
+    NcsNavigator::Warehouse::Configuration.new.
+      tap { |c| c.mdes_version = NcsNavigatorCore.mdes_version.number }.models_module
     NcsNavigatorCore.mdes.transmission_tables
   end
 
