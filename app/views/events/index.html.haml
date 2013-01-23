@@ -63,7 +63,7 @@
           %td
             = event.event_end_date
           %td
-            - disp =  DispositionMapper.disposition_text_for_event(event.event_disposition_category, event.event_disposition)
+            - disp =  DispositionMapper.disposition_text_for_event(event)
             = disp.blank? ? event.event_disposition : disp
           %td
             = event.event_disposition_category
