@@ -584,4 +584,252 @@ describe OperationalDataExtractor::Base do
     end
 
   end
+
+  context "Processing PersonRace records" do
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+    let(:asian_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 4) }
+    let(:other_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", -5) }
+    let(:vietnamese_race) { NcsCode.for_list_name_and_local_code("RACE_CL6", 9) }
+
+    before do
+      @person_race_map = OperationalDataExtractor::Birth::PERSON_RACE_MAP
+
+      @person = Factory(:person)
+      @participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => @participant, :person => @person)
+      @survey = create_birth_survey_with_person_race_operational_data
+      @response_set, instrument = prepare_instrument(@person, @participant, @survey)
+
+      take_survey(@survey, @response_set) do |a|
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH", "Chinese"
+        a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+        a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Korean"
+      end
+
+      @response_set.save!
+
+      @birth_extractor = OperationalDataExtractor::Birth.new(@response_set)
+    end
+
+    describe "#process_person_race" do
+      context "when there is only a single response for a given question" do
+        it "directs non _new type race export identifiers to #process_standard_race" do
+          @birth_extractor.should_receive(:process_standard_race).twice
+          @birth_extractor.process_person_race(@person_race_map)
+        end
+
+        it "directs _new type race export identifiers to #process_new_type_race" do
+          @birth_extractor.should_receive(:process_new_type_race).twice
+          @birth_extractor.process_person_race(@person_race_map)
+        end
+      end
+
+      context "when there are multiple responses for a given question" do
+        before do
+          @response_set_multiple_responses, instrument = prepare_instrument(@person, @participant, @survey)
+
+          take_survey(@survey, @response_set_multiple_responses) do |a|
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", black_race
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", asian_race
+          end
+          @response_set_multiple_responses.save!
+
+          @multiple_response_birth_extractor = OperationalDataExtractor::Birth.new(@response_set_multiple_responses)
+        end
+
+        it "calls race record generation method for each response" do
+          @multiple_response_birth_extractor.should_not_receive(:process_standard_race)
+          @multiple_response_birth_extractor.should_receive(:process_new_type_race).exactly(3).times
+          @multiple_response_birth_extractor.process_person_race(@person_race_map)
+        end
+
+        it "saves all the records" do
+          @multiple_response_birth_extractor.process_person_race(@person_race_map)
+          @person.races.count.should == 3
+        end
+      end
+
+      context "when some of the responses are new_type and some are of standard type" do
+        before do
+          @response_set_multiple_mixed_type, instrument = prepare_instrument(@person, @participant, @survey)
+
+          take_survey(@survey, @response_set_multiple_mixed_type) do |a|
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", black_race
+          end
+          @response_set_multiple_mixed_type.save!
+
+          @birth_extractor_multiple_mixed_type = OperationalDataExtractor::Birth.new(@response_set_multiple_mixed_type)
+        end
+
+        it "calls the right race record generation method for each response type" do
+          @birth_extractor_multiple_mixed_type.should_receive(:process_new_type_race).once
+          @birth_extractor_multiple_mixed_type.should_receive(:process_standard_race).once
+          @birth_extractor_multiple_mixed_type.process_person_race(@person_race_map)
+        end
+
+        it "saves all the records" do
+          @birth_extractor_multiple_mixed_type.process_person_race(@person_race_map)
+          @person.races.count.should == 2
+        end
+      end
+
+      context "when some of the new_type responses match to standard code list values and some do not" do
+        before do
+          @response_set_on_and_off_code_list, instrument = prepare_instrument(@person, @participant, @survey)
+
+          take_survey(@survey, @response_set_on_and_off_code_list) do |a|
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", vietnamese_race
+          end
+          @response_set_on_and_off_code_list.save!
+
+          @on_and_off_code_list_birth_extractor = OperationalDataExtractor::Birth.new(@response_set_on_and_off_code_list)
+        end
+
+        it "calls the right race record generation method for each response type" do
+          @on_and_off_code_list_birth_extractor.should_receive(:process_new_type_race).twice
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
+        end
+
+        it "saves all the records" do
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
+          @person.races.count.should == 2
+        end
+
+        it "specifies the response that matches the standard code list as its integer code value" do
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
+          white_race_record = @person.races.detect { |race| race.race_code == 1 }
+          white_race_record.race_code.should == 1
+          white_race_record.race_other.should be_nil
+        end
+
+        it "specifies the response that does not match the standard code list as the text value associated with its code on the new type code list (CL6) " do
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
+          other_race_record = @person.races.detect { |race| race.race_code == -5 }
+          other_race_record.race_code.should == -5
+          other_race_record.race_other.should == "Vietnamese"
+        end
+      end
+
+      context "when the response is an other race value, for standard race type" do
+        before do
+          @response_set_other_race_type, instrument = prepare_instrument(@person, @participant, @survey)
+
+          take_survey(@survey, @response_set_other_race_type) do |a|
+            a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1", other_race
+            a.str "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH", "Aborigine"
+          end
+          @response_set_other_race_type.save!
+
+          @birth_extractor_other_race_type = OperationalDataExtractor::Birth.new(@response_set_other_race_type)
+        end
+
+        it "calls the right race record generation method for each response type" do
+          @birth_extractor_other_race_type.should_receive(:process_standard_race).twice
+          @birth_extractor_other_race_type.process_person_race(@person_race_map)
+        end
+
+        it "saves all the records" do
+          @birth_extractor_other_race_type.process_person_race(@person_race_map)
+          @person.races.count.should == 1
+        end
+
+        it "a record with the response of other(-5) should have -5 and the other description on the same race record" do
+          @birth_extractor_other_race_type.process_person_race(@person_race_map)
+          @person.races.first.race_code.should == -5
+          @person.races.first.race_other.should == "Aborigine"
+        end
+
+      end
+    end
+
+    describe "#process_new_type_race" do
+      before do
+        @blank_person_race = Factory(:person_race, :race_code => nil)
+      end
+
+      context "when the response is part of the code list associated with the model (RACE_CL1 from MDES spreadsheet)" do
+
+        it "populates a 'new' type PersonRace race_code attribute with the code value" do
+          attribute = "race_code"
+          answer = mock_model(Answer, :reference_identifier => "3", :response_class => "answer")
+          response = mock_model(Response, :answer => answer)
+          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+          @blank_person_race.race_code.should == 3
+        end
+      end
+
+      context "when the record is not part of the code list associated with the model (RACE_CL1 from MDES spreadsheet)" do
+
+        before do
+          attribute = "race_code"
+          answer = mock_model(Answer, :reference_identifier => "8", :response_class => "answer", :text => "Korean")
+          response = mock_model(Response, :answer => answer)
+          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+        end
+
+        it "populates a 'new' type PersonRace race_code attribute with the code value for 'other' (-5)" do
+          @blank_person_race.race_code.should == -5
+        end
+
+        it "populates a 'new' type PersonRace race_other attribute with the text value of the response" do
+          @blank_person_race.race_other.should == "Korean"
+        end
+      end
+    end
+
+    describe "#process_standard_race" do
+      before do
+        @blank_person_race = Factory(:person_race, :race_code => nil)
+      end
+
+      it "populates a standard PersonRace record with a response" do
+        attribute = "race_code"
+        response = 1
+        @birth_extractor.process_standard_race(@blank_person_race, attribute, response)
+        @blank_person_race.race_code.should == 1
+      end
+    end
+
+    describe "#collect_race_responses" do
+      before do
+        @response_set2, instrument = prepare_instrument(@person, @participant, @survey)
+        take_survey(@survey, @response_set2) do |a|
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", white_race
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", black_race
+          a.choice "#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW", asian_race
+        end
+        @response_set2.save!
+        @birth_extractor2 = OperationalDataExtractor::Birth.new(@response_set2)
+      end
+
+      it "collects all the race-related responses" do
+        @birth_extractor2.collect_race_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW").count.should  == 3
+        @birth_extractor2.collect_race_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW").first.should be_instance_of(Response)
+        @birth_extractor2.collect_race_responses("#{OperationalDataExtractor::Birth::BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW").first.question.data_export_identifier.should =~ /RACE/
+      end
+    end
+
+    describe "#get_person_race" do
+      before do
+        @birth_extractor = OperationalDataExtractor::Birth.new(@response_set)
+      end
+
+      it "returns an existing person race record when the is one that contains an other choice selection, yet whose other text description is blank" do
+        other_with_no_description = @person.races.create(:race_code => -5, :race_other => nil)
+        @birth_extractor.get_person_race.should eql(other_with_no_description)
+      end
+
+      it "returns a new person race record when a record of the above description does not exist" do
+        person_race = @birth_extractor.get_person_race
+        person_race.should be_instance_of(PersonRace)
+        person_race.race_code.should be_nil
+      end
+    end
+  end
+
 end

@@ -8,6 +8,8 @@ module OperationalDataExtractor
 
     INTERVIEW_PREFIX = "PREG_SCREEN_HI_2"
 
+    PREG_SCREEN_HI_RACE_2_PREFIX = "PREG_SCREEN_HI_RACE_2"
+
     ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
     CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG"
     CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_OTH"
@@ -91,6 +93,10 @@ module OperationalDataExtractor
       "#{INTERVIEW_PREFIX}.DATE_PERIOD"     => "DATE_PERIOD",
       "#{INTERVIEW_PREFIX}.ORIG_DUE_DATE"   => "ORIG_DUE_DATE",
     }
+    PERSON_RACE_MAP = {
+      "#{PREG_SCREEN_HI_RACE_2_PREFIX}.RACE"         => "race_code",
+      "#{PREG_SCREEN_HI_RACE_2_PREFIX}.RACE_OTH"     => "race_other"
+    }
 
     def initialize(response_set)
       super(response_set)
@@ -107,20 +113,12 @@ module OperationalDataExtractor
         CELL_PHONE_MAP,
         EMAIL_MAP,
         PPG_DETAILS_MAP,
-        DUE_DATE_DETERMINER_MAP
+        DUE_DATE_DETERMINER_MAP,
+        PERSON_RACE_MAP
       ]
     end
 
     def extract_data
-
-      ppg_detail   = nil
-      email        = nil
-      home_phone   = nil
-      cell_phone   = nil
-      phone        = nil
-      mail_address = nil
-      address      = nil
-
       process_person(PERSON_MAP)
       process_participant(PARTICIPANT_MAP)
 
@@ -130,6 +128,7 @@ module OperationalDataExtractor
       home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
       email        = process_email(EMAIL_MAP)
+      process_person_race(PERSON_RACE_MAP)
 
       if participant
         ppg_detail = process_ppg_details(participant, PPG_DETAILS_MAP, INTERVIEW_PREFIX)

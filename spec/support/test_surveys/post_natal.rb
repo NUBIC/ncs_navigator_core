@@ -20,6 +20,24 @@ module PostNatal
     survey
   end
 
+  def create_three_month_mother_int_part_two_survey_with_person_race_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1_PART_TWO", :access_code => "ins-que-3mmother-int-ehpbhi-p2-v1-1-part_two")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Race One
+    q = Factory(:question, :reference_identifier => "RACE", :data_export_identifier => "THREE_MTH_MOTHER_RACE.RACE", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Other", :response_class => "answer", :reference_identifier => "neg_5")
+    a = Factory(:answer, :question_id => q.id, :text => "Asian", :response_class => "answer", :reference_identifier => "4")
+
+    # Race One Other
+    q = Factory(:question, :reference_identifier => "RACE_OTH", :data_export_identifier => "THREE_MTH_MOTHER_RACE.RACE_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+
+    survey
+  end
+
   def create_three_month_mother_int_child_detail_survey_with_date_of_birth_operational_data
     survey = Factory(:survey, :title => "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1_CHILD_DETAIL", :access_code => "ins-que-3mmother-int-ehpbhi-p2-v1-1-child-detail")
     survey_section = Factory(:survey_section, :survey_id => survey.id)

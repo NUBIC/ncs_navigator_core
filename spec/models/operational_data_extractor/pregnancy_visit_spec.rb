@@ -666,4 +666,76 @@ describe OperationalDataExtractor::PregnancyVisit do
     end
 
   end
+
+  context "extracting race operational data" do
+
+    let(:white_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 1) }
+    let(:black_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", 2) }
+    let(:other_race) { NcsCode.for_list_name_and_local_code("RACE_CL1", -5) }
+    let(:vietnamese_race) { NcsCode.for_list_name_and_local_code("RACE_CL6", 9) }
+
+    before do
+      @person = Factory(:person)
+      participant = Factory(:participant)
+      Factory(:participant_person_link, :participant => participant, :person => @person)
+      @survey = create_pbs_pregnancy_visit_1_with_race_operational_data
+      @response_set, instrument = prepare_instrument(@person, participant, @survey)
+    end
+
+    describe "processing standard racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1", black_race
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1", other_race
+          a.str "#{OperationalDataExtractor::PregnancyVisit::PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1_OTH", "Aborigine"
+        end
+
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
+      end
+
+      it "extracts two standard racial data" do
+        @person.races.should have(2).races
+      end
+
+      it "creates at least one race record with a specific non-other code" do
+        @person.races.map(&:race_code).should include(black_race.local_code)
+      end
+
+      it "creates at least one race record with an other code" do
+        @person.races.map(&:race_code).should include(other_race.local_code)
+      end
+
+      it "creates an other code with the text 'Aborigine'" do
+        @person.races.map(&:race_other).should include("Aborigine")
+      end
+    end
+
+    describe "processing new type racial data" do
+      before do
+        take_survey(@survey, @response_set) do |a|
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW", white_race
+          a.choice "#{OperationalDataExtractor::PregnancyVisit::PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW", vietnamese_race
+        end
+
+        OperationalDataExtractor::PregnancyVisit.new(@response_set).extract_data
+      end
+
+      it "extracts a two new type racial data" do
+        @person.races.should have(2).races
+      end
+
+      it "the record with a choice that is on the standard race code list is represented as a simple code" do
+        @person.races.map(&:race_code).should include(white_race.local_code)
+      end
+
+      it "the record generated from a response that is NOT on the standard race code list is represented with a code for 'other' (-5)" do
+        @person.races.map(&:race_code).should include(other_race.local_code)
+      end
+
+      it "the record generated from a response that is NOT on the standard race code list should have the text associated with the choice in the 'race_other' attribute" do
+        other_race_record = @person.races.detect { |race| race.race_code == other_race.local_code }
+        other_race_record.race_other.should == "Vietnamese"
+      end
+    end
+  end
 end

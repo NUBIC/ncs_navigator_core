@@ -773,5 +773,71 @@ module OperationalDataExtractor
       end
     end
 
+    def process_person_race(person_race_map)
+      person_race_map.each do |key, attribute|
+        collect_race_responses(key).each do |r|
+          person_race = get_person_race
+          if value = response_value(r)
+            if key =~ /NEW/
+              process_new_type_race(person_race, attribute, r)
+            else
+              process_standard_race(person_race, attribute, value)
+            end
+          end
+        end
+      end
+    end
+
+    ##
+    # Similar to data_export_identifier_indexed_responses, but since
+    # Race selection is a pick any, there can be more than one
+    # race response for any data_export_identifier
+    # @param[String]
+    # @return[Array<Response>]
+    def collect_race_responses(data_export_identifier)
+      result = Array.new
+      sorted_responses.each do |r|
+        dei = r.question.data_export_identifier
+        result << r if known_keys.include?(dei) && dei == data_export_identifier
+      end
+      result
+    end
+
+    ##
+    # Creates a PersonRace record. If the response text and value
+    # does not match something in the RACE_CL1 code list, then we
+    # create an /other/ response for the PersonRace.
+    # (i.e. race_code = -5 - other and race_other = display_text)
+    def process_new_type_race(person_race, attribute, response)
+      value = response_value(response)
+
+      if standard_person_race_codes.include?(value)
+        set_value(person_race, attribute, value)
+      elsif response.answer.response_class == "answer"
+        person_race.race_code = NcsCode::OTHER
+        person_race.race_other = response.answer.text
+      else
+        person_race.race_other = value
+      end
+      person_race.save!
+    end
+
+    def standard_person_race_codes
+      @race_cl1_codes ||= NcsCode.ncs_code_lookup(:race_code).map(&:last)
+    end
+
+    ##
+    # Creates a PersonRace record using the RACE_CL1 code list
+    def process_standard_race(person_race, attribute, value)
+      set_value(person_race, attribute, value)
+      person_race.save!
+    end
+
+    def get_person_race
+      person_race = person.races.where(:race_code => NcsCode::OTHER, :race_other => nil).first
+      person_race = person.races.build if person_race.nil?
+      person_race
+    end
+
   end
 end
