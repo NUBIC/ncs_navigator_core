@@ -18,6 +18,7 @@ class NcsCode < ActiveRecord::Base
 
   YES = 1
   NO  = 2
+  OTHER = -5
 
   ATTRIBUTE_MAPPING = {
 

@@ -337,15 +337,6 @@ module OperationalDataExtractor
       result
     end
 
-    def collect_race_responses(data_export_identifier)
-      result = Array.new
-      sorted_responses.each do |r|
-        dei = r.question.data_export_identifier
-        result << r if known_keys.include?(dei) &&  dei == data_export_identifier
-      end
-      result
-    end
-
     def sorted_responses
       response_set.responses.sort_by { |r| r.created_at }
     end
@@ -786,14 +777,10 @@ module OperationalDataExtractor
       person_race_map.each do |key, attribute|
         collect_race_responses(key).each do |r|
           person_race = get_person_race
-          if r && key =~ /NEW/
-            value = response_value(r)
-            unless value.blank?
-              process_new_type_race(person_race, attribute, value)
-            end
-          elsif r && key !~ /NEW/
-            value = response_value(r)
-            unless value.blank?
+          if value = response_value(r)
+            if key =~ /NEW/
+              process_new_type_race(person_race, attribute, r)
+            else
               process_standard_race(person_race, attribute, value)
             end
           end
@@ -801,29 +788,53 @@ module OperationalDataExtractor
       end
     end
 
-    def process_new_type_race(person_race, attribute, value)
-      standard_and_new_type_intersection = [-5, -1, -2, 1, 2, 3, 4]
-      new_type_exclusive_values = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    ##
+    # Similar to data_export_identifier_indexed_responses, but since
+    # Race selection is a pick any, there can be more than one
+    # race response for any data_export_identifier
+    # @param[String]
+    # @return[Array<Response>]
+    def collect_race_responses(data_export_identifier)
+      result = Array.new
+      sorted_responses.each do |r|
+        dei = r.question.data_export_identifier
+        result << r if known_keys.include?(dei) && dei == data_export_identifier
+      end
+      result
+    end
 
-      if standard_and_new_type_intersection.include?(value)
+    ##
+    # Creates a PersonRace record. If the response text and value
+    # does not match something in the RACE_CL1 code list, then we
+    # create an /other/ response for the PersonRace.
+    # (i.e. race_code = -5 - other and race_other = display_text)
+    def process_new_type_race(person_race, attribute, response)
+      value = response_value(response)
+
+      if standard_person_race_codes.include?(value)
         set_value(person_race, attribute, value)
-      elsif new_type_exclusive_values.include?(value)
-        race_text = NcsCode.where(:list_name => "RACE_CL6", :local_code => value.to_i).first.display_text
-        person_race.race_code = -5
-        person_race.race_other = race_text
+      elsif response.answer.response_class == "answer"
+        person_race.race_code = NcsCode::OTHER
+        person_race.race_other = response.answer.text
       else
         person_race.race_other = value
       end
       person_race.save!
     end
 
+    def standard_person_race_codes
+      @race_cl1_codes ||= NcsCode.ncs_code_lookup(:race_code).map(&:last)
+    end
+
+    ##
+    # Creates a PersonRace record using the RACE_CL1 code list
     def process_standard_race(person_race, attribute, value)
       set_value(person_race, attribute, value)
       person_race.save!
     end
 
     def get_person_race
-      person_race = person.races.where(:race_code => -5, :race_other => nil).first
+      person_race = person.races.where(:race_code => NcsCode::OTHER, :race_other => nil).first
       person_race = person.races.build if person_race.nil?
       person_race
     end

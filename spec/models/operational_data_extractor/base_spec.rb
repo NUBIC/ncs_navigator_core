@@ -615,12 +615,12 @@ describe OperationalDataExtractor::Base do
 
     describe "#process_person_race" do
       context "when there is only a single response for a given question" do
-        it "directs standard type race export identifiers to #process_standard_race" do
+        it "directs non _new type race export identifiers to #process_standard_race" do
           @birth_extractor.should_receive(:process_standard_race).twice
           @birth_extractor.process_person_race(@person_race_map)
         end
 
-        it "directs new type race export identifiers to #process_new_type_race" do
+        it "directs _new type race export identifiers to #process_new_type_race" do
           @birth_extractor.should_receive(:process_new_type_race).twice
           @birth_extractor.process_person_race(@person_race_map)
         end
@@ -637,16 +637,17 @@ describe OperationalDataExtractor::Base do
           end
           @response_set_multiple_responses.save!
 
-          @birth_extractor_multiple_responses = OperationalDataExtractor::Birth.new(@response_set_multiple_responses)
+          @multiple_response_birth_extractor = OperationalDataExtractor::Birth.new(@response_set_multiple_responses)
         end
 
         it "calls race record generation method for each response" do
-          @birth_extractor_multiple_responses.should_receive(:process_new_type_race).exactly(3).times
-          @birth_extractor_multiple_responses.process_person_race(@person_race_map)
+          @multiple_response_birth_extractor.should_not_receive(:process_standard_race)
+          @multiple_response_birth_extractor.should_receive(:process_new_type_race).exactly(3).times
+          @multiple_response_birth_extractor.process_person_race(@person_race_map)
         end
 
         it "saves all the records" do
-          @birth_extractor_multiple_responses.process_person_race(@person_race_map)
+          @multiple_response_birth_extractor.process_person_race(@person_race_map)
           @person.races.count.should == 3
         end
       end
@@ -686,28 +687,28 @@ describe OperationalDataExtractor::Base do
           end
           @response_set_on_and_off_code_list.save!
 
-          @birth_extractor_on_and_off_code_list = OperationalDataExtractor::Birth.new(@response_set_on_and_off_code_list)
+          @on_and_off_code_list_birth_extractor = OperationalDataExtractor::Birth.new(@response_set_on_and_off_code_list)
         end
 
         it "calls the right race record generation method for each response type" do
-          @birth_extractor_on_and_off_code_list.should_receive(:process_new_type_race).twice
-          @birth_extractor_on_and_off_code_list.process_person_race(@person_race_map)
+          @on_and_off_code_list_birth_extractor.should_receive(:process_new_type_race).twice
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
         end
 
         it "saves all the records" do
-          @birth_extractor_on_and_off_code_list.process_person_race(@person_race_map)
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
           @person.races.count.should == 2
         end
 
         it "specifies the response that matches the standard code list as its integer code value" do
-          @birth_extractor_on_and_off_code_list.process_person_race(@person_race_map)
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
           white_race_record = @person.races.detect { |race| race.race_code == 1 }
           white_race_record.race_code.should == 1
           white_race_record.race_other.should be_nil
         end
 
         it "specifies the response that does not match the standard code list as the text value associated with its code on the new type code list (CL6) " do
-          @birth_extractor_on_and_off_code_list.process_person_race(@person_race_map)
+          @on_and_off_code_list_birth_extractor.process_person_race(@person_race_map)
           other_race_record = @person.races.detect { |race| race.race_code == -5 }
           other_race_record.race_code.should == -5
           other_race_record.race_other.should == "Vietnamese"
@@ -755,7 +756,8 @@ describe OperationalDataExtractor::Base do
 
         it "populates a 'new' type PersonRace race_code attribute with the code value" do
           attribute = "race_code"
-          response = 3
+          answer = mock_model(Answer, :reference_identifier => "3", :response_class => "answer")
+          response = mock_model(Response, :answer => answer)
           @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
           @blank_person_race.race_code.should == 3
         end
@@ -763,17 +765,18 @@ describe OperationalDataExtractor::Base do
 
       context "when the record is not part of the code list associated with the model (RACE_CL1 from MDES spreadsheet)" do
 
-        it "populates a 'new' type PersonRace race_code attribute with the code value for 'other' (-5)" do
+        before do
           attribute = "race_code"
-          response = 8
+          answer = mock_model(Answer, :reference_identifier => "8", :response_class => "answer", :text => "Korean")
+          response = mock_model(Response, :answer => answer)
           @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
+        end
+
+        it "populates a 'new' type PersonRace race_code attribute with the code value for 'other' (-5)" do
           @blank_person_race.race_code.should == -5
         end
 
         it "populates a 'new' type PersonRace race_other attribute with the text value of the response" do
-          attribute = "race_code"
-          response = 8
-          @birth_extractor.process_new_type_race(@blank_person_race, attribute, response)
           @blank_person_race.race_other.should == "Korean"
         end
       end
