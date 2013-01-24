@@ -232,8 +232,8 @@ class Instrument < ActiveRecord::Base
     survey_code = survey.access_code
 
     activities.select do |id, sa|
-      instr = sa.instrument_label
-      ref = sa.references_label
+      instr = sa.instrument_label.try(:content)
+      ref = sa.references_label.try(:content)
 
       code = if instr && !ref
                Survey.to_normalized_string(instr)

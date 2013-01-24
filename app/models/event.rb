@@ -511,7 +511,7 @@ class Event < ActiveRecord::Base
 
     all_activities = psc_participant.scheduled_activities
 
-    all_activities.select { |_, sa| implied_by?(sa.event_label, sa.ideal_date) }.values
+    all_activities.select { |_, sa| implied_by?(sa.event_label.try(:content), sa.ideal_date) }.values
   end
 
   ##
