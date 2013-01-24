@@ -57,6 +57,35 @@ module PbsEligibilityScreener
     survey
   end
 
+  def create_pbs_eligibility_screener_survey_with_person_race_operational_data
+    survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+
+    # Race New
+    q = Factory(:question, :reference_identifier => "RACE_NEW", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_NEW.RACE_NEW", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "White", :response_class => "answer", :reference_identifier => "1")
+    a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Asian", :response_class => "answer", :reference_identifier => "4")
+    a = Factory(:answer, :question_id => q.id, :text => "Vietnamese", :response_class => "answer", :reference_identifier => "9")
+
+    # Race New Other
+    q = Factory(:question, :reference_identifier => "RACE_NEW_OTH", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_NEW.RACE_NEW_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Chinese", :response_class => "string")
+
+    # Race One
+    q = Factory(:question, :reference_identifier => "RACE_1", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_1.RACE_1", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Black or African American", :response_class => "answer", :reference_identifier => "2")
+    a = Factory(:answer, :question_id => q.id, :text => "Other", :response_class => "answer", :reference_identifier => "neg_5")
+    a = Factory(:answer, :question_id => q.id, :text => "Asian", :response_class => "answer", :reference_identifier => "4")
+
+    # Race One Other
+    q = Factory(:question, :reference_identifier => "RACE_1_OTH", :data_export_identifier => "PBS_ELIG_SCREENER_RACE_1.RACE_1_OTH", :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "Korean", :response_class => "string")
+    a = Factory(:answer, :question_id => q.id, :text => "Aborigine", :response_class => "string")
+
+    survey
+  end
+
   def create_pbs_eligibility_screener_survey_with_address_operational_data
     survey = Factory(:survey, :title => "INS_QUE_PBSamplingScreen_INT_PBS_M3.0_V1.0", :access_code => "ins-que-pbsamplingscreen-int-pbs-m3-0-v1-0")
     survey_section = Factory(:survey_section, :survey_id => survey.id)

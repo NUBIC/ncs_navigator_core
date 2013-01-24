@@ -9,6 +9,9 @@ module OperationalDataExtractor
     BIRTH_LI_PREFIX      = "BIRTH_VISIT_LI"
     BIRTH_VISIT_3_PREFIX = "BIRTH_VISIT_3"
 
+    BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX = "BIRTH_VISIT_BABY_RACE_NEW_3"
+    BIRTH_VISIT_BABY_RACE_1_3_PREFIX   = "BIRTH_VISIT_BABY_RACE_1_3"
+
     CHILD_PERSON_MAP = {
       "#{BABY_NAME_PREFIX}.BABY_FNAME"        => "first_name",
       "#{BABY_NAME_PREFIX}.BABY_MNAME"        => "middle_name",
@@ -101,6 +104,13 @@ module OperationalDataExtractor
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
 
+    PERSON_RACE_MAP = {
+      "#{BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW"     => "race_code",
+      "#{BIRTH_VISIT_BABY_RACE_NEW_3_PREFIX}.BABY_RACE_NEW_OTH" => "race_other",
+      "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1"         => "race_code",
+      "#{BIRTH_VISIT_BABY_RACE_1_3_PREFIX}.BABY_RACE_1_OTH"     => "race_other"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -117,33 +127,23 @@ module OperationalDataExtractor
         CELL_PHONE_MAP,
         EMAIL_MAP,
         INSTITUTION_MAP,
-        MODE_OF_CONTACT_MAP
+        MODE_OF_CONTACT_MAP,
+        PERSON_RACE_MAP
       ]
     end
 
     def extract_data
-
-      email        = nil
-      home_phone   = nil
-      cell_phone   = nil
-      phone        = nil
-      mail_address = nil
-      work_address = nil
-      institution  = nil
-
       process_person(PERSON_MAP)
 
-      child = process_child(CHILD_PERSON_MAP)
-
+      child        = process_child(CHILD_PERSON_MAP)
       mail_address = process_address(person, MAIL_ADDRESS_MAP, Address.mailing_address_type)
       work_address = process_address(person, WORK_ADDRESS_MAP, Address.work_address_type)
-
       phone        = process_telephone(person, TELEPHONE_MAP)
       home_phone   = process_telephone(person, HOME_PHONE_MAP, Telephone.home_phone_type)
       cell_phone   = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
-
       email        = process_email(EMAIL_MAP)
       institution  = process_institution(INSTITUTION_MAP, response_set)
+      process_person_race(PERSON_RACE_MAP)
 
       finalize_email(email)
       finalize_addresses(mail_address, work_address)

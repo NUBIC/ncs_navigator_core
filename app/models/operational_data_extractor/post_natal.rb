@@ -15,6 +15,8 @@ module OperationalDataExtractor
     EIGHTEEN_MONTH_MOTHER_SECTION_PREFIX = "EIGHTEEN_MTH_MOTHER"
     TWENTY_FOUR_MONTH_MOTHER_SECTION_PREFIX = "TWENTY_FOUR_MTH_MOTHER"
 
+    THREE_MONTH_MOTHER_RACE_PREFIX = "THREE_MTH_MOTHER_RACE"
+
     CHILD_PERSON_NAME_MAP = {
       "#{THREE_MONTH_CHILD_SECTION_PREFIX}.C_FNAME"       =>"first_name",
       "#{THREE_MONTH_CHILD_SECTION_PREFIX}.C_LNAME"       =>"last_name",
@@ -206,6 +208,11 @@ module OperationalDataExtractor
       "#{TWENTY_FOUR_MONTH_MOTHER_SECTION_PREFIX}.CONTACT_PHONE_2"     => "phone_nbr",
     }
 
+    PERSON_RACE_MAP = {
+      "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE"  => "race_code",
+      "#{THREE_MONTH_MOTHER_RACE_PREFIX}.RACE_OTH"  => "race_other",
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -223,24 +230,12 @@ module OperationalDataExtractor
         CONTACT_2_PERSON_MAP,
         CONTACT_2_RELATIONSHIP_MAP,
         CONTACT_2_ADDRESS_MAP,
-        CONTACT_2_PHONE_MAP
+        CONTACT_2_PHONE_MAP,
+        PERSON_RACE_MAP
       ]
     end
 
     def extract_data
-      email = nil
-      cell_phone = nil
-
-      contact1 = nil
-      contact1phone = nil
-      contact1address = nil
-      contact1relationship = nil
-
-      contact2 = nil
-      contact2phone = nil
-      contact2address = nil
-      contact2relationship = nil
-
       if child
         process_child(CHILD_PERSON_NAME_MAP)
         process_child_dob(CHILD_PERSON_DATE_OF_BIRTH_MAP)
@@ -261,6 +256,8 @@ module OperationalDataExtractor
         contact2address = process_address(contact2, CONTACT_2_ADDRESS_MAP, Address.home_address_type)
         contact2phone = process_telephone(contact2, CONTACT_2_PHONE_MAP)
       end
+
+      process_person_race(PERSON_RACE_MAP)
 
       finalize_contact(contact1, contact1relationship, contact1address, contact1phone)
       finalize_contact(contact2, contact2relationship, contact2address, contact2phone)

@@ -52,8 +52,6 @@ module OperationalDataExtractor
     def extract_data
 
       ppg_status_history = nil
-      birth_address = nil
-      institution          = nil
 
       birth_address, institution = process_birth_institution_and_address(BIRTH_ADDRESS_MAP, INSTITUTION_MAP)
 

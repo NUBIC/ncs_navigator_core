@@ -89,11 +89,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-      child_phone    = nil
-      child_phone2   = nil
-      child_address  = nil
-      child_address2 = nil
-
       process_person(PERSON_MAP)
 
       if child

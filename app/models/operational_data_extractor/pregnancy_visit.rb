@@ -12,6 +12,8 @@ module OperationalDataExtractor
     PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX  = "PREG_VISIT_1_3"
     PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX  = "PREG_VISIT_2_3"
 
+    PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX = "PREG_VISIT_1_RACE_NEW_3"
+    PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX   = "PREG_VISIT_1_RACE_1_3"
 
     PERSON_MAP = {
       "#{PREGNANCY_VISIT_1_INTERVIEW_PREFIX}.R_FNAME"           => "first_name",
@@ -302,6 +304,13 @@ module OperationalDataExtractor
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
 
+    PERSON_RACE_MAP = {
+      "#{PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW"        => "race_code",
+      "#{PREG_VISIT_1_RACE_NEW_3_INTERVIEW_PREFIX}.RACE_NEW_OTH"    => "race_other",
+      "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1"            => "race_code",
+      "#{PREG_VISIT_1_RACE_1_3_INTERVIEW_PREFIX}.RACE_1_OTH"        => "race_other"
+    }
+
     def initialize(response_set)
       super(response_set)
     end
@@ -329,31 +338,12 @@ module OperationalDataExtractor
         FATHER_PHONE_MAP,
         DUE_DATE_DETERMINER_MAP,
         INSTITUTION_MAP,
-        MODE_OF_CONTACT_MAP
+        MODE_OF_CONTACT_MAP,
+        PERSON_RACE_MAP
       ]
     end
 
     def extract_data
-
-      cell_phone           = nil
-      email                = nil
-      birth_address        = nil
-      contact1             = nil
-      contact1relationship = nil
-      contact1phone        = nil
-      contact1address      = nil
-      contact2             = nil
-      contact2relationship = nil
-      contact2phone        = nil
-      contact2address      = nil
-      father               = nil
-      father_phone         = nil
-      father_address       = nil
-      father_relationship  = nil
-      work_address         = nil
-      confirm_work_address = nil
-      institution          = nil
-
       process_person(PERSON_MAP)
       process_ppg_status(PPG_STATUS_MAP)
       cell_phone = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
@@ -383,6 +373,8 @@ module OperationalDataExtractor
         father_address = process_address(father, FATHER_ADDRESS_MAP, Address.home_address_type)
         father_phone = process_telephone(father, FATHER_PHONE_MAP)
       end
+
+      process_person_race(PERSON_RACE_MAP)
 
       set_due_date(DUE_DATE_DETERMINER_MAP)
 

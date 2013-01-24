@@ -9,6 +9,9 @@ module OperationalDataExtractor
     INTERVIEW_PREFIX = "PBS_ELIG_SCREENER"
     INTERVIEW_PREFIX_PROVIDER_OFFICE = "PBS_ELIG_SCREENER_PR_OFFICE"
 
+    PBS_ELIG_SCREENER_RACE_NEW_PREFIX = "PBS_ELIG_SCREENER_RACE_NEW"
+    PBS_ELIG_SCREENER_RACE_1_PREFIX = "PBS_ELIG_SCREENER_RACE_1"
+
     ENGLISH               = "#{INTERVIEW_PREFIX}.ENGLISH"
     CONTACT_LANG          = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW"
     CONTACT_LANG_OTH      = "#{INTERVIEW_PREFIX}.CONTACT_LANG_NEW_OTH"
@@ -28,11 +31,6 @@ module OperationalDataExtractor
 
     AGE_RANGE_MAP = {
       "#{INTERVIEW_PREFIX}.AGE_RANGE_PBS"   => "age_range_code",
-    }
-
-    PERSON_RACE_MAP = {
-      "#{INTERVIEW_PREFIX}.RACE_NEW"         => "race_code",
-      "#{INTERVIEW_PREFIX}.RACE_NEW_OTH"     => "race_other",
     }
 
     PARTICIPANT_MAP = {
@@ -85,6 +83,13 @@ module OperationalDataExtractor
       "prepopulated_mode_of_contact" => "prepopulated_mode_of_contact"
     }
 
+    PERSON_RACE_MAP = {
+      "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW" => "race_code",
+      "#{PBS_ELIG_SCREENER_RACE_NEW_PREFIX}.RACE_NEW_OTH" => "race_other",
+      "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1" => "race_code",
+      "#{PBS_ELIG_SCREENER_RACE_1_PREFIX}.RACE_1_OTH" => "race_other"
+    }
+
     def maps
       [
         PERSON_MAP,
@@ -97,7 +102,8 @@ module OperationalDataExtractor
         EMAIL_MAP,
         PPG_DETAILS_MAP,
         DUE_DATE_DETERMINER_MAP,
-        MODE_OF_CONTACT_MAP
+        MODE_OF_CONTACT_MAP,
+        PERSON_RACE_MAP
       ]
     end
 
@@ -106,12 +112,6 @@ module OperationalDataExtractor
     end
 
     def extract_data
-
-      ppg_detail   = nil
-      email        = nil
-      phone1       = nil
-      phone2       = nil
-      address      = nil
 
       process_person(PERSON_MAP)
       process_participant(PARTICIPANT_MAP)
@@ -133,6 +133,8 @@ module OperationalDataExtractor
       end
 
       address = process_address(person, ADDRESS_MAP, Address.home_address_type)
+
+      process_person_race(PERSON_RACE_MAP)
 
       phone1  = process_telephone(person, TELEPHONE_MAP1, nil, primary_rank)
       phone2  = process_telephone(person, TELEPHONE_MAP2, nil, secondary_rank)
@@ -176,7 +178,6 @@ module OperationalDataExtractor
 
     def calculated_due_date(response_set)
       # try due date first
-      ret = nil
       ret = due_date_response(response_set, "ORIG_DUE_DATE", INTERVIEW_PREFIX)
       ret = due_date_response(response_set, "DATE_PERIOD", INTERVIEW_PREFIX) unless ret
       ret

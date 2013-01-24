@@ -92,20 +92,6 @@ module OperationalDataExtractor
 
 
     def extract_data
-
-      cell_phone           = nil
-      email                = nil
-
-      contact1             = nil
-      contact1relationship = nil
-      contact1phone        = nil
-      contact1address      = nil
-
-      contact2             = nil
-      contact2relationship = nil
-      contact2phone        = nil
-      contact2address      = nil
-
       process_person(PERSON_MAP)
       cell_phone = process_telephone(person, CELL_PHONE_MAP, Telephone.cell_phone_type)
       email = process_email(EMAIL_MAP)
