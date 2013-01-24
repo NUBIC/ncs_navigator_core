@@ -13,6 +13,7 @@ module NcsNavigator::Core::ResponseSetPopulator
   autoload :Birth,                    'ncs_navigator/core/response_set_populator/birth'
   autoload :NonInterview,             'ncs_navigator/core/response_set_populator/noninterview'
   autoload :ChildAndAdHoc,            'ncs_navigator/core/response_set_populator/child_and_adhoc'
+  autoload :MMother,                  'ncs_navigator/core/response_set_populator/mmother'
 
   POPULATORS = [
     [/_ParticipantVerif_/,  ParticipantVerification],
@@ -27,6 +28,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_PM_Child/,           ChildAndAdHoc],
     [/_BIO_Child/,          ChildAndAdHoc],
     [/_CON_Reconsideration/,ChildAndAdHoc],
+    [/_18MM.*_MOLD/,        MMother],
   ]
 
 end
