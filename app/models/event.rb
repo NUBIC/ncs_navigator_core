@@ -397,8 +397,16 @@ class Event < ActiveRecord::Base
     13
   end
 
+  def self.pregnancy_visit_1_sqa_code
+    14
+  end
+
   def self.pregnancy_visit_2_code
     15
+  end
+
+  def self.pregnancy_visit_2_sqa_code
+    16
   end
 
   def self.birth_code
@@ -411,6 +419,14 @@ class Event < ActiveRecord::Base
 
   def self.provider_recruitment_code
     22
+  end
+
+  def self.six_month_visit_code
+    24
+  end
+
+  def self.twelve_month_visit_code
+    27
   end
 
   def self.pregnancy_screener_code
@@ -435,11 +451,21 @@ class Event < ActiveRecord::Base
   alias :pv1? :pregnancy_visit_1?
   alias :pregnancy_visit1? :pregnancy_visit_1?
 
+  def pregnancy_visit_1_sqa?
+    self.event_type_code == Event.pregnancy_visit_1_sqa_code
+  end
+  alias :pv1sqa? :pregnancy_visit_1_sqa?
+
   def pregnancy_visit_2?
     self.event_type_code == Event.pregnancy_visit_2_code
   end
   alias :pv2? :pregnancy_visit_2?
   alias :pregnancy_visit2? :pregnancy_visit_2?
+
+  def pregnancy_visit_2_sqa?
+    self.event_type_code == Event.pregnancy_visit_2_sqa_code
+  end
+  alias :pv2sqa? :pregnancy_visit_2_sqa?
 
   def birth?
     self.event_type_code == Event.birth_code
@@ -447,6 +473,14 @@ class Event < ActiveRecord::Base
 
   def informed_consent?
     self.event_type_code == Event.informed_consent_code
+  end
+
+  def six_month_visit?
+    self.event_type_code == Event.six_month_visit_code
+  end
+
+  def twelve_month_visit?
+    self.event_type_code == Event.twelve_month_visit_code
   end
 
   ##

@@ -51,12 +51,14 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def what_study_center_type?(question)
+      # Maps answer.text to answer.reference_identifier for clarity
       answer_map = {
         "OVC AND EH STUDY CENTER" => 1,
         "PB AND PBS STUDY CENTER" => 2,
         "HILI STUDY CENTER" => 3
       }
 
+      # Maps recruitment_type_id to the corresponding answer.reference_identifier
       center_type_map = {
         # Enhanced Household Enumeration
         1 => answer_map["OVC AND EH STUDY CENTER"],

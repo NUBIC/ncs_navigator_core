@@ -47,11 +47,8 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def is_response_to_mold_question_yes?
-      if get_last_response_as_string("EIGHTEEN_MTH_MOTHER_2.MOLD") == "1" # YES
-        true
-      else
-        false
-      end
+      get_last_response_as_string(
+                    "EIGHTEEN_MTH_MOTHER_2.MOLD") == NcsCode::YES.to_s
     end
 
   end

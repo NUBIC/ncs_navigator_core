@@ -38,9 +38,9 @@ module NcsNavigator::Core::ResponseSetPopulator
                                                              response_set)) :
                 answer_for(question, false)
             when "prepopulated_is_6_month_event"
-              answer_for(question, (event.try(:event_type_code).to_i == 24))
+              answer_for(question, event.six_month_visit?)
             when "prepopulated_is_12_month_visit"
-              answer_for(question, (event.try(:event_type_code).to_i == 27))
+              answer_for(question, event.twelve_month_visit?)
             when "prepopulated_event_type"
               answer_for(question, check_event_type_for_con_reconsideration)
             else
@@ -62,12 +62,11 @@ module NcsNavigator::Core::ResponseSetPopulator
       begin
         bp_arm_circ = Float(most_recent_response)
       rescue ArgumentError
-        false
+        nil
       end
     end
 
     def prepopulate_bp_mid_upper_arm_circ(question, response_set)
-      #bp_arm_circ = get_upper_arm_circ_as_float
       return false unless bp_arm_circ = get_upper_arm_circ_as_float
 
       prepop_question = find_question_for_reference_identifier(
@@ -83,9 +82,16 @@ module NcsNavigator::Core::ResponseSetPopulator
     end
 
     def check_event_type_for_con_reconsideration
-      if [13, 14, 15, 16].include?(event.try(:event_type_code).to_i)
+      # List of all pregnancy visit events
+      pregnancy_visits = [
+        event.pregnancy_visit_1?,
+        event.pregnancy_visit_1_sqa?,
+        event.pregnancy_visit_2?,
+        event.pregnancy_visit_2_sqa?
+      ]
+      if pregnancy_visits.any?
         "pv"
-      elsif event.try(:event_type_code).to_i == 27
+      elsif event.twelve_month_visit?
         "twelve_mns"
       else
         "" 
