@@ -250,7 +250,7 @@ module OperationalDataExtractor
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_UNIT"            => "unit",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_CITY"            => "city",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_STATE"           => "state_code",
-      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIPCODE"         => "zip",
+      "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP"             => "zip",
       "#{PREGNANCY_VISIT_1_3_INTERVIEW_PREFIX}.WORK_ZIP4"            => "zip4",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_1"       => "address_one",
       "#{PREGNANCY_VISIT_2_3_INTERVIEW_PREFIX}.WORK_ADDRESS_2"       => "address_two",
