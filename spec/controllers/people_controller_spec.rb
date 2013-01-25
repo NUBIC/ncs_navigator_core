@@ -71,6 +71,55 @@ describe PeopleController do
         get :new
         assigns(:person).should be_a_new(Person)
       end
+
+      it "sets the p_info_date attribute to today by default" do
+        get :new
+        assigns(:person).p_info_date.should == Date.today
+      end
+
+      it "sets the p_info_update attribute to today by default" do
+        get :new
+        assigns(:person).p_info_update.should == Date.today
+      end
+
+      it "sets the p_info_source_code attribute to 1 (Person/Self) by default" do
+        get :new
+        assigns(:person).p_info_source_code.should == Person.person_self_code
+      end
+    end
+
+    describe "GET edit" do
+
+      let(:person) { Factory(:person, :p_info_source_code => 2, :p_info_date => 1.day.ago.to_date) }
+
+      it "assigns the requested person as @person" do
+        get :edit, :id => person.id
+        assigns(:person).should eq(person)
+      end
+
+      it "sets the p_info_date attribute to the previously known p_info_date" do
+        previous = person.p_info_date
+        get :edit, :id => person.id
+        assigns(:person).p_info_date.should == previous
+      end
+
+      it "sets the p_info_date attribute to created_at if not set" do
+        per = Factory(:person, :p_info_date => nil, :created_at => 3.days.ago)
+        get :edit, :id => per.id
+        assigns(:person).p_info_date.should == per.created_at.to_date
+      end
+
+
+      it "sets the p_info_update attribute to today by default" do
+        get :edit, :id => person.id
+        assigns(:person).p_info_update.should == Date.today
+      end
+
+      it "sets the p_info_source_code attribute the previously known p_info_source_code" do
+        previous = person.p_info_source_code
+        get :edit, :id => person.id
+        assigns(:person).p_info_source_code.should == previous
+      end
     end
 
     context "with a provider" do
