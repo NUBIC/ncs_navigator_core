@@ -659,4 +659,33 @@ describe Person do
     end
   end
 
+  context "household association" do
+
+    describe "#in_household?" do
+
+      let(:person) { Factory(:person) }
+      let(:household) { Factory(:household_unit) }
+
+      describe "when a person is associated with a household through household_person_links" do
+
+        before do
+          Factory(:household_person_link, :person => person, :household_unit => household)
+        end
+
+        it "returns true" do
+          person.household_person_links.should_not be_empty
+          person.should be_in_household
+        end
+      end
+
+      describe "when a person is /not/ associated with a household" do
+        it "returns false" do
+          person.household_person_links.should be_empty
+          person.should_not be_in_household
+        end
+      end
+
+    end
+  end
+
 end

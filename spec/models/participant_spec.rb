@@ -541,6 +541,46 @@ describe Participant do
 
   end
 
+  describe "#create_child_person_and_participant" do
+
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:household) { Factory(:household_unit) }
+
+    before do
+      participant.person = person
+      participant.save!
+    end
+
+    describe "for a participant with an associated household" do
+
+      before do
+        Factory(:household_person_link, :person => person, :household_unit => household)
+        participant.person.should be_in_household
+      end
+
+      it "associates the created child with the participant's household" do
+        participant.create_child_person_and_participant!({:first_name => "cfname", :last_name => "clname"})
+        participant.participant_person_links.reload
+        child = participant.children.first
+        child.should be_in_household
+        child.household.should == household
+      end
+    end
+
+    describe "for a participant without an associated household" do
+
+      it "does not associate the created child with a household" do
+        participant.create_child_person_and_participant!({:first_name => "cfname", :last_name => "clname"})
+        participant.participant_person_links.reload
+        child = participant.children.first
+        child.should_not be_in_household
+      end
+    end
+
+
+  end
+
   context "when determining schedule" do
 
     describe "a participant who has had a recent pregnancy loss (PPG 3)" do

@@ -383,32 +383,43 @@ class Participant < ActiveRecord::Base
     Participant.all_people_for_self(person_id).first
   end
 
-   ##
-   # Given attributes for the child person record
-   # create the child Person record, the child Participant record
-   # and associate it with this Participant
-   # @param[Hash]
-   # @return[Participant]
-   def create_child_person_and_participant!(person_attrs)
-     create_child_participant!(Person.create(person_attrs))
-   end
+  ##
+  # Given attributes for the child person record
+  # create the child Person record, the child Participant record
+  # and associate it with this Participant
+  # @param[Hash]
+  # @return[Participant]
+  def create_child_person_and_participant!(person_attrs)
+    child = Person.create(person_attrs)
+    create_child_participant!(child)
+    associate_child_with_household(child) if person.in_household?
+  end
 
-   ##
-   # Given the child person record
-   # create the child Participant record
-   # and associate it with this Participant through ParticipantPersonLink
-   # @param[Hash]
-   # @return[Participant]
-   def create_child_participant!(child)
-     # 6 - NCS Child - Participant Type
-     child_participant = Participant.create(:psu_code => NcsNavigatorCore.psu, :p_type_code => 6)
-     child_participant.person = child
-     child_participant.save!
-     # 2 - Mother, associating child participant with its mother - ParticipantPersonRelationship
-     ParticipantPersonLink.create(:participant_id => child_participant.id, :person_id => self.person.id, :relationship_code => 2)
-     # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
-     ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
-     child_participant
+  ##
+  # Create a HouseholdPersonLink for the participant's household and the
+  # given child
+  # @param[Person]
+  def associate_child_with_household(child)
+    HouseholdPersonLink.create(:person => child, :household_unit => person.household,
+                               :is_active_code => NcsCode::YES)
+  end
+
+  ##
+  # Given the child person record
+  # create the child Participant record
+  # and associate it with this Participant through ParticipantPersonLink
+  # @param[Hash]
+  # @return[Participant]
+  def create_child_participant!(child)
+    # 6 - NCS Child - Participant Type
+    child_participant = Participant.create(:psu_code => NcsNavigatorCore.psu, :p_type_code => 6)
+    child_participant.person = child
+    child_participant.save!
+    # 2 - Mother, associating child participant with its mother - ParticipantPersonRelationship
+    ParticipantPersonLink.create(:participant_id => child_participant.id, :person_id => self.person.id, :relationship_code => 2)
+    # 8 - Child, associating mother participant with its child - ParticipantPersonRelationship
+    ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
+    child_participant
   end
 
   ##
