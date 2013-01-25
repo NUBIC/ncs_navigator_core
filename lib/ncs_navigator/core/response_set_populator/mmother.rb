@@ -6,7 +6,8 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def reference_identifiers
       [
-        "prepopulated_should_show_room_mold_child"
+        "prepopulated_should_show_room_mold_child",
+        "prepopulated_should_show_demographics"
       ]
     end
 
@@ -29,8 +30,9 @@ module NcsNavigator::Core::ResponseSetPopulator
           answer =
             case reference_identifier
             when "prepopulated_should_show_room_mold_child"
-              nil
               answer_for(question, is_response_to_mold_question_yes?)
+            when "prepopulated_should_show_demographics"
+              answer_for(question, were_there_prenatal_events?)
             else
               nil
             end
@@ -49,6 +51,16 @@ module NcsNavigator::Core::ResponseSetPopulator
     def is_response_to_mold_question_yes?
       get_last_response_as_string(
                     "EIGHTEEN_MTH_MOTHER_2.MOLD") == NcsCode::YES.to_s
+    end
+
+    def were_there_prenatal_events?
+      person.events.each do |event|
+        return false unless Event::POSTNATAL_EVENTS.any? { |pnatal_event_code|
+          event.event_type_code == pnatal_event_code
+        }
+      end
+
+      true
     end
 
   end

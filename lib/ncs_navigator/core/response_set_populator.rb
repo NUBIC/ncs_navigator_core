@@ -28,7 +28,7 @@ module NcsNavigator::Core::ResponseSetPopulator
     [/_PM_Child/,           ChildAndAdHoc],
     [/_BIO_Child/,          ChildAndAdHoc],
     [/_CON_Reconsideration/,ChildAndAdHoc],
-    [/_18MM.*_MOLD/,        MMother],
+    [/MMother/,             MMother],
   ]
 
 end

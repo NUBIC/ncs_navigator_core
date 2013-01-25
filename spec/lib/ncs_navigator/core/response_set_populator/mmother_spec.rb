@@ -39,6 +39,52 @@ module NcsNavigator::Core
       @response_set.responses.should be_empty
     end
 
+    def prepare_and_take_survey(question_dexp_identifier, answer,
+                                survey_template, event=nil)
+      survey = send(survey_template)
+      response_set, instrument = prepare_instrument(@person, @participant,
+                                                    survey)
+      response_set.responses.should be_empty
+
+      answer_code = mock(NcsCode, :local_code => answer)
+      take_survey(survey, response_set) do |a|
+        a.choice(question_dexp_identifier, answer_code)
+      end
+    end
+
+    context "for 3MM part two prepopulators"
+      describe "prepopulated_is_6_month_event" do
+        def make_contact(event_type_code)
+          event = Factory(:event, :event_type_code => event_type_code,
+                          :event_end_date => '2010-12-12',
+                          :participant => @participant)
+          contact = Factory(:contact)
+          contact_link = Factory(:contact_link, :person => @person, 
+                                 :contact => contact, :event => event)
+          ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
+                                                           event_type_code)
+          @person.participant.completed_event?(ncs_code).should be_true
+        end
+
+        before(:each) do
+          init_common_vars(:create_3mmmother_int_part_two)
+        end
+
+        it "should be TRUE when there are no pre-natal events" do
+          make_contact(Event::six_month_visit_code)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          assert_match(rsp.populate, "prepopulated_should_show_demographics",
+                       "TRUE")
+        end
+
+        it "should be FALSE when there are pre-natal events" do
+          make_contact(Event::pregnancy_visit_1_code)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          assert_match(rsp.populate, "prepopulated_should_show_demographics",
+                       "FALSE")
+        end
+      end
+
     context "for 18MM v2.x prepopulators"
       describe "prepopulated_should_show_upper_arm_length" do
         before(:each) do
@@ -47,36 +93,28 @@ module NcsNavigator::Core
                                                    @survey)
         end
 
-        def take_mmother_survey(question_dexp_identifier, answer)
-          survey = create_18mm_v2_survey_part_three_for_mold_prepopulators
-          response_set, instrument = prepare_instrument(@person, @participant,
-                                                        survey)
-          response_set.responses.should be_empty
-
-          answer_code = mock(NcsCode, :local_code => answer)
-          take_survey(survey, response_set) do |a|
-            a.choice(question_dexp_identifier, answer_code)
-          end
-        end
-
         it "should be TRUE if response to MOLD question was YES" do
-          take_mmother_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 1)
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 1,
+                      :create_18mm_v2_survey_part_three_for_mold_prepopulators)
           assert_match(@rsp.populate,
                        "prepopulated_should_show_room_mold_child", "TRUE")
         end
         it "should be FALSE if response to MOLD question was NO" do
-          take_mmother_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 2)
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 2,
+                      :create_18mm_v2_survey_part_three_for_mold_prepopulators)
           assert_match(@rsp.populate,
                        "prepopulated_should_show_room_mold_child", "FALSE")
         end
 
         it "should be FALSE if response to MOLD question was REFUSED" do
-          take_mmother_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_1")
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_1",
+                      :create_18mm_v2_survey_part_three_for_mold_prepopulators)
           assert_match(@rsp.populate,
                        "prepopulated_should_show_room_mold_child", "FALSE")
         end
         it "should be FALSE if response to MOLD question was REFUSED" do
-          take_mmother_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_2")
+          prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_2",
+                      :create_18mm_v2_survey_part_three_for_mold_prepopulators)
           assert_match(@rsp.populate,
                        "prepopulated_should_show_room_mold_child", "FALSE")
         end
