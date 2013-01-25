@@ -7,19 +7,19 @@ module NcsNavigator::Core
   describe ResponseSetPopulator::MMother do
     include SurveyCompletion
 
-    def get_response(response_set, reference_identifier)
+    def get_response_as_string(response_set, reference_identifier)
       response = response_set.responses.select { |r|
         r.question.reference_identifier == reference_identifier
       }.first
-      response
+      response.to_s
     end
 
     def assert_match(response_set, reference_identifier, value)
-      get_response(response_set, reference_identifier).to_s.should == value
+      get_response_as_string(response_set, reference_identifier).should == value
     end
 
     def assert_miss(response_set, reference_identifier, value)
-      get_response(response_set, reference_identifier).to_s.should_not == value
+      get_response_as_string(response_set, reference_identifier).should_not == value
     end
 
     def assert_multiple_match(response_set, question_value)
@@ -73,15 +73,15 @@ module NcsNavigator::Core
         it "should be TRUE when there are no pre-natal events" do
           make_contact(Event::six_month_visit_code)
           rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
-          assert_match(rsp.populate, "prepopulated_should_show_demographics",
-                       "TRUE")
+          get_response_as_string(rsp.populate,
+                       "prepopulated_should_show_demographics").should == "TRUE"
         end
 
         it "should be FALSE when there are pre-natal events" do
           make_contact(Event::pregnancy_visit_1_code)
           rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
-          assert_match(rsp.populate, "prepopulated_should_show_demographics",
-                       "FALSE")
+          get_response_as_string(rsp.populate,
+                       "prepopulated_should_show_demographics").should == "FALSE"
         end
       end
 
@@ -96,31 +96,36 @@ module NcsNavigator::Core
         it "should be TRUE if response to MOLD question was YES" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 1,
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          assert_match(@rsp.populate,
-                       "prepopulated_should_show_room_mold_child", "TRUE")
+          get_response_as_string(@rsp.populate,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "TRUE"
         end
         it "should be FALSE if response to MOLD question was NO" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", 2,
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          assert_match(@rsp.populate,
-                       "prepopulated_should_show_room_mold_child", "FALSE")
+          get_response_as_string(@rsp.populate,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
         end
 
         it "should be FALSE if response to MOLD question was REFUSED" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_1",
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          assert_match(@rsp.populate,
-                       "prepopulated_should_show_room_mold_child", "FALSE")
+          get_response_as_string(@rsp.populate,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
         end
         it "should be FALSE if response to MOLD question was REFUSED" do
           prepare_and_take_survey("EIGHTEEN_MTH_MOTHER_2.MOLD", "neg_2",
                       :create_18mm_v2_survey_part_three_for_mold_prepopulators)
-          assert_match(@rsp.populate,
-                       "prepopulated_should_show_room_mold_child", "FALSE")
+          get_response_as_string(@rsp.populate,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
         end
         it "should be FALSE if 18MM part 3 survey was not completed" do
-          assert_match(@rsp.populate,
-                       "prepopulated_should_show_room_mold_child", "FALSE")
+          get_response_as_string(@rsp.populate,
+                        "prepopulated_should_show_room_mold_child"
+                      ).should == "FALSE"
         end
       end
 
