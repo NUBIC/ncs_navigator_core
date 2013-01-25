@@ -16,6 +16,7 @@ tmp
 tmtags
 *.sw?
 *.out
+*.un~
 
 # Generated assets
 public/assets
