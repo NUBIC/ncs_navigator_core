@@ -86,6 +86,19 @@ class Merge < ActiveRecord::Base
   # then the status will be "timeout" until the merge is restarted.)
   #
   #
+  # Merge restarts and ODEs
+  # =======================
+  #
+  # Failing merges may be restarted freely until they pass.  Merges that have
+  # completed can be restarted, but may result in operational data conflicts.
+  # The reason is that the merge process currently has no visibility into the
+  # operational data extractors and what they change: as far as merge is
+  # concerned, the ODEs are another user making changes to operational data
+  # which may or may not jive with what's coming from Field.
+  #
+  # In the future, this might be addressed, but doing that is not trivial.
+  #
+  #
   # Merge status updates
   # ====================
   #
