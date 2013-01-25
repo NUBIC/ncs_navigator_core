@@ -7,7 +7,8 @@ module NcsNavigator::Core::ResponseSetPopulator
     def reference_identifiers
       [
         "prepopulated_should_show_room_mold_child",
-        "prepopulated_should_show_demographics"
+        "prepopulated_should_show_demographics",
+        "prepopulated_is_prev_event_birth_li_and_set_to_complete"
       ]
     end
 
@@ -33,6 +34,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, is_response_to_mold_question_yes?)
             when "prepopulated_should_show_demographics"
               answer_for(question, were_there_prenatal_events?)
+            when "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+              answer_for(question, does_completed_birth_record_exists?)
             else
               nil
             end
@@ -61,6 +64,18 @@ module NcsNavigator::Core::ResponseSetPopulator
       end
 
       true
+    end
+
+    def does_completed_birth_record_exists?
+      ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
+                                                       Event::birth_code)
+      person.events.each do |event|
+        if event.event_type_code == Event::birth_code
+          return person.participant.completed_event?(ncs_code)
+        end
+      end
+
+      false
     end
 
   end

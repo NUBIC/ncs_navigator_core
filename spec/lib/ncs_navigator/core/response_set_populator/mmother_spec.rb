@@ -14,20 +14,6 @@ module NcsNavigator::Core
       response.to_s
     end
 
-    def assert_match(response_set, reference_identifier, value)
-      get_response_as_string(response_set, reference_identifier).should == value
-    end
-
-    def assert_miss(response_set, reference_identifier, value)
-      get_response_as_string(response_set, reference_identifier).should_not == value
-    end
-
-    def assert_multiple_match(response_set, question_value)
-      question_value.each_pair do |question, value|
-        assert_match(response_set, question, value)
-      end
-    end
-
     def init_common_vars(survey_template)
       @survey = send(survey_template)
       @participant = Factory(:participant)
@@ -52,20 +38,50 @@ module NcsNavigator::Core
       end
     end
 
-    context "for 3MM part two prepopulators"
-      describe "prepopulated_is_6_month_event" do
-        def make_contact(event_type_code)
-          event = Factory(:event, :event_type_code => event_type_code,
-                          :event_end_date => '2010-12-12',
-                          :participant => @participant)
-          contact = Factory(:contact)
-          contact_link = Factory(:contact_link, :person => @person, 
-                                 :contact => contact, :event => event)
-          ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
-                                                           event_type_code)
-          @person.participant.completed_event?(ncs_code).should be_true
+    def make_contact(event_type_code, event_complete = '2010-12-12')
+      event = Factory(:event, :event_type_code => event_type_code,
+                      :event_end_date => event_complete,
+                      :participant => @participant)
+      contact = Factory(:contact)
+      contact_link = Factory(:contact_link, :person => @person, 
+                              :contact => contact, :event => event)
+      ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
+                                                        event_type_code)
+      @person.participant.completed_event?(ncs_code).send(
+        event_complete ? :should : :should_not) == true
+    end
+
+    context "for 3MM child habits prepopulators"
+      describe "prepopulated_is_prev_event_birth_li_and_set_to_complete" do
+        before(:each) do
+          init_common_vars(:create_3mmmother_int_child_habits)
         end
 
+        it "should be TRUE when a complete birth record exists" do
+          make_contact(Event::birth_code)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+            "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+          ).should == "TRUE"
+        end
+
+        it "should be FALSE when an incomplete birth record exists" do
+          make_contact(Event::birth_code, event_complete = nil)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+            "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+          ).should == "FALSE"
+        end
+        it "should be FALSE when no birth record exists" do
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+            "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+          ).should == "FALSE"
+        end
+      end
+
+    context "for 3MM part two prepopulators"
+      describe "prepopulated_is_6_month_event" do
         before(:each) do
           init_common_vars(:create_3mmmother_int_part_two)
         end

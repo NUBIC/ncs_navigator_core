@@ -103,4 +103,20 @@ module MMother
     survey
   end
 
+  def create_3mmmother_int_child_habits
+    survey = Factory(:survey, :title =>
+              "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",
+                     :access_code =>
+              "ins_que_3month_int_ehpbhilipbs_m3_1_v2_0_child_habits")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question, :reference_identifier =>
+                    "prepopulated_is_prev_event_birth_li_and_set_to_complete",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
+                :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
+                :response_class => "answer", :reference_identifier => "false")
+    survey
+  end
+
 end
