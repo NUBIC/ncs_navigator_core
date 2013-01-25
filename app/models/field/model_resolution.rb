@@ -184,6 +184,10 @@ module Field
         possible = p_model.contact_links.select { |cl| cl.staff_id == staff_id }.map(&:contact)
         accepted = possible.detect { |c| c.contact_date_date == date }
 
+        if accepted
+          logger.info %Q{Reusing contact #{accepted.contact_id} because it occurs on date #{date}}
+        end
+
         resolutions[contact] = accepted || ::Contact.start(p_model, :contact_date => contact.scheduled_date)
       end
     end
