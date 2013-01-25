@@ -152,6 +152,7 @@ class Merge < ActiveRecord::Base
 
         if !superposition
           update_attribute(:crashed_at, Time.now)
+          logger.fatal { 'Merge failed, rolling back' }
           raise ActiveRecord::Rollback
         else
           self.merged_at = Time.now
