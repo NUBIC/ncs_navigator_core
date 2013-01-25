@@ -152,7 +152,7 @@ class Merge < ActiveRecord::Base
 
         if !superposition
           update_attribute(:crashed_at, Time.now)
-          false
+          raise ActiveRecord::Rollback
         else
           self.merged_at = Time.now
           self.conflict_report = superposition.conflicts
