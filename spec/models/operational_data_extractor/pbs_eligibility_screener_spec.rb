@@ -187,7 +187,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       address.to_s.should == "123 Easy St. Chicago, ILLINOIS"
       address.address_rank_code.should == 1
     end
-
   end
 
   context "extracting telephone operational data from the survey responses" do
@@ -257,7 +256,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     person.emails.size.should == 1
     person.emails.first.email.should == "email@dev.null"
     person.emails.first.email_rank_code.should == 1
-
   end
 
   it "sets the ppg detail ppg status to 1 if the person responds that they are pregnant" do
@@ -289,7 +287,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     participant.ppg_details.first.ppg_first.local_code.should == 1
     participant.ppg_status.local_code.should == 1
     participant.p_type.should == p_type
-
   end
 
   it "sets the ppg detail ppg status to 2 if the person responds that they are trying to become pregnant" do
@@ -322,7 +319,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     participant.ppg_status.local_code.should == 2
     participant.due_date.should be_nil
     participant.p_type.should == p_type
-
   end
 
   it "sets the ppg detail ppg status to 5 if the person responds that they are unable to become pregnant" do
@@ -353,7 +349,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
     participant.ppg_status.local_code.should == 5
     participant.due_date.should be_nil
   end
-
 
   context "determining the due date of a pregnant woman" do
 
@@ -637,7 +632,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       participant = person.participant
       participant.due_date.should == ((Date.today + 280.days) - (140.days)).to_date
     end
-
   end
 
   context "ensuring that the ODE processes regardless of response_set response ordering" do
@@ -723,7 +717,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       participant.due_date.should == (last_period + 280.days).to_date
 
     end
-
   end
 
   context "setting instrument administration mode" do
@@ -767,7 +760,6 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       OperationalDataExtractor::PbsEligibilityScreener.new(@response_set).extract_data
       Instrument.find(@instrument.id).instrument_mode_code.should == Instrument.papi
     end
-
   end
 
   context "extracting race operational data" do
@@ -841,4 +833,43 @@ describe OperationalDataExtractor::PbsEligibilityScreener do
       end
     end
   end
+
+  context "household" do
+
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:survey) { create_pbs_eligibility_screener_survey_with_ppg_detail_operational_data }
+
+    before do
+      participant.person = person
+      participant.save!
+    end
+
+    describe "for a person without a household" do
+      it "creates a household record for the person upon completion of the survey" do
+        person.should_not be_in_household
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        response_set.save!
+        OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
+        Person.find(person.id).should be_in_household
+      end
+    end
+
+    describe "for a person with a household" do
+
+      before do
+        Factory(:household_person_link, :person => person)
+        person.should be_in_household
+      end
+
+      it "does not create a new household" do
+        person.household_units.size.should == 1
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        response_set.save!
+        OperationalDataExtractor::PbsEligibilityScreener.new(response_set).extract_data
+        Person.find(person.id).household_units.size.should == 1
+      end
+    end
+  end
+
 end

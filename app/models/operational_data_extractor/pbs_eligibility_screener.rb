@@ -172,6 +172,8 @@ module OperationalDataExtractor
 
       update_instrument_mode
 
+      create_household_for(person) unless person.in_household?
+
       participant.save! if participant
       person.save!
     end

@@ -330,7 +330,6 @@ describe OperationalDataExtractor::PregnancyScreener do
       end
 
     end
-
   end
 
   it "extracts email information from the survey responses" do
@@ -361,7 +360,44 @@ describe OperationalDataExtractor::PregnancyScreener do
     person.emails.first.email.should == "email@dev.null"
     person.emails.first.email_type.local_code.should == 1
     person.emails.first.email_rank_code.should == 1
+  end
 
+  context "household" do
+
+    let(:person) { Factory(:person) }
+    let(:participant) { Factory(:participant) }
+    let(:survey) { create_pregnancy_screener_survey_with_ppg_detail_operational_data }
+
+    before do
+      participant.person = person
+      participant.save!
+    end
+
+    describe "for a person without a household" do
+      it "creates a household record for the person upon completion of the survey" do
+        person.should_not be_in_household
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        response_set.save!
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
+        Person.find(person.id).should be_in_household
+      end
+    end
+
+    describe "for a person with a household" do
+
+      before do
+        Factory(:household_person_link, :person => person)
+        person.should be_in_household
+      end
+
+      it "does not create a new household" do
+        person.household_units.size.should == 1
+        response_set, instrument = prepare_instrument(person, participant, survey)
+        response_set.save!
+        OperationalDataExtractor::PregnancyScreener.new(response_set).extract_data
+        Person.find(person.id).household_units.size.should == 1
+      end
+    end
   end
 
   # PREGNANT              PpgDetail.ppg_first               PPG_STATUS_CL2/PREGNANCY_STATUS_CL1
@@ -407,7 +443,6 @@ describe OperationalDataExtractor::PregnancyScreener do
     participant.ppg_status.local_code.should == 1
     participant.due_date.should == Date.parse("2011-12-25")
     participant.p_type.should == p_type
-
   end
 
   it "sets the ppg detail ppg status to 2 if the person responds that they are trying to become pregnant" do
@@ -440,7 +475,6 @@ describe OperationalDataExtractor::PregnancyScreener do
     participant.ppg_status.local_code.should == 2
     participant.due_date.should be_nil
     participant.p_type.should == p_type
-
   end
 
   it "sets the ppg detail ppg status to 5 if the person responds that they are unable to become pregnant" do
@@ -685,7 +719,6 @@ describe OperationalDataExtractor::PregnancyScreener do
       participant = person.participant
       participant.due_date.should == ((Date.today + 280.days) - (140.days)).to_date
     end
-
   end
 
   context "ensuring that the ODE processes regardless of response_set response ordering" do
@@ -759,7 +792,6 @@ describe OperationalDataExtractor::PregnancyScreener do
       participant.due_date.should == ((Date.today + 280.days) - ((months_pregnant * 30) - 15)).to_date
 
     end
-
   end
 
   context "extracting race operational data" do
@@ -803,7 +835,6 @@ describe OperationalDataExtractor::PregnancyScreener do
         @person.races.map(&:race_other).should include("Aborigine")
       end
     end
-
   end
 
 end

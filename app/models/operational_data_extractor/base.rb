@@ -839,5 +839,17 @@ module OperationalDataExtractor
       person_race
     end
 
+    ##
+    # Create a HouseholdUnit record and create a
+    # HouseholdPersonLink record for the given Person
+    # anc newly created HouseholdUnit
+    #
+    # @param[Person]
+    def create_household_for(person)
+      hhu = HouseholdUnit.create(:psu_code => person.psu_code)
+      HouseholdPersonLink.create(:person => person, :household_unit => hhu,
+        :is_active_code => NcsCode::YES)
+    end
+
   end
 end

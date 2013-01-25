@@ -139,6 +139,8 @@ module OperationalDataExtractor
       finalize_addresses(mail_address, address)
       finalize_telephones(cell_phone, home_phone, phone)
 
+      create_household_for(person) unless person.in_household?
+
       participant.save!
       person.save!
     end

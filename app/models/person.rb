@@ -373,6 +373,24 @@ class Person < ActiveRecord::Base
   end
 
   ##
+  # Determine if this person is associated with
+  # a Household record through household_person_links
+  # @return[Boolean]
+  def in_household?
+    !household_person_links.empty?
+  end
+
+  ##
+  # FIXME: this method needs to be smarter in determining the
+  #        primary household for the person
+  #        for now, there should only be one household unit
+  #        associated with this person
+  # @return[HouseholdUnit]
+  def household
+    household_units.first
+  end
+
+  ##
   # Returns the primary cell phone number for this person, or nil if no such
   # phone record exists.
   def primary_cell_phone
