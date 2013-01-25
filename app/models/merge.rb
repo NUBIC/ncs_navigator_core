@@ -133,27 +133,30 @@ class Merge < ActiveRecord::Base
       end
 
       # Do the merge.
-      superposition = do_merge(logger)
 
-      if !superposition
-        update_attribute(:crashed_at, Time.now)
-        return false
-      end
+      self.class.transaction do
+        superposition = do_merge(logger)
 
-      self.merged_at = Time.now
-      self.conflict_report = superposition.conflicts
-      save(:validate => false)
+        if !superposition
+          update_attribute(:crashed_at, Time.now)
+          false
+        else
+          self.merged_at = Time.now
+          self.conflict_report = superposition.conflicts
+          save(:validate => false)
 
-      if self.class.sync_with_psc?
-        # Sync current state...
-        superposition.prepare_for_sync(self)
-        superposition.sync_with_psc
+          if self.class.sync_with_psc?
+            # Sync current state...
+            superposition.prepare_for_sync(self)
+            superposition.sync_with_psc
 
-        # ...and schedule new events.
-        superposition.advance_participant_schedules
-        update_attribute(:synced_at, Time.now)
-      else
-        true
+            # ...and schedule new events.
+            superposition.advance_participant_schedules
+            update_attribute(:synced_at, Time.now)
+          else
+            true
+          end
+        end
       end
     rescue Exception => e
       logger.fatal { "#{e.class.name}: #{e.message}" }
