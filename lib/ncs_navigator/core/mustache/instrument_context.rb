@@ -101,7 +101,7 @@ module NcsNavigator::Core::Mustache
     end
 
     def participant_parent_caregiver_name
-      result = response_for("PARTICIPANT_VERIF.NAME_CONFIRM")
+      result = p_full_name
       if result.blank?
         result = "[Participant/Parent/Caregiver Name]"
       end
