@@ -29,4 +29,6 @@ module NcsNavigator::Core
   end
 end
 
-Rails.application.send(:extend, NcsNavigator::Core::SidekiqConfiguration)
+if defined?(Rails.application)
+  Rails.application.send(:extend, NcsNavigator::Core::SidekiqConfiguration)
+end

@@ -53,4 +53,6 @@ module NcsNavigator::Core::RedisConfiguration
   private :redis_db
 end
 
-Rails.application.send(:extend, NcsNavigator::Core::RedisConfiguration)
+if defined?(Rails)
+  Rails.application.send(:extend, NcsNavigator::Core::RedisConfiguration)
+end
