@@ -4,6 +4,8 @@ require 'ncs_navigator/core'
 
 module NcsNavigator::Core
   module SidekiqConfiguration
+    include RedisConfiguration
+
     def sidekiq_namespace
       'nubic:ncs_navigator_core:sidekiq'
     end
