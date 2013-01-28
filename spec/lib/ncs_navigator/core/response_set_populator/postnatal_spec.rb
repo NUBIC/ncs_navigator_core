@@ -50,6 +50,44 @@ module NcsNavigator::Core
         event_complete ? :should : :should_not) == true
     end
 
+    context "for 6MM mother detial prepopulators"
+      describe "prepopulated_mult_child_answer_from_part_one_for_6MM" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_6MMother_INT_EHPBHI_P2_V11_SIX_MTH_MOTHER_DETAIL",
+                      "prepopulated_mult_child_answer_from_part_one_for_6MM")
+          init_common_vars
+        end
+
+        it "should be TRUE when answer to MULT_CHILD from part one is YES" do
+          prepare_and_take_survey("SIX_MTH_MOTHER.MULT_CHILD", NcsCode::YES,
+                                  :create_6mm_part_one_mult_child)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_mult_child_answer_from_part_one_for_6MM"
+                ).should == "TRUE"
+        end
+
+        it "should be FALSE when answer to MULT_CHILD from part one is NO" do
+          prepare_and_take_survey("SIX_MTH_MOTHER.MULT_CHILD", NcsCode::NO,
+                                  :create_6mm_part_one_mult_child)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_mult_child_answer_from_part_one_for_6MM"
+                ).should == "FALSE"
+        end
+
+        it "should be TRUE when there's no answer to MULT_CHILD from part one" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                        "prepopulated_mult_child_answer_from_part_one_for_6MM"
+                ).should == "FALSE"
+        end
+      end
+
     context "for 3MM child habits prepopulators"
       describe "prepopulated_is_birth_deliver_collelected_and_set_to_one" do
         before(:each) do

@@ -305,4 +305,21 @@ module PostNatal
     survey
   end
 
+  def create_6mm_part_one_mult_child
+    survey = Factory(:survey,
+                     :title => "INS_QUE_6MMother_INT_EHPBHI_P2_V11_PART_ONE",
+                     :access_code =>
+                               "ins_que_6mmother_int_ehpbhi_p2_v11_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "MULT_CHILD",
+                :data_export_identifier => "SIX_MTH_MOTHER.MULT_CHILD",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "YES", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "NO", :response_class => "answer")
+    survey
+  end
+
 end

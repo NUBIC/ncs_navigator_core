@@ -10,7 +10,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_should_show_demographics",
         "prepopulated_is_prev_event_birth_li_and_set_to_complete",
         "prepopulated_is_multiple_child",
-        "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+        "prepopulated_is_birth_deliver_collelected_and_set_to_one",
+        "prepopulated_mult_child_answer_from_part_one_for_6MM"
       ]
     end
 
@@ -42,6 +43,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, participan_has_multiple_children?)
             when "prepopulated_is_birth_deliver_collelected_and_set_to_one"
               answer_for(question, was_birth_given_at_hospital?)
+            when "prepopulated_mult_child_answer_from_part_one_for_6MM"
+              answer_for(question, was_answer_to_mult_child_yes?)
             else
               nil
             end
@@ -91,6 +94,11 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_birth_given_at_hospital?
       get_last_response_as_string(
                     "BIRTH_VISIT_LI_2.BIRTH_DELIVER") == "1" # HOSPITAL
+    end
+
+    def was_answer_to_mult_child_yes?
+      get_last_response_as_string(
+                    "SIX_MTH_MOTHER.MULT_CHILD") == NcsCode::YES.to_s
     end
 
   end
