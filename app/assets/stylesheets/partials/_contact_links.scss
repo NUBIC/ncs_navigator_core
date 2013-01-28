@@ -15,6 +15,13 @@
 
 .activity_list_for_event {
 
+  .activity_link,
+  .consent_link,
+  .other_activity {
+    @include rounded-corners(.5em);
+    border: 1px solid whitesmoke;
+  }
+
   .activity_link:hover,
   .consent_link:hover,
   .other_activity:hover {

@@ -53,7 +53,10 @@
                     %th
                       Continue
                   - event.contact_links.map(&:contact).uniq.sort_by{ |c| c.contact_date.to_s }.each do |contact|
-                    - cl = contact.contact_links.last
+                    - e = event
+                    - if event.informed_consent? && event.associated_with_other_event?
+                      - e = event.principal_event
+                    - cl = contact.contact_links.where(:event_id => e.id).first
                     - cls = cycle('even_record', 'odd_record')
                     %tr{ :class => cls }
                       %td
@@ -65,9 +68,9 @@
                       %td
                         = contact.contact_end_time
                       %td
-                        = DispositionMapper.disposition_text_for_contact(event, contact)
+                        = DispositionMapper.disposition_text_for_contact(e, contact)
                       %td
-                        - if contact.open? && event.open?
+                        - if contact.open? && e.open?
                           - link_text = contact.contact_date.blank? ? "Continue Contact" : "Continue Contact on #{contact.contact_date}"
                           = link_to link_text, decision_page_contact_link_path(cl),
                             :class => "continue_link icon_link"
