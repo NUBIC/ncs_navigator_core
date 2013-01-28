@@ -214,22 +214,6 @@ module PostNatal
     survey
   end
 
-  def create_18mm_v2_survey_for_mold_prepopulators
-    survey = Factory(:survey, :title =>
-              "INS_QUE_18MMother_INT_EHPBHI_M2.2_V2.0_EIGHTEEN_MTH_MOTHER_MOLD",
-                     :access_code =>
-              "ins_que_18mmother_int_ehpbhi_m2_2_V2_0_eighteen_mth_mother_mold")
-    survey_section = Factory(:survey_section, :survey_id => survey.id)
-    q = Factory(:question, :reference_identifier =>
-                                   "prepopulated_should_show_room_mold_child",
-                :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
-                :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
-                :response_class => "answer", :reference_identifier => "false")
-    survey
-  end
-
   def create_18mm_v2_survey_part_three_for_mold_prepopulators
     survey = Factory(:survey,
                      :title =>
@@ -296,54 +280,6 @@ module PostNatal
     a = Factory(:answer, :question_id => q.id, :text => "12 MONTH",
                 :response_class => "answer",
                 :reference_identifier => "twelve_mns")
-    survey
-  end
-
-  def create_3mmmother_int_part_two
-    survey = Factory(:survey, :title =>
-              "INS_QUE_3MMother_INT_EHPBHI_P2_V1.1_PART_TWO",
-                     :access_code =>
-              "ins_que_3mmother_int_ehpbhi_p2_v1_1_part_two")
-    survey_section = Factory(:survey_section, :survey_id => survey.id)
-    q = Factory(:question, :reference_identifier =>
-                                   "prepopulated_should_show_demographics",
-                :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
-                :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
-                :response_class => "answer", :reference_identifier => "false")
-    survey
-  end
-
-  def create_3month_int_child_habits
-    survey = Factory(:survey, :title =>
-              "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",
-                     :access_code =>
-              "ins_que_3month_int_ehpbhilipbs_m3_1_v2_0_child_habits")
-    survey_section = Factory(:survey_section, :survey_id => survey.id)
-    q = Factory(:question, :reference_identifier =>
-                    "prepopulated_is_prev_event_birth_li_and_set_to_complete",
-                :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
-                :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
-                :response_class => "answer", :reference_identifier => "false")
-
-    q = Factory(:question, :reference_identifier =>
-                                            "prepopulated_is_multiple_child",
-                :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
-                :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
-                :response_class => "answer", :reference_identifier => "false")
-
-    q = Factory(:question, :reference_identifier =>
-                    "prepopulated_is_birth_deliver_collelected_and_set_to_one",
-                :survey_section_id => survey_section.id)
-    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
-                :response_class => "answer", :reference_identifier => "true")
-    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
-                :response_class => "answer", :reference_identifier => "false")
     survey
   end
 

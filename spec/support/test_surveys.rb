@@ -30,4 +30,18 @@ module TestSurveys
     survey
   end
 
+  def create_generic_true_false_prepopulator_survey(survey_title,
+                                                    reference_identifier)
+    survey = Factory(:survey, :title => survey_title,
+                     :access_code => survey_title.downcase.tr('.', '_'))
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question, :reference_identifier => reference_identifier,
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
+                :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
+                :response_class => "answer", :reference_identifier => "false")
+    survey
+  end
+
 end
