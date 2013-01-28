@@ -1,23 +1,17 @@
 - title "Event Activities"
 
+%h3
+  = @person
+
 .page_section
   %h3
     = "Instruments and Activities for the #{@event} Event"
   .instructional_note
     If there are other instruments associated with this event,
     you can choose to administer another instrument from the list below.
+    %br
+    The starred item is the current activity to perform.
   = render 'instruments_for_upcoming_events' if @person
-
-- unless @contact_link.contact.instruments.blank?
-  .page_section
-    %h3
-      Instrument Records created during this Contact
-    - @contact_links.each do |contact_link|
-      - if instr = contact_link.instrument
-        .edit_instrument
-          = link_to "Edit #{instr}", edit_instrument_path(instr), :class => "edit_link icon_link"
-      - elsif contact_link.event.try(:informed_consent?)
-        = render "consents"
 
 .page_section
   %h3

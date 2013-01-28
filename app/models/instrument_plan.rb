@@ -30,7 +30,7 @@ class InstrumentPlan
     activities(schedule).each do |activity|
       sa = ScheduledActivity.new(scheduled_activity_attrs_from_activity(activity))
       @all_activities << sa
-      @scheduled_activities << sa if sa.scheduled?
+      @scheduled_activities << sa if (sa.scheduled? || sa.conditional?)
       @occurred_activities << sa if sa.occurred?
     end
   end
