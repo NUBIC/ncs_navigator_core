@@ -164,7 +164,7 @@ module Field
       describe 'for contacts' do
         let!(:p) { Factory(:person, :person_id => person_id) }
 
-        describe 'if there exists a contact for the scheduled date, person, and staff ID' do
+        describe 'if there exists a open contact for the scheduled date, person, and staff ID' do
           let!(:c) { Factory(:contact, :contact_date => scheduled_date) }
 
           before do
@@ -178,26 +178,27 @@ module Field
           end
         end
 
+        describe 'if there exists a closed contact for the scheduled date, person, and staff ID' do
+          let!(:c) { Factory(:contact, :contact_date => scheduled_date, :contact_end_time => '12:00') }
+
+          before do
+            Factory(:contact_link, :contact => c, :person => p, :staff_id => staff_id)
+          end
+
+          it 'starts a new contact' do
+            report.reify_models
+
+            contact = report.resolutions.values.detect { |v| Contact === v }
+            contact.should be_new_record
+          end
+        end
+
         describe 'if there does not exist a contact for the scheduled date, person, and staff ID' do
           it 'starts a new contact' do
             report.reify_models
 
             contact = report.resolutions.values.detect { |v| Contact === v }
-            contact.should_not be_nil
-          end
-
-          describe 'the started contact' do
-            let(:contact) do
-              report.resolutions.values.detect { |v| Contact === v }
-            end
-
-            before do
-              report.reify_models
-            end
-
-            it 'is a new record' do
-              contact.should be_new_record
-            end
+            contact.should be_new_record
           end
         end
       end

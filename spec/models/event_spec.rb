@@ -31,6 +31,7 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/a_time_bounded_task', __FILE__)
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
 
 describe Event do
@@ -87,29 +88,7 @@ describe Event do
     end
   end
 
-  describe '#closed?' do
-    subject { Factory(:event) }
-
-    describe 'if end date is not blank' do
-      before do
-        subject.event_end_date = Date.today
-      end
-
-      it 'is true' do
-        subject.should be_closed
-      end
-    end
-
-    describe 'if end date is blank' do
-      before do
-        subject.event_end_date = nil
-      end
-
-      it 'is false' do
-        subject.should_not be_closed
-      end
-    end
-  end
+  it_should_behave_like 'a time-bounded task', 'event_end_date', '01/01/2000'
 
   describe ".event_start_time" do
 

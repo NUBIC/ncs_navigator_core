@@ -36,6 +36,7 @@
 
 require 'spec_helper'
 
+require File.expand_path('../../shared/models/a_time_bounded_task', __FILE__)
 require File.expand_path('../../shared/models/an_optimistically_locked_record', __FILE__)
 
 describe Contact do
@@ -82,14 +83,7 @@ describe Contact do
     end
   end
 
-  it "knows when it is 'closed'" do
-    c = Factory(:contact)
-    c.should_not be_closed
-
-    c.contact_disposition = 510
-    c.should be_closed
-    c.should be_completed
-  end
+  it_should_behave_like 'a time-bounded task', 'contact_end_time', '12:00'
 
   context "as mdes record" do
 
