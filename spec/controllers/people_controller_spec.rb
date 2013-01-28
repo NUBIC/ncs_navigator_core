@@ -67,6 +67,11 @@ describe PeopleController do
     end
 
     describe "GET new" do
+
+      before do
+        Date.stub!(:today => Date.parse('2525-12-25'))
+      end
+
       it "assigns a new person as @person" do
         get :new
         assigns(:person).should be_a_new(Person)
