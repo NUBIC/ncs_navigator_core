@@ -9,7 +9,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_should_show_room_mold_child",
         "prepopulated_should_show_demographics",
         "prepopulated_is_prev_event_birth_li_and_set_to_complete",
-        "prepopulated_is_multiple_child"
+        "prepopulated_is_multiple_child",
+        "prepopulated_is_birth_deliver_collelected_and_set_to_one"
       ]
     end
 
@@ -39,6 +40,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, does_completed_birth_record_exists?)
             when "prepopulated_is_multiple_child"
               answer_for(question, participan_has_multiple_children?)
+            when "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+              answer_for(question, was_birth_given_at_hospital?)
             else
               nil
             end
@@ -83,6 +86,11 @@ module NcsNavigator::Core::ResponseSetPopulator
 
     def participan_has_multiple_children?
       participant.children.size > 1
+    end
+
+    def was_birth_given_at_hospital?
+      get_last_response_as_string(
+                    "BIRTH_VISIT_LI_2.BIRTH_DELIVER") == "1" # HOSPITAL
     end
 
   end

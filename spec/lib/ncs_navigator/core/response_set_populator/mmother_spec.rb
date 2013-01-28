@@ -52,9 +52,38 @@ module NcsNavigator::Core
     end
 
     context "for 3MM child habits prepopulators"
+      describe "prepopulated_is_birth_deliver_collelected_and_set_to_one" do
+        before(:each) do
+          init_common_vars(:create_3month_int_child_habits)
+        end
+
+        it "should be TRUE when a birth was given at a hospital" do
+          prepare_and_take_survey('BIRTH_VISIT_LI_2.BIRTH_DELIVER',
+                                  1, :create_birth_part_one_birth_deliver)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+            "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+          ).should == "TRUE"
+        end
+        it "should be FALSE when a birth was not given at a hospital" do
+          prepare_and_take_survey('BIRTH_VISIT_LI_2.BIRTH_DELIVER',
+                                  2, :create_birth_part_one_birth_deliver)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+            "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+          ).should == "FALSE"
+        end
+        it "should be FALSE when information about birth was not collected" do
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+            "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+          ).should == "FALSE"
+        end
+      end
+
       describe "prepopulated_is_prev_event_birth_li_and_set_to_complete" do
         before(:each) do
-          init_common_vars(:create_3mmmother_int_child_habits)
+          init_common_vars(:create_3month_int_child_habits)
         end
 
         it "should be TRUE when a complete birth record exists" do
@@ -103,7 +132,7 @@ module NcsNavigator::Core
         end
           
         before(:each) do
-          init_common_vars(:create_3mmmother_int_child_habits)
+          init_common_vars(:create_3month_int_child_habits)
         end
 
         it "should be TRUE when participant has multiple children" do

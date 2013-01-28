@@ -103,7 +103,7 @@ module MMother
     survey
   end
 
-  def create_3mmmother_int_child_habits
+  def create_3month_int_child_habits
     survey = Factory(:survey, :title =>
               "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",
                      :access_code =>
@@ -124,6 +124,36 @@ module MMother
                 :response_class => "answer", :reference_identifier => "true")
     a = Factory(:answer, :question_id => q.id, :text => "FALSE",
                 :response_class => "answer", :reference_identifier => "false")
+
+    q = Factory(:question, :reference_identifier =>
+                    "prepopulated_is_birth_deliver_collelected_and_set_to_one",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :text => "TRUE",
+                :response_class => "answer", :reference_identifier => "true")
+    a = Factory(:answer, :question_id => q.id, :text => "FALSE",
+                :response_class => "answer", :reference_identifier => "false")
+    survey
+  end
+
+  def create_birth_part_one_birth_deliver
+    survey = Factory(:survey,
+                     :title =>
+                            "INS_QUE_Birth_INT_LI_M3.1_V2.0_PART_ONE",
+                     :access_code =>
+                            "ins_que_birth_int_li_m3_1_V2_0_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "BIRTH_DELIVER",
+                :data_export_identifier => "BIRTH_VISIT_LI_2.BIRTH_DELIVER",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "1",
+                :text => "HOSPITAL", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
+                :text => "BIRTHING CENTER", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "3",
+                :text => "AT HOME", :response_class => "answer")
+    a = Factory(:answer, :question_id => q.id, :text => "SOME OTHER PLACE",
+                :response_class => "answer", :reference_identifier => "neg_5")
     survey
   end
 
