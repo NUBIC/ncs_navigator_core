@@ -421,6 +421,10 @@ class Event < ActiveRecord::Base
     22
   end
 
+  def self.three_month_visit_code
+    23
+  end
+
   def self.six_month_visit_code
     24
   end
@@ -473,6 +477,10 @@ class Event < ActiveRecord::Base
 
   def informed_consent?
     self.event_type_code == Event.informed_consent_code
+  end
+
+  def three_month_visit?
+    self.event_type_code == Event.three_month_visit_code
   end
 
   def six_month_visit?

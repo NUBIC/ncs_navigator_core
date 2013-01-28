@@ -50,7 +50,44 @@ module NcsNavigator::Core
         event_complete ? :should : :should_not) == true
     end
 
-    context "for 6MM mother detial prepopulators"
+    context "for 6Month part one prepopulators"
+      describe "prepopulated_is_three_months_interview_set_to_complete" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_SIX_MTH_MOTHER_DETAIL",
+                "prepopulated_is_three_months_interview_set_to_complete")
+          init_common_vars
+        end
+
+        it "should be TRUE if 3-month interview event was completed" do
+          make_contact(Event::three_month_visit_code)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_three_months_interview_set_to_complete"
+                ).should == "TRUE"
+        end
+
+        it "should be FALSE if 3-month interview event was not completed" do
+          make_contact(Event::three_month_visit_code, nil)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_three_months_interview_set_to_complete"
+                ).should == "FALSE"
+        end
+
+        it "should be FALSE if 3-month interview event never happened" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                  "prepopulated_is_three_months_interview_set_to_complete"
+                ).should == "FALSE"
+        end
+
+      end
+
+    context "for 6MM mother detail prepopulators"
       describe "prepopulated_mult_child_answer_from_part_one_for_6MM" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
