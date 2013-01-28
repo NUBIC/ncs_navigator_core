@@ -325,6 +325,14 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns true if event is Pregnancy Screener or
+  # PBS Eligibility Screener
+  # @return[Boolean]
+  def screener_event?
+    [Event.pregnancy_screener_code, Event.pbs_eligibility_screener_code].include? event_type_code
+  end
+
+  ##
   # Returns true for all post-natal events (includes Birth)
   # @return [Boolean]
   def postnatal?
