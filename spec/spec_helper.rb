@@ -155,8 +155,7 @@ Spork.prefork do
       SamplesAndSpecimens,
       PostNatal,
       NonInterview,
-      ChildAndAdHoc,
-      Postnatal
+      ChildAndAdHoc
     ].each { |test_survey| config.include test_survey }
 
     if ENV['PROFILE_DB']
