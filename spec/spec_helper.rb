@@ -156,7 +156,7 @@ Spork.prefork do
       PostNatal,
       NonInterview,
       ChildAndAdHoc,
-      MMother
+      Postnatal
     ].each { |test_survey| config.include test_survey }
 
     if ENV['PROFILE_DB']

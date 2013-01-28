@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module NcsNavigator::Core
 
-  describe ResponseSetPopulator::MMother do
+  describe ResponseSetPopulator::Postnatal do
     include SurveyCompletion
 
     def get_response_as_string(response_set, reference_identifier)
@@ -60,7 +60,7 @@ module NcsNavigator::Core
         it "should be TRUE when a birth was given at a hospital" do
           prepare_and_take_survey('BIRTH_VISIT_LI_2.BIRTH_DELIVER',
                                   1, :create_birth_part_one_birth_deliver)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
             "prepopulated_is_birth_deliver_collelected_and_set_to_one"
           ).should == "TRUE"
@@ -68,13 +68,13 @@ module NcsNavigator::Core
         it "should be FALSE when a birth was not given at a hospital" do
           prepare_and_take_survey('BIRTH_VISIT_LI_2.BIRTH_DELIVER',
                                   2, :create_birth_part_one_birth_deliver)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
             "prepopulated_is_birth_deliver_collelected_and_set_to_one"
           ).should == "FALSE"
         end
         it "should be FALSE when information about birth was not collected" do
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
             "prepopulated_is_birth_deliver_collelected_and_set_to_one"
           ).should == "FALSE"
@@ -88,7 +88,7 @@ module NcsNavigator::Core
 
         it "should be TRUE when a complete birth record exists" do
           make_contact(Event::birth_code)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "TRUE"
@@ -96,13 +96,13 @@ module NcsNavigator::Core
 
         it "should be FALSE when an incomplete birth record exists" do
           make_contact(Event::birth_code, event_complete = nil)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "FALSE"
         end
         it "should be FALSE when no birth record exists" do
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
             "prepopulated_is_prev_event_birth_li_and_set_to_complete"
           ).should == "FALSE"
@@ -137,20 +137,20 @@ module NcsNavigator::Core
 
         it "should be TRUE when participant has multiple children" do
           have_children(2)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
                             "prepopulated_is_multiple_child").should == "TRUE"
         end
 
         it "should be FALSE when participant has only one child" do
           have_children(1)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
                             "prepopulated_is_multiple_child").should == "FALSE"
         end
 
         it "should be TRUE when participant has no children" do
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
                             "prepopulated_is_multiple_child").should == "FALSE"
         end
@@ -164,14 +164,14 @@ module NcsNavigator::Core
 
         it "should be TRUE when there are no pre-natal events" do
           make_contact(Event::six_month_visit_code)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
                        "prepopulated_should_show_demographics").should == "TRUE"
         end
 
         it "should be FALSE when there are pre-natal events" do
           make_contact(Event::pregnancy_visit_1_code)
-          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument, @survey)
           get_response_as_string(rsp.populate,
                        "prepopulated_should_show_demographics").should == "FALSE"
         end
@@ -181,7 +181,7 @@ module NcsNavigator::Core
       describe "prepopulated_should_show_upper_arm_length" do
         before(:each) do
           init_common_vars(:create_18mm_v2_survey_for_mold_prepopulators)
-          @rsp = ResponseSetPopulator::MMother.new(@person, @instrument,
+          @rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                    @survey)
         end
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-module MMother
+module Postnatal
 
   def create_18mm_v2_survey_for_mold_prepopulators
     survey = Factory(:survey, :title =>

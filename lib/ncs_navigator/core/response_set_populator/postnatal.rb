@@ -2,7 +2,7 @@
 require 'ncs_navigator/core'
 
 module NcsNavigator::Core::ResponseSetPopulator
-  class MMother < Base
+  class Postnatal < Base
 
     def reference_identifiers
       [
