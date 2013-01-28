@@ -41,7 +41,7 @@ module NcsNavigator::Core::ResponseSetPopulator
             when "prepopulated_is_prev_event_birth_li_and_set_to_complete"
               answer_for(question, does_completed_birth_record_exists?)
             when "prepopulated_is_multiple_child"
-              answer_for(question, participan_has_multiple_children?)
+              answer_for(question, prepopulated_is_multiple_child?(question))
             when "prepopulated_is_birth_deliver_collelected_and_set_to_one"
               answer_for(question, was_birth_given_at_hospital?)
             when "prepopulated_mult_child_answer_from_part_one_for_6MM"
@@ -90,8 +90,15 @@ module NcsNavigator::Core::ResponseSetPopulator
       false
     end
 
-    def participan_has_multiple_children?
-      participant.children.size > 1
+    def prepopulated_is_multiple_child?(question)
+      # Two different surveys have this question signature, easier to
+      # check for survey name here then split-out into yet another file
+      if question.survey_section.survey.title =~ /6Month/i
+        get_last_response_as_string(
+                    "PARTICIPANT_VERIF.MULT_CHILD") == NcsCode::YES.to_s
+      else
+        participant.children.size > 1
+      end
     end
 
     def was_birth_given_at_hospital?

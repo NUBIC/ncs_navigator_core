@@ -50,6 +50,41 @@ module NcsNavigator::Core
         event_complete ? :should : :should_not) == true
     end
 
+    context "for 6Month part two prepopulators" 
+      describe "prepopulated_is_multiple_child" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
+                      "prepopulated_is_multiple_child")
+          init_common_vars
+        end
+
+        it "should be TRUE if more then one child is eligible for interview" do
+          prepare_and_take_survey("PARTICIPANT_VERIF.MULT_CHILD", NcsCode::YES,
+                                  :create_participant_verif_mult_child)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_multiple_child").should == "TRUE"
+        end
+
+        it "should be FALSE if only one child is eligible for interview" do
+          prepare_and_take_survey("PARTICIPANT_VERIF.MULT_CHILD", NcsCode::NO,
+                                  :create_participant_verif_mult_child)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_multiple_child").should == "FALSE"
+        end
+
+        it "should be FALSE if number of elgible children is not known" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_multiple_child").should == "FALSE"
+        end
+      end
+
     context "for 6Month part one prepopulators"
       describe "prepopulated_is_three_months_interview_set_to_complete" do
         before(:each) do
