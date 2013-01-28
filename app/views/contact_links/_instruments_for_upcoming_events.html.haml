@@ -23,4 +23,10 @@
           - next unless sa.scheduled? or sa.occurred? or sa.conditional?
           = render "instrument_for_activity", :activity => sa, :person => @person, :contact_link => @contact_link
       - else
-        = render "consent_or_empty", :contact_link => @contact_link
+        .no_activities_for_event
+          No instruments or activities are associated with
+          = @contact_link.event.to_s
+          .instructional_note
+            Most likely all activities associated with this event have been completed or
+            %br
+            there is a disconnect between this Event and the scheduled activities for this Participant in PSC.
