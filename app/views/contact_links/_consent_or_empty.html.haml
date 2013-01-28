@@ -1,9 +1,0 @@
-- if contact_link.event.to_s.include?("Consent")
-  = render "consents"
-- else
-  No instruments or activities are associated with
-  = contact_link.event.to_s
-  .instructional_note
-    Most likely all activities associated with this event have been completed or
-    %br
-    there is a disconnect between this Event and the scheduled activities for this Participant in PSC.

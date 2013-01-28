@@ -13,27 +13,40 @@
   display: none;
 }
 
-.close_consent {
-  h3 {
-    margin-top: 0.5em;
-  }
-}
 .activity_list_for_event {
+
+  .activity_link,
+  .consent_link,
+  .other_activity {
+    @include rounded-corners(.5em);
+    border: 1px solid whitesmoke;
+  }
+
+  .activity_link:hover,
+  .consent_link:hover,
+  .other_activity:hover {
+    @include rounded-corners(.5em);
+    border: 1px solid $BORDER_GRAY;
+  }
+
+  .child_participation {
+    display: inline-block;
+  }
 
   .child_participation,
   .consent_link,
+  .known_instrument,
   .instrument {
     a {
       display: inline-block;
-      width: 20em;
+      width: 23em;
     }
   }
 
-  .known_instrument,
-  .unknown_instrument {
+  .other_activity {
     span.activity_name {
       display: inline-block;
-      width: 22em;
+      width: 25.25em;
       padding: 2px 2px 2px 20px;
     }
   }

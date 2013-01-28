@@ -117,7 +117,6 @@ describe Event do
       e.save!
       e.event_start_time.should == now.strftime('%H:%M')
     end
-
   end
 
   describe ".import_sort_date" do
@@ -136,7 +135,6 @@ describe Event do
       event = Factory(:event, :event_end_date => Date.today)
       event.import_sort_date.should == event.event_end_date
     end
-
   end
 
   describe "sorting" do
@@ -161,7 +159,6 @@ describe Event do
       ordered_event_array[3].should == m3
 
     end
-
   end
 
   context "as mdes record" do
@@ -289,15 +286,71 @@ describe Event do
         Factory(:event, :event_type_code => code).should_not be_enumeration_event
       end
     end
-
   end
 
   describe ".provider_event?"  do
-
     it "is true for provider base recruitment" do
-      Factory(:event, :event_type_code => 22).should be_provider_event
+      Factory(:event, :event_type_code => Event.provider_recruitment_code).should be_provider_event
+    end
+  end
+
+  describe "#screener_event?" do
+    it "is true for pregnancy_screener" do
+      Factory(:event, :event_type_code => Event.pregnancy_screener_code).should be_screener_event
     end
 
+    it "is true for pbs_eligibility_screener" do
+      Factory(:event, :event_type_code => Event.pbs_eligibility_screener_code).should be_screener_event
+    end
+
+    it "is false for any other event" do
+      Factory(:event, :event_type_code => Event.birth_code).should_not be_screener_event
+    end
+  end
+
+  describe "#associated_with_other_event?" do
+
+    let(:event) { Factory(:event, :event_type_code => Event.informed_consent_code) }
+    let(:primary_event) { Factory(:event, :event_type_code => Event.pbs_eligibility_screener_code) }
+    let(:contact) { Factory(:contact) }
+
+    it "returns true if the event shares a contact with another event" do
+      Factory(:contact_link, :event => event, :contact => contact)
+      Factory(:contact_link, :event => primary_event, :contact => contact)
+      event.should be_associated_with_other_event
+      primary_event.should be_associated_with_other_event
+    end
+
+    it "returns false if it does not share a contact with another event" do
+      event.should_not be_associated_with_other_event
+    end
+
+  end
+
+  describe "#principal_event" do
+
+    let(:event) { Factory(:event, :event_type_code => Event.informed_consent_code) }
+    let(:primary_event) { Factory(:event, :event_type_code => Event.pbs_eligibility_screener_code) }
+    let(:contact) { Factory(:contact) }
+
+    it "returns itself if the event does not share a contact with another event" do
+      event.principal_event.should == event
+    end
+
+    describe "sharing a contact" do
+      before do
+        Factory(:contact_link, :event => event, :contact => contact)
+        Factory(:contact_link, :event => primary_event, :contact => contact)
+      end
+
+      it "returns itself if the event is the principal event" do
+        primary_event.principal_event.should == primary_event
+      end
+
+      it "returns the screener event if the event is not the principal event" do
+        event.principal_event.should == primary_event
+      end
+    end
   end
 
   describe "type categories" do
@@ -469,7 +522,6 @@ describe Event do
       end
 
     end
-
   end
 
   context "when scheduling an event with PSC " do
@@ -634,7 +686,6 @@ describe Event do
       end
 
     end
-
   end
 
   context "matching against activity in PSC" do
@@ -690,7 +741,6 @@ describe Event do
       end
 
     end
-
   end
 
   describe ".determine_repeat_key" do
@@ -705,7 +755,6 @@ describe Event do
         end
       end
     end
-
   end
 
   describe '#scheduled_activities' do
@@ -863,7 +912,6 @@ describe Event do
       contact_link.contact.update_attribute(:contact_end_time, "12:00")
       contact_link.event.open_contacts?.should be_false
     end
-
   end
 
   describe '#label' do
@@ -935,6 +983,5 @@ describe Event do
       updated_ic_event.event_end_date.should == other_date
       updated_ic_event.event_end_time.should == midnight
     end
-
   end
 end
