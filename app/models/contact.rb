@@ -94,18 +94,12 @@ class Contact < ActiveRecord::Base
   end
   private :strip_time_whitespace
 
-
-  ##
-  # An event is 'closed' or 'completed' if the disposition has been set.
-  # @return [true, false]
   def closed?
-    contact_disposition.to_i > 0
+    !open?
   end
-  alias completed? closed?
-  alias complete? closed?
 
   def open?
-    !closed? && self.contact_end_time.blank?
+    contact_end_time.blank?
   end
 
   def via_telephone?
