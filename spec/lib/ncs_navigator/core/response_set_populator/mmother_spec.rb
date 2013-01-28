@@ -80,6 +80,53 @@ module NcsNavigator::Core
         end
       end
 
+      describe "prepopulated_is_multiple_child" do
+        def have_children(quantity)
+          mother = @participant
+          child_code = NcsCode::for_list_name_and_display_text(
+                                          "PERSON_PARTCPNT_RELTNSHP_CL1",
+                                          "Child").local_code
+          mother_code = NcsCode::for_list_name_and_display_text(
+                                          "PERSON_PARTCPNT_RELTNSHP_CL1",
+                                          "Biological Mother").local_code
+          (1..quantity).each do
+            child = Factory(:participant)
+            child.person = Factory(:person)
+            ParticipantPersonLink.create(:person_id => child.person.id,
+                                        :participant_id => mother.id,
+                                        :relationship_code => child_code)
+            ParticipantPersonLink.create(:person_id => mother.person.id,
+                                        :participant_id => child.id,
+                                        :relationship_code => mother_code)
+            child.save!
+          end
+        end
+          
+        before(:each) do
+          init_common_vars(:create_3mmmother_int_child_habits)
+        end
+
+        it "should be TRUE when participant has multiple children" do
+          have_children(2)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_multiple_child").should == "TRUE"
+        end
+
+        it "should be FALSE when participant has only one child" do
+          have_children(1)
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_multiple_child").should == "FALSE"
+        end
+
+        it "should be TRUE when participant has no children" do
+          rsp = ResponseSetPopulator::MMother.new(@person, @instrument, @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_multiple_child").should == "FALSE"
+        end
+      end
+
     context "for 3MM part two prepopulators"
       describe "prepopulated_is_6_month_event" do
         before(:each) do

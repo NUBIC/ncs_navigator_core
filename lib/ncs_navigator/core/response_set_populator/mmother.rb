@@ -8,7 +8,8 @@ module NcsNavigator::Core::ResponseSetPopulator
       [
         "prepopulated_should_show_room_mold_child",
         "prepopulated_should_show_demographics",
-        "prepopulated_is_prev_event_birth_li_and_set_to_complete"
+        "prepopulated_is_prev_event_birth_li_and_set_to_complete",
+        "prepopulated_is_multiple_child"
       ]
     end
 
@@ -36,6 +37,8 @@ module NcsNavigator::Core::ResponseSetPopulator
               answer_for(question, were_there_prenatal_events?)
             when "prepopulated_is_prev_event_birth_li_and_set_to_complete"
               answer_for(question, does_completed_birth_record_exists?)
+            when "prepopulated_is_multiple_child"
+              answer_for(question, participan_has_multiple_children?)
             else
               nil
             end
@@ -76,6 +79,10 @@ module NcsNavigator::Core::ResponseSetPopulator
       end
 
       false
+    end
+
+    def participan_has_multiple_children?
+      participant.children.size > 1
     end
 
   end
