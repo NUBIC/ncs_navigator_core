@@ -12,7 +12,7 @@ require 'clockwork'
 require 'ncs_navigator/core'
 require 'pathname'
 
-require 'field/survey_cache_worker'
+require 'survey_cache_worker'
 require 'watchdog_worker'
 
 LOG = Logger.new($stderr)
@@ -41,7 +41,7 @@ handler { |job| job.perform_async }
 sidekiq_configure_client
 
 [
-  Field::SurveyCacheWorker,
+  SurveyCacheWorker,
   WatchdogWorker
 ].each do |worker|
   every(worker.period.seconds, worker)

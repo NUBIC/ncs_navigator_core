@@ -74,4 +74,36 @@ describe Survey do
       Survey.most_recent.order(:title).map(&:title).should == expected
     end
   end
+
+  describe '.cache_recent' do
+    let!(:s1) { Factory(:survey) }
+    let!(:s2) { Factory(:survey) }
+    let(:cache) { SurveyCache.new }
+
+    before do
+      cache.redis.flushdb
+    end
+
+    it 'caches uncached surveys' do
+      Survey.cache_recent
+
+      cache.get([s1, s2]).should == {
+        s1 => s1.to_json,
+        s2 => s2.to_json
+      }
+    end
+
+    it 'renews cached surveys' do
+      Survey.cache_recent
+
+      # I'd like to use < 1 second waits here, but the maximum resolution of
+      # Redis' key TTLs is one second.
+      sleep 2
+      Survey.cache_recent
+
+      cache.ttl([s1, s2]).each do |ttl|
+        ttl.should be_within(1.second).of(SurveyCache::TTL)
+      end
+    end
+  end
 end

@@ -45,5 +45,24 @@ class Survey < ActiveRecord::Base
   def self.most_recent_for_access_code(code)
     most_recent.where(:access_code => Survey.to_normalized_string(code)).first
   end
-end
 
+  ##
+  # Caches JSON representations of the most recent surveys, as determined by
+  # {.most_recent_for_each_title}.
+  #
+  # If surveys are already cached, then this method only extends the cache
+  # lifetime for those surveys; it does not re-generate any JSON.
+  #
+  # This method caches surveys in batches because that gives us more immediate
+  # visibility into the cache results.  The batch size of 20 is just a guess,
+  # and is open for benchmarking.
+  def self.cache_recent
+    cache = SurveyCache.new
+
+    most_recent.find_in_batches(:batch_size => 20) do |chunk|
+      to_cache = cache.peek(chunk).select { |_, present| !present }.map(&:first)
+      cache.put(to_cache)
+      cache.renew(chunk)
+    end
+  end
+end
