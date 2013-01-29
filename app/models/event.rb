@@ -397,7 +397,7 @@ class Event < ActiveRecord::Base
     13
   end
 
-  def self.pregnancy_visit_1_sqa_code
+  def self.pregnancy_visit_1_saq_code
     14
   end
 
@@ -405,7 +405,7 @@ class Event < ActiveRecord::Base
     15
   end
 
-  def self.pregnancy_visit_2_sqa_code
+  def self.pregnancy_visit_2_saq_code
     16
   end
 
@@ -455,10 +455,10 @@ class Event < ActiveRecord::Base
   alias :pv1? :pregnancy_visit_1?
   alias :pregnancy_visit1? :pregnancy_visit_1?
 
-  def pregnancy_visit_1_sqa?
-    self.event_type_code == Event.pregnancy_visit_1_sqa_code
+  def pregnancy_visit_1_saq?
+    self.event_type_code == Event.pregnancy_visit_1_saq_code
   end
-  alias :pv1sqa? :pregnancy_visit_1_sqa?
+  alias :pv1saq? :pregnancy_visit_1_saq?
 
   def pregnancy_visit_2?
     self.event_type_code == Event.pregnancy_visit_2_code
@@ -466,10 +466,10 @@ class Event < ActiveRecord::Base
   alias :pv2? :pregnancy_visit_2?
   alias :pregnancy_visit2? :pregnancy_visit_2?
 
-  def pregnancy_visit_2_sqa?
-    self.event_type_code == Event.pregnancy_visit_2_sqa_code
+  def pregnancy_visit_2_saq?
+    self.event_type_code == Event.pregnancy_visit_2_saq_code
   end
-  alias :pv2sqa? :pregnancy_visit_2_sqa?
+  alias :pv2saq? :pregnancy_visit_2_saq?
 
   def birth?
     self.event_type_code == Event.birth_code

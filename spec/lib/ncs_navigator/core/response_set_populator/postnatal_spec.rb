@@ -37,17 +37,23 @@ module NcsNavigator::Core
       end
     end
 
-    def make_contact(event_type_code, event_complete = '2010-12-12')
+    def complete_event(event, event_complete)
+      event.event_disposition_category_code = 3 # General Study Visit Event Code 
+      event.event_disposition = 60 # Completed Consent/Interview in English
+      event.save!
+    end
+
+    def make_contact(event_type_code, event_complete = true)
       event = Factory(:event, :event_type_code => event_type_code,
-                      :event_end_date => event_complete,
                       :participant => @participant)
+      complete_event(event, event_complete) if event_complete
+
       contact = Factory(:contact)
       contact_link = Factory(:contact_link, :person => @person, 
                               :contact => contact, :event => event)
       ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
                                                         event_type_code)
-      @person.participant.completed_event?(ncs_code).send(
-        event_complete ? :should : :should_not) == true
+      event.completed?.send(event_complete ? :should : :should_not, be_true)
     end
 
     context "for 6Month part two prepopulators" 
@@ -104,7 +110,7 @@ module NcsNavigator::Core
         end
 
         it "should be FALSE if 3-month interview event was not completed" do
-          make_contact(Event::three_month_visit_code, nil)
+          make_contact(Event::three_month_visit_code, event_complete = false)
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
@@ -161,11 +167,11 @@ module NcsNavigator::Core
       end
 
     context "for 3MM child habits prepopulators"
-      describe "prepopulated_is_birth_deliver_collelected_and_set_to_one" do
+      describe "q_prepopulated_is_birth_deliver_collected_and_set_to_one" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
                       "INS_QUE_3Month_INT_EHPBHILIPBS_M3.1_V2.0_CHILD_HABITS",
-                      "prepopulated_is_birth_deliver_collelected_and_set_to_one")
+                      "q_prepopulated_is_birth_deliver_collected_and_set_to_one")
           init_common_vars
         end
 
@@ -175,7 +181,7 @@ module NcsNavigator::Core
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
-            "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+            "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "TRUE"
         end
         it "should be FALSE when a birth was not given at a hospital" do
@@ -184,14 +190,14 @@ module NcsNavigator::Core
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
-            "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+            "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "FALSE"
         end
         it "should be FALSE when information about birth was not collected" do
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,
-            "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+            "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
           ).should == "FALSE"
         end
       end
@@ -214,7 +220,7 @@ module NcsNavigator::Core
         end
 
         it "should be FALSE when an incomplete birth record exists" do
-          make_contact(Event::birth_code, event_complete = nil)
+          make_contact(Event::birth_code, event_complete = false)
           rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
                                                     @survey)
           get_response_as_string(rsp.populate,

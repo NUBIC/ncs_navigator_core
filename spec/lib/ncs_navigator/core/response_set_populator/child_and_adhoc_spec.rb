@@ -64,7 +64,7 @@ module NcsNavigator::Core
         end
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv1 SAQ" do
           event = Factory(:event, :event_type_code =>
-                                              Event::pregnancy_visit_1_sqa_code)
+                                              Event::pregnancy_visit_1_saq_code)
           rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
                                                         @survey,
                                                         :event => event)
@@ -81,7 +81,7 @@ module NcsNavigator::Core
         end
         it "should be 'PV1 or PV2' if EVENT_TYPE = pv2 SQA" do
           event = Factory(:event, :event_type_code =>
-                                              Event::pregnancy_visit_2_sqa_code)
+                                              Event::pregnancy_visit_2_saq_code)
           rsp = ResponseSetPopulator::ChildAndAdHoc.new(@person, @instrument,
                                                         @survey,
                                                         :event => event)

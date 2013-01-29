@@ -10,7 +10,7 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_should_show_demographics",
         "prepopulated_is_prev_event_birth_li_and_set_to_complete",
         "prepopulated_is_multiple_child",
-        "prepopulated_is_birth_deliver_collelected_and_set_to_one",
+        "q_prepopulated_is_birth_deliver_collected_and_set_to_one",
         "prepopulated_mult_child_answer_from_part_one_for_6MM",
         "prepopulated_is_three_months_interview_set_to_complete"
       ]
@@ -37,17 +37,18 @@ module NcsNavigator::Core::ResponseSetPopulator
             when "prepopulated_should_show_room_mold_child"
               answer_for(question, is_response_to_mold_question_yes?)
             when "prepopulated_should_show_demographics"
-              answer_for(question, were_there_prenatal_events?)
+              answer_for(question, were_there_no_prenatal_events?)
             when "prepopulated_is_prev_event_birth_li_and_set_to_complete"
-              answer_for(question, does_completed_birth_record_exists?)
+              answer_for(question, is_event_completed?(Event::birth_code))
             when "prepopulated_is_multiple_child"
               answer_for(question, prepopulated_is_multiple_child?(question))
-            when "prepopulated_is_birth_deliver_collelected_and_set_to_one"
+            when "q_prepopulated_is_birth_deliver_collected_and_set_to_one"
               answer_for(question, was_birth_given_at_hospital?)
             when "prepopulated_mult_child_answer_from_part_one_for_6MM"
               answer_for(question, was_answer_to_mult_child_yes?)
             when "prepopulated_is_three_months_interview_set_to_complete"
-              answer_for(question, was_three_month_event_completed?)
+              answer_for(question, 
+                         is_event_completed?(Event::three_month_visit_code))
             else
               nil
             end
@@ -68,25 +69,20 @@ module NcsNavigator::Core::ResponseSetPopulator
                     "EIGHTEEN_MTH_MOTHER_2.MOLD") == NcsCode::YES.to_s
     end
 
-    def were_there_prenatal_events?
-      person.events.each do |event|
-        return false unless Event::POSTNATAL_EVENTS.any? { |pnatal_event_code|
-          event.event_type_code == pnatal_event_code
-        }
-      end
-
-      true
+    def were_there_no_prenatal_events?
+      person_events_array = person.events.inject([]) { |arr, el|
+        arr + [el.event_type_code]
+      }
+      # Returns true if events found that are not in the POSTNATAL_EVENTS set
+      (Set.new(person_events_array) - Set.new(Event::POSTNATAL_EVENTS)).empty?
     end
 
-    def does_completed_birth_record_exists?
-      ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
-                                                       Event::birth_code)
+    def is_event_completed?(target_event_code)
       person.events.each do |event|
-        if event.event_type_code == Event::birth_code
-          return person.participant.completed_event?(ncs_code)
-        end
+        next unless event.event_type_code == target_event_code
+        event.completed? ? (return true) : (return false)
       end
-
+      
       false
     end
 
@@ -109,18 +105,6 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_answer_to_mult_child_yes?
       get_last_response_as_string(
                     "SIX_MTH_MOTHER.MULT_CHILD") == NcsCode::YES.to_s
-    end
-
-    def was_three_month_event_completed?
-      ncs_code = NcsCode::for_list_name_and_local_code('EVENT_TYPE_CL1',
-                                                Event::three_month_visit_code)
-      person.events.each do |event|
-        if event.event_type_code == Event::three_month_visit_code
-          return person.participant.completed_event?(ncs_code)
-        end
-      end
-
-      false
     end
 
   end

@@ -54,20 +54,9 @@ module NcsNavigator::Core::ResponseSetPopulator
       response_set
     end
 
-    def get_upper_arm_circ_as_float
-      most_recent_response = person.responses_for(
-                    "CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1"
-      ).last.string_value
-
-      begin
-        bp_arm_circ = Float(most_recent_response)
-      rescue ArgumentError
-        nil
-      end
-    end
-
     def prepopulate_bp_mid_upper_arm_circ(question, response_set)
-      return false unless bp_arm_circ = get_upper_arm_circ_as_float
+      bp_arm_circ = person.responses_for("CHILD_ANTHRO.AN_MID_UPPER_ARM_CIRC1"
+                                        ).last.string_value
 
       prepop_question = find_question_for_reference_identifier(
                                                   "BP_MID_UPPER_ARM_CIRC")
@@ -85,9 +74,9 @@ module NcsNavigator::Core::ResponseSetPopulator
       # List of all pregnancy visit events
       pregnancy_visits = [
         event.pregnancy_visit_1?,
-        event.pregnancy_visit_1_sqa?,
+        event.pregnancy_visit_1_saq?,
         event.pregnancy_visit_2?,
-        event.pregnancy_visit_2_sqa?
+        event.pregnancy_visit_2_saq?
       ]
       if pregnancy_visits.any?
         "pv"
