@@ -13,8 +13,9 @@ module NcsNavigator::Core::Warehouse
   autoload :OperationalImporter,          'ncs_navigator/core/warehouse/operational_importer'
   autoload :OperationalImporterPscSync,   'ncs_navigator/core/warehouse/operational_importer_psc_sync'
   autoload :TwoPointOne,                  'ncs_navigator/core/warehouse/two_point_one'
+  autoload :TwoPointTwo,                  'ncs_navigator/core/warehouse/two_point_two'
   autoload :TwoPointZero,                 'ncs_navigator/core/warehouse/two_point_zero'
-  autoload :ThreePointZero,                'ncs_navigator/core/warehouse/three_point_zero'
+  autoload :ThreePointZero,               'ncs_navigator/core/warehouse/three_point_zero'
   autoload :UnusedOperationalPassthrough, 'ncs_navigator/core/warehouse/unused_operational_passthrough'
   autoload :UnusedPassthrough,            'ncs_navigator/core/warehouse/unused_passthrough'
 
