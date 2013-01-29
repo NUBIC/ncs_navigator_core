@@ -1,4 +1,4 @@
-.activity_psc_action
+.activity_psc_action.hide
   = form_tag "/contact_links/update_psc_for_activity", :method => :post do
     = hidden_field_tag :activity_id, activity.activity_id
     = hidden_field_tag :contact_link_id, @contact_link.id
