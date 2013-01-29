@@ -390,9 +390,11 @@ class Participant < ActiveRecord::Base
   # @param[Hash]
   # @return[Participant]
   def create_child_person_and_participant!(person_attrs)
-    child = Person.create(person_attrs)
-    create_child_participant!(child)
-    associate_child_with_household(child) if person.in_household?
+    ActiveRecord::Base.transaction do
+      child = Person.create(person_attrs)
+      create_child_participant!(child)
+      associate_child_with_household(child) if person.in_household?
+    end
   end
 
   ##
@@ -403,6 +405,7 @@ class Participant < ActiveRecord::Base
     HouseholdPersonLink.create(:person => child, :household_unit => person.household,
                                :is_active_code => NcsCode::YES)
   end
+  private :associate_child_with_household
 
   ##
   # Given the child person record
@@ -421,6 +424,7 @@ class Participant < ActiveRecord::Base
     ParticipantPersonLink.create(:participant_id => self.id, :person_id => child.id, :relationship_code => 8)
     child_participant
   end
+  private :create_child_participant!
 
   ##
   # True if the participant has children
