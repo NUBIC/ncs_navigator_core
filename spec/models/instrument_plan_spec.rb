@@ -133,7 +133,7 @@ describe InstrumentPlan do
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
 
           it "returns false if there is a next instrument" do
-            plan.final_survey_part?(response_set1).should be_false
+            plan.final_survey_part?(response_set1, 'birth').should be_false
           end
 
           it "returns true if there is no next instrument and
@@ -142,7 +142,7 @@ describe InstrumentPlan do
             rs2 = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                          :person => mp, :participant => child)
             instrument.response_sets.reload
-            plan.final_survey_part?(rs2).should be_true
+            plan.final_survey_part?(rs2, 'birth').should be_true
           end
 
         end
@@ -250,13 +250,13 @@ describe InstrumentPlan do
                                                         :person => mp, :participant => child1) }
 
           it "returns false if there is a next instrument" do
-            plan.final_survey_part?(response_set1).should be_false
+            plan.final_survey_part?(response_set1, 'birth').should be_false
           end
 
           it "returns false if there is no next instrument and
               there are NOT as many response_sets as there are scheduled_activities
               for the survey" do
-            plan.final_survey_part?(response_set2).should be_false
+            plan.final_survey_part?(response_set2, 'birth').should be_false
           end
 
           it "returns true if there is no next instrument and
@@ -265,7 +265,7 @@ describe InstrumentPlan do
             rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                         :person => mp, :participant => child2)
             instrument.response_sets.reload
-            plan.final_survey_part?(rs).should be_true
+            plan.final_survey_part?(rs, 'birth').should be_true
           end
 
         end
@@ -530,17 +530,8 @@ describe InstrumentPlan do
       let!(:birth_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_birth_event_survey, :instrument => birth_instrument) }
       let!(:informed_consent_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_informed_consent_event_survey, :instrument => informed_consent_instrument) }
 
-      it "returns false if there are more scheduled activites to complete than corresponding response sets" do
-        plan.final_survey_part?(birth_response_set1).should be_false
-      end
-
       it "returns false if, with a scoping event parameter, there a more scheduled activities for that event than there are response sets" do
         plan.final_survey_part?(birth_response_set1, 'birth').should be_false
-      end
-
-      it "returns false if, without a scoping event parameter, there are more scheduled activities of the same survey name than there are overall response sets for the instrument, even if there is enough to complete the survey in question" do
-        birth_response_set2 = Factory(:response_set, :survey => part_verif_part_2_in_birth_event_survey, :instrument => birth_instrument)
-        plan.final_survey_part?(birth_response_set2).should be_false
       end
 
       it "returns true if, with an appropriate scoping event parameter, there are equal or greater response sets present than there are scheduled activities for a given event" do
