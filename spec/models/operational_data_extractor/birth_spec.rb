@@ -368,7 +368,7 @@ describe OperationalDataExtractor::Birth do
         OperationalDataExtractor::Birth.new(@response_set).extract_data
       end
 
-      it "extracts a two new type racial data" do
+      it "extracts two new type racial data" do
         @person.races.should have(2).races
       end
 
