@@ -42,17 +42,14 @@ class Survey < ActiveRecord::Base
   end
 
   def self.most_recent_for_each_title
-    title_index = {}
-    Survey.order('survey_version DESC').all.each do |survey|
-      actual_title =
-        if survey.title =~ /^(\S+)\s+\d+$/
-          $1
-        else
-          survey.title
-        end
-      title_index[actual_title] ||= survey
-    end
-    title_index.values.sort_by { |s| s.title }
+    maximums = except(:select, :group).
+      select(['title AS t', 'MAX(survey_version) AS ver']).group('t')
+
+    joins(%Q{
+      INNER JOIN (#{maximums.to_sql})
+      AS sv
+      ON sv.t = title AND sv.ver = survey_version
+    }).order('title')
   end
 end
 

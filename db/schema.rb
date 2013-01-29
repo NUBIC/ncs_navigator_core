@@ -11,8 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108224850) do
-
+ActiveRecord::Schema.define(:version => 20130129202515) do
   create_table "addresses", :force => true do |t|
     t.integer  "psu_code",                                                :null => false
     t.string   "address_id",                :limit => 36,                 :null => false
@@ -1500,6 +1499,7 @@ ActiveRecord::Schema.define(:version => 20130108224850) do
   add_index "surveys", ["access_code", "survey_version"], :name => "surveys_access_code_survey_version_idx", :unique => true
   add_index "surveys", ["api_id"], :name => "uq_surveys_api_id", :unique => true
   add_index "surveys", ["display_order"], :name => "idx_surveys_display_order"
+  add_index "surveys", ["title"], :name => "index_surveys_on_title"
 
   create_table "telephones", :force => true do |t|
     t.integer  "psu_code",                                             :null => false
