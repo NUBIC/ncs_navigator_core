@@ -165,9 +165,11 @@ class InstrumentPlan
   # This should be true if there are as many (or more) response_sets
   # for this survey as there are scheduled survey parts.
   #
+  # @param[ResponseSet]
+  # @param[String] - event type text (to match against ScheduledActivity event label)
   # @return Boolean
-  def final_survey_part?(response_set)
-    expected = scheduled_activities_for_survey(response_set.survey.title).size
+  def final_survey_part?(response_set, event)
+    expected = scheduled_activities_for_survey(response_set.survey.title, event).size
     actual   = response_set.instrument.response_sets.size
     expected <= actual
   end
@@ -201,7 +203,6 @@ class InstrumentPlan
     if response_set.blank?
       result = sas
     else
-
       already_touched_survey_titles = get_already_touched_survey_titles(response_set)
       sas_hsh = keyed_scheduled_activities(sas)
 
@@ -250,13 +251,14 @@ class InstrumentPlan
   #
   # @param String - survey_title
   # @return [Array<ScheduledActivities>]
-  def scheduled_activities_for_survey(survey_title)
-    if a = scheduled_activity_for_survey(survey_title)
-      scheduled_activities.select { |sa| sa.instrument == a.survey_root ||
-                                         sa.references == a.survey_root }.sort
-    else
-      []
+  def scheduled_activities_for_survey(survey_title, event = nil)
+    result = []
+    if a = scheduled_activity_for_survey(survey_title, event)
+      result = scheduled_activities_for_event(event).select do |sa|
+        sa.instrument == a.survey_root || sa.references == a.survey_root
+      end.sort
     end
+    result
   end
 
   ##
@@ -265,9 +267,9 @@ class InstrumentPlan
   #
   # @param [String] - survey title
   # @return [ScheduledActivity]
-  def scheduled_activity_for_survey(survey_title)
+  def scheduled_activity_for_survey(survey_title, event = nil)
     survey_title = survey_title.to_s.downcase
-    @scheduled_activities.select { |sa| sa.instrument == survey_title }.first
+    scheduled_activities_for_event(event).select { |sa| sa.instrument == survey_title }.first
   end
 
 end

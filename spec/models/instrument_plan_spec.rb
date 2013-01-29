@@ -133,7 +133,7 @@ describe InstrumentPlan do
           let(:survey2) { Factory(:survey, :title => 'ins_que_birth_int_ehpbhi_p2_v2.0_baby_name') }
 
           it "returns false if there is a next instrument" do
-            plan.final_survey_part?(response_set1).should be_false
+            plan.final_survey_part?(response_set1, 'birth').should be_false
           end
 
           it "returns true if there is no next instrument and
@@ -142,7 +142,7 @@ describe InstrumentPlan do
             rs2 = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                          :person => mp, :participant => child)
             instrument.response_sets.reload
-            plan.final_survey_part?(rs2).should be_true
+            plan.final_survey_part?(rs2, 'birth').should be_true
           end
 
         end
@@ -250,13 +250,13 @@ describe InstrumentPlan do
                                                         :person => mp, :participant => child1) }
 
           it "returns false if there is a next instrument" do
-            plan.final_survey_part?(response_set1).should be_false
+            plan.final_survey_part?(response_set1, 'birth').should be_false
           end
 
           it "returns false if there is no next instrument and
               there are NOT as many response_sets as there are scheduled_activities
               for the survey" do
-            plan.final_survey_part?(response_set2).should be_false
+            plan.final_survey_part?(response_set2, 'birth').should be_false
           end
 
           it "returns true if there is no next instrument and
@@ -265,7 +265,7 @@ describe InstrumentPlan do
             rs = Factory(:response_set, :survey => survey2, :instrument => instrument,
                                         :person => mp, :participant => child2)
             instrument.response_sets.reload
-            plan.final_survey_part?(rs).should be_true
+            plan.final_survey_part?(rs, 'birth').should be_true
           end
 
         end
@@ -481,6 +481,66 @@ describe InstrumentPlan do
 
   end
 
+  context "finding scheduled activities" do
+
+    let(:plan) { InstrumentPlan.from_schedule(find_scheduled_activity_plan) }
+
+    before do
+      NcsNavigatorCore.mdes.stub!(:version).and_return("3.0")
+      @survey_title = 'ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one'
+      @event = 'birth'
+    end
+
+    describe "#scheduled_activity_for_survey" do
+
+      it "returns first scheduled activity matching title if called without a scoping parameter" do
+        activity = plan.scheduled_activity_for_survey(@survey_title)
+        activity.event.should == "informed_consent"
+      end
+
+      it "returns first scheduled activity associated with a particular event if called with a scoping parameter" do
+        activity = plan.scheduled_activity_for_survey(@survey_title, @event)
+        activity.event.should == "birth"
+      end
+    end
+
+    describe "#scheduled_activities_for_survey" do
+
+      it "returns all scheduled_activities without event scoping parameter" do
+        plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one').count.should == 4
+      end
+
+      it "returns only those activites associated with their respective events if a scoping parameter is given" do
+        plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one', 'informed consent').count.should == 2
+        plan.scheduled_activities_for_survey('ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one', 'birth').count.should == 2
+      end
+    end
+
+    describe "#final_survey_part?" do
+      let(:informed_consent_event_type) { NcsCode.find_event_by_lbl('informed_consent') }
+      let(:birth_event_type)            { NcsCode.find_event_by_lbl('birth') }
+      let(:birth_event)                 { Factory(:event, :event_type => birth_event_type) }
+      let(:informed_consent_event)      { Factory(:event, :event_type => informed_consent_event_type) }
+      let(:birth_instrument)            { Factory(:instrument, :event => birth_event) }
+      let(:informed_consent_instrument) { Factory(:instrument, :event => informed_consent_event) }
+      let(:part_verif_part_1_in_birth_event_survey)             { Factory(:survey, :title => 'ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one') }
+      let(:part_verif_part_2_in_birth_event_survey)             { Factory(:survey, :title => 'ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two') }
+      let(:part_verif_part_1_in_informed_consent_event_survey)  { Factory(:survey, :title => 'ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one') }
+      let(:part_verif_part_2_in_informed_consent_event_survey)  { Factory(:survey, :title => 'ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two') }
+      let!(:birth_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_birth_event_survey, :instrument => birth_instrument) }
+      let!(:informed_consent_response_set1) { Factory(:response_set, :survey => part_verif_part_1_in_informed_consent_event_survey, :instrument => informed_consent_instrument) }
+
+      it "returns false if, with a scoping event parameter, there a more scheduled activities for that event than there are response sets" do
+        plan.final_survey_part?(birth_response_set1, 'birth').should be_false
+      end
+
+      it "returns true if, with an appropriate scoping event parameter, there are equal or greater response sets present than there are scheduled activities for a given event" do
+        birth_response_set2 = Factory(:response_set, :survey => part_verif_part_2_in_birth_event_survey, :instrument => birth_instrument)
+        plan.final_survey_part?(birth_response_set2, 'birth').should be_true
+      end
+
+    end
+  end
 
   def participant_plan
     {
@@ -656,6 +716,105 @@ describe InstrumentPlan do
           ]
         }
 
+      }
+    }
+  end
+
+  def find_scheduled_activity_plan
+    {
+      'days' => {
+        '2010-12-01' => {
+          'activities' => [
+            {
+              'id' => '1',
+              'activity' => { 'name' => 'Participant Verification Part One', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother'
+            },
+            {
+              'id' => '2',
+              'activity' => { 'name' => 'Participant Verification Part Two', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-01',
+              'assignment' => { 'id' => 'child'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:informed_consent instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_01 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one'
+            },
+            {
+              'id' => '3',
+              'activity' => { 'name' => 'Informed Consent', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:informed_consent order:01_01 participant_type:mother'
+            },
+            {
+              'id' => '4',
+              'activity' => { 'name' => 'Parental Permission for Child Participation', 'type' => 'Instrument' },
+              'ideal_date' => '2010-12-01',
+              'assignment' => { 'id' => 'child'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:informed_consent order:01_01 participant_type:child'
+            }
+          ]
+        },
+        '2011-04-01' => {
+          'activities' => [
+            {
+              'id' => '5',
+              'activity' => { 'name' => '3-Month Mother Phone Interview', 'type' => 'Instrument' },
+              'ideal_date' => '2011-04-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:3m instrument:2.0:ins_que_3mmother_int_ehpbhi_p2_v1.1 participant_type:mother'
+            }
+          ]
+        },
+        '2011-07-01' => {
+          'activities' => [
+            {
+              'id' => '6',
+              'activity' => { 'name' => 'Participant Verification Part One', 'type' => 'Instrument' },
+              'ideal_date' => '2011-07-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one order:00_01 participant_type:mother'
+            },
+            {
+              'id' => '7',
+              'activity' => { 'name' => 'Participant Verification Part Two', 'type' => 'Instrument' },
+              'ideal_date' => '2011-07-01',
+              'assignment' => { 'id' => 'child'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:birth instrument:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_two order:00_02 participant_type:child references:3.0:ins_que_participantverif_dci_ehpbhilipbs_m3.0_v1.0_part_one'
+            },
+            {
+              'id' => '8',
+              'activity' => { 'name' => 'Birth Interview Part 1', 'type' => 'Instrument' },
+              'ideal_date' => '2011-07-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one order:01_01 participant_type:mother'
+            },
+            {
+              'id' => '9',
+              'activity' => { 'name' => 'Birth Interview Baby Name', 'type' => 'Instrument' },
+              'ideal_date' => '2011-07-01',
+              'assignment' => { 'id' => 'child'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_birth_visit_baby_name instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_birth_visit_baby_name_3 order:01_02 participant_type:child references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one'
+            },
+            {
+              'id' => '10',
+              'activity' => { 'name' => 'Birth Interview Part 2', 'type' => 'Instrument' },
+              'ideal_date' => '2011-07-01',
+              'assignment' => { 'id' => 'mother'},
+              'current_state' => { 'name' => 'scheduled' },
+              'labels' => 'event:birth instrument:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_two instrument:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_two order:01_03 participant_type:mother references:2.0:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.1:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:2.2:ins_que_birth_int_ehpbhi_p2_v2.0_part_one references:3.0:ins_que_birth_int_ehpbhipbs_m3.0_v3.0_part_one'
+            }
+          ]
+        }
       }
     }
   end
