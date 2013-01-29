@@ -86,12 +86,6 @@ class Address < ActiveRecord::Base
     NcsCode.where(:list_name => "ADDRESS_CATEGORY_CL1").where(:local_code => 4).first
   end
 
-  def self.find_zip_is_23456(options = {})
-    with_scope :find => options do
-      find_all_by_zip('23456', :order => 'created_at DESC')
-    end
-  end
-
   ##
   # Concatentate Address information into a complete string
   # if that data exists.
