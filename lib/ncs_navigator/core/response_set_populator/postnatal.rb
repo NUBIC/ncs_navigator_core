@@ -12,7 +12,8 @@ module NcsNavigator::Core::ResponseSetPopulator
         "prepopulated_is_multiple_child",
         "q_prepopulated_is_birth_deliver_collected_and_set_to_one",
         "prepopulated_mult_child_answer_from_part_one_for_6MM",
-        "prepopulated_is_three_months_interview_set_to_complete"
+        "prepopulated_is_three_months_interview_set_to_complete",
+        "prepopulated_is_child_qnum_one"
       ]
     end
 
@@ -49,6 +50,8 @@ module NcsNavigator::Core::ResponseSetPopulator
             when "prepopulated_is_three_months_interview_set_to_complete"
               answer_for(question, 
                          is_event_completed?(Event::three_month_visit_code))
+            when "prepopulated_is_child_qnum_one"
+              answer_for(question, is_this_child_number_one?)
             else
               nil
             end
@@ -105,6 +108,11 @@ module NcsNavigator::Core::ResponseSetPopulator
     def was_answer_to_mult_child_yes?
       get_last_response_as_string(
                     "SIX_MTH_MOTHER.MULT_CHILD") == NcsCode::YES.to_s
+    end
+
+    def is_this_child_number_one?
+      person.responses_for("PARTICIPANT_VERIF.CHILD_QNUM"
+                          ).last.try(:integer_value) == 1 # Child number 1
     end
 
   end

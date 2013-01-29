@@ -323,8 +323,7 @@ module PostNatal
   end
 
   def create_participant_verif_mult_child
-    survey = Factory(:survey,
-                :title =>
+    survey = Factory(:survey, :title =>
                   "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_ONE",
                 :access_code =>
                   "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_one")
@@ -337,6 +336,21 @@ module PostNatal
                 :text => "YES", :response_class => "answer")
     a = Factory(:answer, :question_id => q.id, :reference_identifier => "2",
                 :text => "NO", :response_class => "answer")
+    survey
+  end
+
+  def create_participant_verif_child_qnum
+    survey = Factory(:survey, :title =>
+                  "INS_QUE_ParticipantVerif_DCI_EHPBHILIPBS_M3.0_V1.0_PART_ONE",
+                :access_code =>
+                  "ins_que_participantverif_dci_ehpbhilipbs_m3_0_v1_0_part_one")
+    survey_section = Factory(:survey_section, :survey_id => survey.id)
+    q = Factory(:question,
+                :reference_identifier => "CHILD_QNUM",
+                :data_export_identifier => "PARTICIPANT_VERIF.CHILD_QNUM",
+                :survey_section_id => survey_section.id)
+    a = Factory(:answer, :question_id => q.id, :reference_identifier => "number",
+                :text => "NUMBER", :response_class => "integer")
     survey
   end
 end

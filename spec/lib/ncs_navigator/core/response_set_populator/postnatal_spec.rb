@@ -24,17 +24,19 @@ module NcsNavigator::Core
       @response_set.responses.should be_empty
     end
 
-    def prepare_and_take_survey(question_dexp_identifier, answer,
-                                survey_template, event=nil)
+    def prepare_and_take_survey(question_dexp_identifier = nil, answer = nil,
+                                survey_template, &block)
       survey = send(survey_template)
       response_set, instrument = prepare_instrument(@person, @participant,
                                                     survey)
       response_set.responses.should be_empty
 
-      answer_code = mock(NcsCode, :local_code => answer)
-      take_survey(survey, response_set) do |a|
-        a.choice(question_dexp_identifier, answer_code)
+      unless block_given?
+        answer_code = mock(NcsCode, :local_code => answer)
+        block = Proc.new { |a| a.choice(question_dexp_identifier, answer_code) }
       end
+
+      take_survey(survey, response_set, &block)
     end
 
     def complete_event(event, event_complete)
@@ -57,6 +59,42 @@ module NcsNavigator::Core
     end
 
     context "for 6Month part two prepopulators" 
+      describe "prepopulated_is_multiple_child" do
+        before(:each) do
+          @survey = create_generic_true_false_prepopulator_survey(
+                      "INS_QUE_6Month_INT_EHPBHIPBS_M3.1_V2.0_PART_TWO",
+                      "prepopulated_is_child_qnum_one")
+          init_common_vars
+        end
+
+        it "should be TRUE if child number is 1" do
+          block = Proc.new { |a| a.int("PARTICIPANT_VERIF.CHILD_QNUM", 1) }
+          prepare_and_take_survey(nil, nil, :create_participant_verif_child_qnum,
+                                  &block)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_child_qnum_one").should == "TRUE"
+        end
+
+        it "should be FALSE if child number is not 1" do
+          block = Proc.new { |a| a.int("PARTICIPANT_VERIF.CHILD_QNUM", 2) }
+          prepare_and_take_survey(nil, nil, :create_participant_verif_child_qnum,
+                                  &block)
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_child_qnum_one").should == "FALSE"
+        end
+
+        it "should be FALSE if child number is not set" do
+          rsp = ResponseSetPopulator::Postnatal.new(@person, @instrument,
+                                                    @survey)
+          get_response_as_string(rsp.populate,
+                            "prepopulated_is_child_qnum_one").should == "FALSE"
+        end
+      end
+
       describe "prepopulated_is_multiple_child" do
         before(:each) do
           @survey = create_generic_true_false_prepopulator_survey(
