@@ -1101,7 +1101,17 @@ module NcsNavigator::Core::Mustache
           Person.any_instance.stub(:full_name).and_return('')
           instrument_context.p_full_name.should == '[UNKNOWN]'
         end
+      end
 
+      describe ".participant_parent_caregiver_name" do
+        it "returns the full name of the person taking the survey" do
+          instrument_context.participant_parent_caregiver_name.should == @person.full_name
+        end
+
+        it "returns [Participant/Parent/Caregiver Name] if person full_name is blank" do
+          Person.any_instance.stub(:full_name).and_return('')
+          instrument_context.participant_parent_caregiver_name.should == '[Participant/Parent/Caregiver Name]'
+        end
       end
 
       describe ".p_dob" do
@@ -1186,20 +1196,6 @@ module NcsNavigator::Core::Mustache
     context "participant verification instrument" do
 
       let(:instrument_context) { InstrumentContext.new }
-
-      describe ".participant_parent_caregiver_name" do
-
-        it "returns the most recent response for PARTICIPANT_VERIF.NAME_CONFIRM" do
-          InstrumentContext.any_instance.stub(:response_for).and_return('The Given Name')
-          instrument_context.participant_parent_caregiver_name.should == 'The Given Name'
-        end
-
-        it "returns [Participant/Parent/Caregiver Name] if no reponse for NAME_CONFIRM" do
-          InstrumentContext.any_instance.stub(:response_for).and_return(nil)
-          instrument_context.participant_parent_caregiver_name.should == '[Participant/Parent/Caregiver Name]'
-        end
-
-      end
 
       describe ".child_primary_address" do
         it "returns '[CHILD'S PRIMARY ADDRESS]' if the child has no primary address" do

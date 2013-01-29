@@ -102,7 +102,7 @@ module NcsNavigator::Core::Mustache
 
     def participant_parent_caregiver_name
       result = p_full_name
-      if result.blank?
+      if result.blank? || result == '[UNKNOWN]'
         result = "[Participant/Parent/Caregiver Name]"
       end
       result
