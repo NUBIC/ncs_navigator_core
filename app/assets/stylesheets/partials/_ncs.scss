@@ -147,9 +147,16 @@ body.ncs {
       }
     }
 
-    .app_version {
+    .versions {
       color: #999;
       @include column($blueprint-grid-columns);
+      .app_version {
+        @include column(11);
+      }
+      .mdes_version {
+        @include column(12, true);
+        text-align: right;
+      }
     }
   } // end of footer
 } // end of body

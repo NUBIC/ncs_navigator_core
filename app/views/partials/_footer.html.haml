@@ -9,5 +9,8 @@
 .ncs_text
   = image_tag(NcsNavigatorCore.footer_right_logo_path) if NcsNavigatorCore.footer_right_logo_path
 
-.app_version
-  = app_version_helper
+.versions
+  .app_version
+    = app_version_helper
+  .mdes_version
+    = mdes_version_helper

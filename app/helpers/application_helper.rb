@@ -16,6 +16,10 @@ module ApplicationHelper
     @show_title
   end
 
+  def mdes_version_helper
+    "MDES Version #{NcsNavigatorCore.mdes.version}"
+  end
+
   def app_version_helper
     "Release Version #{NcsNavigator::Core::VERSION}"
   end
