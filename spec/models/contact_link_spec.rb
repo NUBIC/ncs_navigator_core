@@ -33,9 +33,8 @@ describe ContactLink do
     link = Factory(:contact_link)
     link.should_not be_closed
 
-    link.contact.contact_disposition = 510
-    link.event.event_disposition = 510
-    link.event.event_end_date = Date.today
+    link.contact.contact_end_time = "12:00"
+    link.event.event_end_date = Date.parse("2525-12-25")
     link.should be_closed
   end
 
