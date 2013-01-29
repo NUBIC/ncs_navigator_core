@@ -368,6 +368,10 @@ class Event < ActiveRecord::Base
     10
   end
 
+  def self.pre_pregnancy_code
+    11
+  end
+
   def self.pregnancy_visit_1_code
     13
   end
@@ -431,7 +435,9 @@ class Event < ActiveRecord::Base
 
   ##
   # Returns the Event that was the primary reason for the interaction
-  # with the Participant (i.e. the Screener Event)
+  # with the Participant (e.g. the Screener Event)
+  #
+  # @see principal_event_codes
   # @return [Event]
   def principal_event
     return self unless associated_with_other_event?
@@ -441,11 +447,22 @@ class Event < ActiveRecord::Base
     end
   end
 
+  ##
+  # The NcsCode values for event types that can be the
+  # principal event associated with another event during the
+  # same contact
+  # (i.e. Informed Consent is an activity during this Event)
+  # @return[Array<Integer>]
   def principal_event_codes
     [
       Event.pregnancy_screener_code,
       Event.pbs_eligibility_screener_code,
-      Event.low_to_high_conversion_code
+      Event.low_to_high_conversion_code,
+      Event.low_intensity_data_collection_code,
+      Event.pregnancy_visit_1_code,
+      Event.pregnancy_visit_2_code,
+      Event.birth_code,
+      Event.pre_pregnancy_code
     ]
   end
 
