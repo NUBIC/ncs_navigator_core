@@ -329,7 +329,7 @@ class Event < ActiveRecord::Base
   # PBS Eligibility Screener
   # @return[Boolean]
   def screener_event?
-    screener_event_codes.include? event_type_code
+    [Event.pregnancy_screener_code, Event.pbs_eligibility_screener_code].include? event_type_code
   end
 
   ##
@@ -388,6 +388,10 @@ class Event < ActiveRecord::Base
     29
   end
 
+  def self.low_to_high_conversion_code
+    32
+  end
+
   def self.low_intensity_data_collection_code
     33
   end
@@ -433,12 +437,16 @@ class Event < ActiveRecord::Base
     return self unless associated_with_other_event?
     contact = contact_links.map(&:contact).uniq.first
     contact.contact_links.map(&:event).detect do |e|
-      screener_event_codes.include? e.event_type_code
+      principal_event_codes.include? e.event_type_code
     end
   end
 
-  def screener_event_codes
-    [Event.pregnancy_screener_code, Event.pbs_eligibility_screener_code]
+  def principal_event_codes
+    [
+      Event.pregnancy_screener_code,
+      Event.pbs_eligibility_screener_code,
+      Event.low_to_high_conversion_code
+    ]
   end
 
   ##
