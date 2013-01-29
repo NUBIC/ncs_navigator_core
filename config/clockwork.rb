@@ -38,3 +38,6 @@ include NcsNavigator::Core::WorkerWatchdog
 
 handler { |job| job.perform_async }
 sidekiq_configure_client
+
+# Jobs go here.
+every(watchdog_periodicity.seconds, WatchdogWorker)
