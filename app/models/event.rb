@@ -325,6 +325,14 @@ class Event < ActiveRecord::Base
   end
 
   ##
+  # Returns true if event is Pregnancy Screener or
+  # PBS Eligibility Screener
+  # @return[Boolean]
+  def screener_event?
+    screener_event_codes.include? event_type_code
+  end
+
+  ##
   # Returns true for all post-natal events (includes Birth)
   # @return [Boolean]
   def postnatal?
@@ -406,6 +414,31 @@ class Event < ActiveRecord::Base
 
   def informed_consent?
     self.event_type_code == Event.informed_consent_code
+  end
+
+  ##
+  # Returns true if this event is created during the same contact as another event
+  # @return [Boolean]
+  def associated_with_other_event?
+    contacts = contact_links.map(&:contact).uniq
+    contacts.count == 1 &&
+      contacts.first.contact_links.map(&:event).map(&:event_type_code).uniq.count > 1
+  end
+
+  ##
+  # Returns the Event that was the primary reason for the interaction
+  # with the Participant (i.e. the Screener Event)
+  # @return [Event]
+  def principal_event
+    return self unless associated_with_other_event?
+    contact = contact_links.map(&:contact).uniq.first
+    contact.contact_links.map(&:event).detect do |e|
+      screener_event_codes.include? e.event_type_code
+    end
+  end
+
+  def screener_event_codes
+    [Event.pregnancy_screener_code, Event.pbs_eligibility_screener_code]
   end
 
   ##
@@ -511,7 +544,7 @@ class Event < ActiveRecord::Base
 
     all_activities = psc_participant.scheduled_activities
 
-    all_activities.select { |_, sa| implied_by?(sa.event_label, sa.ideal_date) }.values
+    all_activities.select { |_, sa| implied_by?(sa.event_label.try(:content), sa.ideal_date) }.values
   end
 
   ##

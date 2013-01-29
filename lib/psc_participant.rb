@@ -198,7 +198,7 @@ class PscParticipant
     # build a map with key [event_type_label, ideal_date] and value
     # (array of SA IDs)
     event_date_index = scheduled_activities(:sa_list).inject({}) do |index, (sa_id, sa)|
-      event = sa.event_label.content
+      event = sa.event_label.try(:content)
       next index unless event
       key = [event, sa['ideal_date']]
 

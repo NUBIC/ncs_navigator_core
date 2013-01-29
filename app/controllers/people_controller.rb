@@ -48,6 +48,7 @@ class PeopleController < ApplicationController
     end
 
     @person = Person.new
+    set_person_attribute_defaults(@person)
     @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
     if @provider
       @person.person_provider_links.build(:psu_code => @psu_code,
@@ -115,6 +116,7 @@ class PeopleController < ApplicationController
   # GET /people/1/edit
   def edit
     @person = Person.find(params[:id])
+    set_person_attribute_defaults(@person)
     @provider = Provider.find(params[:provider_id]) unless params[:provider_id].blank?
   end
 
@@ -188,5 +190,15 @@ class PeopleController < ApplicationController
       send_data(@person.export_versions, :filename => "#{@person.public_id}.csv")
     end
   end
+
+  def set_person_attribute_defaults(person)
+    if person.p_info_date.blank?
+      dt = person.new_record? ? Date.today : person.created_at.to_date
+      person.p_info_date = dt
+    end
+    person.p_info_source_code = Person.person_self_code if person.p_info_source_code.blank?
+    person.p_info_update      = Date.today
+  end
+  private :set_person_attribute_defaults
 
 end

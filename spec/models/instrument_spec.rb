@@ -675,6 +675,18 @@ describe Instrument do
       { 'foo' => schedule }
     end
 
+    let(:version) { NcsNavigator::Core::Mdes::Version.new('2.0') }
+
+    around do |example|
+      begin
+        old_version = NcsNavigatorCore.mdes_version
+        NcsNavigatorCore.mdes_version = version
+        example.call
+      ensure
+        NcsNavigatorCore.mdes_version = old_version
+      end
+    end
+
     describe "if the given PscParticipant does not match this instruments's participant" do
       let(:psc_participant) { stub(:participant => Participant.new) }
 

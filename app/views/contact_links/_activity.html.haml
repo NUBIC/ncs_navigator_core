@@ -1,18 +1,24 @@
-- if contact_link.contact.instrument_survey_titles.include?(survey.title)
-  %div{ :class => "known_instrument", :title => survey.title}
-    %span{ :class => 'activity_name' }
-      = activity.activity_name
-    = render "activity_psc_action", :activity => activity
-- elsif @current_activity == activity
-  %div{ :class => "instrument", :title => survey.title}
-    = link_to activity.activity_name,
-        start_instrument_person_path(person, :participant_id => activity.participant.id,
-                                             :references_survey_access_code => activity.references.to_s,
-                                             :survey_access_code => survey.access_code,
-                                             :contact_link_id => contact_link.id),
-        :class => "star_link icon_link"
-    = render "activity_psc_action", :activity => activity
-- else
-  %div{ :class => "instrument", :title => survey.title}
-    %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
-      = activity.activity_name
+%div{ :id => "activity_#{activity.activity_id}", :class => "activity_link" }
+  - if contact_link.contact.instrument_survey_titles.include?(survey.title)
+    -# activities associated with a previously completed instrument via survey title
+    - instruments = contact_link.contact.instruments.select { |i| i.survey.try(:title) == survey.title }
+    - instruments.each do |instr|
+      %div{ :class => "known_instrument", :title => survey.title}
+        = link_to "Edit #{activity.activity_name}", edit_instrument_path(instr), :class => "edit_link icon_link"
+        = render "activity_psc_action", :activity => activity
+  - elsif @current_activity == activity
+    -# the current activity
+    %div{ :class => "instrument", :title => survey.title}
+      = link_to activity.activity_name,
+          start_instrument_person_path(person, :participant_id => activity.participant.id,
+                                               :references_survey_access_code => activity.references.to_s,
+                                               :survey_access_code => survey.access_code,
+                                               :contact_link_id => contact_link.id),
+          :class => "star_link icon_link"
+      = render "activity_psc_action", :activity => activity
+  - else
+    -# activities that are 'to be done'
+    %div{ :class => "instrument", :title => survey.title}
+      %a{ :href => "javascript:alert('Please choose instruments in order')", :class => "add_link icon_link"}
+        = activity.activity_name
+      = render "activity_psc_action", :activity => activity

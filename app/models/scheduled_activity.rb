@@ -98,6 +98,13 @@ class ScheduledActivity
   end
 
   ##
+  # True if activity_name == "Child Consent"
+  # @return [Boolean]
+  def child_consent?
+    @activity_name == "Child Consent"
+  end
+
+  ##
   # Returns the survey title that this scheduled activity is a part of.
   # @return String
   def survey_root

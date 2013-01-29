@@ -19,9 +19,9 @@ class ContactsController < ApplicationController
                              :contact_start_time => Time.now.strftime("%H:%M"))
 
     @event = event_for_person
-    @requires_consent = @person.participant &&
-                        @person.participant.consented? == false &&
-                        !@event.to_s.include?("Screener")
+    @requires_consent = (@person.participant &&
+                            (@person.participant.consented? == false) &&
+                            !@event.screener_event?)
 
     respond_to do |format|
       format.html # new.html.haml

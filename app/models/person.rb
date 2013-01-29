@@ -283,18 +283,6 @@ class Person < ActiveRecord::Base
   end
 
   ##
-  # Return the currently active ContactLink, if a person is associated with a Contact through
-  # a ContactLink and that ContactLink has not been closed (cf. Event#closed? and Contact#closed?)
-  #
-  # @return [ContactLink]
-  def current_contact_link
-    open_contact_links = contact_links.select { |link| !link.complete? }
-    return nil if open_contact_links.blank?
-    return open_contact_links.first if open_contact_links.size == 1
-    # TODO: what to do if there is more than one open contact?
-  end
-
-  ##
   # Create a new Instrument for the Person associated with the given Survey.
   #
   # @param [Survey]
@@ -474,6 +462,13 @@ class Person < ActiveRecord::Base
     false
   end
   alias :is_first_child? :first_child?
+
+  ##
+  # From INFORMATION_SOURCE_CL4, the code for Person/Self
+  # @return[Integer]
+  def self.person_self_code
+    1
+  end
 
   private
 

@@ -322,25 +322,6 @@ describe Person do
 
   end
 
-  context "with a contact" do
-
-    it "gets an incomplete contact/contact link" do
-      pers = Factory(:person)
-      pers.current_contact_link.should be_nil
-
-      link = Factory(:contact_link, :person => pers)
-      pers.contact_links.reload
-      pers.current_contact_link.should eq link
-
-      pers.current_contact_link.contact.contact_disposition = 510
-      pers.current_contact_link.event.event_disposition = 510
-      pers.current_contact_link.event.event_end_date = Date.today
-      pers.current_contact_link.should be_nil
-
-    end
-
-  end
-
   context "with a response set" do
 
     before(:each) do

@@ -20,52 +20,56 @@ module Field
     ##
     # @private
     def contacts_as_json(options)
-      contacts.map do |c|
+      contacts.each_with_object([]) do |c, a|
         mc = m c
         mp = m c.person
 
         if mc && mp
-          adapt_model(mc).as_json(options).merge({
+          a << adapt_model(mc).as_json(options).merge({
             'events' => events_as_json(c, c.person, options),
             'person_id' => mp.person_id,
             'version' => mc.updated_at.utc
           })
         end
-      end.compact
+      end
     end
 
     ##
     # @private
     def events_as_json(contact, person, options)
-      events.select { |e| e.contact == contact && e.person == person }.map do |e|
+      relevant = events.select { |e| e.contact == contact && e.person == person }
+
+      relevant.each_with_object([]) do |e, a|
         me = m e
 
         if me
-          adapt_model(me).as_json(options).merge({
+          a << adapt_model(me).as_json(options).merge({
             'instruments' => instruments_as_json(e, person, options),
             'name' => me.event_type.to_s,
             'p_id' => me.participant.public_id,
             'version' => me.updated_at.utc
           })
         end
-      end.compact
+      end
     end
 
     ##
     # @private
     def instruments_as_json(event, person, options)
-      instruments.select { |i| i.event == event && i.person == person }.map do |i|
+      relevant = instruments.select { |i| i.event == event && i.person == person }
+
+      relevant.each_with_object([]) do |i, a|
         mi = m i
         plan = plan_for(i)
 
         if mi && plan
-          adapt_model(mi).as_json(options).merge({
+          a << adapt_model(mi).as_json(options).merge({
             'instrument_plan_id' => plan.id,
             'name' => i.name,
             'response_sets' => mi.response_sets
           })
         end
-      end.compact
+      end
     end
 
     ##
@@ -139,18 +143,22 @@ module Field
     ##
     # @private
     def instrument_templates_as_json(plan, options)
-      plan.surveys.map do |s|
-        ms = m s
+      cache = SurveyCache.new
+      mapping = plan.surveys.map { |s| [s, m(s)] }
+      mapping.select!(&:last)
+      data = cache.get(mapping.map(&:last))
 
-        if ms
-          {
-            'instrument_template_id' => ms.api_id,
-            'participant_type' => s.participant_type.try(:content),
-            'survey' => ms,
-            'version' => ms.updated_at.utc
-          }
-        end
-      end.compact
+      mapping.each_with_object([]) do |(s, ms), a|
+        cached = data[ms]
+        sj = cached ? JsonSurvey.new(cached) : ms.as_json
+
+        a << {
+          'instrument_template_id' => ms.api_id,
+          'participant_type' => s.participant_type.try(:content),
+          'survey' => sj,
+          'version' => ms.updated_at.utc
+        }
+      end
     end
 
     ##

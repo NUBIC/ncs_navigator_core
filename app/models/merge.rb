@@ -86,6 +86,19 @@ class Merge < ActiveRecord::Base
   # then the status will be "timeout" until the merge is restarted.)
   #
   #
+  # Merge restarts and ODEs
+  # =======================
+  #
+  # Failing merges may be restarted freely until they pass.  Merges that have
+  # completed can be restarted, but may result in operational data conflicts.
+  # The reason is that the merge process currently has no visibility into the
+  # operational data extractors and what they change: as far as merge is
+  # concerned, the ODEs are another user making changes to operational data
+  # which may or may not jive with what's coming from Field.
+  #
+  # In the future, this might be addressed, but doing that is not trivial.
+  #
+  #
   # Merge status updates
   # ====================
   #
@@ -133,27 +146,31 @@ class Merge < ActiveRecord::Base
       end
 
       # Do the merge.
-      superposition = do_merge(logger)
 
-      if !superposition
-        update_attribute(:crashed_at, Time.now)
-        return false
-      end
+      self.class.transaction do
+        superposition = do_merge(logger)
 
-      self.merged_at = Time.now
-      self.conflict_report = superposition.conflicts
-      save(:validate => false)
+        if !superposition
+          update_attribute(:crashed_at, Time.now)
+          logger.fatal { 'Merge failed, rolling back' }
+          raise ActiveRecord::Rollback
+        else
+          self.merged_at = Time.now
+          self.conflict_report = superposition.conflicts
+          save(:validate => false)
 
-      if self.class.sync_with_psc?
-        # Sync current state...
-        superposition.prepare_for_sync(self)
-        superposition.sync_with_psc
+          if self.class.sync_with_psc?
+            # Sync current state...
+            superposition.prepare_for_sync(self)
+            superposition.sync_with_psc
 
-        # ...and schedule new events.
-        superposition.advance_participant_schedules
-        update_attribute(:synced_at, Time.now)
-      else
-        true
+            # ...and schedule new events.
+            superposition.advance_participant_schedules
+            update_attribute(:synced_at, Time.now)
+          else
+            true
+          end
+        end
       end
     rescue Exception => e
       logger.fatal { "#{e.class.name}: #{e.message}" }
