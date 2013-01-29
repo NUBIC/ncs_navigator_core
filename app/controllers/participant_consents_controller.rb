@@ -52,9 +52,7 @@ class ParticipantConsentsController < ApplicationController
     respond_to do |format|
       if @participant_consent.save
 
-        mark_activity_occurred
-        update_enrollment_status
-        create_informed_consent_event(@participant, @contact_link)
+        post_create_actions(@participant)
 
         format.html { redirect_to decision_page_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
@@ -119,7 +117,7 @@ class ParticipantConsentsController < ApplicationController
     respond_to do |format|
       if @participant_consent.save
 
-        update_enrollment_status
+        post_create_actions(@child_guardian)
 
         format.html { redirect_to decision_page_contact_link_path(@contact_link), :notice => 'Participant consent was successfully created.' }
         format.json { render :json => @participant_consent, :status => :created, :location => @participant_consent }
@@ -139,8 +137,21 @@ class ParticipantConsentsController < ApplicationController
     end
 
     ##
+    # After creation of a ParticipantConsent record
+    # we need to
+    # 1. Mark the activity as occurred in PSC
+    # 2. Update the enrollment status of the Participant
+    # 3. Create an Informed Consent event for the given Participant
+    # @param[Participant]
+    def post_create_actions(participant)
+      mark_activity_occurred
+      update_enrollment_status
+      create_informed_consent_event(participant, @contact_link)
+    end
+
+    ##
     # Updates activities associated with this event
-    # whose event is labeled 'informed_consent'
+    # that are known to be consent activities
     # in PSC as 'occurred'
     def mark_activity_occurred
 	    psc.activities_for_event(@contact_link.event).each do |a|
