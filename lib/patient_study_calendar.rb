@@ -273,15 +273,29 @@ class PatientStudyCalendar
   end
 
   ##
-  # Gets information about all scheduled activities for a participant
-  # (cf. ScheduledActivity ).
-  # Intended to find and re-schedule activities
+  # Gets information about all open activities
+  # (scheduled or conditional) for a participant.
+  #
+  # @see #build_scheduled_activities
+  # @see #participant_activities
+  # @see #schedules
+  #
   # @param [Participant,String]
   # @return [Array<ScheduledActivity>]
   def scheduled_activities(participant)
-    build_scheduled_activities(participant_activities(schedules(participant)), [Psc::ScheduledActivity::SCHEDULED])
+    build_scheduled_activities(
+      participant_activities(schedules(participant)),
+      [Psc::ScheduledActivity::SCHEDULED, Psc::ScheduledActivity::CONDITIONAL]
+    )
   end
 
+  ##
+  # Given a response from PSC for a participant's schedule
+  # this method creates an Array of ScheduledActivity objects.
+  #
+  # @param [Array<Hash>]
+  # @param [Array<String>]
+  # @return [Array<ScheduledActivity>]
   def build_scheduled_activities(activities, states = nil)
     scheduled_activities = []
     activities.each do |activity|
@@ -322,8 +336,10 @@ class PatientStudyCalendar
   end
 
   ##
-  # Gets all activities for an event
-  # (cf. ScheduledActivity )
+  # Gets all open activities for an event.
+  #
+  # @see PatientStudyCalendar#scheduled_activities
+  #
   # @param [Event]
   # @return [Array<ScheduledActivity>]
   def activities_for_event(event)
@@ -500,23 +516,18 @@ class PatientStudyCalendar
   end
 
   ##
-  # Schedules the matching PSC segment to the given event on the participant's calendar.
-  # Similar to #schedule_known_event but without the check on the date, instead here we
-  # check if there are any existing scheduled activities for the given event type and
-  # update the activity state and date for those that are currently 'scheduled'
+  # Reschedules open activities for the PSC segment matching the given event on the participant's calendar.
+  # Open activities are those activities that are "scheduled" or "conditional".
   #
   # @param [Participant]
-  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
+  # @param [String] - the PSC status
   # @param [Date]
-  # @param [String] - reason
-  def schedule_pending_event(event, value, date, reason = nil, time = nil)
-    participant = event.participant
-    if activities = activities_to_reschedule(event)
-      activities.each do |activity_identifier|
-        update_activity_state(activity_identifier, participant, value, date, reason, time)
-      end
-    else
-      schedule_known_event(participant, event.event_type.to_s, date)
+  # @param [String] - reason (optional)
+  # @param [String] - time (optional)
+  def reschedule_pending_event(event, value, date, reason = nil, time = nil)
+    activities_for_event(event).each do |activity|
+      next unless activity.open?
+      update_activity_state(activity.activity_id, participant, value, date, reason, time)
     end
   end
 
