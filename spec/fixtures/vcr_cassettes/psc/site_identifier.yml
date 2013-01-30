@@ -1,38 +1,41 @@
 ---
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+http_interactions:
+- request:
+    method: get
     uri: https://ncsn-psc.local/api/v1/sites
     body:
+      encoding: US-ASCII
+      string: ''
     headers:
-      authorization:
+      Authorization:
       - Basic cGZyOTU3OnBzYw==
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response:
+    status:
       code: 200
       message: OK
     headers:
-      content-type:
+      Content-Type:
       - text/xml;charset=UTF-8
-      server:
+      Server:
       - Restlet-Framework/2.0.3
-      date:
+      Date:
       - Fri, 26 Aug 2011 18:54:05 GMT
-      content-length:
-      - "364"
-      vary:
+      Content-Length:
+      - '364'
+      Vary:
       - Accept-Charset, Accept-Encoding, Accept-Language, Accept
-      accept-ranges:
+      Accept-Ranges:
       - bytes
-      cache-control:
+      Cache-Control:
       - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-      pragma:
+      Pragma:
       - no-cache
-    body: |
-      <?xml version="1.0" encoding="UTF-8"?>
-
-      <sites xmlns="http://bioinformatics.northwestern.edu/ns/psc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://bioinformatics.northwestern.edu/ns/psc http://bioinformatics.northwestern.edu/ns/psc/psc.xsd">
-        <site site-name="Greater Chicago Study Center" assigned-identifier="20000029"/>
-      </sites>
-
-    http_version: "1.1"
+    body:
+      encoding: UTF-8
+      string: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<sites xmlns=\"http://bioinformatics.northwestern.edu/ns/psc\"
+        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://bioinformatics.northwestern.edu/ns/psc
+        http://bioinformatics.northwestern.edu/ns/psc/psc.xsd\">\n  <site site-name=\"Greater
+        Chicago Study Center\" assigned-identifier=\"20000029\"/>\n</sites>\n"
+    http_version: '1.1'
+  recorded_at: Thu, 10 Jan 2013 18:04:42 GMT
+recorded_with: VCR 2.4.0

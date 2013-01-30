@@ -134,8 +134,6 @@ Spork.prefork do
       DatabaseCleaner.clean
     end
 
-    config.extend VCR::RSpec::Macros
-
     config.include ScheduledActivities
     config.include TestLogins
     [

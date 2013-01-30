@@ -98,7 +98,7 @@ group :test, :ci do
   gem 'factory_girl', '~> 2.6'
   gem 'simplecov', :require => false
   gem 'pickle'
-  gem 'vcr', '~> 1.11'
+  gem 'vcr', '~> 2.4'
   gem 'fakeweb'
   gem 'webmock', :require => false
 
