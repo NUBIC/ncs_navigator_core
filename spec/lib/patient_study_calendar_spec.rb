@@ -364,30 +364,6 @@ describe PatientStudyCalendar do
       end
     end
 
-    it "retrieves a list of all scheduled activities" do
-      VCR.use_cassette('psc/scheduled_activity_report') do
-        scheduled_activities = subject.scheduled_activities_report
-        scheduled_activities.size.should == 2
-      end
-    end
-
-    it "schedules an activity for a participant given an event type and date" do
-      VCR.use_cassette('psc/known_events') do
-        person = Factory(:person, :first_name => "As", :last_name => "Df", :sex => @female, :person_dob => '1900-01-01', :person_id => "asdf")
-        participant = Factory(:participant, :p_id => "asdf")
-        participant.person = person
-        subject.schedules(participant).should be_nil
-        subject.schedule_known_event(participant, "Pregnancy Probability", Date.today)
-
-        subject_schedules = subject.schedules(participant)
-        days = subject_schedules["days"]
-        date = days.keys.first
-        day = days[date]
-        activities = day["activities"]
-        activities.first["study_segment"].should == "LO-Intensity: PPG Follow-Up"
-      end
-    end
-
   end
 
   context "determining schedule state" do
@@ -428,20 +404,6 @@ describe PatientStudyCalendar do
         sss.activity_name.should == "Pregnancy Probability Group Follow-Up SAQ"
         sss.activity_id.should == "bfb76131-58cd-4db5-b0df-17b82fd2de17"
         sss.current_state.should == Psc::ScheduledActivity::SCHEDULED
-      end
-    end
-
-    it "can determine if activities are to be rescheduled" do
-      VCR.use_cassette('psc/lo_i_ppg_follow_up_pending') do
-        person = Factory(:person, :first_name => "Ally", :last_name => "Goodfella", :sex => @female, :person_dob => '1980-10-31', :person_id => "allyg")
-        participant = Factory(:participant, :p_id => "allyg")
-        participant.person = person
-
-        preg_screen_event = Factory(:event, :participant => participant, :event_type => @preg_screen)
-        ppgfu_event_event = Factory(:event, :participant => participant, :event_type => @ppgfu_event, :event_start_date => '2011-11-14')
-
-        subject.activities_to_reschedule(preg_screen_event).should be_nil
-        subject.activities_to_reschedule(ppgfu_event_event).should == ["fb6249e5-2bf6-40cc-81e9-dc30e2012410", "bfb76131-58cd-4db5-b0df-17b82fd2de17"]
       end
     end
 
@@ -617,26 +579,21 @@ describe PatientStudyCalendar do
 
             @participant.pending_events.should == [@informed_consent, @lo_i_quex]
 
-            subject_schedule_status = subject.scheduled_activities(@participant)
-            subject_schedule_status.size.should == 2
-
             activities_for_pending_events = subject.activities_for_pending_events(@participant)
             activities_for_pending_events.size.should == 2
 
-            sss = subject_schedule_status[0]
+            sss = activities_for_pending_events[0]
             sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
             sss.labels.should == "event:informed_consent"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Consent"
 
-            sss = subject_schedule_status[1]
+            sss = activities_for_pending_events[1]
             sss.study_segment.should == "LO-Intensity: PPG 1 and 2"
             sss.labels.should == "event:low_intensity_data_collection instrument:2.0:ins_que_lipregnotpreg_int_li_p2_v2.0"
             sss.ideal_date.should == date
             sss.activity_name.should == "Low-Intensity Interview"
 
-            activities_for_pending_events[0].should == subject_schedule_status[0]
-            activities_for_pending_events[1].should == subject_schedule_status[1]
           end
         end
 

@@ -393,24 +393,6 @@ class PatientStudyCalendar
     label_ideal_date_pairs.uniq
   end
 
-  ##
-  # Returns the activity ids for participant activities in the 'scheduled' state
-  # whose segment matches the given event type
-  # (from the MDES event code list - cf. #get_psc_segment_from_mdes_event_type)
-  #
-  # @param [Event]
-  # @return [String or nil] - the scheduled activity identifier or nil
-  def activities_to_reschedule(event)
-    ids = []
-    scheduled_activities(event.participant).each do |sa|
-      if ((sa.current_state == Psc::ScheduledActivity::SCHEDULED) &&
-          event.matches_activity(sa))
-        ids << sa.activity_id
-      end
-    end
-    ids.blank? ? nil : ids
-  end
-
   # Helper method to gather the activities returned from call to
   # schedules
   # @param[Hash] - result of json call to PSC
@@ -493,21 +475,6 @@ class PatientStudyCalendar
   def schedule_segment(participant, event, date)
     post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}",
       build_next_scheduled_study_segment_request(event, date))
-  end
-
-  ##
-  # Schedules the matching PSC segment to the given event on the participant's calendar
-  # if an existing event of the given type does not exist on the given date.
-  #
-  # @param [Participant]
-  # @param [String] - the event type label from the MDES Code List for 'EVENT_TYPE_CL1'
-  # @param [Date]
-  def schedule_known_event(participant, event_type, date)
-    if should_schedule_segment(participant, PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
-      log.debug("~~~ about to schedule #{event_type} for #{participant.person} on #{date}")
-      request_data = build_known_event_request(event_type, date)
-      post("studies/#{CGI.escape(study_identifier)}/schedules/#{psc_assignment_id(participant)}", request_data) if request_data
-    end
   end
 
   ##
@@ -697,17 +664,6 @@ class PatientStudyCalendar
   def build_next_scheduled_study_segment_request(event, date)
     study_segment_id = get_study_segment_id(event)
     build_study_segment_request(study_segment_id, date) if study_segment_id
-  end
-
-  ##
-  # Creates the xml request for a post to psc.
-  # This method takes a String (Master Data Element Specification Code List Event Type)
-  # to determine the Psc Segment and delegates to the #build_next_scheduled_study_segment_request
-  # method.
-  # @param [String] - Master Data Element Specification Code List Event Type
-  # @param[String] - as date
-  def build_known_event_request(event_type, date)
-    build_next_scheduled_study_segment_request(PatientStudyCalendar.get_psc_segment_from_mdes_event_type(event_type), date)
   end
 
   # <xsd:element name="next-scheduled-study-segment" type="psc:NextScheduledStudySegment"/>
