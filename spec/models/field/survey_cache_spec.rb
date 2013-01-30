@@ -29,7 +29,7 @@ module Field
 
       it "sets an expiration time" do
         cache.put([s1])
-        cache.ttl([s1]).first.should be_within(1.second).of(1.hour)
+        cache.ttl([s1]).first.should be_within(1.second).of(SurveyCache::TTL)
       end
     end
 
@@ -71,7 +71,7 @@ module Field
         sleep 2
         cache.renew([s1])
 
-        cache.ttl([s1]).first.should be_within(1.second).of(1.hour)
+        cache.ttl([s1]).first.should be_within(1.second).of(SurveyCache::TTL)
       end
     end
 

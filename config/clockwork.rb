@@ -11,6 +11,8 @@ $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'clockwork'
 require 'ncs_navigator/core'
 require 'pathname'
+
+require 'field/survey_cache_worker'
 require 'watchdog_worker'
 
 LOG = Logger.new($stderr)
@@ -34,10 +36,13 @@ end
 
 include Clockwork
 include NcsNavigator::Core::SidekiqConfiguration
-include NcsNavigator::Core::WorkerWatchdog
 
 handler { |job| job.perform_async }
 sidekiq_configure_client
 
-# Jobs go here.
-every(watchdog_periodicity.seconds, WatchdogWorker)
+[
+  Field::SurveyCacheWorker,
+  WatchdogWorker
+].each do |worker|
+  every(worker.period.seconds, worker)
+end

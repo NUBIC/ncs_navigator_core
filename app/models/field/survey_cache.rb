@@ -42,7 +42,7 @@ module Field
   # Instead, wrap it in {Field::JsonSurvey}, which provides a much more direct
   # path for JSON serialization.
   class SurveyCache
-    TTL = 1.hour
+    TTL = SurveyCacheWorker.period * 2
 
     attr_reader :redis
 
